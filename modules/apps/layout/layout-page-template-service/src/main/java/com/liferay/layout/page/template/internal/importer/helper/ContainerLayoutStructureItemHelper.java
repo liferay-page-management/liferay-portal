@@ -24,6 +24,7 @@ import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -60,22 +61,18 @@ public class ContainerLayoutStructureItemHelper
 			Map<String, Object> backgroundImageMap =
 				(Map<String, Object>)definitionMap.get("backgroundImage");
 
+			Map<String, Object> titleMap =
+				(Map<String, Object>)backgroundImageMap.get("title");
+
+			Map<String, Object> urlMap =
+				(Map<String, Object>)backgroundImageMap.get("url");
+
 			if (backgroundImageMap != null) {
-				JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-
-				Map<String, String> titleMap =
-					(Map<String, String>)backgroundImageMap.get("title");
-
-				if (titleMap != null) {
-					jsonObject.put("title", titleMap.get("value"));
-				}
-
-				Map<String, String> urlMap =
-					(Map<String, String>)backgroundImageMap.get("url");
-
-				if (urlMap != null) {
-					jsonObject.put("url", urlMap.get("value"));
-				}
+				JSONObject jsonObject = JSONUtil.put(
+					"title", _getLocalizedValue(titleMap)
+				).put(
+					"url", _getLocalizedValue(urlMap)
+				);
 
 				containerLayoutStructureItem.setBackgroundImageJSONObject(
 					jsonObject);
@@ -101,6 +98,26 @@ public class ContainerLayoutStructureItemHelper
 		}
 
 		return containerLayoutStructureItem;
+	}
+
+	private Object _getLocalizedValue(Map<String, Object> map) {
+		Map<String, Object> localizedValuesMap = (Map<String, Object>)map.get(
+			"value_i18n");
+
+		if (localizedValuesMap != null) {
+			JSONObject localizedValueJSONObject =
+				JSONFactoryUtil.createJSONObject();
+
+			for (Map.Entry<String, Object> entry :
+					localizedValuesMap.entrySet()) {
+
+				localizedValueJSONObject.put(entry.getKey(), entry.getValue());
+			}
+
+			return localizedValueJSONObject;
+		}
+
+		return map.get("value");
 	}
 
 }
