@@ -2615,6 +2615,7 @@ definition {
 		SignIn.signIn(userEmailAddress = "user@liferay.com");
 
 		Smoke.viewWelcomePage(
+			upgrade = "true",
 			userFirstName = "Userfn",
 			userLastName = "Userln");
 
