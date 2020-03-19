@@ -16,6 +16,7 @@ package com.liferay.fragment.internal.contributor;
 
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.contributor.FragmentCollectionContributor;
+import com.liferay.fragment.contributor.FragmentCollectionContributorRegistration;
 import com.liferay.fragment.contributor.FragmentCollectionContributorTracker;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
@@ -28,17 +29,20 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.AggregateResourceBundleLoader;
+import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ResourceBundleLoader;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -166,6 +170,8 @@ public class FragmentCollectionContributorTrackerImpl
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
+		_fragmentEntries = new ConcurrentHashMap<>();
+
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
 			bundleContext, FragmentCollectionContributor.class, null,
 			(serviceReference, emitter) -> {
@@ -295,9 +301,25 @@ public class FragmentCollectionContributorTrackerImpl
 		public FragmentCollectionContributor addingService(
 			ServiceReference<FragmentCollectionContributor> serviceReference) {
 
-			_fragmentEntries = null;
+			Dictionary<String, Object> properties = new HashMapDictionary<>();
 
-			return _bundleContext.getService(serviceReference);
+			FragmentCollectionContributor fragmentCollectionContributor =
+				_bundleContext.getService(serviceReference);
+
+			_fragmentEntries.putAll(
+					_getFragmentEntries(fragmentCollectionContributor));
+
+			properties.put(
+				"fragment.collection.key",
+				serviceReference.getProperty("fragment.collection.key"));
+
+			_bundleContext.registerService(
+				FragmentCollectionContributorRegistration.class,
+				new FragmentCollectionContributorRegistration() {
+				},
+				properties);
+
+			return fragmentCollectionContributor;
 		}
 
 		@Override
