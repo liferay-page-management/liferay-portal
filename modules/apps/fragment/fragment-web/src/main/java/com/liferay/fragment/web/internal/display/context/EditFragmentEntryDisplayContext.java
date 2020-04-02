@@ -368,6 +368,9 @@ public class EditFragmentEntryDisplayContext {
 		).put(
 			"cacheable", _fragmentEntry.isCacheable()
 		).put(
+			"dataAttributes",
+			_fragmentEntryProcessorRegistry.getDataAttributesJSONArray()
+		).put(
 			"fragmentCollectionId", getFragmentCollectionId()
 		).put(
 			"fragmentEntryId", getFragmentEntryId()
