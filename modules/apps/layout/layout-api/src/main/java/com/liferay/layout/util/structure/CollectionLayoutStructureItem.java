@@ -26,6 +26,10 @@ import java.util.Objects;
  */
 public class CollectionLayoutStructureItem extends LayoutStructureItem {
 
+	public static final String LIST_FORMAT_GRID = "grid";
+
+	public static final String LIST_FORMAT_STACKED = "stacked";
+
 	public CollectionLayoutStructureItem(String parentItemId) {
 		super(parentItemId);
 	}
@@ -136,7 +140,7 @@ public class CollectionLayoutStructureItem extends LayoutStructureItem {
 	}
 
 	private JSONObject _collectionJSONObject;
-	private String _listFormat;
+	private String _listFormat = LIST_FORMAT_STACKED;
 	private int _numberOfColumns = 3;
 	private int _numberOfItems = 3;
 
