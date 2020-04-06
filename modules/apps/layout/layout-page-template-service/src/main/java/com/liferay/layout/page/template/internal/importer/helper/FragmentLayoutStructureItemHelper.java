@@ -525,10 +525,10 @@ public class FragmentLayoutStructureItemHelper
 
 			try {
 				if (useSegmentsExperience) {
-					localizationJSONObject = JSONUtil.put(
+					baseFragmentFieldJSONObject = JSONUtil.put(
 						SegmentsExperienceConstants.ID_PREFIX +
 							SegmentsExperienceConstants.ID_DEFAULT,
-						localizationJSONObject);
+						baseFragmentFieldJSONObject);
 				}
 
 				jsonObject.put(
