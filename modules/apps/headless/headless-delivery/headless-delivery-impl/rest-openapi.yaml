@@ -220,6 +220,24 @@ components:
                     type: string
                     writeOnly: true
             type: object
+        CollectionDefinition:
+            description:
+                ""
+            properties:
+                collectionConfig:
+                    type: object
+                numberOfColumns:
+                    type: integer
+                numberOfItems:
+                    type: integer
+            type: object
+        CollectionItemDefinition:
+            description:
+                ""
+            properties:
+                collectionItemConfig:
+                    type: object
+            type: object
         ColumnDefinition:
             properties:
                 size:
@@ -1836,6 +1854,8 @@ components:
             properties:
                 definition:
                     oneOf:
+                        - $ref: "#/components/schemas/CollectionDefinition"
+                        - $ref: "#/components/schemas/CollectionItemDefinition"
                         - $ref: "#/components/schemas/ColumnDefinition"
                         - $ref: "#/components/schemas/DropZoneDefinition"
                         - $ref: "#/components/schemas/FragmentInstanceDefinition"
@@ -1847,7 +1867,7 @@ components:
                         $ref: "#/components/schemas/PageElement"
                     type: array
                 type:
-                    enum: [Column, DropZone, Fragment, Root, Row, Section]
+                    enum: [Collection, CollectionItem, Column, DropZone, Fragment, Root, Row, Section]
                     type: string
         PageTemplate:
             description:
