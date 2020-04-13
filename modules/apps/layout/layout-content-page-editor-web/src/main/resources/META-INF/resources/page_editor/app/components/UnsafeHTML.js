@@ -12,6 +12,7 @@
  * details.
  */
 
+import {debounce} from 'frontend-js-web';
 import {globalEval} from 'metal-dom';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -25,6 +26,7 @@ export default class UnsafeHTML extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		this.state = {portals: [], ref: null};
+		this._syncRefContent = debounce(this._syncRefContent.bind(this), 100);
 	}
 
 	componentDidUpdate(prevProps) {
@@ -52,14 +54,24 @@ export default class UnsafeHTML extends React.PureComponent {
 
 		ref.innerHTML = this.props.markup;
 
-		requestAnimationFrame(() => {
-			globalEval.runScriptsInElement(ref);
-			this.props.onRender(ref);
-		});
+		const nextPortals = this.props.getPortals(ref);
 
-		this.setState({
-			portals: this.props.getPortals(ref),
-		});
+		const parseContent = () => {
+			requestAnimationFrame(() => {
+				globalEval.runScriptsInElement(ref);
+				this.props.onRender(ref);
+			});
+		};
+
+		if (
+			nextPortals.length ||
+			nextPortals.length !== this.state.portals.length
+		) {
+			this.setState({portals: nextPortals}, parseContent);
+		}
+		else {
+			parseContent();
+		}
 	}
 
 	/**
