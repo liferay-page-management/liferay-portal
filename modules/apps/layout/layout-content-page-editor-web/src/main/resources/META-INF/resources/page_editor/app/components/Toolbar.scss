@@ -14,6 +14,15 @@
 		border-bottom: 1px solid $primary-l1;
 	}
 
+	& > .container-fluid > .navbar-nav:first-child .nav-item:last-child {
+		@include media-breakpoint-up(lg) {
+			left: 50%;
+			margin-left: 0;
+			position: absolute;
+			transform: translateX(-50%);
+		}
+	}
+
 	button {
 		color: $secondary;
 	}
@@ -52,6 +61,17 @@
 
 				@include media-breakpoint-up(lg) {
 					order: 0;
+				}
+
+				.nav-item:last-child {
+					margin-left: 16px;
+
+					@include media-breakpoint-up(lg) {
+						left: calc(50% + 47px);
+						margin-left: 0;
+						position: absolute;
+						transform: translateX(-50%);
+					}
 				}
 			}
 

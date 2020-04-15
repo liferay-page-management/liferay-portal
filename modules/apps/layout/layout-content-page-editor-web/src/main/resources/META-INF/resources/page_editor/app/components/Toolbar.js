@@ -29,6 +29,7 @@ import ExperimentsLabel from './ExperimentsLabel';
 import NetworkStatusBar from './NetworkStatusBar';
 import Translation from './Translation';
 import UnsafeHTML from './UnsafeHTML';
+import ViewportSizeSelector from './ViewportSizeSelector';
 
 const {Suspense, useCallback, useRef} = React;
 
@@ -45,6 +46,7 @@ function ToolbarBody() {
 		network,
 		segmentsExperienceId,
 		segmentsExperimentStatus,
+		selectedViewportSize,
 	} = store;
 
 	const [enableDiscard, setEnableDiscard] = useState(false);
@@ -207,6 +209,9 @@ function ToolbarBody() {
 							/>
 						</li>
 					)}
+				<li className="nav-item">
+					<ViewportSizeSelector selectedSize={selectedViewportSize} />
+				</li>
 			</ul>
 
 			<ul className="navbar-nav" onClick={deselectItem}>
