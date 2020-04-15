@@ -64,9 +64,15 @@ const FragmentContent = React.forwardRef(
 
 		const updateEditables = useCallback(
 			parent => {
+				let updatedEditableValues = [];
 				if (isMounted()) {
-					setEditables(parent ? getAllEditables(parent) : []);
+					updatedEditableValues = parent
+						? getAllEditables(parent)
+						: [];
+					setEditables(updatedEditableValues);
 				}
+
+				return updatedEditableValues;
 			},
 			[isMounted]
 		);
@@ -101,15 +107,22 @@ const FragmentContent = React.forwardRef(
 				dispatch(
 					updateFragmentEntryLinkContent({
 						content,
+						editableValues,
 						fragmentEntryLinkId,
 					})
 				)
 			);
-		}, [dispatch, fragmentEntryLinkId, segmentsExperienceId]);
+		}, [
+			dispatch,
+			editableValues,
+			fragmentEntryLinkId,
+			segmentsExperienceId,
+		]);
 
 		useEffect(() => {
 			let element = document.createElement('div');
 			element.innerHTML = defaultContent;
+			const updatedEditables = updateEditables(element);
 
 			const updateContent = debounce(() => {
 				if (isMounted() && element) {
@@ -118,7 +131,7 @@ const FragmentContent = React.forwardRef(
 			}, 50);
 
 			if (!editableProcessorUniqueId) {
-				editables.forEach(editable => {
+				updatedEditables.forEach(editable => {
 					resolveEditableValue(
 						editableValues,
 						editable.editableId,
@@ -147,11 +160,11 @@ const FragmentContent = React.forwardRef(
 			defaultContent,
 			editableProcessorUniqueId,
 			editableValues,
-			editables,
 			getFieldValue,
 			isMounted,
 			languageId,
 			prefixedSegmentsExperienceId,
+			updateEditables,
 		]);
 
 		const dropZones = useSelector(state => {
@@ -237,15 +250,16 @@ const FragmentContent = React.forwardRef(
 					fragmentEntryLinkId={fragmentEntryLinkId}
 				/>
 
-				{editableElements.map(editableElement => (
-					<FragmentContentDecoration
-						editableElement={editableElement}
-						element={element}
-						fragmentEntryLinkId={fragmentEntryLinkId}
-						itemId={itemId}
-						key={getEditableElementId(editableElement)}
-					/>
-				))}
+				{element &&
+					editableElements.map(editableElement => (
+						<FragmentContentDecoration
+							editableElement={editableElement}
+							element={element}
+							fragmentEntryLinkId={fragmentEntryLinkId}
+							itemId={itemId}
+							key={getEditableElementId(editableElement)}
+						/>
+					))}
 			</>
 		);
 	}
