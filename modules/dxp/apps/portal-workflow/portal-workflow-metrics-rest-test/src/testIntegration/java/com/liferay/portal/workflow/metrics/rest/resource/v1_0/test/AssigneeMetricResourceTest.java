@@ -93,7 +93,6 @@ public class AssigneeMetricResourceTest
 
 		Instance instance1 = _workflowMetricsRESTTestHelper.addInstance(
 			testGroup.getCompanyId(), false, _process.getId());
-
 		Long reviewNodeId = RandomTestUtil.nextLong();
 
 		_addNodeMetric(
