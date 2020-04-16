@@ -1708,6 +1708,10 @@ public class GraphQLServletExtender {
 						return _getExtendedGraphQLError(
 							graphQLError, Response.Status.UNAUTHORIZED);
 					}
+					else if (message.contains("NoSuchEntryException")) {
+						return _getExtendedGraphQLError(
+							graphQLError, Response.Status.NOT_FOUND);
+					}
 					else if (!isClientError(graphQLError) &&
 							 !message.contains("ClientErrorException")) {
 
