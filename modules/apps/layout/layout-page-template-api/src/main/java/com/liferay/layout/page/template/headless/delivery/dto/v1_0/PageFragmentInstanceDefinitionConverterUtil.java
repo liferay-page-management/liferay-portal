@@ -793,7 +793,6 @@ public class PageFragmentInstanceDefinitionConverterUtil {
 
 								return jsonObject.getString("mappedField");
 							});
-
 						setItemKey(
 							() -> {
 								String classNameId = jsonObject.getString(
