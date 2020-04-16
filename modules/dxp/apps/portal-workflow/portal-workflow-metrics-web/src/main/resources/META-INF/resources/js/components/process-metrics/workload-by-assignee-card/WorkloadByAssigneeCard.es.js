@@ -101,7 +101,7 @@ const WorkloadByAssigneeCard = ({routeParams}) => {
 				<WorkloadByAssigneeCard.Body
 					currentTab={currentTab}
 					{...data}
-					processStepKey={taskKey}
+					processStepKey={taskKeys && taskKey}
 					{...routeParams}
 				/>
 			</Panel>
