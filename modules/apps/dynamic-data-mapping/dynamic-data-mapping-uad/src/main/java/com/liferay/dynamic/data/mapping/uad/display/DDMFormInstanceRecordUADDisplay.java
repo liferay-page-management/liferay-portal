@@ -150,10 +150,7 @@ public class DDMFormInstanceRecordUADDisplay
 					"record"));
 			sb.append(StringPool.SPACE);
 			sb.append(StringPool.POUND);
-
-			int ddmFormInstanceRecordIndex = _getIndex(ddmFormInstanceRecord);
-
-			sb.append(ddmFormInstanceRecordIndex + 1);
+			sb.append(_getIndex(ddmFormInstanceRecord) + 1);
 
 			return sb.toString();
 		}
