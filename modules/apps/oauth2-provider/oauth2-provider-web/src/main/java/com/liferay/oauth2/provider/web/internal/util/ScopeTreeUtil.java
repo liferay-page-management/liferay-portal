@@ -38,12 +38,12 @@ public class ScopeTreeUtil {
 		List<String> scopeAliasesList,
 		ScopeMatcherFactory scopeMatcherFactory) {
 
-		HashMap<String, ScopeMatcher> scopeMatcherMap = new HashMap<>();
+		HashMap<String, ScopeMatcher> scopeMatchers = new HashMap<>();
 
 		Tree.Node<String> treeNode = TreeUtil.getTreeNode(
 			new TreeSet<String>(scopeAliasesList), StringPool.BLANK,
 			(scopeAlias1, scopeAlias2) -> {
-				ScopeMatcher scopeMatcher = scopeMatcherMap.computeIfAbsent(
+				ScopeMatcher scopeMatcher = scopeMatchers.computeIfAbsent(
 					scopeAlias1, scopeMatcherFactory::create);
 
 				return scopeMatcher.match(scopeAlias2);
