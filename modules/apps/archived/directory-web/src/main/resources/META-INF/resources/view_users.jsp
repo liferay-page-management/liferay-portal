@@ -122,11 +122,13 @@ boolean showSearch = ParamUtil.getBoolean(request, "showSearch", true);
 			userParams.put("socialRelationType", new Long[] {themeDisplay.getUserId(), Long.valueOf(SocialRelationConstants.TYPE_BI_FRIEND)});
 		}
 		else if (portletName.equals(PortletKeys.MY_SITES_DIRECTORY) && (organizationId == 0) && (userGroupId == 0)) {
-			LinkedHashMap<String, Object> groupParams = new LinkedHashMap<String, Object>();
-
-			groupParams.put("inherit", Boolean.FALSE);
-			groupParams.put("site", Boolean.TRUE);
-			groupParams.put("usersGroups", user.getUserId());
+			LinkedHashMap<String, Object> groupParams = LinkedHashMapBuilder.<String, Object>put(
+				"inherit", Boolean.FALSE
+			).put(
+				"site", Boolean.TRUE
+			).put(
+				"usersGroups", user.getUserId()
+			).build();
 
 			userParams.put("inherit", Boolean.TRUE);
 

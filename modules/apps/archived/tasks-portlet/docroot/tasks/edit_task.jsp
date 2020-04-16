@@ -92,10 +92,11 @@ String dueDateWrapperCssClass = dueDateControlGroupCssClass + StringPool.SPACE +
 							users = UserLocalServiceUtil.getSocialUsers(group.getClassPK(), SocialRelationConstants.TYPE_BI_CONNECTION, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new UserFirstNameComparator(true));
 						}
 						else {
-							LinkedHashMap userParams = new LinkedHashMap();
-
-							userParams.put("inherit", Boolean.TRUE);
-							userParams.put("usersGroups", Long.valueOf(themeDisplay.getScopeGroupId()));
+							LinkedHashMap<String, Object> userParams = LinkedHashMapBuilder.<String, Object>put(
+								"inherit", Boolean.TRUE
+							).put(
+								"usersGroups", Long.valueOf(themeDisplay.getScopeGroupId())
+							).build();
 
 							users = UserLocalServiceUtil.search(company.getCompanyId(), StringPool.BLANK, WorkflowConstants.STATUS_APPROVED, userParams, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new UserFirstNameComparator(true));
 						}
