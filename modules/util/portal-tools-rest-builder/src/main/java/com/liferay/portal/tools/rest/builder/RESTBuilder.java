@@ -295,7 +295,7 @@ public class RESTBuilder {
 	}
 
 	private String _addClientVersionDescription(String yamlString) {
-		Optional<String> versionOptional = _getVersionOptional();
+		Optional<String> versionOptional = _getClientVersionOptional();
 
 		if (!versionOptional.isPresent()) {
 			return yamlString;
@@ -1637,7 +1637,7 @@ public class RESTBuilder {
 		return relatedSchemaNames;
 	}
 
-	private Optional<String> _getVersionOptional() {
+	private Optional<String> _getClientVersionOptional() {
 		try {
 			String directory = StringUtil.removeSubstring(
 				_configYAML.getClientDir(), "src/main/java");
