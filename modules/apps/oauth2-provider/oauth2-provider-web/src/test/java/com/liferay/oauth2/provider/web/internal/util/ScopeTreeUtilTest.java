@@ -131,10 +131,10 @@ public class ScopeTreeUtilTest {
 		Assert.assertTrue(lastChildTree instanceof Tree.Leaf);
 	}
 
-	private Tree<String> _getLastTree(Tree.Node<String> node) {
-		final Collection<Tree<String>> trees = node.getTrees();
+	private Tree<String> _getLastTree(Tree.Node<String> treeNode) {
+		final Collection<Tree<String>> trees = treeNode.getTrees();
 
-		return _getTree(node, trees.size() - 1);
+		return _getTree(treeNode, trees.size() - 1);
 	}
 
 	private List<Tree<String>> _getSortedTrees(Tree.Node<String> treeNode) {
@@ -144,8 +144,8 @@ public class ScopeTreeUtilTest {
 				Tree::getValue, String.CASE_INSENSITIVE_ORDER));
 	}
 
-	private Tree<String> _getTree(Tree.Node<String> node, int indexItem) {
-		final List<Tree<String>> trees = _getSortedTrees(node);
+	private Tree<String> _getTree(Tree.Node<String> treeNode, int indexItem) {
+		final List<Tree<String>> trees = _getSortedTrees(treeNode);
 
 		return trees.get(indexItem);
 	}
