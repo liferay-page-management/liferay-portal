@@ -61,6 +61,7 @@ public class ScopeTreeUtilTest {
 		Assert.assertEquals(
 			"everything.read.user", firstGrandChildTree.getValue());
 		Assert.assertFalse(firstGrandChildTree instanceof Tree.Leaf);
+
 		Tree<String> greatGrandChildTree = _getTree(
 			(Tree.Node<String>)firstGrandChildTree, 0);
 
