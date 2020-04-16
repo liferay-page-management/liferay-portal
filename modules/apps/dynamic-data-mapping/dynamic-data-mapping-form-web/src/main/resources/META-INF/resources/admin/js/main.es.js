@@ -47,7 +47,7 @@ import StateSyncronizer from './util/StateSyncronizer.es';
 const NAV_ITEMS = {
 	FORM: 0,
 	RULES: 1,
-	SUMMARY: 3,
+	SUMMARY: 2,
 };
 
 /**
@@ -573,85 +573,27 @@ class Form extends Component {
 	}
 
 	syncActiveNavItem(activeNavItem) {
-		const {
-			defaultLanguageId,
-			editingLanguageId,
-			published,
-			saved,
-		} = this.props;
-		const ddmFormInstanceManagementToolbar = document.querySelector(
-			'#ddmFormInstanceManagementToolbar'
-		);
-		const formBasicInfo = document.querySelector('.ddm-form-basic-info');
-		const formBuilderButtons = document.querySelector(
-			'.ddm-form-builder-buttons'
-		);
-		const publishIcon = document.querySelector('.publish-icon');
-		const shareURLButton = document.querySelector(
-			'.lfr-ddm-share-url-button'
-		);
-		const translationManager = document.querySelector(
-			'.ddm-translation-manager'
-		);
-		const viewFormInstanceRecords = document.querySelector(
-			'#viewFormInstanceRecords'
-		);
+		switch (activeNavItem) {
+			case NAV_ITEMS.FORM:
+				this._toggleRulesBuilder(false);
+				this._toggleSummary(false);
+				this._toggleFormBuilder(true);
+				break;
 
-		if (activeNavItem !== NAV_ITEMS.FORM) {
-			formBasicInfo.classList.add('hide');
-			formBuilderButtons.classList.add('hide');
-			shareURLButton.classList.add('hide');
+			case NAV_ITEMS.RULES:
+				this._toggleFormBuilder(false);
+				this._toggleSummary(false);
+				this._toggleRulesBuilder(true);
+				break;
 
-			if (publishIcon) {
-				publishIcon.classList.add('hide');
-			}
+			case NAV_ITEMS.SUMMARY:
+				this._toggleFormBuilder(false);
+				this._toggleRulesBuilder(false);
+				this._toggleSummary(true);
+				break;
 
-			if (translationManager) {
-				translationManager.classList.add('hide');
-			}
-
-			if (activeNavItem === NAV_ITEMS.RULES) {
-				ddmFormInstanceManagementToolbar.classList.remove('hide');
-				viewFormInstanceRecords.classList.add('hide');
-
-				if (this.refs.ruleBuilder.isViewMode()) {
-					this.showAddButton();
-				}
-				else {
-					this.hideAddButton();
-				}
-			}
-			else {
-				ddmFormInstanceManagementToolbar.classList.add('hide');
-				viewFormInstanceRecords.classList.remove('hide');
-
-				this.hideAddButton();
-			}
-		}
-		else {
-			ddmFormInstanceManagementToolbar.classList.remove('hide');
-			formBasicInfo.classList.remove('hide');
-			formBuilderButtons.classList.remove('hide');
-			viewFormInstanceRecords.classList.add('hide');
-
-			if (publishIcon) {
-				publishIcon.classList.remove('hide');
-			}
-
-			if (translationManager) {
-				translationManager.classList.remove('hide');
-			}
-
-			if (saved || published) {
-				shareURLButton.classList.remove('hide');
-			}
-
-			if (defaultLanguageId === editingLanguageId) {
-				this.showAddButton();
-			}
-			else {
-				this.hideAddButton();
-			}
+			default:
+				break;
 		}
 	}
 
@@ -989,6 +931,105 @@ class Form extends Component {
 		Notifications.showAlert(
 			Liferay.Language.get('the-form-was-unpublished-successfully')
 		);
+	}
+
+	_toggleFormBuilder(show) {
+		const {
+			defaultLanguageId,
+			editingLanguageId,
+			published,
+			saved,
+		} = this.props;
+
+		const ddmFormInstanceManagementToolbar = document.querySelector(
+			'#ddmFormInstanceManagementToolbar'
+		);
+		const formBasicInfo = document.querySelector('.ddm-form-basic-info');
+		const formBuilderButtons = document.querySelector(
+			'.ddm-form-builder-buttons'
+		);
+		const publishIcon = document.querySelector('.publish-icon');
+		const shareURLButton = document.querySelector(
+			'.lfr-ddm-share-url-button'
+		);
+		const translationManager = document.querySelector(
+			'.ddm-translation-manager'
+		);
+
+		if (show) {
+			ddmFormInstanceManagementToolbar.classList.remove('hide');
+			formBasicInfo.classList.remove('hide');
+			formBuilderButtons.classList.remove('hide');
+
+			if (publishIcon) {
+				publishIcon.classList.remove('hide');
+			}
+
+			if (translationManager) {
+				translationManager.classList.remove('hide');
+			}
+
+			if (saved || published) {
+				shareURLButton.classList.remove('hide');
+			}
+
+			if (defaultLanguageId === editingLanguageId) {
+				this.showAddButton();
+			}
+			else {
+				this.hideAddButton();
+			}
+		}
+		else {
+			ddmFormInstanceManagementToolbar.classList.add('hide');
+			formBasicInfo.classList.add('hide');
+			formBuilderButtons.classList.add('hide');
+
+			if (publishIcon) {
+				publishIcon.classList.add('hide');
+			}
+
+			if (translationManager) {
+				translationManager.classList.add('hide');
+			}
+
+			shareURLButton.classList.add('hide');
+
+			this.hideAddButton();
+		}
+	}
+
+	_toggleRulesBuilder(show) {
+		const ddmFormInstanceManagementToolbar = document.querySelector(
+			'#ddmFormInstanceManagementToolbar'
+		);
+
+		if (show) {
+			ddmFormInstanceManagementToolbar.classList.remove('hide');
+		}
+		else {
+			ddmFormInstanceManagementToolbar.classList.add('hide');
+		}
+
+		if (this.refs.ruleBuilder.isViewMode()) {
+			this.showAddButton();
+		}
+		else {
+			this.hideAddButton();
+		}
+	}
+
+	_toggleSummary(show) {
+		const viewFormInstanceRecords = document.querySelector(
+			'#viewFormInstanceRecords'
+		);
+
+		if (show) {
+			viewFormInstanceRecords.classList.remove('hide');
+		}
+		else {
+			viewFormInstanceRecords.classList.add('hide');
+		}
 	}
 
 	_updateAutoSaveMessage({modifiedDate, savedAsDraft}) {
