@@ -16,10 +16,10 @@ package com.liferay.headless.delivery.internal.resource.v1_0;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.headless.delivery.dto.v1_0.PageDefinition;
 import com.liferay.headless.delivery.resource.v1_0.PageDefinitionResource;
@@ -32,20 +32,24 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.DummyHttpServletResponse;
+import com.liferay.portal.kernel.servlet.ServletContextPool;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.taglib.util.ThemeUtil;
 
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 
 import javax.ws.rs.core.Context;
@@ -53,6 +57,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Providers;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -83,7 +91,7 @@ public class PageDefinitionResourceImpl extends BasePageDefinitionResourceImpl {
 			_portal.getClassNameId(PageDefinition.class), 0, nameMap, nameMap,
 			Collections.emptyMap(), Collections.emptyMap(),
 			Collections.emptyMap(), LayoutConstants.TYPE_CONTENT,
-			StringPool.BLANK, true, true, Collections.emptyMap(), 0,
+			StringPool.BLANK, true, false, Collections.emptyMap(), 0,
 			serviceContext);
 
 		LayoutStructure layoutStructure = new LayoutStructure();
@@ -134,8 +142,6 @@ public class PageDefinitionResourceImpl extends BasePageDefinitionResourceImpl {
 		layout.includeLayoutContent(
 			contextHttpServletRequest, contextHttpServletResponse);
 
-		_layoutService.deleteLayout(layout.getPlid(), serviceContext);
-
 		StringBundler sb =
 			(StringBundler)contextHttpServletRequest.getAttribute(
 				WebKeys.LAYOUT_CONTENT);
@@ -145,8 +151,29 @@ public class PageDefinitionResourceImpl extends BasePageDefinitionResourceImpl {
 			).build();
 		}
 
+		LayoutSet layoutSet = layout.getLayoutSet();
+
+		ServletContext servletContext = ServletContextPool.get(
+			StringPool.BLANK);
+
+		if (contextHttpServletRequest.getAttribute(WebKeys.CTX) == null) {
+			contextHttpServletRequest.setAttribute(WebKeys.CTX, servletContext);
+		}
+
+		Document document = Jsoup.parse(
+			ThemeUtil.include(
+				servletContext, contextHttpServletRequest,
+				contextHttpServletResponse, "portal_normal.ftl",
+				layoutSet.getTheme(), false));
+
+		_layoutService.deleteLayout(layout.getPlid(), serviceContext);
+
+		Element bodyElement = document.body();
+
+		bodyElement.html(sb.toString());
+
 		return Response.ok(
-			sb.toString()
+			document.html()
 		).build();
 	}
 
