@@ -82,7 +82,7 @@ public class ProcessResourceImpl extends BaseProcessResourceImpl {
 				document, contextAcceptLanguage.getPreferredLocale())
 		).orElseThrow(
 			() -> new NoSuchProcessException(
-				"No Process exists with the processId " + processId)
+				"No process exists with the process ID " + processId)
 		);
 	}
 
