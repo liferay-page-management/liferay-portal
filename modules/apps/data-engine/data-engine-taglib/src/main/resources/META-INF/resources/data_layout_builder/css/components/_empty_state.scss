@@ -1,4 +1,6 @@
 .taglib-empty-result-message {
+	margin-top: 82px !important;
+
 	.empty-state-small {
 		background-position: center;
 		background-repeat: no-repeat;
@@ -7,7 +9,7 @@
 
 	.taglib-empty-result-message-title {
 		&.empty-state-title-small {
-			margin-top: 24px;
+			margin-top: 0;
 		}
 	}
 }

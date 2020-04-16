@@ -83,6 +83,9 @@ export default () => {
 								{Liferay.Language.get('add-rule')}
 							</ClayButton>
 						),
+						description: Liferay.Language.get(
+							'there-are-no-rules-description'
+						),
 						title: Liferay.Language.get('there-are-no-rules'),
 					}}
 					keywords={searchText}
