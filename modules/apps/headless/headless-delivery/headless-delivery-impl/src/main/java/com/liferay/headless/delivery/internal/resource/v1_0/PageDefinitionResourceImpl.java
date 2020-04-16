@@ -17,6 +17,9 @@ package com.liferay.headless.delivery.internal.resource.v1_0;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
+import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.headless.delivery.dto.v1_0.PageDefinition;
 import com.liferay.headless.delivery.resource.v1_0.PageDefinitionResource;
@@ -98,7 +101,12 @@ public class PageDefinitionResourceImpl extends BasePageDefinitionResourceImpl {
 		ObjectMapper objectMapper = contextResolver.getContext(
 			ObjectMapper.class);
 
-		ObjectWriter objectWriter = objectMapper.writer();
+		SimpleFilterProvider simpleFilterProvider = new SimpleFilterProvider();
+
+		FilterProvider filterProvider = simpleFilterProvider.addFilter(
+			"Liferay.Vulcan", SimpleBeanPropertyFilter.serializeAll());
+
+		ObjectWriter objectWriter = objectMapper.writer(filterProvider);
 
 		try {
 			_layoutPageTemplatesImporter.importPageElement(
