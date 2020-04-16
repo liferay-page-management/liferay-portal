@@ -1578,6 +1578,25 @@ public class RESTBuilder {
 		return yamlString;
 	}
 
+	private Optional<String> _getClientVersionOptional() {
+		try {
+			String directory = StringUtil.removeSubstring(
+				_configYAML.getClientDir(), "src/main/java");
+
+			Stream<String> stream = Files.lines(
+				Paths.get(directory + "/bnd.bnd"), StandardCharsets.UTF_8);
+
+			return stream.filter(
+				line -> line.startsWith("Bundle-Version: ")
+			).map(
+				line -> StringUtil.removeSubstring(line, "Bundle-Version: ")
+			).findFirst();
+		}
+		catch (Exception exception) {
+			return Optional.empty();
+		}
+	}
+
 	private List<Operation> _getOperations(PathItem pathItem) {
 		List<Operation> operations = new ArrayList<>();
 
@@ -1635,25 +1654,6 @@ public class RESTBuilder {
 		}
 
 		return relatedSchemaNames;
-	}
-
-	private Optional<String> _getClientVersionOptional() {
-		try {
-			String directory = StringUtil.removeSubstring(
-				_configYAML.getClientDir(), "src/main/java");
-
-			Stream<String> stream = Files.lines(
-				Paths.get(directory + "/bnd.bnd"), StandardCharsets.UTF_8);
-
-			return stream.filter(
-				line -> line.startsWith("Bundle-Version: ")
-			).map(
-				line -> StringUtil.removeSubstring(line, "Bundle-Version: ")
-			).findFirst();
-		}
-		catch (Exception exception) {
-			return Optional.empty();
-		}
 	}
 
 	private OpenAPIYAML _loadOpenAPIYAML(String yamlString) {
