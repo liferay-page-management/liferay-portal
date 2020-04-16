@@ -208,6 +208,10 @@
 							zIndex: CKEDITOR.getNextZIndex(),
 						});
 
+						itemSelectorDialog.on('disposed', () => {
+							instance._itemSelectorDialog = null;
+						});
+
 						instance._itemSelectorDialog = itemSelectorDialog;
 
 						callback(itemSelectorDialog);
