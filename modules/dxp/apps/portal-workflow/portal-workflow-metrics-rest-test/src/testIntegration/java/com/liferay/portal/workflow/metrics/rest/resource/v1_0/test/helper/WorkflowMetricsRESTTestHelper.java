@@ -96,7 +96,6 @@ public class WorkflowMetricsRESTTestHelper {
 					name = RandomTestUtil.randomString();
 				}
 			});
-
 		instance.setCompleted(completed);
 
 		if (completed) {
