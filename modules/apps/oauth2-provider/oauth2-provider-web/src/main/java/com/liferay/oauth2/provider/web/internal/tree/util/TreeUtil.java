@@ -131,15 +131,11 @@ public class TreeUtil {
 			Set<T> visitedVerticesSet = visitedVerticesMap.computeIfAbsent(
 				pathKey, key -> new HashSet<>());
 
-			List<T> vertexList = graphPath.getVertexList();
-
 			Set<String> visitedEdgesSet = visitedEdgesMap.computeIfAbsent(
 				pathKey, key -> new HashSet<>());
 
-			List<String> edgeList = graphPath.getEdgeList();
-
-			if (visitedVerticesSet.containsAll(vertexList)) {
-				for (String edge : edgeList) {
+			if (visitedVerticesSet.containsAll(graphPath.getVertexList())) {
+				for (String edge : graphPath.getEdgeList()) {
 					if (!visitedEdgesSet.contains(edge)) {
 						directedAcyclicGraph.removeEdge(edge);
 					}
@@ -148,8 +144,8 @@ public class TreeUtil {
 				continue;
 			}
 
-			visitedEdgesSet.addAll(edgeList);
-			visitedVerticesSet.addAll(vertexList);
+			visitedEdgesSet.addAll(graphPath.getEdgeList());
+			visitedVerticesSet.addAll(graphPath.getVertexList());
 		}
 	}
 
