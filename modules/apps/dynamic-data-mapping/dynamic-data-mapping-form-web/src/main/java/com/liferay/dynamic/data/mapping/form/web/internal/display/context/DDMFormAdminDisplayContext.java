@@ -504,6 +504,13 @@ public class DDMFormAdminDisplayContext {
 				navigationItem.setLabel(
 					LanguageUtil.get(httpServletRequest, "rules"));
 			}
+		).add(
+			navigationItem -> {
+				navigationItem.putData("action", "showEntries");
+				navigationItem.setHref(StringPool.BLANK);
+				navigationItem.setLabel(
+					LanguageUtil.get(httpServletRequest, "entries"));
+			}
 		).build();
 	}
 
