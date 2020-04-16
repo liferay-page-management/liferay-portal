@@ -161,76 +161,78 @@ export default function MultiPanelSidebar({panels, sidebarPanels}) {
 	return (
 		<ClayTooltipProvider>
 			<div className="multi-panel-sidebar">
-				<div className="multi-panel-sidebar__buttons">
-					{panels.reduce((elements, group, groupIndex) => {
-						const buttons = group.map(panelId => {
-							const panel = sidebarPanels[panelId];
+				<nav className="multi-panel-sidebar__buttons tbar tbar-light tbar-stacked">
+					<ul className="tbar-nav">
+						{panels.reduce((elements, group, groupIndex) => {
+							const buttons = group.map(panelId => {
+								const panel = sidebarPanels[panelId];
 
-							const active =
-								sidebarOpen && sidebarPanelId === panelId;
-							const {
-								icon,
-								isLink,
-								label,
-								pluginEntryPoint,
-								url,
-							} = panel;
+								const active =
+									sidebarOpen && sidebarPanelId === panelId;
+								const {
+									icon,
+									isLink,
+									label,
+									pluginEntryPoint,
+									url,
+								} = panel;
 
-							if (isLink) {
-								return (
-									<a
-										className={classNames({active})}
-										href={url}
-										key={panelId}
-									>
-										<ClayIcon symbol={icon} />
-									</a>
+								const prefetch = () =>
+									load(
+										panel.sidebarPanelId,
+										pluginEntryPoint
+									).then(...swallow);
+
+								const btnClasses = classNames(
+									'tbar-btn tbar-btn-monospaced',
+									{active}
 								);
+
+								return (
+									<li
+										className="tbar-item"
+										key={panel.sidebarPanelId}
+									>
+										{isLink ? (
+											<a
+												className={btnClasses}
+												href={url}
+											>
+												<ClayIcon symbol={icon} />
+											</a>
+										) : (
+											<ClayButtonWithIcon
+												aria-pressed={active}
+												className={btnClasses}
+												data-tooltip-align="left"
+												displayType="unstyled"
+												id={panel.sidebarPanelId}
+												onClick={() =>
+													handleClick(panel)
+												}
+												onFocus={prefetch}
+												onMouseEnter={prefetch}
+												symbol={icon}
+												title={label}
+											/>
+										)}
+									</li>
+								);
+							});
+
+							// Add separator between groups.
+							if (groupIndex === panels.length - 1) {
+								return elements.concat(buttons);
 							}
-
-							const prefetch = () =>
-								load(
-									panel.sidebarPanelId,
-									pluginEntryPoint
-								).then(...swallow);
-
-							return isLink ? (
-								<a
-									className={classNames({active})}
-									href={url}
-									key={panel.sidebarPanelId}
-								>
-									<ClayIcon symbol={icon} />
-								</a>
-							) : (
-								<ClayButtonWithIcon
-									aria-pressed={active}
-									className={classNames({active})}
-									data-tooltip-align="left"
-									displayType="unstyled"
-									id={panel.sidebarPanelId}
-									key={panel.sidebarPanelId}
-									onClick={() => handleClick(panel)}
-									onFocus={prefetch}
-									onMouseEnter={prefetch}
-									symbol={icon}
-									title={label}
-								/>
-							);
-						});
-
-						// Add separator between groups.
-						if (groupIndex === panels.length - 1) {
-							return elements.concat(buttons);
-						}
-						else {
-							return elements.concat([
-								...buttons,
-								<hr key={`separator-${groupIndex}`} />,
-							]);
-						}
-					}, [])}
-				</div>
+							else {
+								return elements.concat([
+									...buttons,
+									<hr key={`separator-${groupIndex}`} />,
+								]);
+							}
+						}, [])}
+					</ul>
+				</nav>
 				<div
 					className={classNames({
 						'multi-panel-sidebar__content': true,
