@@ -116,7 +116,7 @@ public class ScopeTreeUtilTest {
 
 		Assert.assertEquals(StringPool.BLANK, rootTreeNode.getValue());
 
-		final Tree<String> tree = _getTree(rootTreeNode, 0);
+		Tree<String> tree = _getTree(rootTreeNode, 0);
 
 		Assert.assertEquals("everything", tree.getValue());
 		Assert.assertFalse(tree instanceof Tree.Leaf);
@@ -133,7 +133,7 @@ public class ScopeTreeUtilTest {
 	}
 
 	private Tree<String> _getLastTree(Tree.Node<String> treeNode) {
-		final Collection<Tree<String>> trees = treeNode.getTrees();
+		Collection<Tree<String>> trees = treeNode.getTrees();
 
 		return _getTree(treeNode, trees.size() - 1);
 	}
@@ -146,7 +146,7 @@ public class ScopeTreeUtilTest {
 	}
 
 	private Tree<String> _getTree(Tree.Node<String> treeNode, int indexItem) {
-		final List<Tree<String>> trees = _getSortedTrees(treeNode);
+		List<Tree<String>> trees = _getSortedTrees(treeNode);
 
 		return trees.get(indexItem);
 	}
