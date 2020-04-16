@@ -925,7 +925,7 @@ class RuleEditor extends Component {
 				this.refs.confirmationModalCondition.emit('hide');
 			}
 
-			let maxPage = maxPageIndex(conditions, pages);
+			const maxPage = maxPageIndex(conditions, pages);
 
 			this.setState({
 				actions,
