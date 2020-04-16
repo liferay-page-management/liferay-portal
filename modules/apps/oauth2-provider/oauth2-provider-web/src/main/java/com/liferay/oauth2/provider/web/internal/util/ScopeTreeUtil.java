@@ -47,7 +47,7 @@ public class ScopeTreeUtil {
 
 		HashMap<String, ScopeMatcher> scopeMatchers = new HashMap<>();
 
-		Tree.Node<String> treeNode = TreeUtil.getTreeNode(
+		Tree.Node<String> node = TreeUtil.getTreeNode(
 			scopeAliases, StringPool.BLANK,
 			(scopeAlias1, scopeAlias2) -> {
 				ScopeMatcher scopeMatcher = scopeMatchers.computeIfAbsent(
@@ -56,7 +56,7 @@ public class ScopeTreeUtil {
 				return scopeMatcher.match(scopeAlias2);
 			});
 
-		return (Tree.Node<String>)treeNode.accept(_sortTreeVisitor);
+		return (Tree.Node<String>)node.accept(_sortTreeVisitor);
 	}
 
 	private static TreeVisitor<String, Tree<String>> _sortTreeVisitor =

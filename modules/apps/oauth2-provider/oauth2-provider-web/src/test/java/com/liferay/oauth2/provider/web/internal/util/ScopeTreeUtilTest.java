@@ -39,12 +39,12 @@ public class ScopeTreeUtilTest {
 			"everything.read", "everything.write", "everything",
 			"everything.read.user", "everything.read.user.documents");
 
-		Tree.Node<String> treeNode = ScopeTreeUtil.getScopeTreeNode(
+		Tree.Node<String> node = ScopeTreeUtil.getScopeTreeNode(
 			scopeAliasesList, _scopeMatcherFactory);
 
-		Assert.assertEquals(StringPool.BLANK, treeNode.getValue());
+		Assert.assertEquals(StringPool.BLANK, node.getValue());
 
-		Tree<String> tree = _getTree(treeNode, 0);
+		Tree<String> tree = _getTree(node, 0);
 
 		Assert.assertEquals("everything", tree.getValue());
 		Assert.assertFalse(tree instanceof Tree.Leaf);
@@ -79,12 +79,12 @@ public class ScopeTreeUtilTest {
 			"everything.read", "everything.write", "everything",
 			"everything.read.user", "analytics.read", "analytics");
 
-		Tree.Node<String> treeNode = ScopeTreeUtil.getScopeTreeNode(
+		Tree.Node<String> node = ScopeTreeUtil.getScopeTreeNode(
 			scopeAliasesList, _scopeMatcherFactory);
 
-		Assert.assertEquals(StringPool.BLANK, treeNode.getValue());
+		Assert.assertEquals(StringPool.BLANK, node.getValue());
 
-		Tree<String> tree = _getTree(treeNode, 0);
+		Tree<String> tree = _getTree(node, 0);
 
 		Assert.assertEquals("analytics", tree.getValue());
 		Assert.assertFalse(tree instanceof Tree.Leaf);
@@ -94,7 +94,7 @@ public class ScopeTreeUtilTest {
 		Assert.assertEquals("analytics.read", firstChildTree.getValue());
 		Assert.assertTrue(firstChildTree instanceof Tree.Leaf);
 
-		Tree<String> lastTree = _getLastTree(treeNode);
+		Tree<String> lastTree = _getLastTree(node);
 
 		Assert.assertEquals("everything", lastTree.getValue());
 		Assert.assertFalse(lastTree instanceof Tree.Leaf);
@@ -110,12 +110,12 @@ public class ScopeTreeUtilTest {
 		List<String> scopeAliasesList = Arrays.asList(
 			"everything.read", "everything.write", "everything");
 
-		Tree.Node<String> treeNode = ScopeTreeUtil.getScopeTreeNode(
+		Tree.Node<String> node = ScopeTreeUtil.getScopeTreeNode(
 			scopeAliasesList, _scopeMatcherFactory);
 
-		Assert.assertEquals(StringPool.BLANK, treeNode.getValue());
+		Assert.assertEquals(StringPool.BLANK, node.getValue());
 
-		Tree<String> tree = _getTree(treeNode, 0);
+		Tree<String> tree = _getTree(node, 0);
 
 		Assert.assertEquals("everything", tree.getValue());
 		Assert.assertFalse(tree instanceof Tree.Leaf);
@@ -131,21 +131,21 @@ public class ScopeTreeUtilTest {
 		Assert.assertTrue(lastChildTree instanceof Tree.Leaf);
 	}
 
-	private Tree<String> _getLastTree(Tree.Node<String> treeNode) {
-		Collection<Tree<String>> trees = treeNode.getTrees();
+	private Tree<String> _getLastTree(Tree.Node<String> node) {
+		Collection<Tree<String>> trees = node.getTrees();
 
-		return _getTree(treeNode, trees.size() - 1);
+		return _getTree(node, trees.size() - 1);
 	}
 
-	private List<Tree<String>> _getSortedTrees(Tree.Node<String> treeNode) {
+	private List<Tree<String>> _getSortedTrees(Tree.Node<String> node) {
 		return ListUtil.sort(
-			treeNode.getTrees(),
+			node.getTrees(),
 			Comparator.comparing(
 				Tree::getValue, String.CASE_INSENSITIVE_ORDER));
 	}
 
-	private Tree<String> _getTree(Tree.Node<String> treeNode, int index) {
-		List<Tree<String>> trees = _getSortedTrees(treeNode);
+	private Tree<String> _getTree(Tree.Node<String> node, int index) {
+		List<Tree<String>> trees = _getSortedTrees(node);
 
 		return trees.get(index);
 	}

@@ -45,12 +45,12 @@ public class RenderChildrenTag extends TreeTag {
 		Deque<Tree.Node<?>> parentNodes =
 			(Deque<Tree.Node<?>>)jspContext.getAttribute("parentNodes");
 
-		Tree.Node<?> treeNode = (Tree.Node<?>)treeObject;
+		Tree.Node<?> node = (Tree.Node<?>)treeObject;
 
-		parentNodes.push(treeNode);
+		parentNodes.push(node);
 
 		try {
-			for (Tree<?> tree : treeNode.getTrees()) {
+			for (Tree<?> tree : node.getTrees()) {
 				renderTree(tree);
 			}
 		}
