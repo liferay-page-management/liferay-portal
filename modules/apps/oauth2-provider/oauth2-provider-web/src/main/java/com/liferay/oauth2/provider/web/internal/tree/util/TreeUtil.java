@@ -128,10 +128,9 @@ public class TreeUtil {
 			String pathKey = StringBundler.concat(
 				graphPath.getStartVertex(), "#", graphPath.getEndVertex());
 
-			Set<T> visitedVerticesSet = visitedVerticesMap.computeIfAbsent(
-				pathKey, key -> new HashSet<>());
-
 			Set<String> visitedEdgesSet = visitedEdgesMap.computeIfAbsent(
+				pathKey, key -> new HashSet<>());
+			Set<T> visitedVerticesSet = visitedVerticesMap.computeIfAbsent(
 				pathKey, key -> new HashSet<>());
 
 			if (visitedVerticesSet.containsAll(graphPath.getVertexList())) {
