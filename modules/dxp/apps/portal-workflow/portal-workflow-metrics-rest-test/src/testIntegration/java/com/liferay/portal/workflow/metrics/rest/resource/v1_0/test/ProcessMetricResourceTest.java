@@ -192,11 +192,14 @@ public class ProcessMetricResourceTest
 		return new ProcessMetric() {
 			{
 				instanceCount = (long)RandomTestUtil.randomInt(0, 20);
+
 				onTimeInstanceCount = (long)RandomTestUtil.randomInt(
 					0, instanceCount.intValue());
+
 				overdueInstanceCount = (long)RandomTestUtil.randomInt(
 					0,
 					instanceCount.intValue() - onTimeInstanceCount.intValue());
+
 				process = new Process() {
 					{
 						active = true;
