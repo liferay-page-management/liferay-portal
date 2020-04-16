@@ -27,6 +27,7 @@ import Answer from '../../components/Answer.es';
 import ArticleBodyRenderer from '../../components/ArticleBodyRenderer.es';
 import CreatorRow from '../../components/CreatorRow.es';
 import Link from '../../components/Link.es';
+import Modal from '../../components/Modal.es';
 import Rating from '../../components/Rating.es';
 import RelatedQuestions from '../../components/RelatedQuestions.es';
 import SectionLabel from '../../components/SectionLabel.es';
@@ -48,6 +49,7 @@ import {
 export default withRouter(
 	({
 		location: key,
+		history,
 		match: {
 			params: {questionId},
 			url,
@@ -57,6 +59,7 @@ export default withRouter(
 
 		const [answers, setAnswers] = useState([]);
 		const [articleBody, setArticleBody] = useState();
+		const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 		const [page, setPage] = useState(1);
 		const [question, setQuestion] = useState();
 		const [sectionTitle, setSectionTitle] = useState('');
@@ -83,6 +86,11 @@ export default withRouter(
 				return loadThread();
 			});
 		};
+
+		const deleteThread = () => {
+			console.log("Lanzamos el borrado");
+			history.goBack();
+		}
 
 		const deleteAnswer = useCallback(
 			answer => {
@@ -231,6 +239,25 @@ export default withRouter(
 													}
 													question={question}
 												/>
+											)}
+
+											{question.actions.delete && (
+												<>
+													<Modal
+														title="Delete thread?"
+														body="Do you want to delete this thread?"
+														status="Warning"
+														textPrimaryButton="Delete"
+														visible={deleteModalVisible}
+														primaryAction={deleteThread}
+														onClose={() => setDeleteModalVisible(false)}
+													/>
+													<ClayButton
+														displayType="secondary"
+														onClick={() => setDeleteModalVisible(true)}>
+														<ClayIcon symbol="trash" />
+													</ClayButton>
+												</>
 											)}
 
 											{question.actions.replace && (
