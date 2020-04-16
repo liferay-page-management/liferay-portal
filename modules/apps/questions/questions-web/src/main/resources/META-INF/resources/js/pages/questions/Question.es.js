@@ -244,16 +244,16 @@ export default withRouter(
 											{question.actions.delete && (
 												<>
 													<Modal
-														body="Do you want to delete this thread?"
+														body={Liferay.Language.get('do-you-want-to-delete–this-thread')}
 														callback={deleteThread}
 														onClose={() =>
 															setDeleteModalVisible(
 																false
 															)
 														}
-														status="Warning"
-														textPrimaryButton="Delete"
-														title="Delete thread?"
+														status="warning"
+														textPrimaryButton={Liferay.Language.get('delete')}
+														title={Liferay.Language.get('delete-thread')}
 														visible={
 															deleteModalVisible
 														}
