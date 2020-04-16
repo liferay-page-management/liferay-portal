@@ -661,11 +661,11 @@ public class InstanceResourceImpl extends BaseInstanceResourceImpl {
 			Role.class.getName());
 
 		if (roleBucket != null) {
+			boolean reviewer = false;
+
 			TermsAggregationResult termsAggregationResult =
 				(TermsAggregationResult)roleBucket.getChildAggregationResult(
 					"assigneeId");
-
-			boolean reviewer = false;
 
 			for (Bucket assigneeIdBucket :
 					termsAggregationResult.getBuckets()) {
