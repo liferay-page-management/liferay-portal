@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -55,10 +54,26 @@ public class SegmentUserResourceTest extends BaseSegmentUserResourceTestCase {
 		Assert.assertEquals(0, page.getTotalCount());
 	}
 
-	@Ignore
 	@Override
 	@Test
 	public void testGetSegmentUserAccountsPage() throws Exception {
+		Page<SegmentUser> page = segmentUserResource.getSegmentUserAccountsPage(
+			testGetSegmentUserAccountsPage_getSegmentId(), null);
+
+		long totalCount = page.getTotalCount();
+
+		Long segmentId = testGetSegmentUserAccountsPage_getSegmentId();
+
+		testGetSegmentUserAccountsPage_addSegmentUser(
+			segmentId, randomSegmentUser());
+		testGetSegmentUserAccountsPage_addSegmentUser(
+			segmentId, randomSegmentUser());
+
+		page = segmentUserResource.getSegmentUserAccountsPage(segmentId, null);
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertValid(page);
 	}
 
 	@Test(expected = Problem.ProblemException.class)
@@ -67,13 +82,6 @@ public class SegmentUserResourceTest extends BaseSegmentUserResourceTestCase {
 
 		segmentUserResource.getSegmentUserAccountsPage(
 			RandomTestUtil.randomLong(), null);
-	}
-
-	@Ignore
-	@Override
-	@Test
-	public void testGetSegmentUserAccountsPageWithPagination()
-		throws Exception {
 	}
 
 	@Override
