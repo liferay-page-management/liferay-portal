@@ -113,30 +113,30 @@ public class TreeUtil {
 		AllDirectedPaths<T, String> allDirectedPaths = new AllDirectedPaths<>(
 			directedAcyclicGraph);
 
-		List<GraphPath<T, String>> allPaths = allDirectedPaths.getAllPaths(
+		List<GraphPath<T, String>> allGraphPaths = allDirectedPaths.getAllPaths(
 			initialVertices, endingVertices, true, null);
 
 		Comparator<GraphPath<?, ?>> comparator = Comparator.comparingInt(
 			GraphPath::getLength);
 
-		allPaths.sort(comparator.reversed());
+		allGraphPaths.sort(comparator.reversed());
 
 		HashMap<String, Set<String>> visitedEdgesMap = new HashMap<>();
 		HashMap<String, Set<T>> visitedVerticesMap = new HashMap<>();
 
-		for (GraphPath<T, String> path : allPaths) {
+		for (GraphPath<T, String> graphPath : allGraphPaths) {
 			String pathKey = StringBundler.concat(
-				path.getStartVertex(), "#", path.getEndVertex());
+				graphPath.getStartVertex(), "#", graphPath.getEndVertex());
 
 			Set<T> visitedVerticesSet = visitedVerticesMap.computeIfAbsent(
 				pathKey, key -> new HashSet<>());
 
-			List<T> vertexList = path.getVertexList();
+			List<T> vertexList = graphPath.getVertexList();
 
 			Set<String> visitedEdgesSet = visitedEdgesMap.computeIfAbsent(
 				pathKey, key -> new HashSet<>());
 
-			List<String> edgeList = path.getEdgeList();
+			List<String> edgeList = graphPath.getEdgeList();
 
 			if (visitedVerticesSet.containsAll(vertexList)) {
 				for (String edge : edgeList) {
