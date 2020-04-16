@@ -107,10 +107,10 @@ public class SpiraProject extends BaseSpiraArtifact {
 
 		String releaseName = PathSpiraArtifact.getPathName(releasePath);
 
-		List<SpiraRelease> spiraReleaseByNames = SpiraRelease.getSpiraReleases(
+		List<SpiraRelease> nameSpiraReleases = SpiraRelease.getSpiraReleases(
 			this, new SearchQuery.SearchParameter("Name", releaseName));
 
-		for (SpiraRelease spiraRelease : spiraReleaseByNames) {
+		for (SpiraRelease spiraRelease : nameSpiraReleases) {
 			if (!releasePath.equals(spiraRelease.getPath())) {
 				continue;
 			}
