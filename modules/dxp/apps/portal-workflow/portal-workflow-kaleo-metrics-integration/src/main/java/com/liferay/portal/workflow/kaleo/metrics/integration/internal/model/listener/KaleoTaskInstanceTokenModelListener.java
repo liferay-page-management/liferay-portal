@@ -47,61 +47,66 @@ public class KaleoTaskInstanceTokenModelListener
 	public void onAfterCreate(KaleoTaskInstanceToken kaleoTaskInstanceToken)
 		throws ModelListenerException {
 
-		KaleoDefinitionVersion kaleoDefinitionVersion =
-			getKaleoDefinitionVersion(
-				kaleoTaskInstanceToken.getKaleoDefinitionVersionId());
+		TransactionCommitCallbackUtil.registerCallback(
+			() -> {
+				KaleoDefinitionVersion kaleoDefinitionVersion =
+					getKaleoDefinitionVersion(
+						kaleoTaskInstanceToken.getKaleoDefinitionVersionId());
 
-		if (Objects.isNull(kaleoDefinitionVersion)) {
-			return;
-		}
+				if (Objects.isNull(kaleoDefinitionVersion)) {
+					return null;
+				}
 
-		List<KaleoTaskAssignmentInstance> kaleoTaskAssignmentInstances =
-			_kaleoTaskAssignmentInstanceLocalService.
-				getKaleoTaskAssignmentInstances(
-					kaleoTaskInstanceToken.
-						getKaleoTaskInstanceTokenId());
+				List<KaleoTaskAssignmentInstance> kaleoTaskAssignmentInstances =
+					_kaleoTaskAssignmentInstanceLocalService.
+						getKaleoTaskAssignmentInstances(
+							kaleoTaskInstanceToken.
+								getKaleoTaskInstanceTokenId());
 
-		Long[] assigneeIds = Optional.ofNullable(
-			kaleoTaskAssignmentInstances
-		).filter(
-			ListUtil::isNotEmpty
-		).map(
-			List::stream
-		).map(
-			stream -> stream.map(
-				KaleoTaskAssignmentInstance::getAssigneeClassPK
-			).toArray(
-				Long[]::new
-			)
-		).orElseGet(
-			() -> null
-		);
+				Long[] assigneeIds = Optional.ofNullable(
+					kaleoTaskAssignmentInstances
+				).filter(
+					ListUtil::isNotEmpty
+				).map(
+					List::stream
+				).map(
+					stream -> stream.map(
+						KaleoTaskAssignmentInstance::getAssigneeClassPK
+					).toArray(
+						Long[]::new
+					)
+				).orElseGet(
+					() -> null
+				);
 
-		String assigneeType = Stream.of(
-			kaleoTaskAssignmentInstances
-		).flatMap(
-			List::stream
-		).map(
-			KaleoTaskAssignmentInstance::getAssigneeClassName
-		).findFirst(
-		).orElseGet(
-			() -> null
-		);
+				String assigneeType = Stream.of(
+					kaleoTaskAssignmentInstances
+				).flatMap(
+					List::stream
+				).map(
+					KaleoTaskAssignmentInstance::getAssigneeClassName
+				).findFirst(
+				).orElseGet(
+					() -> null
+				);
 
-		_taskWorkflowMetricsIndexer.addTask(
-			assigneeIds, assigneeType,
-			kaleoTaskInstanceToken.getClassName(),
-			kaleoTaskInstanceToken.getClassPK(),
-			kaleoTaskInstanceToken.getCompanyId(), false, null, null,
-			kaleoTaskInstanceToken.getCreateDate(), false,
-			kaleoTaskInstanceToken.getKaleoInstanceId(),
-			kaleoTaskInstanceToken.getModifiedDate(),
-			kaleoTaskInstanceToken.getKaleoTaskName(),
-			kaleoTaskInstanceToken.getKaleoTaskId(),
-			kaleoTaskInstanceToken.getKaleoDefinitionId(),
-			kaleoDefinitionVersion.getVersion(),
-			kaleoTaskInstanceToken.getKaleoTaskInstanceTokenId(),
-			kaleoTaskInstanceToken.getUserId());
+				_taskWorkflowMetricsIndexer.addTask(
+					assigneeIds, assigneeType,
+					kaleoTaskInstanceToken.getClassName(),
+					kaleoTaskInstanceToken.getClassPK(),
+					kaleoTaskInstanceToken.getCompanyId(), false, null, null,
+					kaleoTaskInstanceToken.getCreateDate(), false,
+					kaleoTaskInstanceToken.getKaleoInstanceId(),
+					kaleoTaskInstanceToken.getModifiedDate(),
+					kaleoTaskInstanceToken.getKaleoTaskName(),
+					kaleoTaskInstanceToken.getKaleoTaskId(),
+					kaleoTaskInstanceToken.getKaleoDefinitionId(),
+					kaleoDefinitionVersion.getVersion(),
+					kaleoTaskInstanceToken.getKaleoTaskInstanceTokenId(),
+					kaleoTaskInstanceToken.getUserId());
+
+				return null;
+			});
 	}
 
 	@Override
