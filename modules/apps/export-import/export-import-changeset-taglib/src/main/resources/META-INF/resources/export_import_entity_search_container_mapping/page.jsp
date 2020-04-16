@@ -22,15 +22,17 @@
 	List<ResultRow> resultRows = searchContainer.getResultRows();
 
 	for (ResultRow resultRow : resultRows) {
-		Map<String, Object> data = new HashMap<>();
-
-		data.put("rowPK", resultRow.getPrimaryKey());
-
 		StagedModel stagedModel = (StagedModel)resultRow.getObject();
 
-		data.put("classNameId", ExportImportClassedModelUtil.getClassNameId(stagedModel));
-		data.put("groupId", BeanPropertiesUtil.getLong(stagedModel, "groupId"));
-		data.put("uuid", stagedModel.getUuid());
+		Map<String, Object> data = HashMapBuilder.<String, Object>put(
+			"classNameId", ExportImportClassedModelUtil.getClassNameId(stagedModel)
+		).put(
+			"groupId", BeanPropertiesUtil.getLong(stagedModel, "groupId")
+		).put(
+			"rowPK", resultRow.getPrimaryKey()
+		).put(
+			"uuid", stagedModel.getUuid()
+		).build();
 	%>
 
 		<div <%= HtmlUtil.buildData(data) %>></div>
