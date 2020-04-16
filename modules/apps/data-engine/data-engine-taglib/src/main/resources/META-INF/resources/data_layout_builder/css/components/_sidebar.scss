@@ -1,9 +1,4 @@
 .data-layout-builder-sidebar {
-	border-top-width: 0;
-	display: flex;
-	flex-flow: column;
-	height: 100%;
-
 	&.main {
 		transform: translateX(0%);
 		transition: transform 0.3s $animation, opacity 0.3s $animation;
@@ -29,12 +24,8 @@
 	}
 
 	.sidebar {
-		box-shadow: none;
-		overflow: visible;
-
 		.sidebar-body {
 			height: calc(100vh - 168px);
-			overflow: visible;
 
 			.component-tbar {
 				height: auto;
@@ -54,19 +45,5 @@
 
 	.lfr-ddm-form-container .ddm-field-options-container .ddm-options-target {
 		margin: 2px 0;
-	}
-}
-
-.data-layout-builder-sidebar-content {
-	margin-top: 0;
-	padding-right: $sidebarMainWidth;
-	transition: padding-right 0.3s $animation;
-
-	.ddm-form-builder .sheet {
-		margin-top: 0;
-	}
-
-	&.closed {
-		padding-right: $sidebarMiniWidth;
 	}
 }

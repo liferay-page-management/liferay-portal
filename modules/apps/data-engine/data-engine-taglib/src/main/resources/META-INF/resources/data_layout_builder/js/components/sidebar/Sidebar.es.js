@@ -12,32 +12,21 @@
  * details.
  */
 
-import ClayForm from '@clayui/form';
 import classNames from 'classnames';
 import React, {useState} from 'react';
 
 import SearchInput from '../search-input/SearchInput.es';
 
-const Sidebar = React.forwardRef(
-	({children, className, onSearch = null}, ref) => {
-		return (
-			<div
-				className={classNames(className, 'data-layout-builder-sidebar')}
-				ref={ref}
-			>
-				<div className="sidebar">
-					{onSearch && (
-						<ClayForm onSubmit={event => event.preventDefault()}>
-							<SidebarSearchInput onSearch={onSearch} />
-						</ClayForm>
-					)}
-
-					{children}
-				</div>
-			</div>
-		);
-	}
-);
+const Sidebar = React.forwardRef(({children, className}, ref) => {
+	return (
+		<div
+			className={classNames(className, 'data-layout-builder-sidebar')}
+			ref={ref}
+		>
+			<div className="sidebar sidebar-light">{children}</div>
+		</div>
+	);
+});
 
 const SidebarBody = ({children, className}) => {
 	return (
@@ -58,17 +47,13 @@ const SidebarHeader = ({children, className}) => {
 };
 
 const SidebarSearchInput = ({onSearch}) => (
-	<SidebarHeader>
-		<div className="autofit-row sidebar-section">
-			<div className="autofit-col autofit-col-expand">
-				{onSearch && (
-					<SearchInput
-						onChange={searchText => onSearch(searchText)}
-					/>
-				)}
-			</div>
+	<div className="autofit-row sidebar-section">
+		<div className="autofit-col autofit-col-expand">
+			{onSearch && (
+				<SearchInput onChange={searchText => onSearch(searchText)} />
+			)}
 		</div>
-	</SidebarHeader>
+	</div>
 );
 
 const SidebarTabs = ({initialSelectedTab = 0, tabs}) => {
@@ -128,6 +113,16 @@ const SidebarTabContent = ({children}) => {
 	);
 };
 
+const SidebarTitle = ({title}) => (
+	<div className="autofit-row mb-3 sidebar-section">
+		<div className="autofit-col autofit-col-expand">
+			<div className="component-title">
+				<span className="text-truncate-inline">{title}</span>
+			</div>
+		</div>
+	</div>
+);
+
 Sidebar.Body = SidebarBody;
 Sidebar.Footer = SidebarFooter;
 Sidebar.Header = SidebarHeader;
@@ -135,8 +130,7 @@ Sidebar.SearchInput = SidebarSearchInput;
 Sidebar.Tab = SidebarTab;
 Sidebar.Tabs = SidebarTabs;
 Sidebar.TabContent = SidebarTabContent;
-
-export default Sidebar;
+Sidebar.Title = SidebarTitle;
 
 export {
 	SidebarBody,
@@ -147,3 +141,5 @@ export {
 	SidebarTabs,
 	SidebarTabContent,
 };
+
+export default Sidebar;
