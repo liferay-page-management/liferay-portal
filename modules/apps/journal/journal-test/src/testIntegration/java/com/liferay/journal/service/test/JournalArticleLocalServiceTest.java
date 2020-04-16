@@ -109,14 +109,16 @@ public class JournalArticleLocalServiceTest {
 
 		httpServletRequest.setAttribute(WebKeys.THEME_DISPLAY, _themeDisplay);
 
-		User user = _userLocalService.getUser(_group.getCreatorUserId());
-
 		_themeDisplay.setCompany(
 			_companyLocalService.getCompany(_group.getCompanyId()));
 		_themeDisplay.setLayout(layout);
 		_themeDisplay.setLookAndFeel(
 			layout.getTheme(), layout.getColorScheme());
+
+		User user = _userLocalService.getUser(_group.getCreatorUserId());
+
 		_themeDisplay.setRealUser(user);
+
 		_themeDisplay.setRequest(httpServletRequest);
 		_themeDisplay.setResponse(new MockHttpServletResponse());
 		_themeDisplay.setScopeGroupId(_group.getGroupId());
