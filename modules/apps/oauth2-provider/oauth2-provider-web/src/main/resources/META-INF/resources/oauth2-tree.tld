@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+
+<taglib
+	version="2.1"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+>
+	<description><![CDATA[Provides the OAuth2 Tree tags, prefixed with <code>oauth2-tree:</code>.]]></description>
+	<tlib-version>1.0</tlib-version>
+	<short-name>oauth2-tree</short-name>
+	<uri>http://liferay.com/tld/oauth2-tree</uri>
+	<tag>
+		<description><![CDATA[Triggers rendering of the trees contained in the tree node currently being rendered. Can only be used inside a nodeJspFragment of an oauth2-tree:render tag.]]></description>
+		<name>render-children</name>
+		<tag-class>com.liferay.oauth2.provider.web.internal.tree.tag.RenderChildrenTag</tag-class>
+		<body-content>scriptless</body-content>
+		<variable>
+			<description><![CDATA[This variable contains the list of parent tree nodes of the current tree]]></description>
+			<name-given>parentNodes</name-given>
+			<variable-class>java.util.Collection</variable-class>
+		</variable>
+		<variable>
+			<description><![CDATA[This variable contains the tree that is currently being rendered]]></description>
+			<name-given>tree</name-given>
+			<variable-class>com.liferay.oauth2.provider.web.internal.tree.Tree</variable-class>
+		</variable>
+		<attribute>
+			<description><![CDATA[An optional JSP Fragment describing how a tree leaf is rendered. If not present the value of the enclosing tag is used.]]></description>
+			<name>leafJspFragment</name>
+			<required>false</required>
+			<fragment>true</fragment>
+		</attribute>
+		<attribute>
+			<description><![CDATA[An optional JSP Fragment describing how a tree node is rendered. If not present the value of the enclosing tag is used.]]></description>
+			<name>nodeJspFragment</name>
+			<required>false</required>
+			<fragment>true</fragment>
+		</attribute>
+	</tag>
+	<tag>
+		<name>tree</name>
+		<tag-class>com.liferay.oauth2.provider.web.internal.tree.tag.TreeTag</tag-class>
+		<body-content>scriptless</body-content>
+		<variable>
+			<description><![CDATA[This variable contains the list of parent tree nodes of the current tree]]></description>
+			<name-given>parentNodes</name-given>
+			<variable-class>java.util.Collection</variable-class>
+		</variable>
+		<variable>
+			<description><![CDATA[This variable contains the tree that is currently being rendered]]></description>
+			<name-given>tree</name-given>
+			<variable-class>com.liferay.oauth2.provider.web.internal.tree.Tree</variable-class>
+		</variable>
+		<attribute>
+			<description><![CDATA[A required JSP Fragment describing how a tree leaf is rendered.]]></description>
+			<name>leafJspFragment</name>
+			<required>true</required>
+			<fragment>true</fragment>
+		</attribute>
+		<attribute>
+			<description><![CDATA[A required JSP Fragment describing how a tree node is rendered.]]></description>
+			<name>nodeJspFragment</name>
+			<required>true</required>
+			<fragment>true</fragment>
+		</attribute>
+		<attribute>
+			<description><![CDATA[A collection of trees to be rendered]]></description>
+			<name>trees</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.util.Collection</type>
+		</attribute>
+	</tag>
+</taglib>
