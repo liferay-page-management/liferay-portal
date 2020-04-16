@@ -209,7 +209,9 @@ public class FragmentLayoutStructureItemHelper
 		Map<String, Object> defaultValueMap = (Map<String, Object>)map.get(
 			"defaultValue");
 
-		jsonObject.put("defaultValue", defaultValueMap.get("value"));
+		if (defaultValueMap != null) {
+			jsonObject.put("defaultValue", defaultValueMap.get("value"));
+		}
 
 		_processMapping(jsonObject, (Map<String, String>)map.get("mapping"));
 
@@ -250,7 +252,9 @@ public class FragmentLayoutStructureItemHelper
 			return jsonObject;
 		}
 
-		value = defaultValueMap.get("value");
+		if (defaultValueMap != null) {
+			value = defaultValueMap.get("value");
+		}
 
 		if (value != null) {
 			jsonObject.put("href", value);
@@ -386,15 +390,21 @@ public class FragmentLayoutStructureItemHelper
 		if (map != null) {
 			String fieldKey = map.get("fieldKey");
 
-			String itemKey = map.get("itemKey");
-
-			String[] itemKeyParts = new String[0];
-
-			if (itemKey != null) {
-				itemKeyParts = itemKey.split(StringPool.POUND);
+			if (Validator.isNull(fieldKey)) {
+				return;
 			}
 
-			if ((fieldKey != null) && (itemKeyParts.length == 2)) {
+			String itemKey = map.get("itemKey");
+
+			if (Validator.isNull(itemKey)) {
+				jsonObject.put("mappedField", fieldKey);
+
+				return;
+			}
+
+			String[] itemKeyParts = itemKey.split(StringPool.POUND);
+
+			if (itemKeyParts.length == 2) {
 				jsonObject.put(
 					"classNameId", itemKeyParts[0]
 				).put(
