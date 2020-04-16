@@ -18,6 +18,7 @@ import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
@@ -423,10 +424,10 @@ public class WorkflowMetricsRESTTestHelper {
 		_assertCount(
 			_slaTaskResultWorkflowMetricsIndexNameBuilder.getIndexName(
 				companyId),
-			"breached", breached, "assigneeId", assigneeId, "companyId",
-			companyId, "deleted", false, "instanceCompleted",
-			Objects.nonNull(instance.getDateCompletion()), "instanceId",
-			instance.getId(), "onTime", onTime, "processId",
+			"breached", breached, "assigneeIds", assigneeId, "assigneeType",
+			User.class.getName(), "companyId", companyId, "deleted", false,
+			"instanceCompleted", Objects.nonNull(instance.getDateCompletion()),
+			"instanceId", instance.getId(), "onTime", onTime, "processId",
 			instance.getProcessId(), "slaDefinitionId", slaDefinitionId,
 			"taskId", taskId, "taskName", taskName);
 	}
@@ -435,11 +436,11 @@ public class WorkflowMetricsRESTTestHelper {
 		throws Exception {
 
 		_taskWorkflowMetricsIndexer.addTask(
-			task.getAssigneeId(), task.getClassName(), task.getClassPK(),
-			companyId, false, null, null, task.getDateCreated(), false,
-			instance.getId(), task.getDateModified(), task.getName(),
-			task.getNodeId(), task.getProcessId(), task.getProcessVersion(),
-			task.getId(), 0);
+			new Long[] {task.getAssigneeId()}, User.class.getName(),
+			task.getClassName(), task.getClassPK(), companyId, false, null,
+			null, task.getDateCreated(), false, instance.getId(),
+			task.getDateModified(), task.getName(), task.getNodeId(),
+			task.getProcessId(), task.getProcessVersion(), task.getId(), 0);
 
 		_assertCount(
 			_taskWorkflowMetricsIndexNameBuilder.getIndexName(companyId),
@@ -449,12 +450,14 @@ public class WorkflowMetricsRESTTestHelper {
 
 		if (task.getAssigneeId() != 0) {
 			_taskWorkflowMetricsIndexer.updateTask(
-				task.getAssigneeId(), companyId, new Date(), task.getId(), 0);
+				new Long[] {task.getAssigneeId()}, User.class.getName(),
+				companyId, new Date(), task.getId(), 0);
 
 			_assertCount(
 				_taskWorkflowMetricsIndexNameBuilder.getIndexName(companyId),
-				"assigneeId", task.getAssigneeId(), "companyId", companyId,
-				"deleted", false, "instanceId", instance.getId(), "processId",
+				"assigneeIds", task.getAssigneeId(), "assigneeType",
+				User.class.getName(), "companyId", companyId, "deleted", false,
+				"instanceId", instance.getId(), "processId",
 				task.getProcessId(), "nodeId", task.getNodeId(), "name",
 				task.getName(), "taskId", task.getId());
 		}
@@ -768,7 +771,9 @@ public class WorkflowMetricsRESTTestHelper {
 		DocumentBuilder documentBuilder = _documentBuilderFactory.builder();
 
 		documentBuilder.setValue(
-			"assigneeId", assigneeId
+			"assigneeIds", assigneeId
+		).setValue(
+			"assigneeType", User.class.getName()
 		).setValue(
 			"breached", breached
 		).setValue(

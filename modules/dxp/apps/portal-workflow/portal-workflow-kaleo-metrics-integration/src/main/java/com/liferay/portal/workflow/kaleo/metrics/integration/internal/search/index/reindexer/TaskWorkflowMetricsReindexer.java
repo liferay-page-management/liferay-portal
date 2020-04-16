@@ -18,7 +18,7 @@ import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.workflow.kaleo.model.KaleoDefinitionVersion;
 import com.liferay.portal.workflow.kaleo.model.KaleoInstance;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance;
@@ -30,7 +30,10 @@ import com.liferay.portal.workflow.kaleo.service.KaleoTaskInstanceTokenLocalServ
 import com.liferay.portal.workflow.metrics.search.index.TaskWorkflowMetricsIndexer;
 import com.liferay.portal.workflow.metrics.search.index.reindexer.WorkflowMetricsReindexer;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -76,22 +79,42 @@ public class TaskWorkflowMetricsReindexer implements WorkflowMetricsReindexer {
 					return;
 				}
 
-				KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance =
+				List<KaleoTaskAssignmentInstance> kaleoTaskAssignmentInstances =
 					_kaleoTaskAssignmentInstanceLocalService.
-						fetchFirstKaleoTaskAssignmentInstance(
+						getKaleoTaskAssignmentInstances(
 							kaleoTaskInstanceToken.
-								getKaleoTaskInstanceTokenId(),
-							User.class.getName(), null);
+								getKaleoTaskInstanceTokenId());
 
-				Long assigneeId = null;
+				Long[] assigneeIds = Optional.ofNullable(
+					kaleoTaskAssignmentInstances
+				).filter(
+					ListUtil::isNotEmpty
+				).map(
+					List::stream
+				).map(
+					stream -> stream.map(
+						KaleoTaskAssignmentInstance::getAssigneeClassPK
+					).toArray(
+						Long[]::new
+					)
+				).orElseGet(
+					() -> null
+				);
 
-				if (kaleoTaskAssignmentInstance != null) {
-					assigneeId =
-						kaleoTaskAssignmentInstance.getAssigneeClassPK();
-				}
+				String assigneeType = Stream.of(
+					kaleoTaskAssignmentInstances
+				).flatMap(
+					List::stream
+				).map(
+					KaleoTaskAssignmentInstance::getAssigneeClassName
+				).findFirst(
+				).orElseGet(
+					() -> null
+				);
 
 				_taskWorkflowMetricsIndexer.addTask(
-					assigneeId, kaleoTaskInstanceToken.getClassName(),
+					assigneeIds, assigneeType,
+					kaleoTaskInstanceToken.getClassName(),
 					kaleoTaskInstanceToken.getClassPK(),
 					kaleoTaskInstanceToken.getCompanyId(),
 					kaleoTaskInstanceToken.isCompleted(),

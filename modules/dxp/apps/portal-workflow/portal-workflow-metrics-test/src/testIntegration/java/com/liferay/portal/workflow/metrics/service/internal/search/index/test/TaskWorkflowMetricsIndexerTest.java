@@ -15,6 +15,7 @@
 package com.liferay.portal.workflow.metrics.service.internal.search.index.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.test.rule.Inject;
@@ -86,9 +87,9 @@ public class TaskWorkflowMetricsIndexerTest
 		retryAssertCount(
 			_taskWorkflowMetricsIndexNameBuilder.getIndexName(
 				kaleoDefinition.getCompanyId()),
-			"WorkflowMetricsTaskType", "assigneeId",
-			TestPropsValues.getUserId(), "companyId",
-			kaleoDefinition.getCompanyId(), "processId",
+			"WorkflowMetricsTaskType", "assigneeIds",
+			TestPropsValues.getUserId(), "assigneeType", User.class.getName(),
+			"companyId", kaleoDefinition.getCompanyId(), "processId",
 			kaleoDefinition.getKaleoDefinitionId(), "nodeId",
 			kaleoTaskInstanceToken.getKaleoTaskId(), "name", "review", "taskId",
 			kaleoTaskInstanceToken.getKaleoTaskInstanceTokenId());
@@ -124,10 +125,11 @@ public class TaskWorkflowMetricsIndexerTest
 		retryAssertCount(
 			_taskWorkflowMetricsIndexNameBuilder.getIndexName(
 				kaleoDefinition.getCompanyId()),
-			"WorkflowMetricsTaskType", "assigneeId",
-			TestPropsValues.getUserId(), "companyId",
-			kaleoDefinition.getCompanyId(), "duration", duration.toMillis(),
-			"processId", kaleoDefinition.getKaleoDefinitionId(), "nodeId",
+			"WorkflowMetricsTaskType", "assigneeIds",
+			TestPropsValues.getUserId(), "assigneeType", User.class.getName(),
+			"companyId", kaleoDefinition.getCompanyId(), "duration",
+			duration.toMillis(), "processId",
+			kaleoDefinition.getKaleoDefinitionId(), "nodeId",
 			kaleoTaskInstanceToken.getKaleoTaskId(), "name", "review", "taskId",
 			kaleoTaskInstanceToken.getKaleoTaskInstanceTokenId());
 	}

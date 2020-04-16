@@ -63,7 +63,7 @@ public class AssigneeResourceImpl extends BaseAssigneeResourceImpl {
 		SearchSearchRequest searchSearchRequest = new SearchSearchRequest();
 
 		TermsAggregation termsAggregation = _aggregations.terms(
-			"assigneeId", "assigneeId");
+			"assigneeId", "assigneeIds");
 
 		termsAggregation.setSize(10000);
 

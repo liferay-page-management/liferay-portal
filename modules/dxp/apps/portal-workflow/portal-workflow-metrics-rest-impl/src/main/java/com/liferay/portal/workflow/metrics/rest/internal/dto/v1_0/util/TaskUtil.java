@@ -17,6 +17,7 @@ package com.liferay.portal.workflow.metrics.rest.internal.dto.v1_0.util;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.search.document.Document;
 import com.liferay.portal.workflow.metrics.rest.dto.v1_0.Task;
@@ -24,6 +25,7 @@ import com.liferay.portal.workflow.metrics.rest.dto.v1_0.Task;
 import java.text.DateFormat;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 /**
@@ -36,7 +38,6 @@ public class TaskUtil {
 
 		return new Task() {
 			{
-				assigneeId = document.getLong("assigneeId");
 				className = document.getString("className");
 				classPK = document.getLong("classPK");
 				completed = document.getBoolean("completed");
@@ -53,6 +54,20 @@ public class TaskUtil {
 				nodeId = document.getLong("nodeId");
 				processId = document.getLong("processId");
 				processVersion = document.getString("version");
+
+				setAssigneeId(
+					() -> {
+						String assigneeType = document.getString(
+							"assigneeType");
+
+						if (Objects.deepEquals(
+								assigneeType, User.class.getName())) {
+
+							return document.getLong("assigneeIds");
+						}
+
+						return null;
+					});
 			}
 		};
 	}

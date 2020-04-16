@@ -17,6 +17,7 @@ package com.liferay.portal.workflow.metrics.rest.internal.resource.v1_0;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -122,13 +123,19 @@ public class InstanceResourceImpl extends BaseInstanceResourceImpl {
 				_taskWorkflowMetricsIndexNameBuilder.getIndexName(
 					contextCompany.getCompanyId())));
 
-		TermsAggregation assigneeIdTermsAggregation = _aggregations.terms(
-			"assigneeId", "assigneeId");
+		TermsAggregation assigneeTypeTermsAggregation = _aggregations.terms(
+			"assigneeType", "assigneeType");
 
-		assigneeIdTermsAggregation.setMissing(-1L);
+		TermsAggregation assigneeIdTermsAggregation = _aggregations.terms(
+			"assigneeId", "assigneeIds");
+
 		assigneeIdTermsAggregation.setSize(10000);
 
-		indexFilterAggregation.addChildAggregation(assigneeIdTermsAggregation);
+		assigneeTypeTermsAggregation.addChildAggregation(
+			assigneeIdTermsAggregation);
+
+		indexFilterAggregation.addChildAggregation(
+			assigneeTypeTermsAggregation);
 
 		FilterAggregation onTimeFilterAggregation = _aggregations.filter(
 			"onTime", _resourceHelper.createMustNotBooleanQuery());
@@ -294,13 +301,27 @@ public class InstanceResourceImpl extends BaseInstanceResourceImpl {
 				creator.getName()));
 	}
 
+	private Assignee _createAssignee() {
+		Assignee assignee = new Assignee();
+
+		assignee.setId(-1L);
+		assignee.setName(
+			_language.get(
+				ResourceBundleUtil.getModuleAndPortalResourceBundle(
+					contextAcceptLanguage.getPreferredLocale(),
+					InstanceResourceImpl.class),
+				"unassigned"));
+
+		return assignee;
+	}
+
 	private BooleanQuery _createAssigneeIdsExistsBooleanQuery(
 		Long[] assigneeIds) {
 
 		BooleanQuery booleanQuery = _queries.booleanQuery();
 
 		if (ArrayUtil.contains(assigneeIds, -1L)) {
-			booleanQuery.addMustNotQueryClauses(_queries.exists("assigneeId"));
+			booleanQuery.addMustNotQueryClauses(_queries.exists("assigneeIds"));
 		}
 
 		return booleanQuery;
@@ -311,7 +332,7 @@ public class InstanceResourceImpl extends BaseInstanceResourceImpl {
 
 		BooleanQuery booleanQuery = _queries.booleanQuery();
 
-		TermsQuery termsQuery = _queries.terms("assigneeId");
+		TermsQuery termsQuery = _queries.terms("assigneeIds");
 
 		termsQuery.addValues(
 			Stream.of(
@@ -590,48 +611,59 @@ public class InstanceResourceImpl extends BaseInstanceResourceImpl {
 	}
 
 	private List<Assignee> _getAssignees(Bucket bucket) {
+		List<Assignee> assignees = new ArrayList<>();
+
 		FilterAggregationResult filterAggregationResult =
 			(FilterAggregationResult)bucket.getChildAggregationResult(
 				"tasksIndex");
 
-		TermsAggregationResult termsAggregationResult =
+		TermsAggregationResult assigneeTypeAggregationResult =
 			(TermsAggregationResult)
-				filterAggregationResult.getChildAggregationResult("assigneeId");
+				filterAggregationResult.getChildAggregationResult(
+					"assigneeType");
 
-		Collection<Bucket> buckets = termsAggregationResult.getBuckets();
+		Bucket userBucket = assigneeTypeAggregationResult.getBucket(
+			User.class.getName());
 
-		Stream<Bucket> stream = buckets.stream();
+		if (userBucket != null) {
+			TermsAggregationResult termsAggregationResult =
+				(TermsAggregationResult)userBucket.getChildAggregationResult(
+					"assigneeId");
 
-		return stream.map(
-			Bucket::getKey
-		).map(
-			GetterUtil::getLong
-		).map(
-			userId -> AssigneeUtil.toAssignee(
-				_language, _portal,
-				ResourceBundleUtil.getModuleAndPortalResourceBundle(
-					contextAcceptLanguage.getPreferredLocale(),
-					InstanceResourceImpl.class),
-				userId, _userLocalService::fetchUser)
-		).sorted(
-			Comparator.comparing(
-				Assignee::getName,
+			Collection<Bucket> buckets = termsAggregationResult.getBuckets();
+
+			Stream<Bucket> stream = buckets.stream();
+
+			stream.map(
+				Bucket::getKey
+			).map(
+				GetterUtil::getLong
+			).map(
+				userId -> AssigneeUtil.toAssignee(
+					_language, _portal,
+					ResourceBundleUtil.getModuleAndPortalResourceBundle(
+						contextAcceptLanguage.getPreferredLocale(),
+						InstanceResourceImpl.class),
+					userId, _userLocalService::fetchUser)
+			).sorted(
 				Comparator.comparing(
-					(String name) -> Objects.equals(
-						name,
-						_language.get(
-							ResourceBundleUtil.getModuleAndPortalResourceBundle(
-								contextAcceptLanguage.getPreferredLocale(),
-								InstanceResourceImpl.class),
-							"unassigned"))
-				).thenComparing(
-					Comparator.nullsLast(String::compareToIgnoreCase)
-				))
-		).filter(
-			Objects::nonNull
-		).collect(
-			Collectors.toList()
-		);
+					Assignee::getName,
+					Comparator.nullsLast(String::compareToIgnoreCase))
+			).filter(
+				Objects::nonNull
+			).forEachOrdered(
+				assignees::add
+			);
+		}
+
+		Bucket roleBucket = assigneeTypeAggregationResult.getBucket(
+			Role.class.getName());
+
+		if (roleBucket != null) {
+			assignees.add(_createAssignee());
+		}
+
+		return assignees;
 	}
 
 	private int _getInstanceCount(SearchSearchResponse searchSearchResponse) {
@@ -691,14 +723,19 @@ public class InstanceResourceImpl extends BaseInstanceResourceImpl {
 				_taskWorkflowMetricsIndexNameBuilder.getIndexName(
 					contextCompany.getCompanyId())));
 
-		TermsAggregation assigneeIdTermsAggregation = _aggregations.terms(
-			"assigneeId", "assigneeId");
+		TermsAggregation assigneeTypeTermsAggregation = _aggregations.terms(
+			"assigneeType", "assigneeType");
 
-		assigneeIdTermsAggregation.setMissing(-1L);
+		TermsAggregation assigneeIdTermsAggregation = _aggregations.terms(
+			"assigneeId", "assigneeIds");
+
 		assigneeIdTermsAggregation.setSize(10000);
 
-		tasksIndexFilterAggregation.addChildAggregation(
+		assigneeTypeTermsAggregation.addChildAggregation(
 			assigneeIdTermsAggregation);
+
+		tasksIndexFilterAggregation.addChildAggregation(
+			assigneeTypeTermsAggregation);
 
 		termsAggregation.addChildrenAggregations(
 			instancesIndexFilterAggregation, onTimeFilterAggregation,

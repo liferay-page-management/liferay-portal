@@ -15,6 +15,7 @@
 package com.liferay.portal.workflow.metrics.rest.internal.resource.v1_0;
 
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.search.aggregation.AggregationResult;
 import com.liferay.portal.search.aggregation.Aggregations;
@@ -114,8 +115,9 @@ public class TaskResourceImpl extends BaseTaskResourceImpl {
 		getProcessTask(processId, taskId);
 
 		_taskWorkflowMetricsIndexer.updateTask(
-			task.getAssigneeId(), contextCompany.getCompanyId(),
-			task.getDateModified(), task.getId(), contextUser.getUserId());
+			new Long[] {task.getAssigneeId()}, User.class.getName(),
+			contextCompany.getCompanyId(), task.getDateModified(), task.getId(),
+			contextUser.getUserId());
 	}
 
 	@Override
@@ -134,7 +136,8 @@ public class TaskResourceImpl extends BaseTaskResourceImpl {
 	public Task postProcessTask(Long processId, Task task) throws Exception {
 		return TaskUtil.toTask(
 			_taskWorkflowMetricsIndexer.addTask(
-				task.getAssigneeId(), task.getClassName(), task.getClassPK(),
+				new Long[] {task.getAssigneeId()}, User.class.getName(),
+				task.getClassName(), task.getClassPK(),
 				contextCompany.getCompanyId(), false, null, null,
 				task.getDateCreated(), false, task.getInstanceId(),
 				task.getDateModified(), task.getName(), task.getNodeId(),

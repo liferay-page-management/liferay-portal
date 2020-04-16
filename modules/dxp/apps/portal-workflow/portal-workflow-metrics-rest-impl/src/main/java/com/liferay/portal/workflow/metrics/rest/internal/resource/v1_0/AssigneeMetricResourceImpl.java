@@ -141,7 +141,7 @@ public class AssigneeMetricResourceImpl
 		boolean completed, Set<Long> userIds) {
 
 		TermsQuery termsQuery = _queries.terms(
-			completed ? "completionUserId" : "assigneeId");
+			completed ? "completionUserId" : "assigneeIds");
 
 		Stream<Long> stream = userIds.stream();
 
@@ -333,7 +333,7 @@ public class AssigneeMetricResourceImpl
 		SearchSearchRequest searchSearchRequest = new SearchSearchRequest();
 
 		TermsAggregation termsAggregation = _aggregations.terms(
-			"assigneeId", completed ? "completionUserId" : "assigneeId");
+			"assigneeId", completed ? "completionUserId" : "assigneeIds");
 
 		FilterAggregation countFilterAggregation = _aggregations.filter(
 			"countFilter", _createCountFilterBooleanQuery());
@@ -410,7 +410,7 @@ public class AssigneeMetricResourceImpl
 
 		searchSearchRequest.addAggregation(
 			_aggregations.cardinality(
-				"assigneeId", completed ? "completionUserId" : "assigneeId"));
+				"assigneeId", completed ? "completionUserId" : "assigneeIds"));
 		searchSearchRequest.setIndexNames(
 			_taskWorkflowMetricsIndexNameBuilder.getIndexName(
 				contextCompany.getCompanyId()));

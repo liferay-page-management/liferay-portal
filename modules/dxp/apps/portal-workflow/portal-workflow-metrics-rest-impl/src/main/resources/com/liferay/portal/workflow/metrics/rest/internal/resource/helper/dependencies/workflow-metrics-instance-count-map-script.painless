@@ -2,9 +2,9 @@ def instanceId = doc.instanceId.value;
 
 if (doc.uid.value.startsWith("WorkflowMetricsTask") &&
 	((state.assigneeIds == null) ||
-	 (((doc.assigneeId.size() != 0) &&
-	  state.assigneeIds.contains(doc.assigneeId.value)) || 
-	 (state.assigneeIds.contains("-1") && (doc.assigneeId.size() == 0))))) {
+	 (((doc.assigneeIds.size() != 0) &&
+	  state.assigneeIds.contains(doc.assigneeIds.value)) || 
+	 (state.assigneeIds.contains("-1") && (doc.assigneeIds.size() == 0))))) {
 
 	state.assigneeIdInstanceIds.add(instanceId);
 }
