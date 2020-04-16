@@ -89,26 +89,20 @@ public class HistogramMetricResourceTest
 		_testGetProcessMetric(
 			nowLocalDateTime,
 			LocalDateTime.of(localDate.minusDays(6), LocalTime.MIDNIGHT));
-
 		_testGetProcessMetric(
 			nowLocalDateTime,
 			LocalDateTime.of(localDate.minusDays(29), LocalTime.MIDNIGHT));
-
 		_testGetProcessMetric(
 			nowLocalDateTime,
 			LocalDateTime.of(localDate.minusDays(89), LocalTime.MIDNIGHT));
-
 		_testGetProcessMetric(
 			nowLocalDateTime,
 			LocalDateTime.of(localDate.minusDays(179), LocalTime.MIDNIGHT));
-
 		_testGetProcessMetric(
 			nowLocalDateTime,
 			LocalDateTime.of(localDate.minusDays(364), LocalTime.MIDNIGHT));
-
 		_testGetProcessMetric(
 			nowLocalDateTime, LocalDateTime.of(localDate, LocalTime.MIDNIGHT));
-
 		_testGetProcessMetric(
 			LocalDateTime.of(localDate.minusDays(1), LocalTime.MAX),
 			LocalDateTime.of(localDate.minusDays(1), LocalTime.MIDNIGHT));
