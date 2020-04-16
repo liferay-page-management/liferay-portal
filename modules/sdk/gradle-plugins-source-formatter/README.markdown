@@ -13,7 +13,7 @@ To use the plugin, include it in your build script:
 ```gradle
 buildscript {
 	dependencies {
-		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.source.formatter", version: "3.0.9"
+		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.source.formatter", version: "3.0.10"
 	}
 
 	repositories {
@@ -122,7 +122,7 @@ manually adding a dependency to the `sourceFormatter` configuration:
 
 ```gradle
 dependencies {
-	sourceFormatter group: "com.liferay", name: "com.liferay.source.formatter", version: "1.0.979"
+	sourceFormatter group: "com.liferay", name: "com.liferay.source.formatter", version: "1.0.980"
 }
 ```
 
