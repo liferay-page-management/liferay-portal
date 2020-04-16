@@ -87,6 +87,27 @@ public class Assignee implements Cloneable {
 
 	protected String name;
 
+	public Boolean getReviewer() {
+		return reviewer;
+	}
+
+	public void setReviewer(Boolean reviewer) {
+		this.reviewer = reviewer;
+	}
+
+	public void setReviewer(
+		UnsafeSupplier<Boolean, Exception> reviewerUnsafeSupplier) {
+
+		try {
+			reviewer = reviewerUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean reviewer;
+
 	@Override
 	public Assignee clone() throws CloneNotSupportedException {
 		return (Assignee)super.clone();

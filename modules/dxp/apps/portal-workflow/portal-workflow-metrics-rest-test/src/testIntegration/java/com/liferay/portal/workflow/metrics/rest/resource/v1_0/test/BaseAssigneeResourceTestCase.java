@@ -289,6 +289,14 @@ public abstract class BaseAssigneeResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("reviewer", additionalAssertFieldName)) {
+				if (assignee.getReviewer() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			throw new IllegalArgumentException(
 				"Invalid additional assert field name " +
 					additionalAssertFieldName);
@@ -370,6 +378,16 @@ public abstract class BaseAssigneeResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("reviewer", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						assignee1.getReviewer(), assignee2.getReviewer())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			throw new IllegalArgumentException(
 				"Invalid additional assert field name " +
 					additionalAssertFieldName);
@@ -405,6 +423,17 @@ public abstract class BaseAssigneeResourceTestCase {
 			if (Objects.equals("name", fieldName)) {
 				if (!Objects.deepEquals(
 						assignee.getName(), jsonObject.getString("name"))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("reviewer", fieldName)) {
+				if (!Objects.deepEquals(
+						assignee.getReviewer(),
+						jsonObject.getBoolean("reviewer"))) {
 
 					return false;
 				}
@@ -490,6 +519,11 @@ public abstract class BaseAssigneeResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("reviewer")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		throw new IllegalArgumentException(
 			"Invalid entity field " + entityFieldName);
 	}
@@ -517,6 +551,7 @@ public abstract class BaseAssigneeResourceTestCase {
 				id = RandomTestUtil.randomLong();
 				image = RandomTestUtil.randomString();
 				name = RandomTestUtil.randomString();
+				reviewer = RandomTestUtil.randomBoolean();
 			}
 		};
 	}

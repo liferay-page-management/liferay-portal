@@ -91,6 +91,16 @@ public class AssigneeSerDes {
 			sb.append("\"");
 		}
 
+		if (assignee.getReviewer() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"reviewer\": ");
+
+			sb.append(assignee.getReviewer());
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -130,6 +140,13 @@ public class AssigneeSerDes {
 			map.put("name", String.valueOf(assignee.getName()));
 		}
 
+		if (assignee.getReviewer() == null) {
+			map.put("reviewer", null);
+		}
+		else {
+			map.put("reviewer", String.valueOf(assignee.getReviewer()));
+		}
+
 		return map;
 	}
 
@@ -163,6 +180,11 @@ public class AssigneeSerDes {
 			else if (Objects.equals(jsonParserFieldName, "name")) {
 				if (jsonParserFieldValue != null) {
 					assignee.setName((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "reviewer")) {
+				if (jsonParserFieldValue != null) {
+					assignee.setReviewer((Boolean)jsonParserFieldValue);
 				}
 			}
 			else {

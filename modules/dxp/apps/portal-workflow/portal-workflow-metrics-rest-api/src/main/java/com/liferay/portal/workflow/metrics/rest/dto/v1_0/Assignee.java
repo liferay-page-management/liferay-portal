@@ -124,6 +124,34 @@ public class Assignee {
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String name;
 
+	@Schema
+	public Boolean getReviewer() {
+		return reviewer;
+	}
+
+	public void setReviewer(Boolean reviewer) {
+		this.reviewer = reviewer;
+	}
+
+	@JsonIgnore
+	public void setReviewer(
+		UnsafeSupplier<Boolean, Exception> reviewerUnsafeSupplier) {
+
+		try {
+			reviewer = reviewerUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Boolean reviewer;
+
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -187,6 +215,16 @@ public class Assignee {
 			sb.append(_escape(name));
 
 			sb.append("\"");
+		}
+
+		if (reviewer != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"reviewer\": ");
+
+			sb.append(reviewer);
 		}
 
 		sb.append("}");
