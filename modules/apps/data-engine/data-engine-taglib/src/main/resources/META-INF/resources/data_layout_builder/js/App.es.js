@@ -23,7 +23,6 @@ import MultiPanelSidebar from './components/sidebar/MultiPanelSidebar.es';
 import initializeSidebarConfig from './components/sidebar/initializeSidebarConfig.es';
 import DataLayoutBuilder from './data-layout-builder/DataLayoutBuilder.es';
 import DataLayoutBuilderContextProvider from './data-layout-builder/DataLayoutBuilderContextProvider.es';
-import DataLayoutBuilderSidebar from './data-layout-builder/DataLayoutBuilderSidebar.es';
 import DataLayoutBuilderDragAndDrop from './drag-and-drop/DataLayoutBuilderDragAndDrop.es';
 
 const parseProps = ({
@@ -40,25 +39,18 @@ const parseProps = ({
 	groupId: Number(groupId),
 });
 
-const AppSidebar = props => {
-	if (props.sidebarPanels && props.panels) {
-		return (
-			<MultiPanelSidebar
-				panels={props.panels}
-				sidebarPanels={props.sidebarPanels}
-				toolbarId={props.toolbarId}
-			/>
-		);
-	}
-
-	return <DataLayoutBuilderSidebar />;
-};
+const AppSidebar = ({panels, sidebarPanels, toolbarId}) => (
+	<MultiPanelSidebar
+		panels={panels}
+		sidebarPanels={sidebarPanels}
+		toolbarId={toolbarId}
+	/>
+);
 
 const AppContent = ({
 	dataLayoutBuilder,
 	setDataLayoutBuilder,
 	sidebarConfig,
-	sidebarPanelId,
 	...props
 }) => {
 	const [state, dispatch] = useContext(AppContext);
@@ -84,11 +76,7 @@ const AppContent = ({
 				<DataLayoutBuilderContextProvider
 					dataLayoutBuilder={dataLayoutBuilder}
 				>
-					<AppSidebar
-						panels={panels}
-						sidebarPanelId={sidebarPanelId}
-						sidebarPanels={sidebarPanels}
-					/>
+					<AppSidebar panels={panels} sidebarPanels={sidebarPanels} />
 
 					<DataLayoutBuilderDragAndDrop
 						dataLayoutBuilder={dataLayoutBuilder}

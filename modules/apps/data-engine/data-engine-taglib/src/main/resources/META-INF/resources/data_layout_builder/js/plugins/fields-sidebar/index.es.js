@@ -18,7 +18,7 @@ import {Component} from '../PluginContext.es';
 import FieldsSidebar from './components/FieldsSidebar.es';
 
 /**
- * Entry-point for "FieldsSidebar" (sidebar pane) functionality.
+ * Entry-point for "FieldsSidebar" (sidebar panel) functionality.
  */
 export default class {
 	constructor({app, panel}) {
