@@ -44,6 +44,12 @@ import FormURL from './util/FormURL.es';
 import Notifications from './util/Notifications.es';
 import StateSyncronizer from './util/StateSyncronizer.es';
 
+const NAV_ITEMS = {
+	FORM: 0,
+	RULES: 1,
+	SUMMARY: 3,
+};
+
 /**
  * Form.
  * @extends Component
@@ -329,9 +335,9 @@ class Form extends Component {
 	}
 
 	isShowRuleBuilder() {
-		const {ruleBuilderVisible} = this.state;
+		const {activeNavItem} = this.state;
 
-		return ruleBuilderVisible && this.isFormBuilderView();
+		return activeNavItem === NAV_ITEMS.RULES && this.isFormBuilderView();
 	}
 
 	isShowEntries() {
@@ -566,7 +572,7 @@ class Form extends Component {
 		submitForm(document.querySelector(`#${namespace}editForm`));
 	}
 
-	syncTabsVisible(entriesVisible, ruleBuilderVisible) {
+	syncActiveNavItem(activeNavItem) {
 		const {
 			defaultLanguageId,
 			editingLanguageId,
@@ -591,7 +597,7 @@ class Form extends Component {
 			'#viewFormInstanceRecords'
 		);
 
-		if (entriesVisible || ruleBuilderVisible) {
+		if (activeNavItem !== NAV_ITEMS.FORM) {
 			formBasicInfo.classList.add('hide');
 			formBuilderButtons.classList.add('hide');
 			shareURLButton.classList.add('hide');
@@ -604,7 +610,7 @@ class Form extends Component {
 				translationManager.classList.add('hide');
 			}
 
-			if (ruleBuilderVisible) {
+			if (activeNavItem === NAV_ITEMS.RULES) {
 				ddmFormInstanceManagementToolbar.classList.remove('hide');
 				viewFormInstanceRecords.classList.add('hide');
 
@@ -806,15 +812,11 @@ class Form extends Component {
 			navLink.classList.add('active');
 
 			this.setState({
-				entriesVisible: navItemIndex === 2,
-				ruleBuilderVisible: navItemIndex === 1,
+				activeNavItem: navItemIndex,
 			});
 		}
 
-		this.syncTabsVisible(
-			this.state.entriesVisible,
-			this.state.ruleBuilderVisible
-		);
+		this.syncActiveNavItem(this.state.activeNavItem);
 	}
 
 	_handleNameEditorCopyAndPaste(event) {
@@ -1181,7 +1183,7 @@ Form.PROPS = {
 	namespace: Config.string().required(),
 
 	/**
-	 * Wether the form is published or not
+	 * Whether the form is published or not
 	 * @default false
 	 * @instance
 	 * @memberof Form
@@ -1231,7 +1233,7 @@ Form.PROPS = {
 	saved: Config.bool(),
 
 	/**
-	 * Wether to show an alert telling the user about the result of the
+	 * Whether to show an alert telling the user about the result of the
 	 * "Publish" operation.
 	 * @default false
 	 * @instance
@@ -1256,14 +1258,14 @@ Form.PROPS = {
 
 Form.STATE = {
 	/**
-	 * Wether the Entries should be visible or not.
-	 * @default false
+	 * Current active tab index.
+	 * @default
 	 * @instance
 	 * @memberof Form
-	 * @type {!boolean}
+	 * @type {!number}
 	 */
 
-	entriesVisible: Config.bool().value(false),
+	activeNavItem: Config.number().value(NAV_ITEMS.FORM),
 
 	/**
 	 * Internal mirror of the pages state
@@ -1283,16 +1285,6 @@ Form.STATE = {
 	 */
 
 	paginationMode: Config.string().valueFn('_paginationModeValueFn'),
-
-	/**
-	 * Wether the RuleBuilder should be visible or not.
-	 * @default false
-	 * @instance
-	 * @memberof Form
-	 * @type {!boolean}
-	 */
-
-	ruleBuilderVisible: Config.bool().value(false),
 
 	/**
 	 * The label of the save button
