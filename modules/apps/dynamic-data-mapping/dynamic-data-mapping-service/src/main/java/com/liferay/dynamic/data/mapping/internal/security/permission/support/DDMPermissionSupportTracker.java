@@ -47,18 +47,8 @@ public class DDMPermissionSupportTracker {
 			getDDMStructurePermissionSupportServiceWrapper(String className)
 		throws PortalException {
 
-		ServiceWrapper<DDMStructurePermissionSupport>
-			ddmStructurePermissionSupportServiceWrapper =
-				_ddmStructurePermissionSupportServiceTrackerMap.getService(
-					className);
-
-		if (ddmStructurePermissionSupportServiceWrapper == null) {
-			throw new PortalException(
-				"The model does not support DDMStructure permission checking " +
-					className);
-		}
-
-		return ddmStructurePermissionSupportServiceWrapper;
+		return _ddmStructurePermissionSupportServiceTrackerMap.getService(
+			className);
 	}
 
 	public ServiceWrapper<DDMTemplatePermissionSupport>
