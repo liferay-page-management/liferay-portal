@@ -105,10 +105,10 @@ public class AnalyticsCloudPortalInstanceLifecycleListener
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
-		_scopeAliasesList = new ArrayList<>(_SAP_ENTRY_OBJECT_ARRAYS.length);
+		_scopesList = new ArrayList<>(_SAP_ENTRY_OBJECT_ARRAYS.length);
 
 		for (String[] sapEntryObjectArray : _SAP_ENTRY_OBJECT_ARRAYS) {
-			_scopeAliasesList.add(
+			_scopesList.add(
 				StringUtil.replaceFirst(
 					sapEntryObjectArray[0], "OAUTH2_", StringPool.BLANK));
 		}
@@ -254,7 +254,7 @@ public class AnalyticsCloudPortalInstanceLifecycleListener
 		builder.forApplication(
 			OAuth2ProviderShortcutConstants.APPLICATION_NAME,
 			"com.liferay.oauth2.provider.shortcut",
-			applicationScopeAssigner -> _scopeAliasesList.forEach(
+			applicationScopeAssigner -> _scopesList.forEach(
 				applicationScopeAssigner::assignScope));
 	}
 
@@ -343,7 +343,7 @@ public class AnalyticsCloudPortalInstanceLifecycleListener
 	@Reference
 	private SAPEntryLocalService _sapEntryLocalService;
 
-	private List<String> _scopeAliasesList;
+	private List<String> _scopesList;
 	private ServiceRegistration<?> _serviceRegistration;
 
 	@Reference
