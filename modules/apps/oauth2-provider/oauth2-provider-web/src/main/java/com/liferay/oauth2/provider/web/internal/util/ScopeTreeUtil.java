@@ -23,6 +23,7 @@ import com.liferay.petra.string.StringPool;
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -33,6 +34,13 @@ import java.util.stream.Stream;
  * @author Marta Medio
  */
 public class ScopeTreeUtil {
+
+	public static Tree.Node<String> getScopeTreeNode(
+		List<String> scopeAliases, ScopeMatcherFactory scopeMatcherFactory) {
+
+		return getScopeTreeNode(
+			new HashSet<>(scopeAliases), scopeMatcherFactory);
+	}
 
 	public static Tree.Node<String> getScopeTreeNode(
 		Set<String> scopeAliases, ScopeMatcherFactory scopeMatcherFactory) {

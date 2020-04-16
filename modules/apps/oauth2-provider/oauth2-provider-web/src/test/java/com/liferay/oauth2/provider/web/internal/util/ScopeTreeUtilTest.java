@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.TreeSet;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -36,12 +35,12 @@ public class ScopeTreeUtilTest {
 
 	@Test
 	public void testMultipleLevelsScopeTree() {
-		List<String> scopesList = Arrays.asList(
+		List<String> scopeAliasesList = Arrays.asList(
 			"everything.read", "everything.write", "everything",
 			"everything.read.user", "everything.read.user.documents");
 
 		Tree.Node<String> treeNode = ScopeTreeUtil.getScopeTreeNode(
-			new TreeSet<>(scopesList), _scopeMatcherFactory);
+			scopeAliasesList, _scopeMatcherFactory);
 
 		Assert.assertEquals(StringPool.BLANK, treeNode.getValue());
 
@@ -76,12 +75,12 @@ public class ScopeTreeUtilTest {
 
 	@Test
 	public void testMultipleParentsScopeTree() {
-		List<String> scopesList = Arrays.asList(
+		List<String> scopeAliasesList = Arrays.asList(
 			"everything.read", "everything.write", "everything",
 			"everything.read.user", "analytics.read", "analytics");
 
 		Tree.Node<String> treeNode = ScopeTreeUtil.getScopeTreeNode(
-			new TreeSet<>(scopesList), _scopeMatcherFactory);
+			scopeAliasesList, _scopeMatcherFactory);
 
 		Assert.assertEquals(StringPool.BLANK, treeNode.getValue());
 
@@ -108,11 +107,11 @@ public class ScopeTreeUtilTest {
 
 	@Test
 	public void testOneLevelScopeTree() {
-		List<String> scopesList = Arrays.asList(
+		List<String> scopeAliasesList = Arrays.asList(
 			"everything.read", "everything.write", "everything");
 
 		Tree.Node<String> treeNode = ScopeTreeUtil.getScopeTreeNode(
-			new TreeSet<>(scopesList), _scopeMatcherFactory);
+			scopeAliasesList, _scopeMatcherFactory);
 
 		Assert.assertEquals(StringPool.BLANK, treeNode.getValue());
 
