@@ -26,4 +26,7 @@ dependencies {
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
+
+	testCompile group: "junit", name: "junit", version: "4.12"
+	testCompile project(":apps:oauth2-provider:oauth2-provider-scope-impl")
 }
