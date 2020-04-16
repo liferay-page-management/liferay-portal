@@ -1763,9 +1763,8 @@ public abstract class Base${schemaName}ResourceTestCase {
 		return true;
 	}
 
-	private boolean equals(Map<String, Object> map1, Map<String, Object> map2) {
-
-		if (map1.keySet().equals(map2.keySet())) {
+	protected boolean equals(Map<String, Object> map1, Map<String, Object> map2) {
+		if (Objects.equals(map1.keySet(), map2.keySet())) {
 			for (Map.Entry<String, Object> entry : map1.entrySet()) {
 				if (entry.getValue() instanceof Map) {
 					if (!equals((Map)entry.getValue(), (Map)map2.get(entry.getKey()))) {
