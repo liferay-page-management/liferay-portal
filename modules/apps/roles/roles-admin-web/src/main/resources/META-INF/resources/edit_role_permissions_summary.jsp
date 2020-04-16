@@ -139,11 +139,11 @@
 			int scope;
 
 			if (role.getType() == RoleConstants.TYPE_REGULAR) {
-				LinkedHashMap<String, Object> groupParams = new LinkedHashMap<String, Object>();
-
 				RolePermissions rolePermissions = new RolePermissions(curResource, ResourceConstants.SCOPE_GROUP, actionId, role.getRoleId());
 
-				groupParams.put("rolePermissions", rolePermissions);
+				LinkedHashMap<String, Object> groupParams = LinkedHashMapBuilder.<String, Object>put(
+					"rolePermissions", rolePermissions
+				).build();
 
 				groups = GroupLocalServiceUtil.search(company.getCompanyId(), GroupTypeContributorUtil.getClassNameIds(), null, null, groupParams, true, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 

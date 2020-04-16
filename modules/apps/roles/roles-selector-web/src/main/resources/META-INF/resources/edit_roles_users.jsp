@@ -41,10 +41,11 @@ PortletURL portletURL = (PortletURL)request.getAttribute("edit_roles.jsp-portlet
 	<%
 	UserSearchTerms searchTerms = (UserSearchTerms)userSearchContainer.getSearchTerms();
 
-	LinkedHashMap<String, Object> userParams = new LinkedHashMap<String, Object>();
-
-	userParams.put("inherit", Boolean.TRUE);
-	userParams.put("usersGroups", Long.valueOf(group.getGroupId()));
+	LinkedHashMap<String, Object> userParams = LinkedHashMapBuilder.<String, Object>put(
+		"inherit", Boolean.TRUE
+	).put(
+		"usersGroups", Long.valueOf(group.getGroupId())
+	).build();
 
 	if (tabs1.equals("current")) {
 		userParams.put("userGroupRole", new Long[] {Long.valueOf(group.getGroupId()), Long.valueOf(roleId)});

@@ -94,10 +94,11 @@ portletURL.setParameter("delta", String.valueOf(delta));
 		<aui:input name="permissions" type="hidden" />
 
 		<%
-		LinkedHashMap<String, Object> groupParams = new LinkedHashMap<String, Object>();
-
-		groupParams.put("active", true);
-		groupParams.put("site", true);
+		LinkedHashMap<String, Object> groupParams = LinkedHashMapBuilder.<String, Object>put(
+			"active", true
+		).put(
+			"site", true
+		).build();
 
 		List<Group> groups = GroupLocalServiceUtil.search(themeDisplay.getCompanyId(), keywords, groupParams, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 

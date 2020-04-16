@@ -34,11 +34,13 @@ if (step == 1) {
 		groups = selUser.getSiteGroups();
 	}
 	else {
-		LinkedHashMap<String, Object> groupParams = new LinkedHashMap<>();
-
-		groupParams.put("inherit", Boolean.FALSE);
-		groupParams.put("site", Boolean.TRUE);
-		groupParams.put("usersGroups", selUser.getUserId());
+		LinkedHashMap<String, Object> groupParams = LinkedHashMapBuilder.<String, Object>put(
+			"inherit", Boolean.FALSE
+		).put(
+			"site", Boolean.TRUE
+		).put(
+			"usersGroups", selUser.getUserId()
+		).build();
 
 		groups = GroupLocalServiceUtil.search(user.getCompanyId(), keywords, groupParams, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 	}
