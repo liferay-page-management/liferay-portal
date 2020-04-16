@@ -635,9 +635,9 @@ public abstract class BasePostalAddressResourceTestCase {
 			if (Objects.equals(
 					"addressCountry_i18n", additionalAssertFieldName)) {
 
-				if (!Objects.deepEquals(
-						postalAddress1.getAddressCountry_i18n(),
-						postalAddress2.getAddressCountry_i18n())) {
+				if (!equals(
+						(Map)postalAddress1.getAddressCountry_i18n(),
+						(Map)postalAddress2.getAddressCountry_i18n())) {
 
 					return false;
 				}
@@ -752,6 +752,30 @@ public abstract class BasePostalAddressResourceTestCase {
 			throw new IllegalArgumentException(
 				"Invalid additional assert field name " +
 					additionalAssertFieldName);
+		}
+
+		return true;
+	}
+
+	protected boolean equals(
+		Map<String, Object> map1, Map<String, Object> map2) {
+
+		if (Objects.equals(map1.keySet(), map2.keySet())) {
+			for (Map.Entry<String, Object> entry : map1.entrySet()) {
+				if (entry.getValue() instanceof Map) {
+					if (!equals(
+							(Map)entry.getValue(),
+							(Map)map2.get(entry.getKey()))) {
+
+						return false;
+					}
+				}
+				else if (!Objects.deepEquals(
+							entry.getValue(), map2.get(entry.getKey()))) {
+
+					return false;
+				}
+			}
 		}
 
 		return true;

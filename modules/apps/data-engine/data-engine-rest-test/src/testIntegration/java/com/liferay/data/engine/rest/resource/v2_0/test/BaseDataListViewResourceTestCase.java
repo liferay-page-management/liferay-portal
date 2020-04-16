@@ -805,9 +805,9 @@ public abstract class BaseDataListViewResourceTestCase {
 				getAdditionalAssertFieldNames()) {
 
 			if (Objects.equals("appliedFilters", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						dataListView1.getAppliedFilters(),
-						dataListView2.getAppliedFilters())) {
+				if (!equals(
+						(Map)dataListView1.getAppliedFilters(),
+						(Map)dataListView2.getAppliedFilters())) {
 
 					return false;
 				}
@@ -870,8 +870,9 @@ public abstract class BaseDataListViewResourceTestCase {
 			}
 
 			if (Objects.equals("name", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						dataListView1.getName(), dataListView2.getName())) {
+				if (!equals(
+						(Map)dataListView1.getName(),
+						(Map)dataListView2.getName())) {
 
 					return false;
 				}
@@ -903,6 +904,30 @@ public abstract class BaseDataListViewResourceTestCase {
 			throw new IllegalArgumentException(
 				"Invalid additional assert field name " +
 					additionalAssertFieldName);
+		}
+
+		return true;
+	}
+
+	protected boolean equals(
+		Map<String, Object> map1, Map<String, Object> map2) {
+
+		if (Objects.equals(map1.keySet(), map2.keySet())) {
+			for (Map.Entry<String, Object> entry : map1.entrySet()) {
+				if (entry.getValue() instanceof Map) {
+					if (!equals(
+							(Map)entry.getValue(),
+							(Map)map2.get(entry.getKey()))) {
+
+						return false;
+					}
+				}
+				else if (!Objects.deepEquals(
+							entry.getValue(), map2.get(entry.getKey()))) {
+
+					return false;
+				}
+			}
 		}
 
 		return true;

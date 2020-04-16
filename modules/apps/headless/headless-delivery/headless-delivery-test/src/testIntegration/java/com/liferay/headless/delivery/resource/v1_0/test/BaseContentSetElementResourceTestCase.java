@@ -848,9 +848,9 @@ public abstract class BaseContentSetElementResourceTestCase {
 			}
 
 			if (Objects.equals("title_i18n", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						contentSetElement1.getTitle_i18n(),
-						contentSetElement2.getTitle_i18n())) {
+				if (!equals(
+						(Map)contentSetElement1.getTitle_i18n(),
+						(Map)contentSetElement2.getTitle_i18n())) {
 
 					return false;
 				}
@@ -861,6 +861,30 @@ public abstract class BaseContentSetElementResourceTestCase {
 			throw new IllegalArgumentException(
 				"Invalid additional assert field name " +
 					additionalAssertFieldName);
+		}
+
+		return true;
+	}
+
+	protected boolean equals(
+		Map<String, Object> map1, Map<String, Object> map2) {
+
+		if (Objects.equals(map1.keySet(), map2.keySet())) {
+			for (Map.Entry<String, Object> entry : map1.entrySet()) {
+				if (entry.getValue() instanceof Map) {
+					if (!equals(
+							(Map)entry.getValue(),
+							(Map)map2.get(entry.getKey()))) {
+
+						return false;
+					}
+				}
+				else if (!Objects.deepEquals(
+							entry.getValue(), map2.get(entry.getKey()))) {
+
+					return false;
+				}
+			}
 		}
 
 		return true;

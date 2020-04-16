@@ -1200,9 +1200,9 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 				getAdditionalAssertFieldNames()) {
 
 			if (Objects.equals("actions", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						taxonomyVocabulary1.getActions(),
-						taxonomyVocabulary2.getActions())) {
+				if (!equals(
+						(Map)taxonomyVocabulary1.getActions(),
+						(Map)taxonomyVocabulary2.getActions())) {
 
 					return false;
 				}
@@ -1279,9 +1279,9 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 			}
 
 			if (Objects.equals("description_i18n", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						taxonomyVocabulary1.getDescription_i18n(),
-						taxonomyVocabulary2.getDescription_i18n())) {
+				if (!equals(
+						(Map)taxonomyVocabulary1.getDescription_i18n(),
+						(Map)taxonomyVocabulary2.getDescription_i18n())) {
 
 					return false;
 				}
@@ -1312,9 +1312,9 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 			}
 
 			if (Objects.equals("name_i18n", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						taxonomyVocabulary1.getName_i18n(),
-						taxonomyVocabulary2.getName_i18n())) {
+				if (!equals(
+						(Map)taxonomyVocabulary1.getName_i18n(),
+						(Map)taxonomyVocabulary2.getName_i18n())) {
 
 					return false;
 				}
@@ -1349,6 +1349,30 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 			throw new IllegalArgumentException(
 				"Invalid additional assert field name " +
 					additionalAssertFieldName);
+		}
+
+		return true;
+	}
+
+	protected boolean equals(
+		Map<String, Object> map1, Map<String, Object> map2) {
+
+		if (Objects.equals(map1.keySet(), map2.keySet())) {
+			for (Map.Entry<String, Object> entry : map1.entrySet()) {
+				if (entry.getValue() instanceof Map) {
+					if (!equals(
+							(Map)entry.getValue(),
+							(Map)map2.get(entry.getKey()))) {
+
+						return false;
+					}
+				}
+				else if (!Objects.deepEquals(
+							entry.getValue(), map2.get(entry.getKey()))) {
+
+					return false;
+				}
+			}
 		}
 
 		return true;

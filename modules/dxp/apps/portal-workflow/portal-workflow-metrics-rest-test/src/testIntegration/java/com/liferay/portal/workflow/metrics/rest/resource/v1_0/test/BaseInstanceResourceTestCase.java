@@ -728,9 +728,9 @@ public abstract class BaseInstanceResourceTestCase {
 			}
 
 			if (Objects.equals("assetTitle_i18n", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						instance1.getAssetTitle_i18n(),
-						instance2.getAssetTitle_i18n())) {
+				if (!equals(
+						(Map)instance1.getAssetTitle_i18n(),
+						(Map)instance2.getAssetTitle_i18n())) {
 
 					return false;
 				}
@@ -749,9 +749,9 @@ public abstract class BaseInstanceResourceTestCase {
 			}
 
 			if (Objects.equals("assetType_i18n", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						instance1.getAssetType_i18n(),
-						instance2.getAssetType_i18n())) {
+				if (!equals(
+						(Map)instance1.getAssetType_i18n(),
+						(Map)instance2.getAssetType_i18n())) {
 
 					return false;
 				}
@@ -935,6 +935,30 @@ public abstract class BaseInstanceResourceTestCase {
 			throw new IllegalArgumentException(
 				"Invalid additional assert field name " +
 					additionalAssertFieldName);
+		}
+
+		return true;
+	}
+
+	protected boolean equals(
+		Map<String, Object> map1, Map<String, Object> map2) {
+
+		if (Objects.equals(map1.keySet(), map2.keySet())) {
+			for (Map.Entry<String, Object> entry : map1.entrySet()) {
+				if (entry.getValue() instanceof Map) {
+					if (!equals(
+							(Map)entry.getValue(),
+							(Map)map2.get(entry.getKey()))) {
+
+						return false;
+					}
+				}
+				else if (!Objects.deepEquals(
+							entry.getValue(), map2.get(entry.getKey()))) {
+
+					return false;
+				}
+			}
 		}
 
 		return true;
