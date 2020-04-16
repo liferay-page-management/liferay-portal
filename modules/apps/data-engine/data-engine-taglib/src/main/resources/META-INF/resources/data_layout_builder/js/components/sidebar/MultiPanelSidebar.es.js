@@ -220,7 +220,6 @@ export default function MultiPanelSidebar({panels, sidebarPanels}) {
 								);
 							});
 
-							// Add separator between groups.
 							if (groupIndex === panels.length - 1) {
 								return elements.concat(buttons);
 							}
