@@ -40,12 +40,12 @@ public class ScopeTreeUtilTest {
 			"everything.read", "everything.write", "everything",
 			"everything.read.user", "everything.read.user.documents");
 
-		Tree.Node<String> rootTreeNode = ScopeTreeUtil.getScopeTreeNode(
+		Tree.Node<String> treeNode = ScopeTreeUtil.getScopeTreeNode(
 			new TreeSet<>(scopesList), _scopeMatcherFactory);
 
-		Assert.assertEquals(StringPool.BLANK, rootTreeNode.getValue());
+		Assert.assertEquals(StringPool.BLANK, treeNode.getValue());
 
-		Tree<String> tree = _getTree(rootTreeNode, 0);
+		Tree<String> tree = _getTree(treeNode, 0);
 
 		Assert.assertEquals("everything", tree.getValue());
 		Assert.assertFalse(tree instanceof Tree.Leaf);
@@ -80,17 +80,17 @@ public class ScopeTreeUtilTest {
 			"everything.read", "everything.write", "everything",
 			"everything.read.user", "analytics.read", "analytics");
 
-		Tree.Node<String> rootTreeNode = ScopeTreeUtil.getScopeTreeNode(
+		Tree.Node<String> treeNode = ScopeTreeUtil.getScopeTreeNode(
 			new TreeSet<>(scopesList), _scopeMatcherFactory);
 
-		Assert.assertEquals(StringPool.BLANK, rootTreeNode.getValue());
+		Assert.assertEquals(StringPool.BLANK, treeNode.getValue());
 
-		Tree<String> tree = _getTree(rootTreeNode, 0);
+		Tree<String> tree = _getTree(treeNode, 0);
 
 		Assert.assertEquals("analytics", tree.getValue());
 		Assert.assertFalse(tree instanceof Tree.Leaf);
 
-		Tree<String> lastTree = _getLastTree(rootTreeNode);
+		Tree<String> lastTree = _getLastTree(treeNode);
 
 		Assert.assertEquals("everything", lastTree.getValue());
 		Assert.assertFalse(lastTree instanceof Tree.Leaf);
@@ -111,12 +111,12 @@ public class ScopeTreeUtilTest {
 		List<String> scopesList = Arrays.asList(
 			"everything.read", "everything.write", "everything");
 
-		Tree.Node<String> rootTreeNode = ScopeTreeUtil.getScopeTreeNode(
+		Tree.Node<String> treeNode = ScopeTreeUtil.getScopeTreeNode(
 			new TreeSet<>(scopesList), _scopeMatcherFactory);
 
-		Assert.assertEquals(StringPool.BLANK, rootTreeNode.getValue());
+		Assert.assertEquals(StringPool.BLANK, treeNode.getValue());
 
-		Tree<String> tree = _getTree(rootTreeNode, 0);
+		Tree<String> tree = _getTree(treeNode, 0);
 
 		Assert.assertEquals("everything", tree.getValue());
 		Assert.assertFalse(tree instanceof Tree.Leaf);
