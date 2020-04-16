@@ -12,6 +12,7 @@
  * details.
  */
 
+import ClayForm from '@clayui/form';
 import {
 	DataDefinitionUtils,
 	DragTypes,
@@ -99,27 +100,14 @@ const FieldsTabContent = ({keywords, onAddFieldName}) => {
 	);
 };
 
-export default ({onAddFieldName, onClose}) => {
+export default ({onAddFieldName}) => {
 	const [{focusedColumn}] = useContext(EditTableViewContext);
-
 	const [keywords, setKeywords] = useState('');
-	const [sidebarClosed, setSidebarClosed] = useState(false);
-
-	const onSidebarToggle = closed => {
-		setSidebarClosed(closed);
-		onClose(closed);
-	};
 
 	const displayFieldFilters = !!focusedColumn;
 
 	return (
-		<Sidebar
-			className="app-builder-sidebar main"
-			closeable={!displayFieldFilters || sidebarClosed}
-			closed={sidebarClosed}
-			onSearch={displayFieldFilters ? false : setKeywords}
-			onToggle={onSidebarToggle}
-		>
+		<Sidebar className="app-builder-sidebar main">
 			{displayFieldFilters ? (
 				<>
 					<FiltersSidebarHeader />
@@ -128,27 +116,37 @@ export default ({onAddFieldName, onClose}) => {
 					</Sidebar.Body>
 				</>
 			) : (
-				<Sidebar.Body>
-					{!displayFieldFilters && (
-						<Sidebar.Tabs
-							tabs={[
-								{
-									label: Liferay.Language.get('columns'),
-									render: () => (
-										<FieldsTabContent
-											keywords={keywords}
-											onAddFieldName={onAddFieldName}
-										/>
-									),
-								},
-								{
-									label: Liferay.Language.get('filters'),
-									render: () => <TableViewFiltersList />,
-								},
-							]}
-						/>
-					)}
-				</Sidebar.Body>
+				<>
+					<Sidebar.Header>
+						<ClayForm onSubmit={event => event.preventDefault()}>
+							<Sidebar.SearchInput
+								onSearch={keywords => setKeywords(keywords)}
+							/>
+						</ClayForm>
+					</Sidebar.Header>
+
+					<Sidebar.Body>
+						{!displayFieldFilters && (
+							<Sidebar.Tabs
+								tabs={[
+									{
+										label: Liferay.Language.get('columns'),
+										render: () => (
+											<FieldsTabContent
+												keywords={keywords}
+												onAddFieldName={onAddFieldName}
+											/>
+										),
+									},
+									{
+										label: Liferay.Language.get('filters'),
+										render: () => <TableViewFiltersList />,
+									},
+								]}
+							/>
+						)}
+					</Sidebar.Body>
+				</>
 			)}
 		</Sidebar>
 	);
