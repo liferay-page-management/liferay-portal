@@ -24,11 +24,11 @@ import java.util.Date;
 public interface TaskWorkflowMetricsIndexer {
 
 	public Document addTask(
-		Long assigneeId, String className, long classPK, long companyId,
-		boolean completed, Date completionDate, Long completionUserId,
-		Date createDate, boolean instanceCompleted, long instanceId,
-		Date modifiedDate, String name, long nodeId, long processId,
-		String processVersion, long taskId, long userId);
+		Long[] assigneeIds, String assigneeType, String className, long classPK,
+		long companyId, boolean completed, Date completionDate,
+		Long completionUserId, Date createDate, boolean instanceCompleted,
+		long instanceId, Date modifiedDate, String name, long nodeId,
+		long processId, String processVersion, long taskId, long userId);
 
 	public Document completeTask(
 		long companyId, Date completionDate, long completionUserId,
@@ -37,7 +37,7 @@ public interface TaskWorkflowMetricsIndexer {
 	public void deleteTask(long companyId, long taskId);
 
 	public Document updateTask(
-		Long assigneeId, long companyId, Date modifiedDate, long taskId,
-		long userId);
+		Long[] assigneeIds, String assigneeType, long companyId,
+		Date modifiedDate, long taskId, long userId);
 
 }

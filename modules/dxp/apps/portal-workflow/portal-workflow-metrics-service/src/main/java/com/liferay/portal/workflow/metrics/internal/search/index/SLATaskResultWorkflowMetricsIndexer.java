@@ -55,9 +55,11 @@ public class SLATaskResultWorkflowMetricsIndexer
 
 		DocumentBuilder documentBuilder = documentBuilderFactory.builder();
 
-		if (workflowMetricsSLATaskResult.getAssigneeId() != null) {
-			documentBuilder.setLong(
-				"assigneeId", workflowMetricsSLATaskResult.getAssigneeId());
+		if (workflowMetricsSLATaskResult.getAssigneeIds() != null) {
+			documentBuilder.setLongs(
+				"assigneeIds", workflowMetricsSLATaskResult.getAssigneeIds());
+			documentBuilder.setString(
+				"assigneeType", workflowMetricsSLATaskResult.getAssigneeType());
 		}
 
 		documentBuilder.setValue(

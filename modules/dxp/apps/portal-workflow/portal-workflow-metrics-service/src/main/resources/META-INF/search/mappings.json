@@ -1131,7 +1131,11 @@
 			}
 		],
 		"properties": {
-			"assigneeId": {
+			"assigneeIds": {
+				"store": true,
+				"type": "keyword"
+			},
+			"assigneeType": {
 				"store": true,
 				"type": "keyword"
 			},
@@ -1218,7 +1222,11 @@
 			}
 		],
 		"properties": {
-			"assigneeId": {
+			"assigneeIds": {
+				"store": true,
+				"type": "keyword"
+			},
+			"assigneeType": {
 				"store": true,
 				"type": "keyword"
 			},

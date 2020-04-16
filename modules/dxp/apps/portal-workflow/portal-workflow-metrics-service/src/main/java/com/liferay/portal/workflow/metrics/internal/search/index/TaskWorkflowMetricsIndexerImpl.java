@@ -44,16 +44,17 @@ public class TaskWorkflowMetricsIndexerImpl
 
 	@Override
 	public Document addTask(
-		Long assigneeId, String className, long classPK, long companyId,
-		boolean completed, Date completionDate, Long completionUserId,
-		Date createDate, boolean instanceCompleted, long instanceId,
-		Date modifiedDate, String name, long nodeId, long processId,
-		String processVersion, long taskId, long userId) {
+		Long[] assigneeIds, String assigneeType, String className, long classPK,
+		long companyId, boolean completed, Date completionDate,
+		Long completionUserId, Date createDate, boolean instanceCompleted,
+		long instanceId, Date modifiedDate, String name, long nodeId,
+		long processId, String processVersion, long taskId, long userId) {
 
 		DocumentBuilder documentBuilder = documentBuilderFactory.builder();
 
-		if (assigneeId != null) {
-			documentBuilder.setLong("assigneeId", assigneeId);
+		if (assigneeIds != null) {
+			documentBuilder.setLongs("assigneeIds", assigneeIds);
+			documentBuilder.setString("assigneeType", assigneeType);
 		}
 
 		documentBuilder.setString(
@@ -199,13 +200,14 @@ public class TaskWorkflowMetricsIndexerImpl
 
 	@Override
 	public Document updateTask(
-		Long assigneeId, long companyId, Date modifiedDate, long taskId,
-		long userId) {
+		Long[] assigneeIds, String assigneeType, long companyId,
+		Date modifiedDate, long taskId, long userId) {
 
 		DocumentBuilder documentBuilder = documentBuilderFactory.builder();
 
-		if (assigneeId != null) {
-			documentBuilder.setLong("assigneeId", assigneeId);
+		if (assigneeIds != null) {
+			documentBuilder.setLongs("assigneeIds", assigneeIds);
+			documentBuilder.setString("assigneeType", assigneeType);
 		}
 
 		documentBuilder.setLong(
@@ -226,7 +228,7 @@ public class TaskWorkflowMetricsIndexerImpl
 			() -> {
 				updateDocument(document);
 
-				if (Objects.isNull(document.getLong("assigneeId"))) {
+				if (Objects.isNull(document.getLongs("assigneeIds"))) {
 					return;
 				}
 
@@ -239,7 +241,9 @@ public class TaskWorkflowMetricsIndexerImpl
 				_slaTaskResultWorkflowMetricsIndexer.updateDocuments(
 					companyId,
 					HashMapBuilder.<String, Object>put(
-						"assigneeId", assigneeId
+						"assigneeIds", assigneeIds
+					).put(
+						"assigneeType", assigneeType
 					).build(),
 					booleanQuery);
 			});
