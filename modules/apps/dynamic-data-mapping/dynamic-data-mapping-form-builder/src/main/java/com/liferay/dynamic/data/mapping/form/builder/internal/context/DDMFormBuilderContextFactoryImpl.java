@@ -46,7 +46,6 @@ public class DDMFormBuilderContextFactoryImpl
 			Optional.ofNullable(
 				ddmFormBuilderContextRequest.getProperty(
 					"ddmStructureVersion"));
-
 		String portletNamespace = GetterUtil.getString(
 			ddmFormBuilderContextRequest.getProperty("portletNamespace"));
 
