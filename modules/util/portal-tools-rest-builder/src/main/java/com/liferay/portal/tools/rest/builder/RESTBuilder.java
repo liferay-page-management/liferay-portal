@@ -295,13 +295,13 @@ public class RESTBuilder {
 	}
 
 	private String _addClientVersionDescription(String yamlString) {
-		Optional<String> versionOptional = _getClientVersionOptional();
+		Optional<String> clientVersionOptional = _getClientVersionOptional();
 
-		if (!versionOptional.isPresent()) {
+		if (!clientVersionOptional.isPresent()) {
 			return yamlString;
 		}
 
-		String version = versionOptional.get();
+		String clientVersion = clientVersionOptional.get();
 
 		String clientMessage =
 			"For Java, you can use " + _configYAML.getApiPackagePath() +
@@ -321,11 +321,11 @@ public class RESTBuilder {
 
 		if (!description.isEmpty()) {
 			description = StringBundler.concat(
-				description, ". ", clientMessage, version);
+				description, ". ", clientMessage, clientVersion);
 		}
 		else {
 			description = StringBundler.concat(
-				description, clientMessage, version);
+				description, clientMessage, clientVersion);
 		}
 
 		String descriptionBlock = String.format(
