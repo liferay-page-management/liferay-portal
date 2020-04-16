@@ -24,7 +24,7 @@ import com.liferay.petra.string.StringPool;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,12 +35,13 @@ import java.util.stream.Stream;
 public class ScopeTreeUtil {
 
 	public static Tree.Node<String> getScopeTreeNode(
-		Set<String> scopeAliases, ScopeMatcherFactory scopeMatcherFactory) {
+		List<String> scopeAliasesList,
+		ScopeMatcherFactory scopeMatcherFactory) {
 
 		HashMap<String, ScopeMatcher> scopeMatcherMap = new HashMap<>();
 
 		Tree.Node<String> treeNode = TreeUtil.getTreeNode(
-			scopeAliases, StringPool.BLANK,
+			new TreeSet<String>(scopeAliasesList), StringPool.BLANK,
 			(scopeAlias1, scopeAlias2) -> {
 				ScopeMatcher scopeMatcher = scopeMatcherMap.computeIfAbsent(
 					scopeAlias1, scopeMatcherFactory::create);

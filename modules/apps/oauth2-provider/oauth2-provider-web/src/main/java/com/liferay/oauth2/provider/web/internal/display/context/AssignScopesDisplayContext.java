@@ -209,18 +209,18 @@ public class AssignScopesDisplayContext
 
 		Stream<String> stream = applicationScopeDescription.stream();
 
-		List<String> scopesList = stream.sorted(
+		List<String> scopeAliasesList = stream.sorted(
 		).map(
 			HtmlUtil::escape
 		).collect(
 			Collectors.toList()
 		);
 
-		if (ListUtil.isEmpty(scopesList)) {
+		if (ListUtil.isEmpty(scopeAliasesList)) {
 			return StringPool.BLANK;
 		}
 
-		return StringUtil.merge(scopesList, delimiter);
+		return StringUtil.merge(scopeAliasesList, delimiter);
 	}
 
 	public Map<AssignableScopes, Relations> getAssignableScopesRelations(
