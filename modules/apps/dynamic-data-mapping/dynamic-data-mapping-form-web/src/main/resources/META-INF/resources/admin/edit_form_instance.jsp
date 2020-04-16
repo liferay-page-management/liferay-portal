@@ -21,6 +21,8 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 DDMFormInstance formInstance = ddmFormAdminDisplayContext.getDDMFormInstance();
 
+int entriesCount = 0;
+
 long formInstanceId = BeanParamUtil.getLong(formInstance, request, "formInstanceId");
 long groupId = BeanParamUtil.getLong(formInstance, request, "groupId", scopeGroupId);
 long ddmStructureId = BeanParamUtil.getLong(formInstance, request, "structureId");
@@ -29,6 +31,12 @@ boolean disableCopyButton = false;
 
 if (!ddmFormAdminDisplayContext.isFormPublished() && (formInstance != null)) {
 	disableCopyButton = true;
+}
+
+if (formInstance != null) {
+	DDMFormViewFormInstanceRecordsDisplayContext ddmFormViewFormInstanceRecordsDisplayContext = ddmFormAdminDisplayContext.getFormViewRecordsDisplayContext();
+
+	entriesCount = ddmFormViewFormInstanceRecordsDisplayContext.getTotalItems();
 }
 
 portletDisplay.setShowBackIcon(true);
@@ -194,6 +202,7 @@ renderResponse.setTitle((formInstance == null) ? LanguageUtil.get(request, "new-
 								'<%= dataProviderInstancesURL %>',
 							defaultLanguageId:
 								'<%= ddmFormAdminDisplayContext.getDefaultLanguageId() %>',
+							entriesCount: <%= entriesCount %>,
 							fieldSetDefinitionURL:
 								'<%= ddmFormAdminDisplayContext.getFieldSetDefinitionURL() %>',
 							fieldSets: <%= ddmFormAdminDisplayContext.getFieldSetsJSONArray() %>,
