@@ -238,12 +238,12 @@ public class DDMFormInstanceRecordUADDisplay
 	}
 
 	private int _getIndex(DDMFormInstanceRecord ddmFormInstanceRecord) {
+		int index = 0;
+
 		List<DDMFormInstanceRecord> ddmFormInstanceRecords =
 			_getDDMFormInstanceRecords(
 				ddmFormInstanceRecord.getFormInstanceId(),
 				ddmFormInstanceRecord.getUserId());
-
-		int index = 0;
 
 		for (DDMFormInstanceRecord currentDDMFormInstanceRecord :
 				ddmFormInstanceRecords) {
