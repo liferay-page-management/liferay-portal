@@ -112,27 +112,45 @@ kbGroupServiceConfiguration = ParameterMapUtil.setParameterMap(KBGroupServiceCon
 			</liferay-ui:section>
 
 			<%
-			Map<String, String> emailDefinitionTerms = new LinkedHashMap<String, String>();
-
-			emailDefinitionTerms.put("[$ARTICLE_ATTACHMENTS$]", LanguageUtil.get(resourceBundle, "the-article-attachments-file-names"));
-			emailDefinitionTerms.put("[$ARTICLE_CONTENT$]", LanguageUtil.get(resourceBundle, "the-article-content"));
-			emailDefinitionTerms.put("[$ARTICLE_CONTENT_DIFF$]", LanguageUtil.get(resourceBundle, "the-article-content-diff"));
-			emailDefinitionTerms.put("[$ARTICLE_TITLE$]", LanguageUtil.get(resourceBundle, "the-article-title"));
-			emailDefinitionTerms.put("[$ARTICLE_TITLE_DIFF$]", LanguageUtil.get(resourceBundle, "the-article-title-diff"));
-			emailDefinitionTerms.put("[$ARTICLE_URL$]", LanguageUtil.get(resourceBundle, "the-article-url"));
-			emailDefinitionTerms.put("[$ARTICLE_USER_ADDRESS$]", LanguageUtil.get(resourceBundle, "the-email-address-of-the-user-who-added-the-article"));
-			emailDefinitionTerms.put("[$ARTICLE_USER_NAME$]", LanguageUtil.get(resourceBundle, "the-user-who-added-the-article"));
-			emailDefinitionTerms.put("[$ARTICLE_VERSION$]", LanguageUtil.get(resourceBundle, "the-article-version"));
-			emailDefinitionTerms.put("[$CATEGORY_TITLE$]", LanguageUtil.get(resourceBundle, "category.kb"));
-			emailDefinitionTerms.put("[$COMPANY_ID$]", LanguageUtil.get(resourceBundle, "the-company-id-associated-with-the-article"));
-			emailDefinitionTerms.put("[$COMPANY_MX$]", LanguageUtil.get(resourceBundle, "the-company-mx-associated-with-the-article"));
-			emailDefinitionTerms.put("[$COMPANY_NAME$]", LanguageUtil.get(resourceBundle, "the-company-name-associated-with-the-article"));
-			emailDefinitionTerms.put("[$FROM_ADDRESS$]", HtmlUtil.escape(kbGroupServiceConfiguration.emailFromAddress()));
-			emailDefinitionTerms.put("[$FROM_NAME$]", HtmlUtil.escape(kbGroupServiceConfiguration.emailFromName()));
-			emailDefinitionTerms.put("[$PORTAL_URL$]", PortalUtil.getPortalURL(themeDisplay));
-			emailDefinitionTerms.put("[$SITE_NAME$]", LanguageUtil.get(resourceBundle, "the-site-name-associated-with-the-article"));
-			emailDefinitionTerms.put("[$TO_ADDRESS$]", LanguageUtil.get(resourceBundle, "the-address-of-the-email-recipient"));
-			emailDefinitionTerms.put("[$TO_NAME$]", LanguageUtil.get(resourceBundle, "the-name-of-the-email-recipient"));
+			Map<String, String> emailDefinitionTerms = LinkedHashMapBuilder.put(
+				"[$ARTICLE_ATTACHMENTS$]", LanguageUtil.get(resourceBundle, "the-article-attachments-file-names")
+			).put(
+				"[$ARTICLE_CONTENT$]", LanguageUtil.get(resourceBundle, "the-article-content")
+			).put(
+				"[$ARTICLE_CONTENT_DIFF$]", LanguageUtil.get(resourceBundle, "the-article-content-diff")
+			).put(
+				"[$ARTICLE_TITLE$]", LanguageUtil.get(resourceBundle, "the-article-title")
+			).put(
+				"[$ARTICLE_TITLE_DIFF$]", LanguageUtil.get(resourceBundle, "the-article-title-diff")
+			).put(
+				"[$ARTICLE_URL$]", LanguageUtil.get(resourceBundle, "the-article-url")
+			).put(
+				"[$ARTICLE_USER_ADDRESS$]", LanguageUtil.get(resourceBundle, "the-email-address-of-the-user-who-added-the-article")
+			).put(
+				"[$ARTICLE_USER_NAME$]", LanguageUtil.get(resourceBundle, "the-user-who-added-the-article")
+			).put(
+				"[$ARTICLE_VERSION$]", LanguageUtil.get(resourceBundle, "the-article-version")
+			).put(
+				"[$CATEGORY_TITLE$]", LanguageUtil.get(resourceBundle, "category.kb")
+			).put(
+				"[$COMPANY_ID$]", LanguageUtil.get(resourceBundle, "the-company-id-associated-with-the-article")
+			).put(
+				"[$COMPANY_MX$]", LanguageUtil.get(resourceBundle, "the-company-mx-associated-with-the-article")
+			).put(
+				"[$COMPANY_NAME$]", LanguageUtil.get(resourceBundle, "the-company-name-associated-with-the-article")
+			).put(
+				"[$FROM_ADDRESS$]", HtmlUtil.escape(kbGroupServiceConfiguration.emailFromAddress())
+			).put(
+				"[$FROM_NAME$]", HtmlUtil.escape(kbGroupServiceConfiguration.emailFromName())
+			).put(
+				"[$PORTAL_URL$]", PortalUtil.getPortalURL(themeDisplay)
+			).put(
+				"[$SITE_NAME$]", LanguageUtil.get(resourceBundle, "the-site-name-associated-with-the-article")
+			).put(
+				"[$TO_ADDRESS$]", LanguageUtil.get(resourceBundle, "the-address-of-the-email-recipient")
+			).put(
+				"[$TO_NAME$]", LanguageUtil.get(resourceBundle, "the-name-of-the-email-recipient")
+			).build();
 			%>
 
 			<liferay-ui:section>
@@ -160,15 +178,21 @@ kbGroupServiceConfiguration = ParameterMapUtil.setParameterMap(KBGroupServiceCon
 			</liferay-ui:section>
 
 			<%
-			emailDefinitionTerms = new LinkedHashMap<String, String>();
-
-			emailDefinitionTerms.put("[$ARTICLE_CONTENT$]", LanguageUtil.get(resourceBundle, "the-article-content"));
-			emailDefinitionTerms.put("[$ARTICLE_TITLE$]", LanguageUtil.get(resourceBundle, "the-article-title"));
-			emailDefinitionTerms.put("[$ARTICLE_URL$]", LanguageUtil.get(resourceBundle, "the-article-url"));
-			emailDefinitionTerms.put("[$COMMENT_CONTENT$]", LanguageUtil.get(resourceBundle, "the-comment-content"));
-			emailDefinitionTerms.put("[$COMMENT_CREATE_DATE$]", LanguageUtil.get(resourceBundle, "the-comment-create-date"));
-			emailDefinitionTerms.put("[$TO_ADDRESS$]", LanguageUtil.get(resourceBundle, "the-address-of-the-email-recipient"));
-			emailDefinitionTerms.put("[$TO_NAME$]", LanguageUtil.get(resourceBundle, "the-name-of-the-email-recipient"));
+			emailDefinitionTerms = LinkedHashMapBuilder.put(
+				"[$ARTICLE_CONTENT$]", LanguageUtil.get(resourceBundle, "the-article-content")
+			).put(
+				"[$ARTICLE_TITLE$]", LanguageUtil.get(resourceBundle, "the-article-title")
+			).put(
+				"[$ARTICLE_URL$]", LanguageUtil.get(resourceBundle, "the-article-url")
+			).put(
+				"[$COMMENT_CONTENT$]", LanguageUtil.get(resourceBundle, "the-comment-content")
+			).put(
+				"[$COMMENT_CREATE_DATE$]", LanguageUtil.get(resourceBundle, "the-comment-create-date")
+			).put(
+				"[$TO_ADDRESS$]", LanguageUtil.get(resourceBundle, "the-address-of-the-email-recipient")
+			).put(
+				"[$TO_NAME$]", LanguageUtil.get(resourceBundle, "the-name-of-the-email-recipient")
+			).build();
 			%>
 
 			<liferay-ui:section>
