@@ -105,10 +105,6 @@ public class JournalArticleLocalServiceTest {
 
 		_themeDisplay = new ThemeDisplay();
 
-		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
-
-		httpServletRequest.setAttribute(WebKeys.THEME_DISPLAY, _themeDisplay);
-
 		_themeDisplay.setCompany(
 			_companyLocalService.getCompany(_group.getCompanyId()));
 		_themeDisplay.setLayout(layout);
@@ -119,7 +115,12 @@ public class JournalArticleLocalServiceTest {
 
 		_themeDisplay.setRealUser(user);
 
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
+
+		httpServletRequest.setAttribute(WebKeys.THEME_DISPLAY, _themeDisplay);
+
 		_themeDisplay.setRequest(httpServletRequest);
+
 		_themeDisplay.setResponse(new MockHttpServletResponse());
 		_themeDisplay.setScopeGroupId(_group.getGroupId());
 		_themeDisplay.setSiteGroupId(_group.getGroupId());
