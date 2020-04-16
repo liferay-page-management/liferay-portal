@@ -44,7 +44,9 @@ public class KaleoTaskInstanceTokenModelListener
 	extends BaseKaleoModelListener<KaleoTaskInstanceToken> {
 
 	@Override
-	public void onAfterCreate(KaleoTaskInstanceToken kaleoTaskInstanceToken) {
+	public void onAfterCreate(KaleoTaskInstanceToken kaleoTaskInstanceToken)
+		throws ModelListenerException {
+
 		KaleoDefinitionVersion kaleoDefinitionVersion =
 			getKaleoDefinitionVersion(
 				kaleoTaskInstanceToken.getKaleoDefinitionVersionId());
@@ -149,14 +151,18 @@ public class KaleoTaskInstanceTokenModelListener
 	}
 
 	@Override
-	public void onBeforeRemove(KaleoTaskInstanceToken kaleoTaskInstanceToken) {
+	public void onBeforeRemove(KaleoTaskInstanceToken kaleoTaskInstanceToken)
+		throws ModelListenerException {
+
 		_taskWorkflowMetricsIndexer.deleteTask(
 			kaleoTaskInstanceToken.getCompanyId(),
 			kaleoTaskInstanceToken.getKaleoTaskInstanceTokenId());
 	}
 
 	@Override
-	public void onBeforeUpdate(KaleoTaskInstanceToken kaleoTaskInstanceToken) {
+	public void onBeforeUpdate(KaleoTaskInstanceToken kaleoTaskInstanceToken)
+		throws ModelListenerException {
+
 		KaleoTaskInstanceToken currentKaleoTaskInstanceToken =
 			_kaleoTaskInstanceTokenLocalService.fetchKaleoTaskInstanceToken(
 				kaleoTaskInstanceToken.getKaleoTaskInstanceTokenId());
