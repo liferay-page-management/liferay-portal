@@ -301,7 +301,7 @@ public class InstanceResourceImpl extends BaseInstanceResourceImpl {
 				creator.getName()));
 	}
 
-	private Assignee _createAssignee() {
+	private Assignee _createAssignee(boolean reviewer) {
 		Assignee assignee = new Assignee();
 
 		assignee.setId(-1L);
@@ -311,6 +311,7 @@ public class InstanceResourceImpl extends BaseInstanceResourceImpl {
 					contextAcceptLanguage.getPreferredLocale(),
 					InstanceResourceImpl.class),
 				"unassigned"));
+		assignee.setReviewer(reviewer);
 
 		return assignee;
 	}
@@ -660,7 +661,27 @@ public class InstanceResourceImpl extends BaseInstanceResourceImpl {
 			Role.class.getName());
 
 		if (roleBucket != null) {
-			assignees.add(_createAssignee());
+			TermsAggregationResult termsAggregationResult =
+				(TermsAggregationResult)roleBucket.getChildAggregationResult(
+					"assigneeId");
+
+			long[] roleIds = contextUser.getRoleIds();
+
+			boolean reviewer = false;
+
+			for (Bucket assigneeIdBucket :
+					termsAggregationResult.getBuckets()) {
+
+				long roleId = GetterUtil.getLong(assigneeIdBucket.getKey());
+
+				if (ArrayUtil.contains(roleIds, roleId)) {
+					reviewer = true;
+
+					break;
+				}
+			}
+
+			assignees.add(_createAssignee(reviewer));
 		}
 
 		return assignees;
