@@ -22,7 +22,6 @@ import {updateFragmentEntryLinkContent} from '../../actions/index';
 import {DROP_ZONE_FRAGMENT_ENTRY_PROCESSOR} from '../../config/constants/dropZoneFragmentEntryProcessor';
 import {EDITABLE_FLOATING_TOOLBAR_BUTTONS} from '../../config/constants/editableFloatingToolbarButtons';
 import selectCanUpdateLayoutContent from '../../selectors/selectCanUpdateLayoutContent';
-import selectPrefixedSegmentsExperienceId from '../../selectors/selectPrefixedSegmentsExperienceId';
 import selectSegmentsExperienceId from '../../selectors/selectSegmentsExperienceId';
 import FragmentService from '../../services/FragmentService';
 import {useDispatch, useSelector} from '../../store/index';
@@ -76,9 +75,6 @@ const FragmentContent = React.forwardRef(
 
 		const languageId = useSelector(state => state.languageId);
 
-		const prefixedSegmentsExperienceId = useSelector(
-			selectPrefixedSegmentsExperienceId
-		);
 		const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
 
 		const defaultContent = useSelector(state =>
@@ -135,7 +131,6 @@ const FragmentContent = React.forwardRef(
 						editable.editableId,
 						editable.editableValueNamespace,
 						languageId,
-						prefixedSegmentsExperienceId,
 						getFieldValue
 					).then(([value, editableConfig]) => {
 						editable.processor.render(
@@ -163,7 +158,6 @@ const FragmentContent = React.forwardRef(
 			getFieldValue,
 			isMounted,
 			languageId,
-			prefixedSegmentsExperienceId,
 			updateEditables,
 		]);
 
