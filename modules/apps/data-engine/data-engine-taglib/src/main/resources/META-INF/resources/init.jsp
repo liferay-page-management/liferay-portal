@@ -36,35 +36,3 @@
 <%@ page import="java.util.Set" %>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
-<%!
-private static ArrayList<Object> _toArrayList(Object obj) {
-	return (ArrayList<Object>)_deserialize(obj);
-}
-
-private static HashMap<String, Object> _toHashMap(Object obj) {
-	return (HashMap<String, Object>)_deserialize(obj);
-}
-
-public static void _initJSONFactoryUtil() {
-	if (JSONFactoryUtil.getJSONFactory() == null) {
-		(new JSONFactoryUtil()).setJSONFactory(new JSONFactoryImpl());
-	}
-}
-
-private static Object _deserialize(Object obj) {
-	if (obj != null) {
-		String json = JSONFactoryUtil.looseSerialize(obj);
-
-		json = StringUtil.unquote(json);
-
-		return JSONFactoryUtil.looseDeserialize(json);
-	}
-
-	return null;
-}
-%>
-
-<%
-_initJSONFactoryUtil();
-%>

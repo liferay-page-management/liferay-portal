@@ -106,23 +106,39 @@ public class DataLayoutBuilderTag extends BaseDataLayoutBuilderTag {
 
 	private Map<String, Object> _getSidebarPanels() {
 		Map<String, Object> sidebarPanels =
-			LinkedHashMapBuilder.<String, Object>put(
-				"fields",
-				HashMapBuilder.<String, Object>put(
-					"icon", "grid"
-				).put(
-					"isLink", false
-				).put(
-					"label", LanguageUtil.get(request, "fields")
-				).put(
-					"pluginEntryPoint",
-					DataLayoutTaglibUtil.resolveModule(
-						"data-engine-taglib/data_layout_builder/js/plugins" +
-							"/fields-sidebar/index.es")
-				).put(
-					"sidebarPanelId", "fields"
-				).build()
-			).build();
+            LinkedHashMapBuilder.<String, Object>put(
+                "fields",
+                HashMapBuilder.<String, Object>put(
+                    "icon", "forms"
+                ).put(
+                    "isLink", false
+                ).put(
+                    "label", LanguageUtil.get(request, "fields")
+                ).put(
+                    "pluginEntryPoint",
+                    DataLayoutTaglibUtil.resolveModule(
+                        "data-engine-taglib/data_layout_builder/js/plugins" +
+                            "/fields-sidebar/index.es")
+                ).put(
+                    "sidebarPanelId", "fields"
+                ).build()
+            ).put(
+				"rules",
+                HashMapBuilder.<String, Object>put(
+                    "icon", "rules"
+                ).put(
+                    "isLink", false
+                ).put(
+                    "label", LanguageUtil.get(request, "rules")
+                ).put(
+                    "pluginEntryPoint",
+                    DataLayoutTaglibUtil.resolveModule(
+                        "data-engine-taglib/data_layout_builder/js/plugins" +
+                            "/rules-sidebar/index.es")
+                ).put(
+                    "sidebarPanelId", "rules"
+                ).build()
+            ).build();
 
 		List<Map> additionalPanels = getAdditionalPanels();
 
