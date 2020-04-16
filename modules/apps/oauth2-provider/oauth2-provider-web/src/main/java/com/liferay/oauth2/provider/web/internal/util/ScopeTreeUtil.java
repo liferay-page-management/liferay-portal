@@ -36,10 +36,11 @@ import java.util.stream.Stream;
 public class ScopeTreeUtil {
 
 	public static Tree.Node<String> getScopeTreeNode(
-		List<String> scopeAliases, ScopeMatcherFactory scopeMatcherFactory) {
+		List<String> scopeAliasesList,
+		ScopeMatcherFactory scopeMatcherFactory) {
 
 		return getScopeTreeNode(
-			new HashSet<>(scopeAliases), scopeMatcherFactory);
+			new HashSet<>(scopeAliasesList), scopeMatcherFactory);
 	}
 
 	public static Tree.Node<String> getScopeTreeNode(
