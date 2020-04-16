@@ -95,15 +95,15 @@ public class ScopeTreeUtilTest {
 		Assert.assertEquals("everything", lastTree.getValue());
 		Assert.assertFalse(lastTree instanceof Tree.Leaf);
 
-		Tree<String> childFirstTree = _getTree((Tree.Node<String>)tree, 0);
+		Tree<String> firstChildTree = _getTree((Tree.Node<String>)tree, 0);
 
-		Assert.assertEquals("analytics.read", childFirstTree.getValue());
-		Assert.assertTrue(childFirstTree instanceof Tree.Leaf);
+		Assert.assertEquals("analytics.read", firstChildTree.getValue());
+		Assert.assertTrue(firstChildTree instanceof Tree.Leaf);
 
-		Tree<String> childLastTree = _getTree((Tree.Node<String>)lastTree, 0);
+		Tree<String> lastChildTree = _getTree((Tree.Node<String>)lastTree, 0);
 
-		Assert.assertEquals("everything.read", childLastTree.getValue());
-		Assert.assertFalse(childLastTree instanceof Tree.Leaf);
+		Assert.assertEquals("everything.read", lastChildTree.getValue());
+		Assert.assertFalse(lastChildTree instanceof Tree.Leaf);
 	}
 
 	@Test
