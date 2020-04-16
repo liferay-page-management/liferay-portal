@@ -17,6 +17,7 @@ package com.liferay.portal.tools.rest.builder;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.CamelCaseUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -52,6 +53,10 @@ import java.io.InputStream;
 
 import java.net.URL;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 
@@ -60,8 +65,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Stream;
 
 /**
  * @author Peter Shin
@@ -287,6 +294,52 @@ public class RESTBuilder {
 		jCommander.usage();
 	}
 
+	private String _addClientVersionDescription(String yamlString) {
+		Optional<String> versionOptional = _getVersionOptional();
+
+		if (!versionOptional.isPresent()) {
+			return yamlString;
+		}
+
+		String version = versionOptional.get();
+
+		String clientMessage =
+			"For Java, you can use " + _configYAML.getApiPackagePath() +
+				".client, version ";
+
+		OpenAPIYAML openAPIYAML = _loadOpenAPIYAML(yamlString);
+
+		Info info = openAPIYAML.getInfo();
+
+		String description = info.getDescription();
+
+		if (description.contains(clientMessage)) {
+			description = StringUtil.removeSubstring(
+				description,
+				description.substring(description.indexOf(clientMessage)));
+		}
+
+		if (!description.isEmpty()) {
+			description = StringBundler.concat(
+				description, ". ", clientMessage, version);
+		}
+		else {
+			description = StringBundler.concat(
+				description, clientMessage, version);
+		}
+
+		String descriptionBlock = String.format(
+			"    description:\n        \"%s\"\n", description);
+
+		return StringUtil.replace(
+			yamlString,
+			yamlString.substring(
+				yamlString.indexOf(
+					"    description:", yamlString.indexOf("info:")),
+				yamlString.indexOf("    license:")),
+			descriptionBlock);
+	}
+
 	private void _checkOpenAPIYAMLFile(FreeMarkerTool freeMarkerTool, File file)
 		throws Exception {
 
@@ -307,6 +360,10 @@ public class RESTBuilder {
 
 		if (_configYAML.isForcePredictableContentApplicationXML()) {
 			yamlString = _fixOpenAPIContentApplicationXML(yamlString);
+		}
+
+		if (_configYAML.isForceClientVersionDescription()) {
+			yamlString = _addClientVersionDescription(yamlString);
 		}
 
 		if (_configYAML.isWarningsEnabled()) {
@@ -1578,6 +1635,25 @@ public class RESTBuilder {
 		}
 
 		return relatedSchemaNames;
+	}
+
+	private Optional<String> _getVersionOptional() {
+		try {
+			String directory = StringUtil.removeSubstring(
+				_configYAML.getClientDir(), "src/main/java");
+
+			Stream<String> stream = Files.lines(
+				Paths.get(directory + "/bnd.bnd"), StandardCharsets.UTF_8);
+
+			return stream.filter(
+				line -> line.startsWith("Bundle-Version: ")
+			).map(
+				line -> StringUtil.removeSubstring(line, "Bundle-Version: ")
+			).findFirst();
+		}
+		catch (Exception exception) {
+			return Optional.empty();
+		}
 	}
 
 	private OpenAPIYAML _loadOpenAPIYAML(String yamlString) {
