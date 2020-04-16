@@ -225,9 +225,9 @@ request.setAttribute("view_user.jsp-user", user2);
 								<c:if test="<%= showSites %>">
 
 									<%
-									LinkedHashMap groupParams = new LinkedHashMap();
-
-									groupParams.put("site", Boolean.TRUE);
+									LinkedHashMap<String, Object> groupParams = LinkedHashMapBuilder.<String, Object>put(
+										"site", Boolean.TRUE
+									).build();
 
 									if (scopeGroup.isUser()) {
 										groupParams.put("usersGroups", Long.valueOf(scopeGroup.getClassPK()));

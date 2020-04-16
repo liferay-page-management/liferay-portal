@@ -39,10 +39,11 @@ portletURL.setParameter("mvcPath", "/document_library/select_group.jsp");
 			<%
 			GroupSearchTerms searchTerms = (GroupSearchTerms)searchContainer.getSearchTerms();
 
-			LinkedHashMap<String, Object> groupParams = new LinkedHashMap<String, Object>();
-
-			groupParams.put("active", true);
-			groupParams.put("usersGroups", user.getUserId());
+			LinkedHashMap<String, Object> groupParams = LinkedHashMapBuilder.<String, Object>put(
+				"active", true
+			).put(
+				"usersGroups", user.getUserId()
+			).build();
 			%>
 
 			<liferay-ui:search-container-results>

@@ -64,9 +64,9 @@ for (int i = 0; i < openSearchInstances.size(); i++) {
 
 	String xml = openSearch.search(request, groupId, themeDisplay.getUserId(), searchDisplayContext.getKeywords(), openSearchSearchContainer.getCur(), openSearchSearchContainer.getDelta(), format);
 
-	LinkedHashMap<String, Object> groupParams = new LinkedHashMap<String, Object>();
-
-	groupParams.put("active", Boolean.FALSE);
+	LinkedHashMap<String, Object> groupParams = LinkedHashMapBuilder.<String, Object>put(
+		"active", Boolean.FALSE
+	).build();
 
 	int inactiveGroupsCount = GroupLocalServiceUtil.searchCount(themeDisplay.getCompanyId(), null, null, groupParams);
 
