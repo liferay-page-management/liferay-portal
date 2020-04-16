@@ -221,7 +221,6 @@ public class WorkflowMetricsRESTTestHelper {
 						name = randomString;
 					}
 				};
-
 				onTimeInstanceCount = 0L;
 				overdueInstanceCount = 0L;
 			}
