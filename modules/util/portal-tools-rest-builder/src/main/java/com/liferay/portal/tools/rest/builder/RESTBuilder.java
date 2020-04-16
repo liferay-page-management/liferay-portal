@@ -303,9 +303,10 @@ public class RESTBuilder {
 
 		String clientVersion = clientVersionOptional.get();
 
-		String clientMessage =
-			"For Java, you can use " + _configYAML.getApiPackagePath() +
-				".client, version ";
+		String clientMessage = StringBundler.concat(
+			"A Java client JAR is available for use with the group ID ",
+			"'com.liferay', artifact ID '", _configYAML.getApiPackagePath(),
+			".client', and version '");
 
 		OpenAPIYAML openAPIYAML = _loadOpenAPIYAML(yamlString);
 
@@ -321,11 +322,11 @@ public class RESTBuilder {
 
 		if (!description.isEmpty()) {
 			description = StringBundler.concat(
-				description, ". ", clientMessage, clientVersion);
+				description, ". ", clientMessage, clientVersion, "'.");
 		}
 		else {
 			description = StringBundler.concat(
-				description, clientMessage, clientVersion);
+				description, clientMessage, clientVersion, "'.");
 		}
 
 		String descriptionBlock = String.format(
