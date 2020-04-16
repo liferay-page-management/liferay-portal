@@ -94,9 +94,7 @@ public class ScopeTreeUtilTest {
 		Tree<String> childFirstTree = _getTree((Tree.Node<String>)firstTree, 0);
 
 		Assert.assertEquals("analytics.read", childFirstTree.getValue());
-
 		Assert.assertTrue(childFirstTree instanceof Tree.Leaf);
-
 		Assert.assertEquals("everything", lastTree.getValue());
 		Assert.assertFalse(lastTree instanceof Tree.Leaf);
 
