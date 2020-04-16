@@ -665,8 +665,6 @@ public class InstanceResourceImpl extends BaseInstanceResourceImpl {
 				(TermsAggregationResult)roleBucket.getChildAggregationResult(
 					"assigneeId");
 
-			long[] roleIds = contextUser.getRoleIds();
-
 			boolean reviewer = false;
 
 			for (Bucket assigneeIdBucket :
@@ -674,7 +672,7 @@ public class InstanceResourceImpl extends BaseInstanceResourceImpl {
 
 				long roleId = GetterUtil.getLong(assigneeIdBucket.getKey());
 
-				if (ArrayUtil.contains(roleIds, roleId)) {
+				if (ArrayUtil.contains(contextUser.getRoleIds(), roleId)) {
 					reviewer = true;
 
 					break;
