@@ -4180,6 +4180,43 @@ org.apache.catalina.startup.ClassLoaderFactory.level=INFO]]>
 					</then>
 				</elseif>
 				<elseif>
+					<equals arg1="${database.type}" arg2="sqlserver" />
+					<then>
+						<property location="setup.sh" name="setup.sh.file" />
+
+						<get-database-property property.name="database.password" />
+						<get-database-property property.name="database.username" />
+						<get-database-property property.name="database.version" />
+
+						<local name="test.query" />
+
+						<property name="test.query" value="select name from sys.databases" />
+
+						<echo file="${setup.sh.file}">
+							<![CDATA[
+								#!/bin/bash
+
+								until /opt/mssql-tools/bin/sqlcmd -P ${database.password} -U ${database.username} -Q "${test.query}";
+								do
+									echo "Waiting for SQL Server ${database.version} to be ready"
+
+									sleep 10
+								done
+							]]>
+						</echo>
+
+						<get-database-property property.name="database.host" />
+
+						<execute>
+							<![CDATA[
+								docker cp ${setup.sh.file} ${database.host}:/tmp/setup.sh
+
+								docker exec ${database.host} /bin/bash /tmp/setup.sh
+							]]>
+						</execute>
+					</then>
+				</elseif>
+				<elseif>
 					<equals arg1="${database.type}" arg2="sybase" />
 					<then>
 						<property location="setup.sh" name="setup.sh.file" />
