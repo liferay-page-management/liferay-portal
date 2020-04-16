@@ -73,7 +73,7 @@ public class RenderChildrenTag extends TreeTag {
 			return treeTag.getLeafJspFragment();
 		}
 
-		throw new IllegalStateException("Can not find leaf fragment");
+		throw new IllegalStateException("Unable to get leaf JSP fragment");
 	}
 
 	@Override
@@ -90,7 +90,7 @@ public class RenderChildrenTag extends TreeTag {
 			return treeTag.getNodeJspFragment();
 		}
 
-		throw new IllegalStateException("Can not find node fragment");
+		throw new IllegalStateException("Unable to get node JSP fragment");
 	}
 
 	public void setLeafJspFragment(JspFragment leafJspFragment) {
