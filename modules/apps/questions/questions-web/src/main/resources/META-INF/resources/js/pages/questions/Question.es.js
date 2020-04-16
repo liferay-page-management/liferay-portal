@@ -35,6 +35,7 @@ import Subscription from '../../components/Subscription.es';
 import TagList from '../../components/TagList.es';
 import {
 	createAnswer,
+	deleteMessageBoardThread,
 	getMessages,
 	getThread,
 	markAsAnswerMessageBoardMessage,
@@ -88,8 +89,7 @@ export default withRouter(
 		};
 
 		const deleteThread = () => {
-			console.log("Lanzamos el borrado");
-			history.goBack();
+			deleteMessageBoardThread(question.id).then(() => history.goBack());
 		}
 
 		const deleteAnswer = useCallback(

@@ -148,6 +148,13 @@ export const deleteMessage = messageBoardMessage =>
 		return data;
 	});
 
+export const deleteMessageBoardThread = messageBoardThreadId =>
+	request(gql`
+		mutation {
+			deleteMessageBoardThread(messageBoardThreadId: ${messageBoardThreadId})
+		}
+	`);
+
 export const getTags = (page = 1, siteKey) =>
 	request(gql`
         query {
