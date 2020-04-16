@@ -20,6 +20,7 @@ import {MockRouter} from '../../../mock/MockRouter.es';
 const items = [
 	{
 		assignee: {
+			id: 1,
 			name: 'User 1',
 		},
 		onTimeTaskCount: 10,
@@ -28,6 +29,7 @@ const items = [
 	},
 	{
 		assignee: {
+			id: 2,
 			name: 'User 2',
 		},
 		onTimeTaskCount: 3,
@@ -61,13 +63,18 @@ describe('The workload by assignee body should', () => {
 			getAllByTestId = renderResult.getAllByTestId;
 		});
 
-		test('Be rendered with "User 1" and "User 2" items', async () => {
-			const assigneeNames = await waitForElement(() =>
-				getAllByTestId('assigneeName')
-			);
+		test('Be rendered with "User 1" and "User 2" items', () => {
+			const assigneeNames = getAllByTestId('assigneeName');
 
-			expect(assigneeNames[0].innerHTML).toBe('User 1');
-			expect(assigneeNames[1].innerHTML).toBe('User 2');
+			expect(assigneeNames[0]).toHaveTextContent('User 1');
+			expect(assigneeNames[1]).toHaveTextContent('User 2');
+
+			expect(assigneeNames[0].parentNode.getAttribute('href')).toContain(
+				'&filters.assigneeIds%5B0%5D=1&filters.statuses%5B0%5D=Pending&filters.slaStatuses%5B0%5D=OnTime'
+			);
+			expect(assigneeNames[1].parentNode.getAttribute('href')).toContain(
+				'&filters.assigneeIds%5B0%5D=2&filters.statuses%5B0%5D=Pending&filters.slaStatuses%5B0%5D=OnTime'
+			);
 		});
 
 		test('Be rendered with "View All Steps" button and total "(2)"', async () => {
@@ -98,20 +105,21 @@ describe('The workload by assignee body should', () => {
 			getByTestId = renderResult.getByTestId;
 		});
 
-		test('and with "User 1" item', async () => {
-			const assigneeName = await waitForElement(() =>
-				getByTestId('assigneeName')
-			);
+		test('and with "User 1" item', () => {
+			const assigneeName = getByTestId('assigneeName');
 
-			expect(assigneeName.innerHTML).toBe('User 1');
+			expect(assigneeName).toHaveTextContent('User 1');
+			expect(assigneeName.parentNode.getAttribute('href')).toContain(
+				'&filters.assigneeIds%5B0%5D=1&filters.statuses%5B0%5D=Pending&filters.taskKeys%5B0%5D=review'
+			);
 		});
 
-		test('and with "View All Steps" button and total "(1)"', async () => {
-			const viewAllAssignees = await waitForElement(() =>
-				getByTestId('viewAllAssignees')
-			);
+		test('and with "View All Steps" button and total "(1)"', () => {
+			const viewAllAssignees = getByTestId('viewAllAssignees');
 
-			expect(viewAllAssignees.innerHTML).toBe('view-all-assignees (1)');
+			expect(viewAllAssignees).toHaveTextContent(
+				'view-all-assignees (1)'
+			);
 			expect(viewAllAssignees.parentNode.getAttribute('href')).toContain(
 				'filters.taskKeys%5B0%5D=review'
 			);
@@ -132,12 +140,14 @@ describe('The workload by assignee body should', () => {
 			getByTestId = renderResult.getByTestId;
 		});
 
-		test('and with "User 1" item', async () => {
-			const assigneeName = await waitForElement(() =>
-				getByTestId('assigneeName')
-			);
+		test('and with "User 1" item', () => {
+			const assigneeName = getByTestId('assigneeName');
 
-			expect(assigneeName.innerHTML).toBe('User 2');
+			expect(assigneeName).toHaveTextContent('User 2');
+
+			expect(assigneeName.parentNode.getAttribute('href')).toContain(
+				'&filters.assigneeIds%5B0%5D=2&filters.statuses%5B0%5D=Pending&filters.taskKeys%5B0%5D=update&filters.slaStatuses%5B0%5D=OnTime'
+			);
 		});
 
 		test('and with "View All Steps" button and total "(1)"', async () => {
