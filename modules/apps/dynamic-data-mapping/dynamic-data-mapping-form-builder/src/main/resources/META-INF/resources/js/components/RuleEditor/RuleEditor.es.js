@@ -907,7 +907,7 @@ class RuleEditor extends Component {
 			const activeActionIndex = this.activeActionIndex;
 			const activeConditionIndex = this.activeConditionIndex;
 
-			const {actions, conditions} = this;
+			const {actions, conditions, pages} = this;
 
 			if (activeConditionIndex > -1) {
 				conditions.splice(activeConditionIndex, 1);
@@ -925,11 +925,14 @@ class RuleEditor extends Component {
 				this.refs.confirmationModalCondition.emit('hide');
 			}
 
+			let maxPage = maxPageIndex(conditions, pages);
+
 			this.setState({
 				actions,
 				activeActionIndex: -1,
 				activeConditionIndex: -1,
 				conditions,
+				pageOptions: pageOptions(pages, maxPage),
 			});
 		}
 	}
