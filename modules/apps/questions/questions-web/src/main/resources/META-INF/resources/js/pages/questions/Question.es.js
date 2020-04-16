@@ -49,8 +49,8 @@ import {
 
 export default withRouter(
 	({
-		location: key,
 		history,
+		location: key,
 		match: {
 			params: {questionId},
 			url,
@@ -90,7 +90,7 @@ export default withRouter(
 
 		const deleteThread = () => {
 			deleteMessageBoardThread(question.id).then(() => history.goBack());
-		}
+		};
 
 		const deleteAnswer = useCallback(
 			answer => {
@@ -244,17 +244,28 @@ export default withRouter(
 											{question.actions.delete && (
 												<>
 													<Modal
-														title="Delete thread?"
 														body="Do you want to delete this thread?"
+														callback={deleteThread}
+														onClose={() =>
+															setDeleteModalVisible(
+																false
+															)
+														}
 														status="Warning"
 														textPrimaryButton="Delete"
-														visible={deleteModalVisible}
-														primaryAction={deleteThread}
-														onClose={() => setDeleteModalVisible(false)}
+														title="Delete thread?"
+														visible={
+															deleteModalVisible
+														}
 													/>
 													<ClayButton
 														displayType="secondary"
-														onClick={() => setDeleteModalVisible(true)}>
+														onClick={() =>
+															setDeleteModalVisible(
+																true
+															)
+														}
+													>
 														<ClayIcon symbol="trash" />
 													</ClayButton>
 												</>

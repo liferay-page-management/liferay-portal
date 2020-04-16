@@ -17,50 +17,45 @@ import ClayModal, {useModal} from '@clayui/modal';
 import React from 'react';
 
 export default ({
-    visible,
-    onClose,
-    title,
-    body,
-    primaryAction,
-    status="info",
-    textSecondaryButton="Cancel",
-    textPrimaryButton="Save"
+	body,
+	callback,
+	onClose,
+	status = 'info',
+	textPrimaryButton = 'Save',
+	textSecondaryButton = 'Cancel',
+	title,
+	visible,
 }) => {
-    const {observer, onClose: close} = useModal({
-        onClose: onClose
-    })
+	const {observer, onClose: close} = useModal({
+		onClose,
+	});
 
-    return(
-        <>
-        {visible && (
-            <ClayModal
-                observer={observer}
-                status={status}
-            >
-                <ClayModal.Header>{title}</ClayModal.Header>
-                <ClayModal.Body>
-                    {body}
-                </ClayModal.Body>
-                <ClayModal.Footer
-                    first={
-                        <ClayButton
-                            displayType="secondary"
-                            onClick={close}
-                        >
-                                {textSecondaryButton}
-                        </ClayButton>
-                    }
-                    last={
-                        <ClayButton
-                            displayType="primary"
-                            onClick={() =>{primaryAction();close();}}
-                        >
-                                {textPrimaryButton}
-                        </ClayButton>
-                }
-                />
-            </ClayModal>
-        )}
-        </>
-    )
-}
+	return (
+		<>
+			{visible && (
+				<ClayModal observer={observer} status={status}>
+					<ClayModal.Header>{title}</ClayModal.Header>
+					<ClayModal.Body>{body}</ClayModal.Body>
+					<ClayModal.Footer
+						first={
+							<ClayButton displayType="secondary" onClick={close}>
+								{textSecondaryButton}
+							</ClayButton>
+						}
+						last={
+							<ClayButton
+								displayType="primary"
+								onClick={() => {
+									callback();
+									close();
+								}}
+							>
+								{textPrimaryButton}
+							</ClayButton>
+						}
+					/>
+				</ClayModal>
+			)}
+		</>
+	);
+};
