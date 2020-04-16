@@ -489,29 +489,40 @@ public class DDMFormAdminDisplayContext {
 		HttpServletRequest httpServletRequest =
 			formAdminRequestHelper.getRequest();
 
-		return NavigationItemListBuilder.add(
-			navigationItem -> {
-				navigationItem.putData("action", "showForm");
-				navigationItem.setActive(true);
-				navigationItem.setHref(StringPool.BLANK);
-				navigationItem.setLabel(
-					LanguageUtil.get(httpServletRequest, "form"));
+		NavigationItemListBuilder.NavigationItemListWrapper
+			navigationItemListWrapper = NavigationItemListBuilder.add(
+				navigationItem -> {
+					navigationItem.putData("action", "showForm");
+					navigationItem.setActive(true);
+					navigationItem.setHref(StringPool.BLANK);
+					navigationItem.setLabel(
+						LanguageUtil.get(httpServletRequest, "form"));
+				}
+			).add(
+				navigationItem -> {
+					navigationItem.putData("action", "showRules");
+					navigationItem.setHref(StringPool.BLANK);
+					navigationItem.setLabel(
+						LanguageUtil.get(httpServletRequest, "rules"));
+				}
+			);
+
+		try {
+			if (isShowSummary()) {
+				navigationItemListWrapper.add(
+					navigationItem -> {
+						navigationItem.putData("action", "showSummary");
+						navigationItem.setHref(StringPool.BLANK);
+						navigationItem.setLabel(
+							LanguageUtil.get(httpServletRequest, "entries"));
+					});
 			}
-		).add(
-			navigationItem -> {
-				navigationItem.putData("action", "showRules");
-				navigationItem.setHref(StringPool.BLANK);
-				navigationItem.setLabel(
-					LanguageUtil.get(httpServletRequest, "rules"));
-			}
-		).add(
-			navigationItem -> {
-				navigationItem.putData("action", "showEntries");
-				navigationItem.setHref(StringPool.BLANK);
-				navigationItem.setLabel(
-					LanguageUtil.get(httpServletRequest, "entries"));
-			}
-		).build();
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException, portalException);
+		}
+
+		return navigationItemListWrapper.build();
 	}
 
 	public String getFormDescription() throws PortalException {
@@ -962,6 +973,14 @@ public class DDMFormAdminDisplayContext {
 
 	public boolean isShowPublishAlert() {
 		return ParamUtil.getBoolean(renderRequest, "showPublishAlert");
+	}
+
+	public boolean isShowSummary() throws PortalException {
+		if (getDDMFormInstance() == null) {
+			return false;
+		}
+
+		return ParamUtil.getBoolean(renderRequest, "showSummary");
 	}
 
 	public String serializeSettingsForm(PageContext pageContext)
