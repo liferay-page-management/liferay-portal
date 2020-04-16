@@ -84,7 +84,7 @@ public class JavaPackagePathCheck extends BaseJavaTermCheck {
 			if (array.length == 2) {
 				_checkPackageName(
 					fileName, javaClass.getImplementedClassNames(), array[0],
-					packageName, array[1], true);
+					packageName, array[1]);
 			}
 		}
 
@@ -137,14 +137,14 @@ public class JavaPackagePathCheck extends BaseJavaTermCheck {
 	private void _checkPackageName(
 			String fileName, List<String> implementedClassNames,
 			String implementedClassName, String packageName,
-			String expectedPackageName, boolean internal)
+			String expectedPackageName)
 		throws IOException {
 
 		if (!implementedClassNames.contains(implementedClassName)) {
 			return;
 		}
 
-		if (internal && !packageName.contains(".internal.") &&
+		if (!packageName.contains(".internal.") &&
 			!packageName.endsWith(".internal")) {
 
 			addMessage(
