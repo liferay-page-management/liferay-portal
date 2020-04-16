@@ -334,6 +334,12 @@ class Form extends Component {
 		return ruleBuilderVisible && this.isFormBuilderView();
 	}
 
+	isShowEntries() {
+		const {entriesVisible} = this.state;
+
+		return entriesVisible && this.isFormBuilderView();
+	}
+
 	onAvailableLocalesRemoved({newValue, previousValue}) {
 		const {store} = this.refs;
 
@@ -440,7 +446,9 @@ class Form extends Component {
 						rules={rules}
 						spritemap={spritemap}
 						view={view}
-						visible={!this.isShowRuleBuilder()}
+						visible={
+							!this.isShowEntries() && !this.isShowRuleBuilder()
+						}
 					/>
 
 					<Sidebar
@@ -452,7 +460,9 @@ class Form extends Component {
 						portletNamespace={namespace}
 						ref="sidebar"
 						spritemap={spritemap}
-						visible={!this.isShowRuleBuilder()}
+						visible={
+							!this.isShowEntries() && !this.isShowRuleBuilder()
+						}
 					/>
 				</LayoutProviderTag>
 
@@ -556,13 +566,16 @@ class Form extends Component {
 		submitForm(document.querySelector(`#${namespace}editForm`));
 	}
 
-	syncRuleBuilderVisible(visible) {
+	syncTabsVisible(entriesVisible, ruleBuilderVisible) {
 		const {
 			defaultLanguageId,
 			editingLanguageId,
 			published,
 			saved,
 		} = this.props;
+		const ddmFormInstanceManagementToolbar = document.querySelector(
+			'#ddmFormInstanceManagementToolbar'
+		);
 		const formBasicInfo = document.querySelector('.ddm-form-basic-info');
 		const formBuilderButtons = document.querySelector(
 			'.ddm-form-builder-buttons'
@@ -574,8 +587,11 @@ class Form extends Component {
 		const translationManager = document.querySelector(
 			'.ddm-translation-manager'
 		);
+		const viewFormInstanceRecords = document.querySelector(
+			'#viewFormInstanceRecords'
+		);
 
-		if (visible) {
+		if (entriesVisible || ruleBuilderVisible) {
 			formBasicInfo.classList.add('hide');
 			formBuilderButtons.classList.add('hide');
 			shareURLButton.classList.add('hide');
@@ -588,16 +604,29 @@ class Form extends Component {
 				translationManager.classList.add('hide');
 			}
 
-			if (this.refs.ruleBuilder.isViewMode()) {
-				this.showAddButton();
+			if (ruleBuilderVisible) {
+				ddmFormInstanceManagementToolbar.classList.remove('hide');
+				viewFormInstanceRecords.classList.add('hide');
+
+				if (this.refs.ruleBuilder.isViewMode()) {
+					this.showAddButton();
+				}
+				else {
+					this.hideAddButton();
+				}
 			}
 			else {
+				ddmFormInstanceManagementToolbar.classList.add('hide');
+				viewFormInstanceRecords.classList.remove('hide');
+
 				this.hideAddButton();
 			}
 		}
 		else {
+			ddmFormInstanceManagementToolbar.classList.remove('hide');
 			formBasicInfo.classList.remove('hide');
 			formBuilderButtons.classList.remove('hide');
+			viewFormInstanceRecords.classList.add('hide');
 
 			if (publishIcon) {
 				publishIcon.classList.remove('hide');
@@ -762,20 +791,30 @@ class Form extends Component {
 
 	_handleFormNavClicked(event) {
 		const {delegateTarget} = event;
+		const {published, saved} = this.props;
 		const navItem = dom.closest(delegateTarget, '.nav-item');
 		const navItemIndex = Number(navItem.dataset.navItemIndex);
 		const navLink = navItem.querySelector('.nav-link');
 
-		this.setState({
-			ruleBuilderVisible: navItemIndex === 1,
-		});
+		if (
+			(navItemIndex === 2 && (published || saved)) ||
+			navItemIndex !== 2
+		) {
+			document
+				.querySelector('.forms-management-bar li > a.active')
+				.classList.remove('active');
+			navLink.classList.add('active');
 
-		document
-			.querySelector('.forms-management-bar li > a.active')
-			.classList.remove('active');
-		navLink.classList.add('active');
+			this.setState({
+				entriesVisible: navItemIndex === 2,
+				ruleBuilderVisible: navItemIndex === 1,
+			});
+		}
 
-		this.syncRuleBuilderVisible(this.state.ruleBuilderVisible);
+		this.syncTabsVisible(
+			this.state.entriesVisible,
+			this.state.ruleBuilderVisible
+		);
 	}
 
 	_handleNameEditorCopyAndPaste(event) {
@@ -1216,6 +1255,16 @@ Form.PROPS = {
 };
 
 Form.STATE = {
+	/**
+	 * Wether the Entries should be visible or not.
+	 * @default false
+	 * @instance
+	 * @memberof Form
+	 * @type {!boolean}
+	 */
+
+	entriesVisible: Config.bool().value(false),
+
 	/**
 	 * Internal mirror of the pages state
 	 * @default _pagesValueFn
