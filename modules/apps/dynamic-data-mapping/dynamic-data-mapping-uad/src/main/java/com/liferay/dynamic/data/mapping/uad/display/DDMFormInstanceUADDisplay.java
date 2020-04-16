@@ -74,7 +74,7 @@ public class DDMFormInstanceUADDisplay extends BaseDDMFormInstanceUADDisplay {
 
 	@Override
 	public DDMFormInstance getTopLevelContainer(
-		Class parentContainerClass, Serializable parentContainerId,
+		Class<?> parentContainerClass, Serializable parentContainerId,
 		Object childObject) {
 
 		if ((childObject instanceof DDMFormInstanceRecord) &&
