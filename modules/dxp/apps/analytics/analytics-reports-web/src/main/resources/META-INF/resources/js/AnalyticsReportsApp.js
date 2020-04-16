@@ -148,7 +148,7 @@ function Navigation({
 					displayType="danger"
 					variant="stripe"
 				>
-					{Liferay.Language.get('something-went-wrong')}
+					{Liferay.Language.get('an-unexpected-error-occurred')}
 				</ClayAlert>
 			)}
 
