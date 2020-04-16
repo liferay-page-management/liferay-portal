@@ -12,11 +12,11 @@
  *
  */
 
-package com.liferay.saml.web.internal.portlet.action;
+package com.liferay.saml.web.internal.struts;
 
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.saml.runtime.configuration.SamlProviderConfigurationHelper;
-import com.liferay.saml.runtime.servlet.profile.WebSsoProfile;
+import com.liferay.saml.runtime.servlet.profile.SingleLogoutProfile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,19 +28,14 @@ import org.osgi.service.component.annotations.Reference;
  * @author Mika Koivisto
  */
 @Component(
-	immediate = true, property = "path=/portal/saml/sso",
+	immediate = true,
+	property = {
+		"path=/portal/saml/slo", "path=/portal/saml/slo_logout",
+		"path=/portal/saml/slo_soap"
+	},
 	service = StrutsAction.class
 )
-public class WebSsoAction extends BaseSamlStrutsAction {
-
-	@Override
-	public boolean isEnabled() {
-		if (samlProviderConfigurationHelper.isRoleIdp()) {
-			return super.isEnabled();
-		}
-
-		return false;
-	}
+public class SingleLogoutAction extends BaseSamlStrutsAction {
 
 	@Override
 	@Reference(unbind = "-")
@@ -57,13 +52,23 @@ public class WebSsoAction extends BaseSamlStrutsAction {
 			HttpServletResponse httpServletResponse)
 		throws Exception {
 
-		_webSsoProfile.processAuthnRequest(
-			httpServletRequest, httpServletResponse);
+		String requestURI = httpServletRequest.getRequestURI();
+
+		if (samlProviderConfigurationHelper.isRoleIdp() &&
+			requestURI.endsWith("/slo_logout")) {
+
+			_singleLogoutProfile.processIdpLogout(
+				httpServletRequest, httpServletResponse);
+		}
+		else {
+			_singleLogoutProfile.processSingleLogout(
+				httpServletRequest, httpServletResponse);
+		}
 
 		return null;
 	}
 
-	@Reference(unbind = "-")
-	private WebSsoProfile _webSsoProfile;
+	@Reference
+	private SingleLogoutProfile _singleLogoutProfile;
 
 }

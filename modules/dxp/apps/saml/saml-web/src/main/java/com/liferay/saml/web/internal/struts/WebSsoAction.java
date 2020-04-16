@@ -12,7 +12,7 @@
  *
  */
 
-package com.liferay.saml.web.internal.portlet.action;
+package com.liferay.saml.web.internal.struts;
 
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.saml.runtime.configuration.SamlProviderConfigurationHelper;
@@ -28,14 +28,14 @@ import org.osgi.service.component.annotations.Reference;
  * @author Mika Koivisto
  */
 @Component(
-	immediate = true, property = "path=/portal/saml/acs",
+	immediate = true, property = "path=/portal/saml/sso",
 	service = StrutsAction.class
 )
-public class AssertionConsumerServiceAction extends BaseSamlStrutsAction {
+public class WebSsoAction extends BaseSamlStrutsAction {
 
 	@Override
 	public boolean isEnabled() {
-		if (samlProviderConfigurationHelper.isRoleSp()) {
+		if (samlProviderConfigurationHelper.isRoleIdp()) {
 			return super.isEnabled();
 		}
 
@@ -57,12 +57,13 @@ public class AssertionConsumerServiceAction extends BaseSamlStrutsAction {
 			HttpServletResponse httpServletResponse)
 		throws Exception {
 
-		_webSsoProfile.processResponse(httpServletRequest, httpServletResponse);
+		_webSsoProfile.processAuthnRequest(
+			httpServletRequest, httpServletResponse);
 
 		return null;
 	}
 
-	@Reference
+	@Reference(unbind = "-")
 	private WebSsoProfile _webSsoProfile;
 
 }

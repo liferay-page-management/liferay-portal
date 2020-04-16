@@ -12,7 +12,7 @@
  *
  */
 
-package com.liferay.saml.web.internal.portlet.action;
+package com.liferay.saml.web.internal.struts;
 
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.struts.StrutsAction;

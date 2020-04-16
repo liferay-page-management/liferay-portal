@@ -12,7 +12,7 @@
  *
  */
 
-package com.liferay.saml.web.internal.portlet.action;
+package com.liferay.saml.web.internal.struts;
 
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
