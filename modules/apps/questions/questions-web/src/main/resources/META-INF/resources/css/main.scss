@@ -6,6 +6,10 @@
 	z-index: 2;
 }
 
+.question-row-article-body {
+	max-height: 8vh;
+}
+
 .questions-title {
 	&:after {
 		background-color: $light-l1;

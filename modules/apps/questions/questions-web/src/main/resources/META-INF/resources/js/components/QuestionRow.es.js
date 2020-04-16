@@ -81,7 +81,7 @@ export default ({question}) => {
 				</h2>
 			</Link>
 
-			<div className="c-mb-0 c-mt-3 stretched-link-layer text-truncate">
+			<div className="c-mb-0 c-mt-3 stretched-link-layer question-row-article-body text-truncate">
 				<ArticleBodyRenderer {...question} />
 			</div>
 
