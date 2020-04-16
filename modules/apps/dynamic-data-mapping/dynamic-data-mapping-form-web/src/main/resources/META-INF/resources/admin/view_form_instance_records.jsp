@@ -27,4 +27,4 @@ renderResponse.setTitle(LanguageUtil.get(request, "form-entries"));
 	navigationItems="<%= ddmFormViewFormInstanceRecordsDisplayContext.getNavigationItems() %>"
 />
 
-<liferay-util:include page="/admin/list_form_instance_records.jsp" servletContext="<%= application %>" />
+<liferay-util:include page="/admin/form_instance_records_search_container.jsp" servletContext="<%= application %>" />
