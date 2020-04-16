@@ -35,7 +35,11 @@ JournalDDMStructuresManagementToolbarDisplayContext journalDDMStructuresManageme
 	<portlet:param name="mvcPath" value="/view_ddm_structures.jsp" />
 </portlet:actionURL>
 
-<aui:form action="<%= deleteDDMStructureURL %>" cssClass="container-fluid-1280" method="post" name="fm">
+<portlet:actionURL name="/journal/delete_data_definition" var="deleteDataDefinitionURL">
+	<portlet:param name="mvcPath" value="/view_ddm_structures.jsp" />
+</portlet:actionURL>
+
+<aui:form action="<%= journalDisplayContext.useDataEngineEditor() ? deleteDataDefinitionURL : deleteDDMStructureURL %>" cssClass="container-fluid-1280" method="post" name="fm">
 	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 
 	<liferay-ui:error exception="<%= RequiredStructureException.MustNotDeleteStructureReferencedByStructureLinks.class %>" message="the-structure-cannot-be-deleted-because-it-is-required-by-one-or-more-structure-links" />

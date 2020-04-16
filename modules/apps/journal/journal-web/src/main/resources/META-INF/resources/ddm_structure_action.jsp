@@ -106,14 +106,29 @@ DDMStructure ddmStructure = (DDMStructure)row.getObject();
 	</c:if>
 
 	<c:if test="<%= DDMStructurePermission.contains(permissionChecker, ddmStructure, ActionKeys.DELETE) %>">
-		<portlet:actionURL name="/journal/delete_ddm_structure" var="deleteURL">
-			<portlet:param name="mvcPath" value="/view_ddm_structures.jsp" />
-			<portlet:param name="redirect" value="<%= currentURL %>" />
-			<portlet:param name="ddmStructureId" value="<%= String.valueOf(ddmStructure.getStructureId()) %>" />
-		</portlet:actionURL>
+		<c:choose>
+			<c:when test="<%= journalDisplayContext.useDataEngineEditor() %>">
+				<portlet:actionURL name="/journal/delete_data_definition" var="deleteURL">
+					<portlet:param name="mvcPath" value="/view_ddm_structures.jsp" />
+					<portlet:param name="redirect" value="<%= currentURL %>" />
+					<portlet:param name="dataDefinitionId" value="<%= String.valueOf(ddmStructure.getStructureId()) %>" />
+				</portlet:actionURL>
 
-		<liferay-ui:icon-delete
-			url="<%= deleteURL %>"
-		/>
+				<liferay-ui:icon-delete
+					url="<%= deleteURL %>"
+				/>
+			</c:when>
+			<c:otherwise>
+				<portlet:actionURL name="/journal/delete_ddm_structure" var="deleteURL">
+					<portlet:param name="mvcPath" value="/view_ddm_structures.jsp" />
+					<portlet:param name="redirect" value="<%= currentURL %>" />
+					<portlet:param name="ddmStructureId" value="<%= String.valueOf(ddmStructure.getStructureId()) %>" />
+				</portlet:actionURL>
+
+				<liferay-ui:icon-delete
+					url="<%= deleteURL %>"
+				/>
+			</c:otherwise>
+		</c:choose>
 	</c:if>
 </liferay-ui:icon-menu>
