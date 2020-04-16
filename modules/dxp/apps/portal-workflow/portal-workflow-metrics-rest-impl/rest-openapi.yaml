@@ -21,6 +21,9 @@ components:
                         The user's full name.
                     readOnly: true
                     type: string
+                reviewer:
+                    readOnly: true
+                    type: boolean
             type: object
         AssigneeBulkSelection:
             description:
