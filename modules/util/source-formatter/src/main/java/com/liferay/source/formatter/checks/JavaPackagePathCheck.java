@@ -66,12 +66,6 @@ public class JavaPackagePathCheck extends BaseJavaTermCheck {
 			_checkModulePackageName(fileName, packageName);
 		}
 
-		String className = javaClass.getName();
-
-		if (className.startsWith("Base")) {
-			return javaTerm.getContent();
-		}
-
 		List<String> expectedInternalImplementsDataEntries = getAttributeValues(
 			_EXPECTED_INTERNAL_IMPLEMENTS_DATA_KEY, absolutePath);
 
@@ -83,8 +77,9 @@ public class JavaPackagePathCheck extends BaseJavaTermCheck {
 
 			if (array.length == 2) {
 				_checkPackageName(
-					fileName, javaClass.getImplementedClassNames(), array[0],
-					packageName, array[1]);
+					fileName, javaClass.getName(),
+					javaClass.getImplementedClassNames(), array[0], packageName,
+					array[1]);
 			}
 		}
 
@@ -135,9 +130,9 @@ public class JavaPackagePathCheck extends BaseJavaTermCheck {
 	}
 
 	private void _checkPackageName(
-			String fileName, List<String> implementedClassNames,
-			String implementedClassName, String packageName,
-			String expectedPackageName)
+			String fileName, String className,
+			List<String> implementedClassNames, String implementedClassName,
+			String packageName, String expectedPackageName)
 		throws IOException {
 
 		if (!implementedClassNames.contains(implementedClassName)) {
@@ -146,6 +141,10 @@ public class JavaPackagePathCheck extends BaseJavaTermCheck {
 
 		if (!packageName.contains(".internal.") &&
 			!packageName.endsWith(".internal")) {
+
+			if (className.startsWith("Base")) {
+				return;
+			}
 
 			addMessage(
 				fileName,
