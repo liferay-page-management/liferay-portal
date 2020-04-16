@@ -77,12 +77,12 @@ public class ProcessUtil {
 		);
 	}
 
-	private static Date _parseDate(String formattedDate) {
+	private static Date _parseDate(String dateString) {
 		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
 			"yyyyMMddHHmmss");
 
 		try {
-			return dateFormat.parse(formattedDate);
+			return dateFormat.parse(dateString);
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {
