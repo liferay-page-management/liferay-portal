@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.Component;
 	immediate = true,
 	property = {
 		"javax.portlet.name=" + JournalPortletKeys.JOURNAL,
-		"mvc.command.name=/journal/delete_data_enginee"
+		"mvc.command.name=/journal/delete_data_definition"
 	},
 	service = MVCActionCommand.class
 )
