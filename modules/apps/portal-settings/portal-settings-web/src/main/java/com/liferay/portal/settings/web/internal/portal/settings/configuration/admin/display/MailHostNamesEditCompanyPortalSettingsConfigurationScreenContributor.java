@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.portal.settings.web.internal.configuration.admin.display;
+package com.liferay.portal.settings.web.internal.portal.settings.configuration.admin.display;
 
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenContributor;
 
@@ -23,7 +23,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(service = PortalSettingsConfigurationScreenContributor.class)
 public class
-	PasswordChangedNotificationEditCompanyPortalSettingsConfigurationScreenContributor
+	MailHostNamesEditCompanyPortalSettingsConfigurationScreenContributor
 		extends BaseEditCompanyPortalSettingsConfigurationScreenContributor {
 
 	@Override
@@ -33,12 +33,12 @@ public class
 
 	@Override
 	public String getJspPath() {
-		return "/email.notifications/password_changed_notification.jsp";
+		return "/email.notifications/mail_host_names.jsp";
 	}
 
 	@Override
 	public String getKey() {
-		return "password-changed-notification";
+		return "mail-host-names";
 	}
 
 }

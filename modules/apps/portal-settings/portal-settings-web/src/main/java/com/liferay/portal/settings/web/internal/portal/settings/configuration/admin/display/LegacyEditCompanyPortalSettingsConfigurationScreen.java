@@ -12,40 +12,48 @@
  * details.
  */
 
-package com.liferay.portal.settings.web.internal.configuration.admin.display;
+package com.liferay.portal.settings.web.internal.portal.settings.configuration.admin.display;
 
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenContributor;
 
 import java.util.Locale;
 
+import javax.servlet.ServletContext;
+
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Drew Brokke
  */
 @Component(service = PortalSettingsConfigurationScreenContributor.class)
-public class
-	GeneralAuthenticationEditCompanyPortalSettingsConfigurationScreenContributor
-		extends BaseEditCompanyPortalSettingsConfigurationScreenContributor {
+public class LegacyEditCompanyPortalSettingsConfigurationScreen
+	extends BaseEditCompanyPortalSettingsConfigurationScreenContributor {
 
 	@Override
 	public String getCategoryKey() {
-		return "user-authentication";
+		return "instance-configuration";
 	}
 
-	@Override/**/
+	@Override
 	public String getJspPath() {
-		return "/authentication/general.jsp";
+		return "/general.jsp";
 	}
 
 	@Override
 	public String getKey() {
-		return "general-authentication";
+		return "general";
 	}
 
 	@Override
 	public String getName(Locale locale) {
-		return "general";
+		return LanguageUtil.get(locale, "general");
 	}
+
+	@Reference(
+		target = "(osgi.web.symbolicname=com.liferay.portal.settings.web)"
+	)
+	private ServletContext _servletContext;
 
 }

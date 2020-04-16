@@ -12,35 +12,33 @@
  * details.
  */
 
-package com.liferay.portal.settings.web.internal.configuration.admin.display;
+package com.liferay.portal.settings.web.internal.portal.settings.configuration.admin.display;
 
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenContributor;
 
-import javax.servlet.ServletContext;
-
-import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Drew Brokke
  */
-public abstract class
-	BaseEditCompanyPortalSettingsConfigurationScreenContributor
-		implements PortalSettingsConfigurationScreenContributor {
+@Component(service = PortalSettingsConfigurationScreenContributor.class)
+public class
+	PasswordResetNotificationEditCompanyPortalSettingsConfigurationScreenContributor
+		extends BaseEditCompanyPortalSettingsConfigurationScreenContributor {
 
 	@Override
-	public String getSaveMVCActionCommandName() {
-		return "/portal_settings/edit_company";
+	public String getCategoryKey() {
+		return "email";
 	}
 
 	@Override
-	public ServletContext getServletContext() {
-		return servletContext;
+	public String getJspPath() {
+		return "/email.notifications/password_reset_notification.jsp";
 	}
 
-	@Reference(
-		target = "(osgi.web.symbolicname=com.liferay.portal.settings.web)",
-		unbind = "-"
-	)
-	protected ServletContext servletContext;
+	@Override
+	public String getKey() {
+		return "password-reset-notification";
+	}
 
 }

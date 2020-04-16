@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.portal.settings.web.internal.configuration.admin.display;
+package com.liferay.portal.settings.web.internal.portal.settings.configuration.admin.display;
 
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenContributor;
 
@@ -22,22 +22,23 @@ import org.osgi.service.component.annotations.Component;
  * @author Drew Brokke
  */
 @Component(service = PortalSettingsConfigurationScreenContributor.class)
-public class EmailSenderEditCompanyPortalSettingsConfigurationScreenContributor
-	extends BaseEditCompanyPortalSettingsConfigurationScreenContributor {
+public class
+	ReservedCredentialsEditCompanyPortalSettingsConfigurationScreenContributor
+		extends BaseEditCompanyPortalSettingsConfigurationScreenContributor {
 
 	@Override
 	public String getCategoryKey() {
-		return "email";
+		return "user-authentication";
 	}
 
 	@Override
 	public String getJspPath() {
-		return "/email.notifications/email_sender.jsp";
+		return "/authentication/reserved_credentials.jsp";
 	}
 
 	@Override
 	public String getKey() {
-		return "email-sender";
+		return "reserved-credentials";
 	}
 
 }

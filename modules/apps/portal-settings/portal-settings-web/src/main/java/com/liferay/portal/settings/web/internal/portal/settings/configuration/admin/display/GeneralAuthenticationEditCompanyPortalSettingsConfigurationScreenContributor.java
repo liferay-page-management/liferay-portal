@@ -12,51 +12,40 @@
  * details.
  */
 
-package com.liferay.portal.settings.web.internal.configuration.admin.display;
+package com.liferay.portal.settings.web.internal.portal.settings.configuration.admin.display;
 
-import com.liferay.portal.kernel.terms.of.use.TermsOfUseContentProvider;
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenContributor;
-import com.liferay.portal.settings.web.internal.constants.PortalSettingsWebKeys;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Drew Brokke
  */
 @Component(service = PortalSettingsConfigurationScreenContributor.class)
-public class TermsOfUseEditCompanyPortalSettingsConfigurationScreenContributor
-	extends BaseEditCompanyPortalSettingsConfigurationScreenContributor {
+public class
+	GeneralAuthenticationEditCompanyPortalSettingsConfigurationScreenContributor
+		extends BaseEditCompanyPortalSettingsConfigurationScreenContributor {
 
 	@Override
 	public String getCategoryKey() {
-		return "instance-configuration";
+		return "user-authentication";
 	}
 
-	@Override
+	@Override/**/
 	public String getJspPath() {
-		return "/terms_of_use.jsp";
+		return "/authentication/general.jsp";
 	}
 
 	@Override
 	public String getKey() {
-		return "terms-of-use";
+		return "general-authentication";
 	}
 
 	@Override
-	public void setAttributes(
-		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse) {
-
-		httpServletRequest.setAttribute(
-			PortalSettingsWebKeys.TERMS_OF_USE_CONTENT_PROVIDER,
-			_termsOfUseContentProvider);
+	public String getName(Locale locale) {
+		return "general";
 	}
-
-	@Reference
-	private TermsOfUseContentProvider _termsOfUseContentProvider;
 
 }

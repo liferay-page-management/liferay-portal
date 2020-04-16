@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.portal.settings.web.internal.configuration.admin.display;
+package com.liferay.portal.settings.web.internal.portal.settings.configuration.admin.display;
 
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenContributor;
 
@@ -23,22 +23,22 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(service = PortalSettingsConfigurationScreenContributor.class)
 public class
-	ContentSharingEditCompanyPortalSettingsConfigurationScreenContributor
+	PasswordChangedNotificationEditCompanyPortalSettingsConfigurationScreenContributor
 		extends BaseEditCompanyPortalSettingsConfigurationScreenContributor {
 
 	@Override
 	public String getCategoryKey() {
-		return "sharing";
+		return "email";
 	}
 
 	@Override
 	public String getJspPath() {
-		return "/content_sharing.jsp";
+		return "/email.notifications/password_changed_notification.jsp";
 	}
 
 	@Override
 	public String getKey() {
-		return "content-sharing";
+		return "password-changed-notification";
 	}
 
 }

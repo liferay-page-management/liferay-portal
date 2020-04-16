@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.portal.settings.web.internal.configuration.admin.display;
+package com.liferay.portal.settings.web.internal.portal.settings.configuration.admin.display;
 
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenContributor;
 
@@ -22,22 +22,22 @@ import org.osgi.service.component.annotations.Component;
  * @author Drew Brokke
  */
 @Component(service = PortalSettingsConfigurationScreenContributor.class)
-public class LanguageEditCompanyPortalSettingsConfigurationScreenContributor
+public class AppearanceEditCompanyPortalSettingsConfigurationScreenContributor
 	extends BaseEditCompanyPortalSettingsConfigurationScreenContributor {
 
 	@Override
 	public String getCategoryKey() {
-		return "localization";
+		return "instance-configuration";
 	}
 
 	@Override
 	public String getJspPath() {
-		return "/language.jsp";
+		return "/look_and_feel.jsp";
 	}
 
 	@Override
 	public String getKey() {
-		return "language";
+		return "appearance";
 	}
 
 }

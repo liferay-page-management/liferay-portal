@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.portal.settings.web.internal.configuration.admin.display;
+package com.liferay.portal.settings.web.internal.portal.settings.configuration.admin.display;
 
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenContributor;
 
@@ -22,23 +22,22 @@ import org.osgi.service.component.annotations.Component;
  * @author Drew Brokke
  */
 @Component(service = PortalSettingsConfigurationScreenContributor.class)
-public class
-	PasswordResetNotificationEditCompanyPortalSettingsConfigurationScreenContributor
-		extends BaseEditCompanyPortalSettingsConfigurationScreenContributor {
+public class AnalyticsEditCompanyPortalSettingsConfigurationScreenContributor
+	extends BaseEditCompanyPortalSettingsConfigurationScreenContributor {
 
 	@Override
 	public String getCategoryKey() {
-		return "email";
+		return "analytics";
 	}
 
 	@Override
 	public String getJspPath() {
-		return "/email.notifications/password_reset_notification.jsp";
+		return "/analytics.jsp";
 	}
 
 	@Override
 	public String getKey() {
-		return "password-reset-notification";
+		return "analytics";
 	}
 
 }

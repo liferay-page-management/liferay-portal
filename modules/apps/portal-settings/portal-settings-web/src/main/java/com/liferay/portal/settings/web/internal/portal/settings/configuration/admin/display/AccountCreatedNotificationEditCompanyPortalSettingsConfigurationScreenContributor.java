@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.portal.settings.web.internal.configuration.admin.display;
+package com.liferay.portal.settings.web.internal.portal.settings.configuration.admin.display;
 
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenContributor;
 
@@ -22,22 +22,23 @@ import org.osgi.service.component.annotations.Component;
  * @author Drew Brokke
  */
 @Component(service = PortalSettingsConfigurationScreenContributor.class)
-public class TimeZoneEditCompanyPortalSettingsConfigurationScreenContributor
-	extends BaseEditCompanyPortalSettingsConfigurationScreenContributor {
+public class
+	AccountCreatedNotificationEditCompanyPortalSettingsConfigurationScreenContributor
+		extends BaseEditCompanyPortalSettingsConfigurationScreenContributor {
 
 	@Override
 	public String getCategoryKey() {
-		return "localization";
+		return "email";
 	}
 
 	@Override
 	public String getJspPath() {
-		return "/time_zone.jsp";
+		return "/email.notifications/account_created_notification.jsp";
 	}
 
 	@Override
 	public String getKey() {
-		return "time-zone";
+		return "account-created-notification";
 	}
 
 }

@@ -12,33 +12,35 @@
  * details.
  */
 
-package com.liferay.portal.settings.web.internal.configuration.admin.display;
+package com.liferay.portal.settings.web.internal.portal.settings.configuration.admin.display;
 
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenContributor;
 
-import org.osgi.service.component.annotations.Component;
+import javax.servlet.ServletContext;
+
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Drew Brokke
  */
-@Component(service = PortalSettingsConfigurationScreenContributor.class)
-public class
-	ReservedCredentialsEditCompanyPortalSettingsConfigurationScreenContributor
-		extends BaseEditCompanyPortalSettingsConfigurationScreenContributor {
+public abstract class
+	BaseEditCompanyPortalSettingsConfigurationScreenContributor
+		implements PortalSettingsConfigurationScreenContributor {
 
 	@Override
-	public String getCategoryKey() {
-		return "user-authentication";
+	public String getSaveMVCActionCommandName() {
+		return "/portal_settings/edit_company";
 	}
 
 	@Override
-	public String getJspPath() {
-		return "/authentication/reserved_credentials.jsp";
+	public ServletContext getServletContext() {
+		return servletContext;
 	}
 
-	@Override
-	public String getKey() {
-		return "reserved-credentials";
-	}
+	@Reference(
+		target = "(osgi.web.symbolicname=com.liferay.portal.settings.web)",
+		unbind = "-"
+	)
+	protected ServletContext servletContext;
 
 }

@@ -12,32 +12,33 @@
  * details.
  */
 
-package com.liferay.portal.settings.web.internal.configuration.admin.category;
+package com.liferay.portal.settings.web.internal.portal.settings.configuration.admin.display;
 
-import com.liferay.configuration.admin.category.ConfigurationCategory;
+import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenContributor;
 
 import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Drew Brokke
  */
-@Component(service = ConfigurationCategory.class)
-public class PortalSettingsConfigurationCategory
-	implements ConfigurationCategory {
-
-	@Override
-	public String getBundleSymbolicName() {
-		return "com.liferay.portal.settings.web";
-	}
+@Component(service = PortalSettingsConfigurationScreenContributor.class)
+public class
+	DefaultUserAssociationsEditCompanyPortalSettingsConfigurationScreenContributor
+		extends BaseEditCompanyPortalSettingsConfigurationScreenContributor {
 
 	@Override
 	public String getCategoryKey() {
-		return "instance-configuration";
+		return "users";
 	}
 
 	@Override
-	public String getCategorySection() {
-		return "platform";
+	public String getJspPath() {
+		return "/users/default_user_associations.jsp";
+	}
+
+	@Override
+	public String getKey() {
+		return "default-user-associations";
 	}
 
 }

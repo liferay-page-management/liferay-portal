@@ -12,56 +12,51 @@
  * details.
  */
 
-package com.liferay.portal.settings.web.internal.configuration.admin.display;
+package com.liferay.portal.settings.web.internal.portal.settings.configuration.admin.display;
 
+import com.liferay.portal.kernel.terms.of.use.TermsOfUseContentProvider;
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenContributor;
-import com.liferay.ratings.kernel.definition.PortletRatingsDefinitionUtil;
-import com.liferay.ratings.kernel.definition.PortletRatingsDefinitionValues;
+import com.liferay.portal.settings.web.internal.constants.PortalSettingsWebKeys;
 
-import java.util.Locale;
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Drew Brokke
  */
 @Component(service = PortalSettingsConfigurationScreenContributor.class)
-public class RatingsEditCompanyPortalSettingsConfigurationScreenContributor
+public class TermsOfUseEditCompanyPortalSettingsConfigurationScreenContributor
 	extends BaseEditCompanyPortalSettingsConfigurationScreenContributor {
 
 	@Override
 	public String getCategoryKey() {
-		return "community-tools";
+		return "instance-configuration";
 	}
 
 	@Override
 	public String getJspPath() {
-		return "/ratings.jsp";
+		return "/terms_of_use.jsp";
 	}
 
 	@Override
 	public String getKey() {
-		return "social-ratings";
+		return "terms-of-use";
 	}
 
 	@Override
-	public String getName(Locale locale) {
-		return "ratings";
+	public void setAttributes(
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse) {
+
+		httpServletRequest.setAttribute(
+			PortalSettingsWebKeys.TERMS_OF_USE_CONTENT_PROVIDER,
+			_termsOfUseContentProvider);
 	}
 
-	@Override
-	public boolean isVisible() {
-		Map<String, PortletRatingsDefinitionValues>
-			portletRatingsDefinitionValuesMap =
-				PortletRatingsDefinitionUtil.
-					getPortletRatingsDefinitionValuesMap();
-
-		if (portletRatingsDefinitionValuesMap.isEmpty()) {
-			return false;
-		}
-
-		return true;
-	}
+	@Reference
+	private TermsOfUseContentProvider _termsOfUseContentProvider;
 
 }

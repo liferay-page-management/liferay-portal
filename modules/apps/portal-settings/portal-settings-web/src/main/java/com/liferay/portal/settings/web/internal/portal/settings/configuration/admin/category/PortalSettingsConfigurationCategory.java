@@ -12,39 +12,32 @@
  * details.
  */
 
-package com.liferay.portal.settings.web.internal.configuration.admin.display;
+package com.liferay.portal.settings.web.internal.portal.settings.configuration.admin.category;
 
-import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenContributor;
-
-import java.util.Locale;
+import com.liferay.configuration.admin.category.ConfigurationCategory;
 
 import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Drew Brokke
  */
-@Component(service = PortalSettingsConfigurationScreenContributor.class)
-public class FieldsEditCompanyPortalSettingsConfigurationScreenContributor
-	extends BaseEditCompanyPortalSettingsConfigurationScreenContributor {
+@Component(service = ConfigurationCategory.class)
+public class PortalSettingsConfigurationCategory
+	implements ConfigurationCategory {
+
+	@Override
+	public String getBundleSymbolicName() {
+		return "com.liferay.portal.settings.web";
+	}
 
 	@Override
 	public String getCategoryKey() {
-		return "users";
+		return "instance-configuration";
 	}
 
 	@Override
-	public String getJspPath() {
-		return "/users/fields.jsp";
-	}
-
-	@Override
-	public String getKey() {
-		return "user-fields";
-	}
-
-	@Override
-	public String getName(Locale locale) {
-		return "fields";
+	public String getCategorySection() {
+		return "platform";
 	}
 
 }

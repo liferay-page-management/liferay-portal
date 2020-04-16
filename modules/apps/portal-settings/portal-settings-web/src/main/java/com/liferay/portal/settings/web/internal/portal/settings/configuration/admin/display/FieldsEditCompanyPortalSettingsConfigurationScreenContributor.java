@@ -12,9 +12,11 @@
  * details.
  */
 
-package com.liferay.portal.settings.web.internal.configuration.admin.display;
+package com.liferay.portal.settings.web.internal.portal.settings.configuration.admin.display;
 
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenContributor;
+
+import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -22,22 +24,27 @@ import org.osgi.service.component.annotations.Component;
  * @author Drew Brokke
  */
 @Component(service = PortalSettingsConfigurationScreenContributor.class)
-public class AppearanceEditCompanyPortalSettingsConfigurationScreenContributor
+public class FieldsEditCompanyPortalSettingsConfigurationScreenContributor
 	extends BaseEditCompanyPortalSettingsConfigurationScreenContributor {
 
 	@Override
 	public String getCategoryKey() {
-		return "instance-configuration";
+		return "users";
 	}
 
 	@Override
 	public String getJspPath() {
-		return "/look_and_feel.jsp";
+		return "/users/fields.jsp";
 	}
 
 	@Override
 	public String getKey() {
-		return "appearance";
+		return "user-fields";
+	}
+
+	@Override
+	public String getName(Locale locale) {
+		return "fields";
 	}
 
 }
