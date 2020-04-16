@@ -318,6 +318,7 @@ definition {
 			value1 = "${userGroupName}");
 
 		var key_portletName = "${portletName}";
+		var key_portletId = "${portletId}";
 
 		AssertTextEquals(
 			locator1 = "Portlet#TITLE",
