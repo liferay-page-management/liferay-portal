@@ -73,23 +73,23 @@ public class PageWidgetInstanceDefinitionConverterUtil {
 			return null;
 		}
 
-		PortletPreferences jxPortletPreferences =
+		PortletPreferences portletPreferences =
 			PortletPreferencesFactoryUtil.getLayoutPortletSetup(
 				layout.getPlid(), PortletKeys.PREFS_OWNER_ID_DEFAULT,
 				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, plid, portletId,
 				portlet.getDefaultPreferences());
 
-		if (jxPortletPreferences == null) {
+		if (portletPreferences == null) {
 			return null;
 		}
 
 		Map<String, Object> widgetConfigMap = new HashMap<>();
 
-		Map<String, String[]> jxPortletPreferencesMap =
-			jxPortletPreferences.getMap();
+		Map<String, String[]> portletPreferencesMap =
+			portletPreferences.getMap();
 
 		for (Map.Entry<String, String[]> entrySet :
-				jxPortletPreferencesMap.entrySet()) {
+				portletPreferencesMap.entrySet()) {
 
 			String[] values = entrySet.getValue();
 
