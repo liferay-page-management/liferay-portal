@@ -12,23 +12,14 @@
  * details.
  */
 
-import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
-import React, {useContext, useState} from 'react';
+import ClayButton from '@clayui/button';
+import React, {useContext} from 'react';
 
 import AppContext from '../../AppContext.es';
 import EmptyState from '../empty-state/EmptyState.es';
-import {SearchInputWithForm} from '../search-input/SearchInput.es';
-import RuleEditorModal from './RuleEditorModal.es';
 import RuleItem from './RuleItem.es';
 
-export default () => {
-	const [rulesEditorState, setRulesEditorState] = useState({
-		isVisible: false,
-		rule: null,
-	});
-
-	const [searchText, setSearchText] = useState('');
-
+export default ({keywords, toggleRulesEditorVisibility}) => {
 	const [
 		{
 			dataLayout: {dataRules},
@@ -40,38 +31,10 @@ export default () => {
 			...rule,
 			name: `Rule ${index}`,
 		}))
-		.filter(({name}) => new RegExp(searchText, 'ig').test(name));
-
-	const toggleRulesEditorVisibility = rule => {
-		if (rule) {
-			rule['logical-operator'] = rule['logicalOperator'];
-			delete rule.logicalOperator;
-		}
-
-		setRulesEditorState(prevState => ({
-			isVisible: !prevState.isVisible,
-			rule,
-		}));
-	};
+		.filter(({name}) => new RegExp(keywords, 'ig').test(name));
 
 	return (
 		<>
-			<div className="autofit-row sidebar-section">
-				<div className="autofit-col autofit-col-expand">
-					<SearchInputWithForm
-						onChange={searchText => setSearchText(searchText)}
-					/>
-				</div>
-
-				<div className="autofit-col ml-2">
-					<ClayButtonWithIcon
-						displayType="primary"
-						onClick={() => toggleRulesEditorVisibility()}
-						symbol="plus"
-					/>
-				</div>
-			</div>
-
 			{filtereDataRules.length === 0 ? (
 				<EmptyState
 					emptyState={{
@@ -88,11 +51,11 @@ export default () => {
 						),
 						title: Liferay.Language.get('there-are-no-rules'),
 					}}
-					keywords={searchText}
+					keywords={keywords}
 					small
 				/>
 			) : (
-				<div className="autofit-col mt-4 rule-list">
+				<div className="autofit-col rule-list">
 					<hr />
 					{filtereDataRules.map((rule, index) => (
 						<RuleItem
@@ -105,12 +68,6 @@ export default () => {
 					))}
 				</div>
 			)}
-
-			<RuleEditorModal
-				isVisible={rulesEditorState.isVisible}
-				onClose={() => toggleRulesEditorVisibility()}
-				rule={rulesEditorState.rule}
-			/>
 		</>
 	);
 };
