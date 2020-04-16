@@ -106,7 +106,7 @@ public class FragmentEntryValidatorImpl implements FragmentEntryValidator {
 									"validation"))) {
 
 							throw new FragmentEntryConfigurationException(
-								"Invalid default configurationvalue for the " +
+								"Invalid default configuration value for " +
 									"field " + fieldName);
 						}
 
@@ -120,8 +120,8 @@ public class FragmentEntryValidatorImpl implements FragmentEntryValidator {
 										"validation"))) {
 
 								throw new FragmentEntryConfigurationException(
-									"Invalid configuration value for the " +
-										"field " + fieldName);
+									"Invalid configuration value for field " +
+										fieldName);
 							}
 						}
 					}
