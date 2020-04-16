@@ -50,14 +50,14 @@ public class TaskResourceTest extends BaseTaskResourceTestCase {
 	public void tearDown() throws Exception {
 		super.tearDown();
 
-		if (_process != null) {
-			_workflowMetricsRESTTestHelper.deleteProcess(
-				testGroup.getCompanyId(), _process);
-		}
-
 		if (_instance != null) {
 			_workflowMetricsRESTTestHelper.deleteInstance(
 				testGroup.getCompanyId(), _instance);
+		}
+
+		if (_process != null) {
+			_workflowMetricsRESTTestHelper.deleteProcess(
+				testGroup.getCompanyId(), _process);
 		}
 	}
 
