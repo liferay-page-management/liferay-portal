@@ -103,6 +103,7 @@ public class HistogramMetricResourceTest
 			LocalDateTime.of(localDate.minusDays(364), LocalTime.MIDNIGHT));
 		_testGetProcessMetric(
 			nowLocalDateTime, LocalDateTime.of(localDate, LocalTime.MIDNIGHT));
+
 		_testGetProcessMetric(
 			LocalDateTime.of(localDate.minusDays(1), LocalTime.MAX),
 			LocalDateTime.of(localDate.minusDays(1), LocalTime.MIDNIGHT));
