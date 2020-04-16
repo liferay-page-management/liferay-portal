@@ -51,9 +51,9 @@ EditSiteTeamAssignmentsUserGroupsManagementToolbarDisplayContext editSiteTeamAss
 		>
 
 			<%
-			LinkedHashMap<String, Object> userParams = new LinkedHashMap<>();
-
-			userParams.put("usersUserGroups", Long.valueOf(userGroup.getUserGroupId()));
+			LinkedHashMap<String, Object> userParams = LinkedHashMapBuilder.<String, Object>put(
+				"usersUserGroups", Long.valueOf(userGroup.getUserGroupId())
+			).build();
 
 			int usersCount = UserLocalServiceUtil.searchCount(company.getCompanyId(), StringPool.BLANK, WorkflowConstants.STATUS_ANY, userParams);
 			%>

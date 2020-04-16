@@ -34,10 +34,11 @@ List<Organization> organizations = (List<Organization>)request.getAttribute(Site
 			<h5><liferay-ui:message key="num-of-organizations" /></h5>
 
 			<%
-			LinkedHashMap<String, Object> organizationParams = new LinkedHashMap<String, Object>();
-
-			organizationParams.put("groupOrganization", Long.valueOf(siteMembershipsDisplayContext.getGroupId()));
-			organizationParams.put("organizationsGroups", Long.valueOf(siteMembershipsDisplayContext.getGroupId()));
+			LinkedHashMap<String, Object> organizationParams = LinkedHashMapBuilder.<String, Object>put(
+				"groupOrganization", Long.valueOf(siteMembershipsDisplayContext.getGroupId())
+			).put(
+				"organizationsGroups", Long.valueOf(siteMembershipsDisplayContext.getGroupId())
+			).build();
 
 			int organizationsCount = OrganizationLocalServiceUtil.searchCount(company.getCompanyId(), OrganizationConstants.ANY_PARENT_ORGANIZATION_ID, StringPool.BLANK, StringPool.BLANK, null, null, organizationParams);
 			%>
