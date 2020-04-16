@@ -144,10 +144,10 @@ public class ScopeTreeUtilTest {
 				Tree::getValue, String.CASE_INSENSITIVE_ORDER));
 	}
 
-	private Tree<String> _getTree(Tree.Node<String> treeNode, int indexItem) {
+	private Tree<String> _getTree(Tree.Node<String> treeNode, int index) {
 		List<Tree<String>> trees = _getSortedTrees(treeNode);
 
-		return trees.get(indexItem);
+		return trees.get(index);
 	}
 
 	private final ScopeMatcherFactory _scopeMatcherFactory =
