@@ -49,12 +49,12 @@ public class InfoPanelMVCResourceCommand extends BaseMVCResourceCommand {
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws Exception {
 
-		LongStream stream = Arrays.stream(
+		LongStream longStream = Arrays.stream(
 			ParamUtil.getLongValues(resourceRequest, "rowIds"));
 
 		resourceRequest.setAttribute(
 			RedirectWebKeys.REDIRECT_ENTRIES,
-			stream.mapToObj(
+			longStream.mapToObj(
 				_redirectEntryLocalService::fetchRedirectEntry
 			).collect(
 				Collectors.toList()
