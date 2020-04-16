@@ -27,18 +27,12 @@ import java.util.List;
 import java.util.TreeSet;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
  * @author Marta Medio
  */
 public class ScopeTreeUtilTest {
-
-	@Before
-	public void setUp() {
-		_scopeMatcherFactory = new ChunkScopeMatcherFactory();
-	}
 
 	@Test
 	public void testMultipleLevelsScopeTree() {
@@ -156,6 +150,7 @@ public class ScopeTreeUtilTest {
 		return trees.get(indexItem);
 	}
 
-	private ScopeMatcherFactory _scopeMatcherFactory;
+	private final ScopeMatcherFactory _scopeMatcherFactory =
+		new ChunkScopeMatcherFactory();
 
 }
