@@ -364,8 +364,6 @@ definition {
 
 	@priority = "3"
 	test StagingBlogsPG {
-		property portal.upstream = "quarantine";
-
 		Navigator.gotoStagedSitePage(
 			pageName = "Staging Blogs Page",
 			siteName = "Site Name");
@@ -548,7 +546,6 @@ definition {
 
 	@priority = "3"
 	test StagingBlogsWithScheduledPublishing {
-		property portal.upstream = "quarantine";
 		property test.name.skip.portal.instance = "BlogsUsecase#StagingBlogsWithScheduledPublishing";
 
 		Navigator.gotoStagedSitePage(
@@ -605,8 +602,6 @@ definition {
 	@description = "This is a use case for LPS-72949."
 	@priority = "5"
 	test StagingLocalLiveLockAndEditBlogsEntry {
-		property portal.upstream = "quarantine";
-
 		Navigator.gotoStagedSitePage(
 			pageName = "Staging Blogs Page",
 			siteName = "Site Name");
