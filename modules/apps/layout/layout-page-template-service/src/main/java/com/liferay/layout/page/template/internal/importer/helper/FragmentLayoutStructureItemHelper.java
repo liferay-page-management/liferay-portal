@@ -167,7 +167,8 @@ public class FragmentLayoutStructureItemHelper
 		JSONObject freeMarkerFragmentEntryProcessorJSONObject =
 			_toFreeMarkerFragmentEntryProcessorJSONObject(
 				configurationTypes,
-				(Map<String, Object>)definitionMap.get("fragmentConfig"));
+				(Map<String, Object>)definitionMap.get("fragmentConfig"),
+				useSegmentsExperience);
 
 		fragmentEntryValidator.validateConfigurationValues(
 			configuration, fragmentEntryProcessorValuesJSONObject);
@@ -560,12 +561,12 @@ public class FragmentLayoutStructureItemHelper
 
 	private JSONObject _toFreeMarkerFragmentEntryProcessorJSONObject(
 		Map<String, String> configurationTypes,
-		Map<String, Object> fragmentConfigMap) {
+		Map<String, Object> fragmentConfigMap, boolean useSegmentsExperience) {
 
-		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+		JSONObject configJSONObject = JSONFactoryUtil.createJSONObject();
 
 		if (fragmentConfigMap == null) {
-			return jsonObject;
+			return configJSONObject;
 		}
 
 		for (Map.Entry<String, Object> entry : fragmentConfigMap.entrySet()) {
@@ -573,26 +574,34 @@ public class FragmentLayoutStructureItemHelper
 				String type = configurationTypes.get(entry.getKey());
 
 				if (Objects.equals(type, "colorPalette")) {
-					jsonObject.put(
+					configJSONObject.put(
 						entry.getKey(),
 						JSONUtil.put("color", entry.getValue()));
 				}
 				else {
-					jsonObject.put(entry.getKey(), entry.getValue());
+					configJSONObject.put(entry.getKey(), entry.getValue());
 				}
 			}
 			else if (entry.getValue() instanceof HashMap) {
 				Map<String, Object> childFragmentConfigMap =
 					(Map<String, Object>)entry.getValue();
 
-				jsonObject.put(
+				configJSONObject.put(
 					entry.getKey(),
 					_toFreeMarkerFragmentEntryProcessorJSONObject(
-						configurationTypes, childFragmentConfigMap));
+						configurationTypes, childFragmentConfigMap,
+						useSegmentsExperience));
 			}
 		}
 
-		return jsonObject;
+		if (useSegmentsExperience) {
+			return JSONUtil.put(
+				SegmentsExperienceConstants.ID_PREFIX +
+					SegmentsExperienceConstants.ID_DEFAULT,
+				configJSONObject);
+		}
+
+		return configJSONObject;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
