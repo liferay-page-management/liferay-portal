@@ -487,6 +487,10 @@ public class PageFragmentInstanceDefinitionConverterUtil {
 			InfoDisplayObjectProvider infoDisplayObjectProvider =
 				infoDisplayContributor.getInfoDisplayObjectProvider(classPK);
 
+			if (infoDisplayObjectProvider == null) {
+				return null;
+			}
+
 			Map<String, Object> fieldValues =
 				infoDisplayContributor.getInfoDisplayFieldsValues(
 					infoDisplayObjectProvider.getDisplayObject(),
