@@ -6155,7 +6155,10 @@ go</echo>
 		<if>
 			<and>
 				<isset property="portal.lcs.license.url" />
-				<matches pattern="https?://" string="${portal.lcs.license.url}" />
+				<or>
+					<matches pattern="file://" string="${portal.lcs.license.url}" />
+					<matches pattern="https?://" string="${portal.lcs.license.url}" />
+				</or>
 			</and>
 			<then>
 				<mirrors-get
