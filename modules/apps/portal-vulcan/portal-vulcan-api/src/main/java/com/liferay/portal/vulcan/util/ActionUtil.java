@@ -174,15 +174,15 @@ public class ActionUtil {
 		String baseURIString = baseURI.toString();
 
 		if (baseURIString.contains("/graphql")) {
-			String field = null;
 			String operation = null;
+			String type = null;
 
 			if (httpMethodName.equals("GET")) {
 				Class<?> returnType = method.getReturnType();
 
 				Stream<Method> stream = Arrays.stream(clazz.getMethods());
 
-				field = GraphQLNamingUtil.getGraphQLPropertyName(
+				operation = GraphQLNamingUtil.getGraphQLPropertyName(
 					methodName, returnType.getName(),
 					stream.map(
 						Method::getName
@@ -190,17 +190,17 @@ public class ActionUtil {
 						Collectors.toList()
 					));
 
-				operation = "query";
+				type = "query";
 			}
 			else {
-				field = getGraphQLMutationName(methodName);
-				operation = "mutation";
+				operation = getGraphQLMutationName(methodName);
+				type = "mutation";
 			}
 
 			return HashMapBuilder.put(
-				"field", field
-			).put(
 				"operation", operation
+			).put(
+				"type", type
 			).build();
 		}
 
