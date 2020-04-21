@@ -12,7 +12,6 @@
  * details.
  */
 
-
 package com.liferay.fragment.constants;
 
 /**
@@ -22,4 +21,5 @@ public class FragmentWebKeys {
 
 	public static final String FRAGMENT_ENTRY_LINK_PORTLETS =
 		"com_liferay_fragment_web_portlet_fragmentEntryLinkIdPortletIds";
+
 }

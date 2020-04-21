@@ -46,7 +46,6 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -61,7 +60,6 @@ import com.liferay.segments.util.SegmentsExperiencePortletUtil;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -238,8 +236,8 @@ public class PortletFragmentEntryProcessor implements FragmentEntryProcessor {
 
 			_addRenderedPortlet(
 				fragmentEntryProcessorContext.getHttpServletRequest(),
-				fragmentEntryLink.getFragmentEntryLinkId(),
-				portletName, instanceId);
+				fragmentEntryLink.getFragmentEntryLinkId(), portletName,
+				instanceId);
 
 			String portletHTML = _fragmentPortletRenderer.renderPortlet(
 				fragmentEntryProcessorContext.getHttpServletRequest(),
@@ -293,7 +291,7 @@ public class PortletFragmentEntryProcessor implements FragmentEntryProcessor {
 		Map<String, String> portletIds = fragmentEntryLinkIdPortletIds.get(
 			fragmentEntryLinkId);
 
-		if (Validator.isNull(portletIds)) {
+		if (portletIds == null) {
 			portletIds = new HashMap<>();
 
 			fragmentEntryLinkIdPortletIds.put(fragmentEntryLinkId, portletIds);

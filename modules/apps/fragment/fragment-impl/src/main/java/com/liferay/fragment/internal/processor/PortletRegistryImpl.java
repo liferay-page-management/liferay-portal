@@ -226,10 +226,9 @@ public class PortletRegistryImpl implements PortletRegistry {
 			).collect(
 				Collectors.toList()
 			);
-
 		}
 
-		Map <String, String> portletIds = fragmentEntryLinkIdPortletIds.get(
+		Map<String, String> portletIds = fragmentEntryLinkIdPortletIds.get(
 			fragmentEntryLink.getFragmentEntryLinkId());
 
 		return new ArrayList<>(portletIds.values());
