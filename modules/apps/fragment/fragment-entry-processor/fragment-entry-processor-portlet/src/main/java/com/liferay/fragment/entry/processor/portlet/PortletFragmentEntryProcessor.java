@@ -14,6 +14,7 @@
 
 package com.liferay.fragment.entry.processor.portlet;
 
+import com.liferay.fragment.constants.FragmentWebKeys;
 import com.liferay.fragment.exception.FragmentEntryContentException;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.processor.FragmentEntryProcessor;
@@ -45,6 +46,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -58,7 +60,10 @@ import com.liferay.segments.util.SegmentsExperiencePortletUtil;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.OptionalLong;
 import java.util.ResourceBundle;
@@ -162,7 +167,8 @@ public class PortletFragmentEntryProcessor implements FragmentEntryProcessor {
 
 		if (Validator.isNotNull(jsonObject.getString("portletId"))) {
 			return _renderWidgetHTML(
-				editableValues, fragmentEntryProcessorContext);
+				fragmentEntryLink.getFragmentEntryLinkId(), editableValues,
+				fragmentEntryProcessorContext);
 		}
 
 		FragmentEntryLink originalFragmentEntryLink = null;
@@ -230,6 +236,11 @@ public class PortletFragmentEntryProcessor implements FragmentEntryProcessor {
 				defaultPreferences = portlet.getDefaultPreferences();
 			}
 
+			_addRenderedPortlet(
+				fragmentEntryProcessorContext.getHttpServletRequest(),
+				fragmentEntryLink.getFragmentEntryLinkId(),
+				PortletIdCodec.encode(portletName, instanceId));
+
 			String portletHTML = _fragmentPortletRenderer.renderPortlet(
 				fragmentEntryProcessorContext.getHttpServletRequest(),
 				fragmentEntryProcessorContext.getHttpServletResponse(),
@@ -259,6 +270,34 @@ public class PortletFragmentEntryProcessor implements FragmentEntryProcessor {
 		Document document = _getDocument(html);
 
 		_validateFragmentEntryHTMLDocument(document);
+	}
+
+	private void _addRenderedPortlet(
+		HttpServletRequest httpServletRequest, long fragmentEntryLinkId,
+		String portletId) {
+
+		Map<Long, List<String>> fragmentEntryLinkIdPortletIds =
+			(Map<Long, List<String>>)httpServletRequest.getAttribute(
+				FragmentWebKeys.FRAGMENT_ENTRY_LINK_PORTLETS);
+
+		if (fragmentEntryLinkIdPortletIds == null) {
+			fragmentEntryLinkIdPortletIds = new HashMap<>();
+
+			httpServletRequest.setAttribute(
+				FragmentWebKeys.FRAGMENT_ENTRY_LINK_PORTLETS,
+				fragmentEntryLinkIdPortletIds);
+		}
+
+		List<String> portletIds = fragmentEntryLinkIdPortletIds.get(
+			fragmentEntryLinkId);
+
+		if (Validator.isNull(portletIds)) {
+			portletIds = new LinkedList<>();
+
+			fragmentEntryLinkIdPortletIds.put(fragmentEntryLinkId, portletIds);
+		}
+
+		portletIds.add(portletId);
 	}
 
 	private long _getDefaultPlid(ThemeDisplay themeDisplay) {
@@ -412,7 +451,7 @@ public class PortletFragmentEntryProcessor implements FragmentEntryProcessor {
 	}
 
 	private String _renderWidgetHTML(
-			String editableValues,
+			long fragmentEntryLinkId, String editableValues,
 			FragmentEntryProcessorContext fragmentEntryProcessorContext)
 		throws PortalException {
 
@@ -485,6 +524,10 @@ public class PortletFragmentEntryProcessor implements FragmentEntryProcessor {
 					fragmentEntryProcessorContext.getHttpServletRequest(),
 					PortletIdCodec.encode(portletId, instanceId));
 		}
+
+		_addRenderedPortlet(
+			fragmentEntryProcessorContext.getHttpServletRequest(),
+			fragmentEntryLinkId, PortletIdCodec.encode(portletId, instanceId));
 
 		return _fragmentPortletRenderer.renderPortlet(
 			fragmentEntryProcessorContext.getHttpServletRequest(),
