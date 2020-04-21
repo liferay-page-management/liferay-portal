@@ -239,7 +239,7 @@ public class PortletFragmentEntryProcessor implements FragmentEntryProcessor {
 			_addRenderedPortlet(
 				fragmentEntryProcessorContext.getHttpServletRequest(),
 				fragmentEntryLink.getFragmentEntryLinkId(),
-				PortletIdCodec.encode(portletName, instanceId));
+				portletName, instanceId);
 
 			String portletHTML = _fragmentPortletRenderer.renderPortlet(
 				fragmentEntryProcessorContext.getHttpServletRequest(),
@@ -274,10 +274,12 @@ public class PortletFragmentEntryProcessor implements FragmentEntryProcessor {
 
 	private void _addRenderedPortlet(
 		HttpServletRequest httpServletRequest, long fragmentEntryLinkId,
-		String portletId) {
+		String portletName, String instanceId) {
 
-		Map<Long, List<String>> fragmentEntryLinkIdPortletIds =
-			(Map<Long, List<String>>)httpServletRequest.getAttribute(
+		String portletId = PortletIdCodec.encode(portletName, instanceId);
+
+		Map<Long, Map<String, String>> fragmentEntryLinkIdPortletIds =
+			(Map<Long, Map<String, String>>)httpServletRequest.getAttribute(
 				FragmentWebKeys.FRAGMENT_ENTRY_LINK_PORTLETS);
 
 		if (fragmentEntryLinkIdPortletIds == null) {
@@ -288,16 +290,16 @@ public class PortletFragmentEntryProcessor implements FragmentEntryProcessor {
 				fragmentEntryLinkIdPortletIds);
 		}
 
-		List<String> portletIds = fragmentEntryLinkIdPortletIds.get(
+		Map<String, String> portletIds = fragmentEntryLinkIdPortletIds.get(
 			fragmentEntryLinkId);
 
 		if (Validator.isNull(portletIds)) {
-			portletIds = new LinkedList<>();
+			portletIds = new HashMap<>();
 
 			fragmentEntryLinkIdPortletIds.put(fragmentEntryLinkId, portletIds);
 		}
 
-		portletIds.add(portletId);
+		portletIds.put(portletName, portletId);
 	}
 
 	private long _getDefaultPlid(ThemeDisplay themeDisplay) {
@@ -527,7 +529,7 @@ public class PortletFragmentEntryProcessor implements FragmentEntryProcessor {
 
 		_addRenderedPortlet(
 			fragmentEntryProcessorContext.getHttpServletRequest(),
-			fragmentEntryLinkId, PortletIdCodec.encode(portletId, instanceId));
+			fragmentEntryLinkId, portletId, instanceId);
 
 		return _fragmentPortletRenderer.renderPortlet(
 			fragmentEntryProcessorContext.getHttpServletRequest(),

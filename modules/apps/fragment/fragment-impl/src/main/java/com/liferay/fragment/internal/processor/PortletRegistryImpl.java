@@ -217,8 +217,8 @@ public class PortletRegistryImpl implements PortletRegistry {
 			HttpServletRequest httpServletRequest)
 		throws PortalException {
 
-		Map<Long, List<String>> fragmentEntryLinkIdPortletIds =
-			(Map<Long, List<String>>)httpServletRequest.getAttribute(
+		Map<Long, Map<String, String>> fragmentEntryLinkIdPortletIds =
+			(Map<Long, Map<String, String>>)httpServletRequest.getAttribute(
 				FragmentWebKeys.FRAGMENT_ENTRY_LINK_PORTLETS);
 
 		if (fragmentEntryLinkIdPortletIds == null) {
@@ -251,9 +251,10 @@ public class PortletRegistryImpl implements PortletRegistry {
 
 		}
 
-		return fragmentEntryLinkIdPortletIds.get(
+		Map <String, String> portletIds = fragmentEntryLinkIdPortletIds.get(
 			fragmentEntryLink.getFragmentEntryLinkId());
 
+		return new ArrayList<>(portletIds.values());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
