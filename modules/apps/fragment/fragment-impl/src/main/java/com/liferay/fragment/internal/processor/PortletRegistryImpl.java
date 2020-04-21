@@ -14,6 +14,7 @@
 
 package com.liferay.fragment.internal.processor;
 
+import com.liferay.fragment.constants.FragmentWebKeys;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.processor.PortletRegistry;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
@@ -26,6 +27,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.PortletPreferences;
+import com.liferay.portal.kernel.model.PortletPreferencesModel;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.portlet.PortletJSONUtil;
 import com.liferay.portal.kernel.service.PortletLocalService;
@@ -40,6 +42,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -132,27 +136,12 @@ public class PortletRegistryImpl implements PortletRegistry {
 			HttpServletResponse httpServletResponse)
 		throws PortalException {
 
-		long plid = fragmentEntryLink.getClassPK();
+		List<String> portletIds = _getPortletIds(
+			fragmentEntryLink, httpServletRequest);
 
-		if (fragmentEntryLink.getClassNameId() == _portal.getClassNameId(
-				LayoutPageTemplateEntry.class)) {
-
-			LayoutPageTemplateEntry layoutPageTemplateEntry =
-				_layoutPageTemplateEntryLocalService.getLayoutPageTemplateEntry(
-					fragmentEntryLink.getClassPK());
-
-			plid = layoutPageTemplateEntry.getPlid();
-		}
-
-		List<PortletPreferences> portletPreferencesList =
-			_portletPreferencesLocalService.getPortletPreferences(
-				PortletKeys.PREFS_OWNER_ID_DEFAULT,
-				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, plid);
-
-		for (PortletPreferences portletPreferences : portletPreferencesList) {
+		for (String portletId : portletIds) {
 			Portlet portlet = _portletLocalService.getPortletById(
-				fragmentEntryLink.getCompanyId(),
-				portletPreferences.getPortletId());
+				fragmentEntryLink.getCompanyId(), portletId);
 
 			JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
@@ -199,6 +188,50 @@ public class PortletRegistryImpl implements PortletRegistry {
 			properties, "javax.portlet.name");
 
 		_portletNames.remove(alias, portletName);
+	}
+
+	private List<String> _getPortletIds(
+			FragmentEntryLink fragmentEntryLink,
+			HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		Map<Long, List<String>> fragmentEntryLinkIdPortletIds =
+			(Map<Long, List<String>>)httpServletRequest.getAttribute(
+				FragmentWebKeys.FRAGMENT_ENTRY_LINK_PORTLETS);
+
+		if (fragmentEntryLinkIdPortletIds == null) {
+			long plid = fragmentEntryLink.getClassPK();
+
+			if (fragmentEntryLink.getClassNameId() == _portal.getClassNameId(
+					LayoutPageTemplateEntry.class)) {
+
+				LayoutPageTemplateEntry layoutPageTemplateEntry =
+					_layoutPageTemplateEntryLocalService.
+						getLayoutPageTemplateEntry(
+							fragmentEntryLink.getClassPK());
+
+				plid = layoutPageTemplateEntry.getPlid();
+			}
+
+			List<PortletPreferences> portletPreferencesList =
+				_portletPreferencesLocalService.getPortletPreferences(
+					PortletKeys.PREFS_OWNER_ID_DEFAULT,
+					PortletKeys.PREFS_OWNER_TYPE_LAYOUT, plid);
+
+			Stream<PortletPreferences> portletPreferencesStream =
+				portletPreferencesList.stream();
+
+			return portletPreferencesStream.map(
+				PortletPreferencesModel::getPortletId
+			).collect(
+				Collectors.toList()
+			);
+
+		}
+
+		return fragmentEntryLinkIdPortletIds.get(
+			fragmentEntryLink.getFragmentEntryLinkId());
+
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
