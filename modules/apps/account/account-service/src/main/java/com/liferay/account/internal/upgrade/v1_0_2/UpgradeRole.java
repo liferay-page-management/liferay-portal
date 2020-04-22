@@ -24,9 +24,9 @@ import java.sql.SQLException;
 /**
  * @author Pei-Jung Lan
  */
-public class UpgradeRoleName extends UpgradeProcess {
+public class UpgradeRole extends UpgradeProcess {
 
-	public UpgradeRoleName(RoleLocalService roleLocalService) {
+	public UpgradeRole(RoleLocalService roleLocalService) {
 		_roleLocalService = roleLocalService;
 	}
 

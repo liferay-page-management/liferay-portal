@@ -14,8 +14,6 @@
 
 package com.liferay.account.internal.upgrade;
 
-import com.liferay.account.internal.upgrade.v1_0_1.UpgradeRole;
-import com.liferay.account.internal.upgrade.v1_0_2.UpgradeRoleName;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
@@ -30,10 +28,14 @@ public class AccountServiceUpgrade implements UpgradeStepRegistrator {
 
 	@Override
 	public void register(Registry registry) {
-		registry.register("1.0.0", "1.0.1", new UpgradeRole());
+		registry.register(
+			"1.0.0", "1.0.1",
+			new com.liferay.account.internal.upgrade.v1_0_1.UpgradeRole());
 
 		registry.register(
-			"1.0.1", "1.0.2", new UpgradeRoleName(_roleLocalService));
+			"1.0.1", "1.0.2",
+			new com.liferay.account.internal.upgrade.v1_0_2.UpgradeRole(
+				_roleLocalService));
 	}
 
 	@Reference
