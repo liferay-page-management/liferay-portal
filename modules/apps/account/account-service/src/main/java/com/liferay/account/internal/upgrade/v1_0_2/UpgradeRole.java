@@ -37,18 +37,18 @@ public class UpgradeRole extends UpgradeProcess {
 				AccountRoleConstants.REQUIRED_ROLE_NAME_ACCOUNT_ADMINISTRATOR +
 					"'");
 
-		_updateRoleName(
+		_updateRole(
 			AccountRoleConstants.REQUIRED_ROLE_NAME_ACCOUNT_POWER_USER,
 			AccountRoleConstants.REQUIRED_ROLE_NAME_ACCOUNT_ADMINISTRATOR);
-		_updateRoleName(
+		_updateRole(
 			AccountRoleConstants.REQUIRED_ROLE_NAME_ACCOUNT_OWNER,
 			AccountRoleConstants.REQUIRED_ROLE_NAME_ACCOUNT_MANAGER);
-		_updateRoleName(
+		_updateRole(
 			AccountRoleConstants.REQUIRED_ROLE_NAME_ACCOUNT_USER,
 			AccountRoleConstants.REQUIRED_ROLE_NAME_ACCOUNT_MEMBER);
 	}
 
-	private void _updateRoleName(String oldName, String newName)
+	private void _updateRole(String oldName, String newName)
 		throws SQLException {
 
 		try (PreparedStatement ps = connection.prepareStatement(
