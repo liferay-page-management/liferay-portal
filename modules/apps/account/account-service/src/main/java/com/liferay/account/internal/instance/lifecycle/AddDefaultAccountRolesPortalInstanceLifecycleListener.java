@@ -84,7 +84,7 @@ public class AddDefaultAccountRolesPortalInstanceLifecycleListener
 			_roleLocalService.addRole(
 				defaultUser.getUserId(), null, 0,
 				AccountRoleConstants.REQUIRED_ROLE_NAME_ACCOUNT_MANAGER, null,
-				_roleDescriptionMaps.get(
+				_roleDescriptionsMaps.get(
 					AccountRoleConstants.REQUIRED_ROLE_NAME_ACCOUNT_MANAGER),
 				RoleConstants.TYPE_REGULAR, null, null);
 		}
@@ -98,7 +98,7 @@ public class AddDefaultAccountRolesPortalInstanceLifecycleListener
 
 		Role role = _roleLocalService.addRole(
 			userId, AccountRole.class.getName(), accountRole.getAccountRoleId(),
-			roleName, null, _roleDescriptionMaps.get(roleName),
+			roleName, null, _roleDescriptionsMaps.get(roleName),
 			RoleConstants.TYPE_ACCOUNT, null, null);
 
 		accountRole.setCompanyId(role.getCompanyId());
@@ -129,7 +129,7 @@ public class AddDefaultAccountRolesPortalInstanceLifecycleListener
 
 	private void _checkRoleDescription(Role role) {
 		if (MapUtil.isEmpty(role.getDescriptionMap())) {
-			role.setDescriptionMap(_roleDescriptionMaps.get(role.getName()));
+			role.setDescriptionMap(_roleDescriptionsMaps.get(role.getName()));
 
 			_roleLocalService.updateRole(role);
 		}
@@ -160,8 +160,8 @@ public class AddDefaultAccountRolesPortalInstanceLifecycleListener
 		_accountMemberResourceActionsMap = HashMapBuilder.put(
 			AccountEntry.class.getName(), new String[] {ActionKeys.VIEW}
 		).build();
-	private static final Map<String, Map<Locale, String>> _roleDescriptionMaps =
-		HashMapBuilder.<String, Map<Locale, String>>put(
+	private static final Map<String, Map<Locale, String>>
+		_roleDescriptionsMaps = HashMapBuilder.<String, Map<Locale, String>>put(
 			AccountRoleConstants.REQUIRED_ROLE_NAME_ACCOUNT_ADMINISTRATOR,
 			Collections.singletonMap(
 				LocaleUtil.US,
