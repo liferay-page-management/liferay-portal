@@ -131,8 +131,21 @@ public class RowLayoutStructureItem extends LayoutStructureItem {
 			setGutters(itemConfigJSONObject.getBoolean("gutters"));
 		}
 
+		if (itemConfigJSONObject.has("modulesPerRow")) {
+			setModulesPerRow(itemConfigJSONObject.getInt("modulesPerRow"));
+		}
+
 		if (itemConfigJSONObject.has("numberOfColumns")) {
 			setNumberOfColumns(itemConfigJSONObject.getInt("numberOfColumns"));
+		}
+
+		if (itemConfigJSONObject.has("reverseOrder")) {
+			setReverseOrder(itemConfigJSONObject.getBoolean("reverseOrder"));
+		}
+
+		if (itemConfigJSONObject.has("verticalAlignment")) {
+			setVerticalAlignment(
+				itemConfigJSONObject.getString("verticalAlignment"));
 		}
 	}
 
