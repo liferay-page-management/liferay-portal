@@ -45,7 +45,14 @@ public class RowLayoutStructureItem extends LayoutStructureItem {
 
 		if (!Objects.equals(_gutters, rowLayoutStructureItem._gutters) ||
 			!Objects.equals(
-				_numberOfColumns, rowLayoutStructureItem._numberOfColumns)) {
+				_modulesPerRow, rowLayoutStructureItem._numberOfColumns) ||
+			!Objects.equals(
+				_numberOfColumns, rowLayoutStructureItem._numberOfColumns) ||
+			!Objects.equals(
+				_reverseOrder, rowLayoutStructureItem._reverseOrder) ||
+			!Objects.equals(
+				_verticalAlignment,
+				rowLayoutStructureItem._verticalAlignment)) {
 
 			return false;
 		}
@@ -58,7 +65,13 @@ public class RowLayoutStructureItem extends LayoutStructureItem {
 		return JSONUtil.put(
 			"gutters", _gutters
 		).put(
+			"modulesPerRow", _modulesPerRow
+		).put(
 			"numberOfColumns", _numberOfColumns
+		).put(
+			"reverseOrder", _reverseOrder
+		).put(
+			"verticalAlignment", _verticalAlignment
 		);
 	}
 
@@ -67,8 +80,16 @@ public class RowLayoutStructureItem extends LayoutStructureItem {
 		return LayoutDataItemTypeConstants.TYPE_ROW;
 	}
 
+	public int getModulesPerRow() {
+		return _modulesPerRow;
+	}
+
 	public int getNumberOfColumns() {
 		return _numberOfColumns;
+	}
+
+	public String getVerticalAlignment() {
+		return _verticalAlignment;
 	}
 
 	@Override
@@ -80,12 +101,28 @@ public class RowLayoutStructureItem extends LayoutStructureItem {
 		return _gutters;
 	}
 
+	public boolean isReverseOrder() {
+		return _reverseOrder;
+	}
+
 	public void setGutters(boolean gutters) {
 		_gutters = gutters;
 	}
 
+	public void setModulesPerRow(int modulesPerRow) {
+		_modulesPerRow = modulesPerRow;
+	}
+
 	public void setNumberOfColumns(int numberOfColumns) {
 		_numberOfColumns = numberOfColumns;
+	}
+
+	public void setReverseOrder(boolean reverseOrder) {
+		_reverseOrder = reverseOrder;
+	}
+
+	public void setVerticalAlignment(String verticalAlignment) {
+		_verticalAlignment = verticalAlignment;
 	}
 
 	@Override
@@ -100,6 +137,9 @@ public class RowLayoutStructureItem extends LayoutStructureItem {
 	}
 
 	private boolean _gutters = true;
+	private int _modulesPerRow = 3;
 	private int _numberOfColumns;
+	private boolean _reverseOrder = true;
+	private String _verticalAlignment = "top";
 
 }
