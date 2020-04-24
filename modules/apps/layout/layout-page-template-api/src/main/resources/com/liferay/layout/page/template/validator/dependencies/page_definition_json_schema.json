@@ -90,7 +90,7 @@
 			"type": "object"
 		},
 		"FragmentField": {
-			"oneOf": [
+			"anyOf": [
 				{
 					"$ref": "#/definitions/FragmentFieldBackgroundImage"
 				},
@@ -241,8 +241,7 @@
 							}
 						},
 						"required": [
-							"id",
-							"value"
+							"id"
 						],
 						"type": "object"
 					},
