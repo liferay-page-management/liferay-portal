@@ -16,10 +16,12 @@ package com.liferay.layout.page.template.internal.model.listener;
 
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ModelListener;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.Portal;
 
 import org.osgi.service.component.annotations.Component;
@@ -30,6 +32,25 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(immediate = true, service = ModelListener.class)
 public class LayoutModelListener extends BaseModelListener<Layout> {
+
+	@Override
+	public void onBeforeCreate(Layout layout) throws ModelListenerException {
+		if (!(layout.isTypeAssetDisplay() || layout.isTypeContent())) {
+			return;
+		}
+
+		try {
+			_layoutPageTemplateStructureLocalService.
+				addLayoutPageTemplateStructure(
+					layout.getUserId(), layout.getGroupId(),
+					_portal.getClassNameId(Layout.class), layout.getPlid(),
+					StringPool.BLANK,
+					ServiceContextThreadLocal.getServiceContext());
+		}
+		catch (Exception exception) {
+			throw new ModelListenerException(exception);
+		}
+	}
 
 	@Override
 	public void onBeforeRemove(Layout layout) throws ModelListenerException {
