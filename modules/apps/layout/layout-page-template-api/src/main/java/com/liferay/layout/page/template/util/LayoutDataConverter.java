@@ -20,7 +20,6 @@ import com.liferay.layout.util.structure.ColumnLayoutStructureItem;
 import com.liferay.layout.util.structure.ContainerLayoutStructureItem;
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
-import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.layout.util.structure.RowLayoutStructureItem;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -63,10 +62,8 @@ public class LayoutDataConverter {
 			return data;
 		}
 
-		LayoutStructure layoutStructure = new LayoutStructure();
-
-		LayoutStructureItem rootLayoutStructureItem =
-			layoutStructure.addRootLayoutStructureItem();
+		LayoutStructure layoutStructure =
+			LayoutStructure.emptyLayoutStructure();
 
 		for (int i = 0; i < structureJSONArray.length(); i++) {
 			JSONObject inputRowJSONObject = structureJSONArray.getJSONObject(i);
@@ -80,7 +77,7 @@ public class LayoutDataConverter {
 				ContainerLayoutStructureItem containerLayoutStructureItem =
 					(ContainerLayoutStructureItem)
 						layoutStructure.addContainerLayoutStructureItem(
-							rootLayoutStructureItem.getItemId(), i);
+							layoutStructure.getMainItemId(), i);
 
 				JSONObject inputRowConfigJSONObject =
 					inputRowJSONObject.getJSONObject("config");
@@ -152,7 +149,7 @@ public class LayoutDataConverter {
 				_addFragmentEntryLink(
 					fragmentEntryLinkIdsJSONArray.getString(0),
 					inputDataJSONObject, layoutStructure,
-					rootLayoutStructureItem.getItemId(), i);
+					layoutStructure.getMainItemId(), i);
 			}
 		}
 

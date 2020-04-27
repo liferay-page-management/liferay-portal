@@ -29,7 +29,6 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServ
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalServiceUtil;
 import com.liferay.layout.util.structure.CollectionLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
-import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -201,13 +200,11 @@ public class PortletLayoutDisplayContext {
 	}
 
 	private LayoutStructure _getDefaultMasterLayoutStructure() {
-		LayoutStructure layoutStructure = new LayoutStructure();
-
-		LayoutStructureItem rootLayoutStructureItem =
-			layoutStructure.addRootLayoutStructureItem();
+		LayoutStructure layoutStructure =
+			LayoutStructure.emptyLayoutStructure();
 
 		layoutStructure.addDropZoneLayoutStructureItem(
-			rootLayoutStructureItem.getItemId(), 0);
+			layoutStructure.getMainItemId(), 0);
 
 		return layoutStructure;
 	}

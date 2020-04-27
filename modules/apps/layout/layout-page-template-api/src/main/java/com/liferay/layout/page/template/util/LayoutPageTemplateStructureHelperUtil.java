@@ -41,33 +41,28 @@ public class LayoutPageTemplateStructureHelperUtil {
 		if (fragmentEntryLinks.isEmpty() &&
 			(type == LayoutPageTemplateEntryTypeConstants.TYPE_MASTER_LAYOUT)) {
 
-			LayoutStructure layoutStructure = new LayoutStructure();
-
-			LayoutStructureItem rootLayoutStructureItem =
-				layoutStructure.addRootLayoutStructureItem();
+			LayoutStructure layoutStructure =
+				LayoutStructure.emptyLayoutStructure();
 
 			layoutStructure.addDropZoneLayoutStructureItem(
-				rootLayoutStructureItem.getItemId(), 0);
+				layoutStructure.getMainItemId(), 0);
 
 			return layoutStructure.toJSONObject();
 		}
 
 		if (fragmentEntryLinks.isEmpty()) {
-			LayoutStructure layoutStructure = new LayoutStructure();
-
-			layoutStructure.addRootLayoutStructureItem();
+			LayoutStructure layoutStructure =
+				LayoutStructure.emptyLayoutStructure();
 
 			return layoutStructure.toJSONObject();
 		}
 
-		LayoutStructure layoutStructure = new LayoutStructure();
-
-		LayoutStructureItem rootLayoutStructureItem =
-			layoutStructure.addRootLayoutStructureItem();
+		LayoutStructure layoutStructure =
+			LayoutStructure.emptyLayoutStructure();
 
 		LayoutStructureItem containerLayoutStructureItem =
 			layoutStructure.addContainerLayoutStructureItem(
-				rootLayoutStructureItem.getItemId(), 0);
+				layoutStructure.getMainItemId(), 0);
 
 		for (int i = 0; i < fragmentEntryLinks.size(); i++) {
 			FragmentEntryLink fragmentEntryLink = fragmentEntryLinks.get(i);

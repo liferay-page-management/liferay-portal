@@ -37,17 +37,15 @@ public class LayoutData {
 	}
 
 	public JSONObject getLayoutDataJSONObject() {
-		LayoutStructure layoutStructure = new LayoutStructure();
-
-		LayoutStructureItem rootLayoutStructureItem =
-			layoutStructure.addRootLayoutStructureItem();
+		LayoutStructure layoutStructure =
+			LayoutStructure.emptyLayoutStructure();
 
 		int i = 0;
 
 		for (LayoutRow layoutRow : _layoutRows) {
 			LayoutStructureItem containerLayoutStructureItem =
 				layoutStructure.addContainerLayoutStructureItem(
-					rootLayoutStructureItem.getItemId(), i++);
+					layoutStructure.getMainItemId(), i++);
 
 			List<LayoutColumn> layoutColumns = layoutRow.getLayoutColumns();
 

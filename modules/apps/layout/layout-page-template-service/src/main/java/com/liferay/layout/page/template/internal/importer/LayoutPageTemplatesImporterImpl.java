@@ -1042,10 +1042,8 @@ public class LayoutPageTemplatesImporterImpl
 		Layout layout = _layoutLocalService.getLayout(
 			layoutPageTemplateEntry.getPlid());
 
-		LayoutStructure layoutStructure = new LayoutStructure();
-
-		LayoutStructureItem rootLayoutStructureItem =
-			layoutStructure.addRootLayoutStructureItem();
+		LayoutStructure layoutStructure =
+			LayoutStructure.emptyLayoutStructure();
 
 		if (pageDefinition != null) {
 			PageElement pageElement = pageDefinition.getPageElement();
@@ -1060,7 +1058,7 @@ public class LayoutPageTemplatesImporterImpl
 
 					_processPageElement(
 						layout, layoutStructure, childPageElement,
-						rootLayoutStructureItem.getItemId(), position);
+						layoutStructure.getMainItemId(), position);
 
 					position++;
 				}

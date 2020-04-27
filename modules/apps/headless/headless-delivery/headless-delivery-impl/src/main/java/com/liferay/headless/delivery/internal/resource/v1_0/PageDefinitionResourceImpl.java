@@ -124,9 +124,8 @@ public class PageDefinitionResourceImpl extends BasePageDefinitionResourceImpl {
 			StringPool.BLANK, true, false, Collections.emptyMap(), 0,
 			serviceContext);
 
-		LayoutStructure layoutStructure = new LayoutStructure();
-
-		layoutStructure.addRootLayoutStructureItem();
+		LayoutStructure layoutStructure =
+			LayoutStructure.emptyLayoutStructure();
 
 		_fragmentEntryLinkLocalService.
 			deleteLayoutPageTemplateEntryFragmentEntryLinks(
