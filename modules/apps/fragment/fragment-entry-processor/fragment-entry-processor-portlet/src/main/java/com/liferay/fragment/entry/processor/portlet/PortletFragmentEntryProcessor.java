@@ -56,13 +56,18 @@ import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.segments.util.SegmentsExperiencePortletUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.OptionalLong;
 import java.util.ResourceBundle;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 import javax.portlet.PortletPreferences;
 
@@ -531,6 +536,8 @@ public class PortletFragmentEntryProcessor implements FragmentEntryProcessor {
 	private void _validateFragmentEntryHTMLDocument(Document document)
 		throws PortalException {
 
+		List<String> portletNames = new ArrayList<>();
+
 		for (Element element : document.select("*")) {
 			String htmlTagName = element.tagName();
 
@@ -541,7 +548,9 @@ public class PortletFragmentEntryProcessor implements FragmentEntryProcessor {
 			String alias = StringUtil.removeSubstring(
 				htmlTagName, "lfr-widget-");
 
-			if (Validator.isNull(_portletRegistry.getPortletName(alias))) {
+			String portletName = _portletRegistry.getPortletName(alias);
+
+			if (Validator.isNull(portletName)) {
 				throw new FragmentEntryContentException(
 					LanguageUtil.format(
 						_resourceBundle,
@@ -587,7 +596,33 @@ public class PortletFragmentEntryProcessor implements FragmentEntryProcessor {
 						"duplicate-widgets-within-the-same-fragment-must-" +
 							"have-an-id"));
 			}
+
+			portletNames.add(portletName);
 		}
+
+		Stream<String> stream = portletNames.stream();
+
+		Map<String, Long> portletNamesMap = stream.collect(
+			Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+		for (Map.Entry<String, Long> entry : portletNamesMap.entrySet()) {
+			if (entry.getValue() <= 1) {
+				continue;
+			}
+
+			Portlet portlet = _portletLocalService.getPortletById(
+				entry.getKey());
+
+			if (!portlet.isInstanceable()) {
+				throw new FragmentEntryContentException(
+					LanguageUtil.get(
+						_resourceBundle,
+						"non-instanceable-widgets-cannot-be-added-more-than-" +
+							"once-to-a-fragment"));
+			}
+		}
+
+		portletNamesMap.size();
 	}
 
 	@Reference
