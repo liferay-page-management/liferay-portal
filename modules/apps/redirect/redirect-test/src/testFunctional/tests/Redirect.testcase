@@ -538,8 +538,6 @@ definition {
 	@description = "This ensures that an unexpired redirect can be edited."
 	@priority = "5"
 	test EditEntry {
-		property portal.upstream = "quarantine";
-
 		var portalURL = PropsUtil.get("portal.url");
 		var siteName = TestCase.getSiteName(siteName = "${siteName}");
 
@@ -548,6 +546,7 @@ definition {
 		Redirect.addEntry(
 			destinationURL = "${portalURL}/web/test-site-name/test-destination-page",
 			expirationDate = "12/31/2024",
+			redirectType = "Permanent (301)",
 			siteName = "test-site-name",
 			sourceURL = "test-source-page");
 
@@ -685,8 +684,6 @@ definition {
 	@description = "This ensures that an expired permanent redirect can be reset."
 	@priority = "5"
 	test ResetExpiredEntry {
-		property portal.upstream = "quarantine";
-
 		var portalURL = PropsUtil.get("portal.url");
 
 		Redirect.openRedirectAdmin(siteURLKey = "test-site-name");
@@ -694,6 +691,7 @@ definition {
 		Redirect.addEntry(
 			destinationURL = "${portalURL}/web/test-site-name/test-destination-page",
 			expirationDate = "12/31/2013",
+			redirectType = "Permanent (301)",
 			siteName = "test-site-name",
 			sourceURL = "test-source-page");
 
@@ -766,9 +764,8 @@ definition {
 	@description = "This ensures that an expired temporary redirect can be reactivated."
 	@priority = "5"
 	test ViewExpiredAndActiveEntries {
-		property portal.upstream = "quarantine";
-
 		var portalURL = PropsUtil.get("portal.url");
+		var siteName = TestCase.getSiteName(siteName = "${siteName}");
 
 		Redirect.openRedirectAdmin(siteURLKey = "test-site-name");
 
@@ -805,8 +802,6 @@ definition {
 	@description = "This ensures that an expired permanent redirect can be viewed."
 	@priority = "5"
 	test ViewExpiredPermanentEntry {
-		property portal.upstream = "quarantine";
-
 		var portalURL = PropsUtil.get("portal.url");
 
 		Redirect.openRedirectAdmin(siteURLKey = "test-site-name");
@@ -814,6 +809,7 @@ definition {
 		Redirect.addEntry(
 			destinationURL = "${portalURL}/web/test-site-name/test-destination-page",
 			expirationDate = "12/31/2013",
+			redirectType = "Permanent (301)",
 			siteName = "test-site-name",
 			sourceURL = "test-source-page");
 
@@ -829,8 +825,6 @@ definition {
 	@description = "This ensures that an expired temporary redirect can be viewed."
 	@priority = "5"
 	test ViewExpiredTempEntry {
-		property portal.upstream = "quarantine";
-
 		var portalURL = PropsUtil.get("portal.url");
 
 		Redirect.openRedirectAdmin(siteURLKey = "test-site-name");

@@ -12,7 +12,7 @@
  * details.
  */
 
-import {PortletBase} from 'frontend-js-web';
+import {PortletBase, normalizeFriendlyURL} from 'frontend-js-web';
 import core from 'metal';
 import dom from 'metal-dom';
 
@@ -116,9 +116,7 @@ class EditAdaptiveMediaConfig extends PortletBase {
 			this.isAutomaticUuid_() &&
 			(uuidEmpty || this._originalUuidChanged)
 		) {
-			newUuidInput.value = Liferay.Util.normalizeFriendlyURL(
-				this.nameInput.value
-			);
+			newUuidInput.value = normalizeFriendlyURL(this.nameInput.value);
 		}
 
 		this._originalUuidChanged = true;

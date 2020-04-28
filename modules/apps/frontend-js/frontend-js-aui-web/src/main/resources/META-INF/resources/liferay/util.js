@@ -293,12 +293,6 @@
 			}
 		},
 
-		disableEsc() {
-			if (document.all && window.event.keyCode == 27) {
-				window.event.returnValue = false;
-			}
-		},
-
 		disableFormButtons(inputs, form) {
 			inputs.attr('disabled', true);
 			inputs.setStyle('opacity', 0.5);
@@ -806,18 +800,6 @@
 
 		listUncheckedExcept(form, except, name) {
 			return Util.listCheckboxesExcept(form, except, name, false);
-		},
-
-		normalizeFriendlyURL(text) {
-			var newText = text.replace(/[^a-zA-Z0-9_-]/g, '-');
-
-			if (newText[0] === '-') {
-				newText = newText.replace(/^-+/, '');
-			}
-
-			newText = newText.replace(/--+/g, '-');
-
-			return newText.toLowerCase();
 		},
 
 		openInDialog(event, config) {

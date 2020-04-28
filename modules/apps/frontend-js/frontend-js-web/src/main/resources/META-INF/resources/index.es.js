@@ -76,3 +76,4 @@ export {default as getPortletId} from './liferay/util/get_portlet_id';
 export {default as isPhone} from './liferay/util/is_phone';
 export {default as isTablet} from './liferay/util/is_tablet';
 export {default as navigate} from './liferay/util/navigate.es';
+export {default as normalizeFriendlyURL} from './liferay/util/normalize_friendly_url';
