@@ -16,9 +16,13 @@ package com.liferay.analytics.reports.web.internal.portlet.action;
 
 import com.liferay.analytics.reports.web.internal.constants.AnalyticsReportsPortletKeys;
 import com.liferay.analytics.reports.web.internal.data.provider.AnalyticsReportsDataProvider;
+import com.liferay.analytics.reports.web.internal.layout.seo.CanonicalURLProvider;
+import com.liferay.analytics.reports.web.internal.model.HistoricalMetric;
 import com.liferay.analytics.reports.web.internal.model.TimeSpan;
+import com.liferay.layout.seo.kernel.LayoutSEOLinkManager;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -28,6 +32,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import javax.portlet.ResourceRequest;
@@ -61,8 +66,6 @@ public class GetAnalyticsReportsHistoricalReadsMVCResourceCommand
 			AnalyticsReportsDataProvider analyticsReportsDataProvider =
 				new AnalyticsReportsDataProvider(_http);
 
-			long plid = ParamUtil.getLong(resourceRequest, "plid");
-
 			String timeSpanKey = ParamUtil.getString(
 				resourceRequest, "timeSpanKey", TimeSpan.defaultTimeSpanKey());
 
@@ -71,10 +74,20 @@ public class GetAnalyticsReportsHistoricalReadsMVCResourceCommand
 			int timeSpanOffset = ParamUtil.getInteger(
 				resourceRequest, "timeSpanOffset");
 
+			CanonicalURLProvider canonicalURLProvider =
+				new CanonicalURLProvider(
+					_portal.getHttpServletRequest(resourceRequest), _language,
+					_layoutSEOLinkManager, _portal);
+
+			HistoricalMetric historicalMetric =
+				analyticsReportsDataProvider.getHistoricalReadsHistoricalMetric(
+					_portal.getCompanyId(resourceRequest),
+					timeSpan.toTimeRange(timeSpanOffset),
+					canonicalURLProvider.getCanonicalURL());
+
 			jsonObject.put(
 				"analyticsReportsHistoricalReads",
-				analyticsReportsDataProvider.getHistoricalReadsJSONObject(
-					plid, timeSpan.toTimeRange(timeSpanOffset)));
+				historicalMetric.toJSONObject());
 		}
 		catch (Exception exception) {
 			_log.error(exception, exception);
@@ -98,5 +111,14 @@ public class GetAnalyticsReportsHistoricalReadsMVCResourceCommand
 
 	@Reference
 	private Http _http;
+
+	@Reference
+	private Language _language;
+
+	@Reference
+	private LayoutSEOLinkManager _layoutSEOLinkManager;
+
+	@Reference
+	private Portal _portal;
 
 }

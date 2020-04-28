@@ -62,6 +62,7 @@
 		<suppress checks="StaticVariableNameCheck" files="portal-kernel/src/com/liferay/portal/kernel/license/messaging/LicenseManagerMessageType\.java" />
 		<suppress checks="StaticVariableNameCheck" files="util-java/src/com/liferay/util/resiliency/spi/provider/SPIClassPathContextListener\.java" />
 		<suppress checks="StaticVariableNameCheck" files="util-slf4j/src/org/slf4j/impl/StaticLoggerBinder\.java" />
+		<suppress checks="TryWithResourcesCheck" files="portal-kernel/test/unit/com/liferay/portal/kernel/nio/intraband/blocking/ExecutorIntrabandTest\.java" />
 		<suppress checks="VariableDeclarationAsUsedCheck" files="portal-impl/src/com/liferay/portal/action/UpdateLayoutAction\.java" />
 		<suppress checks="VariableNameCheck" files="portal-impl/test/unit/com/liferay/portal/jsonwebservice/FooService\.java" />
 	</checkstyle>

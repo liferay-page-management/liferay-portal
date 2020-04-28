@@ -1,0 +1,367 @@
+{
+	"closeableTypeNames": [
+		{
+			"name": "aQute.bnd.build.Project"
+		},
+		{
+			"name": "aQute.bnd.build.ProjectBuilder"
+		},
+		{
+			"name": "aQute.bnd.build.Workspace"
+		},
+		{
+			"name": "aQute.bnd.main.bnd"
+		},
+		{
+			"name": "aQute.bnd.osgi.Analyzer"
+		},
+		{
+			"name": "aQute.bnd.osgi.Builder"
+		},
+		{
+			"name": "aQute.bnd.osgi.Jar"
+		},
+		{
+			"name": "aQute.bnd.osgi.Processor"
+		},
+		{
+			"name": "biz.aQute.resolve.Bndrun"
+		},
+		{
+			"name": "com.github.scribejava.core.oauth.OAuth20Service"
+		},
+		{
+			"name": "com.liferay.adaptive.media.document.library.thumbnails.internal.test.util.PropsValuesReplacer"
+		},
+		{
+			"name": "com.liferay.arquillian.extension.junit.bridge.client.ClientState.Connection"
+		},
+		{
+			"name": "com.liferay.batch.engine.internal.item.BatchEngineTaskItemDelegateExecutor"
+		},
+		{
+			"name": "com.liferay.batch.engine.internal.reader.BatchEngineImportTaskItemReader"
+		},
+		{
+			"name": "com.liferay.batch.engine.internal.writer.BatchEngineExportTaskItemWriter"
+		},
+		{
+			"name": "com.liferay.css.builder.CSSBuilder"
+		},
+		{
+			"name": "com.liferay.document.library.opener.onedrive.web.internal.test.util.PropsValuesReplacer"
+		},
+		{
+			"name": "com.liferay.document.library.workflow.WorkflowHandlerInvocationCounter"
+		},
+		{
+			"name": "com.liferay.frontend.taglib.util.internal.NPMResolverRef"
+		},
+		{
+			"name": "com.liferay.gogo.shell.client.GogoShellClient"
+		},
+		{
+			"name": "com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList"
+		},
+		{
+			"name": "com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap"
+		},
+		{
+			"name": "com.liferay.petra.io.AnnotatedObjectOutputStream"
+		},
+		{
+			"name": "com.liferay.petra.io.unsync.UnsyncBufferedReader"
+		},
+		{
+			"name": "com.liferay.petra.io.unsync.UnsyncByteArrayInputStream"
+		},
+		{
+			"name": "com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream"
+		},
+		{
+			"name": "com.liferay.petra.io.unsync.UnsyncStringWriter"
+		},
+		{
+			"name": "com.liferay.petra.lang.SafeClosable"
+		},
+		{
+			"name": "com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper"
+		},
+		{
+			"name": "com.liferay.portal.kernel.deploy.auto.AutoDeployer"
+		},
+		{
+			"name": "com.liferay.portal.kernel.io.WriterOutputStream"
+		},
+		{
+			"name": "com.liferay.portal.kernel.io.unsync.UnsyncBufferedReader"
+		},
+		{
+			"name": "com.liferay.portal.kernel.io.unsync.UnsyncBufferedWriter"
+		},
+		{
+			"name": "com.liferay.portal.kernel.io.unsync.UnsyncByteArrayInputStream"
+		},
+		{
+			"name": "com.liferay.portal.kernel.io.unsync.UnsyncByteArrayOutputStream"
+		},
+		{
+			"name": "com.liferay.portal.kernel.io.unsync.UnsyncPrintWriter"
+		},
+		{
+			"name": "com.liferay.portal.kernel.io.unsync.UnsyncStringWriter"
+		},
+		{
+			"name": "com.liferay.portal.kernel.test.CaptureHandler"
+		},
+		{
+			"name": "com.liferay.portal.kernel.test.SwappableSecurityManager"
+		},
+		{
+			"name": "com.liferay.portal.kernel.test.context.ContextUserReplace"
+		},
+		{
+			"name": "com.liferay.portal.kernel.util.LoggingTimer"
+		},
+		{
+			"name": "com.liferay.portal.test.log.CaptureAppender"
+		},
+		{
+			"name": "com.liferay.registry.collections.ServiceTrackerList"
+		},
+		{
+			"name": "com.liferay.registry.collections.ServiceTrackerMap"
+		},
+		{
+			"name": "com.liferay.sass.compiler.SassCompiler"
+		},
+		{
+			"name": "java.io.BufferedInputStream"
+		},
+		{
+			"name": "java.io.BufferedOutputStream"
+		},
+		{
+			"name": "java.io.BufferedReader"
+		},
+		{
+			"name": "java.io.BufferedWriter"
+		},
+		{
+			"name": "java.io.ByteArrayInputStream"
+		},
+		{
+			"name": "java.io.ByteArrayOutputStream"
+		},
+		{
+			"name": "java.io.Closeable"
+		},
+		{
+			"name": "java.io.DataOutputStream"
+		},
+		{
+			"name": "java.io.FileInputStream"
+		},
+		{
+			"name": "java.io.FileOutputStream"
+		},
+		{
+			"name": "java.io.FileReader"
+		},
+		{
+			"name": "java.io.FileWriter"
+		},
+		{
+			"name": "java.io.InputStream"
+		},
+		{
+			"name": "java.io.InputStreamReader"
+		},
+		{
+			"name": "java.io.ObjectInputStream"
+		},
+		{
+			"name": "java.io.ObjectOutput"
+		},
+		{
+			"name": "java.io.ObjectOutputStream"
+		},
+		{
+			"name": "java.io.OutputStream"
+		},
+		{
+			"name": "java.io.OutputStreamWriter"
+		},
+		{
+			"name": "java.io.PrintStream"
+		},
+		{
+			"name": "java.io.PrintWriter"
+		},
+		{
+			"name": "java.io.RandomAccessFile"
+		},
+		{
+			"name": "java.io.Reader"
+		},
+		{
+			"name": "java.io.StringWriter"
+		},
+		{
+			"name": "java.io.Writer"
+		},
+		{
+			"name": "java.net.DatagramSocket"
+		},
+		{
+			"name": "java.net.ServerSocket"
+		},
+		{
+			"name": "java.net.Socket"
+		},
+		{
+			"name": "java.net.URLClassLoader"
+		},
+		{
+			"name": "java.nio.channels.FileChannel"
+		},
+		{
+			"name": "java.nio.channels.GatheringByteChannel"
+		},
+		{
+			"name": "java.nio.channels.Pipe.SinkChannel"
+		},
+		{
+			"name": "java.nio.channels.Pipe.SourceChannel"
+		},
+		{
+			"name": "java.nio.channels.ReadableByteChannel"
+		},
+		{
+			"name": "java.nio.channels.ScatteringByteChannel"
+		},
+		{
+			"name": "java.nio.channels.SelectableChannel"
+		},
+		{
+			"name": "java.nio.channels.ServerSocketChannel"
+		},
+		{
+			"name": "java.nio.channels.WritableByteChannel"
+		},
+		{
+			"name": "java.nio.file.DirectoryStream"
+		},
+		{
+			"name": "java.nio.file.FileSystem"
+		},
+		{
+			"name": "java.sql.CallableStatement"
+		},
+		{
+			"name": "java.sql.Connection"
+		},
+		{
+			"name": "java.sql.PreparedStatement"
+		},
+		{
+			"name": "java.sql.ResultSet"
+		},
+		{
+			"name": "java.sql.Statement"
+		},
+		{
+			"name": "java.util.Scanner"
+		},
+		{
+			"name": "java.util.jar.JarFile"
+		},
+		{
+			"name": "java.util.jar.JarInputStream"
+		},
+		{
+			"name": "java.util.jar.JarOutputStream"
+		},
+		{
+			"name": "java.util.zip.ZipFile"
+		},
+		{
+			"name": "java.util.zip.ZipInputStream"
+		},
+		{
+			"name": "java.util.zip.ZipOutputStream"
+		},
+		{
+			"name": "javax.management.remote.JMXConnector"
+		},
+		{
+			"name": "javax.tools.JavaFileManager"
+		},
+		{
+			"name": "org.apache.commons.compress.archivers.sevenz.SevenZFile"
+		},
+		{
+			"name": "org.apache.commons.compress.archivers.sevenz.SevenZOutputFile"
+		},
+		{
+			"name": "org.apache.commons.compress.archivers.tar.TarArchiveInputStream"
+		},
+		{
+			"name": "org.apache.commons.compress.archivers.tar.TarArchiveOutputStream"
+		},
+		{
+			"name": "org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream"
+		},
+		{
+			"name": "org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream"
+		},
+		{
+			"name": "org.apache.http.client.methods.CloseableHttpResponse"
+		},
+		{
+			"name": "org.apache.http.impl.client.CloseableHttpClient"
+		},
+		{
+			"name": "org.apache.lucene.analysis.ngram.NGramTokenizer"
+		},
+		{
+			"name": "org.apache.pdfbox.pdmodel.PDDocument"
+		},
+		{
+			"name": "org.apache.poi.hssf.usermodel.HSSFWorkbook"
+		},
+		{
+			"name": "org.apache.poi.ss.usermodel.Workbook"
+		},
+		{
+			"name": "org.apache.poi.xssf.usermodel.XSSFWorkbook"
+		},
+		{
+			"name": "org.apache.tika.io.TikaInputStream"
+		},
+		{
+			"name": "org.bouncycastle.asn1.ASN1InputStream"
+		},
+		{
+			"name": "org.eclipse.jgit.api.Git"
+		},
+		{
+			"name": "org.eclipse.jgit.lib.Repository"
+		},
+		{
+			"name": "org.eclipse.jgit.revwalk.RevWalk"
+		},
+		{
+			"name": "org.eclipse.jgit.treewalk.TreeWalk"
+		},
+		{
+			"name": "org.talend.daikon.sandbox.SandboxedInstance"
+		},
+		{
+			"name": "org.tensorflow.Session"
+		},
+		{
+			"name": "org.tensorflow.Tensor"
+		}
+	]
+}

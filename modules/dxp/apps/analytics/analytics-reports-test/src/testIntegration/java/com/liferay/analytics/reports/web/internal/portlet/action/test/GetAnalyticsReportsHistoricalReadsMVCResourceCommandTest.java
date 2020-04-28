@@ -17,7 +17,6 @@ package com.liferay.analytics.reports.web.internal.portlet.action.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.function.UnsafeSupplier;
-import com.liferay.portal.kernel.exception.NestableRuntimeException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -36,7 +35,6 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -66,7 +64,7 @@ import org.junit.runner.RunWith;
  * @author Cristina González
  */
 @RunWith(Arquillian.class)
-public class GetAnalyticsReportsTotalViewsMVCResourceCommandTest {
+public class GetAnalyticsReportsHistoricalReadsMVCResourceCommandTest {
 
 	@ClassRule
 	@Rule
@@ -86,10 +84,8 @@ public class GetAnalyticsReportsTotalViewsMVCResourceCommandTest {
 		ReflectionTestUtil.setFieldValue(
 			_mvcResourceCommand, "_http",
 			_geMocktHttp(
-				HashMapBuilder.<String, UnsafeSupplier<String, Exception>>put(
-					"/api/1.0/pages/view-count", () -> "12345"
-				).put(
-					"/api/1.0/pages/view-counts",
+				Collections.singletonMap(
+					"/api/1.0/pages/read-counts",
 					() -> JSONUtil.put(
 						"histogram",
 						JSONUtil.put(
@@ -102,8 +98,7 @@ public class GetAnalyticsReportsTotalViewsMVCResourceCommandTest {
 							))
 					).put(
 						"value", 5
-					).toJSONString()
-				).build()));
+					).toJSONString())));
 
 		try {
 			MockLiferayResourceResponse mockLiferayResourceResponse =
@@ -119,42 +114,11 @@ public class GetAnalyticsReportsTotalViewsMVCResourceCommandTest {
 			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
 				new String(byteArrayOutputStream.toByteArray()));
 
-			Assert.assertEquals(
-				12340L, jsonObject.getLong("analyticsReportsTotalViews"));
-		}
-		finally {
-			ReflectionTestUtil.setFieldValue(
-				_mvcResourceCommand, "_http", _http);
-		}
-	}
-
-	@Test
-	public void testServeResponseWithError() throws Exception {
-		ReflectionTestUtil.setFieldValue(
-			_mvcResourceCommand, "_http",
-			_geMocktHttp(
-				Collections.singletonMap(
-					"/api/1.0/pages/view-count",
-					() -> {
-						throw new NestableRuntimeException();
-					})));
-
-		try {
-			MockLiferayResourceResponse mockLiferayResourceResponse =
-				new MockLiferayResourceResponse();
-
-			_mvcResourceCommand.serveResource(
-				_getMockLiferayResourceRequest(), mockLiferayResourceResponse);
-
-			ByteArrayOutputStream byteArrayOutputStream =
-				(ByteArrayOutputStream)
-					mockLiferayResourceResponse.getPortletOutputStream();
-
-			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
-				new String(byteArrayOutputStream.toByteArray()));
+			JSONObject analyticsReportsHistoricalReadsJsonObject =
+				jsonObject.getJSONObject("analyticsReportsHistoricalReads");
 
 			Assert.assertEquals(
-				"An unexpected error occurred.", jsonObject.getString("error"));
+				5L, analyticsReportsHistoricalReadsJsonObject.getLong("value"));
 		}
 		finally {
 			ReflectionTestUtil.setFieldValue(
@@ -283,7 +247,7 @@ public class GetAnalyticsReportsTotalViewsMVCResourceCommandTest {
 	@Inject
 	private LayoutSetLocalService _layoutSetLocalService;
 
-	@Inject(filter = "mvc.command.name=/analytics_reports/get_total_views")
+	@Inject(filter = "mvc.command.name=/analytics_reports/get_historical_reads")
 	private MVCResourceCommand _mvcResourceCommand;
 
 }

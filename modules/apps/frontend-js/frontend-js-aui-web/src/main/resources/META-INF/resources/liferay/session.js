@@ -465,7 +465,9 @@ AUI.add(
 
 					var banner = instance._getBanner();
 
-					var counterTextNode = banner.one('.countdown-timer');
+					var counterTextNode = banner
+						.one('.countdown-timer')
+						.getDOMNode();
 
 					instance._uiSetRemainingTime(
 						remainingTime,
@@ -588,6 +590,24 @@ AUI.add(
 										instance._alertClosed = true;
 									}
 								},
+								focus(event) {
+									if (instance._alert) {
+										var notificationContainer = A.one(
+											'.lfr-notification-container'
+										);
+
+										if (
+											!notificationContainer.contains(
+												event.domEvent.relatedTarget
+											)
+										) {
+											instance._alert.setAttribute(
+												'role',
+												'alert'
+											);
+										}
+									}
+								},
 							},
 							title: Liferay.Language.get('warning'),
 							type: 'warning',
@@ -635,26 +655,25 @@ AUI.add(
 					DOC.title = instance.get('pageTitle');
 				},
 
-				_uiSetRemainingTime(remainingTime) {
+				_uiSetRemainingTime(remainingTime, counterTextNode) {
 					var instance = this;
 
 					remainingTime = instance._formatTime(remainingTime);
 
 					if (!instance._alertClosed) {
-						var banner = instance._getBanner();
-
-						var bannerFocused = banner.bodyNode.contains(
-							document.activeElement
+						var alert = counterTextNode.closest(
+							'div[role="alert"]'
 						);
 
-						banner.set(
-							'message',
-							Lang.sub(instance._warningText, [remainingTime])
-						);
+						// Prevent screen reader from rereading alert:
 
-						if (bannerFocused) {
-							banner.bodyNode.all('a').item(0).focus();
+						if (alert) {
+							alert.removeAttribute('role');
+
+							instance._alert = alert;
 						}
+
+						counterTextNode.innerHTML = remainingTime;
 					}
 
 					DOC.title =

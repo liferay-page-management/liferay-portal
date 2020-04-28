@@ -17,9 +17,6 @@ package com.liferay.analytics.reports.web.internal.model;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,34 +25,6 @@ import org.junit.Test;
  * @author David Arques
  */
 public class TimeRangeTest {
-
-	@Test
-	public void testGetIntervalLocalDateTimesWithLast7DaysTimeSpan() {
-		TimeRange timeRange = TimeRange.of(TimeSpan.LAST_7_DAYS, 0);
-
-		List<LocalDateTime> intervalLocalDateTimes =
-			timeRange.getIntervalLocalDateTimes();
-
-		Assert.assertEquals(
-			intervalLocalDateTimes.toString(), 7,
-			intervalLocalDateTimes.size());
-		Assert.assertEquals(
-			timeRange.getStartLocalDateTime(), intervalLocalDateTimes.get(0));
-	}
-
-	@Test
-	public void testGetIntervalLocalDateTimesWithLast30DaysTimeSpan() {
-		TimeRange timeRange = TimeRange.of(TimeSpan.LAST_30_DAYS, 0);
-
-		List<LocalDateTime> intervalLocalDateTimes =
-			timeRange.getIntervalLocalDateTimes();
-
-		Assert.assertEquals(
-			intervalLocalDateTimes.toString(), 30,
-			intervalLocalDateTimes.size());
-		Assert.assertEquals(
-			timeRange.getStartLocalDateTime(), intervalLocalDateTimes.get(0));
-	}
 
 	@Test
 	public void testOf() {

@@ -26,18 +26,12 @@ import com.liferay.analytics.reports.web.internal.model.TimeRange;
 import com.liferay.analytics.reports.web.internal.model.TimeSpan;
 import com.liferay.analytics.reports.web.internal.model.TrafficSource;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author David Arques
@@ -52,34 +46,28 @@ public class AnalyticsReportsDataProvider {
 		_asahFaroBackendClient = new AsahFaroBackendClient(http);
 	}
 
-	public JSONObject getHistoricalReadsJSONObject(
-			long plid, TimeRange timeRange)
+	public HistoricalMetric getHistoricalReadsHistoricalMetric(
+			long companyId, TimeRange timeRange, String url)
 		throws PortalException {
 
-		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
-		int totalValue = 0;
+		try {
+			String response = _asahFaroBackendClient.doGet(
+				companyId,
+				String.format(
+					"api/1.0/pages/read-counts?endDate=%s&interval=D&" +
+						"startDate=%s&url=%s",
+					DateTimeFormatter.ISO_DATE.format(
+						timeRange.getEndLocalDate()),
+					DateTimeFormatter.ISO_DATE.format(
+						timeRange.getStartLocalDate()),
+					url));
 
-		for (LocalDateTime localDateTime :
-				timeRange.getIntervalLocalDateTimes()) {
-
-			int value = _getRandomInt();
-
-			jsonArray.put(
-				JSONUtil.put(
-					"key",
-					DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(localDateTime)
-				).put(
-					"value", value
-				));
-
-			totalValue = totalValue + value;
+			return _objectMapper.readValue(response, HistoricalMetric.class);
 		}
-
-		return JSONUtil.put(
-			"histogram", jsonArray
-		).put(
-			"value", totalValue
-		);
+		catch (Exception exception) {
+			throw new PortalException(
+				"Unable to get historical views", exception);
+		}
 	}
 
 	public HistoricalMetric getHistoricalViewsHistoricalMetric(
@@ -156,12 +144,6 @@ public class AnalyticsReportsDataProvider {
 
 	public boolean isValidAnalyticsConnection(long companyId) {
 		return _asahFaroBackendClient.isValidConnection(companyId);
-	}
-
-	private int _getRandomInt() {
-		ThreadLocalRandom threadLocalRandom = ThreadLocalRandom.current();
-
-		return threadLocalRandom.nextInt(0, 200 + 1);
 	}
 
 	private long _getTodayViews(long companyId, String url)

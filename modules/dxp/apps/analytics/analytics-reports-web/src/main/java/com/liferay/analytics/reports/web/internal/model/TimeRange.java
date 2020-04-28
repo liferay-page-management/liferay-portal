@@ -17,10 +17,6 @@ package com.liferay.analytics.reports.web.internal.model;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Adolfo Pérez
@@ -56,47 +52,10 @@ public class TimeRange {
 		return localDateTime.toLocalDate();
 	}
 
-	public LocalDateTime getEndLocalDateTime() {
-		LocalDateTime localDateTime = LocalDateTime.now(_clock);
-
-		if (_includeToday) {
-			localDateTime = localDateTime.with(LocalTime.of(0, 0, 0, 0));
-		}
-		else {
-			localDateTime = localDateTime.minusDays(1);
-			localDateTime = localDateTime.with(
-				LocalTime.of(23, 59, 59, 999999999));
-		}
-
-		return localDateTime.minusDays(_getOffsetDays());
-	}
-
-	public List<LocalDateTime> getIntervalLocalDateTimes() {
-		List<LocalDateTime> intervals = new ArrayList<>();
-
-		LocalDateTime intervalLocalDateTime = getStartLocalDateTime();
-
-		for (int i = 0; i < _timeSpan.getDays(); i++) {
-			intervals.add(intervalLocalDateTime);
-
-			intervalLocalDateTime = intervalLocalDateTime.plusDays(1);
-		}
-
-		return intervals;
-	}
-
 	public LocalDate getStartLocalDate() {
 		LocalDate localDate = getEndLocalDate();
 
 		return localDate.minusDays(_timeSpan.getDays() - 1);
-	}
-
-	public LocalDateTime getStartLocalDateTime() {
-		LocalDateTime localDateTime = getEndLocalDateTime();
-
-		localDateTime = localDateTime.with(LocalTime.of(0, 0, 0, 0));
-
-		return localDateTime.minusDays(_timeSpan.getDays() - 1);
 	}
 
 	public TimeSpan getTimeSpan() {
