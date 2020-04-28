@@ -173,7 +173,11 @@ public class LayoutPageTemplatesImporterImpl
 				layoutStructure,
 				parentLayoutStructureItem.getChildrenItemIds()));
 
-		_updateLayoutPageTemplateStructure(layout, layoutStructure);
+		_layoutPageTemplateStructureLocalService.
+			updateLayoutPageTemplateStructure(
+				layout.getGroupId(),
+				_portal.getClassNameId(Layout.class.getName()),
+				layout.getPlid(), layoutStructure.toString());
 
 		return fragmentEntryLinks;
 	}
@@ -1073,7 +1077,11 @@ public class LayoutPageTemplatesImporterImpl
 			}
 		}
 
-		_updateLayoutPageTemplateStructure(layout, layoutStructure);
+		_layoutPageTemplateStructureLocalService.
+			updateLayoutPageTemplateStructure(
+				layout.getGroupId(),
+				_portal.getClassNameId(Layout.class.getName()),
+				layout.getPlid(), layoutStructure.toString());
 
 		_updateLayouts(layoutPageTemplateEntry);
 	}
@@ -1186,30 +1194,6 @@ public class LayoutPageTemplatesImporterImpl
 		}
 
 		return null;
-	}
-
-	private void _updateLayoutPageTemplateStructure(
-			Layout layout, LayoutStructure layoutStructure)
-		throws PortalException {
-
-		long classNameId = _portal.getClassNameId(Layout.class.getName());
-
-		JSONObject jsonObject = layoutStructure.toJSONObject();
-
-		LayoutPageTemplateStructure layoutPageTemplateStructure =
-			_layoutPageTemplateStructureLocalService.
-				fetchLayoutPageTemplateStructure(
-					layout.getGroupId(), classNameId, layout.getPlid());
-
-		if (layoutPageTemplateStructure != null) {
-			_layoutPageTemplateStructureLocalService.
-				deleteLayoutPageTemplateStructure(layoutPageTemplateStructure);
-		}
-
-		_layoutPageTemplateStructureLocalService.addLayoutPageTemplateStructure(
-			layout.getUserId(), layout.getGroupId(), classNameId,
-			layout.getPlid(), jsonObject.toString(),
-			ServiceContextThreadLocal.getServiceContext());
 	}
 
 	private void _updateLayouts(LayoutPageTemplateEntry layoutPageTemplateEntry)
