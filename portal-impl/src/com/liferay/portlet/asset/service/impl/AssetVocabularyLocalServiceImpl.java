@@ -20,6 +20,7 @@ import com.liferay.asset.kernel.model.AssetCategoryConstants;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
@@ -49,9 +50,11 @@ import com.liferay.portlet.asset.service.base.AssetVocabularyLocalServiceBaseImp
 import com.liferay.portlet.asset.util.AssetUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Provides the local service for accessing, adding, deleting, and updating
@@ -74,9 +77,15 @@ public class AssetVocabularyLocalServiceImpl
 		long defaultUserId = userLocalService.getDefaultUserId(
 			group.getCompanyId());
 
-		Map<Locale, String> titleMap = HashMapBuilder.put(
-			LocaleUtil.getSiteDefault(), PropsValues.ASSET_VOCABULARY_DEFAULT
-		).build();
+		Set<Locale> locales = LanguageUtil.getAvailableLocales(groupId);
+
+		Map<Locale, String> titleMap = new HashMap<>();
+
+		for (Locale locale : locales) {
+			titleMap.put(
+				locale,
+				LanguageUtil.get(locale, PropsValues.ASSET_VOCABULARY_DEFAULT));
+		}
 
 		ServiceContext serviceContext = new ServiceContext();
 
