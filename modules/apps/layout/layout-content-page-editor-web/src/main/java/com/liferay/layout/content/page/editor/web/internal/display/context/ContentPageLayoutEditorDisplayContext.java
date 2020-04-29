@@ -59,7 +59,6 @@ import com.liferay.segments.service.SegmentsExperimentLocalServiceUtil;
 import com.liferay.staging.StagingGroupHelper;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -332,10 +331,6 @@ public class ContentPageLayoutEditorDisplayContext
 					themeDisplay.getScopeGroupId(),
 					PortalUtil.getClassNameId(Layout.class.getName()),
 					themeDisplay.getPlid(), true);
-
-		if (layoutPageTemplateStructure == null) {
-			return Collections.emptyList();
-		}
 
 		List<Map<String, Object>> layoutDataList = new ArrayList<>();
 

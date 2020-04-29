@@ -76,14 +76,6 @@ public class LayoutPageTemplateStructureDataHandlerHelper {
 			layoutPageTemplateStructure.getLayoutPageTemplateStructureId(),
 			layoutPageTemplateStructure.getLayoutPageTemplateStructureId());
 
-		LayoutPageTemplateStructure existingLayoutPageTemplateStructure =
-			_layoutPageTemplateStructureLocalService.
-				fetchLayoutPageTemplateStructure(layoutPageTemplateStructureId);
-
-		if (existingLayoutPageTemplateStructure == null) {
-			return;
-		}
-
 		List<LayoutPageTemplateStructureRel>
 			existingLayoutPageTemplateStructureRels =
 				_layoutPageTemplateStructureRelLocalService.

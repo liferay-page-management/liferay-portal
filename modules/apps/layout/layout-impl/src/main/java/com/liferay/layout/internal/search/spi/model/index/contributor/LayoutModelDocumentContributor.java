@@ -84,12 +84,6 @@ public class LayoutModelDocumentContributor
 			"privateLayout", String.valueOf(layout.isPrivateLayout()));
 		document.addText(Field.TYPE, layout.getType());
 
-		LayoutPageTemplateStructure layoutPageTemplateStructure =
-			_layoutPageTemplateStructureLocalService.
-				fetchLayoutPageTemplateStructure(
-					layout.getGroupId(), _portal.getClassNameId(Layout.class),
-					layout.getPlid());
-
 		for (String languageId : layout.getAvailableLanguageIds()) {
 			Locale locale = LocaleUtil.fromLanguageId(languageId);
 
@@ -97,6 +91,12 @@ public class LayoutModelDocumentContributor
 				Field.getLocalizedName(locale, Field.TITLE),
 				layout.getName(locale));
 		}
+
+		LayoutPageTemplateStructure layoutPageTemplateStructure =
+			_layoutPageTemplateStructureLocalService.
+				fetchLayoutPageTemplateStructure(
+					layout.getGroupId(), _portal.getClassNameId(Layout.class),
+					layout.getPlid());
 
 		if (layoutPageTemplateStructure == null) {
 			return;

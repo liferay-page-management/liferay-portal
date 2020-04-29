@@ -142,31 +142,6 @@ public class LayoutCopyHelperImpl implements LayoutCopyHelper {
 					sourceLayout.getGroupId(), classNameId,
 					sourceLayout.getPlid());
 
-		if (layoutPageTemplateStructure == null) {
-			LayoutPageTemplateStructure targetLayoutPageTemplateStructure =
-				_layoutPageTemplateStructureLocalService.
-					fetchLayoutPageTemplateStructure(
-						targetLayout.getGroupId(), classNameId,
-						targetLayout.getPlid());
-
-			if (targetLayoutPageTemplateStructure != null) {
-				_layoutPageTemplateStructureLocalService.
-					deleteLayoutPageTemplateStructure(
-						targetLayoutPageTemplateStructure);
-			}
-
-			_fragmentEntryLinkLocalService.
-				deleteLayoutPageTemplateEntryFragmentEntryLinks(
-					targetLayout.getGroupId(), classNameId,
-					targetLayout.getPlid());
-
-			layoutPageTemplateStructure =
-				_layoutPageTemplateStructureLocalService.
-					rebuildLayoutPageTemplateStructure(
-						sourceLayout.getGroupId(), classNameId,
-						sourceLayout.getPlid());
-		}
-
 		ServiceContext serviceContext = Optional.ofNullable(
 			ServiceContextThreadLocal.getServiceContext()
 		).orElse(
@@ -187,19 +162,6 @@ public class LayoutCopyHelperImpl implements LayoutCopyHelper {
 		_fragmentEntryLinkLocalService.
 			deleteLayoutPageTemplateEntryFragmentEntryLinks(
 				targetLayout.getGroupId(), classNameId, targetLayout.getPlid());
-
-		LayoutPageTemplateStructure targetLayoutPageTemplateStructure =
-			_layoutPageTemplateStructureLocalService.
-				fetchLayoutPageTemplateStructure(
-					targetLayout.getGroupId(), classNameId,
-					targetLayout.getPlid());
-
-		if (targetLayoutPageTemplateStructure == null) {
-			_layoutPageTemplateStructureLocalService.
-				addLayoutPageTemplateStructure(
-					targetLayout.getUserId(), targetLayout.getGroupId(),
-					classNameId, targetLayout.getPlid(), null, serviceContext);
-		}
 
 		for (Long segmentsExperienceId :
 				_getSegmentsExperienceIds(

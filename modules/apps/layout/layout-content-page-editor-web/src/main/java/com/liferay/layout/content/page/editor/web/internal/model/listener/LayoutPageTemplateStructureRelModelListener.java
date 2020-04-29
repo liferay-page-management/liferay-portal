@@ -52,10 +52,6 @@ public class LayoutPageTemplateStructureRelModelListener
 					layoutPageTemplateStructureRel.
 						getLayoutPageTemplateStructureId());
 
-		if (layoutPageTemplateStructure == null) {
-			return;
-		}
-
 		_layoutClassedModelUsageLocalService.deleteLayoutClassedModelUsages(
 			String.valueOf(
 				layoutPageTemplateStructure.getLayoutPageTemplateStructureId()),

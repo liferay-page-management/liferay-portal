@@ -212,10 +212,6 @@ public class FragmentEntryLinkModelListener
 					fragmentEntryLink.getClassNameId(),
 					fragmentEntryLink.getClassPK());
 
-		if (layoutPageTemplateStructure == null) {
-			return null;
-		}
-
 		String data = layoutPageTemplateStructure.getData(
 			fragmentEntryLink.getSegmentsExperienceId());
 
