@@ -1,37 +1,25 @@
 .taglib-ratings {
-	&.stars {
-		.liferay-rating-score {
-			padding-left: 15px;
+	&.stacked-stars {
+		.rating-element {
+			color: $primary;
 		}
 
-		.liferay-rating-vote,
 		.liferay-rating-score {
-			display: inline-block;
+			> div {
+				display: flex;
+			}
+
+			.rating-element {
+				color: $yellow;
+				padding-top: 3px;
+			}
+
+			.rating-label {
+				margin-left: 8px;
+			}
 		}
 
 		.lexicon-icon {
-			pointer-events: none;
-		}
-	}
-
-	&.stacked-stars .liferay-rating-score {
-		> div {
-			display: flex;
-		}
-
-		.rating-element {
-			color: #ffb900;
-			padding-top: 3px;
-		}
-
-		.rating-label {
-			margin-left: 8px;
-		}
-	}
-
-	&.like,
-	&.thumbs {
-		.rating-element * {
 			pointer-events: none;
 		}
 	}

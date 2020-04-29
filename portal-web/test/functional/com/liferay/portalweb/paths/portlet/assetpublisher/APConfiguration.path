@@ -20,6 +20,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ASSET_SELECTION_INFO_LIST_PROVIDER</td>
+	<td>//input[contains(@id,'selectionStyleInfoListProvider')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>ASSET_SELECTION_MANUAL</td>
 	<td>//input[contains(@id,'selectionStyleManual')]</td>
 	<td></td>
@@ -258,6 +263,12 @@
 <tr>
 	<td>ASSET_SELECTION_MANUAL_ASSET_ENTRIES_ASSET</td>
 	<td>//a[@data-title='Select ${key_assetType}']</td>
+	<td></td>
+</tr>
+<!--COLLECTION_PROVIDER-->
+<tr>
+	<td>SELECT_COLLECTION_PROVIDER_FIELD</td>
+	<td>//select[contains(@id,'infoListProviderClassName')]</td>
 	<td></td>
 </tr>
 </tbody>
