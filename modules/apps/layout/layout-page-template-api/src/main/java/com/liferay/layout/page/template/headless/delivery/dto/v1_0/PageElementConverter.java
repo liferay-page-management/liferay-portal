@@ -14,21 +14,20 @@
 
 package com.liferay.layout.page.template.headless.delivery.dto.v1_0;
 
-import com.liferay.headless.delivery.dto.v1_0.PageDefinition;
+import com.liferay.headless.delivery.dto.v1_0.PageElement;
 import com.liferay.portal.kernel.model.Layout;
 
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
+ * @author Rubén Pulido
  * @author Jürgen Kappler
  */
 @ProviderType
-public interface PageDefinitionConverter {
+public interface PageElementConverter {
 
-	public PageDefinition toPageDefinition(Layout layout);
-
-	public PageDefinition toPageDefinition(
-		Layout layout, boolean saveInlineContent,
-		boolean saveMappingConfiguration);
+	public PageElement toPageElement(
+		Layout layout, String layoutStructureItemId, boolean saveInlineContent,
+		boolean saveMappingConfiguration, long segmentsExperienceId);
 
 }

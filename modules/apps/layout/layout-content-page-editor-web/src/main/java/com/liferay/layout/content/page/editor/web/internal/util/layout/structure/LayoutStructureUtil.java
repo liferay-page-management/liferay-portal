@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.delivery.dto.v1_0.PageElement;
-import com.liferay.layout.page.template.headless.delivery.dto.v1_0.PageDefinitionConverter;
+import com.liferay.layout.page.template.headless.delivery.dto.v1_0.PageElementConverter;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalServiceUtil;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureServiceUtil;
@@ -89,12 +89,12 @@ public class LayoutStructureUtil {
 	}
 
 	public static String getLayoutStructureItemJSON(
-			String itemId, PageDefinitionConverter pageDefinitionConverter,
-			long plid, boolean saveInlineContent,
-			boolean saveMappingConfiguration, long segmentsExperienceId)
+			String itemId, PageElementConverter pageElementConverter, long plid,
+			boolean saveInlineContent, boolean saveMappingConfiguration,
+			long segmentsExperienceId)
 		throws PortalException {
 
-		PageElement pageElement = pageDefinitionConverter.toPageElement(
+		PageElement pageElement = pageElementConverter.toPageElement(
 			LayoutLocalServiceUtil.getLayout(plid), itemId, saveInlineContent,
 			saveMappingConfiguration, segmentsExperienceId);
 

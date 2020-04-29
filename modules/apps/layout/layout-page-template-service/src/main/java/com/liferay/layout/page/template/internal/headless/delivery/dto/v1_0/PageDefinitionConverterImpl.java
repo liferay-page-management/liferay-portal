@@ -16,10 +16,9 @@ package com.liferay.layout.page.template.internal.headless.delivery.dto.v1_0;
 
 import com.liferay.headless.delivery.dto.v1_0.MasterPage;
 import com.liferay.headless.delivery.dto.v1_0.PageDefinition;
-import com.liferay.headless.delivery.dto.v1_0.PageElement;
 import com.liferay.headless.delivery.dto.v1_0.Settings;
 import com.liferay.layout.page.template.headless.delivery.dto.v1_0.PageDefinitionConverter;
-import com.liferay.layout.page.template.headless.delivery.dto.v1_0.structure.LayoutStructureItemExporter;
+import com.liferay.layout.page.template.headless.delivery.dto.v1_0.PageElementConverter;
 import com.liferay.layout.page.template.headless.delivery.dto.v1_0.structure.LayoutStructureItemExporterTracker;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
@@ -37,8 +36,6 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -69,126 +66,17 @@ public class PageDefinitionConverterImpl implements PageDefinitionConverter {
 		LayoutStructure layoutStructure = LayoutStructure.of(
 			layoutPageTemplateStructure.getData(0L));
 
-		return new PageDefinition() {
-			{
-				pageElement = _toPageElement(
-					layout, layoutStructure, saveInlineContent,
-					saveMappingConfiguration);
-				settings = _toSettings(layout);
-			}
-		};
-	}
-
-	@Override
-	public PageElement toPageElement(
-		Layout layout, String layoutStructureItemId, boolean saveInlineContent,
-		boolean saveMappingConfiguration, long segmentsExperienceId) {
-
-		LayoutPageTemplateStructure layoutPageTemplateStructure =
-			_layoutPageTemplateStructureLocalService.
-				fetchLayoutPageTemplateStructure(
-					layout.getGroupId(), _portal.getClassNameId(Layout.class),
-					layout.getPlid());
-
-		LayoutStructure layoutStructure = LayoutStructure.of(
-			layoutPageTemplateStructure.getData(segmentsExperienceId));
-
-		return _toPageElement(
-			layout.getGroupId(), layoutStructure,
-			layoutStructure.getLayoutStructureItem(layoutStructureItemId),
-			saveInlineContent, saveMappingConfiguration);
-	}
-
-	private PageElement _toPageElement(
-		Layout layout, LayoutStructure layoutStructure,
-		boolean saveInlineContent, boolean saveMappingConfiguration) {
-
 		LayoutStructureItem mainLayoutStructureItem =
 			layoutStructure.getMainLayoutStructureItem();
 
-		List<PageElement> mainPageElements = new ArrayList<>();
-
-		for (String childItemId :
-				mainLayoutStructureItem.getChildrenItemIds()) {
-
-			mainPageElements.add(
-				_toPageElement(
-					layout.getGroupId(), layoutStructure,
-					layoutStructure.getLayoutStructureItem(childItemId),
-					saveInlineContent, saveMappingConfiguration));
-		}
-
-		PageElement pageElement = _toPageElement(
-			layout.getGroupId(), mainLayoutStructureItem, saveInlineContent,
-			saveMappingConfiguration);
-
-		if (!mainPageElements.isEmpty()) {
-			pageElement.setPageElements(
-				mainPageElements.toArray(new PageElement[0]));
-		}
-
-		return pageElement;
-	}
-
-	private PageElement _toPageElement(
-		long groupId, LayoutStructure layoutStructure,
-		LayoutStructureItem layoutStructureItem, boolean saveInlineContent,
-		boolean saveMappingConfiguration) {
-
-		List<PageElement> pageElements = new ArrayList<>();
-
-		List<String> childrenItemIds = layoutStructureItem.getChildrenItemIds();
-
-		for (String childItemId : childrenItemIds) {
-			LayoutStructureItem childLayoutStructureItem =
-				layoutStructure.getLayoutStructureItem(childItemId);
-
-			List<String> grandChildrenItemIds =
-				childLayoutStructureItem.getChildrenItemIds();
-
-			if (grandChildrenItemIds.isEmpty()) {
-				pageElements.add(
-					_toPageElement(
-						groupId, childLayoutStructureItem, saveInlineContent,
-						saveMappingConfiguration));
+		return new PageDefinition() {
+			{
+				pageElement = _pageElementConverter.toPageElement(
+					layout, mainLayoutStructureItem.getItemId(),
+					saveInlineContent, saveMappingConfiguration, 0);
+				settings = _toSettings(layout);
 			}
-			else {
-				pageElements.add(
-					_toPageElement(
-						groupId, layoutStructure, childLayoutStructureItem,
-						saveInlineContent, saveMappingConfiguration));
-			}
-		}
-
-		PageElement pageElement = _toPageElement(
-			groupId, layoutStructureItem, saveInlineContent,
-			saveMappingConfiguration);
-
-		if (!pageElements.isEmpty()) {
-			pageElement.setPageElements(
-				pageElements.toArray(new PageElement[0]));
-		}
-
-		return pageElement;
-	}
-
-	private PageElement _toPageElement(
-		long groupId, LayoutStructureItem layoutStructureItem,
-		boolean saveInlineContent, boolean saveMappingConfiguration) {
-
-		Class<?> clazz = layoutStructureItem.getClass();
-
-		LayoutStructureItemExporter layoutStructureItemExporter =
-			_layoutStructureItemExporterTracker.getLayoutStructureItemExporter(
-				clazz.getName());
-
-		if (layoutStructureItemExporter == null) {
-			return null;
-		}
-
-		return layoutStructureItemExporter.getPageElement(
-			groupId, layoutStructureItem, saveInlineContent,
-			saveMappingConfiguration);
+		};
 	}
 
 	private Settings _toSettings(Layout layout) {
@@ -307,6 +195,9 @@ public class PageDefinitionConverterImpl implements PageDefinitionConverter {
 	@Reference
 	private LayoutStructureItemExporterTracker
 		_layoutStructureItemExporterTracker;
+
+	@Reference
+	private PageElementConverter _pageElementConverter;
 
 	@Reference
 	private Portal _portal;
