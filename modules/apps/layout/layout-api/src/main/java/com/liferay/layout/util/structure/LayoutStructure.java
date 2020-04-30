@@ -61,17 +61,33 @@ public class LayoutStructure {
 			JSONObject itemsJSONObject =
 				layoutStructureJSONObject.getJSONObject("items");
 
+			Map<Long, LayoutStructureItem> fragmentLayoutStructureItems =
+				new HashMap<>(itemsJSONObject.length());
+
 			Map<String, LayoutStructureItem> layoutStructureItems =
 				new HashMap<>(itemsJSONObject.length());
 
 			for (String key : itemsJSONObject.keySet()) {
-				layoutStructureItems.put(
-					key,
-					LayoutStructureItem.of(itemsJSONObject.getJSONObject(key)));
+				LayoutStructureItem layoutStructureItem =
+					LayoutStructureItem.of(itemsJSONObject.getJSONObject(key));
+
+				layoutStructureItems.put(key, layoutStructureItem);
+
+				if (layoutStructureItem instanceof
+						FragmentLayoutStructureItem) {
+
+					FragmentLayoutStructureItem fragmentLayoutStructureItem =
+						(FragmentLayoutStructureItem)layoutStructureItem;
+
+					fragmentLayoutStructureItems.put(
+						fragmentLayoutStructureItem.getFragmentEntryLinkId(),
+						fragmentLayoutStructureItem);
+				}
 			}
 
 			return new LayoutStructure(
-				layoutStructureItems, rootItemsJSONObject.getString("main"));
+				fragmentLayoutStructureItems, layoutStructureItems,
+				rootItemsJSONObject.getString("main"));
 		}
 		catch (JSONException jsonException) {
 			if (_log.isDebugEnabled()) {
@@ -83,6 +99,7 @@ public class LayoutStructure {
 	}
 
 	public LayoutStructure() {
+		_fragmentLayoutStructureItems = new HashMap<>();
 		_layoutStructureItems = new HashMap<>();
 		_mainItemId = StringPool.BLANK;
 	}
@@ -480,9 +497,11 @@ public class LayoutStructure {
 	}
 
 	private LayoutStructure(
+		Map<Long, LayoutStructureItem> fragmentLayoutStructureItems,
 		Map<String, LayoutStructureItem> layoutStructureItems,
 		String mainItemId) {
 
+		_fragmentLayoutStructureItems = fragmentLayoutStructureItems;
 		_layoutStructureItems = layoutStructureItems;
 		_mainItemId = mainItemId;
 	}
@@ -564,6 +583,7 @@ public class LayoutStructure {
 	private static final Log _log = LogFactoryUtil.getLog(
 		LayoutStructure.class);
 
+	private final Map<Long, LayoutStructureItem> _fragmentLayoutStructureItems;
 	private final Map<String, LayoutStructureItem> _layoutStructureItems;
 	private String _mainItemId;
 
