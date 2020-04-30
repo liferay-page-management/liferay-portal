@@ -12,22 +12,21 @@
  * details.
  */
 
-package com.liferay.fragment.entry.processor.drop.zone.model.listener;
+package com.liferay.fragment.entry.processor.drop.zone.listener;
 
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.renderer.DefaultFragmentRendererContext;
 import com.liferay.fragment.renderer.FragmentRendererController;
+import com.liferay.layout.content.page.editor.listener.ContentPageEditorListener;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
-import com.liferay.portal.kernel.exception.ModelListenerException;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.model.BaseModelListener;
-import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
@@ -42,32 +41,28 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Eudaldo Alonso
  */
-@Component(service = ModelListener.class)
-public class FragmentEntryLinkModelListener
-	extends BaseModelListener<FragmentEntryLink> {
+@Component(service = ContentPageEditorListener.class)
+public class DropZoneContentPageEditorListener
+	implements ContentPageEditorListener {
 
 	@Override
-	public void onAfterCreate(FragmentEntryLink fragmentEntryLink)
-		throws ModelListenerException {
-
-		try {
-			_updateLayoutPageTemplateStructure(fragmentEntryLink);
-		}
-		catch (Exception exception) {
-			throw new ModelListenerException(exception);
-		}
+	public void onAddFragmentEntryLink(FragmentEntryLink fragmentEntryLink) {
+		_updateLayoutPageTemplateStructure(fragmentEntryLink);
 	}
 
 	@Override
-	public void onAfterUpdate(FragmentEntryLink fragmentEntryLink)
-		throws ModelListenerException {
+	public void onDeleteFragmentEntryLink(FragmentEntryLink fragmentEntryLink) {
+	}
 
-		try {
-			_updateLayoutPageTemplateStructure(fragmentEntryLink);
-		}
-		catch (Exception exception) {
-			throw new ModelListenerException(exception);
-		}
+	@Override
+	public void onUpdateFragmentEntryLink(FragmentEntryLink fragmentEntryLink) {
+	}
+
+	@Override
+	public void onUpdateFragmentEntryLinkConfigurationValues(
+		FragmentEntryLink fragmentEntryLink) {
+
+		_updateLayoutPageTemplateStructure(fragmentEntryLink);
 	}
 
 	private Document _getDocument(String html) {
@@ -107,8 +102,7 @@ public class FragmentEntryLinkModelListener
 	}
 
 	private void _updateLayoutPageTemplateStructure(
-			FragmentEntryLink fragmentEntryLink)
-		throws PortalException {
+		FragmentEntryLink fragmentEntryLink) {
 
 		DefaultFragmentRendererContext defaultFragmentRendererContext =
 			new DefaultFragmentRendererContext(fragmentEntryLink);
@@ -156,14 +150,26 @@ public class FragmentEntryLinkModelListener
 				layoutStructureItem.getItemId(), 0);
 		}
 
-		_layoutPageTemplateStructureLocalService.
-			updateLayoutPageTemplateStructure(
-				fragmentEntryLink.getGroupId(),
-				fragmentEntryLink.getClassNameId(),
-				fragmentEntryLink.getClassPK(),
-				fragmentEntryLink.getSegmentsExperienceId(),
-				layoutStructure.toString());
+		try {
+			_layoutPageTemplateStructureLocalService.
+				updateLayoutPageTemplateStructure(
+					fragmentEntryLink.getGroupId(),
+					fragmentEntryLink.getClassNameId(),
+					fragmentEntryLink.getClassPK(),
+					fragmentEntryLink.getSegmentsExperienceId(),
+					layoutStructure.toString());
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					"Unable to update layout page template structure",
+					exception);
+			}
+		}
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		DropZoneContentPageEditorListener.class);
 
 	@Reference
 	private FragmentRendererController _fragmentRendererController;
