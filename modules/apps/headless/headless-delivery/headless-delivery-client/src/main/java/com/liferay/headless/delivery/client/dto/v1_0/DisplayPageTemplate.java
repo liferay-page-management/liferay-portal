@@ -28,26 +28,28 @@ import javax.annotation.Generated;
 @Generated("")
 public class DisplayPageTemplate implements Cloneable {
 
-	public String getContentSubtypeName() {
-		return contentSubtypeName;
+	public Long getContentSubtypeClassTypeId() {
+		return contentSubtypeClassTypeId;
 	}
 
-	public void setContentSubtypeName(String contentSubtypeName) {
-		this.contentSubtypeName = contentSubtypeName;
+	public void setContentSubtypeClassTypeId(Long contentSubtypeClassTypeId) {
+		this.contentSubtypeClassTypeId = contentSubtypeClassTypeId;
 	}
 
-	public void setContentSubtypeName(
-		UnsafeSupplier<String, Exception> contentSubtypeNameUnsafeSupplier) {
+	public void setContentSubtypeClassTypeId(
+		UnsafeSupplier<Long, Exception>
+			contentSubtypeClassTypeIdUnsafeSupplier) {
 
 		try {
-			contentSubtypeName = contentSubtypeNameUnsafeSupplier.get();
+			contentSubtypeClassTypeId =
+				contentSubtypeClassTypeIdUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected String contentSubtypeName;
+	protected Long contentSubtypeClassTypeId;
 
 	public String getContentTypeClassName() {
 		return contentTypeClassName;
