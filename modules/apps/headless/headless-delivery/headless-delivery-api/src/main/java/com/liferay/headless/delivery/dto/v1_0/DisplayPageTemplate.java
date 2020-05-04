@@ -45,20 +45,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class DisplayPageTemplate {
 
 	@Schema
-	public String getContentSubtypeName() {
-		return contentSubtypeName;
+	public Long getContentSubtypeClassTypeId() {
+		return contentSubtypeClassTypeId;
 	}
 
-	public void setContentSubtypeName(String contentSubtypeName) {
-		this.contentSubtypeName = contentSubtypeName;
+	public void setContentSubtypeClassTypeId(Long contentSubtypeClassTypeId) {
+		this.contentSubtypeClassTypeId = contentSubtypeClassTypeId;
 	}
 
 	@JsonIgnore
-	public void setContentSubtypeName(
-		UnsafeSupplier<String, Exception> contentSubtypeNameUnsafeSupplier) {
+	public void setContentSubtypeClassTypeId(
+		UnsafeSupplier<Long, Exception>
+			contentSubtypeClassTypeIdUnsafeSupplier) {
 
 		try {
-			contentSubtypeName = contentSubtypeNameUnsafeSupplier.get();
+			contentSubtypeClassTypeId =
+				contentSubtypeClassTypeIdUnsafeSupplier.get();
 		}
 		catch (RuntimeException re) {
 			throw re;
@@ -70,7 +72,7 @@ public class DisplayPageTemplate {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String contentSubtypeName;
+	protected Long contentSubtypeClassTypeId;
 
 	@Schema
 	public String getContentTypeClassName() {
@@ -179,18 +181,14 @@ public class DisplayPageTemplate {
 
 		sb.append("{");
 
-		if (contentSubtypeName != null) {
+		if (contentSubtypeClassTypeId != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"contentSubtypeName\": ");
+			sb.append("\"contentSubtypeClassTypeId\": ");
 
-			sb.append("\"");
-
-			sb.append(_escape(contentSubtypeName));
-
-			sb.append("\"");
+			sb.append(contentSubtypeClassTypeId);
 		}
 
 		if (contentTypeClassName != null) {
