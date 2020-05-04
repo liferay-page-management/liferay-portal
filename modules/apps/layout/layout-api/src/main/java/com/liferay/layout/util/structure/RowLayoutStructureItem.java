@@ -49,7 +49,7 @@ public class RowLayoutStructureItem extends LayoutStructureItem {
 
 		if (!Objects.equals(_gutters, rowLayoutStructureItem._gutters) ||
 			!Objects.equals(
-				_modulesPerRow, rowLayoutStructureItem._numberOfColumns) ||
+				_modulesPerRow, rowLayoutStructureItem._modulesPerRow) ||
 			!Objects.equals(
 				_numberOfColumns, rowLayoutStructureItem._numberOfColumns) ||
 			!Objects.equals(
