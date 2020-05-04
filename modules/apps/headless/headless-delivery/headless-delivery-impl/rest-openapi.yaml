@@ -737,8 +737,9 @@ components:
             description:
                 ""
             properties:
-                contentSubtypeName:
-                    type: string
+                contentSubtypeClassTypeId:
+                    format: int64
+                    type: integer
                 contentTypeClassName:
                     type: string
                 key:
