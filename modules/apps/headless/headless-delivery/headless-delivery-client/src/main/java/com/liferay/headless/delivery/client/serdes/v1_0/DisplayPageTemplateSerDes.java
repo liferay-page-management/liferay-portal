@@ -55,18 +55,14 @@ public class DisplayPageTemplateSerDes {
 
 		sb.append("{");
 
-		if (displayPageTemplate.getContentSubtypeName() != null) {
+		if (displayPageTemplate.getContentSubtypeClassTypeId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"contentSubtypeName\": ");
+			sb.append("\"contentSubtypeClassTypeId\": ");
 
-			sb.append("\"");
-
-			sb.append(_escape(displayPageTemplate.getContentSubtypeName()));
-
-			sb.append("\"");
+			sb.append(displayPageTemplate.getContentSubtypeClassTypeId());
 		}
 
 		if (displayPageTemplate.getContentTypeClassName() != null) {
@@ -132,13 +128,14 @@ public class DisplayPageTemplateSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (displayPageTemplate.getContentSubtypeName() == null) {
-			map.put("contentSubtypeName", null);
+		if (displayPageTemplate.getContentSubtypeClassTypeId() == null) {
+			map.put("contentSubtypeClassTypeId", null);
 		}
 		else {
 			map.put(
-				"contentSubtypeName",
-				String.valueOf(displayPageTemplate.getContentSubtypeName()));
+				"contentSubtypeClassTypeId",
+				String.valueOf(
+					displayPageTemplate.getContentSubtypeClassTypeId()));
 		}
 
 		if (displayPageTemplate.getContentTypeClassName() == null) {
@@ -185,10 +182,12 @@ public class DisplayPageTemplateSerDes {
 			DisplayPageTemplate displayPageTemplate, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "contentSubtypeName")) {
+			if (Objects.equals(
+					jsonParserFieldName, "contentSubtypeClassTypeId")) {
+
 				if (jsonParserFieldValue != null) {
-					displayPageTemplate.setContentSubtypeName(
-						(String)jsonParserFieldValue);
+					displayPageTemplate.setContentSubtypeClassTypeId(
+						Long.valueOf((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(
