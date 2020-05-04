@@ -441,6 +441,7 @@ public class LayoutStructure {
 			return Collections.emptyList();
 		}
 
+		rowLayoutStructureItem.setModulesPerRow(numberOfColumns);
 		rowLayoutStructureItem.setNumberOfColumns(numberOfColumns);
 
 		List<String> childrenItemIds = new ArrayList<>(
@@ -576,6 +577,8 @@ public class LayoutStructure {
 			viewportSizeConfigurations.getOrDefault(
 				viewportSizeId, JSONFactoryUtil.createJSONObject());
 
+		viewportSizeConfigurationJSONObject.put(
+			"modulesPerRow", numberOfColumns);
 		viewportSizeConfigurationJSONObject.put(
 			"numberOfColumns", numberOfColumns);
 	}
