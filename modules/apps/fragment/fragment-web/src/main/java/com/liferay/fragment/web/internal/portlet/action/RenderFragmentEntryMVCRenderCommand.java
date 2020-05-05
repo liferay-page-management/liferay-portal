@@ -19,8 +19,13 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+import javax.servlet.http.HttpServletRequest;
 
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.sharepoint.methods.Method;
 import org.osgi.service.component.annotations.Component;
+
+import java.util.Objects;
 
 /**
  * @author Pablo Molina
@@ -38,6 +43,11 @@ public class RenderFragmentEntryMVCRenderCommand implements MVCRenderCommand {
 	@Override
 	public String render(
 		RenderRequest renderRequest, RenderResponse renderResponse) {
+		HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
+
+		if(!Objects.equals(request.getMethod(), Method.POST)) {
+			throw new UnsupportedOperationException();
+		}
 
 		return "/render_fragment_entry.jsp";
 	}
