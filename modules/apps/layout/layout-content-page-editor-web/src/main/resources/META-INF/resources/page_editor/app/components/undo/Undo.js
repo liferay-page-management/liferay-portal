@@ -35,6 +35,21 @@ const isAlloyEditor = (element) => {
 };
 
 export default function Undo({onRedo = () => {}, onUndo = () => {}}) {
+	const undoHistory = useSelector((state) => state.undoHistory);
+
+	useEventListener(
+		'beforeunload',
+		(event) => {
+			if (undoHistory && undoHistory.length) {
+				event.returnValue = Liferay.Language.get(
+					'are-you-sure-you-want-to-reload-the-page-editor-you-won-t-be-able-to-undo-past-actions-after-the-reload'
+				);
+			}
+		},
+		false,
+		window
+	);
+
 	useEventListener(
 		'keydown',
 		(event) => {
@@ -50,8 +65,6 @@ export default function Undo({onRedo = () => {}, onUndo = () => {}}) {
 		false,
 		window
 	);
-
-	const undoHistory = useSelector((state) => state.undoHistory);
 
 	return (
 		<ClayButton.Group className="d-block d-none mr-3">
