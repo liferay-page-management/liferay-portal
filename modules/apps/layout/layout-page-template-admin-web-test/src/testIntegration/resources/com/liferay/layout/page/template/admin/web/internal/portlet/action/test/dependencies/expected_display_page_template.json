@@ -1,5 +1,5 @@
 {
-	"contentSubtypeName": "Basic Web Content",
+	"contentSubtypeClassTypeId": "${CONTENT_SUBTYPE_CLASS_TYPE_ID}",
 	"contentTypeClassName": "com.liferay.journal.model.JournalArticle",
 	"name": "Display Page Template One"
 }
