@@ -44,6 +44,8 @@ export function initializeConfig(backendConfig) {
 		...DEFAULT_CONFIG,
 		...backendConfig,
 		...syntheticItems,
+
+		undoEnabled: true,
 	};
 
 	return config;
