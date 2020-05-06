@@ -22,7 +22,6 @@
 taglib uri="http://liferay.com/tld/aui" prefix="aui" %><%@
 taglib uri="http://liferay.com/tld/clay" prefix="clay" %><%@
 taglib uri="http://liferay.com/tld/data-engine" prefix="liferay-data-engine" %><%@
-taglib uri="http://liferay.com/tld/ddm" prefix="liferay-ddm" %><%@
 taglib uri="http://liferay.com/tld/expando" prefix="liferay-expando" %><%@
 taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
 taglib uri="http://liferay.com/tld/layout" prefix="liferay-layout" %><%@
@@ -48,8 +47,6 @@ page import="com.liferay.dynamic.data.mapping.exception.NoSuchTemplateException"
 page import="com.liferay.dynamic.data.mapping.exception.RequiredStructureException" %><%@
 page import="com.liferay.dynamic.data.mapping.exception.RequiredTemplateException" %><%@
 page import="com.liferay.dynamic.data.mapping.exception.StorageFieldRequiredException" %><%@
-page import="com.liferay.dynamic.data.mapping.exception.StructureDefinitionException" %><%@
-page import="com.liferay.dynamic.data.mapping.exception.StructureDuplicateElementException" %><%@
 page import="com.liferay.dynamic.data.mapping.exception.StructureNameException" %><%@
 page import="com.liferay.dynamic.data.mapping.exception.TemplateNameException" %><%@
 page import="com.liferay.dynamic.data.mapping.exception.TemplateScriptException" %><%@
@@ -65,8 +62,6 @@ page import="com.liferay.dynamic.data.mapping.model.LocalizedValue" %><%@
 page import="com.liferay.dynamic.data.mapping.service.DDMStorageLinkLocalServiceUtil" %><%@
 page import="com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceUtil" %><%@
 page import="com.liferay.dynamic.data.mapping.service.DDMTemplateLocalServiceUtil" %><%@
-page import="com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidationException" %><%@
-page import="com.liferay.dynamic.data.mapping.validator.DDMFormValidationException" %><%@
 page import="com.liferay.exportimport.kernel.exception.ExportImportContentValidationException" %><%@
 page import="com.liferay.info.field.InfoField" %><%@
 page import="com.liferay.info.field.InfoFieldSetEntry" %><%@
@@ -99,7 +94,6 @@ page import="com.liferay.journal.exception.FeedTargetLayoutFriendlyUrlException"
 page import="com.liferay.journal.exception.FeedTargetPortletIdException" %><%@
 page import="com.liferay.journal.exception.FolderNameException" %><%@
 page import="com.liferay.journal.exception.InvalidDDMStructureException" %><%@
-page import="com.liferay.journal.exception.InvalidDDMStructureFieldNameException" %><%@
 page import="com.liferay.journal.exception.InvalidFolderException" %><%@
 page import="com.liferay.journal.exception.MaxAddMenuFavItemsException" %><%@
 page import="com.liferay.journal.exception.NoSuchArticleException" %><%@
@@ -144,7 +138,6 @@ page import="com.liferay.journal.web.internal.display.context.JournalViewMoreMen
 page import="com.liferay.journal.web.internal.display.context.JournalViewMoreMenuItemsManagementToolbarDisplayContext" %><%@
 page import="com.liferay.journal.web.internal.display.context.util.JournalWebRequestHelper" %><%@
 page import="com.liferay.journal.web.internal.helper.JournalDDMTemplateHelper" %><%@
-page import="com.liferay.journal.web.internal.item.selector.JournalItemSelectorHelper" %><%@
 page import="com.liferay.journal.web.internal.portlet.JournalPortlet" %><%@
 page import="com.liferay.journal.web.internal.portlet.action.ActionUtil" %><%@
 page import="com.liferay.journal.web.internal.security.permission.resource.DDMStructurePermission" %><%@

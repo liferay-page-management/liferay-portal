@@ -86,7 +86,7 @@ public class JournalEditDDMStructuresDisplayContext {
 				"label", LanguageUtil.get(_httpServletRequest, "properties")
 			).put(
 				"pluginEntryPoint",
-				npmResolvedPackageName + "/js/ddm_structure/panels/index.es"
+				npmResolvedPackageName + "/js/data_engine/panels/index.es"
 			).put(
 				"sidebarPanelId", "properties"
 			).put(
@@ -97,7 +97,7 @@ public class JournalEditDDMStructuresDisplayContext {
 
 					editBasicInfoURL.setParameter(
 						"mvcPath",
-						"/ddm_structure/basic_info_data_engine_editor.jsp");
+						"/data_engine/basic_info_data_engine_editor.jsp");
 					editBasicInfoURL.setParameter(
 						"ddmStructureId", String.valueOf(getDDMStructureId()));
 					editBasicInfoURL.setWindowState(

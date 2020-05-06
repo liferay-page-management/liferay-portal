@@ -55,7 +55,6 @@ import com.liferay.journal.exception.NoSuchFeedException;
 import com.liferay.journal.exception.NoSuchFolderException;
 import com.liferay.journal.util.JournalContent;
 import com.liferay.journal.util.JournalConverter;
-import com.liferay.journal.web.internal.configuration.JournalDDMEditorConfiguration;
 import com.liferay.journal.web.internal.configuration.JournalWebConfiguration;
 import com.liferay.journal.web.internal.helper.JournalDDMTemplateHelper;
 import com.liferay.journal.web.internal.portlet.action.ActionUtil;
@@ -94,10 +93,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Eduardo García
  */
 @Component(
-	configurationPid = {
-		"com.liferay.journal.web.internal.configuration.JournalDDMEditorConfiguration",
-		"com.liferay.journal.web.internal.configuration.JournalWebConfiguration"
-	},
+	configurationPid = "com.liferay.journal.web.internal.configuration.JournalWebConfiguration",
 	configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true,
 	property = {
 		"com.liferay.portlet.add-default-resource=true",
@@ -160,9 +156,6 @@ public class JournalPortlet extends MVCPortlet {
 			DDMFormValuesToMapConverter.class.getName(),
 			_ddmFormValuesToMapConverter);
 		renderRequest.setAttribute(
-			JournalDDMEditorConfiguration.class.getName(),
-			_journalDDMEditorConfiguration);
-		renderRequest.setAttribute(
 			JournalFileUploadsConfiguration.class.getName(),
 			_journalFileUploadsConfiguration);
 		renderRequest.setAttribute(
@@ -186,9 +179,6 @@ public class JournalPortlet extends MVCPortlet {
 		resourceRequest.setAttribute(
 			DDMTemplateHelper.class.getName(), _ddmTemplateHelper);
 		resourceRequest.setAttribute(
-			JournalDDMEditorConfiguration.class.getName(),
-			_journalDDMEditorConfiguration);
-		resourceRequest.setAttribute(
 			JournalWebConfiguration.class.getName(), _journalWebConfiguration);
 		resourceRequest.setAttribute(TrashWebKeys.TRASH_HELPER, _trashHelper);
 
@@ -198,8 +188,6 @@ public class JournalPortlet extends MVCPortlet {
 	@Activate
 	@Modified
 	protected void activate(Map<String, Object> properties) {
-		_journalDDMEditorConfiguration = ConfigurableUtil.createConfigurable(
-			JournalDDMEditorConfiguration.class, properties);
 		_journalFileUploadsConfiguration = ConfigurableUtil.createConfigurable(
 			JournalFileUploadsConfiguration.class, properties);
 		_journalWebConfiguration = ConfigurableUtil.createConfigurable(
@@ -321,9 +309,6 @@ public class JournalPortlet extends MVCPortlet {
 
 	@Reference
 	private JournalConverter _journalConverter;
-
-	private volatile JournalDDMEditorConfiguration
-		_journalDDMEditorConfiguration;
 
 	@Reference
 	private JournalDDMTemplateHelper _journalDDMTemplateHelper;
