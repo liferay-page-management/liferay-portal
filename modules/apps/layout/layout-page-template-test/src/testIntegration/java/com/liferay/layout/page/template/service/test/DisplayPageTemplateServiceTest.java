@@ -60,8 +60,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -84,12 +86,20 @@ public class DisplayPageTemplateServiceTest {
 				Propagation.REQUIRED,
 				LayoutPersistenceConstants.BUNDLE_SYMBOLIC_NAME));
 
+	@BeforeClass
+	public static void setUpClass() {
+		_className = ClassNameLocalServiceUtil.addClassName(
+			TestInfoDisplayContributor.class.getName());
+	}
+
+	@AfterClass
+	public static void tearDownClass() {
+		ClassNameLocalServiceUtil.deleteClassName(_className);
+	}
+
 	@Before
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
-
-		_className = ClassNameLocalServiceUtil.addClassName(
-			TestInfoDisplayContributor.class.getName());
 	}
 
 	@After
@@ -211,8 +221,7 @@ public class DisplayPageTemplateServiceTest {
 
 	private static final long _CLASS_TYPE_ID = 99999L;
 
-	@DeleteAfterTestRun
-	private ClassName _className;
+	private static ClassName _className;
 
 	@DeleteAfterTestRun
 	private Group _group;
