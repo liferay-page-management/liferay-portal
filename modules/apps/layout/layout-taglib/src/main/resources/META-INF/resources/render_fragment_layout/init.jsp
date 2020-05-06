@@ -23,6 +23,7 @@ page import="com.liferay.fragment.renderer.FragmentRendererController" %><%@
 page import="com.liferay.fragment.service.FragmentEntryLinkLocalServiceUtil" %><%@
 page import="com.liferay.info.constants.InfoDisplayWebKeys" %><%@
 page import="com.liferay.info.display.contributor.InfoDisplayContributor" %><%@
+page import="com.liferay.layout.responsive.ResponsiveLayoutStructureUtil" %><%@
 page import="com.liferay.layout.taglib.internal.display.context.RenderFragmentLayoutDisplayContext" %><%@
 page import="com.liferay.layout.util.structure.CollectionItemLayoutStructureItem" %><%@
 page import="com.liferay.layout.util.structure.CollectionLayoutStructureItem" %><%@
@@ -36,7 +37,6 @@ page import="com.liferay.layout.util.structure.LayoutStructureItem" %><%@
 page import="com.liferay.layout.util.structure.RootLayoutStructureItem" %><%@
 page import="com.liferay.layout.util.structure.RowLayoutStructureItem" %><%@
 page import="com.liferay.petra.string.StringBundler" %><%@
-page import="com.liferay.petra.string.StringPool" %><%@
 page import="com.liferay.portal.kernel.util.WebKeys" %>
 
 <%@ page import="java.util.List" %><%@

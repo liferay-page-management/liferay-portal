@@ -83,10 +83,12 @@ for (String childrenItemId : childrenItemIds) {
 
 			<%
 			ColumnLayoutStructureItem columnLayoutStructureItem = (ColumnLayoutStructureItem)layoutStructureItem;
+
+			RowLayoutStructureItem rowLayoutStructureItem = (RowLayoutStructureItem)layoutStructure.getLayoutStructureItem(columnLayoutStructureItem.getParentItemId());
 			%>
 
 			<clay:col
-				md="<%= (columnLayoutStructureItem.getSize() > 0) ? String.valueOf(columnLayoutStructureItem.getSize()) : StringPool.BLANK %>"
+				className="<%= ResponsiveLayoutStructureUtil.getColumnClass(rowLayoutStructureItem, columnLayoutStructureItem) %>"
 			>
 
 				<%
@@ -224,7 +226,7 @@ for (String childrenItemId : childrenItemIds) {
 				<c:when test="<%= includeContainer %>">
 					<div class="container-fluid p-0">
 						<clay:row
-							className='<%= !rowLayoutStructureItem.isGutters() ? "no-gutters" : StringPool.BLANK %>'
+							className="<%= ResponsiveLayoutStructureUtil.getRowClass(rowLayoutStructureItem) %>"
 						>
 
 							<%
@@ -237,7 +239,7 @@ for (String childrenItemId : childrenItemIds) {
 				</c:when>
 				<c:otherwise>
 					<clay:row
-						className='<%= !rowLayoutStructureItem.isGutters() ? "no-gutters" : StringPool.BLANK %>'
+						className="<%= ResponsiveLayoutStructureUtil.getRowClass(rowLayoutStructureItem) %>"
 					>
 
 						<%

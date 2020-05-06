@@ -12,23 +12,9 @@
  * details.
  */
 
-import updateItemConfig from '../actions/updateItemConfig';
-import LayoutService from '../services/LayoutService';
-
-export default function updateRowColumns({
-	itemId,
-	numberOfColumns,
-	segmentsExperienceId,
-	viewportSizeId,
-}) {
-	return (dispatch) =>
-		LayoutService.updateRowColumns({
-			itemId,
-			numberOfColumns,
-			onNetworkStatus: dispatch,
-			segmentsExperienceId,
-			viewportSizeId,
-		}).then(({layoutData}) => {
-			dispatch(updateItemConfig({layoutData}));
-		});
-}
+export const VIEWPORT_SIZES = {
+	desktop: 'desktop',
+	landscapeMobile: 'landscapeMobile',
+	portraitMobile: 'portraitMobile',
+	tablet: 'tablet',
+};

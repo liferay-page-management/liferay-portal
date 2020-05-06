@@ -204,6 +204,10 @@ definition {
 			configurationName = "Authentication",
 			configurationScope = "Virtual Instance Scope");
 
+		AssertClick(
+			locator1 = "Button#ADD",
+			value1 = "Add");
+
 		FormFields.viewCheckboxNotChecked(fieldName = "Enabled");
 
 		PortalSettings.configureLDAPSetting(enableSettingList = "enabled");
@@ -217,6 +221,10 @@ definition {
 			configurationCategory = "LDAP",
 			configurationName = "Authentication",
 			configurationScope = "Virtual Instance Scope");
+
+		AssertClick(
+			locator1 = "Button#ADD",
+			value1 = "Add");
 
 		FormFields.viewCheckboxNotChecked(fieldName = "Enabled");
 	}

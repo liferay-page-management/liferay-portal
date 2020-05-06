@@ -18,11 +18,16 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.data.engine.rest.client.dto.v2_0.DataDefinition;
 import com.liferay.data.engine.rest.client.dto.v2_0.DataListView;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataDefinitionTestUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 
+import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,22 +48,44 @@ public class DataListViewResourceTest extends BaseDataListViewResourceTestCase {
 			irrelevantGroup.getGroupId());
 	}
 
-	@Ignore
 	@Override
 	@Test
-	public void testGraphQLDeleteDataListView() {
+	public void testGraphQLGetDataListView() throws Exception {
+		DataListView dataListView = testGraphQLDataListView_addDataListView();
+
+		JSONObject dataListViewJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"dataListView",
+					HashMapBuilder.<String, Object>put(
+						"dataListViewId", dataListView.getId()
+					).build(),
+					getGraphQLFields())),
+			"JSONObject/data", "JSONObject/dataListView");
+
+		Assert.assertEquals(
+			GetterUtil.getLong(dataListView.getDataDefinitionId()),
+			dataListViewJSONObject.getLong("dataDefinitionId"));
+		Assert.assertEquals(
+			GetterUtil.getString(
+				ArrayUtil.getValue(dataListView.getFieldNames(), 0)),
+			JSONUtil.getValueAsString(
+				dataListViewJSONObject, "JSONArray/fieldNames", "Object/0"));
+		Assert.assertEquals(
+			GetterUtil.getString(dataListView.getSortField()),
+			dataListViewJSONObject.getString("sortField"));
 	}
 
-	@Ignore
 	@Override
-	@Test
-	public void testGraphQLGetDataListView() {
+	protected String[] getAdditionalAssertFieldNames() {
+		return new String[] {"dataDefinitionId", "fieldNames", "sortField"};
 	}
 
 	@Override
 	protected DataListView randomDataListView() throws Exception {
 		DataListView dataListView = super.randomDataListView();
 
+		dataListView.setDataDefinitionId(_dataDefinition.getId());
 		dataListView.setFieldNames(
 			new String[] {RandomTestUtil.randomString()});
 
@@ -90,6 +117,14 @@ public class DataListViewResourceTest extends BaseDataListViewResourceTestCase {
 
 	@Override
 	protected DataListView testGetDataListView_addDataListView()
+		throws Exception {
+
+		return dataListViewResource.postDataDefinitionDataListView(
+			_dataDefinition.getId(), randomDataListView());
+	}
+
+	@Override
+	protected DataListView testGraphQLDataListView_addDataListView()
 		throws Exception {
 
 		return dataListViewResource.postDataDefinitionDataListView(

@@ -748,7 +748,9 @@ public abstract class BaseCheck extends AbstractCheck {
 	protected boolean isJSPFile() {
 		FileContents fileContents = getFileContents();
 
-		if (StringUtil.endsWith(fileContents.getFileName(), ".jsp")) {
+		if (StringUtil.endsWith(fileContents.getFileName(), ".jsp") ||
+			StringUtil.endsWith(fileContents.getFileName(), ".jspf")) {
+
 			return true;
 		}
 
