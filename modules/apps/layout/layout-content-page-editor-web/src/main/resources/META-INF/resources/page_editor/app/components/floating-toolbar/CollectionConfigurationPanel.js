@@ -13,13 +13,14 @@
  */
 
 import ClayForm, {ClayInput, ClaySelectWithOption} from '@clayui/form';
-import React from 'react';
+import React, {useState} from 'react';
 
 import {config} from '../../../app/config/index';
 import CollectionSelector from '../../../common/components/CollectionSelector';
 import {LAYOUT_DATA_ITEM_DEFAULT_CONFIGURATIONS} from '../../config/constants/layoutDataItemDefaultConfigurations';
 import {LAYOUT_DATA_ITEM_TYPES} from '../../config/constants/layoutDataItemTypes';
 import selectSegmentsExperienceId from '../../selectors/selectSegmentsExperienceId';
+import InfoItemService from '../../services/InfoItemService';
 import {useDispatch, useSelector} from '../../store/index';
 import updateItemConfig from '../../thunks/updateItemConfig';
 
@@ -57,6 +58,16 @@ export const CollectionConfigurationPanel = ({item}) => {
 		);
 	};
 
+	const [availableListRenderers, setAvailableListRenderers] = useState([]);
+
+	if (collectionConfig.collection) {
+		InfoItemService.getAvailableListRenderers({
+			className: collectionConfig.collection.itemType,
+		}).then((response) => {
+			setAvailableListRenderers(response);
+		});
+	}
+
 	return (
 		<>
 			<ClayForm.Group small>
@@ -73,6 +84,25 @@ export const CollectionConfigurationPanel = ({item}) => {
 			</ClayForm.Group>
 			{collectionIsMapped(item.config) && (
 				<>
+					{availableListRenderers.length > 0 && (
+						<ClayForm.Group small>
+							<label htmlFor="listStyle">
+								{Liferay.Language.get('list-style')}
+							</label>
+							<ClaySelectWithOption
+								aria-label={Liferay.Language.get('list-style')}
+								id="listStyle"
+								onChange={({target: {value}}) =>
+									handleConfigurationChanged({
+										listStyle: value,
+									})
+								}
+								options={availableListRenderers}
+								value={item.config.listStyle}
+							/>
+						</ClayForm.Group>
+					)}
+
 					<ClayForm.Group small>
 						<label htmlFor="collectionLayout">
 							{Liferay.Language.get('layout')}
