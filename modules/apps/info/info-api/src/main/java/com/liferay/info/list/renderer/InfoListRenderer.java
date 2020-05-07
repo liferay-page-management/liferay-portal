@@ -14,7 +14,10 @@
 
 package com.liferay.info.list.renderer;
 
+import com.liferay.portal.kernel.language.LanguageUtil;
+
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,6 +31,10 @@ public interface InfoListRenderer<T> {
 		Class<?> clazz = getClass();
 
 		return clazz.getName();
+	}
+
+	public default String getLabel(Locale locale) {
+		return LanguageUtil.get(locale, getKey());
 	}
 
 	public void render(
