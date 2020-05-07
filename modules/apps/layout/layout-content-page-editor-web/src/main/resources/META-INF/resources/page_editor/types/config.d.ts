@@ -54,6 +54,7 @@ export interface Config {
 	editSegmentsEntryURL: string;
 	getAssetFieldValueURL: string;
 	getAssetMappingFieldsURL: string;
+	getAvailableListRenderersURL: string;
 	getAvailableTemplatesURL: string;
 	getCollectionFieldURL: string;
 	getCollectionMappingFieldsURL: string;
