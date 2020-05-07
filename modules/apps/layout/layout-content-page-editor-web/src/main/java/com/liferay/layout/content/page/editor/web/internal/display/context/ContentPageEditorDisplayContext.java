@@ -271,6 +271,9 @@ public class ContentPageEditorDisplayContext {
 				"getAssetMappingFieldsURL",
 				getResourceURL("/content_layout/get_asset_mapping_fields")
 			).put(
+				"getAvailableListRenderersURL",
+				getResourceURL("/content_layout/get_available_list_renderers")
+			).put(
 				"getAvailableTemplatesURL",
 				getResourceURL("/content_layout/get_available_templates")
 			).put(
