@@ -68,6 +68,24 @@ export default {
 	},
 
 	/**
+	 * Get available list renderers for the class name
+	 * @param {object} options
+	 * @param {string} options.className className
+	 * @param {function} options.onNetworkStatus
+	 */
+	getAvailableListRenderers({className, onNetworkStatus}) {
+		return serviceFetch(
+			config.getAvailableListRenderersURL,
+			{
+				body: {
+					className,
+				},
+			},
+			onNetworkStatus
+		);
+	},
+
+	/**
 	 * Get available structure mapping fields
 	 * @param {object} options
 	 * @param {string} options.classNameId Asset's className
