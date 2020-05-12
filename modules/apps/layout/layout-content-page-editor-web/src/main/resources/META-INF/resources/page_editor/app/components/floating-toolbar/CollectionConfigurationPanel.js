@@ -72,9 +72,13 @@ export const CollectionConfigurationPanel = ({item}) => {
 		if (collectionItemType) {
 			InfoItemService.getAvailableListRenderers({
 				className: collectionItemType,
-			}).then((response) => {
-				setAvailableListRenderers(response);
-			});
+			})
+				.then((response) => {
+					setAvailableListRenderers(response);
+				})
+				.catch(() => {
+					setAvailableListRenderers([]);
+				});
 		}
 	}, [collectionItemType]);
 
