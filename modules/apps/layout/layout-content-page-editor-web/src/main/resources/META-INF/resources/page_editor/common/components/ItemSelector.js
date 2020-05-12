@@ -21,6 +21,7 @@ import React, {useState} from 'react';
 
 import {config} from '../../app/config/index';
 import {useSelector} from '../../app/store/index';
+import {useId} from '../../app/utils/useId';
 import {openInfoItemSelector} from '../../core/openInfoItemSelector';
 
 export default function ItemSelector({
@@ -32,21 +33,22 @@ export default function ItemSelector({
 	showAddButton = true,
 	showMappedItems = true,
 }) {
-	const mappedInfoItems = useSelector((state) => state.mappedInfoItems);
 	const [active, setActive] = useState(false);
+	const itemSelectorInputId = useId();
+	const mappedInfoItems = useSelector((state) => state.mappedInfoItems);
 
 	const defaultEventName = `${config.portletNamespace}selectInfoItem`;
 
 	return (
 		<>
-			{label && <label htmlFor="itemSelectorInput">{label}</label>}
+			{label && <label htmlFor={itemSelectorInputId}>{label}</label>}
 
 			<div className="d-flex">
 				<ClayInput
 					className={classNames('mr-2', {
 						'page-editor__item-selector__content-input': showAddButton,
 					})}
-					id="itemSelectorInput"
+					id={itemSelectorInputId}
 					readOnly
 					sizing="sm"
 					type="text"

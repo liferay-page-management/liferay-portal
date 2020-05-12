@@ -18,52 +18,58 @@ import React from 'react';
 
 import {CONTAINER_PADDING_IDENTIFIERS} from '../../config/constants/containerPaddingIdentifiers';
 import {config} from '../../config/index';
+import {useId} from '../../utils/useId';
 
 export const ContainerPaddingVerticalConfiguration = ({
 	onValueChange,
 	paddingBottom,
 	paddingTop,
-}) => (
-	<ClayForm.Group className="form-group-autofit" small>
-		<div className="form-group-item">
-			<label htmlFor="containerPaddingTop">
-				{Liferay.Language.get('padding-top')}
-			</label>
-			<ClaySelectWithOption
-				aria-label={Liferay.Language.get('padding-top')}
-				id="containerPaddingTop"
-				onChange={({target: {value}}) =>
-					onValueChange({
-						[CONTAINER_PADDING_IDENTIFIERS.paddingTop]: Number(
-							value
-						),
-					})
-				}
-				options={config.paddingOptions}
-				value={String(paddingTop)}
-			/>
-		</div>
+}) => {
+	const containerPaddingTopId = useId();
+	const containerPaddingBottomId = useId();
 
-		<div className="form-group-item">
-			<label htmlFor="containerPaddingBottom">
-				{Liferay.Language.get('padding-bottom')}
-			</label>
-			<ClaySelectWithOption
-				aria-label={Liferay.Language.get('padding-bottom')}
-				id="containerPaddingBottom"
-				onChange={({target: {value}}) =>
-					onValueChange({
-						[CONTAINER_PADDING_IDENTIFIERS.paddingBottom]: Number(
-							value
-						),
-					})
-				}
-				options={config.paddingOptions}
-				value={String(paddingBottom)}
-			/>
-		</div>
-	</ClayForm.Group>
-);
+	return (
+		<ClayForm.Group className="form-group-autofit" small>
+			<div className="form-group-item">
+				<label htmlFor={containerPaddingTopId}>
+					{Liferay.Language.get('padding-top')}
+				</label>
+				<ClaySelectWithOption
+					aria-label={Liferay.Language.get('padding-top')}
+					id={containerPaddingTopId}
+					onChange={({target: {value}}) =>
+						onValueChange({
+							[CONTAINER_PADDING_IDENTIFIERS.paddingTop]: Number(
+								value
+							),
+						})
+					}
+					options={config.paddingOptions}
+					value={String(paddingTop)}
+				/>
+			</div>
+
+			<div className="form-group-item">
+				<label htmlFor={containerPaddingBottomId}>
+					{Liferay.Language.get('padding-bottom')}
+				</label>
+				<ClaySelectWithOption
+					aria-label={Liferay.Language.get('padding-bottom')}
+					id={containerPaddingBottomId}
+					onChange={({target: {value}}) =>
+						onValueChange({
+							[CONTAINER_PADDING_IDENTIFIERS.paddingBottom]: Number(
+								value
+							),
+						})
+					}
+					options={config.paddingOptions}
+					value={String(paddingBottom)}
+				/>
+			</div>
+		</ClayForm.Group>
+	);
+};
 
 ContainerPaddingVerticalConfiguration.propTypes = {
 	onValueChange: PropTypes.func.isRequired,
@@ -74,28 +80,32 @@ ContainerPaddingVerticalConfiguration.propTypes = {
 export const ContainerPaddingHorizontalConfiguration = ({
 	onValueChange,
 	paddingHorizontal,
-}) => (
-	<ClayForm.Group className="form-group-autofit" small>
-		<div className="form-group-item">
-			<label htmlFor="containerPaddingHorizontal">
-				{Liferay.Language.get('padding-horizontal')}
-			</label>
-			<ClaySelectWithOption
-				aria-label={Liferay.Language.get('padding-horizontal')}
-				id="containerPaddingHorizontal"
-				onChange={({target: {value}}) =>
-					onValueChange({
-						[CONTAINER_PADDING_IDENTIFIERS.paddingHorizontal]: Number(
-							value
-						),
-					})
-				}
-				options={config.paddingOptions}
-				value={String(paddingHorizontal)}
-			/>
-		</div>
-	</ClayForm.Group>
-);
+}) => {
+	const containerPaddingHorizontalId = useId();
+
+	return (
+		<ClayForm.Group className="form-group-autofit" small>
+			<div className="form-group-item">
+				<label htmlFor={containerPaddingHorizontalId}>
+					{Liferay.Language.get('padding-horizontal')}
+				</label>
+				<ClaySelectWithOption
+					aria-label={Liferay.Language.get('padding-horizontal')}
+					id={containerPaddingHorizontalId}
+					onChange={({target: {value}}) =>
+						onValueChange({
+							[CONTAINER_PADDING_IDENTIFIERS.paddingHorizontal]: Number(
+								value
+							),
+						})
+					}
+					options={config.paddingOptions}
+					value={String(paddingHorizontal)}
+				/>
+			</div>
+		</ClayForm.Group>
+	);
+};
 
 ContainerPaddingVerticalConfiguration.propTypes = {
 	onValueChange: PropTypes.func.isRequired,
