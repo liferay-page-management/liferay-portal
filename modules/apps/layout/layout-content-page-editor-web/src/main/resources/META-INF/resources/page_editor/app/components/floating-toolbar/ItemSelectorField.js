@@ -21,6 +21,7 @@ import ItemSelector from '../../../common/components/ItemSelector';
 import {ConfigurationFieldPropTypes} from '../../../prop-types/index';
 import InfoItemService from '../../services/InfoItemService';
 import {useDispatch} from '../../store/index';
+import {useId} from '../../utils/useId';
 import {CollectionItemContext} from '../CollectionItemContext';
 
 export const ItemSelectorField = ({field, onValueSelect, value}) => {
@@ -98,6 +99,7 @@ const TemplateSelector = ({
 	const dispatch = useDispatch();
 	const [availableTemplates, setAvailableTemplates] = useState([]);
 	const isMounted = useIsMounted();
+	const itemSelectorTemplateSelectId = useId();
 
 	useEffect(() => {
 		if (isMounted()) {
@@ -114,13 +116,13 @@ const TemplateSelector = ({
 	return (
 		<>
 			<ClayForm.Group small>
-				<label htmlFor="template">
+				<label htmlFor={itemSelectorTemplateSelectId}>
 					{Liferay.Language.get('template')}
 				</label>
 
 				<select
 					className="form-control"
-					id="itemSelectorTemplateSelect"
+					id={itemSelectorTemplateSelectId}
 					onChange={(event) => {
 						onTemplateSelect(
 							event.target.options[event.target.selectedIndex]

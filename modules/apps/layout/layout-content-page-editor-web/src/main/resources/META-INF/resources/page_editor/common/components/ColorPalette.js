@@ -18,6 +18,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import {config} from '../../app/config/index';
+import {useId} from '../../app/utils/useId';
 
 export default function ColorPalette({
 	label,
@@ -25,11 +26,13 @@ export default function ColorPalette({
 	onColorSelect,
 	selectedColor,
 }) {
+	const colorPaletteId = useId();
+
 	return (
 		<>
-			{label && <label htmlFor="colorPalette">{label}</label>}
+			{label && <label htmlFor={colorPaletteId}>{label}</label>}
 
-			<div className="palette-container" id="colorPalette">
+			<div className="palette-container" id={colorPaletteId}>
 				<ul className="list-unstyled palette-items-container">
 					{config.themeColorsCssClasses.map((color) => (
 						<li
