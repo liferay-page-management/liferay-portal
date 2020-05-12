@@ -23,6 +23,7 @@ import selectSegmentsExperienceId from '../../selectors/selectSegmentsExperience
 import InfoItemService from '../../services/InfoItemService';
 import {useDispatch, useSelector} from '../../store/index';
 import updateItemConfig from '../../thunks/updateItemConfig';
+import {useId} from '../../utils/useId';
 
 const LAYOUT_OPTIONS = [
 	{label: Liferay.Language.get('full-width'), value: '1'},
@@ -38,7 +39,10 @@ function collectionIsMapped(collectionConfig) {
 }
 
 export const CollectionConfigurationPanel = ({item}) => {
+	const collectionLayoutId = useId();
+	const collectionNumberOfItemsId = useId();
 	const dispatch = useDispatch();
+	const listStyleId = useId();
 	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
 
 	const collectionConfig = {
@@ -86,12 +90,12 @@ export const CollectionConfigurationPanel = ({item}) => {
 				<>
 					{availableListRenderers.length > 0 && (
 						<ClayForm.Group small>
-							<label htmlFor="listStyle">
+							<label htmlFor={listStyleId}>
 								{Liferay.Language.get('list-style')}
 							</label>
 							<ClaySelectWithOption
 								aria-label={Liferay.Language.get('list-style')}
-								id="listStyle"
+								id={listStyleId}
 								onChange={({target: {value}}) =>
 									handleConfigurationChanged({
 										listStyle: value,
@@ -104,12 +108,12 @@ export const CollectionConfigurationPanel = ({item}) => {
 					)}
 
 					<ClayForm.Group small>
-						<label htmlFor="collectionLayout">
+						<label htmlFor={collectionLayoutId}>
 							{Liferay.Language.get('layout')}
 						</label>
 						<ClaySelectWithOption
 							aria-label={Liferay.Language.get('layout')}
-							id="collectionLayout"
+							id={collectionLayoutId}
 							onChange={({target: {value}}) =>
 								handleConfigurationChanged({
 									numberOfColumns: value,
@@ -121,11 +125,11 @@ export const CollectionConfigurationPanel = ({item}) => {
 					</ClayForm.Group>
 
 					<ClayForm.Group small>
-						<label htmlFor="collectionNumberOfItems">
+						<label htmlFor={collectionNumberOfItemsId}>
 							{Liferay.Language.get('max-number-of-items')}
 						</label>
 						<ClayInput
-							id="collectionNumberOfItems"
+							id={collectionNumberOfItemsId}
 							min={1}
 							onChange={({target: {value}}) =>
 								handleConfigurationChanged({

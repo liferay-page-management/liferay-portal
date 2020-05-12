@@ -18,6 +18,7 @@ import React, {useState} from 'react';
 
 import {BackgroundImagePropTypes} from '../../../prop-types/index';
 import {EDITABLE_TYPES} from '../../config/constants/editableTypes';
+import {useId} from '../../utils/useId';
 import {ImageSelector} from './../../../common/components/ImageSelector';
 import MappingSelector from './MappingSelector';
 
@@ -30,6 +31,7 @@ export const ContainerBackgroundImageConfiguration = ({
 	backgroundImage,
 	onValueChange,
 }) => {
+	const containerBackgroundImageId = useId();
 	const [imageSource, setImageSource] = useState(() =>
 		backgroundImage.fieldId || backgroundImage.mappedField
 			? IMAGE_SOURCE.contentMapping
@@ -39,12 +41,12 @@ export const ContainerBackgroundImageConfiguration = ({
 	return (
 		<>
 			<ClayForm.Group small>
-				<label htmlFor="containerBackgroundImage">
+				<label htmlFor={containerBackgroundImageId}>
 					{Liferay.Language.get('image-source')}
 				</label>
 				<ClaySelectWithOption
 					aria-label={Liferay.Language.get('image-source')}
-					id="containerBackgroundImage"
+					id={containerBackgroundImageId}
 					onChange={({target: {value}}) => {
 						setImageSource(value);
 

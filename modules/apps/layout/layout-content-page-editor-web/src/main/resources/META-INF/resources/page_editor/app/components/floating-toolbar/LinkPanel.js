@@ -22,6 +22,7 @@ import {EDITABLE_TYPES} from '../../config/constants/editableTypes';
 import selectSegmentsExperienceId from '../../selectors/selectSegmentsExperienceId';
 import {useDispatch, useSelector} from '../../store/index';
 import updateEditableValues from '../../thunks/updateEditableValues';
+import {useId} from '../../utils/useId';
 import {useGetFieldValue} from '../CollectionItemContext';
 import isMapped from '../fragment-content/isMapped';
 import MappingSelector from './MappingSelector';
@@ -62,9 +63,11 @@ const TARGET_OPTIONS = [
 ];
 
 export default function LinkPanel({item}) {
-	const {editableId, editableType, fragmentEntryLinkId} = item;
-
 	const dispatch = useDispatch();
+	const {editableId, editableType, fragmentEntryLinkId} = item;
+	const floatingToolbarLinkHrefOptionId = useId();
+	const floatingToolbarLinkSourceOptionId = useId();
+	const floatingToolbarLinkTargetOptionId = useId();
 	const fragmentEntryLinks = useSelector((state) => state.fragmentEntryLinks);
 	const languageId = useSelector((state) => state.languageId);
 	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
@@ -181,11 +184,11 @@ export default function LinkPanel({item}) {
 	return (
 		<>
 			<ClayForm.Group small>
-				<label htmlFor="floatingToolbarLinkSourceOption">
+				<label htmlFor={floatingToolbarLinkSourceOptionId}>
 					{Liferay.Language.get('link')}
 				</label>
 				<ClaySelectWithOption
-					id="floatingToolbarLinkSourceOption"
+					id={floatingToolbarLinkSourceOptionId}
 					onChange={(event) => {
 						updateRowConfig({});
 						setHref('');
@@ -218,11 +221,11 @@ export default function LinkPanel({item}) {
 			)}
 			{(sourceType === SOURCE_TYPES.manual || href) && (
 				<ClayForm.Group>
-					<label htmlFor="floatingToolbarLinkHrefOption">
+					<label htmlFor={floatingToolbarLinkHrefOptionId}>
 						{Liferay.Language.get('url')}
 					</label>
 					<ClayInput
-						id="floatingToolbarLinkHrefOption"
+						id={floatingToolbarLinkHrefOptionId}
 						onBlur={() => {
 							const previousValue = editableConfig.href || '';
 
@@ -242,11 +245,11 @@ export default function LinkPanel({item}) {
 			)}
 
 			<ClayForm.Group small>
-				<label htmlFor="floatingToolbarLinkTargetOption">
+				<label htmlFor={floatingToolbarLinkTargetOptionId}>
 					{Liferay.Language.get('target')}
 				</label>
 				<ClaySelectWithOption
-					id="floatingToolbarLinkTargetOption"
+					id={floatingToolbarLinkTargetOptionId}
 					onChange={(event) => {
 						updateRowConfig({
 							...editableConfig,

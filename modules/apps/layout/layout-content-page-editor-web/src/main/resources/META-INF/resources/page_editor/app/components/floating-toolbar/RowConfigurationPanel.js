@@ -25,6 +25,7 @@ import selectSegmentsExperienceId from '../../selectors/selectSegmentsExperience
 import {useDispatch, useSelector} from '../../store/index';
 import updateItemConfig from '../../thunks/updateItemConfig';
 import updateRowColumns from '../../thunks/updateRowColumns';
+import {useId} from '../../utils/useId';
 import {RowConfigurationCheckboxField} from './RowConfigurationCheckboxField';
 import {RowConfigurationSelectField} from './RowConfigurationSelectField';
 
@@ -54,6 +55,9 @@ const ROW_CONFIGURATION_IDENTIFIERS = {
 export const RowConfigurationPanel = ({item}) => {
 	const {availableViewportSizes} = config;
 	const dispatch = useDispatch();
+	const rowModulesPerRowId = useId();
+	const rowNumberOfColumnsId = useId();
+	const rowVerticalAlignmentId = useId();
 	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
 	const selectedViewportSize = useSelector(
 		(state) => state.selectedViewportSize
@@ -120,7 +124,7 @@ export const RowConfigurationPanel = ({item}) => {
 		<>
 			<RowConfigurationSelectField
 				config={viewportSizeConfig.numberOfColumns}
-				id="rowNumberOfColumns"
+				id={rowNumberOfColumnsId}
 				identifier={ROW_CONFIGURATION_IDENTIFIERS.numberOfColumns}
 				label={Liferay.Language.get('number-of-columns')}
 				onValueChange={handleConfigurationValueChanged}
@@ -157,7 +161,7 @@ export const RowConfigurationPanel = ({item}) => {
 					<RowConfigurationSelectField
 						config={viewportSizeConfig.modulesPerRow}
 						getOptionLabel={getModulesPerRowOptionLabel}
-						id="rowModulesPerRow"
+						id={rowModulesPerRowId}
 						identifier={ROW_CONFIGURATION_IDENTIFIERS.modulesPerRow}
 						label={Liferay.Language.get('layout')}
 						onValueChange={handleConfigurationValueChanged}
@@ -180,7 +184,7 @@ export const RowConfigurationPanel = ({item}) => {
 						)}
 					<RowConfigurationSelectField
 						config={viewportSizeConfig.verticalAlignment}
-						id="rowVerticalAlignment"
+						id={rowVerticalAlignmentId}
 						identifier={
 							ROW_CONFIGURATION_IDENTIFIERS.verticalAlignment
 						}
