@@ -13,7 +13,7 @@
  */
 
 import ClayForm, {ClayInput, ClaySelectWithOption} from '@clayui/form';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {config} from '../../../app/config/index';
 import CollectionSelector from '../../../common/components/CollectionSelector';
@@ -64,13 +64,19 @@ export const CollectionConfigurationPanel = ({item}) => {
 
 	const [availableListRenderers, setAvailableListRenderers] = useState([]);
 
-	if (collectionConfig.collection) {
-		InfoItemService.getAvailableListRenderers({
-			className: collectionConfig.collection.itemType,
-		}).then((response) => {
-			setAvailableListRenderers(response);
-		});
-	}
+	const collectionItemType = collectionConfig.collection
+		? collectionConfig.collection.itemType
+		: null;
+
+	useEffect(() => {
+		if (collectionItemType) {
+			InfoItemService.getAvailableListRenderers({
+				className: collectionItemType,
+			}).then((response) => {
+				setAvailableListRenderers(response);
+			});
+		}
+	}, [collectionItemType]);
 
 	return (
 		<>
