@@ -23,6 +23,7 @@ import {PAGE_TYPES} from '../../config/constants/pageTypes';
 import {config} from '../../config/index';
 import InfoItemService from '../../services/InfoItemService';
 import {useDispatch, useSelector} from '../../store/index';
+import {useId} from '../../utils/useId';
 import {useCollectionFields} from '../CollectionItemContext';
 
 const MAPPING_SOURCE_TYPE_IDS = {
@@ -104,18 +105,19 @@ function CollectionMappingSelector({
 	mappedItem,
 	onMappingSelect,
 }) {
+	const mappingSelectorFieldSelectId = useId();
 	const fields = collectionFields.filter(
 		(field) => COMPATIBLE_TYPES[fieldType].indexOf(field.type) !== -1
 	);
 
 	return (
 		<ClayForm.Group small>
-			<label htmlFor="mappingSelectorFieldSelect">
+			<label htmlFor={mappingSelectorFieldSelectId}>
 				{Liferay.Language.get('field')}
 			</label>
 			<ClaySelectWithOption
 				aria-label={Liferay.Language.get('field')}
-				id="mappingSelectorFieldSelect"
+				id={mappingSelectorFieldSelectId}
 				onChange={(event) => {
 					if (event.target.value === UNMAPPED_OPTION.value) {
 						onMappingSelect({collectionFieldId: ''});
@@ -146,6 +148,8 @@ function CollectionMappingSelector({
 function MappingSelector({fieldType, mappedItem, onMappingSelect}) {
 	const dispatch = useDispatch();
 	const mappedInfoItems = useSelector((state) => state.mappedInfoItems);
+	const mappingSelectorSourceSelectId = useId();
+	const mappingSelectorFieldSelectId = useId();
 
 	const {selectedMappingTypes} = config;
 
@@ -265,7 +269,7 @@ function MappingSelector({fieldType, mappedItem, onMappingSelect}) {
 					</label>
 					<ClaySelectWithOption
 						aria-label={Liferay.Language.get('source')}
-						id="mappingSelectorSourceSelect"
+						id={mappingSelectorSourceSelectId}
 						onChange={(event) => {
 							setSelectedSourceTypeId(event.target.value);
 
@@ -313,7 +317,7 @@ function MappingSelector({fieldType, mappedItem, onMappingSelect}) {
 				<ClaySelectWithOption
 					aria-label={Liferay.Language.get('field')}
 					disabled={!(fields && fields.length)}
-					id="mappingSelectorFieldSelect"
+					id={mappingSelectorFieldSelectId}
 					onChange={onFieldSelect}
 					options={
 						fields && fields.length

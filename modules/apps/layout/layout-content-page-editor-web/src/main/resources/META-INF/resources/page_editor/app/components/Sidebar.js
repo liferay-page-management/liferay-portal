@@ -29,6 +29,7 @@ import {config} from '../config/index';
 import selectAvailablePanels from '../selectors/selectAvailablePanels';
 import selectAvailableSidebarPanels from '../selectors/selectAvailableSidebarPanels';
 import {useDispatch, useSelector} from '../store/index';
+import {useId} from '../utils/useId';
 import {useSelectItem} from './Controls';
 
 const {Suspense, useCallback, useEffect} = React;
@@ -40,13 +41,14 @@ const {Suspense, useCallback, useEffect} = React;
 const swallow = [(value) => value, (_error) => undefined];
 
 export default function Sidebar() {
-	const dispatch = useDispatch();
-	const store = useSelector((state) => state);
 	const [hasError, setHasError] = useStateSafe(false);
-	const isMounted = useIsMounted();
-	const selectItem = useSelectItem();
-	const load = useLoad();
 	const {getInstance, register} = usePlugins();
+	const dispatch = useDispatch();
+	const isMounted = useIsMounted();
+	const load = useLoad();
+	const selectItem = useSelectItem();
+	const sidebarId = useId();
+	const store = useSelector((state) => state);
 
 	const languageId = useSelector((state) => state.languageId);
 	const panels = useSelector(selectAvailablePanels(config.panels));
@@ -225,7 +227,7 @@ export default function Sidebar() {
 									className={classNames({active})}
 									data-tooltip-align="left"
 									displayType="unstyled"
-									id={panel.sidebarPanelId}
+									id={`${sidebarId}${panel.sidebarPanelId}`}
 									key={panel.sidebarPanelId}
 									onClick={() => handleClick(panel)}
 									onFocus={prefetch}

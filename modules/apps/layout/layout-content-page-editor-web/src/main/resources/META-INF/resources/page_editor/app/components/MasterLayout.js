@@ -52,7 +52,7 @@ export default function MasterPage() {
 	const mainItem = masterLayoutData.items[masterLayoutData.rootItems.main];
 
 	return (
-		<div className="master-page" id="master-layout">
+		<div className="master-page">
 			<MasterLayoutDataItem
 				fragmentEntryLinks={fragmentEntryLinks}
 				item={mainItem}
