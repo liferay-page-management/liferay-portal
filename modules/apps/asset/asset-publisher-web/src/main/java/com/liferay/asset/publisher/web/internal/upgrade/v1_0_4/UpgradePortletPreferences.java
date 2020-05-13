@@ -18,6 +18,7 @@ import com.liferay.asset.publisher.constants.AssetPublisherPortletKeys;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.upgrade.BaseUpgradePortletPreferences;
+import com.liferay.portal.kernel.util.Validator;
 
 import javax.portlet.PortletPreferences;
 
@@ -46,9 +47,16 @@ public class UpgradePortletPreferences extends BaseUpgradePortletPreferences {
 		String enableSocialBookmarks = portletPreferences.getValue(
 			"enableSocialBookmarks", Boolean.TRUE.toString());
 
+		String socialBookmarksTypes = portletPreferences.getValue(
+			"socialBookmarksTypes", StringPool.BLANK);
+
 		if (!enableSocialBookmarks.equals(Boolean.TRUE.toString())) {
 			portletPreferences.setValue(
 				"socialBookmarksTypes", StringPool.BLANK);
+		}
+		else if (Validator.isNull(socialBookmarksTypes)) {
+			portletPreferences.setValue(
+				"socialBookmarksTypes", "facebook,twitter");
 		}
 
 		portletPreferences.reset("enableSocialBookmarks");
