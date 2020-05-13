@@ -17,6 +17,7 @@ package com.liferay.fragment.internal.processor;
 import com.liferay.fragment.contributor.PortletAliasRegistration;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.processor.PortletRegistry;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -186,6 +187,20 @@ public class PortletRegistryImpl implements PortletRegistry {
 			properties, "com.liferay.fragment.entry.processor.portlet.alias");
 		String portletName = MapUtil.getString(
 			properties, "javax.portlet.name");
+
+		boolean instanceable = MapUtil.getBoolean(
+			properties, "com.liferay.portlet.instanceable");
+
+		if (!instanceable) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					StringBundler.concat(
+						"Non-instanceable portlet (", portletName,
+						") cannot be embedded into the fragment code"));
+			}
+
+			return;
+		}
 
 		_portletNames.put(alias, portletName);
 
