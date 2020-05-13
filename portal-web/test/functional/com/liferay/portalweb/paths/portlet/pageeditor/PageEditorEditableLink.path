@@ -30,7 +30,7 @@
 </tr>
 <tr>
 	<td>LINK_TYPE</td>
-	<td>//select[contains(@id,'floatingToolbarLinkSourceOption')]</td>
+	<td>//label[contains(.,'Link')]/following-sibling::select</td>
 	<td></td>
 </tr>
 <!--LAYOUT_BACKGROUND_IMAGE-->
