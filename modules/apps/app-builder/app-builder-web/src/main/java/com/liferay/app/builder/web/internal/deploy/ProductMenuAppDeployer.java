@@ -85,7 +85,7 @@ public class ProductMenuAppDeployer implements AppDeployer {
 					_deployPortlet(appBuilderApp, appName, siteMenuLabel),
 					_deployPanelApp(
 						appBuilderApp.getCompanyId(),
-						PanelCategoryKeys.CONTROL_PANEL, controlPanelMenuLabel,
+						PanelCategoryKeys.GLOBAL_MENU, controlPanelMenuLabel,
 						JSONUtil.toLongArray(
 							jsonObject.getJSONArray("siteIds"))),
 					_deployPanelApp(
@@ -100,7 +100,7 @@ public class ProductMenuAppDeployer implements AppDeployer {
 			String scope = scopeJSONArray.getString(0);
 			String menuLabel;
 
-			if (PanelCategoryKeys.CONTROL_PANEL.equals(scope)) {
+			if (PanelCategoryKeys.GLOBAL_MENU.equals(scope)) {
 				menuLabel = controlPanelMenuLabel;
 			}
 			else {
