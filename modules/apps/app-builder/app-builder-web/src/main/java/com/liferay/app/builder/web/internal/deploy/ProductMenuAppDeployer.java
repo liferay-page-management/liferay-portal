@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.portlet.Portlet;
@@ -100,7 +101,7 @@ public class ProductMenuAppDeployer implements AppDeployer {
 			String scope = scopeJSONArray.getString(0);
 			String menuLabel;
 
-			if (PanelCategoryKeys.GLOBAL_MENU.equals(scope)) {
+			if (Objects.equals(PanelCategoryKeys.GLOBAL_MENU, scope)) {
 				menuLabel = controlPanelMenuLabel;
 			}
 			else {
