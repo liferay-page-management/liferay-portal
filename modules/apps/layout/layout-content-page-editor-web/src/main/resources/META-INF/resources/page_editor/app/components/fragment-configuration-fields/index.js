@@ -12,11 +12,18 @@
  * details.
  */
 
-/**
- * Container padding identifiers
- */
-export const CONTAINER_PADDING_IDENTIFIERS = {
-	paddingBottom: 'paddingBottom',
-	paddingHorizontal: 'paddingHorizontal',
-	paddingTop: 'paddingTop',
+import {CheckboxField} from './CheckboxField';
+import {CollectionSelectorField} from './CollectionSelectorField';
+import {ColorPaletteField} from './ColorPaletteField';
+import {ItemSelectorField} from './ItemSelectorField';
+import {SelectField} from './SelectField';
+import {TextField} from './TextField';
+
+export const FRAGMENT_CONFIGURATION_FIELDS = {
+	checkbox: CheckboxField,
+	collectionSelector: CollectionSelectorField,
+	colorPalette: ColorPaletteField,
+	itemSelector: ItemSelectorField,
+	select: SelectField,
+	text: TextField,
 };
