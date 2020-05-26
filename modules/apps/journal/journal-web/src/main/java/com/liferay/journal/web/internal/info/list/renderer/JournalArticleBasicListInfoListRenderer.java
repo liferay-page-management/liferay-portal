@@ -21,7 +21,7 @@ import com.liferay.info.list.renderer.InfoListRendererContext;
 import com.liferay.info.taglib.list.renderer.BasicListInfoListItemStyle;
 import com.liferay.info.taglib.servlet.taglib.InfoListBasicListTag;
 import com.liferay.journal.model.JournalArticle;
-import com.liferay.journal.web.internal.info.item.renderer.JournalArticleAbstractInfoItemRenderer;
+import com.liferay.journal.web.internal.info.item.renderer.JournalArticleTitleInfoItemRenderer;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -81,7 +81,7 @@ public class JournalArticleBasicListInfoListRenderer
 
 		infoListBasicListTag.setInfoListObjects(articles);
 		infoListBasicListTag.setItemRendererKey(
-			JournalArticleAbstractInfoItemRenderer.class.getName());
+			JournalArticleTitleInfoItemRenderer.class.getName());
 
 		Optional<String> infoListItemStyleKeyOptional =
 			infoListRendererContext.getListItemStyleKeyOptional();
