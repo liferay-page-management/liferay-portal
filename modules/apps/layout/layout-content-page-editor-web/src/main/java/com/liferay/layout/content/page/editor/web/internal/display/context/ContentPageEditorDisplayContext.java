@@ -14,6 +14,7 @@
 
 package com.liferay.layout.content.page.editor.web.internal.display.context;
 
+import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.document.library.kernel.model.DLFileEntryConstants;
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.contributor.FragmentCollectionContributor;
@@ -1328,6 +1329,8 @@ public class ContentPageEditorDisplayContext {
 
 			infoDisplayContributorsClassNames.add(className);
 		}
+
+		infoDisplayContributorsClassNames.add(AssetEntry.class.getName());
 
 		return infoDisplayContributorsClassNames;
 	}
