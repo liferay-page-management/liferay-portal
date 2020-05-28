@@ -14,6 +14,8 @@
 
 package com.liferay.info.item.provider;
 
+import java.util.List;
+
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -24,5 +26,7 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface InfoItemFormProviderTracker {
 
 	public InfoItemFormProvider getInfoItemFormProvider(String itemClassName);
+
+	public List<String> getInfoItemFormProviderClassNames();
 
 }

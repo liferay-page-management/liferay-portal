@@ -20,6 +20,9 @@ import com.liferay.info.item.provider.InfoItemFormProviderTracker;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -35,6 +38,11 @@ public class InfoItemFormProviderTrackerImpl
 	@Override
 	public InfoItemFormProvider getInfoItemFormProvider(String itemClassName) {
 		return _infoItemFormProviderServiceTrackerMap.getService(itemClassName);
+	}
+
+	@Override
+	public List<String> getInfoItemFormProviderClassNames() {
+		return new ArrayList<>(_infoItemFormProviderServiceTrackerMap.keySet());
 	}
 
 	@Activate
