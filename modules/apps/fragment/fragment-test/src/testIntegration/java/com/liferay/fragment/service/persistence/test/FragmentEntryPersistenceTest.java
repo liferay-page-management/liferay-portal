@@ -158,6 +158,8 @@ public class FragmentEntryPersistenceTest {
 
 		newFragmentEntry.setPreviewFileEntryId(RandomTestUtil.nextLong());
 
+		newFragmentEntry.setPublishedFragmentEntryId(RandomTestUtil.nextLong());
+
 		newFragmentEntry.setReadOnly(RandomTestUtil.randomBoolean());
 
 		newFragmentEntry.setType(RandomTestUtil.nextInt());
@@ -225,6 +227,9 @@ public class FragmentEntryPersistenceTest {
 			existingFragmentEntry.getPreviewFileEntryId(),
 			newFragmentEntry.getPreviewFileEntryId());
 		Assert.assertEquals(
+			existingFragmentEntry.getPublishedFragmentEntryId(),
+			newFragmentEntry.getPublishedFragmentEntryId());
+		Assert.assertEquals(
 			existingFragmentEntry.isReadOnly(), newFragmentEntry.isReadOnly());
 		Assert.assertEquals(
 			existingFragmentEntry.getType(), newFragmentEntry.getType());
@@ -283,6 +288,13 @@ public class FragmentEntryPersistenceTest {
 		_persistence.countByFragmentCollectionId(RandomTestUtil.nextLong());
 
 		_persistence.countByFragmentCollectionId(0L);
+	}
+
+	@Test
+	public void testCountByPublishedFragmentEntryId() throws Exception {
+		_persistence.countByPublishedFragmentEntryId(RandomTestUtil.nextLong());
+
+		_persistence.countByPublishedFragmentEntryId(0L);
 	}
 
 	@Test
@@ -380,9 +392,10 @@ public class FragmentEntryPersistenceTest {
 			"userId", true, "userName", true, "createDate", true,
 			"modifiedDate", true, "fragmentCollectionId", true,
 			"fragmentEntryKey", true, "name", true, "cacheable", true,
-			"previewFileEntryId", true, "readOnly", true, "type", true,
-			"lastPublishDate", true, "status", true, "statusByUserId", true,
-			"statusByUserName", true, "statusDate", true);
+			"previewFileEntryId", true, "publishedFragmentEntryId", true,
+			"readOnly", true, "type", true, "lastPublishDate", true, "status",
+			true, "statusByUserId", true, "statusByUserName", true,
+			"statusDate", true);
 	}
 
 	@Test
@@ -668,6 +681,8 @@ public class FragmentEntryPersistenceTest {
 		fragmentEntry.setConfiguration(RandomTestUtil.randomString());
 
 		fragmentEntry.setPreviewFileEntryId(RandomTestUtil.nextLong());
+
+		fragmentEntry.setPublishedFragmentEntryId(RandomTestUtil.nextLong());
 
 		fragmentEntry.setReadOnly(RandomTestUtil.randomBoolean());
 

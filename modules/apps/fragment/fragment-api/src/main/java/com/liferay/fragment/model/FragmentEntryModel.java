@@ -361,6 +361,20 @@ public interface FragmentEntryModel
 	public void setPreviewFileEntryId(long previewFileEntryId);
 
 	/**
+	 * Returns the published fragment entry ID of this fragment entry.
+	 *
+	 * @return the published fragment entry ID of this fragment entry
+	 */
+	public long getPublishedFragmentEntryId();
+
+	/**
+	 * Sets the published fragment entry ID of this fragment entry.
+	 *
+	 * @param publishedFragmentEntryId the published fragment entry ID of this fragment entry
+	 */
+	public void setPublishedFragmentEntryId(long publishedFragmentEntryId);
+
+	/**
 	 * Returns the read only of this fragment entry.
 	 *
 	 * @return the read only of this fragment entry

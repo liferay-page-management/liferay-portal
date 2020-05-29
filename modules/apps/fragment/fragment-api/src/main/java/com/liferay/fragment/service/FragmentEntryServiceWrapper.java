@@ -61,6 +61,21 @@ public class FragmentEntryServiceWrapper
 	@Override
 	public com.liferay.fragment.model.FragmentEntry addFragmentEntry(
 			long groupId, long fragmentCollectionId, String fragmentEntryKey,
+			String name, String css, String html, String js, boolean cacheable,
+			String configuration, long previewFileEntryId,
+			long publishedFragmentEntryId, int type, int status,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _fragmentEntryService.addFragmentEntry(
+			groupId, fragmentCollectionId, fragmentEntryKey, name, css, html,
+			js, cacheable, configuration, previewFileEntryId,
+			publishedFragmentEntryId, type, status, serviceContext);
+	}
+
+	@Override
+	public com.liferay.fragment.model.FragmentEntry addFragmentEntry(
+			long groupId, long fragmentCollectionId, String fragmentEntryKey,
 			String name, String css, String html, String js,
 			String configuration, long previewFileEntryId, int type, int status,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
@@ -103,6 +118,16 @@ public class FragmentEntryServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _fragmentEntryService.fetchFragmentEntry(fragmentEntryId);
+	}
+
+	@Override
+	public com.liferay.fragment.model.FragmentEntry
+		fetchFragmentEntryByPublishedFragmentEntryId(
+			long publishedFragmentEntryId) {
+
+		return _fragmentEntryService.
+			fetchFragmentEntryByPublishedFragmentEntryId(
+				publishedFragmentEntryId);
 	}
 
 	@Override

@@ -77,7 +77,7 @@ public class FragmentEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(51);
+		StringBundler sb = new StringBundler(53);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -115,6 +115,8 @@ public class FragmentEntryCacheModel
 		sb.append(configuration);
 		sb.append(", previewFileEntryId=");
 		sb.append(previewFileEntryId);
+		sb.append(", publishedFragmentEntryId=");
+		sb.append(publishedFragmentEntryId);
 		sb.append(", readOnly=");
 		sb.append(readOnly);
 		sb.append(", type=");
@@ -220,6 +222,7 @@ public class FragmentEntryCacheModel
 		}
 
 		fragmentEntryImpl.setPreviewFileEntryId(previewFileEntryId);
+		fragmentEntryImpl.setPublishedFragmentEntryId(publishedFragmentEntryId);
 		fragmentEntryImpl.setReadOnly(readOnly);
 		fragmentEntryImpl.setType(type);
 
@@ -281,6 +284,8 @@ public class FragmentEntryCacheModel
 		configuration = (String)objectInput.readObject();
 
 		previewFileEntryId = objectInput.readLong();
+
+		publishedFragmentEntryId = objectInput.readLong();
 
 		readOnly = objectInput.readBoolean();
 
@@ -371,6 +376,8 @@ public class FragmentEntryCacheModel
 
 		objectOutput.writeLong(previewFileEntryId);
 
+		objectOutput.writeLong(publishedFragmentEntryId);
+
 		objectOutput.writeBoolean(readOnly);
 
 		objectOutput.writeInt(type);
@@ -408,6 +415,7 @@ public class FragmentEntryCacheModel
 	public boolean cacheable;
 	public String configuration;
 	public long previewFileEntryId;
+	public long publishedFragmentEntryId;
 	public boolean readOnly;
 	public int type;
 	public long lastPublishDate;
