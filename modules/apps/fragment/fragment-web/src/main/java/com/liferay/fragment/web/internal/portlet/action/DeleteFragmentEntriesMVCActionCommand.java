@@ -17,9 +17,12 @@ package com.liferay.fragment.web.internal.portlet.action;
 import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.exception.RequiredFragmentEntryException;
 import com.liferay.fragment.service.FragmentEntryService;
+import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.ParamUtil;
 
 import javax.portlet.ActionRequest;
@@ -37,10 +40,10 @@ import org.osgi.service.component.annotations.Reference;
 		"javax.portlet.name=" + FragmentPortletKeys.FRAGMENT,
 		"mvc.command.name=/fragment/delete_fragment_entries"
 	},
-	service = MVCActionCommand.class
+	service = {AopService.class, MVCActionCommand.class}
 )
 public class DeleteFragmentEntriesMVCActionCommand
-	extends BaseMVCActionCommand {
+	extends BaseMVCActionCommand implements AopService {
 
 	@Override
 	protected void doProcessAction(
@@ -51,7 +54,7 @@ public class DeleteFragmentEntriesMVCActionCommand
 			actionRequest, "fragmentEntryId");
 
 		try {
-			_fragmentEntryService.deleteFragmentEntry(fragmentEntryId);
+			_deleteFragmentEntry(fragmentEntryId);
 		}
 		catch (RequiredFragmentEntryException requiredFragmentEntryException) {
 			SessionErrors.add(
@@ -61,6 +64,13 @@ public class DeleteFragmentEntriesMVCActionCommand
 
 			sendRedirect(actionRequest, actionResponse);
 		}
+	}
+
+	@Transactional(rollbackFor = PortalException.class)
+	private void _deleteFragmentEntry(long fragmentEntryId)
+		throws PortalException {
+
+		_fragmentEntryService.deleteFragmentEntry(fragmentEntryId);
 	}
 
 	@Reference
