@@ -226,6 +226,17 @@ public class FragmentEntryLocalServiceImpl
 	public FragmentEntry deleteFragmentEntry(FragmentEntry fragmentEntry)
 		throws PortalException {
 
+		if (fragmentEntry == null) {
+			return null;
+		}
+
+		FragmentEntry draftFragmentEntry =
+			fragmentEntry.getDraftFragmentEntry();
+
+		if (draftFragmentEntry != null) {
+			deleteFragmentEntry(draftFragmentEntry.getFragmentEntryId());
+		}
+
 		// Fragment entry
 
 		long fragmentEntryLinkCount =
