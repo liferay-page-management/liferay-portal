@@ -108,17 +108,28 @@ public class FragmentDisplayContext {
 	}
 
 	public String getAvailableActions(Object object) {
+		List<String> availableActions = new ArrayList<>();
+
+		if (object instanceof FragmentEntry) {
+			FragmentEntry fragmentEntry = (FragmentEntry)object;
+
+			if (!fragmentEntry.isDraft()) {
+				availableActions.add(
+					"exportFragmentCompositionsAndFragmentEntries");
+			}
+		}
+		else {
+			availableActions.add(
+				"exportFragmentCompositionsAndFragmentEntries");
+		}
+
 		if (!FragmentPermission.contains(
 				_themeDisplay.getPermissionChecker(),
 				_themeDisplay.getScopeGroupId(),
 				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES)) {
 
-			return "exportFragmentCompositionsAndFragmentEntries";
+			return StringUtil.merge(availableActions, StringPool.COMMA);
 		}
-
-		List<String> availableActions = new ArrayList<>();
-
-		availableActions.add("exportFragmentCompositionsAndFragmentEntries");
 
 		if (object instanceof FragmentEntry) {
 			availableActions.add("copySelectedFragmentEntries");
