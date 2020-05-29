@@ -16,16 +16,21 @@ package com.liferay.fragment.web.internal.portlet.action;
 
 import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.service.FragmentEntryService;
+import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+
+import java.io.IOException;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -43,14 +48,15 @@ import org.osgi.service.component.annotations.Reference;
 		"javax.portlet.name=" + FragmentPortletKeys.FRAGMENT,
 		"mvc.command.name=/fragment/copy_fragment_entry"
 	},
-	service = MVCActionCommand.class
+	service = {AopService.class, MVCActionCommand.class}
 )
-public class CopyFragmentEntryMVCActionCommand extends BaseMVCActionCommand {
+public class CopyFragmentEntryMVCActionCommand
+	extends BaseMVCActionCommand implements AopService {
 
 	@Override
 	protected void doProcessAction(
 			ActionRequest actionRequest, ActionResponse actionResponse)
-		throws Exception {
+		throws IOException, PortalException {
 
 		long fragmentCollectionId = ParamUtil.getLong(
 			actionRequest, "fragmentCollectionId");
@@ -65,9 +71,9 @@ public class CopyFragmentEntryMVCActionCommand extends BaseMVCActionCommand {
 			actionRequest);
 
 		for (long fragmentEntryId : fragmentEntryIds) {
-			_fragmentEntryService.copyFragmentEntry(
-				themeDisplay.getScopeGroupId(), fragmentEntryId,
-				fragmentCollectionId, serviceContext);
+			_copyFragmentEntry(
+				themeDisplay.getScopeGroupId(), fragmentCollectionId,
+				fragmentEntryId, serviceContext);
 		}
 
 		LiferayPortletResponse liferayPortletResponse =
@@ -79,6 +85,16 @@ public class CopyFragmentEntryMVCActionCommand extends BaseMVCActionCommand {
 			"fragmentCollectionId", String.valueOf(fragmentCollectionId));
 
 		sendRedirect(actionRequest, actionResponse, redirectURL.toString());
+	}
+
+	@Transactional(rollbackFor = PortalException.class)
+	private void _copyFragmentEntry(
+			long groupId, long fragmentCollectionId, long fragmentEntryId,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		_fragmentEntryService.copyFragmentEntry(
+			groupId, fragmentEntryId, fragmentCollectionId, serviceContext);
 	}
 
 	@Reference
