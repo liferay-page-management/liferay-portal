@@ -14,6 +14,7 @@
 
 package com.liferay.fragment.service.impl;
 
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.fragment.configuration.FragmentServiceConfiguration;
 import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.exception.DuplicateFragmentEntryKeyException;
@@ -40,6 +41,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
+import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
@@ -196,6 +198,26 @@ public class FragmentEntryLocalServiceImpl
 
 		FragmentEntry fragmentEntry = getFragmentEntry(fragmentEntryId);
 
+		FragmentEntry draftFragmentEntry = null;
+		FragmentEntry publishedFragmentEntry = null;
+
+		if (fragmentEntry.isDraft()) {
+			draftFragmentEntry = fragmentEntry;
+
+			long publishedFragmentEntryId =
+				draftFragmentEntry.getPublishedFragmentEntryId();
+
+			if (publishedFragmentEntryId != 0) {
+				publishedFragmentEntry = fetchFragmentEntry(
+					publishedFragmentEntryId);
+			}
+		}
+		else {
+			publishedFragmentEntry = fragmentEntry;
+
+			draftFragmentEntry = publishedFragmentEntry.getDraftFragmentEntry();
+		}
+
 		StringBundler sb = new StringBundler(5);
 
 		sb.append(fragmentEntry.getName());
@@ -204,21 +226,64 @@ public class FragmentEntryLocalServiceImpl
 		sb.append(LanguageUtil.get(LocaleUtil.getMostRelevantLocale(), "copy"));
 		sb.append(StringPool.CLOSE_PARENTHESIS);
 
+		String name = sb.toString();
+
+		FragmentEntry copyPublishedFragmentEntry = null;
+
 		long originalFragmentCollectionId =
 			fragmentEntry.getFragmentCollectionId();
 
-		FragmentEntry copyFragmentEntry = addFragmentEntry(
-			userId, groupId, fragmentCollectionId, null, sb.toString(),
-			fragmentEntry.getCss(), fragmentEntry.getHtml(),
-			fragmentEntry.getJs(), fragmentEntry.isCacheable(),
-			fragmentEntry.getConfiguration(),
-			fragmentEntry.getPreviewFileEntryId(), fragmentEntry.getType(),
-			fragmentEntry.getStatus(), serviceContext);
+		if (publishedFragmentEntry != null) {
+			copyPublishedFragmentEntry = addFragmentEntry(
+				userId, groupId, fragmentCollectionId, null, name,
+				publishedFragmentEntry.getCss(),
+				publishedFragmentEntry.getHtml(),
+				publishedFragmentEntry.getJs(),
+				publishedFragmentEntry.isCacheable(),
+				publishedFragmentEntry.getConfiguration(), 0, 0,
+				publishedFragmentEntry.getType(),
+				WorkflowConstants.STATUS_APPROVED, serviceContext);
 
-		_copyFragmentEntryResources(
-			fragmentEntry, originalFragmentCollectionId, fragmentCollectionId);
+			_copyFragmentEntryPreviewFileEntry(
+				userId, groupId, publishedFragmentEntry,
+				copyPublishedFragmentEntry);
 
-		return copyFragmentEntry;
+			_copyFragmentEntryResources(
+				publishedFragmentEntry, originalFragmentCollectionId,
+				fragmentCollectionId);
+		}
+
+		FragmentEntry copyDraftFragmentEntry = null;
+
+		if (draftFragmentEntry != null) {
+			long publishedFragmentEntryId = 0;
+
+			if (copyPublishedFragmentEntry != null) {
+				publishedFragmentEntryId =
+					copyPublishedFragmentEntry.getFragmentEntryId();
+			}
+
+			copyDraftFragmentEntry = addFragmentEntry(
+				userId, groupId, fragmentCollectionId, null, name,
+				draftFragmentEntry.getCss(), draftFragmentEntry.getHtml(),
+				draftFragmentEntry.getJs(), draftFragmentEntry.isCacheable(),
+				draftFragmentEntry.getConfiguration(), 0,
+				publishedFragmentEntryId, draftFragmentEntry.getType(),
+				WorkflowConstants.STATUS_DRAFT, serviceContext);
+
+			_copyFragmentEntryPreviewFileEntry(
+				userId, groupId, draftFragmentEntry, copyDraftFragmentEntry);
+
+			_copyFragmentEntryResources(
+				draftFragmentEntry, originalFragmentCollectionId,
+				fragmentCollectionId);
+		}
+
+		if (copyPublishedFragmentEntry != null) {
+			return copyPublishedFragmentEntry;
+		}
+
+		return copyDraftFragmentEntry;
 	}
 
 	@Override
@@ -540,6 +605,48 @@ public class FragmentEntryLocalServiceImpl
 		}
 	}
 
+	private void _copyFragmentEntryPreviewFileEntry(
+			long userId, long groupId, FragmentEntry fragmentEntry,
+			FragmentEntry copyFragmentEntry)
+		throws PortalException {
+
+		if (fragmentEntry.getPreviewFileEntryId() != 0) {
+			FileEntry fileEntry = _dlAppLocalService.getFileEntry(
+				fragmentEntry.getPreviewFileEntryId());
+
+			Repository repository =
+				PortletFileRepositoryUtil.fetchPortletRepository(
+					groupId, FragmentPortletKeys.FRAGMENT);
+
+			if (repository == null) {
+				ServiceContext addPortletRepositoryServiceContext =
+					new ServiceContext();
+
+				addPortletRepositoryServiceContext.setAddGroupPermissions(true);
+				addPortletRepositoryServiceContext.setAddGuestPermissions(true);
+
+				repository = PortletFileRepositoryUtil.addPortletRepository(
+					groupId, FragmentPortletKeys.FRAGMENT,
+					addPortletRepositoryServiceContext);
+			}
+
+			String fileName =
+				copyFragmentEntry.getFragmentEntryId() + "_preview." +
+					fileEntry.getExtension();
+
+			fileEntry = PortletFileRepositoryUtil.addPortletFileEntry(
+				groupId, userId, FragmentEntry.class.getName(),
+				copyFragmentEntry.getFragmentEntryId(),
+				FragmentPortletKeys.FRAGMENT, repository.getDlFolderId(),
+				fileEntry.getContentStream(), fileName, fileEntry.getMimeType(),
+				false);
+
+			updateFragmentEntry(
+				copyFragmentEntry.getFragmentEntryId(),
+				fileEntry.getFileEntryId());
+		}
+	}
+
 	private void _copyFragmentEntryResources(
 			FragmentEntry fragmentEntry, long sourceFragmentCollectionId,
 			long targetFragmentCollectionId)
@@ -660,6 +767,9 @@ public class FragmentEntryLocalServiceImpl
 
 	@Reference
 	private CustomSQL _customSQL;
+
+	@Reference
+	private DLAppLocalService _dlAppLocalService;
 
 	@Reference
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
