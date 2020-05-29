@@ -169,6 +169,14 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 	}
 
 	@Override
+	public FragmentEntry fetchFragmentEntryByPublishedFragmentEntryId(
+		long publishedFragmentEntryId) {
+
+		return fragmentEntryPersistence.fetchByPublishedFragmentEntryId_First(
+			publishedFragmentEntryId, null);
+	}
+
+	@Override
 	public List<Object> getFragmentCompositionsAndFragmentEntries(
 		long groupId, long fragmentCollectionId, int status, int start, int end,
 		OrderByComparator<?> orderByComparator) {
