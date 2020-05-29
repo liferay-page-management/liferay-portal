@@ -17,7 +17,9 @@ package com.liferay.fragment.model.impl;
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.constants.FragmentExportImportConstants;
+import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.service.FragmentEntryLinkLocalServiceUtil;
+import com.liferay.fragment.service.FragmentEntryServiceUtil;
 import com.liferay.fragment.util.FragmentEntryRenderUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -39,6 +41,15 @@ public class FragmentEntryImpl extends FragmentEntryBaseImpl {
 	@Override
 	public String getContent() {
 		return FragmentEntryRenderUtil.renderFragmentEntry(this);
+	}
+
+	public FragmentEntry getDraftFragmentEntry() {
+		if (isDraft()) {
+			return null;
+		}
+
+		return FragmentEntryServiceUtil.
+			fetchFragmentEntryByPublishedFragmentEntryId(getFragmentEntryId());
 	}
 
 	@Override
