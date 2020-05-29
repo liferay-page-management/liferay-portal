@@ -1030,7 +1030,8 @@ definition {
 		ProductMenu.gotoPortlet(
 			category = "Configuration",
 			panel = "Site Administration",
-			portlet = "Redirection");
+			portlet = "Redirection",
+			site = "Guest");
 
 		Redirect.viewDefault();
 
