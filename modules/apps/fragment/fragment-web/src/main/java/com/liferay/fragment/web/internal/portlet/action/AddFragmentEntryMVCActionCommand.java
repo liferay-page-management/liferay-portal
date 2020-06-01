@@ -19,6 +19,8 @@ import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.service.FragmentEntryService;
 import com.liferay.fragment.web.internal.handler.FragmentEntryExceptionRequestHandler;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -75,6 +77,13 @@ public class AddFragmentEntryMVCActionCommand extends BaseMVCActionCommand {
 					null, name, 0, type, WorkflowConstants.STATUS_DRAFT,
 					serviceContext);
 
+			_fragmentEntryService.updateFragmentEntry(
+				fragmentEntry.getFragmentEntryId(), fragmentEntry.getName(),
+				_getInitialCss(fragmentEntry.getFragmentEntryId()),
+				_getInitialHtml(fragmentEntry.getFragmentEntryId()),
+				StringPool.BLANK, _getInitialConfiguration(),
+				fragmentEntry.getStatus());
+
 			JSONObject jsonObject = JSONUtil.put(
 				"redirectURL", getRedirectURL(actionResponse, fragmentEntry));
 
@@ -113,6 +122,30 @@ public class AddFragmentEntryMVCActionCommand extends BaseMVCActionCommand {
 			String.valueOf(fragmentEntry.getFragmentEntryId()));
 
 		return portletURL.toString();
+	}
+
+	private static String _getInitialConfiguration() {
+		return "{\n\t\"fieldSets\": [\n\t]\n}";
+	}
+
+	private static String _getInitialCss(long fragmentEntryId) {
+		StringBundler sb = new StringBundler(3);
+
+		sb.append(".fragment_");
+		sb.append(fragmentEntryId);
+		sb.append(" {\n}");
+
+		return sb.toString();
+	}
+
+	private static String _getInitialHtml(long fragmentEntryId) {
+		StringBundler sb = new StringBundler(3);
+
+		sb.append("<div class=\"fragment_");
+		sb.append(fragmentEntryId);
+		sb.append("\">\n</div>");
+
+		return sb.toString();
 	}
 
 	@Reference
