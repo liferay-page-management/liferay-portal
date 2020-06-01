@@ -14,21 +14,33 @@
 
 package com.liferay.fragment.web.internal.portlet.action;
 
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.exception.FragmentEntryConfigurationException;
 import com.liferay.fragment.exception.FragmentEntryContentException;
+import com.liferay.fragment.exception.NoSuchEntryException;
 import com.liferay.fragment.model.FragmentEntry;
+import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.fragment.service.FragmentEntryService;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -51,17 +63,100 @@ import org.osgi.service.component.annotations.Reference;
 		"javax.portlet.name=" + FragmentPortletKeys.FRAGMENT,
 		"mvc.command.name=/fragment/edit_fragment_entry"
 	},
-	service = MVCActionCommand.class
+	service = {AopService.class, MVCActionCommand.class}
 )
-public class EditFragmentEntryMVCActionCommand extends BaseMVCActionCommand {
+public class EditFragmentEntryMVCActionCommand
+	extends BaseMVCActionCommand implements AopService {
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	protected void doProcessAction(
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
 		long fragmentEntryId = ParamUtil.getLong(
 			actionRequest, "fragmentEntryId");
+
+		FragmentEntry fragmentEntry = _fragmentEntryService.fetchFragmentEntry(
+			fragmentEntryId);
+
+		if (fragmentEntry == null) {
+			throw new NoSuchEntryException();
+		}
+
+		FragmentEntry draftFragmentEntry = null;
+
+		if (fragmentEntry.isDraft()) {
+			draftFragmentEntry = fragmentEntry;
+		}
+		else {
+			draftFragmentEntry = fragmentEntry.getDraftFragmentEntry();
+
+			if (draftFragmentEntry == null) {
+				ServiceContext serviceContext =
+					ServiceContextFactory.getInstance(actionRequest);
+
+				draftFragmentEntry = _fragmentEntryService.addFragmentEntry(
+					fragmentEntry.getGroupId(),
+					fragmentEntry.getFragmentCollectionId(),
+					_getFragmentEntryKey(
+						fragmentEntry.getGroupId(),
+						fragmentEntry.getFragmentEntryKey() + "_draft"),
+					fragmentEntry.getName(), fragmentEntry.getCss(),
+					fragmentEntry.getHtml(), fragmentEntry.getJs(),
+					fragmentEntry.isCacheable(),
+					fragmentEntry.getConfiguration(), 0,
+					fragmentEntry.getFragmentEntryId(), fragmentEntry.getType(),
+					WorkflowConstants.STATUS_DRAFT, serviceContext);
+
+				if (fragmentEntry.getPreviewFileEntryId() != 0) {
+					FileEntry publishedFragmentFileEntry =
+						_dlAppLocalService.getFileEntry(
+							fragmentEntry.getPreviewFileEntryId());
+
+					Repository repository =
+						PortletFileRepositoryUtil.fetchPortletRepository(
+							fragmentEntry.getGroupId(),
+							FragmentPortletKeys.FRAGMENT);
+
+					if (repository == null) {
+						ServiceContext addPortletRepositoryServiceContext =
+							new ServiceContext();
+
+						addPortletRepositoryServiceContext.
+							setAddGroupPermissions(true);
+						addPortletRepositoryServiceContext.
+							setAddGuestPermissions(true);
+
+						repository =
+							PortletFileRepositoryUtil.addPortletRepository(
+								fragmentEntry.getGroupId(),
+								FragmentPortletKeys.FRAGMENT,
+								addPortletRepositoryServiceContext);
+					}
+
+					String fileName =
+						draftFragmentEntry.getFragmentEntryId() + "_preview." +
+							publishedFragmentFileEntry.getExtension();
+
+					FileEntry draftFragmentFileEntry =
+						PortletFileRepositoryUtil.addPortletFileEntry(
+							draftFragmentEntry.getGroupId(),
+							draftFragmentEntry.getUserId(),
+							FragmentEntry.class.getName(),
+							draftFragmentEntry.getFragmentEntryId(),
+							FragmentPortletKeys.FRAGMENT,
+							repository.getDlFolderId(),
+							publishedFragmentFileEntry.getContentStream(),
+							fileName, publishedFragmentFileEntry.getMimeType(),
+							false);
+
+					_fragmentEntryService.updateFragmentEntry(
+						draftFragmentEntry.getFragmentEntryId(),
+						draftFragmentFileEntry.getFileEntryId());
+				}
+			}
+		}
 
 		String name = ParamUtil.getString(actionRequest, "name");
 		String css = ParamUtil.getString(actionRequest, "cssContent");
@@ -75,14 +170,14 @@ public class EditFragmentEntryMVCActionCommand extends BaseMVCActionCommand {
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
 		try {
-			FragmentEntry fragmentEntry =
+			FragmentEntry updatedDraftFragmentEntry =
 				_fragmentEntryService.updateFragmentEntry(
-					fragmentEntryId, name, css, html, js, cacheable,
-					configuration, status);
+					draftFragmentEntry.getFragmentEntryId(), name, css, html,
+					js, cacheable, configuration, status);
 
 			if (status == WorkflowConstants.ACTION_SAVE_DRAFT) {
 				String redirect = _getSaveAndContinueRedirect(
-					actionRequest, fragmentEntry);
+					actionRequest, updatedDraftFragmentEntry);
 
 				jsonObject.put("redirect", redirect);
 			}
@@ -115,6 +210,37 @@ public class EditFragmentEntryMVCActionCommand extends BaseMVCActionCommand {
 			actionRequest, actionResponse, jsonObject);
 	}
 
+	private String _getFragmentEntryKey(long groupId, String fragmentEntryKey) {
+		if (fragmentEntryKey == null) {
+			fragmentEntryKey = StringPool.BLANK;
+		}
+		else {
+			fragmentEntryKey = fragmentEntryKey.trim();
+			fragmentEntryKey = StringUtil.toLowerCase(fragmentEntryKey);
+		}
+
+		FragmentEntry fragmentEntry =
+			_fragmentEntryLocalService.fetchFragmentEntry(
+				groupId, fragmentEntryKey);
+
+		if (fragmentEntry == null) {
+			return fragmentEntryKey;
+		}
+
+		String newFragmentEntryKey = null;
+
+		for (int i = 1;; i++) {
+			newFragmentEntryKey = fragmentEntryKey + i;
+
+			fragmentEntry = _fragmentEntryLocalService.fetchFragmentEntry(
+				groupId, newFragmentEntryKey);
+
+			if (fragmentEntry == null) {
+				return newFragmentEntryKey;
+			}
+		}
+	}
+
 	private String _getSaveAndContinueRedirect(
 		ActionRequest actionRequest, FragmentEntry fragmentEntry) {
 
@@ -133,6 +259,12 @@ public class EditFragmentEntryMVCActionCommand extends BaseMVCActionCommand {
 
 		return portletURL.toString();
 	}
+
+	@Reference
+	private DLAppLocalService _dlAppLocalService;
+
+	@Reference
+	private FragmentEntryLocalService _fragmentEntryLocalService;
 
 	@Reference
 	private FragmentEntryService _fragmentEntryService;
