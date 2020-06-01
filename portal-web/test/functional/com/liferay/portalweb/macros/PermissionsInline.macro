@@ -144,7 +144,8 @@ definition {
 		ProductMenu.gotoPortlet(
 			category = "Site Builder",
 			panel = "Site Administration",
-			portlet = "Pages");
+			portlet = "Pages",
+			site = "${site}");
 
 		SitePages.gotoPageMenuItem(
 			menuItem = "Permissions",
@@ -190,7 +191,8 @@ definition {
 		ProductMenu.gotoPortlet(
 			category = "Site Builder",
 			panel = "Site Administration",
-			portlet = "Pages");
+			portlet = "Pages",
+			site = "${site}");
 
 		SitePages.gotoPageMenuItem(
 			menuItem = "Permissions",
