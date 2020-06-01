@@ -20,7 +20,7 @@ import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.fragment.service.FragmentEntryService;
 import com.liferay.fragment.web.internal.handler.FragmentEntryExceptionRequestHandler;
-import com.liferay.petra.string.StringPool;
+import com.liferay.fragment.web.internal.portlet.helper.FragmentEntryKeyGenerator;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -37,7 +37,6 @@ import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import javax.portlet.ActionRequest;
@@ -97,9 +96,10 @@ public class PublishFragmentEntryMVCActionCommand
 				publishedFragmentEntry = _fragmentEntryService.addFragmentEntry(
 					draftFragmentEntry.getGroupId(),
 					draftFragmentEntry.getFragmentCollectionId(),
-					_getFragmentEntryKey(
+					FragmentEntryKeyGenerator.getFragmentEntryKey(
 						draftFragmentEntry.getGroupId(),
-						draftFragmentEntry.getFragmentEntryKey()),
+						draftFragmentEntry.getFragmentEntryKey(),
+						_fragmentEntryLocalService),
 					draftFragmentEntry.getName(), draftFragmentEntry.getCss(),
 					draftFragmentEntry.getHtml(), draftFragmentEntry.getJs(),
 					draftFragmentEntry.isCacheable(),
@@ -193,37 +193,6 @@ public class PublishFragmentEntryMVCActionCommand
 			String.valueOf(fragmentEntry.getFragmentCollectionId()));
 
 		return portletURL.toString();
-	}
-
-	private String _getFragmentEntryKey(long groupId, String fragmentEntryKey) {
-		if (fragmentEntryKey == null) {
-			fragmentEntryKey = StringPool.BLANK;
-		}
-		else {
-			fragmentEntryKey = fragmentEntryKey.trim();
-			fragmentEntryKey = StringUtil.toLowerCase(fragmentEntryKey);
-		}
-
-		FragmentEntry fragmentEntry =
-			_fragmentEntryLocalService.fetchFragmentEntry(
-				groupId, fragmentEntryKey);
-
-		if (fragmentEntry == null) {
-			return fragmentEntryKey;
-		}
-
-		String newFragmentEntryKey = null;
-
-		for (int i = 1;; i++) {
-			newFragmentEntryKey = fragmentEntryKey + i;
-
-			fragmentEntry = _fragmentEntryLocalService.fetchFragmentEntry(
-				groupId, newFragmentEntryKey);
-
-			if (fragmentEntry == null) {
-				return newFragmentEntryKey;
-			}
-		}
 	}
 
 	@Reference
