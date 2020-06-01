@@ -198,7 +198,7 @@ definition {
 	}
 
 	macro gotoUserGroupSitePermissionsCP {
-		ProductMenu.gotoPortlet(
+		GlobalMenu.gotoPortlet(
 			category = "Users",
 			panel = "Control Panel",
 			portlet = "User Groups");
