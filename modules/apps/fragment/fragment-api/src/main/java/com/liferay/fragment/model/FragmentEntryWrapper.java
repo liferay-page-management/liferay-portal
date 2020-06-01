@@ -61,6 +61,8 @@ public class FragmentEntryWrapper
 		attributes.put("cacheable", isCacheable());
 		attributes.put("configuration", getConfiguration());
 		attributes.put("previewFileEntryId", getPreviewFileEntryId());
+		attributes.put(
+			"publishedFragmentEntryId", getPublishedFragmentEntryId());
 		attributes.put("readOnly", isReadOnly());
 		attributes.put("type", getType());
 		attributes.put("lastPublishDate", getLastPublishDate());
@@ -183,6 +185,13 @@ public class FragmentEntryWrapper
 			setPreviewFileEntryId(previewFileEntryId);
 		}
 
+		Long publishedFragmentEntryId = (Long)attributes.get(
+			"publishedFragmentEntryId");
+
+		if (publishedFragmentEntryId != null) {
+			setPublishedFragmentEntryId(publishedFragmentEntryId);
+		}
+
 		Boolean readOnly = (Boolean)attributes.get("readOnly");
 
 		if (readOnly != null) {
@@ -279,6 +288,11 @@ public class FragmentEntryWrapper
 	@Override
 	public String getCss() {
 		return model.getCss();
+	}
+
+	@Override
+	public FragmentEntry getDraftFragmentEntry() {
+		return model.getDraftFragmentEntry();
 	}
 
 	/**
@@ -416,6 +430,16 @@ public class FragmentEntryWrapper
 	@Override
 	public long getPrimaryKey() {
 		return model.getPrimaryKey();
+	}
+
+	/**
+	 * Returns the published fragment entry ID of this fragment entry.
+	 *
+	 * @return the published fragment entry ID of this fragment entry
+	 */
+	@Override
+	public long getPublishedFragmentEntryId() {
+		return model.getPublishedFragmentEntryId();
 	}
 
 	/**
@@ -829,6 +853,16 @@ public class FragmentEntryWrapper
 	@Override
 	public void setPrimaryKey(long primaryKey) {
 		model.setPrimaryKey(primaryKey);
+	}
+
+	/**
+	 * Sets the published fragment entry ID of this fragment entry.
+	 *
+	 * @param publishedFragmentEntryId the published fragment entry ID of this fragment entry
+	 */
+	@Override
+	public void setPublishedFragmentEntryId(long publishedFragmentEntryId) {
+		model.setPublishedFragmentEntryId(publishedFragmentEntryId);
 	}
 
 	/**

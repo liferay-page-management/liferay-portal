@@ -58,6 +58,8 @@ public interface FragmentEntry extends FragmentEntryModel, PersistedModel {
 
 	public String getContent();
 
+	public FragmentEntry getDraftFragmentEntry();
+
 	public int getGlobalUsageCount();
 
 	public String getIcon();

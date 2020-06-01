@@ -109,6 +109,31 @@ public class FragmentEntryServiceSoap {
 
 	public static com.liferay.fragment.model.FragmentEntrySoap addFragmentEntry(
 			long groupId, long fragmentCollectionId, String fragmentEntryKey,
+			String name, String css, String html, String js, boolean cacheable,
+			String configuration, long previewFileEntryId,
+			long publishedFragmentEntryId, int type, int status,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws RemoteException {
+
+		try {
+			com.liferay.fragment.model.FragmentEntry returnValue =
+				FragmentEntryServiceUtil.addFragmentEntry(
+					groupId, fragmentCollectionId, fragmentEntryKey, name, css,
+					html, js, cacheable, configuration, previewFileEntryId,
+					publishedFragmentEntryId, type, status, serviceContext);
+
+			return com.liferay.fragment.model.FragmentEntrySoap.toSoapModel(
+				returnValue);
+		}
+		catch (Exception exception) {
+			_log.error(exception, exception);
+
+			throw new RemoteException(exception.getMessage());
+		}
+	}
+
+	public static com.liferay.fragment.model.FragmentEntrySoap addFragmentEntry(
+			long groupId, long fragmentCollectionId, String fragmentEntryKey,
 			String name, String css, String html, String js,
 			String configuration, long previewFileEntryId, int type, int status,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
@@ -191,6 +216,27 @@ public class FragmentEntryServiceSoap {
 		try {
 			com.liferay.fragment.model.FragmentEntry returnValue =
 				FragmentEntryServiceUtil.fetchFragmentEntry(fragmentEntryId);
+
+			return com.liferay.fragment.model.FragmentEntrySoap.toSoapModel(
+				returnValue);
+		}
+		catch (Exception exception) {
+			_log.error(exception, exception);
+
+			throw new RemoteException(exception.getMessage());
+		}
+	}
+
+	public static com.liferay.fragment.model.FragmentEntrySoap
+			fetchFragmentEntryByPublishedFragmentEntryId(
+				long publishedFragmentEntryId)
+		throws RemoteException {
+
+		try {
+			com.liferay.fragment.model.FragmentEntry returnValue =
+				FragmentEntryServiceUtil.
+					fetchFragmentEntryByPublishedFragmentEntryId(
+						publishedFragmentEntryId);
 
 			return com.liferay.fragment.model.FragmentEntrySoap.toSoapModel(
 				returnValue);

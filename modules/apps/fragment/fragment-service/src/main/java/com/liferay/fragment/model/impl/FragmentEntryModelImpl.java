@@ -84,7 +84,8 @@ public class FragmentEntryModelImpl
 		{"fragmentEntryKey", Types.VARCHAR}, {"name", Types.VARCHAR},
 		{"css", Types.CLOB}, {"html", Types.CLOB}, {"js", Types.CLOB},
 		{"cacheable", Types.BOOLEAN}, {"configuration", Types.CLOB},
-		{"previewFileEntryId", Types.BIGINT}, {"readOnly", Types.BOOLEAN},
+		{"previewFileEntryId", Types.BIGINT},
+		{"publishedFragmentEntryId", Types.BIGINT}, {"readOnly", Types.BOOLEAN},
 		{"type_", Types.INTEGER}, {"lastPublishDate", Types.TIMESTAMP},
 		{"status", Types.INTEGER}, {"statusByUserId", Types.BIGINT},
 		{"statusByUserName", Types.VARCHAR}, {"statusDate", Types.TIMESTAMP}
@@ -112,6 +113,7 @@ public class FragmentEntryModelImpl
 		TABLE_COLUMNS_MAP.put("cacheable", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("configuration", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("previewFileEntryId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("publishedFragmentEntryId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("readOnly", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("type_", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("lastPublishDate", Types.TIMESTAMP);
@@ -122,7 +124,7 @@ public class FragmentEntryModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table FragmentEntry (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,fragmentEntryId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,fragmentCollectionId LONG,fragmentEntryKey VARCHAR(75) null,name VARCHAR(75) null,css TEXT null,html TEXT null,js TEXT null,cacheable BOOLEAN,configuration TEXT null,previewFileEntryId LONG,readOnly BOOLEAN,type_ INTEGER,lastPublishDate DATE null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null)";
+		"create table FragmentEntry (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,fragmentEntryId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,fragmentCollectionId LONG,fragmentEntryKey VARCHAR(75) null,name VARCHAR(75) null,css TEXT null,html TEXT null,js TEXT null,cacheable BOOLEAN,configuration TEXT null,previewFileEntryId LONG,publishedFragmentEntryId LONG,readOnly BOOLEAN,type_ INTEGER,lastPublishDate DATE null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null)";
 
 	public static final String TABLE_SQL_DROP = "drop table FragmentEntry";
 
@@ -148,11 +150,13 @@ public class FragmentEntryModelImpl
 
 	public static final long NAME_COLUMN_BITMASK = 16L;
 
-	public static final long STATUS_COLUMN_BITMASK = 32L;
+	public static final long PUBLISHEDFRAGMENTENTRYID_COLUMN_BITMASK = 32L;
 
-	public static final long TYPE_COLUMN_BITMASK = 64L;
+	public static final long STATUS_COLUMN_BITMASK = 64L;
 
-	public static final long UUID_COLUMN_BITMASK = 128L;
+	public static final long TYPE_COLUMN_BITMASK = 128L;
+
+	public static final long UUID_COLUMN_BITMASK = 256L;
 
 	public static void setEntityCacheEnabled(boolean entityCacheEnabled) {
 		_entityCacheEnabled = entityCacheEnabled;
@@ -193,6 +197,8 @@ public class FragmentEntryModelImpl
 		model.setCacheable(soapModel.isCacheable());
 		model.setConfiguration(soapModel.getConfiguration());
 		model.setPreviewFileEntryId(soapModel.getPreviewFileEntryId());
+		model.setPublishedFragmentEntryId(
+			soapModel.getPublishedFragmentEntryId());
 		model.setReadOnly(soapModel.isReadOnly());
 		model.setType(soapModel.getType());
 		model.setLastPublishDate(soapModel.getLastPublishDate());
@@ -430,6 +436,13 @@ public class FragmentEntryModelImpl
 			"previewFileEntryId",
 			(BiConsumer<FragmentEntry, Long>)
 				FragmentEntry::setPreviewFileEntryId);
+		attributeGetterFunctions.put(
+			"publishedFragmentEntryId",
+			FragmentEntry::getPublishedFragmentEntryId);
+		attributeSetterBiConsumers.put(
+			"publishedFragmentEntryId",
+			(BiConsumer<FragmentEntry, Long>)
+				FragmentEntry::setPublishedFragmentEntryId);
 		attributeGetterFunctions.put("readOnly", FragmentEntry::getReadOnly);
 		attributeSetterBiConsumers.put(
 			"readOnly",
@@ -803,6 +816,29 @@ public class FragmentEntryModelImpl
 
 	@JSON
 	@Override
+	public long getPublishedFragmentEntryId() {
+		return _publishedFragmentEntryId;
+	}
+
+	@Override
+	public void setPublishedFragmentEntryId(long publishedFragmentEntryId) {
+		_columnBitmask |= PUBLISHEDFRAGMENTENTRYID_COLUMN_BITMASK;
+
+		if (!_setOriginalPublishedFragmentEntryId) {
+			_setOriginalPublishedFragmentEntryId = true;
+
+			_originalPublishedFragmentEntryId = _publishedFragmentEntryId;
+		}
+
+		_publishedFragmentEntryId = publishedFragmentEntryId;
+	}
+
+	public long getOriginalPublishedFragmentEntryId() {
+		return _originalPublishedFragmentEntryId;
+	}
+
+	@JSON
+	@Override
 	public boolean getReadOnly() {
 		return _readOnly;
 	}
@@ -1069,6 +1105,8 @@ public class FragmentEntryModelImpl
 		fragmentEntryImpl.setCacheable(isCacheable());
 		fragmentEntryImpl.setConfiguration(getConfiguration());
 		fragmentEntryImpl.setPreviewFileEntryId(getPreviewFileEntryId());
+		fragmentEntryImpl.setPublishedFragmentEntryId(
+			getPublishedFragmentEntryId());
 		fragmentEntryImpl.setReadOnly(isReadOnly());
 		fragmentEntryImpl.setType(getType());
 		fragmentEntryImpl.setLastPublishDate(getLastPublishDate());
@@ -1159,6 +1197,11 @@ public class FragmentEntryModelImpl
 			fragmentEntryModelImpl._fragmentEntryKey;
 
 		fragmentEntryModelImpl._originalName = fragmentEntryModelImpl._name;
+
+		fragmentEntryModelImpl._originalPublishedFragmentEntryId =
+			fragmentEntryModelImpl._publishedFragmentEntryId;
+
+		fragmentEntryModelImpl._setOriginalPublishedFragmentEntryId = false;
 
 		fragmentEntryModelImpl._originalType = fragmentEntryModelImpl._type;
 
@@ -1274,6 +1317,9 @@ public class FragmentEntryModelImpl
 		}
 
 		fragmentEntryCacheModel.previewFileEntryId = getPreviewFileEntryId();
+
+		fragmentEntryCacheModel.publishedFragmentEntryId =
+			getPublishedFragmentEntryId();
 
 		fragmentEntryCacheModel.readOnly = isReadOnly();
 
@@ -1413,6 +1459,9 @@ public class FragmentEntryModelImpl
 	private boolean _cacheable;
 	private String _configuration;
 	private long _previewFileEntryId;
+	private long _publishedFragmentEntryId;
+	private long _originalPublishedFragmentEntryId;
+	private boolean _setOriginalPublishedFragmentEntryId;
 	private boolean _readOnly;
 	private int _type;
 	private int _originalType;

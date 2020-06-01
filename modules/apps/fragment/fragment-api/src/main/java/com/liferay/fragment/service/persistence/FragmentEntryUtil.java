@@ -882,6 +882,190 @@ public class FragmentEntryUtil {
 	}
 
 	/**
+	 * Returns all the fragment entries where publishedFragmentEntryId = &#63;.
+	 *
+	 * @param publishedFragmentEntryId the published fragment entry ID
+	 * @return the matching fragment entries
+	 */
+	public static List<FragmentEntry> findByPublishedFragmentEntryId(
+		long publishedFragmentEntryId) {
+
+		return getPersistence().findByPublishedFragmentEntryId(
+			publishedFragmentEntryId);
+	}
+
+	/**
+	 * Returns a range of all the fragment entries where publishedFragmentEntryId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>FragmentEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param publishedFragmentEntryId the published fragment entry ID
+	 * @param start the lower bound of the range of fragment entries
+	 * @param end the upper bound of the range of fragment entries (not inclusive)
+	 * @return the range of matching fragment entries
+	 */
+	public static List<FragmentEntry> findByPublishedFragmentEntryId(
+		long publishedFragmentEntryId, int start, int end) {
+
+		return getPersistence().findByPublishedFragmentEntryId(
+			publishedFragmentEntryId, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the fragment entries where publishedFragmentEntryId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>FragmentEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param publishedFragmentEntryId the published fragment entry ID
+	 * @param start the lower bound of the range of fragment entries
+	 * @param end the upper bound of the range of fragment entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching fragment entries
+	 */
+	public static List<FragmentEntry> findByPublishedFragmentEntryId(
+		long publishedFragmentEntryId, int start, int end,
+		OrderByComparator<FragmentEntry> orderByComparator) {
+
+		return getPersistence().findByPublishedFragmentEntryId(
+			publishedFragmentEntryId, start, end, orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the fragment entries where publishedFragmentEntryId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>FragmentEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param publishedFragmentEntryId the published fragment entry ID
+	 * @param start the lower bound of the range of fragment entries
+	 * @param end the upper bound of the range of fragment entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching fragment entries
+	 */
+	public static List<FragmentEntry> findByPublishedFragmentEntryId(
+		long publishedFragmentEntryId, int start, int end,
+		OrderByComparator<FragmentEntry> orderByComparator,
+		boolean useFinderCache) {
+
+		return getPersistence().findByPublishedFragmentEntryId(
+			publishedFragmentEntryId, start, end, orderByComparator,
+			useFinderCache);
+	}
+
+	/**
+	 * Returns the first fragment entry in the ordered set where publishedFragmentEntryId = &#63;.
+	 *
+	 * @param publishedFragmentEntryId the published fragment entry ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching fragment entry
+	 * @throws NoSuchEntryException if a matching fragment entry could not be found
+	 */
+	public static FragmentEntry findByPublishedFragmentEntryId_First(
+			long publishedFragmentEntryId,
+			OrderByComparator<FragmentEntry> orderByComparator)
+		throws com.liferay.fragment.exception.NoSuchEntryException {
+
+		return getPersistence().findByPublishedFragmentEntryId_First(
+			publishedFragmentEntryId, orderByComparator);
+	}
+
+	/**
+	 * Returns the first fragment entry in the ordered set where publishedFragmentEntryId = &#63;.
+	 *
+	 * @param publishedFragmentEntryId the published fragment entry ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching fragment entry, or <code>null</code> if a matching fragment entry could not be found
+	 */
+	public static FragmentEntry fetchByPublishedFragmentEntryId_First(
+		long publishedFragmentEntryId,
+		OrderByComparator<FragmentEntry> orderByComparator) {
+
+		return getPersistence().fetchByPublishedFragmentEntryId_First(
+			publishedFragmentEntryId, orderByComparator);
+	}
+
+	/**
+	 * Returns the last fragment entry in the ordered set where publishedFragmentEntryId = &#63;.
+	 *
+	 * @param publishedFragmentEntryId the published fragment entry ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching fragment entry
+	 * @throws NoSuchEntryException if a matching fragment entry could not be found
+	 */
+	public static FragmentEntry findByPublishedFragmentEntryId_Last(
+			long publishedFragmentEntryId,
+			OrderByComparator<FragmentEntry> orderByComparator)
+		throws com.liferay.fragment.exception.NoSuchEntryException {
+
+		return getPersistence().findByPublishedFragmentEntryId_Last(
+			publishedFragmentEntryId, orderByComparator);
+	}
+
+	/**
+	 * Returns the last fragment entry in the ordered set where publishedFragmentEntryId = &#63;.
+	 *
+	 * @param publishedFragmentEntryId the published fragment entry ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching fragment entry, or <code>null</code> if a matching fragment entry could not be found
+	 */
+	public static FragmentEntry fetchByPublishedFragmentEntryId_Last(
+		long publishedFragmentEntryId,
+		OrderByComparator<FragmentEntry> orderByComparator) {
+
+		return getPersistence().fetchByPublishedFragmentEntryId_Last(
+			publishedFragmentEntryId, orderByComparator);
+	}
+
+	/**
+	 * Returns the fragment entries before and after the current fragment entry in the ordered set where publishedFragmentEntryId = &#63;.
+	 *
+	 * @param fragmentEntryId the primary key of the current fragment entry
+	 * @param publishedFragmentEntryId the published fragment entry ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next fragment entry
+	 * @throws NoSuchEntryException if a fragment entry with the primary key could not be found
+	 */
+	public static FragmentEntry[] findByPublishedFragmentEntryId_PrevAndNext(
+			long fragmentEntryId, long publishedFragmentEntryId,
+			OrderByComparator<FragmentEntry> orderByComparator)
+		throws com.liferay.fragment.exception.NoSuchEntryException {
+
+		return getPersistence().findByPublishedFragmentEntryId_PrevAndNext(
+			fragmentEntryId, publishedFragmentEntryId, orderByComparator);
+	}
+
+	/**
+	 * Removes all the fragment entries where publishedFragmentEntryId = &#63; from the database.
+	 *
+	 * @param publishedFragmentEntryId the published fragment entry ID
+	 */
+	public static void removeByPublishedFragmentEntryId(
+		long publishedFragmentEntryId) {
+
+		getPersistence().removeByPublishedFragmentEntryId(
+			publishedFragmentEntryId);
+	}
+
+	/**
+	 * Returns the number of fragment entries where publishedFragmentEntryId = &#63;.
+	 *
+	 * @param publishedFragmentEntryId the published fragment entry ID
+	 * @return the number of matching fragment entries
+	 */
+	public static int countByPublishedFragmentEntryId(
+		long publishedFragmentEntryId) {
+
+		return getPersistence().countByPublishedFragmentEntryId(
+			publishedFragmentEntryId);
+	}
+
+	/**
 	 * Returns all the fragment entries where groupId = &#63; and fragmentCollectionId = &#63;.
 	 *
 	 * @param groupId the group ID

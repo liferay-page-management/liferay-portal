@@ -15,6 +15,7 @@ create index IX_9EC6FEE4 on FragmentEntry (groupId, fragmentCollectionId, name[$
 create index IX_BD18F965 on FragmentEntry (groupId, fragmentCollectionId, status);
 create index IX_BD1F4C5C on FragmentEntry (groupId, fragmentCollectionId, type_, status);
 create unique index IX_7F3F0EB3 on FragmentEntry (groupId, fragmentEntryKey[$COLUMN_LENGTH:75$]);
+create index IX_61B6154B on FragmentEntry (publishedFragmentEntryId);
 create index IX_C65BF31C on FragmentEntry (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_553E909E on FragmentEntry (uuid_[$COLUMN_LENGTH:75$], groupId);
 

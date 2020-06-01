@@ -68,6 +68,14 @@ public interface FragmentEntryService extends BaseService {
 
 	public FragmentEntry addFragmentEntry(
 			long groupId, long fragmentCollectionId, String fragmentEntryKey,
+			String name, String css, String html, String js, boolean cacheable,
+			String configuration, long previewFileEntryId,
+			long publishedFragmentEntryId, int type, int status,
+			ServiceContext serviceContext)
+		throws PortalException;
+
+	public FragmentEntry addFragmentEntry(
+			long groupId, long fragmentCollectionId, String fragmentEntryKey,
 			String name, String css, String html, String js,
 			String configuration, long previewFileEntryId, int type, int status,
 			ServiceContext serviceContext)
@@ -87,6 +95,10 @@ public interface FragmentEntryService extends BaseService {
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public FragmentEntry fetchFragmentEntry(long fragmentEntryId)
 		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public FragmentEntry fetchFragmentEntryByPublishedFragmentEntryId(
+		long publishedFragmentEntryId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Object> getFragmentCompositionsAndFragmentEntries(
