@@ -99,6 +99,21 @@ public class FragmentEntryLocalServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
+		return addFragmentEntry(
+			userId, groupId, fragmentCollectionId, fragmentEntryKey, name, css,
+			html, js, cacheable, configuration, previewFileEntryId, 0, type,
+			status, serviceContext);
+	}
+
+	@Override
+	public FragmentEntry addFragmentEntry(
+			long userId, long groupId, long fragmentCollectionId,
+			String fragmentEntryKey, String name, String css, String html,
+			String js, boolean cacheable, String configuration,
+			long previewFileEntryId, long publishedFragmentEntryId, int type,
+			int status, ServiceContext serviceContext)
+		throws PortalException {
+
 		// Fragment entry
 
 		User user = userLocalService.getUser(userId);
@@ -149,6 +164,7 @@ public class FragmentEntryLocalServiceImpl
 		fragmentEntry.setCacheable(cacheable);
 		fragmentEntry.setConfiguration(configuration);
 		fragmentEntry.setPreviewFileEntryId(previewFileEntryId);
+		fragmentEntry.setPublishedFragmentEntryId(publishedFragmentEntryId);
 		fragmentEntry.setType(type);
 		fragmentEntry.setStatus(status);
 		fragmentEntry.setStatusByUserId(userId);
