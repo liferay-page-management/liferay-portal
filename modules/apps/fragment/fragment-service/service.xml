@@ -183,6 +183,9 @@
 		<finder name="FragmentCollectionId" return-type="Collection">
 			<finder-column name="fragmentCollectionId" />
 		</finder>
+		<finder name="PublishedFragmentEntryId" return-type="Collection">
+			<finder-column name="publishedFragmentEntryId" />
+		</finder>
 		<finder name="G_FCI" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="fragmentCollectionId" />
