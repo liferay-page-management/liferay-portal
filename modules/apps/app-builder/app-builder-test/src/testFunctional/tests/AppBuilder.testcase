@@ -2672,11 +2672,6 @@ definition {
 
 		AppBuilderAdmin.deployApp(itemName = "Test App A");
 
-		ProductMenu.gotoPortlet(
-			category = "Site Builder",
-			panel = "Site Administration",
-			portlet = "Pages");
-
 		AppBuilderAdmin.gotoCustomAppCP(portlet = "Test App A");
 
 		AppBuilderAdmin.validateProductMenuApp(appName = "Test App A");
@@ -2691,11 +2686,6 @@ definition {
 		AppBuilderAdmin.switchTab(tabName = "Apps");
 
 		AppBuilderAdmin.undeployApp(itemName = "Test App B");
-
-		ProductMenu.gotoPortlet(
-			category = "Site Builder",
-			panel = "Site Administration",
-			portlet = "Pages");
 
 		Navigator.gotoSitePage(
 			pageName = "App Builder Test Page",
@@ -2713,11 +2703,6 @@ definition {
 		AppBuilderAdmin.switchTab(tabName = "Apps");
 
 		AppBuilderAdmin.deployApp(itemName = "Test App B");
-
-		ProductMenu.gotoPortlet(
-			category = "Site Builder",
-			panel = "Site Administration",
-			portlet = "Pages");
 
 		Navigator.gotoSitePage(
 			pageName = "App Builder Test Page",
