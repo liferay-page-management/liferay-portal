@@ -524,9 +524,7 @@ definition {
 			formViewName = "My Form View",
 			tableViewName = "My Table View");
 
-		AppBuilderAdmin.gotoCustomAppCP(
-			panel = "Control Panel",
-			portlet = "Test App");
+		AppBuilderAdmin.gotoCustomAppCP(portlet = "Test App");
 
 		AppBuilderAdmin.addEntry();
 
@@ -791,9 +789,7 @@ definition {
 			formViewName = "My Form View 2",
 			tableViewName = "My Table View 2");
 
-		AppBuilderAdmin.gotoCustomAppCP(
-			panel = "Control Panel",
-			portlet = "Test App 1");
+		AppBuilderAdmin.gotoCustomAppCP(portlet = "Test App 1");
 
 		AppBuilderAdmin.addEntry();
 
@@ -805,9 +801,7 @@ definition {
 
 		AppBuilderAdmin.validateItemNameOnTable(itemName = "content of form 1");
 
-		AppBuilderAdmin.gotoCustomAppCP(
-			panel = "Control Panel",
-			portlet = "Test App 2");
+		AppBuilderAdmin.gotoCustomAppCP(portlet = "Test App 2");
 
 		AppBuilderAdmin.addEntry();
 
@@ -1617,9 +1611,7 @@ definition {
 
 		AppBuilderAdmin.validateAppIsNotPresentOnSite(portlet = "Test App B");
 
-		AppBuilderAdmin.gotoCustomAppCP(
-			panel = "Control Panel",
-			portlet = "Test App B");
+		AppBuilderAdmin.gotoCustomAppCP(portlet = "Test App B");
 
 		AppBuilderAdmin.validateProductMenuApp(appName = "Test App B");
 
@@ -1745,9 +1737,7 @@ definition {
 			formViewName = "${myFormViewName_1}",
 			tableViewName = "${myTableViewName_2}");
 
-		AppBuilderAdmin.gotoCustomAppCP(
-			panel = "Control Panel",
-			portlet = "${myAppName_1}");
+		AppBuilderAdmin.gotoCustomAppCP(portlet = "${myAppName_1}");
 
 		AppBuilderAdmin.addEntry();
 
@@ -1759,9 +1749,7 @@ definition {
 
 		AppBuilderAdmin.validateItemNameOnTable(itemName = "Content from Form 1");
 
-		AppBuilderAdmin.gotoCustomAppCP(
-			panel = "Control Panel",
-			portlet = "${myAppName_2}");
+		AppBuilderAdmin.gotoCustomAppCP(portlet = "${myAppName_2}");
 
 		AppBuilderAdmin.addEntry();
 
@@ -1773,9 +1761,7 @@ definition {
 
 		AppBuilderAdmin.validateItemNameOnTable(itemName = "Content from Form 2");
 
-		AppBuilderAdmin.gotoCustomAppCP(
-			panel = "Control Panel",
-			portlet = "${myAppName_3}");
+		AppBuilderAdmin.gotoCustomAppCP(portlet = "${myAppName_3}");
 
 		AppBuilderAdmin.validateItemNameOnTable(itemName = "Content from Form 2");
 
@@ -2269,9 +2255,7 @@ definition {
 			userLoginEmailAddress = "userea@liferay.com",
 			userLoginFullName = "userfn userln");
 
-		AppBuilderAdmin.gotoCustomAppCP(
-			panel = "Control Panel",
-			portlet = "App Admin");
+		AppBuilderAdmin.gotoCustomAppCP(portlet = "App Admin");
 
 		AppBuilderAdmin.validateProductMenuApp(appName = "App Admin");
 
@@ -2622,9 +2606,7 @@ definition {
 			formViewName = "Form View Title",
 			tableViewName = "Table View Title");
 
-		AppBuilderAdmin.gotoCustomAppCP(
-			panel = "Control Panel",
-			portlet = "Test App A");
+		AppBuilderAdmin.gotoCustomAppCP(portlet = "Test App A");
 
 		AppBuilderAdmin.validateProductMenuApp(appName = "Test App A");
 
@@ -2693,9 +2675,7 @@ definition {
 			panel = "Site Administration",
 			portlet = "Pages");
 
-		AppBuilderAdmin.gotoCustomAppCP(
-			panel = "Control Panel",
-			portlet = "Test App A");
+		AppBuilderAdmin.gotoCustomAppCP(portlet = "Test App A");
 
 		AppBuilderAdmin.validateProductMenuApp(appName = "Test App A");
 
@@ -2816,9 +2796,7 @@ definition {
 			formViewName = "Form View Title",
 			tableViewName = "Table View Title");
 
-		AppBuilderAdmin.gotoCustomAppCP(
-			panel = "Control Panel",
-			portlet = "Test App C");
+		AppBuilderAdmin.gotoCustomAppCP(portlet = "Test App C");
 
 		AppBuilderAdmin.validateProductMenuApp(appName = "Test App C");
 
@@ -2894,9 +2872,7 @@ definition {
 			pageName = "App Builder Test Page",
 			siteName = "App Builder Site Name");
 
-		AppBuilderAdmin.gotoCustomAppCP(
-			panel = "Control Panel",
-			portlet = "Changed Name");
+		AppBuilderAdmin.gotoCustomAppCP(portlet = "Changed Name");
 
 		AppBuilderAdmin.validateProductMenuApp(appName = "Changed Name");
 
@@ -3110,9 +3086,7 @@ definition {
 			formViewName = "${myFormViewName}",
 			tableViewName = "${myTableViewName}");
 
-		AppBuilderAdmin.gotoCustomAppCP(
-			panel = "Control Panel",
-			portlet = "${myAppName}");
+		AppBuilderAdmin.gotoCustomAppCP(portlet = "${myAppName}");
 
 		AppBuilderAdmin.addEntry();
 
