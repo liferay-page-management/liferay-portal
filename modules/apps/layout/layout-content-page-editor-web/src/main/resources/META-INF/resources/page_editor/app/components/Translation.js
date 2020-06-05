@@ -127,6 +127,7 @@ export default function Translation({
 	dispatch,
 	fragmentEntryLinks,
 	languageId,
+	showNotTranslated = true,
 }) {
 	const [active, setActive] = useState(false);
 	const editableValues = useMemo(
@@ -143,13 +144,26 @@ export default function Translation({
 		return Object.keys({
 			[defaultLanguageId]: defaultLanguage,
 			...availableLanguagesMut,
-		}).map((languageId) => ({
-			languageId,
-			values: editableValues.filter((editableValue) =>
-				isTranslated(editableValue, languageId)
-			),
-		}));
-	}, [availableLanguages, defaultLanguageId, editableValues]);
+		})
+			.filter(
+				(languageId) =>
+					showNotTranslated ||
+					editableValues.filter((editableValue) =>
+						isTranslated(editableValue, languageId)
+					).length > 0
+			)
+			.map((languageId) => ({
+				languageId,
+				values: editableValues.filter((editableValue) =>
+					isTranslated(editableValue, languageId)
+				),
+			}));
+	}, [
+		availableLanguages,
+		defaultLanguageId,
+		editableValues,
+		showNotTranslated,
+	]);
 
 	const {languageIcon, languageLabel} = availableLanguages[languageId];
 

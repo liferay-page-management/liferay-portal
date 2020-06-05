@@ -141,6 +141,7 @@ const PreviewModal = ({observer}) => {
 									fragmentEntryLinks={fragmentEntryLinks}
 									languageId={languageId}
 									segmentsExperienceId={segmentsExperienceId}
+									showNotTranslated={false}
 								/>
 							</li>
 						</ul>
