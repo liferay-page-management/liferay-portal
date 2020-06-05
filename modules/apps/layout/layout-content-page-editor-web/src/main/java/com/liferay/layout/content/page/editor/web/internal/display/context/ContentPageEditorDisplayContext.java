@@ -87,7 +87,9 @@ import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.PortletApp;
 import com.liferay.portal.kernel.model.PortletCategory;
 import com.liferay.portal.kernel.model.Theme;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
@@ -97,6 +99,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
@@ -200,6 +203,9 @@ public class ContentPageEditorDisplayContext {
 
 	public Map<String, Object> getEditorContext(String npmResolvedPackageName)
 		throws Exception {
+
+		User defaultUser = UserLocalServiceUtil.getDefaultUser(
+			themeDisplay.getCompanyId());
 
 		return HashMapBuilder.<String, Object>put(
 			"config",
@@ -363,7 +369,8 @@ public class ContentPageEditorDisplayContext {
 				"portletNamespace", getPortletNamespace()
 			).put(
 				"previewPageURL",
-				getResourceURL("/content_layout/get_page_preview")
+				getResourceURL(
+					"/content_layout/get_page_preview", defaultUser.getUserId())
 			).put(
 				"publishURL", getPublishURL()
 			).put(
@@ -529,6 +536,21 @@ public class ContentPageEditorDisplayContext {
 	protected String getResourceURL(String resourceID) {
 		ResourceURL resourceURL = _renderResponse.createResourceURL();
 
+		resourceURL.setResourceID(resourceID);
+
+		return HttpUtil.addParameter(
+			resourceURL.toString(), "p_l_mode", Constants.EDIT);
+	}
+
+	protected String getResourceURL(String resourceID, long doAsUserId) {
+		LiferayPortletResponse liferayPortletResponse =
+			PortalUtil.getLiferayPortletResponse(_renderResponse);
+
+		LiferayPortletURL resourceURL =
+			liferayPortletResponse.createResourceURL(
+				ContentPageEditorPortletKeys.CONTENT_PAGE_EDITOR_PORTLET);
+
+		resourceURL.setDoAsUserId(doAsUserId);
 		resourceURL.setResourceID(resourceID);
 
 		return HttpUtil.addParameter(
