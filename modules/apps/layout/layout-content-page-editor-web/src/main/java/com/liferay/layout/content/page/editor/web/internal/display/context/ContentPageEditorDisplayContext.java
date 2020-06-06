@@ -1225,9 +1225,8 @@ public class ContentPageEditorDisplayContext {
 		Map<String, Object> fragmentEntryLinksMap = new HashMap<>();
 
 		List<FragmentEntryLink> fragmentEntryLinks = new ArrayList<>(
-			FragmentEntryLinkLocalServiceUtil.getFragmentEntryLinks(
-				getGroupId(), PortalUtil.getClassNameId(Layout.class.getName()),
-				themeDisplay.getPlid()));
+			FragmentEntryLinkLocalServiceUtil.getFragmentEntryLinksByPlid(
+				getGroupId(), themeDisplay.getPlid()));
 
 		Layout layout = themeDisplay.getLayout();
 
@@ -1238,10 +1237,8 @@ public class ContentPageEditorDisplayContext {
 						layout.getMasterLayoutPlid());
 
 			fragmentEntryLinks.addAll(
-				FragmentEntryLinkLocalServiceUtil.getFragmentEntryLinks(
-					getGroupId(),
-					PortalUtil.getClassNameId(Layout.class.getName()),
-					masterLayoutPageTemplateEntry.getPlid()));
+				FragmentEntryLinkLocalServiceUtil.getFragmentEntryLinksByPlid(
+					getGroupId(), masterLayoutPageTemplateEntry.getPlid()));
 		}
 
 		boolean isolated = themeDisplay.isIsolated();
