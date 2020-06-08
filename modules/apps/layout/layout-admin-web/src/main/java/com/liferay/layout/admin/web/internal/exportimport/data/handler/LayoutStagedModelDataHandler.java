@@ -354,18 +354,18 @@ public class LayoutStagedModelDataHandler
 			StagedModelDataHandlerUtil.exportReferenceStagedModel(
 				portletDataContext, layout, layoutFriendlyURL,
 				PortletDataContext.REFERENCE_TYPE_DEPENDENCY);
-		}
 
-		List<FriendlyURLEntry> friendlyURLEntries = _getFriendlyURLEntries(
-			layout);
+			List<FriendlyURLEntry> friendlyURLEntries = _getFriendlyURLEntries(
+				layoutFriendlyURL);
 
-		for (FriendlyURLEntry friendlyURLEntry : friendlyURLEntries) {
-			StagedModelDataHandlerUtil.exportStagedModel(
-				portletDataContext, friendlyURLEntry);
+			for (FriendlyURLEntry friendlyURLEntry : friendlyURLEntries) {
+				StagedModelDataHandlerUtil.exportStagedModel(
+					portletDataContext, friendlyURLEntry);
 
-			StagedModelDataHandlerUtil.exportReferenceStagedModel(
-				portletDataContext, layout, friendlyURLEntry,
-				PortletDataContext.REFERENCE_TYPE_DEPENDENCY);
+				StagedModelDataHandlerUtil.exportReferenceStagedModel(
+					portletDataContext, layoutFriendlyURL, friendlyURLEntry,
+					PortletDataContext.REFERENCE_TYPE_DEPENDENCY);
+			}
 		}
 
 		LayoutSEOEntry layoutSEOEntry =
@@ -903,8 +903,6 @@ public class LayoutStagedModelDataHandler
 		}
 
 		importAssets(portletDataContext, layout, importedLayout);
-
-		importFriendlyURLEntries(portletDataContext, layout, importedLayout);
 		importLayoutFriendlyURLs(portletDataContext, layout, importedLayout);
 
 		importLayoutPageTemplateStructures(
@@ -1524,6 +1522,8 @@ public class LayoutStagedModelDataHandler
 			StagedModelDataHandlerUtil.importStagedModel(
 				portletDataContext, layoutFriendlyURL);
 		}
+
+		importFriendlyURLEntries(portletDataContext, layout, importedLayout);
 
 		deleteMissingLayoutFriendlyURLs(portletDataContext, importedLayout);
 	}
@@ -2348,12 +2348,14 @@ public class LayoutStagedModelDataHandler
 			"master-layout-id", String.valueOf(masterLayout.getLayoutId()));
 	}
 
-	private List<FriendlyURLEntry> _getFriendlyURLEntries(Layout layout) {
+	private List<FriendlyURLEntry> _getFriendlyURLEntries(
+		LayoutFriendlyURL layoutFriendlyURL) {
+
 		return _friendlyURLEntryLocalService.getFriendlyURLEntries(
-			layout.getGroupId(),
+			layoutFriendlyURL.getGroupId(),
 			_layoutFriendlyURLEntryHelper.getClassNameId(
-				layout.isPrivateLayout()),
-			layout.getPlid());
+				layoutFriendlyURL.isPrivateLayout()),
+			layoutFriendlyURL.getPlid());
 	}
 
 	private String _getLayoutPrototypeUuid(
