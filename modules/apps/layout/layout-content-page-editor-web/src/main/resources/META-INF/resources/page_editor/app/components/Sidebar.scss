@@ -121,7 +121,7 @@ $zIndexContent: 0;
 		height: calc(100vh - #{$controlMenuHeight + $managementBarHeight});
 		top: $controlMenuHeight + $managementBarHeight;
 
-		@include media-breakpoint-up(lg) {
+		@include media-breakpoint-up(xl) {
 			height: calc(100vh - #{$desktopControlMenuHeight + $toolbarHeight});
 			top: $desktopControlMenuHeight + $toolbarHeight;
 		}
