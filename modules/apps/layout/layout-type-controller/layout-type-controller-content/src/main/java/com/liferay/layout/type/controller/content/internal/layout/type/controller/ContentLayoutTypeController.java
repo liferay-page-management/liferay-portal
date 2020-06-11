@@ -173,8 +173,7 @@ public class ContentLayoutTypeController extends BaseLayoutTypeControllerImpl {
 				httpServletRequest,
 				"com.liferay.frontend.js.web_toggleControls", "visible");
 
-			Layout draftLayout = _layoutLocalService.fetchLayout(
-				_portal.getClassNameId(Layout.class), layout.getPlid());
+			Layout draftLayout = layout.getDraftLayout();
 
 			if (layoutMode.equals(Constants.EDIT) && (draftLayout != null)) {
 				String layoutFullURL = _portal.getLayoutFullURL(
