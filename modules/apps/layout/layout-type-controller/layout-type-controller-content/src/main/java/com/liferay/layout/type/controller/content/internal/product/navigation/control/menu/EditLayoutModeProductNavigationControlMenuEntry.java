@@ -101,8 +101,7 @@ public class EditLayoutModeProductNavigationControlMenuEntry
 					themeDisplay);
 			}
 			else {
-				Layout draftLayout = _layoutLocalService.fetchLayout(
-					_portal.getClassNameId(Layout.class), layout.getPlid());
+				Layout draftLayout = layout.getDraftLayout();
 
 				if (draftLayout == null) {
 					UnicodeProperties unicodeProperties =
