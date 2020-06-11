@@ -17,13 +17,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-String backURL = layoutsAdminDisplayContext.getRedirect();
-
-if (Validator.isNull(backURL)) {
-	PortletURL portletURL = layoutsAdminDisplayContext.getPortletURL();
-
-	backURL = portletURL.toString();
-}
+String backURL = layoutsAdminDisplayContext.getBackURL();
 
 SelectLayoutCollectionDisplayContext selectLayoutCollectionDisplayContext = (SelectLayoutCollectionDisplayContext)request.getAttribute(LayoutAdminWebKeys.SELECT_LAYOUT_COLLECTION_DISPLAY_CONTEXT);
 
