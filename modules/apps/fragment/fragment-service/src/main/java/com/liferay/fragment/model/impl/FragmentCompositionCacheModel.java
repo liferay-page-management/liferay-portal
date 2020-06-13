@@ -37,17 +37,17 @@ public class FragmentCompositionCacheModel
 	implements CacheModel<FragmentComposition>, Externalizable, MVCCModel {
 
 	@Override
-	public boolean equals(Object object) {
-		if (this == object) {
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
 
-		if (!(object instanceof FragmentCompositionCacheModel)) {
+		if (!(obj instanceof FragmentCompositionCacheModel)) {
 			return false;
 		}
 
 		FragmentCompositionCacheModel fragmentCompositionCacheModel =
-			(FragmentCompositionCacheModel)object;
+			(FragmentCompositionCacheModel)obj;
 
 		if ((fragmentCompositionId ==
 				fragmentCompositionCacheModel.fragmentCompositionId) &&
