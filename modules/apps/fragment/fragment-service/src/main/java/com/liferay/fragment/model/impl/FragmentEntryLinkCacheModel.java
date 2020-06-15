@@ -37,17 +37,17 @@ public class FragmentEntryLinkCacheModel
 	implements CacheModel<FragmentEntryLink>, Externalizable, MVCCModel {
 
 	@Override
-	public boolean equals(Object object) {
-		if (this == object) {
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
 
-		if (!(object instanceof FragmentEntryLinkCacheModel)) {
+		if (!(obj instanceof FragmentEntryLinkCacheModel)) {
 			return false;
 		}
 
 		FragmentEntryLinkCacheModel fragmentEntryLinkCacheModel =
-			(FragmentEntryLinkCacheModel)object;
+			(FragmentEntryLinkCacheModel)obj;
 
 		if ((fragmentEntryLinkId ==
 				fragmentEntryLinkCacheModel.fragmentEntryLinkId) &&

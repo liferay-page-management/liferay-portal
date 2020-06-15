@@ -727,16 +727,16 @@ public class FragmentCollectionModelImpl
 	}
 
 	@Override
-	public boolean equals(Object object) {
-		if (this == object) {
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
 
-		if (!(object instanceof FragmentCollection)) {
+		if (!(obj instanceof FragmentCollection)) {
 			return false;
 		}
 
-		FragmentCollection fragmentCollection = (FragmentCollection)object;
+		FragmentCollection fragmentCollection = (FragmentCollection)obj;
 
 		long primaryKey = fragmentCollection.getPrimaryKey();
 
