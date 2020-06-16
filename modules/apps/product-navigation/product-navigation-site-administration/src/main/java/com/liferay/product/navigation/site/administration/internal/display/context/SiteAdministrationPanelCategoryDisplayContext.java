@@ -39,6 +39,8 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PrefsPropsUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -389,6 +391,14 @@ public class SiteAdministrationPanelCategoryDisplayContext {
 	}
 
 	public boolean isShowSiteSelector() throws PortalException {
+		String navigationModel = PrefsPropsUtil.getString(
+			_themeDisplay.getCompanyId(), PropsKeys.NAVIGATION_MODEL,
+			"global-navigation");
+
+		if (Objects.equals(navigationModel, "global-navigation")) {
+			return false;
+		}
+
 		List<Group> mySites = getMySites();
 		List<Group> recentSites = _recentGroupManager.getRecentGroups(
 			PortalUtil.getHttpServletRequest(_portletRequest));
