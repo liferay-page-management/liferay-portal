@@ -393,9 +393,9 @@ public class SiteAdministrationPanelCategoryDisplayContext {
 	public boolean isShowSiteSelector() throws PortalException {
 		String navigationModel = PrefsPropsUtil.getString(
 			_themeDisplay.getCompanyId(), PropsKeys.NAVIGATION_MODEL,
-			"global-navigation");
+			WebKeys.NAVIGATION_MODEL_GLOBAL);
 
-		if (Objects.equals(navigationModel, "global-navigation")) {
+		if (Objects.equals(navigationModel, WebKeys.NAVIGATION_MODEL_GLOBAL)) {
 			return false;
 		}
 
