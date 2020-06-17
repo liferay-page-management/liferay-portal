@@ -68,7 +68,6 @@ definition {
 
 		//ProductMenu.gotoPortlet(
 		//	category = "Site Builder",
-		//
 		//	portlet = "Pages");
 
 		WaitForSPARefresh();

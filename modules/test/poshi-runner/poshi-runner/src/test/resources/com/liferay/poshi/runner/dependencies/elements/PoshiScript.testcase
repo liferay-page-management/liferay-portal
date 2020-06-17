@@ -258,7 +258,6 @@ definition {
 
 			ProductMenu.gotoPortlet(
 				category = "Content",
-
 				portlet = "Blogs"
 			);
 
@@ -273,7 +272,6 @@ definition {
 
 			ProductMenu.gotoPortlet(
 				category = "Content",
-
 				portlet = "Blogs"
 			);
 
