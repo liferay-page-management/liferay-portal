@@ -15,7 +15,6 @@
 package com.liferay.layout.internal.importer;
 
 import com.liferay.document.library.kernel.util.DLUtil;
-import com.liferay.layout.internal.service.DefaultLayoutLayoutSetPrototypeLocalServiceWrapper;
 import com.liferay.layout.page.template.importer.LayoutPageTemplatesImporter;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
@@ -118,7 +117,7 @@ public class DefaultLayoutDefinitionImporter {
 
 		if (fileEntry == null) {
 			byte[] bytes = _file.getBytes(
-				DefaultLayoutLayoutSetPrototypeLocalServiceWrapper.class,
+				DefaultLayoutDefinitionImporter.class,
 				_FILE_NAME_WELCOME_IMAGE);
 
 			fileEntry = _portletFileRepository.addPortletFileEntry(
@@ -133,7 +132,7 @@ public class DefaultLayoutDefinitionImporter {
 	}
 
 	private static final String _DEFAULT_LAYOUT_DEFINITION = StringUtil.read(
-		DefaultLayoutLayoutSetPrototypeLocalServiceWrapper.class,
+		DefaultLayoutDefinitionImporter.class,
 		"default-layout-definition.json");
 
 	private static final String _FILE_NAME_WELCOME_IMAGE = "welcome_bg.jpg";
