@@ -24,10 +24,13 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.PrefsPropsUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
@@ -64,6 +67,21 @@ public class ProductMenuDisplayContext {
 		_childPanelCategories = _panelCategoryRegistry.getChildPanelCategories(
 			PanelCategoryKeys.ROOT, _themeDisplay.getPermissionChecker(),
 			_themeDisplay.getScopeGroup());
+
+		String navigationModel = PrefsPropsUtil.getString(
+			_themeDisplay.getCompanyId(), PropsKeys.NAVIGATION_MODEL,
+			WebKeys.NAVIGATION_MODEL_GLOBAL);
+
+		if (Objects.equals(navigationModel, WebKeys.NAVIGATION_MODEL_GLOBAL)) {
+			return _childPanelCategories;
+		}
+
+		_childPanelCategories.addAll(
+			0,
+			_panelCategoryRegistry.getChildPanelCategories(
+				PanelCategoryKeys.GLOBAL_MENU,
+				_themeDisplay.getPermissionChecker(),
+				_themeDisplay.getScopeGroup()));
 
 		return _childPanelCategories;
 	}
