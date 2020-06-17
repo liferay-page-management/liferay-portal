@@ -400,14 +400,12 @@ definition {
 
 		ProductMenu.gotoPortlet(
 			category = "Categorization",
-			panel = "Site Administration",
 			portlet = "Tags");
 
 		Staging.viewAddButtonDoesNotExist();
 
 		ProductMenu.gotoPortlet(
 			category = "Categorization",
-			panel = "Site Administration",
 			portlet = "Categories");
 
 		Staging.viewAddButtonDoesNotExist();
@@ -733,7 +731,6 @@ definition {
 
 		ProductMenu.gotoPortlet(
 			category = "Recycle Bin",
-			panel = "Site Administration",
 			portlet = "Recycle Bin");
 
 		RecycleBin.viewCP(
@@ -775,7 +772,6 @@ definition {
 
 		ProductMenu.gotoPortlet(
 			category = "People",
-			panel = "Site Administration",
 			portlet = "Teams");
 
 		Team.addCP(
@@ -784,7 +780,6 @@ definition {
 
 		ProductMenu.gotoPortlet(
 			category = "People",
-			panel = "Site Administration",
 			portlet = "Teams");
 
 		Staging.publishToLiveNowViaPortletCP();
@@ -793,7 +788,6 @@ definition {
 
 		ProductMenu.gotoPortlet(
 			category = "People",
-			panel = "Site Administration",
 			portlet = "Teams");
 
 		Team.viewCP(
@@ -1007,7 +1001,6 @@ definition {
 
 		ProductMenu.gotoScopedPortlet(
 			category = "Content &amp; Data",
-			panel = "Site Administration",
 			portlet = "Blogs",
 			scope = "Staging Test Page");
 
@@ -1027,7 +1020,6 @@ definition {
 	test StagingPublishAssetPublisherConfiguredTagsFilter {
 		ProductMenu.gotoPortlet(
 			category = "Categorization",
-			panel = "Site Administration",
 			portlet = "Tags");
 
 		Tag.addCP(tagName = "tag1");
@@ -1071,7 +1063,6 @@ definition {
 
 		ProductMenu.gotoPortlet(
 			category = "Categorization",
-			panel = "Site Administration",
 			portlet = "Tags");
 
 		Tag.addCP(tagName = "tag2");
@@ -1324,7 +1315,6 @@ definition {
 
 		ProductMenu.gotoPortlet(
 			category = "Content &amp; Data",
-			panel = "Site Administration",
 			portlet = "Documents and Media");
 
 		DMDocument.addCP(
@@ -1379,7 +1369,6 @@ definition {
 
 		ProductMenu.gotoPortlet(
 			category = "Content &amp; Data",
-			panel = "Site Administration",
 			portlet = "Documents and Media");
 
 		DMDocument.deleteCP(dmDocumentTitle = "DM Document Title");
@@ -1417,7 +1406,6 @@ definition {
 
 		ProductMenu.gotoPortlet(
 			category = "Content &amp; Data",
-			panel = "Site Administration",
 			portlet = "Documents and Media");
 
 		DMDocument.viewPG(dmDocumentTitle = "DM Document Title");
