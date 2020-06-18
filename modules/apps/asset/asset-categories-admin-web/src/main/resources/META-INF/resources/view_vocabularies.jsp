@@ -111,7 +111,7 @@ AssetVocabulariesManagementToolbarDisplayContext assetVocabulariesManagementTool
 		'<portlet:namespace />assetVocabularies'
 	);
 
-	searchContainer.on('rowToggled', function (event) {
+	searchContainer.on('rowToggled', function(event) {
 		Liferay.Util.getOpener().Liferay.fire(
 			'<%= HtmlUtil.escapeJS(assetCategoriesDisplayContext.getEventName()) %>',
 			{

@@ -151,7 +151,7 @@
 </aui:form>
 
 <aui:script require="metal-dom/src/dom as dom, frontend-js-web/liferay/ItemSelectorDialog.es as ItemSelectorDialog">
-	var deleteVocabularies = function () {
+	var deleteVocabularies = function() {
 		var vocabulariesFm = document.<portlet:namespace />vocabulariesFm;
 
 		if (vocabulariesFm) {
@@ -163,7 +163,7 @@
 					'<portlet:renderURL windowState="<%= LiferayWindowState.POP_UP.toString() %>"><portlet:param name="mvcPath" value="/view_vocabularies.jsp" /></portlet:renderURL>',
 			});
 
-			itemSelectorDialog.on('selectedItemChange', function (event) {
+			itemSelectorDialog.on('selectedItemChange', function(event) {
 				var selectedItems = event.selectedItem;
 
 				if (selectedItems) {
@@ -172,7 +172,7 @@
 							'<liferay-ui:message key="are-you-sure-you-want-to-delete-the-selected-entries" />'
 						)
 					) {
-						Array.prototype.forEach.call(selectedItems, function (
+						Array.prototype.forEach.call(selectedItems, function(
 							item,
 							index
 						) {
@@ -196,8 +196,8 @@
 		deleteVocabularies: deleteVocabularies,
 	};
 
-	Liferay.componentReady('actionsComponent').then(function (actionsComponent) {
-		actionsComponent.on(['click', 'itemClicked'], function (event, facade) {
+	Liferay.componentReady('actionsComponent').then(function(actionsComponent) {
+		actionsComponent.on(['click', 'itemClicked'], function(event, facade) {
 			var itemData;
 
 			if (event.data && event.data.item) {
