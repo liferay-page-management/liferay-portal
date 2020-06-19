@@ -346,7 +346,7 @@ definition {
 			configurationScope = "System Scope");
 
 		GlobalMenu.gotoPortlet(
-			category = "Apps",
+			category = "System",
 			panel = "Control Panel",
 			portlet = "App Manager");
 
