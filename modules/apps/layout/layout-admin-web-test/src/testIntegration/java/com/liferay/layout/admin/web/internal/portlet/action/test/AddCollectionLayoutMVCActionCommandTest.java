@@ -217,20 +217,16 @@ public class AddCollectionLayoutMVCActionCommandTest {
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
 		themeDisplay.setCompany(_company);
-
-		Layout layout = LayoutTestUtil.addLayout(_group);
-
-		themeDisplay.setLayout(layout);
+		themeDisplay.setLayout(LayoutTestUtil.addLayout(_group));
 
 		LayoutSet layoutSet = _layoutSetLocalService.getLayoutSet(
 			_group.getGroupId(), false);
 
 		themeDisplay.setLayoutSet(layoutSet);
-
-		Theme theme = _themeLocalService.getTheme(
-			_company.getCompanyId(), layoutSet.getThemeId());
-
-		themeDisplay.setLookAndFeel(theme, null);
+		themeDisplay.setLookAndFeel(
+			_themeLocalService.getTheme(
+				_company.getCompanyId(), layoutSet.getThemeId()),
+			null);
 
 		themeDisplay.setPermissionChecker(
 			PermissionThreadLocal.getPermissionChecker());
