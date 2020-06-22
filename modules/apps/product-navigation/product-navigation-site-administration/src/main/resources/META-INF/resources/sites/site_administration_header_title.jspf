@@ -167,7 +167,7 @@
 			cssClass="autofit-col-end"
 		>
 			<clay:sticker
-				cssClass="panel-notifications-count mr-0"
+				cssClass="mr-0 panel-notifications-count"
 				displayType="warning"
 				size="sm"
 			>
