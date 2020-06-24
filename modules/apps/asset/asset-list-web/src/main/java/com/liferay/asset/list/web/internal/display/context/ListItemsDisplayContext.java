@@ -15,17 +15,22 @@
 package com.liferay.asset.list.web.internal.display.context;
 
 import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.kernel.model.AssetRenderer;
 import com.liferay.asset.list.asset.entry.provider.AssetListAssetEntryProvider;
 import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.service.AssetListEntryLocalServiceUtil;
+import com.liferay.asset.list.web.internal.field.ListItemField;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
+import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.segments.constants.SegmentsEntryConstants;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
@@ -36,9 +41,9 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author Jürgen Kappler
  */
-public class AssetListItemsDisplayContext {
+public class ListItemsDisplayContext {
 
-	public AssetListItemsDisplayContext(
+	public ListItemsDisplayContext(
 		AssetListAssetEntryProvider assetListAssetEntryProvider,
 		RenderRequest renderRequest, RenderResponse renderResponse) {
 
@@ -50,32 +55,6 @@ public class AssetListItemsDisplayContext {
 
 		_themeDisplay = (ThemeDisplay)_httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
-	}
-
-	public SearchContainer<AssetEntry> getAssetListContentSearchContainer() {
-		if (_assetListContentSearchContainer != null) {
-			return _assetListContentSearchContainer;
-		}
-
-		SearchContainer<AssetEntry> searchContainer = new SearchContainer(
-			_renderRequest, _getAssetListContentURL(), null,
-			"there-are-no-asset-entries");
-
-		List<AssetEntry> assetEntries =
-			_assetListAssetEntryProvider.getAssetEntries(
-				getAssetListEntry(), getSegmentsEntryId(),
-				searchContainer.getStart(), searchContainer.getEnd());
-
-		searchContainer.setResults(assetEntries);
-
-		int total = _assetListAssetEntryProvider.getAssetEntriesCount(
-			getAssetListEntry(), getSegmentsEntryId());
-
-		searchContainer.setTotal(total);
-
-		_assetListContentSearchContainer = searchContainer;
-
-		return _assetListContentSearchContainer;
 	}
 
 	public AssetListEntry getAssetListEntry() {
@@ -100,6 +79,28 @@ public class AssetListItemsDisplayContext {
 		return _assetListEntryId;
 	}
 
+	public String getListItemFieldType(ListItemField listItemField) {
+		return ResourceActionsUtil.getModelResource(
+			_themeDisplay.getLocale(), listItemField.getClassName());
+	}
+
+	public SearchContainer<ListItemField> getSearchContainer() {
+		if (_searchContainer != null) {
+			return _searchContainer;
+		}
+
+		SearchContainer<ListItemField> searchContainer = new SearchContainer(
+			_renderRequest, _getListItemsURL(), null, "there-are-no-items");
+
+		searchContainer.setResults(_getListItemFields(searchContainer));
+
+		searchContainer.setTotal(_getListItemFieldsCount());
+
+		_searchContainer = searchContainer;
+
+		return _searchContainer;
+	}
+
 	public long getSegmentsEntryId() {
 		if (_segmentsEntryId != null) {
 			return _segmentsEntryId;
@@ -122,10 +123,41 @@ public class AssetListItemsDisplayContext {
 		return _showActions;
 	}
 
-	private PortletURL _getAssetListContentURL() {
+	private List<ListItemField> _getListItemFields(
+		SearchContainer<ListItemField> searchContainer) {
+
+		List<ListItemField> listItemFields = new ArrayList<>();
+
+		List<AssetEntry> assetEntries =
+			_assetListAssetEntryProvider.getAssetEntries(
+				getAssetListEntry(), getSegmentsEntryId(),
+				searchContainer.getStart(), searchContainer.getEnd());
+
+		Locale locale = _themeDisplay.getLocale();
+
+		for (AssetEntry assetEntry : assetEntries) {
+			AssetRenderer<?> assetRenderer = assetEntry.getAssetRenderer();
+
+			listItemFields.add(
+				new ListItemField(
+					assetRenderer.getTitle(locale),
+					assetRenderer.getClassName(), assetEntry.getClassPK(),
+					assetEntry.getUserName(), assetEntry.getModifiedDate(),
+					assetEntry.getCreateDate()));
+		}
+
+		return listItemFields;
+	}
+
+	private int _getListItemFieldsCount() {
+		return _assetListAssetEntryProvider.getAssetEntriesCount(
+			getAssetListEntry(), getSegmentsEntryId());
+	}
+
+	private PortletURL _getListItemsURL() {
 		PortletURL portletURL = _renderResponse.createRenderURL();
 
-		portletURL.setParameter("mvcPath", "/view_asset_list_items.jsp");
+		portletURL.setParameter("mvcPath", "/view_list_items.jsp");
 		portletURL.setParameter(
 			"assetListEntryId", String.valueOf(getAssetListEntryId()));
 		portletURL.setParameter(
@@ -135,12 +167,12 @@ public class AssetListItemsDisplayContext {
 	}
 
 	private final AssetListAssetEntryProvider _assetListAssetEntryProvider;
-	private SearchContainer<AssetEntry> _assetListContentSearchContainer;
 	private AssetListEntry _assetListEntry;
 	private Long _assetListEntryId;
 	private final HttpServletRequest _httpServletRequest;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
+	private SearchContainer<ListItemField> _searchContainer;
 	private Long _segmentsEntryId;
 	private Boolean _showActions;
 	private final ThemeDisplay _themeDisplay;

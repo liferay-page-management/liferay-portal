@@ -23,11 +23,12 @@ import com.liferay.asset.list.exception.DuplicateAssetListEntryTitleException;
 import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.web.internal.constants.AssetListWebKeys;
 import com.liferay.asset.list.web.internal.display.context.AssetListDisplayContext;
-import com.liferay.asset.list.web.internal.display.context.AssetListItemsDisplayContext;
 import com.liferay.asset.list.web.internal.display.context.EditAssetListDisplayContext;
 import com.liferay.asset.list.web.internal.display.context.InfoListProviderDisplayContext;
-import com.liferay.asset.list.web.internal.servlet.taglib.util.AssetListItemsActionDropdownItems;
+import com.liferay.asset.list.web.internal.display.context.ListItemsDisplayContext;
+import com.liferay.asset.list.web.internal.servlet.taglib.util.ListItemsActionDropdownItems;
 import com.liferay.asset.util.AssetRendererFactoryClassProvider;
+import com.liferay.info.display.contributor.InfoDisplayContributorTracker;
 import com.liferay.info.item.InfoItemServiceTracker;
 import com.liferay.info.list.provider.InfoListProviderTracker;
 import com.liferay.item.selector.ItemSelector;
@@ -75,16 +76,6 @@ public class AssetListPortlet extends MVCPortlet {
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
 
-		renderRequest.setAttribute(
-			AssetListWebKeys.ASSET_LIST_ITEMS_ACTION_DROPDOWN_ITEMS,
-			new AssetListItemsActionDropdownItems(
-				_assetDisplayPageFriendlyURLProvider, _assetInfoEditURLProvider,
-				_portal.getHttpServletRequest(renderRequest)));
-		renderRequest.setAttribute(
-			AssetListWebKeys.ASSET_LIST_ITEMS_DISPLAY_CONTEXT,
-			new AssetListItemsDisplayContext(
-				_assetListAssetEntryProvider, renderRequest, renderResponse));
-
 		AssetListDisplayContext assetListDisplayContext =
 			new AssetListDisplayContext(
 				_assetRendererFactoryClassProvider, renderRequest,
@@ -107,6 +98,17 @@ public class AssetListPortlet extends MVCPortlet {
 				renderRequest, renderResponse));
 		renderRequest.setAttribute(
 			AssetListWebKeys.ITEM_SELECTOR, _itemSelector);
+
+		renderRequest.setAttribute(
+			AssetListWebKeys.LIST_ITEMS_ACTION_DROPDOWN_ITEMS,
+			new ListItemsActionDropdownItems(
+				_assetDisplayPageFriendlyURLProvider, _assetInfoEditURLProvider,
+				_infoDisplayContributorTracker,
+				_portal.getHttpServletRequest(renderRequest)));
+		renderRequest.setAttribute(
+			AssetListWebKeys.LIST_ITEMS_DISPLAY_CONTEXT,
+			new ListItemsDisplayContext(
+				_assetListAssetEntryProvider, renderRequest, renderResponse));
 
 		super.doDispatch(renderRequest, renderResponse);
 	}
@@ -155,6 +157,9 @@ public class AssetListPortlet extends MVCPortlet {
 	@Reference
 	private AssetRendererFactoryClassProvider
 		_assetRendererFactoryClassProvider;
+
+	@Reference
+	private InfoDisplayContributorTracker _infoDisplayContributorTracker;
 
 	@Reference
 	private InfoItemServiceTracker _infoItemServiceTracker;

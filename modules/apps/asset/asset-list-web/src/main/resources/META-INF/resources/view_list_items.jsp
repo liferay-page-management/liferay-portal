@@ -17,59 +17,51 @@
 <%@ include file="/init.jsp" %>
 
 <%
-AssetListItemsActionDropdownItems assetListItemsActionDropdownItems = (AssetListItemsActionDropdownItems)request.getAttribute(AssetListWebKeys.ASSET_LIST_ITEMS_ACTION_DROPDOWN_ITEMS);
-AssetListItemsDisplayContext assetListItemsDisplayContext = (AssetListItemsDisplayContext)request.getAttribute(AssetListWebKeys.ASSET_LIST_ITEMS_DISPLAY_CONTEXT);
+ListItemsActionDropdownItems listItemsActionDropdownItems = (ListItemsActionDropdownItems)request.getAttribute(AssetListWebKeys.LIST_ITEMS_ACTION_DROPDOWN_ITEMS);
+ListItemsDisplayContext listItemsDisplayContext = (ListItemsDisplayContext)request.getAttribute(AssetListWebKeys.LIST_ITEMS_DISPLAY_CONTEXT);
 %>
 
 <clay:container-fluid
 	cssClass="container-view"
 >
 	<liferay-ui:search-container
-		id="assetEntries"
-		searchContainer="<%= assetListItemsDisplayContext.getAssetListContentSearchContainer() %>"
+		id="listItemFieldEntries"
+		searchContainer="<%= listItemsDisplayContext.getSearchContainer() %>"
 	>
 		<liferay-ui:search-container-row
-			className="com.liferay.asset.kernel.model.AssetEntry"
-			keyProperty="entryId"
-			modelVar="assetEntry"
+			className="com.liferay.asset.list.web.internal.field.ListItemField"
+			modelVar="listItemField"
 		>
-
-			<%
-			AssetRenderer<?> assetRenderer = assetEntry.getAssetRenderer();
-
-			AssetRendererFactory<?> assetRendererFactory = assetRenderer.getAssetRendererFactory();
-			%>
-
 			<liferay-ui:search-container-column-text
 				name="title"
-				value="<%= HtmlUtil.escape(assetRenderer.getTitle(locale)) %>"
+				value="<%= HtmlUtil.escape(listItemField.getTitle()) %>"
 			/>
 
 			<liferay-ui:search-container-column-text
 				name="type"
-				value="<%= assetRendererFactory.getTypeName(locale) %>"
+				value="<%= listItemsDisplayContext.getListItemFieldType(listItemField) %>"
 			/>
 
 			<liferay-ui:search-container-column-text
 				name="author"
-				value="<%= assetEntry.getUserName() %>"
+				value="<%= listItemField.getAuthor() %>"
 			/>
 
 			<liferay-ui:search-container-column-date
 				name="modified-date"
-				value="<%= assetEntry.getModifiedDate() %>"
+				value="<%= listItemField.getModifiedDate() %>"
 			/>
 
 			<liferay-ui:search-container-column-date
 				name="create-date"
-				value="<%= assetEntry.getCreateDate() %>"
+				value="<%= listItemField.getCreateDate() %>"
 			/>
 
-			<c:if test="<%= assetListItemsDisplayContext.isShowActions() %>">
+			<c:if test="<%= listItemsDisplayContext.isShowActions() %>">
 				<liferay-ui:search-container-column-text>
 					<clay:dropdown-actions
-						defaultEventHandler="<%= AssetListWebKeys.ASSET_LIST_ITEMS_DROPDOWN_DEFAULT_EVENT_HANDLER %>"
-						dropdownItems="<%= assetListItemsActionDropdownItems.getActionDropdownItems(assetEntry) %>"
+						defaultEventHandler="<%= AssetListWebKeys.LIST_ITEMS_DROPDOWN_DEFAULT_EVENT_HANDLER %>"
+						dropdownItems="<%= listItemsActionDropdownItems.getActionDropdownItems(listItemField) %>"
 					/>
 				</liferay-ui:search-container-column-text>
 			</c:if>
@@ -82,6 +74,6 @@ AssetListItemsDisplayContext assetListItemsDisplayContext = (AssetListItemsDispl
 </clay:container-fluid>
 
 <liferay-frontend:component
-	componentId="<%= AssetListWebKeys.ASSET_LIST_ITEMS_DROPDOWN_DEFAULT_EVENT_HANDLER %>"
-	module="js/AssetListItemsDropdownDefaultEventHandler.es"
+	componentId="<%= AssetListWebKeys.LIST_ITEMS_DROPDOWN_DEFAULT_EVENT_HANDLER %>"
+	module="js/ListItemsDropdownDefaultEventHandler.es"
 />

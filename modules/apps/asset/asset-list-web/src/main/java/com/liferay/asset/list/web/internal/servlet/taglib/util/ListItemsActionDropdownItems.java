@@ -17,9 +17,12 @@ package com.liferay.asset.list.web.internal.servlet.taglib.util;
 import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
 import com.liferay.asset.display.page.util.AssetDisplayPageUtil;
 import com.liferay.asset.info.display.url.provider.AssetInfoEditURLProvider;
-import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.list.web.internal.field.ListItemField;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
+import com.liferay.info.display.contributor.InfoDisplayContributor;
+import com.liferay.info.display.contributor.InfoDisplayContributorTracker;
+import com.liferay.info.display.contributor.InfoDisplayObjectProvider;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -41,16 +44,18 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author Jürgen Kappler
  */
-public class AssetListItemsActionDropdownItems {
+public class ListItemsActionDropdownItems {
 
-	public AssetListItemsActionDropdownItems(
+	public ListItemsActionDropdownItems(
 		AssetDisplayPageFriendlyURLProvider assetDisplayPageFriendlyURLProvider,
 		AssetInfoEditURLProvider assetInfoEditURLProvider,
+		InfoDisplayContributorTracker infoDisplayContributorTracker,
 		HttpServletRequest httpServletRequest) {
 
 		_assetDisplayPageFriendlyURLProvider =
 			assetDisplayPageFriendlyURLProvider;
 		_assetInfoEditURLProvider = assetInfoEditURLProvider;
+		_infoDisplayContributorTracker = infoDisplayContributorTracker;
 
 		_httpServletRequest = httpServletRequest;
 
@@ -58,23 +63,24 @@ public class AssetListItemsActionDropdownItems {
 			WebKeys.THEME_DISPLAY);
 	}
 
-	public List<DropdownItem> getActionDropdownItems(AssetEntry assetEntry)
+	public List<DropdownItem> getActionDropdownItems(
+			ListItemField listItemField)
 		throws Exception {
 
 		return DropdownItemListBuilder.add(
-			_getViewDisplayPageActionUnsafeConsumer(assetEntry)
+			_getViewDisplayPageActionUnsafeConsumer(listItemField)
 		).add(
-			_getEditContentActionUnsafeConsumer(assetEntry)
+			_getEditContentActionUnsafeConsumer(listItemField)
 		).add(
-			_getEditDisplayPageActionUnsafeConsumer(assetEntry)
+			_getEditDisplayPageActionUnsafeConsumer(listItemField)
 		).build();
 	}
 
 	private UnsafeConsumer<DropdownItem, Exception>
-		_getEditContentActionUnsafeConsumer(AssetEntry assetEntry) {
+		_getEditContentActionUnsafeConsumer(ListItemField listItemField) {
 
 		String editContentURL = _assetInfoEditURLProvider.getURL(
-			assetEntry.getClassName(), assetEntry.getClassPK(),
+			listItemField.getClassName(), listItemField.getClassPK(),
 			_httpServletRequest);
 
 		return dropdownItem -> {
@@ -87,11 +93,11 @@ public class AssetListItemsActionDropdownItems {
 	}
 
 	private UnsafeConsumer<DropdownItem, Exception>
-			_getEditDisplayPageActionUnsafeConsumer(AssetEntry assetEntry)
+			_getEditDisplayPageActionUnsafeConsumer(ListItemField listItemField)
 		throws Exception {
 
 		String editDisplayPageTemplateURL = _getEditDisplayPageTemplateURL(
-			assetEntry);
+			listItemField);
 
 		return dropdownItem -> {
 			dropdownItem.putData("action", "editDisplayPageTemplate");
@@ -105,13 +111,31 @@ public class AssetListItemsActionDropdownItems {
 		};
 	}
 
-	private String _getEditDisplayPageTemplateURL(AssetEntry assetEntry)
+	private String _getEditDisplayPageTemplateURL(ListItemField listItemField)
 		throws Exception {
+
+		InfoDisplayContributor<?> infoDisplayContributor =
+			_infoDisplayContributorTracker.getInfoDisplayContributor(
+				listItemField.getClassName());
+
+		if (infoDisplayContributor == null) {
+			return null;
+		}
+
+		InfoDisplayObjectProvider<?> infoDisplayObjectProvider =
+			infoDisplayContributor.getInfoDisplayObjectProvider(
+				listItemField.getClassPK());
+
+		if (infoDisplayObjectProvider == null) {
+			return null;
+		}
 
 		LayoutPageTemplateEntry assetDisplayPageLayoutPageTemplateEntry =
 			AssetDisplayPageUtil.getAssetDisplayPageLayoutPageTemplateEntry(
-				_themeDisplay.getScopeGroupId(), assetEntry.getClassNameId(),
-				assetEntry.getClassPK(), assetEntry.getClassTypeId());
+				_themeDisplay.getScopeGroupId(),
+				PortalUtil.getClassNameId(listItemField.getClassName()),
+				listItemField.getClassPK(),
+				infoDisplayObjectProvider.getClassTypeId());
 
 		if (assetDisplayPageLayoutPageTemplateEntry == null) {
 			return null;
@@ -148,10 +172,10 @@ public class AssetListItemsActionDropdownItems {
 	}
 
 	private UnsafeConsumer<DropdownItem, Exception>
-			_getViewDisplayPageActionUnsafeConsumer(AssetEntry assetEntry)
+			_getViewDisplayPageActionUnsafeConsumer(ListItemField listItemField)
 		throws Exception {
 
-		String viewDisplayPageURL = _getViewDisplayPageURL(assetEntry);
+		String viewDisplayPageURL = _getViewDisplayPageURL(listItemField);
 
 		return dropdownItem -> {
 			dropdownItem.putData("action", "viewDisplayPage");
@@ -162,27 +186,23 @@ public class AssetListItemsActionDropdownItems {
 		};
 	}
 
-	private String _getViewDisplayPageURL(AssetEntry assetEntry)
+	private String _getViewDisplayPageURL(ListItemField listItemField)
 		throws Exception {
 
 		if (_assetDisplayPageFriendlyURLProvider == null) {
 			return null;
 		}
 
-		if (!AssetDisplayPageUtil.hasAssetDisplayPage(
-				_themeDisplay.getScopeGroupId(), assetEntry)) {
-
-			return null;
-		}
-
 		return _assetDisplayPageFriendlyURLProvider.getFriendlyURL(
-			assetEntry.getClassName(), assetEntry.getClassPK(), _themeDisplay);
+			listItemField.getClassName(), listItemField.getClassPK(),
+			_themeDisplay);
 	}
 
 	private final AssetDisplayPageFriendlyURLProvider
 		_assetDisplayPageFriendlyURLProvider;
 	private final AssetInfoEditURLProvider _assetInfoEditURLProvider;
 	private final HttpServletRequest _httpServletRequest;
+	private final InfoDisplayContributorTracker _infoDisplayContributorTracker;
 	private final ThemeDisplay _themeDisplay;
 
 }
