@@ -66,7 +66,7 @@ public class DefaultLayoutLayoutSetPrototypeLocalServiceWrapper
 			layoutsUpdateable, serviceContext);
 
 		if (GetterUtil.getBoolean(
-				serviceContext.getAttribute("addDefaultLayout"), true)) {
+				serviceContext.getAttribute("addDefaultLayout"))) {
 
 			Layout defaultLayout = _layoutLocalService.addLayout(
 				userId, layoutSetPrototype.getGroupId(), true,
