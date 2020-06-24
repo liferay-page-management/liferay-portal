@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HttpUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -79,9 +80,7 @@ public class ListItemsActionDropdownItems {
 	private UnsafeConsumer<DropdownItem, Exception>
 		_getEditContentActionUnsafeConsumer(ListItemField listItemField) {
 
-		String editContentURL = _assetInfoEditURLProvider.getURL(
-			listItemField.getClassName(), listItemField.getClassPK(),
-			_httpServletRequest);
+		String editContentURL = _getEditContentURL(listItemField);
 
 		return dropdownItem -> {
 			dropdownItem.putData("action", "editContent");
@@ -90,6 +89,15 @@ public class ListItemsActionDropdownItems {
 			dropdownItem.setLabel(
 				LanguageUtil.get(_httpServletRequest, "edit-content"));
 		};
+	}
+
+	private String _getEditContentURL(ListItemField listItemField) {
+		String editContentURL = _assetInfoEditURLProvider.getURL(
+			listItemField.getClassName(), listItemField.getClassPK(),
+			_httpServletRequest);
+
+		return HttpUtil.setParameter(
+			editContentURL, "redirect", _getRedirect());
 	}
 
 	private UnsafeConsumer<DropdownItem, Exception>
@@ -162,13 +170,22 @@ public class ListItemsActionDropdownItems {
 			draftLayout, _themeDisplay);
 
 		editDisplayPageTemplateURL = HttpUtil.setParameter(
-			editDisplayPageTemplateURL, "p_l_back_url",
-			_themeDisplay.getURLCurrent());
+			editDisplayPageTemplateURL, "p_l_back_url", _getRedirect());
 
 		editDisplayPageTemplateURL = HttpUtil.setParameter(
 			editDisplayPageTemplateURL, "p_l_mode", Constants.EDIT);
 
 		return editDisplayPageTemplateURL;
+	}
+
+	private String _getRedirect() {
+		if (Validator.isNotNull(_redirect)) {
+			return _redirect;
+		}
+
+		_redirect = ParamUtil.getString(_httpServletRequest, "redirect");
+
+		return _redirect;
 	}
 
 	private UnsafeConsumer<DropdownItem, Exception>
@@ -193,9 +210,13 @@ public class ListItemsActionDropdownItems {
 			return null;
 		}
 
-		return _assetDisplayPageFriendlyURLProvider.getFriendlyURL(
-			listItemField.getClassName(), listItemField.getClassPK(),
-			_themeDisplay);
+		String viewDisplayPageURL =
+			_assetDisplayPageFriendlyURLProvider.getFriendlyURL(
+				listItemField.getClassName(), listItemField.getClassPK(),
+				_themeDisplay);
+
+		return HttpUtil.setParameter(
+			viewDisplayPageURL, "p_l_back_url", _getRedirect());
 	}
 
 	private final AssetDisplayPageFriendlyURLProvider
@@ -203,6 +224,7 @@ public class ListItemsActionDropdownItems {
 	private final AssetInfoEditURLProvider _assetInfoEditURLProvider;
 	private final HttpServletRequest _httpServletRequest;
 	private final InfoDisplayContributorTracker _infoDisplayContributorTracker;
+	private String _redirect;
 	private final ThemeDisplay _themeDisplay;
 
 }

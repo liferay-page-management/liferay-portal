@@ -108,7 +108,8 @@ public class AssetListPortlet extends MVCPortlet {
 		renderRequest.setAttribute(
 			AssetListWebKeys.LIST_ITEMS_DISPLAY_CONTEXT,
 			new ListItemsDisplayContext(
-				_assetListAssetEntryProvider, renderRequest, renderResponse));
+				_assetListAssetEntryProvider, _infoItemServiceTracker,
+				renderRequest, renderResponse));
 
 		super.doDispatch(renderRequest, renderResponse);
 	}

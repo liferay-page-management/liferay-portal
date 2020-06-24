@@ -53,6 +53,7 @@ page import="com.liferay.asset.list.web.internal.display.context.InfoListProvide
 page import="com.liferay.asset.list.web.internal.display.context.ListItemsDisplayContext" %><%@
 page import="com.liferay.asset.list.web.internal.security.permission.resource.AssetListEntryPermission" %><%@
 page import="com.liferay.asset.list.web.internal.servlet.taglib.util.AssetEntryListActionDropdownItems" %><%@
+page import="com.liferay.asset.list.web.internal.servlet.taglib.util.InfoListProviderActionDropdownItems" %><%@
 page import="com.liferay.asset.list.web.internal.servlet.taglib.util.ListItemsActionDropdownItems" %><%@
 page import="com.liferay.asset.util.comparator.AssetRendererFactoryTypeNameComparator" %><%@
 page import="com.liferay.dynamic.data.mapping.model.DDMStructure" %><%@
