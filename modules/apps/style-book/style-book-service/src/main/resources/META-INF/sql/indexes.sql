@@ -1,0 +1,1 @@
+create index IX_D648668A on StyleBookEntry (groupId, ctCollectionId);
