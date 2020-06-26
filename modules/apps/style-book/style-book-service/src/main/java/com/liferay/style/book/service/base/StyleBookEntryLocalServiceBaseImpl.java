@@ -120,10 +120,13 @@ public abstract class StyleBookEntryLocalServiceBaseImpl
 	 *
 	 * @param styleBookEntry the style book entry
 	 * @return the style book entry that was removed
+	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
-	public StyleBookEntry deleteStyleBookEntry(StyleBookEntry styleBookEntry) {
+	public StyleBookEntry deleteStyleBookEntry(StyleBookEntry styleBookEntry)
+		throws PortalException {
+
 		return styleBookEntryPersistence.remove(styleBookEntry);
 	}
 
@@ -431,10 +434,6 @@ public abstract class StyleBookEntryLocalServiceBaseImpl
 	@Reference
 	protected com.liferay.counter.kernel.service.CounterLocalService
 		counterLocalService;
-
-	@Reference
-	protected com.liferay.portal.kernel.service.GroupLocalService
-		groupLocalService;
 
 	@Reference
 	protected com.liferay.portal.kernel.service.UserLocalService

@@ -77,7 +77,7 @@ public class StyleBookEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(19);
+		StringBundler sb = new StringBundler(23);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -97,6 +97,10 @@ public class StyleBookEntryCacheModel
 		sb.append(createDate);
 		sb.append(", name=");
 		sb.append(name);
+		sb.append(", styleBookEntryKey=");
+		sb.append(styleBookEntryKey);
+		sb.append(", previewFileEntryId=");
+		sb.append(previewFileEntryId);
 		sb.append("}");
 
 		return sb.toString();
@@ -134,6 +138,15 @@ public class StyleBookEntryCacheModel
 			styleBookEntryImpl.setName(name);
 		}
 
+		if (styleBookEntryKey == null) {
+			styleBookEntryImpl.setStyleBookEntryKey("");
+		}
+		else {
+			styleBookEntryImpl.setStyleBookEntryKey(styleBookEntryKey);
+		}
+
+		styleBookEntryImpl.setPreviewFileEntryId(previewFileEntryId);
+
 		styleBookEntryImpl.resetOriginalValues();
 
 		return styleBookEntryImpl;
@@ -155,6 +168,9 @@ public class StyleBookEntryCacheModel
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		name = objectInput.readUTF();
+		styleBookEntryKey = objectInput.readUTF();
+
+		previewFileEntryId = objectInput.readLong();
 	}
 
 	@Override
@@ -186,6 +202,15 @@ public class StyleBookEntryCacheModel
 		else {
 			objectOutput.writeUTF(name);
 		}
+
+		if (styleBookEntryKey == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(styleBookEntryKey);
+		}
+
+		objectOutput.writeLong(previewFileEntryId);
 	}
 
 	public long mvccVersion;
@@ -197,5 +222,7 @@ public class StyleBookEntryCacheModel
 	public String userName;
 	public long createDate;
 	public String name;
+	public String styleBookEntryKey;
+	public long previewFileEntryId;
 
 }
