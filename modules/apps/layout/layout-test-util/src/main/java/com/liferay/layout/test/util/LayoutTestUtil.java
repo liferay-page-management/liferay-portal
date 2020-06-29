@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.service.LayoutPrototypeLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutServiceUtil;
 import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.randomizerbumpers.NumericStringRandomizerBumper;
 import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -248,16 +247,10 @@ public class LayoutTestUtil {
 			LocaleUtil.getDefault(), name
 		).build();
 
-		ServiceContext serviceContext =
-			ServiceContextThreadLocal.getServiceContext();
-
-		if (serviceContext == null) {
-			serviceContext = ServiceContextTestUtil.getServiceContext();
-		}
-
 		return LayoutSetPrototypeLocalServiceUtil.addLayoutSetPrototype(
 			TestPropsValues.getUserId(), TestPropsValues.getCompanyId(),
-			nameMap, (Map<Locale, String>)null, true, true, serviceContext);
+			nameMap, (Map<Locale, String>)null, true, true,
+			ServiceContextTestUtil.getServiceContext());
 	}
 
 	public static String addPortletToLayout(Layout layout, String portletId)

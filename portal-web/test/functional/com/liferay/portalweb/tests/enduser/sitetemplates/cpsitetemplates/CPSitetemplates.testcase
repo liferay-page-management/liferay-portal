@@ -103,10 +103,6 @@ definition {
 			disableChanges = "true",
 			siteTemplateName = "Site Template Name");
 
-		SiteTemplates.addSitePageViaSiteTemplateCP(
-			pageName = "Home",
-			siteTemplateName = "Site Template Name");
-
 		GlobalMenu.gotoPortlet(
 			category = "Sites",
 			panel = "Control Panel",
@@ -431,13 +427,6 @@ definition {
 		property portal.acceptance = "true";
 
 		SiteTemplates.addCP(siteTemplateName = "Site Template Name");
-
-		SiteTemplates.addSitePageViaSiteTemplateCP(
-			pageName = "Home",
-			sitePageType = "Content Page",
-			siteTemplateName = "Site Template Name");
-
-		Button.clickPublish();
 
 		GlobalMenu.gotoPortlet(
 			category = "Sites",

@@ -102,10 +102,6 @@ definition {
 		SiteTemplates.addCP(siteTemplateName = "Site Template Name");
 
 		SiteTemplates.addSitePageViaSiteTemplateCP(
-			pageName = "Home",
-			siteTemplateName = "Site Template Name");
-
-		SiteTemplates.addSitePageViaSiteTemplateCP(
 			pageName = "Site Page Name",
 			siteTemplateName = "Site Template Name");
 
@@ -508,10 +504,6 @@ definition {
 		var siteName = TestCase.getSiteName(siteName = "${siteName}");
 
 		SiteTemplates.addCP(siteTemplateName = "Template Site");
-
-		SiteTemplates.addSitePageViaSiteTemplateCP(
-			pageName = "Home",
-			siteTemplateName = "Template Site");
 
 		SiteTemplates.addSitePageViaSiteTemplateCP(
 			pageName = "Page1 Name",
