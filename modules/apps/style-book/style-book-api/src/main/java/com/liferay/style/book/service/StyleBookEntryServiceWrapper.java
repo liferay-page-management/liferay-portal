@@ -15,6 +15,7 @@
 package com.liferay.style.book.service;
 
 import com.liferay.portal.kernel.service.ServiceWrapper;
+import com.liferay.style.book.model.StyleBookEntry;
 
 /**
  * Provides a wrapper for {@link StyleBookEntryService}.
@@ -32,6 +33,30 @@ public class StyleBookEntryServiceWrapper
 		_styleBookEntryService = styleBookEntryService;
 	}
 
+	@Override
+	public StyleBookEntry addStyleBookEntry(
+			long groupId, String name, String styleBookEntryKey,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _styleBookEntryService.addStyleBookEntry(
+			groupId, name, styleBookEntryKey, serviceContext);
+	}
+
+	@Override
+	public StyleBookEntry deleteStyleBookEntry(long styleBookEntryId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _styleBookEntryService.deleteStyleBookEntry(styleBookEntryId);
+	}
+
+	@Override
+	public StyleBookEntry deleteStyleBookEntry(StyleBookEntry styleBookEntry)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _styleBookEntryService.deleteStyleBookEntry(styleBookEntry);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -40,6 +65,24 @@ public class StyleBookEntryServiceWrapper
 	@Override
 	public String getOSGiServiceIdentifier() {
 		return _styleBookEntryService.getOSGiServiceIdentifier();
+	}
+
+	@Override
+	public StyleBookEntry updateStyleBookEntry(
+			long styleBookEntryId, long previewFileEntryId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _styleBookEntryService.updateStyleBookEntry(
+			styleBookEntryId, previewFileEntryId);
+	}
+
+	@Override
+	public StyleBookEntry updateStyleBookEntry(
+			long styleBookEntryId, String name)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _styleBookEntryService.updateStyleBookEntry(
+			styleBookEntryId, name);
 	}
 
 	@Override
