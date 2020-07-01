@@ -19,6 +19,7 @@ import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.ModelWrapper;
 import com.liferay.portal.kernel.model.User;
@@ -30,6 +31,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.model.StyleBookEntryModel;
+import com.liferay.style.book.model.StyleBookEntrySoap;
 
 import java.io.Serializable;
 
@@ -38,10 +40,12 @@ import java.lang.reflect.InvocationHandler;
 
 import java.sql.Types;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -57,6 +61,7 @@ import java.util.function.Function;
  * @see StyleBookEntryImpl
  * @generated
  */
+@JSON(strict = true)
 public class StyleBookEntryModelImpl
 	extends BaseModelImpl<StyleBookEntry> implements StyleBookEntryModel {
 
@@ -130,6 +135,57 @@ public class StyleBookEntryModelImpl
 	 */
 	@Deprecated
 	public static void setFinderCacheEnabled(boolean finderCacheEnabled) {
+	}
+
+	/**
+	 * Converts the soap model instance into a normal model instance.
+	 *
+	 * @param soapModel the soap model instance to convert
+	 * @return the normal model instance
+	 */
+	public static StyleBookEntry toModel(StyleBookEntrySoap soapModel) {
+		if (soapModel == null) {
+			return null;
+		}
+
+		StyleBookEntry model = new StyleBookEntryImpl();
+
+		model.setMvccVersion(soapModel.getMvccVersion());
+		model.setCtCollectionId(soapModel.getCtCollectionId());
+		model.setStyleBookEntryId(soapModel.getStyleBookEntryId());
+		model.setGroupId(soapModel.getGroupId());
+		model.setCompanyId(soapModel.getCompanyId());
+		model.setUserId(soapModel.getUserId());
+		model.setUserName(soapModel.getUserName());
+		model.setCreateDate(soapModel.getCreateDate());
+		model.setName(soapModel.getName());
+		model.setStyleBookEntryKey(soapModel.getStyleBookEntryKey());
+		model.setPreviewFileEntryId(soapModel.getPreviewFileEntryId());
+
+		return model;
+	}
+
+	/**
+	 * Converts the soap model instances into normal model instances.
+	 *
+	 * @param soapModels the soap model instances to convert
+	 * @return the normal model instances
+	 */
+	public static List<StyleBookEntry> toModels(
+		StyleBookEntrySoap[] soapModels) {
+
+		if (soapModels == null) {
+			return null;
+		}
+
+		List<StyleBookEntry> models = new ArrayList<StyleBookEntry>(
+			soapModels.length);
+
+		for (StyleBookEntrySoap soapModel : soapModels) {
+			models.add(toModel(soapModel));
+		}
+
+		return models;
 	}
 
 	public StyleBookEntryModelImpl() {
@@ -317,6 +373,7 @@ public class StyleBookEntryModelImpl
 			(Map)attributeSetterBiConsumers);
 	}
 
+	@JSON
 	@Override
 	public long getMvccVersion() {
 		return _mvccVersion;
@@ -327,6 +384,7 @@ public class StyleBookEntryModelImpl
 		_mvccVersion = mvccVersion;
 	}
 
+	@JSON
 	@Override
 	public long getCtCollectionId() {
 		return _ctCollectionId;
@@ -337,6 +395,7 @@ public class StyleBookEntryModelImpl
 		_ctCollectionId = ctCollectionId;
 	}
 
+	@JSON
 	@Override
 	public long getStyleBookEntryId() {
 		return _styleBookEntryId;
@@ -347,6 +406,7 @@ public class StyleBookEntryModelImpl
 		_styleBookEntryId = styleBookEntryId;
 	}
 
+	@JSON
 	@Override
 	public long getGroupId() {
 		return _groupId;
@@ -369,6 +429,7 @@ public class StyleBookEntryModelImpl
 		return _originalGroupId;
 	}
 
+	@JSON
 	@Override
 	public long getCompanyId() {
 		return _companyId;
@@ -379,6 +440,7 @@ public class StyleBookEntryModelImpl
 		_companyId = companyId;
 	}
 
+	@JSON
 	@Override
 	public long getUserId() {
 		return _userId;
@@ -405,6 +467,7 @@ public class StyleBookEntryModelImpl
 	public void setUserUuid(String userUuid) {
 	}
 
+	@JSON
 	@Override
 	public String getUserName() {
 		if (_userName == null) {
@@ -420,6 +483,7 @@ public class StyleBookEntryModelImpl
 		_userName = userName;
 	}
 
+	@JSON
 	@Override
 	public Date getCreateDate() {
 		return _createDate;
@@ -432,6 +496,7 @@ public class StyleBookEntryModelImpl
 		_createDate = createDate;
 	}
 
+	@JSON
 	@Override
 	public String getName() {
 		if (_name == null) {
@@ -457,6 +522,7 @@ public class StyleBookEntryModelImpl
 		return GetterUtil.getString(_originalName);
 	}
 
+	@JSON
 	@Override
 	public String getStyleBookEntryKey() {
 		if (_styleBookEntryKey == null) {
@@ -482,6 +548,7 @@ public class StyleBookEntryModelImpl
 		return GetterUtil.getString(_originalStyleBookEntryKey);
 	}
 
+	@JSON
 	@Override
 	public long getPreviewFileEntryId() {
 		return _previewFileEntryId;
