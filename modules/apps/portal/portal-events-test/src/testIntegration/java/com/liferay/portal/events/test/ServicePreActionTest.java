@@ -30,6 +30,8 @@ import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -111,6 +113,36 @@ public class ServicePreActionTest {
 		Assert.assertEquals(layout.getPlid(), plid);
 
 		Assert.assertEquals(layouts.toString(), 1, layouts.size());
+	}
+
+	@Test
+	public void testInitServiceContextScopeGroupId() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		Assert.assertNotNull(serviceContext);
+		Assert.assertNotEquals(
+			_group.getGroupId(), serviceContext.getScopeGroupId());
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)_request.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		Assert.assertNull(themeDisplay);
+
+		_servicePreAction.servicePre(_request, _response, false);
+
+		themeDisplay = (ThemeDisplay)_request.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		Assert.assertNotNull(themeDisplay);
+		Assert.assertEquals(
+			_group.getGroupId(), themeDisplay.getScopeGroupId());
+
+		serviceContext = ServiceContextThreadLocal.getServiceContext();
+
+		Assert.assertNotNull(serviceContext);
+		Assert.assertEquals(
+			_group.getGroupId(), serviceContext.getScopeGroupId());
 	}
 
 	@Test
