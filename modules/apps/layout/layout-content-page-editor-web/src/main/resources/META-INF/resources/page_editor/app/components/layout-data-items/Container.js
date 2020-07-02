@@ -130,15 +130,19 @@ const Container = React.forwardRef(
 			</div>
 		);
 
-		return link ? (
-			<a {...data} href={link.href} target={link.target}>
-				{content}
-			</a>
-		) : (
-			content
-		);
-	}
-);
+	return link ? (
+		<a
+			{...data}
+			href={link.href}
+			style={{color: 'inherit', textDecoration: 'none'}}
+			target={link.target}
+		>
+			{content}
+		</a>
+	) : (
+		content
+	);
+});
 
 Container.displayName = 'Container';
 
