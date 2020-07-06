@@ -32,8 +32,6 @@ public class JustifyConverter {
 		).put(
 			"End", "justify-content-end"
 		).put(
-			"None", StringPool.BLANK
-		).put(
 			"SpaceAround", "justify-content-around"
 		).put(
 			"SpaceBetween", "justify-content-between"

@@ -32,8 +32,6 @@ public class BorderRadiusConverter {
 		).put(
 			"Large", "rounded-lg"
 		).put(
-			"None", StringPool.BLANK
-		).put(
 			"Pill", "rounded-pill"
 		).put(
 			"Regular", "rounded"

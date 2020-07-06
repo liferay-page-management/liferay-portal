@@ -32,8 +32,6 @@ public class AlignConverter {
 		).put(
 			"End", "align-items-end"
 		).put(
-			"None", StringPool.BLANK
-		).put(
 			"Start", "align-items-start"
 		).put(
 			"Stretch", "align-items-stretch"
