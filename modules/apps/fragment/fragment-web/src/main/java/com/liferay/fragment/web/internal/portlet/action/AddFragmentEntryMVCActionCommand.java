@@ -89,10 +89,10 @@ public class AddFragmentEntryMVCActionCommand extends BaseMVCActionCommand {
 			htmlSB.append(fragmentEntry.getFragmentEntryId());
 			htmlSB.append("\">\n</div>");
 
-			fragmentEntry = _fragmentEntryService.updateFragmentEntry(
-				fragmentEntry.getFragmentEntryId(), fragmentEntry.getName(),
-				cssSB.toString(), htmlSB.toString(), StringPool.BLANK,
-				StringPool.BLANK, WorkflowConstants.STATUS_DRAFT);
+			fragmentEntry.setCss(cssSB.toString());
+			fragmentEntry.setHtml(htmlSB.toString());
+
+			fragmentEntry = _fragmentEntryService.updateDraft(fragmentEntry);
 
 			JSONObject jsonObject = JSONUtil.put(
 				"redirectURL", getRedirectURL(actionResponse, fragmentEntry));
