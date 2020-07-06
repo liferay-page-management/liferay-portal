@@ -639,7 +639,7 @@ public class FragmentEntryLocalServiceImpl
 		fragmentEntry.setStatusByUserName(user.getFullName());
 		fragmentEntry.setStatusDate(new Date());
 
-		fragmentEntry = getDraft(fragmentEntry);
+		fragmentEntry = updateDraft(fragmentEntry);
 
 		if (status == WorkflowConstants.STATUS_APPROVED) {
 			fragmentEntry = publishDraft(fragmentEntry);
