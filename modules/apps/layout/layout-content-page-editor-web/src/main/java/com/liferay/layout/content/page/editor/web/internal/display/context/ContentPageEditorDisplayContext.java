@@ -1619,7 +1619,7 @@ public class ContentPageEditorDisplayContext {
 		return PortletIdCodec.decodePortletName(id.substring(8));
 	}
 
-	private List<HashMap<String, Object>> _getPortlets(
+	private List<Map<String, Object>> _getPortlets(
 		PortletCategory portletCategory) {
 
 		Set<String> portletIds = portletCategory.getPortletIds();
