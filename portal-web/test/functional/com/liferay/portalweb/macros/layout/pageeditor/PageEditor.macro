@@ -1056,7 +1056,7 @@ definition {
 
 		if (isSet(columnCount)) {
 			Select(
-				key_fieldLabel = "Number of Columns",
+				key_fieldLabel = "Number of Modules",
 				locator1 = "Select#GENERIC_SELECT_FIELD",
 				value1 = "${columnCount}");
 
