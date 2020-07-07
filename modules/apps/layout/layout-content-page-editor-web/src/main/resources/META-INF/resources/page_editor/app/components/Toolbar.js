@@ -14,7 +14,6 @@
 
 import {ClayButtonWithIcon, default as ClayButton} from '@clayui/button';
 import {useModal} from '@clayui/modal';
-import classNames from 'classnames';
 import {useIsMounted} from 'frontend-js-react-web';
 import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
@@ -179,12 +178,7 @@ function ToolbarBody() {
 			onClick={deselectItem}
 			ref={dropClearRef}
 		>
-			<ul
-				className={classNames('navbar-nav', {
-					'responsive-mode': config.responsiveEnabled,
-				})}
-				onClick={deselectItem}
-			>
+			<ul className="navbar-nav responsive-mode" onClick={deselectItem}>
 				{config.toolbarPlugins.map(
 					({loadingPlaceholder, pluginEntryPoint}) => {
 						return (
@@ -217,16 +211,14 @@ function ToolbarBody() {
 						segmentsExperienceId={segmentsExperienceId}
 					/>
 				</li>
-				{config.responsiveEnabled && (
-					<li className="nav-item">
-						<ViewportSizeSelector
-							onSizeSelected={(size) =>
-								dispatch(Actions.switchViewportSize({size}))
-							}
-							selectedSize={selectedViewportSize}
-						/>
-					</li>
-				)}
+				<li className="nav-item">
+					<ViewportSizeSelector
+						onSizeSelected={(size) =>
+							dispatch(Actions.switchViewportSize({size}))
+						}
+						selectedSize={selectedViewportSize}
+					/>
+				</li>
 				{!config.singleSegmentsExperienceMode &&
 					segmentsExperimentStatus && (
 						<li className="nav-item pl-2">
