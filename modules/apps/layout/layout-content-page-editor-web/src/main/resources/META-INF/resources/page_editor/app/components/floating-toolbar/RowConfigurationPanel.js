@@ -18,7 +18,6 @@ import React from 'react';
 
 import {getLayoutDataItemPropTypes} from '../../../prop-types/index';
 import {VIEWPORT_SIZES} from '../../config/constants/viewportSizes';
-import {config} from '../../config/index';
 import selectSegmentsExperienceId from '../../selectors/selectSegmentsExperienceId';
 import {useDispatch, useSelector} from '../../store/index';
 import updateItemConfig from '../../thunks/updateItemConfig';
