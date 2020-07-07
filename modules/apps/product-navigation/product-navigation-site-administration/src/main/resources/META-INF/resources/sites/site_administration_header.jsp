@@ -35,10 +35,6 @@ portletURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 	<c:when test="<%= group != null %>">
 		<c:choose>
 			<c:when test="<%= childPanelCategoriesSize > 1 %>">
-				<c:if test="<%= (group.getType() != GroupConstants.TYPE_DEPOT) && !group.isCompany() %>">
-					<%@ include file="/sites/site_administration_header_icon_pages_tree.jspf" %>
-				</c:if>
-
 				<%@ include file="/sites/site_administration_header_icon_sites.jspf" %>
 
 				<a aria-controls="<portlet:namespace /><%= AUIUtil.normalizeId(panelCategory.getKey()) %>Collapse" aria-expanded="<%= siteAdministrationPanelCategoryDisplayContext.isCollapsedPanel() %>" class="panel-toggler <%= (group != null) ? "collapse-icon collapse-icon-middle " : StringPool.BLANK %> <%= siteAdministrationPanelCategoryDisplayContext.isCollapsedPanel() ? StringPool.BLANK : "collapsed" %> site-administration-toggler" data-parent="#<portlet:namespace />Accordion" data-qa-id="productMenuSiteAdministrationPanelCategory" data-toggle="liferay-collapse" href="#<portlet:namespace /><%= AUIUtil.normalizeId(panelCategory.getKey()) %>Collapse" id="<portlet:namespace /><%= AUIUtil.normalizeId(panelCategory.getKey()) %>Toggler" <%= (group != null) ? "role=\"button\"" : StringPool.BLANK %>>
