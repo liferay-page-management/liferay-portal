@@ -244,7 +244,7 @@
 </tr>
 <tr>
 	<td>FRAGMENT_HEADER_ELLIPSIS</td>
-	<td>//li[contains(@class,'topper__title') and contains(.,'${key_fragmentName}')]/following-sibling::li//button[contains(@class,'dropdown-toggle')]</td>
+	<td>//li[contains(@class,'topper__title') and contains(.,'${key_fragmentName}')]/following-sibling::li//button[@title='Options']</td>
 	<td></td>
 </tr>
 <tr>
