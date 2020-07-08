@@ -21,6 +21,7 @@ import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -30,6 +31,7 @@ import javax.portlet.PortletURL;
 import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Jürgen Kappler
@@ -74,6 +76,10 @@ public class AssetInfoEditURLProviderImpl implements AssetInfoEditURLProvider {
 				redirect = themeDisplay.getURLCurrent();
 			}
 
+			redirect = _http.addParameter(
+				redirect, "portletResource",
+				assetRendererFactory.getPortletId());
+
 			PortletURL editAssetEntryURL = assetRenderer.getURLEdit(
 				httpServletRequest, LiferayWindowState.NORMAL, redirect);
 
@@ -91,5 +97,8 @@ public class AssetInfoEditURLProviderImpl implements AssetInfoEditURLProvider {
 
 		return StringPool.BLANK;
 	}
+
+	@Reference
+	private Http _http;
 
 }
