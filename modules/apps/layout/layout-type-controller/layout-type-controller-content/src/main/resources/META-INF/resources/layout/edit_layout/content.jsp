@@ -22,6 +22,14 @@
 
 <liferay-ui:success key="layoutPublished" message="the-page-was-published-succesfully" />
 
+<%
+String portletResource = ParamUtil.getString(request, "portletResource");
+%>
+
+<c:if test="<%= Validator.isNotNull(portletResource) %>">
+	<liferay-ui:success key='<%= portletResource + "requestProcessed" %>' message="your-request-completed-successfully" />
+</c:if>
+
 <div class="layout-content portlet-layout" id="main-content" role="main">
 	<liferay-portlet:runtime
 		portletName="<%= ContentPageEditorPortletKeys.CONTENT_PAGE_EDITOR_PORTLET %>"
