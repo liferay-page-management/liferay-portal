@@ -1057,9 +1057,7 @@ definition {
 		}
 
 		if ("${panel}" == "Configuration") {
-			Click(
-				key_elementType = "Row",
-				locator1 = "PageEditor#FRAGMENT_BODY_TOOLBAR_CONFIGURATION_BUTTON");
+			Click(locator1 = "PageEditor#FRAGMENT_BODY_TOOLBAR_CONFIGURATION_BUTTON");
 
 			if (isSet(columnCount)) {
 				Select(
@@ -1087,9 +1085,7 @@ definition {
 			}
 		}
 		else if ("${panel}" == "Styles") {
-			Click(
-				key_elementType = "Row",
-				locator1 = "PageEditor#FRAGMENT_BODY_TOOLBAR_STYLE_BUTTON");
+			Click(locator1 = "PageEditor#FRAGMENT_BODY_TOOLBAR_STYLE_BUTTON");
 		}
 
 		PageEditor.waitForAutoSave();
