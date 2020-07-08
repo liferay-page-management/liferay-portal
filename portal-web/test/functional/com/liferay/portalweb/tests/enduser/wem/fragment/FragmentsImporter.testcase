@@ -637,7 +637,7 @@ definition {
 				key_fragmentName = "Heading",
 				key_position = "1",
 				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT",
-				locator2 = "PageEditor#ROW_COLUMN",
+				locator2 = "PageEditor#GRID_COLUMN",
 				value1 = "");
 
 			Pause(locator1 = "5000");
@@ -646,7 +646,7 @@ definition {
 				key_columnNumber = "1",
 				key_elementHeader = "//div[contains(@class,'page-editor')]//li[contains(.,'Heading')]",
 				key_position = "1",
-				locator1 = "PageEditor#ROW_COLUMN_NESTED_ELEMENT");
+				locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
 		}
 
 		task ("Edit inline content of Heading") {
@@ -667,7 +667,7 @@ definition {
 				key_fragmentName = "Image",
 				key_position = "1",
 				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT",
-				locator2 = "PageEditor#ROW_COLUMN",
+				locator2 = "PageEditor#GRID_COLUMN",
 				value1 = "");
 
 			PageEditor.waitForAutoSave();
@@ -676,7 +676,7 @@ definition {
 				key_columnNumber = "2",
 				key_elementHeader = "//div[contains(@class,'page-editor')]//li[contains(.,'Image')]",
 				key_position = "1",
-				locator1 = "PageEditor#ROW_COLUMN_NESTED_ELEMENT");
+				locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
 		}
 
 		PageEditor.editFragmentImage(
@@ -694,7 +694,7 @@ definition {
 				key_fragmentName = "HTML",
 				key_position = "1",
 				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT",
-				locator2 = "PageEditor#ROW_COLUMN",
+				locator2 = "PageEditor#GRID_COLUMN",
 				value1 = "");
 
 			PageEditor.waitForAutoSave();
@@ -703,7 +703,7 @@ definition {
 				key_columnNumber = "3",
 				key_elementHeader = "//div[contains(@class,'page-editor')]//li[contains(.,'HTML')]",
 				key_position = "1",
-				locator1 = "PageEditor#ROW_COLUMN_NESTED_ELEMENT");
+				locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
 		}
 
 		PageEditor.editFragmentHTML(
@@ -760,7 +760,7 @@ definition {
 			key_columnNumber = "1",
 			key_elementHeader = "/div[contains(@class,'page-editor__topper')][1]//h1[contains(.,'Heading Example')]",
 			key_position = "1",
-			locator1 = "PageEditor#ROW_COLUMN_NESTED_ELEMENT");
+			locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
 
 		PageEditor.clickEditableField(
 			contributed = "true",
@@ -771,7 +771,7 @@ definition {
 			key_columnNumber = "2",
 			key_elementHeader = "//div[contains(@class,'page-editor')]//img[contains(@src,'Document_1.png')]",
 			key_position = "1",
-			locator1 = "PageEditor#ROW_COLUMN_NESTED_ELEMENT");
+			locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
 
 		PageEditor.clickEditableField(
 			contributed = "true",
@@ -782,7 +782,7 @@ definition {
 			key_columnNumber = "3",
 			key_elementHeader = "//div[contains(@class,'page-editor')]//h1[contains(.,'HTML Example')]",
 			key_position = "1",
-			locator1 = "PageEditor#ROW_COLUMN_NESTED_ELEMENT");
+			locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
 	}
 
 	@description = "This is a test for LPS-101255. The edited inline contents will be reset to default value when save a composition of fragments without Save Inline Content."
@@ -816,7 +816,7 @@ definition {
 				key_fragmentName = "Heading",
 				key_position = "1",
 				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT",
-				locator2 = "PageEditor#ROW_COLUMN",
+				locator2 = "PageEditor#GRID_COLUMN",
 				value1 = "");
 
 			Pause(locator1 = "5000");
@@ -825,7 +825,7 @@ definition {
 				key_columnNumber = "1",
 				key_elementHeader = "//div[contains(@class,'page-editor')]//li[contains(.,'Heading')]",
 				key_position = "1",
-				locator1 = "PageEditor#ROW_COLUMN_NESTED_ELEMENT");
+				locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
 		}
 
 		task ("Edit inline content of Heading") {
@@ -846,7 +846,7 @@ definition {
 				key_fragmentName = "Image",
 				key_position = "1",
 				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT",
-				locator2 = "PageEditor#ROW_COLUMN",
+				locator2 = "PageEditor#GRID_COLUMN",
 				value1 = "");
 
 			PageEditor.waitForAutoSave();
@@ -855,7 +855,7 @@ definition {
 				key_columnNumber = "2",
 				key_elementHeader = "//div[contains(@class,'page-editor')]//li[contains(.,'Image')]",
 				key_position = "1",
-				locator1 = "PageEditor#ROW_COLUMN_NESTED_ELEMENT");
+				locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
 		}
 
 		PageEditor.editFragmentImage(
@@ -873,7 +873,7 @@ definition {
 				key_fragmentName = "HTML",
 				key_position = "1",
 				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT",
-				locator2 = "PageEditor#ROW_COLUMN",
+				locator2 = "PageEditor#GRID_COLUMN",
 				value1 = "");
 
 			PageEditor.waitForAutoSave();
@@ -882,7 +882,7 @@ definition {
 				key_columnNumber = "3",
 				key_elementHeader = "//div[contains(@class,'page-editor')]//li[contains(.,'HTML')]",
 				key_position = "1",
-				locator1 = "PageEditor#ROW_COLUMN_NESTED_ELEMENT");
+				locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
 		}
 
 		PageEditor.editFragmentHTML(
@@ -941,7 +941,7 @@ definition {
 			key_columnNumber = "1",
 			key_elementHeader = "/div[contains(@class,'page-editor__topper')][1]//h1[contains(.,'New editable fragment text')]",
 			key_position = "1",
-			locator1 = "PageEditor#ROW_COLUMN_NESTED_ELEMENT");
+			locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
 
 		PageEditor.clickEditableField(
 			contributed = "true",
@@ -952,7 +952,7 @@ definition {
 			key_columnNumber = "2",
 			key_elementHeader = "//div[contains(@class,'page-editor')]//img[contains(@src,'Document_1.png')]",
 			key_position = "1",
-			locator1 = "PageEditor#ROW_COLUMN_NESTED_ELEMENT");
+			locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
 
 		PageEditor.clickEditableField(
 			contributed = "true",
@@ -963,7 +963,7 @@ definition {
 			key_columnNumber = "3",
 			key_elementHeader = "//div[contains(@class,'page-editor')]//*[contains(.,'Basic Text')]",
 			key_position = "1",
-			locator1 = "PageEditor#ROW_COLUMN_NESTED_ELEMENT");
+			locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
 	}
 
 	@description = "This is a test case for LPS-101256. Can duplicate fragment in layout elements in composition."
