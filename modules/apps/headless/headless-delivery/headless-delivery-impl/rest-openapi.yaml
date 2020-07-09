@@ -2138,6 +2138,8 @@ components:
                                 - $ref: "#/components/schemas/FragmentInlineValue"
                                 - $ref: "#/components/schemas/FragmentMappedValue"
                     type: object
+                backgroundFragmentImage:
+                    $ref: "#/components/schemas/FragmentImage"
                 fragmentLink:
                     $ref: "#/components/schemas/FragmentLink"
                 layout:
