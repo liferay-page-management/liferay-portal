@@ -42,63 +42,31 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @generated
  */
 @Generated("")
-@GraphQLName("PageSectionDefinition")
+@GraphQLName("BackgroundImage")
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "PageSectionDefinition")
-public class PageSectionDefinition {
+@XmlRootElement(name = "BackgroundImage")
+public class BackgroundImage {
 
-	public static PageSectionDefinition toDTO(String json) {
-		return ObjectMapperUtil.readValue(PageSectionDefinition.class, json);
+	public static BackgroundImage toDTO(String json) {
+		return ObjectMapperUtil.readValue(BackgroundImage.class, json);
 	}
-
-	@Schema
-	public String getBackgroundColor() {
-		return backgroundColor;
-	}
-
-	public void setBackgroundColor(String backgroundColor) {
-		this.backgroundColor = backgroundColor;
-	}
-
-	@JsonIgnore
-	public void setBackgroundColor(
-		UnsafeSupplier<String, Exception> backgroundColorUnsafeSupplier) {
-
-		try {
-			backgroundColor = backgroundColorUnsafeSupplier.get();
-		}
-		catch (RuntimeException re) {
-			throw re;
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String backgroundColor;
 
 	@Schema
 	@Valid
-	public FragmentImage getBackgroundFragmentImage() {
-		return backgroundFragmentImage;
+	public Object getDescription() {
+		return description;
 	}
 
-	public void setBackgroundFragmentImage(
-		FragmentImage backgroundFragmentImage) {
-
-		this.backgroundFragmentImage = backgroundFragmentImage;
+	public void setDescription(Object description) {
+		this.description = description;
 	}
 
 	@JsonIgnore
-	public void setBackgroundFragmentImage(
-		UnsafeSupplier<FragmentImage, Exception>
-			backgroundFragmentImageUnsafeSupplier) {
+	public void setDescription(
+		UnsafeSupplier<Object, Exception> descriptionUnsafeSupplier) {
 
 		try {
-			backgroundFragmentImage =
-				backgroundFragmentImageUnsafeSupplier.get();
+			description = descriptionUnsafeSupplier.get();
 		}
 		catch (RuntimeException re) {
 			throw re;
@@ -110,25 +78,24 @@ public class PageSectionDefinition {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected FragmentImage backgroundFragmentImage;
+	protected Object description;
 
 	@Schema
 	@Valid
-	public BackgroundImage getBackgroundImage() {
-		return backgroundImage;
+	public Object getTitle() {
+		return title;
 	}
 
-	public void setBackgroundImage(BackgroundImage backgroundImage) {
-		this.backgroundImage = backgroundImage;
+	public void setTitle(Object title) {
+		this.title = title;
 	}
 
 	@JsonIgnore
-	public void setBackgroundImage(
-		UnsafeSupplier<BackgroundImage, Exception>
-			backgroundImageUnsafeSupplier) {
+	public void setTitle(
+		UnsafeSupplier<Object, Exception> titleUnsafeSupplier) {
 
 		try {
-			backgroundImage = backgroundImageUnsafeSupplier.get();
+			title = titleUnsafeSupplier.get();
 		}
 		catch (RuntimeException re) {
 			throw re;
@@ -138,27 +105,24 @@ public class PageSectionDefinition {
 		}
 	}
 
-	@Deprecated
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected BackgroundImage backgroundImage;
+	protected Object title;
 
 	@Schema
 	@Valid
-	public FragmentLink getFragmentLink() {
-		return fragmentLink;
+	public Object getUrl() {
+		return url;
 	}
 
-	public void setFragmentLink(FragmentLink fragmentLink) {
-		this.fragmentLink = fragmentLink;
+	public void setUrl(Object url) {
+		this.url = url;
 	}
 
 	@JsonIgnore
-	public void setFragmentLink(
-		UnsafeSupplier<FragmentLink, Exception> fragmentLinkUnsafeSupplier) {
-
+	public void setUrl(UnsafeSupplier<Object, Exception> urlUnsafeSupplier) {
 		try {
-			fragmentLink = fragmentLinkUnsafeSupplier.get();
+			url = urlUnsafeSupplier.get();
 		}
 		catch (RuntimeException re) {
 			throw re;
@@ -170,36 +134,7 @@ public class PageSectionDefinition {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected FragmentLink fragmentLink;
-
-	@Schema
-	@Valid
-	public Layout getLayout() {
-		return layout;
-	}
-
-	public void setLayout(Layout layout) {
-		this.layout = layout;
-	}
-
-	@JsonIgnore
-	public void setLayout(
-		UnsafeSupplier<Layout, Exception> layoutUnsafeSupplier) {
-
-		try {
-			layout = layoutUnsafeSupplier.get();
-		}
-		catch (RuntimeException re) {
-			throw re;
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Layout layout;
+	protected Object url;
 
 	@Override
 	public boolean equals(Object object) {
@@ -207,14 +142,13 @@ public class PageSectionDefinition {
 			return true;
 		}
 
-		if (!(object instanceof PageSectionDefinition)) {
+		if (!(object instanceof BackgroundImage)) {
 			return false;
 		}
 
-		PageSectionDefinition pageSectionDefinition =
-			(PageSectionDefinition)object;
+		BackgroundImage backgroundImage = (BackgroundImage)object;
 
-		return Objects.equals(toString(), pageSectionDefinition.toString());
+		return Objects.equals(toString(), backgroundImage.toString());
 	}
 
 	@Override
@@ -229,58 +163,34 @@ public class PageSectionDefinition {
 
 		sb.append("{");
 
-		if (backgroundColor != null) {
+		if (description != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"backgroundColor\": ");
+			sb.append("\"description\": ");
 
-			sb.append("\"");
-
-			sb.append(_escape(backgroundColor));
-
-			sb.append("\"");
+			sb.append(String.valueOf(description));
 		}
 
-		if (backgroundFragmentImage != null) {
+		if (title != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"backgroundFragmentImage\": ");
+			sb.append("\"title\": ");
 
-			sb.append(String.valueOf(backgroundFragmentImage));
+			sb.append(String.valueOf(title));
 		}
 
-		if (backgroundImage != null) {
+		if (url != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"backgroundImage\": ");
+			sb.append("\"url\": ");
 
-			sb.append(String.valueOf(backgroundImage));
-		}
-
-		if (fragmentLink != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"fragmentLink\": ");
-
-			sb.append(String.valueOf(fragmentLink));
-		}
-
-		if (layout != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"layout\": ");
-
-			sb.append(String.valueOf(layout));
+			sb.append(String.valueOf(url));
 		}
 
 		sb.append("}");
@@ -289,7 +199,7 @@ public class PageSectionDefinition {
 	}
 
 	@Schema(
-		defaultValue = "com.liferay.headless.delivery.dto.v1_0.PageSectionDefinition",
+		defaultValue = "com.liferay.headless.delivery.dto.v1_0.BackgroundImage",
 		name = "x-class-name"
 	)
 	public String xClassName;
