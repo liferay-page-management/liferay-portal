@@ -87,28 +87,26 @@ export const ContainerStylesPanel = ({item}) => {
 					<p>{Liferay.Language.get('styles')}</p>
 				</div>
 
-				{config.containerItemEnabled && (
-					<SelectField
-						field={{
-							label: Liferay.Language.get('content-display'),
-							name: 'contentDisplay',
-							typeOptions: {
-								validValues: [
-									{
-										label: Liferay.Language.get('block'),
-										value: 'block',
-									},
-									{
-										label: Liferay.Language.get('flex'),
-										value: 'flex',
-									},
-								],
-							},
-						}}
-						onValueSelect={handleValueSelect}
-						value={item.config.contentDisplay}
-					/>
-				)}
+				<SelectField
+					field={{
+						label: Liferay.Language.get('content-display'),
+						name: 'contentDisplay',
+						typeOptions: {
+							validValues: [
+								{
+									label: Liferay.Language.get('block'),
+									value: 'block',
+								},
+								{
+									label: Liferay.Language.get('flex'),
+									value: 'flex',
+								},
+							],
+						},
+					}}
+					onValueSelect={handleValueSelect}
+					value={item.config.contentDisplay}
+				/>
 
 				{item.config.contentDisplay === 'flex' && (
 					<FormRow>
