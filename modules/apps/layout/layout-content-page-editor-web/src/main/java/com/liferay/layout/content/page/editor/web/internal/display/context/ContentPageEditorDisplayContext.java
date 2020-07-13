@@ -52,7 +52,6 @@ import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.layout.content.page.editor.sidebar.panel.ContentPageEditorSidebarPanel;
 import com.liferay.layout.content.page.editor.web.internal.comment.CommentUtil;
-import com.liferay.layout.content.page.editor.web.internal.configuration.FFLayoutContentPageEditorConfiguration;
 import com.liferay.layout.content.page.editor.web.internal.configuration.PageEditorConfiguration;
 import com.liferay.layout.content.page.editor.web.internal.constants.ContentPageEditorActionKeys;
 import com.liferay.layout.content.page.editor.web.internal.constants.ContentPageEditorConstants;
@@ -169,8 +168,6 @@ public class ContentPageEditorDisplayContext {
 	public ContentPageEditorDisplayContext(
 		CommentManager commentManager,
 		List<ContentPageEditorSidebarPanel> contentPageEditorSidebarPanels,
-		FFLayoutContentPageEditorConfiguration
-			ffLayoutContentPageEditorConfiguration,
 		FragmentCollectionContributorTracker
 			fragmentCollectionContributorTracker,
 		FragmentEntryConfigurationParser fragmentEntryConfigurationParser,
@@ -185,8 +182,6 @@ public class ContentPageEditorDisplayContext {
 
 		_commentManager = commentManager;
 		_contentPageEditorSidebarPanels = contentPageEditorSidebarPanels;
-		_ffLayoutContentPageEditorConfiguration =
-			ffLayoutContentPageEditorConfiguration;
 		_fragmentCollectionContributorTracker =
 			fragmentCollectionContributorTracker;
 		_fragmentEntryConfigurationParser = fragmentEntryConfigurationParser;
@@ -241,9 +236,6 @@ public class ContentPageEditorDisplayContext {
 				"availableViewportSizes", _getAvailableViewportSizes()
 			).put(
 				"collectionSelectorURL", _getCollectionSelectorURL()
-			).put(
-				"containerItemEnabled",
-				_ffLayoutContentPageEditorConfiguration.containerItemEnabled()
 			).put(
 				"defaultEditorConfigurations", _getDefaultConfigurations()
 			).put(
@@ -1934,8 +1926,6 @@ public class ContentPageEditorDisplayContext {
 	private final List<ContentPageEditorSidebarPanel>
 		_contentPageEditorSidebarPanels;
 	private Map<String, Object> _defaultConfigurations;
-	private final FFLayoutContentPageEditorConfiguration
-		_ffLayoutContentPageEditorConfiguration;
 	private final FragmentCollectionContributorTracker
 		_fragmentCollectionContributorTracker;
 	private final FragmentEntryConfigurationParser
