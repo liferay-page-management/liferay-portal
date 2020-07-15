@@ -14,8 +14,8 @@
 
 package com.liferay.journal.internal.exportimport;
 
-import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.cache.PortalCache;
+import com.liferay.portal.kernel.cache.SingleVMPool;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -41,13 +41,14 @@ public class JournalArticleExportImportCache {
 
 	@Activate
 	protected void activate() {
-		_portalCache = (PortalCache<String, String>)_multiVMPool.getPortalCache(
-			JournalArticleExportImportCache.class.getName());
+		_portalCache =
+			(PortalCache<String, String>)_singleVMPool.getPortalCache(
+				JournalArticleExportImportCache.class.getName());
 	}
 
 	private static PortalCache<String, String> _portalCache;
 
 	@Reference
-	private MultiVMPool _multiVMPool;
+	private SingleVMPool _singleVMPool;
 
 }
