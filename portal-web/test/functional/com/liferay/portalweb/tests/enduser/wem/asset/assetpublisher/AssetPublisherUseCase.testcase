@@ -436,12 +436,7 @@ definition {
 			structureDescription = "WC Structure Description",
 			structureName = "WC Structure Name");
 
-		for (var structureFieldName : list "Boolean,Date,Decimal,Documents and Media,HTML,Image,Integer,Link to Page,Number,Radio,Select,Text,Text Box") {
-			DynamicDataMapping.addField(
-				field = "${structureFieldName}",
-				fieldFieldLabel = "${structureFieldName}",
-				fieldName = StringUtil.replace("${structureFieldName}", " ", ""));
-		}
+		DataEngine.addFields(fieldTypeList = "Text,Select from List,Single Selection,Multiple Selection,Grid,Date,Numeric,Rich Text,Upload,Color,Web Content,Link to Page");
 
 		WebContentStructures.saveCP(structureName = "WC Structure Name");
 
@@ -452,8 +447,7 @@ definition {
 		WebContentTemplates.addCP(
 			structureName = "WC Structure Name",
 			templateDescription = "WC Template Description",
-			templateFieldNames = "Boolean,Date,Decimal,Documents and Media,HTML,Image,Integer,Link to Page,Number,Radio,Select,Text,Text Box",
-			templateFile = "simple_all_fields_template.txt",
+			templateFieldNames = "Text,Select from List,Single Selection,Multiple Selection,Grid,Date,Numeric,Rich Text,Upload,Color,Web Content,Link to Page",
 			templateName = "WC Template Name");
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
@@ -463,8 +457,8 @@ definition {
 		WebContent.addWithStructureCP(
 			structureName = "WC Structure Name",
 			templateName = "WC Template Name",
-			webContentInteger = "4",
 			webContentNumber = "123",
+			webContentRichText = "4",
 			webContentTitle = "Web Content1 Title");
 
 		PortletEntry.publish();
@@ -479,10 +473,9 @@ definition {
 
 		WebContent.addCP(webContentTitle = "Netz Inhalt1 Titel");
 
-		Type(
-			key_fieldName = "Integer",
-			locator1 = "TextInput#DDM",
-			value1 = "3");
+		WebContent.addTextToRichText(
+			key_fieldLabel = "Rich Text",
+			webContentRichText = "3");
 
 		PortletEntry.publish();
 
@@ -493,8 +486,8 @@ definition {
 		WebContent.addWithStructureCP(
 			structureName = "WC Structure Name",
 			templateName = "WC Template Name",
-			webContentInteger = "1",
 			webContentNumber = "345",
+			webContentRichText = "1",
 			webContentTitle = "Web Content2 Title");
 
 		PortletEntry.publish();
@@ -509,10 +502,9 @@ definition {
 
 		WebContent.addCP(webContentTitle = "Netz Inhalt2 Titel");
 
-		Type(
-			key_fieldName = "Integer",
-			locator1 = "TextInput#DDM",
-			value1 = "8");
+		WebContent.addTextToRichText(
+			key_fieldLabel = "Rich Text",
+			webContentRichText = "8");
 
 		PortletEntry.publish();
 
@@ -523,8 +515,8 @@ definition {
 		WebContent.addWithStructureCP(
 			structureName = "WC Structure Name",
 			templateName = "WC Template Name",
-			webContentInteger = "5",
 			webContentNumber = "567",
+			webContentRichText = "5",
 			webContentTitle = "Web Content3 Title");
 
 		PortletEntry.publish();
@@ -539,10 +531,9 @@ definition {
 
 		WebContent.addCP(webContentTitle = "Netz Inhalt3 Titel");
 
-		Type(
-			key_fieldName = "Integer",
-			locator1 = "TextInput#DDM",
-			value1 = "5");
+		WebContent.addTextToRichText(
+			key_fieldLabel = "Rich Text",
+			webContentRichText = "5");
 
 		PortletEntry.publish();
 
@@ -573,7 +564,7 @@ definition {
 			siteName = "Test Site Name");
 
 		AssetPublisherPortlet.configureAssetDisplayOrderPG(
-			fieldNameOrder = "Integer",
+			fieldNameOrder = "Rich Text",
 			sortOrder = "Ascending");
 
 		Navigator.gotoSitePage(
@@ -698,7 +689,7 @@ definition {
 
 		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Name");
 
-		for (var structureFieldName : list "Boolean,Date,Decimal,Documents and Media,HTML,Image,Integer,Link to Page,Number,Radio,Select,Text,Text Box") {
+		for (var structureFieldName : list "Text,Select from List,Single Selection,Multiple Selection,Grid,Date,Numeric,Rich Text,Upload,Color,Web Content,Link to Page") {
 			DynamicDataMapping.editFieldIndexable(fieldFieldLabel = "${structureFieldName}");
 		}
 
