@@ -32,7 +32,6 @@ import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.exception.NoSuchArticleException;
-import com.liferay.journal.internal.exportimport.JournalArticleExportImportCache;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.util.JournalConverter;
@@ -108,8 +107,8 @@ public class JournalArticleExportImportContentProcessor
 		sb.append(exportReferencedContent);
 		sb.append(escapeContent);
 
-		String processedContent = _journalArticleExportImportCache.get(
-			sb.toString());
+		String processedContent =
+			_journalArticleExportImportContentProcessorCache.get(sb.toString());
 
 		if (Validator.isNotNull(processedContent)) {
 			return processedContent;
@@ -147,7 +146,8 @@ public class JournalArticleExportImportContentProcessor
 					portletDataContext, stagedModel, content,
 					exportReferencedContent, escapeContent);
 
-		_journalArticleExportImportCache.put(sb.toString(), content);
+		_journalArticleExportImportContentProcessorCache.put(
+			sb.toString(), content);
 
 		return content;
 	}
@@ -652,7 +652,8 @@ public class JournalArticleExportImportContentProcessor
 	private GroupLocalService _groupLocalService;
 
 	@Reference
-	private JournalArticleExportImportCache _journalArticleExportImportCache;
+	private JournalArticleExportImportContentProcessorCache
+		_journalArticleExportImportContentProcessorCache;
 
 	@Reference
 	private JournalArticleLocalService _journalArticleLocalService;

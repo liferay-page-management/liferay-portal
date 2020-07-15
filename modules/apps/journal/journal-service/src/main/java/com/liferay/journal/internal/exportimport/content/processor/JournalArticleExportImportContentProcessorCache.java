@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.journal.internal.exportimport;
+package com.liferay.journal.internal.exportimport.content.processor;
 
 import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.cache.SingleVMPool;
@@ -24,8 +24,11 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Pavel Savinov
  */
-@Component(immediate = true, service = JournalArticleExportImportCache.class)
-public class JournalArticleExportImportCache {
+@Component(
+	immediate = true,
+	service = JournalArticleExportImportContentProcessorCache.class
+)
+public class JournalArticleExportImportContentProcessorCache {
 
 	public void clear() {
 		_portalCache.removeAll();
@@ -43,7 +46,8 @@ public class JournalArticleExportImportCache {
 	protected void activate() {
 		_portalCache =
 			(PortalCache<String, String>)_singleVMPool.getPortalCache(
-				JournalArticleExportImportCache.class.getName());
+				JournalArticleExportImportContentProcessorCache.class.
+					getName());
 	}
 
 	private static PortalCache<String, String> _portalCache;
