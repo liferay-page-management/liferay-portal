@@ -49,15 +49,15 @@ public class AMJournalArticleExportImportContentProcessor
 			boolean escapeContent)
 		throws Exception {
 
-		if (!_hasTextHTMLFields(stagedModel)) {
-			return content;
-		}
-
 		String replacedContent =
 			_journalArticleExportImportContentProcessor.
 				replaceExportContentReferences(
 					portletDataContext, stagedModel, content,
 					exportReferencedContent, escapeContent);
+
+		if (!_hasTextHTMLFields(stagedModel)) {
+			return replacedContent;
+		}
 
 		return _amJournalArticleContentHTMLReplacer.replace(
 			replacedContent,
@@ -74,14 +74,14 @@ public class AMJournalArticleExportImportContentProcessor
 			String content)
 		throws Exception {
 
-		if (!_hasTextHTMLFields(stagedModel)) {
-			return content;
-		}
-
 		String replacedContent =
 			_journalArticleExportImportContentProcessor.
 				replaceImportContentReferences(
 					portletDataContext, stagedModel, content);
+
+		if (!_hasTextHTMLFields(stagedModel)) {
+			return replacedContent;
+		}
 
 		return _amJournalArticleContentHTMLReplacer.replace(
 			replacedContent,
