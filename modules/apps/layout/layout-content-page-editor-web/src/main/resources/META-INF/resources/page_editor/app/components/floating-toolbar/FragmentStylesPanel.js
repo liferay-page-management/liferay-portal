@@ -18,13 +18,17 @@ import React, {useCallback} from 'react';
 import {getLayoutDataItemPropTypes} from '../../../prop-types/index';
 import {FRAGMENT_CONFIGURATION_ROLES} from '../../config/constants/fragmentConfigurationRoles';
 import {FREEMARKER_FRAGMENT_ENTRY_PROCESSOR} from '../../config/constants/freemarkerFragmentEntryProcessor';
+import {config} from '../../config/index';
 import selectSegmentsExperienceId from '../../selectors/selectSegmentsExperienceId';
 import {useDispatch, useSelector} from '../../store/index';
 import updateFragmentConfiguration from '../../thunks/updateFragmentConfiguration';
+import updateItemConfig from '../../thunks/updateItemConfig';
 import {FieldSet} from './FieldSet';
 
 export const FragmentStylesPanel = ({item}) => {
 	const dispatch = useDispatch();
+
+	const {commonStyles} = config;
 
 	const fragmentEntryLink = useSelector(
 		(state) => state.fragmentEntryLinks[item.config.fragmentEntryLinkId]
@@ -54,11 +58,32 @@ export const FragmentStylesPanel = ({item}) => {
 		[dispatch, fragmentEntryLink, segmentsExperienceId]
 	);
 
+	const onCommonStylesValueSelect = (name, value) =>
+		dispatch(
+			updateItemConfig({
+				itemConfig: {
+					styles: {
+						[name]: value,
+					},
+				},
+				itemId: item.itemId,
+				segmentsExperienceId,
+			})
+		);
+
 	return (
-		<CustomStyles
-			fragmentEntryLink={fragmentEntryLink}
-			onValueSelect={onCustomStyleValueSelect}
-		/>
+		<>
+			<CustomStyles
+				fragmentEntryLink={fragmentEntryLink}
+				onValueSelect={onCustomStyleValueSelect}
+			/>
+
+			<CommonStyles
+				commonStyles={commonStyles}
+				item={item}
+				onValueSelect={onCommonStylesValueSelect}
+			/>
+		</>
 	);
 };
 
@@ -97,6 +122,28 @@ const CustomStyles = ({fragmentEntryLink, onValueSelect}) => {
 
 CustomStyles.propTypes = {
 	fragmentEntryLink: PropTypes.object.isRequired,
+	onValueSelect: PropTypes.func.isRequired,
+};
+
+const CommonStyles = ({commonStyles, item, onValueSelect}) => (
+	<div className="page-editor__floating-toolbar__panel__common-styles">
+		{commonStyles.map((fieldSet, index) => {
+			return (
+				<FieldSet
+					configurationValues={item.config.styles}
+					fields={fieldSet.styles}
+					key={index}
+					label={fieldSet.label}
+					onValueSelect={onValueSelect}
+				/>
+			);
+		})}
+	</div>
+);
+
+CommonStyles.propTypes = {
+	fragmentEntryLink: PropTypes.object.isRequired,
+	item: PropTypes.object.isRequired,
 	onValueSelect: PropTypes.func.isRequired,
 };
 
