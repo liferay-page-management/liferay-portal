@@ -39,9 +39,9 @@ export default function App({state}) {
 			<LanguageDirection />
 			<URLParser />
 			<ControlsProvider>
-				<Toolbar />
 				<DragAndDropContextProvider>
 					<DragPreview />
+					<Toolbar />
 					<LayoutViewport />
 					<Sidebar />
 				</DragAndDropContextProvider>
