@@ -16,6 +16,7 @@ import PropTypes from 'prop-types';
 import React, {useEffect} from 'react';
 
 import useAutoExtendSession from '../../core/hooks/useAutoExtendSession';
+import {ItemConfigurationContextProvider} from '../../plugins/page-structure/components/ItemConfigurationContext';
 import {INIT} from '../actions/types';
 import {config} from '../config/index';
 import {reducer} from '../reducers/index';
@@ -41,8 +42,10 @@ export default function App({state}) {
 				<DragAndDropContextProvider>
 					<DragPreview />
 					<Toolbar />
-					<LayoutViewport />
-					<Sidebar />
+					<ItemConfigurationContextProvider>
+						<LayoutViewport />
+						<Sidebar />
+					</ItemConfigurationContextProvider>
 				</DragAndDropContextProvider>
 			</ControlsProvider>
 		</StoreContextProvider>
