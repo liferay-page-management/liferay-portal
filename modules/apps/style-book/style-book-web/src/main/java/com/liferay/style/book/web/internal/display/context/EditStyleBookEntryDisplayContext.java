@@ -136,8 +136,12 @@ public class EditStyleBookEntryDisplayContext {
 			_getStyleBookEntryId());
 
 		if (_styleBookEntry.isHead()) {
-			_styleBookEntry = StyleBookEntryLocalServiceUtil.getDraft(
-				_styleBookEntry);
+			StyleBookEntry draftStyleBookEntry =
+				StyleBookEntryLocalServiceUtil.fetchDraft(_styleBookEntry);
+
+			if (draftStyleBookEntry != null) {
+				_styleBookEntry = draftStyleBookEntry;
+			}
 		}
 
 		return _styleBookEntry;
