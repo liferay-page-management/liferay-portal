@@ -88,35 +88,4 @@ public class LayoutPageTemplateTestUtil {
 				layoutPageTemplateCollectionId, name, type, 0, status,
 				serviceContext);
 	}
-
-	public static LayoutPageTemplateEntry addWidgetLayoutPageTemplateEntry(
-			long layoutPageTemplateCollectionId)
-		throws PortalException {
-
-		return addWidgetLayoutPageTemplateEntry(
-			layoutPageTemplateCollectionId, RandomTestUtil.randomString());
-	}
-
-	public static LayoutPageTemplateEntry addWidgetLayoutPageTemplateEntry(
-			long layoutPageTemplateCollectionId, String name)
-		throws PortalException {
-
-		LayoutPageTemplateCollection layoutPageTemplateCollection =
-			LayoutPageTemplateCollectionLocalServiceUtil.
-				getLayoutPageTemplateCollection(layoutPageTemplateCollectionId);
-
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				layoutPageTemplateCollection.getGroupId(),
-				TestPropsValues.getUserId());
-
-		return LayoutPageTemplateEntryLocalServiceUtil.
-			addLayoutPageTemplateEntry(
-				TestPropsValues.getUserId(),
-				layoutPageTemplateCollection.getGroupId(),
-				layoutPageTemplateCollectionId, name,
-				LayoutPageTemplateEntryTypeConstants.TYPE_WIDGET_PAGE, 0,
-				WorkflowConstants.STATUS_APPROVED, serviceContext);
-	}
-
 }
