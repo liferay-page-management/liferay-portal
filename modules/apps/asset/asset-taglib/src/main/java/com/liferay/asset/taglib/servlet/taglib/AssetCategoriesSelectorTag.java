@@ -318,6 +318,8 @@ public class AssetCategoriesSelectorTag extends IncludeTag {
 					_showRequiredLabel
 				).put(
 					"selectedCategories", selectedCategoryIds
+ 				).put(
+ 					"system", vocabulary.isSystem()
 				).put(
 					"title",
 					vocabulary.getUnambiguousTitle(
