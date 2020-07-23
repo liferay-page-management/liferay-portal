@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Lang Builder
 Bundle-SymbolicName: com.liferay.lang.builder
-Bundle-Version: 1.0.36
+Bundle-Version: 1.0.38
 Import-Package:\
 	!org.apache.maven.plugin.*,\
 	!org.apache.tools.ant.*,\
@@ -24,7 +24,9 @@ Main-Class: com.liferay.lang.builder.LangBuilder
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/io/unsync/UnsyncByteArrayOutputStream.class,\
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/io/unsync/UnsyncStringReader.class,\
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/io/unsync/UnsyncStringWriter.class,\
+	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/language/LanguageBuilderUtil.class,\
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/language/LanguageConstants.class,\
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/language/LanguageValidator.class,\
+	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/language/constants/LanguageConstants.class,\
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/log/*,\
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/util/*

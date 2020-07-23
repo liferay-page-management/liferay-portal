@@ -50,7 +50,7 @@ $navbarHeight: 120px;
 			}
 
 			.arrow-body {
-				align-items: flex-start;
+				align-items: end;
 				display: flex;
 				flex-flow: wrap-reverse;
 				justify-content: center;
@@ -101,13 +101,14 @@ $navbarHeight: 120px;
 		}
 
 		.step-card {
+			align-items: center;
 			background-clip: border-box;
 			background-color: #fff;
 			border: 2px solid #e7e7ed;
 			border-radius: 0.25rem;
 			cursor: pointer;
-			display: block;
-			flex-direction: column;
+			display: flex;
+			justify-content: space-between;
 			margin-bottom: unset;
 			margin-left: 16px;
 			min-width: 0;
@@ -225,10 +226,6 @@ $navbarHeight: 120px;
 	border: 1px solid #cdced9;
 	border-radius: 6px;
 	box-sizing: border-box;
-	margin-bottom: 1rem;
+	margin-top: 1rem;
 	padding: 1rem 1rem 0;
-
-	&:first-of-type {
-		margin-top: 1rem;
-	}
 }

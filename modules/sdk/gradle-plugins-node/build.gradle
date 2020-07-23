@@ -28,5 +28,16 @@ gradleTest {
 }
 
 pluginBundle {
-	tags = ["javascript", "js", "node", "nodejs", "npm"]
+	plugins {
+		nodePlugin {
+			displayName = "Liferay Gradle Plugins Node"
+		}
+
+		yarnPlugin {
+			description = "The Yarn Gradle plugin lets you use Yarn to install Node packages from package.json"
+			displayName = "Liferay Gradle Plugins Yarn"
+		}
+	}
+
+	tags = ["javascript", "js", "node", "nodejs", "npm", "yarn"]
 }

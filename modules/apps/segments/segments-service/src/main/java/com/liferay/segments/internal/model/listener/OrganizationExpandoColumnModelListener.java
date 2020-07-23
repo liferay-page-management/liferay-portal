@@ -42,8 +42,10 @@ import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.odata.entity.BooleanEntityField;
 import com.liferay.portal.odata.entity.DateTimeEntityField;
+import com.liferay.portal.odata.entity.DoubleEntityField;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
+import com.liferay.portal.odata.entity.IntegerEntityField;
 import com.liferay.portal.odata.entity.StringEntityField;
 import com.liferay.portal.odata.normalizer.Normalizer;
 import com.liferay.segments.internal.odata.entity.OrganizationEntityModel;
@@ -184,6 +186,19 @@ public class OrganizationExpandoColumnModelListener
 				encodedName,
 				locale -> Field.getSortableFieldName(encodedIndexedFieldName),
 				locale -> encodedIndexedFieldName);
+		}
+		else if ((expandoColumn.getType() == ExpandoColumnConstants.DOUBLE) ||
+				 (expandoColumn.getType() == ExpandoColumnConstants.FLOAT)) {
+
+			entityField = new DoubleEntityField(
+				encodedName, locale -> encodedIndexedFieldName);
+		}
+		else if ((expandoColumn.getType() == ExpandoColumnConstants.INTEGER) ||
+				 (expandoColumn.getType() == ExpandoColumnConstants.LONG) ||
+				 (expandoColumn.getType() == ExpandoColumnConstants.SHORT)) {
+
+			entityField = new IntegerEntityField(
+				encodedName, locale -> encodedIndexedFieldName);
 		}
 		else if (expandoColumn.getType() ==
 					ExpandoColumnConstants.STRING_LOCALIZED) {

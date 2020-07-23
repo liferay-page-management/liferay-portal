@@ -15,6 +15,7 @@
 package com.liferay.content.dashboard.web.internal.portlet.action;
 
 import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.content.dashboard.web.internal.constants.ContentDashboardPortletKeys;
 import com.liferay.content.dashboard.web.internal.item.ContentDashboardItem;
 import com.liferay.content.dashboard.web.internal.item.ContentDashboardItemFactory;
@@ -26,6 +27,7 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
@@ -46,12 +48,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -105,10 +112,23 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 					"categories",
 					_getAssetCategoriesJSONArray(contentDashboardItem, locale)
 				).put(
+					"className", contentDashboardItem.getClassName()
+				).put(
+					"classPK", contentDashboardItem.getClassPK()
+				).put(
+					"createDate",
+					_toString(contentDashboardItem.getCreateDate())
+				).put(
+					"data", _getDataJSONObject(contentDashboardItem, locale)
+				).put(
+					"languageTag", locale.toLanguageTag()
+				).put(
 					"modifiedDate",
 					_toString(contentDashboardItem.getModifiedDate())
 				).put(
 					"subType", _getSubtype(contentDashboardItem, locale)
+				).put(
+					"tags", _getAssetTagsJSONArray(contentDashboardItem)
 				).put(
 					"title", contentDashboardItem.getTitle(locale)
 				).put(
@@ -116,8 +136,17 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 				).put(
 					"userName", contentDashboardItem.getUserName()
 				).put(
+					"userPortraitURL",
+					contentDashboardItem.getUserPortraitURL(
+						_portal.getHttpServletRequest(resourceRequest))
+				).put(
 					"versions",
 					_getVersionsJSONArray(contentDashboardItem, locale)
+				).put(
+					"viewURLs",
+					_getViewURLsJSONArray(
+						contentDashboardItem,
+						_portal.getHttpServletRequest(resourceRequest))
 				)
 			).orElseGet(
 				JSONFactoryUtil::createJSONObject
@@ -157,6 +186,42 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 			).toArray());
 	}
 
+	private JSONArray _getAssetTagsJSONArray(
+		ContentDashboardItem contentDashboardItem) {
+
+		List<AssetTag> assetTags = contentDashboardItem.getAssetTags();
+
+		Stream<AssetTag> stream = assetTags.stream();
+
+		return JSONUtil.putAll(
+			stream.map(
+				AssetTag::getName
+			).toArray());
+	}
+
+	private JSONObject _getDataJSONObject(
+		ContentDashboardItem contentDashboardItem, Locale locale) {
+
+		Map<String, Object> data = contentDashboardItem.getData(locale);
+
+		Set<Map.Entry<String, Object>> entries = data.entrySet();
+
+		Stream<Map.Entry<String, Object>> stream = entries.stream();
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+
+		stream.forEach(
+			entry -> jsonObject.put(
+				entry.getKey(),
+				JSONUtil.put(
+					"title", _language.get(locale, entry.getKey())
+				).put(
+					"value", _toString(entry.getValue())
+				)));
+
+		return jsonObject;
+	}
+
 	private String _getSubtype(
 		ContentDashboardItem contentDashboardItem, Locale locale) {
 
@@ -180,6 +245,31 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 			).toArray());
 	}
 
+	private JSONArray _getViewURLsJSONArray(
+		ContentDashboardItem contentDashboardItem,
+		HttpServletRequest httpServletRequest) {
+
+		Map<Locale, String> viewURLs = contentDashboardItem.getViewURLs(
+			httpServletRequest);
+
+		Set<Map.Entry<Locale, String>> entries = viewURLs.entrySet();
+
+		Stream<Map.Entry<Locale, String>> stream = entries.stream();
+
+		return JSONUtil.putAll(
+			stream.map(
+				entry -> JSONUtil.put(
+					"default",
+					Objects.equals(
+						entry.getKey(), contentDashboardItem.getDefaultLocale())
+				).put(
+					"languageId", _language.getBCP47LanguageId(entry.getKey())
+				).put(
+					"viewURL", entry.getValue()
+				)
+			).toArray());
+	}
+
 	private String _toString(Date date) {
 		Instant instant = date.toInstant();
 
@@ -188,6 +278,18 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 		LocalDateTime localDateTime = zonedDateTime.toLocalDateTime();
 
 		return localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+	}
+
+	private String _toString(Object object) {
+		if (object == null) {
+			return null;
+		}
+
+		if (object instanceof Date) {
+			return _toString((Date)object);
+		}
+
+		return String.valueOf(object);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
@@ -200,6 +302,9 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 	@Reference
 	private ContentDashboardSearchRequestBuilderFactory
 		_contentDashboardSearchRequestBuilderFactory;
+
+	@Reference
+	private Language _language;
 
 	@Reference
 	private Portal _portal;

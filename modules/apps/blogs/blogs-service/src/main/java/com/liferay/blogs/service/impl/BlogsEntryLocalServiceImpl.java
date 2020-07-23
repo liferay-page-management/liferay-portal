@@ -1839,10 +1839,12 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 			fileEntry.getMimeType());
 
 		if (Stream.of(
-				_blogsFileUploadsConfiguration.imageExtensions()).anyMatch(
-					extension ->
-						extension.equals(StringPool.STAR) ||
-						extensions.contains(extension))) {
+				_blogsFileUploadsConfiguration.imageExtensions()
+			).anyMatch(
+				extension ->
+					extension.equals(StringPool.STAR) ||
+					extensions.contains(extension)
+			)) {
 
 			return true;
 		}

@@ -457,12 +457,12 @@ public class AssetCategoriesDisplayContext {
 
 	public String getLinkURL() throws Exception {
 		AssetCategoriesCompanyConfiguration
-			accountEntryEmailDomainsConfiguration =
+			assetCategoriesCompanyConfiguration =
 				ConfigurationProviderUtil.getCompanyConfiguration(
 					AssetCategoriesCompanyConfiguration.class,
 					_themeDisplay.getCompanyId());
 
-		return accountEntryEmailDomainsConfiguration.linkURL();
+		return assetCategoriesCompanyConfiguration.linkToDocumentationURL();
 	}
 
 	public String getNavigation() {

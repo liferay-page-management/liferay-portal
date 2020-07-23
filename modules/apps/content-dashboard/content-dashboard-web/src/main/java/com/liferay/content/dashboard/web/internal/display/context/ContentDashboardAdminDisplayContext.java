@@ -93,6 +93,18 @@ public class ContentDashboardAdminDisplayContext {
 		_searchContainer = searchContainer;
 	}
 
+	public List<Long> getAssetCategoryIds() {
+		if (_assetCategoryIds != null) {
+			return _assetCategoryIds;
+		}
+
+		_assetCategoryIds = Arrays.asList(
+			ArrayUtil.toLongArray(
+				ParamUtil.getLongValues(_liferayPortletRequest, "categoryId")));
+
+		return _assetCategoryIds;
+	}
+
 	public List<AssetVocabulary> getAssetVocabularies() {
 		return _assetVocabularies;
 	}
@@ -313,18 +325,20 @@ public class ContentDashboardAdminDisplayContext {
 						WebKeys.THEME_DISPLAY);
 
 				AssetCategoriesCompanyConfiguration
-					accountEntryEmailDomainsConfiguration =
+					assetCategoriesCompanyConfiguration =
 						ConfigurationProviderUtil.getCompanyConfiguration(
 							AssetCategoriesCompanyConfiguration.class,
 							themeDisplay.getCompanyId());
 
-				return accountEntryEmailDomainsConfiguration.linkURL();
+				return assetCategoriesCompanyConfiguration.
+					linkToDocumentationURL();
 			}
 		).put(
 			"vocabularies", _assetVocabularyMetric.toJSONArray()
 		).build();
 	}
 
+	private List<Long> _assetCategoryIds;
 	private final List<AssetVocabulary> _assetVocabularies;
 	private final AssetVocabularyMetric _assetVocabularyMetric;
 	private List<Long> _authorIds;

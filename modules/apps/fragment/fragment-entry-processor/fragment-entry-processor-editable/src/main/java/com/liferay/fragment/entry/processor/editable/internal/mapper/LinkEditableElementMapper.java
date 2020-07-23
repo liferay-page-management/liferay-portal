@@ -52,15 +52,23 @@ public class LinkEditableElementMapper implements EditableElementMapper {
 		boolean assetDisplayPage =
 			_fragmentEntryProcessorHelper.isAssetDisplayPage(
 				fragmentEntryProcessorContext.getMode());
-
+		boolean collectionMapped =
+			_fragmentEntryProcessorHelper.isMappedCollection(configJSONObject);
 		boolean mapped = _fragmentEntryProcessorHelper.isMapped(
 			configJSONObject);
 
-		if (Validator.isNull(href) && !assetDisplayPage && !mapped) {
+		if (Validator.isNull(href) && !assetDisplayPage && !collectionMapped &&
+			!mapped) {
+
 			return;
 		}
 
-		if (mapped) {
+		if (collectionMapped) {
+			href = GetterUtil.getString(
+				_fragmentEntryProcessorHelper.getMappedCollectionValue(
+					configJSONObject, fragmentEntryProcessorContext));
+		}
+		else if (mapped) {
 			href = GetterUtil.getString(
 				_fragmentEntryProcessorHelper.getMappedValue(
 					configJSONObject, new HashMap<>(),

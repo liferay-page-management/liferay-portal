@@ -207,12 +207,6 @@ public class JournalArticleInfoDisplayContributor
 			getPreviewInfoDisplayObjectProvider(long classPK, int type)
 		throws PortalException {
 
-		AssetEntry assetEntry = assetEntryLocalService.fetchAssetEntry(classPK);
-
-		if (assetEntry == null) {
-			return null;
-		}
-
 		AssetRendererFactory<JournalArticle> assetRendererFactory =
 			(AssetRendererFactory<JournalArticle>)
 				AssetRendererFactoryRegistryUtil.
@@ -220,8 +214,7 @@ public class JournalArticleInfoDisplayContributor
 						JournalArticle.class.getName());
 
 		AssetRenderer<JournalArticle> assetRenderer =
-			assetRendererFactory.getAssetRenderer(
-				assetEntry.getClassPK(), type);
+			assetRendererFactory.getAssetRenderer(classPK, type);
 
 		JournalArticle article = assetRenderer.getAssetObject();
 
@@ -253,9 +246,6 @@ public class JournalArticleInfoDisplayContributor
 	@Reference
 	protected AssetEntryInfoDisplayFieldProvider
 		assetEntryInfoDisplayFieldProvider;
-
-	@Reference
-	protected AssetEntryLocalService assetEntryLocalService;
 
 	@Reference
 	protected ClassTypesInfoDisplayFieldProvider

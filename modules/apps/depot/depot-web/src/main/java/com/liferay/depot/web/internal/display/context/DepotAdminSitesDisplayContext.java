@@ -111,6 +111,8 @@ public class DepotAdminSitesDisplayContext {
 						disconnectSiteActionURL.toString()
 					).build());
 
+				dropdownItem.setDisabled(
+					depotEntryGroupRel.isDdmStructuresAvailable());
 				dropdownItem.setLabel(
 					LanguageUtil.get(
 						PortalUtil.getHttpServletRequest(
@@ -160,11 +162,11 @@ public class DepotAdminSitesDisplayContext {
 	private String _getUpdateDDMStructuresAvailableKey(
 		DepotEntryGroupRel depotEntryGroupRel) {
 
-		if (depotEntryGroupRel.isSearchable()) {
-			return "make-ddm-structures-available";
+		if (!depotEntryGroupRel.isDdmStructuresAvailable()) {
+			return "make-web-content-structures-available";
 		}
 
-		return "make-ddm-structures-unavailable";
+		return "make-web-content-structures-unavailable";
 	}
 
 	private String _getUpdateSearchableKey(

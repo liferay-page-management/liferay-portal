@@ -1422,12 +1422,6 @@ public class JavaParserUtil {
 			_parseParameterValueJavaExpressions(
 				methodCallDetailAST.findFirstToken(TokenTypes.ELIST)));
 
-		boolean statementCondition = DetailASTUtil.hasParentWithTokenType(
-			methodCallDetailAST, TokenTypes.LITERAL_FOR, TokenTypes.LITERAL_IF,
-			TokenTypes.LITERAL_WHILE);
-
-		javaMethodCall.setStatementCondition(statementCondition);
-
 		boolean insideConstructorCall = DetailASTUtil.hasParentWithTokenType(
 			methodCallDetailAST, TokenTypes.CTOR_CALL,
 			TokenTypes.SUPER_CTOR_CALL);

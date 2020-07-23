@@ -16,6 +16,14 @@
 
 <%@ include file="/init.jsp" %>
 
+<%
+String backURL = ParamUtil.getString(request, "backURL");
+
+if (Validator.isNotNull(backURL)) {
+	portletDisplay.setURLBack(backURL);
+}
+%>
+
 <portlet:actionURL name="/asset_list/add_asset_entry_selection" var="addAssetEntrySelectionURL">
 	<portlet:param name="mvcPath" value="/edit_asset_list_entry.jsp" />
 </portlet:actionURL>
@@ -28,6 +36,7 @@
 	name="fm"
 >
 	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
+	<aui:input name="backURL" type="hidden" value="<%= backURL %>" />
 	<aui:input name="assetListEntryId" type="hidden" value="<%= assetListDisplayContext.getAssetListEntryId() %>" />
 	<aui:input name="segmentsEntryId" type="hidden" value="<%= assetListDisplayContext.getSegmentsEntryId() %>" />
 	<aui:input name="assetEntryIds" type="hidden" />
@@ -59,7 +68,7 @@
 					expand="<%= true %>"
 				>
 					<span class="heading-text">
-						<liferay-ui:message key="asset-entries" />
+						<liferay-ui:message key="collection-items" />
 					</span>
 				</clay:content-col>
 
@@ -99,7 +108,7 @@
 
 		<liferay-ui:search-container
 			compactEmptyResultsMessage="<%= true %>"
-			emptyResultsMessage="no-assets-are-selected"
+			emptyResultsMessage="no-collection-items-are-selected"
 			id="assetEntriesSearchContainer"
 			searchContainer="<%= editAssetListDisplayContext.getSearchContainer() %>"
 		>

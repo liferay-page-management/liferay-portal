@@ -14,10 +14,11 @@
 
 import ClayAlert from '@clayui/alert';
 import {render} from 'frontend-js-react-web';
+import {buildFragment} from 'metal-dom';
 import React from 'react';
 import {unmountComponentAtNode} from 'react-dom';
 
-const DEFAULT_ALERT_CONTAINER_ID = 'alertContainer';
+const DEFAULT_ALERT_CONTAINER_ID = 'ToastAlertContainer';
 
 const DEFAULT_RENDER_DATA = {
 	portletId: 'UNKNOWN_PORTLET_ID',
@@ -29,6 +30,12 @@ const TYPES = {
 	HTML: 'html',
 	TEXT: 'text',
 };
+
+const TPL_ALERT_CONTAINER = `
+	<div class="alert-container container">
+		<div class="alert-notifications alert-notifications-fixed" id=${DEFAULT_ALERT_CONTAINER_ID}></div>
+	</div>
+`;
 
 const Text = ({allowHTML, string = null}) => {
 	if (allowHTML) {
@@ -51,15 +58,26 @@ const getRootElement = ({container, containerId}) => {
 		}
 	}
 
-	container = document.getElementById(DEFAULT_ALERT_CONTAINER_ID);
+	let alertFixed = document.getElementById(DEFAULT_ALERT_CONTAINER_ID);
 
-	if (!container) {
-		container = document.createElement('div');
+	if (!alertFixed) {
+		alertFixed = buildFragment(TPL_ALERT_CONTAINER).querySelector(
+			'.alert-container.container'
+		);
 
-		container.id = DEFAULT_ALERT_CONTAINER_ID;
-
-		document.body.appendChild(container);
+		alertFixed = document.body.appendChild(alertFixed);
 	}
+
+	// Creates a fragment to prevent React from unmounting the alert container
+
+	container = document.createElement('div');
+	container.className = 'mb-3';
+
+	const fragmentContainer = document.querySelector(
+		`.alert-notifications.alert-notifications-fixed`
+	);
+
+	fragmentContainer.appendChild(container);
 
 	return container;
 };
@@ -100,38 +118,34 @@ function openToast({
 
 	unmountComponentAtNode(rootElement);
 
-	const Container =
-		container || containerId ? React.Fragment : ClayAlert.ToastContainer;
-
 	const onCloseFn = (event) => {
 		if (onClose) {
 			onClose({event});
+		}
+
+		if (!container || !containerId) {
+			rootElement.parentNode.removeChild(rootElement);
 		}
 
 		unmountComponentAtNode(rootElement);
 	};
 
 	render(
-		<Container>
-			<ClayAlert
-				autoClose={autoClose}
-				displayType={type}
-				onClick={(event) => onClick({event, onClose: onCloseFn})}
-				onClose={onCloseFn}
-				title={
-					title && (
-						<Text
-							allowHTML={titleType === TYPES.HTML}
-							string={title}
-						/>
-					)
-				}
-				variant={variant}
-				{...toastProps}
-			>
-				<Text allowHTML={messageType === TYPES.HTML} string={message} />
-			</ClayAlert>
-		</Container>,
+		<ClayAlert
+			autoClose={autoClose}
+			displayType={type}
+			onClick={(event) => onClick({event, onClose: onCloseFn})}
+			onClose={onCloseFn}
+			title={
+				title && (
+					<Text allowHTML={titleType === TYPES.HTML} string={title} />
+				)
+			}
+			variant={variant}
+			{...toastProps}
+		>
+			<Text allowHTML={messageType === TYPES.HTML} string={message} />
+		</ClayAlert>,
 		renderData,
 		rootElement
 	);

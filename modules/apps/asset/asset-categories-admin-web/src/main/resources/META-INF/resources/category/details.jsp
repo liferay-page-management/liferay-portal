@@ -32,7 +32,16 @@ long vocabularyId = ParamUtil.getLong(request, "vocabularyId");
 portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(redirect);
 
-renderResponse.setTitle((category == null) ? LanguageUtil.get(request, "add-new-category") : category.getTitle(locale));
+String title = LanguageUtil.get(request, "add-new-category");
+
+if (category != null) {
+	title = category.getTitle(locale);
+}
+else if (parentCategoryId > 0) {
+	title = LanguageUtil.get(request, "add-new-subcategory");
+}
+
+renderResponse.setTitle(title);
 %>
 
 <portlet:actionURL name="editCategory" var="editCategoryURL">

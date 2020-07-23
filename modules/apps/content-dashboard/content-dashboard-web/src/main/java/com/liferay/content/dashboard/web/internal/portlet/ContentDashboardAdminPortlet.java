@@ -15,6 +15,8 @@
 package com.liferay.content.dashboard.web.internal.portlet;
 
 import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.content.dashboard.web.internal.configuration.FFContentDashboardConfiguration;
 import com.liferay.content.dashboard.web.internal.constants.ContentDashboardPortletKeys;
 import com.liferay.content.dashboard.web.internal.constants.ContentDashboardWebKeys;
@@ -153,6 +155,7 @@ public class ContentDashboardAdminPortlet extends MVCPortlet {
 		ContentDashboardAdminManagementToolbarDisplayContext
 			contentDashboardAdminManagementToolbarDisplayContext =
 				new ContentDashboardAdminManagementToolbarDisplayContext(
+					_assetCategoryLocalService, _assetVocabularyLocalService,
 					contentDashboardAdminDisplayContext, _groupLocalService,
 					_portal.getHttpServletRequest(renderRequest),
 					liferayPortletRequest, liferayPortletResponse,
@@ -184,7 +187,13 @@ public class ContentDashboardAdminPortlet extends MVCPortlet {
 	private Aggregations _aggregations;
 
 	@Reference
+	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Reference
 	private AssetVocabulariesProvider _assetVocabulariesProvider;
+
+	@Reference
+	private AssetVocabularyLocalService _assetVocabularyLocalService;
 
 	@Reference
 	private ContentDashboardItemFactoryTracker

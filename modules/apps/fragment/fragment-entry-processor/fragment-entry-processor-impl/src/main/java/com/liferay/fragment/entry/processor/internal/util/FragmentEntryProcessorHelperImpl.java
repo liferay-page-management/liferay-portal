@@ -188,10 +188,7 @@ public class FragmentEntryProcessorHelperImpl
 
 		InfoDisplayObjectProvider<Object> infoDisplayObjectProvider = null;
 
-		if ((fragmentEntryProcessorContext.getPreviewClassPK() > 0) &&
-			_isSameClassedModel(
-				classPK, fragmentEntryProcessorContext.getPreviewClassPK())) {
-
+		if (fragmentEntryProcessorContext.getPreviewClassPK() > 0) {
 			infoDisplayObjectProvider =
 				infoDisplayContributor.getPreviewInfoDisplayObjectProvider(
 					fragmentEntryProcessorContext.getPreviewClassPK(),
@@ -369,17 +366,6 @@ public class FragmentEntryProcessorHelperImpl
 		}
 
 		return value;
-	}
-
-	private boolean _isSameClassedModel(long classPK, long previewClassPK) {
-		AssetEntry assetEntry = _assetEntryLocalService.fetchAssetEntry(
-			previewClassPK);
-
-		if ((assetEntry == null) || (assetEntry.getClassPK() != classPK)) {
-			return false;
-		}
-
-		return true;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
