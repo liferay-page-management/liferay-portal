@@ -33,6 +33,12 @@ public class UpgradeLayout extends UpgradeProcess {
 				new AlterTableDropColumn("head"));
 		}
 
+		if (!hasColumn("Layout", "styleBookEntryId")) {
+			alter(
+				LayoutTable.class,
+				new AlterTableAddColumn("styleBookEntryId", "LONG"));
+		}
+
 		if (!hasColumn("Layout", "masterLayoutPlid")) {
 			alter(
 				LayoutTable.class,
