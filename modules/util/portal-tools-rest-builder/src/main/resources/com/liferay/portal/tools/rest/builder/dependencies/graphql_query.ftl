@@ -162,6 +162,31 @@ public class Query {
 		}
 	</#list>
 
+	<#list freeMarkerTool.getParentGraphQLRelationJavaMethodSignatures(configYAML, "query", openAPIYAML) as javaMethodSignature>
+		@GraphQLTypeExtension(${javaMethodSignature.parentSchemaName}.class)
+		public class Parent${javaMethodSignature.parentSchemaName}${javaMethodSignature.javaMethodParameters[0].parameterName?cap_first}TypeExtension {
+
+			public Parent${javaMethodSignature.parentSchemaName}${javaMethodSignature.javaMethodParameters[0].parameterName?cap_first}TypeExtension(${javaMethodSignature.parentSchemaName} ${javaMethodSignature.parentSchemaName?uncap_first}) {
+				_${javaMethodSignature.parentSchemaName?uncap_first} = ${javaMethodSignature.parentSchemaName?uncap_first};
+			}
+
+			${freeMarkerTool.getGraphQLMethodAnnotations(javaMethodSignature)}
+			public ${javaMethodSignature.returnType} parent${javaMethodSignature.returnType}(${freeMarkerTool.getGraphQLParameters(javaMethodSignature.javaMethodParameters[1..*(javaMethodSignature.javaMethodParameters?size - 1)], javaMethodSignature.operation, true)}) throws Exception {
+				<#assign arguments = freeMarkerTool.getGraphQLArguments(javaMethodSignature.javaMethodParameters[1..*(javaMethodSignature.javaMethodParameters?size - 1)], freeMarkerTool.getSchemaVarName(javaMethodSignature.schemaName)) />
+
+				return _applyComponentServiceObjects(_${freeMarkerTool.getSchemaVarName(javaMethodSignature.schemaName)}ResourceComponentServiceObjects, Query.this::_populateResourceContext, ${freeMarkerTool.getSchemaVarName(javaMethodSignature.schemaName)}Resource -> ${freeMarkerTool.getSchemaVarName(javaMethodSignature.schemaName)}Resource.${javaMethodSignature.methodName}(
+					_${javaMethodSignature.parentSchemaName?uncap_first}.getParent${javaMethodSignature.javaMethodParameters[0].parameterName?cap_first}()
+
+					<#if arguments?has_content>
+						, ${arguments}
+					</#if>));
+			}
+
+			private ${javaMethodSignature.parentSchemaName} _${javaMethodSignature.parentSchemaName?uncap_first};
+
+		}
+	</#list>
+
 	private <T, R, E1 extends Throwable, E2 extends Throwable> R _applyComponentServiceObjects(ComponentServiceObjects<T> componentServiceObjects, UnsafeConsumer<T, E1> unsafeConsumer, UnsafeFunction<T, R, E2> unsafeFunction) throws E1, E2 {
 		T resource = componentServiceObjects.getService();
 

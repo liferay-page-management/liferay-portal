@@ -97,6 +97,21 @@ class DropdownProvider {
 		trigger.parentElement.classList.add(CssClass.SHOW);
 		trigger.setAttribute('aria-expanded', true);
 
+		const clickOutsideHandler = (event) => {
+			if (
+				!menu.contains(event.target) &&
+				!trigger.contains(event.target)
+			) {
+				this.hide({menu, trigger});
+
+				document.removeEventListener('mousedown', clickOutsideHandler);
+				document.removeEventListener('touchstart', clickOutsideHandler);
+			}
+		};
+
+		document.addEventListener('mousedown', clickOutsideHandler);
+		document.addEventListener('touchstart', clickOutsideHandler);
+
 		menu.classList.add(CssClass.SHOW);
 
 		domAlign(menu, trigger, {

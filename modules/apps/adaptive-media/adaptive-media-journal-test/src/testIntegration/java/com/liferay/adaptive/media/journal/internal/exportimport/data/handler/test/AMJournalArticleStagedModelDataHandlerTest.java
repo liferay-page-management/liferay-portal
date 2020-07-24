@@ -162,8 +162,7 @@ public class AMJournalArticleStagedModelDataHandlerTest
 		JournalArticle importedJournalArticle = (JournalArticle)getStagedModel(
 			journalArticle.getUuid(), liveGroup);
 
-		Assert.assertEquals(
-			journalArticle.getContent(), importedJournalArticle.getContent());
+		_assertContentEquals(journalArticle, importedJournalArticle);
 	}
 
 	@Test

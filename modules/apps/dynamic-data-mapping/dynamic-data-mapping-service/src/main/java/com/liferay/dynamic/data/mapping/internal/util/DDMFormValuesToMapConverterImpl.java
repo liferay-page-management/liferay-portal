@@ -79,36 +79,6 @@ public class DDMFormValuesToMapConverterImpl
 	}
 
 	private void _addMissingDDMFormFieldValues(
-		List<DDMFormField> ddmFormFields,
-		DDMFormFieldValue parentDDMFormFieldValue) {
-
-		Map<String, List<DDMFormFieldValue>> ddmFormFieldValues =
-			parentDDMFormFieldValue.getNestedDDMFormFieldValuesMap();
-
-		for (DDMFormField ddmFormField : ddmFormFields) {
-			if (!ddmFormFieldValues.containsKey(ddmFormField.getName())) {
-				DDMFormFieldValue ddmFormFieldValue = new DDMFormFieldValue() {
-					{
-						setInstanceId(StringUtil.randomString());
-						setName(ddmFormField.getName());
-					}
-				};
-
-				parentDDMFormFieldValue.addNestedDDMFormFieldValue(
-					ddmFormFieldValue);
-
-				if (ListUtil.isNotEmpty(
-						ddmFormField.getNestedDDMFormFields())) {
-
-					_addMissingDDMFormFieldValues(
-						ddmFormField.getNestedDDMFormFields(),
-						ddmFormFieldValue);
-				}
-			}
-		}
-	}
-
-	private void _addMissingDDMFormFieldValues(
 		List<DDMFormField> ddmFormFields, DDMFormValues ddmFormValues) {
 
 		Map<String, List<DDMFormFieldValue>> ddmFormFieldValues =
@@ -130,7 +100,35 @@ public class DDMFormValuesToMapConverterImpl
 
 					_addMissingDDMFormFieldValues(
 						ddmFormField.getNestedDDMFormFields(),
-						ddmFormFieldValue);
+						ddmFormFieldValues, ddmFormFieldValue);
+				}
+			}
+		}
+	}
+
+	private void _addMissingDDMFormFieldValues(
+		List<DDMFormField> ddmFormFields,
+		Map<String, List<DDMFormFieldValue>> ddmFormFieldValues,
+		DDMFormFieldValue parentDDMFormFieldValue) {
+
+		for (DDMFormField ddmFormField : ddmFormFields) {
+			if (!ddmFormFieldValues.containsKey(ddmFormField.getName())) {
+				DDMFormFieldValue ddmFormFieldValue = new DDMFormFieldValue() {
+					{
+						setInstanceId(StringUtil.randomString());
+						setName(ddmFormField.getName());
+					}
+				};
+
+				parentDDMFormFieldValue.addNestedDDMFormFieldValue(
+					ddmFormFieldValue);
+
+				if (ListUtil.isNotEmpty(
+						ddmFormField.getNestedDDMFormFields())) {
+
+					_addMissingDDMFormFieldValues(
+						ddmFormField.getNestedDDMFormFields(),
+						ddmFormFieldValues, ddmFormFieldValue);
 				}
 			}
 		}

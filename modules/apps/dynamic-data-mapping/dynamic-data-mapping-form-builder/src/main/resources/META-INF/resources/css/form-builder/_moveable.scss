@@ -62,8 +62,8 @@ $c: '.ddm-form-builder';
 	.col.col-empty {
 		.ddm-empty-page {
 			border-radius: 6px;
-			height: 80px;
-			line-height: 80px;
+			height: auto;
+			line-height: 32px;
 			text-align: center;
 
 			&.target-droppable {
@@ -82,7 +82,7 @@ $c: '.ddm-form-builder';
 				color: $strong-blue;
 
 				.ddm-empty-page-message {
-					display: none;
+					visibility: hidden;
 				}
 			}
 
@@ -94,6 +94,11 @@ $c: '.ddm-form-builder';
 				100% {
 					background-color: $dark-blue;
 				}
+			}
+
+			.ddm-empty-page-message {
+				margin-bottom: 0px;
+				padding: 24px 0px;
 			}
 		}
 

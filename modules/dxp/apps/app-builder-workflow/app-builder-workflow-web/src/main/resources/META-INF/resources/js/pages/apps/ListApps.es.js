@@ -22,6 +22,7 @@ export default ({scope, ...props}) => {
 	const [showTooltip, setShowTooltip] = useState(false);
 
 	const [firstColumn, ...otherColumns] = COLUMNS;
+	const lastColumn = otherColumns.pop();
 
 	const columns = [
 		firstColumn,
@@ -30,6 +31,11 @@ export default ({scope, ...props}) => {
 			value: Liferay.Language.get('object'),
 		},
 		...otherColumns,
+		{
+			key: 'version',
+			value: Liferay.Language.get('version'),
+		},
+		lastColumn,
 	];
 
 	const newAppLink = compile(props.editPath[0])();

@@ -12,7 +12,7 @@
  * details.
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 
 import LanguageSelector from './LanguageSelector';
 
@@ -25,24 +25,50 @@ const TranslateLanguagesSelector = ({
 	targetLanguageId,
 }) => {
 	const namespace = `${portletNamespace}`;
+	const [formHaschanges, setFormHasChanges] = useState(false);
+
+	const bridgeComponentId = `${namespace}TranslateLanguagesSelector`;
+
+	if (!Liferay.component(bridgeComponentId)) {
+		Liferay.component(
+			bridgeComponentId,
+			{
+				onFormChange: () => {
+					if (!formHaschanges) {
+						setFormHasChanges(true);
+					}
+				},
+			},
+			{
+				destroyOnNavigate: true,
+			}
+		);
+	}
 
 	const refreshPage = (sourceId, targetId) => {
-		if (
+		const url = new URL(currentUrl);
+		const search_params = url.searchParams;
+
+		search_params.set(namespace + 'sourceLanguageId', sourceId);
+		search_params.set(namespace + 'targetLanguageId', targetId);
+
+		url.search = search_params.toString();
+
+		location.href = url.toString();
+	};
+
+	const changePage = (sourceId, targetId) => {
+		if (!formHaschanges) {
+			refreshPage(sourceId, targetId);
+		}
+		else if (
 			confirm(
 				Liferay.Language.get(
 					'are-you-sure-you-want-to-leave-the-page-you-may-lose-your-changes'
 				)
 			)
 		) {
-			const url = new URL(currentUrl);
-			const search_params = url.searchParams;
-
-			search_params.set(namespace + 'sourceLanguageId', sourceId);
-			search_params.set(namespace + 'targetLanguageId', targetId);
-
-			url.search = search_params.toString();
-
-			location.href = url.toString();
+			refreshPage(sourceId, targetId);
 		}
 	};
 
@@ -56,7 +82,7 @@ const TranslateLanguagesSelector = ({
 				<LanguageSelector
 					languageIds={sourceAvailableLanguages}
 					onChange={(value) => {
-						refreshPage(value, targetLanguageId);
+						changePage(value, targetLanguageId);
 					}}
 					selectedLanguageId={sourceLanguageId}
 				/>
@@ -70,7 +96,7 @@ const TranslateLanguagesSelector = ({
 				<LanguageSelector
 					languageIds={targetAvailableLanguages}
 					onChange={(value) => {
-						refreshPage(sourceLanguageId, value);
+						changePage(sourceLanguageId, value);
 					}}
 					selectedLanguageId={targetLanguageId}
 				/>

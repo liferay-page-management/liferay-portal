@@ -9,16 +9,21 @@
  * distribution rights of the Software.
  */
 
+import ClayAlert from '@clayui/alert';
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import {ClayRadio, ClayRadioGroup} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import {ClayTooltipProvider} from '@clayui/tooltip';
 import SelectObjects from 'app-builder-web/js/pages/apps/SelectObjectsDropDown.es';
 import EditAppContext, {
-	UPDATE_DATA_DEFINITION_ID,
+	UPDATE_APP,
 	UPDATE_DATA_LAYOUT_ID,
 	UPDATE_DATA_LIST_VIEW_ID,
 } from 'app-builder-web/js/pages/apps/edit/EditAppContext.es';
+import {sub} from 'app-builder-web/js/utils/lang.es';
+import {concatValues} from 'app-builder-web/js/utils/utils.es';
+import classNames from 'classnames';
+import {DataDefinitionUtils} from 'data-engine-taglib';
 import React, {useContext} from 'react';
 
 import SelectDropdown from '../../../../components/select-dropdown/SelectDropdown.es';
@@ -100,10 +105,14 @@ export default function DataAndViewsTab() {
 		},
 		dispatch,
 		dispatchConfig,
-		state: {app},
 	} = useContext(EditAppContext);
 
-	const {appWorkflowDataLayoutLinks: stepFormViews = []} = currentStep;
+	const {
+		appWorkflowDataLayoutLinks: stepFormViews = [],
+		errors: {
+			formViews: {duplicatedFields = [], errorIndexes = []} = {},
+		} = {},
+	} = currentStep;
 
 	const availableFormViews = formViews.map((form) => ({
 		...form,
@@ -126,16 +135,22 @@ export default function DataAndViewsTab() {
 		});
 	};
 
-	const updateDataObject = (dataObject) => {
-		dispatchConfig({
-			dataObject,
-			type: UPDATE_DATA_OBJECT,
-		});
+	const updateDataObject = (newDataObject) => {
+		if (newDataObject.id !== dataObject.id) {
+			dispatchConfig({
+				dataObject: newDataObject,
+				type: UPDATE_DATA_OBJECT,
+			});
 
-		dispatch({
-			...dataObject,
-			type: UPDATE_DATA_DEFINITION_ID,
-		});
+			dispatch({
+				app: {
+					dataDefinitionId: newDataObject.id,
+					dataLayoutId: null,
+					dataListViewId: null,
+				},
+				type: UPDATE_APP,
+			});
+		}
 	};
 
 	const updateFormView = (formView) => {
@@ -178,13 +193,70 @@ export default function DataAndViewsTab() {
 		});
 	};
 
+	const duplicatedFieldsMessage =
+		duplicatedFields.length === 1
+			? Liferay.Language.get(
+					'the-field-x-is-present-in-multiple-form-views'
+			  )
+			: Liferay.Language.get(
+					'the-fields-x-are-present-in-multiple-form-views'
+			  );
+
+	const fieldsLabels = duplicatedFields.map((field) =>
+		DataDefinitionUtils.getFieldLabel(dataObject, field)
+	);
+
+	const parsedFieldsLabels = fieldsLabels
+		.slice(0, 5)
+		.map((label) => `"${label}"`);
+
+	if (fieldsLabels.length > 5) {
+		parsedFieldsLabels.push(`others*`);
+	}
+
 	return (
 		<>
 			{stepIndex > 0 ? (
 				<>
+					{duplicatedFields.length > 0 && (
+						<ClayAlert
+							className="fields-alert-container mt-2"
+							displayType="danger"
+							title={`${Liferay.Language.get('error')}:`}
+						>
+							{`${sub(duplicatedFieldsMessage, [
+								concatValues(parsedFieldsLabels),
+							])} `}
+
+							{duplicatedFields.length > 5 && (
+								<ClayTooltipProvider delay="0">
+									<a
+										className="text-primary"
+										data-tooltip-align="bottom"
+										title={fieldsLabels
+											.slice(5, fieldsLabels.length)
+											.join('\n')}
+									>
+										{'*'}
+										{Liferay.Language.get(
+											'see-other-fields'
+										)}
+									</a>
+								</ClayTooltipProvider>
+							)}
+						</ClayAlert>
+					)}
+
 					{stepFormViews.map(
 						({dataLayoutId, name, readOnly}, index) => (
-							<div className="step-form-view" key={index}>
+							<div
+								className={classNames(
+									'step-form-view',
+									errorIndexes.includes(index) &&
+										'border-error'
+								)}
+								key={index}
+							>
 								<label id="form-view-label">
 									{Liferay.Language.get('form-view')}
 								</label>
@@ -251,7 +323,7 @@ export default function DataAndViewsTab() {
 					)}
 
 					<ClayButton
-						className="w-100"
+						className="mt-3 w-100"
 						displayType="secondary"
 						onClick={addStepFormView}
 					>
@@ -280,7 +352,6 @@ export default function DataAndViewsTab() {
 						</ClayTooltipProvider>
 
 						<SelectObjects
-							defaultValue={app.dataDefinitionId}
 							label={Liferay.Language.get('select-object')}
 							onSelect={updateDataObject}
 							selectedValue={dataObject}

@@ -10,6 +10,7 @@
  */
 
 import ClayLabel from '@clayui/label';
+import {ClayTooltipProvider} from '@clayui/tooltip';
 import {concatValues} from 'app-builder-web/js/utils/utils.es';
 import React from 'react';
 
@@ -17,6 +18,7 @@ import '../../../css/WorkflowInfoBar.scss';
 
 export default function WorkflowInfo({
 	assignees = [{}],
+	appVersion,
 	completed,
 	hideColumns = [],
 	taskNames = [],
@@ -63,22 +65,34 @@ export default function WorkflowInfo({
 			show: !hideColumns.includes('assignee'),
 			value: assignee,
 		},
+		{
+			label: Liferay.Language.get('version'),
+			show: !hideColumns.includes('status'),
+			tooltip: {
+				'data-tooltip-align': 'bottom',
+				'data-tooltip-delay': '0',
+				title: Liferay.Language.get('app-version'),
+			},
+			value: appVersion ?? '1.0',
+		},
 	];
 
 	return (
-		<div className="workflow-info-bar">
-			{items.map(
-				({label, show, value}, index) =>
-					show && (
-						<div className="info-item" key={index}>
-							<span className="font-weight-bold text-secondary">
-								{`${label}: `}
-							</span>
+		<ClayTooltipProvider>
+			<div className="workflow-info-bar">
+				{items.map(
+					({label, show, tooltip = {}, value}, index) =>
+						show && (
+							<div className="info-item" key={index} {...tooltip}>
+								<span className="font-weight-bold text-secondary">
+									{`${label}: `}
+								</span>
 
-							{value}
-						</div>
-					)
-			)}
-		</div>
+								{value}
+							</div>
+						)
+				)}
+			</div>
+		</ClayTooltipProvider>
 	);
 }

@@ -17,6 +17,7 @@ package com.liferay.portal.kernel.service;
 import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.internal.service.permission.ModelPermissionsImpl;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -81,14 +82,22 @@ public class ServiceContextFactory {
 
 		ServiceContext serviceContext = _getInstance(httpServletRequest);
 
+		if (className == null) {
+			return serviceContext;
+		}
+
 		// Permissions
 
 		if (serviceContext.getModelPermissions() == null) {
 			serviceContext.setModelPermissions(
 				ModelPermissionsFactory.create(httpServletRequest, className));
 		}
+		else {
+			ModelPermissions modelPermissions =
+				serviceContext.getModelPermissions();
 
-		_ensureValidModelPermissions(serviceContext);
+			modelPermissions.setResourceName(className);
+		}
 
 		// Expando
 
@@ -109,14 +118,22 @@ public class ServiceContextFactory {
 
 		ServiceContext serviceContext = _getInstance(portletRequest);
 
+		if (className == null) {
+			return serviceContext;
+		}
+
 		// Permissions
 
 		if (serviceContext.getModelPermissions() == null) {
 			serviceContext.setModelPermissions(
 				ModelPermissionsFactory.create(portletRequest, className));
 		}
+		else {
+			ModelPermissions modelPermissions =
+				serviceContext.getModelPermissions();
 
-		_ensureValidModelPermissions(serviceContext);
+			modelPermissions.setResourceName(className);
+		}
 
 		// Expando
 
@@ -142,7 +159,9 @@ public class ServiceContextFactory {
 		ServiceContext serviceContext) {
 
 		if (serviceContext.getModelPermissions() == null) {
-			serviceContext.setModelPermissions(new ModelPermissions());
+			serviceContext.setModelPermissions(
+				ModelPermissionsFactory.create(
+					ModelPermissionsImpl.RESOURCE_NAME_UNINITIALIZED));
 		}
 	}
 

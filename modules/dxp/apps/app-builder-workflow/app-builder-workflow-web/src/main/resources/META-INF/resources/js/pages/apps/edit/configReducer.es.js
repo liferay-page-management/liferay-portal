@@ -16,6 +16,7 @@ import {getFormViewFields, validateSelectedFormViews} from './utils.es';
 export const ADD_STEP = 'ADD_STEP';
 export const ADD_STEP_ACTION = 'ADD_STEP_ACTION';
 export const ADD_STEP_FORM_VIEW = 'ADD_STEP_FORM_VIEW';
+export const REMOVE_STEP = 'REMOVE_STEP';
 export const REMOVE_STEP_ACTION = 'REMOVE_STEP_ACTION';
 export const REMOVE_STEP_FORM_VIEW = 'REMOVE_STEP_FORM_VIEW';
 export const UPDATE_CONFIG = 'UPDATE_CONFIG';
@@ -109,13 +110,13 @@ export default (state, action) => {
 						readOnly: true,
 					})
 				);
-
-				previousStep.appWorkflowTransitions.forEach((action) => {
-					if (action.primary) {
-						action.transitionTo = currentStep.name;
-					}
-				});
 			}
+
+			previousStep.appWorkflowTransitions.forEach((action) => {
+				if (action.primary) {
+					action.transitionTo = currentStep.name;
+				}
+			});
 
 			if (nextStep) {
 				nextStep.appWorkflowTransitions.forEach((action) => {
@@ -152,6 +153,49 @@ export default (state, action) => {
 
 			return {...state};
 		}
+		case REMOVE_STEP: {
+			let currentStep;
+			const workflowSteps = [...state.steps];
+			const previousStep = workflowSteps[action.stepIndex - 1];
+			const nextStep = workflowSteps[action.stepIndex + 1];
+
+			previousStep.appWorkflowTransitions[0].transitionTo = nextStep.name;
+
+			if (nextStep?.appWorkflowTransitions?.length > 1) {
+				if (action.stepIndex > 1) {
+					nextStep.appWorkflowTransitions.forEach((transition) => {
+						if (!transition.primary) {
+							transition.transitionTo = previousStep.name;
+						}
+					});
+				}
+				else {
+					nextStep.appWorkflowTransitions.forEach(
+						(transition, index) => {
+							if (!transition.primary) {
+								nextStep.appWorkflowTransitions.splice(
+									index,
+									1
+								);
+							}
+						}
+					);
+				}
+			}
+
+			if (state.stepIndex === action.stepIndex) {
+				currentStep = previousStep;
+			}
+
+			workflowSteps.splice(action.stepIndex, 1);
+
+			return {
+				...state,
+				currentStep,
+				stepIndex: state.stepIndex - 1,
+				steps: [...workflowSteps],
+			};
+		}
 		case REMOVE_STEP_ACTION: {
 			state.steps[state.stepIndex].appWorkflowTransitions.pop();
 
@@ -174,9 +218,24 @@ export default (state, action) => {
 			};
 		}
 		case UPDATE_DATA_OBJECT: {
+			state.steps.forEach((step) => {
+				if (step.appWorkflowDataLayoutLinks) {
+					step.appWorkflowDataLayoutLinks = [];
+				}
+
+				if (step?.errors?.formViews) {
+					step.errors.formViews = {
+						duplicatedFields: [],
+						errorIndexes: [],
+					};
+				}
+			});
+
 			return {
 				...state,
 				dataObject: action.dataObject,
+				formView: {},
+				tableView: {},
 			};
 		}
 		case UPDATE_FORM_VIEW: {

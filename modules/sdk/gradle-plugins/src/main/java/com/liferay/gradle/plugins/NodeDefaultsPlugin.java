@@ -17,7 +17,6 @@ package com.liferay.gradle.plugins;
 import com.liferay.gradle.plugins.internal.util.GradleUtil;
 import com.liferay.gradle.plugins.node.NodeExtension;
 import com.liferay.gradle.plugins.node.NodePlugin;
-import com.liferay.gradle.plugins.node.tasks.ExecuteNodeTask;
 import com.liferay.gradle.plugins.node.tasks.ExecutePackageManagerTask;
 import com.liferay.gradle.plugins.node.tasks.NpmInstallTask;
 import com.liferay.gradle.plugins.node.tasks.PublishNodeModuleTask;
@@ -25,6 +24,7 @@ import com.liferay.gradle.util.Validator;
 
 import org.gradle.api.Action;
 import org.gradle.api.Project;
+import org.gradle.api.plugins.ExtensionContainer;
 import org.gradle.api.tasks.TaskContainer;
 
 /**
@@ -34,10 +34,57 @@ public class NodeDefaultsPlugin extends BaseDefaultsPlugin<NodePlugin> {
 
 	@Override
 	protected void applyPluginDefaults(Project project, NodePlugin nodePlugin) {
-		_configureNode(project);
-		_configureTasksExecutePackageManager(project);
-		_configureTasksNpmInstall(project);
-		_configureTasksPublishNodeModule(project);
+
+		// Extensions
+
+		ExtensionContainer extensionContainer = project.getExtensions();
+
+		NodeExtension nodeExtension = extensionContainer.getByType(
+			NodeExtension.class);
+
+		_configureExtensionNode(project, nodeExtension);
+
+		// Other
+
+		TaskContainer taskContainer = project.getTasks();
+
+		taskContainer.withType(
+			ExecutePackageManagerTask.class,
+			new Action<ExecutePackageManagerTask>() {
+
+				@Override
+				public void execute(
+					ExecutePackageManagerTask executePackageManagerTask) {
+
+					_configureTaskExecutePackageManager(
+						executePackageManagerTask);
+				}
+
+			});
+
+		taskContainer.withType(
+			NpmInstallTask.class,
+			new Action<NpmInstallTask>() {
+
+				@Override
+				public void execute(NpmInstallTask npmInstallTask) {
+					_configureTaskNpmInstall(npmInstallTask);
+				}
+
+			});
+
+		taskContainer.withType(
+			PublishNodeModuleTask.class,
+			new Action<PublishNodeModuleTask>() {
+
+				@Override
+				public void execute(
+					PublishNodeModuleTask publishNodeModuleTask) {
+
+					_configureTaskPublishNodeModule(publishNodeModuleTask);
+				}
+
+			});
 	}
 
 	@Override
@@ -45,9 +92,8 @@ public class NodeDefaultsPlugin extends BaseDefaultsPlugin<NodePlugin> {
 		return NodePlugin.class;
 	}
 
-	private void _configureNode(Project project) {
-		NodeExtension nodeExtension = GradleUtil.getExtension(
-			project, NodeExtension.class);
+	private void _configureExtensionNode(
+		Project project, NodeExtension nodeExtension) {
 
 		nodeExtension.setGlobal(true);
 		nodeExtension.setNodeVersion(_NODE_VERSION);
@@ -87,8 +133,19 @@ public class NodeDefaultsPlugin extends BaseDefaultsPlugin<NodePlugin> {
 			(String)null);
 
 		if (Validator.isNotNull(sassBinarySite)) {
-			_setTaskExecuteNodeArgDefault(
-				npmInstallTask, _SASS_BINARY_SITE_ARG, sassBinarySite);
+			boolean sassBinarySiteArg = false;
+
+			for (Object object : npmInstallTask.getArgs()) {
+				String arg = GradleUtil.toString(object);
+
+				if (arg.startsWith(_SASS_BINARY_SITE_ARG)) {
+					sassBinarySiteArg = true;
+				}
+			}
+
+			if (!sassBinarySiteArg) {
+				npmInstallTask.args(_SASS_BINARY_SITE_ARG + sassBinarySite);
+			}
 		}
 	}
 
@@ -145,70 +202,6 @@ public class NodeDefaultsPlugin extends BaseDefaultsPlugin<NodePlugin> {
 		if (Validator.isNotNull(repository)) {
 			publishNodeModuleTask.setModuleRepository(repository);
 		}
-	}
-
-	private void _configureTasksExecutePackageManager(Project project) {
-		TaskContainer taskContainer = project.getTasks();
-
-		taskContainer.withType(
-			ExecutePackageManagerTask.class,
-			new Action<ExecutePackageManagerTask>() {
-
-				@Override
-				public void execute(
-					ExecutePackageManagerTask executePackageManagerTask) {
-
-					_configureTaskExecutePackageManager(
-						executePackageManagerTask);
-				}
-
-			});
-	}
-
-	private void _configureTasksNpmInstall(Project project) {
-		TaskContainer taskContainer = project.getTasks();
-
-		taskContainer.withType(
-			NpmInstallTask.class,
-			new Action<NpmInstallTask>() {
-
-				@Override
-				public void execute(NpmInstallTask npmInstallTask) {
-					_configureTaskNpmInstall(npmInstallTask);
-				}
-
-			});
-	}
-
-	private void _configureTasksPublishNodeModule(Project project) {
-		TaskContainer taskContainer = project.getTasks();
-
-		taskContainer.withType(
-			PublishNodeModuleTask.class,
-			new Action<PublishNodeModuleTask>() {
-
-				@Override
-				public void execute(
-					PublishNodeModuleTask publishNodeModuleTask) {
-
-					_configureTaskPublishNodeModule(publishNodeModuleTask);
-				}
-
-			});
-	}
-
-	private void _setTaskExecuteNodeArgDefault(
-		ExecuteNodeTask executeNodeTask, String key, String value) {
-
-		for (Object object : executeNodeTask.getArgs()) {
-			String arg = GradleUtil.toString(object);
-
-			if (arg.startsWith(key)) {
-				return;
-			}
-		}
-
-		executeNodeTask.args(key + value);
 	}
 
 	private static final String _NODE_VERSION = "10.15.1";

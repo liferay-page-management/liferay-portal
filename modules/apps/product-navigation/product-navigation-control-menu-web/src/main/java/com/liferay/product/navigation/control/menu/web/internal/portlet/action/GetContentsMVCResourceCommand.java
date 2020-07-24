@@ -19,7 +19,7 @@ import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.product.navigation.control.menu.web.internal.constants.ProductNavigationControlMenuPortletKeys;
+import com.liferay.product.navigation.control.menu.constants.ProductNavigationControlMenuPortletKeys;
 import com.liferay.product.navigation.control.menu.web.internal.display.context.AddContentPanelDisplayContext;
 
 import javax.portlet.ResourceRequest;

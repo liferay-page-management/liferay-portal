@@ -618,8 +618,8 @@ definition {
 			panel = "Control Panel",
 			portlet = "Audit");
 
-		Audit.searchCP(
-			resourceAction = "MFA_EMAIL_OTP_VERIFICATION_FAILURE",
+		Audit.searchViaKeywords(
+			resourceName = "EmailOTPBrowserMFAChecker",
 			searchTerm = "MFA_EMAIL_OTP_VERIFICATION_FAILURE",
 			userName = "Test Test");
 

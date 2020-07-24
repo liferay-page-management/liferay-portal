@@ -24,6 +24,8 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.util.PropsValues;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -68,13 +70,7 @@ public class FileInstallConfigTest {
 
 	@After
 	public void tearDown() throws Exception {
-		if (_configurationPath != null) {
-			Files.deleteIfExists(_configurationPath);
-		}
-
-		if (_configuration != null) {
-			ConfigurationTestUtil.deleteConfiguration(_configuration);
-		}
+		_deleteConfiguration();
 	}
 
 	@Test
@@ -210,8 +206,54 @@ public class FileInstallConfigTest {
 		Assert.assertEquals("testValue", dictionary.get(testKey));
 	}
 
+	@Test
+	public void testEncoding() throws Exception {
+		String configurationPid = _CONFIGURATION_PID_PREFIX.concat(
+			".testEncoding");
+
+		_configurationPath = Paths.get(
+			PropsValues.MODULE_FRAMEWORK_CONFIGS_DIR,
+			configurationPid.concat(".config"));
+
+		String special = "üß";
+
+		StringBundler sb = new StringBundler(5);
+
+		sb.append("testKey");
+		sb.append(StringPool.EQUAL);
+		sb.append(StringPool.QUOTE);
+		sb.append(special);
+		sb.append(StringPool.QUOTE);
+
+		String line = sb.toString();
+
+		_configuration = _createConfiguration(
+			configurationPid, line, StandardCharsets.UTF_8);
+
+		Dictionary<String, Object> dictionary = _configuration.getProperties();
+
+		Assert.assertEquals(special, dictionary.get("testKey"));
+
+		_deleteConfiguration();
+
+		_configuration = _createConfiguration(
+			configurationPid, line, StandardCharsets.ISO_8859_1);
+
+		dictionary = _configuration.getProperties();
+
+		Assert.assertNotEquals(special, dictionary.get("testKey"));
+	}
+
 	private Configuration _createConfiguration(
 			String configurationPid, String content)
+		throws Exception {
+
+		return _createConfiguration(
+			configurationPid, content, Charset.defaultCharset());
+	}
+
+	private Configuration _createConfiguration(
+			String configurationPid, String content, Charset charset)
 		throws Exception {
 
 		CountDownLatch countDownLatch = new CountDownLatch(2);
@@ -223,7 +265,7 @@ public class FileInstallConfigTest {
 					Constants.SERVICE_PID, configurationPid));
 
 		try {
-			Files.write(_configurationPath, content.getBytes());
+			Files.write(_configurationPath, content.getBytes(charset));
 
 			countDownLatch.await();
 		}
@@ -233,6 +275,16 @@ public class FileInstallConfigTest {
 
 		return _configurationAdmin.getConfiguration(
 			configurationPid, StringPool.QUESTION);
+	}
+
+	private void _deleteConfiguration() throws Exception {
+		if (_configurationPath != null) {
+			Files.deleteIfExists(_configurationPath);
+		}
+
+		if (_configuration != null) {
+			ConfigurationTestUtil.deleteConfiguration(_configuration);
+		}
 	}
 
 	private static final String _CONFIGURATION_PID_PREFIX =

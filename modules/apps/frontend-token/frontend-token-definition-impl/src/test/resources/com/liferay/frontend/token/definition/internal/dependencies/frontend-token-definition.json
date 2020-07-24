@@ -1,0 +1,28 @@
+{
+	"frontendTokenCategories": [
+		{
+			"label": "color-system",
+			"name": "colorSystem",
+			"tokenSets": [
+				{
+					"frontendTokens": [
+						{
+							"editorType": "ColorPicker",
+							"label": "white",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "white"
+								}
+							],
+							"name": "whiteColor",
+							"type": "String"
+						}
+					],
+					"label": "grays",
+					"name": "grays"
+				}
+			]
+		}
+	]
+}

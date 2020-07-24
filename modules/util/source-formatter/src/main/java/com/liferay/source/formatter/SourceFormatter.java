@@ -543,7 +543,10 @@ public class SourceFormatter {
 				dependentFileNames.addAll(
 					SourceFormatterUtil.filterFileNames(
 						_allFileNames, new String[0],
-						new String[] {"**/test.properties"},
+						new String[] {
+							"**/source-formatter.properties",
+							"**/test.properties"
+						},
 						_sourceFormatterExcludes, false));
 			}
 

@@ -22,6 +22,8 @@ import com.liferay.portal.kernel.exception.PortalException;
  */
 public class SchedulerException extends PortalException {
 
+	public static final int TYPE_INVALID_START_DATE = 1;
+
 	public SchedulerException() {
 	}
 
@@ -36,5 +38,15 @@ public class SchedulerException extends PortalException {
 	public SchedulerException(Throwable cause) {
 		super(cause);
 	}
+
+	public int getType() {
+		return _type;
+	}
+
+	public void setType(int type) {
+		_type = type;
+	}
+
+	private int _type;
 
 }

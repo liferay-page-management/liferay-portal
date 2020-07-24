@@ -1422,12 +1422,6 @@ public class JavaParserUtil {
 			_parseParameterValueJavaExpressions(
 				methodCallDetailAST.findFirstToken(TokenTypes.ELIST)));
 
-		boolean statementCondition = DetailASTUtil.hasParentWithTokenType(
-			methodCallDetailAST, TokenTypes.LITERAL_FOR, TokenTypes.LITERAL_IF,
-			TokenTypes.LITERAL_WHILE);
-
-		javaMethodCall.setStatementCondition(statementCondition);
-
 		boolean insideConstructorCall = DetailASTUtil.hasParentWithTokenType(
 			methodCallDetailAST, TokenTypes.CTOR_CALL,
 			TokenTypes.SUPER_CTOR_CALL);
@@ -1680,10 +1674,30 @@ public class JavaParserUtil {
 		DetailAST colonDetailAST = questionDetailAST.findFirstToken(
 			TokenTypes.COLON);
 
+		JavaExpression conditionJavaExpression = _parseJavaExpression(
+			questionDetailAST.getFirstChild(), true);
+
+		if (conditionJavaExpression instanceof JavaTernaryOperator) {
+			conditionJavaExpression.setHasSurroundingParentheses(true);
+		}
+
+		JavaExpression falseValueJavaExpression = _parseJavaExpression(
+			colonDetailAST.getNextSibling(), true);
+
+		if (falseValueJavaExpression instanceof JavaTernaryOperator) {
+			falseValueJavaExpression.setHasSurroundingParentheses(true);
+		}
+
+		JavaExpression trueValueJavaExpression = _parseJavaExpression(
+			colonDetailAST.getPreviousSibling(), true);
+
+		if (trueValueJavaExpression instanceof JavaTernaryOperator) {
+			trueValueJavaExpression.setHasSurroundingParentheses(true);
+		}
+
 		return new JavaTernaryOperator(
-			_parseJavaExpression(questionDetailAST.getFirstChild(), true),
-			_parseJavaExpression(colonDetailAST.getPreviousSibling(), true),
-			_parseJavaExpression(colonDetailAST.getNextSibling(), true));
+			conditionJavaExpression, trueValueJavaExpression,
+			falseValueJavaExpression);
 	}
 
 	private static JavaThrowStatement _parseJavaThrowStatement(

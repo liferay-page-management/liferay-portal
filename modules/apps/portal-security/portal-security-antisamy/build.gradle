@@ -28,6 +28,7 @@ dependencies {
 	compileOnly group: "xerces", name: "xercesImpl", version: "2.12.0"
 	compileOnly group: "xml-apis", name: "xml-apis", version: "1.4.01"
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
+	compileOnly project(":apps:static:portal-configuration:portal-configuration-persistence-api")
 	compileOnly project(":core:petra:petra-string")
 }
 

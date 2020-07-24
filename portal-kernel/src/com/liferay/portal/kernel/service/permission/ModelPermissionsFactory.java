@@ -16,6 +16,7 @@ package com.liferay.portal.kernel.service.permission;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.internal.service.permission.ModelPermissionsImpl;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
@@ -55,13 +56,11 @@ public class ModelPermissionsFactory {
 	}
 
 	public static ModelPermissions create(
-		Map<String, String[]> modelPermissionsParameterMap) {
-
-		return create(modelPermissionsParameterMap, null);
-	}
-
-	public static ModelPermissions create(
 		Map<String, String[]> modelPermissionsParameterMap, String className) {
+
+		if (className == null) {
+			className = ModelPermissionsImpl.RESOURCE_NAME_FIRST_RESOURCE;
+		}
 
 		ModelPermissions modelPermissions = null;
 
@@ -73,7 +72,7 @@ public class ModelPermissionsFactory {
 					CompanyThreadLocal.getCompanyId(), entry.getKey());
 
 				if (modelPermissions == null) {
-					modelPermissions = new ModelPermissions(className);
+					modelPermissions = new ModelPermissionsImpl(className);
 				}
 
 				modelPermissions.addRolePermissions(
@@ -106,6 +105,10 @@ public class ModelPermissionsFactory {
 			portletRequest.getParameterMap(), className);
 	}
 
+	public static ModelPermissions create(String className) {
+		return new ModelPermissionsImpl(className);
+	}
+
 	public static ModelPermissions create(
 		String[] groupPermissions, String[] guestPermissions) {
 
@@ -116,7 +119,11 @@ public class ModelPermissionsFactory {
 		String[] groupPermissions, String[] guestPermissions,
 		String className) {
 
-		ModelPermissions modelPermissions = new ModelPermissions(className);
+		if (className == null) {
+			className = ModelPermissionsImpl.RESOURCE_NAME_FIRST_RESOURCE;
+		}
+
+		ModelPermissions modelPermissions = new ModelPermissionsImpl(className);
 
 		modelPermissions.addRolePermissions(
 			RoleConstants.PLACEHOLDER_DEFAULT_GROUP_ROLE, groupPermissions);
@@ -126,10 +133,19 @@ public class ModelPermissionsFactory {
 		return modelPermissions;
 	}
 
+	public static ModelPermissions createForAllResources() {
+		return new ModelPermissionsImpl(
+			ModelPermissionsImpl.RESOURCE_NAME_ALL_RESOURCES);
+	}
+
 	public static ModelPermissions createWithDefaultPermissions(
 		String className) {
 
-		ModelPermissions modelPermissions = new ModelPermissions(className);
+		if (className == null) {
+			throw new NullPointerException("Class name is null");
+		}
+
+		ModelPermissions modelPermissions = new ModelPermissionsImpl(className);
 
 		List<String> modelResourceGroupDefaultActions =
 			ResourceActionsUtil.getModelResourceGroupDefaultActions(className);

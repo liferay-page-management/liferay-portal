@@ -15,7 +15,8 @@
 package com.liferay.content.dashboard.web.internal.portlet;
 
 import com.liferay.asset.kernel.model.AssetVocabulary;
-import com.liferay.content.dashboard.web.internal.configuration.FFContentDashboardConfiguration;
+import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.content.dashboard.web.internal.constants.ContentDashboardPortletKeys;
 import com.liferay.content.dashboard.web.internal.constants.ContentDashboardWebKeys;
 import com.liferay.content.dashboard.web.internal.dao.search.ContentDashboardItemSearchContainerFactory;
@@ -30,7 +31,6 @@ import com.liferay.content.dashboard.web.internal.search.request.ContentDashboar
 import com.liferay.content.dashboard.web.internal.searcher.ContentDashboardSearchRequestBuilderFactory;
 import com.liferay.content.dashboard.web.internal.servlet.taglib.util.ContentDashboardDropdownItemsProvider;
 import com.liferay.item.selector.ItemSelector;
-import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.constants.LanguageConstants;
@@ -43,32 +43,25 @@ import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.search.aggregation.Aggregations;
-import com.liferay.portal.search.legacy.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.Searcher;
 
 import java.io.IOException;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Cristina González
  */
 @Component(
-	configurationPid = "com.liferay.content.dashboard.web.internal.configuration.FFContentDashboardConfiguration",
 	configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true,
 	property = {
 		"com.liferay.portlet.add-default-resource=true",
@@ -136,8 +129,7 @@ public class ContentDashboardAdminPortlet extends MVCPortlet {
 					new ContentDashboardDropdownItemsProvider(
 						_http, _language, liferayPortletRequest,
 						liferayPortletResponse, _portal),
-					_contentDashboardItemTypeFactoryTracker,
-					_ffContentDashboardConfiguration, _itemSelector,
+					_contentDashboardItemTypeFactoryTracker, _itemSelector,
 					_language.get(
 						_portal.getLocale(liferayPortletRequest),
 						LanguageConstants.KEY_DIR),
@@ -153,6 +145,7 @@ public class ContentDashboardAdminPortlet extends MVCPortlet {
 		ContentDashboardAdminManagementToolbarDisplayContext
 			contentDashboardAdminManagementToolbarDisplayContext =
 				new ContentDashboardAdminManagementToolbarDisplayContext(
+					_assetCategoryLocalService, _assetVocabularyLocalService,
 					contentDashboardAdminDisplayContext, _groupLocalService,
 					_portal.getHttpServletRequest(renderRequest),
 					liferayPortletRequest, liferayPortletResponse,
@@ -166,25 +159,17 @@ public class ContentDashboardAdminPortlet extends MVCPortlet {
 		super.render(renderRequest, renderResponse);
 	}
 
-	@Activate
-	@Modified
-	protected void activate(
-		BundleContext bundleContext, Map<String, Object> properties) {
-
-		_ffContentDashboardConfiguration = ConfigurableUtil.createConfigurable(
-			FFContentDashboardConfiguration.class, properties);
-	}
-
-	@Deactivate
-	protected void deactivate() {
-		_ffContentDashboardConfiguration = null;
-	}
-
 	@Reference
 	private Aggregations _aggregations;
 
 	@Reference
+	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Reference
 	private AssetVocabulariesProvider _assetVocabulariesProvider;
+
+	@Reference
+	private AssetVocabularyLocalService _assetVocabularyLocalService;
 
 	@Reference
 	private ContentDashboardItemFactoryTracker
@@ -197,9 +182,6 @@ public class ContentDashboardAdminPortlet extends MVCPortlet {
 	@Reference
 	private ContentDashboardSearchRequestBuilderFactory
 		_contentDashboardSearchRequestBuilderFactory;
-
-	private volatile FFContentDashboardConfiguration
-		_ffContentDashboardConfiguration;
 
 	@Reference
 	private GroupLocalService _groupLocalService;
@@ -218,9 +200,6 @@ public class ContentDashboardAdminPortlet extends MVCPortlet {
 
 	@Reference
 	private Searcher _searcher;
-
-	@Reference
-	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 	@Reference
 	private UserLocalService _userLocalService;

@@ -31,7 +31,7 @@ public class JSPMethodCallsCheck extends BaseStylingCheck {
 		while (matcher.find()) {
 			addMessage(
 				fileName,
-				"Use tyep of 'LiferayPortletResponse' to call 'getNamespace()'",
+				"Use type 'LiferayPortletResponse' to call 'getNamespace()'",
 				getLineNumber(content, matcher.start()));
 		}
 

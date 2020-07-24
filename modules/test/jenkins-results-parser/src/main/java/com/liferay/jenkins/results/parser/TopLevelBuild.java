@@ -245,6 +245,10 @@ public abstract class TopLevelBuild extends BaseBuild {
 	}
 
 	public Build getControllerBuild() {
+		if (_controllerBuild != null) {
+			return _controllerBuild;
+		}
+
 		String controllerBuildURL = getParameterValue("CONTROLLER_BUILD_URL");
 
 		if ((controllerBuildURL == null) ||
@@ -253,7 +257,9 @@ public abstract class TopLevelBuild extends BaseBuild {
 			return null;
 		}
 
-		return BuildFactory.newBuild(controllerBuildURL, null);
+		_controllerBuild = BuildFactory.newBuild(controllerBuildURL, null);
+
+		return _controllerBuild;
 	}
 
 	@Override
@@ -1656,8 +1662,6 @@ public abstract class TopLevelBuild extends BaseBuild {
 			new GenericFailureMessageGenerator()
 		};
 
-	// Skip JavaParser
-
 	private static final long _MILLIS_DOWNSTREAM_BUILDS_LISTING_INTERVAL =
 		1000 * 60 * 5;
 
@@ -1668,6 +1672,7 @@ public abstract class TopLevelBuild extends BaseBuild {
 		JenkinsResultsParserUtil.getNewThreadPoolExecutor(10, true);
 
 	private boolean _compareToUpstream = true;
+	private Build _controllerBuild;
 	private long _lastDownstreamBuildsListingTimestamp = -1L;
 	private String _metricsHostName;
 	private int _metricsHostPort;

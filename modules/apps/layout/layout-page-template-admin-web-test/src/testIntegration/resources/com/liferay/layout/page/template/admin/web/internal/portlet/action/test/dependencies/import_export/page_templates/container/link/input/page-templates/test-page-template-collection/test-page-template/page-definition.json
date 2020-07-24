@@ -1,0 +1,22 @@
+{
+	"pageElement": {
+		"pageElements": [
+			{
+				"definition": {
+					"fragmentLink": {
+						"href": {
+							"value": "https://www.liferay.com/"
+						},
+						"target": "Parent"
+					}
+				},
+				"type": "Section"
+			}
+		],
+		"type": "Root"
+	},
+	"settings": {
+		"colorSchemeName": "01",
+		"themeName": "Classic"
+	}
+}

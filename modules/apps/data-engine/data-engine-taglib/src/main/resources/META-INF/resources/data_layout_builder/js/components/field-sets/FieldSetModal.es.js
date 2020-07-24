@@ -19,6 +19,7 @@ import React, {useContext, useEffect, useState} from 'react';
 
 import App from '../../App.es';
 import AppContext from '../../AppContext.es';
+import {UPDATE_CONFIG} from '../../actions.es';
 import {
 	containsField,
 	isDataLayoutEmpty,
@@ -50,7 +51,9 @@ const ModalContent = ({
 	const [name, setName] = useState({});
 	const {
 		dataLayoutBuilder,
+		dispatch,
 		state: {
+			config,
 			dataLayout,
 			dataDefinition: {
 				dataDefinitionFields: childrenDataDefinitionFields = [],
@@ -58,6 +61,8 @@ const ModalContent = ({
 			editingLanguageId = defaultLanguageId,
 		},
 	} = childrenContext;
+
+	const {contentType} = appProps;
 
 	const availableLanguageIds = [
 		...new Set([...Object.keys(name), editingLanguageId]),
@@ -96,6 +101,21 @@ const ModalContent = ({
 	}, [fieldSet]);
 
 	useEffect(() => {
+		if (contentType === 'app-builder') {
+			dispatch({
+				payload: {
+					config: {
+						...config,
+						allowFieldSets: false,
+					},
+				},
+				type: UPDATE_CONFIG,
+			});
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [contentType, dispatch]);
+
+	useEffect(() => {
 		if (dataLayout) {
 			const {dataLayoutPages} = dataLayout;
 			setDataLayoutIsEmpty(isDataLayoutEmpty(dataLayoutPages));
@@ -105,11 +125,16 @@ const ModalContent = ({
 	useEffect(() => {
 		if (dataLayoutBuilder) {
 			const provider = dataLayoutBuilder.getLayoutProvider();
-			provider.props.fieldNameGenerator = (desiredName) =>
-				generateDataDefinitionFieldName(
-					{dataDefinitionFields: mergedDataDefinitionFields},
-					desiredName
-				);
+
+			provider.props = {
+				...provider.props,
+				fieldNameGenerator: (desiredName) =>
+					generateDataDefinitionFieldName(
+						{dataDefinitionFields: mergedDataDefinitionFields},
+						desiredName
+					),
+				shouldAutoGenerateName: () => false,
+			};
 		}
 	}, [dataLayoutBuilder, mergedDataDefinitionFields]);
 
@@ -129,37 +154,35 @@ const ModalContent = ({
 		};
 	}, [dataLayoutBuilder]);
 
-	const createFieldSet = useCreateFieldSet({
-		availableLanguageIds,
-		childrenContext,
-	});
-	const saveFieldSet = useSaveFieldSet({
-		DataLayout: childrenAppProps.DataLayout,
+	const actionProps = {
 		availableLanguageIds,
 		childrenContext,
 		fieldSet,
-	});
-	const propagateFieldSet = usePropagateFieldSet();
-
-	const isDataLayoutChanged = () => {
-		const fieldNames = fieldSet.dataDefinitionFields.map(({name}) => name);
-
-		const [prevLayoutFields, actualLayoutFields] = [
-			fieldSet.defaultDataLayout.dataLayoutPages,
-			dataLayout.dataLayoutPages,
-		].map((layout) =>
-			fieldNames.filter((field) => containsField(layout, field))
-		);
-
-		return !!prevLayoutFields.filter(
-			(field) => !actualLayoutFields.includes(field)
-		).length;
 	};
 
-	const onSave = () => {
-		if (fieldSet) {
-			const containsRemovedFields = isDataLayoutChanged();
+	const createFieldSet = useCreateFieldSet(actionProps);
+	const saveFieldSet = useSaveFieldSet(actionProps);
+	const propagateFieldSet = usePropagateFieldSet();
 
+	const onSave = () => {
+		const hasRemovedField = () => {
+			const fieldNames = fieldSet.dataDefinitionFields.map(
+				({name}) => name
+			);
+
+			const [prevLayoutFields, actualLayoutFields] = [
+				fieldSet.defaultDataLayout.dataLayoutPages,
+				dataLayout.dataLayoutPages,
+			].map((layout) =>
+				fieldNames.filter((field) => containsField(layout, field))
+			);
+
+			return !!prevLayoutFields.filter(
+				(field) => !actualLayoutFields.includes(field)
+			).length;
+		};
+
+		if (fieldSet) {
 			propagateFieldSet({
 				fieldSet,
 				modal: {
@@ -168,7 +191,7 @@ const ModalContent = ({
 						'do-you-want-to-propagate-the-changes-to-other-objects-views-using-this-fieldset'
 					),
 					headerMessage: Liferay.Language.get('propagate-changes'),
-					...(containsRemovedFields && {
+					...(hasRemovedField() && {
 						warningMessage: Liferay.Language.get(
 							'the-changes-include-the-deletion-of-fields-and-may-erase-the-data-collected-permanently'
 						),

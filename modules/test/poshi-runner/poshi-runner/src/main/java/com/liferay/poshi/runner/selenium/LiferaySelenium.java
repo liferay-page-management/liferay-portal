@@ -69,6 +69,10 @@ public interface LiferaySelenium {
 
 	public void assertHTMLSourceTextPresent(String value) throws Exception;
 
+	public void assertJavaScript(
+			String javaScript, String message, String argument)
+		throws Exception;
+
 	public void assertJavaScriptErrors(String ignoreJavaScriptError)
 		throws Exception;
 
@@ -317,10 +321,6 @@ public interface LiferaySelenium {
 
 	public void javaScriptDoubleClick(String locator);
 
-	public void javaScriptDragAndDropToObject(
-			String sourceLocator, String targetLocator)
-		throws Exception;
-
 	public void javaScriptMouseDown(String locator);
 
 	public void javaScriptMouseUp(String locator);
@@ -491,6 +491,10 @@ public interface LiferaySelenium {
 
 	public void verifyElementPresent(String locator) throws Exception;
 
+	public void verifyJavaScript(
+			String javaScript, String message, String argument)
+		throws Exception;
+
 	public void verifyNotVisible(String locator) throws Exception;
 
 	public void verifyVisible(String locator) throws Exception;
@@ -510,6 +514,10 @@ public interface LiferaySelenium {
 		throws Exception;
 
 	public void waitForJavaScript(
+			String javaScript, String message, String argument)
+		throws Exception;
+
+	public void waitForJavaScriptNoError(
 			String javaScript, String message, String argument)
 		throws Exception;
 

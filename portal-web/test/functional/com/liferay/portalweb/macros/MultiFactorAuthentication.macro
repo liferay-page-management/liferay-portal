@@ -128,9 +128,7 @@ definition {
 	}
 
 	macro sendOTPEmailPG {
-		AssertTextEquals.assertPartialText(
-			locator1 = "MultiFactorAuthentication#EMAIL_OTP_VERIFY_INFO_MESSAGE",
-			value1 = "Press the button bellow to obtain your one-time password. It will be sent to");
+		AssertElementPresent(locator1 = "MultiFactorAuthentication#EMAIL_OTP_VERIFY_INFO_MESSAGE");
 
 		AssertClick(
 			locator1 = "MultiFactorAuthentication#EMAIL_OTP_VERIFY_SEND_EMAIL_BUTTON",

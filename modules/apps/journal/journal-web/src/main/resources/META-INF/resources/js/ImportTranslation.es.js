@@ -18,6 +18,10 @@ import {usePrevious} from 'frontend-js-react-web';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 const VALID_EXTENSIONS = '.xliff,.xlf';
+const XLIFF_ID_ATTRIBUTE = {
+	[1.2]: 'original',
+	default: 'id',
+};
 
 export default function ImportTranslation({
 	articleResourcePrimKey,
@@ -43,7 +47,7 @@ export default function ImportTranslation({
 			const reader = new FileReader();
 
 			reader.addEventListener('loadend', (event) => {
-				parseFile(importFile.name, event.target.result);
+				parseFile(event.target.result);
 			});
 
 			reader.readAsText(importFile);
@@ -51,16 +55,22 @@ export default function ImportTranslation({
 	}, [importFile, parseFile, saveDraftBtnId, submitBtnId, worflowPending]);
 
 	const parseFile = useCallback(
-		(filename, fileData) => {
+		(fileData) => {
 			try {
 				const xmlDoc = new DOMParser().parseFromString(
 					fileData,
 					'text/xml'
 				);
 
-				const fileElement = xmlDoc.getElementsByTagName('file')[0];
+				const xliffVersion = xmlDoc
+					.getElementsByTagName('xliff')[0]
+					.getAttribute('version');
 
-				const fileId = fileElement.getAttribute('id');
+				const fileElement = xmlDoc.getElementsByTagName('file')[0];
+				const fileId = fileElement.getAttribute(
+					XLIFF_ID_ATTRIBUTE[xliffVersion] ||
+						XLIFF_ID_ATTRIBUTE.default
+				);
 
 				const id = fileId.substring(fileId.indexOf(':') + 1);
 
@@ -74,6 +84,7 @@ export default function ImportTranslation({
 			}
 			catch (_error) {
 				setHasError(true);
+				setImportFile(null);
 			}
 		},
 		[articleResourcePrimKey]

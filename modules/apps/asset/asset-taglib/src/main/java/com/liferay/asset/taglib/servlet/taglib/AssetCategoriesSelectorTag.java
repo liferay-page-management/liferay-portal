@@ -319,6 +319,8 @@ public class AssetCategoriesSelectorTag extends IncludeTag {
 				).put(
 					"selectedCategories", selectedCategoryIds
 				).put(
+					"system", vocabulary.isSystem()
+				).put(
 					"title",
 					vocabulary.getUnambiguousTitle(
 						vocabularies, themeDisplay.getScopeGroupId(),
@@ -376,14 +378,15 @@ public class AssetCategoriesSelectorTag extends IncludeTag {
 								WebKeys.THEME_DISPLAY);
 
 						AssetCategoriesCompanyConfiguration
-							accountEntryEmailDomainsConfiguration =
+							assetCategoriesCompanyConfiguration =
 								ConfigurationProviderUtil.
 									getCompanyConfiguration(
 										AssetCategoriesCompanyConfiguration.
 											class,
 										themeDisplay.getCompanyId());
 
-						return accountEntryEmailDomainsConfiguration.linkURL();
+						return assetCategoriesCompanyConfiguration.
+							linkToDocumentationURL();
 					}
 				).put(
 					"portletURL", getPortletURL().toString()

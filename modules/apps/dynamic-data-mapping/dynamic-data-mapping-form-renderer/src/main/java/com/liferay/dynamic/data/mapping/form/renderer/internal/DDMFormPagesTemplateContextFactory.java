@@ -82,7 +82,7 @@ public class DDMFormPagesTemplateContextFactory {
 		_ddmFormValues = ddmFormValues;
 
 		_ddmFormFieldsMap = ddmForm.getDDMFormFieldsMap(true);
-		_ddmFormFieldValuesMap = ddmFormValues.getDDMFormFieldValuesMap();
+		_ddmFormFieldValuesMap = ddmFormValues.getDDMFormFieldValuesMap(true);
 		_locale = ddmFormRenderingContext.getLocale();
 	}
 
@@ -165,7 +165,8 @@ public class DDMFormPagesTemplateContextFactory {
 					getDDMFormFieldsPropertyChanges(),
 				_ddmFormFieldValuesMap.get(ddmFormFieldName),
 				_ddmFormRenderingContext, _ddmStructureLayoutLocalService,
-				_ddmStructureLocalService, _jsonFactory, _pageEnabled);
+				_ddmStructureLocalService, _jsonFactory, _pageEnabled,
+				_ddmFormLayout);
 
 		ddmFormFieldTemplateContextFactory.setDDMFormFieldTypeServicesTracker(
 			_ddmFormFieldTypeServicesTracker);

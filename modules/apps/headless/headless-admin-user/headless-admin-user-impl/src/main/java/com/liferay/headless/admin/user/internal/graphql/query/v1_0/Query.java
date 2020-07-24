@@ -1453,6 +1453,25 @@ public class Query {
 
 	}
 
+	@GraphQLTypeExtension(Site.class)
+	public class ParentSiteSiteIdTypeExtension {
+
+		public ParentSiteSiteIdTypeExtension(Site site) {
+			_site = site;
+		}
+
+		@GraphQLField
+		public Site parentSite() throws Exception {
+			return _applyComponentServiceObjects(
+				_siteResourceComponentServiceObjects,
+				Query.this::_populateResourceContext,
+				siteResource -> siteResource.getSite(_site.getParentSiteId()));
+		}
+
+		private Site _site;
+
+	}
+
 	private <T, R, E1 extends Throwable, E2 extends Throwable> R
 			_applyComponentServiceObjects(
 				ComponentServiceObjects<T> componentServiceObjects,

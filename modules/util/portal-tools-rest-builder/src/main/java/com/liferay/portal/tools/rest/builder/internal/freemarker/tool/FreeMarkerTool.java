@@ -227,8 +227,7 @@ public class FreeMarkerTool {
 	}
 
 	public List<JavaMethodSignature> getGraphQLJavaMethodSignatures(
-		ConfigYAML configYAML, final String graphQLType,
-		OpenAPIYAML openAPIYAML) {
+		ConfigYAML configYAML, String graphQLType, OpenAPIYAML openAPIYAML) {
 
 		return GraphQLOpenAPIParser.getJavaMethodSignatures(
 			configYAML, openAPIYAML,
@@ -326,17 +325,11 @@ public class FreeMarkerTool {
 	}
 
 	public List<JavaMethodSignature> getGraphQLRelationJavaMethodSignatures(
-		ConfigYAML configYAML, final String graphQLType,
-		OpenAPIYAML openAPIYAML) {
+		ConfigYAML configYAML, String graphQLType, OpenAPIYAML openAPIYAML) {
 
 		List<JavaMethodSignature> javaMethodSignatures =
-			getGraphQLJavaMethodSignatures(
+			_getSortedJavaMethodSignatures(
 				configYAML, graphQLType, openAPIYAML);
-
-		javaMethodSignatures.sort(
-			Comparator.comparingInt(
-				javaMethodSignature -> StringUtil.count(
-					javaMethodSignature.getPath(), "/")));
 
 		Map<String, Schema> schemas = getSchemas(openAPIYAML);
 
@@ -446,6 +439,73 @@ public class FreeMarkerTool {
 		).orElse(
 			null
 		);
+	}
+
+	public List<JavaMethodSignature>
+		getParentGraphQLRelationJavaMethodSignatures(
+			ConfigYAML configYAML, String graphQLType,
+			OpenAPIYAML openAPIYAML) {
+
+		Map<String, Schema> schemas = getSchemas(openAPIYAML);
+
+		List<JavaMethodSignature> javaMethodSignatures =
+			_getSortedJavaMethodSignatures(
+				configYAML, graphQLType, openAPIYAML);
+
+		List<JavaMethodSignature> parentJavaMethodSignatures =
+			new ArrayList<>();
+
+		for (Map.Entry<String, Schema> entry : schemas.entrySet()) {
+			Schema schema = entry.getValue();
+
+			Map<String, Schema> propertySchemas = schema.getPropertySchemas();
+
+			if (propertySchemas == null) {
+				continue;
+			}
+
+			Set<String> propertyNames = propertySchemas.keySet();
+
+			for (String propertyName : propertyNames) {
+				if (!propertyName.startsWith("parent") ||
+					propertyNames.contains(
+						StringUtil.removeSubstring(propertyName, "Id"))) {
+
+					continue;
+				}
+
+				propertyName = StringUtil.lowerCaseFirstLetter(
+					StringUtil.removeSubstring(propertyName, "parent"));
+
+				for (JavaMethodSignature javaMethodSignature :
+						javaMethodSignatures) {
+
+					List<JavaMethodParameter> javaMethodParameters =
+						javaMethodSignature.getJavaMethodParameters();
+
+					if (javaMethodParameters.isEmpty()) {
+						continue;
+					}
+
+					JavaMethodParameter javaMethodParameter =
+						javaMethodParameters.get(0);
+
+					if (!propertyName.equals(
+							javaMethodParameter.getParameterName())) {
+
+						continue;
+					}
+
+					parentJavaMethodSignatures.add(
+						_getJavaMethodSignature(
+							javaMethodSignature, entry.getKey()));
+
+					break;
+				}
+			}
+		}
+
+		return parentJavaMethodSignatures;
 	}
 
 	public JavaMethodSignature getPostSchemaJavaMethodSignature(
@@ -996,6 +1056,21 @@ public class FreeMarkerTool {
 		}
 
 		return sb.toString();
+	}
+
+	private List<JavaMethodSignature> _getSortedJavaMethodSignatures(
+		ConfigYAML configYAML, String graphQLType, OpenAPIYAML openAPIYAML) {
+
+		List<JavaMethodSignature> javaMethodSignatures =
+			getGraphQLJavaMethodSignatures(
+				configYAML, graphQLType, openAPIYAML);
+
+		javaMethodSignatures.sort(
+			Comparator.comparingInt(
+				javaMethodSignature -> StringUtil.count(
+					javaMethodSignature.getPath(), "/")));
+
+		return javaMethodSignatures;
 	}
 
 	private boolean _isGraphQLPropertyRelation(

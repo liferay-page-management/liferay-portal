@@ -38,6 +38,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ReleaseInfo;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.version.Version;
+import com.liferay.portal.module.framework.ModuleFrameworkUtilAdapter;
 import com.liferay.portal.transaction.TransactionsUtil;
 import com.liferay.portal.upgrade.PortalUpgradeProcess;
 import com.liferay.portal.util.InitUtil;
@@ -58,6 +59,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import org.apache.commons.lang.time.StopWatch;
+
+import org.springframework.context.ApplicationContext;
 
 /**
  * @author Michael C. Han
@@ -127,20 +130,6 @@ public class DBUpgrader {
 
 			upgrade();
 
-			_checkClassNamesAndResourceActions();
-
-			verify();
-
-			DependencyManagerSyncUtil.sync();
-
-			DLFileEntryTypeLocalServiceUtil.getBasicDocumentDLFileEntryType();
-
-			_registerModuleServiceLifecycle("database.initialized");
-
-			InitUtil.registerContext();
-
-			_registerModuleServiceLifecycle("portal.initialized");
-
 			_registerModuleServiceLifecycle("portlets.initialized");
 
 			System.out.println(
@@ -159,100 +148,21 @@ public class DBUpgrader {
 	}
 
 	public static void upgrade() throws Exception {
+		upgrade(null);
+	}
 
-		// Disable database caching before upgrade
+	public static void upgrade(ApplicationContext applicationContext)
+		throws Exception {
 
-		if (_log.isDebugEnabled()) {
-			_log.debug("Disable cache registry");
-		}
+		StartupHelperUtil.setUpgrading(true);
 
-		// Check required build number
+		_upgradePortal();
 
-		checkRequiredBuildNumber(ReleaseInfo.RELEASE_6_2_0_BUILD_NUMBER);
+		DependencyManagerSyncUtil.sync();
 
-		try (Connection connection = DataAccess.getConnection()) {
-			if (PortalUpgradeProcess.isInLatestSchemaVersion(connection)) {
-				return;
-			}
-		}
+		DLFileEntryTypeLocalServiceUtil.getBasicDocumentDLFileEntryType();
 
-		CacheRegistryUtil.setActive(false);
-
-		// Upgrade
-
-		Release release = ReleaseLocalServiceUtil.getRelease(
-			ReleaseConstants.DEFAULT_ID);
-
-		int buildNumber = release.getBuildNumber();
-
-		if (_log.isDebugEnabled()) {
-			_log.debug("Update build " + buildNumber);
-		}
-
-		_checkPermissionAlgorithm();
-		checkReleaseState();
-
-		if (PropsValues.UPGRADE_DATABASE_TRANSACTIONS_DISABLED) {
-			TransactionsUtil.disableTransactions();
-		}
-
-		try {
-			buildNumber = _getBuildNumberForMissedUpgradeProcesses(buildNumber);
-
-			StartupHelperUtil.upgradeProcess(buildNumber);
-		}
-		catch (Exception exception) {
-			_updateReleaseState(ReleaseConstants.STATE_UPGRADE_FAILURE);
-
-			throw exception;
-		}
-		finally {
-			if (PropsValues.UPGRADE_DATABASE_TRANSACTIONS_DISABLED) {
-				TransactionsUtil.enableTransactions();
-			}
-		}
-
-		// Update indexes
-
-		StartupHelperUtil.updateIndexes(true);
-
-		// Update Release
-
-		_updateReleaseBuildInfo();
-
-		// Reload SQL
-
-		CustomSQLUtil.reloadCustomSQL();
-		SQLTransformer.reloadSQLTransformer();
-
-		// Update company key
-
-		if (StartupHelperUtil.isUpgraded()) {
-			if (_log.isDebugEnabled()) {
-				_log.debug("Update company key");
-			}
-
-			_updateCompanyKey();
-		}
-
-		// Clear the caches only if the upgrade process was run
-
-		if (_log.isDebugEnabled()) {
-			_log.debug("Clear cache if upgrade process was run");
-		}
-
-		if (StartupHelperUtil.isUpgraded()) {
-			PortalCacheHelperUtil.clearPortalCaches(
-				PortalCacheManagerNames.MULTI_VM);
-		}
-
-		// Enable database caching after upgrade
-
-		CacheRegistryUtil.setActive(true);
-
-		// Register release service
-
-		_registerReleaseService();
+		_upgradeModules(applicationContext);
 	}
 
 	public static void verify() throws VerifyException {
@@ -284,25 +194,6 @@ public class DBUpgrader {
 		StartupHelperUtil.initResourceActions();
 
 		ResourceActionLocalServiceUtil.checkResourceActions();
-	}
-
-	private static void _checkPermissionAlgorithm() throws Exception {
-		long count = _getResourceCodesCount();
-
-		if (count == 0) {
-			return;
-		}
-
-		StringBundler sb = new StringBundler(6);
-
-		sb.append("Permission conversion to algorithm 6 has not been ");
-		sb.append("completed. Please complete the conversion prior to ");
-		sb.append("starting the portal. The conversion process is available ");
-		sb.append("in portal versions starting with 5203 and prior to ");
-		sb.append(ReleaseInfo.RELEASE_6_2_0_BUILD_NUMBER);
-		sb.append(".");
-
-		throw new IllegalStateException(sb.toString());
 	}
 
 	private static int _getBuildNumberForMissedUpgradeProcesses(int buildNumber)
@@ -338,23 +229,6 @@ public class DBUpgrader {
 			throw new IllegalArgumentException(
 				"No Release exists with the primary key " +
 					ReleaseConstants.DEFAULT_ID);
-		}
-	}
-
-	private static long _getResourceCodesCount() throws Exception {
-		try (Connection con = DataAccess.getConnection();
-			PreparedStatement ps = con.prepareStatement(
-				"select count(*) from ResourceCode");
-			ResultSet rs = ps.executeQuery()) {
-
-			if (rs.next()) {
-				return rs.getInt(1);
-			}
-
-			return 0;
-		}
-		catch (Exception exception) {
-			return 0;
 		}
 	}
 
@@ -432,6 +306,112 @@ public class DBUpgrader {
 
 			ps.executeUpdate();
 		}
+	}
+
+	private static void _upgradeModules(ApplicationContext applicationContext) {
+		_registerModuleServiceLifecycle("database.initialized");
+
+		if (applicationContext == null) {
+			InitUtil.registerContext();
+		}
+		else {
+			ModuleFrameworkUtilAdapter.registerContext(applicationContext);
+		}
+
+		_registerModuleServiceLifecycle("portal.initialized");
+
+		PortalCacheHelperUtil.clearPortalCaches(
+			PortalCacheManagerNames.MULTI_VM);
+	}
+
+	private static void _upgradePortal() throws Exception {
+
+		// Check required build number
+
+		checkRequiredBuildNumber(ReleaseInfo.RELEASE_6_2_0_BUILD_NUMBER);
+
+		try (Connection connection = DataAccess.getConnection()) {
+			if (PortalUpgradeProcess.isInLatestSchemaVersion(connection)) {
+				return;
+			}
+		}
+
+		// Disable database caching before upgrade
+
+		if (_log.isDebugEnabled()) {
+			_log.debug("Disable cache registry");
+		}
+
+		CacheRegistryUtil.setActive(false);
+
+		// Upgrade
+
+		Release release = ReleaseLocalServiceUtil.getRelease(
+			ReleaseConstants.DEFAULT_ID);
+
+		int buildNumber = release.getBuildNumber();
+
+		if (_log.isDebugEnabled()) {
+			_log.debug("Update build " + buildNumber);
+		}
+
+		checkReleaseState();
+
+		if (PropsValues.UPGRADE_DATABASE_TRANSACTIONS_DISABLED) {
+			TransactionsUtil.disableTransactions();
+		}
+
+		try {
+			buildNumber = _getBuildNumberForMissedUpgradeProcesses(buildNumber);
+
+			StartupHelperUtil.upgradeProcess(buildNumber);
+		}
+		catch (Exception exception) {
+			_updateReleaseState(ReleaseConstants.STATE_UPGRADE_FAILURE);
+
+			throw exception;
+		}
+		finally {
+			if (PropsValues.UPGRADE_DATABASE_TRANSACTIONS_DISABLED) {
+				TransactionsUtil.enableTransactions();
+			}
+		}
+
+		// Update indexes
+
+		StartupHelperUtil.updateIndexes(true);
+
+		// Update release build info
+
+		_updateReleaseBuildInfo();
+
+		// Reload SQL
+
+		CustomSQLUtil.reloadCustomSQL();
+		SQLTransformer.reloadSQLTransformer();
+
+		// Update company key
+
+		if (_log.isDebugEnabled()) {
+			_log.debug("Update company key");
+		}
+
+		_updateCompanyKey();
+
+		PortalCacheHelperUtil.clearPortalCaches(
+			PortalCacheManagerNames.MULTI_VM);
+
+		// Enable database caching after upgrade
+
+		CacheRegistryUtil.setActive(true);
+
+		// Register release service
+
+		_registerReleaseService();
+
+		_checkClassNamesAndResourceActions();
+
+		verify();
 	}
 
 	private static final Version _VERSION_7010 = new Version(0, 0, 6);

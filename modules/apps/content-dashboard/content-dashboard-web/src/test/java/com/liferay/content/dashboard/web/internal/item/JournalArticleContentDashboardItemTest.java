@@ -16,6 +16,7 @@ package com.liferay.content.dashboard.web.internal.item;
 
 import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
 import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.content.dashboard.web.internal.item.type.ContentDashboardItemType;
 import com.liferay.info.display.url.provider.InfoEditURLProvider;
 import com.liferay.journal.model.JournalArticle;
@@ -61,8 +62,6 @@ public class JournalArticleContentDashboardItemTest {
 
 	@Test
 	public void testGetAssetCategories() {
-		JournalArticle journalArticle = _getJournalArticle();
-
 		AssetCategory assetCategory = Mockito.mock(AssetCategory.class);
 
 		Mockito.when(
@@ -71,10 +70,12 @@ public class JournalArticleContentDashboardItemTest {
 			RandomTestUtil.randomLong()
 		);
 
+		JournalArticle journalArticle = _getJournalArticle();
+
 		JournalArticleContentDashboardItem journalArticleContentDashboardItem =
 			new JournalArticleContentDashboardItem(
 				Collections.singletonList(assetCategory), null, null, null,
-				null, journalArticle, null, null, null);
+				null, null, journalArticle, null, null, null, null);
 
 		Assert.assertEquals(
 			Collections.singletonList(assetCategory),
@@ -83,8 +84,6 @@ public class JournalArticleContentDashboardItemTest {
 
 	@Test
 	public void testGetAssetCategoriesByAssetVocabulary() {
-		JournalArticle journalArticle = _getJournalArticle();
-
 		AssetCategory assetCategory = Mockito.mock(AssetCategory.class);
 
 		Mockito.when(
@@ -93,10 +92,12 @@ public class JournalArticleContentDashboardItemTest {
 			RandomTestUtil.randomLong()
 		);
 
+		JournalArticle journalArticle = _getJournalArticle();
+
 		JournalArticleContentDashboardItem journalArticleContentDashboardItem =
 			new JournalArticleContentDashboardItem(
 				Collections.singletonList(assetCategory), null, null, null,
-				null, journalArticle, null, null, null);
+				null, null, journalArticle, null, null, null, null);
 
 		Assert.assertEquals(
 			Collections.singletonList(assetCategory),
@@ -110,7 +111,8 @@ public class JournalArticleContentDashboardItemTest {
 
 		JournalArticleContentDashboardItem journalArticleContentDashboardItem =
 			new JournalArticleContentDashboardItem(
-				null, null, null, null, null, journalArticle, null, null, null);
+				null, null, null, null, null, null, journalArticle, null, null,
+				null, null);
 
 		Assert.assertEquals(
 			Collections.emptyList(),
@@ -120,8 +122,6 @@ public class JournalArticleContentDashboardItemTest {
 
 	@Test
 	public void testGetAssetCategoriesWithNoAssetCategoriesInAssetVocabulary() {
-		JournalArticle journalArticle = _getJournalArticle();
-
 		AssetCategory assetCategory = Mockito.mock(AssetCategory.class);
 
 		Mockito.when(
@@ -130,10 +130,12 @@ public class JournalArticleContentDashboardItemTest {
 			RandomTestUtil.randomLong()
 		);
 
+		JournalArticle journalArticle = _getJournalArticle();
+
 		JournalArticleContentDashboardItem journalArticleContentDashboardItem =
 			new JournalArticleContentDashboardItem(
 				Collections.singletonList(assetCategory), null, null, null,
-				null, journalArticle, null, null, null);
+				null, null, journalArticle, null, null, null, null);
 
 		Assert.assertEquals(
 			Collections.emptyList(),
@@ -142,9 +144,23 @@ public class JournalArticleContentDashboardItemTest {
 	}
 
 	@Test
-	public void testGetEditURL() throws Exception {
+	public void testGetAssetTags() {
+		AssetTag assetTag = Mockito.mock(AssetTag.class);
+
 		JournalArticle journalArticle = _getJournalArticle();
 
+		JournalArticleContentDashboardItem journalArticleContentDashboardItem =
+			new JournalArticleContentDashboardItem(
+				null, Collections.singletonList(assetTag), null, null, null,
+				null, journalArticle, null, null, null, null);
+
+		Assert.assertEquals(
+			Collections.singletonList(assetTag),
+			journalArticleContentDashboardItem.getAssetTags());
+	}
+
+	@Test
+	public void testGetEditURL() throws Exception {
 		InfoEditURLProvider<JournalArticle> infoEditURLProvider = Mockito.mock(
 			InfoEditURLProvider.class);
 
@@ -156,10 +172,12 @@ public class JournalArticleContentDashboardItemTest {
 			"validURL"
 		);
 
+		JournalArticle journalArticle = _getJournalArticle();
+
 		JournalArticleContentDashboardItem journalArticleContentDashboardItem =
 			new JournalArticleContentDashboardItem(
-				null, null, null, null, infoEditURLProvider, journalArticle,
-				null, null, null);
+				null, null, null, null, null, infoEditURLProvider,
+				journalArticle, null, null, null, null);
 
 		Assert.assertEquals(
 			"validURL",
@@ -169,8 +187,6 @@ public class JournalArticleContentDashboardItemTest {
 
 	@Test
 	public void testGetEditURLWithNullURL() throws Exception {
-		JournalArticle journalArticle = _getJournalArticle();
-
 		InfoEditURLProvider<JournalArticle> infoEditURLProvider = Mockito.mock(
 			InfoEditURLProvider.class);
 
@@ -182,10 +198,12 @@ public class JournalArticleContentDashboardItemTest {
 			null
 		);
 
+		JournalArticle journalArticle = _getJournalArticle();
+
 		JournalArticleContentDashboardItem journalArticleContentDashboardItem =
 			new JournalArticleContentDashboardItem(
-				null, null, null, null, infoEditURLProvider, journalArticle,
-				null, null, null);
+				null, null, null, null, null, infoEditURLProvider,
+				journalArticle, null, null, null, null);
 
 		Assert.assertEquals(
 			StringPool.BLANK,
@@ -199,7 +217,8 @@ public class JournalArticleContentDashboardItemTest {
 
 		JournalArticleContentDashboardItem journalArticleContentDashboardItem =
 			new JournalArticleContentDashboardItem(
-				null, null, null, null, null, journalArticle, null, null, null);
+				null, null, null, null, null, null, journalArticle, null, null,
+				null, null);
 
 		Assert.assertEquals(
 			journalArticle.getExpirationDate(),
@@ -212,7 +231,8 @@ public class JournalArticleContentDashboardItemTest {
 
 		JournalArticleContentDashboardItem journalArticleContentDashboardItem =
 			new JournalArticleContentDashboardItem(
-				null, null, null, null, null, journalArticle, null, null, null);
+				null, null, null, null, null, null, journalArticle, null, null,
+				null, null);
 
 		Assert.assertEquals(
 			journalArticle.getModifiedDate(),
@@ -225,7 +245,8 @@ public class JournalArticleContentDashboardItemTest {
 
 		JournalArticleContentDashboardItem journalArticleContentDashboardItem =
 			new JournalArticleContentDashboardItem(
-				null, null, null, null, null, journalArticle, null, null, null);
+				null, null, null, null, null, null, journalArticle, null, null,
+				null, null);
 
 		Assert.assertEquals(
 			journalArticle.getDisplayDate(),
@@ -234,8 +255,6 @@ public class JournalArticleContentDashboardItemTest {
 
 	@Test
 	public void testGetScopeName() throws Exception {
-		JournalArticle journalArticle = _getJournalArticle();
-
 		Group group = Mockito.mock(Group.class);
 
 		Mockito.when(
@@ -244,10 +263,12 @@ public class JournalArticleContentDashboardItemTest {
 			"scopeName"
 		);
 
+		JournalArticle journalArticle = _getJournalArticle();
+
 		JournalArticleContentDashboardItem journalArticleContentDashboardItem =
 			new JournalArticleContentDashboardItem(
-				null, null, null, group, null, journalArticle, null, null,
-				null);
+				null, null, null, null, group, null, journalArticle, null, null,
+				null, null);
 
 		Assert.assertEquals(
 			"scopeName",
@@ -260,7 +281,7 @@ public class JournalArticleContentDashboardItemTest {
 
 		JournalArticleContentDashboardItem journalArticleContentDashboardItem =
 			new JournalArticleContentDashboardItem(
-				null, null,
+				null, null, null,
 				new ContentDashboardItemType() {
 
 					@Override
@@ -299,7 +320,7 @@ public class JournalArticleContentDashboardItemTest {
 					}
 
 				},
-				null, null, journalArticle, null, null, null);
+				null, null, journalArticle, null, null, null, null);
 
 		ContentDashboardItemType contentDashboardItemType =
 			journalArticleContentDashboardItem.getContentDashboardItemType();
@@ -314,7 +335,8 @@ public class JournalArticleContentDashboardItemTest {
 
 		JournalArticleContentDashboardItem journalArticleContentDashboardItem =
 			new JournalArticleContentDashboardItem(
-				null, null, null, null, null, journalArticle, null, null, null);
+				null, null, null, null, null, null, journalArticle, null, null,
+				null, null);
 
 		Assert.assertEquals(
 			journalArticle.getTitle(LocaleUtil.US),
@@ -333,8 +355,8 @@ public class JournalArticleContentDashboardItemTest {
 
 		JournalArticleContentDashboardItem journalArticleContentDashboardItem =
 			new JournalArticleContentDashboardItem(
-				null, null, null, null, null, journalArticle, _getLanguage(),
-				null, null);
+				null, null, null, null, null, null, journalArticle,
+				_getLanguage(), null, null, null);
 
 		List<ContentDashboardItem.Version> versions =
 			journalArticleContentDashboardItem.getVersions(LocaleUtil.US);
@@ -380,8 +402,8 @@ public class JournalArticleContentDashboardItemTest {
 
 		JournalArticleContentDashboardItem journalArticleContentDashboardItem =
 			new JournalArticleContentDashboardItem(
-				null, null, null, null, null, journalArticle1, _getLanguage(),
-				journalArticle2, null);
+				null, null, null, null, null, null, journalArticle1,
+				_getLanguage(), journalArticle2, null, null);
 
 		List<ContentDashboardItem.Version> versions =
 			journalArticleContentDashboardItem.getVersions(LocaleUtil.US);
@@ -402,8 +424,6 @@ public class JournalArticleContentDashboardItemTest {
 
 	@Test
 	public void testGetViewURL() throws Exception {
-		JournalArticle journalArticle = _getJournalArticle();
-
 		AssetDisplayPageFriendlyURLProvider
 			assetDisplayPageFriendlyURLProvider = Mockito.mock(
 				AssetDisplayPageFriendlyURLProvider.class);
@@ -415,10 +435,12 @@ public class JournalArticleContentDashboardItemTest {
 			"validURL"
 		);
 
+		JournalArticle journalArticle = _getJournalArticle();
+
 		JournalArticleContentDashboardItem journalArticleContentDashboardItem =
 			new JournalArticleContentDashboardItem(
-				null, assetDisplayPageFriendlyURLProvider, null, null, null,
-				journalArticle, null, null, null);
+				null, null, assetDisplayPageFriendlyURLProvider, null, null,
+				null, journalArticle, _getLanguage(), null, null, null);
 
 		Assert.assertEquals(
 			"validURL",
@@ -428,16 +450,16 @@ public class JournalArticleContentDashboardItemTest {
 
 	@Test
 	public void testGetViewURLWithNullFriendlyURL() throws Exception {
-		JournalArticle journalArticle = _getJournalArticle();
-
 		AssetDisplayPageFriendlyURLProvider
 			assetDisplayPageFriendlyURLProvider = Mockito.mock(
 				AssetDisplayPageFriendlyURLProvider.class);
 
+		JournalArticle journalArticle = _getJournalArticle();
+
 		JournalArticleContentDashboardItem journalArticleContentDashboardItem =
 			new JournalArticleContentDashboardItem(
-				null, assetDisplayPageFriendlyURLProvider, null, null, null,
-				journalArticle, null, null, null);
+				null, null, assetDisplayPageFriendlyURLProvider, null, null,
+				null, journalArticle, _getLanguage(), null, null, null);
 
 		Assert.assertEquals(
 			StringPool.BLANK,
@@ -447,8 +469,6 @@ public class JournalArticleContentDashboardItemTest {
 
 	@Test
 	public void testIsEditURLEnabled() throws Exception {
-		JournalArticle journalArticle = _getJournalArticle();
-
 		InfoEditURLProvider<JournalArticle> infoEditURLProvider = Mockito.mock(
 			InfoEditURLProvider.class);
 
@@ -463,10 +483,13 @@ public class JournalArticleContentDashboardItemTest {
 			Boolean.TRUE
 		);
 
+		JournalArticle journalArticle = _getJournalArticle();
+
 		JournalArticleContentDashboardItem journalArticleContentDashboardItem =
 			new JournalArticleContentDashboardItem(
-				null, null, null, null, infoEditURLProvider, journalArticle,
-				null, null, modelResourcePermission);
+				null, null, null, null, null, infoEditURLProvider,
+				journalArticle, _getLanguage(), null, modelResourcePermission,
+				null);
 
 		Assert.assertTrue(
 			journalArticleContentDashboardItem.isEditURLEnabled(
@@ -475,18 +498,19 @@ public class JournalArticleContentDashboardItemTest {
 
 	@Test
 	public void testIsEditURLEnabledWithoutPermissions() throws Exception {
-		JournalArticle journalArticle = _getJournalArticle();
-
 		InfoEditURLProvider<JournalArticle> infoEditURLProvider = Mockito.mock(
 			InfoEditURLProvider.class);
 
 		ModelResourcePermission<JournalArticle> modelResourcePermission =
 			Mockito.mock(ModelResourcePermission.class);
 
+		JournalArticle journalArticle = _getJournalArticle();
+
 		JournalArticleContentDashboardItem journalArticleContentDashboardItem =
 			new JournalArticleContentDashboardItem(
-				null, null, null, null, infoEditURLProvider, journalArticle,
-				null, null, modelResourcePermission);
+				null, null, null, null, null, infoEditURLProvider,
+				journalArticle, _getLanguage(), null, modelResourcePermission,
+				null);
 
 		Assert.assertFalse(
 			journalArticleContentDashboardItem.isEditURLEnabled(
@@ -495,8 +519,6 @@ public class JournalArticleContentDashboardItemTest {
 
 	@Test
 	public void testIsViewURLEnabled() throws Exception {
-		JournalArticle journalArticle = _getJournalArticle();
-
 		AssetDisplayPageFriendlyURLProvider
 			assetDisplayPageFriendlyURLProvider = Mockito.mock(
 				AssetDisplayPageFriendlyURLProvider.class);
@@ -508,10 +530,12 @@ public class JournalArticleContentDashboardItemTest {
 			"validURL"
 		);
 
+		JournalArticle journalArticle = _getJournalArticle();
+
 		JournalArticleContentDashboardItem journalArticleContentDashboardItem =
 			new JournalArticleContentDashboardItem(
-				null, assetDisplayPageFriendlyURLProvider, null, null, null,
-				journalArticle, null, null, null);
+				null, null, assetDisplayPageFriendlyURLProvider, null, null,
+				null, journalArticle, _getLanguage(), null, null, null);
 
 		Assert.assertTrue(
 			journalArticleContentDashboardItem.isViewURLEnabled(
@@ -520,6 +544,10 @@ public class JournalArticleContentDashboardItemTest {
 
 	@Test
 	public void testIsViewURLEnabledWithNotApprovedVersion() {
+		AssetDisplayPageFriendlyURLProvider
+			assetDisplayPageFriendlyURLProvider = Mockito.mock(
+				AssetDisplayPageFriendlyURLProvider.class);
+
 		JournalArticle journalArticle = _getJournalArticle();
 
 		Mockito.when(
@@ -528,14 +556,10 @@ public class JournalArticleContentDashboardItemTest {
 			false
 		);
 
-		AssetDisplayPageFriendlyURLProvider
-			assetDisplayPageFriendlyURLProvider = Mockito.mock(
-				AssetDisplayPageFriendlyURLProvider.class);
-
 		JournalArticleContentDashboardItem journalArticleContentDashboardItem =
 			new JournalArticleContentDashboardItem(
-				null, assetDisplayPageFriendlyURLProvider, null, null, null,
-				journalArticle, null, null, null);
+				null, null, assetDisplayPageFriendlyURLProvider, null, null,
+				null, journalArticle, null, null, null, null);
 
 		Assert.assertFalse(
 			journalArticleContentDashboardItem.isViewURLEnabled(null));
@@ -543,16 +567,16 @@ public class JournalArticleContentDashboardItemTest {
 
 	@Test
 	public void testIsViewURLEnabledWithNullFriendlyURL() throws Exception {
-		JournalArticle journalArticle = _getJournalArticle();
-
 		AssetDisplayPageFriendlyURLProvider
 			assetDisplayPageFriendlyURLProvider = Mockito.mock(
 				AssetDisplayPageFriendlyURLProvider.class);
 
+		JournalArticle journalArticle = _getJournalArticle();
+
 		JournalArticleContentDashboardItem journalArticleContentDashboardItem =
 			new JournalArticleContentDashboardItem(
-				null, assetDisplayPageFriendlyURLProvider, null, null, null,
-				journalArticle, null, null, null);
+				null, null, assetDisplayPageFriendlyURLProvider, null, null,
+				null, journalArticle, _getLanguage(), null, null, null);
 
 		Assert.assertFalse(
 			journalArticleContentDashboardItem.isViewURLEnabled(
@@ -569,6 +593,12 @@ public class JournalArticleContentDashboardItemTest {
 			themeDisplay.clone()
 		).thenReturn(
 			themeDisplay
+		);
+
+		Mockito.when(
+			themeDisplay.getLocale()
+		).thenReturn(
+			LocaleUtil.US
 		);
 
 		mockHttpServletRequest.setAttribute(
@@ -593,18 +623,6 @@ public class JournalArticleContentDashboardItemTest {
 		);
 
 		Mockito.when(
-			journalArticle.hasApprovedVersion()
-		).thenReturn(
-			true
-		);
-
-		Mockito.when(
-			journalArticle.isApproved()
-		).thenReturn(
-			true
-		);
-
-		Mockito.when(
 			journalArticle.getModifiedDate()
 		).thenReturn(
 			new Date()
@@ -614,6 +632,18 @@ public class JournalArticleContentDashboardItemTest {
 			journalArticle.getTitle(Mockito.any(Locale.class))
 		).thenReturn(
 			RandomTestUtil.randomString()
+		);
+
+		Mockito.when(
+			journalArticle.hasApprovedVersion()
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
+			journalArticle.isApproved()
+		).thenReturn(
+			true
 		);
 
 		return journalArticle;

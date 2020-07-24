@@ -78,6 +78,10 @@ public class StartupHelperUtil {
 		return _startupFinished;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
+	 */
+	@Deprecated
 	public static boolean isUpgraded() {
 		return _upgraded;
 	}
@@ -119,6 +123,10 @@ public class StartupHelperUtil {
 
 	public static void setStartupFinished(boolean startupFinished) {
 		_startupFinished = startupFinished;
+	}
+
+	public static void setUpgrading(boolean upgrading) {
+		_upgrading = upgrading;
 	}
 
 	public static void updateIndexes() {
@@ -164,20 +172,13 @@ public class StartupHelperUtil {
 	}
 
 	public static void upgradeProcess(int buildNumber) throws UpgradeException {
-		_upgrading = true;
+		List<UpgradeProcess> upgradeProcesses =
+			UpgradeProcessUtil.initUpgradeProcesses(
+				PortalClassLoaderUtil.getClassLoader(),
+				_UPGRADE_PROCESS_CLASS_NAMES);
 
-		try {
-			List<UpgradeProcess> upgradeProcesses =
-				UpgradeProcessUtil.initUpgradeProcesses(
-					PortalClassLoaderUtil.getClassLoader(),
-					_UPGRADE_PROCESS_CLASS_NAMES);
-
-			_upgraded = UpgradeProcessUtil.upgradeProcess(
-				buildNumber, upgradeProcesses);
-		}
-		finally {
-			_upgrading = false;
-		}
+		_upgraded = UpgradeProcessUtil.upgradeProcess(
+			buildNumber, upgradeProcesses);
 	}
 
 	/**

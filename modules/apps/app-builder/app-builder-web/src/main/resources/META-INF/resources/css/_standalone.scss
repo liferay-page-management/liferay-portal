@@ -8,7 +8,7 @@
 		padding-bottom: 2rem;
 
 		&.edit-entry {
-			max-width: 856px;
+			max-width: 808px;
 		}
 
 		.app-builder-root {
@@ -49,6 +49,10 @@
 			font-weight: bold;
 			margin-top: 4.5rem;
 			padding: 0;
+
+			&.edit-entry {
+				display: none;
+			}
 		}
 
 		.company-link {

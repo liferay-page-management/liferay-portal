@@ -202,13 +202,10 @@ public class SourceFormatBuild
 
 	@Override
 	protected FailureMessageGenerator[] getFailureMessageGenerators() {
-
-		// Skip JavaParser
-
 		return new FailureMessageGenerator[] {
 			new RebaseFailureMessageGenerator(),
 			new SourceFormatFailureMessageGenerator(),
-
+			//
 			new GenericFailureMessageGenerator()
 		};
 	}

@@ -60,7 +60,7 @@ public class AssetEntryInfoItemFieldSetProviderImpl
 
 	@Override
 	public InfoFieldSet getInfoFieldSet(AssetEntry assetEntry) {
-		return _getInfoFieldSet(_getAssetVocabularies(assetEntry));
+		return _getInfoFieldSet(_getNonsystemAssetVocabularies(assetEntry));
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class AssetEntryInfoItemFieldSetProviderImpl
 		String itemClassName, long itemClassTypeId, long scopeGroupId) {
 
 		return _getInfoFieldSet(
-			_getAssetVocabularies(
+			_getNonsystemAssetVocabularies(
 				itemClassName, itemClassTypeId, scopeGroupId));
 	}
 
@@ -83,7 +83,7 @@ public class AssetEntryInfoItemFieldSetProviderImpl
 
 		List<InfoFieldValue<Object>> infoFieldValues = new ArrayList<>();
 
-		Set<AssetVocabulary> assetVocabularies = _getAssetVocabularies(
+		Set<AssetVocabulary> assetVocabularies = _getNonsystemAssetVocabularies(
 			assetEntry);
 
 		for (AssetVocabulary assetVocabulary : assetVocabularies) {
@@ -109,7 +109,8 @@ public class AssetEntryInfoItemFieldSetProviderImpl
 		infoFieldValues.add(
 			new InfoFieldValue<>(
 				_categoriesInfoField,
-				() -> _getAssetCategoryNames(assetEntry.getCategories())));
+				() -> _getAssetCategoryNames(
+					_filterBySystem(assetEntry.getCategories()))));
 		infoFieldValues.add(
 			new InfoFieldValue<>(
 				_tagsInfoField,
@@ -149,6 +150,20 @@ public class AssetEntryInfoItemFieldSetProviderImpl
 		}
 	}
 
+	private List<AssetCategory> _filterBySystem(
+		List<AssetCategory> assetCategories) {
+
+		return ListUtil.filter(
+			assetCategories,
+			assetCategory -> {
+				AssetVocabulary assetVocabulary =
+					_assetVocabularyLocalService.fetchAssetVocabulary(
+						assetCategory.getVocabularyId());
+
+				return !assetVocabulary.isSystem();
+			});
+	}
+
 	private List<AssetCategory> _filterByVocabularyId(
 		List<AssetCategory> assetCategories, long vocabularyId) {
 
@@ -175,40 +190,6 @@ public class AssetEntryInfoItemFieldSetProviderImpl
 		).collect(
 			Collectors.joining(StringPool.COMMA_AND_SPACE)
 		);
-	}
-
-	private Set<AssetVocabulary> _getAssetVocabularies(AssetEntry assetEntry) {
-		Set<AssetVocabulary> assetVocabularies = new HashSet<>(
-			_getAssetVocabularies(
-				assetEntry.getClassName(), assetEntry.getClassTypeId(),
-				assetEntry.getGroupId()));
-
-		for (AssetCategory assetCategory : assetEntry.getCategories()) {
-			assetVocabularies.add(
-				_assetVocabularyLocalService.fetchAssetVocabulary(
-					assetCategory.getVocabularyId()));
-		}
-
-		return assetVocabularies;
-	}
-
-	private List<AssetVocabulary> _getAssetVocabularies(
-		String itemClassName, long itemClassTypeId, long scopeGroupId) {
-
-		try {
-			if (itemClassTypeId > 0) {
-				return _assetVocabularyLocalService.getGroupsVocabularies(
-					_portal.getCurrentAndAncestorSiteGroupIds(scopeGroupId),
-					itemClassName, itemClassTypeId);
-			}
-
-			return _assetVocabularyLocalService.getGroupsVocabularies(
-				_portal.getCurrentAndAncestorSiteGroupIds(scopeGroupId),
-				itemClassName);
-		}
-		catch (PortalException portalException) {
-			throw new RuntimeException(portalException);
-		}
 	}
 
 	private InfoFieldSet _getInfoFieldSet(
@@ -241,6 +222,56 @@ public class AssetEntryInfoItemFieldSetProviderImpl
 		).name(
 			"categorization"
 		).build();
+	}
+
+	private Set<AssetVocabulary> _getNonsystemAssetVocabularies(
+		AssetEntry assetEntry) {
+
+		Set<AssetVocabulary> assetVocabularies = new HashSet<>(
+			_getNonsystemAssetVocabularies(
+				assetEntry.getClassName(), assetEntry.getClassTypeId(),
+				assetEntry.getGroupId()));
+
+		for (AssetCategory assetCategory : assetEntry.getCategories()) {
+			AssetVocabulary assetVocabulary =
+				_assetVocabularyLocalService.fetchAssetVocabulary(
+					assetCategory.getVocabularyId());
+
+			if (!assetVocabulary.isSystem()) {
+				assetVocabularies.add(assetVocabulary);
+			}
+		}
+
+		return assetVocabularies;
+	}
+
+	private List<AssetVocabulary> _getNonsystemAssetVocabularies(
+		String itemClassName, long itemClassTypeId, long scopeGroupId) {
+
+		try {
+			if (itemClassTypeId > 0) {
+				List<AssetVocabulary> groupsAssetVocabularies =
+					_assetVocabularyLocalService.getGroupsVocabularies(
+						_portal.getCurrentAndAncestorSiteGroupIds(scopeGroupId),
+						itemClassName, itemClassTypeId);
+
+				return ListUtil.filter(
+					groupsAssetVocabularies,
+					assetVocabulary -> !assetVocabulary.isSystem());
+			}
+
+			List<AssetVocabulary> groupsAssetVocabularies =
+				_assetVocabularyLocalService.getGroupsVocabularies(
+					_portal.getCurrentAndAncestorSiteGroupIds(scopeGroupId),
+					itemClassName);
+
+			return ListUtil.filter(
+				groupsAssetVocabularies,
+				assetVocabulary -> !assetVocabulary.isSystem());
+		}
+		catch (PortalException portalException) {
+			throw new RuntimeException(portalException);
+		}
 	}
 
 	@Reference

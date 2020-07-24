@@ -81,7 +81,8 @@ public class DDMFormFieldTemplateContextFactory {
 		DDMFormRenderingContext ddmFormRenderingContext,
 		DDMStructureLayoutLocalService ddmStructureLayoutLocalService,
 		DDMStructureLocalService ddmStructureLocalService,
-		JSONFactory jsonFactory, boolean pageEnabled) {
+		JSONFactory jsonFactory, boolean pageEnabled,
+		DDMFormLayout parentDDMFormLayout) {
 
 		_ddmFormEvaluator = ddmFormEvaluator;
 		_ddmFormFieldName = ddmFormFieldName;
@@ -93,6 +94,7 @@ public class DDMFormFieldTemplateContextFactory {
 		_ddmStructureLocalService = ddmStructureLocalService;
 		_jsonFactory = jsonFactory;
 		_pageEnabled = pageEnabled;
+		_parentDDMFormLayout = parentDDMFormLayout;
 
 		_locale = ddmFormRenderingContext.getLocale();
 	}
@@ -883,7 +885,12 @@ public class DDMFormFieldTemplateContextFactory {
 		DDMFormField ddmFormField,
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext) {
 
-		if (Validator.isNotNull(ddmFormField.getProperty("ddmStructureId"))) {
+		Map<String, Object> properties =
+			ddmFormFieldRenderingContext.getProperties();
+
+		if (Validator.isNotNull(ddmFormField.getProperty("ddmStructureId")) &&
+			!properties.containsKey("nestedFields")) {
+
 			long ddmStructureLayoutId = GetterUtil.getLong(
 				ddmFormField.getProperty("ddmStructureLayoutId"));
 
@@ -895,6 +902,9 @@ public class DDMFormFieldTemplateContextFactory {
 
 			DDMFormLayout ddmFormLayout = _getDDMFormLayout(
 				ddmStructureLayoutId);
+
+			ddmFormLayout.setDDMFormRules(
+				_parentDDMFormLayout.getDDMFormRules());
 
 			String rows = MapUtil.getString(
 				ddmFormField.getProperties(), "rows");
@@ -1003,5 +1013,6 @@ public class DDMFormFieldTemplateContextFactory {
 	private final JSONFactory _jsonFactory;
 	private final Locale _locale;
 	private final boolean _pageEnabled;
+	private final DDMFormLayout _parentDDMFormLayout;
 
 }

@@ -32,7 +32,11 @@ export default function ViewEntry({
 	},
 }) {
 	const {appId, dataDefinitionId, dataLayoutId} = useContext(AppContext);
-	const {appWorkflowDefinitionId, appWorkflowTasks} = useAppWorkflow(appId);
+	const {
+		appVersion,
+		appWorkflowDefinitionId,
+		appWorkflowTasks,
+	} = useAppWorkflow(appId);
 	const {
 		dataDefinition,
 		dataLayout: {dataLayoutPages},
@@ -84,6 +88,7 @@ export default function ViewEntry({
 								if (workflowResponse.totalCount > 0) {
 									state.workflowInfo = {
 										...workflowResponse.items.pop(),
+										appVersion,
 										tasks: appWorkflowTasks,
 									};
 								}

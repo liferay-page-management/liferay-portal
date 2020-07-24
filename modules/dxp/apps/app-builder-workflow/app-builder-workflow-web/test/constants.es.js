@@ -28,6 +28,7 @@ const createItems = (size) => {
 			name: {
 				en_US: `Item ${i + 1}`,
 			},
+			version: '1.0',
 		});
 	}
 
@@ -36,6 +37,7 @@ const createItems = (size) => {
 
 export const ENTRY = {
 	APP_WORKFLOW: {
+		appVersion: '1.0',
 		appWorkflowDefinitionId: 1,
 		appWorkflowStates: [
 			{

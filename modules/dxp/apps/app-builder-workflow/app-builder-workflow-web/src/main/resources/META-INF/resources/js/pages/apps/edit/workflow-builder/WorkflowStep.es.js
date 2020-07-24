@@ -10,9 +10,12 @@
  */
 
 import ClayBadge from '@clayui/badge';
+import {ClayButtonWithIcon} from '@clayui/button';
+import ClayDropDown from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
+import {ClayTooltipProvider} from '@clayui/tooltip';
 import classNames from 'classnames';
-import React from 'react';
+import React, {useState} from 'react';
 
 import ButtonInfo from '../../../../components/button-info/ButtonInfo.es';
 
@@ -22,9 +25,17 @@ const Arrow = ({addStep, selected}) => {
 			<ClayIcon className="arrow-point icon" symbol="live" />
 
 			{selected && (
-				<div className="arrow-plus-button" onClick={addStep}>
-					<ClayIcon className="icon" symbol="plus" />
-				</div>
+				<ClayTooltipProvider>
+					<div
+						className="arrow-plus-button"
+						data-tooltip-align="left"
+						data-tooltip-delay="0"
+						onClick={addStep}
+						title={Liferay.Language.get('create-new-step')}
+					>
+						<ClayIcon className="icon" symbol="plus" />
+					</div>
+				</ClayTooltipProvider>
 			)}
 
 			<div className="arrow-body">
@@ -35,9 +46,95 @@ const Arrow = ({addStep, selected}) => {
 	);
 };
 
+const Card = ({
+	actions,
+	errors,
+	isInitialOrFinalSteps,
+	name,
+	onClick,
+	selected,
+	stepInfo,
+}) => {
+	const [active, setActive] = useState(false);
+
+	const duplicatedFields = errors?.formViews?.duplicatedFields || [];
+
+	const handleOnClick = (event, onClick) => {
+		event.preventDefault();
+		setActive(false);
+		onClick();
+	};
+
+	return (
+		<div
+			className={classNames('step-card', selected && 'selected')}
+			onClick={onClick}
+		>
+			<div>
+				{name}
+
+				<ButtonInfo items={stepInfo} />
+			</div>
+
+			{duplicatedFields.length > 0 && (
+				<ClayTooltipProvider>
+					<ClayIcon
+						className="tooltip-icon-error"
+						data-tooltip-align="bottom"
+						data-tooltip-delay="0"
+						fontSize="26px"
+						symbol="exclamation-full"
+						title={`${Liferay.Language.get(
+							'error'
+						)}: ${Liferay.Language.get(
+							'there-are-form-views-with-duplicated-fields'
+						)}`}
+					/>
+				</ClayTooltipProvider>
+			)}
+
+			<div className="d-flex">
+				{!isInitialOrFinalSteps && (
+					<ClayTooltipProvider>
+						<ClayDropDown
+							active={active}
+							data-tooltip-align="bottom"
+							data-tooltip-delay="0"
+							onActiveChange={setActive}
+							title={Liferay.Language.get('options')}
+							trigger={
+								<ClayButtonWithIcon
+									className="border-0"
+									displayType="secondary"
+									symbol="ellipsis-v"
+								/>
+							}
+						>
+							<ClayDropDown.ItemList>
+								{actions.map(({label, onClick}, index) => (
+									<ClayDropDown.Item
+										key={index}
+										onClick={(event) =>
+											handleOnClick(event, onClick)
+										}
+									>
+										{label}
+									</ClayDropDown.Item>
+								))}
+							</ClayDropDown.ItemList>
+						</ClayDropDown>
+					</ClayTooltipProvider>
+				)}
+			</div>
+		</div>
+	);
+};
+
 export default function WorkflowStep({
+	actions,
 	addStep,
 	badgeLabel,
+	errors,
 	initial,
 	name,
 	onClick,
@@ -60,17 +157,15 @@ export default function WorkflowStep({
 						label={badgeLabel}
 					/>
 
-					<div
-						className={classNames(
-							'step-card',
-							selected && 'selected'
-						)}
+					<Card
+						actions={actions}
+						errors={errors}
+						isInitialOrFinalSteps={isInitialOrFinalSteps}
+						name={name}
 						onClick={onClick}
-					>
-						{name}
-
-						<ButtonInfo items={stepInfo} />
-					</div>
+						selected={selected}
+						stepInfo={stepInfo}
+					/>
 				</div>
 			</div>
 

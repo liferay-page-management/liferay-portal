@@ -71,7 +71,7 @@ public class HttpUtil {
 		throws IOException {
 
 		try (CloseableHttpClient closeableHttpClient = _getHttpClient(
-				uri, userName, password)) {
+				uri, userName, password, -1)) {
 
 			HttpPost httpPost = new HttpPost(uri);
 
@@ -110,10 +110,18 @@ public class HttpUtil {
 			URI uri, String token, Path cacheDirPath, StreamLogger streamLogger)
 		throws Exception {
 
+		return downloadFile(uri, token, cacheDirPath, streamLogger, -1);
+	}
+
+	public static Path downloadFile(
+			URI uri, String token, Path cacheDirPath, StreamLogger streamLogger,
+			int connectionTimeout)
+		throws Exception {
+
 		Path path;
 
 		try (CloseableHttpClient closeableHttpClient = _getHttpClient(
-				uri, token)) {
+				uri, token, connectionTimeout)) {
 
 			path = _downloadFile(
 				closeableHttpClient, uri, cacheDirPath, streamLogger);
@@ -127,10 +135,19 @@ public class HttpUtil {
 			StreamLogger streamLogger)
 		throws Exception {
 
+		return downloadFile(
+			uri, userName, password, cacheDirPath, streamLogger, -1);
+	}
+
+	public static Path downloadFile(
+			URI uri, String userName, String password, Path cacheDirPath,
+			StreamLogger streamLogger, int connectionTimeout)
+		throws Exception {
+
 		Path path;
 
 		try (CloseableHttpClient closeableHttpClient = _getHttpClient(
-				uri, userName, password)) {
+				uri, userName, password, connectionTimeout)) {
 
 			path = _downloadFile(
 				closeableHttpClient, uri, cacheDirPath, streamLogger);
@@ -177,7 +194,7 @@ public class HttpUtil {
 
 				if (index > 0) {
 					fileName = dispositionValue.substring(
-						index + 10, dispositionValue.length() - 1);
+						index + "filename=".length());
 				}
 			}
 			else {
@@ -265,9 +282,11 @@ public class HttpUtil {
 		return path;
 	}
 
-	private static CloseableHttpClient _getHttpClient(URI uri, String token) {
+	private static CloseableHttpClient _getHttpClient(
+		URI uri, String token, int connectionTimeout) {
+
 		HttpClientBuilder httpClientBuilder = _getHttpClientBuilder(
-			uri, null, null);
+			uri, null, null, connectionTimeout);
 
 		Header header = new BasicHeader(
 			HttpHeaders.AUTHORIZATION, "Bearer " + token);
@@ -278,16 +297,16 @@ public class HttpUtil {
 	}
 
 	private static CloseableHttpClient _getHttpClient(
-		URI uri, String userName, String password) {
+		URI uri, String userName, String password, int connectionTimeout) {
 
 		HttpClientBuilder httpClientBuilder = _getHttpClientBuilder(
-			uri, userName, password);
+			uri, userName, password, connectionTimeout);
 
 		return httpClientBuilder.build();
 	}
 
 	private static HttpClientBuilder _getHttpClientBuilder(
-		URI uri, String userName, String password) {
+		URI uri, String userName, String password, int connectionTimeout) {
 
 		HttpClientBuilder httpClientBuilder = HttpClients.custom();
 
@@ -298,6 +317,7 @@ public class HttpUtil {
 
 		RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
 
+		requestConfigBuilder.setConnectTimeout(connectionTimeout);
 		requestConfigBuilder.setCookieSpec(CookieSpecs.STANDARD);
 		requestConfigBuilder.setRedirectsEnabled(true);
 

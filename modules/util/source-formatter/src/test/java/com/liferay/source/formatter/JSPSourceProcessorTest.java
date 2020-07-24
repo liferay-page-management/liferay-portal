@@ -66,8 +66,8 @@ public class JSPSourceProcessorTest extends BaseSourceProcessorTestCase {
 		test(
 			"IncorrectMethodCalls.testjsp",
 			new String[] {
-				"Use tyep of 'LiferayPortletResponse' to call 'getNamespace()'",
-				"Use tyep of 'LiferayPortletResponse' to call 'getNamespace()'"
+				"Use type 'LiferayPortletResponse' to call 'getNamespace()'",
+				"Use type 'LiferayPortletResponse' to call 'getNamespace()'"
 			},
 			new Integer[] {21, 28});
 	}

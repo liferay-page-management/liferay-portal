@@ -14,6 +14,7 @@ import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import {ClayTooltipProvider} from '@clayui/tooltip';
 import EditAppContext from 'app-builder-web/js/pages/apps/edit/EditAppContext.es';
+import classNames from 'classnames';
 import {Sidebar} from 'data-engine-taglib';
 import React, {useContext, useEffect, useState} from 'react';
 
@@ -41,7 +42,7 @@ export default function EditAppSidebar() {
 
 	const {
 		appWorkflowTransitions: [primaryAction, secondaryAction] = [],
-		appWorkflowDataLayoutLinks: [stepFormView] = [{}],
+		appWorkflowDataLayoutLinks = [{}],
 	} = currentStep;
 
 	const actionsInfo = [];
@@ -64,6 +65,10 @@ export default function EditAppSidebar() {
 		{
 			content: DataAndViewsTab,
 			disabled: stepIndex > 0 && !dataObject.id,
+			error:
+				stepIndex > 0 &&
+				stepIndex < steps.length - 1 &&
+				steps[stepIndex].errors.formViews.duplicatedFields.length > 0,
 			infoItems:
 				stepIndex === 0
 					? [
@@ -82,8 +87,16 @@ export default function EditAppSidebar() {
 					  ]
 					: [
 							{
-								...stepFormView,
 								label: Liferay.Language.get('form-view'),
+								name:
+									appWorkflowDataLayoutLinks.length > 0
+										? appWorkflowDataLayoutLinks
+												.map(({name}) => name)
+												.reduce(
+													(acc, cur) =>
+														`${acc}, ${cur}`
+												)
+										: '',
 							},
 					  ],
 			show: stepIndex !== steps.length - 1,
@@ -212,10 +225,16 @@ export default function EditAppSidebar() {
 						</ClayForm.Group>
 
 						{tabs.map(
-							({disabled, infoItems, show, title}, index) =>
+							(
+								{disabled, error, infoItems, show, title},
+								index
+							) =>
 								show && (
 									<ClayButton
-										className="mb-3 tab-button"
+										className={classNames(
+											'mb-3 tab-button',
+											error && 'border-error'
+										)}
 										disabled={disabled}
 										displayType="secondary"
 										key={index}
@@ -229,10 +248,29 @@ export default function EditAppSidebar() {
 											<ButtonInfo items={infoItems} />
 										</div>
 
-										<ClayIcon
-											className="dropdown-button-asset"
-											symbol="angle-right"
-										/>
+										<div>
+											{error && (
+												<ClayTooltipProvider>
+													<ClayIcon
+														className="mr-2 mt-1 tooltip-icon-error"
+														data-tooltip-align="left"
+														data-tooltip-delay="0"
+														fontSize="26px"
+														symbol="exclamation-full"
+														title={`${Liferay.Language.get(
+															'error'
+														)}: ${Liferay.Language.get(
+															'there-are-form-views-with-duplicated-fields'
+														)}`}
+													/>
+												</ClayTooltipProvider>
+											)}
+
+											<ClayIcon
+												className="dropdown-button-asset"
+												symbol="angle-right"
+											/>
+										</div>
 									</ClayButton>
 								)
 						)}

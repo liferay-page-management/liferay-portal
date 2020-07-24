@@ -63,9 +63,10 @@ describe('ViewEntry', () => {
 
 		const infoItems = container.querySelectorAll('.info-item');
 
-		expect(infoItems.length).toBe(3);
+		expect(infoItems.length).toBe(4);
 		expect(infoItems[0]).toHaveTextContent('status: pending');
 		expect(infoItems[1]).toHaveTextContent('step: Review');
 		expect(infoItems[2]).toHaveTextContent('assignee: Administrator');
+		expect(infoItems[3]).toHaveTextContent('version: 1.0');
 	});
 });

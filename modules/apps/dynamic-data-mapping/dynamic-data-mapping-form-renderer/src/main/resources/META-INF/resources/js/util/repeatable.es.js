@@ -32,16 +32,14 @@ export const generateName = (name, props = {}) => {
 };
 
 export const generateNestedFieldName = (name, parentFieldName) => {
-	const parsedName = parseNestedFieldName(name);
 	const parsedParentFieldName = parseName(parentFieldName);
+	let parsedName = parseNestedFieldName(name);
 
-	const {
-		fieldName,
-		instanceId,
-		locale,
-		portletNamespace,
-		repeatedIndex,
-	} = parsedName;
+	if (!parsedName.fieldName) {
+		parsedName = parseName(name);
+	}
+
+	const {fieldName, instanceId, portletNamespace, repeatedIndex} = parsedName;
 
 	return [
 		portletNamespace,
@@ -58,7 +56,7 @@ export const generateNestedFieldName = (name, parentFieldName) => {
 		'$',
 		repeatedIndex,
 		'$$',
-		locale,
+		parsedName.locale || parsedName.editingLanguageId,
 	].join('');
 };
 

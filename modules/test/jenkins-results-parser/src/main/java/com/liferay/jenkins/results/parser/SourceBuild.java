@@ -75,8 +75,6 @@ public class SourceBuild extends BaseBuild {
 		return null;
 	}
 
-	// Skip JavaParser
-
 	private static final FailureMessageGenerator[] _FAILURE_MESSAGE_GENERATORS =
 		{
 			new RebaseFailureMessageGenerator(),

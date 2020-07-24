@@ -344,6 +344,26 @@ public class Query {
 
 	}
 
+	@GraphQLTypeExtension(Account.class)
+	public class ParentAccountAccountIdTypeExtension {
+
+		public ParentAccountAccountIdTypeExtension(Account account) {
+			_account = account;
+		}
+
+		@GraphQLField(description = "")
+		public Account parentAccount() throws Exception {
+			return _applyComponentServiceObjects(
+				_accountResourceComponentServiceObjects,
+				Query.this::_populateResourceContext,
+				accountResource -> accountResource.getAccount(
+					_account.getParentAccountId()));
+		}
+
+		private Account _account;
+
+	}
+
 	private <T, R, E1 extends Throwable, E2 extends Throwable> R
 			_applyComponentServiceObjects(
 				ComponentServiceObjects<T> componentServiceObjects,

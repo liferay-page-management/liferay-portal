@@ -1,25 +1,17 @@
 $sidebarWidth: 366px;
 $navbarHeight: 120px;
 
-.dropdown-button-asset {
-	margin-top: 0.25rem;
-}
-
-.tooltip-icon:hover {
-	fill: #6b6c7e;
-}
-
 .app-builder-workflow-app {
 	display: flex;
+	justify-content: center;
 	margin-top: 64px;
 
 	&__builder {
-		display: flex;
-		flex-flow: column;
-		height: calc(100vh - #{$navbarHeight} + 56px);
+		height: calc(100vh - #{$navbarHeight});
+		margin-right: 350px;
+		max-height: calc(100vh - #{$navbarHeight});
 		overflow: auto;
-		padding-bottom: 55px;
-		padding-top: 56px;
+		position: fixed;
 		width: calc(100vw - #{$sidebarWidth});
 
 		.arrow {
@@ -50,12 +42,12 @@ $navbarHeight: 120px;
 			}
 
 			.arrow-body {
-				align-items: flex-start;
 				display: flex;
 				flex-flow: wrap-reverse;
 				justify-content: center;
 
 				.arrow-head {
+					bottom: 0;
 					margin-bottom: -4px;
 					margin-top: 4px;
 				}
@@ -87,6 +79,14 @@ $navbarHeight: 120px;
 		.step {
 			display: flex;
 			width: 100%;
+
+			&:first-of-type .step-wrapper {
+				margin-top: 3.5rem;
+			}
+
+			&:last-of-type .step-wrapper {
+				margin-bottom: 3.5rem;
+			}
 		}
 
 		.step-badge {
@@ -101,13 +101,15 @@ $navbarHeight: 120px;
 		}
 
 		.step-card {
+			align-items: center;
 			background-clip: border-box;
 			background-color: #fff;
 			border: 2px solid #e7e7ed;
 			border-radius: 0.25rem;
 			cursor: pointer;
-			display: block;
-			flex-direction: column;
+			display: flex;
+			font-weight: 600;
+			justify-content: space-between;
 			margin-bottom: unset;
 			margin-left: 16px;
 			min-width: 0;
@@ -162,6 +164,10 @@ $navbarHeight: 120px;
 	}
 }
 
+.border-error {
+	border-color: #da1414 !important;
+}
+
 .data-layout-builder-sidebar {
 	@media (max-width: 576px) {
 		top: 112px;
@@ -212,6 +218,10 @@ $navbarHeight: 120px;
 	}
 }
 
+.dropdown-button-asset {
+	margin-top: 0.25rem;
+}
+
 .outline-text {
 	background-color: white;
 	font-size: 12px;
@@ -225,10 +235,31 @@ $navbarHeight: 120px;
 	border: 1px solid #cdced9;
 	border-radius: 6px;
 	box-sizing: border-box;
-	margin-bottom: 1rem;
+	margin-top: 1rem;
 	padding: 1rem 1rem 0;
+}
 
-	&:first-of-type {
-		margin-top: 1rem;
-	}
+.tooltip-icon:hover {
+	fill: #6b6c7e;
+}
+
+.tooltip-icon-error {
+	align-self: center;
+	border: 5px solid #fde7e8;
+	border-radius: 50%;
+	fill: #da1414;
+	margin-left: auto;
+	min-width: 1em;
+}
+
+.tooltip-icon:hover {
+	fill: #6b6c7e;
+}
+
+.version-badge {
+	align-self: center;
+	font-size: 12px;
+	height: 24px;
+	margin-right: -0.25rem;
+	padding: 0 8px;
 }

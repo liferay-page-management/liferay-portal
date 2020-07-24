@@ -15,6 +15,7 @@
 package com.liferay.content.dashboard.web.internal.item;
 
 import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.content.dashboard.web.internal.item.type.ContentDashboardItemType;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -22,6 +23,7 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,7 +36,19 @@ public interface ContentDashboardItem<T> {
 
 	public List<AssetCategory> getAssetCategories(long vocabularyId);
 
+	public List<AssetTag> getAssetTags();
+
+	public String getClassName();
+
+	public Long getClassPK();
+
 	public ContentDashboardItemType getContentDashboardItemType();
+
+	public Date getCreateDate();
+
+	public Map<String, Object> getData(Locale locale);
+
+	public Locale getDefaultLocale();
 
 	public String getEditURL(HttpServletRequest httpServletRequest);
 
@@ -52,9 +66,14 @@ public interface ContentDashboardItem<T> {
 
 	public String getUserName();
 
+	public String getUserPortraitURL(HttpServletRequest httpServletRequest);
+
 	public List<Version> getVersions(Locale locale);
 
 	public String getViewURL(HttpServletRequest httpServletRequest);
+
+	public Map<Locale, String> getViewURLs(
+		HttpServletRequest httpServletRequest);
 
 	public boolean isEditURLEnabled(HttpServletRequest httpServletRequest);
 

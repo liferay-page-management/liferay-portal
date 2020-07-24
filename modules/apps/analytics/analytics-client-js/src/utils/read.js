@@ -59,8 +59,10 @@ class ReadTracker {
 	 * @param {Function} fn The callback function that will process if the depth and time are reached.
 	 */
 	onDepthReached(fn) {
-		this.depthReached = true;
-		this.checkIsRead(fn);
+		if (!this.depthReached) {
+			this.depthReached = true;
+			this.checkIsRead(fn);
+		}
 	}
 
 	/**

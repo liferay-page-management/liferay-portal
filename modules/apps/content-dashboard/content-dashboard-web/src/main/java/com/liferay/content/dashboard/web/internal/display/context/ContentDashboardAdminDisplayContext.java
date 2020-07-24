@@ -16,7 +16,6 @@ package com.liferay.content.dashboard.web.internal.display.context;
 
 import com.liferay.asset.categories.configuration.AssetCategoriesCompanyConfiguration;
 import com.liferay.asset.kernel.model.AssetVocabulary;
-import com.liferay.content.dashboard.web.internal.configuration.FFContentDashboardConfiguration;
 import com.liferay.content.dashboard.web.internal.item.ContentDashboardItem;
 import com.liferay.content.dashboard.web.internal.item.selector.criteria.content.dashboard.type.criterion.ContentDashboardItemTypeItemSelectorCriterion;
 import com.liferay.content.dashboard.web.internal.item.type.ContentDashboardItemType;
@@ -70,7 +69,6 @@ public class ContentDashboardAdminDisplayContext {
 			contentDashboardDropdownItemsProvider,
 		ContentDashboardItemTypeFactoryTracker
 			contentDashboardItemTypeFactoryTracker,
-		FFContentDashboardConfiguration ffContentDashboardConfiguration,
 		ItemSelector itemSelector, String languageDirection,
 		LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse, Portal portal,
@@ -83,7 +81,6 @@ public class ContentDashboardAdminDisplayContext {
 			contentDashboardDropdownItemsProvider;
 		_contentDashboardItemTypeFactoryTracker =
 			contentDashboardItemTypeFactoryTracker;
-		_ffContentDashboardConfiguration = ffContentDashboardConfiguration;
 		_itemSelector = itemSelector;
 		_languageDirection = languageDirection;
 		_liferayPortletRequest = liferayPortletRequest;
@@ -91,6 +88,18 @@ public class ContentDashboardAdminDisplayContext {
 		_portal = portal;
 		_resourceBundle = resourceBundle;
 		_searchContainer = searchContainer;
+	}
+
+	public List<Long> getAssetCategoryIds() {
+		if (_assetCategoryIds != null) {
+			return _assetCategoryIds;
+		}
+
+		_assetCategoryIds = Arrays.asList(
+			ArrayUtil.toLongArray(
+				ParamUtil.getLongValues(_liferayPortletRequest, "categoryId")));
+
+		return _assetCategoryIds;
 	}
 
 	public List<AssetVocabulary> getAssetVocabularies() {
@@ -295,10 +304,6 @@ public class ContentDashboardAdminDisplayContext {
 		return _userId;
 	}
 
-	public boolean isAuditGraphEnabled() {
-		return _ffContentDashboardConfiguration.auditGraphEnabled();
-	}
-
 	private Map<String, Object> _getContext() {
 		return Collections.singletonMap(
 			"languageDirection", _languageDirection);
@@ -313,18 +318,20 @@ public class ContentDashboardAdminDisplayContext {
 						WebKeys.THEME_DISPLAY);
 
 				AssetCategoriesCompanyConfiguration
-					accountEntryEmailDomainsConfiguration =
+					assetCategoriesCompanyConfiguration =
 						ConfigurationProviderUtil.getCompanyConfiguration(
 							AssetCategoriesCompanyConfiguration.class,
 							themeDisplay.getCompanyId());
 
-				return accountEntryEmailDomainsConfiguration.linkURL();
+				return assetCategoriesCompanyConfiguration.
+					linkToDocumentationURL();
 			}
 		).put(
 			"vocabularies", _assetVocabularyMetric.toJSONArray()
 		).build();
 	}
 
+	private List<Long> _assetCategoryIds;
 	private final List<AssetVocabulary> _assetVocabularies;
 	private final AssetVocabularyMetric _assetVocabularyMetric;
 	private List<Long> _authorIds;
@@ -334,8 +341,6 @@ public class ContentDashboardAdminDisplayContext {
 		_contentDashboardItemTypeFactoryTracker;
 	private List<ContentDashboardItemType> _contentDashboardItemTypePayloads;
 	private Map<String, Object> _data;
-	private final FFContentDashboardConfiguration
-		_ffContentDashboardConfiguration;
 	private final ItemSelector _itemSelector;
 	private final String _languageDirection;
 	private final LiferayPortletRequest _liferayPortletRequest;

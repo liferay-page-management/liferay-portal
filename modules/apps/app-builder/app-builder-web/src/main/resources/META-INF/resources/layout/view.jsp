@@ -71,7 +71,7 @@ if (mvcPath.startsWith("/edit_entry.jsp")) {
 	</header>
 
 	<clay:container-fluid
-		cssClass="app-builder-standalone-content <%= editEntryCssClass %> sheet"
+		cssClass='<%= " app-builder-standalone-content sheet " + editEntryCssClass %>'
 	>
 		<liferay-portlet:runtime
 			portletName="<%= portletName %>"

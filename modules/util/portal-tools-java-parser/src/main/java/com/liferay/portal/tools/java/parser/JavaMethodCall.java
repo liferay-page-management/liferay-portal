@@ -62,10 +62,6 @@ public class JavaMethodCall extends BaseJavaExpression {
 		_parameterValueJavaExpressions = parameterValueJavaExpressions;
 	}
 
-	public void setStatementCondition(boolean statementCondition) {
-		_statementCondition = statementCondition;
-	}
-
 	public void setUseChainStyle(boolean useChainStyle) {
 		_useChainStyle = useChainStyle;
 
@@ -145,10 +141,6 @@ public class JavaMethodCall extends BaseJavaExpression {
 	}
 
 	private boolean _isUseChainStyle() {
-		if (_statementCondition) {
-			return false;
-		}
-
 		if (_useChainStyle) {
 			return _useChainStyle;
 		}
@@ -177,7 +169,6 @@ public class JavaMethodCall extends BaseJavaExpression {
 	private boolean _methodCallWithinClass;
 	private final JavaSimpleValue _methodName;
 	private List<JavaExpression> _parameterValueJavaExpressions;
-	private boolean _statementCondition;
 	private boolean _useChainStyle;
 
 }

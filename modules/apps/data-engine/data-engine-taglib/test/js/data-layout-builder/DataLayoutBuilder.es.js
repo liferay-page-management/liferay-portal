@@ -112,6 +112,7 @@ describe('DataLayoutBuilder', () => {
 
 	it('is serializing pages', () => {
 		component = new DataLayoutBuilder(props);
+		component.componentDidMount();
 
 		expect(component.serialize([], [])).toMatchObject({
 			definition:

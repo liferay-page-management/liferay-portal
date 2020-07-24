@@ -118,7 +118,7 @@ public class PropertiesSourceFormatterFileCheck extends BaseFileCheck {
 				content = _sortPropertyValues(content, key, propertyValues);
 			}
 
-			if (!key.endsWith("excludes")) {
+			if (!key.endsWith("excludes") && !key.endsWith("FileNames")) {
 				continue;
 			}
 

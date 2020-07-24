@@ -49,6 +49,38 @@ class ContentDashboardManagementToolbarDefaultEventHandler extends DefaultEventH
 		itemSelectorDialog.open();
 	}
 
+	selectCategory(itemData) {
+		const itemSelectorDialog = new ItemSelectorDialog({
+			buttonAddLabel: Liferay.Language.get('select'),
+			eventName: this.ns('selectedCategory'),
+			title: itemData.dialogTitle,
+			url: itemData.selectCategoryURL,
+		});
+
+		itemSelectorDialog.on('selectedItemChange', (event) => {
+			const selectedItem = event.selectedItem;
+
+			if (selectedItem) {
+				const categories = Object.keys(selectedItem);
+
+				var redirectURL = itemData.redirectURL;
+
+				categories.forEach((category) => {
+					redirectURL = addParams(
+						this.namespace +
+							'categoryId=' +
+							selectedItem[category].categoryId,
+						redirectURL
+					);
+				});
+
+				navigate(redirectURL);
+			}
+		});
+
+		itemSelectorDialog.open();
+	}
+
 	selectContentDashboardItemType(itemData) {
 		const itemSelectorDialog = new ItemSelectorDialog({
 			buttonAddLabel: Liferay.Language.get('select'),

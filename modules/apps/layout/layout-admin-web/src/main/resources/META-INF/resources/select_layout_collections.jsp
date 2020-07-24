@@ -19,6 +19,8 @@
 <%
 SelectLayoutCollectionDisplayContext selectLayoutCollectionDisplayContext = (SelectLayoutCollectionDisplayContext)request.getAttribute(LayoutAdminWebKeys.SELECT_LAYOUT_COLLECTION_DISPLAY_CONTEXT);
 
+SelectCollectionManagementToolbarDisplayContext selectCollectionManagementToolbarDisplayContext = new SelectCollectionManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, selectLayoutCollectionDisplayContext);
+
 portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(layoutsAdminDisplayContext.getBackURL());
 
@@ -31,8 +33,13 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-collection"));
 	navigationItems="<%= selectLayoutCollectionDisplayContext.getNavigationItems() %>"
 />
 
+<c:if test="<%= selectLayoutCollectionDisplayContext.isCollections() %>">
+	<clay:management-toolbar
+		displayContext="<%= selectCollectionManagementToolbarDisplayContext %>"
+	/>
+</c:if>
+
 <clay:container-fluid
-	cssClass="container-view"
 	id='<%= liferayPortletResponse.getNamespace() + "collections" %>'
 >
 	<c:choose>
@@ -44,3 +51,33 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-collection"));
 		</c:otherwise>
 	</c:choose>
 </clay:container-fluid>
+
+<c:if test="<%= selectLayoutCollectionDisplayContext.isCollections() %>">
+	<liferay-frontend:component
+		componentId="<%= selectCollectionManagementToolbarDisplayContext.getDefaultEventHandler() %>"
+		module="js/SelectCollectionManagementToolbarDefaultEventHandler.es"
+	/>
+</c:if>
+
+<aui:script require="metal-dom/src/all/dom as dom">
+	var collections = document.getElementById('<portlet:namespace />collections');
+
+	var selectLayoutMasterLayoutActionOptionQueryClickHandler = dom.delegate(
+		collections,
+		'click',
+		'.select-collection-action-option',
+		function (event) {
+			Liferay.Util.navigate(
+				event.delegateTarget.dataset.selectLayoutMasterLayoutUrl
+			);
+		}
+	);
+
+	function handleDestroyPortlet() {
+		selectLayoutMasterLayoutActionOptionQueryClickHandler.removeListener();
+
+		Liferay.detach('destroyPortlet', handleDestroyPortlet);
+	}
+
+	Liferay.on('destroyPortlet', handleDestroyPortlet);
+</aui:script>

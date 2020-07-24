@@ -20,6 +20,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderRequest;
+import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletURL;
 import com.liferay.portal.kernel.test.util.PropsTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -95,8 +96,8 @@ public class ContentDashboardDropdownItemsProviderTest {
 		ContentDashboardDropdownItemsProvider
 			contentDashboardDropdownItemsProvider =
 				new ContentDashboardDropdownItemsProvider(
-					_http, _language, mockLiferayPortletRenderRequest, null,
-					new PortalImpl());
+					_http, _language, mockLiferayPortletRenderRequest,
+					new MockLiferayPortletRenderResponse(), new PortalImpl());
 
 		ContentDashboardItem contentDashboardItem = Mockito.mock(
 			ContentDashboardItem.class);
@@ -135,99 +136,6 @@ public class ContentDashboardDropdownItemsProviderTest {
 	}
 
 	@Test
-	public void testGetInfoURL() {
-		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-			new MockLiferayPortletRenderRequest();
-
-		MockLiferayPortletURL mockLiferayPortletURL =
-			new MockLiferayPortletURL();
-
-		mockLiferayPortletRenderRequest.setAttribute(
-			"null" + StringPool.DASH + WebKeys.CURRENT_PORTLET_URL,
-			mockLiferayPortletURL);
-
-		mockLiferayPortletRenderRequest.setAttribute(
-			WebKeys.LOCALE, LocaleUtil.US);
-
-		ContentDashboardDropdownItemsProvider
-			contentDashboardDropdownItemsProvider =
-				new ContentDashboardDropdownItemsProvider(
-					_http, _language, mockLiferayPortletRenderRequest, null,
-					new PortalImpl());
-
-		ContentDashboardItem contentDashboardItem = Mockito.mock(
-			ContentDashboardItem.class);
-
-		List<DropdownItem> dropdownItems =
-			contentDashboardDropdownItemsProvider.getDropdownItems(
-				contentDashboardItem);
-
-		Stream<DropdownItem> stream = dropdownItems.stream();
-
-		DropdownItem infoDropdownItem = stream.filter(
-			dropdownItem -> Objects.equals(
-				String.valueOf(dropdownItem.get("label")), "info")
-		).findFirst(
-		).orElseThrow(
-			() -> new AssertionError()
-		);
-
-		Assert.assertEquals(
-			StringPool.BLANK,
-			_http.getPath(String.valueOf(infoDropdownItem.get("href"))));
-	}
-
-	@Test
-	public void testGetMetricsURL() {
-		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-			new MockLiferayPortletRenderRequest();
-
-		MockLiferayPortletURL mockLiferayPortletURL =
-			new MockLiferayPortletURL();
-
-		mockLiferayPortletRenderRequest.setAttribute(
-			"null" + StringPool.DASH + WebKeys.CURRENT_PORTLET_URL,
-			mockLiferayPortletURL);
-
-		mockLiferayPortletRenderRequest.setAttribute(
-			WebKeys.LOCALE, LocaleUtil.US);
-
-		ContentDashboardDropdownItemsProvider
-			contentDashboardDropdownItemsProvider =
-				new ContentDashboardDropdownItemsProvider(
-					_http, _language, mockLiferayPortletRenderRequest, null,
-					new PortalImpl());
-
-		ContentDashboardItem contentDashboardItem = Mockito.mock(
-			ContentDashboardItem.class);
-
-		Mockito.when(
-			contentDashboardItem.isViewURLEnabled(
-				Mockito.any(HttpServletRequest.class))
-		).thenReturn(
-			true
-		);
-
-		List<DropdownItem> dropdownItems =
-			contentDashboardDropdownItemsProvider.getDropdownItems(
-				contentDashboardItem);
-
-		Stream<DropdownItem> stream = dropdownItems.stream();
-
-		DropdownItem metricsDropdownItem = stream.filter(
-			dropdownItem -> Objects.equals(
-				String.valueOf(dropdownItem.get("label")), "metrics")
-		).findFirst(
-		).orElseThrow(
-			() -> new AssertionError()
-		);
-
-		Assert.assertEquals(
-			StringPool.BLANK,
-			_http.getPath(String.valueOf(metricsDropdownItem.get("href"))));
-	}
-
-	@Test
 	public void testGetURLBackURL() {
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 			new MockLiferayPortletRenderRequest();
@@ -242,8 +150,8 @@ public class ContentDashboardDropdownItemsProviderTest {
 		ContentDashboardDropdownItemsProvider
 			contentDashboardDropdownItemsProvider =
 				new ContentDashboardDropdownItemsProvider(
-					_http, _language, mockLiferayPortletRenderRequest, null,
-					new PortalImpl());
+					_http, _language, mockLiferayPortletRenderRequest,
+					new MockLiferayPortletRenderResponse(), new PortalImpl());
 
 		ContentDashboardItem contentDashboardItem = Mockito.mock(
 			ContentDashboardItem.class);
@@ -298,8 +206,8 @@ public class ContentDashboardDropdownItemsProviderTest {
 		ContentDashboardDropdownItemsProvider
 			contentDashboardDropdownItemsProvider =
 				new ContentDashboardDropdownItemsProvider(
-					_http, _language, mockLiferayPortletRenderRequest, null,
-					new PortalImpl());
+					_http, _language, mockLiferayPortletRenderRequest,
+					new MockLiferayPortletRenderResponse(), new PortalImpl());
 
 		ContentDashboardItem contentDashboardItem = Mockito.mock(
 			ContentDashboardItem.class);
@@ -356,8 +264,8 @@ public class ContentDashboardDropdownItemsProviderTest {
 		ContentDashboardDropdownItemsProvider
 			contentDashboardDropdownItemsProvider =
 				new ContentDashboardDropdownItemsProvider(
-					_http, _language, mockLiferayPortletRenderRequest, null,
-					new PortalImpl());
+					_http, _language, mockLiferayPortletRenderRequest,
+					new MockLiferayPortletRenderResponse(), new PortalImpl());
 
 		ContentDashboardItem contentDashboardItem = Mockito.mock(
 			ContentDashboardItem.class);

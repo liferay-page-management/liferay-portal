@@ -100,6 +100,18 @@ public class AssetVocabularyLocalServiceImpl
 	public AssetVocabulary addVocabulary(
 			long userId, long groupId, String title,
 			Map<Locale, String> titleMap, Map<Locale, String> descriptionMap,
+			String settings, boolean system, ServiceContext serviceContext)
+		throws PortalException {
+
+		return assetVocabularyLocalService.addVocabulary(
+			userId, groupId, titleMap.get(LocaleUtil.getSiteDefault()), title,
+			titleMap, descriptionMap, settings, system, serviceContext);
+	}
+
+	@Override
+	public AssetVocabulary addVocabulary(
+			long userId, long groupId, String title,
+			Map<Locale, String> titleMap, Map<Locale, String> descriptionMap,
 			String settings, ServiceContext serviceContext)
 		throws PortalException {
 
@@ -132,7 +144,7 @@ public class AssetVocabularyLocalServiceImpl
 	public AssetVocabulary addVocabulary(
 			long userId, long groupId, String name, String title,
 			Map<Locale, String> titleMap, Map<Locale, String> descriptionMap,
-			String settings, ServiceContext serviceContext)
+			String settings, boolean system, ServiceContext serviceContext)
 		throws PortalException {
 
 		// Vocabulary
@@ -169,6 +181,7 @@ public class AssetVocabularyLocalServiceImpl
 
 		vocabulary.setDescriptionMap(descriptionMap);
 		vocabulary.setSettings(settings);
+		vocabulary.setSystem(system);
 
 		vocabulary = assetVocabularyPersistence.update(vocabulary);
 
@@ -187,6 +200,18 @@ public class AssetVocabularyLocalServiceImpl
 		}
 
 		return vocabulary;
+	}
+
+	@Override
+	public AssetVocabulary addVocabulary(
+			long userId, long groupId, String name, String title,
+			Map<Locale, String> titleMap, Map<Locale, String> descriptionMap,
+			String settings, ServiceContext serviceContext)
+		throws PortalException {
+
+		return addVocabulary(
+			userId, groupId, name, title, titleMap, descriptionMap, settings,
+			false, serviceContext);
 	}
 
 	@Override
@@ -423,11 +448,21 @@ public class AssetVocabularyLocalServiceImpl
 		return searchVocabularies(searchContext);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public AssetVocabulary updateVocabulary(
 			long vocabularyId, Map<Locale, String> titleMap,
 			Map<Locale, String> descriptionMap, String settings)
+		throws PortalException {
+
+		return assetVocabularyLocalService.updateVocabulary(
+			vocabularyId, titleMap, descriptionMap, settings, false);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public AssetVocabulary updateVocabulary(
+			long vocabularyId, Map<Locale, String> titleMap,
+			Map<Locale, String> descriptionMap, String settings, boolean system)
 		throws PortalException {
 
 		AssetVocabulary vocabulary =
@@ -436,6 +471,7 @@ public class AssetVocabularyLocalServiceImpl
 		vocabulary.setTitleMap(titleMap);
 		vocabulary.setDescriptionMap(descriptionMap);
 		vocabulary.setSettings(settings);
+		vocabulary.setSystem(system);
 
 		return assetVocabularyPersistence.update(vocabulary);
 	}

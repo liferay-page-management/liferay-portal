@@ -206,15 +206,16 @@ definition {
 
 		SelectFrame(locator1 = "IFrame#MODAL_BODY");
 
-		var key_userScreenName = "${userScreenName}";
-
 		AssertTextEquals(
+			key_userScreenName = "${userScreenName}",
 			locator1 = "UserGroupsAssignUsers#USER_TABLE_SCREEN_NAME",
 			value1 = "${userScreenName}");
 
-		Check(locator1 = "UserGroupsAssignUsers#USER_TABLE_CHECKBOX");
+		Check(
+			key_userScreenName = "${userScreenName}",
+			locator1 = "UserGroupsAssignUsers#USER_TABLE_CHECKBOX");
 
-		Pause(locator1 = "5000");
+		Pause(locator1 = "3000");
 
 		SelectFrameTop();
 
@@ -340,31 +341,33 @@ definition {
 	macro assignOrgRoleCP {
 		Organization.gotoActionsCmd(orgName = "${orgName}");
 
-		var key_orgName = "${orgName}";
-
-		Pause(locator1 = "5000");
+		Pause(locator1 = "3000");
 
 		MenuItem.click(menuItem = "Assign Organization Roles");
 
 		SelectFrame(locator1 = "IFrame#MODAL_BODY");
 
 		AssertTextEquals(
+			key_roleTitle = "${roleTitle}",
 			locator1 = "UsersAndOrganizationsAssignOrganizationalRoles#ROLE_TITLE",
 			value1 = "${roleTitle}");
 
-		Click(locator1 = "UsersAndOrganizationsAssignOrganizationalRoles#ROLE_TITLE");
+		Click(
+			key_roleTitle = "${roleTitle}",
+			locator1 = "UsersAndOrganizationsAssignOrganizationalRoles#ROLE_TITLE");
 
 		Navigator.gotoNavItem(navItem = "Available");
 
 		Search.searchCP(searchTerm = "${userScreenName}");
 
-		var key_userScreenName = "${userScreenName}";
-
 		AssertTextEquals(
+			key_userScreenName = "${userScreenName}",
 			locator1 = "UserGroupsAssignUsers#USER_TABLE_SCREEN_NAME",
 			value1 = "${userScreenName}");
 
-		Check(locator1 = "UserGroupsAssignUsers#USER_TABLE_CHECKBOX");
+		Check(
+			key_userScreenName = "${userScreenName}",
+			locator1 = "UserGroupsAssignUsers#USER_TABLE_CHECKBOX");
 
 		AssertClick(
 			locator1 = "Button#UPDATE_ASSOCIATIONS",
@@ -375,10 +378,12 @@ definition {
 		Navigator.gotoNavItem(navItem = "Current");
 
 		AssertTextEquals(
+			key_userScreenName = "${userScreenName}",
 			locator1 = "UsersAndOrganizationsAssignUsers#USER_TABLE_USER_NAME",
 			value1 = "${userFirstName} ${userLastName}");
 
 		AssertTextEquals(
+			key_userScreenName = "${userScreenName}",
 			locator1 = "UserGroupsAssignUsers#USER_TABLE_SCREEN_NAME",
 			value1 = "${userScreenName}");
 

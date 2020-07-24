@@ -32,7 +32,16 @@ long vocabularyId = ParamUtil.getLong(request, "vocabularyId");
 portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(redirect);
 
-renderResponse.setTitle((category == null) ? LanguageUtil.get(request, "add-new-category") : category.getTitle(locale));
+String title = LanguageUtil.get(request, "add-new-category");
+
+if (category != null) {
+	title = category.getTitle(locale);
+}
+else if (parentCategoryId > 0) {
+	title = LanguageUtil.get(request, "add-new-subcategory");
+}
+
+renderResponse.setTitle(title);
 %>
 
 <portlet:actionURL name="editCategory" var="editCategoryURL">
@@ -119,7 +128,7 @@ renderResponse.setTitle((category == null) ? LanguageUtil.get(request, "add-new-
 										).build());
 								}
 
-								Map<String, Object> data = HashMapBuilder.<String, Object>put(
+								Map<String, Object> props = HashMapBuilder.<String, Object>put(
 									"categoryIds", Collections.singletonList(parentCategoryId)
 								).put(
 									"groupIds", Collections.singletonList(scopeGroupId)
@@ -135,8 +144,8 @@ renderResponse.setTitle((category == null) ? LanguageUtil.get(request, "add-new-
 								%>
 
 								<react:component
-									data="<%= data %>"
 									module="js/AssetCategoriesSelectorTag.es"
+									props="<%= props %>"
 								/>
 							</div>
 						</aui:field-wrapper>

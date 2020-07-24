@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.vulcan.util.TransformUtil;
 
@@ -217,6 +218,10 @@ public class AccountUserDisplay {
 		List<AccountEntryUserRel> accountEntryUserRels =
 			_getAccountEntryUserRels(getUserId());
 
+		if (accountEntryUserRels.isEmpty()) {
+			return false;
+		}
+
 		if (accountEntryUserRels.size() != 1) {
 			return true;
 		}
@@ -227,8 +232,15 @@ public class AccountUserDisplay {
 			AccountEntryLocalServiceUtil.getAccountEntry(
 				accountEntryUserRel.getAccountEntryId());
 
-		return !Objects.equals(
-			accountEntry.getType(), AccountConstants.ACCOUNT_ENTRY_TYPE_PERSON);
+		if (Validator.isNotNull(accountEntry.getDomains()) &&
+			!Objects.equals(
+				accountEntry.getType(),
+				AccountConstants.ACCOUNT_ENTRY_TYPE_PERSON)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private AccountUserDisplay(User user) {

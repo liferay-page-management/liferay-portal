@@ -58,6 +58,7 @@ export default function EditEntry({dataRecordId, redirect}) {
 	} = useContext(AppContext);
 
 	const {
+		appVersion,
 		appWorkflowDefinitionId,
 		appWorkflowStates: [initialState = {}] = [],
 		appWorkflowTasks,
@@ -212,12 +213,19 @@ export default function EditEntry({dataRecordId, redirect}) {
 				if (totalCount > 0) {
 					setWorkflowInfo({
 						...items.pop(),
+						appVersion,
 						tasks: appWorkflowTasks,
 					});
 				}
 			});
 		}
-	}, [appWorkflowDefinitionId, appWorkflowTasks, dataRecordId, isEdit]);
+	}, [
+		appVersion,
+		appWorkflowDefinitionId,
+		appWorkflowTasks,
+		dataRecordId,
+		isEdit,
+	]);
 
 	return (
 		<>
