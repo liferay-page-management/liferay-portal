@@ -245,7 +245,8 @@ public class AssetCategoryAdminPortlet extends MVCPortlet {
 			actionRequest, "title");
 		Map<Locale, String> descriptionMap =
 			LocalizationUtil.getLocalizationMap(actionRequest, "description");
-		boolean system = ParamUtil.getBoolean(actionRequest, "system");
+		int visibilityType = ParamUtil.getInteger(
+			actionRequest, "visibilityType");
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			AssetVocabulary.class.getName(), actionRequest);
@@ -258,7 +259,7 @@ public class AssetCategoryAdminPortlet extends MVCPortlet {
 
 			vocabulary = _assetVocabularyService.addVocabulary(
 				serviceContext.getScopeGroupId(), StringPool.BLANK, titleMap,
-				descriptionMap, getSettings(actionRequest), system,
+				descriptionMap, getSettings(actionRequest), visibilityType,
 				serviceContext);
 		}
 		else {
@@ -267,7 +268,7 @@ public class AssetCategoryAdminPortlet extends MVCPortlet {
 
 			vocabulary = _assetVocabularyService.updateVocabulary(
 				vocabularyId, titleMap, descriptionMap,
-				getSettings(actionRequest), system);
+				getSettings(actionRequest), visibilityType);
 		}
 
 		actionRequest.setAttribute(
