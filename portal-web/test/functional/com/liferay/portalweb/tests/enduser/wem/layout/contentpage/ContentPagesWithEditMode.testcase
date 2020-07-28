@@ -180,23 +180,27 @@ definition {
 		}
 
 		task ("Assert floating toolbar of editable field is shown when select the editable field") {
-			for (var fragmentName : list "heading,paragraph,image") {
-				if ("${fragmentName}" == "image") {
-					Click(locator1 = "//div[contains(@class,'component-image')]/img[@data-lfr-editable-id='image-square']");
+			Click(
+				id = "element-text",
+				key_fragmentName = "heading",
+				locator1 = "Fragment#CONTRIBUTED_FRAGMENT_EDITABLE_FIELD_WITHOUT_TOPPER");
 
-					AssertVisible(locator1 = "PageEditor#EDITABLE_FIELD_TOOLBAR_IMAGE_PROPERTIES_BUTTON");
-				}
-				else {
-					Click(
-						id = "element-text",
-						key_fragmentName = "${fragmentName}",
-						locator1 = "Fragment#CONTRIBUTED_FRAGMENT_EDITABLE_FIELD_WITHOUT_TOPPER");
+			DoubleClick(
+				id = "element-text",
+				key_fragmentName = "heading",
+				locator1 = "Fragment#CONTRIBUTED_FRAGMENT_EDITABLE_FIELD_WITHOUT_TOPPER");
 
-					AssertVisible(locator1 = "PageEditor#EDITABLE_FIELD_TOOLBAR_EDIT_BUTTON");
-				}
+			AssertElementPresent(locator1 = "//*[contains(@class,'component-heading') and contains(@data-lfr-editable-id,'element-text')]/div[contains(@class,'cke_editable_inline')]");
 
-				Click(locator1 = "PageEditor#MANAGEMENT_BAR");
-			}
+			Click(locator1 = "PageEditor#MANAGEMENT_BAR");
+
+			Click(locator1 = "//div[contains(@class,'component-image')]/img[@data-lfr-editable-id='image-square']");
+
+			DoubleClick(locator1 = "//div[contains(@class,'component-image')]/img[@data-lfr-editable-id='image-square']");
+
+			ItemSelector.selectDMImage(
+				imageFileName = "Document Title",
+				navTab = "Documents and Media");
 		}
 
 		task ("Assert ellipsis button of Asset Publisher present") {
