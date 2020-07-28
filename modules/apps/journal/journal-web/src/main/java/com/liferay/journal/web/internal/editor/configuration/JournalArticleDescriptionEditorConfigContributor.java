@@ -48,43 +48,25 @@ public class JournalArticleDescriptionEditorConfigContributor
 		RequestBackedPortletURLFactory requestBackedPortletURLFactory) {
 
 		jsonObject.put(
-			"allowedContent", "p br strong i ol ul li u link pre em a"
+			"allowedContent", "p br strong i ol ul li u link pre em a[href]"
 		).put(
 			"height", "120"
 		).put(
-			"pasteFilter", "p br strong i ol ul li u link pre em a"
+			"pasteFilter", "p br strong i ol ul li u link pre em a[href]"
 		).put(
-			"toolbars", getToolbarsJSONObject(themeDisplay.getLocale())
+			"resize_enabled", false
+		).put(
+			"toolbar", getToolbarJSONArray()
 		);
 	}
 
-	protected JSONObject getToolbarsJSONObject(Locale locale) {
-		return JSONUtil.put("styles", getToolbarsStylesJSONObject(locale));
-	}
+	protected JSONArray getToolbarJSONArray() {
+		JSONArray jsonArray = JSONUtil.putAll(
+			toJSONArray("['Bold', 'Italic', 'Underline']"),
+			toJSONArray("['NumberedList', 'BulletedList']"),
+			toJSONArray("['Link', Unlink]"));
 
-	protected JSONObject getToolbarsStylesJSONObject(Locale locale) {
-		return JSONUtil.put(
-			"selections", getToolbarsStylesSelectionsJSONArray(locale)
-		).put(
-			"tabIndex", 1
-		);
-	}
-
-	protected JSONArray getToolbarsStylesSelectionsJSONArray(Locale locale) {
-		return JSONUtil.put(getToolbarsStylesSelectionsTextJSONObject(locale));
-	}
-
-	protected JSONObject getToolbarsStylesSelectionsTextJSONObject(
-		Locale locale) {
-
-		return JSONUtil.put(
-			"buttons",
-			JSONUtil.putAll("bold", "italic", "underline", "ol", "ul", "link")
-		).put(
-			"name", "text"
-		).put(
-			"test", "AlloyEditor.SelectionTest.text"
-		);
+		return jsonArray;
 	}
 
 }
