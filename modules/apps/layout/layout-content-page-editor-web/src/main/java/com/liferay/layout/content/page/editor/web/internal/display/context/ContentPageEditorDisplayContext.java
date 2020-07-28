@@ -311,12 +311,6 @@ public class ContentPageEditorDisplayContext {
 				getFragmentEntryActionURL(
 					"/content_layout/edit_fragment_entry_link")
 			).put(
-				"getAssetFieldValueURL",
-				getResourceURL("/content_layout/get_asset_field_value")
-			).put(
-				"getAssetMappingFieldsURL",
-				getResourceURL("/content_layout/get_asset_mapping_fields")
-			).put(
 				"getAvailableListItemRenderersURL",
 				getResourceURL(
 					"/content_layout/get_available_list_item_renderers")
@@ -351,6 +345,12 @@ public class ContentPageEditorDisplayContext {
 					return HttpUtil.addParameter(
 						layoutURL, "p_l_mode", Constants.PREVIEW);
 				}
+			).put(
+				"getItemFieldValueURL",
+				getResourceURL("/content_layout/get_item_field_value")
+			).put(
+				"getItemMappingFieldsURL",
+				getResourceURL("/content_layout/get_item_mapping_fields")
 			).put(
 				"getPageContentsURL",
 				getResourceURL("/content_layout/get_page_contents")
