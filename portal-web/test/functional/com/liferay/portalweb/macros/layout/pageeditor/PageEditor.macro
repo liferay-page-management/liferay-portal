@@ -3,16 +3,16 @@ definition {
 	macro addComment {
 		Pause(locator1 = "10000");
 
-		PageEditor.gotoTab(tabName = "Comments");
-
-		Pause(locator1 = "3000");
-
 		if (IsElementNotPresent(key_fragmentName = "${fragmentName}", locator1 = "PageEditor#FRAGMENT_SIDEBAR_COMMENT_SECTION_NAME")) {
 			Click(
 				key_content = "${content}",
 				key_fragmentClass = "${fragmentClass}",
 				locator1 = "Fragment#FRAGMENT");
 		}
+
+		Pause(locator1 = "3000");
+
+		PageEditor.gotoTab(tabName = "Comments");
 
 		AssertElementPresent(
 			key_fragmentName = "${fragmentName}",
