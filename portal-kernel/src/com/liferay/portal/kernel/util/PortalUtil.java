@@ -1997,10 +1997,13 @@ public class PortalUtil {
 		return getPortal().isValidResourceId(resourceId);
 	}
 
-	public void processPrincipalException(
+	public static void processPrincipalException(
 		PrincipalException pe, long userId, HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse)
 		throws IOException, ServletException {
+
+		getPortal().processPrincipalException(
+			pe, userId, httpServletRequest, httpServletResponse);
 
 	}
 
