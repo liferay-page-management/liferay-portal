@@ -1147,8 +1147,9 @@ public class MainServlet extends HttpServlet {
 				return true;
 			}
 			else if (cause instanceof PrincipalException) {
-				_processServicePrePrincipalException(
-					cause, userId, httpServletRequest, httpServletResponse);
+				PortalUtil.processPrincipalException(
+					(PrincipalException)cause, userId, httpServletRequest,
+					httpServletResponse);
 
 				return true;
 			}
@@ -1194,58 +1195,6 @@ public class MainServlet extends HttpServlet {
 		}
 
 		return false;
-	}
-
-	private void _processServicePrePrincipalException(
-			Throwable t, long userId, HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse)
-		throws IOException, ServletException {
-
-		if ((userId > 0) ||
-			(ParamUtil.getInteger(httpServletRequest, "p_p_lifecycle") == 2)) {
-
-			PortalUtil.sendError(
-				HttpServletResponse.SC_UNAUTHORIZED, (Exception)t,
-				httpServletRequest, httpServletResponse);
-
-			return;
-		}
-
-		String mainPath = PortalUtil.getPathMain();
-
-		String redirect = mainPath.concat("/portal/login");
-
-		redirect = HttpUtil.addParameter(
-			redirect, "redirect", PortalUtil.getCurrentURL(httpServletRequest));
-
-		long plid = ParamUtil.getLong(httpServletRequest, "p_l_id");
-
-		if (plid > 0) {
-			try {
-				redirect = HttpUtil.addParameter(redirect, "refererPlid", plid);
-
-				Layout layout = LayoutLocalServiceUtil.getLayout(plid);
-
-				Group group = layout.getGroup();
-
-				plid = group.getDefaultPublicPlid();
-
-				if ((plid == LayoutConstants.DEFAULT_PLID) ||
-					group.isStagingGroup()) {
-
-					Group guestGroup = GroupLocalServiceUtil.getGroup(
-						layout.getCompanyId(), GroupConstants.GUEST);
-
-					plid = guestGroup.getDefaultPublicPlid();
-				}
-
-				redirect = HttpUtil.addParameter(redirect, "p_l_id", plid);
-			}
-			catch (Exception exception) {
-			}
-		}
-
-		httpServletResponse.sendRedirect(redirect);
 	}
 
 	private boolean _processShutdownRequest(
