@@ -6498,11 +6498,25 @@ public class PortalImpl implements Portal {
 		HttpServletResponse httpServletResponse)
 		throws IOException, ServletException {
 
-		if ((userId > 0) ||
-			(ParamUtil.getInteger(httpServletRequest, "p_p_lifecycle") == 2)) {
+		User user = null;
+
+		try {
+			user = UserLocalServiceUtil.fetchUser(userId);
+		}
+		catch (Exception e) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(e);
+			}
+		}
+
+		if (user == null ||
+			 !user.isDefaultUser() ||
+				(ParamUtil.getInteger(
+					httpServletRequest, "p_p_lifecycle") ==
+				 2)) {
 
 			PortalUtil.sendError(
-				HttpServletResponse.SC_UNAUTHORIZED, (Exception)pe,
+				HttpServletResponse.SC_UNAUTHORIZED, (Exception) pe,
 				httpServletRequest, httpServletResponse);
 
 			return;
