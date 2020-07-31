@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Pavel Savinov
@@ -32,6 +33,34 @@ public abstract class StyledLayoutStructureItem extends LayoutStructureItem {
 
 	public StyledLayoutStructureItem(String parentItemId) {
 		super(parentItemId);
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+
+		if (!(object instanceof StyledLayoutStructureItem)) {
+			return false;
+		}
+
+		StyledLayoutStructureItem styledLayoutStructureItem =
+			(StyledLayoutStructureItem)object;
+
+		JSONObject stylesJSONObject =
+			styledLayoutStructureItem.stylesJSONObject;
+
+		for (String key : this.stylesJSONObject.keySet()) {
+			if (!Objects.deepEquals(
+					GetterUtil.getString(this.stylesJSONObject.get(key)),
+					GetterUtil.getString(stylesJSONObject.get(key)))) {
+
+				return false;
+			}
+		}
+
+		return super.equals(object);
 	}
 
 	public String getAlign() {
