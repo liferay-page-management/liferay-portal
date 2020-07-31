@@ -1998,13 +1998,14 @@ public class PortalUtil {
 	}
 
 	public static void processPrincipalException(
-		PrincipalException pe, long userId, HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse)
+			PrincipalException principalException, long userId,
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse)
 		throws IOException, ServletException {
 
 		getPortal().processPrincipalException(
-			pe, userId, httpServletRequest, httpServletResponse);
-
+			principalException, userId, httpServletRequest,
+			httpServletResponse);
 	}
 
 	public static boolean removePortalEventListener(
