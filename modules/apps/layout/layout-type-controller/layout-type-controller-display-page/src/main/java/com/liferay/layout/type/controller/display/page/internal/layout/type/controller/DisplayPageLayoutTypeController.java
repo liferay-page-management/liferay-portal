@@ -151,15 +151,17 @@ public class DisplayPageLayoutTypeController
 					themeDisplay.getPermissionChecker(),
 					assetEntry.getClassPK(), ActionKeys.VIEW)) {
 
-				if (!themeDisplay.isSignedIn()) {
-					throw new PrincipalException.MustBeAuthenticated(
-						String.valueOf(themeDisplay.getUserId()));
-				} else {
-					throw new PrincipalException.MustHavePermission(
+				PrincipalException pe =
+					new PrincipalException.MustHavePermission(
 						themeDisplay.getPermissionChecker(),
 						assetRendererFactory.getClassName(),
 						assetEntry.getClassPK(), ActionKeys.VIEW);
-				}
+
+				_portal.processPrincipalException(
+					pe, themeDisplay.getUserId(), httpServletRequest,
+					httpServletResponse);
+
+				return false;
 			}
 
 		}
