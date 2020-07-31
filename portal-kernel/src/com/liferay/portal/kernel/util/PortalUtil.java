@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.portlet.LayoutFriendlyURLSeparatorComposite;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletInstanceFactoryUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -1994,6 +1995,13 @@ public class PortalUtil {
 
 	public static boolean isValidResourceId(String resourceId) {
 		return getPortal().isValidResourceId(resourceId);
+	}
+
+	public void processPrincipalException(
+		PrincipalException pe, long userId, HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse)
+		throws IOException, ServletException {
+
 	}
 
 	public static boolean removePortalEventListener(

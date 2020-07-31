@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.LayoutFriendlyURLSeparatorComposite;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
@@ -1199,6 +1200,12 @@ public interface Portal {
 	public boolean isUpdateAvailable();
 
 	public boolean isValidResourceId(String resourceId);
+
+	public void processPrincipalException(
+		PrincipalException pe, long userId,
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse)
+		throws IOException, ServletException;
 
 	public boolean removePortalInetSocketAddressEventListener(
 		PortalInetSocketAddressEventListener

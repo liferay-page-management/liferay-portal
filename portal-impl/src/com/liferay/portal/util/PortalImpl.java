@@ -6493,6 +6493,59 @@ public class PortalImpl implements Portal {
 	}
 
 	@Override
+	public void processPrincipalException(
+		PrincipalException pe, long userId, HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse)
+		throws IOException, ServletException {
+
+		if ((userId > 0) ||
+			(ParamUtil.getInteger(httpServletRequest, "p_p_lifecycle") == 2)) {
+
+			PortalUtil.sendError(
+				HttpServletResponse.SC_UNAUTHORIZED, (Exception)pe,
+				httpServletRequest, httpServletResponse);
+
+			return;
+		}
+
+		String mainPath = PortalUtil.getPathMain();
+
+		String redirect = mainPath.concat("/portal/login");
+
+		redirect = HttpUtil.addParameter(
+			redirect, "redirect", PortalUtil.getCurrentURL(httpServletRequest));
+
+		long plid = ParamUtil.getLong(httpServletRequest, "p_l_id");
+
+		if (plid > 0) {
+			try {
+				redirect = HttpUtil.addParameter(redirect, "refererPlid", plid);
+
+				Layout layout = LayoutLocalServiceUtil.getLayout(plid);
+
+				Group group = layout.getGroup();
+
+				plid = group.getDefaultPublicPlid();
+
+				if ((plid == LayoutConstants.DEFAULT_PLID) ||
+					group.isStagingGroup()) {
+
+					Group guestGroup = GroupLocalServiceUtil.getGroup(
+						layout.getCompanyId(), GroupConstants.GUEST);
+
+					plid = guestGroup.getDefaultPublicPlid();
+				}
+
+				redirect = HttpUtil.addParameter(redirect, "p_l_id", plid);
+			}
+			catch (Exception exception) {
+			}
+		}
+
+		httpServletResponse.sendRedirect(redirect);
+	}
+
+	@Override
 	public boolean removePortalInetSocketAddressEventListener(
 		PortalInetSocketAddressEventListener
 			portalInetSocketAddressEventListener) {
