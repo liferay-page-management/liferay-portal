@@ -6513,7 +6513,8 @@ public class PortalImpl implements Portal {
 			 !user.isDefaultUser() ||
 				(ParamUtil.getInteger(
 					httpServletRequest, "p_p_lifecycle") ==
-				 2)) {
+				 2) ||
+			!PropsValues.AUTH_LOGIN_PROMPT_ENABLED) {
 
 			PortalUtil.sendError(
 				HttpServletResponse.SC_UNAUTHORIZED, (Exception) pe,
