@@ -346,11 +346,11 @@ public class ContentPageEditorDisplayContext {
 						layoutURL, "p_l_mode", Constants.PREVIEW);
 				}
 			).put(
-				"getItemFieldValueURL",
-				getResourceURL("/content_layout/get_item_field_value")
+				"getInfoItemFieldValueURL",
+				getResourceURL("/content_layout/get_info_item_field_value")
 			).put(
-				"getItemMappingFieldsURL",
-				getResourceURL("/content_layout/get_item_mapping_fields")
+				"getInfoItemMappingFieldsURL",
+				getResourceURL("/content_layout/get_info_item_mapping_fields")
 			).put(
 				"getPageContentsURL",
 				getResourceURL("/content_layout/get_page_contents")

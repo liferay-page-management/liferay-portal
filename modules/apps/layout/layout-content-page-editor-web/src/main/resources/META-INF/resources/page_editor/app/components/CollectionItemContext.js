@@ -111,7 +111,7 @@ const useGetFieldValue = () => {
 
 	const getFromServer = useCallback(
 		({classNameId, classPK, fieldId, languageId}) =>
-			InfoItemService.getItemFieldValue({
+			InfoItemService.getInfoItemFieldValue({
 				classNameId,
 				classPK,
 				fieldId,

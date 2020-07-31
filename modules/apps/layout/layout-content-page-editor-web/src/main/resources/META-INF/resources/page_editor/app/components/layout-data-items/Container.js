@@ -62,7 +62,7 @@ const Container = React.forwardRef(
 				setLink(item.config.link);
 			}
 			else if (item.config.link.fieldId) {
-				InfoItemService.getItemFieldValue({
+				InfoItemService.getInfoItemFieldValue({
 					...item.config.link,
 					languageId,
 					onNetworkStatus: () => {},

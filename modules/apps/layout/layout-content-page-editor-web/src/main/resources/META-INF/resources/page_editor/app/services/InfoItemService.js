@@ -25,14 +25,14 @@ export default {
 	 * @param {string} options.fieldType Type of field to which we are mapping
 	 * @param {function} options.onNetworkStatus
 	 */
-	getAvailableItemMappingFields({
+	getAvailableInfoItemMappingFields({
 		classNameId,
 		classPK,
 		fieldType,
 		onNetworkStatus,
 	}) {
 		return serviceFetch(
-			config.getItemMappingFieldsURL,
+			config.getInfoItemMappingFieldsURL,
 			{
 				body: {
 					classNameId,
@@ -142,7 +142,7 @@ export default {
 	 * @param {string} [options.languageId]
 	 * @param {function} options.onNetworkStatus
 	 */
-	getItemFieldValue({
+	getInfoItemFieldValue({
 		classNameId,
 		classPK,
 		fieldId,
@@ -150,7 +150,7 @@ export default {
 		onNetworkStatus,
 	}) {
 		return serviceFetch(
-			config.getItemFieldValueURL,
+			config.getInfoItemFieldValueURL,
 			{
 				body: {
 					classNameId,

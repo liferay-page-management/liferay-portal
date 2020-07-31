@@ -14,15 +14,16 @@
 
 package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
-import com.liferay.info.field.InfoField;
-import com.liferay.info.field.type.ImageInfoFieldType;
-import com.liferay.info.form.InfoForm;
+import com.liferay.asset.info.display.contributor.util.ContentAccessor;
+import com.liferay.fragment.entry.processor.helper.FragmentEntryProcessorHelper;
+import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.InfoItemServiceTracker;
-import com.liferay.info.item.provider.InfoItemFormProvider;
+import com.liferay.info.item.provider.InfoItemFieldValuesProvider;
 import com.liferay.info.item.provider.InfoItemObjectProvider;
+import com.liferay.info.type.WebImage;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
-import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -32,14 +33,10 @@ import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Predicate;
 
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
@@ -49,17 +46,16 @@ import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Pavel Savinov
- * @author Jorge Ferrer
  */
 @Component(
 	immediate = true,
 	property = {
 		"javax.portlet.name=" + ContentPageEditorPortletKeys.CONTENT_PAGE_EDITOR_PORTLET,
-		"mvc.command.name=/content_layout/get_item_mapping_fields"
+		"mvc.command.name=/content_layout/get_info_item_field_value"
 	},
 	service = MVCResourceCommand.class
 )
-public class GetItemMappingFieldsMVCResourceCommand
+public class GetItemInfoFieldValueMVCResourceCommand
 	extends BaseMVCResourceCommand {
 
 	@Override
@@ -69,36 +65,31 @@ public class GetItemMappingFieldsMVCResourceCommand
 
 		long classNameId = ParamUtil.getLong(resourceRequest, "classNameId");
 
-		String itemClassName = _portal.getClassName(classNameId);
+		String className = _portal.getClassName(classNameId);
 
-		InfoItemFormProvider<Object> infoItemFormProvider =
-			(InfoItemFormProvider<Object>)
-				_infoItemServiceTracker.getFirstInfoItemService(
-					InfoItemFormProvider.class, itemClassName);
+		InfoItemFieldValuesProvider<Object> infoItemFieldValuesProvider =
+			_infoItemServiceTracker.getFirstInfoItemService(
+				InfoItemFieldValuesProvider.class, className);
 
-		if (infoItemFormProvider == null) {
+		if (infoItemFieldValuesProvider == null) {
 			if (_log.isWarnEnabled()) {
 				_log.warn(
 					"Unable to get info item form provider for class " +
-						itemClassName);
+						className);
 			}
 
 			JSONPortletResponseUtil.writeJSON(
 				resourceRequest, resourceResponse,
-				JSONFactoryUtil.createJSONArray());
+				JSONFactoryUtil.createJSONObject());
 
 			return;
 		}
 
 		InfoItemObjectProvider<Object> infoItemObjectProvider =
 			_infoItemServiceTracker.getFirstInfoItemService(
-				InfoItemObjectProvider.class, itemClassName);
+				InfoItemObjectProvider.class, className);
 
 		if (infoItemObjectProvider == null) {
-			JSONPortletResponseUtil.writeJSON(
-				resourceRequest, resourceResponse,
-				JSONFactoryUtil.createJSONArray());
-
 			return;
 		}
 
@@ -106,64 +97,69 @@ public class GetItemMappingFieldsMVCResourceCommand
 
 		InfoItemReference infoItemReference = new InfoItemReference(classPK);
 
-		Object infoItemObject = infoItemObjectProvider.getInfoItem(
-			infoItemReference);
+		Object object = infoItemObjectProvider.getInfoItem(infoItemReference);
 
-		if (infoItemObject == null) {
+		if (object == null) {
 			JSONPortletResponseUtil.writeJSON(
 				resourceRequest, resourceResponse,
-				JSONFactoryUtil.createJSONArray());
+				JSONFactoryUtil.createJSONObject());
 
 			return;
 		}
 
+		String fieldId = ParamUtil.getString(resourceRequest, "fieldId");
+
 		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+		JSONObject jsonObject = JSONUtil.put(
+			"classNameId", classNameId
+		).put(
+			"classPK", classPK
+		).put(
+			"fieldId", fieldId
+		);
 
-		InfoForm infoForm = infoItemFormProvider.getInfoForm(infoItemObject);
+		String languageId = ParamUtil.getString(
+			resourceRequest, "languageId", themeDisplay.getLanguageId());
 
-		String fieldType = ParamUtil.getString(resourceRequest, "fieldType");
+		InfoFieldValue<Object> infoFieldValue =
+			infoItemFieldValuesProvider.getInfoItemFieldValue(object, fieldId);
 
-		List<InfoField> infoFields = ListUtil.filter(
-			infoForm.getAllInfoFields(), _infoFieldTypePredicate(fieldType));
+		Object value = StringPool.BLANK;
 
-		for (InfoField infoField : infoFields) {
-			JSONObject jsonObject = JSONUtil.put(
-				"key", infoField.getName()
-			).put(
-				"label", infoField.getLabel(themeDisplay.getLocale())
-			).put(
-				"type",
-				infoField.getInfoFieldType(
-				).getName()
-			);
-
-			jsonArray.put(jsonObject);
+		if (infoFieldValue != null) {
+			value = infoFieldValue.getValue(
+				LocaleUtil.fromLanguageId(languageId));
 		}
 
+		if (value instanceof ContentAccessor) {
+			ContentAccessor contentAccessor = (ContentAccessor)value;
+
+			value = contentAccessor.getContent();
+		}
+
+		if (value instanceof WebImage) {
+			WebImage webImage = (WebImage)value;
+
+			value = webImage.toJSONObject();
+		}
+		else {
+			value = _fragmentEntryProcessorHelper.formatMappedValue(
+				value, themeDisplay.getLocale());
+		}
+
+		jsonObject.put("fieldValue", value);
+
 		JSONPortletResponseUtil.writeJSON(
-			resourceRequest, resourceResponse, jsonArray);
-	}
-
-	private Predicate<InfoField> _infoFieldTypePredicate(String fieldType) {
-		return infoField -> {
-			boolean imageInfoFieldType =
-				infoField.getInfoFieldType() instanceof ImageInfoFieldType;
-
-			if (Objects.equals(fieldType, "background-image") ||
-				Objects.equals(fieldType, "image")) {
-
-				return imageInfoFieldType;
-			}
-
-			return !imageInfoFieldType;
-		};
+			resourceRequest, resourceResponse, jsonObject);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		GetItemMappingFieldsMVCResourceCommand.class);
+		GetItemInfoFieldValueMVCResourceCommand.class);
+
+	@Reference
+	private FragmentEntryProcessorHelper _fragmentEntryProcessorHelper;
 
 	@Reference
 	private InfoItemServiceTracker _infoItemServiceTracker;
