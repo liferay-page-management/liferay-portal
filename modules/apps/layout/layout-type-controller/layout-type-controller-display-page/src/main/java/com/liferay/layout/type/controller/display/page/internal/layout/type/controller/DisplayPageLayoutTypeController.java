@@ -140,30 +140,30 @@ public class DisplayPageLayoutTypeController
 			WebKeys.LAYOUT_ASSET_ENTRY);
 
 		if ((object != null) && (object instanceof AssetEntry)) {
-			AssetEntry assetEntry = (AssetEntry) object;
+			AssetEntry assetEntry = (AssetEntry)object;
+
 			AssetRendererFactory<?> assetRendererFactory =
 				AssetRendererFactoryRegistryUtil.
 					getAssetRendererFactoryByClassNameId(
 						assetEntry.getClassNameId());
 
-			if (assetRendererFactory != null &&
+			if ((assetRendererFactory != null) &&
 				!assetRendererFactory.hasPermission(
 					themeDisplay.getPermissionChecker(),
 					assetEntry.getClassPK(), ActionKeys.VIEW)) {
 
-				PrincipalException pe =
+				PrincipalException principalException =
 					new PrincipalException.MustHavePermission(
 						themeDisplay.getPermissionChecker(),
 						assetRendererFactory.getClassName(),
 						assetEntry.getClassPK(), ActionKeys.VIEW);
 
 				_portal.processPrincipalException(
-					pe, themeDisplay.getUserId(), httpServletRequest,
-					httpServletResponse);
+					principalException, themeDisplay.getUserId(),
+					httpServletRequest, httpServletResponse);
 
 				return false;
 			}
-
 		}
 
 		String layoutMode = ParamUtil.getString(

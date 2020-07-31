@@ -1202,9 +1202,9 @@ public interface Portal {
 	public boolean isValidResourceId(String resourceId);
 
 	public void processPrincipalException(
-		PrincipalException pe, long userId,
-		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse)
+			PrincipalException principalException, long userId,
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse)
 		throws IOException, ServletException;
 
 	public boolean removePortalInetSocketAddressEventListener(

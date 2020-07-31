@@ -6494,8 +6494,9 @@ public class PortalImpl implements Portal {
 
 	@Override
 	public void processPrincipalException(
-		PrincipalException pe, long userId, HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse)
+			PrincipalException principalException, long userId,
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse)
 		throws IOException, ServletException {
 
 		User user = null;
@@ -6503,22 +6504,20 @@ public class PortalImpl implements Portal {
 		try {
 			user = UserLocalServiceUtil.fetchUser(userId);
 		}
-		catch (Exception e) {
+		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
-				_log.debug(e);
+				_log.debug(exception, exception);
 			}
 		}
 
-		if (user == null ||
-			 !user.isDefaultUser() ||
-				(ParamUtil.getInteger(
-					httpServletRequest, "p_p_lifecycle") ==
-				 2) ||
+		if ((user == null) || !user.isDefaultUser() ||
+			(ParamUtil.getInteger(httpServletRequest, "p_p_lifecycle") == 2) ||
 			!PropsValues.AUTH_LOGIN_PROMPT_ENABLED) {
 
 			PortalUtil.sendError(
-				HttpServletResponse.SC_UNAUTHORIZED, (Exception) pe,
-				httpServletRequest, httpServletResponse);
+				HttpServletResponse.SC_UNAUTHORIZED,
+				(Exception)principalException, httpServletRequest,
+				httpServletResponse);
 
 			return;
 		}
