@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.Reference;
 	immediate = true,
 	property = {
 		"panel.app.order:Integer=1500",
-		"panel.category.key=" + PanelCategoryKeys.SITE_ADMINISTRATION_CONTENT
+		"panel.category.key=" + PanelCategoryKeys.SITE_ADMINISTRATION_BUILD
 	},
 	service = PanelApp.class
 )
