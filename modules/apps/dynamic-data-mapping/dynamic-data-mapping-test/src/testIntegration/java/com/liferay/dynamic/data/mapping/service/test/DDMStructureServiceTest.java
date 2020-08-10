@@ -48,6 +48,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.test.util.SearchTestRule;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
 
 import java.util.ArrayList;
@@ -73,6 +74,7 @@ public class DDMStructureServiceTest extends BaseDDMServiceTestCase {
 	public static final AggregateTestRule aggregateTestRule =
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
+			PermissionCheckerMethodTestRule.INSTANCE,
 			new TransactionalTestRule(
 				Propagation.SUPPORTS,
 				"com.liferay.dynamic.data.mapping.service"));
@@ -85,16 +87,6 @@ public class DDMStructureServiceTest extends BaseDDMServiceTestCase {
 		_classNameId = PortalUtil.getClassNameId(DDL_RECORD_SET_CLASS_NAME);
 		_group = GroupTestUtil.addGroup();
 		_siteAdminUser = UserTestUtil.addGroupAdminUser(group);
-
-		setUpPermissionThreadLocal();
-		setUpPrincipalThreadLocal();
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		PermissionThreadLocal.setPermissionChecker(_originalPermissionChecker);
-
-		PrincipalThreadLocal.setName(_originalName);
 	}
 
 	@Test
@@ -403,20 +395,6 @@ public class DDMStructureServiceTest extends BaseDDMServiceTestCase {
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
 
-	protected void setUpPermissionThreadLocal() throws Exception {
-		_originalPermissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
-		PermissionThreadLocal.setPermissionChecker(
-			PermissionCheckerFactoryUtil.create(_siteAdminUser));
-	}
-
-	protected void setUpPrincipalThreadLocal() throws Exception {
-		_originalName = PrincipalThreadLocal.getName();
-
-		PrincipalThreadLocal.setName(_siteAdminUser.getUserId());
-	}
-
 	private static long _classNameId;
 
 	@DeleteAfterTestRun
@@ -424,9 +402,6 @@ public class DDMStructureServiceTest extends BaseDDMServiceTestCase {
 
 	@DeleteAfterTestRun
 	private Group _group;
-
-	private String _originalName;
-	private PermissionChecker _originalPermissionChecker;
 
 	@DeleteAfterTestRun
 	private User _siteAdminUser;

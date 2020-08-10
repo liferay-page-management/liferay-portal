@@ -83,23 +83,6 @@ public class DDMTemplateSearchTest {
 		addStructureAndTemplate();
 
 		_user = UserTestUtil.addUser();
-
-		_originalPermissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
-		PermissionThreadLocal.setPermissionChecker(
-			PermissionCheckerFactoryUtil.create(_user));
-
-		_originalName = PrincipalThreadLocal.getName();
-
-		PrincipalThreadLocal.setName(_user.getUserId());
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		PermissionThreadLocal.setPermissionChecker(_originalPermissionChecker);
-
-		PrincipalThreadLocal.setName(_originalName);
 	}
 
 	@Test
@@ -197,8 +180,6 @@ public class DDMTemplateSearchTest {
 	@DeleteAfterTestRun
 	private DDMTemplate _ddmTemplate;
 
-	private String _originalName;
-	private PermissionChecker _originalPermissionChecker;
 
 	@DeleteAfterTestRun
 	private Role _role;

@@ -43,6 +43,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -60,7 +61,8 @@ public class DDMTemplateServiceTest extends BaseDDMServiceTestCase {
 	@ClassRule
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
-		new LiferayIntegrationTestRule();
+		new AggregateTestRule(new LiferayIntegrationTestRule(),
+			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Before
 	@Override
@@ -72,16 +74,6 @@ public class DDMTemplateServiceTest extends BaseDDMServiceTestCase {
 			DDL_RECORD_SET_CLASS_NAME);
 		_structureClassNameId = PortalUtil.getClassNameId(DDMStructure.class);
 		_siteAdminUser = UserTestUtil.addGroupAdminUser(group);
-
-		setUpPermissionThreadLocal();
-		setUpPrincipalThreadLocal();
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		PermissionThreadLocal.setPermissionChecker(_originalPermissionChecker);
-
-		PrincipalThreadLocal.setName(_originalName);
 	}
 
 	@Test
@@ -609,28 +601,11 @@ public class DDMTemplateServiceTest extends BaseDDMServiceTestCase {
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
 
-	protected void setUpPermissionThreadLocal() throws Exception {
-		_originalPermissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
-		PermissionThreadLocal.setPermissionChecker(
-			PermissionCheckerFactoryUtil.create(_siteAdminUser));
-	}
-
-	protected void setUpPrincipalThreadLocal() throws Exception {
-		_originalName = PrincipalThreadLocal.getName();
-
-		PrincipalThreadLocal.setName(_siteAdminUser.getUserId());
-	}
-
 	private static long _recordSetClassNameId;
 	private static long _structureClassNameId;
 
 	@DeleteAfterTestRun
 	private Group _group;
-
-	private String _originalName;
-	private PermissionChecker _originalPermissionChecker;
 
 	@DeleteAfterTestRun
 	private User _siteAdminUser;

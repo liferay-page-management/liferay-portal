@@ -116,12 +116,6 @@ public class ApplicationsMenuMVCResourceCommandTest {
 		_setUser();
 	}
 
-	@After
-	public void tearDown() throws Exception {
-		PrincipalThreadLocal.setName(_originalName);
-		PermissionThreadLocal.setPermissionChecker(_originalPermissionChecker);
-	}
-
 	@Test
 	public void testNoSites() {
 		JSONObject jsonObject = ReflectionTestUtil.invoke(
@@ -441,16 +435,6 @@ public class ApplicationsMenuMVCResourceCommandTest {
 
 		_themeDisplay.setUser(_user);
 
-		_originalName = PrincipalThreadLocal.getName();
-
-		PrincipalThreadLocal.setName(_user.getUserId());
-
-		_originalPermissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
-		PermissionThreadLocal.setPermissionChecker(
-			PermissionCheckerFactoryUtil.create(_user));
-
 		_setRecentGroupsValue(_mockHttpServletRequest, StringPool.BLANK);
 	}
 
@@ -472,8 +456,6 @@ public class ApplicationsMenuMVCResourceCommandTest {
 	@Inject(filter = "mvc.command.name=/applications_menu/panel_apps")
 	private MVCResourceCommand _mvcResourceCommand;
 
-	private String _originalName;
-	private PermissionChecker _originalPermissionChecker;
 
 	@Inject
 	private RecentGroupManager _recentGroupManager;

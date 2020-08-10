@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.user.associated.data.anonymizer.UADAnonymizer;
 import com.liferay.user.associated.data.test.util.BaseUADAnonymizerTestCase;
 
@@ -48,22 +49,8 @@ public class LayoutSetPrototypeUADAnonymizerTest
 	@ClassRule
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
-		new LiferayIntegrationTestRule();
-
-	@Before
-	@Override
-	public void setUp() throws Exception {
-		super.setUp();
-
-		_originalName = PrincipalThreadLocal.getName();
-
-		PrincipalThreadLocal.setName(user.getUserId());
-	}
-
-	@After
-	public void tearDown() {
-		PrincipalThreadLocal.setName(_originalName);
-	}
+		new AggregateTestRule(new LiferayIntegrationTestRule(),
+			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Override
 	protected LayoutSetPrototype addBaseModel(long userId) throws Exception {
@@ -132,8 +119,6 @@ public class LayoutSetPrototypeUADAnonymizerTest
 	@DeleteAfterTestRun
 	private final List<LayoutSetPrototype> _layoutSetPrototypes =
 		new ArrayList<>();
-
-	private String _originalName;
 
 	@Inject(filter = "component.name=*.LayoutSetPrototypeUADAnonymizer")
 	private UADAnonymizer<LayoutSetPrototype> _uadAnonymizer;

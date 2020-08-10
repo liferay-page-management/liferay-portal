@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -62,20 +63,8 @@ public class DepotUserServiceTest {
 	@ClassRule
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
-		new LiferayIntegrationTestRule();
-
-	@Before
-	public void setUp() {
-		_originalName = PrincipalThreadLocal.getName();
-		_originalPermissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-	}
-
-	@After
-	public void tearDown() {
-		PermissionThreadLocal.setPermissionChecker(_originalPermissionChecker);
-		PrincipalThreadLocal.setName(_originalName);
-	}
+		new AggregateTestRule(new LiferayIntegrationTestRule(),
+			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Test(expected = PrincipalException.MustHavePermission.class)
 	public void testUnsetGroupUsersFailsWhenUserHasNoAssignMembersPermission()
@@ -202,9 +191,6 @@ public class DepotUserServiceTest {
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
-
-	private String _originalName;
-	private PermissionChecker _originalPermissionChecker;
 
 	@Inject
 	private PermissionCheckerFactory _permissionCheckerFactory;

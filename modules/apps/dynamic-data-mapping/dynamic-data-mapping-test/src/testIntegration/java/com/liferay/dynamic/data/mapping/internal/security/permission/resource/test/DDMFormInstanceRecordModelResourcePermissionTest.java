@@ -43,6 +43,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -61,7 +62,8 @@ public class DDMFormInstanceRecordModelResourcePermissionTest
 	@ClassRule
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
-		new LiferayIntegrationTestRule();
+		new AggregateTestRule(new LiferayIntegrationTestRule(),
+			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Before
 	@Override
@@ -73,16 +75,6 @@ public class DDMFormInstanceRecordModelResourcePermissionTest
 		_classNameId = PortalUtil.getClassNameId(formInstanceClass.getName());
 
 		_siteUser = UserTestUtil.addUser(group.getGroupId());
-
-		setUpPermissionThreadLocal();
-		setUpPrincipalThreadLocal();
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		PermissionThreadLocal.setPermissionChecker(_originalPermissionChecker);
-
-		PrincipalThreadLocal.setName(_originalName);
 	}
 
 	@Test
@@ -159,20 +151,6 @@ public class DDMFormInstanceRecordModelResourcePermissionTest
 			structure.getUserId(), structure.getGroupId(),
 			structure.getStructureId(), structure.getNameMap(),
 			structure.getNameMap(), settingsDDMFormValues, serviceContext);
-	}
-
-	protected void setUpPermissionThreadLocal() throws Exception {
-		_originalPermissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
-		PermissionThreadLocal.setPermissionChecker(
-			PermissionCheckerFactoryUtil.create(_siteUser));
-	}
-
-	protected void setUpPrincipalThreadLocal() throws Exception {
-		_originalName = PrincipalThreadLocal.getName();
-
-		PrincipalThreadLocal.setName(_siteUser.getUserId());
 	}
 
 	private static long _classNameId;
