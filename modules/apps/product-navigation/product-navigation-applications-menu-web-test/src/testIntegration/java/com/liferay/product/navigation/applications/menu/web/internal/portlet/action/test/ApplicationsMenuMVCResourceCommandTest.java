@@ -23,10 +23,8 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
-import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.PortletServlet;
@@ -65,7 +63,6 @@ import javax.portlet.ResourceResponse;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -455,7 +452,6 @@ public class ApplicationsMenuMVCResourceCommandTest {
 
 	@Inject(filter = "mvc.command.name=/applications_menu/panel_apps")
 	private MVCResourceCommand _mvcResourceCommand;
-
 
 	@Inject
 	private RecentGroupManager _recentGroupManager;

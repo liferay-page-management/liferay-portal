@@ -26,10 +26,7 @@ import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormValuesTestUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -42,9 +39,8 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import org.junit.After;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -62,7 +58,8 @@ public class DDMFormInstanceRecordModelResourcePermissionTest
 	@ClassRule
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
-		new AggregateTestRule(new LiferayIntegrationTestRule(),
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Before
@@ -161,9 +158,6 @@ public class DDMFormInstanceRecordModelResourcePermissionTest
 	)
 	private ModelResourcePermission<DDMFormInstanceRecord>
 		_ddmFormInstanceRecordModelResourcePermission;
-
-	private String _originalName;
-	private PermissionChecker _originalPermissionChecker;
 
 	@DeleteAfterTestRun
 	private User _siteUser;
