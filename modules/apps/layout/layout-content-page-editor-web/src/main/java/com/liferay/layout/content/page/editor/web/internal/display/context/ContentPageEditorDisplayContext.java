@@ -1370,6 +1370,12 @@ public class ContentPageEditorDisplayContext {
 					_fragmentRendererController.getConfiguration(
 						fragmentRendererContext);
 
+				if (fragmentEntry == null) {
+					fragmentEntry =
+						_fragmentCollectionContributorTracker.getFragmentEntry(
+							fragmentEntryLink.getRendererKey());
+				}
+
 				JSONObject configurationJSONObject =
 					JSONFactoryUtil.createJSONObject(configuration);
 
@@ -1414,6 +1420,8 @@ public class ContentPageEditorDisplayContext {
 						"fragmentEntryLinkId",
 						String.valueOf(
 							fragmentEntryLink.getFragmentEntryLinkId())
+					).put(
+						"icon", fragmentEntry.getIcon()
 					).put(
 						"masterLayout",
 						layout.getMasterLayoutPlid() ==
