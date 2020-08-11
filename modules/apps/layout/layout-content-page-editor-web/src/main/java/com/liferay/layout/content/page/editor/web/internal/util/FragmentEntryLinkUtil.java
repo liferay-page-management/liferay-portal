@@ -16,6 +16,7 @@ package com.liferay.layout.content.page.editor.web.internal.util;
 
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.contributor.FragmentCollectionContributorTracker;
+import com.liferay.fragment.entry.processor.util.EditableFragmentEntryProcessorUtil;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.processor.PortletRegistry;
@@ -215,6 +216,10 @@ public class FragmentEntryLinkUtil {
 			fragmentEntryConfigurationParser.
 				getConfigurationDefaultValuesJSONObject(configuration)
 		).put(
+			"editableTypes",
+			EditableFragmentEntryProcessorUtil.getEditableTypes(
+				fragmentEntryLink.getHtml())
+		).put(
 			"editableValues",
 			JSONFactoryUtil.createJSONObject(
 				fragmentEntryLink.getEditableValues())
@@ -223,6 +228,8 @@ public class FragmentEntryLinkUtil {
 		).put(
 			"fragmentEntryLinkId",
 			String.valueOf(fragmentEntryLink.getFragmentEntryLinkId())
+		).put(
+			"icon", fragmentEntry.getIcon()
 		).put(
 			"name", name
 		);

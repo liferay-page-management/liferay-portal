@@ -15,10 +15,14 @@
 package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
+import com.liferay.fragment.contributor.FragmentCollectionContributorTracker;
+import com.liferay.fragment.entry.processor.util.EditableFragmentEntryProcessorUtil;
+import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.renderer.DefaultFragmentRendererContext;
 import com.liferay.fragment.renderer.FragmentRendererController;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
+import com.liferay.fragment.service.FragmentEntryService;
 import com.liferay.info.constants.InfoDisplayWebKeys;
 import com.liferay.info.display.contributor.InfoDisplayContributor;
 import com.liferay.info.display.contributor.InfoDisplayContributorTracker;
@@ -144,12 +148,28 @@ public class GetFragmentEntryLinkMVCResourceCommand
 					defaultFragmentRendererContext, httpServletRequest,
 					_portal.getHttpServletResponse(resourceResponse));
 
+				FragmentEntry fragmentEntry =
+					_fragmentEntryService.fetchFragmentEntry(
+						fragmentEntryLink.getFragmentEntryId());
+
+				if (fragmentEntry == null) {
+					fragmentEntry =
+						_fragmentCollectionContributorTracker.getFragmentEntry(
+							fragmentEntryLink.getRendererKey());
+				}
+
 				jsonObject.put(
 					"content", content
+				).put(
+					"editableTypes",
+					EditableFragmentEntryProcessorUtil.getEditableTypes(
+						fragmentEntryLink.getHtml())
 				).put(
 					"editableValues",
 					JSONFactoryUtil.createJSONObject(
 						fragmentEntryLink.getEditableValues())
+				).put(
+					"icon", fragmentEntry.getIcon()
 				);
 			}
 			finally {
@@ -175,7 +195,14 @@ public class GetFragmentEntryLinkMVCResourceCommand
 	}
 
 	@Reference
+	private FragmentCollectionContributorTracker
+		_fragmentCollectionContributorTracker;
+
+	@Reference
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
+
+	@Reference
+	private FragmentEntryService _fragmentEntryService;
 
 	@Reference
 	private FragmentRendererController _fragmentRendererController;
