@@ -62,6 +62,9 @@ const renderComponent = ({
 									content: '<div>001</div>',
 								},
 							},
+							editableTypes: {
+								'05-editable': 'text',
+							},
 							editableValues: {
 								[EDITABLE_FRAGMENT_ENTRY_PROCESSOR]: {
 									'05-editable': {
