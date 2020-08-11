@@ -20,6 +20,7 @@ import {useActiveItemId} from '../../../app/components/Controls';
 import hasDropZoneChild from '../../../app/components/layout-data-items/hasDropZoneChild';
 import {EDITABLE_FRAGMENT_ENTRY_PROCESSOR} from '../../../app/config/constants/editableFragmentEntryProcessor';
 import {ITEM_TYPES} from '../../../app/config/constants/itemTypes';
+import {LAYOUT_DATA_ITEM_TYPE_ICONS} from '../../../app/config/constants/layoutDataItemTypeIcons';
 import {LAYOUT_DATA_ITEM_TYPES} from '../../../app/config/constants/layoutDataItemTypes';
 import {LAYOUT_TYPES} from '../../../app/config/constants/layoutTypes';
 import {config} from '../../../app/config/index';
@@ -124,9 +125,13 @@ function visit(
 		masterLayoutData &&
 		Object.keys(masterLayoutData.items).includes(item.itemId);
 
+	let icon = LAYOUT_DATA_ITEM_TYPE_ICONS[item.type];
+
 	if (item.type === LAYOUT_DATA_ITEM_TYPES.fragment) {
 		const fragmentEntryLink =
 			fragmentEntryLinks[item.config.fragmentEntryLinkId];
+
+		icon = fragmentEntryLink.icon || icon;
 
 		const editables =
 			fragmentEntryLink.editableValues[
@@ -213,6 +218,7 @@ function visit(
 		children,
 		disabled: !isMasterPage && itemInMasterLayout,
 		expanded: item.itemId === activeItemId,
+		icon,
 		id: item.itemId,
 		name: getLayoutDataItemLabel(item, fragmentEntryLinks),
 		removable: !itemInMasterLayout && isRemovable(item, layoutData),
