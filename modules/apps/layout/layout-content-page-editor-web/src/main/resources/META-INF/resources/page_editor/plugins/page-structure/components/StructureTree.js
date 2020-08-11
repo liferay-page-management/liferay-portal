@@ -19,6 +19,8 @@ import React, {useMemo} from 'react';
 import {useActiveItemId} from '../../../app/components/Controls';
 import hasDropZoneChild from '../../../app/components/layout-data-items/hasDropZoneChild';
 import {EDITABLE_FRAGMENT_ENTRY_PROCESSOR} from '../../../app/config/constants/editableFragmentEntryProcessor';
+import {EDITABLE_TYPE_ICONS} from '../../../app/config/constants/editableTypeIcons';
+import {EDITABLE_TYPES} from '../../../app/config/constants/editableTypes';
 import {ITEM_TYPES} from '../../../app/config/constants/itemTypes';
 import {LAYOUT_DATA_ITEM_TYPE_ICONS} from '../../../app/config/constants/layoutDataItemTypeIcons';
 import {LAYOUT_DATA_ITEM_TYPES} from '../../../app/config/constants/layoutDataItemTypes';
@@ -138,14 +140,18 @@ function visit(
 				EDITABLE_FRAGMENT_ENTRY_PROCESSOR
 			] || {};
 
+		const editableTypes = fragmentEntryLink.editableTypes;
+
 		Object.keys(editables).forEach((editableId) => {
 			const childId = `${item.config.fragmentEntryLinkId}-${editableId}`;
+			const type = editableTypes[editableId] || EDITABLE_TYPES.text;
 
 			children.push({
 				activable: canUpdateEditables,
 				children: [],
 				disabled: !isMasterPage && itemInMasterLayout,
 				expanded: childId === activeItemId,
+				icon: EDITABLE_TYPE_ICONS[type],
 				id: childId,
 				name: editableId,
 				removable: false,

@@ -19,6 +19,7 @@ import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.contributor.FragmentCollectionContributor;
 import com.liferay.fragment.contributor.FragmentCollectionContributorTracker;
+import com.liferay.fragment.entry.processor.util.EditableFragmentEntryProcessorUtil;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentComposition;
 import com.liferay.fragment.model.FragmentEntry;
@@ -1398,6 +1399,10 @@ public class ContentPageEditorDisplayContext {
 						_fragmentEntryConfigurationParser.
 							getConfigurationDefaultValuesJSONObject(
 								configuration)
+					).put(
+						"editableTypes",
+						EditableFragmentEntryProcessorUtil.getEditableTypes(
+							fragmentEntry.getHtml())
 					).put(
 						"editableValues",
 						JSONFactoryUtil.createJSONObject(
