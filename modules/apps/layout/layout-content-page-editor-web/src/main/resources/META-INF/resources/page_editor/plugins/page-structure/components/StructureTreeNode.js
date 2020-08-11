@@ -110,6 +110,7 @@ export default function StructureTreeNode({node}) {
 			<NameLabel
 				activable={node.activable}
 				disabled={node.disabled}
+				icon={node.icon}
 				id={node.id}
 				name={node.name}
 			/>
@@ -135,7 +136,7 @@ StructureTreeNode.propTypes = {
 	}).isRequired,
 };
 
-const NameLabel = ({activable, disabled, id, name}) => {
+const NameLabel = ({activable, disabled, icon, id, name}) => {
 	const activeItemId = useActiveItemId();
 
 	return (
@@ -149,6 +150,8 @@ const NameLabel = ({activable, disabled, id, name}) => {
 				}
 			)}
 		>
+			{icon && <ClayIcon symbol={icon || ''} />}
+
 			{name || Liferay.Language.get('element')}
 		</div>
 	);
