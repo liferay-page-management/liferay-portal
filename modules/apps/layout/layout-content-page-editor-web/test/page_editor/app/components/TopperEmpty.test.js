@@ -22,6 +22,7 @@ import {ControlsProvider} from '../../../../src/main/resources/META-INF/resource
 import TopperEmpty from '../../../../src/main/resources/META-INF/resources/page_editor/app/components/Topper';
 import Row from '../../../../src/main/resources/META-INF/resources/page_editor/app/components/layout-data-items/Row';
 import {LAYOUT_DATA_ITEM_TYPES} from '../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/layoutDataItemTypes';
+import {VIEWPORT_SIZES} from '../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/viewportSizes';
 import {StoreAPIContextProvider} from '../../../../src/main/resources/META-INF/resources/page_editor/app/store';
 
 const renderTopperEmpty = ({
@@ -52,6 +53,7 @@ const renderTopperEmpty = ({
 							LOCKED_SEGMENTS_EXPERIMENT: lockedExperience,
 							UPDATE: hasUpdatePermissions,
 						},
+						selectedViewportSize: VIEWPORT_SIZES.desktop,
 					})}
 				>
 					<TopperEmpty item={row} layoutData={layoutData}>
