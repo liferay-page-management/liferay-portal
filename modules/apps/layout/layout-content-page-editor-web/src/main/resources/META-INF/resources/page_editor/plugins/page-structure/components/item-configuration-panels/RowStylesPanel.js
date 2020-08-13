@@ -120,18 +120,31 @@ export const RowStylesPanel = ({item}) => {
 		);
 	};
 
-	const onCommonStylesValueSelect = (name, value) =>
-		dispatch(
-			updateItemConfig({
-				itemConfig: {
+	const onCommonStylesValueSelect = (name, value) => {
+		let itemConfig = {
+			styles: {
+				[name]: value,
+			},
+		};
+
+		if (selectedViewportSize !== VIEWPORT_SIZES.desktop) {
+			itemConfig = {
+				[selectedViewportSize]: {
 					styles: {
 						[name]: value,
 					},
 				},
+			};
+		}
+
+		dispatch(
+			updateItemConfig({
+				itemConfig,
 				itemId: item.itemId,
 				segmentsExperienceId,
 			})
 		);
+	};
 
 	const getModulesPerRowOptionLabel = (value) => {
 		return value > 1
