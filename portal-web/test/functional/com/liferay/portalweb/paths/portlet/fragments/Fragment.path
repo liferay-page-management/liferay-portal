@@ -151,6 +151,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>FRAGMENT_CONFIGURATION_CUSTOM_STYLES_ALIGNMENT</td>
+	<td>//div[contains(@class,'component-${key_fragmentName}')][contains(@class,'text-${key_alignment}')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>FRAGMENT_CONFIGURATION_MARGIN_BOTTOM</td>
 	<td>//div[contains(@class,'page-editor__topper__bar') and contains(.,'${key_fragmentName}')]//following-sibling::div[contains(@class,'page-editor__topper__content')]/div[contains(@class,'mb-${key_marginBottom}')]</td>
 	<td></td>
