@@ -23,6 +23,7 @@ import {
 import selectCanUpdateItemConfiguration from '../../selectors/selectCanUpdateItemConfiguration';
 import selectCanUpdatePageStructure from '../../selectors/selectCanUpdatePageStructure';
 import {useSelector} from '../../store/index';
+import {getResponsiveConfig} from '../../utils/getResponsiveConfig';
 import Topper from '../Topper';
 import Container from './Container';
 
@@ -34,11 +35,19 @@ const ContainerWithControls = React.forwardRef(
 		const canUpdatePageStructure = useSelector(
 			selectCanUpdatePageStructure
 		);
+		const selectedViewportSize = useSelector(
+			(state) => state.selectedViewportSize
+		);
 
 		const [setRef, itemElement] = useSetRef(ref);
 
-		const {widthType} = item.config;
-		const {marginLeft, marginRight, shadow, width} = item.config.styles;
+		const itemConfig = getResponsiveConfig(
+			item.config,
+			selectedViewportSize
+		);
+
+		const {widthType} = itemConfig;
+		const {marginLeft, marginRight, shadow, width} = itemConfig.styles;
 
 		return (
 			<Topper
