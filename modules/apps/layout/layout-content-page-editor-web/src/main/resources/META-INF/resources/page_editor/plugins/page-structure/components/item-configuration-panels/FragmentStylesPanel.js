@@ -17,6 +17,7 @@ import React, {useCallback} from 'react';
 
 import {FRAGMENT_CONFIGURATION_ROLES} from '../../../../app/config/constants/fragmentConfigurationRoles';
 import {FREEMARKER_FRAGMENT_ENTRY_PROCESSOR} from '../../../../app/config/constants/freemarkerFragmentEntryProcessor';
+import {VIEWPORT_SIZES} from '../../../../app/config/constants/viewportSizes';
 import {config} from '../../../../app/config/index';
 import selectSegmentsExperienceId from '../../../../app/selectors/selectSegmentsExperienceId';
 import {
@@ -40,6 +41,9 @@ export const FragmentStylesPanel = ({item}) => {
 	);
 
 	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
+	const selectedViewportSize = useSelector(
+		(state) => state.selectedViewportSize
+	);
 
 	const onCustomStyleValueSelect = useCallback(
 		(name, value) => {
@@ -63,18 +67,31 @@ export const FragmentStylesPanel = ({item}) => {
 		[dispatch, fragmentEntryLink, segmentsExperienceId]
 	);
 
-	const onCommonStylesValueSelect = (name, value) =>
-		dispatch(
-			updateItemConfig({
-				itemConfig: {
+	const onCommonStylesValueSelect = (name, value) => {
+		let itemConfig = {
+			styles: {
+				[name]: value,
+			},
+		};
+
+		if (selectedViewportSize !== VIEWPORT_SIZES.desktop) {
+			itemConfig = {
+				[selectedViewportSize]: {
 					styles: {
 						[name]: value,
 					},
 				},
+			};
+		}
+
+		dispatch(
+			updateItemConfig({
+				itemConfig,
 				itemId: item.itemId,
 				segmentsExperienceId,
 			})
 		);
+	};
 
 	return (
 		<>
