@@ -5,6 +5,49 @@
 			"fields": [
 				{
 					"dataType": "string",
+					"defaultValue": "sm",
+					"label": "box-shadow",
+					"name": "boxShadow",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "none",
+								"value": "none"
+							},
+							{
+								"label": "small",
+								"value": "sm"
+							},
+							{
+								"label": "large",
+								"value": "lg"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "left",
+					"label": "content-align",
+					"name": "contentAlign",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"value": "left"
+							},
+							{
+								"value": "center"
+							},
+							{
+								"value": "right"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
 					"defaultValue": "w-100",
 					"label": "image-size",
 					"name": "imageSize",
