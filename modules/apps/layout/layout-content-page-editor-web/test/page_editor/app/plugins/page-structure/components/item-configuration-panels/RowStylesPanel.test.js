@@ -27,6 +27,8 @@ const ITEM_CONFIG = {
 	gutters: true,
 	modulesPerRow: 2,
 	numberOfColumns: 2,
+	styles: {},
+	tablet: {styles: {}},
 	verticalAlignment: 'top',
 };
 
@@ -77,7 +79,7 @@ jest.mock(
 		config: {
 			availableViewportSizes: {
 				desktop: {label: 'Desktop'},
-				landscapeMobile: {label: 'landscapeMobile'},
+				tablet: {label: 'tablet'},
 			},
 			commonStyles: [],
 			responsiveEnabled: true,
@@ -178,7 +180,7 @@ describe('RowStylesPanel', () => {
 	it('allows changing configuration for a given viewport', async () => {
 		const {getByLabelText} = renderComponent({
 			state: {
-				selectedViewportSize: 'landscapeMobile',
+				selectedViewportSize: 'tablet',
 			},
 		});
 		const input = getByLabelText('layout');
@@ -189,7 +191,7 @@ describe('RowStylesPanel', () => {
 
 		expect(updateItemConfig).toHaveBeenCalledWith({
 			itemConfig: {
-				landscapeMobile: {modulesPerRow: 1},
+				tablet: {modulesPerRow: 1},
 			},
 			itemId: '0',
 			segmentsExperienceId: '0',
