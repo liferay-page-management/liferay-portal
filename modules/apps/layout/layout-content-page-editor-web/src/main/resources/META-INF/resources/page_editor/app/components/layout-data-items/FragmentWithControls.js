@@ -20,12 +20,20 @@ import {
 	LayoutDataPropTypes,
 	getLayoutDataItemPropTypes,
 } from '../../../prop-types/index';
+import {useSelector} from '../../store/index';
+import {getResponsiveConfig} from '../../utils/getResponsiveConfig';
 import loadBackgroundImage from '../../utils/loadBackgroundImage';
 import Topper from '../Topper';
 import FragmentContent from '../fragment-content/FragmentContent';
 
 const FragmentWithControls = React.forwardRef(({item, layoutData}, ref) => {
 	const [setRef, itemElement] = useSetRef(ref);
+
+	const selectedViewportSize = useSelector(
+		(state) => state.selectedViewportSize
+	);
+
+	const itemConfig = getResponsiveConfig(item.config, selectedViewportSize);
 
 	const {
 		backgroundColor,
@@ -55,7 +63,7 @@ const FragmentWithControls = React.forwardRef(({item, layoutData}, ref) => {
 		textAlign,
 		textColor,
 		width,
-	} = item.config.styles;
+	} = itemConfig.styles;
 
 	const [backgroundImageValue, setBackgroundImageValue] = useState('');
 
@@ -111,7 +119,6 @@ const FragmentWithControls = React.forwardRef(({item, layoutData}, ref) => {
 						[`border-${borderColor?.cssClass}`]: borderColor,
 						[borderRadius]: !!borderRadius,
 						[`text-${fontFamily}`]: fontFamily !== 'default',
-						'no-gutters': !item.config.gutters,
 						[textAlign]: textAlign !== 'none',
 						[`text-${textColor?.cssClass}`]: textColor,
 					}
