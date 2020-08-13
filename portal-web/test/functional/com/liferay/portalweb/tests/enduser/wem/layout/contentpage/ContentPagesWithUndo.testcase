@@ -99,7 +99,7 @@ definition {
 		MenuItem.click(menuItem = "Update Button Configuration");
 
 		PageEditor.viewFragmentStyle(
-			alignment = "center",
+			buttonAlign = "center",
 			fragmentName = "button");
 
 		for (var menuItem : list "Add Button,Update Button Configuration,Duplicate Button,Delete Button") {
@@ -111,7 +111,7 @@ definition {
 		PageEditor.viewDuplicateFragment(fragmentName = "Button");
 
 		PageEditor.viewFragmentStyle(
-			alignment = "center",
+			buttonAlign = "center",
 			fragmentName = "button");
 
 		for (var menuItem : list "Add Button,Update Button Configuration,Duplicate Button,Delete Button") {
@@ -127,7 +127,7 @@ definition {
 		PageEditor.viewFragment(fragmentName = "Button");
 
 		PageEditor.viewFragmentStyle(
-			alignment = "center",
+			buttonAlign = "center",
 			fragmentName = "button");
 
 		for (var menuItem : list "Add Button,Update Button Configuration,Duplicate Button,Delete Button") {

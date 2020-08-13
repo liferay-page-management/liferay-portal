@@ -261,7 +261,7 @@ definition {
 
 		task ("View the fragment style") {
 			PageEditor.viewFragmentStyle(
-				alignment = "center",
+				buttonAlign = "center",
 				fragmentName = "button",
 				size = "lg",
 				type = "link");
@@ -321,9 +321,9 @@ definition {
 
 		task ("View the fragment style") {
 			PageEditor.viewFragmentStyle(
-				alignment = "center",
-				borderRadius = "0",
+				borderRadius = "rounded-0",
 				boxShadow = "lg",
+				contentAlign = "center",
 				fragmentName = "card",
 				imageSize = "100",
 				marginBottom = "5");
@@ -442,8 +442,8 @@ definition {
 
 		task ("View the fragment style") {
 			PageEditor.viewFragmentStyle(
-				alignment = "center",
 				fragmentName = "image",
+				imageAlign = "center",
 				imageSize = "0",
 				marginBottom = "2");
 		}

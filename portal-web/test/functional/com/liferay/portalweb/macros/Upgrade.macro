@@ -902,7 +902,7 @@ definition {
 			ContentPages.clickPencil();
 
 			PageEditor.viewFragmentStyle(
-				alignment = "center",
+				buttonAlign = "center",
 				fragmentName = "button",
 				size = "lg",
 				type = "link");

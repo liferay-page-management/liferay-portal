@@ -188,7 +188,7 @@ definition {
 		PageEditor.configureFragment(alignment = "Center");
 
 		PageEditor.viewFragmentStyle(
-			alignment = "center",
+			buttonAlign = "center",
 			fragmentName = "button");
 
 		Click(
@@ -196,7 +196,7 @@ definition {
 			locator1 = "Icon#ANY");
 
 		PageEditor.viewFragmentStyle(
-			alignment = "left",
+			buttonAlign = "left",
 			fragmentName = "button");
 
 		Click(
