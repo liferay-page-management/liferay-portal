@@ -18,11 +18,17 @@ import React from 'react';
 
 import Container from '../../../../../src/main/resources/META-INF/resources/page_editor/app/components/layout-data-items/Container';
 import {LAYOUT_DATA_ITEM_TYPES} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/layoutDataItemTypes';
+import {VIEWPORT_SIZES} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/viewportSizes';
 import {StoreAPIContextProvider} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/store';
 
 const renderContainer = (config) => {
 	return render(
-		<StoreAPIContextProvider getState={() => ({languageId: 'en'})}>
+		<StoreAPIContextProvider
+			getState={() => ({
+				languageId: 'en',
+				selectedViewportSize: VIEWPORT_SIZES.desktop,
+			})}
+		>
 			<Container
 				data={{}}
 				item={{
