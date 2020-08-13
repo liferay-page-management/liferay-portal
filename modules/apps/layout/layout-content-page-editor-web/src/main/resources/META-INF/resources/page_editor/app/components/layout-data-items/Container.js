@@ -20,10 +20,20 @@ import {getLayoutDataItemPropTypes} from '../../../prop-types/index';
 import selectLanguageId from '../../selectors/selectLanguageId';
 import InfoItemService from '../../services/InfoItemService';
 import {useSelector} from '../../store/index';
+import {getResponsiveConfig} from '../../utils/getResponsiveConfig';
 import loadBackgroundImage from '../../utils/loadBackgroundImage';
 
 const Container = React.forwardRef(
 	({children, className, data, item, withinTopper = false}, ref) => {
+		const selectedViewportSize = useSelector(
+			(state) => state.selectedViewportSize
+		);
+
+		const itemConfig = getResponsiveConfig(
+			item.config,
+			selectedViewportSize
+		);
+
 		const {
 			backgroundColor,
 			backgroundImage,
@@ -50,9 +60,9 @@ const Container = React.forwardRef(
 			paddingTop,
 			textAlign,
 			textColor,
-		} = item.config.styles;
+		} = itemConfig.styles;
 
-		const {widthType} = item.config;
+		const {widthType} = itemConfig;
 
 		const languageId = useSelector(selectLanguageId);
 		const [backgroundImageValue, setBackgroundImageValue] = useState('');
@@ -63,26 +73,26 @@ const Container = React.forwardRef(
 		}, [backgroundImage]);
 
 		useEffect(() => {
-			if (!item.config.link) {
+			if (!itemConfig.link) {
 				return;
 			}
 
-			if (item.config.link.href) {
-				setLink(item.config.link);
+			if (itemConfig.link.href) {
+				setLink(itemConfig.link);
 			}
-			else if (item.config.link.fieldId) {
+			else if (itemConfig.link.fieldId) {
 				InfoItemService.getInfoItemFieldValue({
-					...item.config.link,
+					...itemConfig.link,
 					languageId,
 					onNetworkStatus: () => {},
 				}).then(({fieldValue}) => {
 					setLink({
 						href: fieldValue,
-						target: item.config.link.target,
+						target: itemConfig.link.target,
 					});
 				});
 			}
-		}, [item.config.link, languageId]);
+		}, [itemConfig.link, languageId]);
 
 		const style = {
 			boxSizing: 'border-box',

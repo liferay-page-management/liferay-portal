@@ -16,6 +16,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import {SelectField} from '../../../../app/components/fragment-configuration-fields/SelectField';
+import {VIEWPORT_SIZES} from '../../../../app/config/constants/viewportSizes';
 import {config} from '../../../../app/config/index';
 import selectSegmentsExperienceId from '../../../../app/selectors/selectSegmentsExperienceId';
 import {useDispatch, useSelector} from '../../../../app/store/index';
@@ -25,6 +26,9 @@ import {FieldSet} from './FieldSet';
 
 export const ContainerStylesPanel = ({item}) => {
 	const dispatch = useDispatch();
+	const selectedViewportSize = useSelector(
+		(state) => state.selectedViewportSize
+	);
 	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
 
 	const {commonStyles} = config;
@@ -42,11 +46,25 @@ export const ContainerStylesPanel = ({item}) => {
 	};
 
 	const onCommonStyleValueSelect = (name, value) => {
-		const styles = {[name]: value};
+		let itemConfig = {
+			styles: {
+				[name]: value,
+			},
+		};
+
+		if (selectedViewportSize !== VIEWPORT_SIZES.desktop) {
+			itemConfig = {
+				[selectedViewportSize]: {
+					styles: {
+						[name]: value,
+					},
+				},
+			};
+		}
 
 		dispatch(
 			updateItemConfig({
-				itemConfig: {styles},
+				itemConfig,
 				itemId: item.itemId,
 				segmentsExperienceId,
 			})
