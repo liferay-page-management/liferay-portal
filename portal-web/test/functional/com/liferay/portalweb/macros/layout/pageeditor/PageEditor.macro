@@ -1982,6 +1982,24 @@ definition {
 				locator1 = "Fragment#FRAGMENT_CONFIGURATION_BOX_SHADOW");
 		}
 
+		if (isSet(buttonAlign)) {
+			var fragmentName = StringUtil.lowerCase("${fragmentName}");
+
+			AssertElementPresent(
+				key_alignment = "${buttonAlign}",
+				key_fragmentName = "${fragmentName}",
+				locator1 = "Fragment#FRAGMENT_CONFIGURATION_CUSTOM_STYLES_ALIGNMENT");
+		}
+
+		if (isSet(contentAlign)) {
+			var fragmentName = StringUtil.lowerCase("${fragmentName}");
+
+			AssertElementPresent(
+				key_alignment = "${contentAlign}",
+				key_fragmentName = "${fragmentName}",
+				locator1 = "Fragment#FRAGMENT_CONFIGURATION_CUSTOM_STYLES_ALIGNMENT");
+		}
+
 		if (isSet(headingLevel)) {
 			var fragmentName = StringUtil.lowerCase("${fragmentName}");
 
@@ -1995,6 +2013,15 @@ definition {
 			AssertElementPresent(
 				key_height = "${height}",
 				locator1 = "Fragment#FRAGMENT_CONFIGURATION_HEIGHT");
+		}
+
+		if (isSet(imageAlign)) {
+			var fragmentName = StringUtil.lowerCase("${fragmentName}");
+
+			AssertElementPresent(
+				key_alignment = "${imageAlign}",
+				key_fragmentName = "${fragmentName}",
+				locator1 = "Fragment#FRAGMENT_CONFIGURATION_CUSTOM_STYLES_ALIGNMENT");
 		}
 
 		if (isSet(imageSize)) {
