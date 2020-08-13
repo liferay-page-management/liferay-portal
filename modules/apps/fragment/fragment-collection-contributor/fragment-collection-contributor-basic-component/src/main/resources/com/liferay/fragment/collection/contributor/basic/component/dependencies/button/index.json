@@ -55,6 +55,26 @@
 							}
 						]
 					}
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "left",
+					"label": "align",
+					"name": "buttonAlign",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"value": "left"
+							},
+							{
+								"value": "center"
+							},
+							{
+								"value": "right"
+							}
+						]
+					}
 				}
 			]
 		}
