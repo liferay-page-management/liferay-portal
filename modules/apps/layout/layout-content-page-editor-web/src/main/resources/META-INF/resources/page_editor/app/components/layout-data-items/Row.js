@@ -64,7 +64,7 @@ const Row = React.forwardRef(({children, className, item, layoutData}, ref) => {
 		textAlign,
 		textColor,
 		width,
-	} = item.config.styles;
+	} = itemConfig.styles;
 
 	const [backgroundImageValue, setBackgroundImageValue] = useState('');
 
