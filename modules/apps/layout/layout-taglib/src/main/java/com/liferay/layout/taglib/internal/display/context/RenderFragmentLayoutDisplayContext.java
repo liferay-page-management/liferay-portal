@@ -598,15 +598,15 @@ public class RenderFragmentLayoutDisplayContext {
 			styleSB.append(StringPool.SEMICOLON);
 		}
 
-		if (Validator.isNotNull(styledLayoutStructureItem.getTextColor())) {
-			styleSB.append("color: ");
-			styleSB.append(styledLayoutStructureItem.getTextColor());
-			styleSB.append(StringPool.SEMICOLON);
-		}
-
 		if (Validator.isNotNull(styledLayoutStructureItem.getOverflow())) {
 			styleSB.append("overflow: ");
 			styleSB.append(styledLayoutStructureItem.getOverflow());
+			styleSB.append(StringPool.SEMICOLON);
+		}
+
+		if (Validator.isNotNull(styledLayoutStructureItem.getTextColor())) {
+			styleSB.append("color: ");
+			styleSB.append(styledLayoutStructureItem.getTextColor());
 			styleSB.append(StringPool.SEMICOLON);
 		}
 
