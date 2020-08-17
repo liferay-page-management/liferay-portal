@@ -235,6 +235,7 @@
 				"label": "margin-top",
 				"name": "marginTop",
 				"responsive": true,
+				"responsiveTemplate": "mt{viewport}{value}",
 				"type": "select",
 				"validValues": [
 					{
@@ -271,6 +272,7 @@
 				"label": "margin-bottom",
 				"name": "marginBottom",
 				"responsive": true,
+				"responsiveTemplate": "mb{viewport}{value}",
 				"type": "select",
 				"validValues": [
 					{
@@ -307,6 +309,7 @@
 				"label": "margin-left",
 				"name": "marginLeft",
 				"responsive": true,
+				"responsiveTemplate": "ml{viewport}{value}",
 				"type": "select",
 				"validValues": [
 					{
@@ -343,6 +346,7 @@
 				"label": "margin-right",
 				"name": "marginRight",
 				"responsive": true,
+				"responsiveTemplate": "mr{viewport}{value}",
 				"type": "select",
 				"validValues": [
 					{
@@ -379,6 +383,7 @@
 				"label": "padding-top",
 				"name": "paddingTop",
 				"responsive": true,
+				"responsiveTemplate": "pt{viewport}{value}",
 				"type": "select",
 				"validValues": [
 					{
@@ -415,6 +420,7 @@
 				"label": "padding-bottom",
 				"name": "paddingBottom",
 				"responsive": true,
+				"responsiveTemplate": "pb{viewport}{value}",
 				"type": "select",
 				"validValues": [
 					{
@@ -451,6 +457,7 @@
 				"label": "padding-left",
 				"name": "paddingLeft",
 				"responsive": true,
+				"responsiveTemplate": "pl{viewport}{value}",
 				"type": "select",
 				"validValues": [
 					{
@@ -487,6 +494,7 @@
 				"label": "padding-right",
 				"name": "paddingRight",
 				"responsive": true,
+				"responsiveTemplate": "pr{viewport}{value}",
 				"type": "select",
 				"validValues": [
 					{
