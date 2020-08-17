@@ -15,18 +15,24 @@
 package com.liferay.layout.responsive;
 
 import com.liferay.layout.util.structure.ColumnLayoutStructureItem;
+import com.liferay.layout.util.structure.CommonStylesUtil;
 import com.liferay.layout.util.structure.RowLayoutStructureItem;
 import com.liferay.layout.util.structure.RowStyledLayoutStructureItem;
+import com.liferay.layout.util.structure.StyledLayoutStructureItem;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Pavel Savinov
@@ -72,6 +78,68 @@ public class ResponsiveLayoutStructureUtil {
 			sb.append("col");
 			sb.append(viewportSize.getCssClassPrefix());
 			sb.append(columnSize);
+		}
+
+		return sb.toString();
+	}
+
+	public static String getResponsiveCssClassValues(
+			StyledLayoutStructureItem styledLayoutStructureItem)
+		throws Exception {
+
+		StringBundler sb = new StringBundler();
+
+		JSONObject itemConfigJSONObject =
+			styledLayoutStructureItem.getItemConfigJSONObject();
+
+		for (ViewportSize viewportSize : ViewportSize.values()) {
+			if (Objects.equals(viewportSize, ViewportSize.DESKTOP)) {
+				continue;
+			}
+
+			JSONObject viewportItemConfigJSONObject =
+				itemConfigJSONObject.getJSONObject(
+					viewportSize.getViewportSizeId());
+
+			if (viewportItemConfigJSONObject == null) {
+				continue;
+			}
+
+			JSONObject viewportStylesJSONObject =
+				viewportItemConfigJSONObject.getJSONObject("styles");
+
+			if (viewportStylesJSONObject == null) {
+				continue;
+			}
+
+			Set<String> keys = viewportStylesJSONObject.keySet();
+
+			for (String key : keys) {
+				if (!CommonStylesUtil.isResponsive(key)) {
+					continue;
+				}
+
+				String value = viewportStylesJSONObject.getString(key);
+
+				if (Validator.isNull(value)) {
+					continue;
+				}
+
+				String cssClass = StringUtil.replace(
+					CommonStylesUtil.getResponsiveTemplate(key),
+					StringPool.OPEN_CURLY_BRACE, StringPool.CLOSE_CURLY_BRACE,
+					HashMapBuilder.put(
+						"value", value
+					).put(
+						"viewport", viewportSize.getCssClassPrefix()
+					).build());
+
+				if (sb.length() > 0) {
+					sb.append(StringPool.SPACE);
+				}
+
+				sb.append(cssClass);
+			}
 		}
 
 		return sb.toString();
