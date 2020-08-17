@@ -35,6 +35,10 @@ export function getResponsiveConfig(config, viewportSize) {
 		responsiveConfig = {
 			...responsiveConfig,
 			...viewPortSizeConfig,
+			styles: {
+				...responsiveConfig.styles,
+				...viewPortSizeConfig.styles,
+			},
 		};
 	}
 
