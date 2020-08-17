@@ -27,6 +27,7 @@ import {
 } from '../../../../app/store/index';
 import updateFragmentConfiguration from '../../../../app/thunks/updateFragmentConfiguration';
 import updateItemConfig from '../../../../app/thunks/updateItemConfig';
+import {getResponsiveConfig} from '../../../../app/utils/getResponsiveConfig';
 import {getLayoutDataItemPropTypes} from '../../../../prop-types/index';
 import {FieldSet} from './FieldSet';
 
@@ -102,7 +103,10 @@ export const FragmentStylesPanel = ({item}) => {
 
 			<CommonStyles
 				commonStyles={commonStyles}
-				item={item}
+				itemConfig={getResponsiveConfig(
+					item.config,
+					selectedViewportSize
+				)}
 				onValueSelect={onCommonStylesValueSelect}
 			/>
 		</>
@@ -145,21 +149,23 @@ CustomStyles.propTypes = {
 	onValueSelect: PropTypes.func.isRequired,
 };
 
-const CommonStyles = ({commonStyles, item, onValueSelect}) => (
-	<div className="page-editor__floating-toolbar__panel__common-styles">
-		{commonStyles.map((fieldSet, index) => {
-			return (
-				<FieldSet
-					fields={fieldSet.styles}
-					key={index}
-					label={fieldSet.label}
-					onValueSelect={onValueSelect}
-					values={item.config.styles}
-				/>
-			);
-		})}
-	</div>
-);
+const CommonStyles = ({commonStyles, itemConfig, onValueSelect}) => {
+	return (
+		<div className="page-editor__floating-toolbar__panel__common-styles">
+			{commonStyles.map((fieldSet, index) => {
+				return (
+					<FieldSet
+						fields={fieldSet.styles}
+						key={index}
+						label={fieldSet.label}
+						onValueSelect={onValueSelect}
+						values={itemConfig.styles}
+					/>
+				);
+			})}
+		</div>
+	);
+};
 
 CommonStyles.propTypes = {
 	commonStyles: PropTypes.array.isRequired,

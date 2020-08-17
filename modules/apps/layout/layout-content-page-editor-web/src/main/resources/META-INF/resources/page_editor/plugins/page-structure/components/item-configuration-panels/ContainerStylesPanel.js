@@ -21,6 +21,7 @@ import {config} from '../../../../app/config/index';
 import selectSegmentsExperienceId from '../../../../app/selectors/selectSegmentsExperienceId';
 import {useDispatch, useSelector} from '../../../../app/store/index';
 import updateItemConfig from '../../../../app/thunks/updateItemConfig';
+import {getResponsiveConfig} from '../../../../app/utils/getResponsiveConfig';
 import {getLayoutDataItemPropTypes} from '../../../../prop-types/index';
 import {FieldSet} from './FieldSet';
 
@@ -32,6 +33,11 @@ export const ContainerStylesPanel = ({item}) => {
 	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
 
 	const {commonStyles} = config;
+
+	const containerConfig = getResponsiveConfig(
+		item.config,
+		selectedViewportSize
+	);
 
 	const onCustomStyleValueSelect = (name, value) => {
 		const itemConfig = {[name]: value};
@@ -104,7 +110,7 @@ export const ContainerStylesPanel = ({item}) => {
 							key={index}
 							label={fieldSet.label}
 							onValueSelect={onCommonStyleValueSelect}
-							values={item.config.styles}
+							values={containerConfig.styles}
 						/>
 					);
 				})}
