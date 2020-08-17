@@ -217,7 +217,7 @@ export const RowStylesPanel = ({item}) => {
 							key={index}
 							label={fieldSet.label}
 							onValueSelect={onCommonStylesValueSelect}
-							values={item.config.styles}
+							values={rowConfig.styles}
 						/>
 					);
 				})}
