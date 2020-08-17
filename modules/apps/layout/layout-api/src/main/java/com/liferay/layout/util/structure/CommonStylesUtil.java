@@ -14,11 +14,13 @@
 
 package com.liferay.layout.util.structure;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -166,8 +168,62 @@ public class CommonStylesUtil {
 		return _defaultValues;
 	}
 
+	public static String getResponsiveTemplate(String propertyKey)
+		throws Exception {
+
+		if (_responsiveTemplates != null) {
+			return _responsiveTemplates.get(propertyKey);
+		}
+
+		_loadResponsiveTemplates();
+
+		return _responsiveTemplates.get(propertyKey);
+	}
+
+	public static boolean isResponsive(String propertyKey) throws Exception {
+		if (_responsiveTemplates != null) {
+			return Validator.isNotNull(_responsiveTemplates.get(propertyKey));
+		}
+
+		_loadResponsiveTemplates();
+
+		return Validator.isNotNull(_responsiveTemplates.get(propertyKey));
+	}
+
+	private static void _loadResponsiveTemplates() throws Exception {
+		Map<String, String> responsiveTemplates = new HashMap<>();
+
+		JSONArray jsonArray = getCommongStylesJSONArray(null);
+
+		Iterator<JSONObject> iterator = jsonArray.iterator();
+
+		iterator.forEachRemaining(
+			jsonObject -> {
+				JSONArray stylesJSONArray = jsonObject.getJSONArray("styles");
+
+				Iterator<JSONObject> stylesIterator =
+					stylesJSONArray.iterator();
+
+				stylesIterator.forEachRemaining(
+					styleJSONObject -> {
+						boolean responsive = styleJSONObject.getBoolean(
+							"responsive");
+
+						if (responsive) {
+							responsiveTemplates.put(
+								styleJSONObject.getString("name"),
+								styleJSONObject.getString(
+									"responsiveTemplate", StringPool.BLANK));
+						}
+					});
+			});
+
+		_responsiveTemplates = responsiveTemplates;
+	}
+
 	private static List<String> _availableStyleNames;
 	private static JSONArray _commonStylesJSONArray;
 	private static Map<String, Object> _defaultValues;
+	private static Map<String, String> _responsiveTemplates;
 
 }
