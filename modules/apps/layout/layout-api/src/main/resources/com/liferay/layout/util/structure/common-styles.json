@@ -234,7 +234,7 @@
 				],
 				"label": "margin-top",
 				"name": "marginTop",
-				"responsive": false,
+				"responsive": true,
 				"type": "select",
 				"validValues": [
 					{
@@ -270,7 +270,7 @@
 				],
 				"label": "margin-bottom",
 				"name": "marginBottom",
-				"responsive": false,
+				"responsive": true,
 				"type": "select",
 				"validValues": [
 					{
@@ -306,7 +306,7 @@
 				],
 				"label": "margin-left",
 				"name": "marginLeft",
-				"responsive": false,
+				"responsive": true,
 				"type": "select",
 				"validValues": [
 					{
@@ -342,7 +342,7 @@
 				],
 				"label": "margin-right",
 				"name": "marginRight",
-				"responsive": false,
+				"responsive": true,
 				"type": "select",
 				"validValues": [
 					{
@@ -378,7 +378,7 @@
 				],
 				"label": "padding-top",
 				"name": "paddingTop",
-				"responsive": false,
+				"responsive": true,
 				"type": "select",
 				"validValues": [
 					{
@@ -414,7 +414,7 @@
 				],
 				"label": "padding-bottom",
 				"name": "paddingBottom",
-				"responsive": false,
+				"responsive": true,
 				"type": "select",
 				"validValues": [
 					{
@@ -450,7 +450,7 @@
 				],
 				"label": "padding-left",
 				"name": "paddingLeft",
-				"responsive": false,
+				"responsive": true,
 				"type": "select",
 				"validValues": [
 					{
@@ -486,7 +486,7 @@
 				],
 				"label": "padding-right",
 				"name": "paddingRight",
-				"responsive": false,
+				"responsive": true,
 				"type": "select",
 				"validValues": [
 					{
