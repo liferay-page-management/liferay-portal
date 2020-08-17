@@ -14,6 +14,7 @@
 
 package com.liferay.layout.util.structure;
 
+import com.liferay.layout.responsive.ViewportSize;
 import com.liferay.petra.lang.HashUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -23,6 +24,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -132,7 +134,23 @@ public abstract class StyledLayoutStructureItem extends LayoutStructureItem {
 			_log.error("Unable to get default style values", exception);
 		}
 
-		return JSONUtil.put("styles", stylesJSONObject);
+		JSONObject jsonObject = JSONUtil.put("styles", stylesJSONObject);
+
+		for (ViewportSize viewportSize : ViewportSize.values()) {
+			if (viewportSize.equals(ViewportSize.DESKTOP)) {
+				continue;
+			}
+
+			jsonObject.put(
+				viewportSize.getViewportSizeId(),
+				JSONUtil.put(
+					"styles",
+					viewportStyleJSONObjects.getOrDefault(
+						viewportSize.getViewportSizeId(),
+						JSONFactoryUtil.createJSONObject())));
+		}
+
+		return jsonObject;
 	}
 
 	public String getJustify() {
@@ -244,6 +262,43 @@ public abstract class StyledLayoutStructureItem extends LayoutStructureItem {
 					}
 				}
 			}
+
+			for (ViewportSize viewportSize : ViewportSize.values()) {
+				if (viewportSize.equals(ViewportSize.DESKTOP)) {
+					continue;
+				}
+
+				JSONObject currentViewportStyleJSONObject =
+					viewportStyleJSONObjects.getOrDefault(
+						viewportSize.getViewportSizeId(),
+						JSONFactoryUtil.createJSONObject());
+
+				if (itemConfigJSONObject.has(
+						viewportSize.getViewportSizeId())) {
+
+					JSONObject viewportItemConfigJSONObject =
+						itemConfigJSONObject.getJSONObject(
+							viewportSize.getViewportSizeId());
+
+					JSONObject newStylesJSONObject =
+						viewportItemConfigJSONObject.getJSONObject("styles");
+
+					if (newStylesJSONObject == null) {
+						continue;
+					}
+
+					for (String styleName : availableStyleNames) {
+						if (newStylesJSONObject.has(styleName)) {
+							currentViewportStyleJSONObject.put(
+								styleName, newStylesJSONObject.get(styleName));
+						}
+					}
+				}
+
+				viewportStyleJSONObjects.put(
+					viewportSize.getViewportSizeId(),
+					currentViewportStyleJSONObject);
+			}
 		}
 		catch (Exception exception) {
 			_log.error("Unable to get available style names", exception);
@@ -251,6 +306,8 @@ public abstract class StyledLayoutStructureItem extends LayoutStructureItem {
 	}
 
 	protected JSONObject stylesJSONObject = JSONFactoryUtil.createJSONObject();
+	protected Map<String, JSONObject> viewportStyleJSONObjects =
+		new HashMap<>();
 
 	private String _getColor(String property) {
 		JSONObject configJSONObject = getItemConfigJSONObject();

@@ -19,7 +19,6 @@ import com.liferay.layout.util.constants.LayoutDataItemTypeConstants;
 import com.liferay.petra.lang.HashUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -86,23 +85,33 @@ public class RowStyledLayoutStructureItem extends StyledLayoutStructureItem {
 				continue;
 			}
 
+			JSONObject currentViewportConfigurationJSONObject =
+				JSONFactoryUtil.createJSONObject();
+
+			if (jsonObject.has(viewportSize.getViewportSizeId())) {
+				currentViewportConfigurationJSONObject =
+					jsonObject.getJSONObject(viewportSize.getViewportSizeId());
+			}
+
 			JSONObject viewportConfigurationJSONObject =
 				_viewportConfigurations.getOrDefault(
 					viewportSize.getViewportSizeId(),
 					JSONFactoryUtil.createJSONObject());
 
+			currentViewportConfigurationJSONObject.put(
+				"modulesPerRow",
+				viewportConfigurationJSONObject.get("modulesPerRow")
+			).put(
+				"reverseOrder",
+				viewportConfigurationJSONObject.get("reverseOrder")
+			).put(
+				"verticalAlignment",
+				viewportConfigurationJSONObject.get("verticalAlignment")
+			);
+
 			jsonObject.put(
 				viewportSize.getViewportSizeId(),
-				JSONUtil.put(
-					"modulesPerRow",
-					viewportConfigurationJSONObject.get("modulesPerRow")
-				).put(
-					"reverseOrder",
-					viewportConfigurationJSONObject.get("reverseOrder")
-				).put(
-					"verticalAlignment",
-					viewportConfigurationJSONObject.get("verticalAlignment")
-				));
+				currentViewportConfigurationJSONObject);
 		}
 
 		return jsonObject;
