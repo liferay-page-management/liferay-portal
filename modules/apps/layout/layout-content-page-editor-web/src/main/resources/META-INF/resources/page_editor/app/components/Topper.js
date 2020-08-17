@@ -106,6 +106,7 @@ function TopperContent({
 	item,
 	itemElement,
 	layoutData,
+	style,
 }) {
 	const canUpdatePageStructure = useSelector(selectCanUpdatePageStructure);
 	const dispatch = useDispatch();
@@ -195,6 +196,7 @@ function TopperContent({
 
 				hoverItem(item.itemId);
 			}}
+			style={style}
 		>
 			<TopperLabel
 				isActive={isActive}
