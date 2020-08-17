@@ -100,7 +100,6 @@ public class AddStyleBookEntryMVCActionCommandTest {
 		String name = RandomTestUtil.randomString();
 
 		actionRequest.addParameter("name", name);
-
 		actionRequest.setAttribute(WebKeys.THEME_DISPLAY, _themeDisplay);
 
 		ReflectionTestUtil.invoke(
