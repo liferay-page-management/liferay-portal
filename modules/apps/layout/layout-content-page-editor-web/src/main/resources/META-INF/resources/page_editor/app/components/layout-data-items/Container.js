@@ -138,7 +138,7 @@ const Container = React.forwardRef(
 						[`mr-${marginRight}`]:
 							widthType !== 'fixed' && !withinTopper,
 						[textAlign]: textAlign !== 'none',
-						[`text-${textColor?.cssClass}`]: textColor,
+						[`text-${textColor?.cssClass || textColor}`]: textColor,
 					}
 				)}
 				ref={ref}

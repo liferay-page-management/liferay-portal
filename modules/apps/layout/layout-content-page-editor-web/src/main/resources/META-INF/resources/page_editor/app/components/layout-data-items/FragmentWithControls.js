@@ -113,7 +113,7 @@ const FragmentWithControls = React.forwardRef(({item, layoutData}, ref) => {
 					[borderRadius]: !!borderRadius,
 					[`text-${fontFamily}`]: fontFamily !== 'default',
 					[textAlign]: textAlign !== 'none',
-					[`text-${textColor?.cssClass}`]: textColor,
+					[`text-${textColor?.cssClass || textColor}`]: textColor,
 				}
 			)}
 			item={item}
