@@ -47,6 +47,10 @@
 				}
 			},
 			"itemId": "896232e5-04a2-4bd1-a687-f1e0983f16bb",
+			"landscapeMobile": {
+				"styles": {
+				}
+			},
 			"parentId": "7b620b26-53f8-4fd2-a459-2c5aa85b90c1",
 			"type": "row"
 		},

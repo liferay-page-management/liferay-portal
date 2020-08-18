@@ -5,7 +5,13 @@
 				"DROP-ZONE-UUID"
 			],
 			"config": {
-				"size": 12
+				"landscapeMobile": {
+				},
+				"portraitMobile": {
+				},
+				"size": 12,
+				"tablet": {
+				}
 			},
 			"itemId": "COLUMN-UUID",
 			"parentId": "ROW-UUID",
@@ -18,11 +24,19 @@
 			"config": {
 				"backgroundImage": {
 				},
+				"landscapeMobile": {
+					"styles": {
+					}
+				},
 				"paddingBottom": 0,
 				"paddingHorizontal": 0,
 				"paddingLeft": 0,
 				"paddingRight": 0,
 				"paddingTop": 0,
+				"portraitMobile": {
+					"styles": {
+					}
+				},
 				"styles": {
 					"backgroundImage": {
 					},
@@ -31,15 +45,15 @@
 					"fontFamily": "sans-serif",
 					"fontSize": "medium",
 					"fontWeight": "font-weight-normal",
-					"height": "h-auto",
+					"height": "",
 					"marginBottom": "0",
 					"marginLeft": "0",
 					"marginRight": "0",
 					"marginTop": "0",
-					"maxHeight": "none",
-					"maxWidth": "none",
-					"minHeight": "auto",
-					"minWidth": "auto",
+					"maxHeight": "",
+					"maxWidth": "",
+					"minHeight": "",
+					"minWidth": "",
 					"opacity": 100,
 					"overflow": "visible",
 					"paddingBottom": "0",
@@ -48,7 +62,11 @@
 					"paddingTop": "0",
 					"shadow": "shadow-none",
 					"textAlign": "none",
-					"width": "w-auto"
+					"width": ""
+				},
+				"tablet": {
+					"styles": {
+					}
 				},
 				"type": "fluid",
 				"widthType": "fluid"
@@ -87,7 +105,15 @@
 			],
 			"config": {
 				"gutters": true,
+				"landscapeMobile": {
+					"styles": {
+					}
+				},
 				"numberOfColumns": 1,
+				"portraitMobile": {
+					"styles": {
+					}
+				},
 				"styles": {
 					"backgroundImage": {
 					},
@@ -96,15 +122,15 @@
 					"fontFamily": "sans-serif",
 					"fontSize": "medium",
 					"fontWeight": "font-weight-normal",
-					"height": "h-auto",
+					"height": "",
 					"marginBottom": "0",
 					"marginLeft": "0",
 					"marginRight": "0",
 					"marginTop": "0",
-					"maxHeight": "none",
-					"maxWidth": "none",
-					"minHeight": "auto",
-					"minWidth": "auto",
+					"maxHeight": "",
+					"maxWidth": "",
+					"minHeight": "",
+					"minWidth": "",
 					"opacity": 100,
 					"overflow": "visible",
 					"paddingBottom": "0",
@@ -113,7 +139,11 @@
 					"paddingTop": "0",
 					"shadow": "shadow-none",
 					"textAlign": "none",
-					"width": "w-auto"
+					"width": ""
+				},
+				"tablet": {
+					"styles": {
+					}
 				}
 			},
 			"itemId": "ROW-UUID",
