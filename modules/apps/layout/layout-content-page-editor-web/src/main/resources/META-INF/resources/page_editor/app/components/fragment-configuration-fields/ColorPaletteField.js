@@ -34,14 +34,11 @@ export const ColorPaletteField = ({field, onValueSelect, value}) => {
 
 					onValueSelect(field.name, '');
 				}}
-				onColorSelect={(color, event) => {
+				onColorSelect={(color) => {
 					setNextValue(color);
 
 					onValueSelect(field.name, {
-						color,
 						cssClass: color,
-						rgbValue: getComputedStyle(event.target)
-							.backgroundColor,
 					});
 				}}
 				selectedColor={nextValue}
