@@ -12,11 +12,16 @@
  * details.
  */
 
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import {FRAGMENT_CONFIGURATION_FIELDS} from '../../../../app/components/fragment-configuration-fields/index';
 import {ConfigurationFieldPropTypes} from '../../../../prop-types/index';
+
+const DISPLAY_SIZES = {
+	small: 'small',
+};
 
 export const FieldSet = ({fields, label, onValueSelect, values}) => {
 	return (
@@ -27,30 +32,44 @@ export const FieldSet = ({fields, label, onValueSelect, values}) => {
 				</div>
 			)}
 
-			{fields.map((field, index) => {
-				const FieldComponent =
-					field.type && FRAGMENT_CONFIGURATION_FIELDS[field.type];
+			<div className="page-editor__sidebar__fieldset">
+				{fields.map((field, index) => {
+					const FieldComponent =
+						field.type && FRAGMENT_CONFIGURATION_FIELDS[field.type];
 
-				const fieldValue = values[field.name] || field.defaultValue;
+					const fieldValue = values[field.name] || field.defaultValue;
 
-				const visible =
-					!field.dependencies ||
-					field.dependencies.every(
-						(dependency) =>
-							values[dependency.styleName] === dependency.value
+					const visible =
+						!field.dependencies ||
+						field.dependencies.every(
+							(dependency) =>
+								values[dependency.styleName] ===
+								dependency.value
+						);
+
+					return (
+						visible && (
+							<div
+								className={classNames(
+									'page-editor__sidebar__fieldset__field',
+									{
+										'page-editor__sidebar__fieldset__field-small':
+											field.displaySize ===
+											DISPLAY_SIZES.small,
+									}
+								)}
+								key={index}
+							>
+								<FieldComponent
+									field={field}
+									onValueSelect={onValueSelect}
+									value={fieldValue}
+								/>
+							</div>
+						)
 					);
-
-				return (
-					visible && (
-						<FieldComponent
-							field={field}
-							key={index}
-							onValueSelect={onValueSelect}
-							value={fieldValue}
-						/>
-					)
-				);
-			})}
+				})}
+			</div>
 		</>
 	);
 };
