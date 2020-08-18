@@ -51,11 +51,20 @@ const RowWithControls = React.forwardRef(
 		const [setRef, itemElement] = useSetRef(ref);
 		const {verticalAlignment} = rowResponsiveConfig;
 
+		const {maxWidth, minWidth, width} = item.config.styles;
+
+		const style = {};
+
+		style.maxWidth = maxWidth;
+		style.minWidth = minWidth;
+		style.width = width;
+
 		return (
 			<Topper
 				item={item}
 				itemElement={itemElement}
 				layoutData={layoutData}
+				style={style}
 			>
 				<Row
 					className={classNames({
