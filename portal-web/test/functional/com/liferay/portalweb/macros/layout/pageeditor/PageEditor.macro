@@ -485,7 +485,7 @@ definition {
 				locator1 = "Select#GENERIC_SELECT_FIELD",
 				value1 = "${alignment}");
 
-			Pause(locator1 = "2000");
+			Pause(locator1 = "3000");
 		}
 
 		if (isSet(borderColor)) {
@@ -494,7 +494,7 @@ definition {
 				key_paletteItem = "${borderColor}",
 				locator1 = "Button#BORDER_BOTTOM_PALETTE_ITEM");
 
-			Pause(locator1 = "2000");
+			Pause(locator1 = "3000");
 		}
 
 		if (isSet(borderRadius)) {
@@ -503,7 +503,7 @@ definition {
 				locator1 = "Select#GENERIC_SELECT_FIELD",
 				value1 = "${borderRadius}");
 
-			Pause(locator1 = "2000");
+			Pause(locator1 = "3000");
 		}
 
 		if (isSet(bottomSpacing)) {
@@ -512,7 +512,7 @@ definition {
 				locator1 = "Select#GENERIC_SELECT_FIELD",
 				value1 = "${bottomSpacing}");
 
-			Pause(locator1 = "2000");
+			Pause(locator1 = "3000");
 		}
 
 		if (isSet(boxShadow)) {
@@ -521,7 +521,7 @@ definition {
 				locator1 = "Select#GENERIC_SELECT_FIELD",
 				value1 = "${boxShadow}");
 
-			Pause(locator1 = "2000");
+			Pause(locator1 = "3000");
 		}
 
 		if (isSet(headingLevel)) {
@@ -530,7 +530,7 @@ definition {
 				locator1 = "Select#GENERIC_SELECT_FIELD",
 				value1 = "${headingLevel}");
 
-			Pause(locator1 = "2000");
+			Pause(locator1 = "3000");
 		}
 
 		if (isSet(height)) {
@@ -539,7 +539,7 @@ definition {
 				locator1 = "PageEditor#CUSTOM_STYLES_SELECT_FIELD",
 				value1 = "${height}");
 
-			Pause(locator1 = "2000");
+			Pause(locator1 = "3000");
 		}
 
 		if (isSet(imageSize)) {
@@ -548,7 +548,7 @@ definition {
 				locator1 = "Select#GENERIC_SELECT_FIELD",
 				value1 = "${imageSize}");
 
-			Pause(locator1 = "2000");
+			Pause(locator1 = "3000");
 		}
 
 		if (isSet(marginBottom)) {
@@ -653,7 +653,7 @@ definition {
 				locator1 = "Select#GENERIC_SELECT_FIELD",
 				value1 = "${size}");
 
-			Pause(locator1 = "2000");
+			Pause(locator1 = "3000");
 		}
 
 		if (isSet(textColor)) {
@@ -662,7 +662,7 @@ definition {
 				key_paletteItem = "${textColor}",
 				locator1 = "Button#BORDER_BOTTOM_PALETTE_ITEM");
 
-			Pause(locator1 = "2000");
+			Pause(locator1 = "3000");
 		}
 
 		if (isSet(type)) {
@@ -671,7 +671,7 @@ definition {
 				locator1 = "Select#GENERIC_SELECT_FIELD",
 				value1 = "${type}");
 
-			Pause(locator1 = "2000");
+			Pause(locator1 = "3000");
 		}
 
 		PageEditor.waitForAutoSave();
