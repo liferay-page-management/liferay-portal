@@ -17,13 +17,19 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import {FRAGMENT_CONFIGURATION_FIELDS} from '../../../../app/components/fragment-configuration-fields/index';
+import {LAYOUT_DATA_ITEM_TYPES} from '../../../../app/config/constants/layoutDataItemTypes';
 import {ConfigurationFieldPropTypes} from '../../../../prop-types/index';
 
 const DISPLAY_SIZES = {
 	small: 'small',
 };
 
-export const FieldSet = ({fields, label, onValueSelect, values}) => {
+const fieldIsDisabled = (item, field) =>
+	item.type === LAYOUT_DATA_ITEM_TYPES.container &&
+	item.config?.widthType === 'fixed' &&
+	(field.name === 'marginRight' || field.name === 'marginLeft');
+
+export const FieldSet = ({fields, item = {}, label, onValueSelect, values}) => {
 	return (
 		<>
 			{label && (
@@ -61,6 +67,7 @@ export const FieldSet = ({fields, label, onValueSelect, values}) => {
 								key={index}
 							>
 								<FieldComponent
+									disabled={fieldIsDisabled(item, field)}
 									field={field}
 									onValueSelect={onValueSelect}
 									value={fieldValue}
