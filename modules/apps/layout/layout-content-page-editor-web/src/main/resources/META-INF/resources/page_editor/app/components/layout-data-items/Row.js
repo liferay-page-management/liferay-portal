@@ -121,7 +121,7 @@ const Row = React.forwardRef(({children, className, item, layoutData}, ref) => {
 					[`mr-${marginRight}`]: marginRight !== '0',
 					'no-gutters': !item.config.gutters,
 					[textAlign]: textAlign !== 'none',
-					[`text-${textColor?.cssClass}`]: textColor,
+					[`text-${textColor?.cssClass || textColor}`]: textColor,
 				}
 			)}
 			ref={ref}
