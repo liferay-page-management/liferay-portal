@@ -367,11 +367,6 @@ public class RenderFragmentLayoutDisplayContext {
 					"fixed")) {
 
 				cssClassSB.append(" container");
-			}
-
-			if (!Objects.equals(
-					containerStyledLayoutStructureItem.getWidthType(),
-					"fixed")) {
 
 				addHorizontalMargin = false;
 			}
