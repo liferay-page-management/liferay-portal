@@ -84,53 +84,48 @@ const FragmentWithControls = React.forwardRef(({item, layoutData}, ref) => {
 		style.fontSize = fontSize;
 	}
 
-	if (minHeight !== 'auto') {
-		style.minHeight = minHeight;
-	}
-
-	if (minWidth !== 'auto') {
-		style.minWidth = minWidth;
-	}
-
 	style.border = `solid ${borderWidth}px`;
+	style.height = height;
 	style.maxHeight = maxHeight;
 	style.maxWidth = maxWidth;
+	style.minHeight = minHeight;
+	style.minWidth = minWidth;
 	style.opacity = opacity;
 	style.overflow = overflow;
+	style.width = width;
 
 	return (
-		<Topper item={item} itemElement={itemElement} layoutData={layoutData}>
-			<div
-				className={classNames(
-					fontWeight,
-					height,
-					`mb-${marginBottom}`,
-					`ml-${marginLeft}`,
-					`mr-${marginRight}`,
-					`mt-${marginTop}`,
-					`pb-${paddingBottom}`,
-					`pl-${paddingLeft}`,
-					`pr-${paddingRight}`,
-					`pt-${paddingTop}`,
-					shadow,
-					width,
-					{
-						[`bg-${backgroundColor?.cssClass}`]: backgroundColor,
-						[`border-${borderColor?.cssClass}`]: borderColor,
-						[borderRadius]: !!borderRadius,
-						[`text-${fontFamily}`]: fontFamily !== 'default',
-						[textAlign]: textAlign !== 'none',
-						[`text-${textColor?.cssClass}`]: textColor,
-					}
-				)}
-				style={style}
-			>
-				<FragmentContent
-					elementRef={setRef}
-					fragmentEntryLinkId={item.config.fragmentEntryLinkId}
-					itemId={item.itemId}
-				/>
-			</div>
+		<Topper
+			className={classNames(
+				fontWeight,
+				`mb-${marginBottom}`,
+				`ml-${marginLeft}`,
+				`mr-${marginRight}`,
+				`mt-${marginTop}`,
+				`pb-${paddingBottom}`,
+				`pl-${paddingLeft}`,
+				`pr-${paddingRight}`,
+				`pt-${paddingTop}`,
+				shadow,
+				{
+					[`bg-${backgroundColor?.cssClass}`]: backgroundColor,
+					[`border-${borderColor?.cssClass}`]: borderColor,
+					[borderRadius]: !!borderRadius,
+					[`text-${fontFamily}`]: fontFamily !== 'default',
+					[textAlign]: textAlign !== 'none',
+					[`text-${textColor?.cssClass}`]: textColor,
+				}
+			)}
+			item={item}
+			itemElement={itemElement}
+			layoutData={layoutData}
+			style={style}
+		>
+			<FragmentContent
+				elementRef={setRef}
+				fragmentEntryLinkId={item.config.fragmentEntryLinkId}
+				itemId={item.itemId}
+			/>
 		</Topper>
 	);
 });

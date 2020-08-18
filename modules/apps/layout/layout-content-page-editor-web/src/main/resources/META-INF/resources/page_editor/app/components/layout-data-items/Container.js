@@ -49,9 +49,7 @@ const Container = React.forwardRef(
 			marginRight,
 			marginTop,
 			maxHeight,
-			maxWidth,
 			minHeight,
-			minWidth,
 			opacity,
 			overflow,
 			paddingBottom,
@@ -109,17 +107,10 @@ const Container = React.forwardRef(
 			style.fontSize = fontSize;
 		}
 
-		if (minHeight !== 'auto') {
-			style.minHeight = minHeight;
-		}
-
-		if (minWidth !== 'auto') {
-			style.minWidth = minWidth;
-		}
-
 		style.border = `solid ${borderWidth}px`;
+		style.height = height;
 		style.maxHeight = maxHeight;
-		style.maxWidth = maxWidth;
+		style.minHeight = minHeight;
 		style.opacity = opacity;
 		style.overflow = overflow;
 
@@ -129,7 +120,6 @@ const Container = React.forwardRef(
 				className={classNames(
 					className,
 					fontWeight,
-					height,
 					`mb-${marginBottom}`,
 					`mt-${marginTop}`,
 					`pb-${paddingBottom}`,
