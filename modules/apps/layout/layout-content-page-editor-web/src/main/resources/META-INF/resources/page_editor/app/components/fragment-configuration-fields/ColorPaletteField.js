@@ -29,6 +29,11 @@ export const ColorPaletteField = ({field, onValueSelect, value}) => {
 		<ClayForm.Group>
 			<ColorPalette
 				label={field.label}
+				onClear={() => {
+					setNextValue('');
+
+					onValueSelect(field.name, {});
+				}}
 				onColorSelect={(color, event) => {
 					setNextValue(color);
 
