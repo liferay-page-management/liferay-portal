@@ -25,15 +25,15 @@
 			"fontFamily": "sans-serif",
 			"fontSize": "medium",
 			"fontWeight": "font-weight-normal",
-			"height": "h-auto",
+			"height": "",
 			"marginBottom": "0",
 			"marginLeft": "0",
 			"marginRight": "0",
 			"marginTop": "0",
-			"maxHeight": "none",
-			"maxWidth": "none",
-			"minHeight": "auto",
-			"minWidth": "auto",
+			"maxHeight": "",
+			"maxWidth": "",
+			"minHeight": "",
+			"minWidth": "",
 			"opacity": 100,
 			"overflow": "visible",
 			"paddingBottom": "0",
@@ -42,7 +42,7 @@
 			"paddingTop": "0",
 			"shadow": "shadow-none",
 			"textAlign": "none",
-			"width": "w-auto"
+			"width": ""
 		}
 	},
 	"pageElements": [

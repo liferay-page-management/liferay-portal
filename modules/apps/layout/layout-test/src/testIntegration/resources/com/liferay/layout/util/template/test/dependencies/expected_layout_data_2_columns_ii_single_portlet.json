@@ -15,6 +15,14 @@
 				"ROOT-CONTAINER0-ROW0"
 			],
 			"config": {
+				"landscapeMobile": {
+					"styles": {
+					}
+				},
+				"portraitMobile": {
+					"styles": {
+					}
+				},
 				"styles": {
 					"backgroundImage": {
 					},
@@ -23,16 +31,16 @@
 					"fontFamily": "sans-serif",
 					"fontSize": "medium",
 					"fontWeight": "font-weight-normal",
-					"height": "h-auto",
+					"height": "",
 					"marginBottom": "0",
 					"marginLeft": "0",
 					"marginRight": "0",
 					"marginTop": "0",
-					"maxHeight": "none",
-					"maxWidth": "none",
-					"minHeight": "auto",
-					"minWidth": "auto",
-					"opacity": 1,
+					"maxHeight": "",
+					"maxWidth": "",
+					"minHeight": "",
+					"minWidth": "",
+					"opacity": 100,
 					"overflow": "visible",
 					"paddingBottom": "0",
 					"paddingLeft": "0",
@@ -40,7 +48,11 @@
 					"paddingTop": "0",
 					"shadow": "shadow-none",
 					"textAlign": "none",
-					"width": "w-auto"
+					"width": ""
+				},
+				"tablet": {
+					"styles": {
+					}
 				},
 				"widthType": "fluid"
 			},
@@ -80,16 +92,16 @@
 					"fontFamily": "sans-serif",
 					"fontSize": "medium",
 					"fontWeight": "font-weight-normal",
-					"height": "h-auto",
+					"height": "",
 					"marginBottom": "0",
 					"marginLeft": "0",
 					"marginRight": "0",
 					"marginTop": "0",
-					"maxHeight": "none",
-					"maxWidth": "none",
-					"minHeight": "auto",
-					"minWidth": "auto",
-					"opacity": 1,
+					"maxHeight": "",
+					"maxWidth": "",
+					"minHeight": "",
+					"minWidth": "",
+					"opacity": 100,
 					"overflow": "visible",
 					"paddingBottom": "0",
 					"paddingLeft": "0",
@@ -97,13 +109,15 @@
 					"paddingTop": "0",
 					"shadow": "shadow-none",
 					"textAlign": "none",
-					"width": "w-auto"
+					"width": ""
 				},
 				"tablet": {
 					"gutters": true,
 					"modulesPerRow": 2,
 					"numberOfColumns": 2,
 					"reverseOrder": false,
+					"styles": {
+					},
 					"verticalAlignment": "top"
 				},
 				"verticalAlignment": "top"
@@ -128,6 +142,14 @@
 			],
 			"config": {
 				"fragmentEntryLinkId": "column-1:${TEST_PORTLET_NAME_1}",
+				"landscapeMobile": {
+					"styles": {
+					}
+				},
+				"portraitMobile": {
+					"styles": {
+					}
+				},
 				"styles": {
 					"backgroundImage": {
 					},
@@ -136,16 +158,16 @@
 					"fontFamily": "sans-serif",
 					"fontSize": "medium",
 					"fontWeight": "font-weight-normal",
-					"height": "h-auto",
+					"height": "",
 					"marginBottom": "0",
 					"marginLeft": "0",
 					"marginRight": "0",
 					"marginTop": "0",
-					"maxHeight": "none",
-					"maxWidth": "none",
-					"minHeight": "auto",
-					"minWidth": "auto",
-					"opacity": 1,
+					"maxHeight": "",
+					"maxWidth": "",
+					"minHeight": "",
+					"minWidth": "",
+					"opacity": 100,
 					"overflow": "visible",
 					"paddingBottom": "0",
 					"paddingLeft": "0",
@@ -153,7 +175,11 @@
 					"paddingTop": "0",
 					"shadow": "shadow-none",
 					"textAlign": "none",
-					"width": "w-auto"
+					"width": ""
+				},
+				"tablet": {
+					"styles": {
+					}
 				}
 			},
 			"itemId": "ROOT-CONTAINER0-ROW0-COLUMN0-FRAGMENT0",
@@ -176,6 +202,14 @@
 			],
 			"config": {
 				"fragmentEntryLinkId": "column-2:${TEST_PORTLET_NAME_2}",
+				"landscapeMobile": {
+					"styles": {
+					}
+				},
+				"portraitMobile": {
+					"styles": {
+					}
+				},
 				"styles": {
 					"backgroundImage": {
 					},
@@ -184,16 +218,16 @@
 					"fontFamily": "sans-serif",
 					"fontSize": "medium",
 					"fontWeight": "font-weight-normal",
-					"height": "h-auto",
+					"height": "",
 					"marginBottom": "0",
 					"marginLeft": "0",
 					"marginRight": "0",
 					"marginTop": "0",
-					"maxHeight": "none",
-					"maxWidth": "none",
-					"minHeight": "auto",
-					"minWidth": "auto",
-					"opacity": 1,
+					"maxHeight": "",
+					"maxWidth": "",
+					"minHeight": "",
+					"minWidth": "",
+					"opacity": 100,
 					"overflow": "visible",
 					"paddingBottom": "0",
 					"paddingLeft": "0",
@@ -201,7 +235,11 @@
 					"paddingTop": "0",
 					"shadow": "shadow-none",
 					"textAlign": "none",
-					"width": "w-auto"
+					"width": ""
+				},
+				"tablet": {
+					"styles": {
+					}
 				}
 			},
 			"itemId": "ROOT-CONTAINER0-ROW0-COLUMN1-FRAGMENT0",
