@@ -99,7 +99,7 @@
 		]
 	},
 	{
-		"label": "spacing",
+		"label": "margin",
 		"styles": [
 			{
 				"dataType": "string",
@@ -252,7 +252,12 @@
 						"value": "5"
 					}
 				]
-			},
+			}
+		]
+	},
+	{
+		"label": "padding",
+		"styles": [
 			{
 				"dataType": "string",
 				"defaultValue": "0",
