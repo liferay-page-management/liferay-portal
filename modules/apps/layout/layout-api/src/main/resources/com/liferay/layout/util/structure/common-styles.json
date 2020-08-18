@@ -7,6 +7,7 @@
 				"defaultValue": "",
 				"dependencies": [
 				],
+				"displaySize": "small",
 				"label": "width",
 				"name": "width",
 				"responsive": false,
@@ -17,6 +18,7 @@
 				"defaultValue": "",
 				"dependencies": [
 				],
+				"displaySize": "small",
 				"label": "height",
 				"name": "height",
 				"responsive": false,
@@ -27,6 +29,7 @@
 				"defaultValue": "",
 				"dependencies": [
 				],
+				"displaySize": "small",
 				"label": "min-width",
 				"name": "minWidth",
 				"responsive": false,
@@ -37,6 +40,7 @@
 				"defaultValue": "",
 				"dependencies": [
 				],
+				"displaySize": "small",
 				"label": "max-width",
 				"name": "maxWidth",
 				"responsive": false,
@@ -47,6 +51,7 @@
 				"defaultValue": "",
 				"dependencies": [
 				],
+				"displaySize": "small",
 				"label": "min-height",
 				"name": "minHeight",
 				"responsive": false,
@@ -57,6 +62,7 @@
 				"defaultValue": "",
 				"dependencies": [
 				],
+				"displaySize": "small",
 				"label": "max-height",
 				"name": "maxHeight",
 				"responsive": false,
@@ -100,6 +106,7 @@
 				"defaultValue": "0",
 				"dependencies": [
 				],
+				"displaySize": "small",
 				"label": "margin-top",
 				"name": "marginTop",
 				"responsive": true,
@@ -137,6 +144,7 @@
 				"defaultValue": "0",
 				"dependencies": [
 				],
+				"displaySize": "small",
 				"label": "margin-bottom",
 				"name": "marginBottom",
 				"responsive": true,
@@ -174,6 +182,7 @@
 				"defaultValue": "0",
 				"dependencies": [
 				],
+				"displaySize": "small",
 				"label": "margin-left",
 				"name": "marginLeft",
 				"responsive": true,
@@ -211,6 +220,7 @@
 				"defaultValue": "0",
 				"dependencies": [
 				],
+				"displaySize": "small",
 				"label": "margin-right",
 				"name": "marginRight",
 				"responsive": true,
@@ -248,6 +258,7 @@
 				"defaultValue": "0",
 				"dependencies": [
 				],
+				"displaySize": "small",
 				"label": "padding-top",
 				"name": "paddingTop",
 				"responsive": true,
@@ -285,6 +296,7 @@
 				"defaultValue": "0",
 				"dependencies": [
 				],
+				"displaySize": "small",
 				"label": "padding-bottom",
 				"name": "paddingBottom",
 				"responsive": true,
@@ -322,6 +334,7 @@
 				"defaultValue": "0",
 				"dependencies": [
 				],
+				"displaySize": "small",
 				"label": "padding-left",
 				"name": "paddingLeft",
 				"responsive": true,
@@ -359,6 +372,7 @@
 				"defaultValue": "0",
 				"dependencies": [
 				],
+				"displaySize": "small",
 				"label": "padding-right",
 				"name": "paddingRight",
 				"responsive": true,
@@ -548,6 +562,7 @@
 				"defaultValue": 0,
 				"dependencies": [
 				],
+				"displaySize": "small",
 				"label": "border-width",
 				"name": "borderWidth",
 				"responsive": false,
@@ -563,6 +578,7 @@
 				"defaultValue": "rounded-0",
 				"dependencies": [
 				],
+				"displaySize": "small",
 				"label": "border-radius",
 				"name": "borderRadius",
 				"responsive": false,
@@ -605,6 +621,7 @@
 				"defaultValue": 100,
 				"dependencies": [
 				],
+				"displaySize": "small",
 				"label": "opacity",
 				"name": "opacity",
 				"responsive": false,
@@ -620,6 +637,7 @@
 				"defaultValue": "shadow-none",
 				"dependencies": [
 				],
+				"displaySize": "small",
 				"label": "shadow",
 				"name": "shadow",
 				"responsive": false,
