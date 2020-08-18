@@ -20,6 +20,7 @@ import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -45,12 +46,12 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	immediate = true,
 	property = {
-		"product.navigation.control.menu.category.key=" + ProductNavigationControlMenuCategoryKeys.USER,
+		"product.navigation.control.menu.category.key=" + ProductNavigationControlMenuCategoryKeys.SITES,
 		"product.navigation.control.menu.entry.order:Integer=600"
 	},
 	service = ProductNavigationControlMenuEntry.class
 )
-public class ApplicationsMenuProductNavigationControlMenuEntry
+public class ApplicationsMenuControlPanelProductNavigationControlMenuEntry
 	extends BaseJSPProductNavigationControlMenuEntry {
 
 	@Override
@@ -65,6 +66,12 @@ public class ApplicationsMenuProductNavigationControlMenuEntry
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
+
+		Layout layout = themeDisplay.getLayout();
+
+		if (!layout.isTypeControlPanel()) {
+			return false;
+		}
 
 		try {
 			ApplicationsMenuInstanceConfiguration
@@ -131,7 +138,7 @@ public class ApplicationsMenuProductNavigationControlMenuEntry
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		ApplicationsMenuProductNavigationControlMenuEntry.class);
+		ApplicationsMenuControlPanelProductNavigationControlMenuEntry.class);
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
