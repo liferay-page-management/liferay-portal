@@ -287,7 +287,7 @@ public class PortletLayoutDisplayContext {
 			StyledLayoutStructureItem styledLayoutStructureItem)
 		throws Exception {
 
-		StringBundler cssClassSB = new StringBundler(45);
+		StringBundler cssClassSB = new StringBundler(43);
 
 		if (Validator.isNotNull(styledLayoutStructureItem.getAlign())) {
 			cssClassSB.append(" ");
@@ -333,13 +333,6 @@ public class PortletLayoutDisplayContext {
 			cssClassSB.append(StringPool.SPACE);
 			cssClassSB.append(
 				styledLayoutStructureItem.getFontWeightCssClass());
-		}
-
-		if (Validator.isNotNull(
-				styledLayoutStructureItem.getFontSizeCssClass())) {
-
-			cssClassSB.append(StringPool.SPACE);
-			cssClassSB.append(styledLayoutStructureItem.getFontSizeCssClass());
 		}
 
 		if (Validator.isNotNull(
@@ -527,7 +520,7 @@ public class PortletLayoutDisplayContext {
 	public String getStyle(StyledLayoutStructureItem styledLayoutStructureItem)
 		throws PortalException {
 
-		StringBundler styleSB = new StringBundler(39);
+		StringBundler styleSB = new StringBundler(42);
 
 		styleSB.append("box-sizing: border-box;");
 
@@ -565,6 +558,12 @@ public class PortletLayoutDisplayContext {
 		if (Validator.isNotNull(styledLayoutStructureItem.getFontFamily())) {
 			styleSB.append("font-family: ");
 			styleSB.append(styledLayoutStructureItem.getFontFamily());
+			styleSB.append(StringPool.SEMICOLON);
+		}
+
+		if (Validator.isNotNull(styledLayoutStructureItem.getFontSize())) {
+			styleSB.append("font-size: ");
+			styleSB.append(styledLayoutStructureItem.getFontSize());
 			styleSB.append(StringPool.SEMICOLON);
 		}
 
