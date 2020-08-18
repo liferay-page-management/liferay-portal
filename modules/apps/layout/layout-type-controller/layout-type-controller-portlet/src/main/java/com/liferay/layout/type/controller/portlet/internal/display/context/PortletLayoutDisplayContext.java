@@ -438,7 +438,7 @@ public class PortletLayoutDisplayContext {
 		if (Validator.isNotNull(
 				styledLayoutStructureItem.getTextColorCssClass())) {
 
-			cssClassSB.append(StringPool.SPACE);
+			cssClassSB.append(" text-");
 			cssClassSB.append(styledLayoutStructureItem.getTextColorCssClass());
 		}
 
