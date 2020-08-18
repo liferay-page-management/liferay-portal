@@ -106,7 +106,7 @@ public abstract class StyledLayoutStructureItem extends LayoutStructureItem {
 		return GetterUtil.getString(_getStyleProperty("fontFamily"));
 	}
 
-	public String getFontSizeCssClass() {
+	public String getFontSize() {
 		return GetterUtil.getString(_getStyleProperty("fontSize"));
 	}
 
