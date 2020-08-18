@@ -107,6 +107,7 @@ export const ContainerStylesPanel = ({item}) => {
 					return (
 						<FieldSet
 							fields={fieldSet.styles}
+							item={item}
 							key={index}
 							label={fieldSet.label}
 							onValueSelect={onCommonStyleValueSelect}
