@@ -369,11 +369,6 @@ public class PortletLayoutDisplayContext {
 					"fixed")) {
 
 				cssClassSB.append(" container");
-			}
-
-			if (!Objects.equals(
-					containerStyledLayoutStructureItem.getWidthType(),
-					"fixed")) {
 
 				addHorizontalMargin = false;
 			}
