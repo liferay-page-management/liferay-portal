@@ -32,7 +32,7 @@ export const ColorPaletteField = ({field, onValueSelect, value}) => {
 				onClear={() => {
 					setNextValue('');
 
-					onValueSelect(field.name, {});
+					onValueSelect(field.name, '');
 				}}
 				onColorSelect={(color, event) => {
 					setNextValue(color);
