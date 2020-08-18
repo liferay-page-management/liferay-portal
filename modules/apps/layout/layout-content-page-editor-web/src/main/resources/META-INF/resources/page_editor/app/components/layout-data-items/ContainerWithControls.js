@@ -47,11 +47,25 @@ const ContainerWithControls = React.forwardRef(
 		);
 
 		const {widthType} = itemConfig;
-		const {marginLeft, marginRight, shadow, width} = itemConfig.styles;
+
+		const {
+			marginLeft,
+			marginRight,
+			maxWidth,
+			minWidth,
+			shadow,
+			width,
+		} = itemConfig.styles;
+
+		const style = {};
+
+		style.maxWidth = maxWidth;
+		style.minWidth = minWidth;
+		style.width = width;
 
 		return (
 			<Topper
-				className={classNames(shadow, width, {
+				className={classNames(shadow, {
 					container: widthType === 'fixed',
 					[`ml-${marginLeft}`]: widthType !== 'fixed',
 					[`mr-${marginRight}`]: widthType !== 'fixed',
@@ -60,6 +74,7 @@ const ContainerWithControls = React.forwardRef(
 				item={item}
 				itemElement={itemElement}
 				layoutData={layoutData}
+				style={style}
 			>
 				<Container
 					className={classNames({

@@ -51,9 +51,7 @@ const Row = React.forwardRef(({children, className, item, layoutData}, ref) => {
 		marginRight,
 		marginTop,
 		maxHeight,
-		maxWidth,
 		minHeight,
-		minWidth,
 		opacity,
 		overflow,
 		paddingBottom,
@@ -63,7 +61,6 @@ const Row = React.forwardRef(({children, className, item, layoutData}, ref) => {
 		shadow,
 		textAlign,
 		textColor,
-		width,
 	} = itemConfig.styles;
 
 	const [backgroundImageValue, setBackgroundImageValue] = useState('');
@@ -85,17 +82,10 @@ const Row = React.forwardRef(({children, className, item, layoutData}, ref) => {
 		style.fontSize = fontSize;
 	}
 
-	if (minHeight !== 'auto') {
-		style.minHeight = minHeight;
-	}
-
-	if (minWidth !== 'auto') {
-		style.minWidth = minWidth;
-	}
-
 	style.border = `solid ${borderWidth}px`;
+	style.height = height;
 	style.maxHeight = maxHeight;
-	style.maxWidth = maxWidth;
+	style.minHeight = minHeight;
 	style.opacity = opacity;
 	style.overflow = overflow;
 
@@ -104,7 +94,6 @@ const Row = React.forwardRef(({children, className, item, layoutData}, ref) => {
 			className={classNames(
 				className,
 				fontWeight,
-				height,
 				`mb-${marginBottom}`,
 				`mt-${marginTop}`,
 				`pb-${paddingBottom}`,
@@ -112,7 +101,6 @@ const Row = React.forwardRef(({children, className, item, layoutData}, ref) => {
 				`pr-${paddingRight}`,
 				`pt-${paddingTop}`,
 				shadow,
-				width,
 				{
 					[`bg-${backgroundColor?.cssClass}`]: backgroundColor,
 					[`border-${borderColor?.cssClass}`]: borderColor,
