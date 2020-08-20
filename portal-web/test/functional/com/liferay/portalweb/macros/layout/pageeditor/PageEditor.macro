@@ -489,10 +489,10 @@ definition {
 		}
 
 		if (isSet(borderColor)) {
-			Click(
-				key_borderBottom = "Border Color",
-				key_paletteItem = "${borderColor}",
-				locator1 = "Button#BORDER_BOTTOM_PALETTE_ITEM");
+			Type(
+				key_text = "Border Color",
+				locator1 = "TextInput#ANY",
+				value1 = "${borderColor}");
 
 			Pause(locator1 = "3000");
 		}
@@ -657,10 +657,10 @@ definition {
 		}
 
 		if (isSet(textColor)) {
-			Click(
-				key_borderBottom = "Text Body",
-				key_paletteItem = "${textColor}",
-				locator1 = "Button#BORDER_BOTTOM_PALETTE_ITEM");
+			Type(
+				key_text = "Text Body",
+				locator1 = "TextInput#ANY",
+				value1 = "${textColor}");
 
 			Pause(locator1 = "3000");
 		}
@@ -1009,10 +1009,10 @@ definition {
 				value1 = "Styles");
 
 			if (isSet(backgroundColor)) {
-				Click(
-					key_borderBottom = "Background Color",
-					key_paletteItem = "${backgroundColor}",
-					locator1 = "Button#BORDER_BOTTOM_PALETTE_ITEM");
+				Type(
+					key_text = "Background Color",
+					locator1 = "TextInput#ANY",
+					value1 = "${backgroundColor}");
 
 				Pause(locator1 = "3000");
 			}
@@ -1081,10 +1081,10 @@ definition {
 			}
 
 			if (isSet(borderColor)) {
-				Click(
-					key_borderBottom = "Border Color",
-					key_paletteItem = "${borderColor}",
-					locator1 = "Button#BORDER_BOTTOM_PALETTE_ITEM");
+				Type(
+					key_text = "Border Color",
+					locator1 = "TextInput#ANY",
+					value1 = "${borderColor}");
 
 				Pause(locator1 = "3000");
 			}
