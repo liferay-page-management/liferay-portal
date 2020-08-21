@@ -12,34 +12,33 @@
  * details.
  */
 
-package com.liferay.layout.content.page.editor.web.internal.util;
+package com.liferay.asset.taglib.internal.info.display.contributor;
 
-import com.liferay.info.display.contributor.InfoDisplayContributor;
-import com.liferay.info.display.contributor.InfoDisplayContributorTracker;
+import com.liferay.layout.display.page.LayoutDisplayPageProviderTracker;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author Eudaldo Alonso
+ * @author Alejandro Tardín
  */
-@Component(service = {})
-public class InfoDisplayContributorTrackerUtil {
+@Component(immediate = true, service = {})
+public class LayoutDisplayPageProviderTrackerUtil {
 
-	public static InfoDisplayContributor<?> getInfoDisplayContributor(
-		String className) {
+	public static final LayoutDisplayPageProviderTracker
+		getLayoutDisplayPageProviderTracker() {
 
-		return _infoDisplayContributorTracker.getInfoDisplayContributor(
-			className);
+		return _layoutDisplayPageProviderTracker;
 	}
 
 	@Reference(unbind = "-")
-	protected void setsInfoDisplayContributorTracker(
-		InfoDisplayContributorTracker infoDisplayContributorTracker) {
+	protected void setServletContext(
+		LayoutDisplayPageProviderTracker layoutDisplayPageProviderTracker) {
 
-		_infoDisplayContributorTracker = infoDisplayContributorTracker;
+		_layoutDisplayPageProviderTracker = layoutDisplayPageProviderTracker;
 	}
 
-	private static InfoDisplayContributorTracker _infoDisplayContributorTracker;
+	private static LayoutDisplayPageProviderTracker
+		_layoutDisplayPageProviderTracker;
 
 }
