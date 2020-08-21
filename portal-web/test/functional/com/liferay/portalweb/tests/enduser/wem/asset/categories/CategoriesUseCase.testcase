@@ -853,8 +853,7 @@ definition {
 		Category.openCategoriesAdmin(siteURLKey = "test-site-name");
 
 		LAR.importPortlet(
-			larFileName = "Moon-Rocks-Unit-Category-Hierarchy.lar",
-			uploadFrom = "dependencies");
+			larFileName = "Moon-Rocks-Unit-Category-Hierarchy.lar");
 	}
 
 	@priority = "3"
