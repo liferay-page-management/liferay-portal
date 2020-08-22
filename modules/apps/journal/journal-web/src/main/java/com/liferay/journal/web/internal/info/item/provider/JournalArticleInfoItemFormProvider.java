@@ -24,7 +24,7 @@ import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.expando.info.item.provider.ExpandoInfoItemFieldSetProvider;
 import com.liferay.info.exception.NoSuchClassTypeException;
-import com.liferay.info.exception.NoSuchFormVariationException;
+import com.liferay.info.exception.NoSuchInfoFormVariationException;
 import com.liferay.info.field.InfoFieldSet;
 import com.liferay.info.form.InfoForm;
 import com.liferay.info.item.field.reader.InfoItemFieldReaderFieldSetProvider;
@@ -67,8 +67,10 @@ public class JournalArticleInfoItemFormProvider
 				_assetEntryInfoItemFieldSetProvider.getInfoFieldSet(
 					JournalArticle.class.getName()));
 		}
-		catch (NoSuchFormVariationException noSuchFormVariationException) {
-			throw new RuntimeException(noSuchFormVariationException);
+		catch (NoSuchInfoFormVariationException
+					noSuchInfoFormVariationException) {
+
+			throw new RuntimeException(noSuchInfoFormVariationException);
 		}
 	}
 
@@ -101,24 +103,24 @@ public class JournalArticleInfoItemFormProvider
 	}
 
 	@Override
-	public InfoForm getInfoForm(String formVariationKey)
-		throws NoSuchFormVariationException {
+	public InfoForm getInfoForm(long groupId, String infoFormVariationKey)
+		throws NoSuchInfoFormVariationException {
 
 		return _getInfoForm(
-			GetterUtil.getLong(formVariationKey),
+			GetterUtil.getLong(infoFormVariationKey),
 			_assetEntryInfoItemFieldSetProvider.getInfoFieldSet(
-				AssetEntry.class.getName()));
+				JournalArticle.class.getName(),
+				GetterUtil.getLong(infoFormVariationKey), groupId));
 	}
 
 	@Override
-	public InfoForm getInfoForm(String formVariationKey, long groupId)
-		throws NoSuchFormVariationException {
+	public InfoForm getInfoForm(String infoFormVariationKey)
+		throws NoSuchInfoFormVariationException {
 
 		return _getInfoForm(
-			GetterUtil.getLong(formVariationKey),
+			GetterUtil.getLong(infoFormVariationKey),
 			_assetEntryInfoItemFieldSetProvider.getInfoFieldSet(
-				JournalArticle.class.getName(),
-				GetterUtil.getLong(formVariationKey), groupId));
+				AssetEntry.class.getName()));
 	}
 
 	private InfoFieldSet _getBasicInformationInfoFieldSet() {
@@ -168,7 +170,7 @@ public class JournalArticleInfoItemFormProvider
 
 	private InfoForm _getInfoForm(
 			long ddmStructureId, InfoFieldSet assetEntryInfoFieldSet)
-		throws NoSuchFormVariationException {
+		throws NoSuchInfoFormVariationException {
 
 		Set<Locale> availableLocales = LanguageUtil.getAvailableLocales();
 
@@ -222,7 +224,7 @@ public class JournalArticleInfoItemFormProvider
 			).build();
 		}
 		catch (NoSuchStructureException noSuchStructureException) {
-			throw new NoSuchFormVariationException(
+			throw new NoSuchInfoFormVariationException(
 				String.valueOf(ddmStructureId), noSuchStructureException);
 		}
 	}

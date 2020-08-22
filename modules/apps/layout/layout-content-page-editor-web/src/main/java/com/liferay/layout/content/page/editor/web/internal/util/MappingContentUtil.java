@@ -44,7 +44,7 @@ import javax.portlet.ResourceRequest;
 public class MappingContentUtil {
 
 	public static JSONArray getMappingFieldsJSONArray(
-			String fieldType, String formVariationKey,
+			String fieldType, String infoFormVariationKey,
 			InfoItemServiceTracker infoItemServiceTracker, String itemClassName,
 			ResourceRequest resourceRequest)
 		throws Exception {
@@ -81,7 +81,7 @@ public class MappingContentUtil {
 			JSONUtil.put("fields", defaultFieldSetFieldsJSONArray));
 
 		InfoForm infoForm = infoItemFormProvider.getInfoForm(
-			formVariationKey, themeDisplay.getScopeGroupId());
+			themeDisplay.getScopeGroupId(), infoFormVariationKey);
 
 		for (InfoFieldSetEntry infoFieldSetEntry :
 				infoForm.getInfoFieldSetEntries()) {

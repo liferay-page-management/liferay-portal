@@ -19,22 +19,23 @@ import com.liferay.portal.kernel.exception.PortalException;
 /**
  * @author Jorge Ferrer
  */
-public class NoSuchFormVariationException extends PortalException {
+public class NoSuchInfoFormVariationException extends PortalException {
 
-	public NoSuchFormVariationException(
-		String formVariationKey, Throwable throwable) {
+	public NoSuchInfoFormVariationException(
+		String infoFormVariationKey, Throwable throwable) {
 
 		super(
-			"Unable to get form variation with key " + formVariationKey,
+			"Unable to get info form variation with key " +
+				infoFormVariationKey,
 			throwable);
 
-		_formVariationKey = formVariationKey;
+		_infoFormVariationKey = infoFormVariationKey;
 	}
 
-	public String getFormVariationKey() {
-		return _formVariationKey;
+	public String getInfoFormVariationKey() {
+		return _infoFormVariationKey;
 	}
 
-	private final String _formVariationKey;
+	private final String _infoFormVariationKey;
 
 }

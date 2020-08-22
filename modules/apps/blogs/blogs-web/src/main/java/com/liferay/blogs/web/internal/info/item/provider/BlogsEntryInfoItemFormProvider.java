@@ -70,7 +70,7 @@ public class BlogsEntryInfoItemFormProvider
 	}
 
 	@Override
-	public InfoForm getInfoForm(String formVariationKey, long groupId) {
+	public InfoForm getInfoForm(long groupId, String infoFormVariationKey) {
 		return _getInfoForm(
 			_assetEntryInfoItemFieldSetProvider.getInfoFieldSet(
 				BlogsEntry.class.getName(), 0, groupId));

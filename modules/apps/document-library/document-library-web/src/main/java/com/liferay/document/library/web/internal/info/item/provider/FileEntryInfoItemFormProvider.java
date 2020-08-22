@@ -28,7 +28,7 @@ import com.liferay.dynamic.data.mapping.info.item.provider.DDMTemplateInfoItemFi
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.expando.info.item.provider.ExpandoInfoItemFieldSetProvider;
-import com.liferay.info.exception.NoSuchFormVariationException;
+import com.liferay.info.exception.NoSuchInfoFormVariationException;
 import com.liferay.info.field.InfoFieldSet;
 import com.liferay.info.form.InfoForm;
 import com.liferay.info.item.field.reader.InfoItemFieldReaderFieldSetProvider;
@@ -66,8 +66,10 @@ public class FileEntryInfoItemFormProvider
 		try {
 			return _getInfoForm(0);
 		}
-		catch (NoSuchFormVariationException noSuchFormVariationException) {
-			throw new RuntimeException(noSuchFormVariationException);
+		catch (NoSuchInfoFormVariationException
+					noSuchInfoFormVariationException) {
+
+			throw new RuntimeException(noSuchInfoFormVariationException);
 		}
 	}
 
@@ -89,19 +91,21 @@ public class FileEntryInfoItemFormProvider
 		try {
 			return _getInfoForm(ddmStructureId);
 		}
-		catch (NoSuchFormVariationException noSuchFormVariationException) {
-			throw new RuntimeException(noSuchFormVariationException);
+		catch (NoSuchInfoFormVariationException
+					noSuchInfoFormVariationException) {
+
+			throw new RuntimeException(noSuchInfoFormVariationException);
 		}
 	}
 
 	@Override
-	public InfoForm getInfoForm(String formVariationKey, long groupId)
-		throws NoSuchFormVariationException {
+	public InfoForm getInfoForm(long groupId, String infoFormVariationKey)
+		throws NoSuchInfoFormVariationException {
 
 		long ddmStructureId = 0;
 
 		DDMStructure ddmStructure = _fetchDDMStructure(
-			GetterUtil.getLong(formVariationKey));
+			GetterUtil.getLong(infoFormVariationKey));
 
 		if (ddmStructure != null) {
 			ddmStructureId = ddmStructure.getStructureId();
@@ -183,7 +187,7 @@ public class FileEntryInfoItemFormProvider
 	}
 
 	private InfoForm _getInfoForm(long ddmStructureId)
-		throws NoSuchFormVariationException {
+		throws NoSuchInfoFormVariationException {
 
 		Set<Locale> availableLocales = LanguageUtil.getAvailableLocales();
 
@@ -234,7 +238,7 @@ public class FileEntryInfoItemFormProvider
 			).build();
 		}
 		catch (NoSuchStructureException noSuchStructureException) {
-			throw new NoSuchFormVariationException(
+			throw new NoSuchInfoFormVariationException(
 				String.valueOf(ddmStructureId), noSuchStructureException);
 		}
 	}
