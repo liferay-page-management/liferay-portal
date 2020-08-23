@@ -151,6 +151,18 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 		return fragmentEntryLink;
 	}
 
+	private String _getFragmentEntryType(String js) {
+		String fragmentTypeHeader = "//# fragmentType=";
+
+		if (Validator.isNotNull(js) && js.startsWith(fragmentTypeHeader)) {
+			return StringUtil.extractLast(
+				StringUtil.extractFirst(js, StringPool.NEW_LINE),
+				fragmentTypeHeader);
+		}
+
+		return "simple";
+	}
+
 	private boolean _isCacheable(FragmentEntryLink fragmentEntryLink) {
 		if (Validator.isNull(fragmentEntryLink.getRendererKey())) {
 			return fragmentEntryLink.isCacheable();
@@ -267,14 +279,15 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 					fragmentEntryLink.getEditableValues());
 		}
 
+		String js = fragmentEntryLink.getJs();
+
 		FragmentEntryLinkRenderer fragmentEntryLinkRenderer =
-			_fragmentEntryLinkRenderers.getService("simple");
+			_fragmentEntryLinkRenderers.getService(_getFragmentEntryType(js));
 
 		try {
 			content = fragmentEntryLinkRenderer.renderFragmentEntryLink(
 				httpServletRequest, httpServletResponse, fragmentEntryLink, css,
-				html, fragmentEntryLink.getJs(),
-				configurationJSONObject.toString());
+				html, js, configurationJSONObject.toString());
 		}
 		catch (IOException ioException) {
 			throw new PortalException(ioException);

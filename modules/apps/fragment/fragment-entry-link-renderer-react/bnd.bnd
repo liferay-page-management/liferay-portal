@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Fragment Entry Link Renderer React
+Bundle-SymbolicName: com.liferay.fragment.entry.link.renderer.react
+Bundle-Version: 1.0.0
+Web-ContextPath: /fragment-entry-link-renderer-react
