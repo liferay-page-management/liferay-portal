@@ -85,12 +85,10 @@ for (String childrenItemId : childrenItemIds) {
 
 			<%
 			ColumnLayoutStructureItem columnLayoutStructureItem = (ColumnLayoutStructureItem)layoutStructureItem;
-
-			RowStyledLayoutStructureItem rowStyledLayoutStructureItem = (RowStyledLayoutStructureItem)layoutStructure.getLayoutStructureItem(columnLayoutStructureItem.getParentItemId());
 			%>
 
 			<clay:col
-				cssClass="<%= ResponsiveLayoutStructureUtil.getColumnCssClass(rowStyledLayoutStructureItem, columnLayoutStructureItem) %>"
+				cssClass="<%= ResponsiveLayoutStructureUtil.getColumnCssClass(columnLayoutStructureItem) %>"
 			>
 				<liferay-util:include page="/layout/view/render_layout_structure.jsp" servletContext="<%= application %>" />
 			</clay:col>
