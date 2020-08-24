@@ -247,17 +247,19 @@ public class AssetCategoryAdminPortlet extends MVCPortlet {
 		Map<Locale, String> descriptionMap =
 			LocalizationUtil.getLocalizationMap(actionRequest, "description");
 
-		int visibilityType = AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC;
-
-		if (ParamUtil.getBoolean(actionRequest, "internalUse")) {
-			visibilityType = AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL;
-		}
-
 		AssetVocabulary vocabulary = null;
 
 		if (vocabularyId <= 0) {
 
 			// Add vocabulary
+
+			int visibilityType =
+				AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC;
+
+			if (ParamUtil.getBoolean(actionRequest, "internalUse")) {
+				visibilityType =
+					AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL;
+			}
 
 			ServiceContext serviceContext = ServiceContextFactory.getInstance(
 				AssetVocabulary.class.getName(), actionRequest);
@@ -271,9 +273,13 @@ public class AssetCategoryAdminPortlet extends MVCPortlet {
 
 			// Update vocabulary
 
+			AssetVocabulary existingVocabulary =
+				_assetVocabularyService.getVocabulary(vocabularyId);
+
 			vocabulary = _assetVocabularyService.updateVocabulary(
 				vocabularyId, titleMap, descriptionMap,
-				getSettings(actionRequest), visibilityType);
+				getSettings(actionRequest),
+				existingVocabulary.getVisibilityType());
 		}
 
 		actionRequest.setAttribute(
