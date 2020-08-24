@@ -38,7 +38,7 @@ for (String childrenItemId : childrenItemIds) {
 			InfoListRenderer<Object> infoListRenderer = (InfoListRenderer<Object>)renderFragmentLayoutDisplayContext.getInfoListRenderer(collectionStyledLayoutStructureItem);
 			%>
 
-			<div class="<%= renderFragmentLayoutDisplayContext.getCssClass((StyledLayoutStructureItem)layoutStructureItem) %>" style="<%= renderFragmentLayoutDisplayContext.getStyle((StyledLayoutStructureItem)layoutStructureItem) %>">
+			<div class="<%= renderFragmentLayoutDisplayContext.getCssClass(collectionStyledLayoutStructureItem) %>" style="<%= renderFragmentLayoutDisplayContext.getStyle(collectionStyledLayoutStructureItem) %>">
 				<c:choose>
 					<c:when test="<%= infoListRenderer != null %>">
 
@@ -101,7 +101,7 @@ for (String childrenItemId : childrenItemIds) {
 			String containerLinkHref = renderFragmentLayoutDisplayContext.getContainerLinkHref(containerStyledLayoutStructureItem, request.getAttribute(InfoDisplayWebKeys.INFO_LIST_DISPLAY_OBJECT));
 			%>
 
-			<div class="<%= renderFragmentLayoutDisplayContext.getCssClass((StyledLayoutStructureItem)layoutStructureItem) %>" style="<%= renderFragmentLayoutDisplayContext.getStyle((StyledLayoutStructureItem)layoutStructureItem) %>">
+			<div class="<%= renderFragmentLayoutDisplayContext.getCssClass(containerStyledLayoutStructureItem) %>" style="<%= renderFragmentLayoutDisplayContext.getStyle(containerStyledLayoutStructureItem) %>">
 				<c:if test="<%= Validator.isNotNull(containerLinkHref) %>">
 					<a href="<%= containerLinkHref %>" style="color: inherit; text-decoration: none;" target="<%= renderFragmentLayoutDisplayContext.getContainerLinkTarget(containerStyledLayoutStructureItem) %>">
 				</c:if>
@@ -133,7 +133,7 @@ for (String childrenItemId : childrenItemIds) {
 			DefaultFragmentRendererContext defaultFragmentRendererContext = renderFragmentLayoutDisplayContext.getDefaultFragmentRendererContext(fragmentEntryLink, fragmentStyledLayoutStructureItem.getItemId());
 			%>
 
-			<div class="<%= renderFragmentLayoutDisplayContext.getCssClass((StyledLayoutStructureItem)layoutStructureItem) %>" style="<%= renderFragmentLayoutDisplayContext.getStyle((StyledLayoutStructureItem)layoutStructureItem) %>">
+			<div class="<%= renderFragmentLayoutDisplayContext.getCssClass(fragmentStyledLayoutStructureItem) %>" style="<%= renderFragmentLayoutDisplayContext.getStyle(fragmentStyledLayoutStructureItem) %>">
 				<%= fragmentRendererController.render(defaultFragmentRendererContext, request, response) %>
 			</div>
 		</c:when>
@@ -162,7 +162,7 @@ for (String childrenItemId : childrenItemIds) {
 			}
 			%>
 
-			<div class="<%= renderFragmentLayoutDisplayContext.getCssClass((StyledLayoutStructureItem)layoutStructureItem) %>" style="<%= renderFragmentLayoutDisplayContext.getStyle((StyledLayoutStructureItem)layoutStructureItem) %>">
+			<div class="<%= renderFragmentLayoutDisplayContext.getCssClass(rowStyledLayoutStructureItem) %>" style="<%= renderFragmentLayoutDisplayContext.getStyle(rowStyledLayoutStructureItem) %>">
 				<c:choose>
 					<c:when test="<%= includeContainer %>">
 						<clay:container

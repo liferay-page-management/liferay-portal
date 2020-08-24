@@ -38,7 +38,7 @@ for (String childrenItemId : childrenItemIds) {
 			InfoListRenderer<Object> infoListRenderer = (InfoListRenderer<Object>)portletLayoutDisplayContext.getInfoListRenderer(collectionStyledLayoutStructureItem);
 			%>
 
-			<div class="<%= portletLayoutDisplayContext.getCssClass((StyledLayoutStructureItem)layoutStructureItem) %>" style="<%= portletLayoutDisplayContext.getStyle((StyledLayoutStructureItem)layoutStructureItem) %>">
+			<div class="<%= portletLayoutDisplayContext.getCssClass(collectionStyledLayoutStructureItem) %>" style="<%= portletLayoutDisplayContext.getStyle(collectionStyledLayoutStructureItem) %>">
 				<c:choose>
 					<c:when test="<%= infoListRenderer != null %>">
 
@@ -101,7 +101,7 @@ for (String childrenItemId : childrenItemIds) {
 			String containerLinkHref = portletLayoutDisplayContext.getContainerLinkHref(containerStyledLayoutStructureItem, request.getAttribute(InfoDisplayWebKeys.INFO_LIST_DISPLAY_OBJECT));
 			%>
 
-			<div class="<%= portletLayoutDisplayContext.getCssClass((StyledLayoutStructureItem)layoutStructureItem) %>" style="<%= portletLayoutDisplayContext.getStyle((StyledLayoutStructureItem)layoutStructureItem) %>">
+			<div class="<%= portletLayoutDisplayContext.getCssClass(containerStyledLayoutStructureItem) %>" style="<%= portletLayoutDisplayContext.getStyle(containerStyledLayoutStructureItem) %>">
 				<c:if test="<%= Validator.isNotNull(containerLinkHref) %>">
 					<a href="<%= containerLinkHref %>" style="color: inherit; text-decoration: none;" target="<%= portletLayoutDisplayContext.getContainerLinkTarget(containerStyledLayoutStructureItem) %>">
 				</c:if>
@@ -170,7 +170,7 @@ for (String childrenItemId : childrenItemIds) {
 				}
 				%>
 
-				<div class="<%= portletLayoutDisplayContext.getCssClass((StyledLayoutStructureItem)layoutStructureItem) %>" style="<%= portletLayoutDisplayContext.getStyle((StyledLayoutStructureItem)layoutStructureItem) %>">
+				<div class="<%= portletLayoutDisplayContext.getCssClass(fragmentStyledLayoutStructureItem) %>" style="<%= portletLayoutDisplayContext.getStyle(fragmentStyledLayoutStructureItem) %>">
 					<%= fragmentRendererController.render(defaultFragmentRendererContext, request, response) %>
 				</div>
 			</div>
@@ -183,7 +183,7 @@ for (String childrenItemId : childrenItemIds) {
 			LayoutStructureItem parentLayoutStructureItem = layoutStructure.getLayoutStructureItem(rowStyledLayoutStructureItem.getParentItemId());
 			%>
 
-			<div class="<%= portletLayoutDisplayContext.getCssClass((StyledLayoutStructureItem)layoutStructureItem) %>" style="<%= portletLayoutDisplayContext.getStyle((StyledLayoutStructureItem)layoutStructureItem) %>">
+			<div class="<%= portletLayoutDisplayContext.getCssClass(rowStyledLayoutStructureItem) %>" style="<%= portletLayoutDisplayContext.getStyle(rowStyledLayoutStructureItem) %>">
 				<c:choose>
 					<c:when test="<%= parentLayoutStructureItem instanceof RootLayoutStructureItem %>">
 						<clay:container
