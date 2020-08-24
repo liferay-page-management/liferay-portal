@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - Class com.liferay.poshi.runner.PoshiRunner</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>Class com.liferay.poshi.runner.PoshiRunner</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/com.liferay.poshi.runner.html">com.liferay.poshi.runner</a> &gt; PoshiRunner</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">1</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">1</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">13m46.23s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox failures" id="successRate">
+<div class="percent">0%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Failed tests</a>
+</li>
+<li>
+<a href="#tab1">Tests</a>
+</li>
+<li>
+<a href="#tab2">Standard output</a>
+</li>
+<li>
+<a href="#tab3">Standard error</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Failed tests</h2>
+<div class="test">
+<a name="test[LocalFile.WebContentWithCustomStructures#AddWCWithSecondComplexStructure]"></a>
+<h3 class="failures">test[LocalFile.WebContentWithCustomStructures#AddWCWithSecondComplexStructure]</h3>
+<span class="code">
+<pre>java.lang.Exception: Element is not visible at &quot;//input[(@name='value') and (@value='true')]&quot;
+	at com.liferay.poshi.runner.selenium.BaseWebDriverImpl$Condition.assertTrue(BaseWebDriverImpl.java:4576)
+	at com.liferay.poshi.runner.selenium.BaseWebDriverImpl$Condition.waitFor(BaseWebDriverImpl.java:4611)
+	at com.liferay.poshi.runner.selenium.BaseWebDriverImpl.waitForVisible(BaseWebDriverImpl.java:3530)
+	at sun.reflect.GeneratedMethodAccessor8.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at com.liferay.poshi.runner.PoshiRunnerExecutor$1.call(PoshiRunnerExecutor.java:1190)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+</pre>
+</span>
+</div>
+</div>
+<div id="tab1" class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="failures">test[LocalFile.WebContentWithCustomStructures#AddWCWithSecondComplexStructure]</td>
+<td class="failures">13m46.23s</td>
+<td class="failures">failed</td>
+</tr>
+</table>
+</div>
+<div id="tab2" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>-- listing properties --
+accessibility.standards.json={runOnly: {type: 'tag', values: ['wcag2aa']}}
+browser.type=chrome
+debug.stacktrace=false
+get.location.max.retries=3
+get.location.timeout=30
+logger.resources.url=https://cdn.jsdelivr.net/gh/liferay/com-liferay-poshi-runner@824e53042b0b4ffab6d60dc12631e1055a197ec0/poshi-runner/src/main/resources/META-INF/resources
+mobile.browser=false
+output.dir.name=E:/portal/master/../masterbundles/poshi
+portal.url=http://localhost:8080
+poshi.file.read.thread.pool=16
+proxy.server.enabled=false
+save.screenshot=true
+save.web.page=false
+tcat.enabled=false
+test.assert.console.errors=true
+test.assert.javascript.errors=true
+test.assert.warning.exceptions=false
+test.base.dir.name=E:/portal/master/portal-web/test/functional/com/liferay/portalweb/
+test.batch.group.ignore.regex=portal.(acceptance|smoke|release).*|testray.*
+test.batch.max.group.size=25
+test.batch.max.subgroup.size=1
+test.batch.run.type=single
+test.case.available.property.names=testray.main.component.name,analytics.cloud.enabled,apacheds.blank.user.password.enabled,apacheds.enabled,app.server.bundles.size,app.server.types,blacklist.portal.profile.names.remove,blacklist.saml.algorithms,browser.type,captcha.enabled,cas.enabled,cluster.enabled,cluster.jdbc.ping,cluster.node.ip,cmis.repository.type,content.targeting.release,create.osgi.hidden.file,custom.properties,custom.system.properties,data.archive.type,database.bare.enabled,database.jndi.enabled,database.sharding,database.types,databases.size,default.layout.template.id,delete.sidecar.bundle,deploy.latest.marketplace.app.disabled,deploy.lcs.token.file,direct.deploy.enabled,dummy.socket.proxy.disabled,elastic.xpack.enabled,environment.acceptance,ext.plugins.includes,extraapps.plugins.includes,hook.plugins.includes,hot.deploy.osgi.app.includes,ignore.errors,ignore.errors.delimiter,index.search.spell.checker.enabled,layouttpl.plugins.includes,legacy.database.dump,legacy.plugin.includes,legacy.plugins.social.office.version,liferay.dependency.jars,liferay.dependency.wars,liferay.training.dependency.jars,marketplace.app.acceptance,marketplace.staging.enabled,minimum.slave.ram,openam.enabled,osgi.app.includes,osgi.module.configuration.file.names,osgi.module.configurations,osgi.modules.includes,plugins.deployment.type,portal.acceptance,portal.acceptance.tomcat.hypersonic,portal.acceptance.tomcat.mysql,portal.acceptance.wildfly.mariadb,portal.context,portal.fixpack.release,portal.hotfix.release,portal.release,portal.release.environment,portal.smoke,portal.ssl.enabled,portal.suite.search.engine,portal.upgrades,portal.upstream,portal.version,portlet.plugins.includes,portlet.properties.calendar-portlet,portlet.properties.com.liferay.journal.service,portlet.properties.knowledge-base-portlet,portlet.properties.marketplace-portlet,portlet.properties.private-messaging-portlet,product.team.names,project.templates,remote.elasticsearch.cluster.size,remote.elasticsearch.clusters.enabled,remote.elasticsearch.enabled,remote.elasticsearch.ltr.enabled,setup.wizard.enabled,skip.clean-app-server-deploy-dir,skip.install-patch,skip.start-app-server,skip.upgrade-legacy-database,socks.proxy.enabled,socks.proxy.hosts,test.assert.console.errors,test.assert.javascript.errors,test.assert.warning.exceptions,test.ignore.tomcat.ext.environment,test.name.skip.portal.instance,test.prepare.bundle.properties,test.run.environment,test.smtp.server.enabled,testcase.url,testray.component.names,testray.testcase.product.edition,theme.file.name,theme.plugins.includes,timeout.explicit.wait,web.plugins.includes,web.xml.timeout
+test.dependencies.dir.name=dependencies
+test.jvm.max.retries=0
+test.name=LocalFile.WebContentWithCustomStructures#AddWCWithSecondComplexStructure
+test.poshi.script.validation=true
+test.poshi.warnings.file.name=E:/portal/master/poshi-warnings.xml
+test.retry.command.wait.time=3
+test.run.locally=false
+test.skip.tear.down=true
+test.testcase.max.retries=0
+timeout.explicit.wait=120
+timeout.implicit.wait=3
+
+Directory E:/portal/master/modules/sdk/project-templates/project-templates/src/testFunctional does not exist.
+Running Poshi validation... Completed in 809ms.
+
+###
+### LocalFile.WebContentWithCustomStructures#AddWCWithSecondComplexStructure
+###
+
+Executing commands: curl -X POST -u &quot;test@liferay.com:test&quot; -d &quot;parentGroupId=0&quot; -d &quot;liveGroupId=0&quot; -d &quot;nameMap={\&quot;en_US\&quot;:\&quot;Test Site Name\&quot;}&quot; -d &quot;descriptionMap={}&quot; -d &quot;type=1&quot; -d &quot;manualMembership=true&quot; -d &quot;membershipRestriction=0&quot; -d &quot;friendlyURL=&quot; -d &quot;site=true&quot; -d &quot;inheritContent=false&quot; -d &quot;active=true&quot; http://localhost:8080/api/jsonws/group/add-group
+Response: {&quot;active&quot;:true,&quot;classNameId&quot;:&quot;20004&quot;,&quot;classPK&quot;:&quot;39621&quot;,&quot;companyId&quot;:&quot;20097&quot;,&quot;creatorUserId&quot;:&quot;20125&quot;,&quot;ctCollectionId&quot;:&quot;0&quot;,&quot;description&quot;:&quot;&quot;,&quot;descriptionCurrentValue&quot;:&quot;&quot;,&quot;descriptiveName&quot;:&quot;Test Site Name&quot;,&quot;friendlyURL&quot;:&quot;\/test-site-name&quot;,&quot;groupId&quot;:&quot;39621&quot;,&quot;groupKey&quot;:&quot;Test Site Name&quot;,&quot;inheritContent&quot;:false,&quot;liveGroupId&quot;:&quot;0&quot;,&quot;manualMembership&quot;:true,&quot;membershipRestriction&quot;:0,&quot;mvccVersion&quot;:&quot;0&quot;,&quot;name&quot;:&quot;&lt;?xml version='1.0' encoding='UTF-8'?&gt;&lt;root available-locales=\&quot;en_US\&quot; default-locale=\&quot;en_US\&quot;&gt;&lt;Name language-id=\&quot;en_US\&quot;&gt;Test Site Name&lt;\/Name&gt;&lt;\/root&gt;&quot;,&quot;nameCurrentValue&quot;:&quot;Test Site Name&quot;,&quot;parentGroupId&quot;:&quot;0&quot;,&quot;remoteStagingGroupCount&quot;:0,&quot;site&quot;:true,&quot;treePath&quot;:&quot;\/39621\/&quot;,&quot;type&quot;:1,&quot;uuid&quot;:&quot;602dbce0-6d97-579a-1ed9-3814517e2178&quot;}Finished executing commands.
+
+This is a use case for LRQA-61632.
+Executing commands: curl -X GET -u &quot;test@liferay.com:test&quot; http://localhost:8080/api/jsonws/company/get-company-by-virtual-host/virtual-host/localhost
+Response: {&quot;accountId&quot;:&quot;20100&quot;,&quot;active&quot;:true,&quot;companyId&quot;:&quot;20097&quot;,&quot;homeURL&quot;:&quot;&quot;,&quot;logoId&quot;:&quot;0&quot;,&quot;maxUsers&quot;:0,&quot;mvccVersion&quot;:&quot;1&quot;,&quot;mx&quot;:&quot;liferay.com&quot;,&quot;system&quot;:false,&quot;webId&quot;:&quot;liferay.com&quot;}Finished executing commands.
+
+Executing commands: curl -X GET -u &quot;test@liferay.com:test&quot; http://localhost:8080/api/jsonws/group/get-groups/company-id/20097/parent-group-id/0/site/true
+Response: [{&quot;active&quot;:true,&quot;classNameId&quot;:&quot;20003&quot;,&quot;classPK&quot;:&quot;20097&quot;,&quot;companyId&quot;:&quot;20097&quot;,&quot;creatorUserId&quot;:&quot;20102&quot;,&quot;ctCollectionId&quot;:&quot;0&quot;,&quot;description&quot;:&quot;&quot;,&quot;descriptionCurrentValue&quot;:&quot;&quot;,&quot;descriptiveName&quot;:&quot;Global&quot;,&quot;friendlyURL&quot;:&quot;\/global&quot;,&quot;groupId&quot;:&quot;20123&quot;,&quot;groupKey&quot;:&quot;20097&quot;,&quot;inheritContent&quot;:false,&quot;liveGroupId&quot;:&quot;0&quot;,&quot;manualMembership&quot;:true,&quot;membershipRestriction&quot;:0,&quot;mvccVersion&quot;:&quot;0&quot;,&quot;name&quot;:&quot;&lt;?xml version='1.0' encoding='UTF-8'?&gt;&lt;root available-locales=\&quot;en_US\&quot; default-locale=\&quot;en_US\&quot;&gt;&lt;Name language-id=\&quot;en_US\&quot;&gt;Global&lt;\/Name&gt;&lt;\/root&gt;&quot;,&quot;nameCurrentValue&quot;:&quot;Global&quot;,&quot;parentGroupId&quot;:&quot;0&quot;,&quot;remoteStagingGroupCount&quot;:0,&quot;site&quot;:true,&quot;treePath&quot;:&quot;\/20123\/&quot;,&quot;type&quot;:0,&quot;uuid&quot;:&quot;87d7607b-1441-f1c7-c796-6e0ba06c18bd&quot;},{&quot;active&quot;:true,&quot;classNameId&quot;:&quot;20004&quot;,&quot;classPK&quot;:&quot;20121&quot;,&quot;companyId&quot;:&quot;20097&quot;,&quot;creatorUserId&quot;:&quot;20102&quot;,&quot;ctCollectionId&quot;:&quot;0&quot;,&quot;description&quot;:&quot;&quot;,&quot;descriptionCurrentValue&quot;:&quot;&quot;,&quot;descriptiveName&quot;:&quot;Liferay&quot;,&quot;friendlyURL&quot;:&quot;\/guest&quot;,&quot;groupId&quot;:&quot;20121&quot;,&quot;groupKey&quot;:&quot;Guest&quot;,&quot;inheritContent&quot;:false,&quot;liveGroupId&quot;:&quot;0&quot;,&quot;manualMembership&quot;:true,&quot;membershipRestriction&quot;:0,&quot;mvccVersion&quot;:&quot;1&quot;,&quot;name&quot;:&quot;&lt;?xml version='1.0' encoding='UTF-8'?&gt;&lt;root available-locales=\&quot;en_US\&quot; default-locale=\&quot;en_US\&quot;&gt;&lt;Name language-id=\&quot;en_US\&quot;&gt;Guest&lt;\/Name&gt;&lt;\/root&gt;&quot;,&quot;nameCurrentValue&quot;:&quot;Guest&quot;,&quot;parentGroupId&quot;:&quot;0&quot;,&quot;remoteStagingGroupCount&quot;:0,&quot;site&quot;:true,&quot;treePath&quot;:&quot;\/20121\/&quot;,&quot;type&quot;:1,&quot;uuid&quot;:&quot;f5ea62ca-bb10-de64-6072-3fd7b0e7c5fd&quot;},{&quot;active&quot;:true,&quot;classNameId&quot;:&quot;20004&quot;,&quot;classPK&quot;:&quot;39621&quot;,&quot;companyId&quot;:&quot;20097&quot;,&quot;creatorUserId&quot;:&quot;20125&quot;,&quot;ctCollectionId&quot;:&quot;0&quot;,&quot;description&quot;:&quot;&quot;,&quot;descriptionCurrentValue&quot;:&quot;&quot;,&quot;descriptiveName&quot;:&quot;Test Site Name&quot;,&quot;friendlyURL&quot;:&quot;\/test-site-name&quot;,&quot;groupId&quot;:&quot;39621&quot;,&quot;groupKey&quot;:&quot;Test Site Name&quot;,&quot;inheritContent&quot;:false,&quot;liveGroupId&quot;:&quot;0&quot;,&quot;manualMembership&quot;:true,&quot;membershipRestriction&quot;:0,&quot;mvccVersion&quot;:&quot;0&quot;,&quot;name&quot;:&quot;&lt;?xml version='1.0' encoding='UTF-8'?&gt;&lt;root available-locales=\&quot;en_US\&quot; default-locale=\&quot;en_US\&quot;&gt;&lt;Name language-id=\&quot;en_US\&quot;&gt;Test Site Name&lt;\/Name&gt;&lt;\/root&gt;&quot;,&quot;nameCurrentValue&quot;:&quot;Test Site Name&quot;,&quot;parentGroupId&quot;:&quot;0&quot;,&quot;remoteStagingGroupCount&quot;:0,&quot;site&quot;:true,&quot;treePath&quot;:&quot;\/39621\/&quot;,&quot;type&quot;:1,&quot;uuid&quot;:&quot;602dbce0-6d97-579a-1ed9-3814517e2178&quot;}]Finished executing commands.
+
+Executing commands: curl -X POST -u &quot;test@liferay.com:test&quot; -d &quot;groupId=39621&quot; -d &quot;privateLayout=false&quot; -d &quot;parentLayoutId=0&quot; -d &quot;name=Web Content Display Page&quot; -d &quot;title=&quot; -d &quot;description=&quot; -d &quot;type=portlet&quot; -d &quot;hidden=false&quot; -d &quot;friendlyURL=&quot; -d &quot;serviceContext={\&quot;addGuestPermissions\&quot; : true}&quot; http://localhost:8080/api/jsonws/layout/add-layout
+Response: {&quot;classNameId&quot;:&quot;0&quot;,&quot;classPK&quot;:&quot;0&quot;,&quot;colorSchemeId&quot;:&quot;&quot;,&quot;companyId&quot;:&quot;20097&quot;,&quot;createDate&quot;:1604400203292,&quot;css&quot;:&quot;&quot;,&quot;ctCollectionId&quot;:&quot;0&quot;,&quot;description&quot;:&quot;&quot;,&quot;descriptionCurrentValue&quot;:&quot;&quot;,&quot;friendlyURL&quot;:&quot;\/web-content-display-page&quot;,&quot;groupId&quot;:&quot;39621&quot;,&quot;hidden&quot;:false,&quot;iconImageId&quot;:&quot;0&quot;,&quot;keywords&quot;:&quot;&quot;,&quot;keywordsCurrentValue&quot;:&quot;&quot;,&quot;lastPublishDate&quot;:null,&quot;layoutId&quot;:&quot;1&quot;,&quot;layoutPrototypeLinkEnabled&quot;:false,&quot;layoutPrototypeUuid&quot;:&quot;&quot;,&quot;masterLayoutPlid&quot;:&quot;0&quot;,&quot;modifiedDate&quot;:1604400203292,&quot;mvccVersion&quot;:&quot;0&quot;,&quot;name&quot;:&quot;&lt;?xml version='1.0' encoding='UTF-8'?&gt;&lt;root available-locales=\&quot;en_US\&quot; default-locale=\&quot;en_US\&quot;&gt;&lt;Name language-id=\&quot;en_US\&quot;&gt;Web Content Display Page&lt;\/Name&gt;&lt;\/root&gt;&quot;,&quot;nameCurrentValue&quot;:&quot;Web Content Display Page&quot;,&quot;parentLayoutId&quot;:&quot;0&quot;,&quot;parentPlid&quot;:&quot;0&quot;,&quot;plid&quot;:&quot;29&quot;,&quot;priority&quot;:0,&quot;privateLayout&quot;:false,&quot;publishDate&quot;:1604400203292,&quot;robots&quot;:&quot;&quot;,&quot;robotsCurrentValue&quot;:&quot;&quot;,&quot;sourcePrototypeLayoutUuid&quot;:&quot;&quot;,&quot;status&quot;:0,&quot;statusByUserId&quot;:&quot;20125&quot;,&quot;statusByUserName&quot;:&quot;Test Test&quot;,&quot;statusDate&quot;:1604400203292,&quot;styleBookEntryId&quot;:&quot;0&quot;,&quot;system&quot;:false,&quot;themeId&quot;:&quot;&quot;,&quot;title&quot;:&quot;&quot;,&quot;titleCurrentValue&quot;:&quot;&quot;,&quot;type&quot;:&quot;portlet&quot;,&quot;typeSettings&quot;:&quot;layout-template-id=2_columns_ii\n&quot;,&quot;userId&quot;:&quot;20125&quot;,&quot;userName&quot;:&quot;Test Test&quot;,&quot;uuid&quot;:&quot;cf2a570d-4b92-b901-d8fa-894adbb33088&quot;}Finished executing commands.
+
+Executing commands: curl -X GET -u &quot;test@liferay.com:test&quot; http://localhost:8080/api/jsonws/company/get-company-by-virtual-host/virtual-host/localhost
+Response: {&quot;accountId&quot;:&quot;20100&quot;,&quot;active&quot;:true,&quot;companyId&quot;:&quot;20097&quot;,&quot;homeURL&quot;:&quot;&quot;,&quot;logoId&quot;:&quot;0&quot;,&quot;maxUsers&quot;:0,&quot;mvccVersion&quot;:&quot;1&quot;,&quot;mx&quot;:&quot;liferay.com&quot;,&quot;system&quot;:false,&quot;webId&quot;:&quot;liferay.com&quot;}Finished executing commands.
+
+Executing commands: curl -X GET -u &quot;test@liferay.com:test&quot; http://localhost:8080/api/jsonws/group/get-groups/company-id/20097/parent-group-id/0/site/true
+Response: [{&quot;active&quot;:true,&quot;classNameId&quot;:&quot;20003&quot;,&quot;classPK&quot;:&quot;20097&quot;,&quot;companyId&quot;:&quot;20097&quot;,&quot;creatorUserId&quot;:&quot;20102&quot;,&quot;ctCollectionId&quot;:&quot;0&quot;,&quot;description&quot;:&quot;&quot;,&quot;descriptionCurrentValue&quot;:&quot;&quot;,&quot;descriptiveName&quot;:&quot;Global&quot;,&quot;friendlyURL&quot;:&quot;\/global&quot;,&quot;groupId&quot;:&quot;20123&quot;,&quot;groupKey&quot;:&quot;20097&quot;,&quot;inheritContent&quot;:false,&quot;liveGroupId&quot;:&quot;0&quot;,&quot;manualMembership&quot;:true,&quot;membershipRestriction&quot;:0,&quot;mvccVersion&quot;:&quot;0&quot;,&quot;name&quot;:&quot;&lt;?xml version='1.0' encoding='UTF-8'?&gt;&lt;root available-locales=\&quot;en_US\&quot; default-locale=\&quot;en_US\&quot;&gt;&lt;Name language-id=\&quot;en_US\&quot;&gt;Global&lt;\/Name&gt;&lt;\/root&gt;&quot;,&quot;nameCurrentValue&quot;:&quot;Global&quot;,&quot;parentGroupId&quot;:&quot;0&quot;,&quot;remoteStagingGroupCount&quot;:0,&quot;site&quot;:true,&quot;treePath&quot;:&quot;\/20123\/&quot;,&quot;type&quot;:0,&quot;uuid&quot;:&quot;87d7607b-1441-f1c7-c796-6e0ba06c18bd&quot;},{&quot;active&quot;:true,&quot;classNameId&quot;:&quot;20004&quot;,&quot;classPK&quot;:&quot;20121&quot;,&quot;companyId&quot;:&quot;20097&quot;,&quot;creatorUserId&quot;:&quot;20102&quot;,&quot;ctCollectionId&quot;:&quot;0&quot;,&quot;description&quot;:&quot;&quot;,&quot;descriptionCurrentValue&quot;:&quot;&quot;,&quot;descriptiveName&quot;:&quot;Liferay&quot;,&quot;friendlyURL&quot;:&quot;\/guest&quot;,&quot;groupId&quot;:&quot;20121&quot;,&quot;groupKey&quot;:&quot;Guest&quot;,&quot;inheritContent&quot;:false,&quot;liveGroupId&quot;:&quot;0&quot;,&quot;manualMembership&quot;:true,&quot;membershipRestriction&quot;:0,&quot;mvccVersion&quot;:&quot;1&quot;,&quot;name&quot;:&quot;&lt;?xml version='1.0' encoding='UTF-8'?&gt;&lt;root available-locales=\&quot;en_US\&quot; default-locale=\&quot;en_US\&quot;&gt;&lt;Name language-id=\&quot;en_US\&quot;&gt;Guest&lt;\/Name&gt;&lt;\/root&gt;&quot;,&quot;nameCurrentValue&quot;:&quot;Guest&quot;,&quot;parentGroupId&quot;:&quot;0&quot;,&quot;remoteStagingGroupCount&quot;:0,&quot;site&quot;:true,&quot;treePath&quot;:&quot;\/20121\/&quot;,&quot;type&quot;:1,&quot;uuid&quot;:&quot;f5ea62ca-bb10-de64-6072-3fd7b0e7c5fd&quot;},{&quot;active&quot;:true,&quot;classNameId&quot;:&quot;20004&quot;,&quot;classPK&quot;:&quot;39621&quot;,&quot;companyId&quot;:&quot;20097&quot;,&quot;creatorUserId&quot;:&quot;20125&quot;,&quot;ctCollectionId&quot;:&quot;0&quot;,&quot;description&quot;:&quot;&quot;,&quot;descriptionCurrentValue&quot;:&quot;&quot;,&quot;descriptiveName&quot;:&quot;Test Site Name&quot;,&quot;friendlyURL&quot;:&quot;\/test-site-name&quot;,&quot;groupId&quot;:&quot;39621&quot;,&quot;groupKey&quot;:&quot;Test Site Name&quot;,&quot;inheritContent&quot;:false,&quot;liveGroupId&quot;:&quot;0&quot;,&quot;manualMembership&quot;:true,&quot;membershipRestriction&quot;:0,&quot;mvccVersion&quot;:&quot;0&quot;,&quot;name&quot;:&quot;&lt;?xml version='1.0' encoding='UTF-8'?&gt;&lt;root available-locales=\&quot;en_US\&quot; default-locale=\&quot;en_US\&quot;&gt;&lt;Name language-id=\&quot;en_US\&quot;&gt;Test Site Name&lt;\/Name&gt;&lt;\/root&gt;&quot;,&quot;nameCurrentValue&quot;:&quot;Test Site Name&quot;,&quot;parentGroupId&quot;:&quot;0&quot;,&quot;remoteStagingGroupCount&quot;:0,&quot;site&quot;:true,&quot;treePath&quot;:&quot;\/39621\/&quot;,&quot;type&quot;:1,&quot;uuid&quot;:&quot;602dbce0-6d97-579a-1ed9-3814517e2178&quot;}]Finished executing commands.
+
+Executing commands: curl -X POST -u &quot;test@liferay.com:test&quot; -d &quot;groupId=39621&quot; -d &quot;privateLayout=false&quot; http://localhost:8080/api/jsonws/layout/get-layouts
+Response: [{&quot;classNameId&quot;:&quot;0&quot;,&quot;classPK&quot;:&quot;0&quot;,&quot;colorSchemeId&quot;:&quot;&quot;,&quot;companyId&quot;:&quot;20097&quot;,&quot;createDate&quot;:1604400203292,&quot;css&quot;:&quot;&quot;,&quot;ctCollectionId&quot;:&quot;0&quot;,&quot;description&quot;:&quot;&quot;,&quot;descriptionCurrentValue&quot;:&quot;&quot;,&quot;friendlyURL&quot;:&quot;\/web-content-display-page&quot;,&quot;groupId&quot;:&quot;39621&quot;,&quot;hidden&quot;:false,&quot;iconImageId&quot;:&quot;0&quot;,&quot;keywords&quot;:&quot;&quot;,&quot;keywordsCurrentValue&quot;:&quot;&quot;,&quot;lastPublishDate&quot;:null,&quot;layoutId&quot;:&quot;1&quot;,&quot;layoutPrototypeLinkEnabled&quot;:false,&quot;layoutPrototypeUuid&quot;:&quot;&quot;,&quot;masterLayoutPlid&quot;:&quot;0&quot;,&quot;modifiedDate&quot;:1604400203292,&quot;mvccVersion&quot;:&quot;0&quot;,&quot;name&quot;:&quot;&lt;?xml version='1.0' encoding='UTF-8'?&gt;&lt;root available-locales=\&quot;en_US\&quot; default-locale=\&quot;en_US\&quot;&gt;&lt;Name language-id=\&quot;en_US\&quot;&gt;Web Content Display Page&lt;\/Name&gt;&lt;\/root&gt;&quot;,&quot;nameCurrentValue&quot;:&quot;Web Content Display Page&quot;,&quot;parentLayoutId&quot;:&quot;0&quot;,&quot;parentPlid&quot;:&quot;0&quot;,&quot;plid&quot;:&quot;29&quot;,&quot;priority&quot;:0,&quot;privateLayout&quot;:false,&quot;publishDate&quot;:1604400203292,&quot;robots&quot;:&quot;&quot;,&quot;robotsCurrentValue&quot;:&quot;&quot;,&quot;sourcePrototypeLayoutUuid&quot;:&quot;&quot;,&quot;status&quot;:0,&quot;statusByUserId&quot;:&quot;20125&quot;,&quot;statusByUserName&quot;:&quot;Test Test&quot;,&quot;statusDate&quot;:1604400203292,&quot;styleBookEntryId&quot;:&quot;0&quot;,&quot;system&quot;:false,&quot;themeId&quot;:&quot;&quot;,&quot;title&quot;:&quot;&quot;,&quot;titleCurrentValue&quot;:&quot;&quot;,&quot;type&quot;:&quot;portlet&quot;,&quot;typeSettings&quot;:&quot;layout-template-id=2_columns_ii\n&quot;,&quot;userId&quot;:&quot;20125&quot;,&quot;userName&quot;:&quot;Test Test&quot;,&quot;uuid&quot;:&quot;cf2a570d-4b92-b901-d8fa-894adbb33088&quot;}]Finished executing commands.
+
+Executing commands: curl -X POST -u &quot;test@liferay.com:test&quot; -d &quot;groupId=39621&quot; -d &quot;privateLayout=false&quot; http://localhost:8080/api/jsonws/layout/get-layouts
+Response: [{&quot;classNameId&quot;:&quot;0&quot;,&quot;classPK&quot;:&quot;0&quot;,&quot;colorSchemeId&quot;:&quot;&quot;,&quot;companyId&quot;:&quot;20097&quot;,&quot;createDate&quot;:1604400203292,&quot;css&quot;:&quot;&quot;,&quot;ctCollectionId&quot;:&quot;0&quot;,&quot;description&quot;:&quot;&quot;,&quot;descriptionCurrentValue&quot;:&quot;&quot;,&quot;friendlyURL&quot;:&quot;\/web-content-display-page&quot;,&quot;groupId&quot;:&quot;39621&quot;,&quot;hidden&quot;:false,&quot;iconImageId&quot;:&quot;0&quot;,&quot;keywords&quot;:&quot;&quot;,&quot;keywordsCurrentValue&quot;:&quot;&quot;,&quot;lastPublishDate&quot;:null,&quot;layoutId&quot;:&quot;1&quot;,&quot;layoutPrototypeLinkEnabled&quot;:false,&quot;layoutPrototypeUuid&quot;:&quot;&quot;,&quot;masterLayoutPlid&quot;:&quot;0&quot;,&quot;modifiedDate&quot;:1604400203292,&quot;mvccVersion&quot;:&quot;0&quot;,&quot;name&quot;:&quot;&lt;?xml version='1.0' encoding='UTF-8'?&gt;&lt;root available-locales=\&quot;en_US\&quot; default-locale=\&quot;en_US\&quot;&gt;&lt;Name language-id=\&quot;en_US\&quot;&gt;Web Content Display Page&lt;\/Name&gt;&lt;\/root&gt;&quot;,&quot;nameCurrentValue&quot;:&quot;Web Content Display Page&quot;,&quot;parentLayoutId&quot;:&quot;0&quot;,&quot;parentPlid&quot;:&quot;0&quot;,&quot;plid&quot;:&quot;29&quot;,&quot;priority&quot;:0,&quot;privateLayout&quot;:false,&quot;publishDate&quot;:1604400203292,&quot;robots&quot;:&quot;&quot;,&quot;robotsCurrentValue&quot;:&quot;&quot;,&quot;sourcePrototypeLayoutUuid&quot;:&quot;&quot;,&quot;status&quot;:0,&quot;statusByUserId&quot;:&quot;20125&quot;,&quot;statusByUserName&quot;:&quot;Test Test&quot;,&quot;statusDate&quot;:1604400203292,&quot;styleBookEntryId&quot;:&quot;0&quot;,&quot;system&quot;:false,&quot;themeId&quot;:&quot;&quot;,&quot;title&quot;:&quot;&quot;,&quot;titleCurrentValue&quot;:&quot;&quot;,&quot;type&quot;:&quot;portlet&quot;,&quot;typeSettings&quot;:&quot;layout-template-id=2_columns_ii\n&quot;,&quot;userId&quot;:&quot;20125&quot;,&quot;userName&quot;:&quot;Test Test&quot;,&quot;uuid&quot;:&quot;cf2a570d-4b92-b901-d8fa-894adbb33088&quot;}]Finished executing commands.
+
+Executing commands: curl -X POST -u &quot;test@liferay.com:test&quot; -d &quot;groupId=39621&quot; -d &quot;privateLayout=false&quot; -d &quot;layoutId=1&quot; -d &quot;typeSettings=layout-template-id=2_columns_ii%0Acolumn-1=com_liferay_journal_content_web_portlet_JournalContentPortlet_INSTANCE_cMxAkhqUIC4w&quot; http://localhost:8080/api/jsonws/layout/update-layout
+Response: {&quot;classNameId&quot;:&quot;0&quot;,&quot;classPK&quot;:&quot;0&quot;,&quot;colorSchemeId&quot;:&quot;&quot;,&quot;companyId&quot;:&quot;20097&quot;,&quot;createDate&quot;:1604400203292,&quot;css&quot;:&quot;&quot;,&quot;ctCollectionId&quot;:&quot;0&quot;,&quot;description&quot;:&quot;&quot;,&quot;descriptionCurrentValue&quot;:&quot;&quot;,&quot;friendlyURL&quot;:&quot;\/web-content-display-page&quot;,&quot;groupId&quot;:&quot;39621&quot;,&quot;hidden&quot;:false,&quot;iconImageId&quot;:&quot;0&quot;,&quot;keywords&quot;:&quot;&quot;,&quot;keywordsCurrentValue&quot;:&quot;&quot;,&quot;lastPublishDate&quot;:null,&quot;layoutId&quot;:&quot;1&quot;,&quot;layoutPrototypeLinkEnabled&quot;:false,&quot;layoutPrototypeUuid&quot;:&quot;&quot;,&quot;masterLayoutPlid&quot;:&quot;0&quot;,&quot;modifiedDate&quot;:1604400205606,&quot;mvccVersion&quot;:&quot;1&quot;,&quot;name&quot;:&quot;&lt;?xml version='1.0' encoding='UTF-8'?&gt;&lt;root available-locales=\&quot;en_US\&quot; default-locale=\&quot;en_US\&quot;&gt;&lt;Name language-id=\&quot;en_US\&quot;&gt;Web Content Display Page&lt;\/Name&gt;&lt;\/root&gt;&quot;,&quot;nameCurrentValue&quot;:&quot;Web Content Display Page&quot;,&quot;parentLayoutId&quot;:&quot;0&quot;,&quot;parentPlid&quot;:&quot;0&quot;,&quot;plid&quot;:&quot;29&quot;,&quot;priority&quot;:0,&quot;privateLayout&quot;:false,&quot;publishDate&quot;:1604400203292,&quot;robots&quot;:&quot;&quot;,&quot;robotsCurrentValue&quot;:&quot;&quot;,&quot;sourcePrototypeLayoutUuid&quot;:&quot;&quot;,&quot;status&quot;:0,&quot;statusByUserId&quot;:&quot;20125&quot;,&quot;statusByUserName&quot;:&quot;Test Test&quot;,&quot;statusDate&quot;:1604400203292,&quot;styleBookEntryId&quot;:&quot;0&quot;,&quot;system&quot;:false,&quot;themeId&quot;:&quot;&quot;,&quot;title&quot;:&quot;&quot;,&quot;titleCurrentValue&quot;:&quot;&quot;,&quot;type&quot;:&quot;portlet&quot;,&quot;typeSettings&quot;:&quot;column-1=com_liferay_journal_content_web_portlet_JournalContentPortlet_INSTANCE_cMxAkhqUIC4w\nlayout-template-id=2_columns_ii\n&quot;,&quot;userId&quot;:&quot;20125&quot;,&quot;userName&quot;:&quot;Test Test&quot;,&quot;uuid&quot;:&quot;cf2a570d-4b92-b901-d8fa-894adbb33088&quot;}Finished executing commands.
+
+Executing commands: curl -X GET -u &quot;test@liferay.com:test&quot; http://localhost:8080/api/jsonws/company/get-company-by-virtual-host/virtual-host/localhost
+Response: {&quot;accountId&quot;:&quot;20100&quot;,&quot;active&quot;:true,&quot;companyId&quot;:&quot;20097&quot;,&quot;homeURL&quot;:&quot;&quot;,&quot;logoId&quot;:&quot;0&quot;,&quot;maxUsers&quot;:0,&quot;mvccVersion&quot;:&quot;1&quot;,&quot;mx&quot;:&quot;liferay.com&quot;,&quot;system&quot;:false,&quot;webId&quot;:&quot;liferay.com&quot;}Finished executing commands.
+
+Executing commands: curl -X GET -u &quot;test@liferay.com:test&quot; http://localhost:8080/api/jsonws/group/get-groups/company-id/20097/parent-group-id/0/site/true
+Response: [{&quot;active&quot;:true,&quot;classNameId&quot;:&quot;20003&quot;,&quot;classPK&quot;:&quot;20097&quot;,&quot;companyId&quot;:&quot;20097&quot;,&quot;creatorUserId&quot;:&quot;20102&quot;,&quot;ctCollectionId&quot;:&quot;0&quot;,&quot;description&quot;:&quot;&quot;,&quot;descriptionCurrentValue&quot;:&quot;&quot;,&quot;descriptiveName&quot;:&quot;Global&quot;,&quot;friendlyURL&quot;:&quot;\/global&quot;,&quot;groupId&quot;:&quot;20123&quot;,&quot;groupKey&quot;:&quot;20097&quot;,&quot;inheritContent&quot;:false,&quot;liveGroupId&quot;:&quot;0&quot;,&quot;manualMembership&quot;:true,&quot;membershipRestriction&quot;:0,&quot;mvccVersion&quot;:&quot;0&quot;,&quot;name&quot;:&quot;&lt;?xml version='1.0' encoding='UTF-8'?&gt;&lt;root available-locales=\&quot;en_US\&quot; default-locale=\&quot;en_US\&quot;&gt;&lt;Name language-id=\&quot;en_US\&quot;&gt;Global&lt;\/Name&gt;&lt;\/root&gt;&quot;,&quot;nameCurrentValue&quot;:&quot;Global&quot;,&quot;parentGroupId&quot;:&quot;0&quot;,&quot;remoteStagingGroupCount&quot;:0,&quot;site&quot;:true,&quot;treePath&quot;:&quot;\/20123\/&quot;,&quot;type&quot;:0,&quot;uuid&quot;:&quot;87d7607b-1441-f1c7-c796-6e0ba06c18bd&quot;},{&quot;active&quot;:true,&quot;classNameId&quot;:&quot;20004&quot;,&quot;classPK&quot;:&quot;20121&quot;,&quot;companyId&quot;:&quot;20097&quot;,&quot;creatorUserId&quot;:&quot;20102&quot;,&quot;ctCollectionId&quot;:&quot;0&quot;,&quot;description&quot;:&quot;&quot;,&quot;descriptionCurrentValue&quot;:&quot;&quot;,&quot;descriptiveName&quot;:&quot;Liferay&quot;,&quot;friendlyURL&quot;:&quot;\/guest&quot;,&quot;groupId&quot;:&quot;20121&quot;,&quot;groupKey&quot;:&quot;Guest&quot;,&quot;inheritContent&quot;:false,&quot;liveGroupId&quot;:&quot;0&quot;,&quot;manualMembership&quot;:true,&quot;membershipRestriction&quot;:0,&quot;mvccVersion&quot;:&quot;1&quot;,&quot;name&quot;:&quot;&lt;?xml version='1.0' encoding='UTF-8'?&gt;&lt;root available-locales=\&quot;en_US\&quot; default-locale=\&quot;en_US\&quot;&gt;&lt;Name language-id=\&quot;en_US\&quot;&gt;Guest&lt;\/Name&gt;&lt;\/root&gt;&quot;,&quot;nameCurrentValue&quot;:&quot;Guest&quot;,&quot;parentGroupId&quot;:&quot;0&quot;,&quot;remoteStagingGroupCount&quot;:0,&quot;site&quot;:true,&quot;treePath&quot;:&quot;\/20121\/&quot;,&quot;type&quot;:1,&quot;uuid&quot;:&quot;f5ea62ca-bb10-de64-6072-3fd7b0e7c5fd&quot;},{&quot;active&quot;:true,&quot;classNameId&quot;:&quot;20004&quot;,&quot;classPK&quot;:&quot;39621&quot;,&quot;companyId&quot;:&quot;20097&quot;,&quot;creatorUserId&quot;:&quot;20125&quot;,&quot;ctCollectionId&quot;:&quot;0&quot;,&quot;description&quot;:&quot;&quot;,&quot;descriptionCurrentValue&quot;:&quot;&quot;,&quot;descriptiveName&quot;:&quot;Test Site Name&quot;,&quot;friendlyURL&quot;:&quot;\/test-site-name&quot;,&quot;groupId&quot;:&quot;39621&quot;,&quot;groupKey&quot;:&quot;Unnamed Site&quot;,&quot;inheritContent&quot;:false,&quot;liveGroupId&quot;:&quot;0&quot;,&quot;manualMembership&quot;:true,&quot;membershipRestriction&quot;:0,&quot;mvccVersion&quot;:&quot;2&quot;,&quot;name&quot;:&quot;&lt;?xml version='1.0' encoding='UTF-8'?&gt;&lt;root available-locales=\&quot;en_US,pt_BR,\&quot; default-locale=\&quot;pt_BR\&quot;&gt;&lt;Name language-id=\&quot;en_US\&quot;&gt;Test Site Name&lt;\/Name&gt;&lt;Name language-id=\&quot;pt_BR\&quot;&gt;Unnamed Site&lt;\/Name&gt;&lt;\/root&gt;&quot;,&quot;nameCurrentValue&quot;:&quot;Test Site Name&quot;,&quot;parentGroupId&quot;:&quot;0&quot;,&quot;remoteStagingGroupCount&quot;:0,&quot;site&quot;:true,&quot;treePath&quot;:&quot;\/39621\/&quot;,&quot;type&quot;:1,&quot;uuid&quot;:&quot;602dbce0-6d97-579a-1ed9-3814517e2178&quot;}]Finished executing commands.
+
+Executing commands: curl -X POST -u &quot;test@liferay.com:test&quot; -d &quot;groupId=39621&quot; -d &quot;parentFolderId=0&quot; -d &quot;name=WC Folder Name&quot; -d &quot;description=WC Folder Description&quot; http://localhost:8080/api/jsonws/journal.journalfolder/add-folder
+Response: {&quot;companyId&quot;:&quot;20097&quot;,&quot;createDate&quot;:1604400781947,&quot;ctCollectionId&quot;:&quot;0&quot;,&quot;description&quot;:&quot;WC Folder Description&quot;,&quot;folderId&quot;:&quot;39770&quot;,&quot;groupId&quot;:&quot;39621&quot;,&quot;lastPublishDate&quot;:null,&quot;modifiedDate&quot;:1604400781947,&quot;mvccVersion&quot;:&quot;0&quot;,&quot;name&quot;:&quot;WC Folder Name&quot;,&quot;parentFolderId&quot;:&quot;0&quot;,&quot;restrictionType&quot;:0,&quot;status&quot;:0,&quot;statusByUserId&quot;:&quot;0&quot;,&quot;statusByUserName&quot;:&quot;&quot;,&quot;statusDate&quot;:null,&quot;treePath&quot;:&quot;\/39770\/&quot;,&quot;userId&quot;:&quot;20125&quot;,&quot;userName&quot;:&quot;Test Test&quot;,&quot;uuid&quot;:&quot;646c1c1a-f20b-be0c-ca31-5a2b99884b12&quot;}Finished executing commands.
+
+
+BUILD FAILED: Element is not visible at &quot;//input[(@name='value') and (@value='true')]&quot;
+E:\portal\master\portal-web\test\functional\com\liferay\portalweb\macros\DynamicDataMapping.macro[makeFieldRequired]:689
+E:\portal\master\portal-web\test\functional\com\liferay\portalweb\macros\DynamicDataMapping.macro[editFieldRequired]:596
+E:\portal\master\portal-web\test\functional\com\liferay\portalweb\tests\enduser\wem\journal\structure\WebContentWithCustomStructures.testcase[AddWCWithSecondComplexStructure]:1192
+
+Test retry attempts exceeded in Poshi Runner JVM
+</pre>
+</span>
+</div>
+<div id="tab3" class="tab">
+<h2>Standard error</h2>
+<span class="code">
+<pre>Starting ChromeDriver 2.37.544315 (730aa6a5fdba159ac9f4c1e8cbc59bf1b5ce12b7) on port 7698
+Only local connections are allowed.
+十一月 03, 2020 6:42:55 下午 org.openqa.selenium.remote.ProtocolHandshake createSession
+信息: Detected dialect: OSS
+SLF4J: Failed to load class &quot;org.slf4j.impl.StaticLoggerBinder&quot;.
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+java.lang.Exception: Element is not visible at &quot;//input[(@name='value') and (@value='true')]&quot;
+	at com.liferay.poshi.runner.selenium.BaseWebDriverImpl$Condition.assertTrue(BaseWebDriverImpl.java:4576)
+	at com.liferay.poshi.runner.selenium.BaseWebDriverImpl$Condition.waitFor(BaseWebDriverImpl.java:4611)
+	at com.liferay.poshi.runner.selenium.BaseWebDriverImpl.waitForVisible(BaseWebDriverImpl.java:3530)
+	at sun.reflect.GeneratedMethodAccessor8.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at com.liferay.poshi.runner.PoshiRunnerExecutor$1.call(PoshiRunnerExecutor.java:1190)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="http://www.gradle.org">Gradle 6.6.1</a> at 2020-11-3 18:56:35</p>
+</div>
+</div>
+</body>
+</html>
