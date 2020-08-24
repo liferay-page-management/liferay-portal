@@ -83,9 +83,6 @@ for (String childrenItemId : childrenItemIds) {
 				</c:choose>
 			</div>
 		</c:when>
-		<c:when test="<%= layoutStructureItem instanceof CollectionItemLayoutStructureItem %>">
-			<liferay-util:include page="/layout/view/render_layout_structure.jsp" servletContext="<%= application %>" />
-		</c:when>
 		<c:when test="<%= layoutStructureItem instanceof ColumnLayoutStructureItem %>">
 
 			<%
@@ -147,9 +144,6 @@ for (String childrenItemId : childrenItemIds) {
 			%>
 
 		</c:when>
-		<c:when test="<%= layoutStructureItem instanceof FragmentDropZoneLayoutStructureItem %>">
-			<liferay-util:include page="/layout/view/render_layout_structure.jsp" servletContext="<%= application %>" />
-		</c:when>
 		<c:when test="<%= layoutStructureItem instanceof FragmentStyledLayoutStructureItem %>">
 			<div class="master-layout-fragment">
 
@@ -183,9 +177,6 @@ for (String childrenItemId : childrenItemIds) {
 				</div>
 			</div>
 		</c:when>
-		<c:when test="<%= layoutStructureItem instanceof RootLayoutStructureItem %>">
-			<liferay-util:include page="/layout/view/render_layout_structure.jsp" servletContext="<%= application %>" />
-		</c:when>
 		<c:when test="<%= layoutStructureItem instanceof RowStyledLayoutStructureItem %>">
 
 			<%
@@ -218,6 +209,9 @@ for (String childrenItemId : childrenItemIds) {
 				</c:choose>
 			</div>
 		</c:when>
+		<c:otherwise>
+			<liferay-util:include page="/layout/view/render_layout_structure.jsp" servletContext="<%= application %>" />
+		</c:otherwise>
 	</c:choose>
 
 <%

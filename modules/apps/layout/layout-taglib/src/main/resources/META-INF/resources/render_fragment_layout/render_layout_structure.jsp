@@ -81,9 +81,6 @@ for (String childrenItemId : childrenItemIds) {
 				</c:choose>
 			</div>
 		</c:when>
-		<c:when test="<%= layoutStructureItem instanceof CollectionItemLayoutStructureItem %>">
-			<liferay-util:include page="/render_fragment_layout/render_layout_structure.jsp" servletContext="<%= application %>" />
-		</c:when>
 		<c:when test="<%= layoutStructureItem instanceof ColumnLayoutStructureItem %>">
 
 			<%
@@ -118,12 +115,6 @@ for (String childrenItemId : childrenItemIds) {
 				</c:if>
 			</div>
 		</c:when>
-		<c:when test="<%= layoutStructureItem instanceof DropZoneLayoutStructureItem %>">
-			<liferay-util:include page="/render_fragment_layout/render_layout_structure.jsp" servletContext="<%= application %>" />
-		</c:when>
-		<c:when test="<%= layoutStructureItem instanceof FragmentDropZoneLayoutStructureItem %>">
-			<liferay-util:include page="/render_fragment_layout/render_layout_structure.jsp" servletContext="<%= application %>" />
-		</c:when>
 		<c:when test="<%= layoutStructureItem instanceof FragmentStyledLayoutStructureItem %>">
 
 			<%
@@ -147,9 +138,6 @@ for (String childrenItemId : childrenItemIds) {
 			<div class="<%= renderFragmentLayoutDisplayContext.getCssClass((StyledLayoutStructureItem)layoutStructureItem) %>" style="<%= renderFragmentLayoutDisplayContext.getStyle((StyledLayoutStructureItem)layoutStructureItem) %>">
 				<%= fragmentRendererController.render(defaultFragmentRendererContext, request, response) %>
 			</div>
-		</c:when>
-		<c:when test="<%= layoutStructureItem instanceof RootLayoutStructureItem %>">
-			<liferay-util:include page="/render_fragment_layout/render_layout_structure.jsp" servletContext="<%= application %>" />
 		</c:when>
 		<c:when test="<%= layoutStructureItem instanceof RowStyledLayoutStructureItem %>">
 
@@ -200,6 +188,9 @@ for (String childrenItemId : childrenItemIds) {
 				</c:choose>
 			</div>
 		</c:when>
+		<c:otherwise>
+			<liferay-util:include page="/render_fragment_layout/render_layout_structure.jsp" servletContext="<%= application %>" />
+		</c:otherwise>
 	</c:choose>
 
 <%
