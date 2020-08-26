@@ -140,7 +140,7 @@ public class GetCollectionFieldMVCResourceCommandTest {
 			new Class<?>[] {
 				HttpServletRequest.class, HttpServletResponse.class,
 				String.class, String.class, String.class, String.class,
-				Locale.class, long.class, int.class
+				String.class, long.class, int.class
 			},
 			new MockHttpServletRequest(), new MockHttpServletResponse(),
 			layoutObjectReferenceJSONObject.toString(), StringPool.BLANK,
@@ -185,7 +185,7 @@ public class GetCollectionFieldMVCResourceCommandTest {
 			new Class<?>[] {
 				HttpServletRequest.class, HttpServletResponse.class,
 				String.class, String.class, String.class, String.class,
-				Locale.class, long.class, int.class
+				String.class, long.class, int.class
 			},
 			new MockHttpServletRequest(), new MockHttpServletResponse(),
 			layoutObjectReferenceJSONObject.toString(), StringPool.BLANK,
@@ -236,7 +236,7 @@ public class GetCollectionFieldMVCResourceCommandTest {
 			new Class<?>[] {
 				HttpServletRequest.class, HttpServletResponse.class,
 				String.class, String.class, String.class, String.class,
-				Locale.class, long.class, int.class
+				String.class, long.class, int.class
 			},
 			new MockHttpServletRequest(), new MockHttpServletResponse(),
 			layoutObjectReferenceJSONObject.toString(), StringPool.BLANK,
