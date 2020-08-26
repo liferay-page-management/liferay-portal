@@ -987,6 +987,8 @@ definition {
 
 		Click(locator1 = "PageEditor#MANAGEMENT_BAR");
 
+		selenium.pause("2000");
+
 		PageEditor.waitForAutoSave();
 	}
 
