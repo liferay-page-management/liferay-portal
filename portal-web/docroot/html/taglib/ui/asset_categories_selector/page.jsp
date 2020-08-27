@@ -38,9 +38,7 @@ else {
 	groupIds = PortalUtil.getCurrentAndAncestorSiteGroupIds(groupIds);
 }
 
-List<AssetVocabulary> vocabularies = new ArrayList<>();
-
-vocabularies.addAll(AssetVocabularyServiceUtil.getGroupVocabularies(groupIds));
+List<AssetVocabulary> vocabularies = AssetVocabularyServiceUtil.getGroupVocabularies(groupIds);
 
 Collections.sort(vocabularies, new AssetVocabularyGroupLocalizedTitleComparator(scopeGroupId, locale, true));
 

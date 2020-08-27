@@ -456,10 +456,8 @@ public class AssetCategoriesSelectorTag extends IncludeTag {
 	}
 
 	private List<AssetVocabulary> _getVocabularies() {
-		List<AssetVocabulary> vocabularies = new ArrayList<>();
-
-		vocabularies.addAll(
-			AssetVocabularyServiceUtil.getGroupVocabularies(getGroupIds()));
+		List<AssetVocabulary> vocabularies =
+			AssetVocabularyServiceUtil.getGroupVocabularies(getGroupIds());
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
 			WebKeys.THEME_DISPLAY);

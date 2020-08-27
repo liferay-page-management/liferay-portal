@@ -30,9 +30,7 @@ if (ListUtil.isEmpty(categories)) {
 
 AssetEntry assetEntry = AssetEntryLocalServiceUtil.fetchEntry(className, classPK);
 
-List<AssetVocabulary> vocabularies = new ArrayList<>();
-
-vocabularies.addAll(AssetVocabularyServiceUtil.getGroupVocabularies(PortalUtil.getCurrentAndAncestorSiteGroupIds((assetEntry != null) ? assetEntry.getGroupId() : scopeGroupId)));
+List<AssetVocabulary> vocabularies = AssetVocabularyServiceUtil.getGroupVocabularies(PortalUtil.getCurrentAndAncestorSiteGroupIds((assetEntry != null) ? assetEntry.getGroupId() : scopeGroupId));
 
 Collections.sort(vocabularies, new AssetVocabularyGroupLocalizedTitleComparator((assetEntry != null) ? assetEntry.getGroupId() : scopeGroupId, themeDisplay.getLocale(), true));
 
