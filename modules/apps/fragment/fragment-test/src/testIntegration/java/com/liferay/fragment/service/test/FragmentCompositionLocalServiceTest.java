@@ -65,7 +65,7 @@ public class FragmentCompositionLocalServiceTest {
 		_fragmentCollection = FragmentTestUtil.addFragmentCollection(
 			_group.getGroupId());
 
-		_fragmentCollectionAlter = FragmentTestUtil.addFragmentCollection(
+		_updatedFragmentCollection = FragmentTestUtil.addFragmentCollection(
 			_group.getGroupId());
 	}
 
@@ -92,7 +92,7 @@ public class FragmentCompositionLocalServiceTest {
 		long previewFileEntryId = RandomTestUtil.randomLong();
 		int status = WorkflowConstants.STATUS_APPROVED;
 
-		final FragmentComposition fragmentComposition =
+		FragmentComposition fragmentComposition =
 			_fragmentCompositionLocalService.addFragmentComposition(
 				TestPropsValues.getUserId(), _group.getGroupId(),
 				_fragmentCollection.getFragmentCollectionId(),
@@ -102,28 +102,29 @@ public class FragmentCompositionLocalServiceTest {
 		_fragmentCompositionLocalService.updateFragmentComposition(
 			fragmentComposition.getUserId(),
 			fragmentComposition.getFragmentCompositionId(),
-			_fragmentCollectionAlter.getFragmentCollectionId(),
+			_updatedFragmentCollection.getFragmentCollectionId(),
 			fragmentComposition.getName(), fragmentComposition.getDescription(),
 			fragmentComposition.getData(),
 			fragmentComposition.getPreviewFileEntryId(),
 			fragmentComposition.getStatus());
 
-		final FragmentComposition fragmentCompositionByPrimaryKey =
+		FragmentComposition fragmentCompositionByPrimaryKey =
 			_fragmentCompositionLocalService.fetchFragmentComposition(
 				fragmentComposition.getFragmentCompositionId());
 
 		Assert.assertEquals(
-			_fragmentCollectionAlter.getFragmentCollectionId(),
+			_updatedFragmentCollection.getFragmentCollectionId(),
 			fragmentCompositionByPrimaryKey.getFragmentCollectionId());
 	}
 
 	private FragmentCollection _fragmentCollection;
-	private FragmentCollection _fragmentCollectionAlter;
 
 	@Inject
 	private FragmentCompositionLocalService _fragmentCompositionLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	private FragmentCollection _updatedFragmentCollection;
 
 }

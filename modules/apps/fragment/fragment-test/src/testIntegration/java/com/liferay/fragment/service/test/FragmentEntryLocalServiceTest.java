@@ -78,7 +78,7 @@ public class FragmentEntryLocalServiceTest {
 		_fragmentCollection = FragmentTestUtil.addFragmentCollection(
 			_group.getGroupId());
 
-		_fragmentCollectionAlter = FragmentTestUtil.addFragmentCollection(
+		_updatedFragmentCollection = FragmentTestUtil.addFragmentCollection(
 			_group.getGroupId());
 	}
 
@@ -858,7 +858,7 @@ public class FragmentEntryLocalServiceTest {
 
 		_fragmentEntryLocalService.updateFragmentEntry(
 			fragmentEntry.getUserId(), fragmentEntry.getFragmentEntryId(),
-			_fragmentCollectionAlter.getFragmentCollectionId(),
+			_updatedFragmentCollection.getFragmentCollectionId(),
 			fragmentEntry.getName(), fragmentEntry.getCss(),
 			fragmentEntry.getHtml(), fragmentEntry.getJs(), false, null,
 			fragmentEntry.getPreviewFileEntryId(),
@@ -869,7 +869,7 @@ public class FragmentEntryLocalServiceTest {
 				fragmentEntry.getFragmentEntryId());
 
 		Assert.assertEquals(
-			_fragmentCollectionAlter.getFragmentCollectionId(),
+			_updatedFragmentCollection.getFragmentCollectionId(),
 			persistedFragmentEntry.getFragmentCollectionId());
 	}
 
@@ -1029,7 +1029,6 @@ public class FragmentEntryLocalServiceTest {
 	}
 
 	private FragmentCollection _fragmentCollection;
-	private FragmentCollection _fragmentCollectionAlter;
 
 	@Inject
 	private FragmentEntryLocalService _fragmentEntryLocalService;
@@ -1039,5 +1038,7 @@ public class FragmentEntryLocalServiceTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	private FragmentCollection _updatedFragmentCollection;
 
 }

@@ -81,7 +81,7 @@ public class FragmentEntryServiceTest {
 		_fragmentCollection = FragmentTestUtil.addFragmentCollection(
 			_group.getGroupId());
 
-		_fragmentCollectionAlter = FragmentTestUtil.addFragmentCollection(
+		_updatedFragmentCollection = FragmentTestUtil.addFragmentCollection(
 			_group.getGroupId());
 	}
 
@@ -1232,7 +1232,7 @@ public class FragmentEntryServiceTest {
 			_fragmentCollection.getFragmentCollectionId());
 
 		long alterFragmentCollectionId =
-			_fragmentCollectionAlter.getFragmentCollectionId();
+			_updatedFragmentCollection.getFragmentCollectionId();
 
 		_fragmentEntryService.updateFragmentEntry(
 			fragmentEntry.getFragmentEntryId(), alterFragmentCollectionId,
@@ -1400,7 +1400,6 @@ public class FragmentEntryServiceTest {
 	}
 
 	private FragmentCollection _fragmentCollection;
-	private FragmentCollection _fragmentCollectionAlter;
 
 	@Inject
 	private FragmentEntryPersistence _fragmentEntryPersistence;
@@ -1410,5 +1409,7 @@ public class FragmentEntryServiceTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	private FragmentCollection _updatedFragmentCollection;
 
 }

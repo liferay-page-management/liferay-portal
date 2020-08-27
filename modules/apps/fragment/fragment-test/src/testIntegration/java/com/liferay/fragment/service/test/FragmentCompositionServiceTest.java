@@ -63,7 +63,7 @@ public class FragmentCompositionServiceTest {
 		_fragmentCollection = FragmentTestUtil.addFragmentCollection(
 			_group.getGroupId());
 
-		_fragmentCollectionAlter = FragmentTestUtil.addFragmentCollection(
+		_updatedFragmentCollection = FragmentTestUtil.addFragmentCollection(
 			_group.getGroupId());
 	}
 
@@ -80,7 +80,7 @@ public class FragmentCompositionServiceTest {
 		long previewFileEntryId = RandomTestUtil.randomLong();
 		int status = WorkflowConstants.STATUS_APPROVED;
 
-		final FragmentComposition fragmentComposition =
+		FragmentComposition fragmentComposition =
 			_fragmentCompositionService.addFragmentComposition(
 				_group.getGroupId(),
 				_fragmentCollection.getFragmentCollectionId(),
@@ -89,23 +89,22 @@ public class FragmentCompositionServiceTest {
 
 		_fragmentCompositionService.updateFragmentComposition(
 			fragmentComposition.getFragmentCompositionId(),
-			_fragmentCollectionAlter.getFragmentCollectionId(),
+			_updatedFragmentCollection.getFragmentCollectionId(),
 			fragmentComposition.getName(), fragmentComposition.getDescription(),
 			fragmentComposition.getData(),
 			fragmentComposition.getPreviewFileEntryId(),
 			fragmentComposition.getStatus());
 
-		final FragmentComposition fragmentCompositionByPK =
+		FragmentComposition fragmentCompositionByPK =
 			_fragmentCompositionPersistence.fetchByPrimaryKey(
 				fragmentComposition.getFragmentCompositionId());
 
 		Assert.assertEquals(
 			fragmentCompositionByPK.getFragmentCollectionId(),
-			_fragmentCollectionAlter.getFragmentCollectionId());
+			_updatedFragmentCollection.getFragmentCollectionId());
 	}
 
 	private FragmentCollection _fragmentCollection;
-	private FragmentCollection _fragmentCollectionAlter;
 
 	@Inject
 	private FragmentCompositionPersistence _fragmentCompositionPersistence;
@@ -115,5 +114,7 @@ public class FragmentCompositionServiceTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	private FragmentCollection _updatedFragmentCollection;
 
 }
