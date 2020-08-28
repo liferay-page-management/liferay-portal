@@ -60,6 +60,7 @@ import com.liferay.layout.content.page.editor.web.internal.constants.ContentPage
 import com.liferay.layout.content.page.editor.web.internal.constants.ContentPageEditorConstants;
 import com.liferay.layout.content.page.editor.web.internal.util.ContentUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.FragmentEntryLinkItemSelectorUtil;
+import com.liferay.layout.content.page.editor.web.internal.util.StyleBookEntryUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
@@ -154,7 +155,6 @@ import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -331,7 +331,24 @@ public class ContentPageEditorDisplayContext {
 				getFragmentEntryActionURL(
 					"/content_layout/edit_fragment_entry_link")
 			).put(
-				"frontendTokens", _getFrontendTokens()
+				"frontendTokens",
+				() -> {
+					LayoutSet layoutSet =
+						LayoutSetLocalServiceUtil.fetchLayoutSet(
+							themeDisplay.getSiteGroupId(), false);
+
+					FrontendTokenDefinition frontendTokenDefinition =
+						_frontendTokenDefinitionRegistry.
+							getFrontendTokenDefinition(layoutSet.getThemeId());
+
+					if (frontendTokenDefinition == null) {
+						return JSONFactoryUtil.getJSONFactory();
+					}
+
+					return StyleBookEntryUtil.getFrontendTokensValuesJSONArray(
+						frontendTokenDefinition, themeDisplay.getLocale(),
+						_getDefaultStyleBookEntry());
+				}
 			).put(
 				"getAvailableListItemRenderersURL",
 				getResourceURL(
@@ -1455,77 +1472,6 @@ public class ContentPageEditorDisplayContext {
 		return _fragmentEntryLinks;
 	}
 
-	private Map<String, Map<String, Object>> _getFrontendTokens()
-		throws Exception {
-
-		LayoutSet layoutSet = LayoutSetLocalServiceUtil.fetchLayoutSet(
-			themeDisplay.getSiteGroupId(), false);
-
-		FrontendTokenDefinition frontendTokenDefinition =
-			_frontendTokenDefinitionRegistry.getFrontendTokenDefinition(
-				layoutSet.getThemeId());
-
-		if (frontendTokenDefinition == null) {
-			return Collections.emptyMap();
-		}
-
-		JSONObject frontendTokenValuesJSONObject =
-			_getFrontendTokenValuesJSONObject();
-
-		Map<String, Map<String, Object>> frontendTokens = new LinkedHashMap<>();
-
-		JSONObject frontendTokenDefinitionJSONObject =
-			JSONFactoryUtil.createJSONObject(
-				frontendTokenDefinition.getJSON(themeDisplay.getLocale()));
-
-		JSONArray frontendTokenCategoriesJSONArray =
-			frontendTokenDefinitionJSONObject.getJSONArray(
-				"frontendTokenCategories");
-
-		Iterator<JSONObject> frontendTokenCategoriesIterator =
-			frontendTokenCategoriesJSONArray.iterator();
-
-		frontendTokenCategoriesIterator.forEachRemaining(
-			frontendTokenCategoryJSONObject -> {
-				JSONArray frontendTokenSetsJSONArray =
-					frontendTokenCategoryJSONObject.getJSONArray(
-						"frontendTokenSets");
-
-				Iterator<JSONObject> frontendTokenSetsIterator =
-					frontendTokenSetsJSONArray.iterator();
-
-				frontendTokenSetsIterator.forEachRemaining(
-					frontendTokenSetJSONObject -> {
-						JSONArray frontendTokensJSONArray =
-							frontendTokenSetJSONObject.getJSONArray(
-								"frontendTokens");
-
-						Iterator<JSONObject> frontendTokensIterator =
-							frontendTokensJSONArray.iterator();
-
-						frontendTokensIterator.forEachRemaining(
-							frontendTokenJSONObject ->
-								_processFrontendTokenJSONObject(
-									frontendTokenJSONObject,
-									frontendTokenValuesJSONObject,
-									frontendTokens));
-					});
-			});
-
-		return frontendTokens;
-	}
-
-	private JSONObject _getFrontendTokenValuesJSONObject() throws Exception {
-		StyleBookEntry styleBookEntry = _getDefaultStyleBookEntry();
-
-		if (styleBookEntry != null) {
-			return JSONFactoryUtil.createJSONObject(
-				styleBookEntry.getFrontendTokensValues());
-		}
-
-		return JSONFactoryUtil.createJSONObject();
-	}
-
 	private ItemSelectorCriterion _getImageItemSelectorCriterion() {
 		if (_imageItemSelectorCriterion != null) {
 			return _imageItemSelectorCriterion;
@@ -2220,52 +2166,6 @@ public class ContentPageEditorDisplayContext {
 		}
 
 		return false;
-	}
-
-	private void _processFrontendTokenJSONObject(
-		JSONObject frontendTokenJSONObject,
-		JSONObject frontendTokenValuesJSONObject,
-		Map<String, Map<String, Object>> frontendTokens) {
-
-		String name = frontendTokenJSONObject.getString("name");
-
-		JSONObject valueJSONObject =
-			frontendTokenValuesJSONObject.getJSONObject(name);
-
-		String value = StringPool.BLANK;
-
-		if (valueJSONObject != null) {
-			value = valueJSONObject.getString("value");
-		}
-		else {
-			value = frontendTokenJSONObject.getString("defaultValue");
-		}
-
-		JSONArray mappingsJSONArray = frontendTokenJSONObject.getJSONArray(
-			"mappings");
-		String cssVariable = StringPool.BLANK;
-
-		for (int l = 0; l < mappingsJSONArray.length(); l++) {
-			JSONObject mapping = mappingsJSONArray.getJSONObject(l);
-
-			if (Objects.equals(mapping.getString("type"), "cssVariable")) {
-				cssVariable = mapping.getString("value");
-			}
-		}
-
-		frontendTokens.put(
-			name,
-			HashMapBuilder.<String, Object>put(
-				"cssVariable", cssVariable
-			).put(
-				"editorType", frontendTokenJSONObject.get("editorType")
-			).put(
-				"label", frontendTokenJSONObject.get("label")
-			).put(
-				"name", name
-			).put(
-				"value", value
-			).build());
 	}
 
 	private static final String[] _UNSUPPORTED_PORTLETS_NAMES = {
