@@ -15,7 +15,9 @@
 package com.liferay.layout.type.controller.display.page.internal.layout.type.controller;
 
 import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
+import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
 import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.renderer.FragmentRendererController;
 import com.liferay.info.display.request.attributes.contributor.InfoDisplayRequestAttributesContributor;
@@ -145,6 +147,33 @@ public class DisplayPageLayoutTypeController
 				themeDisplay.getPermissionChecker(), layout)) {
 
 			layoutMode = Constants.VIEW;
+		}
+
+		Object object = httpServletRequest.getAttribute(
+			WebKeys.LAYOUT_ASSET_ENTRY);
+
+		if ((object != null) && (object instanceof AssetEntry)) {
+			AssetEntry assetEntry = (AssetEntry)object;
+
+			AssetRendererFactory<?> assetRendererFactory =
+				AssetRendererFactoryRegistryUtil.
+					getAssetRendererFactoryByClassNameId(
+						assetEntry.getClassNameId());
+
+			if ((assetRendererFactory != null) &&
+				!assetRendererFactory.hasPermission(
+					themeDisplay.getPermissionChecker(),
+					assetEntry.getClassPK(), ActionKeys.VIEW)) {
+
+				if (themeDisplay.isSignedIn()) {
+					httpServletResponse.setStatus(
+						HttpServletResponse.SC_FORBIDDEN);
+				}
+				else {
+					httpServletResponse.setStatus(
+						HttpServletResponse.SC_UNAUTHORIZED);
+				}
+			}
 		}
 
 		httpServletRequest.setAttribute(
