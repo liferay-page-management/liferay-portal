@@ -15,9 +15,7 @@
 package com.liferay.layout.type.controller.display.page.internal.layout.type.controller;
 
 import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
-import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
 import com.liferay.asset.kernel.model.AssetEntry;
-import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.renderer.FragmentRendererController;
 import com.liferay.info.display.request.attributes.contributor.InfoDisplayRequestAttributesContributor;
@@ -149,38 +147,27 @@ public class DisplayPageLayoutTypeController
 			layoutMode = Constants.VIEW;
 		}
 
-		Object object = httpServletRequest.getAttribute(
-			WebKeys.LAYOUT_ASSET_ENTRY);
+		DisplayPageLayoutTypeControllerDisplayContext
+			displayPageLayoutTypeControllerDisplayContext =
+				new DisplayPageLayoutTypeControllerDisplayContext(
+					httpServletRequest, _infoItemServiceTracker);
 
-		if ((object != null) && (object instanceof AssetEntry)) {
-			AssetEntry assetEntry = (AssetEntry)object;
+		if (!displayPageLayoutTypeControllerDisplayContext.hasPermission(
+				themeDisplay.getPermissionChecker(), ActionKeys.VIEW)) {
 
-			AssetRendererFactory<?> assetRendererFactory =
-				AssetRendererFactoryRegistryUtil.
-					getAssetRendererFactoryByClassNameId(
-						assetEntry.getClassNameId());
-
-			if ((assetRendererFactory != null) &&
-				!assetRendererFactory.hasPermission(
-					themeDisplay.getPermissionChecker(),
-					assetEntry.getClassPK(), ActionKeys.VIEW)) {
-
-				if (themeDisplay.isSignedIn()) {
-					httpServletResponse.setStatus(
-						HttpServletResponse.SC_FORBIDDEN);
-				}
-				else {
-					httpServletResponse.setStatus(
-						HttpServletResponse.SC_UNAUTHORIZED);
-				}
+			if (themeDisplay.isSignedIn()) {
+				httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			}
+			else {
+				httpServletResponse.setStatus(
+					HttpServletResponse.SC_UNAUTHORIZED);
 			}
 		}
 
 		httpServletRequest.setAttribute(
 			DisplayPageLayoutTypeControllerWebKeys.
 				DISPLAY_PAGE_LAYOUT_TYPE_CONTROLLER_DISPLAY_CONTEXT,
-			new DisplayPageLayoutTypeControllerDisplayContext(
-				httpServletRequest, _infoItemServiceTracker));
+			displayPageLayoutTypeControllerDisplayContext);
 		httpServletRequest.setAttribute(
 			FragmentActionKeys.FRAGMENT_RENDERER_CONTROLLER,
 			_fragmentRendererController);
