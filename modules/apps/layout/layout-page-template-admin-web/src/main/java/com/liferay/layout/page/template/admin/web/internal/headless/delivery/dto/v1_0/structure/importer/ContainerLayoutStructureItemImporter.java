@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.List;
@@ -68,7 +69,7 @@ public class ContainerLayoutStructureItemImporter
 				(Map<String, Object>)definitionMap.get(
 					"backgroundFragmentImage");
 
-			if (backgroundFragmentImageMap == null) {
+			if (MapUtil.isEmpty(backgroundFragmentImageMap)) {
 				backgroundFragmentImageMap =
 					(Map<String, Object>)definitionMap.get("backgroundImage");
 			}

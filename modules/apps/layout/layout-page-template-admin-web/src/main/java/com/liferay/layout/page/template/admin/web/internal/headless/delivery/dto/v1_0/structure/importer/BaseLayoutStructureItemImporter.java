@@ -190,12 +190,19 @@ public abstract class BaseLayoutStructureItemImporter {
 
 		jsonObject.put("backgroundColor", styles.get("backgroundColor"));
 
-		if (styles.containsKey("backgroundFragmentImage")) {
+		if (styles.containsKey("backgroundFragmentImage") ||
+			styles.containsKey("backgroundImage")) {
+
 			JSONObject backgroundImageJSONObject =
 				JSONFactoryUtil.createJSONObject();
 
 			Map<String, Object> childStyleMap = (Map<String, Object>)styles.get(
 				"backgroundFragmentImage");
+
+			if (MapUtil.isEmpty(childStyleMap)) {
+				childStyleMap = (Map<String, Object>)styles.get(
+					"backgroundImage");
+			}
 
 			Map<String, Object> titleMap =
 				(Map<String, Object>)childStyleMap.get("title");

@@ -52,6 +52,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -676,7 +677,7 @@ public class FragmentLayoutStructureItemImporter
 				(Map<String, Object>)fragmentFieldValueMap.get(
 					"backgroundFragmentImage");
 
-			if (backgroundFragmentImageMap == null) {
+			if (MapUtil.isEmpty(backgroundFragmentImageMap)) {
 				backgroundFragmentImageMap =
 					(Map<String, Object>)fragmentFieldValueMap.get(
 						"backgroundImage");
