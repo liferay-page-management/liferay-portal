@@ -23,6 +23,8 @@ import com.liferay.bookmarks.model.BookmarksFolder;
 import com.liferay.bookmarks.service.BookmarksEntryLocalService;
 import com.liferay.bookmarks.service.base.BookmarksFolderLocalServiceBaseImpl;
 import com.liferay.bookmarks.util.comparator.FolderIdComparator;
+import com.liferay.expando.kernel.model.ExpandoRow;
+import com.liferay.expando.kernel.model.ExpandoTableConstants;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
@@ -174,7 +176,16 @@ public class BookmarksFolderLocalServiceImpl
 
 		// Expando
 
-		expandoRowLocalService.deleteRows(folder.getFolderId());
+		List<ExpandoRow> rows = expandoRowLocalService.getRows(
+			folder.getCompanyId(), BookmarksFolder.class.getName(),
+			ExpandoTableConstants.DEFAULT_TABLE_NAME, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS);
+
+		for (ExpandoRow row : rows) {
+			if (row.getClassPK() == folder.getFolderId()) {
+				expandoRowLocalService.deleteRow(row);
+			}
+		}
 
 		// Ratings
 

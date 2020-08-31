@@ -37,6 +37,8 @@ import com.liferay.dynamic.data.mapping.service.DDMStructureLinkLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateLinkLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateLocalService;
+import com.liferay.expando.kernel.model.ExpandoRow;
+import com.liferay.expando.kernel.model.ExpandoTableConstants;
 import com.liferay.expando.kernel.util.ExpandoBridgeUtil;
 import com.liferay.exportimport.kernel.exception.ExportImportContentValidationException;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
@@ -1280,7 +1282,16 @@ public class JournalArticleLocalServiceImpl
 
 		// Expando
 
-		expandoRowLocalService.deleteRows(article.getId());
+		List<ExpandoRow> rows = expandoRowLocalService.getRows(
+			article.getCompanyId(), JournalArticle.class.getName(),
+			ExpandoTableConstants.DEFAULT_TABLE_NAME, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS);
+
+		for (ExpandoRow row : rows) {
+			if (row.getClassPK() == article.getId()) {
+				expandoRowLocalService.deleteRow(row);
+			}
+		}
 
 		// Trash
 
