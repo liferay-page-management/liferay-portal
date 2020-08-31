@@ -15,9 +15,7 @@
 package com.liferay.layout.page.template.admin.web.internal.headless.delivery.dto.v1_0.structure.importer;
 
 import com.liferay.headless.delivery.dto.v1_0.PageElement;
-import com.liferay.layout.page.template.util.AlignConverter;
 import com.liferay.layout.page.template.util.BorderRadiusConverter;
-import com.liferay.layout.page.template.util.JustifyConverter;
 import com.liferay.layout.page.template.util.MarginConverter;
 import com.liferay.layout.page.template.util.PaddingConverter;
 import com.liferay.layout.page.template.util.ShadowConverter;
@@ -61,9 +59,11 @@ public class ContainerLayoutStructureItemImporter
 		Map<String, Object> definitionMap = getDefinitionMap(
 			pageElement.getDefinition());
 
+		JSONObject stylesJSONObject = JSONFactoryUtil.createJSONObject();
+
 		if (definitionMap != null) {
-			containerStyledLayoutStructureItem.setBackgroundColorCssClass(
-				(String)definitionMap.get("backgroundColor"));
+			stylesJSONObject.put(
+				"backgroundColor", definitionMap.get("backgroundColor"));
 
 			Map<String, Object> backgroundFragmentImageMap =
 				(Map<String, Object>)definitionMap.get(
@@ -95,80 +95,67 @@ public class ContainerLayoutStructureItemImporter
 						jsonObject, (Map<String, Object>)urlMap.get("mapping"));
 				}
 
-				containerStyledLayoutStructureItem.setBackgroundImageJSONObject(
-					jsonObject);
+				stylesJSONObject.put("backgroundImage", jsonObject);
 			}
 
 			Map<String, Object> containerLayout =
 				(Map<String, Object>)definitionMap.get("layout");
 
 			if (containerLayout != null) {
-				containerStyledLayoutStructureItem.setAlign(
-					AlignConverter.convertToInternalValue(
-						(String)containerLayout.get("align")));
-				containerStyledLayoutStructureItem.setBorderColor(
-					(String)containerLayout.get("borderColor"));
-				containerStyledLayoutStructureItem.setBorderRadius(
+				stylesJSONObject.put(
+					"borderColor", (String)containerLayout.get("borderColor")
+				).put(
+					"borderRadius",
 					BorderRadiusConverter.convertToInternalValue(
-						(String)containerLayout.get("borderRadius")));
+						(String)containerLayout.get("borderRadius"))
+				);
 
 				Integer borderWidth = (Integer)containerLayout.get(
 					"borderWidth");
 
 				if (borderWidth != null) {
-					containerStyledLayoutStructureItem.setBorderWidth(
-						borderWidth);
+					stylesJSONObject.put("borderWidth", borderWidth);
 				}
 
-				containerStyledLayoutStructureItem.setContentDisplay(
-					StringUtil.toLowerCase(
-						(String)containerLayout.get("contentDisplay")));
-				containerStyledLayoutStructureItem.setJustify(
-					JustifyConverter.convertToInternalValue(
-						(String)containerLayout.get("justify")));
 				Integer marginBottom = MarginConverter.convertToInternalValue(
 					(Integer)containerLayout.get("marginBottom"));
 
 				if (marginBottom != null) {
-					containerStyledLayoutStructureItem.setMarginBottom(
-						marginBottom);
+					stylesJSONObject.put("marginBottom", marginBottom);
 				}
 
 				Integer marginLeft = MarginConverter.convertToInternalValue(
 					(Integer)containerLayout.get("marginLeft"));
 
 				if (marginLeft != null) {
-					containerStyledLayoutStructureItem.setMarginLeft(
-						marginLeft);
+					stylesJSONObject.put("marginLeft", marginLeft);
 				}
 
 				Integer marginRight = MarginConverter.convertToInternalValue(
 					(Integer)containerLayout.get("marginRight"));
 
 				if (marginRight != null) {
-					containerStyledLayoutStructureItem.setMarginRight(
-						marginRight);
+					stylesJSONObject.put("marginRight", marginRight);
 				}
 
 				Integer marginTop = MarginConverter.convertToInternalValue(
 					(Integer)containerLayout.get("marginTop"));
 
 				if (marginTop != null) {
-					containerStyledLayoutStructureItem.setMarginTop(marginTop);
+					stylesJSONObject.put("marginTop", marginTop);
 				}
 
 				Integer opacity = (Integer)containerLayout.get("opacity");
 
 				if (opacity != null) {
-					containerStyledLayoutStructureItem.setOpacity(opacity);
+					stylesJSONObject.put("opacity", opacity);
 				}
 
 				Integer paddingBottom = PaddingConverter.convertToInternalValue(
 					(Integer)containerLayout.get("paddingBottom"));
 
 				if (paddingBottom != null) {
-					containerStyledLayoutStructureItem.setPaddingBottom(
-						paddingBottom);
+					stylesJSONObject.put("paddingBottom", paddingBottom);
 				}
 
 				Integer paddingHorizontal =
@@ -180,32 +167,28 @@ public class ContainerLayoutStructureItemImporter
 					(Integer)containerLayout.get("paddingRight"));
 
 				if (paddingLeft != null) {
-					containerStyledLayoutStructureItem.setPaddingLeft(
-						paddingLeft);
+					stylesJSONObject.put("paddingLeft", paddingLeft);
 				}
 				else if (paddingHorizontal != null) {
-					containerStyledLayoutStructureItem.setPaddingLeft(
-						paddingHorizontal);
+					stylesJSONObject.put("paddingLeft", paddingHorizontal);
 				}
 
 				if (paddingRight != null) {
-					containerStyledLayoutStructureItem.setPaddingRight(
-						paddingRight);
+					stylesJSONObject.put("paddingRight", paddingRight);
 				}
 				else if (paddingHorizontal != null) {
-					containerStyledLayoutStructureItem.setPaddingRight(
-						paddingHorizontal);
+					stylesJSONObject.put("paddingRight", paddingHorizontal);
 				}
 
 				Integer paddingTop = PaddingConverter.convertToInternalValue(
 					(Integer)containerLayout.get("paddingTop"));
 
 				if (paddingTop != null) {
-					containerStyledLayoutStructureItem.setPaddingTop(
-						paddingTop);
+					stylesJSONObject.put("paddingTop", paddingTop);
 				}
 
-				containerStyledLayoutStructureItem.setShadow(
+				stylesJSONObject.put(
+					"shadow",
 					ShadowConverter.convertToInternalValue(
 						(String)containerLayout.get("shadow")));
 
@@ -222,6 +205,9 @@ public class ContainerLayoutStructureItemImporter
 						containerType);
 				}
 			}
+
+			containerStyledLayoutStructureItem.updateItemConfig(
+				JSONUtil.put("styles", stylesJSONObject));
 
 			Map<String, Object> fragmentLinkMap =
 				(Map<String, Object>)definitionMap.get("fragmentLink");
