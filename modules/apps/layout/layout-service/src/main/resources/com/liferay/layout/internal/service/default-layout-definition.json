@@ -1,9 +1,6 @@
 {
 	"definition": {
-		"layout": {
-			"widthType": "Fluid"
-		},
-		"styles": {
+		"fragmentStyle": {
 			"backgroundImage": {
 				"title": {
 					"value": "welcome_bg.jpg"
@@ -25,15 +22,15 @@
 			"paddingLeft": 5,
 			"paddingRight": 5,
 			"paddingTop": 5
+		},
+		"layout": {
+			"widthType": "Fluid"
 		}
 	},
 	"pageElements": [
 		{
 			"definition": {
-				"layout": {
-					"widthType": "Fixed"
-				},
-				"styles": {
+				"fragmentStyle": {
 					"borderRadius": "rounded-0",
 					"borderWidth": 0,
 					"display": "block",
@@ -47,6 +44,9 @@
 					"paddingLeft": 3,
 					"paddingRight": 3,
 					"paddingTop": 0
+				},
+				"layout": {
+					"widthType": "Fixed"
 				}
 			},
 			"pageElements": [
