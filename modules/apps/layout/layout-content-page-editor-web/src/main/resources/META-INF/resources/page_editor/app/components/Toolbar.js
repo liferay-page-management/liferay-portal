@@ -16,7 +16,7 @@ import {ClayButtonWithIcon, default as ClayButton} from '@clayui/button';
 import ClayLayout from '@clayui/layout';
 import {useModal} from '@clayui/modal';
 import {useIsMounted} from 'frontend-js-react-web';
-import React, {useState} from 'react';
+import React, {Suspense, useCallback, useRef, useState} from 'react';
 import ReactDOM from 'react-dom';
 
 import useLazy from '../../core/hooks/useLazy';
@@ -24,6 +24,7 @@ import useLoad from '../../core/hooks/useLoad';
 import usePlugins from '../../core/hooks/usePlugins';
 import * as Actions from '../actions/index';
 import {LAYOUT_TYPES} from '../config/constants/layoutTypes';
+import {SERVICE_NETWORK_STATUS_TYPES} from '../config/constants/serviceNetworkStatusTypes';
 import {config} from '../config/index';
 import {useDispatch, useSelector} from '../store/index';
 import redo from '../thunks/redo';
@@ -39,14 +40,13 @@ import UnsafeHTML from './UnsafeHTML';
 import ViewportSizeSelector from './ViewportSizeSelector';
 import Undo from './undo/Undo';
 
-const {Suspense, useCallback, useRef} = React;
-
 function ToolbarBody() {
 	const dispatch = useDispatch();
 	const dropClearRef = useDropClear();
 	const {getInstance, register} = usePlugins();
 	const isMounted = useIsMounted();
 	const load = useLoad();
+	const publishForm = useRef();
 	const selectItem = useSelectItem();
 	const store = useSelector((state) => state);
 
@@ -56,6 +56,10 @@ function ToolbarBody() {
 		segmentsExperimentStatus,
 		selectedViewportSize,
 	} = store;
+
+	const publishButtonDisabled =
+		store.network.status === SERVICE_NETWORK_STATUS_TYPES.savingDraft ||
+		config.pending;
 
 	const [openPreviewModal, setOpenPreviewModal] = useState(false);
 
@@ -134,7 +138,9 @@ function ToolbarBody() {
 		}
 	};
 
-	const handleSubmit = (event) => {
+	const handlePublishButtonClick = (event) => {
+		event.preventDefault();
+
 		if (
 			config.masterUsed &&
 			!confirm(
@@ -143,8 +149,27 @@ function ToolbarBody() {
 				)
 			)
 		) {
-			event.preventDefault();
+			return;
 		}
+
+		// LPS-119924
+		//
+		// When user has pressed a submit form, we might have some extra change
+		// that needs to be submitted to the backend. Sadly, with the
+		// React-based store that we are using, we have no way to know if there
+		// is some pending action that has to be processed, because everything
+		// happens asynchronously.
+		//
+		// This arbitrary value allows us to wait until the client CPU has
+		// processed everything and React have resolved any pending dispatch.
+		// This should only happen on critical use cases like the one
+		// described in the issue.
+
+		setTimeout(() => {
+			if (!publishButtonDisabled && publishForm.current) {
+				publishForm.current.submit();
+			}
+		}, 300);
 	};
 
 	const onUndo = () => {
@@ -271,7 +296,11 @@ function ToolbarBody() {
 				)}
 
 				<li className="nav-item">
-					<form action={config.publishURL} method="POST">
+					<form
+						action={config.publishURL}
+						method="POST"
+						ref={publishForm}
+					>
 						<input
 							name={`${config.portletNamespace}redirect`}
 							type="hidden"
@@ -279,9 +308,9 @@ function ToolbarBody() {
 						/>
 
 						<ClayButton
-							disabled={config.pending}
+							disabled={publishButtonDisabled}
 							displayType="primary"
-							onClick={handleSubmit}
+							onClick={handlePublishButtonClick}
 							small
 							type="submit"
 						>
