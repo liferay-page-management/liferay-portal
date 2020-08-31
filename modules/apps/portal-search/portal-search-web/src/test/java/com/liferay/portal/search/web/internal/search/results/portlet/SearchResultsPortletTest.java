@@ -88,6 +88,17 @@ public class SearchResultsPortletTest {
 	}
 
 	@Test
+	public void testDocumentWithInternalAssetCategoryIsNotDisplayed() throws Exception {
+		Document document = createDocumentWithInternalAssetCategory();
+
+		setUpSearchResponseDocuments(document, createDocument());
+
+		render();
+
+		assertDisplayContextDocuments(document);
+	}
+
+	@Test
 	public void testDocumentWithoutSummaryIsRemoved() throws Exception {
 		Document document = createDocumentWithSummary();
 
@@ -115,6 +126,24 @@ public class SearchResultsPortletTest {
 		String className = RandomTestUtil.randomString();
 
 		document.addKeyword(Field.ENTRY_CLASS_NAME, className);
+
+		return document;
+	}
+
+	protected Document createDocumentWithInternalAssetCategory() throws Exception {
+		Document document = new DocumentImpl();
+
+		String className = RandomTestUtil.randomString();
+
+		document.addKeyword(Field.ENTRY_CLASS_NAME, className);
+
+		Mockito.doReturn(
+			_createIndexerWithSummary()
+		).when(
+			_indexerRegistry
+		).getIndexer(
+			className
+		);
 
 		return document;
 	}
