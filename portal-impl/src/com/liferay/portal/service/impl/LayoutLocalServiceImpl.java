@@ -14,9 +14,9 @@
 
 package com.liferay.portal.service.impl;
 
-import com.liferay.exportimport.kernel.staging.MergeLayoutPrototypesThreadLocal;
 import com.liferay.expando.kernel.model.ExpandoRow;
 import com.liferay.expando.kernel.model.ExpandoTableConstants;
+import com.liferay.exportimport.kernel.staging.MergeLayoutPrototypesThreadLocal;
 import com.liferay.layout.admin.kernel.model.LayoutTypePortletConstants;
 import com.liferay.petra.lang.CentralizedThreadLocal;
 import com.liferay.petra.string.StringBundler;
@@ -926,15 +926,15 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		// Expando
 
 		List<ExpandoRow> rows = expandoRowLocalService.getRows(
-				layout.getCompanyId(), Layout.class.getName(),
-				ExpandoTableConstants.DEFAULT_TABLE_NAME, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS);
+			layout.getCompanyId(), Layout.class.getName(),
+			ExpandoTableConstants.DEFAULT_TABLE_NAME, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS);
 
-			for (ExpandoRow row : rows) {
-				if (row.getClassPK() == layout.getPlid()) {
-					expandoRowLocalService.deleteRow(row);
-				}
+		for (ExpandoRow row : rows) {
+			if (row.getClassPK() == layout.getPlid()) {
+				expandoRowLocalService.deleteRow(row);
 			}
+		}
 
 		// Icon
 
