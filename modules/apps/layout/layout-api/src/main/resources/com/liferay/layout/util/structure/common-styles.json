@@ -4,7 +4,7 @@
 		"styles": [
 			{
 				"dataType": "string",
-				"defaultValue": "0",
+				"defaultValue": "",
 				"dependencies": [
 				],
 				"displaySize": "small",
@@ -62,7 +62,7 @@
 			},
 			{
 				"dataType": "string",
-				"defaultValue": "0",
+				"defaultValue": "",
 				"dependencies": [
 				],
 				"displaySize": "small",
@@ -120,7 +120,7 @@
 			},
 			{
 				"dataType": "string",
-				"defaultValue": "0",
+				"defaultValue": "",
 				"dependencies": [
 				],
 				"displaySize": "small",
@@ -178,7 +178,7 @@
 			},
 			{
 				"dataType": "string",
-				"defaultValue": "0",
+				"defaultValue": "",
 				"dependencies": [
 				],
 				"displaySize": "small",
@@ -241,7 +241,7 @@
 		"styles": [
 			{
 				"dataType": "string",
-				"defaultValue": "0",
+				"defaultValue": "",
 				"dependencies": [
 				],
 				"displaySize": "small",
@@ -299,7 +299,7 @@
 			},
 			{
 				"dataType": "string",
-				"defaultValue": "0",
+				"defaultValue": "",
 				"dependencies": [
 				],
 				"displaySize": "small",
@@ -357,7 +357,7 @@
 			},
 			{
 				"dataType": "string",
-				"defaultValue": "0",
+				"defaultValue": "",
 				"dependencies": [
 				],
 				"displaySize": "small",
@@ -415,7 +415,7 @@
 			},
 			{
 				"dataType": "string",
-				"defaultValue": "0",
+				"defaultValue": "",
 				"dependencies": [
 				],
 				"displaySize": "small",
