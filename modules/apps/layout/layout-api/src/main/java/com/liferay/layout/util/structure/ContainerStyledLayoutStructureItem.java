@@ -288,13 +288,16 @@ public class ContainerStyledLayoutStructureItem
 
 		if (Validator.isNotNull(backgroundColorCssClass)) {
 			itemConfigJSONObject.put(
-				"backgroundColor", backgroundColorCssClass + "Color");
+				"backgroundColor",
+				_colors.getOrDefault(
+					backgroundColorCssClass, backgroundColorCssClass));
 		}
 
 		String borderColor = itemConfigJSONObject.getString("borderColor");
 
 		if (Validator.isNotNull(borderColor)) {
-			itemConfigJSONObject.put("borderColor", borderColor + "Color");
+			itemConfigJSONObject.put(
+				"borderColor", _colors.getOrDefault(borderColor, borderColor));
 		}
 
 		String borderRadius = itemConfigJSONObject.getString("borderRadius");
@@ -304,16 +307,57 @@ public class ContainerStyledLayoutStructureItem
 				"borderRadius",
 				_borderRadius.getOrDefault(borderRadius, borderRadius));
 		}
+
+		String shadow = itemConfigJSONObject.getString("shadow");
+
+		if (Validator.isNotNull(shadow)) {
+			itemConfigJSONObject.put(
+				"shadow", _shadows.getOrDefault(shadow, shadow));
+		}
 	}
 
 	private static final Map<String, String> _borderRadius = HashMapBuilder.put(
-		"rounded-circle", "borderRadiusCircle"
+		"rounded", "0.25rem"
 	).put(
-		"rounded-lg", "borderRadiusLg"
+		"rounded-circle", "50%"
 	).put(
-		"rounded-pill", "borderRadiusPill"
+		"rounded-lg", "0.375rem"
 	).put(
-		"rounded-sm", "borderRadiusSm"
+		"rounded-pill", "50rem"
+	).put(
+		"rounded-sm", "50rem"
+	).build();
+	private static final Map<String, String> _colors = HashMapBuilder.put(
+		"danger", "#DA1414"
+	).put(
+		"dark", "#272833"
+	).put(
+		"gray-dark", "#393A4A"
+	).put(
+		"info", "#2E5AAC"
+	).put(
+		"light", "#F1F2F5"
+	).put(
+		"lighter", "#F7F8F9"
+	).put(
+		"primary", "#0B5FFF"
+	).put(
+		"secondary", "#6B6C7E"
+	).put(
+		"success", "#287D3C"
+	).put(
+		"warning", "#B95000"
+	).put(
+		"white", "#FFFFFF"
+	).build();
+	private static final Map<String, String> _shadows = HashMapBuilder.put(
+		"shadow", "0 .5rem 1rem rgba(0, 0, 0, 0.15)"
+	).put(
+		"shadow-lg", "0 1rem 3rem rgba(0, 0, 0, 0.175)"
+	).put(
+		"shadow-none", "none"
+	).put(
+		"shadow-sm", "0 .125rem .25rem rgba(0, 0, 0, 0.075)"
 	).build();
 
 	private JSONObject _linkJSONObject;
