@@ -58,6 +58,7 @@ public class UpgradeFragmentEntryLinkEditableValues extends UpgradeProcess {
 				}
 
 				_replaceAlign(configurationJSONObject);
+				_replaceBottomSpacing(configurationJSONObject);
 				_replaceShadow(configurationJSONObject);
 				_replaceTextColor(configurationJSONObject);
 
@@ -92,6 +93,18 @@ public class UpgradeFragmentEntryLinkEditableValues extends UpgradeProcess {
 
 			break;
 		}
+	}
+
+	private void _replaceBottomSpacing(JSONObject configurationJSONObject) {
+		if (!configurationJSONObject.has("bottomSpacing")) {
+			return;
+		}
+
+		String bottomSpacing = GetterUtil.getString(
+			configurationJSONObject.remove("bottomSpacing"));
+
+		configurationJSONObject.put("marginBottom", bottomSpacing);
+		configurationJSONObject.remove("bottomSpacing");
 	}
 
 	private void _replaceShadow(JSONObject configurationJSONObject) {
