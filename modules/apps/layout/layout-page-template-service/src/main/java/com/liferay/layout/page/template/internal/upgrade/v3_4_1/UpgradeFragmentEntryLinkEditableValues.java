@@ -117,9 +117,12 @@ public class UpgradeFragmentEntryLinkEditableValues extends UpgradeProcess {
 			return;
 		}
 
-		if (Validator.isNotNull(textColorJSONObject.getString("rgbValue"))) {
+		if (Validator.isNotNull(textColorJSONObject.getString("cssClass"))) {
 			configurationJSONObject.put(
-				"textColor", textColorJSONObject.getString("rgbValue"));
+				"textColor",
+				_colors.getOrDefault(
+					textColorJSONObject.getString("cssClass"),
+					textColorJSONObject.getString("cssClass")));
 		}
 		else if (Validator.isNotNull(textColorJSONObject.getString("color"))) {
 			configurationJSONObject.put(
@@ -127,6 +130,12 @@ public class UpgradeFragmentEntryLinkEditableValues extends UpgradeProcess {
 				_colors.getOrDefault(
 					textColorJSONObject.getString("color"),
 					textColorJSONObject.getString("color")));
+		}
+		else if (Validator.isNotNull(
+					textColorJSONObject.getString("rgbValue"))) {
+
+			configurationJSONObject.put(
+				"textColor", textColorJSONObject.getString("rgbValue"));
 		}
 	}
 
