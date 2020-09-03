@@ -207,14 +207,7 @@ public class FragmentEntryProcessorHelperImpl
 		Object value = infoFieldValue.getValue(
 			fragmentEntryProcessorContext.getLocale());
 
-		if (value instanceof ContentAccessor) {
-			ContentAccessor contentAccessor = (ContentAccessor)infoFieldValue;
-
-			value = contentAccessor.getContent();
-		}
-
-		return formatMappedValue(
-			value, fragmentEntryProcessorContext.getLocale());
+		return _processFieldValue(value, fragmentEntryProcessorContext);
 	}
 
 	@Override
