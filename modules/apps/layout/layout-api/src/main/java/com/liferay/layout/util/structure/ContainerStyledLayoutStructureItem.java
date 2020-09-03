@@ -18,7 +18,10 @@ import com.liferay.layout.util.constants.LayoutDataItemTypeConstants;
 import com.liferay.petra.lang.HashUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -259,6 +262,8 @@ public class ContainerStyledLayoutStructureItem
 
 	@Override
 	public void updateItemConfig(JSONObject itemConfigJSONObject) {
+		_convertStyleProperties(itemConfigJSONObject);
+
 		super.updateItemConfig(itemConfigJSONObject);
 
 		if (itemConfigJSONObject.has("link")) {
@@ -276,6 +281,40 @@ public class ContainerStyledLayoutStructureItem
 			}
 		}
 	}
+
+	private void _convertStyleProperties(JSONObject itemConfigJSONObject) {
+		String backgroundColorCssClass = itemConfigJSONObject.getString(
+			"backgroundColorCssClass");
+
+		if (Validator.isNotNull(backgroundColorCssClass)) {
+			itemConfigJSONObject.put(
+				"backgroundColor", backgroundColorCssClass + "Color");
+		}
+
+		String borderColor = itemConfigJSONObject.getString("borderColor");
+
+		if (Validator.isNotNull(borderColor)) {
+			itemConfigJSONObject.put("borderColor", borderColor + "Color");
+		}
+
+		String borderRadius = itemConfigJSONObject.getString("borderRadius");
+
+		if (Validator.isNotNull(borderRadius)) {
+			itemConfigJSONObject.put(
+				"borderRadius",
+				_borderRadius.getOrDefault(borderRadius, borderRadius));
+		}
+	}
+
+	private static final Map<String, String> _borderRadius = HashMapBuilder.put(
+		"rounded-circle", "borderRadiusCircle"
+	).put(
+		"rounded-lg", "borderRadiusLg"
+	).put(
+		"rounded-pill", "borderRadiusPill"
+	).put(
+		"rounded-sm", "borderRadiusSm"
+	).build();
 
 	private JSONObject _linkJSONObject;
 	private String _widthType = "fluid";
