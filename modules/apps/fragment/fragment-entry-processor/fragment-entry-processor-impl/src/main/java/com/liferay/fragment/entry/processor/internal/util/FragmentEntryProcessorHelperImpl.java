@@ -304,27 +304,7 @@ public class FragmentEntryProcessorHelperImpl
 		Object fieldValue = fieldsValues.getOrDefault(
 			fieldId, StringPool.BLANK);
 
-		if (fieldValue == null) {
-			return null;
-		}
-
-		if (fieldValue instanceof ContentAccessor) {
-			ContentAccessor contentAccessor = (ContentAccessor)fieldValue;
-
-			fieldValue = contentAccessor.getContent();
-		}
-
-		if (fieldValue instanceof WebImage) {
-			WebImage webImage = (WebImage)fieldValue;
-
-			fieldValue = webImage.toJSONObject();
-		}
-		else {
-			fieldValue = formatMappedValue(
-				fieldValue, fragmentEntryProcessorContext.getLocale());
-		}
-
-		return fieldValue;
+		return _processFieldValue(fieldValue, fragmentEntryProcessorContext);
 	}
 
 	@Override
@@ -457,6 +437,30 @@ public class FragmentEntryProcessorHelperImpl
 		}
 
 		return infoCollectionTextFormatter;
+	}
+
+	private Object _processFieldValue(
+		Object fieldValue,
+		FragmentEntryProcessorContext fragmentEntryProcessorContext) {
+
+		if (fieldValue == null) {
+			return null;
+		}
+
+		if (fieldValue instanceof ContentAccessor) {
+			ContentAccessor contentAccessor = (ContentAccessor)fieldValue;
+
+			fieldValue = contentAccessor.getContent();
+		}
+
+		if (fieldValue instanceof WebImage) {
+			WebImage webImage = (WebImage)fieldValue;
+
+			return webImage.toJSONObject();
+		}
+
+		return formatMappedValue(
+			fieldValue, fragmentEntryProcessorContext.getLocale());
 	}
 
 	private static final InfoCollectionTextFormatter<Object>
