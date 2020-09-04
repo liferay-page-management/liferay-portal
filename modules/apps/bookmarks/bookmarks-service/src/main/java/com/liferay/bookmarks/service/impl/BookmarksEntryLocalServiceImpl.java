@@ -25,15 +25,12 @@ import com.liferay.bookmarks.model.BookmarksFolder;
 import com.liferay.bookmarks.service.base.BookmarksEntryLocalServiceBaseImpl;
 import com.liferay.bookmarks.social.BookmarksActivityKeys;
 import com.liferay.bookmarks.util.comparator.EntryModifiedDateComparator;
-import com.liferay.expando.kernel.model.ExpandoRow;
-import com.liferay.expando.kernel.model.ExpandoTableConstants;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -208,16 +205,11 @@ public class BookmarksEntryLocalServiceImpl
 
 		// Expando
 
-		List<ExpandoRow> rows = expandoRowLocalService.getRows(
-			entry.getCompanyId(), BookmarksEntry.class.getName(),
-			ExpandoTableConstants.DEFAULT_TABLE_NAME, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS);
-
-		for (ExpandoRow row : rows) {
-			if (row.getClassPK() == entry.getEntryId()) {
-				expandoRowLocalService.deleteRow(row);
-			}
-		}
+		expandoRowLocalService.deleteRows(
+			entry.getCompanyId(),
+			classNameLocalService.getClassNameId(
+				BookmarksEntry.class.getName()),
+			entry.getEntryId());
 
 		// Ratings
 
