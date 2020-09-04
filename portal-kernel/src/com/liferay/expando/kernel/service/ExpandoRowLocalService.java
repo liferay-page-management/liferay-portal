@@ -148,6 +148,8 @@ public interface ExpandoRowLocalService
 
 	public void deleteRows(long classPK);
 
+	public void deleteRows(long companyId, long classNameId, long classPK);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public <T> T dslQuery(DSLQuery dslQuery);
 

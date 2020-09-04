@@ -162,6 +162,12 @@ public class ExpandoRowLocalServiceUtil {
 		getService().deleteRows(classPK);
 	}
 
+	public static void deleteRows(
+		long companyId, long classNameId, long classPK) {
+
+		getService().deleteRows(companyId, classNameId, classPK);
+	}
+
 	public static <T> T dslQuery(
 		com.liferay.petra.sql.dsl.query.DSLQuery dslQuery) {
 
