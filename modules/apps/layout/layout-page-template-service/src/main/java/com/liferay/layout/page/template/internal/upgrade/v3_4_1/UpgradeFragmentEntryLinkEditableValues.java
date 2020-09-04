@@ -100,11 +100,8 @@ public class UpgradeFragmentEntryLinkEditableValues extends UpgradeProcess {
 			return;
 		}
 
-		String bottomSpacing = GetterUtil.getString(
-			configurationJSONObject.remove("bottomSpacing"));
-
-		configurationJSONObject.put("marginBottom", bottomSpacing);
-		configurationJSONObject.remove("bottomSpacing");
+		configurationJSONObject.put(
+			"marginBottom", configurationJSONObject.remove("bottomSpacing"));
 	}
 
 	private void _replaceShadow(JSONObject configurationJSONObject) {
