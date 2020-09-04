@@ -28,6 +28,12 @@
 							}
 						]
 					}
+				},
+				{
+					"dataType": "object",
+					"label": "separator-color",
+					"name": "separatorColor",
+					"type": "colorPalette"
 				}
 			]
 		}
