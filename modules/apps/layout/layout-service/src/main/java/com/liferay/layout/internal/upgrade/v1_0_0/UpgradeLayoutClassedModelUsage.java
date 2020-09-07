@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import java.sql.Date;
@@ -73,7 +74,10 @@ public class UpgradeLayoutClassedModelUsage extends UpgradeProcess {
 				AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
 					assetEntryUsage.getAssetEntryId());
 
-				if (assetEntry == null) {
+				if ((assetEntry == null) ||
+					Validator.isNull(assetEntryUsage.getContainerKey()) ||
+					(assetEntryUsage.getPlid() <= 0)) {
+
 					continue;
 				}
 
