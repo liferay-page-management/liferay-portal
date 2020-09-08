@@ -270,11 +270,15 @@ public class ContainerStyledLayoutStructureItem
 			setLinkJSONObject(itemConfigJSONObject.getJSONObject("link"));
 		}
 
-		if (itemConfigJSONObject.has("widthType") ||
-			itemConfigJSONObject.has("type")) {
+		if (itemConfigJSONObject.has("containerType") ||
+			itemConfigJSONObject.has("type") ||
+			itemConfigJSONObject.has("widthType")) {
 
 			if (itemConfigJSONObject.has("widthType")) {
 				setWidthType(itemConfigJSONObject.getString("widthType"));
+			}
+			else if (itemConfigJSONObject.has("containerType")) {
+				setWidthType(itemConfigJSONObject.getString("containerType"));
 			}
 			else {
 				setWidthType(itemConfigJSONObject.getString("type"));

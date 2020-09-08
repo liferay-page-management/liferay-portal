@@ -56,7 +56,7 @@
 					"styles": {
 					}
 				},
-				"type": "fluid"
+				"widthType": "fluid"
 			},
 			"itemId": "CONTAINER0-UUID",
 			"parentId": "MAIN-UUID",
@@ -114,7 +114,7 @@
 					"styles": {
 					}
 				},
-				"type": "fluid"
+				"type": "fixed"
 			},
 			"itemId": "CONTAINER1-UUID",
 			"parentId": "MAIN-UUID",
@@ -175,7 +175,7 @@
 					"styles": {
 					}
 				},
-				"type": "fluid"
+				"type": "fixed"
 			},
 			"itemId": "CONTAINER2-UUID",
 			"parentId": "MAIN-UUID",
@@ -238,7 +238,7 @@
 					"styles": {
 					}
 				},
-				"type": "fluid"
+				"type": "fixed"
 			},
 			"itemId": "CONTAINER3-UUID",
 			"parentId": "MAIN-UUID",

@@ -17,7 +17,7 @@ package com.liferay.layout.page.template.internal.upgrade.v3_3_0;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.layout.page.template.internal.upgrade.v3_3_0.util.EditableValuesTransformerUtil;
-import com.liferay.layout.page.template.util.LayoutDataConverter;
+import com.liferay.layout.page.template.internal.upgrade.v3_3_0.util.LayoutDataConverter;
 import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
@@ -130,11 +130,7 @@ public class UpgradeLayoutPageTemplateStructureRel extends UpgradeProcess {
 	private String _upgradeLayoutData(String data, long segmentsExperienceId)
 		throws PortalException {
 
-		JSONObject dataJSONObject = JSONFactoryUtil.createJSONObject(data);
-
-		if (!LayoutDataConverter.isLatestVersion(dataJSONObject)) {
-			data = LayoutDataConverter.convert(data);
-		}
+		data = LayoutDataConverter.convert(data);
 
 		LayoutStructure layoutStructure = LayoutStructure.of(data);
 

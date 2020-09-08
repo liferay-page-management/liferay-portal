@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.layout.page.template.util;
+package com.liferay.layout.page.template.internal.upgrade.v3_3_0.util;
 
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.layout.util.constants.LayoutDataItemTypeConstants;
@@ -36,8 +36,6 @@ import com.liferay.portal.kernel.util.Validator;
  */
 public class LayoutDataConverter {
 
-	public static final int LATEST_VERSION = 1;
-
 	public static String convert(String data) {
 		if (Validator.isNull(data)) {
 			return StringPool.BLANK;
@@ -50,10 +48,6 @@ public class LayoutDataConverter {
 		}
 		catch (JSONException jsonException) {
 			throw new RuntimeException(jsonException);
-		}
-
-		if (isLatestVersion(inputDataJSONObject)) {
-			return data;
 		}
 
 		JSONArray structureJSONArray = inputDataJSONObject.getJSONArray(
@@ -180,16 +174,6 @@ public class LayoutDataConverter {
 		JSONObject layoutStructureJSONObject = layoutStructure.toJSONObject();
 
 		return layoutStructureJSONObject.toString();
-	}
-
-	public static boolean isLatestVersion(JSONObject dataJSONObject) {
-		int version = dataJSONObject.getInt("version");
-
-		if (version == LATEST_VERSION) {
-			return true;
-		}
-
-		return false;
 	}
 
 	private static void _addFragmentEntryLink(
