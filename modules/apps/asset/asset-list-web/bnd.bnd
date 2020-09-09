@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Asset List Web
 Bundle-SymbolicName: com.liferay.asset.list.web
-Bundle-Version: 2.0.38
+Bundle-Version: 2.0.39
 Web-ContextPath: /asset-list-web
 -dsannotations-options: inherit

@@ -86,7 +86,7 @@ public class CommerceProductPricingClassDataSetActionProvider
 						productPricingClass.getPricingClassId(),
 						productPricingClass.getCpDefinitionId()));
 				dropdownItem.setLabel(
-					LanguageUtil.get(httpServletRequest, "delete"));
+					LanguageUtil.get(httpServletRequest, "remove"));
 				dropdownItem.setTarget("async");
 			}
 		).build();

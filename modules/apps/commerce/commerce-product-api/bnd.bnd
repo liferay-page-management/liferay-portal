@@ -1,12 +1,13 @@
 Bundle-Name: Liferay Commerce Product API
 Bundle-SymbolicName: com.liferay.commerce.product.api
-Bundle-Version: 28.0.0
+Bundle-Version: 28.0.2
 Export-Package:\
 	com.liferay.commerce.product.catalog,\
 	com.liferay.commerce.product.channel,\
 	com.liferay.commerce.product.configuration,\
 	com.liferay.commerce.product.constants,\
 	com.liferay.commerce.product.data.source,\
+	com.liferay.commerce.product.display.context,\
 	com.liferay.commerce.product.display.context.util,\
 	com.liferay.commerce.product.exception,\
 	com.liferay.commerce.product.importer,\
@@ -14,8 +15,10 @@ Export-Package:\
 	com.liferay.commerce.product.model,\
 	com.liferay.commerce.product.option,\
 	com.liferay.commerce.product.permission,\
+	com.liferay.commerce.product.portlet.action,\
 	com.liferay.commerce.product.service,\
 	com.liferay.commerce.product.service.persistence,\
+	com.liferay.commerce.product.servlet.taglib.ui,\
 	com.liferay.commerce.product.type,\
 	com.liferay.commerce.product.util,\
 	com.liferay.commerce.product.util.comparator

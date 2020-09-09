@@ -34,6 +34,8 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.XmlProvider;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.ConfigurationContainer;
+import org.gradle.api.plugins.ExtensionContainer;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.PluginContainer;
 import org.gradle.api.tasks.TaskProvider;
@@ -60,8 +62,10 @@ public class EclipseDefaultsPlugin extends BaseDefaultsPlugin<EclipsePlugin> {
 
 		// Extensions
 
-		final EclipseModel eclipseModelExtension = GradleUtil.getExtension(
-			project, EclipseModel.class);
+		ExtensionContainer extensionContainer = project.getExtensions();
+
+		final EclipseModel eclipseModelExtension = extensionContainer.getByType(
+			EclipseModel.class);
 
 		// Tasks
 
@@ -70,14 +74,7 @@ public class EclipseDefaultsPlugin extends BaseDefaultsPlugin<EclipsePlugin> {
 
 		_configureTaskEclipseProvider(eclipseTaskProvider);
 
-		// Other
-
-		final File portalRootDir = GradleUtil.getRootDir(
-			project.getRootProject(), "portal-impl");
-
-		_configureEclipseClasspath(project, eclipseModelExtension);
-		_configureEclipseProject(
-			project, eclipseModelExtension, eclipseTaskProvider, portalRootDir);
+		// Containers
 
 		PluginContainer pluginContainer = project.getPlugins();
 
@@ -92,6 +89,15 @@ public class EclipseDefaultsPlugin extends BaseDefaultsPlugin<EclipsePlugin> {
 				}
 
 			});
+
+		// Other
+
+		File portalRootDir = GradleUtil.getRootDir(
+			project.getRootProject(), "portal-impl");
+
+		_configureEclipseClasspath(project, eclipseModelExtension);
+		_configureEclipseProject(
+			project, eclipseModelExtension, eclipseTaskProvider, portalRootDir);
 	}
 
 	@Override
@@ -216,16 +222,24 @@ public class EclipseDefaultsPlugin extends BaseDefaultsPlugin<EclipsePlugin> {
 	private void _configurePluginJava(
 		Project project, EclipseModel eclipseModelExtension) {
 
+		// Configurations
+
+		ConfigurationContainer configurationContainer =
+			project.getConfigurations();
+
+		Configuration compileOnlyConfiguration =
+			configurationContainer.getByName(
+				JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME);
+
+		// Other
+
 		EclipseClasspath eclipseClasspath =
 			eclipseModelExtension.getClasspath();
 
 		Collection<Configuration> configurations =
 			eclipseClasspath.getPlusConfigurations();
 
-		Configuration configuration = GradleUtil.getConfiguration(
-			project, JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME);
-
-		configurations.add(configuration);
+		configurations.add(compileOnlyConfiguration);
 	}
 
 	private void _configureTaskEclipseProvider(

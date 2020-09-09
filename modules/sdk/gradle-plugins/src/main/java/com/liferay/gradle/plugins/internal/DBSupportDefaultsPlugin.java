@@ -34,8 +34,10 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.artifacts.DependencySet;
 import org.gradle.api.logging.Logger;
+import org.gradle.api.plugins.ExtensionContainer;
 import org.gradle.api.tasks.TaskContainer;
 
 /**
@@ -53,13 +55,18 @@ public class DBSupportDefaultsPlugin
 
 		// Extensions
 
-		final LiferayExtension liferayExtension = GradleUtil.getExtension(
-			project, LiferayExtension.class);
+		ExtensionContainer extensionContainer = project.getExtensions();
+
+		LiferayExtension liferayExtension = extensionContainer.getByType(
+			LiferayExtension.class);
 
 		// Configurations
 
-		Configuration dbSupportConfiguration = GradleUtil.getConfiguration(
-			project, DBSupportPlugin.CONFIGURATION_NAME);
+		ConfigurationContainer configurationContainer =
+			project.getConfigurations();
+
+		Configuration dbSupportConfiguration = configurationContainer.getByName(
+			DBSupportPlugin.CONFIGURATION_NAME);
 
 		_configureConfigurationDBSupport(
 			project, liferayExtension, dbSupportConfiguration);
@@ -70,7 +77,7 @@ public class DBSupportDefaultsPlugin
 			project, DBSupportPlugin.TOOL_CONFIGURATION_NAME, PortalTools.GROUP,
 			_PORTAL_TOOL_NAME);
 
-		// Other
+		// Containers
 
 		TaskContainer taskContainer = project.getTasks();
 

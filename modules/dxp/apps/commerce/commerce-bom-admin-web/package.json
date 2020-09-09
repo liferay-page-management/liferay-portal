@@ -50,5 +50,5 @@
 		"watch": "liferay-npm-scripts webpack --watch"
 	},
 	"sideEffects": false,
-	"version": "4.0.4"
+	"version": "4.0.6"
 }

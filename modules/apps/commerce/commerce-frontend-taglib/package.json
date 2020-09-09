@@ -15,5 +15,5 @@
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check"
 	},
-	"version": "10.0.3"
+	"version": "10.0.5"
 }
