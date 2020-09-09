@@ -116,6 +116,14 @@ export default function serviceFetch(
 			}
 
 			return body;
+		})
+		.catch((error) => {
+			handleErroredResponse(
+				Liferay.Language.get('an-unexpected-error-occurred'),
+				onNetworkStatus
+			);
+
+			throw error;
 		});
 }
 
