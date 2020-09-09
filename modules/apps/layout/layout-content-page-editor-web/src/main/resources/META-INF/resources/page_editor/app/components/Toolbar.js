@@ -16,7 +16,7 @@ import {ClayButtonWithIcon, default as ClayButton} from '@clayui/button';
 import ClayLayout from '@clayui/layout';
 import {useModal} from '@clayui/modal';
 import {useIsMounted} from 'frontend-js-react-web';
-import React, {Suspense, useCallback, useRef, useState} from 'react';
+import React, {Suspense, useCallback, useEffect, useRef, useState} from 'react';
 import ReactDOM from 'react-dom';
 
 import useLazy from '../../core/hooks/useLazy';
@@ -49,6 +49,7 @@ function ToolbarBody() {
 	const publishForm = useRef();
 	const selectItem = useSelectItem();
 	const store = useSelector((state) => state);
+	const [waitingForPublish, setWaitingForPublish] = useState(false);
 
 	const {
 		network,
@@ -58,7 +59,7 @@ function ToolbarBody() {
 	} = store;
 
 	const publishButtonDisabled =
-		store.network.status === SERVICE_NETWORK_STATUS_TYPES.savingDraft ||
+		network.status === SERVICE_NETWORK_STATUS_TYPES.savingDraft ||
 		config.pending;
 
 	const [openPreviewModal, setOpenPreviewModal] = useState(false);
@@ -70,6 +71,19 @@ function ToolbarBody() {
 			}
 		},
 	});
+
+	// LPS-119924
+	//
+	// Wait until all pending request are done before publishing
+
+	useEffect(() => {
+		if (
+			waitingForPublish &&
+			network.status !== SERVICE_NETWORK_STATUS_TYPES.savingDraft
+		) {
+			publishForm.current.submit();
+		}
+	}, [network.status, waitingForPublish]);
 
 	const loading = useRef(() => {
 		Promise.all(
@@ -160,14 +174,13 @@ function ToolbarBody() {
 		// is some pending action that has to be processed, because everything
 		// happens asynchronously.
 		//
-		// This arbitrary value allows us to wait until the client CPU has
-		// processed everything and React have resolved any pending dispatch.
-		// This should only happen on critical use cases like the one
-		// described in the issue.
+		// This arbitrary value allows us to wait until react has at least started all
+		// the pending requests. This way we can wait until all are finished before
+		// submitting the form
 
 		setTimeout(() => {
 			if (!publishButtonDisabled && publishForm.current) {
-				publishForm.current.submit();
+				setWaitingForPublish(true);
 			}
 		}, 300);
 	};
