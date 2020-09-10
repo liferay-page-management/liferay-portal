@@ -85,7 +85,7 @@ public class CPDefinitionLocalServiceTest {
 			_cpDefinitionLocalService.deleteCPDefinition(cpDefinition);
 		}
 
-		_commerceCatalogLocalService.deleteCommerceCatalog(_commerceCatalog);
+		_cpOptionLocalService.deleteCPOptions(_company.getCompanyId());
 	}
 
 	@Test

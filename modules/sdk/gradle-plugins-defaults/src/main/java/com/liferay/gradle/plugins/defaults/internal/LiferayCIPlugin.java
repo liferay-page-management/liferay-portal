@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.gradle.api.Action;
 import org.gradle.api.GradleException;
@@ -45,12 +46,18 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.UncheckedIOException;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.artifacts.DependencySet;
 import org.gradle.api.artifacts.ProjectDependency;
 import org.gradle.api.file.FileTree;
 import org.gradle.api.logging.Logger;
+import org.gradle.api.plugins.Convention;
+import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.plugins.PluginContainer;
 import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskContainer;
+import org.gradle.api.tasks.testing.Test;
 
 /**
  * @author Andrea Di Giorgi
@@ -61,31 +68,112 @@ public class LiferayCIPlugin implements Plugin<Project> {
 
 	@Override
 	public void apply(final Project project) {
-		_configureTasksDownloadNode(project);
-		_configureTasksExecuteNode(project);
-		_configureTasksExecutePackageManager(project);
-		_configureTasksNpmInstall(project);
-		_configureTasksYarnInstall(project);
 
-		GradleUtil.withPlugin(
-			project, TestIntegrationPlugin.class,
+		// Containers
+
+		final TaskContainer taskContainer = project.getTasks();
+
+		taskContainer.withType(
+			DownloadNodeTask.class,
+			new Action<DownloadNodeTask>() {
+
+				@Override
+				public void execute(DownloadNodeTask downloadNodeTask) {
+					_configureTaskDownloadNode(downloadNodeTask);
+				}
+
+			});
+
+		taskContainer.withType(
+			ExecuteNodeTask.class,
+			new Action<ExecuteNodeTask>() {
+
+				@Override
+				public void execute(ExecuteNodeTask executeNodeTask) {
+					_configureTaskExecuteNode(executeNodeTask);
+				}
+
+			});
+
+		taskContainer.withType(
+			ExecutePackageManagerTask.class,
+			new Action<ExecutePackageManagerTask>() {
+
+				@Override
+				public void execute(
+					ExecutePackageManagerTask executePackageManagerTask) {
+
+					_configureTaskExecutePackageManager(
+						executePackageManagerTask);
+				}
+
+			});
+
+		taskContainer.withType(
+			NpmInstallTask.class,
+			new Action<NpmInstallTask>() {
+
+				@Override
+				public void execute(NpmInstallTask npmInstallTask) {
+					_configureTaskNpmInstall(npmInstallTask);
+				}
+
+			});
+
+		taskContainer.withType(
+			YarnInstallTask.class,
+			new Action<YarnInstallTask>() {
+
+				@Override
+				public void execute(YarnInstallTask yarnInstallTask) {
+					_configureTaskYarnInstall(yarnInstallTask);
+				}
+
+			});
+
+		PluginContainer pluginContainer = project.getPlugins();
+
+		pluginContainer.withType(
+			TestIntegrationPlugin.class,
 			new Action<TestIntegrationPlugin>() {
 
 				@Override
 				public void execute(
 					TestIntegrationPlugin testIntegrationPlugin) {
 
-					_configureTaskTestIntegration(project);
+					taskContainer.withType(
+						Test.class,
+						new Action<Test>() {
+
+							@Override
+							public void execute(Test test) {
+								_configureTaskTestForTestIntegrationPlugin(
+									project, test);
+							}
+
+						});
 				}
 
 			});
+
+		// Other
 
 		project.afterEvaluate(
 			new Action<Project>() {
 
 				@Override
 				public void execute(Project project) {
-					_configureTasksNpmInstallArgs(project);
+					taskContainer.withType(
+						NpmInstallTask.class,
+						new Action<NpmInstallTask>() {
+
+							@Override
+							public void execute(NpmInstallTask npmInstallTask) {
+								_configureTaskNpmInstallAfterEvaluate(
+									project, npmInstallTask);
+							}
+
+						});
 				}
 
 			});
@@ -116,37 +204,6 @@ public class LiferayCIPlugin implements Plugin<Project> {
 		executeNodeTask.setNpmInstallRetries(_NPM_INSTALL_RETRIES);
 	}
 
-	private void _configureTaskExecuteNodeArgs(
-		ExecuteNodeTask executeNodeTask, Map<String, String> newArgs) {
-
-		List<Object> args = executeNodeTask.getArgs();
-
-		for (Map.Entry<String, String> entry : newArgs.entrySet()) {
-			String key = entry.getKey();
-			String value = entry.getValue();
-
-			boolean changed = false;
-
-			for (int i = 0; i < args.size(); i++) {
-				String arg = GradleUtil.toString(args.get(i));
-
-				if (arg.startsWith(key)) {
-					changed = true;
-
-					args.set(i, key + value);
-
-					break;
-				}
-			}
-
-			if (!changed) {
-				args.add(key + value);
-			}
-		}
-
-		executeNodeTask.setArgs(args);
-	}
-
 	private void _configureTaskExecutePackageManager(
 		ExecutePackageManagerTask executePackageManagerTask) {
 
@@ -173,180 +230,145 @@ public class LiferayCIPlugin implements Plugin<Project> {
 		npmInstallTask.setUseNpmCI(Boolean.FALSE);
 	}
 
-	private void _configureTasksDownloadNode(Project project) {
-		TaskContainer taskContainer = project.getTasks();
+	private void _configureTaskNpmInstallAfterEvaluate(
+		Project project, NpmInstallTask npmInstallTask) {
 
-		taskContainer.withType(
-			DownloadNodeTask.class,
-			new Action<DownloadNodeTask>() {
-
-				@Override
-				public void execute(DownloadNodeTask downloadNodeTask) {
-					_configureTaskDownloadNode(downloadNodeTask);
-				}
-
-			});
-	}
-
-	private void _configureTasksExecuteNode(Project project) {
-		TaskContainer taskContainer = project.getTasks();
-
-		taskContainer.withType(
-			ExecuteNodeTask.class,
-			new Action<ExecuteNodeTask>() {
-
-				@Override
-				public void execute(ExecuteNodeTask executeNodeTask) {
-					_configureTaskExecuteNode(executeNodeTask);
-				}
-
-			});
-	}
-
-	private void _configureTasksExecutePackageManager(Project project) {
-		TaskContainer taskContainer = project.getTasks();
-
-		taskContainer.withType(
-			ExecutePackageManagerTask.class,
-			new Action<ExecutePackageManagerTask>() {
-
-				@Override
-				public void execute(
-					ExecutePackageManagerTask executePackageManagerTask) {
-
-					_configureTaskExecutePackageManager(
-						executePackageManagerTask);
-				}
-
-			});
-	}
-
-	private void _configureTasksNpmInstall(Project project) {
-		TaskContainer taskContainer = project.getTasks();
-
-		taskContainer.withType(
-			NpmInstallTask.class,
-			new Action<NpmInstallTask>() {
-
-				@Override
-				public void execute(NpmInstallTask npmInstallTask) {
-					_configureTaskNpmInstall(npmInstallTask);
-				}
-
-			});
-	}
-
-	private void _configureTasksNpmInstallArgs(Project project) {
-		final String ciSassBinarySite = GradleUtil.getProperty(
+		String ciSassBinarySite = GradleUtil.getProperty(
 			project, "nodejs.npm.ci.sass.binary.site", (String)null);
 
 		if (Validator.isNull(ciSassBinarySite)) {
 			return;
 		}
 
-		TaskContainer taskContainer = project.getTasks();
+		Map<String, String> newArgs = Collections.singletonMap(
+			_SASS_BINARY_SITE_ARG, ciSassBinarySite);
 
-		taskContainer.withType(
-			NpmInstallTask.class,
-			new Action<NpmInstallTask>() {
+		List<Object> args = npmInstallTask.getArgs();
 
-				@Override
-				public void execute(NpmInstallTask npmInstallTask) {
-					_configureTaskExecuteNodeArgs(
-						npmInstallTask,
-						Collections.singletonMap(
-							_SASS_BINARY_SITE_ARG, ciSassBinarySite));
-				}
+		for (Map.Entry<String, String> entry : newArgs.entrySet()) {
+			String key = entry.getKey();
+			String value = entry.getValue();
 
-			});
-	}
+			boolean changed = false;
 
-	private void _configureTasksYarnInstall(Project project) {
-		TaskContainer taskContainer = project.getTasks();
+			for (int i = 0; i < args.size(); i++) {
+				String arg = GradleUtil.toString(args.get(i));
 
-		taskContainer.withType(
-			YarnInstallTask.class,
-			new Action<YarnInstallTask>() {
+				if (arg.startsWith(key)) {
+					changed = true;
 
-				@Override
-				public void execute(YarnInstallTask yarnInstallTask) {
-					_configureTaskYarnInstall(yarnInstallTask);
-				}
+					args.set(i, key + value);
 
-			});
-	}
-
-	private void _configureTaskTestIntegration(Project project) {
-		Task testIntegrationTask = GradleUtil.getTask(
-			project, TestIntegrationBasePlugin.TEST_INTEGRATION_TASK_NAME);
-
-		Action<Task> action = new Action<Task>() {
-
-			@Override
-			public void execute(Task task) {
-				Project project = task.getProject();
-
-				Logger logger = project.getLogger();
-
-				SourceSet sourceSet = GradleUtil.getSourceSet(
-					project,
-					TestIntegrationBasePlugin.TEST_INTEGRATION_SOURCE_SET_NAME);
-
-				Configuration configuration = GradleUtil.getConfiguration(
-					project, sourceSet.getCompileConfigurationName());
-
-				DependencySet dependencySet = configuration.getDependencies();
-
-				for (ProjectDependency projectDependency :
-						dependencySet.withType(ProjectDependency.class)) {
-
-					Project dependencyProject =
-						projectDependency.getDependencyProject();
-
-					if (CIUtil.isExcludedDependencyProject(
-							project, dependencyProject)) {
-
-						if (logger.isLifecycleEnabled()) {
-							logger.lifecycle(
-								"Excluded project dependency {} for {}",
-								dependencyProject.getPath(), project.getPath());
-						}
-
-						continue;
-					}
-
-					File lfrBuildCIFile = dependencyProject.file(
-						".lfrbuild-ci");
-					File lfrBuildCISkipTestIntegrationCheckFile =
-						dependencyProject.file(
-							".lfrbuild-ci-skip-test-integration-check");
-					File lfrBuildPortalDeprecatedFile = dependencyProject.file(
-						".lfrbuild-portal-deprecated");
-					File lfrBuildPortalFile = dependencyProject.file(
-						".lfrbuild-portal");
-
-					if (lfrBuildCISkipTestIntegrationCheckFile.exists()) {
-						if (lfrBuildCIFile.exists() ||
-							lfrBuildPortalFile.exists()) {
-
-							throw new GradleException(
-								"Please delete marker file " +
-									lfrBuildCISkipTestIntegrationCheckFile);
-						}
-					}
-					else if (!lfrBuildCIFile.exists() &&
-							 !lfrBuildPortalDeprecatedFile.exists() &&
-							 !lfrBuildPortalFile.exists()) {
-
-						throw new GradleException(
-							"Please create marker file " + lfrBuildPortalFile);
-					}
+					break;
 				}
 			}
 
-		};
+			if (!changed) {
+				args.add(key + value);
+			}
+		}
 
-		testIntegrationTask.doFirst(action);
+		npmInstallTask.setArgs(args);
+	}
+
+	private void _configureTaskTestForTestIntegrationPlugin(
+		final Project project, Test test) {
+
+		String taskName = TestIntegrationBasePlugin.TEST_INTEGRATION_TASK_NAME;
+
+		if (!Objects.equals(test.getName(), taskName)) {
+			return;
+		}
+
+		test.doFirst(
+			new Action<Task>() {
+
+				@Override
+				public void execute(Task task) {
+
+					// Conventions
+
+					Convention convention = project.getConvention();
+
+					JavaPluginConvention javaPluginConvention =
+						convention.getPlugin(JavaPluginConvention.class);
+
+					SourceSetContainer sourceSetContainer =
+						javaPluginConvention.getSourceSets();
+
+					SourceSet testIntegrationSourceSet =
+						sourceSetContainer.getByName(
+							TestIntegrationBasePlugin.
+								TEST_INTEGRATION_SOURCE_SET_NAME);
+
+					// Configurations
+
+					ConfigurationContainer configurationContainer =
+						project.getConfigurations();
+
+					Configuration configuration =
+						configurationContainer.getByName(
+							testIntegrationSourceSet.
+								getCompileConfigurationName());
+
+					// Dependencies
+
+					DependencySet dependencySet =
+						configuration.getDependencies();
+
+					for (ProjectDependency projectDependency :
+							dependencySet.withType(ProjectDependency.class)) {
+
+						Project dependencyProject =
+							projectDependency.getDependencyProject();
+
+						if (CIUtil.isExcludedDependencyProject(
+								project, dependencyProject)) {
+
+							Logger logger = project.getLogger();
+
+							if (logger.isLifecycleEnabled()) {
+								logger.lifecycle(
+									"Excluded project dependency {} for {}",
+									dependencyProject.getPath(),
+									project.getPath());
+							}
+
+							continue;
+						}
+
+						File lfrBuildCIFile = dependencyProject.file(
+							".lfrbuild-ci");
+						File lfrBuildCISkipTestIntegrationCheckFile =
+							dependencyProject.file(
+								".lfrbuild-ci-skip-test-integration-check");
+						File lfrBuildPortalDeprecatedFile =
+							dependencyProject.file(
+								".lfrbuild-portal-deprecated");
+						File lfrBuildPortalFile = dependencyProject.file(
+							".lfrbuild-portal");
+
+						if (lfrBuildCISkipTestIntegrationCheckFile.exists()) {
+							if (lfrBuildCIFile.exists() ||
+								lfrBuildPortalFile.exists()) {
+
+								throw new GradleException(
+									"Please delete marker file " +
+										lfrBuildCISkipTestIntegrationCheckFile);
+							}
+						}
+						else if (!lfrBuildCIFile.exists() &&
+								 !lfrBuildPortalDeprecatedFile.exists() &&
+								 !lfrBuildPortalFile.exists()) {
+
+							throw new GradleException(
+								"Please create marker file " +
+									lfrBuildPortalFile);
+						}
+					}
+				}
+
+			});
 	}
 
 	private void _configureTaskYarnInstall(YarnInstallTask yarnInstallTask) {

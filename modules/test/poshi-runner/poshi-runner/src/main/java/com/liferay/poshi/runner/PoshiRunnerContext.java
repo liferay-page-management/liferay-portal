@@ -350,6 +350,8 @@ public class PoshiRunnerContext {
 	public static void readFiles(String[] testFileIncludes) throws Exception {
 		_readPoshiFiles(testFileIncludes);
 		_readSeleniumFiles();
+
+		PoshiScriptParserException.throwExceptions();
 	}
 
 	public static void readFiles(String[] includes, String... baseDirNames)
@@ -358,6 +360,8 @@ public class PoshiRunnerContext {
 		_readPoshiFilesFromClassPath(includes, "testFunctional");
 		_readPoshiFiles(includes, baseDirNames);
 		_readSeleniumFiles();
+
+		PoshiScriptParserException.throwExceptions();
 	}
 
 	public static void setTestCaseNamespacedClassCommandName(

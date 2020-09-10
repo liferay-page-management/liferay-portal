@@ -28,6 +28,10 @@ import com.liferay.commerce.exception.CommerceOrderGuestCheckoutException;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.order.engine.CommerceOrderEngine;
+import com.liferay.commerce.price.list.model.CommercePriceEntry;
+import com.liferay.commerce.price.list.model.CommercePriceList;
+import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
+import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.service.CommerceOrderLocalServiceUtil;
@@ -52,6 +56,7 @@ import com.liferay.portal.kernel.settings.ModifiableSettings;
 import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.settings.SettingsFactory;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -80,6 +85,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Luca Pellizzon
  */
+@DataGuard(scope = DataGuard.Scope.METHOD)
 @RunWith(Arquillian.class)
 public class CommerceCheckoutTest {
 
@@ -340,7 +346,16 @@ public class CommerceCheckoutTest {
 				continue;
 			}
 
-			BigDecimal price = cpInstance.getPrice();
+			CommercePriceList commercePriceList =
+				_commercePriceListLocalService.getCommerceCatalogBasePriceList(
+					cpInstance.getGroupId());
+
+			CommercePriceEntry commercePriceEntry =
+				_commercePriceEntryLocalService.fetchCommercePriceEntry(
+					commercePriceList.getCommercePriceListId(),
+					cpInstance.getCPInstanceUuid());
+
+			BigDecimal price = commercePriceEntry.getPrice();
 
 			int quantity = commerceOrderItem.getQuantity();
 
@@ -380,10 +395,15 @@ public class CommerceCheckoutTest {
 	@Inject
 	private CommerceOrderEngine _commerceOrderEngine;
 
+	@Inject
+	private CommercePriceEntryLocalService _commercePriceEntryLocalService;
+
+	@Inject
+	private CommercePriceListLocalService _commercePriceListLocalService;
+
 	@DeleteAfterTestRun
 	private Company _company;
 
-	@DeleteAfterTestRun
 	private Group _group;
 
 	@Inject

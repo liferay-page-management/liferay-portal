@@ -26,12 +26,18 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
+import com.liferay.commerce.service.CommerceOrderLocalServiceUtil;
 import com.liferay.commerce.test.util.CommerceInventoryTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.commerce.util.CommerceShippingHelper;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.test.rule.Inject;
@@ -52,6 +58,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Luca Pellizzon
  */
+@DataGuard(scope = DataGuard.Scope.METHOD)
 @RunWith(Arquillian.class)
 public class CommerceShippingHelperTest {
 
@@ -64,13 +71,18 @@ public class CommerceShippingHelperTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_user = UserTestUtil.addUser();
+		_company = CompanyTestUtil.addCompany();
+
+		_user = UserTestUtil.addUser(_company);
+
+		_group = GroupTestUtil.addGroup(
+			_company.getCompanyId(), _user.getUserId(), 0);
 
 		_commerceCurrency = CommerceCurrencyTestUtil.addCommerceCurrency(
 			_user.getCompanyId());
 
 		_commerceChannel = CommerceTestUtil.addCommerceChannel(
-			_commerceCurrency.getCode());
+			_group.getGroupId(), _commerceCurrency.getCode());
 
 		_commerceInventoryWarehouse =
 			CommerceInventoryTestUtil.addCommerceInventoryWarehouse();
@@ -97,9 +109,12 @@ public class CommerceShippingHelperTest {
 			_user.getUserId(), _commerceChannel.getGroupId(),
 			_commerceCurrency);
 
-		CPInstance cpInstance1 = CPTestUtil.addCPInstanceWithSku();
-		CPInstance cpInstance2 = CPTestUtil.addCPInstanceWithSku();
-		CPInstance cpInstance3 = CPTestUtil.addCPInstanceWithSku();
+		CPInstance cpInstance1 = CPTestUtil.addCPInstanceWithSku(
+			_group.getGroupId());
+		CPInstance cpInstance2 = CPTestUtil.addCPInstanceWithSku(
+			_group.getGroupId());
+		CPInstance cpInstance3 = CPTestUtil.addCPInstanceWithSku(
+			_group.getGroupId());
 
 		_addCPDefinitionProperties(cpInstance1);
 		_addCPDefinitionProperties(cpInstance2);
@@ -143,6 +158,9 @@ public class CommerceShippingHelperTest {
 		Assert.assertEquals(
 			expectedDimensions.getWidth(), actualDimensions.getWidth(),
 			0.00001);
+
+		CommerceOrderLocalServiceUtil.deleteCommerceOrder(
+			commerceOrder.getCommerceOrderId());
 	}
 
 	@Test
@@ -162,9 +180,12 @@ public class CommerceShippingHelperTest {
 			_user.getUserId(), _commerceChannel.getGroupId(),
 			_commerceCurrency);
 
-		CPInstance cpInstance1 = CPTestUtil.addCPInstanceWithSku();
-		CPInstance cpInstance2 = CPTestUtil.addCPInstanceWithSku();
-		CPInstance cpInstance3 = CPTestUtil.addCPInstanceWithSku();
+		CPInstance cpInstance1 = CPTestUtil.addCPInstanceWithSku(
+			_group.getGroupId());
+		CPInstance cpInstance2 = CPTestUtil.addCPInstanceWithSku(
+			_group.getGroupId());
+		CPInstance cpInstance3 = CPTestUtil.addCPInstanceWithSku(
+			_group.getGroupId());
 
 		_addCPDefinitionProperties(cpInstance1);
 		_addCPDefinitionProperties(cpInstance2);
@@ -196,6 +217,9 @@ public class CommerceShippingHelperTest {
 				cpInstance3.getWeight();
 
 		Assert.assertEquals(expectedWeight, actualWeight, 0.0001);
+
+		CommerceOrderLocalServiceUtil.deleteCommerceOrder(
+			commerceOrder.getCommerceOrderId());
 	}
 
 	@Rule
@@ -253,6 +277,11 @@ public class CommerceShippingHelperTest {
 
 	@Inject
 	private CommerceShippingHelper _commerceShippingHelper;
+
+	@DeleteAfterTestRun
+	private Company _company;
+
+	private Group _group;
 
 	@DeleteAfterTestRun
 	private User _user;

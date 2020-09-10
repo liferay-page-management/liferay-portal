@@ -26,7 +26,9 @@ import com.liferay.commerce.product.service.CPSpecificationOptionLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.util.CPDefinitionHelper;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
@@ -36,11 +38,14 @@ import com.liferay.portal.kernel.search.facet.collector.FacetCollector;
 import com.liferay.portal.kernel.search.facet.collector.TermCollector;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.SearchContextTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -50,7 +55,6 @@ import java.util.List;
 
 import org.frutilla.FrutillaRule;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -73,24 +77,17 @@ public class SpecificationOptionFacetsTest {
 
 	@Before
 	public void setUp() throws Exception {
+		_company = CompanyTestUtil.addCompany();
+
+		_user = UserTestUtil.addUser(_company);
+
+		_group = GroupTestUtil.addGroup(
+			_company.getCompanyId(), _user.getUserId(), 0);
+
 		_commerceCatalog = _commerceCatalogLocalService.addCommerceCatalog(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			LocaleUtil.US.getDisplayLanguage(), null,
-			ServiceContextTestUtil.getServiceContext());
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		List<CPDefinition> cpDefinitions =
-			_cpDefinitionLocalService.getCPDefinitions(
-				_commerceCatalog.getGroupId(), WorkflowConstants.STATUS_ANY,
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-		for (CPDefinition cpDefinition : cpDefinitions) {
-			_cpDefinitionLocalService.deleteCPDefinition(cpDefinition);
-		}
-
-		_commerceCatalogLocalService.deleteCommerceCatalog(_commerceCatalog);
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 	}
 
 	@Test
@@ -111,8 +108,7 @@ public class SpecificationOptionFacetsTest {
 			_commerceCatalog.getGroupId());
 
 		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				_commerceCatalog.getGroupId());
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
 
 		CPOptionCategory cpOptionCategory =
 			_cpOptionCategoryLocalService.addCPOptionCategory(
@@ -140,6 +136,9 @@ public class SpecificationOptionFacetsTest {
 
 		SearchContext searchContext = SearchContextTestUtil.getSearchContext(
 			_commerceCatalog.getGroupId());
+
+		searchContext.setCompanyId(_company.getCompanyId());
+		searchContext.setUserId(_user.getUserId());
 
 		Facet facet = new SimpleFacet(searchContext);
 
@@ -186,8 +185,7 @@ public class SpecificationOptionFacetsTest {
 			_commerceCatalog.getGroupId());
 
 		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				_commerceCatalog.getGroupId());
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
 
 		CPOptionCategory cpOptionCategory =
 			_cpOptionCategoryLocalService.addCPOptionCategory(
@@ -216,6 +214,9 @@ public class SpecificationOptionFacetsTest {
 		SearchContext searchContext = SearchContextTestUtil.getSearchContext(
 			_commerceCatalog.getGroupId());
 
+		searchContext.setCompanyId(_company.getCompanyId());
+		searchContext.setUserId(_user.getUserId());
+
 		Facet facet = new SimpleFacet(searchContext);
 
 		facet.setFieldName("specificationOptionsIds");
@@ -242,6 +243,9 @@ public class SpecificationOptionFacetsTest {
 	@Inject
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
 
+	@DeleteAfterTestRun
+	private Company _company;
+
 	@Inject
 	private CPDefinitionHelper _cpDefinitionHelper;
 
@@ -258,5 +262,11 @@ public class SpecificationOptionFacetsTest {
 	@Inject
 	private CPSpecificationOptionLocalService
 		_cpSpecificationOptionLocalService;
+
+	@DeleteAfterTestRun
+	private Group _group;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 }

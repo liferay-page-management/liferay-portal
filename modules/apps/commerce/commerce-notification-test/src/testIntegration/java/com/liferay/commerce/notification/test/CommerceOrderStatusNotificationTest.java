@@ -42,11 +42,14 @@ import com.liferay.commerce.service.CommerceShipmentLocalService;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -74,6 +77,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 /**
  * @author Luca Pellizzon
  */
+@DataGuard(scope = DataGuard.Scope.METHOD)
 @RunWith(Arquillian.class)
 public class CommerceOrderStatusNotificationTest {
 
@@ -86,15 +90,18 @@ public class CommerceOrderStatusNotificationTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_group = GroupTestUtil.addGroup();
+		_company = CompanyTestUtil.addCompany();
 
-		_user = UserTestUtil.addUser();
+		_user = UserTestUtil.addUser(_company);
+
+		_group = GroupTestUtil.addGroup(
+			_company.getCompanyId(), _user.getUserId(), 0);
 
 		_commerceCurrency = CommerceCurrencyTestUtil.addCommerceCurrency(
 			_group.getCompanyId());
 
 		_serviceContext = ServiceContextTestUtil.getServiceContext(
-			_group.getCompanyId(), _group.getGroupId(), _user.getUserId());
+			_company.getCompanyId(), _group.getGroupId(), _user.getUserId());
 
 		_commerceChannel = CommerceTestUtil.addCommerceChannel(
 			_group.getGroupId(), _commerceCurrency.getCode());
@@ -150,8 +157,6 @@ public class CommerceOrderStatusNotificationTest {
 			CommerceOrderConstants.ORDER_STATUS_PENDING,
 			_commerceOrder.getOrderStatus());
 
-		Thread.sleep(1000);
-
 		int commerceNotificationQueueEntriesCount =
 			_commerceNotificationQueueEntryLocalService.
 				getCommerceNotificationQueueEntriesCount(
@@ -176,10 +181,6 @@ public class CommerceOrderStatusNotificationTest {
 		_commerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
 			_commerceOrder, _user.getUserId());
 
-		// Notifications are asynchronous, give time to send
-
-		Thread.sleep(1000);
-
 		int commerceNotificationQueueEntriesCount =
 			_commerceNotificationQueueEntryLocalService.
 				getCommerceNotificationQueueEntriesCount(
@@ -193,10 +194,6 @@ public class CommerceOrderStatusNotificationTest {
 		_commerceOrderEngine.transitionCommerceOrder(
 			_commerceOrder, CommerceOrderConstants.ORDER_STATUS_PROCESSING,
 			_user.getUserId());
-
-		// Notifications are asynchronous, give time to send
-
-		Thread.sleep(1000);
 
 		commerceNotificationQueueEntriesCount =
 			_commerceNotificationQueueEntryLocalService.
@@ -239,10 +236,6 @@ public class CommerceOrderStatusNotificationTest {
 			_commerceOrder, CommerceOrderConstants.ORDER_STATUS_SHIPPED,
 			_user.getUserId());
 
-		// Notifications are asynchronous, give time to send
-
-		Thread.sleep(2000);
-
 		commerceNotificationQueueEntriesCount =
 			_commerceNotificationQueueEntryLocalService.
 				getCommerceNotificationQueueEntriesCount(
@@ -256,10 +249,6 @@ public class CommerceOrderStatusNotificationTest {
 		_commerceOrderEngine.transitionCommerceOrder(
 			_commerceOrder, CommerceOrderConstants.ORDER_STATUS_COMPLETED,
 			_user.getUserId());
-
-		// Notifications are asynchronous, give time to send
-
-		Thread.sleep(1000);
 
 		commerceNotificationQueueEntriesCount =
 			_commerceNotificationQueueEntryLocalService.
@@ -369,8 +358,9 @@ public class CommerceOrderStatusNotificationTest {
 	private CommerceShipmentLocalService _commerceShipmentLocalService;
 
 	@DeleteAfterTestRun
-	private Group _group;
+	private Company _company;
 
+	private Group _group;
 	private ServiceContext _serviceContext;
 
 	@DeleteAfterTestRun

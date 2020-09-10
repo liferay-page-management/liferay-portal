@@ -33,9 +33,15 @@ import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.shipment.test.util.CommerceShipmentTestUtil;
 import com.liferay.commerce.test.util.CommerceInventoryTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -69,14 +75,20 @@ public class OrderStockManagementTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_user = UserTestUtil.addUser();
+		_company = CompanyTestUtil.addCompany();
+
+		_user = UserTestUtil.addUser(_company);
+
+		_group = GroupTestUtil.addGroup(
+			_company.getCompanyId(), _user.getUserId(), 0);
+
 		_commerceOrders = new ArrayList<>();
 
 		_commerceCurrency = CommerceCurrencyTestUtil.addCommerceCurrency(
 			_user.getCompanyId());
 
 		_commerceChannel = CommerceTestUtil.addCommerceChannel(
-			_commerceCurrency.getCode());
+			_group.getGroupId(), _commerceCurrency.getCode());
 	}
 
 	@After
@@ -86,8 +98,6 @@ public class OrderStockManagementTest {
 		}
 
 		_commerceCurrencyLocalService.deleteCommerceCurrency(_commerceCurrency);
-		_commerceChannelLocalService.deleteCommerceChannel(_commerceChannel);
-		_userLocalService.deleteUser(_user);
 	}
 
 	@Test
@@ -109,7 +119,7 @@ public class OrderStockManagementTest {
 
 		_commerceOrders.add(commerceOrder);
 
-		CPInstance cpInstance = CPTestUtil.addCPInstance();
+		CPInstance cpInstance = CPTestUtil.addCPInstance(_group.getGroupId());
 
 		CPDefinition cpDefinition = cpInstance.getCPDefinition();
 
@@ -148,10 +158,11 @@ public class OrderStockManagementTest {
 
 		_commerceOrders.add(commerceOrder);
 
-		CPInstance cpInstance = CPTestUtil.addCPInstance();
+		CPInstance cpInstance = CPTestUtil.addCPInstance(_group.getGroupId());
 
 		CommerceInventoryWarehouse commerceInventoryWarehouse =
-			CommerceInventoryTestUtil.addCommerceInventoryWarehouse();
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouse(
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		CommerceTestUtil.addWarehouseCommerceChannelRel(
 			commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
@@ -185,7 +196,7 @@ public class OrderStockManagementTest {
 			commerceInventoryWarehouseItem.getQuantity());
 
 		CommerceShipmentTestUtil.createOrderShipment(
-			commerceOrder.getCommerceOrderId(),
+			_user.getGroupId(), commerceOrder.getCommerceOrderId(),
 			commerceInventoryWarehouse.getCommerceInventoryWarehouseId());
 
 		commerceInventoryWarehouseItem =
@@ -218,7 +229,7 @@ public class OrderStockManagementTest {
 
 		_commerceOrders.add(commerceOrder);
 
-		CPInstance cpInstance = CPTestUtil.addCPInstance();
+		CPInstance cpInstance = CPTestUtil.addCPInstance(_group.getGroupId());
 
 		CommerceInventoryWarehouse commerceInventoryWarehouse =
 			CommerceInventoryTestUtil.addCommerceInventoryWarehouse();
@@ -261,7 +272,7 @@ public class OrderStockManagementTest {
 
 		_commerceOrders.add(commerceOrder);
 
-		CPInstance cpInstance = CPTestUtil.addCPInstance();
+		CPInstance cpInstance = CPTestUtil.addCPInstance(_group.getGroupId());
 
 		CommerceTestUtil.addCommerceOrderItem(
 			commerceOrder.getCommerceOrderId(), cpInstance.getCPInstanceId(),
@@ -290,7 +301,7 @@ public class OrderStockManagementTest {
 
 		_commerceOrders.add(commerceOrder);
 
-		CPInstance cpInstance = CPTestUtil.addCPInstance();
+		CPInstance cpInstance = CPTestUtil.addCPInstance(_group.getGroupId());
 
 		CommerceInventoryWarehouse commerceInventoryWarehouse =
 			CommerceInventoryTestUtil.addCommerceInventoryWarehouse();
@@ -336,10 +347,11 @@ public class OrderStockManagementTest {
 
 		_commerceOrders.add(commerceOrder2);
 
-		CPInstance cpInstance = CPTestUtil.addCPInstance();
+		CPInstance cpInstance = CPTestUtil.addCPInstance(_group.getGroupId());
 
 		CommerceInventoryWarehouse commerceInventoryWarehouse =
-			CommerceInventoryTestUtil.addCommerceInventoryWarehouse();
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouse(
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		CommerceTestUtil.addWarehouseCommerceChannelRel(
 			commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
@@ -354,7 +366,7 @@ public class OrderStockManagementTest {
 			4);
 
 		CommerceShipmentTestUtil.createOrderShipment(
-			commerceOrder1.getCommerceOrderId(),
+			_user.getGroupId(), commerceOrder1.getCommerceOrderId(),
 			commerceInventoryWarehouse.getCommerceInventoryWarehouseId());
 
 		CommerceTestUtil.addCommerceOrderItem(
@@ -383,6 +395,14 @@ public class OrderStockManagementTest {
 	private CommerceOrderLocalService _commerceOrderLocalService;
 
 	private List<CommerceOrder> _commerceOrders;
+
+	@DeleteAfterTestRun
+	private Company _company;
+
+	@DeleteAfterTestRun
+	private Group _group;
+
+	@DeleteAfterTestRun
 	private User _user;
 
 	@Inject
