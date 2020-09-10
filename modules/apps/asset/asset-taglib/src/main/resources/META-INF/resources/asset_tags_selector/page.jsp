@@ -19,7 +19,6 @@
 <%
 Map<String, Object> data = (Map<String, Object>)request.getAttribute("liferay-asset:asset-tags-selector:data");
 
-String inputName = (String)data.get("inputName");
 List<Map<String, String>> selectedItems = (List<Map<String, String>>)data.get("selectedItems");
 %>
 
@@ -30,7 +29,7 @@ List<Map<String, String>> selectedItems = (List<Map<String, String>>)data.get("s
 		for (Map<String, String> selectedItem : selectedItems) {
 		%>
 
-			<input name="<%= inputName %>" type="hidden" value="<%= selectedItem.get("value") %>" />
+			<input name="<%= (String)data.get("inputName") %>" type="hidden" value="<%= selectedItem.get("value") %>" />
 
 		<%
 		}

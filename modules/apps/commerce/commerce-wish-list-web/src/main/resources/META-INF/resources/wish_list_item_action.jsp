@@ -25,15 +25,13 @@ CommerceWishListItem commerceWishListItem = (CommerceWishListItem)row.getObject(
 
 CPInstance cpInstance = commerceWishListItem.fetchCPInstance();
 CProduct cProduct = commerceWishListItem.getCProduct();
-
-String addToCartId = PortalUtil.generateRandomKey(request, "add-to-cart");
 %>
 
 <c:choose>
 	<c:when test="<%= cpInstance != null %>">
 		<commerce-ui:add-to-cart
 			CPInstanceId="<%= cpInstance.getCPInstanceId() %>"
-			id="<%= addToCartId %>"
+			id="<%= PortalUtil.generateRandomKey(request, "add-to-cart") %>"
 		/>
 	</c:when>
 	<c:otherwise>

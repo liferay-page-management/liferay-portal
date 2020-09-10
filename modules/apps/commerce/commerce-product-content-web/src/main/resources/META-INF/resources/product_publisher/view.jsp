@@ -20,8 +20,6 @@
 CPPublisherDisplayContext cpPublisherDisplayContext = (CPPublisherDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
 SearchContainer<CPCatalogEntry> searchContainer = cpPublisherDisplayContext.getSearchContainer();
-
-List<CPCatalogEntry> results = searchContainer.getResults();
 %>
 
 <c:choose>
@@ -35,7 +33,7 @@ List<CPCatalogEntry> results = searchContainer.getResults();
 			%>'
 			displayStyle="<%= cpPublisherDisplayContext.getDisplayStyle() %>"
 			displayStyleGroupId="<%= cpPublisherDisplayContext.getDisplayStyleGroupId() %>"
-			entries="<%= results %>"
+			entries="<%= searchContainer.getResults() %>"
 		/>
 
 		<c:if test="<%= cpPublisherDisplayContext.isPaginate() %>">

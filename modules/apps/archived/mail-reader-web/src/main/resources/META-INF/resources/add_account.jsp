@@ -48,18 +48,10 @@ for (int i = 0; i < accountsJSONArray.length(); i++) {
 		JSONObject accountJSONObject = accountsJSONArray.getJSONObject(i);
 
 		String titleLanguageKey = accountJSONObject.getString("titleLanguageKey");
-		String descriptionLanguageKey = accountJSONObject.getString("descriptionLanguageKey");
-		String address = accountJSONObject.getString("address");
-		String protocol = accountJSONObject.getString("protocol");
 		boolean useLocalPartAsLogin = accountJSONObject.getBoolean("useLocalPartAsLogin");
 		boolean hideSettings = accountJSONObject.getBoolean("hideSettings");
-		String incomingHostName = accountJSONObject.getString("incomingHostName");
 		String incomingPort = accountJSONObject.getString("incomingPort");
-		boolean incomingSecure = accountJSONObject.getBoolean("incomingSecure");
-		String outgoingHostName = accountJSONObject.getString("outgoingHostName");
 		String outgoingPort = accountJSONObject.getString("outgoingPort");
-		boolean outgoingSecure = accountJSONObject.getBoolean("outgoingSecure");
-		String folderPrefix = accountJSONObject.getString("folderPrefix");
 	%>
 
 		<liferay-ui:section>
@@ -67,30 +59,30 @@ for (int i = 0; i < accountsJSONArray.length(); i++) {
 
 			<aui:form cssClass="account-form" name='<%= "dialogFm" + (i + 1) %>' onSubmit="event.preventDefault();">
 				<aui:input name="personalName" type="hidden" value="<%= user.getFullName() %>" />
-				<aui:input name="protocol" type="hidden" value="<%= protocol %>" />
+				<aui:input name="protocol" type="hidden" value='<%= accountJSONObject.getString("protocol") %>' />
 				<aui:input name="signature" type="hidden" />
 				<aui:input name="useSignature" type="hidden" value="false" />
-				<aui:input name="folderPrefix" type="hidden" value="<%= folderPrefix %>" />
+				<aui:input name="folderPrefix" type="hidden" value='<%= accountJSONObject.getString("folderPrefix") %>' />
 				<aui:input name="defaultSender" type="hidden" value="false" />
 				<aui:input name="useLocalPartAsLogin" type="hidden" value="<%= useLocalPartAsLogin %>" />
 
 				<c:if test="<%= hideSettings %>">
-					<aui:input name="incomingHostName" type="hidden" value="<%= incomingHostName %>" />
+					<aui:input name="incomingHostName" type="hidden" value='<%= accountJSONObject.getString("incomingHostName") %>' />
 					<aui:input name="incomingPort" type="hidden" value="<%= incomingPort %>" />
-					<aui:input name="incomingSecure" type="hidden" value="<%= incomingSecure %>" />
-					<aui:input name="outgoingHostName" type="hidden" value="<%= outgoingHostName %>" />
+					<aui:input name="incomingSecure" type="hidden" value='<%= accountJSONObject.getBoolean("incomingSecure") %>' />
+					<aui:input name="outgoingHostName" type="hidden" value='<%= accountJSONObject.getString("outgoingHostName") %>' />
 					<aui:input name="outgoingPort" type="hidden" value="<%= outgoingPort %>" />
-					<aui:input name="outgoingSecure" type="hidden" value="<%= outgoingSecure %>" />
+					<aui:input name="outgoingSecure" type="hidden" value='<%= accountJSONObject.getBoolean("outgoingSecure") %>' />
 				</c:if>
 
 				<c:if test="<%= useLocalPartAsLogin %>">
 					<aui:input name="login" type="hidden" />
 				</c:if>
 
-				<liferay-ui:message key="<%= descriptionLanguageKey %>" />
+				<liferay-ui:message key='<%= accountJSONObject.getString("descriptionLanguageKey") %>' />
 
 				<aui:fieldset label="account-settings">
-					<aui:input name="address" value="<%= address %>" />
+					<aui:input name="address" value='<%= accountJSONObject.getString("address") %>' />
 
 					<c:if test="<%= !useLocalPartAsLogin %>">
 						<aui:input name="login" />

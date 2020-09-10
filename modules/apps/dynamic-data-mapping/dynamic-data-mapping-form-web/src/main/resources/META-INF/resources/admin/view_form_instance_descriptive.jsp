@@ -24,8 +24,6 @@ DDMFormInstance ddmFormInstance = (DDMFormInstance)row.getObject();
 DateSearchEntry dateSearchEntry = new DateSearchEntry();
 
 dateSearchEntry.setDate(ddmFormInstance.getModifiedDate());
-
-String href = (String)request.getAttribute(WebKeys.SEARCH_ENTRY_HREF);
 %>
 
 <div class="clamp-container">
@@ -38,7 +36,7 @@ String href = (String)request.getAttribute(WebKeys.SEARCH_ENTRY_HREF);
 
 		<c:choose>
 			<c:when test="<%= hasValidDDMFormFields && hasValidStorageType %>">
-				<aui:a cssClass="form-instance-name" href="<%= href %>">
+				<aui:a cssClass="form-instance-name" href="<%= (String)request.getAttribute(WebKeys.SEARCH_ENTRY_HREF) %>">
 					<%= HtmlUtil.escape(ddmFormInstance.getName(locale)) %>
 				</aui:a>
 			</c:when>

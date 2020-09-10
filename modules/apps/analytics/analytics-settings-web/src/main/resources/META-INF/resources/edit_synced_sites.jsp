@@ -16,12 +16,8 @@
 
 <%@ include file="/init.jsp" %>
 
-<%
-boolean propertiesEnabled = true;
-%>
-
 <c:choose>
-	<c:when test="<%= propertiesEnabled %>">
+	<c:when test="<%= true %>">
 		<liferay-util:include page="/edit_properties.jsp" servletContext="<%= application %>" />
 	</c:when>
 	<c:otherwise>

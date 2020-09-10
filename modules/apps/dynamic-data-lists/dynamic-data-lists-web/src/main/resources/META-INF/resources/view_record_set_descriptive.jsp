@@ -24,12 +24,10 @@ DDLRecordSet ddlRecordSet = (DDLRecordSet)row.getObject();
 DateSearchEntry dateSearchEntry = new DateSearchEntry();
 
 dateSearchEntry.setDate(ddlRecordSet.getModifiedDate());
-
-String href = (String)request.getAttribute(WebKeys.SEARCH_ENTRY_HREF);
 %>
 
 <h2 class="h5">
-	<aui:a cssClass="record-set-name" href="<%= href %>">
+	<aui:a cssClass="record-set-name" href="<%= (String)request.getAttribute(WebKeys.SEARCH_ENTRY_HREF) %>">
 		<%= HtmlUtil.escape(ddlRecordSet.getName(locale)) %>
 	</aui:a>
 </h2>

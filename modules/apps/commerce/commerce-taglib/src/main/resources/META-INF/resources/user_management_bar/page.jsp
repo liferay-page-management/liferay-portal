@@ -17,7 +17,6 @@
 <%@ include file="/user_management_bar/init.jsp" %>
 
 <%
-String href = (String)request.getAttribute("liferay-commerce:user-management-bar:href");
 int notificationsCount = (int)request.getAttribute("liferay-commerce:user-management-bar:notificationsCount");
 boolean showNotifications = (boolean)request.getAttribute("liferay-commerce:user-management-bar:showNotifications");
 %>
@@ -25,7 +24,7 @@ boolean showNotifications = (boolean)request.getAttribute("liferay-commerce:user
 <c:choose>
 	<c:when test="<%= themeDisplay.isSignedIn() %>">
 		<span class="user-avatar-link">
-			<a class="text-default" href="<%= href %>">
+			<a class="text-default" href="<%= (String)request.getAttribute("liferay-commerce:user-management-bar:href") %>">
 				<c:if test="<%= themeDisplay.isImpersonated() %>">
 					<aui:icon image="asterisk" markupView="lexicon" />
 				</c:if>

@@ -26,13 +26,11 @@ String redirectUrlAttribute = (String)request.getAttribute("redirectUrl");
 String redirectUrl = URLCodec.decodeURL(redirectUrlAttribute);
 
 String sealAttribute = (String)request.getAttribute("seal");
-
-String seal = URLDecoder.decode(sealAttribute, "UTF-8");
 %>
 
 <form action="<%= redirectUrl %>" class="hide" id="formMercanet" method="post" name="formMercanet">
 	<input name="redirectionData" type="hidden" value="<%= redirectionData %>" />
-	<input name="seal" type="hidden" value="<%= seal %>" />
+	<input name="seal" type="hidden" value="<%= URLDecoder.decode(sealAttribute, "UTF-8") %>" />
 	<input type="submit" value="Proceed to checkout" />
 </form>
 

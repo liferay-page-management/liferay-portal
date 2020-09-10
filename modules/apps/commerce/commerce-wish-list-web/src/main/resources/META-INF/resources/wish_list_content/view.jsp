@@ -21,7 +21,6 @@ CommerceWishListDisplayContext commerceWishListDisplayContext = (CommerceWishLis
 
 CommerceWishList commerceWishList = commerceWishListDisplayContext.getCommerceWishList();
 long commerceWishListId = commerceWishListDisplayContext.getCommerceWishListId();
-SearchContainer<CommerceWishListItem> commerceWishListItemsSearchContainer = commerceWishListDisplayContext.getCommerceWishListItemsSearchContainer();
 %>
 
 <c:choose>
@@ -55,7 +54,7 @@ SearchContainer<CommerceWishListItem> commerceWishListItemsSearchContainer = com
 
 				<liferay-ui:search-container
 					id="commerceWishListItems"
-					searchContainer="<%= commerceWishListItemsSearchContainer %>"
+					searchContainer="<%= commerceWishListDisplayContext.getCommerceWishListItemsSearchContainer() %>"
 				>
 					<liferay-ui:search-container-row
 						className="com.liferay.commerce.wish.list.model.CommerceWishListItem"

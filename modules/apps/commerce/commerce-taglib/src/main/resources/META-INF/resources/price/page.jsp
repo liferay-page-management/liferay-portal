@@ -26,8 +26,6 @@ String formattedPrice = (String)request.getAttribute("liferay-commerce:price:for
 String formattedPromoPrice = (String)request.getAttribute("liferay-commerce:price:formattedPromoPrice");
 String promoPriceLabel = (String)request.getAttribute("liferay-commerce:price:promoPriceLabel");
 boolean showDiscount = (boolean)request.getAttribute("liferay-commerce:price:showDiscount");
-boolean showDiscountAmount = (boolean)request.getAttribute("liferay-commerce:price:showDiscountAmount");
-boolean showPercentage = (boolean)request.getAttribute("liferay-commerce:price:showPercentage");
 boolean showPriceRange = (boolean)request.getAttribute("liferay-commerce:price:showPriceRange");
 %>
 
@@ -64,11 +62,11 @@ boolean showPriceRange = (boolean)request.getAttribute("liferay-commerce:price:s
 					<span class="commerce-discount">
 						<%= Validator.isNull(discountLabel) ? StringPool.BLANK : discountLabel %>
 
-						<c:if test="<%= showDiscountAmount %>">
+						<c:if test='<%= (boolean)request.getAttribute("liferay-commerce:price:showDiscountAmount") %>'>
 							<span class="discount-amount"><%= HtmlUtil.escape(discountAmount.format(locale)) %></span>
 						</c:if>
 
-						<c:if test="<%= showPercentage %>">
+						<c:if test='<%= (boolean)request.getAttribute("liferay-commerce:price:showPercentage") %>'>
 
 							<%
 							BigDecimal[] percentages = commerceDiscountValue.getPercentages();

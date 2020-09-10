@@ -23,7 +23,6 @@ if (tabs1.equals("completed")) {
 	statuses = new int[] {PowwowMeetingConstants.STATUS_COMPLETED};
 }
 
-int delta = ParamUtil.getInteger(request, "delta", 10);
 String orderByCol = ParamUtil.getString(request, "orderByCol", "date");
 String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 %>
@@ -47,7 +46,7 @@ String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 	/>
 
 	<liferay-ui:search-container
-		delta="<%= delta %>"
+		delta='<%= ParamUtil.getInteger(request, "delta", 10) %>'
 		emptyResultsMessage="there-are-no-meetings"
 		iteratorURL="<%= portletURL %>"
 		orderByCol="<%= orderByCol %>"

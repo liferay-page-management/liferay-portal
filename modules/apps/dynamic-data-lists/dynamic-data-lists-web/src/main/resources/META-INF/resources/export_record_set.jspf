@@ -21,7 +21,6 @@ if (Validator.isNotNull(ddlDisplayContext.getCSVExport())) {
 	csvExport = ddlDisplayContext.getCSVExport();
 }
 
-boolean csvExportEnabled = !StringUtil.equals("disabled", csvExport);
 boolean showCSVWarning = StringUtil.equals("enabled-with-warning", csvExport);
 %>
 
@@ -39,7 +38,7 @@ boolean showCSVWarning = StringUtil.equals("enabled-with-warning", csvExport);
 	/>
 
 	<aui:select label="file-extension" name="fileExtension">
-		<c:if test="<%= csvExportEnabled %>">
+		<c:if test='<%= !StringUtil.equals("disabled", csvExport) %>'>
 			<aui:option value="csv">CSV</aui:option>
 		</c:if>
 

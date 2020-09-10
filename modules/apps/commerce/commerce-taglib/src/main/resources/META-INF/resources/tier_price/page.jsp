@@ -24,12 +24,10 @@ String taglibQuantityInputId = (String)request.getAttribute("liferay-commerce:ti
 CommerceContext commerceContext = (CommerceContext)request.getAttribute(CommerceWebKeys.COMMERCE_CONTEXT);
 
 String randomNamespace = StringUtil.randomId() + StringPool.UNDERLINE;
-
-String tierPriceId = randomNamespace + "tierPrice";
 %>
 
 <c:if test="<%= (commerceTierPriceEntries != null) && !commerceTierPriceEntries.isEmpty() %>">
-	<div class="commerce-tier-price" id="<%= tierPriceId %>">
+	<div class="commerce-tier-price" id="<%= randomNamespace + "tierPrice" %>">
 		<div class="table-responsive">
 			<table class="table table-hover table-nowrap">
 				<thead>

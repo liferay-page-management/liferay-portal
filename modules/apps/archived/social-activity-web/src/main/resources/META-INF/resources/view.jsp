@@ -45,13 +45,11 @@
 							String className = entry.getKey();
 
 							String localizedClassName = ResourceActionsUtil.getModelResource(locale, className);
-
-							boolean enabled = entry.getValue();
 						%>
 
 							<h4 class="social-activity-item" data-modelName="<%= className %>" title="<%= localizedClassName %>">
 								<div class="social-activity-item-content">
-									<aui:input disabled="<%= !SocialActivityPermissionUtil.contains(permissionChecker, themeDisplay.getSiteGroupId(), ActionKeys.CONFIGURATION) %>" inlineField="<%= true %>" label="" name='<%= className + ".enabled" %>' title="enabled" type="checkbox" value="<%= enabled %>" />
+									<aui:input disabled="<%= !SocialActivityPermissionUtil.contains(permissionChecker, themeDisplay.getSiteGroupId(), ActionKeys.CONFIGURATION) %>" inlineField="<%= true %>" label="" name='<%= className + ".enabled" %>' title="enabled" type="checkbox" value="<%= entry.getValue() %>" />
 
 									<a class="settings-label" href="javascript:;"><%= localizedClassName %></a>
 								</div>

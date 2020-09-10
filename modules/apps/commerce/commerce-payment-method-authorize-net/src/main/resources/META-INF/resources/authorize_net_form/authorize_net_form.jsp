@@ -22,12 +22,10 @@ String redirectUrlAttribute = (String)request.getAttribute("redirectUrl");
 String redirectUrl = URLCodec.decodeURL(redirectUrlAttribute);
 
 String tokenAttribute = (String)request.getAttribute("token");
-
-String token = URLDecoder.decode(tokenAttribute, "UTF-8");
 %>
 
 <form action="<%= redirectUrl %>" class="hide" id="formAuthorizeNet" method="post" name="formAuthorizeNet">
-	<input name="token" type="hidden" value="<%= token %>" />
+	<input name="token" type="hidden" value="<%= URLDecoder.decode(tokenAttribute, "UTF-8") %>" />
 	<button id="btnContinue">Continue</button>
 </form>
 

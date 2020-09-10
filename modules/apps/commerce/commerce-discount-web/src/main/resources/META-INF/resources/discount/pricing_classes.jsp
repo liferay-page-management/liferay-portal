@@ -20,7 +20,6 @@
 CommerceDiscountRelDisplayContext commerceDiscountRelDisplayContext = (CommerceDiscountRelDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
 CommerceDiscount commerceDiscount = commerceDiscountRelDisplayContext.getCommerceDiscount();
-long commerceDiscountId = commerceDiscountRelDisplayContext.getCommerceDiscountId();
 SearchContainer<CommerceDiscountRel> commercePricingClassCommerceDiscountRelSearchContainer = commerceDiscountRelDisplayContext.getCommercePricingClassCommerceDiscountRelSearchContainer();
 %>
 
@@ -43,7 +42,7 @@ SearchContainer<CommerceDiscountRel> commercePricingClassCommerceDiscountRelSear
 			<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 			<aui:input name="classPKs" type="hidden" value="" />
 			<aui:input name="className" type="hidden" value="<%= CommercePricingClass.class.getName() %>" />
-			<aui:input name="commerceDiscountId" type="hidden" value="<%= commerceDiscountId %>" />
+			<aui:input name="commerceDiscountId" type="hidden" value="<%= commerceDiscountRelDisplayContext.getCommerceDiscountId() %>" />
 		</aui:form>
 
 		<liferay-frontend:add-menu

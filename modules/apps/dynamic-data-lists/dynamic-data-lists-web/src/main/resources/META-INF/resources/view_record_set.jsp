@@ -32,8 +32,6 @@ DDLRecordSet recordSet = (DDLRecordSet)request.getAttribute(DDLWebKeys.DYNAMIC_D
 long displayDDMTemplateId = ParamUtil.getLong(request, "displayDDMTemplateId");
 
 DDMTemplate displayDDMTemplate = DDMTemplateLocalServiceUtil.fetchDDMTemplate(displayDDMTemplateId);
-
-boolean spreadsheet = ParamUtil.getBoolean(request, "spreadsheet");
 %>
 
 <c:choose>
@@ -42,7 +40,7 @@ boolean spreadsheet = ParamUtil.getBoolean(request, "spreadsheet");
 	</c:when>
 	<c:otherwise>
 		<c:choose>
-			<c:when test="<%= spreadsheet %>">
+			<c:when test='<%= ParamUtil.getBoolean(request, "spreadsheet") %>'>
 				<liferay-util:include page="/view_spreadsheet_records.jsp" servletContext="<%= application %>" />
 			</c:when>
 			<c:otherwise>

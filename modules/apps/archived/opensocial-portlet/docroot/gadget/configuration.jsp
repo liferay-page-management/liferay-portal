@@ -54,11 +54,10 @@ JSONObject jsonObject = ExpandoValueServiceUtil.getJSONData(themeDisplay.getComp
 
 						<%
 						for (UserPref.EnumValuePair enumValuePair : userPref.getOrderedEnumValues()) {
-							String enumDisplayValue = enumValuePair.getDisplayValue();
 							String enumValue = enumValuePair.getValue();
 						%>
 
-							<aui:option label="<%= enumDisplayValue %>" selected="<%= value.equals(enumValue) %>" value="<%= enumValue %>" />
+							<aui:option label="<%= enumValuePair.getDisplayValue() %>" selected="<%= value.equals(enumValue) %>" value="<%= enumValue %>" />
 
 						<%
 						}

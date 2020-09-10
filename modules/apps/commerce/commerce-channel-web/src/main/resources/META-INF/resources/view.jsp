@@ -18,8 +18,6 @@
 
 <%
 CommerceChannelDisplayContext commerceChannelDisplayContext = (CommerceChannelDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
-
-PortletURL portletURL = commerceChannelDisplayContext.getPortletURL();
 %>
 
 <div class="row">
@@ -32,7 +30,7 @@ PortletURL portletURL = commerceChannelDisplayContext.getPortletURL();
 			itemsPerPage="<%= 10 %>"
 			namespace="<%= liferayPortletResponse.getNamespace() %>"
 			pageNumber="<%= 1 %>"
-			portletURL="<%= portletURL %>"
+			portletURL="<%= commerceChannelDisplayContext.getPortletURL() %>"
 			style="fluid"
 		/>
 	</div>

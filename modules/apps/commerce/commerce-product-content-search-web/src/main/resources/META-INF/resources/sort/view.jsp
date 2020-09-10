@@ -20,8 +20,6 @@
 CPSearchResultsDisplayContext cpSearchResultsDisplayContext = (CPSearchResultsDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
 SearchContainer<CPCatalogEntry> cpCatalogEntrySearchContainer = cpSearchResultsDisplayContext.getSearchContainer();
-
-String orderByCol = cpSearchResultsDisplayContext.getOrderByCol();
 %>
 
 <div class="m-0 mb-3 row">
@@ -33,7 +31,7 @@ String orderByCol = cpSearchResultsDisplayContext.getOrderByCol();
 		<button aria-expanded="false" aria-haspopup="true" class="btn btn-default commerce-order-by dropdown-toggle" data-toggle="dropdown" onclick="<portlet:namespace/>toggleDropdown()" type="button">
 			<c:set var="orderByColArgument">
 				<span class="ml-1">
-					<liferay-ui:message key="<%= orderByCol %>" />
+					<liferay-ui:message key="<%= cpSearchResultsDisplayContext.getOrderByCol() %>" />
 				</span>
 			</c:set>
 

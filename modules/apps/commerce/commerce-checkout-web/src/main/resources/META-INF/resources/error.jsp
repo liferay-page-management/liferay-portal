@@ -16,16 +16,12 @@
 
 <%@ include file="/init.jsp" %>
 
-<%
-String orderDetailURL = (String)request.getAttribute(CommerceCheckoutWebKeys.COMMERCE_CHECKOUT_STEP_ORDER_DETAIL_URL);
-%>
-
 <div class="commerce-checkout-confirmation">
 	<div class="success-message">
 		<liferay-ui:message key="your-order-has-already-been-placed" />
 	</div>
 
 	<aui:button-row>
-		<aui:button href="<%= orderDetailURL %>" primary="<%= true %>" type="submit" value="go-to-order-details" />
+		<aui:button href="<%= (String)request.getAttribute(CommerceCheckoutWebKeys.COMMERCE_CHECKOUT_STEP_ORDER_DETAIL_URL) %>" primary="<%= true %>" type="submit" value="go-to-order-details" />
 	</aui:button-row>
 </div>

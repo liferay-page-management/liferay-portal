@@ -20,7 +20,6 @@
 CommerceDiscountDisplayContext commerceDiscountDisplayContext = (CommerceDiscountDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
 long commerceDiscountId = commerceDiscountDisplayContext.getCommerceDiscountId();
-CommerceDiscountRule commerceDiscountRule = commerceDiscountDisplayContext.getCommerceDiscountRule();
 List<CommerceDiscountRuleType> commerceDiscountRuleTypes = commerceDiscountDisplayContext.getCommerceDiscountRuleTypes();
 %>
 
@@ -29,7 +28,7 @@ List<CommerceDiscountRuleType> commerceDiscountRuleTypes = commerceDiscountDispl
 >
 	<div class="col-12 lfr-form-content">
 		<aui:form cssClass="container-fluid-1280" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + liferayPortletResponse.getNamespace() + "apiSubmit(this.form);" %>' useNamespace="<%= false %>">
-			<aui:input bean="<%= commerceDiscountRule %>" model="<%= CommerceDiscountRule.class %>" name="name" required="<%= true %>" />
+			<aui:input bean="<%= commerceDiscountDisplayContext.getCommerceDiscountRule() %>" model="<%= CommerceDiscountRule.class %>" name="name" required="<%= true %>" />
 
 			<aui:select label="rule-type" name="type" required="<%= true %>">
 

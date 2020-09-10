@@ -65,12 +65,10 @@ ConfigurationScopeDisplayContext configurationScopeDisplayContext = Configuratio
 						if (configurationCategoryMenuDisplay.isEmpty()) {
 							continue;
 						}
-
-						String viewCategoryHREF = ConfigurationCategoryUtil.getHREF(configurationCategoryMenuDisplay, liferayPortletResponse, renderRequest, renderResponse);
 					%>
 
 						<li class="list-group-card-item">
-							<a href="<%= viewCategoryHREF %>">
+							<a href="<%= ConfigurationCategoryUtil.getHREF(configurationCategoryMenuDisplay, liferayPortletResponse, renderRequest, renderResponse) %>">
 								<clay:icon
 									symbol="<%= configurationCategoryDisplay.getCategoryIcon() %>"
 								/>
