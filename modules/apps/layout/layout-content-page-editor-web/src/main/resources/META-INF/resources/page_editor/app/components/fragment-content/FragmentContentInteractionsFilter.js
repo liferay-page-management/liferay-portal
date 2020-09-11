@@ -13,7 +13,7 @@
  */
 
 import PropTypes from 'prop-types';
-import React, {useEffect, useMemo} from 'react';
+import React, {useCallback, useEffect, useMemo} from 'react';
 
 import {EDITABLE_FRAGMENT_ENTRY_PROCESSOR} from '../../config/constants/editableFragmentEntryProcessor';
 import {ITEM_ACTIVATION_ORIGINS} from '../../config/constants/itemActivationOrigins';
@@ -21,6 +21,7 @@ import {ITEM_TYPES} from '../../config/constants/itemTypes';
 import {config} from '../../config/index';
 import selectCanUpdateEditables from '../../selectors/selectCanUpdateEditables';
 import selectCanUpdatePageStructure from '../../selectors/selectCanUpdatePageStructure';
+import selectLanguageId from '../../selectors/selectLanguageId';
 import {useSelector, useSelectorCallback} from '../../store/index';
 import {deepEqual} from '../../utils/checkDeepEqual';
 import {useToControlsId} from '../CollectionItemContext';
@@ -62,14 +63,15 @@ function FragmentContentInteractionsFilter({
 	const hoveredItemType = useHoveredItemType();
 	const isActive = useIsActive();
 	const isHovered = useIsHovered();
-	const languageId = useSelector((state) => state.languageId);
+	const languageId = useSelector(selectLanguageId);
 	const selectItem = useSelectItem();
 	const setEditableProcessorUniqueId = useSetEditableProcessorUniqueId();
 	const toControlsId = useToControlsId();
 
 	const editables = useSelectorCallback(
 		(state) => Object.values(state.editables?.[toControlsId(itemId)] || {}),
-		[itemId, toControlsId]
+		[itemId, toControlsId],
+		deepEqual
 	);
 
 	const editableValues = useSelectorCallback(
@@ -240,40 +242,50 @@ function FragmentContentInteractionsFilter({
 		setEditableProcessorUniqueId,
 	]);
 
-	const hoverEditable = (event) => {
-		const editableElement = getEditableElement(event.target);
+	const hoverEditable = useCallback(
+		(event) => {
+			const editableElement = getEditableElement(event.target);
 
-		const editable = editables.find(
-			(editable) => editable.element === editableElement
-		);
+			const editable = editables.find(
+				(editable) => editable.element === editableElement
+			);
 
-		if (editable) {
-			event.stopPropagation();
-
-			hoverItem(editable.itemId, {itemType: ITEM_TYPES.editable});
-		}
-	};
-
-	const selectEditable = (event) => {
-		const editableElement = getEditableElement(event.target);
-
-		const editable = editables.find(
-			(editable) => editable.element === editableElement
-		);
-
-		if (editable) {
-			event.stopPropagation();
-
-			if (isActive(editable.itemId)) {
+			if (editable) {
 				event.stopPropagation();
+
+				hoverItem(editable.itemId, {itemType: ITEM_TYPES.editable});
 			}
-			else {
-				selectItem(editable.itemId, {
-					itemType: ITEM_TYPES.editable,
-				});
+		},
+		[editables, hoverItem]
+	);
+
+	const selectEditable = useCallback(
+		(event) => {
+			const editableElement = getEditableElement(event.target);
+
+			const editable = editables.find(
+				(editable) => editable.element === editableElement
+			);
+
+			if (editable) {
+				event.stopPropagation();
+
+				if (isActive(editable.itemId)) {
+					event.stopPropagation();
+				}
+				else {
+					selectItem(editable.itemId, {
+						itemType: ITEM_TYPES.editable,
+					});
+				}
 			}
-		}
-	};
+		},
+		[editables, isActive, selectItem]
+	);
+
+	const unHoverEditable = useCallback(() => {
+		hoverItem(null);
+	}, [hoverItem]);
 
 	const props = {};
 
@@ -282,7 +294,7 @@ function FragmentContentInteractionsFilter({
 		(siblingIds.some(isActive) || !canUpdatePageStructure)
 	) {
 		props.onClickCapture = selectEditable;
-		props.onMouseLeave = () => hoverItem(null);
+		props.onMouseLeave = unHoverEditable;
 		props.onMouseOverCapture = hoverEditable;
 	}
 
