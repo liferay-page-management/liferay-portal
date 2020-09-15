@@ -182,12 +182,12 @@ Summary.defaultProps = {
 				value: jsonData.subtotalFormatted,
 			},
 			{
-				label: Liferay.Language.get('line-item-discount'),
-				value: jsonData.subtotalDiscountValueFormatted,
+				label: Liferay.Language.get('subtotal-discount'),
+				value: jsonData.subtotalDiscountAmountFormatted,
 			},
 			{
-				label: Liferay.Language.get('order-discount'),
-				value: jsonData.totalDiscountValueFormatted,
+				label: Liferay.Language.get('total-discount'),
+				value: jsonData.totalDiscountAmountFormatted,
 			},
 			{
 				label: Liferay.Language.get('promotion-code'),
@@ -198,18 +198,18 @@ Summary.defaultProps = {
 				value: jsonData.taxValueFormatted,
 			},
 			{
-				label: Liferay.Language.get('shipping-and-handling'),
-				value: jsonData.shippingValueFormatted,
+				label: Liferay.Language.get('delivery'),
+				value: jsonData.shippingAmountFormatted,
 			},
 			{
-				label: Liferay.Language.get('shipping-and-handling-discount'),
-				value: jsonData.shippingDiscountValueFormatted,
+				label: Liferay.Language.get('delivery-discount'),
+				value: jsonData.shippingDiscountAmountFormatted,
 			},
 			{
 				style: 'divider',
 			},
 			{
-				label: Liferay.Language.get('grand-total'),
+				label: Liferay.Language.get('total'),
 				style: 'big',
 				value: jsonData.totalFormatted,
 			},

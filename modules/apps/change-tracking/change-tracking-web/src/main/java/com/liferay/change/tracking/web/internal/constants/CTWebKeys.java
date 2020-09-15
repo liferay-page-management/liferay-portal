@@ -31,6 +31,9 @@ public interface CTWebKeys {
 
 	public static final String CT_ENTRY_DIFF_DISPLAY = "CT_ENTRY_DIFF_DISPLAY";
 
+	public static final String SCHEDULE_PUBLICATION_DISPLAY_CONTEXT =
+		"SCHEDULE_PUBLICATION_DISPLAY_CONTEXT";
+
 	public static final String VIEW_CHANGES_DISPLAY_CONTEXT =
 		"VIEW_CHANGES_DISPLAY_CONTEXT";
 
@@ -45,5 +48,8 @@ public interface CTWebKeys {
 
 	public static final String VIEW_HISTORY_DISPLAY_CONTEXT =
 		"VIEW_HISTORY_DISPLAY_CONTEXT";
+
+	public static final String VIEW_SCHEDULED_DISPLAY_CONTEXT =
+		"VIEW_SCHEDULED_DISPLAY_CONTEXT";
 
 }
