@@ -194,6 +194,14 @@ public class AssetVocabularyServiceWrapper
 	}
 
 	@Override
+	public java.util.List<AssetVocabulary> getGroupVocabularies(
+		long[] groupIds, int visibilityType) {
+
+		return _assetVocabularyService.getGroupVocabularies(
+			groupIds, visibilityType);
+	}
+
+	@Override
 	public int getGroupVocabulariesCount(long groupId) {
 		return _assetVocabularyService.getGroupVocabulariesCount(groupId);
 	}

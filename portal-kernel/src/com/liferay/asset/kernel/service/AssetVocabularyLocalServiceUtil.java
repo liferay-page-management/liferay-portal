@@ -525,6 +525,12 @@ public class AssetVocabularyLocalServiceUtil {
 		return getService().getGroupVocabularies(groupIds);
 	}
 
+	public static java.util.List<com.liferay.asset.kernel.model.AssetVocabulary>
+		getGroupVocabularies(long[] groupIds, int visibilityType) {
+
+		return getService().getGroupVocabularies(groupIds, visibilityType);
+	}
+
 	public static int getGroupVocabulariesCount(long[] groupIds) {
 		return getService().getGroupVocabulariesCount(groupIds);
 	}
