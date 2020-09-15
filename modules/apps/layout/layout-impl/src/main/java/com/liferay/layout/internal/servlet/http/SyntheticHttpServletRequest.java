@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.layout.internal.search.util;
+package com.liferay.layout.internal.servlet.http;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.servlet.DirectRequestDispatcherFactoryUtil;

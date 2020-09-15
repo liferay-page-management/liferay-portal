@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.layout.internal.search.util;
+package com.liferay.layout.internal.servlet.http;
 
 import com.liferay.portal.kernel.io.unsync.UnsyncPrintWriter;
 import com.liferay.portal.kernel.io.unsync.UnsyncStringWriter;

@@ -17,8 +17,8 @@ package com.liferay.layout.internal.search.spi.model.index.contributor;
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.renderer.FragmentRendererController;
 import com.liferay.layout.internal.search.util.LayoutPageTemplateStructureRenderUtil;
-import com.liferay.layout.internal.search.util.SyntheticHttpServletRequest;
-import com.liferay.layout.internal.search.util.SyntheticHttpServletResponse;
+import com.liferay.layout.internal.servlet.http.SyntheticHttpServletRequest;
+import com.liferay.layout.internal.servlet.http.SyntheticHttpServletResponse;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.portal.events.EventsProcessorUtil;
@@ -120,8 +120,8 @@ public class LayoutModelDocumentContributor
 			}
 			catch (ActionException actionException) {
 				throw new RuntimeException(
-					"Unable to initialize synthetic HTTP servlet request " +
-						"and HTTP servlet response",
+					"Unable to initialize synthetic HTTP servlet request and " +
+						"HTTP servlet response",
 					actionException);
 			}
 
