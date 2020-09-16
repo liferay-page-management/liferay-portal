@@ -50,11 +50,9 @@ public class DLAppServiceWhenSearchingFileEntriesTest
 	public void testShouldFindFileEntryByAssetTagName() throws Exception {
 		String fileName = RandomTestUtil.randomString();
 
-		String[] assetTagNames = {"hello", "world"};
-
 		FileEntry fileEntry = DLAppServiceTestUtil.addFileEntry(
 			group.getGroupId(), parentFolder.getFolderId(), fileName, fileName,
-			assetTagNames);
+			new String[] {"hello", "world"});
 
 		DLAppServiceTestUtil.search(fileEntry, "hello", true);
 		DLAppServiceTestUtil.search(fileEntry, "world", true);

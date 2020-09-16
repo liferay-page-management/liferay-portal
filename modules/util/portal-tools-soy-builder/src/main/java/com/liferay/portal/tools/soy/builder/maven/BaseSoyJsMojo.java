@@ -42,9 +42,7 @@ public abstract class BaseSoyJsMojo<T extends BaseSoyJsCommand>
 			if (_buildContext.isIncremental()) {
 				Scanner scanner = _buildContext.newScanner(_baseDir);
 
-				String[] includes = {"", "**/*.soy"};
-
-				scanner.setIncludes(includes);
+				scanner.setIncludes(new String[] {"", "**/*.soy"});
 
 				scanner.scan();
 

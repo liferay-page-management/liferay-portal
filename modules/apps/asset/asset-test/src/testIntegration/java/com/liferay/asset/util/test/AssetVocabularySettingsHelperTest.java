@@ -226,12 +226,9 @@ public class AssetVocabularySettingsHelperTest {
 	protected AssetVocabularySettingsHelper getVocabularySettingsHelper(
 		long classNameId, long classTypePK, boolean required) {
 
-		long[] classNameIds = {classNameId};
-		long[] classTypePKs = {classTypePK};
-		boolean[] requireds = {required};
-
 		return getVocabularySettingsHelper(
-			true, classNameIds, classTypePKs, requireds);
+			true, new long[] {classNameId}, new long[] {classTypePK},
+			new boolean[] {required});
 	}
 
 }

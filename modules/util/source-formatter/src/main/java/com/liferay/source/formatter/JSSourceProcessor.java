@@ -25,13 +25,13 @@ public class JSSourceProcessor extends BaseSourceProcessor {
 
 	@Override
 	protected List<String> doGetFileNames() throws IOException {
-		String[] excludes = {
-			"**/*.es.js", "**/*.min.js", "**/*.nocsf.js", "**/*.soy.js",
-			"**/aui/**", "**/jquery/**", "**/lodash/**", "**/misc/**",
-			"**/r2.js", "**/tools/**"
-		};
-
-		return getFileNames(excludes, getIncludes());
+		return getFileNames(
+			new String[] {
+				"**/*.es.js", "**/*.min.js", "**/*.nocsf.js", "**/*.soy.js",
+				"**/aui/**", "**/jquery/**", "**/lodash/**", "**/misc/**",
+				"**/r2.js", "**/tools/**"
+			},
+			getIncludes());
 	}
 
 	@Override

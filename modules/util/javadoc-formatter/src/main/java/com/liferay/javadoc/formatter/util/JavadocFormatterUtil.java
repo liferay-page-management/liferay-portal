@@ -64,14 +64,14 @@ public class JavadocFormatterUtil {
 
 		Element rootElement = document.addElement("deprecations");
 
-		String[] excludes = {
-			"**/.git/**", "**/.gradle/**", "**/bin/**", "**/build/**",
-			"**/classes/**", "**/node_modules/**", "**/node_modules_cache/**",
-			"**/portal-client/**", "**/tmp/**"
-		};
-
 		List<String> fileNames = scanForFiles(
-			dirName, excludes, new String[] {"**/*.java"});
+			dirName,
+			new String[] {
+				"**/.git/**", "**/.gradle/**", "**/bin/**", "**/build/**",
+				"**/classes/**", "**/node_modules/**",
+				"**/node_modules_cache/**", "**/portal-client/**", "**/tmp/**"
+			},
+			new String[] {"**/*.java"});
 
 		for (String fileName : fileNames) {
 			fileName = StringUtil.replace(

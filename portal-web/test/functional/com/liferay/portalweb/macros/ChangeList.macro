@@ -135,6 +135,26 @@ definition {
 		Alert.viewSuccessMessage();
 	}
 
+	macro gotoPublish {
+		if ("${gotoManagePublications}" == "true") {
+			ApplicationsMenu.gotoPortlet(
+				category = "Publications",
+				panel = "Applications",
+				portlet = "Publications");
+
+			LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+			Click(
+				key_publicationName = "${publicationName}",
+				locator1 = "ChangeList#LIST_PUBLICATION_ELLIPSIS");
+		}
+		else {
+			Click(locator1 = "ChangeList#CHANGE_LIST_INDICATOR_BUTTON");
+		}
+
+		MenuItem.click(menuItem = "Publish");
+	}
+
 	macro gotoReviewChanges {
 		Click(locator1 = "ChangeList#CHANGE_LIST_INDICATOR_BUTTON");
 
@@ -158,26 +178,6 @@ definition {
 			locator1 = "IFrame#IFRAME_TITLE");
 
 		SelectFrame(locator1 = "IFrame#MODAL_BODY");
-	}
-
-	macro prepareToPublish {
-		if ("${gotoManagePublications}" == "true") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Publications",
-				panel = "Applications",
-				portlet = "Publications");
-
-			LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-			Click(
-				key_publicationName = "${publicationName}",
-				locator1 = "ChangeList#LIST_PUBLICATION_ELLIPSIS");
-		}
-		else {
-			Click(locator1 = "ChangeList#CHANGE_LIST_INDICATOR_BUTTON");
-		}
-
-		MenuItem.click(menuItem = "Prepare to Publish");
 	}
 
 	macro publishPublication {

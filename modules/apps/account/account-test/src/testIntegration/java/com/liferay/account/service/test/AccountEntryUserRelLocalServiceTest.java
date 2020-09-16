@@ -506,10 +506,9 @@ public class AccountEntryUserRelLocalServiceTest {
 		// Add and delete account entries for a user
 
 		long[] addAccountEntryIds2 = _addAccountEntries(5);
-		long[] deleteAccountEntryIds2 = {addAccountEntryIds1[0]};
 
 		_accountEntryUserRelLocalService.updateAccountEntryUserRels(
-			addAccountEntryIds2, deleteAccountEntryIds2, userId);
+			addAccountEntryIds2, new long[] {addAccountEntryIds1[0]}, userId);
 
 		List<Long> expectedAccountEntryIdsList = new ArrayList<>(
 			ListUtil.fromArray(addAccountEntryIds2));

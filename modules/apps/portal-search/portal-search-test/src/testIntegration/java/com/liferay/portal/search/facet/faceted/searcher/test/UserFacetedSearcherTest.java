@@ -70,11 +70,10 @@ public class UserFacetedSearcherTest extends BaseFacetedSearcherTestCase {
 
 		SearchContext searchContext = getSearchContext(keyword);
 
-		String[] entryClassNames = {
-			JournalArticle.class.getName(), User.class.getName()
-		};
-
-		searchContext.setEntryClassNames(entryClassNames);
+		searchContext.setEntryClassNames(
+			new String[] {
+				JournalArticle.class.getName(), User.class.getName()
+			});
 
 		searchContext.setLocale(_locale);
 

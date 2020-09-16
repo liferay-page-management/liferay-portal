@@ -262,13 +262,11 @@ public class LayoutPageTemplateEntryServiceTest {
 				_layoutPageTemplateCollection.
 					getLayoutPageTemplateCollectionId());
 
-		long[] layoutPageTemplateEntries = {
-			layoutPageTemplateEntry1.getLayoutPageTemplateEntryId(),
-			layoutPageTemplateEntry2.getLayoutPageTemplateEntryId()
-		};
-
 		_layoutPageTemplateEntryService.deleteLayoutPageTemplateEntries(
-			layoutPageTemplateEntries);
+			new long[] {
+				layoutPageTemplateEntry1.getLayoutPageTemplateEntryId(),
+				layoutPageTemplateEntry2.getLayoutPageTemplateEntryId()
+			});
 
 		Assert.assertNull(
 			_layoutPageTemplateEntryPersistence.fetchByPrimaryKey(
@@ -355,14 +353,14 @@ public class LayoutPageTemplateEntryServiceTest {
 				FragmentConstants.TYPE_SECTION,
 				WorkflowConstants.STATUS_APPROVED, serviceContext);
 
-		long[] fragmentEntryIds = {
-			fragmentEntry1.getFragmentEntryId(),
-			fragmentEntry2.getFragmentEntryId()
-		};
-
 		_layoutPageTemplateEntryService.updateLayoutPageTemplateEntry(
 			layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
-			RandomTestUtil.randomString(), fragmentEntryIds, serviceContext);
+			RandomTestUtil.randomString(),
+			new long[] {
+				fragmentEntry1.getFragmentEntryId(),
+				fragmentEntry2.getFragmentEntryId()
+			},
+			serviceContext);
 
 		_layoutPageTemplateEntryService.updateLayoutPageTemplateEntry(
 			layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
@@ -433,14 +431,13 @@ public class LayoutPageTemplateEntryServiceTest {
 				FragmentConstants.TYPE_SECTION,
 				WorkflowConstants.STATUS_APPROVED, serviceContext);
 
-		long[] fragmentEntryIds = {
-			fragmentEntry1.getFragmentEntryId(),
-			fragmentEntry2.getFragmentEntryId()
-		};
-
 		_layoutPageTemplateEntryService.updateLayoutPageTemplateEntry(
 			layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
-			layoutPageTemplateEntry.getName(), fragmentEntryIds,
+			layoutPageTemplateEntry.getName(),
+			new long[] {
+				fragmentEntry1.getFragmentEntryId(),
+				fragmentEntry2.getFragmentEntryId()
+			},
 			serviceContext);
 
 		List<FragmentEntryLink> fragmentEntryLinks =

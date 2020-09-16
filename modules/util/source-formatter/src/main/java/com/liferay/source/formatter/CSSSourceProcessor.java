@@ -25,15 +25,16 @@ public class CSSSourceProcessor extends BaseSourceProcessor {
 
 	@Override
 	protected List<String> doGetFileNames() throws IOException {
-		String[] excludes = {
-			"**/.ivy/**", "**/.sass-cache/**", "**/__MACOSX/**",
-			"**/_partial.scss", "**/_styled/css/compat/third_party/**",
-			"**/_unstyled/css/**", "**/aui/**", "**/aui_deprecated.css",
-			"**/bourbon/**", "**/converter/dependencies/**", "**/expected/**",
-			"**/frontend-editors-web/**", "**/tools/node**"
-		};
-
-		return getFileNames(excludes, getIncludes());
+		return getFileNames(
+			new String[] {
+				"**/.ivy/**", "**/.sass-cache/**", "**/__MACOSX/**",
+				"**/_partial.scss", "**/_styled/css/compat/third_party/**",
+				"**/_unstyled/css/**", "**/aui/**", "**/aui_deprecated.css",
+				"**/bourbon/**", "**/converter/dependencies/**",
+				"**/expected/**", "**/frontend-editors-web/**",
+				"**/tools/node**"
+			},
+			getIncludes());
 	}
 
 	@Override

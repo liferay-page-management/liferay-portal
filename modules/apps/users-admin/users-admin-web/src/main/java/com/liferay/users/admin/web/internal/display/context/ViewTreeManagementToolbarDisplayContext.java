@@ -424,17 +424,15 @@ public class ViewTreeManagementToolbarDisplayContext {
 					_organization.getOrganizationId(), getKeywords(), status,
 					null);
 
-			Sort[] sorts = {
-				new Sort("name", orderByType.equals("desc")),
-				new Sort("lastName", orderByType.equals("desc"))
-			};
-
 			Hits hits =
 				OrganizationLocalServiceUtil.searchOrganizationsAndUsers(
 					themeDisplay.getCompanyId(),
 					_organization.getOrganizationId(), getKeywords(), status,
 					null, searchContainer.getStart(), searchContainer.getEnd(),
-					sorts);
+					new Sort[] {
+						new Sort("name", orderByType.equals("desc")),
+						new Sort("lastName", orderByType.equals("desc"))
+					});
 
 			results = new ArrayList<>(hits.getLength());
 

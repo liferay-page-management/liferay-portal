@@ -44,9 +44,7 @@ public class ElasticsearchClusterTest {
 
 	@Test
 	public void testReplicaIndexNamesIncludeSystemCompanyId() {
-		long[] companyIds = {42, 142857};
-
-		setUpCompanyLocalService(getCompanies(companyIds));
+		setUpCompanyLocalService(getCompanies(new long[] {42, 142857}));
 
 		String[] targetIndexNames =
 			_replicasClusterContext.getTargetIndexNames();

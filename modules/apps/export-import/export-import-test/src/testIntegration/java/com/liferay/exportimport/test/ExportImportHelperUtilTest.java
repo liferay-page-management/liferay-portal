@@ -745,14 +745,13 @@ public class ExportImportHelperUtilTest {
 		Layout childLayout = LayoutTestUtil.addLayout(
 			_stagingGroup, layout.getPlid());
 
-		long[] selectedLayoutIds = {
-			layout.getLayoutId(), childLayout.getLayoutId()
-		};
-
 		String selectedLayoutsJSON =
 			ExportImportHelperUtil.getSelectedLayoutsJSON(
 				_stagingGroup.getGroupId(), false,
-				StringUtil.merge(selectedLayoutIds));
+				StringUtil.merge(
+					new long[] {
+						layout.getLayoutId(), childLayout.getLayoutId()
+					}));
 
 		JSONArray selectedLayoutsJSONArray = JSONFactoryUtil.createJSONArray(
 			selectedLayoutsJSON);
@@ -772,12 +771,10 @@ public class ExportImportHelperUtilTest {
 		Layout childLayout = LayoutTestUtil.addLayout(
 			_stagingGroup, layout.getPlid());
 
-		long[] selectedLayoutIds = {childLayout.getLayoutId()};
-
 		String selectedLayoutsJSON =
 			ExportImportHelperUtil.getSelectedLayoutsJSON(
 				_stagingGroup.getGroupId(), false,
-				StringUtil.merge(selectedLayoutIds));
+				StringUtil.merge(new long[] {childLayout.getLayoutId()}));
 
 		JSONArray selectedLayoutsJSONArray = JSONFactoryUtil.createJSONArray(
 			selectedLayoutsJSON);
@@ -817,12 +814,10 @@ public class ExportImportHelperUtilTest {
 		LayoutTestUtil.addLayout(
 			_stagingGroup.getGroupId(), "Child Layout", layout.getPlid());
 
-		long[] selectedLayoutIds = {layout.getLayoutId()};
-
 		String selectedLayoutsJSON =
 			ExportImportHelperUtil.getSelectedLayoutsJSON(
 				_stagingGroup.getGroupId(), false,
-				StringUtil.merge(selectedLayoutIds));
+				StringUtil.merge(new long[] {layout.getLayoutId()}));
 
 		JSONArray selectedLayoutsJSONArray = JSONFactoryUtil.createJSONArray(
 			selectedLayoutsJSON);

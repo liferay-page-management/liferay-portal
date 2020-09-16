@@ -1368,12 +1368,11 @@ public interface BaseProjectTemplatesTestCase {
 		System.setOut(new PrintStream(newOutByteArrayOutputStream, true));
 
 		try (bnd bnd = new bnd()) {
-			String[] args = {
-				"diff", "--ignore", BUNDLES_DIFF_IGNORES,
-				bundleFile1.getAbsolutePath(), bundleFile2.getAbsolutePath()
-			};
-
-			bnd.start(args);
+			bnd.start(
+				new String[] {
+					"diff", "--ignore", BUNDLES_DIFF_IGNORES,
+					bundleFile1.getAbsolutePath(), bundleFile2.getAbsolutePath()
+				});
 		}
 		finally {
 			System.setErr(originalErrorPrintStream);

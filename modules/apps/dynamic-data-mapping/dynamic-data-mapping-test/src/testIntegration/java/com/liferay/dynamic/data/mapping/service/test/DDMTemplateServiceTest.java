@@ -359,10 +359,9 @@ public class DDMTemplateServiceTest extends BaseDDMServiceTestCase {
 			structure.getStructureId(), StringUtil.randomString(),
 			WorkflowConstants.STATUS_ANY);
 
-		long[] groupIds = {group.getGroupId(), _group.getGroupId()};
-
 		List<DDMTemplate> ddmTemplates = DDMTemplateServiceUtil.search(
-			TestPropsValues.getCompanyId(), groupIds,
+			TestPropsValues.getCompanyId(),
+			new long[] {group.getGroupId(), _group.getGroupId()},
 			new long[] {_structureClassNameId},
 			new long[] {structure.getStructureId()}, _recordSetClassNameId,
 			StringPool.BLANK, DDMTemplateConstants.TEMPLATE_TYPE_FORM,
@@ -439,10 +438,9 @@ public class DDMTemplateServiceTest extends BaseDDMServiceTestCase {
 			_recordSetClassNameId, null, StringUtil.randomString(), description,
 			type, mode, language, script, WorkflowConstants.STATUS_ANY);
 
-		long[] groupIds = {group.getGroupId(), _group.getGroupId()};
-
 		List<DDMTemplate> templates = DDMTemplateServiceUtil.search(
-			TestPropsValues.getCompanyId(), groupIds,
+			TestPropsValues.getCompanyId(),
+			new long[] {group.getGroupId(), _group.getGroupId()},
 			new long[] {_structureClassNameId},
 			new long[] {structure.getStructureId()}, _recordSetClassNameId,
 			name, description, type, mode, language,
@@ -480,10 +478,9 @@ public class DDMTemplateServiceTest extends BaseDDMServiceTestCase {
 			_recordSetClassNameId, null, StringUtil.randomString(), description,
 			type, mode, language, script, WorkflowConstants.STATUS_ANY);
 
-		long[] groupIds = {group.getGroupId(), _group.getGroupId()};
-
 		int count = DDMTemplateServiceUtil.searchCount(
-			TestPropsValues.getCompanyId(), groupIds,
+			TestPropsValues.getCompanyId(),
+			new long[] {group.getGroupId(), _group.getGroupId()},
 			new long[] {_structureClassNameId},
 			new long[] {structure.getStructureId()}, _recordSetClassNameId,
 			StringUtil.randomString(), description, type, mode, language,
@@ -594,10 +591,9 @@ public class DDMTemplateServiceTest extends BaseDDMServiceTestCase {
 			_recordSetClassNameId, null, StringUtil.randomString(), description,
 			type, mode, language, script, WorkflowConstants.STATUS_ANY);
 
-		long[] groupIds = {group.getGroupId(), _group.getGroupId()};
-
 		int count = DDMTemplateServiceUtil.searchCount(
-			TestPropsValues.getCompanyId(), groupIds,
+			TestPropsValues.getCompanyId(),
+			new long[] {group.getGroupId(), _group.getGroupId()},
 			new long[] {_structureClassNameId},
 			new long[] {structure.getStructureId()}, _recordSetClassNameId,
 			name, description, type, mode, language,

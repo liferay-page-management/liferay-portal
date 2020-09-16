@@ -106,10 +106,9 @@ public class DDMStructureServiceTest extends BaseDDMServiceTestCase {
 		_ddmStructures.add(
 			addStructure(_classNameId, StringUtil.randomString()));
 
-		long[] groupIds = {group.getGroupId(), _group.getGroupId()};
-
 		List<DDMStructure> structures = DDMStructureServiceUtil.getStructures(
-			TestPropsValues.getCompanyId(), groupIds, _classNameId,
+			TestPropsValues.getCompanyId(),
+			new long[] {group.getGroupId(), _group.getGroupId()}, _classNameId,
 			WorkflowConstants.STATUS_ANY);
 
 		Assert.assertEquals(structures.toString(), 3, structures.size());
@@ -184,10 +183,9 @@ public class DDMStructureServiceTest extends BaseDDMServiceTestCase {
 		_ddmStructures.add(
 			addStructure(_classNameId, StringUtil.randomString()));
 
-		long[] groupIds = {group.getGroupId(), _group.getGroupId()};
-
 		List<DDMStructure> structures = DDMStructureServiceUtil.search(
-			TestPropsValues.getCompanyId(), groupIds, _classNameId,
+			TestPropsValues.getCompanyId(),
+			new long[] {group.getGroupId(), _group.getGroupId()}, _classNameId,
 			StringPool.BLANK, WorkflowConstants.STATUS_ANY, QueryUtil.ALL_POS,
 			QueryUtil.ALL_POS, null);
 
@@ -209,11 +207,10 @@ public class DDMStructureServiceTest extends BaseDDMServiceTestCase {
 
 		_ddmStructures.addAll(expectedStructures);
 
-		long[] groupIds = {group.getGroupId(), _group.getGroupId()};
-
 		List<DDMStructure> structures = DDMStructureServiceUtil.search(
-			TestPropsValues.getCompanyId(), groupIds, _classNameId, name,
-			description, StorageType.JSON.getValue(),
+			TestPropsValues.getCompanyId(),
+			new long[] {group.getGroupId(), _group.getGroupId()}, _classNameId,
+			name, description, StorageType.JSON.getValue(),
 			DDMStructureConstants.TYPE_DEFAULT, WorkflowConstants.STATUS_ANY,
 			true, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
@@ -267,10 +264,9 @@ public class DDMStructureServiceTest extends BaseDDMServiceTestCase {
 		_ddmStructures.add(
 			addStructure(_classNameId, StringUtil.randomString()));
 
-		long[] groupIds = {group.getGroupId(), _group.getGroupId()};
-
 		int count = DDMStructureServiceUtil.searchCount(
-			TestPropsValues.getCompanyId(), groupIds, _classNameId,
+			TestPropsValues.getCompanyId(),
+			new long[] {group.getGroupId(), _group.getGroupId()}, _classNameId,
 			StringPool.BLANK, WorkflowConstants.STATUS_ANY);
 
 		Assert.assertEquals(3, count);
@@ -288,11 +284,10 @@ public class DDMStructureServiceTest extends BaseDDMServiceTestCase {
 		_ddmStructures.add(
 			addStructure(_classNameId, StringUtil.randomString(), description));
 
-		long[] groupIds = {group.getGroupId(), _group.getGroupId()};
-
 		int count = DDMStructureServiceUtil.searchCount(
-			TestPropsValues.getCompanyId(), groupIds, _classNameId, name,
-			description, StorageType.JSON.getValue(),
+			TestPropsValues.getCompanyId(),
+			new long[] {group.getGroupId(), _group.getGroupId()}, _classNameId,
+			name, description, StorageType.JSON.getValue(),
 			DDMStructureConstants.TYPE_DEFAULT, WorkflowConstants.STATUS_ANY,
 			true);
 
@@ -347,10 +342,9 @@ public class DDMStructureServiceTest extends BaseDDMServiceTestCase {
 				ActionKeys.VIEW);
 		}
 
-		long[] groupIds = {group.getGroupId(), group.getGroupId()};
-
 		List<DDMStructure> structures = DDMStructureServiceUtil.search(
-			TestPropsValues.getCompanyId(), groupIds, _classNameId,
+			TestPropsValues.getCompanyId(),
+			new long[] {group.getGroupId(), group.getGroupId()}, _classNameId,
 			StringPool.BLANK, WorkflowConstants.STATUS_ANY, QueryUtil.ALL_POS,
 			QueryUtil.ALL_POS, null);
 

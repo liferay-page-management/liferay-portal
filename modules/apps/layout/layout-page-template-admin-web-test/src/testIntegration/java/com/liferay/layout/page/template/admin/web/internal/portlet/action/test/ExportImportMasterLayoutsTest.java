@@ -127,13 +127,11 @@ public class ExportImportMasterLayoutsTest {
 			layoutPageTemplateEntry1.getLayoutPageTemplateEntryId(),
 			fileEntry.getFileEntryId());
 
-		long[] layoutPageTemplateEntryIds = {
-			layoutPageTemplateEntry1.getLayoutPageTemplateEntryId()
-		};
-
 		File file = ReflectionTestUtil.invoke(
 			_mvcResourceCommand, "getFile", new Class<?>[] {long[].class},
-			layoutPageTemplateEntryIds);
+			new long[] {
+				layoutPageTemplateEntry1.getLayoutPageTemplateEntryId()
+			});
 
 		List<LayoutPageTemplatesImporterResultEntry>
 			layoutPageTemplatesImporterResultEntries = null;

@@ -343,17 +343,16 @@ public class MainServlet extends HttpServlet {
 		}
 
 		try {
-			String[] xmls = {
-				StreamUtil.toString(
-					servletContext.getResourceAsStream(
-						"/WEB-INF/liferay-social.xml")),
-				StreamUtil.toString(
-					servletContext.getResourceAsStream(
-						"/WEB-INF/liferay-social-ext.xml"))
-			};
-
 			SocialConfigurationUtil.read(
-				PortalClassLoaderUtil.getClassLoader(), xmls);
+				PortalClassLoaderUtil.getClassLoader(),
+				new String[] {
+					StreamUtil.toString(
+						servletContext.getResourceAsStream(
+							"/WEB-INF/liferay-social.xml")),
+					StreamUtil.toString(
+						servletContext.getResourceAsStream(
+							"/WEB-INF/liferay-social-ext.xml"))
+				});
 		}
 		catch (Exception exception) {
 			_log.error(exception, exception);
@@ -798,19 +797,20 @@ public class MainServlet extends HttpServlet {
 
 						ServletContext servletContext = getServletContext();
 
-						String[] xmls = {
-							StreamUtil.toString(
-								servletContext.getResourceAsStream(
-									"/WEB-INF/liferay-layout-templates.xml")),
-							StreamUtil.toString(
-								servletContext.getResourceAsStream(
-									"/WEB-INF" +
-										"/liferay-layout-templates-ext.xml"))
-						};
-
 						List<LayoutTemplate> layoutTemplates =
 							LayoutTemplateLocalServiceUtil.init(
-								servletContext, xmls, pluginPackage);
+								servletContext,
+								new String[] {
+									StreamUtil.toString(
+										servletContext.getResourceAsStream(
+											"/WEB-INF/liferay-layout-" +
+												"templates.xml")),
+									StreamUtil.toString(
+										servletContext.getResourceAsStream(
+											"/WEB-INF/liferay-layout-" +
+												"templates-ext.xml"))
+								},
+								pluginPackage);
 
 						servletContext.setAttribute(
 							WebKeys.PLUGIN_LAYOUT_TEMPLATES, layoutTemplates);

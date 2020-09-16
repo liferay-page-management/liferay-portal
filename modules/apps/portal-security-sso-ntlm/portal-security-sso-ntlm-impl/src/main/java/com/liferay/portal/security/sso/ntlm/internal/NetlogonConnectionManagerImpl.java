@@ -130,9 +130,7 @@ public class NetlogonConnectionManagerImpl
 
 		MessageDigest messageDigest = MessageDigest.getInstance("MD5");
 
-		byte[] zeroes = {0, 0, 0, 0};
-
-		messageDigest.update(zeroes, 0, 4);
+		messageDigest.update(new byte[] {0, 0, 0, 0}, 0, 4);
 
 		messageDigest.update(clientChallenge, 0, 8);
 		messageDigest.update(serverChallenge, 0, 8);

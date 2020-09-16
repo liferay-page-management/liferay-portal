@@ -48,12 +48,12 @@ public class BookmarksEntryModelIndexerWriterContributor
 			dynamicQuery -> {
 				Property statusProperty = PropertyFactoryUtil.forName("status");
 
-				Integer[] statuses = {
-					WorkflowConstants.STATUS_APPROVED,
-					WorkflowConstants.STATUS_IN_TRASH
-				};
-
-				dynamicQuery.add(statusProperty.in(statuses));
+				dynamicQuery.add(
+					statusProperty.in(
+						new Integer[] {
+							WorkflowConstants.STATUS_APPROVED,
+							WorkflowConstants.STATUS_IN_TRASH
+						}));
 			});
 
 		batchIndexingActionable.setPerformActionMethod(

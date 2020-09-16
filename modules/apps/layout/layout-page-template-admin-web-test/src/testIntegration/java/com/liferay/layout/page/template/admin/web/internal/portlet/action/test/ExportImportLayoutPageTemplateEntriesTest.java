@@ -165,13 +165,11 @@ public class ExportImportLayoutPageTemplateEntriesTest {
 			layoutPageTemplateEntry1.getLayoutPageTemplateEntryId(),
 			fileEntry.getFileEntryId());
 
-		long[] layoutPageTemplateEntryIds = {
-			layoutPageTemplateEntry1.getLayoutPageTemplateEntryId()
-		};
-
 		File file = ReflectionTestUtil.invoke(
 			_mvcResourceCommand, "getFile", new Class<?>[] {long[].class},
-			layoutPageTemplateEntryIds);
+			new long[] {
+				layoutPageTemplateEntry1.getLayoutPageTemplateEntryId()
+			});
 
 		_addFragmentEntry(
 			_group2.getGroupId(), "test-text-fragment", "Test Text Fragment",

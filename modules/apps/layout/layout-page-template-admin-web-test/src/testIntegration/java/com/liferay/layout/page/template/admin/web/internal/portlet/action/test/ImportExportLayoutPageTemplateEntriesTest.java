@@ -697,13 +697,11 @@ public class ImportExportLayoutPageTemplateEntriesTest {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_getImportLayoutPageTemplateEntry(file, groupId, overwrite, status);
 
-		long[] layoutPageTemplateEntryIds = {
-			layoutPageTemplateEntry.getLayoutPageTemplateEntryId()
-		};
-
 		return ReflectionTestUtil.invoke(
 			_mvcResourceCommand, "getFile", new Class<?>[] {long[].class},
-			layoutPageTemplateEntryIds);
+			new long[] {
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId()
+			});
 	}
 
 	private void _populateZipWriter(

@@ -1426,19 +1426,19 @@ public class CalendarPortlet extends MVCPortlet {
 		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		int[] statuses = {
-			WorkflowConstants.STATUS_APPROVED,
-			CalendarBookingWorkflowConstants.STATUS_MAYBE,
-			WorkflowConstants.STATUS_PENDING
-		};
 		long startTime = ParamUtil.getLong(resourceRequest, "startTime");
 		long endTime = ParamUtil.getLong(resourceRequest, "endTime");
 		String ruleName = ParamUtil.getString(resourceRequest, "ruleName");
 
 		JSONObject jsonObject =
 			CalendarUtil.getCalendarRenderingRulesJSONObject(
-				themeDisplay, calendarIds, statuses, startTime, endTime,
-				ruleName, getTimeZone(resourceRequest));
+				themeDisplay, calendarIds,
+				new int[] {
+					WorkflowConstants.STATUS_APPROVED,
+					CalendarBookingWorkflowConstants.STATUS_MAYBE,
+					WorkflowConstants.STATUS_PENDING
+				},
+				startTime, endTime, ruleName, getTimeZone(resourceRequest));
 
 		writeJSON(resourceRequest, resourceResponse, jsonObject);
 	}

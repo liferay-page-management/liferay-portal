@@ -480,16 +480,16 @@ public class CalendarDisplayContext {
 	protected void setCalendarResourceSearchResults(
 		CalendarResourceSearch calendarResourceSearch) {
 
-		long[] groupIds = {_themeDisplay.getScopeGroupId()};
-		long[] classNameIds = {
-			PortalUtil.getClassNameId(CalendarResource.class.getName())
-		};
 		CalendarResourceDisplayTerms displayTerms =
 			new CalendarResourceDisplayTerms(_renderRequest);
 
 		List<CalendarResource> calendarResources =
 			_calendarResourceLocalService.searchByKeywords(
-				_themeDisplay.getCompanyId(), groupIds, classNameIds,
+				_themeDisplay.getCompanyId(),
+				new long[] {_themeDisplay.getScopeGroupId()},
+				new long[] {
+					PortalUtil.getClassNameId(CalendarResource.class.getName())
+				},
 				getKeywords(), displayTerms.isActive(),
 				displayTerms.isAndOperator(), calendarResourceSearch.getStart(),
 				calendarResourceSearch.getEnd(),
@@ -501,16 +501,16 @@ public class CalendarDisplayContext {
 	protected void setCalendarResourceSearchTotal(
 		CalendarResourceSearch calendarResourceSearch) {
 
-		long[] groupIds = {_themeDisplay.getScopeGroupId()};
-		long[] classNameIds = {
-			PortalUtil.getClassNameId(CalendarResource.class.getName())
-		};
 		CalendarResourceDisplayTerms displayTerms =
 			new CalendarResourceDisplayTerms(_renderRequest);
 
 		int total = _calendarResourceLocalService.searchCount(
-			_themeDisplay.getCompanyId(), groupIds, classNameIds, getKeywords(),
-			displayTerms.isActive());
+			_themeDisplay.getCompanyId(),
+			new long[] {_themeDisplay.getScopeGroupId()},
+			new long[] {
+				PortalUtil.getClassNameId(CalendarResource.class.getName())
+			},
+			getKeywords(), displayTerms.isActive());
 
 		calendarResourceSearch.setTotal(total);
 	}

@@ -88,11 +88,8 @@ public class ModelPermissionsFactoryTest extends PowerMockito {
 
 	@Test
 	public void testCreateWithEmptyPermissions() throws Exception {
-		String[] groupPermissions = {};
-		String[] guestPermissions = {};
-
 		ModelPermissions modelPermissions = ModelPermissionsFactory.create(
-			groupPermissions, guestPermissions);
+			new String[0], new String[0]);
 
 		Collection<String> roleNames = modelPermissions.getRoleNames();
 
@@ -102,10 +99,9 @@ public class ModelPermissionsFactoryTest extends PowerMockito {
 	@Test
 	public void testCreateWithGroupPermissions() throws Exception {
 		String[] groupPermissions = {ActionKeys.VIEW};
-		String[] guestPermissions = {};
 
 		ModelPermissions modelPermissions = ModelPermissionsFactory.create(
-			groupPermissions, guestPermissions);
+			groupPermissions, new String[0]);
 
 		Collection<String> roleNames = modelPermissions.getRoleNames();
 
@@ -123,11 +119,8 @@ public class ModelPermissionsFactoryTest extends PowerMockito {
 
 	@Test
 	public void testCreateWithGuestAndGroupPermissions() {
-		String[] groupPermissions = {ActionKeys.VIEW};
-		String[] guestPermissions = {ActionKeys.VIEW};
-
 		ModelPermissions modelPermissions = ModelPermissionsFactory.create(
-			groupPermissions, guestPermissions);
+			new String[] {ActionKeys.VIEW}, new String[] {ActionKeys.VIEW});
 
 		Set<String> expectedRoleNames = new HashSet<>(
 			Arrays.asList(
@@ -139,11 +132,10 @@ public class ModelPermissionsFactoryTest extends PowerMockito {
 
 	@Test
 	public void testCreateWithGuestPermissions() throws Exception {
-		String[] groupPermissions = {};
 		String[] guestPermissions = {ActionKeys.VIEW};
 
 		ModelPermissions modelPermissions = ModelPermissionsFactory.create(
-			groupPermissions, guestPermissions);
+			new String[0], guestPermissions);
 
 		Collection<String> roleNames = modelPermissions.getRoleNames();
 

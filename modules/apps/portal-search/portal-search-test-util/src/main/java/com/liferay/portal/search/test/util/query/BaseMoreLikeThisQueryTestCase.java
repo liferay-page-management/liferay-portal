@@ -132,10 +132,8 @@ public abstract class BaseMoreLikeThisQueryTestCase
 			addDocuments(text);
 		}
 
-		String[] fields = {_FIELD_TITLE};
-
 		MoreLikeThisQuery moreLikeThisQuery = queries.moreLikeThis(
-			fields, texts[0]);
+			new String[] {_FIELD_TITLE}, texts[0]);
 
 		for (int i = 0; i <= 10; i++) {
 			String minimumShouldMatch = (10 * i) + "%";
@@ -166,10 +164,8 @@ public abstract class BaseMoreLikeThisQueryTestCase
 				_FIELD_DESCRIPTION, value),
 			Arrays.asList("bravo charlie"));
 
-		String[] fields = {_FIELD_TITLE};
-
 		MoreLikeThisQuery moreLikeThisQuery = queries.moreLikeThis(
-			fields, "alpha", "bravo");
+			new String[] {_FIELD_TITLE}, "alpha", "bravo");
 
 		moreLikeThisQuery.addField(_FIELD_DESCRIPTION);
 

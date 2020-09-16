@@ -40,15 +40,13 @@ public abstract class BaseSortTestCase extends BaseIndexingTestCase {
 
 	@Test
 	public void testDefaultSorts() throws Exception {
-		double[] values = {1, 2, 3};
-
 		addDocuments(
 			value -> document -> {
 				document.addDate(
 					Field.MODIFIED_DATE, new Date(value.longValue()));
 				document.addNumber(Field.PRIORITY, value);
 			},
-			values);
+			new double[] {1, 2, 3});
 
 		SortFactory sortFactory = new SortFactoryImpl();
 
@@ -160,9 +158,7 @@ public abstract class BaseSortTestCase extends BaseIndexingTestCase {
 			String fieldName, Function<Double, DocumentCreationHelper> function)
 		throws Exception {
 
-		double[] values = {10, 1, 40, 5.3};
-
-		addDocuments(function, values);
+		addDocuments(function, new double[] {10, 1, 40, 5.3});
 
 		assertOrder(
 			fieldName, Sort.DOUBLE_TYPE, false, "[1.0, 5.3, 10.0, 40.0]");

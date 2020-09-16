@@ -1093,13 +1093,12 @@ public class ContentPageEditorDisplayContext {
 			allFragmentCollections.addAll(_getDynamicFragments());
 		}
 
-		long[] groupIds = {
-			themeDisplay.getCompanyGroupId(), getGroupId(),
-			CompanyConstants.SYSTEM
-		};
-
 		List<FragmentCollection> fragmentCollections =
-			FragmentCollectionServiceUtil.getFragmentCollections(groupIds);
+			FragmentCollectionServiceUtil.getFragmentCollections(
+				new long[] {
+					themeDisplay.getCompanyGroupId(), getGroupId(),
+					CompanyConstants.SYSTEM
+				});
 
 		for (FragmentCollection fragmentCollection : fragmentCollections) {
 			List<FragmentEntry> fragmentEntries =

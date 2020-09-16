@@ -526,18 +526,16 @@ public class AssetEntryQueryTest {
 
 	@Test
 	public void testOrderByRatingsAsc() throws Exception {
-		double[] scores = {0.44, 0.2, 0.6, 0.22, 0.86};
-		double[] orderedScores = {0.2, 0.22, 0.44, 0.6, 0.86};
-
-		testOrderByRatings(scores, orderedScores, "ASC");
+		testOrderByRatings(
+			new double[] {0.44, 0.2, 0.6, 0.22, 0.86},
+			new double[] {0.2, 0.22, 0.44, 0.6, 0.86}, "ASC");
 	}
 
 	@Test
 	public void testOrderByRatingsDesc() throws Exception {
-		double[] scores = {0.44, 0.2, 0.6, 0.22, 0.86};
-		double[] orderedScores = {0.86, 0.6, 0.44, 0.22, 0.2};
-
-		testOrderByRatings(scores, orderedScores, "DESC");
+		testOrderByRatings(
+			new double[] {0.44, 0.2, 0.6, 0.22, 0.86},
+			new double[] {0.86, 0.6, 0.44, 0.22, 0.2}, "DESC");
 	}
 
 	protected AssetEntryQuery buildAssetEntryQuery(

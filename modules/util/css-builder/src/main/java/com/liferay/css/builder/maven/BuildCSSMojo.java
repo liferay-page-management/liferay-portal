@@ -99,9 +99,7 @@ public class BuildCSSMojo extends AbstractMojo {
 			if (_buildContext.isIncremental()) {
 				Scanner scanner = _buildContext.newScanner(_projectBaseDir);
 
-				String[] includes = {"", "**/*.scss"};
-
-				scanner.setIncludes(includes);
+				scanner.setIncludes(new String[] {"", "**/*.scss"});
 
 				scanner.scan();
 

@@ -78,8 +78,10 @@ const mockAddItem = jest.fn().mockResolvedValue(ENTRY.DATA_RECORD_APPS(1));
 const mockGetItem = jest
 	.fn()
 	.mockResolvedValueOnce(ENTRY.DATA_DEFINITION)
+	.mockResolvedValueOnce(ENTRY.DATA_LAYOUT)
 	.mockResolvedValueOnce(ENTRY.APP_WORKFLOW)
 	.mockResolvedValueOnce(ENTRY.DATA_DEFINITION)
+	.mockResolvedValueOnce(ENTRY.DATA_LAYOUT)
 	.mockResolvedValueOnce(ENTRY.APP_WORKFLOW)
 	.mockResolvedValue({
 		items: [

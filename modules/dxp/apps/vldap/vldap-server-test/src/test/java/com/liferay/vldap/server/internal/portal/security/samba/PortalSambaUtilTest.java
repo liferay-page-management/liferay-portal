@@ -291,12 +291,10 @@ public class PortalSambaUtilTest extends BaseVLDAPTestCase {
 	protected void setUpPortalUtil() {
 		Portal portal = mock(Portal.class);
 
-		long[] companyIds = {PRIMARY_KEY};
-
 		when(
 			portal.getCompanyIds()
 		).thenReturn(
-			companyIds
+			new long[] {PRIMARY_KEY}
 		);
 
 		PortalUtil portalUtil = new PortalUtil();

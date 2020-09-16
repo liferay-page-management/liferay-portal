@@ -86,10 +86,10 @@ public class ServiceTrackerListTest {
 
 					})) {
 
-			TrackedOne[] services = {new TrackedOne(), new TrackedOne()};
-
 			Collection<ServiceRegistration<TrackedOne>> serviceRegistrations =
-				registerServices(TrackedOne.class, services);
+				registerServices(
+					TrackedOne.class,
+					new TrackedOne[] {new TrackedOne(), new TrackedOne()});
 
 			Assert.assertEquals(
 				serviceTrackerList.toString(), 2, serviceTrackerList.size());

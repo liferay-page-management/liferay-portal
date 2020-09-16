@@ -313,15 +313,14 @@ public class CalendarBookingServiceImpl extends CalendarBookingServiceBaseImpl {
 
 		Calendar calendar = _calendarService.getCalendar(calendarId);
 
-		int[] statuses = {
-			WorkflowConstants.STATUS_APPROVED,
-			CalendarBookingWorkflowConstants.STATUS_MAYBE
-		};
-
 		List<CalendarBooking> calendarBookings = search(
 			themeDisplay.getCompanyId(), new long[0], new long[] {calendarId},
-			new long[0], -1, null, startTime, endTime, true, statuses, 0, max,
-			null);
+			new long[0], -1, null, startTime, endTime, true,
+			new int[] {
+				WorkflowConstants.STATUS_APPROVED,
+				CalendarBookingWorkflowConstants.STATUS_MAYBE
+			},
+			0, max, null);
 
 		return exportToRSS(
 			calendar.getName(themeDisplay.getLocale()),

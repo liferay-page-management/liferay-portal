@@ -1174,9 +1174,9 @@ public abstract class DLPreviewableProcessor implements DLProcessor {
 		String destinationName, FileVersion sourceFileVersion,
 		FileVersion destinationFileVersion) {
 
-		Object[] payload = {sourceFileVersion, destinationFileVersion};
-
-		MessageBusUtil.sendMessage(destinationName, payload);
+		MessageBusUtil.sendMessage(
+			destinationName,
+			new Object[] {sourceFileVersion, destinationFileVersion});
 	}
 
 	protected void storeThumbnailImage(

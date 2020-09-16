@@ -113,14 +113,12 @@ public class ExportLayoutPageTemplateEntriesMVCResourceCommandTest {
 					getLayoutPageTemplateCollectionId(),
 				name2);
 
-		long[] layoutPageTemplateEntryIds = {
-			layoutPageTemplateEntry1.getLayoutPageTemplateEntryId(),
-			layoutPageTemplateEntry2.getLayoutPageTemplateEntryId()
-		};
-
 		File file = ReflectionTestUtil.invoke(
 			_mvcResourceCommand, "getFile", new Class<?>[] {long[].class},
-			layoutPageTemplateEntryIds);
+			new long[] {
+				layoutPageTemplateEntry1.getLayoutPageTemplateEntryId(),
+				layoutPageTemplateEntry2.getLayoutPageTemplateEntryId()
+			});
 
 		try (ZipFile zipFile = new ZipFile(file)) {
 			int count = 0;
@@ -144,13 +142,11 @@ public class ExportLayoutPageTemplateEntriesMVCResourceCommandTest {
 
 	@Test
 	public void testGetFileNameMultiplePageTemplates() {
-		long[] layoutPageTemplateEntryIds = {
-			RandomTestUtil.randomLong(), RandomTestUtil.randomLong()
-		};
-
 		String fileName = ReflectionTestUtil.invoke(
 			_mvcResourceCommand, "getFileName", new Class<?>[] {long[].class},
-			layoutPageTemplateEntryIds);
+			new long[] {
+				RandomTestUtil.randomLong(), RandomTestUtil.randomLong()
+			});
 
 		Assert.assertTrue(fileName.startsWith("page-templates-"));
 		Assert.assertTrue(fileName.endsWith(".zip"));
@@ -174,13 +170,11 @@ public class ExportLayoutPageTemplateEntriesMVCResourceCommandTest {
 				LayoutPageTemplateEntryTypeConstants.TYPE_BASIC, 0,
 				WorkflowConstants.STATUS_DRAFT, _serviceContext);
 
-		long[] layoutPageTemplateEntryIds = {
-			layoutPageTemplateEntry.getLayoutPageTemplateEntryId()
-		};
-
 		String fileName = ReflectionTestUtil.invoke(
 			_mvcResourceCommand, "getFileName", new Class<?>[] {long[].class},
-			layoutPageTemplateEntryIds);
+			new long[] {
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId()
+			});
 
 		Assert.assertTrue(
 			fileName.startsWith(
@@ -207,13 +201,11 @@ public class ExportLayoutPageTemplateEntriesMVCResourceCommandTest {
 					getLayoutPageTemplateCollectionId(),
 				name);
 
-		long[] layoutPageTemplateEntryIds = {
-			layoutPageTemplateEntry.getLayoutPageTemplateEntryId()
-		};
-
 		File file = ReflectionTestUtil.invoke(
 			_mvcResourceCommand, "getFile", new Class<?>[] {long[].class},
-			layoutPageTemplateEntryIds);
+			new long[] {
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId()
+			});
 
 		try (ZipFile zipFile = new ZipFile(file)) {
 			int count = 0;
@@ -250,13 +242,11 @@ public class ExportLayoutPageTemplateEntriesMVCResourceCommandTest {
 				RandomTestUtil.randomString(10),
 				WorkflowConstants.STATUS_DRAFT);
 
-		long[] layoutPageTemplateEntryIds = {
-			layoutPageTemplateEntry.getLayoutPageTemplateEntryId()
-		};
-
 		File file = ReflectionTestUtil.invoke(
 			_mvcResourceCommand, "getFile", new Class<?>[] {long[].class},
-			layoutPageTemplateEntryIds);
+			new long[] {
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId()
+			});
 
 		try (ZipFile zipFile = new ZipFile(file)) {
 			Assert.assertEquals(0, zipFile.size());

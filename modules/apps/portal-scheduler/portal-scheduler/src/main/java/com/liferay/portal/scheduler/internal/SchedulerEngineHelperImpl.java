@@ -197,15 +197,14 @@ public class SchedulerEngineHelperImpl implements SchedulerEngineHelper {
 				recurrence.setInterval(dailyInterval);
 			}
 			else {
-				DayAndPosition[] dayPos = {
-					new DayAndPosition(Calendar.MONDAY, 0),
-					new DayAndPosition(Calendar.TUESDAY, 0),
-					new DayAndPosition(Calendar.WEDNESDAY, 0),
-					new DayAndPosition(Calendar.THURSDAY, 0),
-					new DayAndPosition(Calendar.FRIDAY, 0)
-				};
-
-				recurrence.setByDay(dayPos);
+				recurrence.setByDay(
+					new DayAndPosition[] {
+						new DayAndPosition(Calendar.MONDAY, 0),
+						new DayAndPosition(Calendar.TUESDAY, 0),
+						new DayAndPosition(Calendar.WEDNESDAY, 0),
+						new DayAndPosition(Calendar.THURSDAY, 0),
+						new DayAndPosition(Calendar.FRIDAY, 0)
+					});
 			}
 		}
 		else if (recurrenceType == Recurrence.WEEKLY) {
@@ -251,11 +250,10 @@ public class SchedulerEngineHelperImpl implements SchedulerEngineHelper {
 				int monthlyDay = ParamUtil.getInteger(
 					portletRequest, "monthlyDay1");
 
-				DayAndPosition[] dayPos = {
-					new DayAndPosition(monthlyDay, monthlyPos)
-				};
-
-				recurrence.setByDay(dayPos);
+				recurrence.setByDay(
+					new DayAndPosition[] {
+						new DayAndPosition(monthlyDay, monthlyPos)
+					});
 
 				int monthlyInterval = ParamUtil.getInteger(
 					portletRequest, "monthlyInterval1", 1);
@@ -288,11 +286,10 @@ public class SchedulerEngineHelperImpl implements SchedulerEngineHelper {
 				int yearlyMonth = ParamUtil.getInteger(
 					portletRequest, "yearlyMonth1");
 
-				DayAndPosition[] dayPos = {
-					new DayAndPosition(yearlyDay, yearlyPos)
-				};
-
-				recurrence.setByDay(dayPos);
+				recurrence.setByDay(
+					new DayAndPosition[] {
+						new DayAndPosition(yearlyDay, yearlyPos)
+					});
 
 				recurrence.setByMonth(new int[] {yearlyMonth});
 

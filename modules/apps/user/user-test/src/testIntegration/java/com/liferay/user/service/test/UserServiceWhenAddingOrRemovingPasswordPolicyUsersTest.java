@@ -93,10 +93,9 @@ public class UserServiceWhenAddingOrRemovingPasswordPolicyUsersTest {
 
 		Assert.assertTrue(_user.isPasswordReset());
 
-		long[] users = {_user.getUserId()};
-
 		_userLocalService.addPasswordPolicyUsers(
-			_testPasswordPolicy.getPasswordPolicyId(), users);
+			_testPasswordPolicy.getPasswordPolicyId(),
+			new long[] {_user.getUserId()});
 
 		_user = _userLocalService.getUser(_user.getUserId());
 

@@ -212,12 +212,11 @@ public class DLServiceVerifyProcess extends VerifyProcess {
 
 	protected void checkMimeTypes() throws Exception {
 		try (LoggingTimer loggingTimer = new LoggingTimer()) {
-			String[] mimeTypes = {
-				ContentTypes.APPLICATION_OCTET_STREAM,
-				_MS_OFFICE_2010_TEXT_XML_UTF8
-			};
-
-			checkFileVersionMimeTypes(mimeTypes);
+			checkFileVersionMimeTypes(
+				new String[] {
+					ContentTypes.APPLICATION_OCTET_STREAM,
+					_MS_OFFICE_2010_TEXT_XML_UTF8
+				});
 
 			if (_log.isDebugEnabled()) {
 				_log.debug("Fixed file entries with invalid mime types");

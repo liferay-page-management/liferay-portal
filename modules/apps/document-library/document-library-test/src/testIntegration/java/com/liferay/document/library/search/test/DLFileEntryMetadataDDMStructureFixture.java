@@ -78,11 +78,10 @@ public class DLFileEntryMetadataDDMStructureFixture {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(groupId);
 
-		long[] structureIds = {ddmStructure.getStructureId()};
-
 		DLFileEntryType type = _dlFileEntryTypeLocalService.addFileEntryType(
 			_dlFixture.getUserId(), groupId, RandomTestUtil.randomString(),
-			StringPool.BLANK, structureIds, serviceContext);
+			StringPool.BLANK, new long[] {ddmStructure.getStructureId()},
+			serviceContext);
 
 		_fileEntryTypes.add(type);
 

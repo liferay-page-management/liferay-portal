@@ -374,7 +374,6 @@ public class ExpandoSearchTest {
 		int birthdayDay = 1;
 		int birthdayYear = 1970;
 		String jobTitle = null;
-		long[] groupIds = {TestPropsValues.getGroupId()};
 		long[] organizationIds = null;
 		long[] roleIds = null;
 		long[] userGroupIds = null;
@@ -384,8 +383,9 @@ public class ExpandoSearchTest {
 			creatorUserId, TestPropsValues.getCompanyId(), autoPassword,
 			password1, password2, autoScreenName, screenName, emailAddress,
 			locale, firstName, middleName, lastName, prefixId, suffixId, male,
-			birthdayMonth, birthdayDay, birthdayYear, jobTitle, groupIds,
-			organizationIds, roleIds, userGroupIds, sendMail, serviceContext);
+			birthdayMonth, birthdayDay, birthdayYear, jobTitle,
+			new long[] {TestPropsValues.getGroupId()}, organizationIds, roleIds,
+			userGroupIds, sendMail, serviceContext);
 
 		_users.add(user);
 

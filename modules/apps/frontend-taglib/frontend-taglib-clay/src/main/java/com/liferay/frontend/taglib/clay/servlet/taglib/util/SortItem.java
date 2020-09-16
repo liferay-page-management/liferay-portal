@@ -12,28 +12,21 @@
  * details.
  */
 
-package com.liferay.source.formatter;
+package com.liferay.frontend.taglib.clay.servlet.taglib.util;
 
-import java.io.IOException;
-
-import java.util.List;
+import java.util.HashMap;
 
 /**
- * @author Hugo Huijser
+ * @author Luca Pellizzon
  */
-public class TLDSourceProcessor extends BaseSourceProcessor {
+public class SortItem extends HashMap<String, Object> {
 
-	@Override
-	protected List<String> doGetFileNames() throws IOException {
-		return getFileNames(
-			new String[] {"**/WEB-INF/tld/**", "**/test_*.tld"}, getIncludes());
+	public void setDirection(String direction) {
+		put("direction", direction);
 	}
 
-	@Override
-	protected String[] doGetIncludes() {
-		return _INCLUDES;
+	public void setKey(String key) {
+		put("key", key);
 	}
-
-	private static final String[] _INCLUDES = {"**/*.tld"};
 
 }

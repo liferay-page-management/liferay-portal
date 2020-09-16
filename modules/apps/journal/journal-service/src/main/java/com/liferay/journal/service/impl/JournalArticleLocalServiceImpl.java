@@ -2018,12 +2018,13 @@ public class JournalArticleLocalServiceImpl
 		OrderByComparator<JournalArticle> orderByComparator =
 			new ArticleVersionComparator();
 
-		int[] statuses = {
-			WorkflowConstants.STATUS_APPROVED, WorkflowConstants.STATUS_IN_TRASH
-		};
-
 		List<JournalArticle> articles = journalArticlePersistence.findByR_I_S(
-			resourcePrimKey, true, statuses, 0, 1, orderByComparator);
+			resourcePrimKey, true,
+			new int[] {
+				WorkflowConstants.STATUS_APPROVED,
+				WorkflowConstants.STATUS_IN_TRASH
+			},
+			0, 1, orderByComparator);
 
 		if (articles.isEmpty()) {
 			return null;

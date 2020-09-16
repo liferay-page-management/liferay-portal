@@ -204,13 +204,11 @@ public class JournalFolderServiceTest {
 		DDMStructure parentDDMStructure = DDMStructureTestUtil.addStructure(
 			_group.getGroupId(), JournalArticle.class.getName());
 
-		long[] parentDDMStructureIds = {parentDDMStructure.getStructureId()};
-
 		parentFolder = JournalFolderLocalServiceUtil.updateFolder(
 			TestPropsValues.getUserId(), serviceContext.getScopeGroupId(),
 			parentFolder.getFolderId(), parentFolder.getParentFolderId(),
 			parentFolder.getName(), parentFolder.getDescription(),
-			parentDDMStructureIds,
+			new long[] {parentDDMStructure.getStructureId()},
 			JournalFolderConstants.RESTRICTION_TYPE_DDM_STRUCTURES_AND_WORKFLOW,
 			false, serviceContext);
 
@@ -254,12 +252,11 @@ public class JournalFolderServiceTest {
 		DDMStructure ddmStructure1 = DDMStructureTestUtil.addStructure(
 			_group.getGroupId(), JournalArticle.class.getName());
 
-		long[] ddmStructureIds = {ddmStructure1.getStructureId()};
-
 		JournalFolderServiceUtil.updateFolder(
 			serviceContext.getScopeGroupId(), spainFolder.getFolderId(),
 			spainFolder.getParentFolderId(), spainFolder.getName(),
-			spainFolder.getDescription(), ddmStructureIds,
+			spainFolder.getDescription(),
+			new long[] {ddmStructure1.getStructureId()},
 			JournalFolderConstants.RESTRICTION_TYPE_DDM_STRUCTURES_AND_WORKFLOW,
 			false, serviceContext);
 
@@ -747,13 +744,11 @@ public class JournalFolderServiceTest {
 		DDMStructure childDDMStructure = DDMStructureTestUtil.addStructure(
 			_group.getGroupId(), JournalArticle.class.getName());
 
-		long[] childDDMStructureIds = {childDDMStructure.getStructureId()};
-
 		JournalFolderLocalServiceUtil.updateFolder(
 			TestPropsValues.getUserId(), serviceContext.getScopeGroupId(),
 			childFolder.getFolderId(), childFolder.getParentFolderId(),
 			childFolder.getName(), childFolder.getDescription(),
-			childDDMStructureIds,
+			new long[] {childDDMStructure.getStructureId()},
 			JournalFolderConstants.RESTRICTION_TYPE_DDM_STRUCTURES_AND_WORKFLOW,
 			false, serviceContext);
 

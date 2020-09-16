@@ -165,13 +165,12 @@ public class FragmentEntryLinkServicePermissionTest {
 
 		UserTestUtil.setUser(_user);
 
-		long[] fragmentEntryIds = {
-			_fragmentEntry.getFragmentEntryId(),
-			fragmentEntry.getFragmentEntryId()
-		};
-
 		_fragmentEntryLinkService.updateFragmentEntryLinks(
-			_group.getGroupId(), _layout.getPlid(), fragmentEntryIds,
+			_group.getGroupId(), _layout.getPlid(),
+			new long[] {
+				_fragmentEntry.getFragmentEntryId(),
+				fragmentEntry.getFragmentEntryId()
+			},
 			_createEditableValues(),
 			ServiceContextTestUtil.getServiceContext(
 				_group, _user.getUserId()));
@@ -188,13 +187,12 @@ public class FragmentEntryLinkServicePermissionTest {
 
 		UserTestUtil.setUser(_user);
 
-		long[] fragmentEntryIds = {
-			_fragmentEntry.getFragmentEntryId(),
-			fragmentEntry.getFragmentEntryId()
-		};
-
 		_fragmentEntryLinkService.updateFragmentEntryLinks(
-			_group.getGroupId(), _layout.getPlid(), fragmentEntryIds,
+			_group.getGroupId(), _layout.getPlid(),
+			new long[] {
+				_fragmentEntry.getFragmentEntryId(),
+				fragmentEntry.getFragmentEntryId()
+			},
 			_createEditableValues(),
 			ServiceContextTestUtil.getServiceContext(
 				_group, _user.getUserId()));

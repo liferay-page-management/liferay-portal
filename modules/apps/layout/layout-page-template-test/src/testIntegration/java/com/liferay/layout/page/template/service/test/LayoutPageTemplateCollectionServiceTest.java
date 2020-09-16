@@ -193,13 +193,14 @@ public class LayoutPageTemplateCollectionServiceTest {
 					_group.getGroupId(), "Layout Page Template Collection 2",
 					null, serviceContext);
 
-		long[] layoutPageTemplateCollections = {
-			layoutPageTemplateCollection1.getLayoutPageTemplateCollectionId(),
-			layoutPageTemplateCollection2.getLayoutPageTemplateCollectionId()
-		};
-
 		_layoutPageTemplateCollectionService.
-			deleteLayoutPageTemplateCollections(layoutPageTemplateCollections);
+			deleteLayoutPageTemplateCollections(
+				new long[] {
+					layoutPageTemplateCollection1.
+						getLayoutPageTemplateCollectionId(),
+					layoutPageTemplateCollection2.
+						getLayoutPageTemplateCollectionId()
+				});
 
 		Assert.assertNull(
 			_layoutPageTemplateCollectionService.

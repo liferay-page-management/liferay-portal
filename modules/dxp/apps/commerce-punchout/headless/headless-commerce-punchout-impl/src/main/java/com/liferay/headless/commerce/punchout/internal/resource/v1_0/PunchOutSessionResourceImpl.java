@@ -246,7 +246,6 @@ public class PunchOutSessionResourceImpl
 		int birthdayDay = 1;
 		int birthdayYear = 1970;
 		String jobTitle = StringPool.BLANK;
-		long[] groupIds = {groupId};
 		long[] organizationIds = null;
 		long[] userGroupIds = null;
 		boolean sendEmail = true;
@@ -256,8 +255,8 @@ public class PunchOutSessionResourceImpl
 			creatorUserId, companyId, autoPassword, password1, password2,
 			autoScreenName, screenName, email, 0, openId, locale, firstName,
 			middleName, lastName, prefixId, suffixId, false, birthdayMonth,
-			birthdayDay, birthdayYear, jobTitle, groupIds, organizationIds,
-			roleIds, userGroupIds, sendEmail,
+			birthdayDay, birthdayYear, jobTitle, new long[] {groupId},
+			organizationIds, roleIds, userGroupIds, sendEmail,
 			_serviceContextHelper.getServiceContext(groupId));
 
 		user = _userLocalService.updateLastLogin(
@@ -284,11 +283,10 @@ public class PunchOutSessionResourceImpl
 			throw new InternalServerErrorException(logMessage);
 		}
 
-		long[] roleIds = {role.getRoleId()};
-
 		_commerceAccountUserRelLocalService.addCommerceAccountUserRels(
 			commerceAccount.getCommerceAccountId(), new long[] {userId}, null,
-			roleIds, _serviceContextHelper.getServiceContext(groupId));
+			new long[] {role.getRoleId()},
+			_serviceContextHelper.getServiceContext(groupId));
 	}
 
 	private void _checkAllowUserCreation(long companyId, String email)

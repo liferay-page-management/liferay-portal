@@ -260,9 +260,9 @@ public class ExpandoValueConversionTest {
 
 	@Test(expected = ClassCastException.class)
 	public void testDateArray10() {
-		int[] times = {1376510136, 1376510136};
-
-		_converter.convertType(ExpandoColumnConstants.DATE_ARRAY, times);
+		_converter.convertType(
+			ExpandoColumnConstants.DATE_ARRAY,
+			new int[] {1376510136, 1376510136});
 	}
 
 	@Test

@@ -279,9 +279,8 @@ public class CSSBuilder implements AutoCloseable {
 	}
 
 	private String[] _getScssFragments(String baseDir) throws Exception {
-		String[] includes = {"**/_*.scss"};
-
-		return FileUtil.getFilesFromDirectory(baseDir, includes, _excludes);
+		return FileUtil.getFilesFromDirectory(
+			baseDir, new String[] {"**/_*.scss"}, _excludes);
 	}
 
 	private void _initSassCompiler(String sassCompilerClassName)

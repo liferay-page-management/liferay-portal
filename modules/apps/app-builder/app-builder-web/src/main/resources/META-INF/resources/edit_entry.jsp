@@ -43,9 +43,7 @@ List<Long> dataLayoutIds = appBuilderAppPortletTabContext.getDataLayoutIds();
 							if (dataLayoutIds.size() > 1) {
 						%>
 
-								<h3 class="px-4">
-									<%= appBuilderAppPortletTabContext.getName(dataLayoutId, locale) %>
-								</h3>
+								<h3 class="px-4" id="<%= dataLayoutId %>_name" />
 
 							<%
 							}

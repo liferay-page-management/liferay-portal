@@ -190,9 +190,8 @@ public class TZSRecurrenceTest extends RecurrenceTestCase {
 		TZSRecurrence tzsRecurrence = new TZSRecurrence(
 			dtStart, duration, Recurrence.MONTHLY);
 
-		DayAndPosition[] dayAndPositions = {new DayAndPosition(day, position)};
-
-		tzsRecurrence.setByDay(dayAndPositions);
+		tzsRecurrence.setByDay(
+			new DayAndPosition[] {new DayAndPosition(day, position)});
 
 		tzsRecurrence.setInterval(interval);
 		tzsRecurrence.setTimeZone(timeZone);

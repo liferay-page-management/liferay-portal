@@ -213,15 +213,14 @@ public class AddSchedulerMVCActionCommand extends BaseMVCActionCommand {
 				recurrence.setInterval(dailyInterval);
 			}
 			else {
-				DayAndPosition[] dayAndPositions = {
-					new DayAndPosition(Calendar.MONDAY, 0),
-					new DayAndPosition(Calendar.TUESDAY, 0),
-					new DayAndPosition(Calendar.WEDNESDAY, 0),
-					new DayAndPosition(Calendar.THURSDAY, 0),
-					new DayAndPosition(Calendar.FRIDAY, 0)
-				};
-
-				recurrence.setByDay(dayAndPositions);
+				recurrence.setByDay(
+					new DayAndPosition[] {
+						new DayAndPosition(Calendar.MONDAY, 0),
+						new DayAndPosition(Calendar.TUESDAY, 0),
+						new DayAndPosition(Calendar.WEDNESDAY, 0),
+						new DayAndPosition(Calendar.THURSDAY, 0),
+						new DayAndPosition(Calendar.FRIDAY, 0)
+					});
 			}
 		}
 		else if (recurrenceType == Recurrence.WEEKLY) {
@@ -267,11 +266,10 @@ public class AddSchedulerMVCActionCommand extends BaseMVCActionCommand {
 				int monthlyPos = ParamUtil.getInteger(
 					actionRequest, "monthlyPos");
 
-				DayAndPosition[] dayAndPositions = {
-					new DayAndPosition(monthlyDay, monthlyPos)
-				};
-
-				recurrence.setByDay(dayAndPositions);
+				recurrence.setByDay(
+					new DayAndPosition[] {
+						new DayAndPosition(monthlyDay, monthlyPos)
+					});
 
 				int monthlyInterval = ParamUtil.getInteger(
 					actionRequest, "monthlyInterval1", 1);
@@ -304,11 +302,10 @@ public class AddSchedulerMVCActionCommand extends BaseMVCActionCommand {
 				int yearlyPos = ParamUtil.getInteger(
 					actionRequest, "yearlyPos");
 
-				DayAndPosition[] dayAndPositions = {
-					new DayAndPosition(yearlyDay, yearlyPos)
-				};
-
-				recurrence.setByDay(dayAndPositions);
+				recurrence.setByDay(
+					new DayAndPosition[] {
+						new DayAndPosition(yearlyDay, yearlyPos)
+					});
 
 				int yearlyMonth = ParamUtil.getInteger(
 					actionRequest, "yearlyMonth1");

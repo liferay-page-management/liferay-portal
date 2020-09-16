@@ -89,18 +89,17 @@ public class GitWorkingDirectory {
 		_gitRemotes.put(gitRemoteName, newGitRemote);
 
 		if (write) {
-			String[] commands = {
-				JenkinsResultsParserUtil.combine(
-					"if [ \"$(git remote | grep ", gitRemoteName,
-					")\" != \"\" ] ; then git remote remove ", gitRemoteName,
-					" ; fi"),
-				JenkinsResultsParserUtil.combine(
-					"git remote add ", gitRemoteName, " ", remoteURL)
-			};
-
 			GitUtil.ExecutionResult executionResult = executeBashCommands(
 				GitUtil.RETRIES_SIZE_MAX, GitUtil.MILLIS_RETRY_DELAY,
-				GitUtil.MILLIS_TIMEOUT, commands);
+				GitUtil.MILLIS_TIMEOUT,
+				new String[] {
+					JenkinsResultsParserUtil.combine(
+						"if [ \"$(git remote | grep ", gitRemoteName,
+						")\" != \"\" ] ; then git remote remove ",
+						gitRemoteName, " ; fi"),
+					JenkinsResultsParserUtil.combine(
+						"git remote add ", gitRemoteName, " ", remoteURL)
+				});
 
 			if (executionResult.getExitValue() != 0) {
 				throw new RuntimeException(

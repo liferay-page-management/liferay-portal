@@ -19,7 +19,7 @@ import useQuery from 'app-builder-web/js/hooks/useQuery.es';
 import {ViewDataLayoutPageValues} from 'app-builder-web/js/pages/entry/ViewEntry.es';
 import ViewEntryUpperToolbar from 'app-builder-web/js/pages/entry/ViewEntryUpperToolbar.es';
 import {addItem, getItem} from 'app-builder-web/js/utils/client.es';
-import {getLocalizedValue} from 'app-builder-web/js/utils/lang.es';
+import {getLocalizedUserPreferenceValue} from 'app-builder-web/js/utils/lang.es';
 import {errorToast} from 'app-builder-web/js/utils/toast.es';
 import {isEqualObjects} from 'app-builder-web/js/utils/utils.es';
 import {usePrevious} from 'frontend-js-react-web';
@@ -35,9 +35,13 @@ export default function ViewEntry({
 		params: {entryIndex},
 	},
 }) {
-	const {appId, dataDefinitionId, dataLayoutId, dataListViewId} = useContext(
-		AppContext
-	);
+	const {
+		appId,
+		dataDefinitionId,
+		dataLayoutId,
+		dataListViewId,
+		userLanguageId,
+	} = useContext(AppContext);
 	const [dataLayoutIds, setDataLayoutIds] = useState([]);
 	const [isModalVisible, setModalVisible] = useState(false);
 
@@ -251,9 +255,10 @@ export default function ViewEntry({
 									({dataLayoutPages = [], ...dataLayout}) => (
 										<div key={dataLayout.id}>
 											<h3>
-												{getLocalizedValue(
-													dataDefinition.defaultLanguageId,
-													dataLayout.name
+												{getLocalizedUserPreferenceValue(
+													dataLayout.name,
+													userLanguageId,
+													dataDefinition.defaultLanguageId
 												)}
 											</h3>
 

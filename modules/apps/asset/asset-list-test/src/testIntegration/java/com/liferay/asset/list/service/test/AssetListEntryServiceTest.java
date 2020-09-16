@@ -119,12 +119,11 @@ public class AssetListEntryServiceTest {
 		AssetListEntry assetListEntry2 = _addAssetListEntry(
 			"Asset List Title 2");
 
-		long[] assetListEntries = {
-			assetListEntry1.getAssetListEntryId(),
-			assetListEntry2.getAssetListEntryId()
-		};
-
-		_assetListEntryService.deleteAssetListEntries(assetListEntries);
+		_assetListEntryService.deleteAssetListEntries(
+			new long[] {
+				assetListEntry1.getAssetListEntryId(),
+				assetListEntry2.getAssetListEntryId()
+			});
 
 		Assert.assertNull(
 			_assetListEntryService.fetchAssetListEntry(

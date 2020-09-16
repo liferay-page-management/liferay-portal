@@ -430,12 +430,11 @@ public class FragmentEntryServiceTest {
 		FragmentEntry fragmentEntry2 = FragmentEntryTestUtil.addFragmentEntry(
 			_fragmentCollection.getFragmentCollectionId());
 
-		long[] fragmentEntryIds = {
-			fragmentEntry1.getFragmentEntryId(),
-			fragmentEntry2.getFragmentEntryId()
-		};
-
-		_fragmentEntryService.deleteFragmentEntries(fragmentEntryIds);
+		_fragmentEntryService.deleteFragmentEntries(
+			new long[] {
+				fragmentEntry1.getFragmentEntryId(),
+				fragmentEntry2.getFragmentEntryId()
+			});
 
 		Assert.assertNull(
 			_fragmentEntryPersistence.fetchByPrimaryKey(

@@ -167,14 +167,13 @@ public class JournalContentExportImportPortletPreferencesProcessor
 				articleGroupId, articleId);
 
 		if (journalArticleResource != null) {
-			int[] statuses = {
-				WorkflowConstants.STATUS_APPROVED,
-				WorkflowConstants.STATUS_EXPIRED,
-				WorkflowConstants.STATUS_SCHEDULED
-			};
-
 			article = _journalArticleLocalService.fetchLatestArticle(
-				journalArticleResource.getResourcePrimKey(), statuses);
+				journalArticleResource.getResourcePrimKey(),
+				new int[] {
+					WorkflowConstants.STATUS_APPROVED,
+					WorkflowConstants.STATUS_EXPIRED,
+					WorkflowConstants.STATUS_SCHEDULED
+				});
 		}
 
 		if (article == null) {

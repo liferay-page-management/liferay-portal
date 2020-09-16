@@ -115,15 +115,14 @@ public class CalendarICalDataHandler implements CalendarDataHandler {
 
 	@Override
 	public String exportCalendar(long calendarId) throws Exception {
-		int[] statuses = {
-			WorkflowConstants.STATUS_APPROVED,
-			CalendarBookingWorkflowConstants.STATUS_MAYBE,
-			WorkflowConstants.STATUS_PENDING
-		};
-
 		List<CalendarBooking> calendarBookings =
 			CalendarBookingServiceUtil.getCalendarBookings(
-				calendarId, statuses);
+				calendarId,
+				new int[] {
+					WorkflowConstants.STATUS_APPROVED,
+					CalendarBookingWorkflowConstants.STATUS_MAYBE,
+					WorkflowConstants.STATUS_PENDING
+				});
 
 		net.fortuna.ical4j.model.Calendar iCalCalendar = toICalCalendar(
 			calendarBookings);

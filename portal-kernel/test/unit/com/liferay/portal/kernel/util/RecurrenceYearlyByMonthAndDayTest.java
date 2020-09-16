@@ -144,11 +144,9 @@ public class RecurrenceYearlyByMonthAndDayTest extends RecurrenceTestCase {
 		Recurrence recurrence = new Recurrence(
 			dtStart, duration, Recurrence.YEARLY);
 
-		DayAndPosition[] days = {new DayAndPosition(day, position)};
-		int[] months = {month};
-
-		recurrence.setByDay(days);
-		recurrence.setByMonth(months);
+		recurrence.setByDay(
+			new DayAndPosition[] {new DayAndPosition(day, position)});
+		recurrence.setByMonth(new int[] {month});
 		recurrence.setInterval(interval);
 
 		return recurrence;

@@ -48,12 +48,12 @@ public class CalendarBookingBatchReindexerImpl
 
 				Property statusProperty = PropertyFactoryUtil.forName("status");
 
-				int[] statuses = {
-					WorkflowConstants.STATUS_APPROVED,
-					CalendarBookingWorkflowConstants.STATUS_MAYBE
-				};
-
-				dynamicQuery.add(statusProperty.in(statuses));
+				dynamicQuery.add(
+					statusProperty.in(
+						new int[] {
+							WorkflowConstants.STATUS_APPROVED,
+							CalendarBookingWorkflowConstants.STATUS_MAYBE
+						}));
 			});
 		batchIndexingActionable.setCompanyId(companyId);
 		batchIndexingActionable.setPerformActionMethod(

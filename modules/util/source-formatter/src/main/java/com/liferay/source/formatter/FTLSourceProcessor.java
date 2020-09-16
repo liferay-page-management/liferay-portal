@@ -25,12 +25,12 @@ public class FTLSourceProcessor extends BaseSourceProcessor {
 
 	@Override
 	protected List<String> doGetFileNames() throws IOException {
-		String[] excludes = {
-			"**/journal/dependencies/template.ftl",
-			"**/service/builder/dependencies/props.ftl"
-		};
-
-		return getFileNames(excludes, getIncludes());
+		return getFileNames(
+			new String[] {
+				"**/journal/dependencies/template.ftl",
+				"**/service/builder/dependencies/props.ftl"
+			},
+			getIncludes());
 	}
 
 	@Override

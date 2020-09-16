@@ -34,11 +34,11 @@ public class MainTest {
 
 	@Test(expected = ParameterException.class)
 	public void testValidateInvalidCompanyId() throws Exception {
-		String[] arguments = {
-			"-C", "foo", "-O", "bar", "-P", "foo.properties", "-S", _SCHEMA_NAME
-		};
-
-		Main.main(arguments);
+		Main.main(
+			new String[] {
+				"-C", "foo", "-O", "bar", "-P", "foo.properties", "-S",
+				_SCHEMA_NAME
+			});
 	}
 
 	@Test(expected = ParameterException.class)
@@ -48,22 +48,20 @@ public class MainTest {
 
 	@Test(expected = ParameterException.class)
 	public void testValidateNonexistingOutputDirectory() throws Exception {
-		String[] arguments = {
-			"-C", _COMPANY_ID, "-O", "foo", "-P", "foo.properties", "-S",
-			_SCHEMA_NAME
-		};
-
-		Main.main(arguments);
+		Main.main(
+			new String[] {
+				"-C", _COMPANY_ID, "-O", "foo", "-P", "foo.properties", "-S",
+				_SCHEMA_NAME
+			});
 	}
 
 	@Test(expected = ParameterException.class)
 	public void testValidateNonexistingPropertiesFile() throws Exception {
-		String[] arguments = {
-			"-C", _COMPANY_ID, "-O", "bar", "-P", "foo.properties", "-S",
-			_SCHEMA_NAME
-		};
-
-		Main.main(arguments);
+		Main.main(
+			new String[] {
+				"-C", _COMPANY_ID, "-O", "bar", "-P", "foo.properties", "-S",
+				_SCHEMA_NAME
+			});
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -78,12 +76,11 @@ public class MainTest {
 		readOnlyDir.setReadable(false);
 		readOnlyDir.setWritable(false);
 
-		String[] arguments = {
-			"-C", _COMPANY_ID, "-O", readOnlyDir.getAbsolutePath(), "-P",
-			"foo.properties", "-S", _SCHEMA_NAME
-		};
-
-		Main.main(arguments);
+		Main.main(
+			new String[] {
+				"-C", _COMPANY_ID, "-O", readOnlyDir.getAbsolutePath(), "-P",
+				"foo.properties", "-S", _SCHEMA_NAME
+			});
 	}
 
 	@Test
