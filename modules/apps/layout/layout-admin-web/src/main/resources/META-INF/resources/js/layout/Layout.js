@@ -119,8 +119,12 @@ const Layout = ({
 	const saveData = (movedItems, parentItemId) => {
 		const formData = new FormData();
 
-		const [, mainColumn] = layoutColumns;
-		const activeItem = mainColumn.find((item) => item.active);
+		const activeItems = layoutColumns.reduce(
+			(acc, column) => [...acc, ...column.filter((item) => item.active)],
+			[]
+		);
+
+		const activeItem = activeItems[activeItems.length - 1];
 
 		formData.append(`${namespace}plids`, JSON.stringify(movedItems));
 		formData.append(`${namespace}parentPlid`, parentItemId);
