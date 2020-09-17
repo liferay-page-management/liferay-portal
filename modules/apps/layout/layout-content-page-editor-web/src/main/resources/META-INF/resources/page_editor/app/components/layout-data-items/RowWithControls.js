@@ -26,9 +26,10 @@ import Topper from '../Topper';
 import Row from './Row';
 
 const RowWithControls = React.forwardRef(({children, item}, ref) => {
+	const [customRow, setCustomRow] = useState(false);
 	const [resizing, setResizing] = useState(false);
 	const [updatedLayoutData, setUpdatedLayoutData] = useState(null);
-	const [customRow, setCustomRow] = useState(false);
+	const {height, maxWidth, minWidth, width} = item.config.styles;
 
 	const canUpdateItemConfiguration = useSelector(
 		selectCanUpdateItemConfiguration
@@ -55,8 +56,6 @@ const RowWithControls = React.forwardRef(({children, item}, ref) => {
 
 	const [setRef, itemElement] = useSetRef(ref);
 	const {modulesPerRow, verticalAlignment} = rowResponsiveConfig;
-
-	const {height, maxWidth, minWidth, width} = item.config.styles;
 
 	const style = {};
 
