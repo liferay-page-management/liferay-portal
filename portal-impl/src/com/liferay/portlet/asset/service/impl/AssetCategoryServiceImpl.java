@@ -424,12 +424,12 @@ public class AssetCategoryServiceImpl extends AssetCategoryServiceBaseImpl {
 			if (Validator.isNull(name)) {
 				categoriesJSONArray = toJSONArray(
 					assetCategoryPersistence.filterFindByG_V(
-						groupId, vocabularyIds));
+						groupId, vocabularyIds, start, end));
 			}
 			else {
 				categoriesJSONArray = toJSONArray(
 					assetCategoryPersistence.filterFindByG_LikeN_V(
-						groupId, name, vocabularyIds));
+						groupId, name, vocabularyIds, start, end));
 			}
 
 			for (int j = 0; j < categoriesJSONArray.length(); j++) {
