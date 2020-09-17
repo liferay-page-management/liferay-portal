@@ -19,7 +19,7 @@ import React, {useState} from 'react';
 import useSetRef from '../../../core/hooks/useSetRef';
 import {getLayoutDataItemPropTypes} from '../../../prop-types/index';
 import selectCanUpdateItemConfiguration from '../../selectors/selectCanUpdateItemConfiguration';
-import {useSelector} from '../../store/index';
+import {useSelector, useSelectorCallback} from '../../store/index';
 import {getResponsiveConfig} from '../../utils/getResponsiveConfig';
 import {ResizeContextProvider} from '../ResizeContext';
 import Topper from '../Topper';
@@ -34,7 +34,15 @@ const RowWithControls = React.forwardRef(({children, item}, ref) => {
 		selectCanUpdateItemConfiguration
 	);
 
-	const layoutData = useSelector((state) => state.layoutData);
+	const empty = useSelectorCallback(
+		(state) =>
+			item.config.numberOfColumns === modulesPerRow &&
+			!item.children.some(
+				(childId) => state.layoutData.items[childId].children.length
+			) &&
+			!height,
+		[item, height]
+	);
 
 	const selectedViewportSize = useSelector(
 		(state) => state.selectedViewportSize
@@ -62,13 +70,7 @@ const RowWithControls = React.forwardRef(({children, item}, ref) => {
 				className={classNames({
 					'align-bottom': verticalAlignment === 'bottom',
 					'align-middle': verticalAlignment === 'middle',
-					empty:
-						item.config.numberOfColumns === modulesPerRow &&
-						!item.children.some(
-							(childId) =>
-								layoutData.items[childId].children.length
-						) &&
-						!height,
+					empty,
 					'page-editor__row': canUpdateItemConfiguration,
 					'page-editor__row-overlay-grid': resizing,
 				})}
