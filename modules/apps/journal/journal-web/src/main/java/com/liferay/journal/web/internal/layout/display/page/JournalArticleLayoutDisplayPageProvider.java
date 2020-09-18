@@ -27,7 +27,13 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Jürgen Kappler
  */
-@Component(immediate = true, service = LayoutDisplayPageProvider.class)
+@Component(
+	immediate = true,
+	property = {
+		"service.ranking:Integer=200"
+	},
+	service = LayoutDisplayPageProvider.class
+)
 public class JournalArticleLayoutDisplayPageProvider
 	implements LayoutDisplayPageProvider<JournalArticle> {
 
