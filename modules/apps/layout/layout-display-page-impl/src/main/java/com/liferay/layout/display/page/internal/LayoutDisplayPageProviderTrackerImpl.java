@@ -16,10 +16,13 @@ package com.liferay.layout.display.page.internal;
 
 import com.liferay.layout.display.page.LayoutDisplayPageProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProviderTracker;
+import com.liferay.osgi.service.tracker.collections.ServiceTrackerMapBuilder;
+import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceComparator;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.osgi.framework.BundleContext;
@@ -58,11 +61,11 @@ public class LayoutDisplayPageProviderTrackerImpl
 	@Activate
 	protected void activate(BundleContext bundleContext) {
 		_layoutDisplayPageProviderByClassNameServiceTrackerMap =
-			ServiceTrackerMapFactory.openSingleValueMap(
+			ServiceTrackerMapBuilder.SelectorFactory.newSelector(
 				bundleContext,
 				(Class<LayoutDisplayPageProvider<?>>)
-					(Class<?>)LayoutDisplayPageProvider.class,
-				null,
+					(Class<?>)LayoutDisplayPageProvider.class
+			).<String>map(
 				(serviceReference, emitter) -> {
 					LayoutDisplayPageProvider<?> layoutDisplayPageProvider =
 						bundleContext.getService(serviceReference);
@@ -73,13 +76,19 @@ public class LayoutDisplayPageProviderTrackerImpl
 					finally {
 						bundleContext.ungetService(serviceReference);
 					}
-				});
+				}
+			).collectSingleValue(
+				Collections.reverseOrder(
+					new PropertyServiceReferenceComparator<>(
+						"service.ranking"))
+			).build();
+
 		_layoutDisplayPageProviderByURLSeparatorServiceTrackerMap =
-			ServiceTrackerMapFactory.openSingleValueMap(
+			ServiceTrackerMapBuilder.SelectorFactory.newSelector(
 				bundleContext,
 				(Class<LayoutDisplayPageProvider<?>>)
-					(Class<?>)LayoutDisplayPageProvider.class,
-				null,
+					(Class<?>)LayoutDisplayPageProvider.class
+			).<String>map(
 				(serviceReference, emitter) -> {
 					LayoutDisplayPageProvider<?> layoutDisplayPageProvider =
 						bundleContext.getService(serviceReference);
@@ -91,7 +100,12 @@ public class LayoutDisplayPageProviderTrackerImpl
 					finally {
 						bundleContext.ungetService(serviceReference);
 					}
-				});
+				}
+			).collectSingleValue(
+				Collections.reverseOrder(
+					new PropertyServiceReferenceComparator<>(
+						"service.ranking"))
+			).build();
 	}
 
 	private ServiceTrackerMap<String, LayoutDisplayPageProvider<?>>
