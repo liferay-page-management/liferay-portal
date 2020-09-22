@@ -29,8 +29,11 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.servlet.DynamicServletRequest;
 import com.liferay.portal.kernel.util.HtmlUtil;
@@ -99,12 +102,23 @@ public class LayoutModelDocumentContributor
 			return;
 		}
 
+		PermissionChecker currentPermissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
 		try {
 			HttpServletRequest httpServletRequest =
 				new DummyHttpServletRequest();
 
-			httpServletRequest.setAttribute(
-				WebKeys.USER_ID, layout.getUserId());
+			ServiceContext serviceContext =
+				ServiceContextThreadLocal.getServiceContext();
+
+			long userId = layout.getUserId();
+
+			if ((serviceContext != null) && (serviceContext.getUserId() > 0)) {
+				userId = serviceContext.getUserId();
+			}
+
+			httpServletRequest.setAttribute(WebKeys.USER_ID, userId);
 
 			httpServletRequest = DynamicServletRequest.addQueryString(
 				httpServletRequest, "p_l_id=" + layout.getPlid(), false);
@@ -158,6 +172,8 @@ public class LayoutModelDocumentContributor
 		}
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
+			PermissionThreadLocal.setPermissionChecker(
+				currentPermissionChecker);
 		}
 	}
 
