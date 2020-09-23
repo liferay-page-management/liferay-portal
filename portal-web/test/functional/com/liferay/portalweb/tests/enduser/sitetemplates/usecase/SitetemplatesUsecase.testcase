@@ -146,7 +146,8 @@ definition {
 
 		SiteTemplates.deletePage(
 			pageName = "Site Page Name",
-			siteTemplateName = "Site Template Name");
+			siteTemplateName = "Site Template Name",
+			hasChildren = "true");
 
 		Navigator.openSiteURL(siteName = "Site Name");
 
