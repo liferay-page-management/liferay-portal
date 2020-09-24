@@ -14,6 +14,8 @@
 
 package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
+import com.liferay.adaptive.media.content.transformer.ContentTransformerHandler;
+import com.liferay.adaptive.media.content.transformer.constants.ContentTransformerContentTypes;
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.contributor.FragmentCollectionContributorTracker;
 import com.liferay.fragment.entry.processor.util.EditableFragmentEntryProcessorUtil;
@@ -146,9 +148,11 @@ public class GetFragmentEntryLinkMVCResourceCommand
 			}
 
 			try {
-				String content = _fragmentRendererController.render(
-					defaultFragmentRendererContext, httpServletRequest,
-					_portal.getHttpServletResponse(resourceResponse));
+				String content = _contentTransformerHandler.transform(
+					ContentTransformerContentTypes.HTML,
+					_fragmentRendererController.render(
+						defaultFragmentRendererContext, httpServletRequest,
+						_portal.getHttpServletResponse(resourceResponse)));
 
 				jsonObject.put(
 					"content", content
@@ -197,6 +201,9 @@ public class GetFragmentEntryLinkMVCResourceCommand
 		JSONPortletResponseUtil.writeJSON(
 			resourceRequest, resourceResponse, jsonObject);
 	}
+
+	@Reference
+	private ContentTransformerHandler _contentTransformerHandler;
 
 	@Reference
 	private FragmentCollectionContributorTracker

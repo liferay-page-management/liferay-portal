@@ -14,6 +14,7 @@
 
 package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
+import com.liferay.adaptive.media.content.transformer.ContentTransformerHandler;
 import com.liferay.fragment.contributor.FragmentCollectionContributorTracker;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.processor.PortletRegistry;
@@ -221,7 +222,7 @@ public class AddSegmentsExperienceMVCActionCommand
 			fragmentEntryLinksJSONObject.put(
 				String.valueOf(fragmentEntryLink.getFragmentEntryLinkId()),
 				FragmentEntryLinkUtil.getFragmentEntryLinkJSONObject(
-					actionRequest, actionResponse,
+					actionRequest, actionResponse, _contentTransformerHandler,
 					_fragmentEntryConfigurationParser, fragmentEntryLink,
 					_fragmentCollectionContributorTracker,
 					_fragmentRendererController, _fragmentRendererTracker,
@@ -315,6 +316,9 @@ public class AddSegmentsExperienceMVCActionCommand
 
 	@Reference
 	private CommentManager _commentManager;
+
+	@Reference
+	private ContentTransformerHandler _contentTransformerHandler;
 
 	@Reference
 	private FragmentCollectionContributorTracker

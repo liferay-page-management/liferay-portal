@@ -14,6 +14,7 @@
 
 package com.liferay.layout.content.page.editor.web.internal.display.context;
 
+import com.liferay.adaptive.media.content.transformer.ContentTransformerHandler;
 import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
@@ -106,6 +107,7 @@ public class ContentPageLayoutEditorDisplayContext
 
 	public ContentPageLayoutEditorDisplayContext(
 		CommentManager commentManager,
+		ContentTransformerHandler contentTransformerHandler,
 		List<ContentPageEditorSidebarPanel> contentPageEditorSidebarPanels,
 		FFLayoutContentPageEditorConfiguration
 			ffLayoutContentPageEditorConfiguration,
@@ -123,7 +125,8 @@ public class ContentPageLayoutEditorDisplayContext
 		StagingGroupHelper stagingGroupHelper) {
 
 		super(
-			commentManager, contentPageEditorSidebarPanels,
+			commentManager, contentTransformerHandler,
+			contentPageEditorSidebarPanels,
 			ffLayoutContentPageEditorConfiguration,
 			fragmentCollectionContributorTracker,
 			fragmentEntryConfigurationParser, fragmentRendererController,

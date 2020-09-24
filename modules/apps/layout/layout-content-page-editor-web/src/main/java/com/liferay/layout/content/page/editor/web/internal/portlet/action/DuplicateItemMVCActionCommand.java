@@ -14,6 +14,7 @@
 
 package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
+import com.liferay.adaptive.media.content.transformer.ContentTransformerHandler;
 import com.liferay.fragment.contributor.FragmentCollectionContributorTracker;
 import com.liferay.fragment.exception.NoSuchEntryLinkException;
 import com.liferay.fragment.model.FragmentEntryLink;
@@ -341,7 +342,7 @@ public class DuplicateItemMVCActionCommand
 
 			jsonArray.put(
 				FragmentEntryLinkUtil.getFragmentEntryLinkJSONObject(
-					actionRequest, actionResponse,
+					actionRequest, actionResponse, _contentTransformerHandler,
 					_fragmentEntryConfigurationParser, fragmentEntryLink,
 					_fragmentCollectionContributorTracker,
 					_fragmentRendererController, _fragmentRendererTracker,
@@ -351,6 +352,9 @@ public class DuplicateItemMVCActionCommand
 
 		return jsonArray;
 	}
+
+	@Reference
+	private ContentTransformerHandler _contentTransformerHandler;
 
 	@Reference
 	private FragmentCollectionContributorTracker

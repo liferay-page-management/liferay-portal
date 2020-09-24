@@ -14,6 +14,7 @@
 
 package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
+import com.liferay.adaptive.media.content.transformer.ContentTransformerHandler;
 import com.liferay.fragment.contributor.FragmentCollectionContributorTracker;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.renderer.FragmentRendererController;
@@ -112,7 +113,7 @@ public class ChangeMasterLayoutMVCActionCommand
 
 			JSONObject fragmentEntryLinkJSONObject =
 				FragmentEntryLinkUtil.getFragmentEntryLinkJSONObject(
-					actionRequest, actionResponse,
+					actionRequest, actionResponse, _contentTransformerHandler,
 					_fragmentEntryConfigurationParser, fragmentEntryLink,
 					_fragmentCollectionContributorTracker,
 					_fragmentRendererController, _fragmentRendererTracker,
@@ -171,6 +172,9 @@ public class ChangeMasterLayoutMVCActionCommand
 				styleBookEntry)
 		);
 	}
+
+	@Reference
+	private ContentTransformerHandler _contentTransformerHandler;
 
 	@Reference
 	private FragmentCollectionContributorTracker

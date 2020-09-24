@@ -14,6 +14,8 @@
 
 package com.liferay.layout.content.page.editor.web.internal.util;
 
+import com.liferay.adaptive.media.content.transformer.ContentTransformerHandler;
+import com.liferay.adaptive.media.content.transformer.constants.ContentTransformerContentTypes;
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.contributor.FragmentCollectionContributorTracker;
 import com.liferay.fragment.entry.processor.util.EditableFragmentEntryProcessorUtil;
@@ -139,6 +141,7 @@ public class FragmentEntryLinkUtil {
 
 	public static JSONObject getFragmentEntryLinkJSONObject(
 			ActionRequest actionRequest, ActionResponse actionResponse,
+			ContentTransformerHandler contentTransformerHandler,
 			FragmentEntryConfigurationParser fragmentEntryConfigurationParser,
 			FragmentEntryLink fragmentEntryLink,
 			FragmentCollectionContributorTracker
@@ -209,10 +212,12 @@ public class FragmentEntryLinkUtil {
 			"configuration", configurationJSONObject
 		).put(
 			"content",
-			fragmentRendererController.render(
-				defaultFragmentRendererContext,
-				PortalUtil.getHttpServletRequest(actionRequest),
-				PortalUtil.getHttpServletResponse(actionResponse))
+			contentTransformerHandler.transform(
+				ContentTransformerContentTypes.HTML,
+				fragmentRendererController.render(
+					defaultFragmentRendererContext,
+					PortalUtil.getHttpServletRequest(actionRequest),
+					PortalUtil.getHttpServletResponse(actionResponse)))
 		).put(
 			"defaultConfigurationValues",
 			fragmentEntryConfigurationParser.

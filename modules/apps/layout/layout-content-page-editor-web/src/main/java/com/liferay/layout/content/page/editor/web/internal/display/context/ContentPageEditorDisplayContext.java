@@ -14,6 +14,8 @@
 
 package com.liferay.layout.content.page.editor.web.internal.display.context;
 
+import com.liferay.adaptive.media.content.transformer.ContentTransformerHandler;
+import com.liferay.adaptive.media.content.transformer.constants.ContentTransformerContentTypes;
 import com.liferay.document.library.kernel.model.DLFileEntryConstants;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
@@ -189,6 +191,7 @@ public class ContentPageEditorDisplayContext {
 
 	public ContentPageEditorDisplayContext(
 		CommentManager commentManager,
+		ContentTransformerHandler contentTransformerHandler,
 		List<ContentPageEditorSidebarPanel> contentPageEditorSidebarPanels,
 		FFLayoutContentPageEditorConfiguration
 			ffLayoutContentPageEditorConfiguration,
@@ -205,6 +208,7 @@ public class ContentPageEditorDisplayContext {
 		PortletRequest portletRequest, RenderResponse renderResponse) {
 
 		_commentManager = commentManager;
+		_contentTransformerHandler = contentTransformerHandler;
 		_contentPageEditorSidebarPanels = contentPageEditorSidebarPanels;
 		_ffLayoutContentPageEditorConfiguration =
 			ffLayoutContentPageEditorConfiguration;
@@ -1392,6 +1396,9 @@ public class ContentPageEditorDisplayContext {
 					fragmentRendererContext, httpServletRequest,
 					PortalUtil.getHttpServletResponse(_renderResponse));
 
+				content = _contentTransformerHandler.transform(
+					ContentTransformerContentTypes.HTML, content);
+
 				String configuration =
 					_fragmentRendererController.getConfiguration(
 						fragmentRendererContext);
@@ -2191,6 +2198,7 @@ public class ContentPageEditorDisplayContext {
 	private final CommentManager _commentManager;
 	private final List<ContentPageEditorSidebarPanel>
 		_contentPageEditorSidebarPanels;
+	private final ContentTransformerHandler _contentTransformerHandler;
 	private Map<String, Object> _defaultConfigurations;
 	private StyleBookEntry _defaultStyleBookEntry;
 	private final FFLayoutContentPageEditorConfiguration

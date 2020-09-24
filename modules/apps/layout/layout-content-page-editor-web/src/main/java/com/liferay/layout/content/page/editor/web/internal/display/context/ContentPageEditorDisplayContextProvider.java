@@ -14,6 +14,7 @@
 
 package com.liferay.layout.content.page.editor.web.internal.display.context;
 
+import com.liferay.adaptive.media.content.transformer.ContentTransformerHandler;
 import com.liferay.fragment.contributor.FragmentCollectionContributorTracker;
 import com.liferay.fragment.renderer.FragmentRendererController;
 import com.liferay.fragment.renderer.FragmentRendererTracker;
@@ -74,7 +75,8 @@ public class ContentPageEditorDisplayContextProvider {
 
 		if (Objects.equals(className, Layout.class.getName())) {
 			return new ContentPageLayoutEditorDisplayContext(
-				_commentManager, _getContentPageEditorSidebarPanels(),
+				_commentManager, _contentTransformerHandler,
+				_getContentPageEditorSidebarPanels(),
 				_ffLayoutContentPageEditorConfiguration,
 				_fragmentCollectionContributorTracker,
 				_fragmentEntryConfigurationParser, _fragmentRendererController,
@@ -101,7 +103,8 @@ public class ContentPageEditorDisplayContextProvider {
 		}
 
 		return new ContentPageEditorLayoutPageTemplateDisplayContext(
-			_commentManager, _getContentPageEditorSidebarPanels(),
+			_commentManager, _contentTransformerHandler,
+			_getContentPageEditorSidebarPanels(),
 			_ffLayoutContentPageEditorConfiguration,
 			_fragmentCollectionContributorTracker,
 			_fragmentEntryConfigurationParser, _fragmentRendererController,
@@ -147,6 +150,9 @@ public class ContentPageEditorDisplayContextProvider {
 
 	@Reference
 	private CommentManager _commentManager;
+
+	@Reference
+	private ContentTransformerHandler _contentTransformerHandler;
 
 	private volatile FFLayoutContentPageEditorConfiguration
 		_ffLayoutContentPageEditorConfiguration;

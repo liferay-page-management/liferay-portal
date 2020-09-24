@@ -14,6 +14,7 @@
 
 package com.liferay.layout.content.page.editor.web.internal.display.context;
 
+import com.liferay.adaptive.media.content.transformer.ContentTransformerHandler;
 import com.liferay.fragment.contributor.FragmentCollectionContributorTracker;
 import com.liferay.fragment.renderer.FragmentRendererController;
 import com.liferay.fragment.renderer.FragmentRendererTracker;
@@ -56,6 +57,7 @@ public class ContentPageEditorLayoutPageTemplateDisplayContext
 
 	public ContentPageEditorLayoutPageTemplateDisplayContext(
 		CommentManager commentManager,
+		ContentTransformerHandler contentTransformerHandler,
 		List<ContentPageEditorSidebarPanel> contentPageEditorSidebarPanels,
 		FFLayoutContentPageEditorConfiguration
 			ffLayoutContentPageEditorConfiguration,
@@ -73,7 +75,8 @@ public class ContentPageEditorLayoutPageTemplateDisplayContext
 		RenderResponse renderResponse) {
 
 		super(
-			commentManager, contentPageEditorSidebarPanels,
+			commentManager, contentTransformerHandler,
+			contentPageEditorSidebarPanels,
 			ffLayoutContentPageEditorConfiguration,
 			fragmentCollectionContributorTracker,
 			fragmentEntryConfigurationParser, fragmentRendererController,
