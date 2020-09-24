@@ -564,9 +564,9 @@ definition {
 
 			var baseURL = PropsUtil.get("portal.url");
 
-			AssertVisible(locator1 = "//div[contains(@class,'layout-content')]/a[contains(@href,'${baseURL}/en/web/test-site-name/-/web-content-title')]");
+			AssertVisible(locator1 = "//div[contains(@class,'layout-content')]/a[contains(@href,'${baseURL}/en/web/test-site-name/w/web-content-title')]");
 
-			Click(locator1 = "//div[contains(@class,'layout-content')]/a[contains(@href,'${baseURL}/en/web/test-site-name/-/web-content-title')]");
+			Click(locator1 = "//div[contains(@class,'layout-content')]/a[contains(@href,'${baseURL}/en/web/test-site-name/w/web-content-title')]");
 
 			AssertTextEquals(
 				locator1 = "ControlMenu#HEADING",
