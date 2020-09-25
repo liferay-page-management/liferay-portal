@@ -14,13 +14,19 @@
 
 package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
+import com.liferay.adaptive.media.content.transformer.ContentTransformerHandler;
+import com.liferay.fragment.contributor.FragmentCollectionContributorTracker;
 import com.liferay.fragment.model.FragmentEntryLink;
+import com.liferay.fragment.renderer.FragmentRendererController;
+import com.liferay.fragment.renderer.FragmentRendererTracker;
 import com.liferay.fragment.service.FragmentEntryLinkService;
+import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
+import com.liferay.item.selector.ItemSelector;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.layout.content.page.editor.listener.ContentPageEditorListener;
 import com.liferay.layout.content.page.editor.listener.ContentPageEditorListenerTracker;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.layout.content.page.editor.web.internal.util.FragmentEntryLinkUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
@@ -53,8 +59,6 @@ public class EditFragmentEntryLinkMVCActionCommand
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-
 		long fragmentEntryLinkId = ParamUtil.getLong(
 			actionRequest, "fragmentEntryLinkId");
 
@@ -78,13 +82,38 @@ public class EditFragmentEntryLinkMVCActionCommand
 		hideDefaultSuccessMessage(actionRequest);
 
 		JSONPortletResponseUtil.writeJSON(
-			actionRequest, actionResponse, jsonObject);
+			actionRequest, actionResponse,
+			FragmentEntryLinkUtil.getFragmentEntryLinkJSONObject(
+				actionRequest, actionResponse, _contentTransformerHandler,
+				_fragmentEntryConfigurationParser, fragmentEntryLink,
+				_fragmentCollectionContributorTracker,
+				_fragmentRendererController, _fragmentRendererTracker,
+				_itemSelector, StringPool.BLANK));
 	}
 
 	@Reference
 	private ContentPageEditorListenerTracker _contentPageEditorListenerTracker;
 
 	@Reference
+	private ContentTransformerHandler _contentTransformerHandler;
+
+	@Reference
+	private FragmentCollectionContributorTracker
+		_fragmentCollectionContributorTracker;
+
+	@Reference
+	private FragmentEntryConfigurationParser _fragmentEntryConfigurationParser;
+
+	@Reference
 	private FragmentEntryLinkService _fragmentEntryLinkService;
+
+	@Reference
+	private FragmentRendererController _fragmentRendererController;
+
+	@Reference
+	private FragmentRendererTracker _fragmentRendererTracker;
+
+	@Reference
+	private ItemSelector _itemSelector;
 
 }
