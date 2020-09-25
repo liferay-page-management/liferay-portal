@@ -27,3 +27,21 @@ export function getEditableElement(target) {
 
 	return editableElement;
 }
+
+export function getEditableElementById(id) {
+	let editableElement = document.querySelector(`lfr-editable[id="${id}"]`);
+
+	if (!editableElement) {
+		editableElement = document.querySelector(
+			`[data-lfr-editable-id="${id}"]`
+		);
+	}
+
+	if (!editableElement) {
+		editableElement = document.querySelector(
+			`[data-lfr-background-image-id="${id}"]`
+		);
+	}
+
+	return editableElement;
+}
