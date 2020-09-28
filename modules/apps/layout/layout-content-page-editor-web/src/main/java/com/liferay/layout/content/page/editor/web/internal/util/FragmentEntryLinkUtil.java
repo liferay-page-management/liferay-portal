@@ -31,6 +31,7 @@ import com.liferay.fragment.service.FragmentEntryLinkServiceUtil;
 import com.liferay.fragment.service.FragmentEntryLocalServiceUtil;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
 import com.liferay.item.selector.ItemSelector;
+import com.liferay.layout.configuration.LayoutAdaptiveMediaConfiguration;
 import com.liferay.layout.content.page.editor.listener.ContentPageEditorListener;
 import com.liferay.layout.content.page.editor.listener.ContentPageEditorListenerTracker;
 import com.liferay.layout.service.LayoutClassedModelUsageLocalServiceUtil;
@@ -148,7 +149,9 @@ public class FragmentEntryLinkUtil {
 				fragmentCollectionContributorTracker,
 			FragmentRendererController fragmentRendererController,
 			FragmentRendererTracker fragmentRendererTracker,
-			ItemSelector itemSelector, String portletId)
+			ItemSelector itemSelector,
+			LayoutAdaptiveMediaConfiguration layoutAdaptiveMediaConfiguration,
+			String portletId)
 		throws PortalException {
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
@@ -208,16 +211,22 @@ public class FragmentEntryLinkUtil {
 			PortalUtil.getLiferayPortletResponse(actionResponse),
 			configurationJSONObject);
 
+		String content = fragmentRendererController.render(
+			defaultFragmentRendererContext,
+			PortalUtil.getHttpServletRequest(actionRequest),
+			PortalUtil.getHttpServletResponse(actionResponse));
+
+		if (layoutAdaptiveMediaConfiguration.
+				contentPagesAdaptiveMediaEnabled()) {
+
+			content = contentTransformerHandler.transform(
+				ContentTransformerContentTypes.HTML, content);
+		}
+
 		return JSONUtil.put(
 			"configuration", configurationJSONObject
 		).put(
-			"content",
-			contentTransformerHandler.transform(
-				ContentTransformerContentTypes.HTML,
-				fragmentRendererController.render(
-					defaultFragmentRendererContext,
-					PortalUtil.getHttpServletRequest(actionRequest),
-					PortalUtil.getHttpServletResponse(actionResponse)))
+			"content", content
 		).put(
 			"defaultConfigurationValues",
 			fragmentEntryConfigurationParser.

@@ -5,3 +5,4 @@ Require-Capability:\
 	liferay.resource.bundle;\
 		filter:="(bundle.symbolic.name=com.liferay.frontend.editor.lang)"
 Web-ContextPath: /layout-content-page-editor-web
+-dsannotations-options: inherit

@@ -346,7 +346,7 @@ public class DuplicateItemMVCActionCommand
 					_fragmentEntryConfigurationParser, fragmentEntryLink,
 					_fragmentCollectionContributorTracker,
 					_fragmentRendererController, _fragmentRendererTracker,
-					_itemSelector,
+					_itemSelector, layoutAdaptiveMediaConfiguration,
 					editableValuesJSONObject.getString("portletId")));
 		}
 

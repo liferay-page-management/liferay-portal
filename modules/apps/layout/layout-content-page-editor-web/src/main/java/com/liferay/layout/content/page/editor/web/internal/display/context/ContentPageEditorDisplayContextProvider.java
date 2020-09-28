@@ -22,6 +22,7 @@ import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
 import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.info.item.InfoItemServiceTracker;
 import com.liferay.item.selector.ItemSelector;
+import com.liferay.layout.configuration.LayoutAdaptiveMediaConfiguration;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorWebKeys;
 import com.liferay.layout.content.page.editor.sidebar.panel.ContentPageEditorSidebarPanel;
 import com.liferay.layout.content.page.editor.web.internal.configuration.FFLayoutContentPageEditorConfiguration;
@@ -59,6 +60,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	configurationPid = {
+		"com.liferay.layout.configuration.LayoutAdaptiveMediaConfiguration",
 		"com.liferay.layout.content.page.editor.web.internal.configuration.FFLayoutContentPageEditorConfiguration",
 		"com.liferay.layout.content.page.editor.web.internal.configuration.PageEditorConfiguration"
 	},
@@ -82,8 +84,8 @@ public class ContentPageEditorDisplayContextProvider {
 				_fragmentEntryConfigurationParser, _fragmentRendererController,
 				_fragmentRendererTracker, _frontendTokenDefinitionRegistry,
 				httpServletRequest, _infoItemServiceTracker, _itemSelector,
-				_pageEditorConfiguration, portletRequest, renderResponse,
-				_stagingGroupHelper);
+				_layoutAdaptiveMediaConfiguration, _pageEditorConfiguration,
+				portletRequest, renderResponse, _stagingGroupHelper);
 		}
 
 		long classPK = GetterUtil.getLong(
@@ -110,8 +112,8 @@ public class ContentPageEditorDisplayContextProvider {
 			_fragmentEntryConfigurationParser, _fragmentRendererController,
 			_fragmentRendererTracker, _frontendTokenDefinitionRegistry,
 			httpServletRequest, _infoItemServiceTracker, _itemSelector,
-			_pageEditorConfiguration, pageIsDisplayPage, portletRequest,
-			renderResponse);
+			_layoutAdaptiveMediaConfiguration, _pageEditorConfiguration,
+			pageIsDisplayPage, portletRequest, renderResponse);
 	}
 
 	@Activate
@@ -122,6 +124,8 @@ public class ContentPageEditorDisplayContextProvider {
 		_ffLayoutContentPageEditorConfiguration =
 			ConfigurableUtil.createConfigurable(
 				FFLayoutContentPageEditorConfiguration.class, properties);
+		_layoutAdaptiveMediaConfiguration = ConfigurableUtil.createConfigurable(
+			LayoutAdaptiveMediaConfiguration.class, properties);
 		_pageEditorConfiguration = ConfigurableUtil.createConfigurable(
 			PageEditorConfiguration.class, properties);
 		_serviceTrackerList = ServiceTrackerListFactory.open(
@@ -178,6 +182,9 @@ public class ContentPageEditorDisplayContextProvider {
 
 	@Reference
 	private ItemSelector _itemSelector;
+
+	private volatile LayoutAdaptiveMediaConfiguration
+		_layoutAdaptiveMediaConfiguration;
 
 	@Reference
 	private LayoutPageTemplateEntryLocalService

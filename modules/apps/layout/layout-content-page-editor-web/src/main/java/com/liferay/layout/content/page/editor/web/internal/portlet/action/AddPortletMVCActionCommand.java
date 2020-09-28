@@ -177,7 +177,7 @@ public class AddPortletMVCActionCommand
 				_fragmentEntryConfigurationParser, fragmentEntryLink,
 				_fragmentCollectionContributorTracker,
 				_fragmentRendererController, _fragmentRendererTracker,
-				_itemSelector, portletId));
+				_itemSelector, layoutAdaptiveMediaConfiguration, portletId));
 	}
 
 	private String _getPortletInstanceId(

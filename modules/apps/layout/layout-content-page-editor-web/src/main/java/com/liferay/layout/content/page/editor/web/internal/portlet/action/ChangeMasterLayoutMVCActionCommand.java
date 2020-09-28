@@ -117,7 +117,7 @@ public class ChangeMasterLayoutMVCActionCommand
 					_fragmentEntryConfigurationParser, fragmentEntryLink,
 					_fragmentCollectionContributorTracker,
 					_fragmentRendererController, _fragmentRendererTracker,
-					_itemSelector,
+					_itemSelector, layoutAdaptiveMediaConfiguration,
 					editableValuesJSONObject.getString("portletId"));
 
 			fragmentEntryLinkJSONObject.put("masterLayout", Boolean.TRUE);

@@ -20,10 +20,12 @@ import com.liferay.fragment.renderer.FragmentRendererTracker;
 import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.info.item.InfoItemServiceTracker;
 import com.liferay.info.list.renderer.InfoListRendererTracker;
+import com.liferay.layout.configuration.LayoutAdaptiveMediaConfiguration;
 import com.liferay.layout.display.page.LayoutDisplayPageProviderTracker;
 import com.liferay.layout.list.retriever.LayoutListRetrieverTracker;
 import com.liferay.layout.list.retriever.ListObjectReferenceFactoryTracker;
 import com.liferay.layout.util.LayoutClassedModelUsageRecorder;
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -32,7 +34,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.ServletContext;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
@@ -41,11 +45,20 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 /**
  * @author Chema Balsas
  */
-@Component(immediate = true, service = {})
+@Component(
+	configurationPid = "com.liferay.layout.configuration.LayoutAdaptiveMediaConfiguration",
+	immediate = true, service = {}
+)
 public class ServletContextUtil {
 
 	public static final ContentTransformerHandler
 		getContentTransformerHandler() {
+
+		if (!_layoutAdaptiveMediaConfiguration.
+				contentPagesAdaptiveMediaEnabled()) {
+
+			return null;
+		}
 
 		return _contentTransformerHandler;
 	}
@@ -104,6 +117,13 @@ public class ServletContextUtil {
 
 	public static final ServletContext getServletContext() {
 		return _servletContext;
+	}
+
+	@Activate
+	@Modified
+	protected void activate(Map<String, Object> properties) {
+		_layoutAdaptiveMediaConfiguration = ConfigurableUtil.createConfigurable(
+			LayoutAdaptiveMediaConfiguration.class, properties);
 	}
 
 	@Reference(
@@ -221,6 +241,8 @@ public class ServletContextUtil {
 		_frontendTokenDefinitionRegistry;
 	private static InfoItemServiceTracker _infoItemServiceTracker;
 	private static InfoListRendererTracker _infoListRendererTracker;
+	private static volatile LayoutAdaptiveMediaConfiguration
+		_layoutAdaptiveMediaConfiguration;
 	private static final Map<String, LayoutClassedModelUsageRecorder>
 		_layoutClassedModelUsageRecorders = new ConcurrentHashMap<>();
 	private static LayoutDisplayPageProviderTracker

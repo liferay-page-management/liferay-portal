@@ -26,6 +26,7 @@ import com.liferay.fragment.renderer.FragmentRendererTracker;
 import com.liferay.fragment.service.FragmentEntryLinkService;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
 import com.liferay.item.selector.ItemSelector;
+import com.liferay.layout.configuration.LayoutAdaptiveMediaConfiguration;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.layout.content.page.editor.listener.ContentPageEditorListener;
 import com.liferay.layout.content.page.editor.listener.ContentPageEditorListenerTracker;
@@ -33,6 +34,7 @@ import com.liferay.layout.content.page.editor.web.internal.util.FragmentEntryLin
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -47,17 +49,21 @@ import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Eudaldo Alonso
  */
 @Component(
+	configurationPid = "com.liferay.layout.configuration.LayoutAdaptiveMediaConfiguration",
 	immediate = true,
 	property = {
 		"javax.portlet.name=" + ContentPageEditorPortletKeys.CONTENT_PAGE_EDITOR_PORTLET,
@@ -67,6 +73,13 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class UpdateConfigurationValuesMVCActionCommand
 	extends BaseMVCActionCommand {
+
+	@Activate
+	@Modified
+	protected void activate(Map<String, Object> properties) {
+		_layoutAdaptiveMediaConfiguration = ConfigurableUtil.createConfigurable(
+			LayoutAdaptiveMediaConfiguration.class, properties);
+	}
 
 	@Override
 	protected void doProcessAction(
@@ -177,7 +190,8 @@ public class UpdateConfigurationValuesMVCActionCommand
 				_fragmentEntryConfigurationParser, fragmentEntryLink,
 				_fragmentCollectionContributorTracker,
 				_fragmentRendererController, _fragmentRendererTracker,
-				_itemSelector, StringPool.BLANK));
+				_itemSelector, _layoutAdaptiveMediaConfiguration,
+				StringPool.BLANK));
 
 		LayoutStructure layoutStructure =
 			LayoutStructureUtil.getLayoutStructure(
@@ -219,6 +233,9 @@ public class UpdateConfigurationValuesMVCActionCommand
 
 	@Reference
 	private ItemSelector _itemSelector;
+
+	private volatile LayoutAdaptiveMediaConfiguration
+		_layoutAdaptiveMediaConfiguration;
 
 	@Reference
 	private Portal _portal;

@@ -33,6 +33,7 @@ import com.liferay.info.list.provider.InfoListProvider;
 import com.liferay.info.list.provider.item.selector.criterion.InfoListProviderItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.InfoListItemSelectorReturnType;
+import com.liferay.layout.configuration.LayoutAdaptiveMediaConfiguration;
 import com.liferay.layout.content.page.editor.sidebar.panel.ContentPageEditorSidebarPanel;
 import com.liferay.layout.content.page.editor.web.internal.configuration.FFLayoutContentPageEditorConfiguration;
 import com.liferay.layout.content.page.editor.web.internal.configuration.PageEditorConfiguration;
@@ -120,6 +121,7 @@ public class ContentPageLayoutEditorDisplayContext
 		HttpServletRequest httpServletRequest,
 		InfoItemServiceTracker infoItemServiceTracker,
 		ItemSelector itemSelector,
+		LayoutAdaptiveMediaConfiguration layoutAdaptiveMediaConfiguration,
 		PageEditorConfiguration pageEditorConfiguration,
 		PortletRequest portletRequest, RenderResponse renderResponse,
 		StagingGroupHelper stagingGroupHelper) {
@@ -132,7 +134,8 @@ public class ContentPageLayoutEditorDisplayContext
 			fragmentEntryConfigurationParser, fragmentRendererController,
 			fragmentRendererTracker, frontendTokenDefinitionRegistry,
 			httpServletRequest, infoItemServiceTracker, itemSelector,
-			pageEditorConfiguration, portletRequest, renderResponse);
+			layoutAdaptiveMediaConfiguration, pageEditorConfiguration,
+			portletRequest, renderResponse);
 
 		_stagingGroupHelper = stagingGroupHelper;
 	}

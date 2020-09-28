@@ -27,6 +27,7 @@ import com.liferay.info.item.provider.InfoItemDetailsProvider;
 import com.liferay.info.item.provider.InfoItemFormProvider;
 import com.liferay.info.item.provider.InfoItemFormVariationsProvider;
 import com.liferay.item.selector.ItemSelector;
+import com.liferay.layout.configuration.LayoutAdaptiveMediaConfiguration;
 import com.liferay.layout.content.page.editor.sidebar.panel.ContentPageEditorSidebarPanel;
 import com.liferay.layout.content.page.editor.web.internal.configuration.FFLayoutContentPageEditorConfiguration;
 import com.liferay.layout.content.page.editor.web.internal.configuration.PageEditorConfiguration;
@@ -70,6 +71,7 @@ public class ContentPageEditorLayoutPageTemplateDisplayContext
 		HttpServletRequest httpServletRequest,
 		InfoItemServiceTracker infoItemServiceTracker,
 		ItemSelector itemSelector,
+		LayoutAdaptiveMediaConfiguration layoutAdaptiveMediaConfiguration,
 		PageEditorConfiguration pageEditorConfiguration,
 		boolean pageIsDisplayPage, PortletRequest portletRequest,
 		RenderResponse renderResponse) {
@@ -82,7 +84,8 @@ public class ContentPageEditorLayoutPageTemplateDisplayContext
 			fragmentEntryConfigurationParser, fragmentRendererController,
 			fragmentRendererTracker, frontendTokenDefinitionRegistry,
 			httpServletRequest, infoItemServiceTracker, itemSelector,
-			pageEditorConfiguration, portletRequest, renderResponse);
+			layoutAdaptiveMediaConfiguration, pageEditorConfiguration,
+			portletRequest, renderResponse);
 
 		_pageIsDisplayPage = pageIsDisplayPage;
 	}

@@ -114,6 +114,10 @@ public class RenderFragmentLayoutDisplayContext {
 		ContentTransformerHandler contentTransformerHandler =
 			ServletContextUtil.getContentTransformerHandler();
 
+		if (contentTransformerHandler == null) {
+			return content;
+		}
+
 		return contentTransformerHandler.transform(
 			ContentTransformerContentTypes.HTML, content);
 	}

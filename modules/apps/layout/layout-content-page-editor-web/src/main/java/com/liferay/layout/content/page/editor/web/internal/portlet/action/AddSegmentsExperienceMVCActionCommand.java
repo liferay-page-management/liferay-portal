@@ -226,7 +226,8 @@ public class AddSegmentsExperienceMVCActionCommand
 					_fragmentEntryConfigurationParser, fragmentEntryLink,
 					_fragmentCollectionContributorTracker,
 					_fragmentRendererController, _fragmentRendererTracker,
-					_itemSelector, StringPool.BLANK));
+					_itemSelector, layoutAdaptiveMediaConfiguration,
+					StringPool.BLANK));
 		}
 
 		return fragmentEntryLinksJSONObject;

@@ -151,7 +151,7 @@ public class AddFragmentEntryLinksMVCActionCommand
 					_fragmentEntryConfigurationParser, fragmentEntryLink,
 					_fragmentCollectionContributorTracker,
 					_fragmentRendererController, _fragmentRendererTracker,
-					_itemSelector,
+					_itemSelector, layoutAdaptiveMediaConfiguration,
 					editableValuesJSONObject.getString("portletId")));
 
 			List<ContentPageEditorListener> contentPageEditorListeners =

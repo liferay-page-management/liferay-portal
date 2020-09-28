@@ -14,6 +14,8 @@
 
 package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
+import com.liferay.layout.configuration.LayoutAdaptiveMediaConfiguration;
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.exception.PortletIdException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -29,16 +31,30 @@ import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Modified;
 
 /**
  * @author Eudaldo Alonso
  */
 public abstract class BaseContentPageEditorTransactionalMVCActionCommand
 	extends BaseMVCActionCommand implements MVCActionCommand {
+
+	@Activate
+	@Modified
+	protected void activate(
+		BundleContext bundleContext, Map<String, Object> properties) {
+
+		layoutAdaptiveMediaConfiguration = ConfigurableUtil.createConfigurable(
+			LayoutAdaptiveMediaConfiguration.class, properties);
+	}
 
 	@Override
 	protected void doProcessAction(
@@ -98,6 +114,9 @@ public abstract class BaseContentPageEditorTransactionalMVCActionCommand
 		return JSONUtil.put(
 			"error", LanguageUtil.get(themeDisplay.getRequest(), errorMessage));
 	}
+
+	protected volatile LayoutAdaptiveMediaConfiguration
+		layoutAdaptiveMediaConfiguration;
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		BaseContentPageEditorTransactionalMVCActionCommand.class);

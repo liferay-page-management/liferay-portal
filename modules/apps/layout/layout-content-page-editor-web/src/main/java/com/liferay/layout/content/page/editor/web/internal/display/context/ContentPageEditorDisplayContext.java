@@ -53,6 +53,7 @@ import com.liferay.item.selector.criteria.info.item.criterion.InfoItemItemSelect
 import com.liferay.item.selector.criteria.info.item.criterion.InfoListItemSelectorCriterion;
 import com.liferay.item.selector.criteria.url.criterion.URLItemSelectorCriterion;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
+import com.liferay.layout.configuration.LayoutAdaptiveMediaConfiguration;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.layout.content.page.editor.sidebar.panel.ContentPageEditorSidebarPanel;
 import com.liferay.layout.content.page.editor.web.internal.comment.CommentUtil;
@@ -204,6 +205,7 @@ public class ContentPageEditorDisplayContext {
 		HttpServletRequest httpServletRequest,
 		InfoItemServiceTracker infoItemServiceTracker,
 		ItemSelector itemSelector,
+		LayoutAdaptiveMediaConfiguration layoutAdaptiveMediaConfiguration,
 		PageEditorConfiguration pageEditorConfiguration,
 		PortletRequest portletRequest, RenderResponse renderResponse) {
 
@@ -219,6 +221,7 @@ public class ContentPageEditorDisplayContext {
 		_fragmentRendererTracker = fragmentRendererTracker;
 		_frontendTokenDefinitionRegistry = frontendTokenDefinitionRegistry;
 		_itemSelector = itemSelector;
+		_layoutAdaptiveMediaConfiguration = layoutAdaptiveMediaConfiguration;
 		_pageEditorConfiguration = pageEditorConfiguration;
 		_renderResponse = renderResponse;
 		_resourceBundleLoader =
@@ -1396,8 +1399,12 @@ public class ContentPageEditorDisplayContext {
 					fragmentRendererContext, httpServletRequest,
 					PortalUtil.getHttpServletResponse(_renderResponse));
 
-				content = _contentTransformerHandler.transform(
-					ContentTransformerContentTypes.HTML, content);
+				if (_layoutAdaptiveMediaConfiguration.
+						contentPagesAdaptiveMediaEnabled()) {
+
+					content = _contentTransformerHandler.transform(
+						ContentTransformerContentTypes.HTML, content);
+				}
 
 				String configuration =
 					_fragmentRendererController.getConfiguration(
@@ -2216,6 +2223,8 @@ public class ContentPageEditorDisplayContext {
 	private Long _groupId;
 	private ItemSelectorCriterion _imageItemSelectorCriterion;
 	private final ItemSelector _itemSelector;
+	private final LayoutAdaptiveMediaConfiguration
+		_layoutAdaptiveMediaConfiguration;
 	private LayoutStructure _layoutStructure;
 	private Integer _layoutType;
 	private LayoutStructure _masterLayoutStructure;

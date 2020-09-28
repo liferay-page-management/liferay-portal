@@ -30,10 +30,12 @@ import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemServiceTracker;
 import com.liferay.info.item.provider.InfoItemObjectProvider;
+import com.liferay.layout.configuration.LayoutAdaptiveMediaConfiguration;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.layout.display.page.LayoutDisplayPageProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProviderTracker;
 import com.liferay.layout.display.page.constants.LayoutDisplayPageWebKeys;
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
@@ -46,18 +48,23 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import java.util.Map;
+
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Pablo Molina
  */
 @Component(
+	configurationPid = "com.liferay.layout.configuration.LayoutAdaptiveMediaConfiguration",
 	immediate = true,
 	property = {
 		"javax.portlet.name=" + ContentPageEditorPortletKeys.CONTENT_PAGE_EDITOR_PORTLET,
@@ -67,6 +74,13 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class GetFragmentEntryLinkMVCResourceCommand
 	extends BaseMVCResourceCommand {
+
+	@Activate
+	@Modified
+	protected void activate(Map<String, Object> properties) {
+		_layoutAdaptiveMediaConfiguration = ConfigurableUtil.createConfigurable(
+			LayoutAdaptiveMediaConfiguration.class, properties);
+	}
 
 	@Override
 	protected void doServeResource(
@@ -148,11 +162,16 @@ public class GetFragmentEntryLinkMVCResourceCommand
 			}
 
 			try {
-				String content = _contentTransformerHandler.transform(
-					ContentTransformerContentTypes.HTML,
-					_fragmentRendererController.render(
-						defaultFragmentRendererContext, httpServletRequest,
-						_portal.getHttpServletResponse(resourceResponse)));
+				String content = _fragmentRendererController.render(
+					defaultFragmentRendererContext, httpServletRequest,
+					_portal.getHttpServletResponse(resourceResponse));
+
+				if (_layoutAdaptiveMediaConfiguration.
+						contentPagesAdaptiveMediaEnabled()) {
+
+					_contentTransformerHandler.transform(
+						ContentTransformerContentTypes.HTML, content);
+				}
 
 				jsonObject.put(
 					"content", content
@@ -220,6 +239,9 @@ public class GetFragmentEntryLinkMVCResourceCommand
 
 	@Reference
 	private InfoItemServiceTracker _infoItemServiceTracker;
+
+	private volatile LayoutAdaptiveMediaConfiguration
+		_layoutAdaptiveMediaConfiguration;
 
 	@Reference
 	private LayoutDisplayPageProviderTracker _layoutDisplayPageProviderTracker;

@@ -212,7 +212,8 @@ public class AddFragmentEntryLinkMVCActionCommand
 				_fragmentEntryConfigurationParser, fragmentEntryLink,
 				_fragmentCollectionContributorTracker,
 				_fragmentRendererController, _fragmentRendererTracker,
-				_itemSelector, StringPool.BLANK));
+				_itemSelector, layoutAdaptiveMediaConfiguration,
+				StringPool.BLANK));
 	}
 
 	@Reference
