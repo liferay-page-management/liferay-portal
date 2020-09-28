@@ -26,6 +26,7 @@ export default function editablesReducer(editables = {}, action) {
 					...editable,
 					fragmentEntryLinkId: action.fragmentEntryLinkId,
 					itemId: editableUniqueId,
+					parentId: action.itemId,
 				};
 			});
 
