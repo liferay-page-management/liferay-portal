@@ -59,12 +59,29 @@ export function ImagePropertiesPanel({item}) {
 
 	useEffect(() => {
 		if (editableElement != null) {
-			setImageSize({
-				height: editableElement.naturalHeight,
-				width: editableElement.naturalWidth,
-			});
+			const setSize = () => {
+				if (
+					editableElement.naturalHeight &&
+					editableElement.naturalWidth
+				) {
+					setImageSize({
+						height: editableElement.naturalHeight,
+						width: editableElement.naturalWidth,
+					});
+				}
+			};
+
+			if (editableElement.complete) {
+				setSize();
+			}
+			else {
+				editableElement.addEventListener('load', setSize);
+
+				return () =>
+					editableElement.removeEventListener('load', setSize);
+			}
 		}
-	}, [editableElement, selectedViewportSize]);
+	}, [editableConfig.naturalHeight, editableElement, selectedViewportSize]);
 
 	useEffect(() => {
 		const editableConfig = editableValue ? editableValue.config || {} : {};
