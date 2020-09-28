@@ -13,10 +13,8 @@
  */
 
 import ClayForm, {ClayInput} from '@clayui/form';
-import {match} from 'metal-dom';
 import React, {useEffect, useState} from 'react';
 
-import {getEditableElementById} from '../../../../app/components/fragment-content/getEditableElement';
 import {BACKGROUND_IMAGE_FRAGMENT_ENTRY_PROCESSOR} from '../../../../app/config/constants/backgroundImageFragmentEntryProcessor';
 import {EDITABLE_FRAGMENT_ENTRY_PROCESSOR} from '../../../../app/config/constants/editableFragmentEntryProcessor';
 import {EDITABLE_TYPES} from '../../../../app/config/constants/editableTypes';
@@ -53,19 +51,20 @@ export function ImagePropertiesPanel({item}) {
 		editableConfig.alt || ''
 	);
 
-	const editableElement = getEditableElementById(editableId);
+	const editables = useSelector((state) => state.editables);
 
-	const imageElement = match(editableElement, 'img')
-		? editableElement
-		: editableElement.querySelector('img');
+	const editableElement = editables[item.parentId]?.[item.itemId]?.element;
 
-	const [imageHeight, setImageHeight] = useState(imageElement.naturalHeight);
-	const [imageWidth, setImageWidth] = useState(imageElement.naturalWidth);
+	const [imageSize, setImageSize] = useState(null);
 
 	useEffect(() => {
-		setImageHeight(imageElement.naturalHeight);
-		setImageWidth(imageElement.naturalWidth);
-	}, [imageElement, selectedViewportSize]);
+		if (editableElement != null) {
+			setImageSize({
+				height: editableElement.naturalHeight,
+				width: editableElement.naturalWidth,
+			});
+		}
+	}, [editableElement, selectedViewportSize]);
 
 	useEffect(() => {
 		const editableConfig = editableValue ? editableValue.config || {} : {};
@@ -186,12 +185,14 @@ export function ImagePropertiesPanel({item}) {
 				}
 			/>
 
-			<div className="mb-2 small">
-				<b>{Liferay.Language.get('resolution')}:</b>
-				<span className="ml-2">
-					{imageWidth}x{imageHeight} px
-				</span>
-			</div>
+			{imageSize && (
+				<div className="mb-2 small">
+					<b>{Liferay.Language.get('resolution')}:</b>
+					<span className="ml-2">
+						{imageSize.width}x{imageSize.height}px
+					</span>
+				</div>
+			)}
 
 			{type === EDITABLE_TYPES.image && (
 				<ClayForm.Group>
