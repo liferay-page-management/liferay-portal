@@ -13,7 +13,6 @@
  */
 
 import updateEditableValuesAction from '../actions/updateEditableValues';
-import updateFragmentEntryLinkContent from '../actions/updateFragmentEntryLinkContent';
 import updatePageContents from '../actions/updatePageContents';
 import FragmentService from '../services/FragmentService';
 import InfoItemService from '../services/InfoItemService';
@@ -32,16 +31,10 @@ export default function updateEditableValues({
 			.then((fragmentEntryLink) => {
 				dispatch(
 					updateEditableValuesAction({
+						content: fragmentEntryLink.content,
 						editableValues,
 						fragmentEntryLinkId,
 						segmentsExperienceId,
-					})
-				);
-
-				dispatch(
-					updateFragmentEntryLinkContent({
-						content: fragmentEntryLink.content,
-						fragmentEntryLinkId,
 					})
 				);
 			})

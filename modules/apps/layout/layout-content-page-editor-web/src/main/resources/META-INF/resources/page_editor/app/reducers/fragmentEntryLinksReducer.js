@@ -193,6 +193,7 @@ export default function fragmentEntryLinksReducer(
 				...fragmentEntryLinks,
 				[action.fragmentEntryLinkId]: {
 					...fragmentEntryLinks[action.fragmentEntryLinkId],
+					content: action.content,
 					editableValues: action.editableValues,
 				},
 			};
