@@ -77,11 +77,7 @@ function selectEditableValueContent(editableValue, languageId) {
 		content = content[config.defaultLanguageId];
 	}
 
-	if (content.url) {
-		content = content.url;
-	}
-
-	if (typeof content !== 'string') {
+	if (content == null || content.defaultValue) {
 		content = editableValue.defaultValue;
 	}
 

@@ -79,14 +79,16 @@ export function ImagePropertiesPanel({item}) {
 	}, [editableValue]);
 
 	const imageUrl = useSelector((state) => {
-		const url = selectEditableValueContent(
+		const content = selectEditableValueContent(
 			state,
 			fragmentEntryLinkId,
 			editableId,
 			processorKey
 		);
 
-		return url === editableValue.defaultValue ? '' : url;
+		const url = content.url != null ? content.url : content;
+
+		return editableValue.defaulValue === url ? '' : url;
 	});
 
 	const updateEditableValues = (

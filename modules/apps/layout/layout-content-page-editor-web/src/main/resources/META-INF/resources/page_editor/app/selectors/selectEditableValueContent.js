@@ -39,7 +39,7 @@ export default function selectEditableValueContent(
 		content = content[config.defaultLanguageId];
 	}
 
-	if (typeof content !== 'string') {
+	if (content == null || content.defaultValue) {
 		content = data.defaultValue;
 	}
 
