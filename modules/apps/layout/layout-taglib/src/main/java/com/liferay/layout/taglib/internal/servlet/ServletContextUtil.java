@@ -14,12 +14,12 @@
 
 package com.liferay.layout.taglib.internal.servlet;
 
-import com.liferay.adaptive.media.content.transformer.ContentTransformerHandler;
 import com.liferay.fragment.contributor.FragmentCollectionContributorTracker;
 import com.liferay.fragment.renderer.FragmentRendererTracker;
 import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.info.item.InfoItemServiceTracker;
 import com.liferay.info.list.renderer.InfoListRendererTracker;
+import com.liferay.layout.adaptive.media.LayoutAdaptiveMediaProcessor;
 import com.liferay.layout.display.page.LayoutDisplayPageProviderTracker;
 import com.liferay.layout.list.retriever.LayoutListRetrieverTracker;
 import com.liferay.layout.list.retriever.ListObjectReferenceFactoryTracker;
@@ -41,14 +41,11 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 /**
  * @author Chema Balsas
  */
-@Component(immediate = true, service = {})
+@Component(
+	configurationPid = "com.liferay.layout.configuration.LayoutAdaptiveMediaConfiguration",
+	immediate = true, service = {}
+)
 public class ServletContextUtil {
-
-	public static final ContentTransformerHandler
-		getContentTransformerHandler() {
-
-		return _contentTransformerHandler;
-	}
 
 	public static final String getContextPath() {
 		return _servletContext.getContextPath();
@@ -76,6 +73,12 @@ public class ServletContextUtil {
 
 	public static final InfoListRendererTracker getInfoListRendererTracker() {
 		return _infoListRendererTracker;
+	}
+
+	public static final LayoutAdaptiveMediaProcessor
+		getLayoutAdaptiveMediaProcessor() {
+
+		return _layoutAdaptiveMediaProcessor;
 	}
 
 	public static final Map<String, LayoutClassedModelUsageRecorder>
@@ -141,13 +144,6 @@ public class ServletContextUtil {
 	}
 
 	@Reference(unbind = "-")
-	protected void setContentTransformerHandler(
-		ContentTransformerHandler contentTransformerHandler) {
-
-		_contentTransformerHandler = contentTransformerHandler;
-	}
-
-	@Reference(unbind = "-")
 	protected void setFragmentCollectionContributorTracker(
 		FragmentCollectionContributorTracker
 			fragmentCollectionContributorTracker) {
@@ -185,6 +181,13 @@ public class ServletContextUtil {
 	}
 
 	@Reference(unbind = "-")
+	protected void setLayoutAdaptiveMediaProcessor(
+		LayoutAdaptiveMediaProcessor layoutAdaptiveMediaProcessor) {
+
+		_layoutAdaptiveMediaProcessor = layoutAdaptiveMediaProcessor;
+	}
+
+	@Reference(unbind = "-")
 	protected void setLayoutDisplayPageProviderTracker(
 		LayoutDisplayPageProviderTracker layoutDisplayPageProviderTracker) {
 
@@ -213,7 +216,6 @@ public class ServletContextUtil {
 		_servletContext = servletContext;
 	}
 
-	private static ContentTransformerHandler _contentTransformerHandler;
 	private static FragmentCollectionContributorTracker
 		_fragmentCollectionContributorTracker;
 	private static FragmentRendererTracker _fragmentRendererTracker;
@@ -221,6 +223,7 @@ public class ServletContextUtil {
 		_frontendTokenDefinitionRegistry;
 	private static InfoItemServiceTracker _infoItemServiceTracker;
 	private static InfoListRendererTracker _infoListRendererTracker;
+	private static LayoutAdaptiveMediaProcessor _layoutAdaptiveMediaProcessor;
 	private static final Map<String, LayoutClassedModelUsageRecorder>
 		_layoutClassedModelUsageRecorders = new ConcurrentHashMap<>();
 	private static LayoutDisplayPageProviderTracker

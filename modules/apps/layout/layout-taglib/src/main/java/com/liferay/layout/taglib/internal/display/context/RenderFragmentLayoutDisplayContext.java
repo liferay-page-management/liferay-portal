@@ -14,12 +14,10 @@
 
 package com.liferay.layout.taglib.internal.display.context;
 
-import com.liferay.adaptive.media.content.transformer.ContentTransformerHandler;
-import com.liferay.adaptive.media.content.transformer.constants.ContentTransformerContentTypes;
+import com.liferay.layout.adaptive.media.LayoutAdaptiveMediaProcessor;
 import com.liferay.layout.taglib.internal.servlet.ServletContextUtil;
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -110,12 +108,12 @@ public class RenderFragmentLayoutDisplayContext {
 		return unsyncStringWriter.toString();
 	}
 
-	public String processAMImages(String content) throws PortalException {
-		ContentTransformerHandler contentTransformerHandler =
-			ServletContextUtil.getContentTransformerHandler();
+	public String processAMImages(String content) {
+		LayoutAdaptiveMediaProcessor layoutAdaptiveMediaProcessor =
+			ServletContextUtil.getLayoutAdaptiveMediaProcessor();
 
-		return contentTransformerHandler.transform(
-			ContentTransformerContentTypes.HTML, content);
+		return layoutAdaptiveMediaProcessor.processAdaptiveMediaContent(
+			content);
 	}
 
 	private List<Portlet> _getPortlets() {

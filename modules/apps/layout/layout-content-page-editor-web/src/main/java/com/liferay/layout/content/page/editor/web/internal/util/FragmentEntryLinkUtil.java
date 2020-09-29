@@ -14,8 +14,6 @@
 
 package com.liferay.layout.content.page.editor.web.internal.util;
 
-import com.liferay.adaptive.media.content.transformer.ContentTransformerHandler;
-import com.liferay.adaptive.media.content.transformer.constants.ContentTransformerContentTypes;
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.contributor.FragmentCollectionContributorTracker;
 import com.liferay.fragment.entry.processor.util.EditableFragmentEntryProcessorUtil;
@@ -31,6 +29,7 @@ import com.liferay.fragment.service.FragmentEntryLinkServiceUtil;
 import com.liferay.fragment.service.FragmentEntryLocalServiceUtil;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
 import com.liferay.item.selector.ItemSelector;
+import com.liferay.layout.adaptive.media.LayoutAdaptiveMediaProcessor;
 import com.liferay.layout.content.page.editor.listener.ContentPageEditorListener;
 import com.liferay.layout.content.page.editor.listener.ContentPageEditorListenerTracker;
 import com.liferay.layout.service.LayoutClassedModelUsageLocalServiceUtil;
@@ -141,14 +140,15 @@ public class FragmentEntryLinkUtil {
 
 	public static JSONObject getFragmentEntryLinkJSONObject(
 			ActionRequest actionRequest, ActionResponse actionResponse,
-			ContentTransformerHandler contentTransformerHandler,
 			FragmentEntryConfigurationParser fragmentEntryConfigurationParser,
 			FragmentEntryLink fragmentEntryLink,
 			FragmentCollectionContributorTracker
 				fragmentCollectionContributorTracker,
 			FragmentRendererController fragmentRendererController,
 			FragmentRendererTracker fragmentRendererTracker,
-			ItemSelector itemSelector, String portletId)
+			ItemSelector itemSelector,
+			LayoutAdaptiveMediaProcessor layoutAdaptiveMediaProcessor,
+			String portletId)
 		throws PortalException {
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
@@ -212,8 +212,7 @@ public class FragmentEntryLinkUtil {
 			"configuration", configurationJSONObject
 		).put(
 			"content",
-			contentTransformerHandler.transform(
-				ContentTransformerContentTypes.HTML,
+			layoutAdaptiveMediaProcessor.processAdaptiveMediaContent(
 				fragmentRendererController.render(
 					defaultFragmentRendererContext,
 					PortalUtil.getHttpServletRequest(actionRequest),

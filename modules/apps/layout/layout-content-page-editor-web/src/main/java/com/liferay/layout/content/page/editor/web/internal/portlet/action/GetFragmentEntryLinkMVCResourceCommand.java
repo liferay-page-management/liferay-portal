@@ -14,8 +14,6 @@
 
 package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
-import com.liferay.adaptive.media.content.transformer.ContentTransformerHandler;
-import com.liferay.adaptive.media.content.transformer.constants.ContentTransformerContentTypes;
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.contributor.FragmentCollectionContributorTracker;
 import com.liferay.fragment.entry.processor.util.EditableFragmentEntryProcessorUtil;
@@ -30,6 +28,7 @@ import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemServiceTracker;
 import com.liferay.info.item.provider.InfoItemObjectProvider;
+import com.liferay.layout.adaptive.media.LayoutAdaptiveMediaProcessor;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.layout.display.page.LayoutDisplayPageProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProviderTracker;
@@ -58,6 +57,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Pablo Molina
  */
 @Component(
+	configurationPid = "com.liferay.layout.configuration.LayoutAdaptiveMediaConfiguration",
 	immediate = true,
 	property = {
 		"javax.portlet.name=" + ContentPageEditorPortletKeys.CONTENT_PAGE_EDITOR_PORTLET,
@@ -148,11 +148,11 @@ public class GetFragmentEntryLinkMVCResourceCommand
 			}
 
 			try {
-				String content = _contentTransformerHandler.transform(
-					ContentTransformerContentTypes.HTML,
-					_fragmentRendererController.render(
-						defaultFragmentRendererContext, httpServletRequest,
-						_portal.getHttpServletResponse(resourceResponse)));
+				String content =
+					_layoutAdaptiveMediaProcessor.processAdaptiveMediaContent(
+						_fragmentRendererController.render(
+							defaultFragmentRendererContext, httpServletRequest,
+							_portal.getHttpServletResponse(resourceResponse)));
 
 				jsonObject.put(
 					"content", content
@@ -203,9 +203,6 @@ public class GetFragmentEntryLinkMVCResourceCommand
 	}
 
 	@Reference
-	private ContentTransformerHandler _contentTransformerHandler;
-
-	@Reference
 	private FragmentCollectionContributorTracker
 		_fragmentCollectionContributorTracker;
 
@@ -220,6 +217,9 @@ public class GetFragmentEntryLinkMVCResourceCommand
 
 	@Reference
 	private InfoItemServiceTracker _infoItemServiceTracker;
+
+	@Reference
+	private LayoutAdaptiveMediaProcessor _layoutAdaptiveMediaProcessor;
 
 	@Reference
 	private LayoutDisplayPageProviderTracker _layoutDisplayPageProviderTracker;

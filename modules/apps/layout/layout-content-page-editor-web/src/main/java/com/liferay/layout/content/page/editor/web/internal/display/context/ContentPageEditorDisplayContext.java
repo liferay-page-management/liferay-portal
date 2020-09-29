@@ -14,8 +14,6 @@
 
 package com.liferay.layout.content.page.editor.web.internal.display.context;
 
-import com.liferay.adaptive.media.content.transformer.ContentTransformerHandler;
-import com.liferay.adaptive.media.content.transformer.constants.ContentTransformerContentTypes;
 import com.liferay.document.library.kernel.model.DLFileEntryConstants;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
@@ -52,6 +50,7 @@ import com.liferay.item.selector.criteria.image.criterion.ImageItemSelectorCrite
 import com.liferay.item.selector.criteria.info.item.criterion.InfoItemItemSelectorCriterion;
 import com.liferay.item.selector.criteria.info.item.criterion.InfoListItemSelectorCriterion;
 import com.liferay.item.selector.criteria.url.criterion.URLItemSelectorCriterion;
+import com.liferay.layout.adaptive.media.LayoutAdaptiveMediaProcessor;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.layout.content.page.editor.sidebar.panel.ContentPageEditorSidebarPanel;
@@ -191,7 +190,6 @@ public class ContentPageEditorDisplayContext {
 
 	public ContentPageEditorDisplayContext(
 		CommentManager commentManager,
-		ContentTransformerHandler contentTransformerHandler,
 		List<ContentPageEditorSidebarPanel> contentPageEditorSidebarPanels,
 		FFLayoutContentPageEditorConfiguration
 			ffLayoutContentPageEditorConfiguration,
@@ -204,11 +202,11 @@ public class ContentPageEditorDisplayContext {
 		HttpServletRequest httpServletRequest,
 		InfoItemServiceTracker infoItemServiceTracker,
 		ItemSelector itemSelector,
+		LayoutAdaptiveMediaProcessor layoutAdaptiveMediaProcessor,
 		PageEditorConfiguration pageEditorConfiguration,
 		PortletRequest portletRequest, RenderResponse renderResponse) {
 
 		_commentManager = commentManager;
-		_contentTransformerHandler = contentTransformerHandler;
 		_contentPageEditorSidebarPanels = contentPageEditorSidebarPanels;
 		_ffLayoutContentPageEditorConfiguration =
 			ffLayoutContentPageEditorConfiguration;
@@ -219,6 +217,7 @@ public class ContentPageEditorDisplayContext {
 		_fragmentRendererTracker = fragmentRendererTracker;
 		_frontendTokenDefinitionRegistry = frontendTokenDefinitionRegistry;
 		_itemSelector = itemSelector;
+		_layoutAdaptiveMediaProcessor = layoutAdaptiveMediaProcessor;
 		_pageEditorConfiguration = pageEditorConfiguration;
 		_renderResponse = renderResponse;
 		_resourceBundleLoader =
@@ -1392,13 +1391,6 @@ public class ContentPageEditorDisplayContext {
 				fragmentRendererContext.setSegmentsExperienceIds(
 					segmentsExperienceIds);
 
-				String content = _fragmentRendererController.render(
-					fragmentRendererContext, httpServletRequest,
-					PortalUtil.getHttpServletResponse(_renderResponse));
-
-				content = _contentTransformerHandler.transform(
-					ContentTransformerContentTypes.HTML, content);
-
 				String configuration =
 					_fragmentRendererController.getConfiguration(
 						fragmentRendererContext);
@@ -1423,6 +1415,13 @@ public class ContentPageEditorDisplayContext {
 					fragmentEntry = fragmentEntries.get(
 						fragmentEntryLink.getRendererKey());
 				}
+
+				String content =
+					_layoutAdaptiveMediaProcessor.processAdaptiveMediaContent(
+						_fragmentRendererController.render(
+							fragmentRendererContext, httpServletRequest,
+							PortalUtil.getHttpServletResponse(
+								_renderResponse)));
 
 				Map<String, Object> fragmentEntryLinkMap =
 					HashMapBuilder.<String, Object>put(
@@ -2198,7 +2197,6 @@ public class ContentPageEditorDisplayContext {
 	private final CommentManager _commentManager;
 	private final List<ContentPageEditorSidebarPanel>
 		_contentPageEditorSidebarPanels;
-	private final ContentTransformerHandler _contentTransformerHandler;
 	private Map<String, Object> _defaultConfigurations;
 	private StyleBookEntry _defaultStyleBookEntry;
 	private final FFLayoutContentPageEditorConfiguration
@@ -2216,6 +2214,7 @@ public class ContentPageEditorDisplayContext {
 	private Long _groupId;
 	private ItemSelectorCriterion _imageItemSelectorCriterion;
 	private final ItemSelector _itemSelector;
+	private final LayoutAdaptiveMediaProcessor _layoutAdaptiveMediaProcessor;
 	private LayoutStructure _layoutStructure;
 	private Integer _layoutType;
 	private LayoutStructure _masterLayoutStructure;
