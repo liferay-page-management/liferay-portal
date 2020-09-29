@@ -37,7 +37,10 @@ describe('ImageProcessor', () => {
 			const changeCallback = jest.fn();
 
 			ImageProcessor.createEditor(null, changeCallback, () => {}, {});
-			expect(changeCallback).toHaveBeenCalledWith('sample-image.jpg');
+			expect(changeCallback).toHaveBeenCalledWith({
+				fileEntryId: undefined,
+				url: 'sample-image.jpg',
+			});
 		});
 
 		it('calls changeCallback with an empty string if the image url is not found', () => {
@@ -48,7 +51,10 @@ describe('ImageProcessor', () => {
 			const changeCallback = jest.fn();
 
 			ImageProcessor.createEditor(null, changeCallback, () => {}, {});
-			expect(changeCallback).toHaveBeenCalledWith('');
+			expect(changeCallback).toHaveBeenCalledWith({
+				fileEntryId: undefined,
+				url: '',
+			});
 		});
 
 		it('calls destroyCallback if the selector is closed without choosing an image', () => {

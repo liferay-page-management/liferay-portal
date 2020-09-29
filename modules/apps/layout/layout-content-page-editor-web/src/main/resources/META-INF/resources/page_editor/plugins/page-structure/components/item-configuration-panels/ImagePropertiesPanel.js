@@ -53,7 +53,9 @@ export function ImagePropertiesPanel({item}) {
 
 	const editables = useSelector((state) => state.editables);
 
-	const editableElement = editables[item.parentId]?.[item.itemId]?.element;
+	const editableElement = editables
+		? editables[item.parentId]?.[item.itemId]?.element
+		: undefined;
 
 	const [imageSize, setImageSize] = useState(null);
 

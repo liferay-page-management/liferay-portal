@@ -184,7 +184,7 @@ describe('TextField', () => {
 
 		expect(ImageSelector).toBeCalledWith(
 			expect.objectContaining({
-				imageTitle: '',
+				imageTitle: 'default-url.jpg',
 				label: 'image',
 			}),
 			{}
@@ -240,7 +240,10 @@ describe('TextField', () => {
 									imageTitle: 'New title',
 								},
 
-								es: 'new-url.jpg',
+								es: {
+									fileEntryId: undefined,
+									url: 'new-url.jpg',
+								},
 							}),
 						}
 					),
@@ -262,7 +265,7 @@ describe('TextField', () => {
 						{
 							'e-1': expect.objectContaining({
 								config: {alt: '', imageTitle: ''},
-								es: '',
+								es: {fileEntryId: undefined, url: ''},
 							}),
 						}
 					),
@@ -286,7 +289,7 @@ describe('TextField', () => {
 						{
 							'e-1': expect.objectContaining({
 								config: {alt: '', imageTitle: ''},
-								es: '',
+								es: {fileEntryId: undefined, url: ''},
 							}),
 						}
 					),
@@ -312,7 +315,10 @@ describe('TextField', () => {
 									imageTitle: 'New title',
 								},
 
-								es: 'new-url.jpg',
+								es: {
+									fileEntryId: undefined,
+									url: 'new-url.jpg',
+								},
 							}),
 						}
 					),
