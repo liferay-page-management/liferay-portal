@@ -15,6 +15,7 @@
 package com.liferay.layout.internal.servlet.http;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.servlet.DirectRequestDispatcherFactoryUtil;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.servlet.ServletContextPool;
@@ -63,7 +64,7 @@ public class DummyHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public String changeSessionId() {
-		return null;
+		return _httpSession.getId();
 	}
 
 	@Override
@@ -78,7 +79,7 @@ public class DummyHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public Enumeration<String> getAttributeNames() {
-		return null;
+		return Collections.enumeration(_attributes.keySet());
 	}
 
 	@Override
@@ -123,22 +124,22 @@ public class DummyHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public DispatcherType getDispatcherType() {
-		return null;
+		return DispatcherType.INCLUDE;
 	}
 
 	@Override
 	public String getHeader(String name) {
-		return null;
+		return StringPool.BLANK;
 	}
 
 	@Override
 	public Enumeration<String> getHeaderNames() {
-		return null;
+		return Collections.emptyEnumeration();
 	}
 
 	@Override
 	public Enumeration<String> getHeaders(String name) {
-		return null;
+		return Collections.emptyEnumeration();
 	}
 
 	@Override
@@ -153,7 +154,7 @@ public class DummyHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public String getLocalAddr() {
-		return null;
+		return "127.0.0.1";
 	}
 
 	@Override
@@ -163,7 +164,7 @@ public class DummyHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public Enumeration<Locale> getLocales() {
-		return null;
+		return Collections.enumeration(LanguageUtil.getAvailableLocales());
 	}
 
 	@Override
@@ -183,7 +184,7 @@ public class DummyHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public String getParameter(String name) {
-		return null;
+		return StringPool.BLANK;
 	}
 
 	@Override
@@ -193,7 +194,7 @@ public class DummyHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public Enumeration<String> getParameterNames() {
-		return null;
+		return Collections.emptyEnumeration();
 	}
 
 	@Override
@@ -269,7 +270,7 @@ public class DummyHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public String getRequestedSessionId() {
-		return null;
+		return _httpSession.getId();
 	}
 
 	@Override
@@ -421,7 +422,7 @@ public class DummyHttpServletRequest implements HttpServletRequest {
 
 		@Override
 		public Enumeration<String> getAttributeNames() {
-			return null;
+			return Collections.enumeration(_attributes.keySet());
 		}
 
 		@Override
@@ -446,7 +447,7 @@ public class DummyHttpServletRequest implements HttpServletRequest {
 
 		@Override
 		public ServletContext getServletContext() {
-			return null;
+			return ServletContextPool.get(StringPool.BLANK);
 		}
 
 		@Override
@@ -479,6 +480,7 @@ public class DummyHttpServletRequest implements HttpServletRequest {
 
 		@Override
 		public void removeAttribute(String name) {
+			_attributes.remove(name);
 		}
 
 		@Override
