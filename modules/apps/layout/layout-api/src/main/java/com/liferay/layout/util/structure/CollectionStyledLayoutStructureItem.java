@@ -71,9 +71,14 @@ public class CollectionStyledLayoutStructureItem
 	public JSONObject getItemConfigJSONObject() {
 		JSONObject jsonObject = super.getItemConfigJSONObject();
 
+		if (_collectionJSONObject != null) {
+			jsonObject.put("collection", _collectionJSONObject);
+		}
+		else {
+			jsonObject.put("collection", StringPool.BLANK);
+		}
+
 		return jsonObject.put(
-			"collection", _collectionJSONObject
-		).put(
 			"listItemStyle", _listItemStyle
 		).put(
 			"listStyle", _listStyle
