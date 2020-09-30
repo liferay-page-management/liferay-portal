@@ -141,14 +141,14 @@ public class TemplateNode extends LinkedHashMap<String, Object> {
 		else if (type.equals("link_to_layout")) {
 			return _getLinkToLayoutData();
 		}
-		else if (type.equals("ddm-journal-article")){
+		else if (type.equals("ddm-journal-article")) {
 			return _getLatestArticleTitle();
 		}
 
 		return (String)get("data");
 	}
 
-	private String _getLatestArticleTitle(){
+	private String _getLatestArticleTitle() {
 		String data = (String)get("data");
 
 		try {
@@ -174,17 +174,20 @@ public class TemplateNode extends LinkedHashMap<String, Object> {
 			}
 
 			String updatedTitle = assetRenderer.getTitle(_themeDisplay.getLocale());
-			jsonObject.put("title",updatedTitle);
+
+			jsonObject.put("title", updatedTitle);
 
 			return jsonObject.toJSONString();
 
-		}catch (JSONException jsonException) {
+		}
+		catch (JSONException jsonException) {
 			if (_log.isDebugEnabled()) {
 				_log.debug("Unable to parse JSON from data: " + data);
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
-				_log.debug(e.getMessage());
+				_log.debug(exception.getMessage());
 			}
 		}
 
