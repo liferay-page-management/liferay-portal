@@ -141,6 +141,52 @@ public class TemplateNode extends LinkedHashMap<String, Object> {
 		else if (type.equals("link_to_layout")) {
 			return _getLinkToLayoutData();
 		}
+		else if (type.equals("ddm-journal-article")){
+			return _getLatestArticleTitle();
+		}
+
+		return (String)get("data");
+	}
+
+	private String _getLatestArticleTitle(){
+		String data = (String)get("data");
+
+		try {
+			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(data);
+
+			AssetRendererFactory<?> assetRendererFactory =
+				AssetRendererFactoryRegistryUtil.
+					getAssetRendererFactoryByClassName(
+						jsonObject.getString("className"));
+
+			if (assetRendererFactory == null) {
+				return StringPool.BLANK;
+			}
+
+			long classPK =
+				GetterUtil.getLong(jsonObject.getLong("classPK"));
+
+			AssetRenderer<?> assetRenderer =
+				assetRendererFactory.getAssetRenderer(classPK);
+
+			if (assetRenderer == null) {
+				return StringPool.BLANK;
+			}
+
+			String updatedTitle = assetRenderer.getTitle(_themeDisplay.getLocale());
+			jsonObject.put("title",updatedTitle);
+
+			return jsonObject.toJSONString();
+
+		}catch (JSONException jsonException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug("Unable to parse JSON from data: " + data);
+			}
+		} catch (Exception e) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(e.getMessage());
+			}
+		}
 
 		return (String)get("data");
 	}
