@@ -25,7 +25,9 @@ import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.ListUtil;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -47,11 +49,15 @@ public class InfoDisplayFieldProviderImpl implements InfoDisplayFieldProvider {
 	public Set<InfoDisplayField> getContributorInfoDisplayFields(
 		Locale locale, String... classNames) {
 
-		Set<InfoDisplayField> infoDisplayFields = new LinkedHashSet<>();
-
 		List<InfoDisplayContributorField<?>> infoDisplayContributorFields =
 			_infoDisplayContributorFieldTracker.getInfoDisplayContributorFields(
 				classNames);
+
+		if (ListUtil.isNull(infoDisplayContributorFields)) {
+			return Collections.emptySet();
+		}
+
+		Set<InfoDisplayField> infoDisplayFields = new LinkedHashSet<>();
 
 		for (InfoDisplayContributorField<?> infoDisplayContributorField :
 				infoDisplayContributorFields) {
@@ -74,11 +80,15 @@ public class InfoDisplayFieldProviderImpl implements InfoDisplayFieldProvider {
 			String className, Object displayObject, Locale locale)
 		throws PortalException {
 
-		Map<String, Object> infoDisplayFieldsValues = new HashMap<>();
-
 		List<InfoDisplayContributorField<?>> infoDisplayContributorFields =
 			_infoDisplayContributorFieldTracker.getInfoDisplayContributorFields(
 				className);
+
+		if (ListUtil.isNull(infoDisplayContributorFields)) {
+			return Collections.emptyMap();
+		}
+
+		Map<String, Object> infoDisplayFieldsValues = new HashMap<>();
 
 		for (InfoDisplayContributorField<?> infoDisplayContributorField :
 				infoDisplayContributorFields) {
