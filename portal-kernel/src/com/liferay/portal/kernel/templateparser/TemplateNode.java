@@ -404,6 +404,7 @@ public class TemplateNode extends LinkedHashMap<String, Object> {
 				_themeDisplay.getLocale());
 
 			jsonObject.put("title", updatedTitle);
+			jsonObject.put("uuid", assetRenderer.getUuid());
 
 			return jsonObject.toJSONString();
 		}
