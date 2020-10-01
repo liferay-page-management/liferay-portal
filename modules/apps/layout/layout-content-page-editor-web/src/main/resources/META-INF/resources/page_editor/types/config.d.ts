@@ -92,6 +92,7 @@ export interface Config {
 			value: string;
 		};
 	}
+	getAvailableImageConfigurationsURL: string;
 	getAvailableListRenderersURL: string;
 	getAvailableListItemRenderersURL: string;
 	getAvailableTemplatesURL: string;
