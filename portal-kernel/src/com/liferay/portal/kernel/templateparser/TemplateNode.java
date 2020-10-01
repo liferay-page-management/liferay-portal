@@ -142,7 +142,7 @@ public class TemplateNode extends LinkedHashMap<String, Object> {
 			return _getLinkToLayoutData();
 		}
 		else if (type.equals("ddm-journal-article")) {
-			return _getLatestArticleTitle();
+			return _getLatestArticleData();
 		}
 
 		return (String)get("data");
@@ -376,7 +376,7 @@ public class TemplateNode extends LinkedHashMap<String, Object> {
 		return StringPool.BLANK;
 	}
 
-	private String _getLatestArticleTitle() {
+	private String _getLatestArticleData() {
 		String data = (String)get("data");
 
 		try {
