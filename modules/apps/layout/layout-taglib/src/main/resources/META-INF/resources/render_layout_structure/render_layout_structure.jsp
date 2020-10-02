@@ -62,7 +62,7 @@ for (String childrenItemId : childrenItemIds) {
 							%>
 
 									<clay:col
-										md="<%= layoutStructure.getColumnSize(collectionStyledLayoutStructureItem.getNumberOfColumns(), i) %>"
+										md="<%= String.valueOf(layoutStructure.getColumnSize(collectionStyledLayoutStructureItem.getNumberOfColumns(), i)) %>"
 									>
 										<liferay-util:include page="/render_layout_structure/render_layout_structure.jsp" servletContext="<%= application %>" />
 									</clay:col>
