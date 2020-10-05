@@ -62,6 +62,7 @@ renderResponse.setTitle(siteNavigationAdminDisplayContext.getSiteNavigationMenuN
 								<clay:dropdown-menu
 									cssClass="nav-btn nav-btn-monospaced"
 									data-qa-id="addButton"
+									data-title="<%= LanguageUtil.get(request, "new")%>"
 									displayType="primary"
 									dropdownItems="<%= siteNavigationAdminDisplayContext.getAddSiteNavigationMenuItemDropdownItems() %>"
 									icon="plus"
