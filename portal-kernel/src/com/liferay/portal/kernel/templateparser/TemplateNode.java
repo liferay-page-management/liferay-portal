@@ -47,6 +47,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
@@ -401,6 +402,12 @@ public class TemplateNode extends LinkedHashMap<String, Object> {
 
 			if (assetRenderer == null) {
 				return StringPool.BLANK;
+			}
+
+			if (Objects.equals(
+					jsonObject.getString("uuid"), assetRenderer.getUuid())) {
+
+				return jsonObject.toJSONString();
 			}
 
 			String updatedTitle = assetRenderer.getTitle(
