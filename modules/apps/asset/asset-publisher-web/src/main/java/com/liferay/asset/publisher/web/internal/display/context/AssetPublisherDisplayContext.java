@@ -238,7 +238,9 @@ public class AssetPublisherDisplayContext {
 
 		String selectionStyle = getSelectionStyle();
 
-		if (selectionStyle.equals("dynamic")) {
+		if (selectionStyle.equals("dynamic") ||
+			selectionStyle.equals("asset-list")) {
+
 			_allAssetTagNames = _assetPublisherHelper.getAssetTagNames(
 				_portletPreferences);
 		}
