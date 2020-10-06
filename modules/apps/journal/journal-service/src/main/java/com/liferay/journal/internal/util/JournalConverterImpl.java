@@ -689,6 +689,8 @@ public class JournalConverterImpl implements JournalConverter {
 						jsonObject.put(
 							"title", title
 						).put(
+							"titleMap", article.getTitleMap()
+						).put(
 							"uuid", article.getUuid()
 						);
 					}
