@@ -79,8 +79,11 @@ JournalArticleItemSelectorViewDisplayContext journalArticleItemSelectorViewDispl
 						title = defaultTitle;
 					}
 
-					articleJSONObject.put("title", defaultTitle);
-					articleJSONObject.put("titleMap", curArticle.getTitleMap());
+					articleJSONObject.put(
+						"title", defaultTitle
+					).put(
+						"titleMap", curArticle.getTitleMap()
+					);
 
 					Map<String, Object> data = HashMapBuilder.<String, Object>put(
 						"value", articleJSONObject.toString()

@@ -426,8 +426,11 @@ public class TemplateNode extends LinkedHashMap<String, Object> {
 				}
 			}
 
-			jsonObject.put("titleMap", titleMap);
-			jsonObject.put("uuid", assetRenderer.getUuid());
+			jsonObject.put(
+				"titleMap", titleMap
+			).put(
+				"uuid", assetRenderer.getUuid()
+			);
 
 			return jsonObject.toJSONString();
 		}
