@@ -73,11 +73,14 @@ JournalArticleItemSelectorViewDisplayContext journalArticleItemSelectorViewDispl
 
 					String title = curArticle.getTitle(locale);
 
+					String defaultTitle = curArticle.getTitle(LocaleUtil.fromLanguageId(curArticle.getDefaultLanguageId()));
+
 					if (Validator.isNull(title)) {
-						title = curArticle.getTitle(LocaleUtil.fromLanguageId(curArticle.getDefaultLanguageId()));
+						title = defaultTitle;
 					}
 
-					articleJSONObject.put("title", title);
+					articleJSONObject.put("title", defaultTitle);
+					articleJSONObject.put("titleMap", curArticle.getTitleMap());
 
 					Map<String, Object> data = HashMapBuilder.<String, Object>put(
 						"value", articleJSONObject.toString()

@@ -1758,6 +1758,7 @@ AUI.add(
 									className: itemValue.className,
 									classPK: itemValue.classPK,
 									title: itemValue.title || '',
+									titleMap: itemValue.titleMap,
 								});
 
 								instance._hideMessage();
