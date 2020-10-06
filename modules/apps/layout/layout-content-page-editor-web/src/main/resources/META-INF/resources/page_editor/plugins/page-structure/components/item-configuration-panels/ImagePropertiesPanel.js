@@ -19,6 +19,7 @@ import {BACKGROUND_IMAGE_FRAGMENT_ENTRY_PROCESSOR} from '../../../../app/config/
 import {EDITABLE_FRAGMENT_ENTRY_PROCESSOR} from '../../../../app/config/constants/editableFragmentEntryProcessor';
 import {EDITABLE_TYPES} from '../../../../app/config/constants/editableTypes';
 import {VIEWPORT_SIZES} from '../../../../app/config/constants/viewportSizes';
+import {config} from '../../../../app/config/index';
 import selectEditableValueContent from '../../../../app/selectors/selectEditableValueContent';
 import ImageService from '../../../../app/services/ImageService';
 import {useDispatch, useSelector} from '../../../../app/store/index';
@@ -116,7 +117,7 @@ export function ImagePropertiesPanel({item}) {
 	useEffect(() => {
 		const fileEntryId = editableContent?.fileEntryId;
 
-		if (fileEntryId > 0) {
+		if (config.adaptiveMediaEnabled && fileEntryId > 0) {
 			ImageService.getAvailableImageConfigurations({
 				fileEntryId,
 				onNetworkStatus: dispatch,
@@ -252,7 +253,7 @@ export function ImagePropertiesPanel({item}) {
 				/>
 			)}
 
-			{imageConfigurations?.length > 0 && (
+			{config.adaptiveMediaEnabled && imageConfigurations?.length > 0 && (
 				<ClayForm.Group>
 					<label htmlFor={imageConfigurationId}>
 						{Liferay.Language.get('resolution')}
@@ -283,14 +284,14 @@ export function ImagePropertiesPanel({item}) {
 				</ClayForm.Group>
 			)}
 
-			{imageTitle && imageSize && (
+			{config.adaptiveMediaEnabled && imageTitle && imageSize && (
 				<div className="mb-2 small">
 					<b>{Liferay.Language.get('width')}:</b>
 					<span className="ml-2">{imageSize.width}px</span>
 				</div>
 			)}
 
-			{imageTitle && imageFileSize && (
+			{config.adaptiveMediaEnabled && imageTitle && imageFileSize && (
 				<div className="mb-2 small">
 					<b>{Liferay.Language.get('file-size')}:</b>
 					<span className="ml-2">
