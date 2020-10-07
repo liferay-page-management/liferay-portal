@@ -28,6 +28,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
@@ -37,6 +39,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.service.ThemeLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.DynamicServletRequest;
 import com.liferay.portal.kernel.util.HtmlUtil;
@@ -105,13 +108,25 @@ public class LayoutModelDocumentContributor
 			return;
 		}
 
+		String themeId = layout.getThemeId();
+
+		if (Validator.isNull(themeId)) {
+			LayoutSet layoutSet = layout.getLayoutSet();
+
+			themeId = layoutSet.getThemeId();
+		}
+
+		Theme theme = _themeLocalService.fetchTheme(
+			layout.getCompanyId(), themeId);
+
+		if (theme == null) {
+			return;
+		}
+
 		PermissionChecker currentPermissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
 		try {
-			HttpServletRequest httpServletRequest =
-				new DummyHttpServletRequest();
-
 			ServiceContext serviceContext =
 				ServiceContextThreadLocal.getServiceContext();
 
@@ -126,6 +141,9 @@ public class LayoutModelDocumentContributor
 			if ((user == null) || user.isDefaultUser()) {
 				return;
 			}
+
+			HttpServletRequest httpServletRequest =
+				new DummyHttpServletRequest();
 
 			httpServletRequest.setAttribute(WebKeys.USER_ID, userId);
 
@@ -205,6 +223,9 @@ public class LayoutModelDocumentContributor
 
 	@Reference
 	private StagingGroupHelper _stagingGroupHelper;
+
+	@Reference
+	private ThemeLocalService _themeLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;
