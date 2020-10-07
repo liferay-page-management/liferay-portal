@@ -136,7 +136,9 @@ public class DisplayPageActionDropdownItemsProvider {
 			() -> {
 				int usagesCount =
 					AssetDisplayPageEntryServiceUtil.
-						getAssetDisplayPageEntriesCountByLayoutPageTemplateEntryId(
+						getAssetDisplayPageEntriesCount(
+							_layoutPageTemplateEntry.getClassNameId(),
+							_layoutPageTemplateEntry.isDefaultTemplate(),
 							_layoutPageTemplateEntry.
 								getLayoutPageTemplateEntryId());
 
