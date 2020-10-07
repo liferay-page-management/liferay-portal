@@ -144,6 +144,31 @@ public class ProjectTemplatesRESTBuilderTest
 	}
 
 	@Test
+	public void testBuildTemplateRESTBuilderWorkspaceRelativePath()
+		throws Exception {
+
+		String liferayVersion = getDefaultLiferayVersion();
+		String name = "sample";
+
+		File gradleWorkspaceDir = buildWorkspace(
+			temporaryFolder, "gradle", "gradleWS", liferayVersion,
+			mavenExecutor);
+
+		File gradlePropertiesFile = new File(
+			gradleWorkspaceDir + "gradle.properties");
+
+		Files.deleteIfExists(gradlePropertiesFile.toPath());
+
+		buildTemplateWithGradle(
+			gradleWorkspaceDir, "rest-builder", name, "--liferay-version",
+			liferayVersion);
+
+		testContains(
+			gradleWorkspaceDir, name + "/" + name + "-impl/build.gradle",
+			"project(\":" + name + ":" + name + "-api");
+	}
+
+	@Test
 	public void testCompareRESTBuilderPluginVersions() throws Exception {
 		String liferayVersion = getDefaultLiferayVersion();
 		String name = "sample";

@@ -581,6 +581,8 @@ public interface BaseProjectTemplatesTestCase {
 		}
 
 		completeArgs.add("-DarchetypeArtifactId=" + archetypeArtifactId);
+		completeArgs.add("-DarchetypeCatalog=internal");
+		completeArgs.add("-DarchetypeGroupId=com.liferay");
 
 		String projectTemplateVersion =
 			ProjectTemplatesUtil.getArchetypeVersion(archetypeArtifactId);
@@ -589,11 +591,11 @@ public interface BaseProjectTemplatesTestCase {
 			"Unable to get project template version",
 			Validator.isNotNull(projectTemplateVersion));
 
-		completeArgs.add("-DarchetypeGroupId=com.liferay");
 		completeArgs.add("-DarchetypeVersion=" + projectTemplateVersion);
+
+		completeArgs.add("-DartifactId=" + name);
 		completeArgs.add("-Dauthor=" + System.getProperty("user.name"));
 		completeArgs.add("-DgroupId=" + groupId);
-		completeArgs.add("-DartifactId=" + name);
 		completeArgs.add("-Dversion=1.0.0");
 
 		boolean liferayVersionSet = false;
@@ -666,6 +668,23 @@ public interface BaseProjectTemplatesTestCase {
 
 		if (buildType.equals("gradle")) {
 			workspaceDir = buildWorkspace(temporaryFolder, liferayVersion);
+
+			if (liferayVersion.startsWith("7.0")) {
+				writeGradlePropertiesInWorkspace(
+					workspaceDir, "liferay.workspace.product=portal-7.0-ga7");
+			}
+			else if (liferayVersion.startsWith("7.1")) {
+				writeGradlePropertiesInWorkspace(
+					workspaceDir, "liferay.workspace.product=portal-7.1-ga4");
+			}
+			else if (liferayVersion.startsWith("7.2")) {
+				writeGradlePropertiesInWorkspace(
+					workspaceDir, "liferay.workspace.product=portal-7.2-ga2");
+			}
+			else if (liferayVersion.startsWith("7.3")) {
+				writeGradlePropertiesInWorkspace(
+					workspaceDir, "liferay.workspace.product=portal-7.3-ga6");
+			}
 		}
 		else {
 			File destinationDir = temporaryFolder.newFolder("mavenWorkspace");
@@ -1257,6 +1276,23 @@ public interface BaseProjectTemplatesTestCase {
 		File gradleWorkspaceDir = buildWorkspace(
 			temporaryFolder, liferayVersion);
 
+		if (liferayVersion.startsWith("7.0")) {
+			writeGradlePropertiesInWorkspace(
+				gradleWorkspaceDir, "liferay.workspace.product=portal-7.0-ga7");
+		}
+		else if (liferayVersion.startsWith("7.1")) {
+			writeGradlePropertiesInWorkspace(
+				gradleWorkspaceDir, "liferay.workspace.product=portal-7.1-ga4");
+		}
+		else if (liferayVersion.startsWith("7.2")) {
+			writeGradlePropertiesInWorkspace(
+				gradleWorkspaceDir, "liferay.workspace.product=portal-7.2-ga2");
+		}
+		else if (liferayVersion.startsWith("7.3")) {
+			writeGradlePropertiesInWorkspace(
+				gradleWorkspaceDir, "liferay.workspace.product=portal-7.3-ga6");
+		}
+
 		File modulesDir = new File(gradleWorkspaceDir, "modules");
 
 		File gradleProjectDir = buildTemplateWithGradle(
@@ -1317,16 +1353,28 @@ public interface BaseProjectTemplatesTestCase {
 
 		if (argsList.contains("7.0.6")) {
 			workspaceDir = buildWorkspace(temporaryFolder, "7.0.6");
+
+			writeGradlePropertiesInWorkspace(
+				workspaceDir, "liferay.workspace.product=portal-7.0-ga7");
 		}
 		else if (argsList.contains("7.1.3")) {
 			workspaceDir = buildWorkspace(temporaryFolder, "7.1.3");
+
+			writeGradlePropertiesInWorkspace(
+				workspaceDir, "liferay.workspace.product=portal-7.1-ga4");
 		}
 		else if (argsList.contains("7.2.1")) {
 			workspaceDir = buildWorkspace(temporaryFolder, "7.2.1");
+
+			writeGradlePropertiesInWorkspace(
+				workspaceDir, "liferay.workspace.product=portal-7.2-ga2");
 		}
 		else {
 			workspaceDir = buildWorkspace(
 				temporaryFolder, getDefaultLiferayVersion());
+
+			writeGradlePropertiesInWorkspace(
+				workspaceDir, "liferay.workspace.product=portal-7.3-ga6");
 		}
 
 		File modulesDir = new File(workspaceDir, "modules");

@@ -1,5 +1,10 @@
 definition {
 
+	macro clickOnCreateNewAppButton {
+
+		Button.click(button = "Create New App");
+	}
+
 	macro clickOnPlusButton {
 
 		Click(locator1 = "AppBuilderAppAdmin#PLUS_BUTTON");
@@ -20,7 +25,7 @@ definition {
 		}
 		else {
 
-			Button.click(button = "Create New App");
+			AppBuilderAppAdmin.clickOnCreateNewAppButton();
 		}
 
 		AppBuilderWorkflow.addWorkflowAppName(workflowAppName = "${workflowAppName}");
@@ -28,6 +33,40 @@ definition {
 			formViewName = "${formViewName}",
 			objectName = "${objectName}",
 			tableViewName = "${tableViewName}");
+
+		Button.click(button = "Deploy");
+
+		App.toggleDeploy(deployOption = "${deployOption}");
+
+		Button.click(button = "Done");
+
+		AppBuilderWorkflow.waitForButtonNotPresent(buttonName = "Done");
+	}
+
+	macro createBasicWorkflowAppWith1ExtraStep {
+
+		AppBuilderAppAdmin.goToWorkflowPoweredTab();
+
+		if ("${isCreatingViaPlusIcon}" == "true") {
+
+			AppBuilderAppAdmin.clickOnPlusButton();
+		}
+		else {
+
+			AppBuilderAppAdmin.clickOnCreateNewAppButton();
+		}
+
+		AppBuilderWorkflow.addWorkflowAppName(workflowAppName = "${workflowAppName}");
+		AppBuilderWorkflow.selectStartStepDataAndViews(
+			formViewName = "${formViewName}",
+			objectName = "${objectName}",
+			tableViewName = "${tableViewName}");
+
+		AppBuilderWorkflow.addNewStep();
+
+		AppBuilderWorkflow.selectStepAssignee(
+			assignee = "${assignee}",
+			step = "1");
 
 		Button.click(button = "Deploy");
 
@@ -96,7 +135,7 @@ definition {
 
 	macro validateObjectSearchBoxDisabled {
 
-		Button.click(button = "Create New App");
+		AppBuilderAppAdmin.clickOnCreateNewAppButton();
 
 		AppBuilderAppAdmin.clickOnSelectObject();
 
@@ -179,6 +218,14 @@ definition {
 		AssertTextEquals(
 			locator1 = "AppBuilderAppAdmin#COLUMN_ITEM",
 			value1 = "Status");
+	}
+
+	macro waitForItemPresentOnTable {
+
+		while (IsElementNotPresent(locator1 = "AppBuilder#ITEM_ON_THE_TABLE", value1 = "${itemName}")) {
+			Pause(locator1 = "3000");
+			Refresh();
+		}
 	}
 
 }
