@@ -224,16 +224,12 @@ public class FragmentEntryLinkExportImportContentProcessor
 			return;
 		}
 
-		AssetRendererFactory<?> assetRendererFactory =
-			assetRenderer.getAssetRendererFactory();
-
 		StagingGroupHelper stagingGroupHelper =
 			StagingGroupHelperUtil.getStagingGroupHelper();
 
 		if (ExportImportThreadLocal.isStagingInProcess() &&
-			!stagingGroupHelper.isStagedPortlet(
-				portletDataContext.getScopeGroupId(),
-				assetRendererFactory.getPortletId())) {
+			!stagingGroupHelper.isStagedPortletData(
+				portletDataContext.getScopeGroupId(), className)) {
 
 			return;
 		}
@@ -321,25 +317,18 @@ public class FragmentEntryLinkExportImportContentProcessor
 
 		// LPS-111037
 
-		String assetRendererFactoryByClassName = className;
+		String stagedPortletClassName = className;
 
-		if (Objects.equals(
-				assetRendererFactoryByClassName, FileEntry.class.getName())) {
-
-			assetRendererFactoryByClassName = DLFileEntry.class.getName();
+		if (Objects.equals(stagedPortletClassName, FileEntry.class.getName())) {
+			stagedPortletClassName = DLFileEntry.class.getName();
 		}
-
-		AssetRendererFactory<?> assetRendererFactory =
-			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
-				assetRendererFactoryByClassName);
 
 		StagingGroupHelper stagingGroupHelper =
 			StagingGroupHelperUtil.getStagingGroupHelper();
 
 		if (ExportImportThreadLocal.isStagingInProcess() &&
-			!stagingGroupHelper.isStagedPortlet(
-				portletDataContext.getScopeGroupId(),
-				assetRendererFactory.getPortletId())) {
+			!stagingGroupHelper.isStagedPortletData(
+				portletDataContext.getScopeGroupId(), stagedPortletClassName)) {
 
 			return;
 		}
