@@ -171,6 +171,29 @@ public class FragmentEntryLinkExportImportContentProcessor
 		throws PortalException {
 	}
 
+	private boolean _isStagedClassName(String className, long groupId) {
+
+		// LPS-111037
+
+		String stagedPortletClassName = className;
+
+		if (Objects.equals(stagedPortletClassName, FileEntry.class.getName())) {
+			stagedPortletClassName = DLFileEntry.class.getName();
+		}
+
+		StagingGroupHelper stagingGroupHelper =
+			StagingGroupHelperUtil.getStagingGroupHelper();
+
+		if (ExportImportThreadLocal.isStagingInProcess() &&
+			!stagingGroupHelper.isStagedPortletData(
+				groupId, stagedPortletClassName)) {
+
+			return false;
+		}
+
+		return true;
+	}
+
 	private void _replaceMappedFieldExportContentReferences(
 			PortletDataContext portletDataContext, StagedModel stagedModel,
 			JSONObject editableJSONObject, boolean exportReferencedContent)
@@ -201,22 +224,10 @@ public class FragmentEntryLinkExportImportContentProcessor
 			}
 		}
 
-		// LPS-111037
-
 		String className = _portal.getClassName(classNameId);
 
-		String stagedPortletClassName = className;
-
-		if (Objects.equals(stagedPortletClassName, FileEntry.class.getName())) {
-			stagedPortletClassName = DLFileEntry.class.getName();
-		}
-
-		StagingGroupHelper stagingGroupHelper =
-			StagingGroupHelperUtil.getStagingGroupHelper();
-
-		if (ExportImportThreadLocal.isStagingInProcess() &&
-			!stagingGroupHelper.isStagedPortletData(
-				portletDataContext.getScopeGroupId(), stagedPortletClassName)) {
+		if (_isStagedClassName(
+				className, portletDataContext.getScopeGroupId())) {
 
 			return;
 		}
@@ -307,20 +318,8 @@ public class FragmentEntryLinkExportImportContentProcessor
 			}
 		}
 
-		// LPS-111037
-
-		String stagedPortletClassName = className;
-
-		if (Objects.equals(stagedPortletClassName, FileEntry.class.getName())) {
-			stagedPortletClassName = DLFileEntry.class.getName();
-		}
-
-		StagingGroupHelper stagingGroupHelper =
-			StagingGroupHelperUtil.getStagingGroupHelper();
-
-		if (ExportImportThreadLocal.isStagingInProcess() &&
-			!stagingGroupHelper.isStagedPortletData(
-				portletDataContext.getScopeGroupId(), stagedPortletClassName)) {
+		if (_isStagedClassName(
+				className, portletDataContext.getScopeGroupId())) {
 
 			return;
 		}
