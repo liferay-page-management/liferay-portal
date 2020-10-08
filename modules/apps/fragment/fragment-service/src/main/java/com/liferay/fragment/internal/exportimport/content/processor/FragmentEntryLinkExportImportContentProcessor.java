@@ -199,16 +199,11 @@ public class FragmentEntryLinkExportImportContentProcessor
 			JSONObject editableJSONObject, boolean exportReferencedContent)
 		throws Exception {
 
-		long classNameId = editableJSONObject.getLong("classNameId");
+		String className = editableJSONObject.getString("className");
 		long classPK = editableJSONObject.getLong("classPK");
 
-		if ((classNameId == 0) || (classPK == 0)) {
-			return;
-		}
-
-		String className = _portal.getClassName(classNameId);
-
-		if (_isStagedClassName(
+		if (Validator.isNull(className) || (classPK == 0) ||
+			_isStagedClassName(
 				className, portletDataContext.getScopeGroupId())) {
 
 			return;
@@ -231,8 +226,6 @@ public class FragmentEntryLinkExportImportContentProcessor
 					PortletDataContext.REFERENCE_TYPE_DEPENDENCY);
 			}
 		}
-
-		editableJSONObject.put("className", _portal.getClassName(classNameId));
 
 		InfoItemObjectProvider<Object> infoItemObjectProvider =
 			_infoItemServiceTracker.getFirstInfoItemService(
@@ -259,7 +252,7 @@ public class FragmentEntryLinkExportImportContentProcessor
 					messageSB.append("primary key ");
 					messageSB.append(classPK);
 					messageSB.append(" and class name ");
-					messageSB.append(_portal.getClassName(classNameId));
+					messageSB.append(className);
 					messageSB.append(" that could not be exported due to ");
 					messageSB.append(exception);
 
