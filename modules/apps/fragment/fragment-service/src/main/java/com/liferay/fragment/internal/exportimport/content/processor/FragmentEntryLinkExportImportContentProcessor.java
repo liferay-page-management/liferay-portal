@@ -14,11 +14,6 @@
 
 package com.liferay.fragment.internal.exportimport.content.processor;
 
-import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
-import com.liferay.asset.kernel.model.AssetEntry;
-import com.liferay.asset.kernel.model.AssetRenderer;
-import com.liferay.asset.kernel.model.AssetRendererFactory;
-import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
@@ -27,6 +22,9 @@ import com.liferay.exportimport.content.processor.ExportImportContentProcessor;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
+import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.InfoItemServiceTracker;
+import com.liferay.info.item.provider.InfoItemObjectProvider;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -207,21 +205,10 @@ public class FragmentEntryLinkExportImportContentProcessor
 
 		String className = _portal.getClassName(classNameId);
 
-		if (Objects.equals(className, FileEntry.class.getName())) {
-			className = DLFileEntry.class.getName();
-		}
+		String stagedPortletClassName = className;
 
-		AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
-			className, classPK);
-
-		if (assetEntry == null) {
-			return;
-		}
-
-		AssetRenderer<?> assetRenderer = assetEntry.getAssetRenderer();
-
-		if (assetRenderer == null) {
-			return;
+		if (Objects.equals(stagedPortletClassName, FileEntry.class.getName())) {
+			stagedPortletClassName = DLFileEntry.class.getName();
 		}
 
 		StagingGroupHelper stagingGroupHelper =
@@ -229,18 +216,24 @@ public class FragmentEntryLinkExportImportContentProcessor
 
 		if (ExportImportThreadLocal.isStagingInProcess() &&
 			!stagingGroupHelper.isStagedPortletData(
-				portletDataContext.getScopeGroupId(), className)) {
+				portletDataContext.getScopeGroupId(), stagedPortletClassName)) {
 
 			return;
 		}
 
 		editableJSONObject.put("className", _portal.getClassName(classNameId));
 
+		InfoItemObjectProvider<Object> infoItemObjectProvider =
+			_infoItemServiceTracker.getFirstInfoItemService(
+				InfoItemObjectProvider.class, className);
+
+		Object object = infoItemObjectProvider.getInfoItem(
+			new ClassPKInfoItemIdentifier(classPK));
+
 		if (exportReferencedContent) {
 			try {
 				StagedModelDataHandlerUtil.exportReferenceStagedModel(
-					portletDataContext, stagedModel,
-					(StagedModel)assetRenderer.getAssetObject(),
+					portletDataContext, stagedModel, (StagedModel)object,
 					PortletDataContext.REFERENCE_TYPE_DEPENDENCY);
 			}
 			catch (Exception exception) {
@@ -275,8 +268,7 @@ public class FragmentEntryLinkExportImportContentProcessor
 				stagedModel);
 
 			portletDataContext.addReferenceElement(
-				stagedModel, entityElement,
-				(ClassedModel)assetRenderer.getAssetObject(),
+				stagedModel, entityElement, (ClassedModel)object,
 				PortletDataContext.REFERENCE_TYPE_DEPENDENCY, true);
 		}
 	}
@@ -360,14 +352,14 @@ public class FragmentEntryLinkExportImportContentProcessor
 		FragmentEntryLinkExportImportContentProcessor.class);
 
 	@Reference
-	private AssetEntryLocalService _assetEntryLocalService;
-
-	@Reference
 	private DDMTemplateLocalService _ddmTemplateLocalService;
 
 	@Reference(target = "(content.processor.type=DLReferences)")
 	private ExportImportContentProcessor<String>
 		_dlReferencesExportImportContentProcessor;
+
+	@Reference
+	private InfoItemServiceTracker _infoItemServiceTracker;
 
 	@Reference(target = "(content.processor.type=LayoutReferences)")
 	private ExportImportContentProcessor<String>
