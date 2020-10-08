@@ -206,6 +206,14 @@ public class FragmentEntryLinkExportImportContentProcessor
 			return;
 		}
 
+		String className = _portal.getClassName(classNameId);
+
+		if (_isStagedClassName(
+				className, portletDataContext.getScopeGroupId())) {
+
+			return;
+		}
+
 		String mappedField = editableJSONObject.getString(
 			"mappedField", editableJSONObject.getString("fieldId"));
 
@@ -222,14 +230,6 @@ public class FragmentEntryLinkExportImportContentProcessor
 					portletDataContext, stagedModel, ddmTemplate,
 					PortletDataContext.REFERENCE_TYPE_DEPENDENCY);
 			}
-		}
-
-		String className = _portal.getClassName(classNameId);
-
-		if (_isStagedClassName(
-				className, portletDataContext.getScopeGroupId())) {
-
-			return;
 		}
 
 		editableJSONObject.put("className", _portal.getClassName(classNameId));
@@ -289,8 +289,12 @@ public class FragmentEntryLinkExportImportContentProcessor
 
 		String className = GetterUtil.getString(
 			editableJSONObject.remove("className"));
+		long classPK = editableJSONObject.getLong("classPK");
 
-		if (Validator.isNull(className)) {
+		if (Validator.isNull(className) || (classPK == 0) ||
+			_isStagedClassName(
+				className, portletDataContext.getScopeGroupId())) {
+
 			return;
 		}
 
@@ -316,18 +320,6 @@ public class FragmentEntryLinkExportImportContentProcessor
 				editableJSONObject.put(
 					"fieldId", _DDM_TEMPLATE + importedDDMTemplateKey);
 			}
-		}
-
-		if (_isStagedClassName(
-				className, portletDataContext.getScopeGroupId())) {
-
-			return;
-		}
-
-		long classPK = editableJSONObject.getLong("classPK");
-
-		if (classPK == 0) {
-			return;
 		}
 
 		editableJSONObject.put(
