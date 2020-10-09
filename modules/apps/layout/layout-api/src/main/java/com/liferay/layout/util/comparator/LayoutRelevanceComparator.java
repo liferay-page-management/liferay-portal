@@ -15,7 +15,6 @@
 package com.liferay.layout.util.comparator;
 
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 /**
@@ -30,31 +29,15 @@ public class LayoutRelevanceComparator extends OrderByComparator<Layout> {
 	public static final String[] ORDER_BY_FIELDS = {"score"};
 
 	public LayoutRelevanceComparator() {
-		this(true);
-	}
-
-	public LayoutRelevanceComparator(boolean ascending) {
-		_ascending = ascending;
 	}
 
 	@Override
 	public int compare(Layout layout1, Layout layout2) {
-		int value = DateUtil.compareTo(
-			layout1.getCreateDate(), layout2.getCreateDate());
-
-		if (_ascending) {
-			return value;
-		}
-
-		return -value;
+		return 0;
 	}
 
 	@Override
 	public String getOrderBy() {
-		if (_ascending) {
-			return ORDER_BY_ASC;
-		}
-
 		return ORDER_BY_DESC;
 	}
 
@@ -65,9 +48,7 @@ public class LayoutRelevanceComparator extends OrderByComparator<Layout> {
 
 	@Override
 	public boolean isAscending() {
-		return _ascending;
+		return false;
 	}
-
-	private final boolean _ascending;
 
 }

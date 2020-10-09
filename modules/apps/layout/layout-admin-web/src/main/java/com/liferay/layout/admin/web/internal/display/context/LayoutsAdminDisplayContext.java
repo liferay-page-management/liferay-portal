@@ -604,7 +604,7 @@ public class LayoutsAdminDisplayContext {
 			orderByComparator = new LayoutCreateDateComparator(orderByAsc);
 		}
 		else if (Objects.equals(_getOrderByCol(), "relevance")) {
-			orderByComparator = new LayoutRelevanceComparator(orderByAsc);
+			orderByComparator = new LayoutRelevanceComparator();
 		}
 
 		layoutsSearchContainer.setOrderByComparator(orderByComparator);
