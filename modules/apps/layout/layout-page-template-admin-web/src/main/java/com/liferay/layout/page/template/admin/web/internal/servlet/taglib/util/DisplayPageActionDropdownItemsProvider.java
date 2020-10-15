@@ -136,7 +136,10 @@ public class DisplayPageActionDropdownItemsProvider {
 			() -> {
 				int count =
 					AssetDisplayPageEntryServiceUtil.
-						getAssetDisplayPageEntriesCountByLayoutPageTemplateEntryId(
+						getAssetDisplayPageEntriesCount(
+							_layoutPageTemplateEntry.getClassNameId(),
+							_layoutPageTemplateEntry.getClassTypeId(),
+							_layoutPageTemplateEntry.isDefaultTemplate(),
 							_layoutPageTemplateEntry.
 								getLayoutPageTemplateEntryId());
 
@@ -477,7 +480,12 @@ public class DisplayPageActionDropdownItemsProvider {
 		return dropdownItem -> {
 			dropdownItem.setHref(
 				_renderResponse.createRenderURL(), "mvcRenderCommandName",
-				"/layout_page_template/view_display_page_usages",
+				"/layout_page_template/view_display_page_usages", "classNameId",
+				String.valueOf(_layoutPageTemplateEntry.getClassNameId()),
+				"classTypeId",
+				String.valueOf(_layoutPageTemplateEntry.getClassTypeId()),
+				"defaultTemplate",
+				String.valueOf(_layoutPageTemplateEntry.isDefaultTemplate()),
 				"layoutPageTemplateEntryId",
 				String.valueOf(
 					_layoutPageTemplateEntry.getLayoutPageTemplateEntryId()),
