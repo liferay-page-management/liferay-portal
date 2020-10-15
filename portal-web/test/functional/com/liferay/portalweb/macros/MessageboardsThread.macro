@@ -147,6 +147,18 @@ definition {
 
 		PortletEntry.publish();
 
+		Navigator.gotoPage(pageName = "${pageName}");
+
+		if (isSet(categoryName)) {
+			MessageboardsCategory.gotoPG(categoryName = "${categoryName}");
+		}
+
+		MessageboardsThread.gotoPG(
+			lastPostUserName = "${lastPostUserName}",
+			replyCount = "${replyCount}",
+			threadBody = "${threadBody}",
+			threadSubject = "${threadSubject}");
+
 		AssertClick(
 			key_breadcrumbName = "${breadcrumbName}",
 			locator1 = "Breadcrumb#BREADCRUMB_ENTRY_LINK",
@@ -189,10 +201,6 @@ definition {
 		AssertElementPresent(locator1 = "MessageBoardsEditMessage#ATTACHMENTS_SAVED_STATUS");
 
 		Button.clickPublish();
-
-		AssertElementPresent(
-			key_threadSubject = "${threadSubject}",
-			locator1 = "MessageBoardsThread#THREAD_REPLY_BUTTON");
 
 		Alert.viewSuccessMessage();
 	}

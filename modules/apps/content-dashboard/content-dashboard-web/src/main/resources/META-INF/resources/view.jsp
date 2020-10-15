@@ -45,7 +45,7 @@ ContentDashboardAdminManagementToolbarDisplayContext contentDashboardAdminManage
 									cssClass="component-action"
 									displayType="secondary"
 									icon="cog"
-									onClick="<%= portletDisplay.getURLConfigurationJS() %>"
+									onClick="<%= contentDashboardAdminDisplayContext.getOnClickConfiguration() %>"
 									small="<%= true %>"
 								/>
 							</span>

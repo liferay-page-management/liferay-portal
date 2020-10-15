@@ -59,6 +59,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
@@ -81,6 +82,7 @@ import java.util.stream.Stream;
 
 import javax.portlet.Portlet;
 import javax.portlet.PortletContext;
+import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequestDispatcher;
 
 import org.junit.AfterClass;
@@ -263,6 +265,29 @@ public class ContentDashboardAdminPortletTest {
 		Assert.assertNotNull(context);
 		Assert.assertEquals(
 			LanguageConstants.VALUE_RTL, context.get("languageDirection"));
+	}
+
+	@Test
+	public void testGetOnClickConfiguration() throws Exception {
+		MVCPortlet mvcPortlet = (MVCPortlet)_portlet;
+
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_getMockLiferayPortletRenderRequest();
+
+		mvcPortlet.render(
+			mockLiferayPortletRenderRequest,
+			new MockLiferayPortletRenderResponse());
+
+		String onClickConfiguration = ReflectionTestUtil.invoke(
+			mockLiferayPortletRenderRequest.getAttribute(
+				"CONTENT_DASHBOARD_ADMIN_DISPLAY_CONTEXT"),
+			"getOnClickConfiguration", new Class<?>[0]);
+
+		Assert.assertTrue(
+			onClickConfiguration.contains(
+				HtmlUtil.escapeJS(
+					"mvcRenderCommandName=/edit_content_dashboard_" +
+						"configuration")));
 	}
 
 	@Test
@@ -1364,6 +1389,12 @@ public class ContentDashboardAdminPortletTest {
 
 		mockLiferayPortletRenderRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _getThemeDisplay(locale));
+
+		PortletPreferences portletPreferences =
+			mockLiferayPortletRenderRequest.getPreferences();
+
+		portletPreferences.setValues(
+			"assetVocabularyNames", "audience", "stage");
 
 		return mockLiferayPortletRenderRequest;
 	}

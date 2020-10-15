@@ -13,7 +13,7 @@
  */
 
 import '@testing-library/jest-dom/extend-expect';
-import {cleanup, fireEvent, render} from '@testing-library/react';
+import {act, cleanup, fireEvent, render} from '@testing-library/react';
 import React from 'react';
 import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
@@ -200,15 +200,17 @@ describe('FragmentsSidebar', () => {
 		expect(TabsPanel).toHaveBeenCalledWith({tabs: NORMALIZED_TABS}, {});
 	});
 
-	it('filters fragments and widgets according to a input value', async () => {
+	it('filters fragments and widgets according to a input value', () => {
 		const {getByLabelText, queryByText} = renderComponent(STATE);
 		const input = getByLabelText('search-form');
 
-		await fireEvent.change(input, {
-			target: {value: 't 1'},
-		});
+		act(() => {
+			fireEvent.change(input, {
+				target: {value: 't 1'},
+			});
 
-		jest.runAllTimers();
+			jest.runAllTimers();
+		});
 
 		expect(queryByText('Portlet 1')).toBeInTheDocument();
 		expect(queryByText('Fragment 1')).toBeInTheDocument();
@@ -216,16 +218,19 @@ describe('FragmentsSidebar', () => {
 		expect(queryByText('Fragment 3')).not.toBeInTheDocument();
 	});
 
-	it('filters collections according to a input value', async () => {
+	it('filters collections according to a input value', () => {
 		const {getByLabelText, queryByText} = renderComponent(STATE);
 		const input = getByLabelText('search-form');
 
-		await fireEvent.change(input, {
-			target: {value: 'Widget Collection 1'},
+		act(() => {
+			fireEvent.change(input, {
+				target: {value: 'Widget Collection 1'},
+			});
+
+			jest.runAllTimers();
 		});
 
-		jest.runAllTimers();
-
+		expect(queryByText('Widget Collection 1')).toBeInTheDocument();
 		expect(queryByText('Portlet 1')).toBeInTheDocument();
 		expect(queryByText('Fragment 1')).not.toBeInTheDocument();
 		expect(queryByText('Fragment 2')).not.toBeInTheDocument();

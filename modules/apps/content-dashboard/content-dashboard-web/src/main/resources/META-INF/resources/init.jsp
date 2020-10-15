@@ -21,13 +21,11 @@
 <%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %><%@
 taglib uri="http://liferay.com/tld/clay" prefix="clay" %><%@
 taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
-taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %><%@
 taglib uri="http://liferay.com/tld/react" prefix="react" %><%@
 taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %><%@
 taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
 <%@ page import="com.liferay.asset.kernel.model.AssetVocabulary" %><%@
-page import="com.liferay.content.dashboard.web.internal.configuration.ContentDashboardAdminConfiguration" %><%@
 page import="com.liferay.content.dashboard.web.internal.constants.ContentDashboardWebKeys" %><%@
 page import="com.liferay.content.dashboard.web.internal.display.context.ContentDashboardAdminConfigurationDisplayContext" %><%@
 page import="com.liferay.content.dashboard.web.internal.display.context.ContentDashboardAdminDisplayContext" %><%@
@@ -40,7 +38,6 @@ page import="com.liferay.info.item.InfoItemReference" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.kernel.servlet.SessionMessages" %><%@
-page import="com.liferay.portal.kernel.util.Constants" %><%@
 page import="com.liferay.portal.kernel.util.GetterUtil" %><%@
 page import="com.liferay.portal.kernel.util.HashMapBuilder" %><%@
 page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@

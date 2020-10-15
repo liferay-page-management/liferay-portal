@@ -1,0 +1,20 @@
+.taglib-categorization-filter {
+	&.entry-title {
+		color: #333;
+		font-size: 1em;
+		line-height: inherit;
+	}
+
+	.asset-entry {
+		background-color: #dee7f8;
+		border-color: #cad8f3;
+
+		&:hover a {
+			text-decoration: none;
+
+			.icon-remove {
+				background-color: #cad8f3;
+			}
+		}
+	}
+}

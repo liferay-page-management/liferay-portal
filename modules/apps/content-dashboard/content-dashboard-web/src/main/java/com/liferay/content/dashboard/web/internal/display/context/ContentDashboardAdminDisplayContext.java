@@ -34,14 +34,18 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
+import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -60,6 +64,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.portlet.PortletURL;
+import javax.portlet.WindowStateException;
 
 /**
  * @author Cristina González
@@ -287,6 +292,43 @@ public class ContentDashboardAdminDisplayContext {
 
 		return _contentDashboardDropdownItemsProvider.getDropdownItems(
 			contentDashboardItem);
+	}
+
+	public String getOnClickConfiguration() throws WindowStateException {
+		StringBundler sb = new StringBundler(13);
+
+		sb.append("Liferay.Portlet.openModal({namespace: '");
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)_liferayPortletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
+		sb.append(portletDisplay.getNamespace());
+
+		sb.append("', onClose: function() {Liferay.Portlet.refresh('#p_p_id_");
+		sb.append(portletDisplay.getId());
+		sb.append("_')}, portletSelector: '#p_p_id_");
+		sb.append(portletDisplay.getId());
+		sb.append("_', portletId: '");
+		sb.append(portletDisplay.getId());
+		sb.append("', title: '");
+		sb.append(
+			ResourceBundleUtil.getString(_resourceBundle, "configuration"));
+		sb.append("', url: '");
+
+		PortletURL renderURL = _liferayPortletResponse.createRenderURL();
+
+		renderURL.setParameter(
+			"mvcRenderCommandName", "/edit_content_dashboard_configuration");
+		renderURL.setWindowState(LiferayWindowState.POP_UP);
+
+		sb.append(HtmlUtil.escapeJS(renderURL.toString()));
+
+		sb.append("'}); return false;");
+
+		return sb.toString();
 	}
 
 	public long getScopeId() {

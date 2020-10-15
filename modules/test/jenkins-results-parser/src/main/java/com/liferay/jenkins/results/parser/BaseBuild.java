@@ -1403,6 +1403,12 @@ public abstract class BaseBuild implements Build {
 		return !_status.equals(_previousStatus);
 	}
 
+	public boolean isCompareToUpstream() {
+		TopLevelBuild topLevelBuild = getTopLevelBuild();
+
+		return topLevelBuild.isCompareToUpstream();
+	}
+
 	@Override
 	public boolean isFromArchive() {
 		return fromArchive;
@@ -3185,7 +3191,8 @@ public abstract class BaseBuild implements Build {
 		Map<String, String> tempMap = new HashMap<>();
 
 		if (!fromArchive) {
-			BuildDatabase buildDatabase = BuildDatabaseUtil.getBuildDatabase();
+			BuildDatabase buildDatabase = BuildDatabaseUtil.getBuildDatabase(
+				this);
 
 			Properties properties = buildDatabase.getProperties(tempMapName);
 
@@ -3225,12 +3232,6 @@ public abstract class BaseBuild implements Build {
 		}
 
 		throw new IllegalArgumentException("Invalid status: " + status);
-	}
-
-	protected boolean isCompareToUpstream() {
-		TopLevelBuild topLevelBuild = getTopLevelBuild();
-
-		return topLevelBuild.isCompareToUpstream();
 	}
 
 	protected boolean isParentBuildRoot() {

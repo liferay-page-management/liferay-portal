@@ -16,11 +16,9 @@ package com.liferay.content.dashboard.web.internal.provider;
 
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
-import com.liferay.content.dashboard.web.internal.configuration.ContentDashboardAdminConfiguration;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.service.GroupLocalService;
 
 import java.util.Collections;
@@ -38,7 +36,9 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = AssetVocabulariesProvider.class)
 public class AssetVocabulariesProvider {
 
-	public List<AssetVocabulary> getAssetVocabularies(long companyId) {
+	public List<AssetVocabulary> getAssetVocabularies(
+		String[] assetVocabularyNames, long companyId) {
+
 		Group group = _groupLocalService.fetchCompanyGroup(companyId);
 
 		if (group == null) {
@@ -46,13 +46,8 @@ public class AssetVocabulariesProvider {
 		}
 
 		try {
-			ContentDashboardAdminConfiguration
-				contentDashboardAdminConfiguration =
-					_configurationProvider.getCompanyConfiguration(
-						ContentDashboardAdminConfiguration.class, companyId);
-
 			return Stream.of(
-				contentDashboardAdminConfiguration.assetVocabularyNames()
+				assetVocabularyNames
 			).map(
 				assetVocabularyName ->
 					_assetVocabularyLocalService.fetchGroupVocabulary(
@@ -81,9 +76,6 @@ public class AssetVocabulariesProvider {
 
 	@Reference
 	private AssetVocabularyLocalService _assetVocabularyLocalService;
-
-	@Reference
-	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private GroupLocalService _groupLocalService;

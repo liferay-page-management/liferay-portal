@@ -99,22 +99,23 @@ import org.json.JSONObject;
  */
 public class JenkinsResultsParserUtil {
 
+	public static final String[] CACHED_REPOSITORIES = {
+		"liferay-jenkins-ee", "liferay-jenkins-results-parser-samples-ee",
+		"liferay-portal"
+	};
+
+	public static final String URL_CACHE = initCacheURL();
+
 	public static final String[] URLS_BUILD_PROPERTIES_DEFAULT = {
-		"http://mirrors-no-cache.lax.liferay.com/github.com/liferay" +
-			"/liferay-jenkins-ee/build.properties",
-		"http://mirrors-no-cache.lax.liferay.com/github.com/liferay" +
-			"/liferay-jenkins-ee/commands/build.properties",
-		"http://mirrors-no-cache.lax.liferay.com/github.com/liferay" +
-			"/liferay-portal/build.properties",
-		"http://mirrors-no-cache.lax.liferay.com/github.com/liferay" +
-			"/liferay-portal/ci.properties",
-		"http://mirrors-no-cache.lax.liferay.com/github.com/liferay" +
-			"/liferay-portal/test.properties"
+		URL_CACHE + "/liferay-jenkins-ee/build.properties",
+		URL_CACHE + "/liferay-jenkins-ee/commands/build.properties",
+		URL_CACHE + "/liferay-portal/build.properties",
+		URL_CACHE + "/liferay-portal/ci.properties",
+		URL_CACHE + "/liferay-portal/test.properties"
 	};
 
 	public static final String[] URLS_JENKINS_PROPERTIES_DEFAULT = {
-		"http://mirrors-no-cache.lax.liferay.com/github.com/liferay" +
-			"/liferay-jenkins-ee/jenkins.properties"
+		URL_CACHE + "/liferay-jenkins-ee/jenkins.properties"
 	};
 
 	public static boolean debug;
@@ -2500,6 +2501,22 @@ public class JenkinsResultsParserUtil {
 			int timeout, HTTPAuthorization httpAuthorizationHeader)
 		throws IOException {
 
+		if (!isCINode() && url.startsWith("file:") &&
+			url.contains("liferay-jenkins-results-parser-samples-ee")) {
+
+			File file = new File(url.replace("file:", ""));
+
+			if (!file.exists()) {
+				if (url.contains("json?")) {
+					url = url.substring(0, url.indexOf("json?") + 4);
+				}
+
+				if (url.contains("json[qt]")) {
+					url = url.substring(0, url.indexOf("json[qt]") + 4);
+				}
+			}
+		}
+
 		if (url.contains("/userContent/") && (timeout == 0)) {
 			timeout = 5000;
 		}
@@ -3254,11 +3271,36 @@ public class JenkinsResultsParserUtil {
 
 	}
 
+	protected static String initCacheURL() {
+		String cacheDirPath = System.getenv("CACHE_DIR");
+
+		if (cacheDirPath != null) {
+			File cacheDir = new File(cacheDirPath);
+
+			if (cacheDir.exists()) {
+				for (String cachedRepository : CACHED_REPOSITORIES) {
+					File cacheRepositoryDir = new File(
+						cacheDir, cachedRepository);
+
+					if (!cacheRepositoryDir.exists()) {
+						break;
+					}
+				}
+
+				System.out.println(
+					"Using " + cacheDirPath + " for cached files");
+
+				return "file://" + cacheDirPath;
+			}
+		}
+
+		return "http://mirrors-no-cache.lax.liferay.com/github.com/liferay";
+	}
+
 	protected static final String URL_DEPENDENCIES_FILE;
 
 	protected static final String URL_DEPENDENCIES_HTTP =
-		"http://mirrors-no-cache.lax.liferay.com/github.com/liferay" +
-			"/liferay-jenkins-results-parser-samples-ee/1/";
+		URL_CACHE + "/liferay-jenkins-results-parser-samples-ee/1/";
 
 	static {
 		File dependenciesDir = new File("src/test/resources/dependencies/");
