@@ -88,6 +88,8 @@ public class GetAvailableImageConfigurationsMVCResourceCommand
 					"size", amImageEntry.getSize() / 1000
 				).put(
 					"value", amImageEntry.getConfigurationUuid()
+				).put(
+					"width", amImageEntry.getWidth()
 				));
 		}
 
