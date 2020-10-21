@@ -41,6 +41,8 @@ import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutSetBranch;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.StagedModel;
+import com.liferay.portal.kernel.model.Theme;
+import com.liferay.portal.kernel.model.ThemeSetting;
 import com.liferay.portal.kernel.model.adapter.ModelAdapterUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ImageLocalService;
@@ -50,6 +52,7 @@ import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.service.ThemeLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ColorSchemeFactoryUtil;
 import com.liferay.portal.kernel.util.Constants;
@@ -60,6 +63,7 @@ import com.liferay.portal.kernel.util.ThemeFactoryUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Element;
+import com.liferay.portal.model.impl.ThemeSettingImpl;
 import com.liferay.portal.service.impl.LayoutLocalServiceHelper;
 import com.liferay.sites.kernel.util.Sites;
 import com.liferay.sites.kernel.util.SitesUtil;
@@ -360,15 +364,7 @@ public class StagedLayoutSetStagedModelDataHandler
 		checkLayoutSetPrototypeLayouts(portletDataContext, modifiedLayouts);
 
 		updateLayoutSetSettingsProperties(
-			portletDataContext, importedStagedLayoutSet, Sites.SHOW_SITE_NAME,
-			Boolean.TRUE.toString(), "lfr-theme:regular:show-footer",
-			Boolean.TRUE.toString(), "lfr-theme:regular:show-header",
-			Boolean.TRUE.toString(), "lfr-theme:regular:show-header-search",
-			Boolean.TRUE.toString(),
-			"lfr-theme:regular:show-maximize-minimize-application-links",
-			Boolean.FALSE.toString(),
-			"lfr-theme:regular:wrap-widget-page-content",
-			Boolean.TRUE.toString());
+			portletDataContext, importedStagedLayoutSet);
 
 		// Last merge time
 
@@ -853,7 +849,7 @@ public class StagedLayoutSetStagedModelDataHandler
 
 	protected void updateLayoutSetSettingsProperties(
 			PortletDataContext portletDataContext,
-			StagedLayoutSet importedLayoutSet, String... defaultsArray)
+			StagedLayoutSet importedStagedLayoutSet)
 		throws PortalException {
 
 		LayoutSet layoutSet = _layoutSetLocalService.getLayoutSet(
@@ -870,27 +866,31 @@ public class StagedLayoutSetStagedModelDataHandler
 		if (Validator.isNull(mergeFailFriendlyURLLayouts)) {
 			boolean changed = false;
 
-			LayoutSet stagedLayoutSet = importedLayoutSet.getLayoutSet();
+			final LayoutSet importedLayoutSet =
+				importedStagedLayoutSet.getLayoutSet();
 
-			UnicodeProperties importedSettingsUnicodeProperties =
-				stagedLayoutSet.getSettingsProperties();
+			final Theme importedTheme = importedLayoutSet.getTheme();
 
-			Map<String, String> defaultsMap = MapUtil.fromArray(defaultsArray);
+			final Map<String, ThemeSetting> themeSettings =
+				importedTheme.getConfigurableSettings();
 
-			for (Map.Entry<String, String> entry : defaultsMap.entrySet()) {
+			for (Map.Entry<String, ThemeSetting> entry :
+					themeSettings.entrySet()) {
+
 				String propertyKey = entry.getKey();
-				String defaultValue = entry.getValue();
 
-				String currentValue = settingsUnicodeProperties.getProperty(
-					propertyKey, defaultValue);
+				final ThemeSetting themeSetting = entry.getValue();
 
-				String importedValue =
-					importedSettingsUnicodeProperties.getProperty(
-						propertyKey, defaultValue);
+				String defaultValue = themeSetting.getValue();
 
-				if (!Objects.equals(currentValue, importedValue)) {
+				String importedValue = importedLayoutSet.getThemeSetting(
+					propertyKey, "regular");
+
+				if (!Objects.equals(defaultValue, importedValue)) {
 					settingsUnicodeProperties.setProperty(
-						propertyKey, importedValue);
+						ThemeSettingImpl.namespaceProperty(
+							"regular", propertyKey),
+						importedValue);
 
 					changed = true;
 				}
@@ -942,6 +942,9 @@ public class StagedLayoutSetStagedModelDataHandler
 
 	@Reference
 	private ThemeImporter _themeImporter;
+
+	@Reference
+	private ThemeLocalService _themeLocalService;
 
 	private class UpdateLayoutSetLastPublishDateCallable
 		implements Callable<Void> {
