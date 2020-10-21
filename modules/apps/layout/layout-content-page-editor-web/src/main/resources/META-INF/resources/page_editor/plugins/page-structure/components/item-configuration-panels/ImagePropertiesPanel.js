@@ -96,26 +96,25 @@ export function ImagePropertiesPanel({item}) {
 		(imageUrl === editableValue.defaultValue ? '' : imageUrl);
 
 	useEffect(() => {
-		if (editableElement != null) {
+		if (editableElement !== null) {
 			const {maxWidth, minWidth} = config.availableViewportSizes[
 				selectedViewportSize
 			];
 
 			const setSize = () => {
 				if (
-					(imageConfigurations.length == 0 ||
+					(imageConfigurations.length ||
 						selectedViewportSize === VIEWPORT_SIZES.desktop) &&
 					editableElement.naturalWidth
 				) {
-					const autoImageConfiguration = Object.assign(
-						imageConfigurations.find(
+					const autoImageConfiguration = {
+						...(imageConfigurations.find(
 							(imageConfiguration) =>
 								imageConfiguration.value === 'auto'
-						) || {},
-						{
-							width: editableElement.naturalWidth,
-						}
-					);
+						) || {}),
+
+						width: editableElement.naturalWidth,
+					};
 
 					setImageSize({
 						width: autoImageConfiguration.width,
@@ -126,21 +125,19 @@ export function ImagePropertiesPanel({item}) {
 					}
 				}
 				else {
-					const viewportImageConfiguraion = imageConfigurations.find(
+					const viewportImageConfiguration = imageConfigurations.find(
 						(imageConfiguration) =>
 							imageConfiguration.width &&
 							imageConfiguration.width <= maxWidth &&
 							imageConfiguration.width > minWidth
-					) || {
-						width: editableElement.naturalWidth,
-					};
+					) || {width: editableElement.naturalWidth};
 
 					setImageSize({
-						width: viewportImageConfiguraion.width,
+						width: viewportImageConfiguration.width,
 					});
 
-					if (viewportImageConfiguraion.size) {
-						setImageFileSize(viewportImageConfiguraion.size);
+					if (viewportImageConfiguration.size) {
+						setImageFileSize(viewportImageConfiguration.size);
 					}
 				}
 			};
