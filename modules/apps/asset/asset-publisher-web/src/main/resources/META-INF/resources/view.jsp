@@ -40,6 +40,7 @@ if (assetPublisherDisplayContext.isEnableTagBasedNavigation() && !assetPublisher
 					label="rss"
 					outline="<%= true %>"
 					small="<%= true %>"
+					target="_blank"
 					type="button"
 				/>
 			</div>
