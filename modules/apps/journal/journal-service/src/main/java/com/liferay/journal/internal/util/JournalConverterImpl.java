@@ -426,8 +426,9 @@ public class JournalConverterImpl implements JournalConverter {
 		String[] fieldsDisplayValues = getDDMFieldsDisplayValues(
 			fieldsDisplayField);
 
-		return countFieldRepetition(ddmFields, fieldName, parentFieldName,
-				parentOffset, fieldsDisplayValues);
+		return countFieldRepetition(
+			ddmFields, fieldName, parentFieldName, parentOffset,
+			fieldsDisplayValues);
 	}
 
 	protected int countFieldRepetition(
