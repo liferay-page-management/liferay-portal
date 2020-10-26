@@ -19,7 +19,10 @@ import java.util.Optional;
 
 /**
  * @author Alejandro Tardín
+ * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+ *             com.liferay.frontend.taglib.form.navigator.FormNavigatorEntryConfigurationHelper}
  */
+@Deprecated
 public interface FormNavigatorEntryConfigurationHelper {
 
 	public <T> Optional<List<FormNavigatorEntry<T>>> getFormNavigatorEntries(

@@ -36,8 +36,11 @@ import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Alejandro Tardín
+ * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+ *             com.liferay.frontend.taglib.form.navigator.internal.FormNavigatorEntryConfigurationHelperImpl}
  */
 @Component(service = FormNavigatorEntryConfigurationHelper.class)
+@Deprecated
 public class FormNavigatorEntryConfigurationHelperImpl
 	implements FormNavigatorEntryConfigurationHelper {
 
