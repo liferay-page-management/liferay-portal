@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.servlet.DirectRequestDispatcherFactoryUtil;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.servlet.ServletContextPool;
 import com.liferay.portal.kernel.util.ConcurrentHashMapBuilder;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.BufferedReader;
@@ -265,7 +266,7 @@ public class DummyHttpServletRequest implements HttpServletRequest {
 	@Override
 	public RequestDispatcher getRequestDispatcher(String path) {
 		return DirectRequestDispatcherFactoryUtil.getRequestDispatcher(
-			ServletContextPool.get(StringPool.BLANK), path);
+			ServletContextPool.get(PortalUtil.getServletContextName()), path);
 	}
 
 	@Override
@@ -300,7 +301,7 @@ public class DummyHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public ServletContext getServletContext() {
-		return ServletContextPool.get(StringPool.BLANK);
+		return ServletContextPool.get(PortalUtil.getServletContextName());
 	}
 
 	@Override
@@ -410,7 +411,8 @@ public class DummyHttpServletRequest implements HttpServletRequest {
 
 	private final Map<String, Object> _attributes =
 		ConcurrentHashMapBuilder.<String, Object>put(
-			WebKeys.CTX, ServletContextPool.get(StringPool.BLANK)
+			WebKeys.CTX,
+			ServletContextPool.get(PortalUtil.getServletContextName())
 		).build();
 
 	private final HttpSession _httpSession = new HttpSession() {
@@ -447,7 +449,7 @@ public class DummyHttpServletRequest implements HttpServletRequest {
 
 		@Override
 		public ServletContext getServletContext() {
-			return ServletContextPool.get(StringPool.BLANK);
+			return ServletContextPool.get(PortalUtil.getServletContextName());
 		}
 
 		@Override
