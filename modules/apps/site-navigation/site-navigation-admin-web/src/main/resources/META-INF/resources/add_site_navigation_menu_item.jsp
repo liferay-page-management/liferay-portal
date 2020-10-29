@@ -70,9 +70,6 @@ renderResponse.setTitle(LanguageUtil.format(request, "add-x", siteNavigationMenu
 
 	if (addButton) {
 		addButton.addEventListener('click', function () {
-			var form = document.getElementById('<portlet:namespace />fm');
-			var formData = new FormData(form);
-
 			var formValidator = Liferay.Form.get('<portlet:namespace />fm')
 				.formValidator;
 
@@ -81,6 +78,9 @@ renderResponse.setTitle(LanguageUtil.format(request, "add-x", siteNavigationMenu
 			if (formValidator.hasErrors()) {
 				return;
 			}
+
+			var form = document.getElementById('<portlet:namespace />fm');
+			var formData = new FormData(form);
 
 			Liferay.Util.fetch(form.action, {
 				body: formData,
