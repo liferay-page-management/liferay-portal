@@ -27,7 +27,7 @@ if (siteNavigationMenuItem != null) {
 
 	typeSettingsProperties.fastLoad(siteNavigationMenuItem.getTypeSettings());
 
-	target = typeSettingsProperties.getProperty("target");
+	target = typeSettingsProperties.getProperty("target", "_blank");
 	url = typeSettingsProperties.getProperty("url");
 }
 %>
@@ -42,21 +42,9 @@ if (siteNavigationMenuItem != null) {
 	<aui:validator name="url" />
 </aui:input>
 
-<aui:input id="TypeSettingsProperties--target--" name="TypeSettingsProperties--target--" type="hidden" value="<%= target %>" />
-
-<aui:select label="target" name="target" onChange='<%= portletDisplay.getNamespace() + "selectTarget() " %>'>
+<aui:select label="target" name="TypeSettingsProperties--target--" value="<%= target %>">
 	<aui:option label="blank" selected='<%= Objects.equals(target, "_blank") %>' value="_blank" />
 	<aui:option label="parent" selected='<%= Objects.equals(target, "_parent") %>' value="_parent" />
 	<aui:option label="self" selected='<%= Objects.equals(target, "_self") %>' value="_self" />
 	<aui:option label="top" selected='<%= Objects.equals(target, "_top") %>' value="_top" />
 </aui:select>
-
-<script>
-	function <portlet:namespace />selectTarget() {
-		var select = document.getElementById('<portlet:namespace />target');
-
-		document.getElementById(
-			'<portlet:namespace />TypeSettingsProperties--target--'
-		).value = select.options[select.selectedIndex].value;
-	}
-</script>
