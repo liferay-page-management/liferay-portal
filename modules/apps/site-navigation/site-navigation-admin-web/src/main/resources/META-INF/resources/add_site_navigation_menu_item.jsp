@@ -71,15 +71,7 @@ renderResponse.setTitle(LanguageUtil.format(request, "add-x", siteNavigationMenu
 	if (addButton) {
 		addButton.addEventListener('click', function () {
 			var form = document.getElementById('<portlet:namespace />fm');
-			var formData = new FormData();
-
-			Array.prototype.slice
-				.call(form.querySelectorAll('input'))
-				.forEach(function (input) {
-					if (input.name && input.value) {
-						formData.append(input.name, input.value);
-					}
-				});
+			var formData = new FormData(form);
 
 			var formValidator = Liferay.Form.get('<portlet:namespace />fm')
 				.formValidator;
