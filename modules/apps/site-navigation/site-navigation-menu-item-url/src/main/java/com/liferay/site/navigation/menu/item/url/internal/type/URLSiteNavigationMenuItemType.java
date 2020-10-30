@@ -15,10 +15,13 @@
 package com.liferay.site.navigation.menu.item.url.internal.type;
 
 import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.site.navigation.constants.SiteNavigationWebKeys;
 import com.liferay.site.navigation.menu.item.layout.constants.SiteNavigationMenuItemTypeConstants;
 import com.liferay.site.navigation.model.SiteNavigationMenuItem;
@@ -68,6 +71,29 @@ public class URLSiteNavigationMenuItemType
 			siteNavigationMenuItem.getTypeSettings());
 
 		return typeSettingsUnicodeProperties.get("url");
+	}
+
+	@Override
+	public String getTarget(SiteNavigationMenuItem siteNavigationMenuItem) {
+		UnicodeProperties typeSettingsUnicodeProperties =
+			new UnicodeProperties();
+
+		typeSettingsUnicodeProperties.fastLoad(
+			siteNavigationMenuItem.getTypeSettings());
+
+		String target = typeSettingsUnicodeProperties.getProperty("target");
+
+		if (Validator.isNull(target)) {
+			return StringPool.BLANK;
+		}
+
+		StringBundler sb = new StringBundler(3);
+
+		sb.append("target=\"");
+		sb.append(target);
+		sb.append("\"");
+
+		return sb.toString();
 	}
 
 	@Override

@@ -19,6 +19,7 @@
 <%
 SiteNavigationMenuItem siteNavigationMenuItem = (SiteNavigationMenuItem)request.getAttribute(SiteNavigationWebKeys.SITE_NAVIGATION_MENU_ITEM);
 
+String target = "_self";
 String url = StringPool.BLANK;
 
 if (siteNavigationMenuItem != null) {
@@ -26,7 +27,8 @@ if (siteNavigationMenuItem != null) {
 
 	typeSettingsProperties.fastLoad(siteNavigationMenuItem.getTypeSettings());
 
-	url = typeSettingsProperties.get("url");
+	target = typeSettingsProperties.getProperty("target", "_self");
+	url = typeSettingsProperties.getProperty("url");
 }
 %>
 
@@ -39,3 +41,10 @@ if (siteNavigationMenuItem != null) {
 
 	<aui:validator name="url" />
 </aui:input>
+
+<aui:select label="target" name="TypeSettingsProperties--target--" value="<%= target %>">
+	<aui:option label="blank" selected='<%= Objects.equals(target, "_blank") %>' value="_blank" />
+	<aui:option label="parent" selected='<%= Objects.equals(target, "_parent") %>' value="_parent" />
+	<aui:option label="self" selected='<%= Objects.equals(target, "_self") %>' value="_self" />
+	<aui:option label="top" selected='<%= Objects.equals(target, "_top") %>' value="_top" />
+</aui:select>

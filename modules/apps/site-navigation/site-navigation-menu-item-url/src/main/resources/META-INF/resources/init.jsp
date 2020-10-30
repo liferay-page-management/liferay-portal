@@ -25,6 +25,8 @@ page import="com.liferay.site.navigation.constants.SiteNavigationWebKeys" %><%@
 page import="com.liferay.site.navigation.menu.item.util.SiteNavigationMenuItemUtil" %><%@
 page import="com.liferay.site.navigation.model.SiteNavigationMenuItem" %>
 
+<%@ page import="java.util.Objects" %>
+
 <liferay-theme:defineObjects />
 
 <%@ include file="/init-ext.jsp" %>
