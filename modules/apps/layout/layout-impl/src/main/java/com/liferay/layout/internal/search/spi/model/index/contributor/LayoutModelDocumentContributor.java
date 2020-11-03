@@ -29,14 +29,17 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.ThemeLocalService;
@@ -54,6 +57,7 @@ import com.liferay.segments.constants.SegmentsExperienceConstants;
 import com.liferay.staging.StagingGroupHelper;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -139,7 +143,23 @@ public class LayoutModelDocumentContributor
 			User user = _userLocalService.fetchUser(userId);
 
 			if ((user == null) || user.isDefaultUser()) {
-				return;
+				Role role = _roleLocalService.fetchRole(
+					layout.getCompanyId(), RoleConstants.ADMINISTRATOR);
+
+				if (role == null) {
+					return;
+				}
+
+				List<User> adminUsers = _userLocalService.getRoleUsers(
+					role.getRoleId(), 0, 1);
+
+				if (adminUsers.isEmpty()) {
+					return;
+				}
+
+				user = adminUsers.get(0);
+
+				userId = user.getUserId();
 			}
 
 			HttpServletRequest httpServletRequest =
@@ -221,6 +241,9 @@ public class LayoutModelDocumentContributor
 	@Reference
 	private LayoutPageTemplateStructureLocalService
 		_layoutPageTemplateStructureLocalService;
+
+	@Reference
+	private RoleLocalService _roleLocalService;
 
 	@Reference
 	private StagingGroupHelper _stagingGroupHelper;
