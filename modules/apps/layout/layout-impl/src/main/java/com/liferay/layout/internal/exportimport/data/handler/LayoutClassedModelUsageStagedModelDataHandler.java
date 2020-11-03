@@ -210,6 +210,13 @@ public class LayoutClassedModelUsageStagedModelDataHandler
 						"layout-classed-model-container-class-name")),
 				plid);
 
+		if (existingLayoutClassedModelUsage == null) {
+			existingLayoutClassedModelUsage =
+				_stagedModelRepository.fetchStagedModelByUuidAndGroupId(
+					layoutClassedModelUsage.getUuid(),
+					portletDataContext.getScopeGroupId());
+		}
+
 		if ((existingLayoutClassedModelUsage == null) ||
 			!portletDataContext.isDataStrategyMirror()) {
 
