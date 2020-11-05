@@ -14,6 +14,7 @@
 
 package com.liferay.layout.internal.search.spi.model.index.contributor;
 
+import com.liferay.exportimport.kernel.staging.MergeLayoutPrototypesThreadLocal;
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.renderer.FragmentRendererController;
 import com.liferay.layout.adaptive.media.LayoutAdaptiveMediaProcessor;
@@ -223,6 +224,9 @@ public class LayoutModelDocumentContributor
 				currentPermissionChecker);
 
 			ServiceContextThreadLocal.popServiceContext();
+
+			MergeLayoutPrototypesThreadLocal.clearMergeComplete();
+			MergeLayoutPrototypesThreadLocal.setInProgress(false);
 		}
 	}
 
