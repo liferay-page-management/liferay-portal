@@ -364,6 +364,29 @@ public class PageFragmentInstanceDefinitionDTOConverter {
 		return false;
 	}
 
+	private Map<String, ClassPKReference> _toClassPKReferenceMap(
+		Map<String, JSONObject> localeJSONObjectMap) {
+
+		Map<String, ClassPKReference> imageReferenceMap = new HashMap<>();
+
+		for (Map.Entry<String, JSONObject> entry :
+				localeJSONObjectMap.entrySet()) {
+
+			JSONObject jsonObject = entry.getValue();
+
+			imageReferenceMap.put(
+				entry.getKey(),
+				new ClassPKReference() {
+					{
+						className = FileEntry.class.getName();
+						classPK = jsonObject.getLong("fileEntryId");
+					}
+				});
+		}
+
+		return imageReferenceMap;
+	}
+
 	private FragmentInlineValue _toDefaultMappingValue(
 		JSONObject jsonObject, Function<Object, String> transformerFunction) {
 
@@ -663,7 +686,7 @@ public class PageFragmentInstanceDefinitionDTOConverter {
 
 		return new FragmentImageClassPKReference() {
 			{
-				classPKReferences = _toImageReferenceMap(localeJSONObjectMap);
+				classPKReferences = _toClassPKReferenceMap(localeJSONObjectMap);
 				fragmentImageConfiguration = new FragmentImageConfiguration() {
 					{
 						landscapeMobile =
@@ -770,29 +793,6 @@ public class PageFragmentInstanceDefinitionDTOConverter {
 				};
 			}
 		};
-	}
-
-	private Map<String, ClassPKReference> _toImageReferenceMap(
-		Map<String, JSONObject> localeJSONObjectMap) {
-
-		Map<String, ClassPKReference> imageReferenceMap = new HashMap<>();
-
-		for (Map.Entry<String, JSONObject> entry :
-				localeJSONObjectMap.entrySet()) {
-
-			JSONObject jsonObject = entry.getValue();
-
-			imageReferenceMap.put(
-				entry.getKey(),
-				new ClassPKReference() {
-					{
-						className = FileEntry.class.getName();
-						classPK = jsonObject.getLong("fileEntryId");
-					}
-				});
-		}
-
-		return imageReferenceMap;
 	}
 
 	private String _toItemClassName(JSONObject jsonObject) {
