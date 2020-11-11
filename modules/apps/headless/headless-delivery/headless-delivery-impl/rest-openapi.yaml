@@ -1,3 +1,1959 @@
+            description:
+    Represents the Adaptive Media fragment image configuration for
+    different viewports.
+        properties:
+    landscapeMobile:
+        type: string
+    portraitMobile:
+        type: string
+    tablet:
+        type: string
+            type: object
+        FragmentInlineValue:
+            properties:
+    value:
+        type: string
+    value_i18n:
+        additionalProperties:
+            type: string
+        type: object
+            type: object
+        FragmentLink:
+            properties:
+    href:
+        oneOf:
+            - $ref: "#/components/schemas/FragmentInlineValue"
+            - $ref: "#/components/schemas/FragmentMappedValue"
+    target:
+        enum: [Blank, Parent, Self, Top]
+        type: string
+        FragmentMappedValue:
+            description:
+    ""
+        properties:
+    defaultFragmentInlineValue:
+        $ref: "#/components/schemas/FragmentInlineValue"
+    defaultValue:
+        deprecated: true
+        description:
+            "Deprecated as of Athanasius (7.3.x), replaced by defaultFragmentInlineValue"
+        properties:
+            value:
+                type: string
+            value_i18n:
+                additionalProperties:
+                    type: string
+                type: object
+        type: object
+    mapping:
+        properties:
+            fieldKey:
+                type: string
+            itemReference:
+                oneOf:
+                    - $ref: "#/components/schemas/ClassPKReference"
+                    - $ref: "#/components/schemas/ContextReference"
+        type: object
+            type: object
+        FragmentSettingsAllowed:
+            properties:
+    allowedFragments:
+        items:
+            $ref: "#/components/schemas/Fragment"
+        type: array
+            type: object
+        FragmentSettingsUnallowed:
+            properties:
+    unallowedFragments:
+        items:
+            $ref: "#/components/schemas/Fragment"
+        type: array
+            type: object
+        FragmentStyle:
+            description:
+    ""
+        properties:
+    backgroundColor:
+        type: string
+    backgroundFragmentImage:
+        $ref: "#/components/schemas/FragmentImage"
+    borderColor:
+        type: string
+    borderRadius:
+        type: string
+    borderWidth:
+        type: string
+    fontFamily:
+        type: string
+    fontSize:
+        type: string
+    fontWeight:
+        type: string
+    height:
+        type: string
+    marginBottom:
+        type: string
+    marginLeft:
+        type: string
+    marginRight:
+        type: string
+    marginTop:
+        type: string
+    maxHeight:
+        type: string
+    maxWidth:
+        type: string
+    minHeight:
+        type: string
+    minWidth:
+        type: string
+    opacity:
+        type: string
+    overflow:
+        type: string
+    paddingBottom:
+        type: string
+    paddingLeft:
+        type: string
+    paddingRight:
+        type: string
+    paddingTop:
+        type: string
+    shadow:
+        type: string
+    textAlign:
+        type: string
+    textColor:
+        type: string
+    width:
+        type: string
+            type: object
+        FragmentViewport:
+            additionalProperties: false
+            properties:
+    fragmentViewportStyle:
+        additionalProperties: false
+        properties:
+            marginBottom:
+                type: string
+            marginLeft:
+                type: string
+            marginRight:
+                type: string
+            marginTop:
+                type: string
+            paddingBottom:
+                type: string
+            paddingLeft:
+                type: string
+            paddingRight:
+                type: string
+            paddingTop:
+                type: string
+        type: object
+    id:
+        type: string
+            required:
+    - fragmentViewportStyle
+    - id
+          type: object
+      KnowledgeBaseArticle:
+          description:
+    Represents a Knowledge Base article (`KBArticle`), the main entity in the Knowledge Base API.
+        properties:
+    actions:
+        additionalProperties:
+            additionalProperties:
+                type: string
+            type: object
+        readOnly: true
+        type: object
+    aggregateRating:
+        allOf:
+            - $ref: "#/components/schemas/AggregateRating"
+        description:
+            The article's average rating.
+        readOnly: true
+    articleBody:
+        description:
+            The article's main content.
+        type: string
+    creator:
+        allOf:
+            - $ref: "#/components/schemas/Creator"
+        description:
+            The article's author.
+        readOnly: true
+    customFields:
+        items:
+            $ref: "#/components/schemas/CustomField"
+        type: array
+    dateCreated:
+        description:
+            The date the article was created.
+        format: date-time
+        readOnly: true
+        type: string
+    dateModified:
+        description:
+            The last time the article's content or metadata changed.
+        format: date-time
+        readOnly: true
+        type: string
+    description:
+        description:
+            The article's description.
+        type: string
+    encodingFormat:
+        description:
+            The article's media type (e.g., HTML, BBCode, etc.).
+        readOnly: true
+        type: string
+    friendlyUrlPath:
+        description:
+            The article's relative URL.
+        type: string
+    id:
+        description:
+            The article's ID.
+        format: int64
+        readOnly: true
+        type: integer
+    keywords:
+        description:
+            A list of keywords describing the article.
+        items:
+            type: string
+        type: array
+    numberOfAttachments:
+        description:
+            The article's number attachments.
+        readOnly: true
+        type: integer
+    numberOfKnowledgeBaseArticles:
+        description:
+            The number of this article's child articles.
+        readOnly: true
+        type: integer
+    parentKnowledgeBaseFolder:
+        description:
+            The article's parent folder, if it exists.
+        properties:
+            folderId:
+                description:
+                    The parent folder's ID.
+                format: int64
+                type: integer
+            folderName:
+                description:
+                    The parent folder's name.
+                type: string
+        readOnly: true
+        type: object
+    parentKnowledgeBaseFolderId:
+        description:
+            The ID of the article's parent folder, if that folder exists.
+        format: int64
+        type: integer
+        writeOnly: true
+    relatedContents:
+        items:
+            $ref: "#/components/schemas/RelatedContent"
+        readOnly: true
+        type: array
+    siteId:
+        description:
+            The ID of the site to which this article is scoped.
+        format: int64
+        readOnly: true
+        type: integer
+    subscribed:
+        readOnly: true
+        type: boolean
+    taxonomyCategoryBriefs:
+        description:
+            The categories associated with this article.
+        items:
+            $ref: "#/components/schemas/TaxonomyCategoryBrief"
+        readOnly: true
+        type: array
+    taxonomyCategoryIds:
+        description:
+            A write-only field that adds taxonomy categories to this article.
+        items:
+            format: int64
+            type: integer
+        type: array
+        writeOnly: true
+    title:
+        description:
+            The article's main title.
+        type: string
+    viewableBy:
+        description:
+            A write-only property that specifies the article's default permissions.
+        enum: [Anyone, Members, Owner]
+        type: string
+        writeOnly: true
+            required:
+    - articleBody
+    - title
+          type: object
+      KnowledgeBaseAttachment:
+          description:
+    Represents a binary file attached to a Knowledge Base article.
+        properties:
+    contentUrl:
+        description:
+            The file's relative URL.
+        readOnly: true
+        type: string
+    contentValue:
+        # @review
+        description:
+            optional field with the content of the document in Base64, can be embedded with nestedFields
+        readOnly: true
+        type: string
+    encodingFormat:
+        description:
+            The file's media type (e.g., application/pdf, etc.).
+        readOnly: true
+        type: string
+    fileExtension:
+        description:
+            The file's extension.
+        readOnly: true
+        type: string
+    id:
+        description:
+            The file's ID.
+        format: int64
+        readOnly: true
+        type: integer
+    sizeInBytes:
+        description:
+            The file's size in bytes.
+        format: int64
+        readOnly: true
+        type: integer
+    title:
+        description:
+            The file's main title.
+        type: string
+            type: object
+        KnowledgeBaseFolder:
+            description:
+    Represents a folder for organizing Knowledge Base articles.
+        properties:
+    actions:
+        additionalProperties:
+            additionalProperties:
+                type: string
+            type: object
+        readOnly: true
+        type: object
+    creator:
+        allOf:
+            - $ref: "#/components/schemas/Creator"
+        description:
+            The folder's creator.
+        readOnly: true
+    customFields:
+        items:
+            $ref: "#/components/schemas/CustomField"
+        type: array
+    dateCreated:
+        description:
+            The date the folder was created.
+        format: date-time
+        readOnly: true
+        type: string
+    dateModified:
+        description:
+            The last time the folder was modified.
+        format: date-time
+        readOnly: true
+        type: string
+    description:
+        description:
+            The folder's description.
+        type: string
+    id:
+        description:
+            The folder's ID.
+        format: int64
+        readOnly: true
+        type: integer
+    name:
+        description:
+            The folder's main title/name.
+        type: string
+    numberOfKnowledgeBaseArticles:
+        description:
+            The number of Knowledge Base articles in this folder.
+        readOnly: true
+        type: integer
+    numberOfKnowledgeBaseFolders:
+        description:
+            The number of Knowledge Base folders in this folder.
+        readOnly: true
+        type: integer
+    parentKnowledgeBaseFolder:
+        description:
+            The folder's parent Knowledge Base folder, if it exists.
+        properties:
+            folderId:
+                description:
+                    The parent folder's ID.
+                format: int64
+                type: integer
+            folderName:
+                description:
+                    The parent folder's name.
+                type: string
+        readOnly: true
+        type: object
+    parentKnowledgeBaseFolderId:
+        description:
+            The ID of the folder's parent Knowledge Base folder, if such a parent folder exists.
+        format: int64
+        type: integer
+        writeOnly: true
+    siteId:
+        description:
+            The ID of the site to which this folder is scoped.
+        format: int64
+        readOnly: true
+        type: integer
+    viewableBy:
+        description:
+            A write-only property that specifies the folder's default permissions.
+        enum: [Anyone, Members, Owner]
+        type: string
+        writeOnly: true
+            required:
+    - name
+          type: object
+      MasterPage:
+          description:
+    ""
+        properties:
+    key:
+        type: string
+    name:
+        type: string
+            type: object
+        MessageBoardAttachment:
+            description:
+    A binary file attached to a message on a message board (`MessageBoardMessage`).
+        properties:
+    contentUrl:
+        description:
+            The file's relative URL.
+        readOnly: true
+        type: string
+    contentValue:
+        # @review
+        description:
+            optional field with the content of the document in Base64, can be embedded with nestedFields
+        readOnly: true
+        type: string
+    encodingFormat:
+        description:
+            The file's media format (e.g., application/pdf, etc.).
+        readOnly: true
+        type: string
+    fileExtension:
+        description:
+            The file's extension.
+        readOnly: true
+        type: string
+    id:
+        description:
+            The file's ID.
+        format: int64
+        readOnly: true
+        type: integer
+    sizeInBytes:
+        description:
+            The file's size in bytes.
+        format: int64
+        readOnly: true
+        type: integer
+    title:
+        description:
+            The file's title.
+        type: string
+            type: object
+        MessageBoardMessage:
+            description:
+    Represents a message on a message board. Properties follow the [Discussion Forum
+    Posting](https://schema.org/DiscussionForumPosting) specification.
+        properties:
+    actions:
+        additionalProperties:
+            additionalProperties:
+                type: string
+            type: object
+        readOnly: true
+        type: object
+    aggregateRating:
+        allOf:
+            - $ref: "#/components/schemas/AggregateRating"
+        description:
+            The message's average rating.
+        readOnly: true
+    anonymous:
+        description:
+            A flag that indicates whether the message's author is anonymous.
+        type: boolean
+    articleBody:
+        description:
+            The message's main content.
+        type: string
+    creator:
+        allOf:
+            - $ref: "#/components/schemas/Creator"
+        description:
+            The message's author.
+        readOnly: true
+    creatorStatistics:
+        $ref: "#/components/schemas/CreatorStatistics"
+    customFields:
+        items:
+            $ref: "#/components/schemas/CustomField"
+        type: array
+    dateCreated:
+        description:
+            The date the message was created.
+        format: date-time
+        readOnly: true
+        type: string
+    dateModified:
+        description:
+            The last time the content or metadata of the message was changed.
+        format: date-time
+        readOnly: true
+        type: string
+    encodingFormat:
+        description:
+            The message's media format (e.g., HTML, BBCode, etc.).
+        type: string
+    friendlyUrlPath:
+        type: string
+    headline:
+        description:
+            The message's main title.
+        type: string
+    id:
+        description:
+            The message's ID.
+        format: int64
+        readOnly: true
+        type: integer
+    keywords:
+        description:
+            A list of keywords describing the message.
+        items:
+            type: string
+        type: array
+    messageBoardSectionId:
+        format: int64
+        type: integer
+    messageBoardThreadId:
+        # @review
+        description:
+            The ID of the Message Board Thread to which this message is scoped.
+        format: int64
+        readOnly: true
+        type: integer
+    numberOfMessageBoardAttachments:
+        description:
+            The number of the message's attachments.
+        readOnly: true
+        type: integer
+    numberOfMessageBoardMessages:
+        description:
+            The number of the message's child messages.
+        readOnly: true
+        type: integer
+    parentMessageBoardMessageId:
+        format: int64
+        type: integer
+    relatedContents:
+        items:
+            $ref: "#/components/schemas/RelatedContent"
+        readOnly: true
+        type: array
+    showAsAnswer:
+        description:
+            A flag that indicates whether the message is answering a question.
+        type: boolean
+    siteId:
+        description:
+            The ID of the site to which this message is scoped.
+        format: int64
+        readOnly: true
+        type: integer
+    subscribed:
+        readOnly: true
+        type: boolean
+    viewableBy:
+        description:
+            A write-only property that specifies the default permissions.
+        enum: [Anyone, Members, Owner]
+        type: string
+        writeOnly: true
+            type: object
+        MessageBoardSection:
+            description:
+    Represents a section/folder on a message board, used to organize messages.
+        properties:
+    actions:
+        additionalProperties:
+            additionalProperties:
+                type: string
+            type: object
+        readOnly: true
+        type: object
+    creator:
+        allOf:
+            - $ref: "#/components/schemas/Creator"
+        description:
+            The section's creator.
+        readOnly: true
+    customFields:
+        items:
+            $ref: "#/components/schemas/CustomField"
+        type: array
+    dateCreated:
+        description:
+            The date the section was created.
+        format: date-time
+        readOnly: true
+        type: string
+    dateModified:
+        description:
+            The last time the section was changed.
+        format: date-time
+        readOnly: true
+        type: string
+    description:
+        description:
+            The section's description.
+        type: string
+    id:
+        description:
+            The section's ID.
+        format: int64
+        readOnly: true
+        type: integer
+    numberOfMessageBoardSections:
+        description:
+            The number of this section's child sections.
+        readOnly: true
+        type: integer
+    numberOfMessageBoardThreads:
+        description:
+            The number of message board threads in this section.
+        readOnly: true
+        type: integer
+    parentMessageBoardSectionId:
+        format: int64
+        type: integer
+    siteId:
+        description:
+            The ID of the site to which this section is scoped.
+        format: int64
+        readOnly: true
+        type: integer
+    subscribed:
+        readOnly: true
+        type: boolean
+    title:
+        description:
+            The section's main title.
+        type: string
+    viewableBy:
+        description:
+            A write-only property that specifies the default permissions.
+        enum: [Anyone, Members, Owner]
+        type: string
+        writeOnly: true
+            required:
+    - title
+          type: object
+      # @review
+      MessageBoardThread:
+          description:
+    Represents a discussion thread in a message board.
+        properties:
+    actions:
+        additionalProperties:
+            additionalProperties:
+                type: string
+            type: object
+        readOnly: true
+        type: object
+    aggregateRating:
+        allOf:
+            - $ref: "#/components/schemas/AggregateRating"
+        description:
+            The thread's average rating.
+        readOnly: true
+    articleBody:
+        description:
+            The thread's main body content (the message written as the thread's description).
+        type: string
+    creator:
+        allOf:
+            - $ref: "#/components/schemas/Creator"
+        description:
+            The thread's creator.
+        readOnly: true
+    creatorStatistics:
+        $ref: "#/components/schemas/CreatorStatistics"
+    customFields:
+        items:
+            $ref: "#/components/schemas/CustomField"
+        type: array
+    dateCreated:
+        description:
+            The date the thread was created.
+        format: date-time
+        readOnly: true
+        type: string
+    dateModified:
+        description:
+            The last time any field of the thread changed.
+        format: date-time
+        readOnly: true
+        type: string
+    encodingFormat:
+        description:
+            The media format of the thread's content (e.g., HTML, BBCode, etc.).
+        type: string
+    friendlyUrlPath:
+        type: string
+    hasValidAnswer:
+        # @review
+        description:
+            A flag that indicates whether this thread has a message considered as valid
+        type: boolean
+    headline:
+        description:
+            The thread's main title.
+        type: string
+    id:
+        description:
+            The thread's ID.
+        format: int64
+        readOnly: true
+        type: integer
+    keywords:
+        description:
+            A list of keywords describing the thread.
+        items:
+            type: string
+        type: array
+    locked:
+        # @review
+        description:
+            A flag that indicates whether this thread is locked.
+        readOnly: true
+        type: boolean
+    messageBoardSectionId:
+        format: int64
+        type: integer
+    numberOfMessageBoardAttachments:
+        description:
+            The number of the thread's attachments.
+        readOnly: true
+        type: integer
+    numberOfMessageBoardMessages:
+        description:
+            The number of the thread's messages.
+        readOnly: true
+        type: integer
+    relatedContents:
+        items:
+            $ref: "#/components/schemas/RelatedContent"
+        readOnly: true
+        type: array
+    seen:
+        type: boolean
+    showAsQuestion:
+        description:
+            A flag that indicates whether this thread was posted as a question that can receive approved
+            answers.
+        type: boolean
+    siteId:
+        description:
+            The ID of the site to which this thread is scoped.
+        format: int64
+        readOnly: true
+        type: integer
+    subscribed:
+        type: boolean
+    taxonomyCategoryBriefs:
+        items:
+            $ref: "#/components/schemas/TaxonomyCategoryBrief"
+        readOnly: true
+        type: array
+    taxonomyCategoryIds:
+        items:
+            format: int64
+            type: integer
+        type: array
+        writeOnly: true
+    threadType:
+        description:
+            The thread's type.
+        type: string
+    viewCount:
+        description:
+            The number of views of this thread.
+        format: int64
+        readOnly: true
+        type: integer
+    viewableBy:
+        description:
+            A write-only property that specifies the thread's default permissions.
+        enum: [Anyone, Members, Owner]
+        type: string
+        writeOnly: true
+            required:
+    - headline
+          type: object
+      NavigationMenu:
+          description:
+    ""
+        properties:
+    actions:
+        additionalProperties:
+            additionalProperties:
+                type: string
+            type: object
+        readOnly: true
+        type: object
+    creator:
+        allOf:
+            - $ref: "#/components/schemas/Creator"
+        readOnly: true
+    dateCreated:
+        format: date-time
+        readOnly: true
+        type: string
+    dateModified:
+        format: date-time
+        readOnly: true
+        type: string
+    id:
+        format: int64
+        readOnly: true
+        type: integer
+    name:
+        type: string
+    navigationMenuItems:
+        items:
+            $ref: "#/components/schemas/NavigationMenuItem"
+        type: array
+    navigationType:
+        enum: [Primary, Secondary, Social]
+        type: string
+    siteId:
+        format: int64
+        readOnly: true
+        type: integer
+        NavigationMenuItem:
+            description:
+    ""
+        properties:
+    availableLanguages:
+        description:
+            The list of languages the structure has a translation for.
+        items:
+            type: string
+        readOnly: true
+        type: array
+    creator:
+        allOf:
+            - $ref: "#/components/schemas/Creator"
+        readOnly: true
+    dateCreated:
+        format: date-time
+        readOnly: true
+        type: string
+    dateModified:
+        format: date-time
+        readOnly: true
+        type: string
+    id:
+        format: int64
+        type: integer
+    link:
+        # @review
+        description:
+            A link to a page on the server.
+        format: uri
+        type: string
+    name:
+        type: string
+    name_i18n:
+        additionalProperties:
+            type: string
+        type: object
+    navigationMenuItems:
+        items:
+            $ref: "#/components/schemas/NavigationMenuItem"
+        type: array
+    parentNavigationMenuId:
+        format: int64
+        readOnly: true
+        type: integer
+    type:
+        readOnly: true
+        type: string
+    url:
+        type: string
+    useCustomName:
+        type: boolean
+        PageCollectionDefinition:
+            description:
+    ""
+        properties:
+    collectionConfig:
+        properties:
+            collectionReference:
+                oneOf:
+                    - $ref: "#/components/schemas/ClassNameReference"
+                    - $ref: "#/components/schemas/ClassPKReference"
+            collectionType:
+                enum: [Collection, CollectionProvider]
+                type: string
+        required:
+            - collectionReference
+            - collectionType
+        type: object
+    fragmentStyle:
+        $ref: "#/components/schemas/FragmentStyle"
+    fragmentViewports:
+        items:
+            $ref: "#/components/schemas/FragmentViewport"
+        type: array
+    listItemStyle:
+        type: string
+    listStyle:
+        type: string
+    numberOfColumns:
+        type: integer
+    numberOfItems:
+        type: integer
+    templateKey:
+        type: string
+            type: object
+        PageCollectionItemDefinition:
+            description:
+    ""
+        properties:
+    collectionItemConfig:
+        type: object
+            type: object
+        PageColumnDefinition:
+            properties:
+    columnViewportConfig:
+        deprecated: true
+        description:
+            "Deprecated as of Athanasius (7.3.x), replaced by columnViewports"
+        properties:
+            landscapeMobile:
+                properties:
+                    size:
+                        maximum: 12
+                        minimum: 1
+                        type: integer
+                type: object
+            portraitMobile:
+                properties:
+                    size:
+                        maximum: 12
+                        minimum: 1
+                        type: integer
+                type: object
+            tablet:
+                properties:
+                    size:
+                        maximum: 12
+                        minimum: 1
+                        type: integer
+                type: object
+        type: object
+    columnViewports:
+        items:
+            $ref: "#/components/schemas/ColumnViewport"
+        type: array
+    size:
+        maximum: 12
+        minimum: 1
+        type: integer
+            type: object
+        PageDefinition:
+            description:
+    ""
+        properties:
+    pageElement:
+        $ref: "#/components/schemas/PageElement"
+    settings:
+        properties:
+            colorSchemeName:
+                type: string
+            css:
+                type: string
+            javascript:
+                type: string
+            masterPage:
+                $ref: "#/components/schemas/MasterPage"
+            themeName:
+                type: string
+            themeSettings:
+                type: object
+        type: object
+            type: object
+        PageDropZoneDefinition:
+            properties:
+    fragmentSettings:
+        oneOf:
+            - $ref: "#/components/schemas/FragmentSettingsAllowed"
+            - $ref: "#/components/schemas/FragmentSettingsUnallowed"
+            type: object
+        PageElement:
+            properties:
+    definition:
+        oneOf:
+            - $ref: "#/components/schemas/PageCollectionDefinition"
+            - $ref: "#/components/schemas/PageCollectionItemDefinition"
+            - $ref: "#/components/schemas/PageColumnDefinition"
+            - $ref: "#/components/schemas/PageDropZoneDefinition"
+            - $ref: "#/components/schemas/PageFragmentInstanceDefinition"
+            - $ref: "#/components/schemas/PageRootDefinition"
+            - $ref: "#/components/schemas/PageRowDefinition"
+            - $ref: "#/components/schemas/PageSectionDefinition"
+            - $ref: "#/components/schemas/PageWidgetInstanceDefinition"
+    pageElements:
+        items:
+            $ref: "#/components/schemas/PageElement"
+        type: array
+    type:
+        enum: [Collection, CollectionItem, Column, DropZone, Fragment, FragmentDropZone, Root, Row, Section,
+            Widget]
+        type: string
+        PageFragmentInstanceDefinition:
+            properties:
+    fragment:
+        $ref: "#/components/schemas/Fragment"
+    fragmentConfig:
+        additionalProperties:
+            type: object
+        type: object
+    fragmentFields:
+        items:
+            $ref: "#/components/schemas/FragmentField"
+        type: array
+    fragmentStyle:
+        $ref: "#/components/schemas/FragmentStyle"
+    fragmentViewports:
+        items:
+            $ref: "#/components/schemas/FragmentViewport"
+        type: array
+    widgetInstances:
+        items:
+            $ref: "#/components/schemas/WidgetInstance"
+        type: array
+            type: object
+        PageRootDefinition:
+            type: object
+        PageRowDefinition:
+            properties:
+    fragmentStyle:
+        $ref: "#/components/schemas/FragmentStyle"
+    fragmentViewports:
+        items:
+            $ref: "#/components/schemas/FragmentViewport"
+        type: array
+    gutters:
+        type: boolean
+    modulesPerRow:
+        type: integer
+    numberOfColumns:
+        type: integer
+    reverseOrder:
+        type: boolean
+    rowViewportConfig:
+        deprecated: true
+        description:
+            "Deprecated as of Athanasius (7.3.x), replaced by rowViewports"
+        properties:
+            landscapeMobile:
+                properties:
+                    modulesPerRow:
+                        type: integer
+                    reverseOrder:
+                        type: boolean
+                    verticalAlignment:
+                        type: string
+                type: object
+            portraitMobile:
+                properties:
+                    modulesPerRow:
+                        type: integer
+                    reverseOrder:
+                        type: boolean
+                    verticalAlignment:
+                        type: string
+                type: object
+            tablet:
+                properties:
+                    modulesPerRow:
+                        type: integer
+                    reverseOrder:
+                        type: boolean
+                    verticalAlignment:
+                        type: string
+                type: object
+        type: object
+    rowViewports:
+        items:
+            $ref: "#/components/schemas/RowViewport"
+        type: array
+    verticalAlignment:
+        type: string
+            type: object
+        PageSectionDefinition:
+            properties:
+    backgroundColor:
+        deprecated: true
+        type: string
+    backgroundFragmentImage:
+        $ref: "#/components/schemas/FragmentImage"
+    backgroundImage:
+        deprecated: true
+        description:
+            "Deprecated as of Athanasius (7.3.x), replaced by backgroundFragmentImage"
+        properties:
+            description:
+                oneOf:
+                    - $ref: "#/components/schemas/FragmentInlineValue"
+            title:
+                oneOf:
+                    - $ref: "#/components/schemas/FragmentInlineValue"
+            url:
+                oneOf:
+                    - $ref: "#/components/schemas/FragmentInlineValue"
+                    - $ref: "#/components/schemas/FragmentMappedValue"
+        type: object
+    fragmentLink:
+        $ref: "#/components/schemas/FragmentLink"
+    fragmentStyle:
+        $ref: "#/components/schemas/FragmentStyle"
+    fragmentViewports:
+        items:
+            $ref: "#/components/schemas/FragmentViewport"
+        type: array
+    layout:
+        properties:
+            align:
+                deprecated: true
+                enum: [Center, End, None, Start, Stretch]
+                type: string
+            borderColor:
+                deprecated: true
+                type: string
+            borderRadius:
+                deprecated: true
+                enum: [Circle, Large, None, Pill, Regular]
+                type: string
+            borderWidth:
+                deprecated: true
+                type: integer
+            containerType:
+                enum: [Fixed, Fluid]
+                type: string
+            contentDisplay:
+                deprecated: true
+                enum: [Block, Flex]
+                type: string
+            justify:
+                deprecated: true
+                enum: [Center, End, None, SpaceAround, SpaceBetween, Start]
+                type: string
+            marginBottom:
+                deprecated: true
+                type: integer
+            marginLeft:
+                deprecated: true
+                type: integer
+            marginRight:
+                deprecated: true
+                type: integer
+            marginTop:
+                deprecated: true
+                type: integer
+            opacity:
+                deprecated: true
+                type: integer
+            paddingBottom:
+                deprecated: true
+                type: integer
+            paddingHorizontal:
+                deprecated: true
+                type: integer
+            paddingLeft:
+                deprecated: true
+                type: integer
+            paddingRight:
+                deprecated: true
+                type: integer
+            paddingTop:
+                deprecated: true
+                type: integer
+            shadow:
+                deprecated: true
+                enum: [Default, Large, None, Regular, Small]
+                type: string
+            widthType:
+                enum: [Fixed, Fluid]
+                type: string
+        type: object
+            type: object
+        PageTemplate:
+            description:
+    ""
+        properties:
+    creator:
+        allOf:
+            - $ref: "#/components/schemas/Creator"
+        readOnly: true
+    dateCreated:
+        format: date-time
+        readOnly: true
+        type: string
+    dateModified:
+        format: date-time
+        readOnly: true
+        type: string
+    id:
+        format: int64
+        readOnly: true
+        type: integer
+    keywords:
+        items:
+            type: string
+        type: array
+    name:
+        type: string
+    pageDefinition:
+        $ref: "#/components/schemas/PageDefinition"
+    pageTemplateCollection:
+        allOf:
+            - $ref: "#/components/schemas/PageTemplateCollection"
+        readOnly: true
+    taxonomyCategoryBriefs:
+        description:
+            The categories associated with this page template.
+        items:
+            $ref: "#/components/schemas/TaxonomyCategoryBrief"
+        readOnly: true
+        type: array
+    taxonomyCategoryIds:
+        items:
+            format: int64
+            type: integer
+        type: array
+        writeOnly: true
+    uuid:
+        description:
+            A valid external identifier to reference this page template.
+        readOnly: true
+        type: string
+            type: object
+        PageTemplateCollection:
+            description:
+    ""
+        properties:
+    creator:
+        allOf:
+            - $ref: "#/components/schemas/Creator"
+        readOnly: true
+    dateCreated:
+        format: date-time
+        readOnly: true
+        type: string
+    dateModified:
+        format: date-time
+        readOnly: true
+        type: string
+    description:
+        type: string
+    id:
+        format: int64
+        readOnly: true
+        type: integer
+    name:
+        type: string
+    uuid:
+        description:
+            A valid external identifier to reference this page template collection.
+        readOnly: true
+        type: string
+            type: object
+        PageWidgetInstanceDefinition:
+            properties:
+    fragmentStyle:
+        $ref: "#/components/schemas/FragmentStyle"
+    fragmentViewports:
+        items:
+            $ref: "#/components/schemas/FragmentViewport"
+        type: array
+    widgetInstance:
+        $ref: "#/components/schemas/WidgetInstance"
+            type: object
+        Rating:
+            description:
+    Represents a rating/score received by any kind of asset. Properties follow the
+    [Rating](https://schema.org/Rating) specification.
+        properties:
+    actions:
+        additionalProperties:
+            additionalProperties:
+                type: string
+            type: object
+        readOnly: true
+        type: object
+    bestRating:
+        description:
+            The best possible rating an asset can receive (normalized to 1.0 by default).
+        format: double
+        readOnly: true
+        type: number
+    creator:
+        allOf:
+            - $ref: "#/components/schemas/Creator"
+        description:
+            The rating's creator.
+        readOnly: true
+    dateCreated:
+        description:
+            The rating's creation date.
+        format: date-time
+        readOnly: true
+        type: string
+    dateModified:
+        description:
+            The last time a field of the rating changed.
+        format: date-time
+        readOnly: true
+        type: string
+    id:
+        description:
+            The rating's ID.
+        format: int64
+        readOnly: true
+        type: integer
+    ratingValue:
+        description:
+            The rating's value.
+        format: double
+        type: number
+    worstRating:
+        description:
+            The worst possible rating an asset can receive (normalized to 0.0 by default).
+        format: double
+        readOnly: true
+        type: number
+            type: object
+        RelatedContent:
+            # @review
+            description:
+    Represents a relationship between two resources, internally modeled as AssetLink.
+        properties:
+    contentType:
+        description:
+            The type of the content.
+        readOnly: true
+        type: string
+    id:
+        description:
+            The identifier of the resource.
+        format: int64
+        readOnly: true
+        type: integer
+    title:
+        description:
+            The title of the content.
+        readOnly: true
+        type: string
+        RowViewport:
+            additionalProperties: false
+            properties:
+    id:
+        type: string
+    rowViewportDefinition:
+        additionalProperties: false
+        properties:
+            modulesPerRow:
+                type: integer
+            reverseOrder:
+                type: boolean
+            verticalAlignment:
+                type: string
+        type: object
+            required:
+    - id
+    - rowViewportDefinition
+          type: object
+      StructuredContent:
+          description:
+    Represents content that has fields and is rendered by a template backed by a `ContentStructure`. This is
+    modeled internally as a `JournalArticle`.
+        properties:
+    actions:
+        additionalProperties:
+            additionalProperties:
+                type: string
+            type: object
+        readOnly: true
+        type: object
+    aggregateRating:
+        allOf:
+            - $ref: "#/components/schemas/AggregateRating"
+        description:
+            The structured content's average rating.
+        readOnly: true
+    assetLibraryKey:
+        readOnly: true
+        type: string
+    availableLanguages:
+        description:
+            The list of languages the structured content has a translation for.
+        items:
+            type: string
+        readOnly: true
+        type: array
+    contentFields:
+        description:
+            The list of fields that store the structured content's information.
+        items:
+            $ref: "#/components/schemas/ContentField"
+        type: array
+    contentStructureId:
+        description:
+            The ID of the `ContentStructure`.
+        format: int64
+        type: integer
+    creator:
+        allOf:
+            - $ref: "#/components/schemas/Creator"
+        description:
+            The structured content's creator.
+        readOnly: true
+    customFields:
+        items:
+            $ref: "#/components/schemas/CustomField"
+        type: array
+    dateCreated:
+        description:
+            The structured content's creation date.
+        format: date-time
+        readOnly: true
+        type: string
+    dateModified:
+        description:
+            The last time any field of the structured content was changed.
+        format: date-time
+        readOnly: true
+        type: string
+    datePublished:
+        description:
+            The structured content's most recent publication date.
+        format: date-time
+        type: string
+    description:
+        description:
+            The structured content's description.
+        type: string
+    description_i18n:
+        additionalProperties:
+            type: string
+        type: object
+    friendlyUrlPath:
+        description:
+            A relative URL to the structured content's rendered content.
+        type: string
+    friendlyUrlPath_i18n:
+        additionalProperties:
+            type: string
+        type: object
+    id:
+        description:
+            The structured content's ID.
+        format: int64
+        readOnly: true
+        type: integer
+    key:
+        description:
+            An identifier, independent of the database, that can be used to reference the structured
+            content.
+        readOnly: true
+        type: string
+    keywords:
+        description:
+            A list of keywords describing the structured content.
+        items:
+            type: string
+        type: array
+    numberOfComments:
+        description:
+            The number of comments the structured content has received.
+        readOnly: true
+        type: integer
+    relatedContents:
+        items:
+            $ref: "#/components/schemas/RelatedContent"
+        readOnly: true
+        type: array
+    renderedContents:
+        description:
+            A list of rendered structured content, which results from using a template to process the
+            content and return HTML.
+        items:
+            properties:
+                contentTemplateId:
+                    readOnly: true
+                    type: string
+                contentTemplateName:
+                    description:
+                        The name of the template used to render the content.
+                    type: string
+                contentTemplateName_i18n:
+                    additionalProperties:
+                        type: string
+                    type: object
+                renderedContentURL:
+                    description:
+                        An absolute URL to the rendered content.
+                    format: uri
+                    type: string
+                renderedContentValue:
+                    # @review
+                    description:
+                        optional field with the rendered content, can be embedded with nestedFields
+                    type: string
+            type: object
+        readOnly: true
+        type: array
+    siteId:
+        description:
+            The ID of the site to which this structured content is scoped.
+        format: int64
+        readOnly: true
+        type: integer
+    subscribed:
+        readOnly: true
+        type: boolean
+    taxonomyCategoryBriefs:
+        description:
+            The categories associated with this structured content.
+        items:
+            $ref: "#/components/schemas/TaxonomyCategoryBrief"
+        readOnly: true
+        type: array
+    taxonomyCategoryIds:
+        description:
+            A write-only field to add a category to this structured content.
+        items:
+            format: int64
+            type: integer
+        type: array
+        writeOnly: true
+    title:
+        description:
+            The structured content's main title.
+        type: string
+    title_i18n:
+        additionalProperties:
+            type: string
+        type: object
+    uuid:
+        description:
+            A valid external identifier to reference this structured content.
+        readOnly: true
+        type: string
+    viewableBy:
+        description:
+            A write-only property that specifies the structured content's default permissions.
+        enum: [Anyone, Members, Owner]
+        type: string
+        writeOnly: true
+            required:
+    - contentStructureId
+    - title
+      StructuredContentFolder:
+          description:
+    Represents a folder that can be used to organize structured content.
+        properties:
+    actions:
+        additionalProperties:
+            additionalProperties:
+                type: string
+            type: object
+        readOnly: true
+        type: object
+    assetLibraryKey:
+        readOnly: true
+        type: string
+    creator:
+        allOf:
+            - $ref: "#/components/schemas/Creator"
+        description:
+            The folder's creator.
+        readOnly: true
+    customFields:
+        items:
+            $ref: "#/components/schemas/CustomField"
+        type: array
+    dateCreated:
+        description:
+            The date the folder was created.
+        format: date-time
+        readOnly: true
+        type: string
+    dateModified:
+        description:
+            The last time any of the folder's fields changed.
+        format: date-time
+        readOnly: true
+        type: string
+    description:
+        description:
+            The folder's description.
+        type: string
+    id:
+        description:
+            The folder's ID.
+        format: int64
+        readOnly: true
+        type: integer
+    name:
+        description:
+            The folder's name.
+        type: string
+    numberOfStructuredContentFolders:
+        description:
+            The number of structured content folders inside this folder.
+        readOnly: true
+        type: integer
+    numberOfStructuredContents:
+        description:
+            The number of structured content objects inside this folder.
+        readOnly: true
+        type: integer
+    parentStructuredContentFolderId:
+        format: int64
+        type: integer
+    siteId:
+        description:
+            The ID of the site to which this folder is scoped.
+        format: int64
+        readOnly: true
+        type: integer
+    subscribed:
+        readOnly: true
+        type: boolean
+    viewableBy:
+        description:
+            A write-only property that specifies the folder's default permissions.
+        enum: [Anyone, Members, Owner]
+        type: string
+        writeOnly: true
+            required:
+    - name
+          type: object
+      TaxonomyCategoryBrief:
+          properties:
+    embeddedTaxonomyCategory:
+        # @review
+        description:
+            Optional field with the embedded taxonomy category, can be embedded with nestedFields
+        readOnly: true
+        type: object
+    taxonomyCategoryId:
+        description:
+            The category's ID. This can be used to retrieve more information in the
+            `TaxonomyCategory` API.
+        format: int64
+        readOnly: true
+        type: integer
+    taxonomyCategoryName:
+        description:
+            The category's name.
+        readOnly: true
+        type: string
+    taxonomyCategoryName_i18n:
+        additionalProperties:
+            type: string
+        readOnly: true
+        type: object
+            type: object
+        WidgetInstance:
+            properties:
+    widgetConfig:
+        additionalProperties:
+            type: object
+        type: object
+    widgetInstanceId:
+        type: string
+    widgetName:
+        type: string
+    widgetPermissions:
+        items:
+            properties:
+                actionKeys:
+                    items:
+                        type: string
+                    type: array
+                roleKey:
+                    type: string
+            type: object
+        type: array
+            type: object
+        WikiNode:
+            # @review
+            description:
+    Represents a wiki node that can be used to organize wiki pages.
+        properties:
+    actions:
+        additionalProperties:
+            additionalProperties:
+                type: string
+            type: object
+        readOnly: true
+        type: object
+    creator:
+        allOf:
+            - $ref: "#/components/schemas/Creator"
+        description:
+            The wiki node's creator.
+        readOnly: true
+    dateCreated:
+        description:
+            The date the wiki node was created.
+        format: date-time
+        readOnly: true
+        type: string
+    dateModified:
+        description:
+            The last time any of the wiki node's fields changed.
+        format: date-time
+        readOnly: true
+        type: string
+    description:
+        description:
+            The wiki node's description.
+        type: string
+    id:
+        description:
+            The wiki node's ID.
+        format: int64
+        readOnly: true
+        type: integer
+    name:
+        description:
+            The wiki node's name.
+        type: string
+    numberOfWikiPages:
+        description:
+            The number of child wiki page on this wiki node.
+        readOnly: true
+        type: integer
+    siteId:
+        description:
+            The ID of the site to which this wiki node is scoped.
+        format: int64
+        readOnly: true
+        type: integer
+    subscribed:
+        readOnly: true
+        type: boolean
+    viewableBy:
+        description:
+            A write-only property that specifies the default permissions.
+        enum: [Anyone, Members, Owner]
+        type: string
+        writeOnly: true
+            type: object
+        WikiPage:
+            # @review
+            description:
+    Represents a wiki page.
+        properties:
+    actions:
+        additionalProperties:
+            additionalProperties:
+                type: string
+            type: object
+        readOnly: true
+        type: object
+    aggregateRating:
+        allOf:
+            - $ref: "#/components/schemas/AggregateRating"
+        description:
+            The blog post's average rating.
+        readOnly: true
+    content:
+        description:
+            The wiki page's content.
+        type: string
+    creator:
+        allOf:
+            - $ref: "#/components/schemas/Creator"
+        description:
+            The wiki page's creator.
+        readOnly: true
+    customFields:
+        items:
+            $ref: "#/components/schemas/CustomField"
+        type: array
+    dateCreated:
+        description:
+            The date the wiki page was created.
+        format: date-time
+        readOnly: true
+        type: string
+    dateModified:
+        description:
+            The last time any of the wiki page's fields changed.
+        format: date-time
+        readOnly: true
+        type: string
+    description:
+        description:
+            The wiki page's description.
+        type: string
+    encodingFormat:
+        description:
+            The wiki page's media format (e.g., HTML, BBCode, etc.).
+        type: string
+    headline:
+        description:
+            The wiki page's main title.
+        type: string
+    id:
+        description:
+            The wiki page's ID.
+        format: int64
+        readOnly: true
+        type: integer
+    keywords:
+        description:
+            A list of keywords describing the blog post.
+        items:
+            type: string
+        type: array
+    numberOfAttachments:
+        description:
+            The wiki page's number attachments.
+        readOnly: true
+        type: integer
+    numberOfWikiPages:
+        description:
+            The number of child wiki page on this wiki page.
+        readOnly: true
+        type: integer
+    parentWikiPageId:
+        format: int64
+        type: integer
+    relatedContents:
+        items:
+            $ref: "#/components/schemas/RelatedContent"
+        readOnly: true
+        type: array
+    siteId:
+        description:
+            The ID of the site to which this wiki page is scoped.
+        format: int64
+        readOnly: true
+        type: integer
+    subscribed:
+        readOnly: true
+        type: boolean
+    taxonomyCategoryBriefs:
+        description:
+            The categories associated with this blog post.
+        items:
+            $ref: "#/components/schemas/TaxonomyCategoryBrief"
+        readOnly: true
+        type: array
+    taxonomyCategoryIds:
+        description:
+            A write-only field that adds a `TaxonomyCategory` to this resource.
+        items:
+            format: int64
+            type: integer
+        type: array
+        writeOnly: true
+    viewableBy:
+        description:
+            A write-only property that specifies the default permissions.
+        enum: [Anyone, Members, Owner]
+        type: string
+        writeOnly: true
+            required:
+    - encodingFormat
+    - headline
+          type: object
+      WikiPageAttachment:
+          # @review
+          description:
+    A binary file attached to a wiki page.
+        properties:
+    contentUrl:
+        description:
+            The file's relative URL.
+        readOnly: true
+        type: string
+    contentValue:
+        # @review
+        description:
+            optional field with the content of the document in Base64, can be embedded with nestedFields
+        readOnly: true
+        type: string
+    encodingFormat:
+        description:
+            The file's media format (e.g., application/pdf, etc.).
+        readOnly: true
+        type: string
+    fileExtension:
+        description:
+            The file's extension.
+        readOnly: true
+        type: string
+    id:
+        description:
+            The file's ID.
+        format: int64
+        readOnly: true
+        type: integer
+    sizeInBytes:
+        description:
+            The file's size in bytes.
+        format: int64
+        readOnly: true
+        type: integer
+    title:
+        description:
+            The file's title.
+        type: string
+            type: object
 components:
     schemas:
         AggregateRating:
@@ -1284,1962 +3240,6 @@ components:
             type: object
         FragmentImageConfiguration:
             # @review
-			description:
-                Represents the Adaptive Media fragment image configuration for
-                different viewports.
-            properties:
-                landscapeMobile:
-                    type: string
-                portraitMobile:
-                    type: string
-                tablet:
-                    type: string
-            type: object
-        FragmentInlineValue:
-            properties:
-                value:
-                    type: string
-                value_i18n:
-                    additionalProperties:
-                        type: string
-                    type: object
-            type: object
-        FragmentLink:
-            properties:
-                href:
-                    oneOf:
-                        - $ref: "#/components/schemas/FragmentInlineValue"
-                        - $ref: "#/components/schemas/FragmentMappedValue"
-                target:
-                    enum: [Blank, Parent, Self, Top]
-                    type: string
-        FragmentMappedValue:
-            description:
-                ""
-            properties:
-                defaultFragmentInlineValue:
-                    $ref: "#/components/schemas/FragmentInlineValue"
-                defaultValue:
-                    deprecated: true
-                    description:
-                        "Deprecated as of Athanasius (7.3.x), replaced by defaultFragmentInlineValue"
-                    properties:
-                        value:
-                            type: string
-                        value_i18n:
-                            additionalProperties:
-                                type: string
-                            type: object
-                    type: object
-                mapping:
-                    properties:
-                        fieldKey:
-                            type: string
-                        itemReference:
-                            oneOf:
-                                - $ref: "#/components/schemas/ClassPKReference"
-                                - $ref: "#/components/schemas/ContextReference"
-                    type: object
-            type: object
-        FragmentSettingsAllowed:
-            properties:
-                allowedFragments:
-                    items:
-                        $ref: "#/components/schemas/Fragment"
-                    type: array
-            type: object
-        FragmentSettingsUnallowed:
-            properties:
-                unallowedFragments:
-                    items:
-                        $ref: "#/components/schemas/Fragment"
-                    type: array
-            type: object
-        FragmentStyle:
-            description:
-                ""
-            properties:
-                backgroundColor:
-                    type: string
-                backgroundFragmentImage:
-                    $ref: "#/components/schemas/FragmentImage"
-                borderColor:
-                    type: string
-                borderRadius:
-                    type: string
-                borderWidth:
-                    type: string
-                fontFamily:
-                    type: string
-                fontSize:
-                    type: string
-                fontWeight:
-                    type: string
-                height:
-                    type: string
-                marginBottom:
-                    type: string
-                marginLeft:
-                    type: string
-                marginRight:
-                    type: string
-                marginTop:
-                    type: string
-                maxHeight:
-                    type: string
-                maxWidth:
-                    type: string
-                minHeight:
-                    type: string
-                minWidth:
-                    type: string
-                opacity:
-                    type: string
-                overflow:
-                    type: string
-                paddingBottom:
-                    type: string
-                paddingLeft:
-                    type: string
-                paddingRight:
-                    type: string
-                paddingTop:
-                    type: string
-                shadow:
-                    type: string
-                textAlign:
-                    type: string
-                textColor:
-                    type: string
-                width:
-                    type: string
-            type: object
-        FragmentViewport:
-            additionalProperties: false
-            properties:
-                fragmentViewportStyle:
-                    additionalProperties: false
-                    properties:
-                        marginBottom:
-                            type: string
-                        marginLeft:
-                            type: string
-                        marginRight:
-                            type: string
-                        marginTop:
-                            type: string
-                        paddingBottom:
-                            type: string
-                        paddingLeft:
-                            type: string
-                        paddingRight:
-                            type: string
-                        paddingTop:
-                            type: string
-                    type: object
-                id:
-                    type: string
-            required:
-                - fragmentViewportStyle
-                - id
-            type: object
-        KnowledgeBaseArticle:
-            description:
-                Represents a Knowledge Base article (`KBArticle`), the main entity in the Knowledge Base API.
-            properties:
-                actions:
-                    additionalProperties:
-                        additionalProperties:
-                            type: string
-                        type: object
-                    readOnly: true
-                    type: object
-                aggregateRating:
-                    allOf:
-                        - $ref: "#/components/schemas/AggregateRating"
-                    description:
-                        The article's average rating.
-                    readOnly: true
-                articleBody:
-                    description:
-                        The article's main content.
-                    type: string
-                creator:
-                    allOf:
-                        - $ref: "#/components/schemas/Creator"
-                    description:
-                        The article's author.
-                    readOnly: true
-                customFields:
-                    items:
-                        $ref: "#/components/schemas/CustomField"
-                    type: array
-                dateCreated:
-                    description:
-                        The date the article was created.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                dateModified:
-                    description:
-                        The last time the article's content or metadata changed.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                description:
-                    description:
-                        The article's description.
-                    type: string
-                encodingFormat:
-                    description:
-                        The article's media type (e.g., HTML, BBCode, etc.).
-                    readOnly: true
-                    type: string
-                friendlyUrlPath:
-                    description:
-                        The article's relative URL.
-                    type: string
-                id:
-                    description:
-                        The article's ID.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                keywords:
-                    description:
-                        A list of keywords describing the article.
-                    items:
-                        type: string
-                    type: array
-                numberOfAttachments:
-                    description:
-                        The article's number attachments.
-                    readOnly: true
-                    type: integer
-                numberOfKnowledgeBaseArticles:
-                    description:
-                        The number of this article's child articles.
-                    readOnly: true
-                    type: integer
-                parentKnowledgeBaseFolder:
-                    description:
-                        The article's parent folder, if it exists.
-                    properties:
-                        folderId:
-                            description:
-                                The parent folder's ID.
-                            format: int64
-                            type: integer
-                        folderName:
-                            description:
-                                The parent folder's name.
-                            type: string
-                    readOnly: true
-                    type: object
-                parentKnowledgeBaseFolderId:
-                    description:
-                        The ID of the article's parent folder, if that folder exists.
-                    format: int64
-                    type: integer
-                    writeOnly: true
-                relatedContents:
-                    items:
-                        $ref: "#/components/schemas/RelatedContent"
-                    readOnly: true
-                    type: array
-                siteId:
-                    description:
-                        The ID of the site to which this article is scoped.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                subscribed:
-                    readOnly: true
-                    type: boolean
-                taxonomyCategoryBriefs:
-                    description:
-                        The categories associated with this article.
-                    items:
-                        $ref: "#/components/schemas/TaxonomyCategoryBrief"
-                    readOnly: true
-                    type: array
-                taxonomyCategoryIds:
-                    description:
-                        A write-only field that adds taxonomy categories to this article.
-                    items:
-                        format: int64
-                        type: integer
-                    type: array
-                    writeOnly: true
-                title:
-                    description:
-                        The article's main title.
-                    type: string
-                viewableBy:
-                    description:
-                        A write-only property that specifies the article's default permissions.
-                    enum: [Anyone, Members, Owner]
-                    type: string
-                    writeOnly: true
-            required:
-                - articleBody
-                - title
-            type: object
-        KnowledgeBaseAttachment:
-            description:
-                Represents a binary file attached to a Knowledge Base article.
-            properties:
-                contentUrl:
-                    description:
-                        The file's relative URL.
-                    readOnly: true
-                    type: string
-                contentValue:
-                    # @review
-                    description:
-                        optional field with the content of the document in Base64, can be embedded with nestedFields
-                    readOnly: true
-                    type: string
-                encodingFormat:
-                    description:
-                        The file's media type (e.g., application/pdf, etc.).
-                    readOnly: true
-                    type: string
-                fileExtension:
-                    description:
-                        The file's extension.
-                    readOnly: true
-                    type: string
-                id:
-                    description:
-                        The file's ID.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                sizeInBytes:
-                    description:
-                        The file's size in bytes.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                title:
-                    description:
-                        The file's main title.
-                    type: string
-            type: object
-        KnowledgeBaseFolder:
-            description:
-                Represents a folder for organizing Knowledge Base articles.
-            properties:
-                actions:
-                    additionalProperties:
-                        additionalProperties:
-                            type: string
-                        type: object
-                    readOnly: true
-                    type: object
-                creator:
-                    allOf:
-                        - $ref: "#/components/schemas/Creator"
-                    description:
-                        The folder's creator.
-                    readOnly: true
-                customFields:
-                    items:
-                        $ref: "#/components/schemas/CustomField"
-                    type: array
-                dateCreated:
-                    description:
-                        The date the folder was created.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                dateModified:
-                    description:
-                        The last time the folder was modified.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                description:
-                    description:
-                        The folder's description.
-                    type: string
-                id:
-                    description:
-                        The folder's ID.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                name:
-                    description:
-                        The folder's main title/name.
-                    type: string
-                numberOfKnowledgeBaseArticles:
-                    description:
-                        The number of Knowledge Base articles in this folder.
-                    readOnly: true
-                    type: integer
-                numberOfKnowledgeBaseFolders:
-                    description:
-                        The number of Knowledge Base folders in this folder.
-                    readOnly: true
-                    type: integer
-                parentKnowledgeBaseFolder:
-                    description:
-                        The folder's parent Knowledge Base folder, if it exists.
-                    properties:
-                        folderId:
-                            description:
-                                The parent folder's ID.
-                            format: int64
-                            type: integer
-                        folderName:
-                            description:
-                                The parent folder's name.
-                            type: string
-                    readOnly: true
-                    type: object
-                parentKnowledgeBaseFolderId:
-                    description:
-                        The ID of the folder's parent Knowledge Base folder, if such a parent folder exists.
-                    format: int64
-                    type: integer
-                    writeOnly: true
-                siteId:
-                    description:
-                        The ID of the site to which this folder is scoped.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                viewableBy:
-                    description:
-                        A write-only property that specifies the folder's default permissions.
-                    enum: [Anyone, Members, Owner]
-                    type: string
-                    writeOnly: true
-            required:
-                - name
-            type: object
-        MasterPage:
-            description:
-                ""
-            properties:
-                key:
-                    type: string
-                name:
-                    type: string
-            type: object
-        MessageBoardAttachment:
-            description:
-                A binary file attached to a message on a message board (`MessageBoardMessage`).
-            properties:
-                contentUrl:
-                    description:
-                        The file's relative URL.
-                    readOnly: true
-                    type: string
-                contentValue:
-                    # @review
-                    description:
-                        optional field with the content of the document in Base64, can be embedded with nestedFields
-                    readOnly: true
-                    type: string
-                encodingFormat:
-                    description:
-                        The file's media format (e.g., application/pdf, etc.).
-                    readOnly: true
-                    type: string
-                fileExtension:
-                    description:
-                        The file's extension.
-                    readOnly: true
-                    type: string
-                id:
-                    description:
-                        The file's ID.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                sizeInBytes:
-                    description:
-                        The file's size in bytes.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                title:
-                    description:
-                        The file's title.
-                    type: string
-            type: object
-        MessageBoardMessage:
-            description:
-                Represents a message on a message board. Properties follow the [Discussion Forum
-                Posting](https://schema.org/DiscussionForumPosting) specification.
-            properties:
-                actions:
-                    additionalProperties:
-                        additionalProperties:
-                            type: string
-                        type: object
-                    readOnly: true
-                    type: object
-                aggregateRating:
-                    allOf:
-                        - $ref: "#/components/schemas/AggregateRating"
-                    description:
-                        The message's average rating.
-                    readOnly: true
-                anonymous:
-                    description:
-                        A flag that indicates whether the message's author is anonymous.
-                    type: boolean
-                articleBody:
-                    description:
-                        The message's main content.
-                    type: string
-                creator:
-                    allOf:
-                        - $ref: "#/components/schemas/Creator"
-                    description:
-                        The message's author.
-                    readOnly: true
-                creatorStatistics:
-                    $ref: "#/components/schemas/CreatorStatistics"
-                customFields:
-                    items:
-                        $ref: "#/components/schemas/CustomField"
-                    type: array
-                dateCreated:
-                    description:
-                        The date the message was created.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                dateModified:
-                    description:
-                        The last time the content or metadata of the message was changed.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                encodingFormat:
-                    description:
-                        The message's media format (e.g., HTML, BBCode, etc.).
-                    type: string
-                friendlyUrlPath:
-                    type: string
-                headline:
-                    description:
-                        The message's main title.
-                    type: string
-                id:
-                    description:
-                        The message's ID.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                keywords:
-                    description:
-                        A list of keywords describing the message.
-                    items:
-                        type: string
-                    type: array
-                messageBoardSectionId:
-                    format: int64
-                    type: integer
-                messageBoardThreadId:
-                    # @review
-                    description:
-                        The ID of the Message Board Thread to which this message is scoped.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                numberOfMessageBoardAttachments:
-                    description:
-                        The number of the message's attachments.
-                    readOnly: true
-                    type: integer
-                numberOfMessageBoardMessages:
-                    description:
-                        The number of the message's child messages.
-                    readOnly: true
-                    type: integer
-                parentMessageBoardMessageId:
-                    format: int64
-                    type: integer
-                relatedContents:
-                    items:
-                        $ref: "#/components/schemas/RelatedContent"
-                    readOnly: true
-                    type: array
-                showAsAnswer:
-                    description:
-                        A flag that indicates whether the message is answering a question.
-                    type: boolean
-                siteId:
-                    description:
-                        The ID of the site to which this message is scoped.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                subscribed:
-                    readOnly: true
-                    type: boolean
-                viewableBy:
-                    description:
-                        A write-only property that specifies the default permissions.
-                    enum: [Anyone, Members, Owner]
-                    type: string
-                    writeOnly: true
-            type: object
-        MessageBoardSection:
-            description:
-                Represents a section/folder on a message board, used to organize messages.
-            properties:
-                actions:
-                    additionalProperties:
-                        additionalProperties:
-                            type: string
-                        type: object
-                    readOnly: true
-                    type: object
-                creator:
-                    allOf:
-                        - $ref: "#/components/schemas/Creator"
-                    description:
-                        The section's creator.
-                    readOnly: true
-                customFields:
-                    items:
-                        $ref: "#/components/schemas/CustomField"
-                    type: array
-                dateCreated:
-                    description:
-                        The date the section was created.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                dateModified:
-                    description:
-                        The last time the section was changed.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                description:
-                    description:
-                        The section's description.
-                    type: string
-                id:
-                    description:
-                        The section's ID.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                numberOfMessageBoardSections:
-                    description:
-                        The number of this section's child sections.
-                    readOnly: true
-                    type: integer
-                numberOfMessageBoardThreads:
-                    description:
-                        The number of message board threads in this section.
-                    readOnly: true
-                    type: integer
-                parentMessageBoardSectionId:
-                    format: int64
-                    type: integer
-                siteId:
-                    description:
-                        The ID of the site to which this section is scoped.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                subscribed:
-                    readOnly: true
-                    type: boolean
-                title:
-                    description:
-                        The section's main title.
-                    type: string
-                viewableBy:
-                    description:
-                        A write-only property that specifies the default permissions.
-                    enum: [Anyone, Members, Owner]
-                    type: string
-                    writeOnly: true
-            required:
-                - title
-            type: object
-        # @review
-        MessageBoardThread:
-            description:
-                Represents a discussion thread in a message board.
-            properties:
-                actions:
-                    additionalProperties:
-                        additionalProperties:
-                            type: string
-                        type: object
-                    readOnly: true
-                    type: object
-                aggregateRating:
-                    allOf:
-                        - $ref: "#/components/schemas/AggregateRating"
-                    description:
-                        The thread's average rating.
-                    readOnly: true
-                articleBody:
-                    description:
-                        The thread's main body content (the message written as the thread's description).
-                    type: string
-                creator:
-                    allOf:
-                        - $ref: "#/components/schemas/Creator"
-                    description:
-                        The thread's creator.
-                    readOnly: true
-                creatorStatistics:
-                    $ref: "#/components/schemas/CreatorStatistics"
-                customFields:
-                    items:
-                        $ref: "#/components/schemas/CustomField"
-                    type: array
-                dateCreated:
-                    description:
-                        The date the thread was created.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                dateModified:
-                    description:
-                        The last time any field of the thread changed.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                encodingFormat:
-                    description:
-                        The media format of the thread's content (e.g., HTML, BBCode, etc.).
-                    type: string
-                friendlyUrlPath:
-                    type: string
-                hasValidAnswer:
-                    # @review
-                    description:
-                        A flag that indicates whether this thread has a message considered as valid
-                    type: boolean
-                headline:
-                    description:
-                        The thread's main title.
-                    type: string
-                id:
-                    description:
-                        The thread's ID.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                keywords:
-                    description:
-                        A list of keywords describing the thread.
-                    items:
-                        type: string
-                    type: array
-                locked:
-                    # @review
-                    description:
-                        A flag that indicates whether this thread is locked.
-                    readOnly: true
-                    type: boolean
-                messageBoardSectionId:
-                    format: int64
-                    type: integer
-                numberOfMessageBoardAttachments:
-                    description:
-                        The number of the thread's attachments.
-                    readOnly: true
-                    type: integer
-                numberOfMessageBoardMessages:
-                    description:
-                        The number of the thread's messages.
-                    readOnly: true
-                    type: integer
-                relatedContents:
-                    items:
-                        $ref: "#/components/schemas/RelatedContent"
-                    readOnly: true
-                    type: array
-                seen:
-                    type: boolean
-                showAsQuestion:
-                    description:
-                        A flag that indicates whether this thread was posted as a question that can receive approved
-                        answers.
-                    type: boolean
-                siteId:
-                    description:
-                        The ID of the site to which this thread is scoped.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                subscribed:
-                    type: boolean
-                taxonomyCategoryBriefs:
-                    items:
-                        $ref: "#/components/schemas/TaxonomyCategoryBrief"
-                    readOnly: true
-                    type: array
-                taxonomyCategoryIds:
-                    items:
-                        format: int64
-                        type: integer
-                    type: array
-                    writeOnly: true
-                threadType:
-                    description:
-                        The thread's type.
-                    type: string
-                viewCount:
-                    description:
-                        The number of views of this thread.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                viewableBy:
-                    description:
-                        A write-only property that specifies the thread's default permissions.
-                    enum: [Anyone, Members, Owner]
-                    type: string
-                    writeOnly: true
-            required:
-                - headline
-            type: object
-        NavigationMenu:
-            description:
-                ""
-            properties:
-                actions:
-                    additionalProperties:
-                        additionalProperties:
-                            type: string
-                        type: object
-                    readOnly: true
-                    type: object
-                creator:
-                    allOf:
-                        - $ref: "#/components/schemas/Creator"
-                    readOnly: true
-                dateCreated:
-                    format: date-time
-                    readOnly: true
-                    type: string
-                dateModified:
-                    format: date-time
-                    readOnly: true
-                    type: string
-                id:
-                    format: int64
-                    readOnly: true
-                    type: integer
-                name:
-                    type: string
-                navigationMenuItems:
-                    items:
-                        $ref: "#/components/schemas/NavigationMenuItem"
-                    type: array
-                navigationType:
-                    enum: [Primary, Secondary, Social]
-                    type: string
-                siteId:
-                    format: int64
-                    readOnly: true
-                    type: integer
-        NavigationMenuItem:
-            description:
-                ""
-            properties:
-                availableLanguages:
-                    description:
-                        The list of languages the structure has a translation for.
-                    items:
-                        type: string
-                    readOnly: true
-                    type: array
-                creator:
-                    allOf:
-                        - $ref: "#/components/schemas/Creator"
-                    readOnly: true
-                dateCreated:
-                    format: date-time
-                    readOnly: true
-                    type: string
-                dateModified:
-                    format: date-time
-                    readOnly: true
-                    type: string
-                id:
-                    format: int64
-                    type: integer
-                link:
-                    # @review
-                    description:
-                        A link to a page on the server.
-                    format: uri
-                    type: string
-                name:
-                    type: string
-                name_i18n:
-                    additionalProperties:
-                        type: string
-                    type: object
-                navigationMenuItems:
-                    items:
-                        $ref: "#/components/schemas/NavigationMenuItem"
-                    type: array
-                parentNavigationMenuId:
-                    format: int64
-                    readOnly: true
-                    type: integer
-                type:
-                    readOnly: true
-                    type: string
-                url:
-                    type: string
-                useCustomName:
-                    type: boolean
-        PageCollectionDefinition:
-            description:
-                ""
-            properties:
-                collectionConfig:
-                    properties:
-                        collectionReference:
-                            oneOf:
-                                - $ref: "#/components/schemas/ClassNameReference"
-                                - $ref: "#/components/schemas/ClassPKReference"
-                        collectionType:
-                            enum: [Collection, CollectionProvider]
-                            type: string
-                    required:
-                        - collectionReference
-                        - collectionType
-                    type: object
-                fragmentStyle:
-                    $ref: "#/components/schemas/FragmentStyle"
-                fragmentViewports:
-                    items:
-                        $ref: "#/components/schemas/FragmentViewport"
-                    type: array
-                listItemStyle:
-                    type: string
-                listStyle:
-                    type: string
-                numberOfColumns:
-                    type: integer
-                numberOfItems:
-                    type: integer
-                templateKey:
-                    type: string
-            type: object
-        PageCollectionItemDefinition:
-            description:
-                ""
-            properties:
-                collectionItemConfig:
-                    type: object
-            type: object
-        PageColumnDefinition:
-            properties:
-                columnViewportConfig:
-                    deprecated: true
-                    description:
-                        "Deprecated as of Athanasius (7.3.x), replaced by columnViewports"
-                    properties:
-                        landscapeMobile:
-                            properties:
-                                size:
-                                    maximum: 12
-                                    minimum: 1
-                                    type: integer
-                            type: object
-                        portraitMobile:
-                            properties:
-                                size:
-                                    maximum: 12
-                                    minimum: 1
-                                    type: integer
-                            type: object
-                        tablet:
-                            properties:
-                                size:
-                                    maximum: 12
-                                    minimum: 1
-                                    type: integer
-                            type: object
-                    type: object
-                columnViewports:
-                    items:
-                        $ref: "#/components/schemas/ColumnViewport"
-                    type: array
-                size:
-                    maximum: 12
-                    minimum: 1
-                    type: integer
-            type: object
-        PageDefinition:
-            description:
-                ""
-            properties:
-                pageElement:
-                    $ref: "#/components/schemas/PageElement"
-                settings:
-                    properties:
-                        colorSchemeName:
-                            type: string
-                        css:
-                            type: string
-                        javascript:
-                            type: string
-                        masterPage:
-                            $ref: "#/components/schemas/MasterPage"
-                        themeName:
-                            type: string
-                        themeSettings:
-                            type: object
-                    type: object
-            type: object
-        PageDropZoneDefinition:
-            properties:
-                fragmentSettings:
-                    oneOf:
-                        - $ref: "#/components/schemas/FragmentSettingsAllowed"
-                        - $ref: "#/components/schemas/FragmentSettingsUnallowed"
-            type: object
-        PageElement:
-            properties:
-                definition:
-                    oneOf:
-                        - $ref: "#/components/schemas/PageCollectionDefinition"
-                        - $ref: "#/components/schemas/PageCollectionItemDefinition"
-                        - $ref: "#/components/schemas/PageColumnDefinition"
-                        - $ref: "#/components/schemas/PageDropZoneDefinition"
-                        - $ref: "#/components/schemas/PageFragmentInstanceDefinition"
-                        - $ref: "#/components/schemas/PageRootDefinition"
-                        - $ref: "#/components/schemas/PageRowDefinition"
-                        - $ref: "#/components/schemas/PageSectionDefinition"
-                        - $ref: "#/components/schemas/PageWidgetInstanceDefinition"
-                pageElements:
-                    items:
-                        $ref: "#/components/schemas/PageElement"
-                    type: array
-                type:
-                    enum: [Collection, CollectionItem, Column, DropZone, Fragment, FragmentDropZone, Root, Row, Section,
-                        Widget]
-                    type: string
-        PageFragmentInstanceDefinition:
-            properties:
-                fragment:
-                    $ref: "#/components/schemas/Fragment"
-                fragmentConfig:
-                    additionalProperties:
-                        type: object
-                    type: object
-                fragmentFields:
-                    items:
-                        $ref: "#/components/schemas/FragmentField"
-                    type: array
-                fragmentStyle:
-                    $ref: "#/components/schemas/FragmentStyle"
-                fragmentViewports:
-                    items:
-                        $ref: "#/components/schemas/FragmentViewport"
-                    type: array
-                widgetInstances:
-                    items:
-                        $ref: "#/components/schemas/WidgetInstance"
-                    type: array
-            type: object
-        PageRootDefinition:
-            type: object
-        PageRowDefinition:
-            properties:
-                fragmentStyle:
-                    $ref: "#/components/schemas/FragmentStyle"
-                fragmentViewports:
-                    items:
-                        $ref: "#/components/schemas/FragmentViewport"
-                    type: array
-                gutters:
-                    type: boolean
-                modulesPerRow:
-                    type: integer
-                numberOfColumns:
-                    type: integer
-                reverseOrder:
-                    type: boolean
-                rowViewportConfig:
-                    deprecated: true
-                    description:
-                        "Deprecated as of Athanasius (7.3.x), replaced by rowViewports"
-                    properties:
-                        landscapeMobile:
-                            properties:
-                                modulesPerRow:
-                                    type: integer
-                                reverseOrder:
-                                    type: boolean
-                                verticalAlignment:
-                                    type: string
-                            type: object
-                        portraitMobile:
-                            properties:
-                                modulesPerRow:
-                                    type: integer
-                                reverseOrder:
-                                    type: boolean
-                                verticalAlignment:
-                                    type: string
-                            type: object
-                        tablet:
-                            properties:
-                                modulesPerRow:
-                                    type: integer
-                                reverseOrder:
-                                    type: boolean
-                                verticalAlignment:
-                                    type: string
-                            type: object
-                    type: object
-                rowViewports:
-                    items:
-                        $ref: "#/components/schemas/RowViewport"
-                    type: array
-                verticalAlignment:
-                    type: string
-            type: object
-        PageSectionDefinition:
-            properties:
-                backgroundColor:
-                    deprecated: true
-                    type: string
-                backgroundFragmentImage:
-                    $ref: "#/components/schemas/FragmentImage"
-                backgroundImage:
-                    deprecated: true
-                    description:
-                        "Deprecated as of Athanasius (7.3.x), replaced by backgroundFragmentImage"
-                    properties:
-                        description:
-                            oneOf:
-                                - $ref: "#/components/schemas/FragmentInlineValue"
-                        title:
-                            oneOf:
-                                - $ref: "#/components/schemas/FragmentInlineValue"
-                        url:
-                            oneOf:
-                                - $ref: "#/components/schemas/FragmentInlineValue"
-                                - $ref: "#/components/schemas/FragmentMappedValue"
-                    type: object
-                fragmentLink:
-                    $ref: "#/components/schemas/FragmentLink"
-                fragmentStyle:
-                    $ref: "#/components/schemas/FragmentStyle"
-                fragmentViewports:
-                    items:
-                        $ref: "#/components/schemas/FragmentViewport"
-                    type: array
-                layout:
-                    properties:
-                        align:
-                            deprecated: true
-                            enum: [Center, End, None, Start, Stretch]
-                            type: string
-                        borderColor:
-                            deprecated: true
-                            type: string
-                        borderRadius:
-                            deprecated: true
-                            enum: [Circle, Large, None, Pill, Regular]
-                            type: string
-                        borderWidth:
-                            deprecated: true
-                            type: integer
-                        containerType:
-                            enum: [Fixed, Fluid]
-                            type: string
-                        contentDisplay:
-                            deprecated: true
-                            enum: [Block, Flex]
-                            type: string
-                        justify:
-                            deprecated: true
-                            enum: [Center, End, None, SpaceAround, SpaceBetween, Start]
-                            type: string
-                        marginBottom:
-                            deprecated: true
-                            type: integer
-                        marginLeft:
-                            deprecated: true
-                            type: integer
-                        marginRight:
-                            deprecated: true
-                            type: integer
-                        marginTop:
-                            deprecated: true
-                            type: integer
-                        opacity:
-                            deprecated: true
-                            type: integer
-                        paddingBottom:
-                            deprecated: true
-                            type: integer
-                        paddingHorizontal:
-                            deprecated: true
-                            type: integer
-                        paddingLeft:
-                            deprecated: true
-                            type: integer
-                        paddingRight:
-                            deprecated: true
-                            type: integer
-                        paddingTop:
-                            deprecated: true
-                            type: integer
-                        shadow:
-                            deprecated: true
-                            enum: [Default, Large, None, Regular, Small]
-                            type: string
-                        widthType:
-                            enum: [Fixed, Fluid]
-                            type: string
-                    type: object
-            type: object
-        PageTemplate:
-            description:
-                ""
-            properties:
-                creator:
-                    allOf:
-                        - $ref: "#/components/schemas/Creator"
-                    readOnly: true
-                dateCreated:
-                    format: date-time
-                    readOnly: true
-                    type: string
-                dateModified:
-                    format: date-time
-                    readOnly: true
-                    type: string
-                id:
-                    format: int64
-                    readOnly: true
-                    type: integer
-                keywords:
-                    items:
-                        type: string
-                    type: array
-                name:
-                    type: string
-                pageDefinition:
-                    $ref: "#/components/schemas/PageDefinition"
-                pageTemplateCollection:
-                    allOf:
-                        - $ref: "#/components/schemas/PageTemplateCollection"
-                    readOnly: true
-                taxonomyCategoryBriefs:
-                    description:
-                        The categories associated with this page template.
-                    items:
-                        $ref: "#/components/schemas/TaxonomyCategoryBrief"
-                    readOnly: true
-                    type: array
-                taxonomyCategoryIds:
-                    items:
-                        format: int64
-                        type: integer
-                    type: array
-                    writeOnly: true
-                uuid:
-                    description:
-                        A valid external identifier to reference this page template.
-                    readOnly: true
-                    type: string
-            type: object
-        PageTemplateCollection:
-            description:
-                ""
-            properties:
-                creator:
-                    allOf:
-                        - $ref: "#/components/schemas/Creator"
-                    readOnly: true
-                dateCreated:
-                    format: date-time
-                    readOnly: true
-                    type: string
-                dateModified:
-                    format: date-time
-                    readOnly: true
-                    type: string
-                description:
-                    type: string
-                id:
-                    format: int64
-                    readOnly: true
-                    type: integer
-                name:
-                    type: string
-                uuid:
-                    description:
-                        A valid external identifier to reference this page template collection.
-                    readOnly: true
-                    type: string
-            type: object
-        PageWidgetInstanceDefinition:
-            properties:
-                fragmentStyle:
-                    $ref: "#/components/schemas/FragmentStyle"
-                fragmentViewports:
-                    items:
-                        $ref: "#/components/schemas/FragmentViewport"
-                    type: array
-                widgetInstance:
-                    $ref: "#/components/schemas/WidgetInstance"
-            type: object
-        Rating:
-            description:
-                Represents a rating/score received by any kind of asset. Properties follow the
-                [Rating](https://schema.org/Rating) specification.
-            properties:
-                actions:
-                    additionalProperties:
-                        additionalProperties:
-                            type: string
-                        type: object
-                    readOnly: true
-                    type: object
-                bestRating:
-                    description:
-                        The best possible rating an asset can receive (normalized to 1.0 by default).
-                    format: double
-                    readOnly: true
-                    type: number
-                creator:
-                    allOf:
-                        - $ref: "#/components/schemas/Creator"
-                    description:
-                        The rating's creator.
-                    readOnly: true
-                dateCreated:
-                    description:
-                        The rating's creation date.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                dateModified:
-                    description:
-                        The last time a field of the rating changed.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                id:
-                    description:
-                        The rating's ID.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                ratingValue:
-                    description:
-                        The rating's value.
-                    format: double
-                    type: number
-                worstRating:
-                    description:
-                        The worst possible rating an asset can receive (normalized to 0.0 by default).
-                    format: double
-                    readOnly: true
-                    type: number
-            type: object
-        RelatedContent:
-            # @review
-            description:
-                Represents a relationship between two resources, internally modeled as AssetLink.
-            properties:
-                contentType:
-                    description:
-                        The type of the content.
-                    readOnly: true
-                    type: string
-                id:
-                    description:
-                        The identifier of the resource.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                title:
-                    description:
-                        The title of the content.
-                    readOnly: true
-                    type: string
-        RowViewport:
-            additionalProperties: false
-            properties:
-                id:
-                    type: string
-                rowViewportDefinition:
-                    additionalProperties: false
-                    properties:
-                        modulesPerRow:
-                            type: integer
-                        reverseOrder:
-                            type: boolean
-                        verticalAlignment:
-                            type: string
-                    type: object
-            required:
-                - id
-                - rowViewportDefinition
-            type: object
-        StructuredContent:
-            description:
-                Represents content that has fields and is rendered by a template backed by a `ContentStructure`. This is
-                modeled internally as a `JournalArticle`.
-            properties:
-                actions:
-                    additionalProperties:
-                        additionalProperties:
-                            type: string
-                        type: object
-                    readOnly: true
-                    type: object
-                aggregateRating:
-                    allOf:
-                        - $ref: "#/components/schemas/AggregateRating"
-                    description:
-                        The structured content's average rating.
-                    readOnly: true
-                assetLibraryKey:
-                    readOnly: true
-                    type: string
-                availableLanguages:
-                    description:
-                        The list of languages the structured content has a translation for.
-                    items:
-                        type: string
-                    readOnly: true
-                    type: array
-                contentFields:
-                    description:
-                        The list of fields that store the structured content's information.
-                    items:
-                        $ref: "#/components/schemas/ContentField"
-                    type: array
-                contentStructureId:
-                    description:
-                        The ID of the `ContentStructure`.
-                    format: int64
-                    type: integer
-                creator:
-                    allOf:
-                        - $ref: "#/components/schemas/Creator"
-                    description:
-                        The structured content's creator.
-                    readOnly: true
-                customFields:
-                    items:
-                        $ref: "#/components/schemas/CustomField"
-                    type: array
-                dateCreated:
-                    description:
-                        The structured content's creation date.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                dateModified:
-                    description:
-                        The last time any field of the structured content was changed.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                datePublished:
-                    description:
-                        The structured content's most recent publication date.
-                    format: date-time
-                    type: string
-                description:
-                    description:
-                        The structured content's description.
-                    type: string
-                description_i18n:
-                    additionalProperties:
-                        type: string
-                    type: object
-                friendlyUrlPath:
-                    description:
-                        A relative URL to the structured content's rendered content.
-                    type: string
-                friendlyUrlPath_i18n:
-                    additionalProperties:
-                        type: string
-                    type: object
-                id:
-                    description:
-                        The structured content's ID.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                key:
-                    description:
-                        An identifier, independent of the database, that can be used to reference the structured
-                        content.
-                    readOnly: true
-                    type: string
-                keywords:
-                    description:
-                        A list of keywords describing the structured content.
-                    items:
-                        type: string
-                    type: array
-                numberOfComments:
-                    description:
-                        The number of comments the structured content has received.
-                    readOnly: true
-                    type: integer
-                relatedContents:
-                    items:
-                        $ref: "#/components/schemas/RelatedContent"
-                    readOnly: true
-                    type: array
-                renderedContents:
-                    description:
-                        A list of rendered structured content, which results from using a template to process the
-                        content and return HTML.
-                    items:
-                        properties:
-                            contentTemplateId:
-                                readOnly: true
-                                type: string
-                            contentTemplateName:
-                                description:
-                                    The name of the template used to render the content.
-                                type: string
-                            contentTemplateName_i18n:
-                                additionalProperties:
-                                    type: string
-                                type: object
-                            renderedContentURL:
-                                description:
-                                    An absolute URL to the rendered content.
-                                format: uri
-                                type: string
-                            renderedContentValue:
-                                # @review
-                                description:
-                                    optional field with the rendered content, can be embedded with nestedFields
-                                type: string
-                        type: object
-                    readOnly: true
-                    type: array
-                siteId:
-                    description:
-                        The ID of the site to which this structured content is scoped.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                subscribed:
-                    readOnly: true
-                    type: boolean
-                taxonomyCategoryBriefs:
-                    description:
-                        The categories associated with this structured content.
-                    items:
-                        $ref: "#/components/schemas/TaxonomyCategoryBrief"
-                    readOnly: true
-                    type: array
-                taxonomyCategoryIds:
-                    description:
-                        A write-only field to add a category to this structured content.
-                    items:
-                        format: int64
-                        type: integer
-                    type: array
-                    writeOnly: true
-                title:
-                    description:
-                        The structured content's main title.
-                    type: string
-                title_i18n:
-                    additionalProperties:
-                        type: string
-                    type: object
-                uuid:
-                    description:
-                        A valid external identifier to reference this structured content.
-                    readOnly: true
-                    type: string
-                viewableBy:
-                    description:
-                        A write-only property that specifies the structured content's default permissions.
-                    enum: [Anyone, Members, Owner]
-                    type: string
-                    writeOnly: true
-            required:
-                - contentStructureId
-                - title
-        StructuredContentFolder:
-            description:
-                Represents a folder that can be used to organize structured content.
-            properties:
-                actions:
-                    additionalProperties:
-                        additionalProperties:
-                            type: string
-                        type: object
-                    readOnly: true
-                    type: object
-                assetLibraryKey:
-                    readOnly: true
-                    type: string
-                creator:
-                    allOf:
-                        - $ref: "#/components/schemas/Creator"
-                    description:
-                        The folder's creator.
-                    readOnly: true
-                customFields:
-                    items:
-                        $ref: "#/components/schemas/CustomField"
-                    type: array
-                dateCreated:
-                    description:
-                        The date the folder was created.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                dateModified:
-                    description:
-                        The last time any of the folder's fields changed.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                description:
-                    description:
-                        The folder's description.
-                    type: string
-                id:
-                    description:
-                        The folder's ID.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                name:
-                    description:
-                        The folder's name.
-                    type: string
-                numberOfStructuredContentFolders:
-                    description:
-                        The number of structured content folders inside this folder.
-                    readOnly: true
-                    type: integer
-                numberOfStructuredContents:
-                    description:
-                        The number of structured content objects inside this folder.
-                    readOnly: true
-                    type: integer
-                parentStructuredContentFolderId:
-                    format: int64
-                    type: integer
-                siteId:
-                    description:
-                        The ID of the site to which this folder is scoped.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                subscribed:
-                    readOnly: true
-                    type: boolean
-                viewableBy:
-                    description:
-                        A write-only property that specifies the folder's default permissions.
-                    enum: [Anyone, Members, Owner]
-                    type: string
-                    writeOnly: true
-            required:
-                - name
-            type: object
-        TaxonomyCategoryBrief:
-            properties:
-                embeddedTaxonomyCategory:
-                    # @review
-                    description:
-                        Optional field with the embedded taxonomy category, can be embedded with nestedFields
-                    readOnly: true
-                    type: object
-                taxonomyCategoryId:
-                    description:
-                        The category's ID. This can be used to retrieve more information in the
-                        `TaxonomyCategory` API.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                taxonomyCategoryName:
-                    description:
-                        The category's name.
-                    readOnly: true
-                    type: string
-                taxonomyCategoryName_i18n:
-                    additionalProperties:
-                        type: string
-                    readOnly: true
-                    type: object
-            type: object
-        WidgetInstance:
-            properties:
-                widgetConfig:
-                    additionalProperties:
-                        type: object
-                    type: object
-                widgetInstanceId:
-                    type: string
-                widgetName:
-                    type: string
-                widgetPermissions:
-                    items:
-                        properties:
-                            actionKeys:
-                                items:
-                                    type: string
-                                type: array
-                            roleKey:
-                                type: string
-                        type: object
-                    type: array
-            type: object
-        WikiNode:
-            # @review
-            description:
-                Represents a wiki node that can be used to organize wiki pages.
-            properties:
-                actions:
-                    additionalProperties:
-                        additionalProperties:
-                            type: string
-                        type: object
-                    readOnly: true
-                    type: object
-                creator:
-                    allOf:
-                        - $ref: "#/components/schemas/Creator"
-                    description:
-                        The wiki node's creator.
-                    readOnly: true
-                dateCreated:
-                    description:
-                        The date the wiki node was created.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                dateModified:
-                    description:
-                        The last time any of the wiki node's fields changed.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                description:
-                    description:
-                        The wiki node's description.
-                    type: string
-                id:
-                    description:
-                        The wiki node's ID.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                name:
-                    description:
-                        The wiki node's name.
-                    type: string
-                numberOfWikiPages:
-                    description:
-                        The number of child wiki page on this wiki node.
-                    readOnly: true
-                    type: integer
-                siteId:
-                    description:
-                        The ID of the site to which this wiki node is scoped.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                subscribed:
-                    readOnly: true
-                    type: boolean
-                viewableBy:
-                    description:
-                        A write-only property that specifies the default permissions.
-                    enum: [Anyone, Members, Owner]
-                    type: string
-                    writeOnly: true
-            type: object
-        WikiPage:
-            # @review
-            description:
-                Represents a wiki page.
-            properties:
-                actions:
-                    additionalProperties:
-                        additionalProperties:
-                            type: string
-                        type: object
-                    readOnly: true
-                    type: object
-                aggregateRating:
-                    allOf:
-                        - $ref: "#/components/schemas/AggregateRating"
-                    description:
-                        The blog post's average rating.
-                    readOnly: true
-                content:
-                    description:
-                        The wiki page's content.
-                    type: string
-                creator:
-                    allOf:
-                        - $ref: "#/components/schemas/Creator"
-                    description:
-                        The wiki page's creator.
-                    readOnly: true
-                customFields:
-                    items:
-                        $ref: "#/components/schemas/CustomField"
-                    type: array
-                dateCreated:
-                    description:
-                        The date the wiki page was created.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                dateModified:
-                    description:
-                        The last time any of the wiki page's fields changed.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                description:
-                    description:
-                        The wiki page's description.
-                    type: string
-                encodingFormat:
-                    description:
-                        The wiki page's media format (e.g., HTML, BBCode, etc.).
-                    type: string
-                headline:
-                    description:
-                        The wiki page's main title.
-                    type: string
-                id:
-                    description:
-                        The wiki page's ID.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                keywords:
-                    description:
-                        A list of keywords describing the blog post.
-                    items:
-                        type: string
-                    type: array
-                numberOfAttachments:
-                    description:
-                        The wiki page's number attachments.
-                    readOnly: true
-                    type: integer
-                numberOfWikiPages:
-                    description:
-                        The number of child wiki page on this wiki page.
-                    readOnly: true
-                    type: integer
-                parentWikiPageId:
-                    format: int64
-                    type: integer
-                relatedContents:
-                    items:
-                        $ref: "#/components/schemas/RelatedContent"
-                    readOnly: true
-                    type: array
-                siteId:
-                    description:
-                        The ID of the site to which this wiki page is scoped.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                subscribed:
-                    readOnly: true
-                    type: boolean
-                taxonomyCategoryBriefs:
-                    description:
-                        The categories associated with this blog post.
-                    items:
-                        $ref: "#/components/schemas/TaxonomyCategoryBrief"
-                    readOnly: true
-                    type: array
-                taxonomyCategoryIds:
-                    description:
-                        A write-only field that adds a `TaxonomyCategory` to this resource.
-                    items:
-                        format: int64
-                        type: integer
-                    type: array
-                    writeOnly: true
-                viewableBy:
-                    description:
-                        A write-only property that specifies the default permissions.
-                    enum: [Anyone, Members, Owner]
-                    type: string
-                    writeOnly: true
-            required:
-                - encodingFormat
-                - headline
-            type: object
-        WikiPageAttachment:
-            # @review
-            description:
-                A binary file attached to a wiki page.
-            properties:
-                contentUrl:
-                    description:
-                        The file's relative URL.
-                    readOnly: true
-                    type: string
-                contentValue:
-                    # @review
-                    description:
-                        optional field with the content of the document in Base64, can be embedded with nestedFields
-                    readOnly: true
-                    type: string
-                encodingFormat:
-                    description:
-                        The file's media format (e.g., application/pdf, etc.).
-                    readOnly: true
-                    type: string
-                fileExtension:
-                    description:
-                        The file's extension.
-                    readOnly: true
-                    type: string
-                id:
-                    description:
-                        The file's ID.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                sizeInBytes:
-                    description:
-                        The file's size in bytes.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                title:
-                    description:
-                        The file's title.
-                    type: string
-            type: object
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
