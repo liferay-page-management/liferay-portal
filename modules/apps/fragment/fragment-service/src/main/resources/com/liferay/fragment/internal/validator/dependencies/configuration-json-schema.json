@@ -120,6 +120,11 @@
 					"title": "The Label Schema",
 					"type": "string"
 				},
+				"localizable": {
+					"default": false,
+					"title": "The Localizable Schema",
+					"type": "boolean"
+				},
 				"name": {
 					"minLength": 1,
 					"pattern": "^[A-Za-z0-9]+$",
