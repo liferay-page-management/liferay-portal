@@ -42,6 +42,8 @@ export const FragmentStylesPanel = ({item}) => {
 		[item.config.fragmentEntryLinkId]
 	);
 
+	const languageId = useSelector((state) => state.languageId);
+
 	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
 	const selectedViewportSize = useSelector(
 		(state) => state.selectedViewportSize
@@ -66,11 +68,12 @@ export const FragmentStylesPanel = ({item}) => {
 				updateFragmentConfiguration({
 					configurationValues: nextConfigurationValues,
 					fragmentEntryLink,
+					languageId,
 					segmentsExperienceId,
 				})
 			);
 		},
-		[dispatch, fragmentEntryLink, segmentsExperienceId]
+		[dispatch, fragmentEntryLink, languageId, segmentsExperienceId]
 	);
 
 	return (
@@ -116,6 +119,7 @@ const CustomStyles = ({fragmentEntryLink, onValueSelect}) => {
 						fields={fieldSet.fields}
 						key={index}
 						label={fieldSet.label}
+						languageId={config.defaultLanguageId}
 						onValueSelect={onValueSelect}
 						values={getConfigurationValues(fragmentEntryLink)}
 					/>

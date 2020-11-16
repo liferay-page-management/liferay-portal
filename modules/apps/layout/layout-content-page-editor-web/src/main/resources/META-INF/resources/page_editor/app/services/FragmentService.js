@@ -274,11 +274,13 @@ export default {
 	 * @param {object} options
 	 * @param {string} options.configurationValues New configurationValues
 	 * @param {string} options.fragmentEntryLinkId Id of the fragmentEntryLink
+	 * @param {string} options.languageId Language id
 	 * @param {function} options.onNetworkStatus
 	 */
 	updateConfigurationValues({
 		configurationValues,
-		fragmentEntryLinkId,
+		fragmentEntryLink,
+        languageId,
 		onNetworkStatus,
 	}) {
 		return serviceFetch(
@@ -287,6 +289,7 @@ export default {
 				body: {
 					editableValues: JSON.stringify(configurationValues),
 					fragmentEntryLinkId,
+					languageId,
 				},
 			},
 			onNetworkStatus,
