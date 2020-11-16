@@ -133,7 +133,7 @@ public class FragmentEntryConfigurationParserImpl
 			configurationDefaultValuesJSONObject.put(
 				name,
 				getFieldValue(
-					configurationField,
+					configurationField, locale,
 					configurationValuesJSONObject.getString(name)));
 		}
 
@@ -234,6 +234,9 @@ public class FragmentEntryConfigurationParserImpl
 				_log.error(
 					"Unable to parse configuration value JSON", jsonException);
 			}
+		}
+		else if (Validator.isNull(value)) {
+			value = fragmentConfigurationField.getDefaultValue();
 		}
 
 		if (StringUtil.equalsIgnoreCase(
