@@ -245,6 +245,7 @@ export default {
 	 * @param {string} options.collectionItemClassName Class name id of the collection item
 	 * @param {string} options.collectionItemClassPK Class PK of the collection item
 	 * @param {string} options.fragmentEntryLinkId Id of the fragmentEntryLink
+	 * @param {string} options.languageId Language id
 	 * @param {function} options.onNetworkStatus
 	 * @param {string} options.segmentsExperienceId Experience id
 	 */
@@ -252,6 +253,7 @@ export default {
 		collectionItemClassName,
 		collectionItemClassPK,
 		fragmentEntryLinkId,
+		languageId,
 		onNetworkStatus,
 		segmentsExperienceId,
 	}) {
@@ -262,6 +264,7 @@ export default {
 					collectionItemClassName,
 					collectionItemClassPK,
 					fragmentEntryLinkId,
+					languageId,
 					segmentsExperienceId,
 				},
 			},
@@ -279,8 +282,8 @@ export default {
 	 */
 	updateConfigurationValues({
 		configurationValues,
-		fragmentEntryLink,
-        languageId,
+		fragmentEntryLinkId,
+		languageId,
 		onNetworkStatus,
 	}) {
 		return serviceFetch(
