@@ -17,6 +17,7 @@ import React, {useCallback} from 'react';
 
 import {FRAGMENT_CONFIGURATION_ROLES} from '../../../../app/config/constants/fragmentConfigurationRoles';
 import {FREEMARKER_FRAGMENT_ENTRY_PROCESSOR} from '../../../../app/config/constants/freemarkerFragmentEntryProcessor';
+import {config} from '../../../../app/config/index';
 import selectSegmentsExperienceId from '../../../../app/selectors/selectSegmentsExperienceId';
 import {
 	useDispatch,
@@ -24,6 +25,7 @@ import {
 	useSelectorCallback,
 } from '../../../../app/store/index';
 import updateFragmentConfiguration from '../../../../app/thunks/updateFragmentConfiguration';
+import isLocalizable from '../../../../app/utils/isLocalizable';
 import {getLayoutDataItemPropTypes} from '../../../../prop-types/index';
 import {FieldSet} from './FieldSet';
 
@@ -34,6 +36,8 @@ export const FragmentGeneralPanel = ({item}) => {
 		(state) => state.fragmentEntryLinks[item.config.fragmentEntryLinkId],
 		[item.config.fragmentEntryLinkId]
 	);
+
+	const languageId = useSelector((state) => state.languageId);
 
 	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
 
@@ -52,15 +56,27 @@ export const FragmentGeneralPanel = ({item}) => {
 				fragmentEntryLink
 			);
 
+			const localizable = isLocalizable(fieldSets, name);
+
+			const currentValue = configurationValues[name];
+
 			const nextConfigurationValues = {
 				...configurationValues,
-				[name]: value,
+				[name]: localizable
+					? {
+							...(typeof currentValue === 'object'
+								? currentValue
+								: {[config.defaultLanguageId]: currentValue}),
+							[languageId]: value,
+					  }
+					: value,
 			};
 
 			dispatch(
 				updateFragmentConfiguration({
 					configurationValues: nextConfigurationValues,
 					fragmentEntryLink,
+					languageId,
 					segmentsExperienceId,
 				})
 			);
@@ -68,7 +84,9 @@ export const FragmentGeneralPanel = ({item}) => {
 		[
 			defaultConfigurationValues,
 			dispatch,
+			fieldSets,
 			fragmentEntryLink,
+			languageId,
 			segmentsExperienceId,
 		]
 	);
@@ -81,6 +99,7 @@ export const FragmentGeneralPanel = ({item}) => {
 						fields={fieldSet.fields}
 						key={index}
 						label={fieldSet.label}
+						languageId={languageId}
 						onValueSelect={onValueSelect}
 						values={getConfigurationValues(
 							defaultConfigurationValues,

@@ -31,7 +31,14 @@ const fieldIsDisabled = (item, field) =>
 	item.config?.widthType === 'fixed' &&
 	(field.name === 'marginRight' || field.name === 'marginLeft');
 
-export const FieldSet = ({fields, item = {}, label, onValueSelect, values}) => {
+export const FieldSet = ({
+	fields,
+	item = {},
+	label,
+	languageId,
+	onValueSelect,
+	values,
+}) => {
 	const selectedViewportSize = useSelector(
 		(state) => state.selectedViewportSize
 	);
@@ -56,8 +63,12 @@ export const FieldSet = ({fields, item = {}, label, onValueSelect, values}) => {
 							field.type &&
 							FRAGMENT_CONFIGURATION_FIELDS[field.type];
 
-						const fieldValue =
-							values[field.name] || field.defaultValue;
+						const localizable = field.localizable;
+
+						const fieldValue = localizable
+							? values[field.name][languageId] ||
+							  field.defaultValue
+							: values[field.name] || field.defaultValue;
 
 						const visible =
 							!field.dependencies ||
