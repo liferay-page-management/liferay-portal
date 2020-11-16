@@ -513,6 +513,18 @@
 	<td></td>
 </tr>
 
+<tr>
+	<td>FIELD_SET_ELLIPSIS_ACTION</td>
+	<td>//div[contains(@class, 'field-type autofit-row autofit-row-center')]['${key_rowNumber}']//div[contains(@class, 'autofit-col pr-2')]//div[contains(@class, 'dropdown')]//button[contains(@class, 'btn btn-monospaced btn-unstyled')]</td>
+	<td></td>
+</tr>
+
+<tr>
+	<td>FIELD_SET_DISABLED_ELLIPSIS_ACTION</td>
+	<td>//div[contains(@class, 'field-type disabled autofit-row autofit-row-center')]['${key_rowNumber}']//div[contains(@class, 'autofit-col pr-2')]//div[contains(@class, 'dropdown')]//button[contains(@class, 'btn btn-monospaced btn-unstyled')]</td>
+	<td></td>
+</tr>
+
 </tbody>
 </table>
 </body>
