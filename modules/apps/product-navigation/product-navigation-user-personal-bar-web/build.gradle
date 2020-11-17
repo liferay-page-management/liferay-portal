@@ -9,6 +9,7 @@ dependencies {
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-clay")
 	compileOnly project(":apps:product-navigation:product-navigation-personal-menu-api")
 	compileOnly project(":apps:product-navigation:product-navigation-taglib")
+	compileOnly project(":apps:product-navigation:product-navigation-user-personal-bar-web-api")
 	compileOnly project(":apps:site:site-api")
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
