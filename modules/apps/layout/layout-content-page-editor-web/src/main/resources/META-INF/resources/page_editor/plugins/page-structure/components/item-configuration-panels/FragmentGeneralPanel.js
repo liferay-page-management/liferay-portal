@@ -25,7 +25,6 @@ import {
 	useSelectorCallback,
 } from '../../../../app/store/index';
 import updateFragmentConfiguration from '../../../../app/thunks/updateFragmentConfiguration';
-import isLocalizable from '../../../../app/utils/isLocalizable';
 import {getLayoutDataItemPropTypes} from '../../../../prop-types/index';
 import {FieldSet} from './FieldSet';
 
@@ -56,7 +55,12 @@ export const FragmentGeneralPanel = ({item}) => {
 				fragmentEntryLink
 			);
 
-			const localizable = isLocalizable(fieldSets, name);
+			const localizable =
+				fieldSets?.some((fieldSet) =>
+					fieldSet.fields.some(
+						(field) => field.name === name && field.localizable
+					)
+				) ?? false;
 
 			const currentValue = configurationValues[name];
 
