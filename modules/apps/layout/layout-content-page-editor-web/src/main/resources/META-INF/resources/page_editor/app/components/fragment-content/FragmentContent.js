@@ -24,7 +24,6 @@ import FragmentService from '../../services/FragmentService';
 import {useDispatch, useSelector, useSelectorCallback} from '../../store/index';
 import {getFrontendTokenValue} from '../../utils/getFrontendTokenValue';
 import {getResponsiveConfig} from '../../utils/getResponsiveConfig';
-import hasLocalizable from '../../utils/hasLocalizable';
 import loadBackgroundImage from '../../utils/loadBackgroundImage';
 import {
 	useGetContent,
@@ -126,7 +125,12 @@ const FragmentContent = ({
 		if (!isProcessorEnabled()) {
 			fragmentElement.innerHTML = defaultContent;
 
-			if (hasLocalizable(fragmentEntryLink.configuration?.fieldSets)) {
+			const hasLocalizable =
+				fragmentEntryLink.configuration?.fieldSets?.some((fieldSet) =>
+					fieldSet.fields.some((field) => field.localizable)
+				) ?? false;
+
+			if (hasLocalizable) {
 				FragmentService.renderFragmentEntryLinkContent({
 					fragmentEntryLinkId: fragmentEntryLink.fragmentEntryLinkId,
 					languageId,
