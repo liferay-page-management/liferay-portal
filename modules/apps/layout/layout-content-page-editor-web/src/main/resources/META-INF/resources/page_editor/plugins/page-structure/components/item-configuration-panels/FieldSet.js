@@ -107,7 +107,9 @@ export const FieldSet = ({
 
 FieldSet.propTypes = {
 	fields: PropTypes.arrayOf(PropTypes.shape(ConfigurationFieldPropTypes)),
+	item: PropTypes.object,
 	label: PropTypes.string,
+	languageId: PropTypes.string.isRequired,
 	onValueSelect: PropTypes.func.isRequired,
 	values: PropTypes.object,
 };
