@@ -19,6 +19,7 @@ import {StyleBookContextProvider} from '../../plugins/page-design-options/hooks/
 import {INIT} from '../actions/types';
 import {config} from '../config/index';
 import {reducer} from '../reducers/index';
+import selectLanguageId from '../selectors/selectLanguageId';
 import {StoreContextProvider, useSelector} from '../store/index';
 import {DragAndDropContextProvider} from '../utils/dragAndDrop/useDragAndDrop';
 import {CollectionActiveItemContextProvider} from './CollectionActiveItemContext';
@@ -75,7 +76,7 @@ App.propTypes = {
 };
 
 const LanguageDirection = () => {
-	const languageId = useSelector((state) => state.languageId);
+	const languageId = useSelector(selectLanguageId);
 
 	useEffect(() => {
 		const currentLanguageDirection = config.languageDirection[languageId];

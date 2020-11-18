@@ -20,6 +20,7 @@ import {FRAGMENT_CONFIGURATION_ROLES} from '../../../../app/config/constants/fra
 import {FREEMARKER_FRAGMENT_ENTRY_PROCESSOR} from '../../../../app/config/constants/freemarkerFragmentEntryProcessor';
 import {VIEWPORT_SIZES} from '../../../../app/config/constants/viewportSizes';
 import {config} from '../../../../app/config/index';
+import selectLanguageId from '../../../../app/selectors/selectLanguageId';
 import selectSegmentsExperienceId from '../../../../app/selectors/selectSegmentsExperienceId';
 import {
 	useDispatch,
@@ -42,7 +43,7 @@ export const FragmentStylesPanel = ({item}) => {
 		[item.config.fragmentEntryLinkId]
 	);
 
-	const languageId = useSelector((state) => state.languageId);
+	const languageId = useSelector(selectLanguageId);
 
 	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
 	const selectedViewportSize = useSelector(

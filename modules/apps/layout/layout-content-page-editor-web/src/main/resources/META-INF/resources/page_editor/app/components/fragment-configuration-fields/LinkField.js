@@ -23,6 +23,7 @@ import React, {useEffect, useState} from 'react';
 import MappingSelector from '../../../common/components/MappingSelector';
 import {ConfigurationFieldPropTypes} from '../../../prop-types/index';
 import {EDITABLE_TYPES} from '../../config/constants/editableTypes';
+import selectLanguageId from '../../selectors/selectLanguageId';
 import InfoItemService from '../../services/InfoItemService';
 import {useSelector} from '../../store/index';
 import isMapped from '../../utils/isMapped';
@@ -53,7 +54,7 @@ export default function LinkField({field, onValueSelect, value}) {
 	const [openNewTab, setOpenNewTab] = useState(value.target === '_blank');
 
 	const [mappedHrefPreview, setMappedHrefPreview] = useState(null);
-	const languageId = useSelector((state) => state.languageId);
+	const languageId = useSelector(selectLanguageId);
 
 	const [source, setSource] = useState(
 		isMapped(value)
