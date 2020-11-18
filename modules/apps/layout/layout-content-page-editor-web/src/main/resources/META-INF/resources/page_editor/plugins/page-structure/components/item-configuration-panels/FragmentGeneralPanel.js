@@ -18,6 +18,7 @@ import React, {useCallback} from 'react';
 import {FRAGMENT_CONFIGURATION_ROLES} from '../../../../app/config/constants/fragmentConfigurationRoles';
 import {FREEMARKER_FRAGMENT_ENTRY_PROCESSOR} from '../../../../app/config/constants/freemarkerFragmentEntryProcessor';
 import {config} from '../../../../app/config/index';
+import selectLanguageId from '../../../../app/selectors/selectLanguageId';
 import selectSegmentsExperienceId from '../../../../app/selectors/selectSegmentsExperienceId';
 import {
 	useDispatch,
@@ -36,8 +37,7 @@ export const FragmentGeneralPanel = ({item}) => {
 		[item.config.fragmentEntryLinkId]
 	);
 
-	const languageId = useSelector((state) => state.languageId);
-
+	const languageId = useSelector(selectLanguageId);
 	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
 
 	const fieldSets = fragmentEntryLink.configuration?.fieldSets.filter(
