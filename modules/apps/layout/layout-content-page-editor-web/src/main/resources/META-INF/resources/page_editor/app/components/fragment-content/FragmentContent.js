@@ -131,17 +131,7 @@ const FragmentContent = ({
 					fieldSet.fields.some((field) => field.localizable)
 				) ?? false;
 
-			if (hasLocalizable) {
-				FragmentService.renderFragmentEntryLinkContent({
-					fragmentEntryLinkId: fragmentEntryLink.fragmentEntryLinkId,
-					languageId,
-					onNetworkStatus: dispatch,
-					segmentsExperienceId,
-				}).then(({content}) => {
-					setContent(content);
-				});
-			}
-			else {
+			const processEditables = () => {
 				Promise.all(
 					getAllEditables(fragmentElement).map((editable) =>
 						resolveEditableValue(
@@ -167,6 +157,23 @@ const FragmentContent = ({
 						setContent(fragmentElement.innerHTML);
 					}
 				});
+			};
+
+			if (hasLocalizable) {
+				FragmentService.renderFragmentEntryLinkContent({
+					fragmentEntryLinkId: fragmentEntryLink.fragmentEntryLinkId,
+					languageId,
+					onNetworkStatus: dispatch,
+					segmentsExperienceId,
+				}).then(({content}) => {
+					if (isMounted()) {
+						fragmentElement.innerHTML = content;
+						processEditables();
+					}
+				});
+			}
+			else {
+				processEditables();
 			}
 		}
 
