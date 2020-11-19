@@ -81,6 +81,7 @@ import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -201,11 +202,31 @@ public class RenderLayoutStructureDisplayContext {
 			Object displayObject)
 		throws PortalException {
 
+		return getContainerLinkHref(
+			containerStyledLayoutStructureItem, displayObject,
+			LocaleUtil.getMostRelevantLocale());
+	}
+
+	public String getContainerLinkHref(
+			ContainerStyledLayoutStructureItem
+				containerStyledLayoutStructureItem,
+			Object displayObject, Locale locale)
+		throws PortalException {
+
 		JSONObject linkJSONObject =
 			containerStyledLayoutStructureItem.getLinkJSONObject();
 
 		if (linkJSONObject == null) {
 			return StringPool.BLANK;
+		}
+
+		JSONObject localizedJSONObject = linkJSONObject.getJSONObject(
+			LocaleUtil.toLanguageId(locale));
+
+		if ((localizedJSONObject != null) &&
+			(localizedJSONObject.length() > 0)) {
+
+			linkJSONObject = localizedJSONObject;
 		}
 
 		String mappedField = linkJSONObject.getString("mappedField");
@@ -323,11 +344,29 @@ public class RenderLayoutStructureDisplayContext {
 	public String getContainerLinkTarget(
 		ContainerStyledLayoutStructureItem containerStyledLayoutStructureItem) {
 
+		return getContainerLinkTarget(
+			containerStyledLayoutStructureItem,
+			LocaleUtil.getMostRelevantLocale());
+	}
+
+	public String getContainerLinkTarget(
+		ContainerStyledLayoutStructureItem containerStyledLayoutStructureItem,
+		Locale locale) {
+
 		JSONObject linkJSONObject =
 			containerStyledLayoutStructureItem.getLinkJSONObject();
 
 		if (linkJSONObject == null) {
 			return StringPool.BLANK;
+		}
+
+		JSONObject localizedJSONObject = linkJSONObject.getJSONObject(
+			LocaleUtil.toLanguageId(locale));
+
+		if ((localizedJSONObject != null) &&
+			(localizedJSONObject.length() > 0)) {
+
+			linkJSONObject = localizedJSONObject;
 		}
 
 		return linkJSONObject.getString("target");
