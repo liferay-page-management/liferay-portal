@@ -451,8 +451,8 @@ public class ContentUtil {
 
 					LayoutDisplayPageObjectProvider<?>
 						localizedLayoutDisplayPageObjectProvider =
-						_getLayoutDisplayPageObjectProvider(
-							localizableJSONObject, mappedClassPKs);
+							_getLayoutDisplayPageObjectProvider(
+								localizableJSONObject, mappedClassPKs);
 
 					if (localizedLayoutDisplayPageObjectProvider != null) {
 						layoutDisplayPageObjectProviders.add(
