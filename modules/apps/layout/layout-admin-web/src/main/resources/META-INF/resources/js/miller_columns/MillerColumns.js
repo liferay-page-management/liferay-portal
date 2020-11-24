@@ -128,6 +128,7 @@ const MillerColumns = ({
 	useEffect(() => {
 		if (previousColumnsValue !== columns) {
 			onColumnsChange(columns);
+			ref.current.scrollLeft = ref.current.scrollWidth;
 		}
 	}, [columns, onColumnsChange, previousColumnsValue]);
 
