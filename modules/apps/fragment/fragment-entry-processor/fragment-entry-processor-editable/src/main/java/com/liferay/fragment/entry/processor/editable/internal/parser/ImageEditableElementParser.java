@@ -90,16 +90,16 @@ public class ImageEditableElementParser implements EditableElementParser {
 				alt = altJSONObject.getString(LocaleUtil.toLanguageId(locale));
 			}
 
-			if (fieldValueJSONObject.has("fileEntryId")) {
-				fileEntryId = fieldValueJSONObject.getLong("fileEntryId");
-			}
-			else if (fieldValueJSONObject.has("className") &&
+			if (fieldValueJSONObject.has("className") &&
 					 fieldValueJSONObject.has("classPK") &&
 					 Objects.equals(
 						 fieldValueJSONObject.getString("className"),
 						 FileEntry.class.getName())) {
 
 				fileEntryId = fieldValueJSONObject.getLong("classPK");
+			}
+			else if (fieldValueJSONObject.has("fileEntryId")) {
+				fileEntryId = fieldValueJSONObject.getLong("fileEntryId");
 			}
 		}
 		else if (fieldValue instanceof WebImage) {
