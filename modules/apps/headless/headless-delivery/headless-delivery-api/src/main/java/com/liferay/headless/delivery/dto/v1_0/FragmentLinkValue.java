@@ -46,13 +46,13 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @generated
  */
 @Generated("")
-@GraphQLName("FragmentLink")
+@GraphQLName("FragmentLinkValue")
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "FragmentLink")
-public class FragmentLink implements Serializable {
+@XmlRootElement(name = "FragmentLinkValue")
+public class FragmentLinkValue implements Serializable {
 
-	public static FragmentLink toDTO(String json) {
-		return ObjectMapperUtil.readValue(FragmentLink.class, json);
+	public static FragmentLinkValue toDTO(String json) {
+		return ObjectMapperUtil.readValue(FragmentLinkValue.class, json);
 	}
 
 	@Schema
@@ -78,7 +78,6 @@ public class FragmentLink implements Serializable {
 		}
 	}
 
-	@Deprecated
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Object href;
@@ -117,69 +116,9 @@ public class FragmentLink implements Serializable {
 		}
 	}
 
-	@Deprecated
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Target target;
-
-	@Schema
-	@Valid
-	public FragmentLinkValue getValue() {
-		return value;
-	}
-
-	public void setValue(FragmentLinkValue value) {
-		this.value = value;
-	}
-
-	@JsonIgnore
-	public void setValue(
-		UnsafeSupplier<FragmentLinkValue, Exception> valueUnsafeSupplier) {
-
-		try {
-			value = valueUnsafeSupplier.get();
-		}
-		catch (RuntimeException re) {
-			throw re;
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected FragmentLinkValue value;
-
-	@Schema
-	@Valid
-	public Map<String, FragmentLinkValue> getValue_i18n() {
-		return value_i18n;
-	}
-
-	public void setValue_i18n(Map<String, FragmentLinkValue> value_i18n) {
-		this.value_i18n = value_i18n;
-	}
-
-	@JsonIgnore
-	public void setValue_i18n(
-		UnsafeSupplier<Map<String, FragmentLinkValue>, Exception>
-			value_i18nUnsafeSupplier) {
-
-		try {
-			value_i18n = value_i18nUnsafeSupplier.get();
-		}
-		catch (RuntimeException re) {
-			throw re;
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Map<String, FragmentLinkValue> value_i18n;
 
 	@Override
 	public boolean equals(Object object) {
@@ -187,13 +126,13 @@ public class FragmentLink implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof FragmentLink)) {
+		if (!(object instanceof FragmentLinkValue)) {
 			return false;
 		}
 
-		FragmentLink fragmentLink = (FragmentLink)object;
+		FragmentLinkValue fragmentLinkValue = (FragmentLinkValue)object;
 
-		return Objects.equals(toString(), fragmentLink.toString());
+		return Objects.equals(toString(), fragmentLinkValue.toString());
 	}
 
 	@Override
@@ -232,33 +171,13 @@ public class FragmentLink implements Serializable {
 			sb.append("\"");
 		}
 
-		if (value != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"value\": ");
-
-			sb.append(String.valueOf(value));
-		}
-
-		if (value_i18n != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"value_i18n\": ");
-
-			sb.append(_toJSON(value_i18n));
-		}
-
 		sb.append("}");
 
 		return sb.toString();
 	}
 
 	@Schema(
-		defaultValue = "com.liferay.headless.delivery.dto.v1_0.FragmentLink",
+		defaultValue = "com.liferay.headless.delivery.dto.v1_0.FragmentLinkValue",
 		name = "x-class-name"
 	)
 	public String xClassName;

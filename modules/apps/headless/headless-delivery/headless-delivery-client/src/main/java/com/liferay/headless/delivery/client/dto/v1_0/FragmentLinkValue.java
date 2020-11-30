@@ -15,11 +15,10 @@
 package com.liferay.headless.delivery.client.dto.v1_0;
 
 import com.liferay.headless.delivery.client.function.UnsafeSupplier;
-import com.liferay.headless.delivery.client.serdes.v1_0.FragmentLinkSerDes;
+import com.liferay.headless.delivery.client.serdes.v1_0.FragmentLinkValueSerDes;
 
 import java.io.Serializable;
 
-import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Generated;
@@ -29,10 +28,10 @@ import javax.annotation.Generated;
  * @generated
  */
 @Generated("")
-public class FragmentLink implements Cloneable, Serializable {
+public class FragmentLinkValue implements Cloneable, Serializable {
 
-	public static FragmentLink toDTO(String json) {
-		return FragmentLinkSerDes.toDTO(json);
+	public static FragmentLinkValue toDTO(String json) {
+		return FragmentLinkValueSerDes.toDTO(json);
 	}
 
 	public Object getHref() {
@@ -83,52 +82,9 @@ public class FragmentLink implements Cloneable, Serializable {
 
 	protected Target target;
 
-	public FragmentLinkValue getValue() {
-		return value;
-	}
-
-	public void setValue(FragmentLinkValue value) {
-		this.value = value;
-	}
-
-	public void setValue(
-		UnsafeSupplier<FragmentLinkValue, Exception> valueUnsafeSupplier) {
-
-		try {
-			value = valueUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected FragmentLinkValue value;
-
-	public Map<String, FragmentLinkValue> getValue_i18n() {
-		return value_i18n;
-	}
-
-	public void setValue_i18n(Map<String, FragmentLinkValue> value_i18n) {
-		this.value_i18n = value_i18n;
-	}
-
-	public void setValue_i18n(
-		UnsafeSupplier<Map<String, FragmentLinkValue>, Exception>
-			value_i18nUnsafeSupplier) {
-
-		try {
-			value_i18n = value_i18nUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected Map<String, FragmentLinkValue> value_i18n;
-
 	@Override
-	public FragmentLink clone() throws CloneNotSupportedException {
-		return (FragmentLink)super.clone();
+	public FragmentLinkValue clone() throws CloneNotSupportedException {
+		return (FragmentLinkValue)super.clone();
 	}
 
 	@Override
@@ -137,13 +93,13 @@ public class FragmentLink implements Cloneable, Serializable {
 			return true;
 		}
 
-		if (!(object instanceof FragmentLink)) {
+		if (!(object instanceof FragmentLinkValue)) {
 			return false;
 		}
 
-		FragmentLink fragmentLink = (FragmentLink)object;
+		FragmentLinkValue fragmentLinkValue = (FragmentLinkValue)object;
 
-		return Objects.equals(toString(), fragmentLink.toString());
+		return Objects.equals(toString(), fragmentLinkValue.toString());
 	}
 
 	@Override
@@ -154,7 +110,7 @@ public class FragmentLink implements Cloneable, Serializable {
 	}
 
 	public String toString() {
-		return FragmentLinkSerDes.toJSON(this);
+		return FragmentLinkValueSerDes.toJSON(this);
 	}
 
 	public static enum Target {
