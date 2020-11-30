@@ -14,7 +14,7 @@
 
 package com.liferay.headless.delivery.client.serdes.v1_0;
 
-import com.liferay.headless.delivery.client.dto.v1_0.FragmentLink;
+import com.liferay.headless.delivery.client.dto.v1_0.FragmentLinkValue;
 import com.liferay.headless.delivery.client.json.BaseJSONParser;
 
 import java.util.Iterator;
@@ -30,24 +30,24 @@ import javax.annotation.Generated;
  * @generated
  */
 @Generated("")
-public class FragmentLinkSerDes {
+public class FragmentLinkValueSerDes {
 
-	public static FragmentLink toDTO(String json) {
-		FragmentLinkJSONParser fragmentLinkJSONParser =
-			new FragmentLinkJSONParser();
+	public static FragmentLinkValue toDTO(String json) {
+		FragmentLinkValueJSONParser fragmentLinkValueJSONParser =
+			new FragmentLinkValueJSONParser();
 
-		return fragmentLinkJSONParser.parseToDTO(json);
+		return fragmentLinkValueJSONParser.parseToDTO(json);
 	}
 
-	public static FragmentLink[] toDTOs(String json) {
-		FragmentLinkJSONParser fragmentLinkJSONParser =
-			new FragmentLinkJSONParser();
+	public static FragmentLinkValue[] toDTOs(String json) {
+		FragmentLinkValueJSONParser fragmentLinkValueJSONParser =
+			new FragmentLinkValueJSONParser();
 
-		return fragmentLinkJSONParser.parseToDTOs(json);
+		return fragmentLinkValueJSONParser.parseToDTOs(json);
 	}
 
-	public static String toJSON(FragmentLink fragmentLink) {
-		if (fragmentLink == null) {
+	public static String toJSON(FragmentLinkValue fragmentLinkValue) {
+		if (fragmentLinkValue == null) {
 			return "null";
 		}
 
@@ -55,7 +55,7 @@ public class FragmentLinkSerDes {
 
 		sb.append("{");
 
-		if (fragmentLink.getHref() != null) {
+		if (fragmentLinkValue.getHref() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
@@ -64,12 +64,12 @@ public class FragmentLinkSerDes {
 
 			sb.append("\"");
 
-			sb.append(_escape(fragmentLink.getHref()));
+			sb.append(_escape(fragmentLinkValue.getHref()));
 
 			sb.append("\"");
 		}
 
-		if (fragmentLink.getTarget() != null) {
+		if (fragmentLinkValue.getTarget() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
@@ -78,29 +78,9 @@ public class FragmentLinkSerDes {
 
 			sb.append("\"");
 
-			sb.append(fragmentLink.getTarget());
+			sb.append(fragmentLinkValue.getTarget());
 
 			sb.append("\"");
-		}
-
-		if (fragmentLink.getValue() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"value\": ");
-
-			sb.append(String.valueOf(fragmentLink.getValue()));
-		}
-
-		if (fragmentLink.getValue_i18n() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"value_i18n\": ");
-
-			sb.append(_toJSON(fragmentLink.getValue_i18n()));
 		}
 
 		sb.append("}");
@@ -109,91 +89,65 @@ public class FragmentLinkSerDes {
 	}
 
 	public static Map<String, Object> toMap(String json) {
-		FragmentLinkJSONParser fragmentLinkJSONParser =
-			new FragmentLinkJSONParser();
+		FragmentLinkValueJSONParser fragmentLinkValueJSONParser =
+			new FragmentLinkValueJSONParser();
 
-		return fragmentLinkJSONParser.parseToMap(json);
+		return fragmentLinkValueJSONParser.parseToMap(json);
 	}
 
-	public static Map<String, String> toMap(FragmentLink fragmentLink) {
-		if (fragmentLink == null) {
+	public static Map<String, String> toMap(
+		FragmentLinkValue fragmentLinkValue) {
+
+		if (fragmentLinkValue == null) {
 			return null;
 		}
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (fragmentLink.getHref() == null) {
+		if (fragmentLinkValue.getHref() == null) {
 			map.put("href", null);
 		}
 		else {
-			map.put("href", String.valueOf(fragmentLink.getHref()));
+			map.put("href", String.valueOf(fragmentLinkValue.getHref()));
 		}
 
-		if (fragmentLink.getTarget() == null) {
+		if (fragmentLinkValue.getTarget() == null) {
 			map.put("target", null);
 		}
 		else {
-			map.put("target", String.valueOf(fragmentLink.getTarget()));
-		}
-
-		if (fragmentLink.getValue() == null) {
-			map.put("value", null);
-		}
-		else {
-			map.put("value", String.valueOf(fragmentLink.getValue()));
-		}
-
-		if (fragmentLink.getValue_i18n() == null) {
-			map.put("value_i18n", null);
-		}
-		else {
-			map.put("value_i18n", String.valueOf(fragmentLink.getValue_i18n()));
+			map.put("target", String.valueOf(fragmentLinkValue.getTarget()));
 		}
 
 		return map;
 	}
 
-	public static class FragmentLinkJSONParser
-		extends BaseJSONParser<FragmentLink> {
+	public static class FragmentLinkValueJSONParser
+		extends BaseJSONParser<FragmentLinkValue> {
 
 		@Override
-		protected FragmentLink createDTO() {
-			return new FragmentLink();
+		protected FragmentLinkValue createDTO() {
+			return new FragmentLinkValue();
 		}
 
 		@Override
-		protected FragmentLink[] createDTOArray(int size) {
-			return new FragmentLink[size];
+		protected FragmentLinkValue[] createDTOArray(int size) {
+			return new FragmentLinkValue[size];
 		}
 
 		@Override
 		protected void setField(
-			FragmentLink fragmentLink, String jsonParserFieldName,
+			FragmentLinkValue fragmentLinkValue, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
 			if (Objects.equals(jsonParserFieldName, "href")) {
 				if (jsonParserFieldValue != null) {
-					fragmentLink.setHref((Object)jsonParserFieldValue);
+					fragmentLinkValue.setHref((Object)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "target")) {
 				if (jsonParserFieldValue != null) {
-					fragmentLink.setTarget(
-						FragmentLink.Target.create(
-							(String)jsonParserFieldValue));
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "value")) {
-				if (jsonParserFieldValue != null) {
-					fragmentLink.setValue(
-						FragmentLinkValueSerDes.toDTO(
-							(String)jsonParserFieldValue));
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "value_i18n")) {
-				if (jsonParserFieldValue != null) {
-					fragmentLink.setValue_i18n(
-						(Map)FragmentLinkSerDes.toMap(
+					fragmentLinkValue.setTarget(
+						FragmentLinkValue.Target.create(
 							(String)jsonParserFieldValue));
 				}
 			}
