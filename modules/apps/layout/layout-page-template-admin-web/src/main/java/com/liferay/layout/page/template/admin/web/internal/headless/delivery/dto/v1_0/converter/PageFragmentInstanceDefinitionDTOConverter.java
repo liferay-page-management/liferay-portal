@@ -52,6 +52,7 @@ import com.liferay.portal.kernel.json.JSONDeserializer;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -488,6 +489,23 @@ public class PageFragmentInstanceDefinitionDTOConverter {
 
 		if (Validator.isNull(alt)) {
 			return null;
+		}
+
+		if (JSONUtil.isValid(alt)) {
+			JSONObject localizedJSONObject = configJSONObject.getJSONObject(
+				"alt");
+
+			Map<String, String> localizedValues = new HashMap<>();
+
+			for (String key : localizedJSONObject.keySet()) {
+				localizedValues.put(key, localizedJSONObject.getString(key));
+			}
+
+			return new FragmentInlineValue() {
+				{
+					value_i18n = localizedValues;
+				}
+			};
 		}
 
 		return new FragmentInlineValue() {

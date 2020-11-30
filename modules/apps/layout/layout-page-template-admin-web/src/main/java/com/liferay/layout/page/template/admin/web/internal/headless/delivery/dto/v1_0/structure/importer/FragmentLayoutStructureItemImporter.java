@@ -323,6 +323,25 @@ public class FragmentLayoutStructureItemImporter
 			jsonObject.put("alt", value);
 		}
 
+		Map<String, Object> localizedDescriptionMap =
+			(Map<String, Object>)descriptionMap.get("value_i18n");
+
+		if (localizedDescriptionMap == null) {
+			return jsonObject;
+		}
+
+		JSONObject localizedDescriptionJSONObject =
+			JSONFactoryUtil.createJSONObject();
+
+		for (Map.Entry<String, Object> entry :
+				localizedDescriptionMap.entrySet()) {
+
+			localizedDescriptionJSONObject.put(
+				entry.getKey(), entry.getValue());
+		}
+
+		jsonObject.put("alt", localizedDescriptionJSONObject);
+
 		return jsonObject;
 	}
 
