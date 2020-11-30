@@ -1307,6 +1307,23 @@ components:
         FragmentLink:
             properties:
                 href:
+                    deprecated: true
+                    oneOf:
+                        - $ref: "#/components/schemas/FragmentInlineValue"
+                        - $ref: "#/components/schemas/FragmentMappedValue"
+                target:
+                    deprecated: true
+                    enum: [Blank, Parent, Self, Top]
+                    type: string
+                value:
+                    $ref: "#/components/schemas/FragmentLinkValue"
+                value_i18n:
+                    additionalProperties:
+                        $ref: "#/components/schemas/FragmentLinkValue"
+                    type: object
+        FragmentLinkValue:
+            properties:
+                href:
                     oneOf:
                         - $ref: "#/components/schemas/FragmentInlineValue"
                         - $ref: "#/components/schemas/FragmentMappedValue"
