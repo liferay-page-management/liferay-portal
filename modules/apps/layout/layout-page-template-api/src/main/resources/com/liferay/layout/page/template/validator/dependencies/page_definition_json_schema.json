@@ -270,6 +270,53 @@
 			"additionalProperties": false,
 			"properties": {
 				"href": {
+					"deprecationMessage": "Deprecated as of Cavanaugh (7.4.x), replaced by FragmentLinkValue.href",
+					"oneOf": [
+						{
+							"$ref": "#/definitions/FragmentInlineValue"
+						},
+						{
+							"$ref": "#/definitions/FragmentMappedValue"
+						}
+					]
+				},
+				"target": {
+					"deprecationMessage": "Deprecated as of Cavanaugh (7.4.x), replaced by FragmentLinkValue.target",
+					"enum": [
+						"Blank",
+						"Parent",
+						"Self",
+						"Top"
+					],
+					"title": "The target Schema",
+					"type": "string"
+				},
+				"value": {
+					"oneOf": [
+						{
+							"$ref": "#/definitions/FragmentInlineValue"
+						},
+						{
+							"$ref": "#/definitions/FragmentMappedValue"
+						}
+					],
+					"title": "The value Schema"
+				},
+				"value_i18n": {
+					"additionalProperties": {
+						"$ref": "#/definitions/FragmentLinkValue"
+					},
+					"title": "The value_i18n Schema",
+					"type": "object"
+				}
+			},
+			"title": "The FragmentLink Schema",
+			"type": "object"
+		},
+		"FragmentLinkValue": {
+			"additionalProperties": false,
+			"properties": {
+				"href": {
 					"oneOf": [
 						{
 							"$ref": "#/definitions/FragmentInlineValue"
@@ -290,7 +337,7 @@
 					"type": "string"
 				}
 			},
-			"title": "The FragmentLink Schema",
+			"title": "The FragmentLinkValue Schema",
 			"type": "object"
 		},
 		"FragmentMappedValue": {
