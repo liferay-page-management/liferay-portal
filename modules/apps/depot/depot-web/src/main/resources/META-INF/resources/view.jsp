@@ -30,7 +30,7 @@ DepotAdminManagementToolbarDisplayContext depotAdminManagementToolbarDisplayCont
 	cssClass="closed sidenav-container sidenav-right"
 >
 	<div class="sidenav-content">
-		<portlet:actionURL name="deleteGroups" var="deleteGroupsURL" />
+		<portlet:actionURL name="/site_admin/delete_groups" var="deleteGroupsURL" />
 
 		<aui:form action="<%= depotAdminDisplayContext.getIteratorURL() %>" cssClass="container-fluid container-fluid-max-xl" name="fm">
 			<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
