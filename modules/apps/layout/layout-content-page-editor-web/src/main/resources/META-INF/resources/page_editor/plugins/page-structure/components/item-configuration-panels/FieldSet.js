@@ -46,7 +46,10 @@ export const FieldSet = ({
 	const availableFields =
 		selectedViewportSize === VIEWPORT_SIZES.desktop
 			? fields
-			: fields.filter((field) => field.responsive);
+			: fields.filter(
+					(field) =>
+						field.responsive || field.name === 'backgroundImage'
+			  );
 
 	return (
 		availableFields.length > 0 && (
