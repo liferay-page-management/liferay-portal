@@ -95,6 +95,8 @@ public class FacetedSearcherTest extends BaseFacetedSearcherTestCase {
 		SearchContext searchContext = getSearchContextWithGroupIdsUnset(
 			keywords);
 
+		searchContext.setEntryClassNames(new String[] {User.class.getName()});
+
 		assertTags(keywords, expected, searchContext);
 	}
 
