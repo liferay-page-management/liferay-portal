@@ -109,7 +109,7 @@ for (String childrenItemId : childrenItemIds) {
 			%>
 
 			<clay:col
-				cssClass="<%= ResponsiveLayoutStructureUtil.getColumnCssClass(columnLayoutStructureItem) %>"
+				md="<%= (columnLayoutStructureItem.getSize() > 0) ? String.valueOf(columnLayoutStructureItem.getSize()) : StringPool.BLANK %>"
 			>
 
 				<%
