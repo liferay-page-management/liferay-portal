@@ -14,6 +14,8 @@
 
 package com.liferay.fragment.internal.upgrade.v2_2_1;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 
 /**
@@ -23,7 +25,17 @@ public class UpgradeFragmentEntry extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		runSQL("drop index IX_62913C70 on FragmentEntry");
+		try {
+			runSQL("drop index IX_62913C70 on FragmentEntry");
+		}
+		catch (Exception exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(exception, exception);
+			}
+		}
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		UpgradeFragmentEntry.class);
 
 }
