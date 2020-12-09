@@ -116,47 +116,47 @@ public class JournalConverterImpl implements JournalConverter {
 		).build();
 
 		_ddmTypesToJournalTypes = HashMapBuilder.put(
-			"checkbox", "boolean"
+			DDMFormFieldType.CHECKBOX, "boolean"
 		).put(
-			"ddm-documentlibrary", "document_library"
+			DDMFormFieldType.DOCUMENT_LIBRARY, "document_library"
 		).put(
-			"ddm-image", "image"
+			DDMFormFieldType.IMAGE, "image"
 		).put(
-			"ddm-link-to-page", "link_to_layout"
+			DDMFormFieldType.LINK_TO_PAGE, "link_to_layout"
 		).put(
-			"ddm-separator", "selection_break"
+			DDMFormFieldType.SELECT, "list"
 		).put(
-			"ddm-text-html", "text_area"
+			DDMFormFieldType.SEPARATOR, "selection_break"
 		).put(
-			"select", "list"
+			DDMFormFieldType.TEXT, "text"
 		).put(
-			"text", "text"
+			DDMFormFieldType.TEXT_AREA, "text_box"
 		).put(
-			"textarea", "text_box"
+			DDMFormFieldType.TEXT_HTML, "text_area"
 		).build();
 
 		_journalTypesToDDMTypes = HashMapBuilder.put(
-			"boolean", "checkbox"
+			"boolean", DDMFormFieldType.CHECKBOX
 		).put(
-			"document_library", "ddm-documentlibrary"
+			"document_library", DDMFormFieldType.DOCUMENT_LIBRARY
 		).put(
-			"image", "ddm-image"
+			"image", DDMFormFieldType.IMAGE
 		).put(
-			"image_gallery", "ddm-documentlibrary"
+			"image_gallery", DDMFormFieldType.DOCUMENT_LIBRARY
 		).put(
-			"link_to_layout", "ddm-link-to-page"
+			"link_to_layout", DDMFormFieldType.LINK_TO_PAGE
 		).put(
-			"list", "select"
+			"list", DDMFormFieldType.SELECT
 		).put(
-			"multi-list", "select"
+			"multi-list", DDMFormFieldType.SELECT
 		).put(
-			"selection_break", "ddm-separator"
+			"selection_break", DDMFormFieldType.SEPARATOR
 		).put(
-			"text", "text"
+			"text", DDMFormFieldType.TEXT
 		).put(
-			"text_area", "ddm-text-html"
+			"text_area", DDMFormFieldType.TEXT_HTML
 		).put(
-			"text_box", "textarea"
+			"text_box", DDMFormFieldType.TEXT_AREA
 		).build();
 	}
 
@@ -1231,15 +1231,18 @@ public class JournalConverterImpl implements JournalConverter {
 			}
 		}
 
-		if (newType.equals("ddm-date") || newType.equals("ddm-decimal") ||
-			newType.equals("ddm-integer") ||
-			newType.equals("ddm-link-to-page") ||
-			newType.equals("ddm-number") || newType.equals("ddm-text-html") ||
-			newType.equals("text") || newType.equals("textarea")) {
+		if (newType.equals(DDMFormFieldType.DATE) ||
+			newType.equals(DDMFormFieldType.DECIMAL) ||
+			newType.equals(DDMFormFieldType.INTEGER) ||
+			newType.equals(DDMFormFieldType.LINK_TO_PAGE) ||
+			newType.equals(DDMFormFieldType.NUMBER) ||
+			newType.equals(DDMFormFieldType.TEXT_HTML) ||
+			newType.equals(DDMFormFieldType.TEXT) ||
+			newType.equals(DDMFormFieldType.TEXT_AREA)) {
 
 			element.addAttribute("width", "25");
 		}
-		else if (newType.equals("ddm-image")) {
+		else if (newType.equals(DDMFormFieldType.IMAGE)) {
 			element.addAttribute("fieldNamespace", "ddm");
 			element.addAttribute("readOnly", "false");
 		}
