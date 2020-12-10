@@ -16,6 +16,11 @@ package com.liferay.fragment.internal.upgrade.v2_2_1;
 
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+
+import java.util.Objects;
+
 /**
  * @author Alberto Chaparro
  */
@@ -23,7 +28,11 @@ public class UpgradeFragmentEntry extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		runSQL("drop index IX_62913C70 on FragmentEntry");
+		if (hasIndex("FragmentEntry", "IX_62913C70")) {
+			runSQL("drop index IX_62913C70 on FragmentEntry");
+		}
 	}
+
+
 
 }
