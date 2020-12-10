@@ -38,7 +38,7 @@ request.setAttribute("view_user.jsp-user", user2);
 		<c:if test="<%= (displayStyle == ContactsConstants.DISPLAY_STYLE_BASIC) || (displayStyle == ContactsConstants.DISPLAY_STYLE_FULL) %>">
 			<clay:row>
 				<clay:col
-					cssClass="social-relations"
+					cssClass="col social-relations"
 				>
 
 					<%
@@ -86,7 +86,7 @@ request.setAttribute("view_user.jsp-user", user2);
 
 					<clay:row>
 						<clay:col
-							cssClass="contacts-action"
+							cssClass="col contacts-action"
 						>
 							<c:choose>
 								<c:when test="<%= portletId.equals(ContactsPortletKeys.CONTACTS_CENTER) || portletId.equals(ContactsPortletKeys.MEMBERS) %>">
