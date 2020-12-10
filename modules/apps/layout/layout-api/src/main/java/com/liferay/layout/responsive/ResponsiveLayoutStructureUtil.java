@@ -52,7 +52,9 @@ public class ResponsiveLayoutStructureUtil {
 			columnLayoutStructureItem.getViewportConfigurations();
 
 		for (ViewportSize viewportSize : ViewportSize.values()) {
-			if (Objects.equals(viewportSize, ViewportSize.DESKTOP)) {
+			if (Objects.equals(viewportSize, ViewportSize.DESKTOP) ||
+				Objects.equals(viewportSize, ViewportSize.PORTRAIT_MOBILE)) {
+
 				continue;
 			}
 
