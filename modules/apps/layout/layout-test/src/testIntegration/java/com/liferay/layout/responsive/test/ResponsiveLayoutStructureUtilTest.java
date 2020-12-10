@@ -64,6 +64,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -188,7 +189,9 @@ public class ResponsiveLayoutStructureUtilTest {
 				WebKeys.LAYOUT_CONTENT));
 
 		for (ViewportSize viewportSize : ViewportSize.values()) {
-			if (viewportSize.equals(ViewportSize.DESKTOP)) {
+			if (Objects.equals(viewportSize, ViewportSize.DESKTOP) ||
+				Objects.equals(viewportSize, ViewportSize.PORTRAIT_MOBILE)) {
+
 				continue;
 			}
 
