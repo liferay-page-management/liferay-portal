@@ -27,7 +27,7 @@
 
 		<clay:row>
 			<clay:col
-				cssClass="contacts-container"
+				cssClass="col contacts-container"
 			>
 				<liferay-util:include page="/view_user.jsp" servletContext="<%= application %>" />
 			</clay:col>
