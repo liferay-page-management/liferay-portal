@@ -106,7 +106,7 @@ public class ColTag extends BaseContainerTag {
 			cssClasses.add("col-xl-" + _xl);
 		}
 
-		if (cssClasses.isEmpty()) {
+		if (Validator.isNull(super.getCssClass()) && cssClasses.isEmpty()) {
 			cssClasses.add("col");
 		}
 
