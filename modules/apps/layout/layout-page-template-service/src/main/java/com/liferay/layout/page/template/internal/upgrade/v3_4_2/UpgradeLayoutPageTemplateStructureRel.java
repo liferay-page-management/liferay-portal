@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -102,6 +103,14 @@ public class UpgradeLayoutPageTemplateStructureRel extends UpgradeProcess {
 					"borderRadius",
 					_borderRadius.get(
 						fragmentStyledLayoutStructureItem.getBorderRadius()));
+
+				String textColorCssClass =
+					fragmentStyledLayoutStructureItem.getTextColorCssClass();
+
+				if (Validator.isNotNull(textColorCssClass)) {
+					stylesJSONObject.put(
+						"textColor", textColorCssClass + "Color");
+				}
 			}
 		}
 
