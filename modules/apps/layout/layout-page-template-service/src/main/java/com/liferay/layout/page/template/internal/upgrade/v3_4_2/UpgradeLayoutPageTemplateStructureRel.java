@@ -16,12 +16,15 @@ package com.liferay.layout.page.template.internal.upgrade.v3_4_2;
 
 import com.liferay.layout.responsive.ViewportSize;
 import com.liferay.layout.util.structure.ColumnLayoutStructureItem;
+import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -81,6 +84,25 @@ public class UpgradeLayoutPageTemplateStructureRel extends UpgradeProcess {
 						JSONUtil.put("size", "12"));
 				}
 			}
+
+			if (layoutStructureItem instanceof
+					FragmentStyledLayoutStructureItem) {
+
+				FragmentStyledLayoutStructureItem
+					fragmentStyledLayoutStructureItem =
+						(FragmentStyledLayoutStructureItem)layoutStructureItem;
+
+				JSONObject itemConfigJSONObject =
+					fragmentStyledLayoutStructureItem.getItemConfigJSONObject();
+
+				JSONObject stylesJSONObject =
+					itemConfigJSONObject.getJSONObject("styles");
+
+				stylesJSONObject.put(
+					"borderRadius",
+					_borderRadius.get(
+						fragmentStyledLayoutStructureItem.getBorderRadius()));
+			}
 		}
 
 		JSONObject jsonObject = layoutStructure.toJSONObject();
@@ -114,5 +136,21 @@ public class UpgradeLayoutPageTemplateStructureRel extends UpgradeProcess {
 			ps.executeBatch();
 		}
 	}
+
+	private static final Map<String, String> _borderRadius = HashMapBuilder.put(
+		StringPool.BLANK, "borderRadiusSm"
+	).put(
+		"borderRadiusCircle", "borderRadiusCircle"
+	).put(
+		"borderRadiusLg", "borderRadiusLg"
+	).put(
+		"borderRadiusSm", "borderRadiusSm"
+	).put(
+		"lg", "borderRadiusLg"
+	).put(
+		"none", "none"
+	).put(
+		"roundedPill", "roundedPill"
+	).build();
 
 }
