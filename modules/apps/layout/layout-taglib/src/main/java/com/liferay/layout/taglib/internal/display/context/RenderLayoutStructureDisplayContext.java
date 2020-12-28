@@ -572,11 +572,12 @@ public class RenderLayoutStructureDisplayContext {
 	}
 
 	public InfoListRendererContext getInfoListRendererContext(
-		String listItemStyle, String templateKey) {
+		HttpServletResponse httpServletResponse, String listItemStyle,
+		String templateKey) {
 
 		DefaultInfoListRendererContext defaultInfoListRendererContext =
 			new DefaultInfoListRendererContext(
-				_httpServletRequest, _httpServletResponse);
+				_httpServletRequest, httpServletResponse);
 
 		defaultInfoListRendererContext.setListItemRendererKey(listItemStyle);
 		defaultInfoListRendererContext.setTemplateKey(templateKey);

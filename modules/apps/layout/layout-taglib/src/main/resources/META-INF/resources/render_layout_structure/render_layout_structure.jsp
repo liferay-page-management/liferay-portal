@@ -41,7 +41,7 @@ for (String childrenItemId : childrenItemIds) {
 					<c:when test="<%= infoListRenderer != null %>">
 
 						<%
-						infoListRenderer.render(renderLayoutStructureDisplayContext.getCollection(collectionStyledLayoutStructureItem), renderLayoutStructureDisplayContext.getInfoListRendererContext(collectionStyledLayoutStructureItem.getListItemStyle(), collectionStyledLayoutStructureItem.getTemplateKey()));
+						infoListRenderer.render(renderLayoutStructureDisplayContext.getCollection(collectionStyledLayoutStructureItem), renderLayoutStructureDisplayContext.getInfoListRendererContext(PipingServletResponse.createPipingServletResponse(pageContext), collectionStyledLayoutStructureItem.getListItemStyle(), collectionStyledLayoutStructureItem.getTemplateKey()));
 						%>
 
 					</c:when>
