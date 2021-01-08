@@ -141,7 +141,16 @@ public class LayoutPermissionImpl
 		long layoutClassNameId = PortalUtil.getClassNameId(Layout.class);
 
 		if (layout.getClassNameId() == layoutClassNameId) {
-			layout = LayoutLocalServiceUtil.getLayout(layout.getClassPK());
+			Layout originalLayout = LayoutLocalServiceUtil.getLayout(
+				layout.getClassPK());
+
+			boolean originalLayoutContains = contains(
+				permissionChecker, originalLayout, checkViewableGroup,
+				actionId);
+
+			if (originalLayoutContains) {
+				return true;
+			}
 		}
 
 		CacheKey cacheKey = new CacheKey(
