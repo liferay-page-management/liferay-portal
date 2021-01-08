@@ -12,7 +12,7 @@
  * details.
  */
 
-function switchLanguage(layoutRendererInstance, languageId) {
+function switchLanguage(layoutRendererInstance, languageId, preserveValue) {
 	const {
 		reactComponentRef: {current},
 	} = layoutRendererInstance;
@@ -20,6 +20,7 @@ function switchLanguage(layoutRendererInstance, languageId) {
 	if (current) {
 		current.updateEditingLanguageId({
 			editingLanguageId: languageId,
+			preserveValue,
 		});
 	}
 }
@@ -40,7 +41,7 @@ export default function dataEngineLayoutRendererLanguageProxy(props) {
 				onLocaleChange.bind(this, event)
 			);
 
-			switchLanguage.call(this, event, props.currentLanguageId);
+			switchLanguage.call(this, event, props.currentLanguageId, true);
 		}
 	);
 
