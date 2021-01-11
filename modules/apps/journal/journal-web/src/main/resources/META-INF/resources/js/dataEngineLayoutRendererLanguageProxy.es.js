@@ -45,13 +45,11 @@ export default function dataEngineLayoutRendererLanguageProxy(props) {
 		}
 	);
 
-	function destroyInstance(_event) {
-		if (localeChangedHandler) {
-			localeChangedHandler.detach();
-		}
-
-		Liferay.detach('destroyPortlet', destroyInstance);
-	}
-
-	Liferay.on('destroyPortlet', destroyInstance);
+	return {
+		dispose() {
+			if (localeChangedHandler) {
+				localeChangedHandler.detach();
+			}
+		},
+	};
 }
