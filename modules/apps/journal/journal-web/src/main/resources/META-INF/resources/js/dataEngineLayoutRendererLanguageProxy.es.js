@@ -12,36 +12,36 @@
  * details.
  */
 
-function switchLanguage(layoutRendererInstance, languageId, preserveValue) {
-	const {
-		reactComponentRef: {current},
-	} = layoutRendererInstance;
-
-	if (current) {
-		current.updateEditingLanguageId({
-			editingLanguageId: languageId,
-			preserveValue,
-		});
-	}
-}
-
-function onLocaleChange(layoutRendererInstance, event) {
-	const selectedLanguageId = event.item.getAttribute('data-value');
-
-	switchLanguage.call(this, layoutRendererInstance, selectedLanguageId);
-}
-
-export default function dataEngineLayoutRendererLanguageProxy(props) {
+export default function dataEngineLayoutRendererLanguageProxy({
+	currentLanguageId,
+	namespace,
+}) {
 	let localeChangedHandler = null;
 
-	Liferay.componentReady(props.namespace + 'dataEngineLayoutRenderer').then(
-		(event) => {
+	Liferay.componentReady(`${namespace}dataEngineLayoutRenderer`).then(
+		(dataEngineLayoutRenderer) => {
+			const dataEngineReactComponentRef =
+				dataEngineLayoutRenderer?.reactComponentRef;
+
 			localeChangedHandler = Liferay.after(
 				'inputLocalized:localeChanged',
-				onLocaleChange.bind(this, event)
+				(event) => {
+					const selectedLanguageId = event.item.getAttribute(
+						'data-value'
+					);
+
+					switchLanguage(
+						dataEngineReactComponentRef,
+						selectedLanguageId
+					);
+				}
 			);
 
-			switchLanguage.call(this, event, props.currentLanguageId, true);
+			switchLanguage(
+				dataEngineReactComponentRef,
+				currentLanguageId,
+				true
+			);
 		}
 	);
 
@@ -52,4 +52,17 @@ export default function dataEngineLayoutRendererLanguageProxy(props) {
 			}
 		},
 	};
+}
+
+function switchLanguage(
+	dataEngineReactComponentRef,
+	languageId,
+	preserveValue
+) {
+	if (dataEngineReactComponentRef?.current) {
+		dataEngineReactComponentRef.current.updateEditingLanguageId({
+			editingLanguageId: languageId,
+			preserveValue,
+		});
+	}
 }
