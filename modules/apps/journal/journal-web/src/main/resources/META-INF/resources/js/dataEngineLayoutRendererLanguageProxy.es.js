@@ -37,11 +37,9 @@ export default function dataEngineLayoutRendererLanguageProxy({
 				}
 			);
 
-			switchLanguage(
-				dataEngineReactComponentRef,
-				currentLanguageId,
-				true
-			);
+			switchLanguage(dataEngineReactComponentRef, currentLanguageId, {
+				preserveValue: true,
+			});
 		}
 	);
 
@@ -57,7 +55,7 @@ export default function dataEngineLayoutRendererLanguageProxy({
 function switchLanguage(
 	dataEngineReactComponentRef,
 	languageId,
-	preserveValue
+	{preserveValue = false} = {}
 ) {
 	if (dataEngineReactComponentRef?.current) {
 		dataEngineReactComponentRef.current.updateEditingLanguageId({
