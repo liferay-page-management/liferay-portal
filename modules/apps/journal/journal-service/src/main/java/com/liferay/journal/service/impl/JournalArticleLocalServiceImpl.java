@@ -447,6 +447,7 @@ public class JournalArticleLocalServiceImpl
 		article.setClassPK(classPK);
 		article.setTreePath(article.buildTreePath());
 		article.setArticleId(articleId);
+		article.setExternalReferenceCode(articleId);
 		article.setVersion(version);
 		article.setUrlTitle(urlTitleMap.get(LocaleUtil.toLanguageId(locale)));
 
@@ -788,6 +789,7 @@ public class JournalArticleLocalServiceImpl
 		article.setClassNameId(classNameId);
 		article.setClassPK(classPK);
 		article.setArticleId(articleId);
+		article.setExternalReferenceCode(articleId);
 
 		content = format(user, groupId, article, content);
 		content = _replaceTempImages(article, content);
@@ -1079,6 +1081,7 @@ public class JournalArticleLocalServiceImpl
 		newArticle.setFolderId(oldArticle.getFolderId());
 		newArticle.setTreePath(oldArticle.getTreePath());
 		newArticle.setArticleId(newArticleId);
+		newArticle.setExternalReferenceCode(newArticleId);
 		newArticle.setVersion(JournalArticleConstants.VERSION_DEFAULT);
 		newArticle.setUrlTitle(
 			getUniqueUrlTitle(
@@ -5707,6 +5710,8 @@ public class JournalArticleLocalServiceImpl
 			article.setClassNameId(latestArticle.getClassNameId());
 			article.setClassPK(latestArticle.getClassPK());
 			article.setArticleId(articleId);
+			article.setExternalReferenceCode(
+				latestArticle.getExternalReferenceCode());
 			article.setVersion(version);
 			article.setSmallImageId(latestArticle.getSmallImageId());
 			article.setStatusByUserId(user.getUserId());
@@ -6360,6 +6365,8 @@ public class JournalArticleLocalServiceImpl
 			article.setClassNameId(oldArticle.getClassNameId());
 			article.setClassPK(oldArticle.getClassPK());
 			article.setArticleId(articleId);
+			article.setExternalReferenceCode(
+				oldArticle.getExternalReferenceCode());
 			article.setVersion(newVersion);
 			article.setUrlTitle(
 				getUniqueUrlTitle(
