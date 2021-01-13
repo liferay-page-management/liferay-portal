@@ -76,8 +76,13 @@ public class LayoutCrawler {
 			themeDisplay.setServerPort(_portal.getPortalServerPort(false));
 			themeDisplay.setSiteGroupId(layout.getGroupId());
 
-			HttpGet httpGet = new HttpGet(
-				_portal.getLayoutFullURL(layout, themeDisplay));
+			String layoutURL = _portal.getLayoutFullURL(layout, themeDisplay);
+
+			if (layout.isTypeContent()) {
+				layoutURL += "?p_p_state=pop_up";
+			}
+
+			HttpGet httpGet = new HttpGet(layoutURL);
 
 			HttpClientContext httpClientContext = new HttpClientContext();
 
