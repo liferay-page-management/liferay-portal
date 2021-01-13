@@ -575,7 +575,7 @@ public class JournalConverterImpl implements JournalConverter {
 				JSONArray fieldValueJSONArray = JSONFactoryUtil.createJSONArray(
 					fieldValue);
 
-				if (Objects.equals(fieldValueJSONArray.get(0), fieldName)) {
+				if (fieldValueJSONArray.length() == 1) {
 					fieldValue = Boolean.TRUE.toString();
 				}
 				else {
