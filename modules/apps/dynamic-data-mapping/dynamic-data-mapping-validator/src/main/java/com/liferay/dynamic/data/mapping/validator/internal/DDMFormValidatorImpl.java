@@ -94,8 +94,8 @@ public class DDMFormValidatorImpl implements DDMFormValidator {
 		_validateDDMFormFieldNames(ddmFormFields);
 
 		validateDDMFormFields(
-			ddmFormFields, new HashSet<String>(), ddmForm.getAvailableLocales(),
-			ddmForm.getDefaultLocale());
+			ddmForm, ddmFormFields, new HashSet<String>(),
+			ddmForm.getAvailableLocales(), ddmForm.getDefaultLocale());
 	}
 
 	@Reference(unbind = "-")
@@ -266,15 +266,16 @@ public class DDMFormValidatorImpl implements DDMFormValidator {
 	}
 
 	protected void validateDDMFormFields(
-			List<DDMFormField> ddmFormFields, Set<String> ddmFormFieldNames,
-			Set<Locale> ddmFormAvailableLocales, Locale ddmFormDefaultLocale)
+			DDMForm ddmForm, List<DDMFormField> ddmFormFields,
+			Set<String> ddmFormFieldNames, Set<Locale> ddmFormAvailableLocales,
+			Locale ddmFormDefaultLocale)
 		throws DDMFormFieldValueValidationException,
 			   DDMFormValidationException {
 
 		for (DDMFormField ddmFormField : ddmFormFields) {
 			validateDDMFormFieldName(ddmFormField, ddmFormFieldNames);
 
-			validateDDMFormFieldType(ddmFormField);
+			validateDDMFormFieldType(ddmForm, ddmFormField);
 
 			validateDDMFormFieldIndexType(ddmFormField);
 
@@ -294,12 +295,14 @@ public class DDMFormValidatorImpl implements DDMFormValidator {
 			validateDDMFormFieldVisibilityExpression(ddmFormField);
 
 			validateDDMFormFields(
-				ddmFormField.getNestedDDMFormFields(), ddmFormFieldNames,
-				ddmFormAvailableLocales, ddmFormDefaultLocale);
+				ddmForm, ddmFormField.getNestedDDMFormFields(),
+				ddmFormFieldNames, ddmFormAvailableLocales,
+				ddmFormDefaultLocale);
 		}
 	}
 
-	protected void validateDDMFormFieldType(DDMFormField ddmFormField)
+	protected void validateDDMFormFieldType(
+			DDMForm ddmForm, DDMFormField ddmFormField)
 		throws DDMFormValidationException {
 
 		if (Validator.isNull(ddmFormField.getType())) {
@@ -317,8 +320,10 @@ public class DDMFormValidatorImpl implements DDMFormValidator {
 		Set<String> ddmFormFieldTypeNames = new HashSet<>(
 			_ddmFormFieldTypeServicesTracker.getDDMFormFieldTypeNames());
 
-		ddmFormFieldTypeNames.addAll(
-			SetUtil.fromArray(DDMConstants.SUPPORTED_DDM_FORM_FIELD_TYPES));
+		if (!Objects.equals(ddmForm.getDefinitionSchemaVersion(), "2.0")) {
+			ddmFormFieldTypeNames.addAll(
+				SetUtil.fromArray(DDMConstants.SUPPORTED_DDM_FORM_FIELD_TYPES));
+		}
 
 		if (!ddmFormFieldTypeNames.contains(ddmFormField.getType())) {
 			throw new MustSetValidType(ddmFormField.getType());
