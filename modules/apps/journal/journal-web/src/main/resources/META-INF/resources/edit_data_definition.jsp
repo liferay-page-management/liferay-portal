@@ -184,7 +184,7 @@ editDDMStructureURL.setParameter("mvcPath", "/edit_data_definition.jsp");
 		);
 	}
 
-	const form = document.getElementById('<portlet:namespace />fm');
+	var form = document.getElementById('<portlet:namespace />fm');
 
 	if (form) {
 		form.addEventListener('submit', <portlet:namespace />saveDDMStructure);
