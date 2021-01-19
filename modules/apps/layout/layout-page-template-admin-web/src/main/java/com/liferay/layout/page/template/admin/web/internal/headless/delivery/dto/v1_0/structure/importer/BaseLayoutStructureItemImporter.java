@@ -241,6 +241,8 @@ public abstract class BaseLayoutStructureItemImporter {
 
 		String borderRadius = GetterUtil.getString(styles.get("borderRadius"));
 
+		Object shadow = styles.getOrDefault("boxShadow", styles.get("shadow"));
+
 		String textAlign = GetterUtil.getString(styles.get("textAlign"));
 
 		if (Validator.isNull(textAlign)) {
@@ -258,8 +260,6 @@ public abstract class BaseLayoutStructureItemImporter {
 		if (textColor instanceof String) {
 			textColor = _colors.getOrDefault(textColor, (String)textColor);
 		}
-
-		Object shadow = styles.getOrDefault("boxShadow", styles.get("shadow"));
 
 		return jsonObject.put(
 			"borderColor", borderColor
