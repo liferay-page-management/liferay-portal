@@ -17,11 +17,14 @@ package com.liferay.layout.page.template.admin.web.internal.headless.delivery.dt
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.liferay.headless.delivery.dto.v1_0.ContextReference;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
@@ -229,10 +232,40 @@ public abstract class BaseLayoutStructureItemImporter {
 			}
 		}
 
+		Object borderColor = styles.get("borderColor");
+
+		if (borderColor instanceof String) {
+			borderColor = _colors.getOrDefault(
+				borderColor, (String)borderColor);
+		}
+
+		String borderRadius = GetterUtil.getString(styles.get("borderRadius"));
+
+		String textAlign = GetterUtil.getString(styles.get("textAlign"));
+
+		if (Validator.isNull(textAlign)) {
+			for (String alignKey : _ALIGN_KEYS) {
+				if (styles.containsKey(alignKey)) {
+					textAlign = GetterUtil.getString(styles.get(alignKey));
+
+					break;
+				}
+			}
+		}
+
+		Object textColor = styles.get("textColor");
+
+		if (textColor instanceof String) {
+			textColor = _colors.getOrDefault(textColor, (String)textColor);
+		}
+
+		Object shadow = styles.getOrDefault("boxShadow", styles.get("shadow"));
+
 		return jsonObject.put(
-			"borderColor", styles.get("borderColor")
+			"borderColor", borderColor
 		).put(
-			"borderRadius", styles.get("borderRadius")
+			"borderRadius",
+			_borderRadiuses.getOrDefault(borderRadius, borderRadius)
 		).put(
 			"borderWidth", styles.get("borderWidth")
 		).put(
@@ -272,11 +305,12 @@ public abstract class BaseLayoutStructureItemImporter {
 		).put(
 			"paddingTop", styles.get("paddingTop")
 		).put(
-			"shadow", styles.get("shadow")
+			"shadow",
+			_shadows.getOrDefault(shadow, GetterUtil.getString(shadow))
 		).put(
-			"textAlign", styles.get("textAlign")
+			"textAlign", textAlign
 		).put(
-			"textColor", styles.get("textColor")
+			"textColor", textColor
 		).put(
 			"width", styles.get("width")
 		);
@@ -285,9 +319,49 @@ public abstract class BaseLayoutStructureItemImporter {
 	@Reference
 	protected Portal portal;
 
+	private static final String[] _ALIGN_KEYS = {
+		"buttonAlign", "contentAlign", "imageAlign", "textAlign"
+	};
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		BaseLayoutStructureItemImporter.class);
 
+	private static final Map<String, String> _borderRadiuses =
+		HashMapBuilder.put(
+			"lg", "0.375rem"
+		).put(
+			"none", StringPool.BLANK
+		).put(
+			"sm", "0.1875rem"
+		).build();
+	private static final Map<String, String> _colors = HashMapBuilder.put(
+		"danger", "#DA1414"
+	).put(
+		"dark", "#272833"
+	).put(
+		"gray-dark", "#393A4A"
+	).put(
+		"info", "#2E5AAC"
+	).put(
+		"light", "#F1F2F5"
+	).put(
+		"lighter", "#F7F8F9"
+	).put(
+		"primary", "#0B5FFF"
+	).put(
+		"secondary", "#6B6C7E"
+	).put(
+		"success", "#287D3C"
+	).put(
+		"warning", "#B95000"
+	).put(
+		"white", "#FFFFFF"
+	).build();
 	private static final ObjectMapper _objectMapper = new ObjectMapper();
+	private static final Map<String, String> _shadows = HashMapBuilder.put(
+		"lg", "0 1rem 3rem rgba(0, 0, 0, .175)"
+	).put(
+		"sm", "0 .125rem .25rem rgba(0, 0, 0, .075)"
+	).build();
 
 }
