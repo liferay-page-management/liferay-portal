@@ -106,12 +106,33 @@ public class FragmentLayoutStructureItemImporter
 			pageElement.getDefinition());
 
 		if (definitionMap != null) {
+			Map<String, Object> fragmentConfigMap =
+				(Map<String, Object>)definitionMap.get("fragmentConfig");
+
 			Map<String, Object> fragmentStyleMap =
 				(Map<String, Object>)definitionMap.get("fragmentStyle");
 
-			if (fragmentStyleMap != null) {
+			if (MapUtil.isNotEmpty(fragmentConfigMap) ||
+				MapUtil.isNotEmpty(fragmentStyleMap)) {
+
+				JSONObject commonStylesJSONObject = toStylesJSONObject(
+					fragmentStyleMap);
+				JSONObject configStylesJSONObject = toStylesJSONObject(
+					fragmentConfigMap);
+
+				for (String key : configStylesJSONObject.keySet()) {
+					if (Validator.isNull(
+							configStylesJSONObject.getString(key))) {
+
+						configStylesJSONObject.put(
+							key, commonStylesJSONObject.get(key));
+					}
+				}
+
 				JSONObject jsonObject = JSONUtil.put(
-					"styles", toStylesJSONObject(fragmentStyleMap));
+					"styles",
+					JSONUtil.merge(
+						commonStylesJSONObject, configStylesJSONObject));
 
 				layoutStructureItem.updateItemConfig(jsonObject);
 			}
