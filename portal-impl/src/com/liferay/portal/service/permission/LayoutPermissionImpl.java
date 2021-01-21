@@ -46,6 +46,7 @@ import com.liferay.portal.kernel.service.permission.OrganizationPermissionUtil;
 import com.liferay.portal.kernel.service.permission.UserGroupPermissionUtil;
 import com.liferay.portal.kernel.service.permission.UserPermissionUtil;
 import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.workflow.permission.WorkflowPermissionUtil;
 import com.liferay.portal.util.LayoutTypeControllerTracker;
 import com.liferay.portal.util.PropsValues;
@@ -280,6 +281,8 @@ public class LayoutPermissionImpl
 		}
 
 		if ((layout.getClassPK() != 0) &&
+			(layout.getClassNameId() ==
+			 	PortalUtil.getClassNameId(Layout.class)) &&
 			permissionChecker.hasPermission(
 				group, Layout.class.getName(), layout.getClassPK(), actionId)) {
 
