@@ -2133,11 +2133,12 @@ public class JournalArticleLocalServiceImpl
 	}
 
 	/**
-	 * Returns the latest web content article matching the group, external reference code, and
-	 * workflow status.
+	 * Returns the latest web content article matching the group and external
+	 * reference code.
 	 *
 	 * @param  groupId the primary key of the web content article's group
-	 * @param  externalReferenceCode the web content article's external reference code
+	 * @param  externalReferenceCode the web content article's external
+	 *         reference code
 	 * @return the latest matching web content article, or <code>null</code> if
 	 *         no matching web content article could be found
 	 */
@@ -3594,11 +3595,12 @@ public class JournalArticleLocalServiceImpl
 	}
 
 	/**
-	 * Returns the latest web content article matching the group, external reference code, and
-	 * workflow status.
+	 * Returns the latest web content article matching the group and external
+	 * reference code.
 	 *
 	 * @param  groupId the primary key of the web content article's group
-	 * @param  externalReferenceCode the web content article's external reference code
+	 * @param  externalReferenceCode the web content article's external
+	 *         reference code
 	 * @return the latest matching web content article
 	 * @throws PortalException if a portal exception occurred
 	 */

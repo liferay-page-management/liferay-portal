@@ -422,6 +422,8 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 	 *         otherwise
 	 * @param  articleId the primary key of the web content article
 	 * @param  autoArticleId whether to auto generate the web content article ID
+	 * @param  externalReferenceCode the external reference code of the web
+	 *         content article
 	 * @param  titleMap the web content article's locales and localized titles
 	 * @param  descriptionMap the web content article's locales and localized
 	 *         descriptions
@@ -435,8 +437,6 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 	 *         <code>null</code> otherwise
 	 * @param  ddmTemplateKey the primary key of the web content article's DDM
 	 *         template
-	 * @param  externalReferenceCode the external reference code of the web
-	 *         content article
 	 * @param  layoutUuid the unique string identifying the web content
 	 *         article's display page
 	 * @param  displayDateMonth the month the web content article is set to
@@ -780,11 +780,12 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 	}
 
 	/**
-	 * Returns the latest web content article matching the group, external reference code,
-	 * and workflow status.
+	 * Returns the latest web content article matching the group and external
+	 * reference code.
 	 *
 	 * @param  groupId the primary key of the web content article's group
-	 * @param  externalReferenceCode the external reference code of the web content article
+	 * @param  externalReferenceCode the external reference code of the web
+	 *         content article
 	 * @return the latest matching web content article, or <code>null</code> if
 	 *         no matching web content article could be found
 	 */
@@ -1807,11 +1808,12 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 	}
 
 	/**
-	 * Returns the latest web content article matching the group, external reference code,
-	 * and workflow status.
+	 * Returns the latest web content article matching the group, external
+	 * reference code, and workflow status.
 	 *
 	 * @param  groupId the primary key of the web content article's group
-	 * @param  externalReferenceCode the external reference code of the web content article
+	 * @param  externalReferenceCode the external reference code of the web
+	 *         content article
 	 * @return the latest matching web content article
 	 * @throws PortalException if a portal exception occurred
 	 */
@@ -2977,8 +2979,6 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 	 * @param  groupId the primary key of the web content article's group
 	 * @param  folderId the primary key of the web content article folder
 	 * @param  articleId the primary key of the web content article
-	 * @param  externalReferenCode the external reference code of the web
-	 *         content article
 	 * @param  version the web content article's version
 	 * @param  titleMap the web content article's locales and localized titles
 	 * @param  descriptionMap the web content article's locales and localized
