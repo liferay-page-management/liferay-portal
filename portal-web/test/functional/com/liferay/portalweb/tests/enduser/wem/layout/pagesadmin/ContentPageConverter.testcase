@@ -206,7 +206,47 @@ definition {
 	test ConvertWidgetPageAndVIewPlidIdentifier {
 		property portal.acceptance = "false";
 
-		// TODO LPS-98327 ConvertWidgetPageAndVIewPlidIdentifier pending implementation
+		JSONLayout.addPublicLayout(
+			groupName = "Test Site Name",
+			layoutName = "Test Page Name");
+
+		JSONLayout.addWidgetToPublicLayout(
+			groupName = "Test Site Name",
+			layoutName = "Test Page Name",
+			widgetName = "Asset Publisher");
+
+		ContentPagesNavigator.openViewContentPage(
+			pageName = "Test Page Name",
+			siteName = "Test Site Name");
+
+		var plid1 = Page.getPlidFromHtmlSource();
+
+		SitePages.openPagesAdmin(siteURLKey = "Test Site Name");
+
+		SitePages.gotoPageMenuItem(
+			menuItem = "Convert to content page...",
+			pageName = "Test Page Name");
+
+		Pause(locator1 = "3000");
+
+		PageEditor.assertFragmentSidebarLoaded();
+
+		Button.clickPublish();
+
+		AssertElementPresent(
+			key_pageName = "Test Page Name",
+			key_pageType = "Content Page",
+			locator1 = "SitePages#LIST_GROUP_ITEM_PAGE_TYPE");
+
+		ContentPagesNavigator.openViewContentPage(
+			pageName = "Test Page Name",
+			siteName = "Test Site Name");
+
+		var plid2 = Page.getPlidFromHtmlSource();
+
+		TestUtils.assertEquals(
+			actual = "${plid2}",
+			expected = "${plid1}");
 	}
 
 	@description = "This is a test for LPS-98589. Multiple widgets with different application decorators survive content page conversion."
