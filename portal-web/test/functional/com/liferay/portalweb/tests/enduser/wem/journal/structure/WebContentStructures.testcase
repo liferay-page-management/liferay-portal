@@ -617,7 +617,7 @@ definition {
 
 		WebContentStructures.saveCP(structureName = "WC Structure Name 1");
 
-		WebContentStructures.editStructure(structureName = "WC Structure Name 1");
+		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Name 1");
 
 		WebContentStructures.addName(structureName = "Edit Structure Name");
 
