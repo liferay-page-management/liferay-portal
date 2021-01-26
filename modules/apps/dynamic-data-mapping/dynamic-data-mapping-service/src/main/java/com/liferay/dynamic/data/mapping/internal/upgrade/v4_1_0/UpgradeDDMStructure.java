@@ -74,6 +74,7 @@ public class UpgradeDDMStructure extends UpgradeProcess {
 		_upgradeStructureDefinition();
 		_upgradeStructureLayoutDefinition();
 		_upgradeStructureVersionDefinition();
+		_upgradeNestedFieldsStructureLayoutDefinition();
 	}
 
 	private DDMFormField _createFieldSetDDMFormField(
@@ -230,6 +231,45 @@ public class UpgradeDDMStructure extends UpgradeProcess {
 		return ddmFormLayoutSerializerSerializeResponse.getContent();
 	}
 
+	private String _upgradeDDMFormLayoutDefinition(
+			String structureLayoutDefinition, String structureVersionDefinition)
+		throws Exception {
+
+		DDMFormLayout ddmFormLayout = DDMFormLayoutDeserializeUtil.deserialize(
+			_ddmFormLayoutDeserializer, structureLayoutDefinition);
+
+		DDMForm ddmForm = DDMFormDeserializeUtil.deserialize(
+			_ddmFormDeserializer, structureVersionDefinition);
+
+		DDMFormLayoutPage ddmFormLayoutPage =
+			ddmFormLayout.getDDMFormLayoutPage(0);
+
+		List<DDMFormLayoutRow> ddmFormLayoutRowList =
+			ddmFormLayoutPage.getDDMFormLayoutRows();
+
+		DDMFormLayoutRow ddmFormLayoutRow = new DDMFormLayoutRow();
+
+		for (DDMFormField ddmFormField : ddmForm.getDDMFormFields()) {
+			ddmFormLayoutRow.addDDMFormLayoutColumn(
+				new DDMFormLayoutColumn(
+					DDMFormLayoutColumn.FULL, ddmFormField.getName()));
+		}
+
+		ddmFormLayoutRowList.clear();
+		ddmFormLayoutRowList.add(ddmFormLayoutRow);
+
+		ddmFormLayoutPage.setDDMFormLayoutRows(ddmFormLayoutRowList);
+
+		DDMFormLayoutSerializerSerializeResponse
+			ddmFormLayoutSerializerSerializeResponse =
+				_ddmFormLayoutSerializer.serialize(
+					DDMFormLayoutSerializerSerializeRequest.Builder.newBuilder(
+						ddmFormLayout
+					).build());
+
+		return ddmFormLayoutSerializerSerializeResponse.getContent();
+	}
+
 	private String _upgradeDefinition(
 			String definition, Long parentStructureId,
 			Long parentStructureLayoutId, Long structureId)
@@ -247,6 +287,66 @@ public class UpgradeDDMStructure extends UpgradeProcess {
 		ddmForm.addDDMFormField(_fieldSetMap.get(structureId));
 
 		return DDMFormSerializeUtil.serialize(ddmForm, _ddmFormSerializer);
+	}
+
+	private void _upgradeNestedFieldsStructureLayoutDefinition()
+		throws Exception {
+
+		StringBundler sb1 = new StringBundler(13);
+
+		sb1.append("select DDMStructureLayout.structureLayoutId, ");
+		sb1.append("DDMStructureLayout.definition as ");
+		sb1.append("structureLayoutDefinition, ");
+		sb1.append("DDMStructureVersion.definition as ");
+		sb1.append("structureVersionDefinition from DDMStructureLayout inner ");
+		sb1.append("join DDMStructureVersion on ");
+		sb1.append("DDMStructureVersion.structureVersionId = ");
+		sb1.append("DDMStructureLayout.structureVersionId inner join ");
+		sb1.append("DDMStructure on DDMStructure.structureId = ");
+		sb1.append("DDMStructureVersion.structureId and DDMStructure.version ");
+		sb1.append("= DDMStructureVersion.version where ");
+		sb1.append("DDMStructure.classNameId = ? or DDMStructure.classNameId ");
+		sb1.append("= ?");
+
+		try (PreparedStatement ps1 = connection.prepareStatement(
+				sb1.toString());
+			PreparedStatement ps2 =
+				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
+					connection,
+					"update DDMStructureLayout set definition = ? where " +
+						"structureLayoutId = ?")) {
+
+			ps1.setLong(
+				1,
+				PortalUtil.getClassNameId(
+					"com.liferay.document.library.kernel.model." +
+						"DLFileEntryMetadata"));
+			ps1.setLong(
+				2,
+				PortalUtil.getClassNameId(
+					"com.liferay.journal.model.JournalArticle"));
+
+			try (ResultSet rs = ps1.executeQuery()) {
+				while (rs.next()) {
+					String structureLayoutDefinition = rs.getString(
+						"structureLayoutDefinition");
+					String structureVersionDefinition = rs.getString(
+						"structureVersionDefinition");
+
+					ps2.setString(
+						1,
+						_upgradeDDMFormLayoutDefinition(
+							structureLayoutDefinition,
+							structureVersionDefinition));
+
+					ps2.setLong(2, rs.getLong("structureLayoutId"));
+
+					ps2.addBatch();
+				}
+
+				ps2.executeBatch();
+			}
+		}
 	}
 
 	private String _upgradeParentStructureDefinition(
