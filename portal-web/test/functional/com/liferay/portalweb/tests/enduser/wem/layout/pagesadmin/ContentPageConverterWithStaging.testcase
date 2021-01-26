@@ -106,6 +106,7 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO LPS-98327 ViewWidgetPageInLiveAfterConvertingWidgetPage pending implementation
+
 	}
 
 }
