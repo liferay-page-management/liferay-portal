@@ -28,10 +28,6 @@ RenderFragmentLayoutDisplayContext renderFragmentLayoutDisplayContext = new Rend
 
 <liferay-util:dynamic-include key="com.liferay.layout,taglib#/render_fragment_layout/page.jsp#pre" />
 
-<liferay-util:html-top>
-	<%= renderFragmentLayoutDisplayContext.getPortletHeaderPaths() %>
-</liferay-util:html-top>
-
 <%
 try {
 	request.setAttribute(WebKeys.SHOW_PORTLET_TOPPER, Boolean.TRUE);
@@ -57,9 +53,5 @@ finally {
 	request.removeAttribute(WebKeys.SHOW_PORTLET_TOPPER);
 }
 %>
-
-<liferay-util:html-bottom>
-	<%= renderFragmentLayoutDisplayContext.getPortletFooterPaths() %>
-</liferay-util:html-bottom>
 
 <liferay-util:dynamic-include key="com.liferay.layout,taglib#/render_fragment_layout/page.jsp#post" />
