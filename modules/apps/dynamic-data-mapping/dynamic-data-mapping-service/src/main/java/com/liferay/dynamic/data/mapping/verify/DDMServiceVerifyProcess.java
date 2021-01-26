@@ -208,38 +208,9 @@ public class DDMServiceVerifyProcess extends VerifyProcess {
 					}
 					catch (PortalException portalException) {
 						_log.error(
-							String.format(
-								"Invalid data for DDM structure %d causes: " +
-									"{%s}",
-								ddmStructure.getStructureId(),
-								portalException.getMessage()),
-							portalException);
-
-						_log.error(
-							String.format(
-								"Invalid data for DDM structure %d causes: " +
-									"{%s}",
-								ddmStructure.getName(
-									LocaleThreadLocal.getDefaultLocale()),
-								ddmStructure.getDefinition()),
-							portalException);
-
-						DDMFormLayoutSerializerSerializeResponse
-							ddmFormLayoutSerializerSerializeResponse =
-								_ddmFormLayoutSerializer.serialize(
-									DDMFormLayoutSerializerSerializeRequest.
-										Builder.newBuilder(
-											ddmStructure.getDDMFormLayout()
-										).build());
-
-						_log.error(
-							String.format(
-								"Invalid data for DDM structure %d causes: " +
-									"{%s}",
-								ddmStructure.getName(
-									LocaleThreadLocal.getDefaultLocale()),
-								ddmFormLayoutSerializerSerializeResponse.
-									getContent()),
+							ddmStructure.getName(
+								LocaleThreadLocal.getDefaultLocale()) +
+									ddmStructure.getDefinition(),
 							portalException);
 					}
 				});
