@@ -16,21 +16,15 @@ package com.liferay.layout.taglib.internal.display.context;
 
 import com.liferay.layout.adaptive.media.LayoutAdaptiveMediaProcessor;
 import com.liferay.layout.taglib.internal.servlet.ServletContextUtil;
-import com.liferay.petra.io.unsync.UnsyncStringWriter;
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.PortletPreferences;
-import com.liferay.portal.kernel.portlet.PortletJSONUtil;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.taglib.servlet.PipingServletResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,60 +46,6 @@ public class RenderFragmentLayoutDisplayContext {
 
 		_themeDisplay = (ThemeDisplay)_httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
-	}
-
-	public String getPortletFooterPaths() {
-		UnsyncStringWriter unsyncStringWriter = new UnsyncStringWriter();
-
-		PipingServletResponse pipingServletResponse = new PipingServletResponse(
-			_httpServletResponse, unsyncStringWriter);
-
-		for (Portlet portlet : _getPortlets()) {
-			JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-
-			try {
-				PortletJSONUtil.populatePortletJSONObject(
-					_httpServletRequest, StringPool.BLANK, portlet, jsonObject);
-
-				PortletJSONUtil.writeHeaderPaths(
-					pipingServletResponse, jsonObject);
-			}
-			catch (Exception exception) {
-				_log.error(
-					"Unable to write portlet footer paths " +
-						portlet.getPortletId(),
-					exception);
-			}
-		}
-
-		return unsyncStringWriter.toString();
-	}
-
-	public String getPortletHeaderPaths() {
-		UnsyncStringWriter unsyncStringWriter = new UnsyncStringWriter();
-
-		PipingServletResponse pipingServletResponse = new PipingServletResponse(
-			_httpServletResponse, unsyncStringWriter);
-
-		for (Portlet portlet : _getPortlets()) {
-			JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-
-			try {
-				PortletJSONUtil.populatePortletJSONObject(
-					_httpServletRequest, StringPool.BLANK, portlet, jsonObject);
-
-				PortletJSONUtil.writeFooterPaths(
-					pipingServletResponse, jsonObject);
-			}
-			catch (Exception exception) {
-				_log.error(
-					"Unable to write portlet header paths " +
-						portlet.getPortletId(),
-					exception);
-			}
-		}
-
-		return unsyncStringWriter.toString();
 	}
 
 	public String processAMImages(String content) {
