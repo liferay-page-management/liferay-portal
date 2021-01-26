@@ -203,7 +203,7 @@ definition {
 	@description = "This is a test for LPS-98327. When a widget page is converted to a content page and the content page is published, the content page has the original plid identifier."
 	@ignore = "true"
 	@priority = "2"
-	test ConvertWidgetPageAndVIewPlidIdentifier {
+	test ConvertWidgetPageAndViewPlidIdentifier {
 		property portal.acceptance = "false";
 
 		JSONLayout.addPublicLayout(
@@ -215,7 +215,7 @@ definition {
 			layoutName = "Test Page Name",
 			widgetName = "Asset Publisher");
 
-		ContentPagesNavigator.openViewContentPage(
+		Navigator.gotoSitePage(
 			pageName = "Test Page Name",
 			siteName = "Test Site Name");
 
@@ -231,7 +231,7 @@ definition {
 
 		PageEditor.assertFragmentSidebarLoaded();
 
-		Button.clickPublish();
+		PageEditor.clickPublish();
 
 		AssertElementPresent(
 			key_pageName = "Test Page Name",
