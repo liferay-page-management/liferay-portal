@@ -14,6 +14,9 @@
 
 package com.liferay.dynamic.data.mapping.verify;
 
+import com.liferay.dynamic.data.mapping.io.DDMFormLayoutSerializer;
+import com.liferay.dynamic.data.mapping.io.DDMFormLayoutSerializerSerializeRequest;
+import com.liferay.dynamic.data.mapping.io.DDMFormLayoutSerializerSerializeResponse;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesDeserializer;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesDeserializerDeserializeRequest;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesDeserializerDeserializeResponse;
@@ -38,6 +41,7 @@ import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.verify.VerifyProcess;
 
@@ -210,6 +214,33 @@ public class DDMServiceVerifyProcess extends VerifyProcess {
 								ddmStructure.getStructureId(),
 								portalException.getMessage()),
 							portalException);
+
+						_log.error(
+							String.format(
+								"Invalid data for DDM structure %d causes: " +
+									"{%s}",
+								ddmStructure.getName(
+									LocaleThreadLocal.getDefaultLocale()),
+								ddmStructure.getDefinition()),
+							portalException);
+
+						DDMFormLayoutSerializerSerializeResponse
+							ddmFormLayoutSerializerSerializeResponse =
+								_ddmFormLayoutSerializer.serialize(
+									DDMFormLayoutSerializerSerializeRequest.
+										Builder.newBuilder(
+											ddmStructure.getDDMFormLayout()
+										).build());
+
+						_log.error(
+							String.format(
+								"Invalid data for DDM structure %d causes: " +
+									"{%s}",
+								ddmStructure.getName(
+									LocaleThreadLocal.getDefaultLocale()),
+								ddmFormLayoutSerializerSerializeResponse.
+									getContent()),
+							portalException);
 					}
 				});
 
@@ -245,6 +276,9 @@ public class DDMServiceVerifyProcess extends VerifyProcess {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DDMServiceVerifyProcess.class);
+
+	@Reference(target = "(ddm.form.layout.serializer.type=json)")
+	private DDMFormLayoutSerializer _ddmFormLayoutSerializer;
 
 	private DDMFormLayoutValidator _ddmFormLayoutValidator;
 	private DDMFormValidator _ddmFormValidator;
