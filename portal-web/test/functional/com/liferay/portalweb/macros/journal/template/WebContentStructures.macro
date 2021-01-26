@@ -111,6 +111,14 @@ definition {
 		}
 	}
 
+	macro editStructure {
+		var key_ddlDataDefinitionName = "${structureName}";
+
+		Click(locator1 = "DDMSelectStructure#DDM_STRUCTURE_ELLIPSIS");
+
+		MenuItem.clickNoError(menuItem = "Edit");
+	}
+
 	macro editStructureDefaultValuesCP {
 		LexiconEntry.gotoEntryMenuItem(
 			menuItem = "Edit Default Values",
