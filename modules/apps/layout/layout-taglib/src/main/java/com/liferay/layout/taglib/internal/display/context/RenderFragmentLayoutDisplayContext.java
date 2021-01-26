@@ -16,18 +16,8 @@ package com.liferay.layout.taglib.internal.display.context;
 
 import com.liferay.layout.adaptive.media.LayoutAdaptiveMediaProcessor;
 import com.liferay.layout.taglib.internal.servlet.ServletContextUtil;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Portlet;
-import com.liferay.portal.kernel.model.PortletPreferences;
-import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
-import com.liferay.portal.kernel.service.PortletPreferencesLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.WebKeys;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -56,43 +46,8 @@ public class RenderFragmentLayoutDisplayContext {
 			content);
 	}
 
-	private List<Portlet> _getPortlets() {
-		if (_portlets != null) {
-			return _portlets;
-		}
-
-		_portlets = new ArrayList<>();
-
-		List<PortletPreferences> portletPreferencesList =
-			PortletPreferencesLocalServiceUtil.getPortletPreferences(
-				PortletKeys.PREFS_OWNER_ID_DEFAULT,
-				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _themeDisplay.getPlid());
-
-		for (PortletPreferences portletPreferences : portletPreferencesList) {
-			Portlet portlet = PortletLocalServiceUtil.getPortletById(
-				_themeDisplay.getCompanyId(),
-				portletPreferences.getPortletId());
-
-			if (portlet == null) {
-				continue;
-			}
-
-			if (!portlet.isActive() || portlet.isUndeployedPortlet()) {
-				continue;
-			}
-
-			_portlets.add(portlet);
-		}
-
-		return _portlets;
-	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		RenderFragmentLayoutDisplayContext.class);
-
 	private final HttpServletRequest _httpServletRequest;
 	private final HttpServletResponse _httpServletResponse;
-	private List<Portlet> _portlets;
 	private final ThemeDisplay _themeDisplay;
 
 }
