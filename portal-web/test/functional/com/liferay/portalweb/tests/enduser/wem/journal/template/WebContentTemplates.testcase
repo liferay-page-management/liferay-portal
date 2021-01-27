@@ -276,7 +276,6 @@ definition {
 			templateName = "WC Template Name Edit",
 			templatePreviousName = "WC Template Name");
 
-
 		WebContentTemplates.deleteCP(templateName = "WC Template Name");
 	}
 
