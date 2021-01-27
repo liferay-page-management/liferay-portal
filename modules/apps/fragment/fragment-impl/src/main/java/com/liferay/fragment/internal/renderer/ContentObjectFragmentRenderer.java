@@ -18,17 +18,28 @@ import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
+import com.liferay.info.constants.InfoDisplayWebKeys;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.InfoItemDetails;
 import com.liferay.info.item.InfoItemServiceTracker;
 import com.liferay.info.item.provider.InfoItemObjectProvider;
+import com.liferay.info.item.provider.InfoItemPermissionProvider;
 import com.liferay.info.item.renderer.InfoItemRenderer;
 import com.liferay.info.item.renderer.InfoItemRendererTracker;
 import com.liferay.info.item.renderer.InfoItemTemplatedRenderer;
+import com.liferay.layout.display.page.LayoutDisplayPageProvider;
+import com.liferay.layout.display.page.constants.LayoutDisplayPageWebKeys;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.Tuple;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.List;
 import java.util.Locale;
@@ -151,6 +162,17 @@ public class ContentObjectFragmentRenderer implements FragmentRenderer {
 			return;
 		}
 
+		if (!_hasPermission(
+				httpServletRequest, jsonObject.getString("className"),
+				displayObject)) {
+
+			FragmentRendererUtil.printPortletMessageInfo(
+				httpServletRequest, httpServletResponse,
+				"you-do-not-have-permission-to-access-the-requested-resource");
+
+			return;
+		}
+
 		if (infoItemRenderer instanceof InfoItemTemplatedRenderer) {
 			InfoItemTemplatedRenderer<Object> infoItemTemplatedRenderer =
 				(InfoItemTemplatedRenderer<Object>)infoItemRenderer;
@@ -253,6 +275,57 @@ public class ContentObjectFragmentRenderer implements FragmentRenderer {
 
 		return new Tuple(defaultInfoItemRenderer);
 	}
+
+	private boolean _hasPermission(
+		HttpServletRequest httpServletRequest, String className,
+		Object displayObject) {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		LayoutDisplayPageProvider<?> layoutDisplayPageProvider =
+			(LayoutDisplayPageProvider<?>)httpServletRequest.getAttribute(
+				LayoutDisplayPageWebKeys.LAYOUT_DISPLAY_PAGE_PROVIDER);
+
+		if (Validator.isNull(className) &&
+			(layoutDisplayPageProvider != null)) {
+
+			className = layoutDisplayPageProvider.getClassName();
+		}
+
+		InfoItemDetails infoItemDetails =
+			(InfoItemDetails)httpServletRequest.getAttribute(
+				InfoDisplayWebKeys.INFO_ITEM_DETAILS);
+
+		if (Validator.isNull(className) && (infoItemDetails != null)) {
+			className = infoItemDetails.getClassName();
+		}
+
+		try {
+			InfoItemPermissionProvider infoItemPermissionProvider =
+				_infoItemServiceTracker.getFirstInfoItemService(
+					InfoItemPermissionProvider.class, className);
+
+			if ((infoItemPermissionProvider != null) &&
+				!infoItemPermissionProvider.hasPermission(
+					themeDisplay.getPermissionChecker(), displayObject,
+					ActionKeys.VIEW)) {
+
+				return false;
+			}
+		}
+		catch (Exception exception) {
+			_log.error("Unable to check display object permissions", exception);
+
+			return false;
+		}
+
+		return true;
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		ContentObjectFragmentRenderer.class);
 
 	@Reference
 	private FragmentEntryConfigurationParser _fragmentEntryConfigurationParser;
