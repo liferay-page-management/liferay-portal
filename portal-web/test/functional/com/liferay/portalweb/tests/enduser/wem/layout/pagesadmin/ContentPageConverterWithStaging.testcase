@@ -99,7 +99,7 @@ definition {
 			locator1 = "Portlet#TITLE");
 	}
 
-	@description = "This is a test for LPS-98327. When a widget page is converted to a content page and the content page is published, the content page has the original plid identifier."
+	@description = "This is a test for LPS-98327. When a widget page is converted to a content page and the content page is not published yet, the content page has the original plid identifier."
 	@ignore = "true"
 	@priority = "2"
 	test ViewWidgetPageInLiveAfterConvertingWidgetPage {
