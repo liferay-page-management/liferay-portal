@@ -908,6 +908,16 @@ definition {
 			locator1 = "WCEditWebContent#REPEATED_FIELD");
 	}
 
+	macro viewDuplicatedField{
+		var i = "0";
+
+		while ("${i}" != "${totalPortletCount}") {
+			var i = ${i} + 1;
+
+			AssertElementPresent(locator1 = "WCEditWebContent#REPEATABLE_BUTTON");
+		}
+	}
+
 	macro clickMarginOfContentContainer {
 		var elementHeight = selenium.getElementHeight("WCEditWebContent#CONTENT_CONTAINER");
 		var offSetY = MathUtil.product("50","${elementHeight}");
