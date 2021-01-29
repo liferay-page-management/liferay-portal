@@ -268,7 +268,7 @@ definition {
 	@priority = "4"
 	test SetColorFieldAsRequired {
 		property portal.acceptance = "false";
-		
+
 		DMDocumentType.add(
 			dmDocumentTypeDescription = "DM Document Type Description",
 			dmDocumentTypeFieldNames = "Color",
@@ -294,7 +294,6 @@ definition {
 			key_fieldFieldLabel = "Color",
 			locator1 = "WCEditWebContent#FIELD_REQUIRED_ALERT",
 			value1 = "This field is required.");
-		
 	}
 
 	@description = "This is a test for LPS-98070. As a Developer, I want to Implement the color field type"
