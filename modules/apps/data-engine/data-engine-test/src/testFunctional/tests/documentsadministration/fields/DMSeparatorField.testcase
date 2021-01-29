@@ -149,12 +149,42 @@ definition {
 	}
 
 	@description = "This is a test for LPS-98081. As a Developer, I want to use separators"
-	@ignore = "true"
 	@priority = "3"
 	test ShowAndHideSeparatorLabel {
 		property portal.acceptance = "false";
 
-		// TODO LPS-98081 ShowAndHideSeparatorLabel pending implementation
+		DMNavigator.gotoDocumentCP(dmDocumentTitle = "Document Type Name");
+
+		DataEngine.viewField(
+			fieldFieldLabel = "Separator",
+			fieldName = "Separator"
+		);
+
+		FormViewBuilder.switchToAdvancedTab();
+
+		FormFields.viewSwitcherLabel(
+			fieldLabel = "Separator",
+			fieldName = "Separator"
+		);
+		
+		Uncheck.uncheckToggleSwitch(
+			checkboxName = "Show Label",
+			locator1 = "Checkbox#ANY_CHECKBOX"
+		);
+
+		FormFields.viewSwitcherLabelNotPresent(
+			fieldLabel = "Separator Label",
+			fieldName = "Separator"
+		);
+
+		Button.clickSave();
+
+		DMNavigator.gotoDocumentCP(dmDocumentTitle = "Document Type Name");
+
+		AssertElementNotPresent(locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER");
+
+		Button.clickSave();
+		
 	}
 
 }
