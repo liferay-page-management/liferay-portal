@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.dynamic.data.mapping.util.DDMDataDefinitionConverter;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -58,7 +57,7 @@ public class DMMDataDefinitionConverterTest {
 			_ddmDataDefinitionConverter.convertDDMFormDataDefinition(
 				_read(
 					"ddm-form-data-definition-json-converter-all-fields.json"),
-				LocaleUtil.US);
+				0, 0);
 
 		Assert.assertEquals(
 			_objectMapper.readTree(
@@ -75,7 +74,7 @@ public class DMMDataDefinitionConverterTest {
 		String dataDefinition =
 			_ddmDataDefinitionConverter.convertDDMFormDataDefinition(
 				_read("ddm-form-data-definition-json-converter-checkbox.json"),
-				LocaleUtil.US);
+				0, 0);
 
 		Assert.assertEquals(
 			_objectMapper.readTree(
@@ -94,13 +93,32 @@ public class DMMDataDefinitionConverterTest {
 				_read(
 					"ddm-form-data-definition-json-converter-nested-" +
 						"fields.json"),
-				LocaleUtil.US);
+				0, 0);
 
 		Assert.assertEquals(
 			_objectMapper.readTree(
 				_read(
 					"ddm-form-data-definition-json-converter-nested-fields-" +
 						"expected-result.json")),
+			_objectMapper.readTree(dataDefinition));
+	}
+
+	@Test
+	public void testConvertDDMFormDataDefinitionParentStructure()
+		throws Exception {
+
+		String dataDefinition =
+			_ddmDataDefinitionConverter.convertDDMFormDataDefinition(
+				_read(
+					"ddm-form-data-definition-json-converter-parent-" +
+						"structure.json"),
+				1, 2);
+
+		Assert.assertEquals(
+			_objectMapper.readTree(
+				_read(
+					"ddm-form-data-definition-json-converter-parent-" +
+						"structure-expected-result.json")),
 			_objectMapper.readTree(dataDefinition));
 	}
 
@@ -113,7 +131,7 @@ public class DMMDataDefinitionConverterTest {
 				_read(
 					"ddm-form-data-definition-json-converter-repeatable-" +
 						"nested-fields.json"),
-				LocaleUtil.US);
+				0, 0);
 
 		Assert.assertEquals(
 			_objectMapper.readTree(
@@ -127,11 +145,19 @@ public class DMMDataDefinitionConverterTest {
 	public void testConvertDDMFormLayoutDataDefinitionLinkToPage()
 		throws Exception {
 
+		String structureVersionDataDefinition =
+			_ddmDataDefinitionConverter.convertDDMFormDataDefinition(
+				_read(
+					"ddm-form-data-definition-json-converter-link-to-" +
+						"page.json"),
+				0, 0);
+
 		String dataDefinition =
 			_ddmDataDefinitionConverter.convertDDMFormLayoutDataDefinition(
 				_read(
 					"ddm-form-layout-data-definition-json-converter-link-to-" +
-						"page.json"));
+						"page.json"),
+				structureVersionDataDefinition);
 
 		Assert.assertEquals(
 			_objectMapper.readTree(
@@ -150,7 +176,7 @@ public class DMMDataDefinitionConverterTest {
 				_read(
 					"ddm-form-data-definition-json-converter-nested-" +
 						"fields.json"),
-				LocaleUtil.US);
+				0, 0);
 
 		String dataDefinition =
 			_ddmDataDefinitionConverter.convertDDMFormLayoutDataDefinition(
