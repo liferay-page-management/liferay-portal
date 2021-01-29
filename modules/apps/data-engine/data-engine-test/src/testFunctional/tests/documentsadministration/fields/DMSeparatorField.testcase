@@ -157,25 +157,21 @@ definition {
 
 		DataEngine.viewField(
 			fieldFieldLabel = "Separator",
-			fieldName = "Separator"
-		);
+			fieldName = "Separator");
 
 		FormViewBuilder.switchToAdvancedTab();
 
 		FormFields.viewSwitcherLabel(
 			fieldLabel = "Separator",
-			fieldName = "Separator"
-		);
-		
+			fieldName = "Separator");
+
 		Uncheck.uncheckToggleSwitch(
 			checkboxName = "Show Label",
-			locator1 = "Checkbox#ANY_CHECKBOX"
-		);
+			locator1 = "Checkbox#ANY_CHECKBOX");
 
 		FormFields.viewSwitcherLabelNotPresent(
 			fieldLabel = "Separator Label",
-			fieldName = "Separator"
-		);
+			fieldName = "Separator");
 
 		Button.clickSave();
 
@@ -184,7 +180,6 @@ definition {
 		AssertElementNotPresent(locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER");
 
 		Button.clickSave();
-		
 	}
 
 }
