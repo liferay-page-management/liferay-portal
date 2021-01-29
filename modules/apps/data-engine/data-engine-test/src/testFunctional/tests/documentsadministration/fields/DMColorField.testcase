@@ -125,30 +125,29 @@ definition {
 		property portal.acceptance = "false";
 
 		DMDocumentType.add(
-            dmDocumentTypeDescription = "DM Document Type Description",
-            dmDocumentTypeFieldNames = "Color",
-            dmDocumentTypeName = "DM Document Type Name");
+			dmDocumentTypeDescription = "DM Document Type Description",
+			dmDocumentTypeFieldNames = "Color",
+			dmDocumentTypeName = "DM Document Type Name");
 
-        LexiconEntry.gotoEntryMenuItem(
-            menuItem = "Edit",
-            rowEntry = "DM Document Type Name");
-		
+		LexiconEntry.gotoEntryMenuItem(
+			menuItem = "Edit",
+			rowEntry = "DM Document Type Name");
+
 		DataEngine.duplicateField(fieldFieldLabel = "Color");
 
-        DDLDataDefinition.save();
+		DDLDataDefinition.save();
 
-        NavItem.click(navItem = "Documents and Media");
+		NavItem.click(navItem = "Documents and Media");
 
-        DMNavigator.gotoAddDocumentTypeCP(dmDocumentTypeName = "DM Document Type Name");
+		DMNavigator.gotoAddDocumentTypeCP(dmDocumentTypeName = "DM Document Type Name");
 
 		AssertElementPresent(
-            key_fieldFieldLabel = "Color",
-            locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
+			key_fieldFieldLabel = "Color",
+			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
 
-        AssertElementPresent(
-            key_fieldFieldLabel = "Copy of Color",
-            locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
-
+		AssertElementPresent(
+			key_fieldFieldLabel = "Copy of Color",
+			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
 	}
 
 	@description = "This is a test for LPS-98070. As a Developer, I want to Implement the color field type"
