@@ -908,16 +908,6 @@ definition {
 			locator1 = "WCEditWebContent#REPEATED_FIELD");
 	}
 
-	macro viewDuplicatedField{
-		var i = "0";
-
-		while ("${i}" != "${totalPortletCount}") {
-			var i = ${i} + 1;
-
-			AssertElementPresent(locator1 = "WCEditWebContent#REPEATABLE_BUTTON");
-		}
-	}
-
 	macro clickMarginOfContentContainer {
 		var elementHeight = selenium.getElementHeight("WCEditWebContent#CONTENT_CONTAINER");
 		var offSetY = MathUtil.product("50","${elementHeight}");
@@ -1865,6 +1855,16 @@ definition {
 		AssertElementPresent(
 			key_webContentTitle = "${webContentTitle}",
 			locator1 = "WC#ENTRY_TABLE_TITLE");
+	}
+
+	macro viewDuplicatedField {
+		var i = "0";
+
+		while ("${i}" != "${totalPortletCount}") {
+			var i = ${i} + 1;
+
+			AssertElementPresent(locator1 = "WCEditWebContent#REPEATABLE_BUTTON");
+		}
 	}
 
 	macro viewEditWCViaWCD {
