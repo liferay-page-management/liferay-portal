@@ -9,6 +9,16 @@ definition {
 		TestCase.setUpPortalInstance();
 
 		User.firstLoginPG();
+
+		ProductMenu.gotoPortlet(
+            category = "Content & Data",
+            portlet = "Documents and Media");
+
+        DMNavigator.gotoDocumentType();
+
+        LexiconEntry.gotoAdd();
+
+        PortletEntry.inputName(name = "New Document Type");
 	}
 
 	tearDown {
@@ -117,7 +127,26 @@ definition {
 	test SetHelpTextOfRichText {
 		property portal.acceptance = "false";
 
-		// TODO LPS-98076 SetHelpTextOfRichText pending implementation
+		DataEngine.addField(
+			fieldFieldLabel = "FieldTest",
+			fieldName = "Rich Text");
+
+		DataEngine.editFieldTip(
+			fieldFieldLabel = "FieldTest",
+			fieldHelp = "Test Help Text");
+
+		PortletEntry.save();
+		
+		DMNavigator.gotoDocumentCP(dmDocumentTitle = "New Document Type");
+
+		DataEngine.viewField(
+			fieldFieldLabel = "FieldTest",
+			fieldName = "Rich Text");
+
+        AssertTextEquals(
+			key_fieldFieldLabel = "FieldTest",
+			locator1 = "DDMEditStructure#SETTINGS_TEXT",
+			value1 = "Test Help Text");
 	}
 
 	@description = "This is a test for LPS-98076. As a Developer, I want to Implement the HTML field type"
