@@ -80,30 +80,26 @@ definition {
 	@priority = "4"
 	test SetFieldReferenceOfRichText {
 		property portal.acceptance = "false";
+
 		var referenceDT = "ReferenceText";
 
 		DataEngine.addField(
-			fieldName = "Rich Text",
-			fieldFieldLabel = "Test"
-		);
+			fieldFieldLabel = "Test",
+			fieldName = "Rich Text");
 
 		DataEngine.editFieldReference(
+			assertFieldReference = "${referenceDT}",
 			fieldFieldLabel = "Test",
-			fieldReference = "${referenceDT}",
-			assertFieldReference ="${referenceDT}"
-		);
+			fieldReference = "${referenceDT}");
 
 		DDLDataDefinition.save();
 
-		DMNavigator.gotoDocumentCP(
-			dmDocumentTitle = "New Document Type"
-		);
+		DMNavigator.gotoDocumentCP(dmDocumentTitle = "New Document Type");
 
 		DataEngine.viewFieldReference(
 			fieldFieldLabel = "Test",
 			fieldName = "Rich Text",
-			fieldReference = "${referenceDT}"
-		);
+			fieldReference = "${referenceDT}");
 	}
 
 	@description = "This is a test for LPS-98076. As a Developer, I want to Implement the HTML field type"
