@@ -152,12 +152,42 @@ definition {
 	}
 
 	@description = "This is a test for LPS-98077. As a Developer, I want to the ability to nest fields"
-	@ignore = "true"
 	@priority = "4"
 	test EditFieldGroupLabel {
 		property portal.acceptance = "false";
 
-		// TODO LPS-98077 EditFieldGroupLabel pending implementation
+		ProductMenu.gotoPortlet(
+            category = "Content & Data",
+            portlet = "Documents and Media"
+        );
+
+		DMNavigator.gotoDocumentType();
+
+		DMDocumentType.addWithoutSave(
+			dmDocumentTypeName = "DM Document Type Name",
+			dmDocumentTypeFieldNames = "Text",
+			dmDocumentTypeDescription = " DM Document Type Description"
+		);
+
+		DataEngine.addFieldNested(
+			fieldFieldLabel = "Text2",
+			fieldName = "Text",
+			targetFieldLabel = "Text"
+		);
+        
+		DataEngine.editFieldLabel(
+			fieldFieldLabel = "Fields Group",
+			fieldFieldLabelEdit = "New name"
+		);
+
+		DDLDataDefinition.save();
+
+		LexiconEntry.gotoEntry(rowEntry = "DM Document Type Name");
+
+        AssertTextEquals(
+            locator1 = "//div[contains(@class, 'ddm-field-types')]//label[contains(text(),'New name')]",
+            value1 = "New name");
+			
 	}
 
 	@description = "This is a test for LPS-98077. As a Developer, I want to the ability to nest fields"
