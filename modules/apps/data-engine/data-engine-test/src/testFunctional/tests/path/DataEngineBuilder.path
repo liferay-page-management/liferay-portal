@@ -14,6 +14,10 @@
 	<td></td>
 </tr>
 <tr>
+    <td>FORM_FIELDS_GROUP_INDEX</td>
+    <td>xpath=(//div[contains(@class, 'fieldset')]//label[text()='Fields Group'])[${index}]</td>
+    <td></td>
+<tr>
 	<td>FORM_FIELDS_GROUP_FIRST</td>
 	<td>xpath=(//div[contains(@class, 'fieldset')]//label[text()='Fields Group'])</td>
 	<td></td>
@@ -21,6 +25,11 @@
 <tr>
 	<td>FORM_FIELDS_GROUP_VERTICAL_ELLIPSIS</td>
 	<td>//div[contains(@class, 'dropdown')]//button[@data-title='Actions']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FORM_FIELD_LABEL</td>
+	<td>//div[contains(@class, 'fieldset')]//label[text()='${formGroupLabel}']</td>
 	<td></td>
 </tr>
 <tr>
