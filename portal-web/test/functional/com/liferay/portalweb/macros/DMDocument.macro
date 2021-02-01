@@ -1616,6 +1616,30 @@ definition {
 		}
 	}
 
+	macro selectColorRGB {
+		Click(
+			key_fieldLabel = "${fieldLabel}",
+			locator1 = "DDMField#COLOR_PICKER");
+
+		Click(locator1 = "DDMField#COLOR_PICKER_CUSTOM_COLOR_BUTTON");
+
+		Type(
+			locator1 = "DDMField#COLOR_PICKER_RGB_RED_INPUT",
+			value1 = "${redValue}");
+
+		Type(
+			locator1 = "DDMField#COLOR_PICKER_RGB_GREEN_INPUT",
+			value1 = "${greenValue}");
+
+		Type(
+			locator1 = "DDMField#COLOR_PICKER_RGB_BLUE_INPUT",
+			value1 = "${blueValue}");
+
+		Click(
+			key_fieldLabel = "${fieldLabel}",
+			locator1 = "DDMField#COLOR_PICKER");
+	}
+
 	macro sharePG {
 		IFrame.selectModalFrame();
 
