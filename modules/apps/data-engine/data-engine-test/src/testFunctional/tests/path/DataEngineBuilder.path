@@ -24,6 +24,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>FORM_FIELDS_GROUP_1</td>
+	<td>//div[contains(@class, 'ddm-field-types')]//label[contains(text(), 'Fields Group')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>FORM_FIELDS_GROUP_VERTICAL_ELLIPSIS</td>
 	<td>//div[contains(@class, 'dropdown')]//button[@data-title='Actions']</td>
 	<td></td>

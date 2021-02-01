@@ -35,12 +35,42 @@ definition {
 	}
 
 	@description = "This is a test for LPS-98077. As a Developer, I want to the ability to nest fields"
-	@ignore = "true"
 	@priority = "5"
 	test CreateFieldGroup {
 		property portal.acceptance = "false";
 
-		// TODO LPS-98077 CreateFieldGroup pending implementation
+		var dmDocumentTypeName = "DM Document Type Name";
+	
+		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+
+		DMNavigator.gotoDocumentType();
+
+		DMDocumentType.addWithoutSave(
+			dmDocumentTypeDescription = "DM Document Type Description",
+			dmDocumentTypeName = "${dmDocumentTypeName}",
+			dmDocumentTypeFieldNames = "Text"
+		);
+
+		DataEngine.addFieldNested(
+			fieldFieldLabel = "Numeric",
+			fieldName = "Numeric",
+			targetFieldLabel = "Text"
+		);
+
+		PortletEntry.save();
+
+		DMDocumentType.viewCP(dmDocumentTypeName = "${dmDocumentTypeName}");
+
+		LexiconEntry.gotoEntry(rowEntry = "${dmDocumentTypeName}");
+
+		AssertElementPresent(locator1="DataEngineBuilder#FORM_FIELDS_GROUP_1");
+
+		PortletEntry.save();
+
+		DMDocument.deleteCP(
+			dmDocumentTitle = "${dmDocumentTypeName}",
+			recycleBinDisabled = "true"	
+		);
 	}
 
 	@description = "This is a test for LPS-98077. As a Developer, I want to the ability to nest fields"
