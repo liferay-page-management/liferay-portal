@@ -28,6 +28,9 @@
 	<td>//div[contains(@class, 'ddm-field-types')]//label[contains(text(), 'Fields Group')]</td>
 	<td></td>
 </tr>
+	<td>FIELDS_GROUP_LOCATOR</td>
+	<td>//div[contains(@class,'ddm-field-types')]//label[contains(text(),'${key_FieldGroupLabel}')]</td>
+	<td></td>
 <tr>
 	<td>FORM_FIELDS_GROUP_VERTICAL_ELLIPSIS</td>
 	<td>//div[contains(@class, 'dropdown')]//button[@data-title='Actions']</td>
