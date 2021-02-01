@@ -74,32 +74,29 @@ definition {
 	@priority = "5"
 	test DuplicateAFieldGroup {
 		property portal.acceptance = "false";
-		
+
 		var formGroupLabel = "Copy of Fields Group";
 
 		ProductMenu.gotoPortlet(
-            category = "Content & Data",
-            portlet = "Documents and Media"
-        );
+			category = "Content & Data",
+			portlet = "Documents and Media");
 
-        AppBuilderAdmin.switchTab(tabName = "Document Types");
+		AppBuilderAdmin.switchTab(tabName = "Document Types");
 
-        DMDocumentType.add(
-            dmDocumentTypeFieldNames = "Text",
-            dmDocumentTypeName = "DM Document Type Name"
-		);
+		DMDocumentType.add(
+			dmDocumentTypeFieldNames = "Text",
+			dmDocumentTypeName = "DM Document Type Name");
 
 		DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Type Name");
 
 		DataEngine.addFieldNested(
 			fieldFieldLabel = "Numeric",
 			fieldName = "Numeric",
-			targetFieldLabel = "Text"
-		);
+			targetFieldLabel = "Text");
 
-		Click(locator1 = "DataEngineBuilder#FORM_FIELDS_GROUP_INDEX",
-            index = "1"
-		);
+		Click(
+			index = "1",
+			locator1 = "DataEngineBuilder#FORM_FIELDS_GROUP_INDEX");
 
 		Click(locator1 = "DataEngineBuilder#FORM_FIELDS_GROUP_VERTICAL_ELLIPSIS");
 
@@ -111,13 +108,11 @@ definition {
 
 		AssertTextEquals(
 			locator1 = "DataEngineBuilder#FORM_FIELD_LABEL",
-			value1 = "${formGroupLabel}"
-		);
+			value1 = "${formGroupLabel}");
 
 		Button.clickSave();
 
 		DMDocumentType.deletePG(dmDocumentTypeName = "DM Document Type Name");
-
 	}
 
 	@description = "This is a test for LPS-98077. As a Developer, I want to the ability to nest fields"
