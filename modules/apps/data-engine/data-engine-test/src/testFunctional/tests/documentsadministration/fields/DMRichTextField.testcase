@@ -213,7 +213,7 @@ definition {
 		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "test-site-name");
 
 		DMNavigator.gotoDocumentType();
-		
+
 		DMDocumentType.addWithoutSave(
 			dmDocumentTypeFieldNames = "${fieldLabel}",
 			dmDocumentTypeName = "DM Document Type Name");
