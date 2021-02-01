@@ -196,10 +196,10 @@ definition {
 
 		DMNavigator.gotoDocumentType();
 
-		DMDocumentType.addWithoutSave(			
-			dmDocumentTypeName = "VerifyRequiredTest",
+		DMDocumentType.addWithoutSave(
 			dmDocumentTitle = "VerifyRequiredTest",
-			dmDocumentTypeFieldNames = "Rich Text");
+			dmDocumentTypeFieldNames = "Rich Text",
+			dmDocumentTypeName = "VerifyRequiredTest");
 
 		AssertElementNotPresent(locator1 = "FormViewBuilder#FORM_FIELD_REQUIRED_ITEM");
 
@@ -216,7 +216,6 @@ definition {
 			locator1 = "Checkbox#ANY_CHECKBOX");
 
 		AssertElementPresent(locator1 = "FormViewBuilder#FORM_FIELD_REQUIRED_ITEM");
-
 	}
 
 	@description = "This is a test for LPS-98076. As a Developer, I want to Implement the HTML field type"
