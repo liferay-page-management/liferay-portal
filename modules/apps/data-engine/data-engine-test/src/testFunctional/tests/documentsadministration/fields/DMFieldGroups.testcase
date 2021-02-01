@@ -209,55 +209,47 @@ definition {
 		property portal.acceptance = "false";
 
 		var label1 = "Field 1";
-		
+
 		var label2 = "Fields Group";
 
 		ProductMenu.gotoPortlet(
-            category = "Content & Data",
-            portlet = "Documents and Media"
-        );
+			category = "Content & Data",
+			portlet = "Documents and Media");
 
 		DMNavigator.gotoDocumentType();
 
 		DMDocumentType.addWithoutSave(
 			dmDocumentTypeDescription = "DM Document Type Description",
-			dmDocumentTypeName = "DM Document Type Name",
-			dmDocumentTypeFieldNames = "Text"
-		);
+			dmDocumentTypeFieldNames = "Text",
+			dmDocumentTypeName = "DM Document Type Name");
 
-        DataEngine.addFieldNested(
-            fieldFieldLabel = "Numeric",
-            fieldName = "Numeric",
-            targetFieldLabel = "Text"
-		);
+		DataEngine.addFieldNested(
+			fieldFieldLabel = "Numeric",
+			fieldName = "Numeric",
+			targetFieldLabel = "Text");
 
-
-        DataEngine.addFieldNested(
-            fieldFieldLabel = "Date",
-            fieldName = "Date",
-            targetFieldLabel = "Numeric"
-		);
+		DataEngine.addFieldNested(
+			fieldFieldLabel = "Date",
+			fieldName = "Date",
+			targetFieldLabel = "Numeric");
 
 		DataEngine.editFieldLabel(
-            fieldFieldLabel = "Fields Group",
-            fieldFieldLabelEdit = "Field 1"
-        );
+			fieldFieldLabel = "Fields Group",
+			fieldFieldLabelEdit = "Field 1");
 
 		DDLDataDefinition.save();
-		
+
 		LexiconEntry.gotoEntry(rowEntry = "DM Document Type Name");
 
 		AssertTextEquals(
-			locator1 = "DataEngineBuilder#FIELDS_GROUP_LOCATOR",
 			key_FieldGroupLabel = "${label1}",
-			value1 = "Field 1"		
-		);
+			locator1 = "DataEngineBuilder#FIELDS_GROUP_LOCATOR",
+			value1 = "Field 1");
 
 		AssertTextEquals(
-			locator1 = "DataEngineBuilder#FIELDS_GROUP_LOCATOR",
 			key_FieldGroupLabel = "${label2}",
-			value1 = "Fields Group"
-		);
+			locator1 = "DataEngineBuilder#FIELDS_GROUP_LOCATOR",
+			value1 = "Fields Group");
 	}
 
 	@description = "This is a test for LPS-98077. As a Developer, I want to the ability to nest fields"
