@@ -220,12 +220,37 @@ definition {
 	}
 
 	@description = "This is a test for LPS-98070. As a Developer, I want to Implement the color field type"
-	@ignore = "true"
 	@priority = "5"
 	test SetColorWithPicker {
 		property portal.acceptance = "false";
 
-		// TODO LPS-98070 SetColorWithPicker pending implementation
+		DMDocumentType.add(
+			dmDocumentTypeDescription = "DM Document Type Description",
+			dmDocumentTypeFieldNames = "Color",
+			dmDocumentTypeName = "DM Document Type Name");
+
+		NavItem.click(navItem = "Documents and Media");
+
+		DMNavigator.gotoAddDocumentTypeCP(dmDocumentTypeName = "DM Document Type Name");
+
+		PortletEntry.inputTitle(title = "DM Title Test");
+
+		DMDocument.selectColorRGB(
+			blueValue = "0",
+			fieldLabel = "Color",
+			greenValue = "0",
+			redValue = "255");
+
+		Button.clickPublish();
+
+		LexiconEntry.gotoEntryMenuItem(
+			menuItem = "Edit",
+			rowEntry = "DM Title Test");
+
+		AssertTextEquals(
+			key_fieldLabel = "Color",
+			locator1 = "DDMField#COLOR_PICKER_GENERAL_INPUT",
+			value1 = "ff0000");
 	}
 
 	@description = "This is a test for LPS-98070. As a Developer, I want to Implement the color field type"
