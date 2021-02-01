@@ -578,6 +578,12 @@
 	<td></td>
 </tr>
 
+<tr>
+	<td>FORM_FIELD_REQUIRED_ITEM</td>
+	<td>//div[contains(@class, 'ddm-field')]//label[contains(., 'Rich Text')]//span[contains(@class, 'ddm-label-required')]</td>
+	<td></td>
+</tr>
+
 </tbody>
 </table>
 </body>
