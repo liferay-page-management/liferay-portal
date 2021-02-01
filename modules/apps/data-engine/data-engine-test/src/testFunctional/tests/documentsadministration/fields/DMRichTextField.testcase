@@ -6,9 +6,19 @@ definition {
 	property testray.main.component.name = "Documents Management";
 
 	setUp {
-		TestCase.setUpPortalInstance();
+        TestCase.setUpPortalInstance();
 
-		User.firstLoginPG();
+        User.firstLoginPG();
+        
+		ProductMenu.gotoPortlet(
+            category = "Content & Data",
+            portlet = "Documents and Media");
+        
+		DMNavigator.gotoDocumentType();
+        
+		LexiconEntry.gotoAdd();
+        
+		PortletEntry.inputName(name = "New Document Type");
 	}
 
 	tearDown {
@@ -175,12 +185,33 @@ definition {
 	}
 
 	@description = "This is a test for LPS-98076. As a Developer, I want to Implement the HTML field type"
-	@ignore = "true"
 	@priority = "4"
 	test UploadWithRequiredRichText {
 		property portal.acceptance = "false";
 
-		// TODO LPS-98076 UploadWithRequiredRichText pending implementation
+		DataEngine.addField(
+			fieldName = "Rich Text",
+			fieldFieldLabel = "Test"
+		);
+
+		DDLDataDefinition.save();
+
+		DMDocumentType.edit(
+			dmDocumentTypeName = "New Document Type",
+			dmDocumentTypeFieldRequiredEdit = "Test"
+		);
+
+		Navigator.gotoNavItem(navItem = "Documents and Media");
+
+		DMDocument.addCP(
+			dmDocumentTypeName = "New Document Type",
+			dmDocumentTitle = "New Document Title"
+		);
+
+		AssertTextEquals.assertPartialText(
+			locator1 = "Message#WARNING_FEEDBACK",
+			value1 = "This field is required."
+		);		
 	}
 
 	@description = "This is a test for LPS-98076. As a Developer, I want to Implement the HTML field type"
