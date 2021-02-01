@@ -61,11 +61,15 @@ definition {
 
 		DataEngine.addRepeatableField(fieldName = "Test");
 
-		WebContent.assertFieldRepeated(fieldName = "RichText");
+		DataEngine.assertFieldRepeated(
+			fieldReference = "RichText",
+			index = "2");
 
 		Click(locator1 = "DDMField#REMOVE_REPEATED_FIELD");
 
-		WebContent.assertFieldRepeatedNotPresent(fieldName = "RichText");
+		DataEngine.assertFieldRepeatedNotPresent(
+				fieldReference = "RichText",
+				index = "2");
 	}
 
 	@description = "This is a test for LPS-98076. As a Developer, I want to Implement the HTML field type"
@@ -177,7 +181,9 @@ definition {
 
 		DataEngine.addRepeatableField(fieldName = "Test");
 
-		WebContent.assertFieldRepeated(fieldName = "RichText");
+		DataEngine.assertFieldRepeated(
+			fieldReference = "RichText",
+			index = "2");
 	}
 
 	@description = "This is a test for LPS-98076. As a Developer, I want to Implement the HTML field type"
