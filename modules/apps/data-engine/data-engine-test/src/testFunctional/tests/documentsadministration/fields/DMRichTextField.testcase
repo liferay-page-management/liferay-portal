@@ -202,12 +202,33 @@ definition {
 	}
 
 	@description = "This is a test for LPS-98076. As a Developer, I want to Implement the HTML field type"
-	@ignore = "true"
 	@priority = "4"
 	test VerifyRichTextIsSetAsRequiredOnUploading {
 		property portal.acceptance = "false";
 
-		// TODO LPS-98076 VerifyRichTextIsSetAsRequiredOnUploading pending implementation
+		var fieldLabel = "Rich Text";
+
+		JSONGroup.addGroup(groupName = "Test Site Name");
+
+		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "test-site-name");
+
+		DMNavigator.gotoDocumentType();
+		
+		DMDocumentType.addWithoutSave(
+			dmDocumentTypeFieldNames = "${fieldLabel}",
+			dmDocumentTypeName = "DM Document Type Name");
+
+		DataEngine.editFieldRequired(fieldFieldLabel = "${fieldLabel}");
+
+		DDLDataDefinition.save();
+
+		DMNavigator.gotoDocumentsAndMedia();
+
+		LexiconEntry.gotoAdd();
+
+		MenuItem.click(menuItem = "DM Document Type Name");
+
+		AssertElementPresent(locator1 = "FormViewBuilder#FIELD_LABEL_REQUIRED");
 	}
 
 }
