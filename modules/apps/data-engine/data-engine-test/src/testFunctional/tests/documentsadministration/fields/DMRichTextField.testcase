@@ -11,14 +11,14 @@ definition {
 		User.firstLoginPG();
 
 		ProductMenu.gotoPortlet(
-            category = "Content & Data",
-            portlet = "Documents and Media");
+			category = "Content & Data",
+			portlet = "Documents and Media");
 
-        DMNavigator.gotoDocumentType();
+		DMNavigator.gotoDocumentType();
 
-        LexiconEntry.gotoAdd();
+		LexiconEntry.gotoAdd();
 
-        PortletEntry.inputName(name = "New Document Type");
+		PortletEntry.inputName(name = "New Document Type");
 	}
 
 	tearDown {
@@ -136,14 +136,14 @@ definition {
 			fieldHelp = "Test Help Text");
 
 		PortletEntry.save();
-		
+
 		DMNavigator.gotoDocumentCP(dmDocumentTitle = "New Document Type");
 
 		DataEngine.viewField(
 			fieldFieldLabel = "FieldTest",
 			fieldName = "Rich Text");
 
-        AssertTextEquals(
+		AssertTextEquals(
 			key_fieldFieldLabel = "FieldTest",
 			locator1 = "DDMEditStructure#SETTINGS_TEXT",
 			value1 = "Test Help Text");
