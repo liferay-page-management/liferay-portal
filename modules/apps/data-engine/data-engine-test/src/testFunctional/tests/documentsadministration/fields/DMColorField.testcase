@@ -135,7 +135,7 @@ definition {
 			menuItem = "Edit",
 			rowEntry = "DM Document Type Name");
 
-		DataEngine.duplicateField(fieldFieldLabel = "Color");
+		DataEngine.duplicate(fieldFieldLabel = "Color");
 
 		DDLDataDefinition.save();
 
