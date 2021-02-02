@@ -128,13 +128,62 @@ definition {
 	}
 
 	@description = "This is a test for LPS-107630. As an App Adm, I want to use an existing fieldset"
-	@ignore = "true"
 	@priority = "4"
 	test RepeatFieldsetWithoutDuplicatingContent {
 		property portal.acceptance = "false";
 
-		// TODO LPS-107630 RepeatFieldsetWithoutDuplicatingContent pending implementation
-	}
+		var documentDescription = "Description";
+		var documentType = "DM Document Type Name";
+		var fieldName = "Upload";
+		var documentName = "Document_1.jpg";
+
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "${documentName}",
+			groupName = "Guest",
+			mimeType = "image/jpeg",
+			sourceFileName = "${documentName}");	
+
+		ProductMenu.gotoPortlet(
+       		category = "Content & Data",
+       		portlet = "Documents and Media"
+		);
+
+		DMNavigator.gotoDocumentType();
+
+		DMDocumentType.addWithoutSave(
+			dmDocumentTypeDescription = "${documentDescription}",
+			dmDocumentTypeName = "${documentType}",
+			dmDocumentTypeFieldNames = "${fieldName}"
+		);
+
+		DataEngine.editFieldRepeatable(fieldFieldLabel = "${fieldName}");
+
+		Button.clickSave();
+			
+		Navigator.gotoNavItem(navItem = "Documents and Media");
+
+		DMNavigator.gotoAddDocumentTypeCP(dmDocumentTypeName = "${documentType}");
+
+		PortletEntry.inputTitle(title = "Title");
+
+		ItemSelector.gotoItemSelectorViaSelectButton();
+
+		ItemSelector.selectDMImage(
+			navTab = "Documents and Media",
+			imageFileName = "${documentName}"
+		);
+
+		DataEngine.addRepeatableField(
+			fieldName = "${fieldName}"
+		);
+
+		AssertTextNotPresent(
+			locator1 = "FormFields#TEXT_FIELD_NULL",
+			value1 = "Document_1.jpg");
+
+		PortletEntry.publish();
+	}	
 
 	@description = "This is a test for LPS-107630. As an App Adm, I want to use an existing fieldset"
 	@priority = "4"

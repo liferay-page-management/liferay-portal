@@ -263,6 +263,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>TEXT_FIELD_NULL</td>
+	<td>//input[@type='text' and (@value='') and contains (@class,'form-control bg-light field')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>TEXT_FIELD_ALT</td>
 	<td>//input[@type='text' and contains(@id,'${key_fieldName}') and contains(@id,'Alt')]</td>
 	<td></td>
