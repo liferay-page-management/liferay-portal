@@ -1616,6 +1616,24 @@ definition {
 		}
 	}
 
+	macro selectColorHEX {
+		Click(
+			key_fieldLabel = "${fieldLabel}",
+			locator1 = "DDMField#COLOR_PICKER");
+
+		Click(locator1 = "DDMField#COLOR_PICKER_CUSTOM_COLOR_BUTTON");
+
+		Click(locator1 = "DDMField#COLOR_PICKER_HEX_INPUT");
+
+		Type(
+			locator1 = "DDMField#COLOR_PICKER_HEX_INPUT",
+			value1 = "${hexValue}");
+
+		Click(
+			key_fieldLabel = "${fieldLabel}",
+			locator1 = "DDMField#COLOR_PICKER");
+	}
+
 	macro selectColorRGB {
 		Click(
 			key_fieldLabel = "${fieldLabel}",
@@ -1637,7 +1655,7 @@ definition {
 
 		Click(
 			key_fieldLabel = "${fieldLabel}",
-			locator1 = "DDMField#COLOR_PICKER");
+			locator1 = "DDMField#COLOR_PICKER");			
 	}
 
 	macro sharePG {
