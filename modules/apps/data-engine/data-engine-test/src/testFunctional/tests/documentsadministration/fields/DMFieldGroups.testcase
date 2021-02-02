@@ -25,13 +25,51 @@ definition {
 	}
 
 	@description = "This is a test for LPS-98077. As a Developer, I want to the ability to nest fields"
-	@ignore = "true"
 	@priority = "3"
 	test CheckIfFieldGroupDataPersists {
 		property portal.acceptance = "false";
 
-		// TODO LPS-98077 CheckIfFieldGroupDataPersists pending implementation
+		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+		
+		DMNavigator.gotoDocumentType();
 
+		DMDocumentType.addWithoutSave(
+			dmDocumentTypeDescription = "DM Document Type Description",
+			dmDocumentTypeName = "DM Document Type Name",
+			dmDocumentTypeFieldNames = "Text"
+		);
+
+		DataEngine.addFieldNested(
+			fieldFieldLabel = "Numeric",
+			fieldName = "Numeric",
+			targetFieldLabel = "Text"
+		);
+
+		DDLDataDefinition.save();
+
+		Navigator.gotoNavItem(navItem = "Documents and Media");
+
+		DMDocument.addCP(
+			dmDocumentTypeName = "DM Document Type Name",
+			dmDocumentTitle = "DM Name",
+			textField = "Test Text",
+			numericField = "7"
+		);
+
+		LexiconEntry.gotoEntryMenuItem(
+			menuItem = "Edit",
+			rowEntry = "DM Name");
+	
+		AssertTextEquals.assertValue(
+			locator1 = "TextInput#TEXT_SPECIFIC",
+			value1 = "Test Text"
+		);
+		
+		AssertTextEquals.assertValue(
+			locator1 = "TextInput#NUMERIC",
+			value1 = "7"
+		);
+	
 	}
 
 	@description = "This is a test for LPS-98077. As a Developer, I want to the ability to nest fields"
