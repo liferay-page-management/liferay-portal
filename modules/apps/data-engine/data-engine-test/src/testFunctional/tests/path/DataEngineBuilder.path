@@ -58,6 +58,18 @@
 	<td>//button[(@class='dropdown-toggle btn btn-monospaced btn-unstyled')]</td>
 	<td></td>
 </tr>
+
+<tr>
+	<td>WEB_CONTENT_REPETABLE_BUTTON_ADD</td>
+	<td>//button[@class ='ddm-form-field-repeatable-add-button p-0 btn btn-sm btn-primary']</td>
+	<td></td>
+</tr>
+
+<tr>
+	<td>WEB_CONTENT_REPETABLE_BUTTON_REMOVE</td>
+	<td>//button[@class ='ddm-form-field-repeatable-delete-button p-0 btn btn-sm btn-primary']</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>
