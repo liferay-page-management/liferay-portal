@@ -124,6 +124,8 @@ definition {
 	test DuplicateColorFieldOnBuilder {
 		property portal.acceptance = "false";
 
+		DMNavigator.gotoDocumentType();
+
 		DMDocumentType.add(
 			dmDocumentTypeDescription = "DM Document Type Description",
 			dmDocumentTypeFieldNames = "Color",
