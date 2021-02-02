@@ -29,6 +29,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>COLOR_PICKER_HEX_INPUT</td>
+	<td>//input[@data-testid='customHexInput']</td>
+	<td></td>
+</tr>
+<tr>
 	<td>COLOR_PICKER_RGB_RED_INPUT</td>
 	<td>//input[@data-testId='rInput']</td>
 	<td></td>
