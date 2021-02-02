@@ -125,10 +125,10 @@ definition {
 	test DeleteNestedFieldGroupOnStructure {
 		property portal.acceptance = "false";
 
-        ProductMenu.gotoPortlet(
-            category = "Content & Data",
-            portlet = "Documents and Media");
-        
+		ProductMenu.gotoPortlet(
+			category = "Content & Data",
+			portlet = "Documents and Media");
+
 		NavItem.click(navItem = "Document Types");
 
 		DMDocumentType.addWithoutSave(
@@ -158,8 +158,7 @@ definition {
 
 		MenuItem.clickNoError(menuItem = "Edit");
 
-        AssertElementNotPresent(locator1 = "DataEngineBuilder#FORM_FIELDS_GROUP");
-
+		AssertElementNotPresent(locator1 = "DataEngineBuilder#FORM_FIELDS_GROUP");
 	}
 
 	@description = "This is a test for LPS-98077. As a Developer, I want to the ability to nest fields"
