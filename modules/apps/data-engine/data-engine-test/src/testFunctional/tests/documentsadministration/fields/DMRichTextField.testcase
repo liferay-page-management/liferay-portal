@@ -6,10 +6,20 @@ definition {
 	property testray.main.component.name = "Documents Management";
 
 	setUp {
-		TestCase.setUpPortalInstance();
+        TestCase.setUpPortalInstance();
 
-		User.firstLoginPG();
-	}
+        User.firstLoginPG();
+
+        ProductMenu.gotoPortlet(
+            category = "Content & Data",
+            portlet = "Documents and Media");
+
+        DMNavigator.gotoDocumentType();
+
+        LexiconEntry.gotoAdd();
+
+        PortletEntry.inputName(name = "New Document Type");
+    }
 
 	tearDown {
 		var testPortalInstance = PropsUtil.get("test.portal.instance");
@@ -210,12 +220,30 @@ definition {
 	}
 
 	@description = "This is a test for LPS-98076. As a Developer, I want to Implement the HTML field type"
-	@ignore = "true"
 	@priority = "5"
 	test UploadDocumentTypetWithRequiredRichText {
-		property portal.acceptance = "false";
 
-		// TODO LPS-98076 UploadDocumentTypetWithRequiredRichText pending implementation
+		DataEngine.addField(
+			fieldFieldLabel = "Test Upload",
+			fieldName = "Rich Text");
+
+		DataEngine.editFieldRequired(fieldFieldLabel = "Test Upload");
+
+		DDLDataDefinition.save();
+
+		Navigator.gotoNavTab(navTab = "Documents and Media");
+
+		DMNavigator.gotoAddDocumentTypeCP(dmDocumentTypeName = "New Document Type");
+
+		PortletEntry.inputTitle(title = "DM Name");
+
+		CKEditor.addContentInWebContent(
+			content = "Hello",
+			fieldLabel = "Test Upload");
+
+		Button.clickPublish();
+
+		Alert.viewSuccessMessage();
 	}
 
 	@description = "This is a test for LPS-98076. As a Developer, I want to Implement the HTML field type"
