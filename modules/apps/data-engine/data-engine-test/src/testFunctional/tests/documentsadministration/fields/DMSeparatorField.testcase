@@ -123,6 +123,12 @@ definition {
 
 		var fieldReferenceWithInvalidChars = "Myreference@#$%¨&*";
 
+		DMNavigator.gotoDocumentType();
+
+		DMDocumentType.addWithoutSave(
+			dmDocumentTypeDescription = "Document Type Description",
+			dmDocumentTypeName = "Document Type Name");
+
 		DataEngine.addField(
 			fieldFieldLabel = "Separator test",
 			fieldName = "Separator");
