@@ -76,7 +76,7 @@ definition {
 			dmDocumentTypeFieldNames = "${key_Label}",
 			dmDocumentTypeName = "DM Document Type Name");
 
-		DataEngine.duplicateField(fieldFieldLabel = "${key_Label}");
+		DataEngine.duplicate(fieldFieldLabel = "${key_Label}");
 
 		DDLDataDefinition.save();
 
@@ -92,6 +92,7 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO LPS-98071 DuplicateRepeatableGeolocationOnRenderer pending implementation
+
 	}
 
 	@description = "This is a test for LPS-98071. As a Developer, I want to Implement the geolocation field type"
