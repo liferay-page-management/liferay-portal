@@ -6,20 +6,20 @@ definition {
 	property testray.main.component.name = "Documents Management";
 
 	setUp {
-        TestCase.setUpPortalInstance();
+		TestCase.setUpPortalInstance();
 
-        User.firstLoginPG();
+		User.firstLoginPG();
 
-        ProductMenu.gotoPortlet(
-            category = "Content & Data",
-            portlet = "Documents and Media");
+		ProductMenu.gotoPortlet(
+			category = "Content & Data",
+			portlet = "Documents and Media");
 
-        DMNavigator.gotoDocumentType();
+		DMNavigator.gotoDocumentType();
 
-        LexiconEntry.gotoAdd();
+		LexiconEntry.gotoAdd();
 
-        PortletEntry.inputName(name = "New Document Type");
-    }
+		PortletEntry.inputName(name = "New Document Type");
+	}
 
 	tearDown {
 		var testPortalInstance = PropsUtil.get("test.portal.instance");
@@ -222,7 +222,6 @@ definition {
 	@description = "This is a test for LPS-98076. As a Developer, I want to Implement the HTML field type"
 	@priority = "5"
 	test UploadDocumentTypetWithRequiredRichText {
-
 		DataEngine.addField(
 			fieldFieldLabel = "Test Upload",
 			fieldName = "Rich Text");
