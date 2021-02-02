@@ -30,46 +30,40 @@ definition {
 		property portal.acceptance = "false";
 
 		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-		
+
 		DMNavigator.gotoDocumentType();
 
 		DMDocumentType.addWithoutSave(
 			dmDocumentTypeDescription = "DM Document Type Description",
-			dmDocumentTypeName = "DM Document Type Name",
-			dmDocumentTypeFieldNames = "Text"
-		);
+			dmDocumentTypeFieldNames = "Text",
+			dmDocumentTypeName = "DM Document Type Name");
 
 		DataEngine.addFieldNested(
 			fieldFieldLabel = "Numeric",
 			fieldName = "Numeric",
-			targetFieldLabel = "Text"
-		);
+			targetFieldLabel = "Text");
 
 		DDLDataDefinition.save();
 
 		Navigator.gotoNavItem(navItem = "Documents and Media");
 
 		DMDocument.addCP(
-			dmDocumentTypeName = "DM Document Type Name",
 			dmDocumentTitle = "DM Name",
-			textField = "Test Text",
-			numericField = "7"
-		);
+			dmDocumentTypeName = "DM Document Type Name",
+			numericField = "7",
+			textField = "Test Text");
 
 		LexiconEntry.gotoEntryMenuItem(
 			menuItem = "Edit",
 			rowEntry = "DM Name");
-	
+
 		AssertTextEquals.assertValue(
 			locator1 = "TextInput#TEXT_SPECIFIC",
-			value1 = "Test Text"
-		);
-		
+			value1 = "Test Text");
+
 		AssertTextEquals.assertValue(
 			locator1 = "TextInput#NUMERIC",
-			value1 = "7"
-		);
-	
+			value1 = "7");
 	}
 
 	@description = "This is a test for LPS-98077. As a Developer, I want to the ability to nest fields"
