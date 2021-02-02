@@ -247,51 +247,48 @@ definition {
 	@description = "This is a test for LPS-98077. As a Developer, I want to the ability to nest fields"
 	@priority = "4"
 	test SetFieldGroupAsRepeatableAndExecuteOnAWebContent {
-
 		var structureName = "WC Structure Name";
 
-        ProductMenu.gotoPortlet(
-            category = "Content & Data",
-            portlet = "Web Content");
+		ProductMenu.gotoPortlet(
+			category = "Content & Data",
+			portlet = "Web Content");
 
-        NavItem.gotoStructures();
+		NavItem.gotoStructures();
 
-        WebContentStructures.addCP(
-            structureDescription = "WC Structure Description",
-            structureName = "WC Structure Name");
+		WebContentStructures.addCP(
+			structureDescription = "WC Structure Description",
+			structureName = "WC Structure Name");
 
-        DataEngine.addField(
-            fieldFieldLabel = "Text",
-            fieldName = "Text");
+		DataEngine.addField(
+			fieldFieldLabel = "Text",
+			fieldName = "Text");
 
-        DataEngine.addFieldNested(
-            fieldFieldLabel = "Numeric",
-            fieldName = "Numeric",
-            targetFieldLabel = "Text");
+		DataEngine.addFieldNested(
+			fieldFieldLabel = "Numeric",
+			fieldName = "Numeric",
+			targetFieldLabel = "Text");
 
-        DataEngine.editFieldsGroupRepeatable();
+		DataEngine.editFieldsGroupRepeatable();
 
-        WebContentStructures.saveCP(structureName = "${structureName}");
+		WebContentStructures.saveCP(structureName = "${structureName}");
 
-        Navigator.gotoNavTab(navTab = "Web Content");
+		Navigator.gotoNavTab(navTab = "Web Content");
 
-        WebContentNavigator.gotoAddWithStructureCP(structureName = "WC Structure Name");
+		WebContentNavigator.gotoAddWithStructureCP(structureName = "WC Structure Name");
 
-        WebContent.addWithStructureCP(
-            structureName = "WC Structure Name",
-            webContentTitle = "WC WebContent Title");
+		WebContent.addWithStructureCP(
+			structureName = "WC Structure Name",
+			webContentTitle = "WC WebContent Title");
 
-        AssertElementPresent(locator1 = "DataEngineBuilder#WEB_CONTENT_REPETABLE_BUTTON_ADD");
+		AssertElementPresent(locator1 = "DataEngineBuilder#WEB_CONTENT_REPETABLE_BUTTON_ADD");
 
-        Click(locator1 = "DataEngineBuilder#WEB_CONTENT_REPETABLE_BUTTON_ADD");
+		Click(locator1 = "DataEngineBuilder#WEB_CONTENT_REPETABLE_BUTTON_ADD");
 
-        Button.clickPublish();
-        
-        WebContentNavigator.gotoEditCP(webContentTitle = "WC WebContent Title");
+		Button.clickPublish();
 
-        AssertElementPresent(locator1 = "DataEngineBuilder#WEB_CONTENT_REPETABLE_BUTTON_REMOVE");
+		WebContentNavigator.gotoEditCP(webContentTitle = "WC WebContent Title");
+
+		AssertElementPresent(locator1 = "DataEngineBuilder#WEB_CONTENT_REPETABLE_BUTTON_REMOVE");
 	}
-
-		
 
 }
