@@ -181,7 +181,7 @@ definition {
 		LexiconEntry.gotoEntry(rowEntry = "DM Document Type Name");
 
 		AssertTextEquals(
-			locator1 = "//div[contains(@class, 'ddm-field-types')]//label[contains(text(),'New name')]",
+			locator1 = "//div[contains(@class, 'ddm-field-types')]//label",
 			value1 = "New name");
 	}
 
