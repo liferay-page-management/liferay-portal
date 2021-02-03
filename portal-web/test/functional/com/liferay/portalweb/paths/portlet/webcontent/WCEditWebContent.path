@@ -49,6 +49,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>FIELDSET_REPEATABLE_BUTTON</td>
+	<td>//label[normalize-space(text())='${key_fieldsetLabel}']/parent::div/preceding-sibling::div[contains(@class,'repeatable-toolbar')]//button[contains(@class,'repeatable-add-button')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>FIELD_REQUIRED_ALERT</td>
 	<td>//label[normalize-space(text())='${key_fieldFieldLabel}']/following-sibling::span[contains(@class,'form-feedback-group')]//div[contains(@class,'form-feedback-item')] | //legend[normalize-space(text())='${key_fieldFieldLabel}']/following-sibling::span[contains(@class,'form-feedback-group')]//div[contains(@class,'form-feedback-item')]</td>
 	<td></td>
