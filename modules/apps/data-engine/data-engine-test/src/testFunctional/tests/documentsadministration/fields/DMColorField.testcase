@@ -303,6 +303,7 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO LPS-98070 SetColorWithHex pending implementation
+
 	}
 
 	@description = "This is a test for LPS-98070. As a Developer, I want to Implement the color field type"
