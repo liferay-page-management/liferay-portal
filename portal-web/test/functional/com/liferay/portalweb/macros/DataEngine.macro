@@ -332,6 +332,12 @@ definition {
 		Click(locator1 = "DDMField#FIELD_DUPLICATE");
 	}
 
+	macro addRepeatableFieldset {
+		Click(
+			key_fieldsetLabel = "${fieldsetLabel}",
+			locator1 = "WCEditWebContent#FIELDSET_REPEATABLE_BUTTON");
+	}
+
 	macro assertFieldRepeated {
 		AssertElementPresent(
 			key_fieldReference = "${fieldReference}",
