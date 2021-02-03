@@ -9,6 +9,11 @@
 </thead>
 <tbody>
 <tr>
+	<td>FORM_FIELD_NESTED</td>
+	<td>//label[normalize-space(text())='${key_fieldsGroupLabel}']/following::div//label[normalize-space(text())='${key_fieldFieldLabel}'] | //label[normalize-space(text())='${key_fieldsGroupLabel}']/following::div//legend[normalize-space(text())='${key_fieldFieldLabel}']</td>
+	<td></td>
+</tr>
+<tr>
 	<td>FORM_FIELDS_GROUP</td>
 	<td>xpath=(//div[contains(@class, 'fieldset')]//label[text()='Fields Group'])[2]</td>
 	<td></td>
