@@ -86,7 +86,7 @@ definition {
 			menuItem = "Edit",
 			rowEntry = "DM Document Type Name");
 
-		DataEngine.deleteField(fieldFieldLabel = "Color");
+		DataEngine.delete(fieldFieldLabel = "Color");
 
 		DDLDataDefinition.save();
 
@@ -297,35 +297,12 @@ definition {
 	}
 
 	@description = "This is a test for LPS-98070. As a Developer, I want to Implement the color field type"
+	@ignore = "true"
 	@priority = "5"
 	test SetColorWithHex {
 		property portal.acceptance = "false";
 
-		DMDocumentType.add(
-			dmDocumentTypeDescription = "DM Document Type Description",
-			dmDocumentTypeFieldNames = "Color",
-			dmDocumentTypeName = "DM Document Type Name");
-
-		NavItem.click(navItem = "Documents and Media");
-
-		DMNavigator.gotoAddDocumentTypeCP(dmDocumentTypeName = "DM Document Type Name");
-
-		PortletEntry.inputTitle(title = "DM Title Test");
-
-		DMDocument.selectColorHEX(
-			fieldLabel = "Color",
-			hexValue = "FF0000");
-
-		Button.clickPublish();
-
-		LexiconEntry.gotoEntryMenuItem(
-			menuItem = "Edit",
-			rowEntry = "DM Title Test");
-
-		AssertTextEquals(
-			key_fieldLabel = "Color",
-			locator1 = "DDMField#COLOR_PICKER_GENERAL_INPUT",
-			value1 = "ff0000");
+		// TODO LPS-98070 SetColorWithHex pending implementation
 	}
 
 	@description = "This is a test for LPS-98070. As a Developer, I want to Implement the color field type"

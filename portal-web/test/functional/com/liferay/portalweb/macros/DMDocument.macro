@@ -1655,7 +1655,7 @@ definition {
 
 		Click(
 			key_fieldLabel = "${fieldLabel}",
-			locator1 = "DDMField#COLOR_PICKER");			
+			locator1 = "DDMField#COLOR_PICKER");
 	}
 
 	macro sharePG {
