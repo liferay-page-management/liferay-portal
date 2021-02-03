@@ -338,6 +338,12 @@ definition {
 			locator1 = "WCEditWebContent#FIELDSET_REPEATABLE_BUTTON");
 	}
 
+	macro addRepeatableFieldsGroup {
+		Click(
+			key_fieldsetLabel = "${fieldsGroupLabel}",
+			locator1 = "WCEditWebContent#FIELDSET_REPEATABLE_BUTTON");
+	}
+
 	macro configureFieldsetsShowOrHideLabel {
 		AssertClick.assertPartialTextClickAt(
 			key_fieldFieldLabel = "${fieldFieldLabel}",
