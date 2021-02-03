@@ -189,13 +189,13 @@ definition {
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
 		for (var n : list "1,2") {
-			WebContent.assertFieldRepeated(
-				fieldReference = "Separator",
+			DataEngine.assertFieldRepeated(
+				fieldName = "Separator",
 				index = "${n}");
 		}
 
 		AssertVisible(
-			key_fieldReference = "Separator",
+			key_fieldName = "Separator",
 			key_index = "2",
 			locator1 = "FormFields#FIELD_REMOVE");
 	}

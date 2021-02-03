@@ -281,24 +281,24 @@ definition {
 		WebContentNavigator.gotoEditCP(webContentTitle = "WC WebContent Title");
 
 		for (var fieldName : list "Text,Numeric") {
-			WebContent.assertFieldRepeated(
-				fieldReference = "${fieldName}",
+			DataEngine.assertFieldRepeated(
+				fieldName = "${fieldName}",
 				index = "1");
 		}
 
 		for (var fieldName : list "Text,Numeric") {
-			WebContent.assertFieldRepeated(
-				fieldReference = "${fieldName}",
+			DataEngine.assertFieldRepeated(
+				fieldName = "${fieldName}",
 				index = "2");
 		}
 
 		AssertElementNotPresent(
-			key_fieldReference = "FieldsGroup",
+			key_fieldName = "FieldsGroup",
 			key_index = "1",
 			locator1 = "FormFields#FIELD_REMOVE");
 
 		AssertVisible(
-			key_fieldReference = "FieldsGroup",
+			key_fieldName = "FieldsGroup",
 			key_index = "2",
 			locator1 = "FormFields#FIELD_REMOVE");
 	}

@@ -199,18 +199,18 @@ definition {
 		DataEngine.addRepeatableFieldset(fieldsetLabel = "New Fieldset");
 
 		for (var n : list "1,2") {
-			WebContent.assertFieldRepeated(
-				fieldReference = "Rich Text",
+			DataEngine.assertFieldRepeated(
+				fieldName = "Rich Text",
 				index = "${n}");
 		}
 
 		AssertElementNotPresent(
-			key_fieldReference = "FieldsGroup",
+			key_fieldName = "FieldsGroup",
 			key_index = "1",
 			locator1 = "FormFields#FIELD_REMOVE");
 
 		AssertVisible(
-			key_fieldReference = "FieldsGroup",
+			key_fieldName = "FieldsGroup",
 			key_index = "2",
 			locator1 = "FormFields#FIELD_REMOVE");
 
@@ -219,18 +219,18 @@ definition {
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
 		for (var n : list "1,2") {
-			WebContent.assertFieldRepeated(
-				fieldReference = "Rich Text",
+			DataEngine.assertFieldRepeated(
+				fieldName = "Rich Text",
 				index = "${n}");
 		}
 
 		AssertElementNotPresent(
-			key_fieldReference = "FieldsGroup",
+			key_fieldName = "FieldsGroup",
 			key_index = "1",
 			locator1 = "FormFields#FIELD_REMOVE");
 
 		AssertVisible(
-			key_fieldReference = "FieldsGroup",
+			key_fieldName = "FieldsGroup",
 			key_index = "2",
 			locator1 = "FormFields#FIELD_REMOVE");
 	}

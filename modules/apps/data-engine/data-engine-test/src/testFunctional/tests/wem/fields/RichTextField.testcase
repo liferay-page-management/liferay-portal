@@ -62,13 +62,13 @@ definition {
 		DataEngine.addRepeatableField(fieldName = "Test");
 
 		DataEngine.assertFieldRepeated(
-			fieldReference = "RichText",
+			fieldName = "RichText",
 			index = "2");
 
 		Click(locator1 = "DDMField#REMOVE_REPEATED_FIELD");
 
 		DataEngine.assertFieldRepeatedNotPresent(
-			fieldReference = "RichText",
+			fieldName = "RichText",
 			index = "2");
 	}
 
@@ -182,7 +182,7 @@ definition {
 		DataEngine.addRepeatableField(fieldName = "Test");
 
 		DataEngine.assertFieldRepeated(
-			fieldReference = "RichText",
+			fieldName = "RichText",
 			index = "2");
 	}
 

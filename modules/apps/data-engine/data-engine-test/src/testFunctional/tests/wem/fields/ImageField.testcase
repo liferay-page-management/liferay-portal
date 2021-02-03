@@ -140,13 +140,13 @@ definition {
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
 		for (var n : list "1,2") {
-			WebContent.assertFieldRepeated(
-				fieldReference = "Image",
+			DataEngine.assertFieldRepeated(
+				fieldName = "Image",
 				index = "${n}");
 		}
 
 		AssertVisible(
-			key_fieldReference = "Image",
+			key_fieldName = "Image",
 			key_index = "2",
 			locator1 = "FormFields#FIELD_REMOVE");
 	}
