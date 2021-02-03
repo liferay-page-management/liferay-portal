@@ -230,11 +230,6 @@
 	<td>//iframe[contains(@id,'selectDisplayPage')]</td>
 	<td></td>
 </tr>
-<tr>
-	<td>REPEATABLE_BUTTON</td>
-	<td>//div[contains(@data-field-name,'${fieldName}')][${i}]//button[contains(@class,'ddm-form-field-repeatable-add-button')]</td>
-	<td></td>
-</tr>
 <!--IMAGE_FIELD-->
 <tr>
 	<td>IMAGE_FIELD_SELECT</td>
