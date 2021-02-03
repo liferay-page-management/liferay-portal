@@ -84,6 +84,52 @@ definition {
 		DMDocument.viewCP(dmDocumentTitle = "DM Document Type Contract Title");
 	}
 
+	@description = "This test covers LPS-123711. It ensures that the document type cannot be published if the title is left blank."
+	@priority = "4"
+	test AddEntryWithNoTitle {
+		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+
+		DMNavigator.gotoMetadataSets();
+
+		DMMetadataSet.addTitle(metadataSetName = "Document Metadata Set Name");
+
+		DataEngine.addField(
+			fieldFieldLabel = "Numeric",
+			fieldName = "Numeric");
+
+		DDLDataDefinition.save();
+
+		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+
+		DMNavigator.gotoDocumentType();
+
+		DMDocumentType.add(
+			dmDocumentTypeDescription = "DM Document Type Description",
+			dmDocumentTypeFieldNames = "Date",
+			dmDocumentTypeName = "DM Document Type Name",
+			metadataSetName = "Document Metadata Set Name");
+
+		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+
+		DMNavigator.gotoAddDocumentTypeCP(dmDocumentTypeName = "DM Document Type Name");
+
+		Type(
+			key_fieldName = "Numeric",
+			locator1 = "TextInput#NUMERIC",
+			value1 = "123");
+
+		Type(
+			key_fieldFieldLabel = "Date",
+			locator1 = "WCEditWebContent#DATE_INPUT",
+			value1 = "01/01/2022");
+
+		Button.clickPublish();
+
+		AssertTextEquals.assertPartialText(
+			locator1 = "TextInput#REQUIRED_ALERT",
+			value1 = "This field is required.");
+	}
+
 	@priority = "4"
 	test AddMultipleEntries {
 		ProductMenu.gotoPortlet(
