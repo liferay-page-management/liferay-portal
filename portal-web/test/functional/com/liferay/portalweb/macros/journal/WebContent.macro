@@ -1857,16 +1857,6 @@ definition {
 			locator1 = "WC#ENTRY_TABLE_TITLE");
 	}
 
-	macro viewDuplicatedField {
-		var i = "0";
-
-		while ("${i}" != "${totalPortletCount}") {
-			var i = ${i} + 1;
-
-			AssertElementPresent(locator1 = "WCEditWebContent#REPEATABLE_BUTTON");
-		}
-	}
-
 	macro viewEditWCViaWCD {
 		AssertElementPresent(locator1 = "WCD#WEB_CONTENT_CONTENT");
 
