@@ -221,12 +221,51 @@ definition {
 	}
 
 	@description = "This is a test for LPS-107630. As an App Adm, I want to use an existing fieldset"
-	@ignore = "true"
 	@priority = "4"
 	test RepeatFieldsetWithoutDuplicatingContent {
 		property portal.acceptance = "false";
 
-		// TODO LPS-107630 RepeatFieldsetWithoutDuplicatingContent pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content & Data",
+			panel = "Site Administration",
+			portlet = "Web Content");
+
+		NavItem.gotoStructures();
+
+		WebContentStructures.addCP(
+			structureDescription = "RepeatibleTest",
+			structureName = "RepeatibleTest");
+
+		DataEngine.addField(
+			field = "Text",
+			fieldFieldLabel = "Text",
+			fieldName = "Text");
+
+		DataEngine.editFieldRepeatable(fieldFieldLabel = "Text");
+
+		WebContentStructures.saveCP(structureName = "RepeatibleTest");
+
+		NavItem.gotoWebContent();
+
+		WebContentNavigator.gotoAddWithStructureCP(structureName = "RepeatibleTest");
+
+		AssertClick.assertPartialTextClickAt(
+			key_fieldFieldLabel = "Text",
+			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER",
+			value1 = "Text");
+
+		Type(
+			key_fieldName = "Text",
+			locator1 = "FormViewBuilder#TEXT_FIELD",
+			value1 = "Hello");
+
+		Click(locator1 = "Button#DUPLICATE");
+
+		AssertTextNotPresent(
+			index = "2",
+			key_fieldName = "Text",
+			locator1 = "FormViewBuilder#TEXT_FIELD_INDEX",
+			value1 = "Hello");
 	}
 
 	@description = "This is a test for LPS-107630. As an App Adm, I want to use an existing fieldset"
