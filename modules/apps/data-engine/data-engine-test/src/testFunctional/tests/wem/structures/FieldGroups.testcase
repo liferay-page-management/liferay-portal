@@ -247,11 +247,7 @@ definition {
 	@description = "This is a test for LPS-98077. As a Developer, I want to the ability to nest fields"
 	@priority = "4"
 	test SetFieldGroupAsRepeatableAndExecuteOnAWebContent {
-		var structureName = "WC Structure Name";
-
-		ProductMenu.gotoPortlet(
-			category = "Content & Data",
-			portlet = "Web Content");
+		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 
 		NavItem.gotoStructures();
 
@@ -270,25 +266,41 @@ definition {
 
 		DataEngine.editFieldsGroupRepeatable();
 
-		WebContentStructures.saveCP(structureName = "${structureName}");
+		WebContentStructures.saveCP();
 
-		Navigator.gotoNavTab(navTab = "Web Content");
+		NavItem.gotoWebContent();
 
 		WebContentNavigator.gotoAddWithStructureCP(structureName = "WC Structure Name");
 
-		WebContent.addWithStructureCP(
-			structureName = "WC Structure Name",
-			webContentTitle = "WC WebContent Title");
+		WebContent.addWithStructureCP(webContentTitle = "WC WebContent Title");
 
-		AssertElementPresent(locator1 = "DataEngineBuilder#WEB_CONTENT_REPETABLE_BUTTON_ADD");
+		DataEngine.addRepeatableFieldsGroup(fieldsGroupLabel = "Fields Group");
 
-		Click(locator1 = "DataEngineBuilder#WEB_CONTENT_REPETABLE_BUTTON_ADD");
-
-		Button.clickPublish();
+		PortletEntry.publish();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "WC WebContent Title");
 
-		AssertElementPresent(locator1 = "DataEngineBuilder#WEB_CONTENT_REPETABLE_BUTTON_REMOVE");
+		for (var fieldName : list "Text,Numeric") {
+			WebContent.assertFieldRepeated(
+				fieldReference = "${fieldName}",
+				index = "1");
+		}
+
+		for (var fieldName : list "Text,Numeric") {
+			WebContent.assertFieldRepeated(
+				fieldReference = "${fieldName}",
+				index = "2");
+		}
+
+		AssertElementNotPresent(
+			key_fieldReference = "FieldsGroup",
+			key_index = "1",
+			locator1 = "FormFields#FIELD_REMOVE");
+
+		AssertVisible(
+			key_fieldReference = "FieldsGroup",
+			key_index = "2",
+			locator1 = "FormFields#FIELD_REMOVE");
 	}
 
 }
