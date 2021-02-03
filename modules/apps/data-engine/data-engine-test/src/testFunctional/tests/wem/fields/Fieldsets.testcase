@@ -223,49 +223,48 @@ definition {
 	@description = "This is a test for LPS-107630. As an App Adm, I want to use an existing fieldset"
 	@priority = "4"
 	test RepeatFieldsetWithoutDuplicatingContent {
-		property portal.acceptance = "false";
-
-		ProductMenu.gotoPortlet(
-			category = "Content & Data",
-			panel = "Site Administration",
-			portlet = "Web Content");
+		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 
 		NavItem.gotoStructures();
 
-		WebContentStructures.addCP(
-			structureDescription = "RepeatibleTest",
-			structureName = "RepeatibleTest");
+		WebContentStructures.addCP(structureName = "WC Structure Name");
 
-		DataEngine.addField(
-			field = "Text",
-			fieldFieldLabel = "Text",
-			fieldName = "Text");
+		DataEngine.addFieldsets(
+			fieldsetLabel = "Basic Web Content",
+			fieldsetName = "Basic Web Content");
 
-		DataEngine.editFieldRepeatable(fieldFieldLabel = "Text");
+		DataEngine.editFieldsetsRepeatable(fieldsetLabel = "Basic Web Content");
 
-		WebContentStructures.saveCP(structureName = "RepeatibleTest");
+		WebContentStructures.saveCP();
 
-		NavItem.gotoWebContent();
+		NavItem.click(navItem = "Web Content");
 
-		WebContentNavigator.gotoAddWithStructureCP(structureName = "RepeatibleTest");
+		WebContentNavigator.gotoAddWithStructureCP(structureName = "WC Structure Name");
 
-		AssertClick.assertPartialTextClickAt(
-			key_fieldFieldLabel = "Text",
-			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER",
-			value1 = "Text");
+		WebContent.addCP(
+			webContentContent = "Web Content Content",
+			webContentTitle = "Web Content Title");
 
-		Type(
-			key_fieldName = "Text",
-			locator1 = "FormViewBuilder#TEXT_FIELD",
-			value1 = "Hello");
+		DataEngine.addRepeatableFieldset(fieldsetLabel = "Basic Web Content");
 
-		Click(locator1 = "Button#DUPLICATE");
+		SelectFrame.selectFrameNoLoading(
+			key_fieldLabel = "content",
+			locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
 
-		AssertTextNotPresent(
+		AssertTextEquals(
+			locator1 = "CKEditor#BODY",
+			value1 = "Web Content Content");
+
+		SelectFrame(value1 = "relative=top");
+
+		SelectFrame.selectFrameNoLoading(
 			index = "2",
-			key_fieldName = "Text",
-			locator1 = "FormViewBuilder#TEXT_FIELD_INDEX",
-			value1 = "Hello");
+			key_fieldLabel = "content",
+			locator1 = "CKEditor#ANY_BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
+
+		AssertTextEquals(
+			locator1 = "CKEditor#BODY",
+			value1 = "");
 	}
 
 	@description = "This is a test for LPS-107630. As an App Adm, I want to use an existing fieldset"
