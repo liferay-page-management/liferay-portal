@@ -346,16 +346,16 @@ definition {
 
 	macro assertFieldRepeated {
 		AssertElementPresent(
-			key_fieldReference = "${fieldReference}",
+			key_fieldName = "${fieldName}",
 			key_index = "${index}",
-			locator1 = "WCEditWebContent#REPEATED_FIELD_BY_INDEX");
+			locator1 = "WCEditWebContent#REPEATED_FIELD");
 	}
 
 	macro assertFieldRepeatedNotPresent {
 		AssertElementNotPresent(
-			key_fieldReference = "${fieldReference}",
+			key_fieldName = "${fieldName}",
 			key_index = "${index}",
-			locator1 = "WCEditWebContent#REPEATED_FIELD_BY_INDEX");
+			locator1 = "WCEditWebContent#REPEATED_FIELD");
 	}
 
 	macro configureFieldsetsShowOrHideLabel {
