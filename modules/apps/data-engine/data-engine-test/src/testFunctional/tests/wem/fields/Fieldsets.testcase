@@ -213,6 +213,26 @@ definition {
 			key_fieldReference = "FieldsGroup",
 			key_index = "2",
 			locator1 = "FormFields#FIELD_REMOVE");
+
+		PortletEntry.publish();
+
+		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
+
+		for (var n : list "1,2") {
+			WebContent.assertFieldRepeated(
+				fieldReference = "Rich Text",
+				index = "${n}");
+		}
+
+		AssertElementNotPresent(
+			key_fieldReference = "FieldsGroup",
+			key_index = "1",
+			locator1 = "FormFields#FIELD_REMOVE");
+
+		AssertVisible(
+			key_fieldReference = "FieldsGroup",
+			key_index = "2",
+			locator1 = "FormFields#FIELD_REMOVE");
 	}
 
 	@description = "This is a test for LPS-107630. As an App Adm, I want to use an existing fieldset"
