@@ -140,12 +140,8 @@ definition {
 
 		DataEngine.viewField(
 			fieldFieldLabel = "FieldTest",
+			fieldHelp = "Test Help Text",
 			fieldName = "Rich Text");
-
-		AssertTextEquals(
-			key_fieldFieldLabel = "FieldTest",
-			locator1 = "DDMEditStructure#SETTINGS_TEXT",
-			value1 = "Test Help Text");
 	}
 
 	@description = "This is a test for LPS-98076. As a Developer, I want to Implement the HTML field type"
