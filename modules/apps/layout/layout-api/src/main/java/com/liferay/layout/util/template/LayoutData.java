@@ -46,13 +46,13 @@ public class LayoutData {
 
 		for (LayoutRow layoutRow : _layoutRows) {
 			LayoutStructureItem containerLayoutStructureItem =
-				layoutStructure.addContainerLayoutStructureItem(
+				layoutStructure.addContainerStyledLayoutStructureItem(
 					rootLayoutStructureItem.getItemId(), i++);
 
 			List<LayoutColumn> layoutColumns = layoutRow.getLayoutColumns();
 
 			LayoutStructureItem rowLayoutStructureItem =
-				layoutStructure.addRowLayoutStructureItem(
+				layoutStructure.addRowStyledLayoutStructureItem(
 					containerLayoutStructureItem.getItemId(), 0,
 					layoutColumns.size());
 
@@ -71,7 +71,7 @@ public class LayoutData {
 				for (long fragmentEntryLinkId :
 						layoutColumn.getFragmentEntryLinkIds()) {
 
-					layoutStructure.addFragmentLayoutStructureItem(
+					layoutStructure.addFragmentStyledLayoutStructureItem(
 						fragmentEntryLinkId,
 						columnLayoutStructureItem.getItemId(), k++);
 				}
