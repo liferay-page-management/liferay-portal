@@ -74,8 +74,9 @@ public class LayoutDataConverter {
 				ContainerStyledLayoutStructureItem
 					containerStyledLayoutStructureItem =
 						(ContainerStyledLayoutStructureItem)
-							layoutStructure.addContainerLayoutStructureItem(
-								rootLayoutStructureItem.getItemId(), i);
+							layoutStructure.
+								addContainerStyledLayoutStructureItem(
+									rootLayoutStructureItem.getItemId(), i);
 
 				JSONObject inputRowConfigJSONObject =
 					inputRowJSONObject.getJSONObject("config");
@@ -121,7 +122,7 @@ public class LayoutDataConverter {
 
 				RowStyledLayoutStructureItem rowStyledLayoutStructureItem =
 					(RowStyledLayoutStructureItem)
-						layoutStructure.addRowLayoutStructureItem(
+						layoutStructure.addRowStyledLayoutStructureItem(
 							containerStyledLayoutStructureItem.getItemId(), 0,
 							columnsJSONArray.length());
 
@@ -201,7 +202,7 @@ public class LayoutDataConverter {
 			return;
 		}
 
-		layoutStructure.addFragmentLayoutStructureItem(
+		layoutStructure.addFragmentStyledLayoutStructureItem(
 			GetterUtil.getLong(fragmentEntryLinkId), parentItemId, position);
 	}
 
