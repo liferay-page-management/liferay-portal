@@ -20,8 +20,11 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalService;
 import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
+import com.liferay.portal.kernel.service.permission.LayoutSetPrototypePermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.product.navigation.control.menu.BaseJSPProductNavigationControlMenuEntry;
@@ -52,6 +55,10 @@ import org.osgi.service.component.annotations.Reference;
 public class InformationMessagesProductNavigationControlMenuEntry
 	extends BaseJSPProductNavigationControlMenuEntry
 	implements ProductNavigationControlMenuEntry {
+
+	public static final String
+		INFORMATION_MESSAGES_LAYOUT_SET_PROTOTYPE_LAYOUT =
+			"INFORMATION_MESSAGES_LAYOUT_SET_PROTOTYPE_LAYOUT";
 
 	public static final String INFORMATION_MESSAGES_LINKED_LAYOUT =
 		"INFORMATION_MESSAGES_LINKED_LAYOUT";
@@ -89,6 +96,9 @@ public class InformationMessagesProductNavigationControlMenuEntry
 
 		try {
 			httpServletRequest.setAttribute(
+				INFORMATION_MESSAGES_LAYOUT_SET_PROTOTYPE_LAYOUT,
+				isLayoutSetPrototypeLayout(themeDisplay));
+			httpServletRequest.setAttribute(
 				INFORMATION_MESSAGES_LINKED_LAYOUT,
 				isLinkedLayout(themeDisplay));
 			httpServletRequest.setAttribute(
@@ -116,7 +126,9 @@ public class InformationMessagesProductNavigationControlMenuEntry
 			return false;
 		}
 
-		if (!isLinkedLayout(themeDisplay) && !isModifiedLayout(themeDisplay)) {
+		if (!isLinkedLayout(themeDisplay) && !isModifiedLayout(themeDisplay) &&
+			!isLayoutSetPrototypeLayout(themeDisplay)) {
+
 			return false;
 		}
 
@@ -130,6 +142,32 @@ public class InformationMessagesProductNavigationControlMenuEntry
 	)
 	public void setServletContext(ServletContext servletContext) {
 		super.setServletContext(servletContext);
+	}
+
+	protected boolean isLayoutSetPrototypeLayout(ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		Layout layout = themeDisplay.getLayout();
+
+		Group group = layout.getGroup();
+
+		if ((group == null) || !group.isLayoutSetPrototype()) {
+			return false;
+		}
+
+		LayoutSetPrototype layoutSetPrototype =
+			_layoutSetPrototypeLocalService.getLayoutSetPrototype(
+				group.getClassPK());
+
+		if (!LayoutSetPrototypePermissionUtil.contains(
+				themeDisplay.getPermissionChecker(),
+				layoutSetPrototype.getLayoutSetPrototypeId(),
+				ActionKeys.UPDATE)) {
+
+			return false;
+		}
+
+		return true;
 	}
 
 	protected boolean isLinkedLayout(ThemeDisplay themeDisplay)
@@ -178,5 +216,8 @@ public class InformationMessagesProductNavigationControlMenuEntry
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		InformationMessagesProductNavigationControlMenuEntry.class);
+
+	@Reference
+	private LayoutSetPrototypeLocalService _layoutSetPrototypeLocalService;
 
 }

@@ -16,12 +16,18 @@ import {ClayButtonWithIcon} from '@clayui/button';
 import ClayLink from '@clayui/link';
 import ClayPopover from '@clayui/popover';
 import {useEventListener} from 'frontend-js-react-web';
+import {openToast} from 'frontend-js-web';
 import React, {useRef, useState} from 'react';
 
 export default function ({
+	enableDisableLayoutSetPrototypePropagationURL,
+	layoutSetPrototypeLayoutButtonLabel,
+	layoutSetPrototypeLayoutMessage,
+	layoutSetPrototypeLayoutToastMessage,
 	linkedLayoutMessage,
 	portletNamespace,
 	resetPrototypeURL,
+	showLayoutSetPrototypeLayoutMessage,
 	showLinkedLayoutMessage,
 	showModifiedLayoutMessage,
 }) {
@@ -72,6 +78,32 @@ export default function ({
 				/>
 			}
 		>
+			{showLayoutSetPrototypeLayoutMessage && (
+				<div>
+					<p
+						className="message-info mt-0"
+						dangerouslySetInnerHTML={{
+							__html: layoutSetPrototypeLayoutMessage,
+						}}
+					/>
+
+					<ClayLink
+						button={{small: true}}
+						displayType="primary"
+						href={enableDisableLayoutSetPrototypePropagationURL}
+						onClick={() => {
+							openToast({
+								autoClose: 10000,
+								message: layoutSetPrototypeLayoutToastMessage,
+								type: 'info',
+							});
+						}}
+					>
+						{layoutSetPrototypeLayoutButtonLabel}
+					</ClayLink>
+				</div>
+			)}
+
 			{showModifiedLayoutMessage && (
 				<div>
 					<p
