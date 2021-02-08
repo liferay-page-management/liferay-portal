@@ -23,6 +23,7 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocal
 import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.comment.CommentManager;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
@@ -46,8 +47,10 @@ import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
+import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
@@ -117,6 +120,9 @@ public class SegmentsExperienceUtil {
 		boolean addedDefault = false;
 
 		for (SegmentsExperience segmentsExperience : segmentsExperiences) {
+			UnicodeProperties typeSettingsUnicodeProperties =
+				segmentsExperience.getTypeSettingsUnicodeProperties();
+
 			if ((segmentsExperience.getPriority() <
 					SegmentsExperienceConstants.PRIORITY_DEFAULT) &&
 				!addedDefault) {
@@ -128,11 +134,17 @@ public class SegmentsExperienceUtil {
 				addedDefault = true;
 			}
 
+			String[] languageIds = StringUtil.split(
+				typeSettingsUnicodeProperties.getProperty(
+					PropsKeys.LOCALES, StringPool.BLANK));
+
 			availableSegmentsExperiences.put(
 				String.valueOf(segmentsExperience.getSegmentsExperienceId()),
 				HashMapBuilder.<String, Object>put(
 					"hasLockedSegmentsExperiment",
 					segmentsExperience.hasSegmentsExperiment()
+				).put(
+					"languageIds", languageIds
 				).put(
 					"name", segmentsExperience.getName(themeDisplay.getLocale())
 				).put(
@@ -168,8 +180,17 @@ public class SegmentsExperienceUtil {
 	public static JSONObject getSegmentsExperienceJSONObject(
 		SegmentsExperience segmentsExperience) {
 
+		UnicodeProperties typeSettingsUnicodeProperties =
+			segmentsExperience.getTypeSettingsUnicodeProperties();
+
+		String[] languageIds = StringUtil.split(
+			typeSettingsUnicodeProperties.getProperty(
+				PropsKeys.LOCALES, StringPool.BLANK));
+
 		return JSONUtil.put(
 			"active", segmentsExperience.isActive()
+		).put(
+			"languageIds", languageIds
 		).put(
 			"name", segmentsExperience.getNameCurrentValue()
 		).put(
