@@ -15,6 +15,7 @@
 import {useIsMounted} from 'frontend-js-react-web';
 import {useEffect, useState} from 'react';
 
+import {FILE_ENTRY_CLASS_NAME} from '../config/constants/fileEntryClassName';
 import ImageService from '../services/ImageService';
 
 export const useBackgroundImageMediaQueries = (elementId, backgroundImage) => {
@@ -27,12 +28,18 @@ export const useBackgroundImageMediaQueries = (elementId, backgroundImage) => {
 	useEffect(() => {
 		setBackgroundImageMediaQueries('');
 
-		if (!backgroundImage?.fileEntryId) {
+		const fileEntryId =
+			backgroundImage?.fileEntryId ||
+			(backgroundImage?.className === FILE_ENTRY_CLASS_NAME &&
+				backgroundImage?.classPK) ||
+			'';
+
+		if (!fileEntryId) {
 			return;
 		}
 
 		ImageService.getAvailableImageConfigurations({
-			fileEntryId: backgroundImage.fileEntryId,
+			fileEntryId,
 			onNetworkStatus: () => {},
 		}).then((imageSizes) => {
 			if (!imageSizes || !imageSizes.length || !isMounted()) {
