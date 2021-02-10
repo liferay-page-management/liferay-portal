@@ -12,18 +12,26 @@
  * details.
  */
 
-import {DefaultEventHandler} from 'frontend-js-web';
+import {openSimpleInputModal} from 'frontend-js-web';
 
-class OrphanPortletsManagementToolbarDefaultEventHandler extends DefaultEventHandler {
-	deleteOrphanPortlets() {
-		if (
-			confirm(
-				Liferay.Language.get('are-you-sure-you-want-to-delete-this')
-			)
-		) {
-			submitForm(this.one('#fm'));
-		}
-	}
+export default function propsTransformer({...otherProps}) {
+	return {
+		...otherProps,
+		onActionButtonClick: (event, {item}) => {
+			const data = item?.data;
+
+			const action = data?.action;
+
+			if (action === 'addAssetListEntry') {
+				openSimpleInputModal({
+					dialogTitle: data.title,
+					formSubmitURL: data.addAssetListEntryURL,
+					mainFieldLabel: Liferay.Language.get('title'),
+					mainFieldName: 'title',
+					mainFieldPlaceholder: Liferay.Language.get('title'),
+					namespace: data.namespace,
+				});
+			}
+		},
+	};
 }
-
-export default OrphanPortletsManagementToolbarDefaultEventHandler;
