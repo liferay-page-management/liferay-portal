@@ -359,25 +359,19 @@ export default function ({classTypes, namespace}) {
 	});
 
 	const openModal = ({delegateTarget}) => {
-		let url = delegateTarget.dataset.href;
+		const url = new URL(delegateTarget.dataset.href);
 
-		url = Liferay.Util.addParams(
-			`${namespace}ddmStructureDisplayFieldValue=${encodeURIComponent(
-				ddmStructureDisplayFieldValueInput.value
-			)}`,
-			url
+		url.searchParams.append(
+			`${namespace}ddmStructureDisplayFieldValue`,
+			encodeURIComponent(ddmStructureDisplayFieldValueInput.value)
 		);
-		url = Liferay.Util.addParams(
-			`${namespace}ddmStructureFieldName=${encodeURIComponent(
-				ddmStructureFieldNameInput.value
-			)}`,
-			url
+		url.searchParams.append(
+			`${namespace}ddmStructureFieldName`,
+			encodeURIComponent(ddmStructureFieldNameInput.value)
 		);
-		url = Liferay.Util.addParams(
-			`${namespace}ddmStructureFieldValue=${encodeURIComponent(
-				ddmStructureFieldValueInput.value
-			)}`,
-			url
+		url.searchParams.append(
+			`${namespace}ddmStructureFieldValue`,
+			encodeURIComponent(ddmStructureFieldValueInput.value)
 		);
 
 		Liferay.Util.openSelectionModal({
@@ -399,7 +393,7 @@ export default function ({classTypes, namespace}) {
 				Liferay.Language.get('select-x'),
 				Liferay.Language.get('structure-field')
 			),
-			url,
+			url: url.href,
 		});
 	};
 
