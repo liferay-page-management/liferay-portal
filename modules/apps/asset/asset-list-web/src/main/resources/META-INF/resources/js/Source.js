@@ -12,7 +12,7 @@
  * details.
  */
 
-import {delegate} from 'frontend-js-web';
+import {delegate, openSelectionModal, toggleDisabled} from 'frontend-js-web';
 
 export default function ({classTypes, namespace}) {
 	const mapDDMStructures = {};
@@ -93,7 +93,7 @@ export default function ({classTypes, namespace}) {
 
 		if (enabledInput) {
 			popupButtons.forEach((popupButton) => {
-				Liferay.Util.toggleDisabled(popupButton, !enabledInputChecked);
+				toggleDisabled(popupButton, !enabledInputChecked);
 			});
 		}
 	};
@@ -374,7 +374,7 @@ export default function ({classTypes, namespace}) {
 			encodeURIComponent(ddmStructureFieldValueInput.value)
 		);
 
-		Liferay.Util.openSelectionModal({
+		openSelectionModal({
 			customSelectEvent: true,
 			id: `${namespace}selectDDMStructure${delegateTarget.id}`,
 			onSelect: (selectedItem) => {
