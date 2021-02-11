@@ -14,6 +14,9 @@
 
 import {delegate, openSelectionModal, toggleDisabled} from 'frontend-js-web';
 
+const ALL_SUBTYPES = 'all-subtypes';
+const SELECT_MORE_THAN_ONE = 'select-more-than-one';
+
 export default function ({classTypes, namespace}) {
 	const mapDDMStructures = {};
 
@@ -128,7 +131,10 @@ export default function ({classTypes, namespace}) {
 		);
 
 		subtypeFieldsWrappers.forEach((subtypeFieldsWrapper) => {
-			if (selectedSubtype != 'false' && selectedSubtype != 'true') {
+			if (
+				selectedSubtype !== ALL_SUBTYPES &&
+				selectedSubtype !== SELECT_MORE_THAN_ONE
+			) {
 				if (orderingPanel) {
 					removeOptionsOrderByFilter();
 

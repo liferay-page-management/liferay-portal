@@ -169,8 +169,8 @@ List<Map<String, Object>> classTypesList = new ArrayList<>();
 					</optgroup>
 
 					<optgroup label="<%= LanguageUtil.get(request, "multiple-item-subtypes") %>">
-						<aui:option label='<%= LanguageUtil.get(request, "select-more-than-one") + StringPool.TRIPLE_PERIOD %>' selected="<%= !anyAssetSubtype && (assetSelectedClassTypeIds.length > 1) && !noAssetSubtypeSelected %>" value="<%= false %>" />
-						<aui:option label="all-subtypes" selected="<%= anyAssetSubtype %>" value="<%= true %>" />
+						<aui:option label='<%= LanguageUtil.get(request, "select-more-than-one") + StringPool.TRIPLE_PERIOD %>' selected="<%= !anyAssetSubtype && (assetSelectedClassTypeIds.length > 1) && !noAssetSubtypeSelected %>" value="select-more-than-one" />
+						<aui:option label="all-subtypes" selected="<%= anyAssetSubtype %>" value="all-subtypes" />
 					</optgroup>
 				</aui:select>
 
