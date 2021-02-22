@@ -65,22 +65,24 @@ public class DDMStructureImpl extends DDMStructureBaseImpl {
 
 		DDMStructure parentDDMStructure = getParentDDMStructure();
 
-		if (parentDDMStructure != null) {
-			DDMForm ancestorsDDMForm =
-				parentDDMStructure.createFullHierarchyDDMForm();
-
-			List<DDMFormField> ancestorsDDMFormFields =
-				ancestorsDDMForm.getDDMFormFields();
-
-			for (DDMFormField ancestorsDDMFormField : ancestorsDDMFormFields) {
-				ancestorsDDMFormField.setDDMForm(fullHierarchyDDMForm);
-			}
-
-			List<DDMFormField> ddmFormFields =
-				fullHierarchyDDMForm.getDDMFormFields();
-
-			ddmFormFields.addAll(0, ancestorsDDMFormFields);
+		if (parentDDMStructure == null) {
+			return fullHierarchyDDMForm;
 		}
+
+		DDMForm ancestorsDDMForm =
+			parentDDMStructure.createFullHierarchyDDMForm();
+
+		List<DDMFormField> ancestorsDDMFormFields =
+			ancestorsDDMForm.getDDMFormFields();
+
+		for (DDMFormField ancestorsDDMFormField : ancestorsDDMFormFields) {
+			ancestorsDDMFormField.setDDMForm(fullHierarchyDDMForm);
+		}
+
+		List<DDMFormField> ddmFormFields =
+			fullHierarchyDDMForm.getDDMFormFields();
+
+		ddmFormFields.addAll(0, ancestorsDDMFormFields);
 
 		return fullHierarchyDDMForm;
 	}
@@ -585,18 +587,21 @@ public class DDMStructureImpl extends DDMStructureBaseImpl {
 	}
 
 	private void _setNestedDDMFormFields(DDMFormField ddmFormField) {
-		if (Validator.isNotNull(ddmFormField.getProperty("ddmStructureId"))) {
-			DDMStructure ddmStructure =
-				DDMStructureLocalServiceUtil.fetchDDMStructure(
-					GetterUtil.getLong(
-						ddmFormField.getProperty("ddmStructureId")));
-
-			if (ddmStructure != null) {
-				DDMForm ddmForm = ddmStructure.getDDMForm();
-
-				ddmFormField.setNestedDDMFormFields(ddmForm.getDDMFormFields());
-			}
+		if (Validator.isNull(ddmFormField.getProperty("ddmStructureId"))) {
+			return;
 		}
+
+		DDMStructure ddmStructure =
+			DDMStructureLocalServiceUtil.fetchDDMStructure(
+				GetterUtil.getLong(ddmFormField.getProperty("ddmStructureId")));
+
+		if (ddmStructure == null) {
+			return;
+		}
+
+		DDMForm ddmForm = ddmStructure.getDDMForm();
+
+		ddmFormField.setNestedDDMFormFields(ddmForm.getDDMFormFields());
 	}
 
 	@CacheField
