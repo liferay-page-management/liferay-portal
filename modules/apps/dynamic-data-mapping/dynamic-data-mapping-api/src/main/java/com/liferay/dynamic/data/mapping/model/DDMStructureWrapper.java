@@ -207,9 +207,7 @@ public class DDMStructureWrapper
 	}
 
 	@Override
-	public DDMForm createFullHierarchyDDMForm()
-		throws com.liferay.portal.kernel.exception.PortalException {
-
+	public DDMForm createFullHierarchyDDMForm() {
 		return model.createFullHierarchyDDMForm();
 	}
 

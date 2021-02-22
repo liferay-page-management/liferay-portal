@@ -58,8 +58,7 @@ public interface DDMStructure extends DDMStructureModel, PersistedModel {
 
 		};
 
-	public DDMForm createFullHierarchyDDMForm()
-		throws com.liferay.portal.kernel.exception.PortalException;
+	public DDMForm createFullHierarchyDDMForm();
 
 	public DDMStructureLayout fetchDDMStructureLayout();
 
