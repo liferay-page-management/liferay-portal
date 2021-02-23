@@ -475,6 +475,10 @@ public abstract class BaseDDMTestCase extends PowerMockito {
 		return valuesMap;
 	}
 
+	protected DDMStructure fetchStructure(long structureId) {
+		return DDMStructureLocalServiceUtil.fetchDDMStructure(structureId);
+	}
+
 	protected DDMFormFieldTypeServicesTracker
 		getMockedDDMFormFieldTypeServicesTracker() {
 
@@ -604,6 +608,25 @@ public abstract class BaseDDMTestCase extends PowerMockito {
 
 	protected void setUpDDMStructureLocalServiceUtil() {
 		mockStatic(DDMStructureLocalServiceUtil.class);
+
+		when(
+			fetchStructure(Matchers.anyLong())
+		).then(
+			new Answer<DDMStructure>() {
+
+				@Override
+				public DDMStructure answer(InvocationOnMock invocationOnMock)
+					throws Throwable {
+
+					Object[] args = invocationOnMock.getArguments();
+
+					Long structureId = (Long)args[0];
+
+					return structures.get(structureId);
+				}
+
+			}
+		);
 
 		when(
 			getStructure(Matchers.anyLong())
