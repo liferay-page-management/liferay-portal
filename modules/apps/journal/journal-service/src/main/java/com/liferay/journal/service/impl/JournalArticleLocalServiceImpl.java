@@ -7547,10 +7547,6 @@ public class JournalArticleLocalServiceImpl
 				"article_group_id", String.valueOf(article.getGroupId()));
 			tokens.put(
 				"company_group_id", String.valueOf(companyGroup.getGroupId()));
-
-			// Deprecated tokens
-
-			tokens.put("group_id", String.valueOf(article.getGroupId()));
 		}
 
 		tokens.put(
@@ -7568,10 +7564,6 @@ public class JournalArticleLocalServiceImpl
 			String.valueOf(ddmStructure.getStructureKey()));
 		tokens.put(
 			"ddm_structure_id", String.valueOf(ddmStructure.getStructureId()));
-
-		// Deprecated token
-
-		tokens.put("structure_id", article.getDDMStructureKey());
 
 		Document document = article.getDocument();
 
@@ -7683,10 +7675,6 @@ public class JournalArticleLocalServiceImpl
 				tokens.put(
 					"ddm_template_id",
 					String.valueOf(ddmTemplate.getTemplateId()));
-
-				// Deprecated token
-
-				tokens.put("template_id", ddmTemplateKey);
 
 				script = ddmTemplate.getScript();
 				langType = ddmTemplate.getLanguage();
