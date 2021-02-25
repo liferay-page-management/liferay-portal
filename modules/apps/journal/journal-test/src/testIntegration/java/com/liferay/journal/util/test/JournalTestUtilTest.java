@@ -29,7 +29,6 @@ import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.portlet.PortletRequestModel;
 import com.liferay.portal.kernel.template.TemplateConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -208,7 +207,7 @@ public class JournalTestUtilTest {
 			null, null, getTokens(), Constants.VIEW, "en_US",
 			UnsecureSAXReaderUtil.read(xml), null,
 			JournalTestUtil.getSampleTemplateXSL(),
-			TemplateConstants.LANG_TYPE_VM);
+			TemplateConstants.LANG_TYPE_VM, false, null);
 
 		Assert.assertEquals("Joe Bloggs", content);
 	}
@@ -267,7 +266,7 @@ public class JournalTestUtilTest {
 			null, null, getTokens(), Constants.VIEW, "en_US",
 			UnsecureSAXReaderUtil.read(xml), null,
 			JournalTestUtil.getSampleTemplateXSL(),
-			TemplateConstants.LANG_TYPE_VM);
+			TemplateConstants.LANG_TYPE_VM, false, null);
 
 		Assert.assertEquals("Joe Bloggs", content);
 	}
@@ -306,8 +305,7 @@ public class JournalTestUtilTest {
 
 	protected Map<String, String> getTokens() throws Exception {
 		Map<String, String> tokens = (Map)_getTokensMethod.invoke(
-			null, TestPropsValues.getGroupId(), (PortletRequestModel)null,
-			null);
+			null, null, null, null);
 
 		tokens.put(
 			"article_group_id", String.valueOf(TestPropsValues.getGroupId()));
