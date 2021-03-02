@@ -204,6 +204,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -7619,14 +7621,15 @@ public class JournalArticleLocalServiceImpl
 			String script = StringPool.BLANK;
 			String langType = StringPool.BLANK;
 
+			DDMStructure ddmStructure = article.getDDMStructure();
+
 			if (ddmTemplate != null) {
-				script = ddmTemplate.getScript();
+				script = _convertDDMTemplateScript(
+					ddmStructure, ddmTemplate.getScript());
 				langType = ddmTemplate.getLanguage();
 				cacheable = ddmTemplate.isCacheable();
 			}
 			else {
-				DDMStructure ddmStructure = article.getDDMStructure();
-
 				script = _journalDefaultTemplateProvider.getScript(
 					ddmStructure.getStructureId());
 
@@ -8841,6 +8844,50 @@ public class JournalArticleLocalServiceImpl
 		return HashMapBuilder.put(
 			defaultLocale, titleMap.get(defaultLocale)
 		).build();
+	}
+
+	private String _convertDDMTemplateScript(
+		DDMStructure ddmStructure, String script) {
+
+		DDMForm ddmForm = ddmStructure.getDDMForm();
+
+		List<DDMFormField> ddmFormFields = ddmForm.getDDMFormFields();
+
+		Stream<DDMFormField> stream = ddmFormFields.stream();
+
+		List<DDMFormField> fieldsetDDMFormFields = stream.filter(
+			ddmFormField ->
+				StringUtil.equals(ddmFormField.getType(), "fieldset") &&
+				StringUtil.endsWith(ddmFormField.getName(), "FieldSet")
+		).collect(
+			Collectors.toList()
+		);
+
+		if (ListUtil.isEmpty(fieldsetDDMFormFields)) {
+			return script;
+		}
+
+		for (DDMFormField ddmFormField : fieldsetDDMFormFields) {
+			String name = ddmFormField.getName();
+
+			script = StringUtil.replace(
+				script,
+				StringUtil.removeSubstring(name, "FieldSet") +
+					StringPool.PERIOD,
+				name + StringPool.PERIOD);
+
+			StringBundler sb = new StringBundler(4);
+
+			sb.append(name);
+			sb.append(StringPool.PERIOD);
+			sb.append(StringUtil.removeSubstring(name, "FieldSet"));
+			sb.append(".getData()");
+
+			script = StringUtil.replace(
+				script, name + ".getData()", sb.toString());
+		}
+
+		return script;
 	}
 
 	private void _deleteDDMStructurePredefinedValues(
