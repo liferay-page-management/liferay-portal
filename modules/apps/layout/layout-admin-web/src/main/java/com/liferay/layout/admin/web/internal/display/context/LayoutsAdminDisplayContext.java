@@ -1478,7 +1478,8 @@ public class LayoutsAdminDisplayContext {
 		}
 
 		if (draftLayout.getStatus() == WorkflowConstants.STATUS_DRAFT) {
-			return true;
+			return GetterUtil.getBoolean(
+				draftLayout.getTypeSettingsProperty("published"));
 		}
 
 		return false;
