@@ -13,20 +13,11 @@
  */
 
 export default function itemSelectorValueToCollection(collection) {
-	const {
-		classNameId,
-		classPK,
-		itemSubtype,
-		itemType,
-		returnType,
-		title,
-	} = collection;
+	const {itemType, key, returnType, title} = collection;
 
 	return {
-		classNameId,
-		classPK,
-		itemSubtype,
 		itemType,
+		key,
 		title,
 		type: returnType,
 	};
