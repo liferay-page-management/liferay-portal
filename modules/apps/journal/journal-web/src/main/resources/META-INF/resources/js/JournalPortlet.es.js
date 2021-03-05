@@ -81,6 +81,7 @@ class JournalPortlet extends PortletBase {
 	 * @inheritDoc
 	 */
 	created() {
+		this._enableFormSubmitTimeoutId = null;
 		this._onContextualSidebarButtonClick = this._onContextualSidebarButtonClick.bind(
 			this
 		);
@@ -129,6 +130,8 @@ class JournalPortlet extends PortletBase {
 		}
 
 		this._localeChangedHandler.detachLocaleChangedEventListener();
+
+		clearTimeout(this._enableFormSubmitTimeoutId);
 	}
 
 	/**
@@ -279,11 +282,23 @@ class JournalPortlet extends PortletBase {
 		this._cleanInputIfNeeded('titleMapAsXML');
 		this._cleanInputIfNeeded('descriptionMapAsXML');
 
-		Array.from(form.querySelectorAll('button[type=submit]')).forEach(
-			(button) => {
-				button.disabled = true;
-			}
+		const formSubmitButtons = Array.from(
+			form.querySelectorAll('button[type=submit]')
 		);
+
+		const handleFormFocus = () => {
+			form.removeEventListener('focusin', handleFormFocus);
+
+			formSubmitButtons.forEach((button) => {
+				button.disabled = false;
+			});
+		};
+
+		formSubmitButtons.forEach((button) => {
+			button.disabled = true;
+		});
+
+		form.addEventListener('focusin', handleFormFocus);
 
 		submitForm(form);
 	}
