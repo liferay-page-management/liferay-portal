@@ -6,6 +6,10 @@ $product-menu-item-fixed-width: $product-menu-width;
 $product-menu-pages-administration-link-height: 72px;
 
 .pages-tree {
+	.autofit-col {
+		display: block;
+	}
+
 	.child-page-action-option {
 		display: block;
 	}
@@ -199,10 +203,6 @@ $product-menu-pages-administration-link-height: 72px;
 			.tree-label {
 				.dropdown {
 					visibility: hidden;
-				}
-
-				.page-icon {
-					display: block;
 				}
 
 				&:hover .dropdown {
