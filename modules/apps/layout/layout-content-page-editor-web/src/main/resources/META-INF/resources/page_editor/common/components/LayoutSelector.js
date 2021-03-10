@@ -12,7 +12,6 @@
  * details.
  */
 
-import ClayButton from '@clayui/button';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -25,19 +24,11 @@ export const LayoutSelector = ({mappedLayout, onLayoutSelect}) => {
 			<ItemSelector
 				eventName={`${config.portletNamespace}selectLayout`}
 				itemSelectorURL={config.layoutItemSelectorURL}
+				label={Liferay.Language.get('page')}
 				onItemSelect={(layout) => onLayoutSelect(layout)}
 				selectedItemTitle={mappedLayout?.name || ''}
 				showMappedItems={false}
 			/>
-			<ClayButton
-				className="mt-2"
-				disabled={!mappedLayout}
-				displayType="secondary"
-				onClick={() => onLayoutSelect(null)}
-				small
-			>
-				{Liferay.Language.get('clear')}
-			</ClayButton>
 		</div>
 	);
 };
