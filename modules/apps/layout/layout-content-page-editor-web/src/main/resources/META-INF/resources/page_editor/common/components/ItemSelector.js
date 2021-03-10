@@ -59,6 +59,13 @@ export default function ItemSelector({
 
 	const selectContentIcon = selectedItemTitle ? 'change' : 'plus';
 
+	const selectContentButtonTitle = Liferay.Util.sub(
+		selectedItemTitle
+			? Liferay.Language.get('change-x')
+			: Liferay.Language.get('select-x'),
+		label
+	);
+
 	return (
 		<>
 			{showLabel && <label htmlFor={itemSelectorInputId}>{label}</label>}
@@ -101,6 +108,7 @@ export default function ItemSelector({
 									onClick={() => setActive(true)}
 									small
 									symbol={selectContentIcon}
+									title={selectContentButtonTitle}
 								/>
 							}
 						>
@@ -140,6 +148,7 @@ export default function ItemSelector({
 							onClick={openModal}
 							small
 							symbol={selectContentIcon}
+							title={selectContentButtonTitle}
 						/>
 					))}
 
@@ -155,6 +164,7 @@ export default function ItemSelector({
 						onClick={() => onItemSelect({})}
 						small
 						symbol="times-circle"
+						title={Liferay.Language.get('clear-selection')}
 					/>
 				)}
 			</div>
