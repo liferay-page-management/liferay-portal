@@ -50,7 +50,7 @@ const CreationMenu = ({
 				? primaryItems?.[0] ??
 				  secondaryItems?.[0].items?.[0] ??
 				  secondaryItems?.[0]
-				: '';
+				: null;
 
 		return item?.label || Liferay.Language.get('new');
 	};
