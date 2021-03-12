@@ -3,6 +3,30 @@
 	"$schema": "http://json-schema.org/draft-07/schema#",
 	"additionalProperties": false,
 	"definitions": {
+		"ClassFieldReference": {
+			"additionalProperties": false,
+			"properties": {
+				"className": {
+					"title": "The className Schema",
+					"type": "string"
+				},
+				"fieldName": {
+					"title": "The fieldName Schema",
+					"type": "string"
+				},
+				"fieldValue": {
+					"title": "The fieldValue Schema",
+					"type": "string"
+				}
+			},
+			"required": [
+				"className",
+				"fieldName",
+				"fieldValue"
+			],
+			"title": "The ClassFieldReference Schema",
+			"type": "object"
+		},
 		"ClassNameReference": {
 			"additionalProperties": false,
 			"properties": {
@@ -405,6 +429,9 @@
 						},
 						"itemReference": {
 							"oneOf": [
+								{
+									"$ref": "#/definitions/ClassFieldReference"
+								},
 								{
 									"$ref": "#/definitions/ClassPKReference"
 								},
@@ -1608,24 +1635,6 @@
 						"key"
 					],
 					"title": "The masterPage Schema",
-					"type": "object"
-				},
-				"styleBook": {
-					"additionalProperties": false,
-					"properties": {
-						"key": {
-							"title": "The key Schema",
-							"type": "string"
-						},
-						"name": {
-							"title": "The name Schema",
-							"type": "string"
-						}
-					},
-					"required": [
-						"key"
-					],
-					"title": "The styleBook Schema",
 					"type": "object"
 				},
 				"themeName": {
