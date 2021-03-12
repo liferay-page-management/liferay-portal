@@ -66,24 +66,28 @@ Map<String, Object> fragmentsEditorData = HashMapBuilder.<String, Object>put(
 %>
 
 <div class="asset-full-content clearfix mb-5 <%= assetPublisherDisplayContext.isDefaultAssetPublisher() ? "default-asset-publisher" : StringPool.BLANK %> <%= assetPublisherDisplayContext.isShowAssetTitle() ? "show-asset-title" : "no-title" %> <%= ((previewClassNameId == assetEntry.getClassNameId()) && (previewClassPK == assetEntry.getClassPK())) ? "p-1 preview-asset-entry" : StringPool.BLANK %>" <%= AUIUtil.buildData(fragmentsEditorData) %>>
-	<div class="align-items-center d-flex mb-2">
-		<p class="component-title h4">
-			<c:if test="<%= showBackURL && Validator.isNotNull(redirect) %>">
-				<liferay-ui:icon
-					cssClass="header-back-to"
-					icon="angle-left"
-					markupView="lexicon"
-					url="<%= redirect %>"
-				/>
-			</c:if>
+	<liferay-util:buffer
+		var="assetTitleSection"
+	>
+		<c:if test="<%= showBackURL && Validator.isNotNull(redirect) %>">
+			<liferay-ui:icon
+				cssClass="header-back-to"
+				icon="angle-left"
+				markupView="lexicon"
+				url="<%= redirect %>"
+			/>
+		</c:if>
 
-			<c:if test="<%= assetPublisherDisplayContext.isShowAssetTitle() %>">
-				<span class="asset-title d-inline">
-					<%= HtmlUtil.escape(title) %>
-				</span>
-			</c:if>
-		</p>
+		<c:if test="<%= assetPublisherDisplayContext.isShowAssetTitle() %>">
+			<span class="asset-title d-inline">
+				<%= HtmlUtil.escape(title) %>
+			</span>
+		</c:if>
+	</liferay-util:buffer>
 
+	<liferay-util:buffer
+		var="assetActionsSection"
+	>
 		<c:if test="<%= !print %>">
 
 			<%
@@ -108,7 +112,21 @@ Map<String, Object> fragmentsEditorData = HashMapBuilder.<String, Object>put(
 				</div>
 			</c:if>
 		</c:if>
-	</div>
+	</liferay-util:buffer>
+
+	<c:if test="<%= Validator.isNotNull(assetTitleSection) || Validator.isNotNull(assetActionsSection) %>">
+		<div class="align-items-center d-flex mb-2">
+			<c:if test="<%= Validator.isNotNull(assetTitleSection) %>">
+				<p class="component-title h4">
+					<%= assetTitleSection %>
+				</p>
+			</c:if>
+
+			<c:if test="<%= Validator.isNotNull(assetActionsSection) %>">
+				<%= assetActionsSection %>
+			</c:if>
+		</div>
+	</c:if>
 
 	<span class="asset-anchor lfr-asset-anchor" id="<%= assetEntry.getEntryId() %>"></span>
 
