@@ -165,12 +165,14 @@ public class FriendlyURLServlet extends HttpServlet {
 
 		Layout defaultLayout = null;
 
+		Map<String, String[]> params = httpServletRequest.getParameterMap();
+
 		try {
 			LayoutFriendlyURLSeparatorComposite
 				layoutFriendlyURLSeparatorComposite =
 					portal.getLayoutFriendlyURLSeparatorComposite(
-						group.getGroupId(), _private, layoutFriendlyURL,
-						httpServletRequest.getParameterMap(), requestContext);
+						group.getGroupId(), _private, layoutFriendlyURL, params,
+						requestContext);
 
 			Layout layout = layoutFriendlyURLSeparatorComposite.getLayout();
 
@@ -306,7 +308,7 @@ public class FriendlyURLServlet extends HttpServlet {
 
 		String actualURL = portal.getActualURL(
 			group.getGroupId(), _private, Portal.PATH_MAIN, layoutFriendlyURL,
-			httpServletRequest.getParameterMap(), requestContext);
+			params, requestContext);
 		String portalURL = portal.getPortalURL(httpServletRequest);
 
 		if (actualURL.startsWith(portalURL)) {
@@ -341,8 +343,7 @@ public class FriendlyURLServlet extends HttpServlet {
 
 			actualURL = actualURL.concat(
 				HttpUtil.parameterMapToString(
-					httpServletRequest.getParameterMap(),
-					!actualURL.contains(StringPool.QUESTION)));
+					params, !actualURL.contains(StringPool.QUESTION)));
 		}
 
 		return new Redirect(actualURL);
