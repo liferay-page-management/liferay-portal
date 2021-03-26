@@ -19,6 +19,7 @@ import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetCategoryConstants;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.model.AssetVocabularyConstants;
+import com.liferay.asset.kernel.service.AssetCategoryLocalServiceUtil;
 import com.liferay.asset.kernel.service.AssetCategoryServiceUtil;
 import com.liferay.asset.kernel.service.AssetVocabularyServiceUtil;
 import com.liferay.asset.taglib.internal.servlet.ServletContextUtil;
@@ -26,6 +27,7 @@ import com.liferay.asset.taglib.internal.util.AssetCategoryUtil;
 import com.liferay.asset.taglib.internal.util.AssetVocabularyUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProviderUtil;
@@ -47,6 +49,8 @@ import com.liferay.taglib.util.IncludeTag;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
@@ -315,6 +319,25 @@ public class AssetCategoriesSelectorTag extends IncludeTag {
 		return null;
 	}
 
+	protected Long[] getRestrictedCategoryIds() throws PortalException {
+		List<AssetCategory> categories =
+			AssetCategoryLocalServiceUtil.getCategories(_className, _classPK);
+		List<AssetCategory> filteredCategories =
+			AssetCategoryServiceUtil.getCategories(_className, _classPK);
+
+		Stream<AssetCategory> categoriesStream = categories.stream();
+
+		List<Long> restrictedCategoryIds = categoriesStream.filter(
+			n -> !filteredCategories.contains(n)
+		).map(
+			n -> n.getCategoryId()
+		).collect(
+			Collectors.toList()
+		);
+
+		return restrictedCategoryIds.toArray(new Long[0]);
+	}
+
 	protected List<Map<String, Object>> getVocabularies() throws Exception {
 		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
 			WebKeys.THEME_DISPLAY);
@@ -425,6 +448,8 @@ public class AssetCategoriesSelectorTag extends IncludeTag {
 					}
 				).put(
 					"portletURL", getPortletURL().toString()
+				).put(
+					"restrictedCategoryIds", getRestrictedCategoryIds()
 				).put(
 					"vocabularies", getVocabularies()
 				).build());

@@ -62,6 +62,8 @@ export default function (props) {
 			vocabulary.visibilityType ===
 			ASSET_VOCABULARY_VISIBILITY_TYPES.internal
 	);
+	const inputName = props.inputName;
+	const restrictedCategoryIds = props.restrictedCategoryIds;
 
 	return (
 		<>
@@ -118,6 +120,21 @@ export default function (props) {
 						/>
 					</>
 				)}
+
+			{restrictedCategoryIds && restrictedCategoryIds.length > 0 && (
+				<>
+					{restrictedCategoryIds.map((categoryId) => {
+						return (
+							<input
+								key={categoryId}
+								name={inputName}
+								type="hidden"
+								value={categoryId}
+							/>
+						);
+					})}
+				</>
+			)}
 		</>
 	);
 }
