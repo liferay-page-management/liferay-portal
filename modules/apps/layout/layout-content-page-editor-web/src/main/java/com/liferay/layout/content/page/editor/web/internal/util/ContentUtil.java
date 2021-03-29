@@ -572,15 +572,15 @@ public class ContentUtil {
 					layoutClassedModelUsage.getClassPK()));
 
 		return mappedContentJSONObject.put(
-			"name",
-			ResourceActionsUtil.getModelResource(
-				themeDisplay.getLocale(),
-				layoutClassedModelUsage.getClassName())
-		).put(
 			"status", _getStatusJSONObject(layoutClassedModelUsage)
 		).put(
 			"title",
 			layoutDisplayPageObjectProvider.getTitle(themeDisplay.getLocale())
+		).put(
+			"type",
+			ResourceActionsUtil.getModelResource(
+				themeDisplay.getLocale(),
+				layoutClassedModelUsage.getClassName())
 		).put(
 			"usagesCount",
 			LayoutClassedModelUsageLocalServiceUtil.

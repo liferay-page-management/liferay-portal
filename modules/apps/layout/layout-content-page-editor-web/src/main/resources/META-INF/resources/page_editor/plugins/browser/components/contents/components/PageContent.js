@@ -92,7 +92,7 @@ export default function PageContent(props) {
 						{props.title}
 					</strong>
 
-					<span className="small text-secondary">{props.name}</span>
+					<span className="small text-secondary">{props.type}</span>
 
 					<span className="small text-secondary">
 						{props.usagesCount === 1
