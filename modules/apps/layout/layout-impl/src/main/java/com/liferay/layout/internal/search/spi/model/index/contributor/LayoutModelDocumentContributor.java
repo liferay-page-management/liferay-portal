@@ -19,8 +19,10 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Html;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -59,7 +61,18 @@ public class LayoutModelDocumentContributor
 		document.addLocalizedText(Field.NAME, layout.getNameMap());
 		document.addText(
 			"privateLayout", String.valueOf(layout.isPrivateLayout()));
-		document.addText(Field.TYPE, layout.getType());
+
+		String type = layout.getType();
+
+		if (type.equals(LayoutConstants.TYPE_CONTENT)) {
+			document.addText(
+				"contentLayoutPublished",
+				String.valueOf(
+					GetterUtil.getBoolean(
+						layout.getTypeSettingsProperty("published"))));
+		}
+
+		document.addText(Field.TYPE, type);
 
 		LayoutPageTemplateStructure layoutPageTemplateStructure =
 			_layoutPageTemplateStructureLocalService.
