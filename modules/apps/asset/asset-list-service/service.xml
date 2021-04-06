@@ -217,10 +217,26 @@
 			<finder-column name="assetListEntryId" />
 			<finder-column name="classNameId" />
 		</finder>
+		<finder name="G_C_K" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="classNameId" />
+			<finder-column name="key" />
+		</finder>
 		<finder name="C_C_P" return-type="AssetListEntryUsage" unique="true">
 			<finder-column name="classNameId" />
 			<finder-column name="classPK" />
 			<finder-column name="portletId" />
+		</finder>
+		<finder db-index="false" name="CK_CT_P" return-type="Collection">
+			<finder-column name="containerKey" />
+			<finder-column name="containerType" />
+			<finder-column name="plid" />
+		</finder>
+		<finder name="G_C_K_T" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="classNameId" />
+			<finder-column name="key" />
+			<finder-column name="type" />
 		</finder>
 
 		<!-- References -->
