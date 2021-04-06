@@ -14,12 +14,30 @@
 
 package com.liferay.asset.list.model.impl;
 
+import com.liferay.portal.kernel.util.GetterUtil;
+
 /**
  * @author Brian Wing Shun Chan
  */
 public class AssetListEntryUsageImpl extends AssetListEntryUsageBaseImpl {
 
 	public AssetListEntryUsageImpl() {
+	}
+
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #getKey()}
+	 */
+	@Deprecated
+	public long getClassPK() {
+		return GetterUtil.getLong(getKey());
+	}
+
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #setKey(String)}
+	 */
+	@Deprecated
+	public void setClassPK(long classPK) {
+		setKey(String.valueOf(classPK));
 	}
 
 }
