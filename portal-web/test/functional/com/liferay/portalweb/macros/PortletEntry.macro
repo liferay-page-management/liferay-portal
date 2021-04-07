@@ -153,6 +153,8 @@ definition {
 	}
 
 	macro publish {
+		TestCase.waitForPageLoaded();
+
 		Button.clickPublish();
 
 		Alert.viewSuccessMessage();
