@@ -82,4 +82,18 @@ definition {
 		}
 	}
 
+	macro waitForPageLoaded {
+		var javaScript = '''
+return document.readyState;
+
+		''';
+		var state = "";
+
+		while ("${state}" != "complete") {
+			var state = selenium.getEval("${javaScript}");
+
+			Pause(locator1 = "1000");
+		}
+	}
+
 }
