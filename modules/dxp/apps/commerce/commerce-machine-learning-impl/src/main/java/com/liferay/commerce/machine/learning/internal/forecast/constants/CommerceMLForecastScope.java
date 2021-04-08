@@ -19,7 +19,8 @@ package com.liferay.commerce.machine.learning.internal.forecast.constants;
  */
 public enum CommerceMLForecastScope {
 
-	ASSET_CATEGORY("asset-category"), COMMERCE_ACCOUNT("commerce-account");
+	ASSET_CATEGORY("asset-category"), COMMERCE_ACCOUNT("commerce-account"),
+	SKU("sku");
 
 	public String getLabel() {
 		return _label;

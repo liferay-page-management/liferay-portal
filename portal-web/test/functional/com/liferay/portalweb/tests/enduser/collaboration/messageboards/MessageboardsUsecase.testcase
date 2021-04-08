@@ -32,7 +32,87 @@ definition {
 		}
 	}
 
+	@priority = "4"
+	@refactorneeded
+	test AddMBThreadWithLinkToDocument {
+		property portal.acceptance = "true";
+
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "Document_1.jpg",
+			groupName = "Guest",
+			mimeType = "image/jpeg",
+			sourceFileName = "Document_1.jpg");
+
+		MessageBoardsAdmin.openMessageBoardsAdmin(siteURLKey = "guest");
+
+		LexiconEntry.gotoAdd();
+
+		MenuItem.click(menuItem = "Thread");
+
+		Type(
+			locator1 = "TextInput#SUBJECT",
+			value1 = "MB Thread Message Subject");
+
+		CKEditor.addTextWithLink(
+			displayText = "Link to Document",
+			dmDocumentTitle = "Document_1.jpg",
+			fieldLabel = "Body");
+
+		PortletEntry.publish();
+
+		MessageBoardsAdmin.openMessageBoardsAdmin(siteURLKey = "guest");
+
+		LexiconEntry.gotoEntry(rowEntry = "MB Thread Message Subject");
+
+		Click(
+			key_text = "Link to Document",
+			locator1 = "Link#ANY");
+
+		AssertElementPresent(locator1 = "//img[contains(@src,'Document_1.jpg')]");
+	}
+
+	@priority = "4"
+	@refactorneeded
+	test AddMBThreadWithLinkToPage {
+		property portal.acceptance = "true";
+
+		JSONLayout.addPublicLayout(
+			groupName = "Guest",
+			layoutName = "${pageName}");
+
+		MessageBoardsAdmin.openMessageBoardsAdmin(siteURLKey = "guest");
+
+		LexiconEntry.gotoAdd();
+
+		MenuItem.click(menuItem = "Thread");
+
+		Type(
+			locator1 = "TextInput#SUBJECT",
+			value1 = "MB Thread Message Subject");
+
+		CKEditor.addTextWithLink(
+			displayText = "Link to Page",
+			fieldLabel = "Body",
+			pageName = "${pageName}");
+
+		PortletEntry.publish();
+
+		MessageBoardsAdmin.openMessageBoardsAdmin(siteURLKey = "guest");
+
+		LexiconEntry.gotoEntry(rowEntry = "MB Thread Message Subject");
+
+		Click(
+			key_text = "Link to Page",
+			locator1 = "Link#ANY");
+
+		AssertVisible(
+			key_pageName = "${pageName}",
+			locator1 = "Home#PAGE_ACTIVE");
+	}
+
 	@priority = "5"
+	@refactorneeded
 	test DeleteMessageboardsThread {
 		JSONMBMessage.addMessage(
 			groupName = "Guest",
@@ -63,6 +143,7 @@ definition {
 	}
 
 	@priority = "5"
+	@refactorneeded
 	test RestoreMessageboardsThread {
 		MessageBoardsAdmin.openMessageBoardsAdmin(siteURLKey = "guest");
 
@@ -128,6 +209,7 @@ definition {
 
 	@description = "This ensures that an MB thread can be searched via category."
 	@priority = "5"
+	@refactorneeded
 	test SearchMBThreadCategory {
 		Navigator.openURL();
 
@@ -160,6 +242,7 @@ definition {
 	}
 
 	@priority = "3"
+	@refactorneeded
 	test SearchMessageBoardsAttachment {
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
@@ -193,6 +276,7 @@ definition {
 	}
 
 	@priority = "3"
+	@refactorneeded
 	test SplitMBThread {
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
@@ -246,6 +330,7 @@ definition {
 
 	@description = "This is a use case for LPS-65368."
 	@priority = "5"
+	@refactorneeded
 	test ViewBBCodeNoXSSWithRemoteServices {
 		property custom.properties = "message.boards.message.formats.default=bbcode";
 
@@ -302,6 +387,7 @@ definition {
 	}
 
 	@priority = "3"
+	@refactorneeded
 	test ViewCorrectViewPermissionsInMessageBoardsQuickReplyInPrivateSite {
 		ApplicationsMenu.gotoPortlet(
 			category = "Sites",
@@ -363,6 +449,7 @@ definition {
 
 	@ignore = "true"
 	@priority = "4"
+	@refactorneeded
 	test ViewMBThreadAndReplyThreadInGmail {
 		property custom.properties = "jsonws.web.service.paths.excludes=${line.separator}message.boards.message.formats.default=html${line.separator}pop.server.notifications.enabled=true${line.separator}pop.server.subdomain=${line.separator}mail.session.mail.smtp.auth=true${line.separator}mail.session.mail.store.protocol=pop3${line.separator}mail.session.mail.transport.protocol=smtp";
 		property dummy.socket.proxy.disabled = "true";
@@ -506,6 +593,7 @@ definition {
 	}
 
 	@priority = "3"
+	@refactorneeded
 	test ViewMessageBoardsBannedUsers {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
 
@@ -624,6 +712,7 @@ definition {
 
 	@ignore = "true"
 	@priority = "4"
+	@refactorneeded
 	test ViewMessageBoardsRSS {
 		var siteName = TestCase.getSiteName(siteName = "${siteName}");
 
@@ -682,6 +771,7 @@ definition {
 	}
 
 	@priority = "4"
+	@refactorneeded
 	test ViewMessageBoardsThreadStatistics {
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
@@ -757,6 +847,7 @@ definition {
 
 	@description = "This is a use case for LPS-65365."
 	@priority = "5"
+	@refactorneeded
 	test ViewNoHTMLXSS {
 		property custom.properties = "message.boards.message.formats.default=html";
 
@@ -798,6 +889,7 @@ definition {
 	}
 
 	@priority = "4"
+	@refactorneeded
 	test ViewNoMBThreadXSS {
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
@@ -831,6 +923,7 @@ definition {
 	}
 
 	@priority = "4"
+	@refactorneeded
 	test ViewNoSubscribeLinksNoWithEmailNotificationsDisabled {
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
@@ -927,6 +1020,7 @@ definition {
 
 	@description = "This test covers LPS-77252 and LPS-86797. It ensures that Categories group and Threads group are listed independently with their own pager."
 	@priority = "4"
+	@refactorneeded
 	test ViewPagersForCategoriesAndThreads {
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
@@ -1038,6 +1132,7 @@ definition {
 	}
 
 	@priority = "3"
+	@refactorneeded
 	test ViewQuestionOnSplitThread {
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
@@ -1098,6 +1193,7 @@ definition {
 	}
 
 	@priority = "3"
+	@refactorneeded
 	test ViewThreadDefaultQuestion {
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",

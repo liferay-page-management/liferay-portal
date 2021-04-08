@@ -14,6 +14,7 @@
 
 package com.liferay.portlet.usersadmin.util;
 
+import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.configuration.Filter;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -120,11 +121,15 @@ public class UsersAdminImpl implements UsersAdmin {
 			RenderResponse renderResponse)
 		throws Exception {
 
-		PortletURL portletURL = renderResponse.createRenderURL();
-
-		portletURL.setParameter("mvcRenderCommandName", "/users_admin/view");
-		portletURL.setParameter("toolbarItem", "view-all-organizations");
-		portletURL.setParameter("usersListView", "tree");
+		PortletURL portletURL = PortletURLBuilder.createRenderURL(
+			renderResponse
+		).setMVCRenderCommandName(
+			"/users_admin/view"
+		).setParameter(
+			"toolbarItem", "view-all-organizations"
+		).setParameter(
+			"usersListView", "tree"
+		).build();
 
 		List<Organization> ancestorOrganizations = organization.getAncestors();
 

@@ -31,8 +31,6 @@ import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.filter.TermsFilter;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.search.engine.adapter.search.CountSearchRequest;
-import com.liferay.portal.search.engine.adapter.search.SearchSearchRequest;
 
 import java.util.Date;
 import java.util.List;
@@ -106,17 +104,13 @@ public class AssetCategoryCommerceMLForecastManagerImpl
 				int forecastLength, int start, int end)
 		throws PortalException {
 
-		Query query = _getMonthlyRevenueQuery(
-			actualDate, assetCategoryIds, commerceAccountIds, historyLength,
-			forecastLength);
-
-		int size = end - start;
-
-		SearchSearchRequest searchSearchRequest = getSearchSearchRequest(
-			commerceMLIndexer.getIndexName(companyId), query, start, size,
-			getDefaultSort(true));
-
-		return getSearchResults(searchSearchRequest);
+		return getSearchResults(
+			getSearchSearchRequest(
+				commerceMLIndexer.getIndexName(companyId),
+				_getMonthlyRevenueQuery(
+					actualDate, assetCategoryIds, commerceAccountIds,
+					historyLength, forecastLength),
+				start, end - start, getDefaultSort(true)));
 	}
 
 	@Override
@@ -125,21 +119,19 @@ public class AssetCategoryCommerceMLForecastManagerImpl
 			Date actualDate, int historyLength, int forecastLength)
 		throws PortalException {
 
-		Query query = _getMonthlyRevenueQuery(
-			actualDate, assetCategoryIds, commerceAccountIds, historyLength,
-			forecastLength);
-
-		CountSearchRequest countSearchRequest = getCountSearchRequest(
-			commerceMLIndexer.getIndexName(companyId), query);
-
-		return getCountResult(countSearchRequest);
+		return getCountResult(
+			getCountSearchRequest(
+				commerceMLIndexer.getIndexName(companyId),
+				_getMonthlyRevenueQuery(
+					actualDate, assetCategoryIds, commerceAccountIds,
+					historyLength, forecastLength)));
 	}
 
 	@Override
 	protected Document toDocumentModel(
 		AssetCategoryCommerceMLForecast assetCategoryCommerceMLForecast) {
 
-		Document document = getBaseDocument(assetCategoryCommerceMLForecast);
+		Document document = getDocument(assetCategoryCommerceMLForecast);
 
 		document.addNumber(
 			CommerceMLForecastField.COMMERCE_ACCOUNT_ID,
@@ -156,12 +148,11 @@ public class AssetCategoryCommerceMLForecastManagerImpl
 		Document document) {
 
 		AssetCategoryCommerceMLForecast assetCategoryCommerceMLForecast =
-			getBaseCommerceMLForecastModel(
+			getCommerceMLForecastModel(
 				new AssetCategoryCommerceMLForecastImpl(), document);
 
 		assetCategoryCommerceMLForecast.setAssetCategoryId(
 			GetterUtil.getLong(document.get(Field.ASSET_CATEGORY_ID)));
-
 		assetCategoryCommerceMLForecast.setCommerceAccountId(
 			GetterUtil.getLong(
 				document.get(CommerceMLForecastField.COMMERCE_ACCOUNT_ID)));
@@ -176,42 +167,35 @@ public class AssetCategoryCommerceMLForecastManagerImpl
 
 		CommerceMLForecastPeriod commerceMLForecastPeriod =
 			CommerceMLForecastPeriod.MONTH;
-
 		CommerceMLForecastTarget commerceMLForecastTarget =
 			CommerceMLForecastTarget.REVENUE;
 
-		Date endDate = getEndDate(
-			actualDate, commerceMLForecastPeriod, forecastLength);
-
-		Date startDate = getStartDate(
-			actualDate, commerceMLForecastPeriod, historyLength);
-
-		BooleanQuery booleanQuery = getBaseQuery(
+		BooleanQuery booleanQuery = getBooleanQuery(
 			_commerceMLForecastScope.getLabel(),
 			commerceMLForecastPeriod.getLabel(),
-			commerceMLForecastTarget.getLabel(), startDate, endDate);
+			commerceMLForecastTarget.getLabel(),
+			getStartDate(actualDate, commerceMLForecastPeriod, historyLength),
+			getEndDate(actualDate, commerceMLForecastPeriod, forecastLength));
 
 		BooleanFilter preBooleanFilter = booleanQuery.getPreBooleanFilter();
 
 		if (assetCategoryIds.length > 0) {
-			TermsFilter assetCategoryIdsTermsFilter = new TermsFilter(
-				Field.ASSET_CATEGORY_ID);
-
-			assetCategoryIdsTermsFilter.addValues(
-				ArrayUtil.toStringArray(assetCategoryIds));
-
 			preBooleanFilter.add(
-				assetCategoryIdsTermsFilter, BooleanClauseOccur.MUST);
+				new TermsFilter(Field.ASSET_CATEGORY_ID) {
+					{
+						addValues(ArrayUtil.toStringArray(assetCategoryIds));
+					}
+				},
+				BooleanClauseOccur.MUST);
 		}
 
-		TermsFilter commerceAccountIdsTermsFilter = new TermsFilter(
-			CommerceMLForecastField.COMMERCE_ACCOUNT_ID);
-
-		commerceAccountIdsTermsFilter.addValues(
-			ArrayUtil.toStringArray(commerceAccountIds));
-
 		preBooleanFilter.add(
-			commerceAccountIdsTermsFilter, BooleanClauseOccur.MUST);
+			new TermsFilter(CommerceMLForecastField.COMMERCE_ACCOUNT_ID) {
+				{
+					addValues(ArrayUtil.toStringArray(commerceAccountIds));
+				}
+			},
+			BooleanClauseOccur.MUST);
 
 		return booleanQuery;
 	}

@@ -1,10 +1,4 @@
 <?xml version="1.0"?>
 
 <suppressions>
-	<source-check>
-
-		<!-- Temporary suppressions for deprecated apps (LPS-100170) -->
-
-		<suppress checks="BNDSuiteCheck" files="apps/documentum/app\.bnd" />
-	</source-check>
 </suppressions>

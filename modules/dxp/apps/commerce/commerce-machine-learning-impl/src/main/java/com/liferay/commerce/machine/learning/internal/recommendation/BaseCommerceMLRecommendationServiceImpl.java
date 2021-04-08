@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
-import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.DocumentImpl;
 import com.liferay.portal.kernel.search.Field;
@@ -82,23 +81,19 @@ public abstract class BaseCommerceMLRecommendationServiceImpl
 		return model;
 	}
 
-	protected T getBaseCommerceMLRecommendationModel(
+	protected T getCommerceMLRecommendation(
 		T commerceMLRecommendation, Document document) {
 
 		commerceMLRecommendation.setCompanyId(
 			GetterUtil.getLong(document.get(Field.COMPANY_ID)));
-
 		commerceMLRecommendation.setCreateDate(
 			_getDate(document.get(Field.CREATE_DATE)));
-
 		commerceMLRecommendation.setJobId(
 			document.get(CommerceMLRecommendationField.JOB_ID));
-
 		commerceMLRecommendation.setRecommendedEntryClassPK(
 			GetterUtil.getLong(
 				document.get(
 					CommerceMLRecommendationField.RECOMMENDED_ENTRY_CLASS_PK)));
-
 		commerceMLRecommendation.setScore(
 			GetterUtil.getFloat(
 				document.get(CommerceMLRecommendationField.SCORE)));
@@ -106,22 +101,22 @@ public abstract class BaseCommerceMLRecommendationServiceImpl
 		return commerceMLRecommendation;
 	}
 
-	protected Document getBaseDocument(T commerceMLRecommend) {
+	protected Document getDocument(T commerceMLRecommend) {
 		Document document = new DocumentImpl();
 
-		document.addNumber(
-			Field.COMPANY_ID, commerceMLRecommend.getCompanyId());
 		document.addDate(
 			Field.CREATE_DATE, commerceMLRecommend.getCreateDate());
-		document.addText(
-			CommerceMLRecommendationField.JOB_ID,
-			commerceMLRecommend.getJobId());
+		document.addNumber(
+			Field.COMPANY_ID, commerceMLRecommend.getCompanyId());
 		document.addNumber(
 			CommerceMLRecommendationField.RECOMMENDED_ENTRY_CLASS_PK,
 			commerceMLRecommend.getRecommendedEntryClassPK());
 		document.addNumber(
 			CommerceMLRecommendationField.SCORE,
 			commerceMLRecommend.getScore());
+		document.addText(
+			CommerceMLRecommendationField.JOB_ID,
+			commerceMLRecommend.getJobId());
 
 		return document;
 	}
@@ -142,61 +137,58 @@ public abstract class BaseCommerceMLRecommendationServiceImpl
 		SearchSearchResponse searchSearchResponse = searchEngineAdapter.execute(
 			searchSearchRequest);
 
-		return toModelList(searchSearchResponse.getHits());
+		return toList(searchSearchResponse.getHits());
 	}
 
 	protected SearchSearchRequest getSearchSearchRequest(
 		String indexName, long companyId, long entryClassPK) {
 
-		SearchSearchRequest searchRequest = new SearchSearchRequest();
+		BooleanFilter booleanFilter = new BooleanFilter() {
+			{
+				add(
+					new TermFilter(Field.COMPANY_ID, String.valueOf(companyId)),
+					BooleanClauseOccur.MUST);
+				add(
+					new TermFilter(
+						Field.ENTRY_CLASS_PK, String.valueOf(entryClassPK)),
+					BooleanClauseOccur.MUST);
+			}
+		};
 
-		searchRequest.setIndexNames(new String[] {indexName});
-
-		searchRequest.setSize(Integer.valueOf(DEFAULT_FETCH_SIZE));
-
-		TermFilter companyTermFilter = new TermFilter(
-			Field.COMPANY_ID, String.valueOf(companyId));
-
-		TermFilter entryClassPKTermFilter = new TermFilter(
-			Field.ENTRY_CLASS_PK, String.valueOf(entryClassPK));
-
-		BooleanFilter booleanFilter = new BooleanFilter();
-
-		booleanFilter.add(companyTermFilter, BooleanClauseOccur.MUST);
-		booleanFilter.add(entryClassPKTermFilter, BooleanClauseOccur.MUST);
-
-		BooleanQuery booleanQuery = new BooleanQueryImpl();
-
-		booleanQuery.setPreBooleanFilter(booleanFilter);
-
-		searchRequest.setQuery(booleanQuery);
-
-		searchRequest.setStats(Collections.emptyMap());
-
-		return searchRequest;
+		return new SearchSearchRequest() {
+			{
+				setIndexNames(new String[] {indexName});
+				setQuery(
+					new BooleanQueryImpl() {
+						{
+							setPreBooleanFilter(booleanFilter);
+						}
+					});
+				setSize(Integer.valueOf(SEARCH_SEARCH_REQUEST_SIZE));
+				setStats(Collections.emptyMap());
+			}
+		};
 	}
 
 	protected abstract Document toDocument(T model);
 
-	protected abstract T toModel(Document document);
-
-	protected List<T> toModelList(Hits hits) {
-		List<Document> documents = _getDocumentList(hits);
-
-		return toModelList(documents);
+	protected List<T> toList(Hits hits) {
+		return toList(_getDocuments(hits));
 	}
 
-	protected List<T> toModelList(List<Document> documents) {
-		Stream<Document> documentsStream = documents.stream();
+	protected List<T> toList(List<Document> documents) {
+		Stream<Document> stream = documents.stream();
 
-		return documentsStream.map(
+		return stream.map(
 			this::toModel
 		).collect(
 			Collectors.toList()
 		);
 	}
 
-	protected static final int DEFAULT_FETCH_SIZE = 10;
+	protected abstract T toModel(Document document);
+
+	protected static final int SEARCH_SEARCH_REQUEST_SIZE = 10;
 
 	@Reference
 	protected volatile SearchEngineAdapter searchEngineAdapter;
@@ -217,16 +209,16 @@ public abstract class BaseCommerceMLRecommendationServiceImpl
 		return null;
 	}
 
-	private List<Document> _getDocumentList(Hits hits) {
-		List<Document> list = new ArrayList<>(hits.toList());
+	private List<Document> _getDocuments(Hits hits) {
+		List<Document> documents = new ArrayList<>(hits.toList());
 
 		Map<String, Hits> groupedHits = hits.getGroupedHits();
 
 		for (Map.Entry<String, Hits> entry : groupedHits.entrySet()) {
-			list.addAll(_getDocumentList(entry.getValue()));
+			documents.addAll(_getDocuments(entry.getValue()));
 		}
 
-		return list;
+		return documents;
 	}
 
 	private static final String _INDEX_DATE_FORMAT_PATTERN =

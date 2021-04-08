@@ -72,10 +72,10 @@ public class ProductContentCommerceMLRecommendationManagerImpl
 			_commerceMLIndexer.getIndexName(companyId), companyId,
 			cpDefinition);
 
-		Sort rankSort = SortFactoryUtil.create(
+		Sort sort = SortFactoryUtil.create(
 			CommerceMLRecommendationField.RANK, Sort.INT_TYPE, false);
 
-		searchSearchRequest.setSorts(new Sort[] {rankSort});
+		searchSearchRequest.setSorts(new Sort[] {sort});
 
 		return getSearchResults(searchSearchRequest);
 	}
@@ -84,16 +84,16 @@ public class ProductContentCommerceMLRecommendationManagerImpl
 	protected Document toDocument(
 		ProductContentCommerceMLRecommendation model) {
 
-		Document document = getBaseDocument(model);
+		Document document = getDocument(model);
 
-		long hash = getHash(
-			model.getEntryClassPK(), model.getRecommendedEntryClassPK());
-
-		document.addKeyword(Field.UID, String.valueOf(hash));
-
-		document.addNumber(Field.ENTRY_CLASS_PK, model.getEntryClassPK());
-
+		document.addKeyword(
+			Field.UID,
+			String.valueOf(
+				getHash(
+					model.getEntryClassPK(),
+					model.getRecommendedEntryClassPK())));
 		document.addNumber(CommerceMLRecommendationField.RANK, model.getRank());
+		document.addNumber(Field.ENTRY_CLASS_PK, model.getEntryClassPK());
 
 		return document;
 	}
@@ -104,7 +104,7 @@ public class ProductContentCommerceMLRecommendationManagerImpl
 
 		ProductContentCommerceMLRecommendation
 			productContentCommerceMLRecommendation =
-				getBaseCommerceMLRecommendationModel(
+				getCommerceMLRecommendation(
 					new ProductContentCommerceMLRecommendationImpl(), document);
 
 		productContentCommerceMLRecommendation.setEntryClassPK(

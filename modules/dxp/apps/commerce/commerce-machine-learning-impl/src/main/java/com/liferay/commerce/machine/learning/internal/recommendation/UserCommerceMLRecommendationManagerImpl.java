@@ -78,20 +78,7 @@ public class UserCommerceMLRecommendationManagerImpl
 		searchSearchRequest.setIndexNames(
 			new String[] {_commerceMLIndexer.getIndexName(companyId)});
 
-		TermFilter companyTermFilter = new TermFilter(
-			Field.COMPANY_ID, String.valueOf(companyId));
-
-		TermFilter entryClassPKTermFilter = new TermFilter(
-			Field.ENTRY_CLASS_PK, String.valueOf(commerceAccountId));
-
-		BooleanFilter booleanFilter = new BooleanFilter();
-
-		booleanFilter.add(companyTermFilter, BooleanClauseOccur.MUST);
-		booleanFilter.add(entryClassPKTermFilter, BooleanClauseOccur.MUST);
-
 		BooleanQuery booleanQuery = new BooleanQueryImpl();
-
-		booleanQuery.setPreBooleanFilter(booleanFilter);
 
 		if (assetCategoryIds != null) {
 			for (long categoryId : assetCategoryIds) {
@@ -102,13 +89,29 @@ public class UserCommerceMLRecommendationManagerImpl
 			}
 		}
 
-		searchSearchRequest.setQuery(booleanQuery);
-		searchSearchRequest.setSize(Integer.valueOf(DEFAULT_FETCH_SIZE));
+		booleanQuery.setPreBooleanFilter(
+			new BooleanFilter() {
+				{
+					add(
+						new TermFilter(
+							Field.COMPANY_ID, String.valueOf(companyId)),
+						BooleanClauseOccur.MUST);
+					add(
+						new TermFilter(
+							Field.ENTRY_CLASS_PK,
+							String.valueOf(commerceAccountId)),
+						BooleanClauseOccur.MUST);
+				}
+			});
 
-		Sort scoreSort = SortFactoryUtil.create(
+		searchSearchRequest.setQuery(booleanQuery);
+
+		searchSearchRequest.setSize(SEARCH_SEARCH_REQUEST_SIZE);
+
+		Sort sort = SortFactoryUtil.create(
 			CommerceMLRecommendationField.SCORE, Sort.FLOAT_TYPE, true);
 
-		searchSearchRequest.setSorts(new Sort[] {scoreSort});
+		searchSearchRequest.setSorts(new Sort[] {sort});
 
 		searchSearchRequest.setStats(Collections.emptyMap());
 
@@ -117,17 +120,17 @@ public class UserCommerceMLRecommendationManagerImpl
 
 	@Override
 	protected Document toDocument(UserCommerceMLRecommendation model) {
-		Document document = getBaseDocument(model);
+		Document document = getDocument(model);
 
-		long hash = getHash(
-			model.getEntryClassPK(), model.getRecommendedEntryClassPK());
-
-		document.addKeyword(Field.UID, String.valueOf(hash));
-
-		document.addNumber(Field.ENTRY_CLASS_PK, model.getEntryClassPK());
-
+		document.addKeyword(
+			Field.UID,
+			String.valueOf(
+				getHash(
+					model.getEntryClassPK(),
+					model.getRecommendedEntryClassPK())));
 		document.addNumber(
 			Field.ASSET_CATEGORY_IDS, model.getAssetCategoryIds());
+		document.addNumber(Field.ENTRY_CLASS_PK, model.getEntryClassPK());
 
 		return document;
 	}
@@ -135,7 +138,7 @@ public class UserCommerceMLRecommendationManagerImpl
 	@Override
 	protected UserCommerceMLRecommendation toModel(Document document) {
 		UserCommerceMLRecommendation userCommerceMLRecommendation =
-			getBaseCommerceMLRecommendationModel(
+			getCommerceMLRecommendation(
 				new UserCommerceMLRecommendationImpl(), document);
 
 		userCommerceMLRecommendation.setAssetCategoryIds(

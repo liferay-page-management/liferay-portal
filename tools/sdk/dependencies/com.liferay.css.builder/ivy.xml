@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<ivy-module
+	version="2.0"
+	xmlns:m2="http://ant.apache.org/ivy/maven"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd"
+>
+	<info module="com.liferay.sdk.dependencies.com.liferay.css.builder" organisation="com.liferay">
+		<extends extendType="configurations,description,info" location="${sdk.dir}/ivy.xml" module="com.liferay.sdk" organisation="com.liferay" revision="latest.integration" />
+	</info>
+
+	<dependencies defaultconf="default">
+		<dependency name="com.liferay.css.builder" org="com.liferay" rev="3.0.0" />
+		<dependency name="com.liferay.frontend.css.common" org="com.liferay" rev="2.0.4" />
+		<dependency name="com.liferay.frontend.theme.admin.web" org="com.liferay" rev="1.0.3" />
+		<dependency name="com.liferay.frontend.theme.classic.web" org="com.liferay" rev="2.0.2" />
+		<dependency name="com.liferay.frontend.theme.styled" org="com.liferay" rev="2.1.7" />
+		<dependency name="com.liferay.frontend.theme.unstyled" org="com.liferay" rev="2.2.12" />
+	</dependencies>
+</ivy-module>

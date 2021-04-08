@@ -3314,57 +3314,6 @@ ${tomcat-gc-log}
 		</sequential>
 	</macrodef>
 
-	<macrodef name="record-git-commit-plugins">
-		<sequential>
-			<beanshell>
-				<![CDATA[
-					File pluginsDir = null;
-
-					String lpPluginsDirName = project.getProperty("lp.plugins.dir");
-
-					if ((lpPluginsDirName == null) || lpPluginsDirName.equals("")) {
-						File projectDir = new File(project.getProperty("project.dir"));
-
-						String projectDirName = projectDir.getName();
-
-						String pluginsDirName = "liferay-plugins" + projectDirName.substring("liferay-portal".length());
-
-						pluginsDir = new File(projectDir.getParent(), pluginsDirName);
-					}
-					else {
-						if (lpPluginsDirName.contains("${basedir.name}")) {
-							lpPluginsDirName = lpPluginsDirName.substring(0, lpPluginsDirName.lastIndexOf("/"));
-						}
-
-						pluginsDir = new File(lpPluginsDirName);
-					}
-
-					project.setProperty("git.plugins.dir", pluginsDir.toString());
-				]]>
-			</beanshell>
-
-			<exec dir="${git.plugins.dir}" executable="git" outputproperty="git.commit.plugins.rev.parse">
-				<arg line="rev-parse HEAD" />
-			</exec>
-
-			<echo>Recording ${git.plugins.dir} with ${git.commit.plugins.rev.parse}.</echo>
-
-			<var name="git.plugins.dir" unset="true" />
-
-			<echo file="git-commit-plugins">${git.commit.plugins.rev.parse}</echo>
-
-			<if>
-				<isset property="env.JENKINS_HOME" />
-				<then>
-					<copy
-						file="git-commit-plugins"
-						todir="${env.JENKINS_HOME}/userContent/jobs/${env.JOB_NAME}/builds/${env.BUILD_NUMBER}"
-					/>
-				</then>
-			</if>
-		</sequential>
-	</macrodef>
-
 	<macrodef name="record-git-commit-portal">
 		<sequential>
 			<exec dir="${project.dir}" executable="git" outputproperty="git.commit.portal.rev.parse">
@@ -3556,178 +3505,6 @@ ${tomcat-gc-log}
 					project.setProperty("cmis.repository.vm.host.name", cmisRepositoryVMHostName);
 				]]>
 			</beanshell>
-
-			<if>
-				<contains string="@{cmis.repository.type}" substring="documentum" />
-				<then>
-					<get-testcase-property property.name="osgi.app.includes" />
-
-					<if>
-						<contains string="${osgi.app.includes}" substring="documentum" />
-						<then>
-							<pathconvert property="app.bnd.file">
-								<fileset
-									dir="modules"
-									includes="dxp/apps/documentum/app.bnd"
-								/>
-							</pathconvert>
-
-							<loadproperties srcFile="${app.bnd.file}">
-								<filterchain>
-									<linecontains>
-										<contains value="Liferay-Releng-App-Title" />
-									</linecontains>
-								</filterchain>
-							</loadproperties>
-
-							<if>
-								<available file="${project.dir}/plugins/dist/${Liferay-Releng-App-Title}.lpkg" />
-								<then>
-									<property name="lpkg.path" value="${project.dir}/plugins/dist/${Liferay-Releng-App-Title}.lpkg" />
-								</then>
-								<elseif>
-									<available file="${project.dir}/plugins/marketplace/${Liferay-Releng-App-Title}.lpkg" />
-									<then>
-										<property name="lpkg.path" value="${project.dir}/plugins/marketplace/${Liferay-Releng-App-Title}.lpkg" />
-									</then>
-								</elseif>
-							</if>
-
-							<if>
-								<isset property="lpkg.path" />
-								<then>
-									<local name="tstamp.value" />
-
-									<tstamp>
-										<format pattern="yyyyMMddkkmmssSSS" property="tstamp.value" />
-									</tstamp>
-
-									<local name="lpkg.dir" />
-
-									<property name="lpkg.dir" value="${tstamp.value}/lpkg-dir" />
-
-									<mkdir dir="${lpkg.dir}" />
-
-									<local name="lpkg.impl.include.name" />
-
-									<property name="lpkg.impl.include.name" value="Liferay Documentum Connector - Impl.lpkg" />
-
-									<unzip
-										dest="${lpkg.dir}"
-										src="${lpkg.path}"
-									>
-										<patternset>
-											<include name="${lpkg.impl.include.name}" />
-										</patternset>
-									</unzip>
-
-									<local name="lpkg.impl.path" />
-
-									<pathconvert property="lpkg.impl.path" setonempty="false">
-										<path>
-											<fileset
-												dir="${lpkg.dir}"
-											>
-												<include name="${lpkg.impl.include.name}" />
-											</fileset>
-										</path>
-									</pathconvert>
-
-									<local name="lpkg.impl.dir" />
-
-									<property name="lpkg.impl.dir" value="${tstamp.value}/lpkg-impl-dir" />
-
-									<mkdir dir="${lpkg.impl.dir}" />
-
-									<local name="war.include.name" />
-
-									<property name="war.include.name" value="documentum-hook-*.war" />
-
-									<unzip
-										dest="${lpkg.impl.dir}"
-										src="${lpkg.impl.path}"
-									>
-										<patternset>
-											<include name="${war.include.name}" />
-										</patternset>
-									</unzip>
-
-									<local name="war.path" />
-
-									<pathconvert property="war.path" setonempty="false">
-										<path>
-											<fileset
-												dir="${lpkg.impl.dir}"
-											>
-												<include name="${war.include.name}" />
-											</fileset>
-										</path>
-									</pathconvert>
-
-									<local name="war.dir" />
-
-									<property name="war.dir" value="${tstamp.value}/war-dir" />
-
-									<mkdir dir="${war.dir}" />
-
-									<unzip
-										dest="${war.dir}"
-										src="${war.path}"
-									>
-										<flattenmapper />
-										<patternset>
-											<include name="WEB-INF/classes/dfc.properties" />
-										</patternset>
-									</unzip>
-
-									<propertyfile file="${war.dir}/dfc.properties">
-										<entry key="dfc.docbroker.host[0]" value="${cmis.repository.vm.host.name}" />
-									</propertyfile>
-
-									<war
-										destfile="${war.path}"
-										update="true"
-									>
-										<zipfileset
-											file="${war.dir}/dfc.properties"
-											fullpath="WEB-INF/classes/dfc.properties"
-										/>
-									</war>
-
-									<zip
-										destfile="${lpkg.impl.path}"
-										update="true"
-									>
-										<zipfileset
-											dir="${lpkg.impl.dir}"
-										>
-											<include name="${war.include.name}" />
-										</zipfileset>
-									</zip>
-
-									<zip
-										destfile="${lpkg.path}"
-										update="true"
-									>
-										<zipfileset
-											dir="${lpkg.dir}"
-										>
-											<include name="${lpkg.impl.include.name}" />
-										</zipfileset>
-									</zip>
-
-									<delete dir="${tstamp.value}" />
-								</then>
-								<else>
-									<propertyfile file="${project.dir}/modules/dxp/apps/documentum/documentum-hook/docroot/WEB-INF/src/dfc.properties">
-										<entry key="dfc.docbroker.host[0]" value="${cmis.repository.vm.host.name}" />
-									</propertyfile>
-								</else>
-							</if>
-						</then>
-					</if>
-				</then>
-			</if>
 		</sequential>
 	</macrodef>
 
@@ -7837,7 +7614,6 @@ virtualHostname="localhost"
 	</target>
 
 	<target name="generate-changelog">
-		<record-git-commit-plugins />
 		<record-git-commit-portal />
 
 		<tstamp>
@@ -7859,15 +7635,9 @@ virtualHostname="localhost"
 		<if>
 			<and>
 				<available file="${previous.changelog.dir}/git-build-log.html" />
-				<available file="${previous.changelog.dir}/git-commit-plugins" />
 				<available file="${previous.changelog.dir}/git-commit-portal" />
 			</and>
 			<then>
-				<loadfile
-					property="previous.git.commit.plugins.rev.parse"
-					srcfile="${previous.changelog.dir}/git-commit-plugins"
-				/>
-
 				<loadfile
 					property="previous.git.commit.portal.rev.parse"
 					srcfile="${previous.changelog.dir}/git-commit-portal"
@@ -7877,23 +7647,6 @@ virtualHostname="localhost"
 					file="${previous.changelog.dir}/git-build-log.html"
 					tofile="${changelog.dir}/git-build-log.html"
 				/>
-
-				<if>
-					<equals arg1="${git.commit.plugins.rev.parse}" arg2="${previous.git.commit.plugins.rev.parse}" />
-					<then>
-						<property name="git.log.content.plugins" value="No Changes" />
-					</then>
-					<else>
-						<execute dir="${lp.plugins.dir}">
-							<![CDATA[git log --pretty=format:'<a href="https://github.com/liferay/liferay-plugins-ee/commit/'%H'" target="_blank">'%H'</a>''<br />'%an'<br />'%s'<br /><br />' ${previous.git.commit.plugins.rev.parse}...${git.commit.plugins.rev.parse} > ${changelog.dir}/git.log]]>
-						</execute>
-
-						<loadfile
-							property="git.log.content.plugins"
-							srcfile="${changelog.dir}/git.log"
-						/>
-					</else>
-				</if>
 
 				<if>
 					<equals arg1="${git.commit.portal.rev.parse}" arg2="${previous.git.commit.portal.rev.parse}" />
@@ -7924,7 +7677,6 @@ virtualHostname="localhost"
 				<h2>
 					Build #${env.BUILD_NUMBER} - ${env.JOB_NAME} - ${build.tstamp.value}<br />
 					Portal: ${git.commit.portal.rev.parse}<br />
-					Plugins: ${git.commit.plugins.rev.parse}
 				</h2>
 
 				<div id="portal">
@@ -7933,15 +7685,6 @@ virtualHostname="localhost"
 					</h4>
 					<p>
 						${git.log.content.portal}
-					</p>
-				</div>
-
-				<div id="plugins">
-					<h4>
-						Plugins Git Log:
-					</h4>
-					<p>
-						${git.log.content.plugins}
 					</p>
 				</div>
 			</div>
@@ -8002,19 +7745,15 @@ virtualHostname="localhost"
 				width: 100%;
 			}
 
-			#plugins {
-				float: right;
-			}
-
 			#portal {
 				float: left;
 			}
 
-			#plugins, #portal {
+			#portal {
 				width: 48%;
 			}
 
-			#plugins p, #portal p {
+			#portal p {
 				border-radius: 8px;
 				-moz-border-radius: 8px;
 				-webkit-border-radius: 8px;
@@ -8026,14 +7765,14 @@ virtualHostname="localhost"
 				word-wrap: break-word;
 			}
 
-			#plugins a, #portal a {
+			#portal a {
 				color: #3D7CA6;
 				font-family: Monaco, "Liberation Mono", Courier, monospace;
 				font-weight: bold;
 				text-decoration: none;
 			}
 
-			#plugins a:hover, #portal a:hover {
+			#portal a:hover {
 				text-decoration: underline;
 			}
 		</style>
@@ -8052,7 +7791,6 @@ virtualHostname="localhost"
 					Initial Commit<br />
 					Build #${env.BUILD_NUMBER} - ${env.JOB_NAME} - ${build.tstamp.value}<br />
 					Portal: ${git.commit.portal.rev.parse}<br />
-					Plugins: ${git.commit.plugins.rev.parse}
 				</h2>
 			</div>
 		</div>
@@ -10650,7 +10388,6 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 
 		<if>
 			<or>
-				<equals arg1="${cmis.repository.type}" arg2="documentum6" />
 				<equals arg1="${cmis.repository.type}" arg2="sharepoint2010" />
 				<equals arg1="${cmis.repository.type}" arg2="sharepoint2013" />
 			</or>
@@ -10858,8 +10595,6 @@ ANT_OPTS=${env.ANT_OPTS}</echo>
 		<app-server-properties-update>
 			app.server.type=${app.server.type}
 		</app-server-properties-update>
-
-		<antcall inheritAll="false" target="update-sdk-properties" />
 
 		<prepare-test-app-server-custom />
 
@@ -12389,10 +12124,6 @@ if (ppstate.equals("normal")) {
 		<echo>Updated ${app.server.dir}/webapps/ROOT/html/common/themes/bottom-test.jsp.</echo>
 	</target>
 
-	<target name="record-git-commit-plugins">
-		<record-git-commit-plugins />
-	</target>
-
 	<target name="record-git-commit-portal">
 		<record-git-commit-portal />
 	</target>
@@ -13190,7 +12921,6 @@ module.framework.properties.blacklist.portal.profile.names=${blacklist.portal.pr
 
 		<if>
 			<or>
-				<equals arg1="${cmis.repository.type}" arg2="documentum6" />
 				<equals arg1="${cmis.repository.type}" arg2="sharepoint2010" />
 				<equals arg1="${cmis.repository.type}" arg2="sharepoint2013" />
 			</or>
@@ -13533,25 +13263,11 @@ url=${short.hostname}:8080</echo>
 
 		<if>
 			<or>
-				<equals arg1="${cmis.repository.type}" arg2="documentum6" />
 				<equals arg1="${cmis.repository.type}" arg2="sharepoint2010" />
 				<equals arg1="${cmis.repository.type}" arg2="sharepoint2013" />
 			</or>
 			<then>
 				<property file="${project.dir}/${test.ext.properties.file}" />
-
-				<if>
-					<contains string="${cmis.repository.type}" substring="documentum" />
-					<then>
-						<ssh-execute ssh.host="${cmis.repository.vm.host.name}">perl C:/Windows/resetdocumentum.pl</ssh-execute>
-					</then>
-					<elseif>
-						<contains string="${cmis.repository.type}" substring="sharepoint" />
-						<then>
-							<ssh-execute ssh.host="${cmis.repository.vm.host.name}">perl C:/Windows/resetsharepointrepo.pl</ssh-execute>
-						</then>
-					</elseif>
-				</if>
 
 				<if>
 					<os family="unix" />

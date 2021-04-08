@@ -91,10 +91,10 @@ public class FrequentPatternCommerceMLRecommendationManagerImpl
 
 		int start = 0;
 
-		Map<String, Document> documentMap = new LinkedHashMap<>(
-			DEFAULT_RESULT_SIZE, 1.0F);
+		Map<String, Document> documents = new LinkedHashMap<>(
+			_DOCUMENTS_SIZE, 1.0F);
 
-		while (documentMap.size() < DEFAULT_RESULT_SIZE) {
+		while (documents.size() < _DOCUMENTS_SIZE) {
 			searchSearchRequest.setStart(start);
 
 			SearchSearchResponse searchSearchResponse =
@@ -102,22 +102,22 @@ public class FrequentPatternCommerceMLRecommendationManagerImpl
 
 			Hits hits = searchSearchResponse.getHits();
 
-			for (Document doc : hits.getDocs()) {
-				String recommendedEntryClassPK = doc.get(
+			for (Document document : hits.getDocs()) {
+				String recommendedEntryClassPK = document.get(
 					CommerceMLRecommendationField.RECOMMENDED_ENTRY_CLASS_PK);
 
-				if (documentMap.get(recommendedEntryClassPK) != null) {
+				if (documents.get(recommendedEntryClassPK) != null) {
 					continue;
 				}
 
-				documentMap.put(recommendedEntryClassPK, doc);
+				documents.put(recommendedEntryClassPK, document);
 
-				if (documentMap.size() == DEFAULT_RESULT_SIZE) {
+				if (documents.size() == _DOCUMENTS_SIZE) {
 					break;
 				}
 			}
 
-			start += DEFAULT_FETCH_SIZE;
+			start += _SEARCH_SEARCH_REQUEST_SIZE;
 
 			if (start > searchSearchResponse.getCount()) {
 				break;
@@ -131,24 +131,24 @@ public class FrequentPatternCommerceMLRecommendationManagerImpl
 					System.currentTimeMillis() - startTimeMillis));
 		}
 
-		return toModelList(new ArrayList<>(documentMap.values()));
+		return toList(new ArrayList<>(documents.values()));
 	}
 
 	@Override
 	protected Document toDocument(
 		FrequentPatternCommerceMLRecommendation model) {
 
-		Document document = getBaseDocument(model);
+		Document document = getDocument(model);
 
-		long hash = getHash(
-			model.getAntecedentIds(), model.getRecommendedEntryClassPK());
-
-		document.addKeyword(Field.UID, String.valueOf(hash));
-
+		document.addKeyword(
+			Field.UID,
+			String.valueOf(
+				getHash(
+					model.getAntecedentIds(),
+					model.getRecommendedEntryClassPK())));
 		document.addKeyword(
 			CommerceMLRecommendationField.ANTECEDENT_IDS,
 			model.getAntecedentIds());
-
 		document.addNumber(
 			CommerceMLRecommendationField.ANTECEDENT_IDS_LENGTH,
 			model.getAntecedentIdsLength());
@@ -162,7 +162,7 @@ public class FrequentPatternCommerceMLRecommendationManagerImpl
 
 		FrequentPatternCommerceMLRecommendation
 			frequentPatternCommerceMLRecommendation =
-				getBaseCommerceMLRecommendationModel(
+				getCommerceMLRecommendation(
 					new FrequentPatternCommerceMLRecommendationImpl(),
 					document);
 
@@ -170,7 +170,6 @@ public class FrequentPatternCommerceMLRecommendationManagerImpl
 			GetterUtil.getLongValues(
 				document.getValues(
 					CommerceMLRecommendationField.ANTECEDENT_IDS)));
-
 		frequentPatternCommerceMLRecommendation.setAntecedentIdsLength(
 			GetterUtil.getLong(
 				document.get(
@@ -178,10 +177,6 @@ public class FrequentPatternCommerceMLRecommendationManagerImpl
 
 		return frequentPatternCommerceMLRecommendation;
 	}
-
-	protected static final int DEFAULT_FETCH_SIZE = 300;
-
-	protected static final int DEFAULT_RESULT_SIZE = 10;
 
 	private BooleanQuery _getConstantScoreQuery(long[] cpInstanceIds) {
 		BooleanQuery booleanQuery = _queries.booleanQuery();
@@ -211,9 +206,9 @@ public class FrequentPatternCommerceMLRecommendationManagerImpl
 	}
 
 	private Script _getScript(long[] cpInstanceIds) {
-		ScriptBuilder builder = _scripts.builder();
+		ScriptBuilder scriptBuilder = _scripts.builder();
 
-		return builder.idOrCode(
+		return scriptBuilder.idOrCode(
 			StringUtil.read(
 				getClass(),
 				"/com/liferay/commerce/machine/learning/internal/dependencies" +
@@ -231,11 +226,6 @@ public class FrequentPatternCommerceMLRecommendationManagerImpl
 	private SearchSearchRequest _getSearchSearchRequest(
 		long companyId, long[] cpDefinitionIds) {
 
-		SearchSearchRequest searchSearchRequest = new SearchSearchRequest();
-
-		searchSearchRequest.setIndexNames(
-			_commerceMLIndexer.getIndexName(companyId));
-
 		FunctionScoreQuery functionScoreQuery = _queries.functionScore(
 			_getConstantScoreQuery(cpDefinitionIds));
 
@@ -246,12 +236,18 @@ public class FrequentPatternCommerceMLRecommendationManagerImpl
 		functionScoreQuery.setScoreMode(FunctionScoreQuery.ScoreMode.SUM);
 		functionScoreQuery.setMinScore(1.1F);
 
-		searchSearchRequest.setQuery(functionScoreQuery);
-
-		searchSearchRequest.setSize(DEFAULT_FETCH_SIZE);
-
-		return searchSearchRequest;
+		return new SearchSearchRequest() {
+			{
+				setIndexNames(_commerceMLIndexer.getIndexName(companyId));
+				setQuery(functionScoreQuery);
+				setSize(_SEARCH_SEARCH_REQUEST_SIZE);
+			}
+		};
 	}
+
+	private static final int _DOCUMENTS_SIZE = 10;
+
+	private static final int _SEARCH_SEARCH_REQUEST_SIZE = 300;
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		FrequentPatternCommerceMLRecommendationManagerImpl.class);

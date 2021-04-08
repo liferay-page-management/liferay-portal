@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-
-<project basedir="." default="clean-documentum-repository" name="portal-test-documentum" xmlns:antelope="antlib:ise.antelope.tasks">
-	<import file="build-test.xml" />
-
-	<target name="clean-documentum-repository">
-		<ssh-execute>perl C:/Windows/resetdocumentum.pl</ssh-execute>
-	</target>
-</project>

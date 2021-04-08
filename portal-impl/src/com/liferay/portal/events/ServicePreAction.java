@@ -20,6 +20,7 @@ import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalServiceUtil;
 import com.liferay.exportimport.kernel.service.ExportImportLocalServiceUtil;
+import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.events.Action;
@@ -1668,13 +1669,13 @@ public class ServicePreAction extends Action {
 				}
 
 				if (hasPublishStagingPermission) {
-					PortletURL publishToLiveURL = PortletURLFactoryUtil.create(
-						httpServletRequest, PortletKeys.EXPORT_IMPORT, plid,
-						PortletRequest.RENDER_PHASE);
-
-					publishToLiveURL.setParameter(
-						"mvcRenderCommandName",
-						"/export_import/publish_layouts");
+					PortletURL publishToLiveURL = PortletURLBuilder.create(
+						PortletURLFactoryUtil.create(
+							httpServletRequest, PortletKeys.EXPORT_IMPORT, plid,
+							PortletRequest.RENDER_PHASE)
+					).setMVCRenderCommandName(
+						"/export_import/publish_layouts"
+					).build();
 
 					if (layout.isPrivateLayout()) {
 						publishToLiveURL.setParameter("tabs1", "private-pages");

@@ -5,16 +5,9 @@ apply plugin: "org.ysb33r.gradletest"
 task copyGradleTestDependencies(type: Copy)
 
 String gradleVersion = "6.6.1"
-String pluginsSDKVersion = project.properties["plugins.sdk.version"]
 
 tasks.eclipse {
 	ext.gradleVersion = gradleVersion
-}
-
-configurations {
-	pluginsSDK {
-		transitive = false
-	}
 }
 
 copyGradleTestDependencies {
@@ -25,7 +18,7 @@ copyGradleTestDependencies {
 dependencies {
 	compile group: "com.github.jk1", name: "gradle-license-report", version: "1.8"
 	compile group: "com.gradle.publish", name: "plugin-publish-plugin", version: "0.11.0"
-	compile group: "com.liferay", name: "com.liferay.gradle.plugins", version: "13.1.32"
+	compile group: "com.liferay", name: "com.liferay.gradle.plugins", version: "13.1.34"
 	compile group: "com.liferay", name: "com.liferay.gradle.plugins.app.javadoc.builder", version: "1.2.4"
 	compile group: "com.liferay", name: "com.liferay.gradle.plugins.baseline", version: "6.0.3"
 	compile group: "com.liferay", name: "com.liferay.gradle.plugins.cache", version: "1.0.18"
@@ -33,7 +26,7 @@ dependencies {
 	compile group: "com.liferay", name: "com.liferay.gradle.plugins.dependency.checker", version: "1.0.5"
 	compile group: "com.liferay", name: "com.liferay.gradle.plugins.go", version: "1.0.2"
 	compile group: "com.liferay", name: "com.liferay.gradle.plugins.jsdoc", version: "2.0.59"
-	compile group: "com.liferay", name: "com.liferay.gradle.plugins.patcher", version: "1.0.19"
+	compile group: "com.liferay", name: "com.liferay.gradle.plugins.patcher", version: "1.0.20"
 	compile group: "com.liferay", name: "com.liferay.gradle.plugins.poshi.runner", version: "3.0.10"
 	compile group: "com.liferay", name: "com.liferay.gradle.plugins.whip", version: "1.0.9"
 	compile group: "com.netflix.nebula", name: "gradle-extra-configurations-plugin", version: "3.1.0"
@@ -42,8 +35,6 @@ dependencies {
 	compile group: "org.springframework.boot", name: "spring-boot-gradle-plugin", version: "2.4.1"
 
 	compileOnly fileTree(builtBy: [rootProject.tasks.getByName("extractGradleApi" + gradleVersion.replace(".", ""))], dir: new File(rootProject.buildDir, "gradle-${gradleVersion}"))
-
-	pluginsSDK group: "com.liferay.portal", name: "com.liferay.portal.plugins.sdk", version: pluginsSDKVersion
 }
 
 gradleTest {
@@ -54,18 +45,8 @@ gradleTest {
 }
 
 processResources {
-	String destinationDirName = "com/liferay/gradle/plugins/defaults/dependencies"
-	String zipDirName = "com.liferay.portal.plugins.sdk-${pluginsSDKVersion}/dependencies/net.sourceforge.pmd/rulesets/java"
-
-	into(destinationDirName) {
-		eachFile new ReplaceLeadingPathAction("${destinationDirName}/${zipDirName}": destinationDirName)
-
-		from {
-			zipTree(configurations.pluginsSDK.singleFile)
-		}
-
-		include "${zipDirName}/standard-rules.xml"
-		includeEmptyDirs = false
+	into("com/liferay/gradle/plugins/defaults/dependencies") {
+		from "../../../tools/sdk/dependencies/net.sourceforge.pmd/rulesets/java/standard-rules.xml"
 	}
 }
 

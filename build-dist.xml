@@ -8,16 +8,12 @@
 			<if>
 				<equals arg1="${tomcat.keep.app.server.properties}" arg2="true" />
 				<then>
-					<antcall inheritAll="false" target="update-sdk-properties" />
-
 					<antcall inheritAll="false" target="unzip-tomcat" />
 				</then>
 				<else>
 					<app-server-properties-update>
 						app.server.type=tomcat
 					</app-server-properties-update>
-
-					<antcall inheritAll="false" target="update-sdk-properties" />
 
 					<antcall target="unzip-tomcat" />
 				</else>
@@ -156,8 +152,6 @@
 			app.server.type=jboss
 		</app-server-properties-update>
 
-		<antcall inheritAll="false" target="update-sdk-properties" />
-
 		<antcall inheritAll="false" target="unzip-jboss" />
 
 		<delete dir="${project.dir}/portal-web/classes" />
@@ -280,8 +274,6 @@
 			app.server.type=tcserver
 		</app-server-properties-update>
 
-		<antcall inheritAll="false" target="update-sdk-properties" />
-
 		<antcall target="unzip-tcserver" />
 
 		<delete dir="${project.dir}/portal-web/classes" />
@@ -327,8 +319,6 @@
 			app.server.type=weblogic
 		</app-server-properties-update>
 
-		<antcall inheritAll="false" target="update-sdk-properties" />
-
 		<if>
 			<equals arg1="${app.server.weblogic.version}" arg2="12.2.1" />
 			<then>
@@ -357,8 +347,6 @@
 			app.server.type=websphere
 		</app-server-properties-update>
 
-		<antcall inheritAll="false" target="update-sdk-properties" />
-
 		<antcall inheritAll="false" target="unzip-websphere" />
 
 		<delete dir="${project.dir}/portal-web/classes" />
@@ -378,8 +366,6 @@
 		<app-server-properties-update>
 			app.server.type=wildfly
 		</app-server-properties-update>
-
-		<antcall inheritAll="false" target="update-sdk-properties" />
 
 		<antcall target="unzip-wildfly" />
 
@@ -2944,11 +2930,6 @@ plugins.includes=</echo>
 				includes="*.jar"
 				prefix="liferay-portal-dependencies-${lp.version}"
 			/>
-			<zipfileset
-				dir="portal-kernel"
-				includes="portal-kernel.jar"
-				prefix="liferay-portal-dependencies-${lp.version}"
-			/>
 		</zip>
 	</target>
 
@@ -3058,7 +3039,7 @@ plugins.includes=</echo>
 		>
 			<fileset
 				dir="${app.server.lib.global.dir}"
-				includes="annotations.jar,portal-kernel.jar,portlet.jar"
+				includes="annotations.jar,portlet.jar"
 			/>
 		</copy>
 
@@ -3123,7 +3104,7 @@ plugins.includes=</echo>
 		>
 			<fileset
 				dir="${app.server.lib.global.dir}"
-				includes="annotations.jar,portal-kernel.jar,portlet.jar"
+				includes="annotations.jar,portlet.jar"
 			/>
 		</copy>
 

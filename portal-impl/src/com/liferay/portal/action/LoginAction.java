@@ -14,6 +14,7 @@
 
 package com.liferay.portal.action;
 
+import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -37,7 +38,6 @@ import com.liferay.portal.util.PropsValues;
 
 import javax.portlet.PortletMode;
 import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
 import javax.portlet.WindowState;
 
 import javax.servlet.http.HttpServletRequest;
@@ -140,16 +140,19 @@ public class LoginAction implements Action {
 		}
 
 		if (Validator.isNull(redirect)) {
-			PortletURL portletURL = PortletURLFactoryUtil.create(
-				httpServletRequest, PortletKeys.LOGIN,
-				PortletRequest.RENDER_PHASE);
-
-			portletURL.setParameter("saveLastPath", Boolean.FALSE.toString());
-			portletURL.setParameter("mvcRenderCommandName", "/login/login");
-			portletURL.setPortletMode(PortletMode.VIEW);
-			portletURL.setWindowState(getWindowState(httpServletRequest));
-
-			redirect = portletURL.toString();
+			redirect = PortletURLBuilder.create(
+				PortletURLFactoryUtil.create(
+					httpServletRequest, PortletKeys.LOGIN,
+					PortletRequest.RENDER_PHASE)
+			).setMVCRenderCommandName(
+				"/login/login"
+			).setParameter(
+				"saveLastPath", Boolean.FALSE.toString()
+			).setPortletMode(
+				PortletMode.VIEW
+			).setWindowState(
+				getWindowState(httpServletRequest)
+			).buildString();
 		}
 
 		if (PropsValues.COMPANY_SECURITY_AUTH_REQUIRES_HTTPS) {

@@ -23,6 +23,7 @@ import com.liferay.expando.kernel.model.ExpandoColumnConstants;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.layout.admin.kernel.model.LayoutTypePortletConstants;
 import com.liferay.petra.encryptor.Encryptor;
+import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -1856,16 +1857,19 @@ public class PortalImpl implements Portal {
 					layout.getGroupId(), false);
 			}
 
-			PortletURL createAccountURL = PortletURLFactoryUtil.create(
-				httpServletRequest, PortletKeys.LOGIN, plid,
-				PortletRequest.RENDER_PHASE);
-
-			createAccountURL.setParameter(
-				"saveLastPath", Boolean.FALSE.toString());
-			createAccountURL.setParameter(
-				"mvcRenderCommandName", "/login/create_account");
-			createAccountURL.setPortletMode(PortletMode.VIEW);
-			createAccountURL.setWindowState(WindowState.MAXIMIZED);
+			PortletURL createAccountURL = PortletURLBuilder.create(
+				PortletURLFactoryUtil.create(
+					httpServletRequest, PortletKeys.LOGIN, plid,
+					PortletRequest.RENDER_PHASE)
+			).setMVCRenderCommandName(
+				"/login/create_account"
+			).setParameter(
+				"saveLastPath", Boolean.FALSE.toString()
+			).setPortletMode(
+				PortletMode.VIEW
+			).setWindowState(
+				WindowState.MAXIMIZED
+			).build();
 
 			if (!PropsValues.COMPANY_SECURITY_AUTH_REQUIRES_HTTPS) {
 				return createAccountURL.toString();
@@ -5886,20 +5890,22 @@ public class PortalImpl implements Portal {
 				Layout layout = (Layout)httpServletRequest.getAttribute(
 					WebKeys.LAYOUT);
 
-				PortletURL portletURL = PortletURLFactoryUtil.create(
-					httpServletRequest, PortletKeys.DIRECTORY, layout,
-					PortletRequest.RENDER_PHASE);
-
-				portletURL.setParameter(
-					"struts_action", "/directory/view_user");
-				portletURL.setParameter(
-					"p_u_i_d", String.valueOf(user.getUserId()));
-				portletURL.setPortletMode(PortletMode.VIEW);
-				portletURL.setWindowState(WindowState.MAXIMIZED);
-
 				userName = StringBundler.concat(
-					"<a href=\"", portletURL.toString(), "\">",
-					HtmlUtil.escape(userName), "</a>");
+					"<a href=\"",
+					PortletURLBuilder.create(
+						PortletURLFactoryUtil.create(
+							httpServletRequest, PortletKeys.DIRECTORY, layout,
+							PortletRequest.RENDER_PHASE)
+					).setParameter(
+						"struts_action", "/directory/view_user"
+					).setParameter(
+						"p_u_i_d", user.getUserId()
+					).setPortletMode(
+						PortletMode.VIEW
+					).setWindowState(
+						WindowState.MAXIMIZED
+					).buildString(),
+					"\">", HtmlUtil.escape(userName), "</a>");
 			}
 		}
 		catch (Exception exception) {

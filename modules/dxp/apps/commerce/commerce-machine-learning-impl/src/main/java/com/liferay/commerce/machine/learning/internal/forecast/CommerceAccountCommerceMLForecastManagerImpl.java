@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.search.filter.TermsFilter;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.search.engine.adapter.search.CountSearchRequest;
-import com.liferay.portal.search.engine.adapter.search.SearchSearchRequest;
 
 import java.util.Date;
 import java.util.List;
@@ -56,14 +55,13 @@ public class CommerceAccountCommerceMLForecastManagerImpl
 					commerceAccountCommerceMLForecast)
 		throws PortalException {
 
-		long commerceMLForecastId = getHash(
-			commerceAccountCommerceMLForecast.getCommerceAccountId(),
-			commerceAccountCommerceMLForecast.getPeriod(),
-			commerceAccountCommerceMLForecast.getScope(),
-			commerceAccountCommerceMLForecast.getTarget(),
-			commerceAccountCommerceMLForecast.getTimestamp());
-
-		commerceAccountCommerceMLForecast.setForecastId(commerceMLForecastId);
+		commerceAccountCommerceMLForecast.setForecastId(
+			getHash(
+				commerceAccountCommerceMLForecast.getCommerceAccountId(),
+				commerceAccountCommerceMLForecast.getPeriod(),
+				commerceAccountCommerceMLForecast.getScope(),
+				commerceAccountCommerceMLForecast.getTarget(),
+				commerceAccountCommerceMLForecast.getTimestamp()));
 
 		return addCommerceMLForecast(commerceAccountCommerceMLForecast);
 	}
@@ -89,11 +87,10 @@ public class CommerceAccountCommerceMLForecastManagerImpl
 				int historyLength, int forecastLength)
 		throws PortalException {
 
-		int size = commerceAccountIds.length * (historyLength + forecastLength);
-
 		return getMonthlyRevenueCommerceAccountCommerceMLForecasts(
 			companyId, commerceAccountIds, actualDate, historyLength,
-			forecastLength, 0, size);
+			forecastLength, 0,
+			commerceAccountIds.length * (historyLength + forecastLength));
 	}
 
 	@Override
@@ -103,16 +100,13 @@ public class CommerceAccountCommerceMLForecastManagerImpl
 				int historyLength, int forecastLength, int start, int end)
 		throws PortalException {
 
-		Query query = _getMonthlyRevenueQuery(
-			commerceAccountIds, actualDate, historyLength, forecastLength);
-
-		int size = end - start;
-
-		SearchSearchRequest searchSearchRequest = getSearchSearchRequest(
-			commerceMLIndexer.getIndexName(companyId), query, start, size,
-			getDefaultSort(true));
-
-		return getSearchResults(searchSearchRequest);
+		return getSearchResults(
+			getSearchSearchRequest(
+				commerceMLIndexer.getIndexName(companyId),
+				_getMonthlyRevenueQuery(
+					commerceAccountIds, actualDate, historyLength,
+					forecastLength),
+				start, end - start, getDefaultSort(true)));
 	}
 
 	@Override
@@ -121,11 +115,10 @@ public class CommerceAccountCommerceMLForecastManagerImpl
 			int historyLength, int forecastLength)
 		throws PortalException {
 
-		Query query = _getMonthlyRevenueQuery(
-			commerceAccountIds, actualDate, historyLength, forecastLength);
-
 		CountSearchRequest countSearchRequest = getCountSearchRequest(
-			commerceMLIndexer.getIndexName(companyId), query);
+			commerceMLIndexer.getIndexName(companyId),
+			_getMonthlyRevenueQuery(
+				commerceAccountIds, actualDate, historyLength, forecastLength));
 
 		return getCountResult(countSearchRequest);
 	}
@@ -134,7 +127,7 @@ public class CommerceAccountCommerceMLForecastManagerImpl
 	protected Document toDocumentModel(
 		CommerceAccountCommerceMLForecast commerceAccountCommerceMLForecast) {
 
-		Document document = getBaseDocument(commerceAccountCommerceMLForecast);
+		Document document = getDocument(commerceAccountCommerceMLForecast);
 
 		document.addNumber(
 			CommerceMLForecastField.COMMERCE_ACCOUNT_ID,
@@ -148,7 +141,7 @@ public class CommerceAccountCommerceMLForecastManagerImpl
 		Document document) {
 
 		CommerceAccountCommerceMLForecast commerceAccountCommerceMLForecast =
-			getBaseCommerceMLForecastModel(
+			getCommerceMLForecastModel(
 				new CommerceAccountCommerceMLForecastImpl(), document);
 
 		commerceAccountCommerceMLForecast.setCommerceAccountId(
@@ -165,31 +158,27 @@ public class CommerceAccountCommerceMLForecastManagerImpl
 
 		CommerceMLForecastPeriod commerceMLForecastPeriod =
 			CommerceMLForecastPeriod.MONTH;
-
 		CommerceMLForecastTarget commerceMLForecastTarget =
 			CommerceMLForecastTarget.REVENUE;
 
-		Date endDate = getEndDate(
-			actualDate, commerceMLForecastPeriod, forecastLength);
-
-		Date startDate = getStartDate(
-			actualDate, commerceMLForecastPeriod, historyLength);
-
-		BooleanQuery baseQuery = getBaseQuery(
+		BooleanQuery booleanQuery = getBooleanQuery(
 			_commerceMLForecastScope.getLabel(),
 			commerceMLForecastPeriod.getLabel(),
-			commerceMLForecastTarget.getLabel(), startDate, endDate);
+			commerceMLForecastTarget.getLabel(),
+			getStartDate(actualDate, commerceMLForecastPeriod, historyLength),
+			getEndDate(actualDate, commerceMLForecastPeriod, forecastLength));
 
-		BooleanFilter preBooleanFilter = baseQuery.getPreBooleanFilter();
+		BooleanFilter preBooleanFilter = booleanQuery.getPreBooleanFilter();
 
-		TermsFilter termsFilter = new TermsFilter(
-			CommerceMLForecastField.COMMERCE_ACCOUNT_ID);
+		preBooleanFilter.add(
+			new TermsFilter(CommerceMLForecastField.COMMERCE_ACCOUNT_ID) {
+				{
+					addValues(ArrayUtil.toStringArray(commerceAccountIds));
+				}
+			},
+			BooleanClauseOccur.MUST);
 
-		termsFilter.addValues(ArrayUtil.toStringArray(commerceAccountIds));
-
-		preBooleanFilter.add(termsFilter, BooleanClauseOccur.MUST);
-
-		return baseQuery;
+		return booleanQuery;
 	}
 
 	private static final CommerceMLForecastScope _commerceMLForecastScope =

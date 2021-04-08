@@ -32,6 +32,7 @@ import com.liferay.document.library.kernel.util.comparator.RepositoryModelModifi
 import com.liferay.document.library.kernel.util.comparator.RepositoryModelReadCountComparator;
 import com.liferay.document.library.kernel.util.comparator.RepositoryModelSizeComparator;
 import com.liferay.document.library.kernel.util.comparator.RepositoryModelTitleComparator;
+import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -239,14 +240,14 @@ public class DLImpl implements DL {
 		String portletId = PortletProviderUtil.getPortletId(
 			FileEntry.class.getName(), PortletProvider.Action.MANAGE);
 
-		PortletURL portletURL = PortalUtil.getControlPanelPortletURL(
-			portletRequest, portletId, PortletRequest.RENDER_PHASE);
-
-		portletURL.setParameter(
-			"mvcRenderCommandName", "/document_library/view_file_entry");
-		portletURL.setParameter("fileEntryId", String.valueOf(fileEntryId));
-
-		return portletURL.toString();
+		return PortletURLBuilder.create(
+			PortalUtil.getControlPanelPortletURL(
+				portletRequest, portletId, PortletRequest.RENDER_PHASE)
+		).setMVCRenderCommandName(
+			"/document_library/view_file_entry"
+		).setParameter(
+			"fileEntryId", fileEntryId
+		).buildString();
 	}
 
 	/**
