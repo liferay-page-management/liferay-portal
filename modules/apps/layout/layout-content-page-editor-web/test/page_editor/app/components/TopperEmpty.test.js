@@ -18,12 +18,12 @@ import React from 'react';
 import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
 
-import {ControlsProvider} from '../../../../src/main/resources/META-INF/resources/page_editor/app/components/Controls';
 import TopperEmpty from '../../../../src/main/resources/META-INF/resources/page_editor/app/components/Topper';
 import Row from '../../../../src/main/resources/META-INF/resources/page_editor/app/components/layout-data-items/Row';
 import {LAYOUT_DATA_ITEM_TYPES} from '../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/layoutDataItemTypes';
 import {VIEWPORT_SIZES} from '../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/viewportSizes';
-import {StoreAPIContextProvider} from '../../../../src/main/resources/META-INF/resources/page_editor/app/store';
+import {ControlsContextProvider} from '../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/ControlsContext';
+import {StoreAPIContextProvider} from '../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/StoreContext';
 
 jest.mock(
 	'../../../../src/main/resources/META-INF/resources/page_editor/app/config',
@@ -54,7 +54,7 @@ const renderTopperEmpty = ({
 
 	return render(
 		<DndProvider backend={HTML5Backend}>
-			<ControlsProvider>
+			<ControlsContextProvider>
 				<StoreAPIContextProvider
 					getState={() => ({
 						layoutData,
@@ -69,7 +69,7 @@ const renderTopperEmpty = ({
 						<Row item={row} layoutData={layoutData}></Row>
 					</TopperEmpty>
 				</StoreAPIContextProvider>
-			</ControlsProvider>
+			</ControlsContextProvider>
 		</DndProvider>
 	);
 };

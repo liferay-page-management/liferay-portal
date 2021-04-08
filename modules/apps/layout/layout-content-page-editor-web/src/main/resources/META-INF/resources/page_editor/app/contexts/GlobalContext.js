@@ -18,7 +18,7 @@ import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {createPortal} from 'react-dom';
 
 import RawDOM from '../../common/components/RawDOM';
-import {config} from '../config/index';
+import {config} from '../config';
 
 const GlobalContext = React.createContext([{document, window}, () => {}]);
 

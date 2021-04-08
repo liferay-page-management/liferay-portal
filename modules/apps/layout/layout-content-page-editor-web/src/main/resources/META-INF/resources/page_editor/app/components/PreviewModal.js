@@ -21,9 +21,9 @@ import React, {useMemo, useState} from 'react';
 
 import {VIEWPORT_SIZES} from '../config/constants/viewportSizes';
 import {config} from '../config/index';
+import {useSelector} from '../contexts/StoreContext';
 import selectLanguageId from '../selectors/selectLanguageId';
 import selectSegmentsExperienceId from '../selectors/selectSegmentsExperienceId';
-import {useSelector} from '../store/index';
 import {useId} from '../utils/useId';
 import Translation from './Translation';
 import ViewportSizeSelector from './ViewportSizeSelector';

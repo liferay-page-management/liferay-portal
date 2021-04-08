@@ -14,10 +14,13 @@
 
 import React from 'react';
 
-import {useActiveItemId, useSelectItem} from '../../../app/components/Controls';
 import {HIGHLIGHTED_COMMENT_ID_KEY} from '../../../app/config/constants/highlightedCommentIdKey';
 import {LAYOUT_DATA_ITEM_TYPES} from '../../../app/config/constants/layoutDataItemTypes';
-import {useSelector} from '../../../app/store/index';
+import {
+	useActiveItemId,
+	useSelectItem,
+} from '../../../app/contexts/ControlsContext';
+import {useSelector} from '../../../app/contexts/StoreContext';
 import FragmentComments from './FragmentComments';
 import FragmentEntryLinksWithComments from './FragmentEntryLinksWithComments';
 

@@ -17,13 +17,13 @@ import ClayTabs from '@clayui/tabs';
 import PropTypes from 'prop-types';
 import React, {useEffect, useMemo, useState} from 'react';
 
-import {useCollectionActiveItemContext} from '../../../../../app/components/CollectionActiveItemContext';
-import {CollectionItemContext} from '../../../../../app/components/CollectionItemContext';
+import {useCollectionActiveItemContext} from '../../../../../app/contexts/CollectionActiveItemContext';
+import {CollectionItemContext} from '../../../../../app/contexts/CollectionItemContext';
 import {
 	useActiveItemId,
 	useActiveItemType,
-} from '../../../../../app/components/Controls';
-import {useSelectorCallback} from '../../../../../app/store/index';
+} from '../../../../../app/contexts/ControlsContext';
+import {useSelectorCallback} from '../../../../../app/contexts/StoreContext';
 import {deepEqual} from '../../../../../app/utils/checkDeepEqual';
 import {useId} from '../../../../../app/utils/useId';
 import {PANELS, selectPanels} from '../selectors/selectPanels';

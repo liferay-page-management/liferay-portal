@@ -18,20 +18,20 @@ import React, {useEffect} from 'react';
 import {StyleBookContextProvider} from '../../plugins/page-design-options/hooks/useStyleBook';
 import {INIT} from '../actions/types';
 import {config} from '../config/index';
+import {CollectionActiveItemContextProvider} from '../contexts/CollectionActiveItemContext';
+import {ControlsContextProvider} from '../contexts/ControlsContext';
+import {EditableProcessorContextProvider} from '../contexts/EditableProcessorContext';
+import {GlobalContextProvider} from '../contexts/GlobalContext';
+import {StoreContextProvider, useSelector} from '../contexts/StoreContext';
 import {reducer} from '../reducers/index';
 import selectLanguageId from '../selectors/selectLanguageId';
-import {StoreContextProvider, useSelector} from '../store/index';
 import {DragAndDropContextProvider} from '../utils/drag-and-drop/useDragAndDrop';
-import {CollectionActiveItemContextProvider} from './CollectionActiveItemContext';
-import {ControlsProvider} from './Controls';
 import DragPreview from './DragPreview';
-import {GlobalContextProvider} from './GlobalContext';
 import LayoutViewport from './LayoutViewport';
 import ShortcutManager from './ShortcutManager';
 import Sidebar from './Sidebar';
 import Toolbar from './Toolbar';
 import URLParser from './URLParser';
-import {EditableProcessorContextProvider} from './fragment-content/EditableProcessorContext';
 
 const DEFAULT_SESSION_LENGTH = 60 * 1000;
 
@@ -55,7 +55,7 @@ export default function App({state}) {
 		<StoreContextProvider initialState={initialState} reducer={reducer}>
 			<LanguageDirection />
 			<URLParser />
-			<ControlsProvider>
+			<ControlsContextProvider>
 				<CollectionActiveItemContextProvider>
 					<DragAndDropContextProvider>
 						<EditableProcessorContextProvider>
@@ -73,7 +73,7 @@ export default function App({state}) {
 						</EditableProcessorContextProvider>
 					</DragAndDropContextProvider>
 				</CollectionActiveItemContextProvider>
-			</ControlsProvider>
+			</ControlsContextProvider>
 		</StoreContextProvider>
 	);
 }

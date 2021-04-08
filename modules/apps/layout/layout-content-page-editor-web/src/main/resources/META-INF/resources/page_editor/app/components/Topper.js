@@ -23,10 +23,17 @@ import {getLayoutDataItemPropTypes} from '../../prop-types/index';
 import {switchSidebarPanel} from '../actions/index';
 import {LAYOUT_DATA_ITEM_TYPES} from '../config/constants/layoutDataItemTypes';
 import {config} from '../config/index';
+import {
+	useHoverItem,
+	useIsActive,
+	useIsHovered,
+	useSelectItem,
+} from '../contexts/ControlsContext';
+import {useEditableProcessorUniqueId} from '../contexts/EditableProcessorContext';
+import {useDispatch, useSelector} from '../contexts/StoreContext';
 import selectCanUpdateItemConfiguration from '../selectors/selectCanUpdateItemConfiguration';
 import selectCanUpdatePageStructure from '../selectors/selectCanUpdatePageStructure';
 import selectSegmentsExperienceId from '../selectors/selectSegmentsExperienceId';
-import {useDispatch, useSelector} from '../store/index';
 import moveItem from '../thunks/moveItem';
 import {TARGET_POSITION} from '../utils/drag-and-drop/constants/targetPosition';
 import {
@@ -34,14 +41,7 @@ import {
 	useDropTarget,
 } from '../utils/drag-and-drop/useDragAndDrop';
 import getLayoutDataItemLabel from '../utils/getLayoutDataItemLabel';
-import {
-	useHoverItem,
-	useIsActive,
-	useIsHovered,
-	useSelectItem,
-} from './Controls';
 import ItemActions from './ItemActions';
-import {useEditableProcessorUniqueId} from './fragment-content/EditableProcessorContext';
 
 const TOPPER_BAR_HEIGHT = 24;
 

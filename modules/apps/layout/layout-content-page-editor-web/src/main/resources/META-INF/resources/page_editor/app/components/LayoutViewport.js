@@ -18,10 +18,10 @@ import React, {useEffect, useRef, useState} from 'react';
 import debounceRAF from '../../core/debounceRAF';
 import {VIEWPORT_SIZES} from '../config/constants/viewportSizes';
 import {config} from '../config/index';
-import {useSelector} from '../store/index';
-import {useSelectItem} from './Controls';
+import {useSelectItem} from '../contexts/ControlsContext';
+import {GlobalContextFrame} from '../contexts/GlobalContext';
+import {useSelector} from '../contexts/StoreContext';
 import DisabledArea from './DisabledArea';
-import {GlobalContextFrame} from './GlobalContext';
 import Layout from './Layout';
 import MasterLayout from './MasterLayout';
 

@@ -18,13 +18,13 @@ import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 
 import {addMappedInfoItem} from '../../app/actions/index';
-import {useCollectionConfig} from '../../app/components/CollectionItemContext';
 import {EDITABLE_TYPES} from '../../app/config/constants/editableTypes';
 import {LAYOUT_TYPES} from '../../app/config/constants/layoutTypes';
 import {config} from '../../app/config/index';
+import {useCollectionConfig} from '../../app/contexts/CollectionItemContext';
+import {useDispatch, useSelector} from '../../app/contexts/StoreContext';
 import CollectionService from '../../app/services/CollectionService';
 import InfoItemService from '../../app/services/InfoItemService';
-import {useDispatch, useSelector} from '../../app/store/index';
 import isMapped from '../../app/utils/editable-value/isMapped';
 import isMappedToInfoItem from '../../app/utils/editable-value/isMappedToInfoItem';
 import isMappedToStructure from '../../app/utils/editable-value/isMappedToStructure';

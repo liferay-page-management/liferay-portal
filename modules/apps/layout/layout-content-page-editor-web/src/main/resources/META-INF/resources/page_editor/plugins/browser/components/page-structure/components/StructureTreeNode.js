@@ -18,21 +18,24 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {useEffect, useRef} from 'react';
 
-import {useToControlsId} from '../../../../../app/components/CollectionItemContext';
+import {fromControlsId} from '../../../../../app/components/layout-data-items/Collection';
+import {ITEM_ACTIVATION_ORIGINS} from '../../../../../app/config/constants/itemActivationOrigins';
+import {ITEM_TYPES} from '../../../../../app/config/constants/itemTypes';
+import {LAYOUT_DATA_ITEM_TYPES} from '../../../../../app/config/constants/layoutDataItemTypes';
+import {useToControlsId} from '../../../../../app/contexts/CollectionItemContext';
 import {
 	useActivationOrigin,
 	useActiveItemId,
 	useHoverItem,
 	useHoveredItemId,
 	useSelectItem,
-} from '../../../../../app/components/Controls';
-import {fromControlsId} from '../../../../../app/components/layout-data-items/Collection';
-import {ITEM_ACTIVATION_ORIGINS} from '../../../../../app/config/constants/itemActivationOrigins';
-import {ITEM_TYPES} from '../../../../../app/config/constants/itemTypes';
-import {LAYOUT_DATA_ITEM_TYPES} from '../../../../../app/config/constants/layoutDataItemTypes';
+} from '../../../../../app/contexts/ControlsContext';
+import {
+	useDispatch,
+	useSelector,
+} from '../../../../../app/contexts/StoreContext';
 import selectCanUpdatePageStructure from '../../../../../app/selectors/selectCanUpdatePageStructure';
 import selectSegmentsExperienceId from '../../../../../app/selectors/selectSegmentsExperienceId';
-import {useDispatch, useSelector} from '../../../../../app/store/index';
 import deleteItem from '../../../../../app/thunks/deleteItem';
 import moveItem from '../../../../../app/thunks/moveItem';
 import {deepEqual} from '../../../../../app/utils/checkDeepEqual';

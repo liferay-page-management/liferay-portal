@@ -22,13 +22,13 @@ import {openModal} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 
+import {EDITABLE_FRAGMENT_ENTRY_PROCESSOR} from '../../../../../app/config/constants/editableFragmentEntryProcessor';
+import {ITEM_TYPES} from '../../../../../app/config/constants/itemTypes';
 import {
 	useHoverItem,
 	useHoveredItemId,
-} from '../../../../../app/components/Controls';
-import {EDITABLE_FRAGMENT_ENTRY_PROCESSOR} from '../../../../../app/config/constants/editableFragmentEntryProcessor';
-import {ITEM_TYPES} from '../../../../../app/config/constants/itemTypes';
-import {useSelector} from '../../../../../app/store/index';
+} from '../../../../../app/contexts/ControlsContext';
+import {useSelector} from '../../../../../app/contexts/StoreContext';
 
 export default function PageContent(props) {
 	const [active, setActive] = useState(false);

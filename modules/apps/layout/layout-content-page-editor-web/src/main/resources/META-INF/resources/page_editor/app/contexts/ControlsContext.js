@@ -15,11 +15,11 @@
 import React, {useCallback, useContext, useReducer} from 'react';
 
 import switchSidebarPanel from '../actions/switchSidebarPanel';
+import {config} from '../config';
 import {ITEM_ACTIVATION_ORIGINS} from '../config/constants/itemActivationOrigins';
 import {ITEM_TYPES} from '../config/constants/itemTypes';
-import {config} from '../config/index';
-import {useDispatch, useSelector} from '../store/index';
 import {useFromControlsId, useToControlsId} from './CollectionItemContext';
+import {useDispatch, useSelector} from './StoreContext';
 
 const ACTIVE_INITIAL_STATE = {
 	activationOrigin: null,
@@ -63,7 +63,7 @@ const reducer = (state, action) => {
 	return nextState;
 };
 
-const ActiveProvider = ({children, initialState}) => {
+const ActiveContextProvider = ({children, initialState}) => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
 	return (
@@ -75,7 +75,7 @@ const ActiveProvider = ({children, initialState}) => {
 	);
 };
 
-const HoverProvider = ({children, initialState}) => {
+const HoverContextProvider = ({children, initialState}) => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
 	return (
@@ -87,17 +87,17 @@ const HoverProvider = ({children, initialState}) => {
 	);
 };
 
-const ControlsProvider = ({
+const ControlsContextProvider = ({
 	activeInitialState = ACTIVE_INITIAL_STATE,
 	hoverInitialState = HOVER_INITIAL_STATE,
 	children,
 }) => {
 	return (
-		<ActiveProvider initialState={activeInitialState}>
-			<HoverProvider initialState={hoverInitialState}>
+		<ActiveContextProvider initialState={activeInitialState}>
+			<HoverContextProvider initialState={hoverInitialState}>
 				{children}
-			</HoverProvider>
-		</ActiveProvider>
+			</HoverContextProvider>
+		</ActiveContextProvider>
 	);
 };
 
@@ -203,7 +203,7 @@ const useSelectItem = () => {
 };
 
 export {
-	ControlsProvider,
+	ControlsContextProvider,
 	reducer,
 	useActivationOrigin,
 	useActiveItemId,

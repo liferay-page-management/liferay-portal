@@ -27,15 +27,15 @@ import MappingSelector from '../../../common/components/MappingSelector';
 import {ConfigurationFieldPropTypes} from '../../../prop-types/index';
 import {EDITABLE_TYPES} from '../../config/constants/editableTypes';
 import {config} from '../../config/index';
+import {useGetFieldValue} from '../../contexts/CollectionItemContext';
+import {useSelector} from '../../contexts/StoreContext';
 import selectLanguageId from '../../selectors/selectLanguageId';
-import {useSelector} from '../../store/index';
 import isMapped from '../../utils/editable-value/isMapped';
 import isMappedToLayout from '../../utils/editable-value/isMappedToLayout';
 import isMappedToStructure from '../../utils/editable-value/isMappedToStructure';
 import resolveEditableValue from '../../utils/editable-value/resolveEditableValue';
 import itemSelectorValueToInfoItem from '../../utils/item-selector-value/itemSelectorValueToInfoItem';
 import {useId} from '../../utils/useId';
-import {useGetFieldValue} from '../CollectionItemContext';
 
 const DISPLAY_PAGE_URL_FIELD_ID = 'displayPageURL';
 

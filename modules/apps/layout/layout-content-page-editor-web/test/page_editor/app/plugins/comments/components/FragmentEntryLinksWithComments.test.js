@@ -16,12 +16,12 @@ import '@testing-library/jest-dom/extend-expect';
 import {cleanup, fireEvent, render, wait} from '@testing-library/react';
 import React from 'react';
 
+import {LAYOUT_DATA_ITEM_TYPES} from '../../../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/layoutDataItemTypes';
 import {
 	useHoverItem,
 	useSelectItem,
-} from '../../../../../../src/main/resources/META-INF/resources/page_editor/app/components/Controls';
-import {LAYOUT_DATA_ITEM_TYPES} from '../../../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/layoutDataItemTypes';
-import {StoreAPIContextProvider} from '../../../../../../src/main/resources/META-INF/resources/page_editor/app/store/index';
+} from '../../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/ControlsContext';
+import {StoreAPIContextProvider} from '../../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/StoreContext';
 import FragmentEntryLinksWithComments from '../../../../../../src/main/resources/META-INF/resources/page_editor/plugins/comments/components/FragmentEntryLinksWithComments';
 
 jest.mock(
@@ -30,7 +30,7 @@ jest.mock(
 );
 
 jest.mock(
-	'../../../../../../src/main/resources/META-INF/resources/page_editor/app/components/Controls',
+	'../../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/ControlsContext',
 	() => {
 		const hoverItem = jest.fn();
 		const selectItem = jest.fn();
