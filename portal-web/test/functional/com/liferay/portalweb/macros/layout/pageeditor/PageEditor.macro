@@ -1,7 +1,7 @@
 definition {
 
 	macro addComment {
-		TestCase.waitForPageLoaded();
+		WaitForPageLoad();
 
 		PageEditor.gotoTab(tabName = "Comments");
 
@@ -441,7 +441,7 @@ definition {
 	}
 
 	macro addFragment {
-		TestCase.waitForPageLoaded();
+		WaitForPageLoad();
 
 		PageEditor.gotoTab(tabName = "Fragments and Widgets");
 
@@ -560,7 +560,7 @@ definition {
 	}
 
 	macro addFragmentToCollectionDisplay {
-		TestCase.waitForPageLoaded();
+		WaitForPageLoad();
 
 		PageEditor.gotoTab(tabName = "Fragments and Widgets");
 
@@ -603,7 +603,7 @@ definition {
 	}
 
 	macro addWidget {
-		TestCase.waitForPageLoaded();
+		WaitForPageLoad();
 
 		PageEditor.gotoTab(tabName = "Fragments and Widgets");
 
@@ -683,7 +683,7 @@ definition {
 	}
 
 	macro assertFragmentSidebarLoaded {
-		TestCase.waitForPageLoaded();
+		WaitForPageLoad();
 
 		AssertVisible(locator1 = "PageEditor#FRAGMENT_SIDEBAR_LOADED");
 	}
@@ -2594,7 +2594,7 @@ definition {
 	}
 
 	macro searchFragmentViaSidebar {
-		TestCase.waitForPageLoaded();
+		WaitForPageLoad();
 
 		PageEditor.gotoTab(tabName = "Fragments");
 
@@ -2620,7 +2620,7 @@ definition {
 	}
 
 	macro viewCannotAddFragmentToOutsideOfDropZone {
-		TestCase.waitForPageLoaded();
+		WaitForPageLoad();
 
 		PageEditor.gotoTab(tabName = "Fragments");
 

@@ -1268,7 +1268,7 @@ definition {
 				pageName = "Test Page Name");
 		}
 
-		TestCase.waitForPageLoaded();
+		WaitForPageLoad();
 
 		PageEditor.gotoTab(tabName = "Fragments");
 
