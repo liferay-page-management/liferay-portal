@@ -424,17 +424,33 @@ definition {
 	}
 
 	macro selectPublication {
-		Click(locator1 = "Publications#PUBLICATIONS_INDICATOR_BUTTON");
+		if ("${gotoManagePublications}" == "true") {
+			ApplicationsMenu.gotoPortlet(
+				category = "Publications",
+				panel = "Applications",
+				portlet = "Publications");
 
-		MenuItem.click(menuItem = "Select a Publication");
+			LexiconEntry.changeDisplayStyle(displayStyle = "list");
 
-		SelectFrameTop(value1 = "relative=top");
+			Click(
+				key_publicationsName = "${publicationsName}",
+				locator1 = "Publications#LIST_PUBLICATION_ELLIPSIS");
 
-		var key_publicationsName = "${publicationsName}";
+			MenuItem.click(menuItem = "Work on Publication");
+		}
+		else {
+			Click(locator1 = "Publications#PUBLICATIONS_INDICATOR_BUTTON");
 
-		Click(
-			locator1 = "Publications#SELECT_PUBLICATION_NAME",
-			value1 = "${publicationsName}");
+			MenuItem.click(menuItem = "Select a Publication");
+
+			SelectFrameTop(value1 = "relative=top");
+
+			var key_publicationsName = "${publicationsName}";
+
+			Click(
+				locator1 = "Publications#SELECT_PUBLICATION_NAME",
+				value1 = "${publicationsName}");
+		}
 
 		AssertTextPresent(
 			locator1 = "Publications#PUBLICATIONS_INDICATOR_TITLE",
@@ -473,7 +489,7 @@ definition {
 		AssertVisible(locator1 = "Publications#DISABLED_PUBLISH_BUTTON");
 	}
 
-	macro viewPublicationsDiff {
+	macro viewPublicationDiff {
 		AssertTextEquals(
 			key_displayItem = "Unified",
 			locator1 = "Publications#CURRENT_DIFF_DISPLAY_ITEM",
@@ -510,7 +526,7 @@ definition {
 
 		Publications.changeDiffDisplayItem(displayItem = "Publication: ${publicationsName}");
 
-		AssertTextEquals(
+		AssertTextEquals.assertPartialText(
 			key_displayItem = "${publicationsName}",
 			locator1 = "Publications#CURRENT_DIFF_DISPLAY_ITEM",
 			value1 = "${publicationsName}");
@@ -522,6 +538,31 @@ definition {
 				locator1 = "Publications#COLUMN_VALUE_IN_PUBLICATION",
 				value1 = "${columnValueInPublication}");
 		}
+	}
+
+	macro viewPublicationPublished {
+		ApplicationsMenu.gotoPortlet(
+			category = "Publications",
+			panel = "Applications",
+			portlet = "Publications");
+
+		var key_navBarTitle = "History";
+
+		Click(
+			locator1 = "Publications#MANGE_PUBLICATIONS_NAVBAR_TITLE",
+			value1 = "History");
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		// Workaround LPS-115320
+
+		Refresh();
+
+		var key_publicationsName = "${publicationsName}";
+
+		AssertTextEquals(
+			locator1 = "Publications#LIST_PUBLISHED_STATUS",
+			value1 = "Published");
 	}
 
 	macro workOnProduction {

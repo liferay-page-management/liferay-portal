@@ -1,0 +1,31 @@
+definition {
+
+	macro addPublication {
+		Variables.assertDefined(parameterList = "${publicationName}");
+
+		var publicationDescription = JSONPublicationsSetter.setPublicationDescription(publicationDescription = "${publicationDescription}");
+
+		var publicationName = JSONPublicationsSetter.setPublicationName(publicationName = "${publicationName}");
+
+		JSONPublicationsAPI._addPublication(
+			publicationDescription = "${publicationDescription}",
+			publicationName = "${publicationName}");
+	}
+
+	macro enablePublications {
+		JSONPublicationsAPI._enablePublications();
+	}
+
+	macro publishPublication {
+		var ctCollectionId = JSONPublicationsSetter.setCTCollectionId(publicationName = "${publicationName}");
+
+		JSONPublicationsAPI._publishPublication(ctCollectionId = "${ctCollectionId}");
+	}
+
+	macro selectPublication {
+		var ctCollectionId = JSONPublicationsSetter.setCTCollectionId(publicationName = "${publicationName}");
+
+		JSONPublicationsAPI._selectPublication(ctCollectionId = "${ctCollectionId}");
+	}
+
+}
