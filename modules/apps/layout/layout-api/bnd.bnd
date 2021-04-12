@@ -4,6 +4,7 @@ Bundle-Version: 7.1.1
 Export-Package:\
 	com.liferay.layout.adaptive.media,\
 	com.liferay.layout.configuration,\
+	com.liferay.layout.contents.contributor,\
 	com.liferay.layout.exception,\
 	com.liferay.layout.friendly.url,\
 	com.liferay.layout.list.retriever,\

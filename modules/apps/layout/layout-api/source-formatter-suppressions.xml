@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<suppressions>
+	<source-check>
+		<suppress checks="JavaAPISignatureCheck" files="src/main/java/com/liferay/layout/contents/contributor/LayoutContentsContributor\.java" />
+	</source-check>
+</suppressions>
