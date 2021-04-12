@@ -76,7 +76,12 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Víctor Galán
  */
-@Component(service = LayoutContentsContributor.class)
+@Component(
+	service = {
+		LayoutClassedModelUsageLayoutContentsContributor.class,
+		LayoutContentsContributor.class
+	}
+)
 public class LayoutClassedModelUsageLayoutContentsContributor
 	implements LayoutContentsContributor {
 
