@@ -325,6 +325,10 @@ public class AssetCategoriesSelectorTag extends IncludeTag {
 		List<AssetCategory> filteredCategories =
 			AssetCategoryServiceUtil.getCategories(_className, _classPK);
 
+		if (categories.size() == filteredCategories.size()) {
+			return new Long[0];
+		}
+
 		Stream<AssetCategory> categoriesStream = categories.stream();
 
 		List<Long> restrictedCategoryIds = categoriesStream.filter(
