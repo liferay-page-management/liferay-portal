@@ -63,6 +63,7 @@ import com.liferay.layout.content.page.editor.web.internal.constants.ContentPage
 import com.liferay.layout.content.page.editor.web.internal.constants.ContentPageEditorConstants;
 import com.liferay.layout.content.page.editor.web.internal.util.ContentUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.FragmentEntryLinkItemSelectorUtil;
+import com.liferay.layout.content.page.editor.web.internal.util.LayoutContentContributorTrackerUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.StyleBookEntryUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
@@ -611,8 +612,9 @@ public class ContentPageEditorDisplayContext {
 				"masterLayout", _getMasterLayoutJSONObject()
 			).put(
 				"pageContents",
-				ContentUtil.getPageContentsJSONArray(
-					themeDisplay.getPlid(), httpServletRequest)
+				LayoutContentContributorTrackerUtil.
+					getAllLayoutContentsJSONArray(
+						httpServletRequest, themeDisplay.getPlid())
 			).put(
 				"permissions",
 				HashMapBuilder.<String, Object>put(

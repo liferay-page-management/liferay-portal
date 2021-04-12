@@ -15,7 +15,7 @@
 package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
-import com.liferay.layout.content.page.editor.web.internal.util.ContentUtil;
+import com.liferay.layout.content.page.editor.web.internal.layout.contents.contributor.LayoutContentsContributorTracker;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
@@ -52,10 +52,13 @@ public class GetPageContentMVCResourceCommand extends BaseMVCResourceCommand {
 
 		JSONPortletResponseUtil.writeJSON(
 			resourceRequest, resourceResponse,
-			ContentUtil.getPageContentsJSONArray(
-				themeDisplay.getPlid(),
-				_portal.getHttpServletRequest(resourceRequest)));
+			_layoutContentsContributorTracker.getAllLayoutContentsJSONArray(
+				_portal.getHttpServletRequest(resourceRequest),
+				themeDisplay.getPlid()));
 	}
+
+	@Reference
+	private LayoutContentsContributorTracker _layoutContentsContributorTracker;
 
 	@Reference
 	private Portal _portal;
