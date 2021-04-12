@@ -19,6 +19,7 @@ import com.liferay.asset.kernel.model.AssetRenderer;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.asset.kernel.model.ClassType;
 import com.liferay.asset.kernel.model.ClassTypeReader;
+import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.info.item.InfoItemReference;
@@ -46,6 +47,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -261,7 +263,7 @@ public class LayoutClassedModelUsageLayoutContentsContributor
 		).put(
 			"subtype",
 			_getSubtype(
-				layoutDisplayPageObjectProvider.getClassNameId(),
+				layoutClassedModelUsage.getClassName(),
 				layoutDisplayPageObjectProvider.getClassTypeId(),
 				themeDisplay.getLocale())
 		).put(
@@ -338,12 +340,18 @@ public class LayoutClassedModelUsageLayoutContentsContributor
 	}
 
 	private String _getSubtype(
-			long classNameId, long classTypeId, Locale locale)
+			String className, long classTypeId, Locale locale)
 		throws Exception {
 
+		// LPS-111037
+
+		if (Objects.equals(className, FileEntry.class.getName())) {
+			className = DLFileEntry.class.getName();
+		}
+
 		AssetRendererFactory<?> assetRendererFactory =
-			AssetRendererFactoryRegistryUtil.
-				getAssetRendererFactoryByClassNameId(classNameId);
+			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
+				className);
 
 		if (assetRendererFactory == null) {
 			return StringPool.BLANK;
@@ -352,9 +360,15 @@ public class LayoutClassedModelUsageLayoutContentsContributor
 		ClassTypeReader classTypeReader =
 			assetRendererFactory.getClassTypeReader();
 
-		ClassType classType = classTypeReader.getClassType(classTypeId, locale);
+		try {
+			ClassType classType = classTypeReader.getClassType(
+				classTypeId, locale);
 
-		return classType.getName();
+			return classType.getName();
+		}
+		catch (Exception exception) {
+			return StringPool.BLANK;
+		}
 	}
 
 	private boolean _isFragmentEntryLinkDeleted(
