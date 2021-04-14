@@ -261,6 +261,14 @@ public class AssetListEntryUsageLocalServiceUtil {
 			classNameId, classPK, portletId);
 	}
 
+	public static AssetListEntryUsage fetchAssetListEntryUsage(
+		long groupId, long classNameId, String containerKey, long containerType,
+		String key, long plid) {
+
+		return getService().fetchAssetListEntryUsage(
+			groupId, classNameId, containerKey, containerType, key, plid);
+	}
+
 	/**
 	 * Returns the asset list entry usage matching the UUID and group.
 	 *

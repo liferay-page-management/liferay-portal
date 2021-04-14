@@ -326,6 +326,18 @@ public class AssetListEntryUsagePersistenceTest {
 	}
 
 	@Test
+	public void testCountByG_C_CK_CT_K_P() throws Exception {
+		_persistence.countByG_C_CK_CT_K_P(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(), "",
+			RandomTestUtil.nextLong(), "", RandomTestUtil.nextLong());
+
+		_persistence.countByG_C_CK_CT_K_P(0L, 0L, "null", 0L, "null", 0L);
+
+		_persistence.countByG_C_CK_CT_K_P(
+			0L, 0L, (String)null, 0L, (String)null, 0L);
+	}
+
+	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		AssetListEntryUsage newAssetListEntryUsage = addAssetListEntryUsage();
 
@@ -667,6 +679,37 @@ public class AssetListEntryUsagePersistenceTest {
 			ReflectionTestUtil.invoke(
 				assetListEntryUsage, "getColumnOriginalValue",
 				new Class<?>[] {String.class}, "portletId"));
+
+		Assert.assertEquals(
+			Long.valueOf(assetListEntryUsage.getGroupId()),
+			ReflectionTestUtil.<Long>invoke(
+				assetListEntryUsage, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "groupId"));
+		Assert.assertEquals(
+			Long.valueOf(assetListEntryUsage.getClassNameId()),
+			ReflectionTestUtil.<Long>invoke(
+				assetListEntryUsage, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "classNameId"));
+		Assert.assertEquals(
+			assetListEntryUsage.getContainerKey(),
+			ReflectionTestUtil.invoke(
+				assetListEntryUsage, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "containerKey"));
+		Assert.assertEquals(
+			Long.valueOf(assetListEntryUsage.getContainerType()),
+			ReflectionTestUtil.<Long>invoke(
+				assetListEntryUsage, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "containerType"));
+		Assert.assertEquals(
+			assetListEntryUsage.getKey(),
+			ReflectionTestUtil.invoke(
+				assetListEntryUsage, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "key_"));
+		Assert.assertEquals(
+			Long.valueOf(assetListEntryUsage.getPlid()),
+			ReflectionTestUtil.<Long>invoke(
+				assetListEntryUsage, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "plid"));
 	}
 
 	protected AssetListEntryUsage addAssetListEntryUsage() throws Exception {

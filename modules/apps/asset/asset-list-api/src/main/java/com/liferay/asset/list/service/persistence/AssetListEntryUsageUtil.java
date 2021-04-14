@@ -1774,6 +1774,106 @@ public class AssetListEntryUsageUtil {
 	}
 
 	/**
+	 * Returns the asset list entry usage where groupId = &#63; and classNameId = &#63; and containerKey = &#63; and containerType = &#63; and key = &#63; and plid = &#63; or throws a <code>NoSuchEntryUsageException</code> if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @param containerKey the container key
+	 * @param containerType the container type
+	 * @param key the key
+	 * @param plid the plid
+	 * @return the matching asset list entry usage
+	 * @throws NoSuchEntryUsageException if a matching asset list entry usage could not be found
+	 */
+	public static AssetListEntryUsage findByG_C_CK_CT_K_P(
+			long groupId, long classNameId, String containerKey,
+			long containerType, String key, long plid)
+		throws com.liferay.asset.list.exception.NoSuchEntryUsageException {
+
+		return getPersistence().findByG_C_CK_CT_K_P(
+			groupId, classNameId, containerKey, containerType, key, plid);
+	}
+
+	/**
+	 * Returns the asset list entry usage where groupId = &#63; and classNameId = &#63; and containerKey = &#63; and containerType = &#63; and key = &#63; and plid = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @param containerKey the container key
+	 * @param containerType the container type
+	 * @param key the key
+	 * @param plid the plid
+	 * @return the matching asset list entry usage, or <code>null</code> if a matching asset list entry usage could not be found
+	 */
+	public static AssetListEntryUsage fetchByG_C_CK_CT_K_P(
+		long groupId, long classNameId, String containerKey, long containerType,
+		String key, long plid) {
+
+		return getPersistence().fetchByG_C_CK_CT_K_P(
+			groupId, classNameId, containerKey, containerType, key, plid);
+	}
+
+	/**
+	 * Returns the asset list entry usage where groupId = &#63; and classNameId = &#63; and containerKey = &#63; and containerType = &#63; and key = &#63; and plid = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @param containerKey the container key
+	 * @param containerType the container type
+	 * @param key the key
+	 * @param plid the plid
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching asset list entry usage, or <code>null</code> if a matching asset list entry usage could not be found
+	 */
+	public static AssetListEntryUsage fetchByG_C_CK_CT_K_P(
+		long groupId, long classNameId, String containerKey, long containerType,
+		String key, long plid, boolean useFinderCache) {
+
+		return getPersistence().fetchByG_C_CK_CT_K_P(
+			groupId, classNameId, containerKey, containerType, key, plid,
+			useFinderCache);
+	}
+
+	/**
+	 * Removes the asset list entry usage where groupId = &#63; and classNameId = &#63; and containerKey = &#63; and containerType = &#63; and key = &#63; and plid = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @param containerKey the container key
+	 * @param containerType the container type
+	 * @param key the key
+	 * @param plid the plid
+	 * @return the asset list entry usage that was removed
+	 */
+	public static AssetListEntryUsage removeByG_C_CK_CT_K_P(
+			long groupId, long classNameId, String containerKey,
+			long containerType, String key, long plid)
+		throws com.liferay.asset.list.exception.NoSuchEntryUsageException {
+
+		return getPersistence().removeByG_C_CK_CT_K_P(
+			groupId, classNameId, containerKey, containerType, key, plid);
+	}
+
+	/**
+	 * Returns the number of asset list entry usages where groupId = &#63; and classNameId = &#63; and containerKey = &#63; and containerType = &#63; and key = &#63; and plid = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @param containerKey the container key
+	 * @param containerType the container type
+	 * @param key the key
+	 * @param plid the plid
+	 * @return the number of matching asset list entry usages
+	 */
+	public static int countByG_C_CK_CT_K_P(
+		long groupId, long classNameId, String containerKey, long containerType,
+		String key, long plid) {
+
+		return getPersistence().countByG_C_CK_CT_K_P(
+			groupId, classNameId, containerKey, containerType, key, plid);
+	}
+
+	/**
 	 * Caches the asset list entry usage in the entity cache if it is enabled.
 	 *
 	 * @param assetListEntryUsage the asset list entry usage

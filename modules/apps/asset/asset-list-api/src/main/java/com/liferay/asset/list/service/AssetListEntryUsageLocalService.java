@@ -240,6 +240,11 @@ public interface AssetListEntryUsageLocalService
 	public AssetListEntryUsage fetchAssetListEntryUsage(
 		long classNameId, long classPK, String portletId);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public AssetListEntryUsage fetchAssetListEntryUsage(
+		long groupId, long classNameId, String containerKey, long containerType,
+		String key, long plid);
+
 	/**
 	 * Returns the asset list entry usage matching the UUID and group.
 	 *

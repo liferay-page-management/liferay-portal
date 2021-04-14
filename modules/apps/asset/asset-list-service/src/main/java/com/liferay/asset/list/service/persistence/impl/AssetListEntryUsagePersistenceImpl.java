@@ -5371,6 +5371,396 @@ public class AssetListEntryUsagePersistenceImpl
 	private static final String _FINDER_COLUMN_G_C_K_T_TYPE_2 =
 		"assetListEntryUsage.type = ?";
 
+	private FinderPath _finderPathFetchByG_C_CK_CT_K_P;
+	private FinderPath _finderPathCountByG_C_CK_CT_K_P;
+
+	/**
+	 * Returns the asset list entry usage where groupId = &#63; and classNameId = &#63; and containerKey = &#63; and containerType = &#63; and key = &#63; and plid = &#63; or throws a <code>NoSuchEntryUsageException</code> if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @param containerKey the container key
+	 * @param containerType the container type
+	 * @param key the key
+	 * @param plid the plid
+	 * @return the matching asset list entry usage
+	 * @throws NoSuchEntryUsageException if a matching asset list entry usage could not be found
+	 */
+	@Override
+	public AssetListEntryUsage findByG_C_CK_CT_K_P(
+			long groupId, long classNameId, String containerKey,
+			long containerType, String key, long plid)
+		throws NoSuchEntryUsageException {
+
+		AssetListEntryUsage assetListEntryUsage = fetchByG_C_CK_CT_K_P(
+			groupId, classNameId, containerKey, containerType, key, plid);
+
+		if (assetListEntryUsage == null) {
+			StringBundler sb = new StringBundler(14);
+
+			sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			sb.append("groupId=");
+			sb.append(groupId);
+
+			sb.append(", classNameId=");
+			sb.append(classNameId);
+
+			sb.append(", containerKey=");
+			sb.append(containerKey);
+
+			sb.append(", containerType=");
+			sb.append(containerType);
+
+			sb.append(", key=");
+			sb.append(key);
+
+			sb.append(", plid=");
+			sb.append(plid);
+
+			sb.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(sb.toString());
+			}
+
+			throw new NoSuchEntryUsageException(sb.toString());
+		}
+
+		return assetListEntryUsage;
+	}
+
+	/**
+	 * Returns the asset list entry usage where groupId = &#63; and classNameId = &#63; and containerKey = &#63; and containerType = &#63; and key = &#63; and plid = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @param containerKey the container key
+	 * @param containerType the container type
+	 * @param key the key
+	 * @param plid the plid
+	 * @return the matching asset list entry usage, or <code>null</code> if a matching asset list entry usage could not be found
+	 */
+	@Override
+	public AssetListEntryUsage fetchByG_C_CK_CT_K_P(
+		long groupId, long classNameId, String containerKey, long containerType,
+		String key, long plid) {
+
+		return fetchByG_C_CK_CT_K_P(
+			groupId, classNameId, containerKey, containerType, key, plid, true);
+	}
+
+	/**
+	 * Returns the asset list entry usage where groupId = &#63; and classNameId = &#63; and containerKey = &#63; and containerType = &#63; and key = &#63; and plid = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @param containerKey the container key
+	 * @param containerType the container type
+	 * @param key the key
+	 * @param plid the plid
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching asset list entry usage, or <code>null</code> if a matching asset list entry usage could not be found
+	 */
+	@Override
+	public AssetListEntryUsage fetchByG_C_CK_CT_K_P(
+		long groupId, long classNameId, String containerKey, long containerType,
+		String key, long plid, boolean useFinderCache) {
+
+		containerKey = Objects.toString(containerKey, "");
+		key = Objects.toString(key, "");
+
+		boolean productionMode = ctPersistenceHelper.isProductionMode(
+			AssetListEntryUsage.class);
+
+		Object[] finderArgs = null;
+
+		if (useFinderCache && productionMode) {
+			finderArgs = new Object[] {
+				groupId, classNameId, containerKey, containerType, key, plid
+			};
+		}
+
+		Object result = null;
+
+		if (useFinderCache && productionMode) {
+			result = finderCache.getResult(
+				_finderPathFetchByG_C_CK_CT_K_P, finderArgs);
+		}
+
+		if (result instanceof AssetListEntryUsage) {
+			AssetListEntryUsage assetListEntryUsage =
+				(AssetListEntryUsage)result;
+
+			if ((groupId != assetListEntryUsage.getGroupId()) ||
+				(classNameId != assetListEntryUsage.getClassNameId()) ||
+				!Objects.equals(
+					containerKey, assetListEntryUsage.getContainerKey()) ||
+				(containerType != assetListEntryUsage.getContainerType()) ||
+				!Objects.equals(key, assetListEntryUsage.getKey()) ||
+				(plid != assetListEntryUsage.getPlid())) {
+
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler sb = new StringBundler(8);
+
+			sb.append(_SQL_SELECT_ASSETLISTENTRYUSAGE_WHERE);
+
+			sb.append(_FINDER_COLUMN_G_C_CK_CT_K_P_GROUPID_2);
+
+			sb.append(_FINDER_COLUMN_G_C_CK_CT_K_P_CLASSNAMEID_2);
+
+			boolean bindContainerKey = false;
+
+			if (containerKey.isEmpty()) {
+				sb.append(_FINDER_COLUMN_G_C_CK_CT_K_P_CONTAINERKEY_3);
+			}
+			else {
+				bindContainerKey = true;
+
+				sb.append(_FINDER_COLUMN_G_C_CK_CT_K_P_CONTAINERKEY_2);
+			}
+
+			sb.append(_FINDER_COLUMN_G_C_CK_CT_K_P_CONTAINERTYPE_2);
+
+			boolean bindKey = false;
+
+			if (key.isEmpty()) {
+				sb.append(_FINDER_COLUMN_G_C_CK_CT_K_P_KEY_3);
+			}
+			else {
+				bindKey = true;
+
+				sb.append(_FINDER_COLUMN_G_C_CK_CT_K_P_KEY_2);
+			}
+
+			sb.append(_FINDER_COLUMN_G_C_CK_CT_K_P_PLID_2);
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(groupId);
+
+				queryPos.add(classNameId);
+
+				if (bindContainerKey) {
+					queryPos.add(containerKey);
+				}
+
+				queryPos.add(containerType);
+
+				if (bindKey) {
+					queryPos.add(key);
+				}
+
+				queryPos.add(plid);
+
+				List<AssetListEntryUsage> list = query.list();
+
+				if (list.isEmpty()) {
+					if (useFinderCache && productionMode) {
+						finderCache.putResult(
+							_finderPathFetchByG_C_CK_CT_K_P, finderArgs, list);
+					}
+				}
+				else {
+					AssetListEntryUsage assetListEntryUsage = list.get(0);
+
+					result = assetListEntryUsage;
+
+					cacheResult(assetListEntryUsage);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (AssetListEntryUsage)result;
+		}
+	}
+
+	/**
+	 * Removes the asset list entry usage where groupId = &#63; and classNameId = &#63; and containerKey = &#63; and containerType = &#63; and key = &#63; and plid = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @param containerKey the container key
+	 * @param containerType the container type
+	 * @param key the key
+	 * @param plid the plid
+	 * @return the asset list entry usage that was removed
+	 */
+	@Override
+	public AssetListEntryUsage removeByG_C_CK_CT_K_P(
+			long groupId, long classNameId, String containerKey,
+			long containerType, String key, long plid)
+		throws NoSuchEntryUsageException {
+
+		AssetListEntryUsage assetListEntryUsage = findByG_C_CK_CT_K_P(
+			groupId, classNameId, containerKey, containerType, key, plid);
+
+		return remove(assetListEntryUsage);
+	}
+
+	/**
+	 * Returns the number of asset list entry usages where groupId = &#63; and classNameId = &#63; and containerKey = &#63; and containerType = &#63; and key = &#63; and plid = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @param containerKey the container key
+	 * @param containerType the container type
+	 * @param key the key
+	 * @param plid the plid
+	 * @return the number of matching asset list entry usages
+	 */
+	@Override
+	public int countByG_C_CK_CT_K_P(
+		long groupId, long classNameId, String containerKey, long containerType,
+		String key, long plid) {
+
+		containerKey = Objects.toString(containerKey, "");
+		key = Objects.toString(key, "");
+
+		boolean productionMode = ctPersistenceHelper.isProductionMode(
+			AssetListEntryUsage.class);
+
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		Long count = null;
+
+		if (productionMode) {
+			finderPath = _finderPathCountByG_C_CK_CT_K_P;
+
+			finderArgs = new Object[] {
+				groupId, classNameId, containerKey, containerType, key, plid
+			};
+
+			count = (Long)finderCache.getResult(finderPath, finderArgs);
+		}
+
+		if (count == null) {
+			StringBundler sb = new StringBundler(7);
+
+			sb.append(_SQL_COUNT_ASSETLISTENTRYUSAGE_WHERE);
+
+			sb.append(_FINDER_COLUMN_G_C_CK_CT_K_P_GROUPID_2);
+
+			sb.append(_FINDER_COLUMN_G_C_CK_CT_K_P_CLASSNAMEID_2);
+
+			boolean bindContainerKey = false;
+
+			if (containerKey.isEmpty()) {
+				sb.append(_FINDER_COLUMN_G_C_CK_CT_K_P_CONTAINERKEY_3);
+			}
+			else {
+				bindContainerKey = true;
+
+				sb.append(_FINDER_COLUMN_G_C_CK_CT_K_P_CONTAINERKEY_2);
+			}
+
+			sb.append(_FINDER_COLUMN_G_C_CK_CT_K_P_CONTAINERTYPE_2);
+
+			boolean bindKey = false;
+
+			if (key.isEmpty()) {
+				sb.append(_FINDER_COLUMN_G_C_CK_CT_K_P_KEY_3);
+			}
+			else {
+				bindKey = true;
+
+				sb.append(_FINDER_COLUMN_G_C_CK_CT_K_P_KEY_2);
+			}
+
+			sb.append(_FINDER_COLUMN_G_C_CK_CT_K_P_PLID_2);
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(groupId);
+
+				queryPos.add(classNameId);
+
+				if (bindContainerKey) {
+					queryPos.add(containerKey);
+				}
+
+				queryPos.add(containerType);
+
+				if (bindKey) {
+					queryPos.add(key);
+				}
+
+				queryPos.add(plid);
+
+				count = (Long)query.uniqueResult();
+
+				if (productionMode) {
+					finderCache.putResult(finderPath, finderArgs, count);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_C_CK_CT_K_P_GROUPID_2 =
+		"assetListEntryUsage.groupId = ? AND ";
+
+	private static final String _FINDER_COLUMN_G_C_CK_CT_K_P_CLASSNAMEID_2 =
+		"assetListEntryUsage.classNameId = ? AND ";
+
+	private static final String _FINDER_COLUMN_G_C_CK_CT_K_P_CONTAINERKEY_2 =
+		"assetListEntryUsage.containerKey = ? AND ";
+
+	private static final String _FINDER_COLUMN_G_C_CK_CT_K_P_CONTAINERKEY_3 =
+		"(assetListEntryUsage.containerKey IS NULL OR assetListEntryUsage.containerKey = '') AND ";
+
+	private static final String _FINDER_COLUMN_G_C_CK_CT_K_P_CONTAINERTYPE_2 =
+		"assetListEntryUsage.containerType = ? AND ";
+
+	private static final String _FINDER_COLUMN_G_C_CK_CT_K_P_KEY_2 =
+		"assetListEntryUsage.key = ? AND ";
+
+	private static final String _FINDER_COLUMN_G_C_CK_CT_K_P_KEY_3 =
+		"(assetListEntryUsage.key IS NULL OR assetListEntryUsage.key = '') AND ";
+
+	private static final String _FINDER_COLUMN_G_C_CK_CT_K_P_PLID_2 =
+		"assetListEntryUsage.plid = ?";
+
 	public AssetListEntryUsagePersistenceImpl() {
 		Map<String, String> dbColumnNames = new HashMap<String, String>();
 
@@ -5416,6 +5806,17 @@ public class AssetListEntryUsagePersistenceImpl
 				assetListEntryUsage.getClassNameId(),
 				assetListEntryUsage.getClassPK(),
 				assetListEntryUsage.getPortletId()
+			},
+			assetListEntryUsage);
+
+		finderCache.putResult(
+			_finderPathFetchByG_C_CK_CT_K_P,
+			new Object[] {
+				assetListEntryUsage.getGroupId(),
+				assetListEntryUsage.getClassNameId(),
+				assetListEntryUsage.getContainerKey(),
+				assetListEntryUsage.getContainerType(),
+				assetListEntryUsage.getKey(), assetListEntryUsage.getPlid()
 			},
 			assetListEntryUsage);
 	}
@@ -5506,6 +5907,21 @@ public class AssetListEntryUsagePersistenceImpl
 		finderCache.putResult(_finderPathCountByC_C_P, args, Long.valueOf(1));
 		finderCache.putResult(
 			_finderPathFetchByC_C_P, args, assetListEntryUsageModelImpl);
+
+		args = new Object[] {
+			assetListEntryUsageModelImpl.getGroupId(),
+			assetListEntryUsageModelImpl.getClassNameId(),
+			assetListEntryUsageModelImpl.getContainerKey(),
+			assetListEntryUsageModelImpl.getContainerType(),
+			assetListEntryUsageModelImpl.getKey(),
+			assetListEntryUsageModelImpl.getPlid()
+		};
+
+		finderCache.putResult(
+			_finderPathCountByG_C_CK_CT_K_P, args, Long.valueOf(1));
+		finderCache.putResult(
+			_finderPathFetchByG_C_CK_CT_K_P, args,
+			assetListEntryUsageModelImpl);
 	}
 
 	/**
@@ -6181,6 +6597,12 @@ public class AssetListEntryUsagePersistenceImpl
 
 		_uniqueIndexColumnNames.add(
 			new String[] {"classNameId", "classPK", "portletId"});
+
+		_uniqueIndexColumnNames.add(
+			new String[] {
+				"groupId", "classNameId", "containerKey", "containerType",
+				"key_", "plid"
+			});
 	}
 
 	/**
@@ -6398,6 +6820,32 @@ public class AssetListEntryUsagePersistenceImpl
 				String.class.getName(), Integer.class.getName()
 			},
 			new String[] {"groupId", "classNameId", "key_", "type_"}, false);
+
+		_finderPathFetchByG_C_CK_CT_K_P = new FinderPath(
+			FINDER_CLASS_NAME_ENTITY, "fetchByG_C_CK_CT_K_P",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				String.class.getName(), Long.class.getName(),
+				String.class.getName(), Long.class.getName()
+			},
+			new String[] {
+				"groupId", "classNameId", "containerKey", "containerType",
+				"key_", "plid"
+			},
+			true);
+
+		_finderPathCountByG_C_CK_CT_K_P = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_C_CK_CT_K_P",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				String.class.getName(), Long.class.getName(),
+				String.class.getName(), Long.class.getName()
+			},
+			new String[] {
+				"groupId", "classNameId", "containerKey", "containerType",
+				"key_", "plid"
+			},
+			false);
 	}
 
 	@Deactivate

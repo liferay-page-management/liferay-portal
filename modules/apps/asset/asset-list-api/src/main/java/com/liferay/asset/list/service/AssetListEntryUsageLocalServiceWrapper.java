@@ -285,6 +285,15 @@ public class AssetListEntryUsageLocalServiceWrapper
 			classNameId, classPK, portletId);
 	}
 
+	@Override
+	public AssetListEntryUsage fetchAssetListEntryUsage(
+		long groupId, long classNameId, String containerKey, long containerType,
+		String key, long plid) {
+
+		return _assetListEntryUsageLocalService.fetchAssetListEntryUsage(
+			groupId, classNameId, containerKey, containerType, key, plid);
+	}
+
 	/**
 	 * Returns the asset list entry usage matching the UUID and group.
 	 *
