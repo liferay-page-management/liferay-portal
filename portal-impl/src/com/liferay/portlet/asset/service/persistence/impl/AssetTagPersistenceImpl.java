@@ -3117,6 +3117,8 @@ public class AssetTagPersistenceImpl
 	public AssetTag findByG_N(long groupId, String name)
 		throws NoSuchTagException {
 
+		name = StringUtil.toLowerCase(name.trim());
+
 		AssetTag assetTag = fetchByG_N(groupId, name);
 
 		if (assetTag == null) {
@@ -3167,6 +3169,8 @@ public class AssetTagPersistenceImpl
 		long groupId, String name, boolean useFinderCache) {
 
 		name = Objects.toString(name, "");
+
+		name = StringUtil.toLowerCase(name.trim());
 
 		boolean productionMode = CTPersistenceHelperUtil.isProductionMode(
 			AssetTag.class);
