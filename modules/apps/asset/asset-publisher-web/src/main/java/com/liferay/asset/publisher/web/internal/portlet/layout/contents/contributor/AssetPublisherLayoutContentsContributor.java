@@ -15,6 +15,7 @@
 package com.liferay.asset.publisher.web.internal.portlet.layout.contents.contributor;
 
 import com.liferay.asset.publisher.constants.AssetPublisherPortletKeys;
+import com.liferay.asset.publisher.web.internal.constants.AssetPublisherSelectionStyleConstants;
 import com.liferay.layout.contents.contributor.LayoutContentsContributor;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -152,12 +153,18 @@ public class AssetPublisherLayoutContentsContributor
 				themeDisplay.getLocale())
 		);
 
-		if (Objects.equals(selectionStyle, "manual")) {
+		if (Objects.equals(
+				selectionStyle,
+				AssetPublisherSelectionStyleConstants.TYPE_MANUAL)) {
+
 			return jsonObject.put(
 				"subtype", LanguageUtil.get(httpServletRequest, "manual"));
 		}
 
-		if (Objects.equals(selectionStyle, "dynamic")) {
+		if (Objects.equals(
+				selectionStyle,
+				AssetPublisherSelectionStyleConstants.TYPE_DYNAMIC)) {
+
 			return jsonObject.put(
 				"subtype",
 				_getDynamicSubtype(httpServletRequest, jxPortletPreferences));
