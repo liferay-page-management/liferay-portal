@@ -157,7 +157,7 @@ $emptyItemMinHeight: 180px;
 		min-width: 3ch;
 		transition: box-shadow ease 0.3s;
 
-		$editablesBorderWidth: 1px;
+		$editablesBorderWidth: 2px;
 
 		&--hovered {
 			box-shadow: inset 0 0 0 $editablesBorderWidth $primary-l1;
