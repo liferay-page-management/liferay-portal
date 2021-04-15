@@ -23,7 +23,7 @@ export default function itemSelectorValueToCategoryTreeNode(categoryTreeNode) {
 	return {
 		categoryTreeNodeId,
 		categoryTreeNodeType,
+		returnType,
 		title,
-		type: returnType,
 	};
 }

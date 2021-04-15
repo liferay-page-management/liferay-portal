@@ -29,7 +29,7 @@ export default function itemSelectorValueToCollection(collection) {
 		itemSubtype,
 		itemType,
 		key,
+		returnType,
 		title,
-		type: returnType,
 	};
 }

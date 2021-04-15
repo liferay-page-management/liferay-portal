@@ -26,8 +26,8 @@ export default function itemSelectorValueToSiteNavigationMenuItem(
 	return {
 		parentSiteNavigationMenuItemId,
 		privateLayout,
+		returnType,
 		siteNavigationMenuId,
 		title,
-		type: returnType,
 	};
 }
