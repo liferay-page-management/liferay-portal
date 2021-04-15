@@ -19,7 +19,7 @@ export default function itemSelectorValueToInfoItem(infoItem) {
 		className,
 		classNameId,
 		classPK,
+		returnType,
 		title,
-		type: returnType,
 	};
 }
