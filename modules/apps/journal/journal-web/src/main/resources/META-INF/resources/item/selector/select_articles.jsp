@@ -62,32 +62,9 @@ JournalArticleItemSelectorViewDisplayContext journalArticleItemSelectorViewDispl
 					<%
 					row.setCssClass("articles " + row.getCssClass());
 
-					JSONObject articleJSONObject = JSONUtil.put(
-						"className", JournalArticle.class.getName()
-					).put(
-						"classNameId", PortalUtil.getClassNameId(JournalArticle.class.getName())
-					).put(
-						"classPK", curArticle.getResourcePrimKey()
-					);
+					row.setData(journalArticleItemSelectorViewDisplayContext.getJournalArticleContext(curArticle));
 
-					String title = curArticle.getTitle(locale);
-
-					String defaultTitle = curArticle.getTitle(LocaleUtil.fromLanguageId(curArticle.getDefaultLanguageId()));
-
-					if (Validator.isNull(title)) {
-						title = defaultTitle;
-					}
-
-					articleJSONObject.put(
-						"title", defaultTitle
-					).put(
-						"titleMap", curArticle.getTitleMap()
-					);
-
-					row.setData(
-						HashMapBuilder.<String, Object>put(
-							"value", articleJSONObject.toString()
-						).build());
+					String title = curArticle.getTitle(locale, true);
 					%>
 
 					<c:choose>
