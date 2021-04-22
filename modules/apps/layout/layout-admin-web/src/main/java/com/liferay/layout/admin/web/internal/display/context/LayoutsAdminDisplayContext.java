@@ -1054,6 +1054,24 @@ public class LayoutsAdminDisplayContext {
 		_selPlid = ParamUtil.getLong(
 			_liferayPortletRequest, "selPlid", LayoutConstants.DEFAULT_PLID);
 
+		try {
+			Layout selLayout = getSelLayout();
+
+			if ((_selPlid != LayoutConstants.DEFAULT_PLID) &&
+				(selLayout != null) &&
+				!LayoutLocalServiceUtil.hasLayout(
+					selLayout.getUuid(), getSelGroupId(), isPrivateLayout())) {
+
+				_selPlid = LayoutConstants.DEFAULT_PLID;
+				_selLayout = null;
+			}
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException, portalException);
+			}
+		}
+
 		return _selPlid;
 	}
 
