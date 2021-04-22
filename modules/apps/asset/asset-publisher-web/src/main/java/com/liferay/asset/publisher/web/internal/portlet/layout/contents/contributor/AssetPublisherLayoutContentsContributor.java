@@ -142,6 +142,8 @@ public class AssetPublisherLayoutContentsContributor
 		).put(
 			"classPK", portletPreferences.getPortletId()
 		).put(
+			"icon", "sheets"
+		).put(
 			"title",
 			_portal.getPortletTitle(
 				AssetPublisherPortletKeys.ASSET_PUBLISHER,

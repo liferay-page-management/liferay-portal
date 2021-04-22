@@ -23,6 +23,7 @@ import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.info.item.InfoItemReference;
+import com.liferay.journal.model.JournalArticle;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.layout.content.page.editor.web.internal.util.InfoEditURLProviderUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.LayoutDisplayPageProviderTrackerUtil;
@@ -232,6 +233,18 @@ public class LayoutClassedModelUsageLayoutContentsContributor
 			).buildString());
 	}
 
+	private String _getIcon(String className) {
+		if (Objects.equals(FileEntry.class.getName(), className)) {
+			return "document-image";
+		}
+
+		if (Objects.equals(JournalArticle.class.getName(), className)) {
+			return "web-content";
+		}
+
+		return "blogs";
+	}
+
 	private JSONObject _getPageContentJSONObject(
 			LayoutClassedModelUsage layoutClassedModelUsage,
 			HttpServletRequest httpServletRequest)
@@ -251,6 +264,8 @@ public class LayoutClassedModelUsageLayoutContentsContributor
 			"classNameId", layoutClassedModelUsage.getClassNameId()
 		).put(
 			"classPK", layoutClassedModelUsage.getClassPK()
+		).put(
+			"icon", _getIcon(layoutClassedModelUsage.getClassName())
 		);
 
 		LayoutDisplayPageProvider<?> layoutDisplayPageProvider =
