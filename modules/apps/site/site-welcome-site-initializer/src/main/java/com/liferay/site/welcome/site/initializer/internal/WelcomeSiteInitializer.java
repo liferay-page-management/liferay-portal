@@ -308,6 +308,8 @@ public class WelcomeSiteInitializer implements SiteInitializer {
 					clazz.getClassLoader(), _PATH + _DEFAULT_LAYOUT_DEFINITION),
 				"${", "}",
 				HashMapBuilder.put(
+					"COMPANY_DEFAULT_NAME", PropsValues.COMPANY_DEFAULT_NAME
+				).put(
 					"RELEASE_INFO", releaseInfo + "."
 				).put(
 					"TREE_IMAGE_ID",
