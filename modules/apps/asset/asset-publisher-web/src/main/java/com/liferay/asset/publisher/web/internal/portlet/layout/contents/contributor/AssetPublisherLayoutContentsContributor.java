@@ -158,7 +158,7 @@ public class AssetPublisherLayoutContentsContributor
 				AssetPublisherSelectionStyleConstants.TYPE_MANUAL)) {
 
 			return jsonObject.put(
-				"subtype", LanguageUtil.get(httpServletRequest, "manual"));
+				"subtype", LanguageUtil.get(httpServletRequest, "asset"));
 		}
 
 		if (Objects.equals(
