@@ -246,7 +246,7 @@
 													},
 													"text": {
 														"value_i18n": {
-															"en_US": "Welcome to Liferay Portal"
+															"en_US": "Welcome to ${PORTAL_VERSION}"
 														}
 													}
 												}

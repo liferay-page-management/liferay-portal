@@ -64,6 +64,7 @@ import java.net.URL;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.servlet.ServletContext;
 
@@ -289,6 +290,12 @@ public class WelcomeSiteInitializer implements SiteInitializer {
 				layoutPageTemplateStructure.getData(
 					SegmentsExperienceConstants.ID_DEFAULT));
 
+			String portalVersion = "Liferay Portal";
+
+			if (!Objects.equals("Liferay", PropsValues.COMPANY_DEFAULT_NAME)) {
+				portalVersion = PropsValues.COMPANY_DEFAULT_NAME;
+			}
+
 			String releaseInfo = StringPool.BLANK;
 
 			if (_HTTP_HEADER_VERSION_VERBOSITY_PARTIAL) {
@@ -308,6 +315,8 @@ public class WelcomeSiteInitializer implements SiteInitializer {
 					clazz.getClassLoader(), _PATH + _DEFAULT_LAYOUT_DEFINITION),
 				"${", "}",
 				HashMapBuilder.put(
+					"PORTAL_VERSION", portalVersion
+				).put(
 					"RELEASE_INFO", releaseInfo + "."
 				).put(
 					"TREE_IMAGE_ID",
