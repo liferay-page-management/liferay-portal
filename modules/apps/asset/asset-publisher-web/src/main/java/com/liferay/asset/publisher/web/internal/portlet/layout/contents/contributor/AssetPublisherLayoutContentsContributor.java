@@ -14,6 +14,7 @@
 
 package com.liferay.asset.publisher.web.internal.portlet.layout.contents.contributor;
 
+import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.publisher.constants.AssetPublisherPortletKeys;
 import com.liferay.asset.publisher.web.internal.constants.AssetPublisherSelectionStyleConstants;
 import com.liferay.layout.contents.contributor.LayoutContentsContributor;
@@ -158,7 +159,8 @@ public class AssetPublisherLayoutContentsContributor
 				AssetPublisherSelectionStyleConstants.TYPE_MANUAL)) {
 
 			return jsonObject.put(
-				"subtype", LanguageUtil.get(httpServletRequest, "manual"));
+				"subtype", ResourceActionsUtil.getModelResource(
+					themeDisplay.getLocale(), AssetEntry.class.getName()));
 		}
 
 		if (Objects.equals(
