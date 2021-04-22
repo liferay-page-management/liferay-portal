@@ -122,6 +122,8 @@ public class AssetListEntryUsagesLayoutContentsContributor
 		).put(
 			"classPK", assetListEntryUsage.getKey()
 		).put(
+			"icon", "list-ul"
+		).put(
 			"type", LanguageUtil.get(httpServletRequest, "collection")
 		);
 

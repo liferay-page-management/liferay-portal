@@ -232,6 +232,36 @@ public class LayoutClassedModelUsageLayoutContentsContributor
 			).buildString());
 	}
 
+	private AssetRendererFactory<?> _getAssetRendererFactory(String className) {
+
+		// LPS-111037
+
+		if (Objects.equals(className, FileEntry.class.getName())) {
+			className = DLFileEntry.class.getName();
+		}
+
+		return AssetRendererFactoryRegistryUtil.
+			getAssetRendererFactoryByClassName(className);
+	}
+
+	private String _getIcon(String className, long classPK) throws Exception {
+		AssetRendererFactory<?> assetRendererFactory = _getAssetRendererFactory(
+			className);
+
+		if (assetRendererFactory == null) {
+			return "web-content";
+		}
+
+		AssetRenderer<?> assetRenderer = assetRendererFactory.getAssetRenderer(
+			classPK);
+
+		if (assetRenderer == null) {
+			return "web-content";
+		}
+
+		return assetRenderer.getIconCssClass();
+	}
+
 	private JSONObject _getPageContentJSONObject(
 			LayoutClassedModelUsage layoutClassedModelUsage,
 			HttpServletRequest httpServletRequest)
@@ -251,6 +281,11 @@ public class LayoutClassedModelUsageLayoutContentsContributor
 			"classNameId", layoutClassedModelUsage.getClassNameId()
 		).put(
 			"classPK", layoutClassedModelUsage.getClassPK()
+		).put(
+			"icon",
+			_getIcon(
+				layoutClassedModelUsage.getClassName(),
+				layoutClassedModelUsage.getClassPK())
 		);
 
 		LayoutDisplayPageProvider<?> layoutDisplayPageProvider =
@@ -345,18 +380,10 @@ public class LayoutClassedModelUsageLayoutContentsContributor
 	}
 
 	private String _getSubtype(
-			String className, long classTypeId, Locale locale)
-		throws Exception {
+		String className, long classTypeId, Locale locale) {
 
-		// LPS-111037
-
-		if (Objects.equals(className, FileEntry.class.getName())) {
-			className = DLFileEntry.class.getName();
-		}
-
-		AssetRendererFactory<?> assetRendererFactory =
-			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
-				className);
+		AssetRendererFactory<?> assetRendererFactory = _getAssetRendererFactory(
+			className);
 
 		if (assetRendererFactory == null) {
 			return StringPool.BLANK;
