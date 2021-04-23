@@ -8,7 +8,7 @@ definition {
 				var criteria = '''{"criteria":{"user":{"conjunction":"and","filterString":"(${field} eq ${date})","typeValue":"model"}},"filterStrings":{"model":"(${field} eq ${date})"}}''';
 			}
 			else if (isSet(text)) {
-				var criteria = '''{"criteria":{"user":{"conjunction":"and","filterString":"(${field} eq '${text}')","typeValue":"model"}},"filterStrings":{"model":"(${field} eq '${text}')"}}''';
+				var criteria = '''{"criteria":{"user":{"conjunction":"and","filterString":"(${field} eq %27${text}%27)","typeValue":"model"}},"filterStrings":{"model":"(${field} eq %27${text}%27)"}}''';
 			}
 		}
 		else if ("${operator}" == "not equals") {
@@ -16,14 +16,14 @@ definition {
 				var criteria = '''{"criteria":{"user":{"conjunction":"and","filterString":"((not (${field} eq ${date})))","typeValue":"model"}},"filterStrings":{"model":"((not (${field} eq ${date})))"}}''';
 			}
 			else if (isSet(text)) {
-				var criteria = '''{"criteria":{"user":{"conjunction":"and","filterString":"((not (${field} eq '${text}')))","typeValue":"model"}},"filterStrings":{"model":"((not (${field} eq '${text}')))"}}''';
+				var criteria = '''{"criteria":{"user":{"conjunction":"and","filterString":"((not (${field} eq %27${text}%27)))","typeValue":"model"}},"filterStrings":{"model":"((not (${field} eq %27${text}%27)))"}}''';
 			}
 		}
 		else if ("${operator}" == "contains") {
-			var criteria = '''{"criteria":{"user":{"conjunction":"and","filterString":"(contains(${field}, '${text}'))","typeValue":"model"}},"filterStrings":{"model":"(contains(${field}, '${text}'))"}}''';
+			var criteria = '''{"criteria":{"user":{"conjunction":"and","filterString":"(contains(${field}, %27${text}%27))","typeValue":"model"}},"filterStrings":{"model":"(contains(${field}, %27${text}%27))"}}''';
 		}
 		else if ("${operator}" == "not contains") {
-			var criteria = '''{"criteria":{"user":{"conjunction":"and","filterString":"((not (contains(${field}, '${text}'))))","typeValue":"model"}},"filterStrings":{"model":"((not (contains(${field}, '${text}'))))"}}''';
+			var criteria = '''{"criteria":{"user":{"conjunction":"and","filterString":"((not (contains(${field}, %27${text}%27))))","typeValue":"model"}},"filterStrings":{"model":"((not (contains(${field}, %27${text}%27))))"}}''';
 		}
 
 		return "${criteria}";
