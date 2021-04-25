@@ -71,11 +71,7 @@ definition {
 		var portalURL = PropsUtil.get("portal.url");
 
 		for (var imageNumber : list "1,2") {
-			SitePages.openPagesAdmin(siteURLKey = "test-site-name");
-
-			ProductMenu.gotoPortlet(
-				category = "Configuration",
-				portlet = "Site Settings");
+			Site.openSiteConfigurationAdmin(siteURLKey = "test-site-name");
 
 			Panel.expandPanel(panel = "Open Graph");
 
@@ -117,9 +113,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "test-site-name");
 
-		ProductMenu.gotoPortlet(
-			category = "Configuration",
-			portlet = "Site Settings");
+		Site.openSiteConfigurationAdmin(siteURLKey = "test-site-name");
 
 		Panel.expandPanel(panel = "Open Graph");
 
@@ -176,11 +170,7 @@ definition {
 
 		SitePages.openPagesAdmin(siteURLKey = "test-site-name");
 
-		ProductMenu.gotoPortlet(
-			category = "Configuration",
-			portlet = "Site Settings");
-
-		Panel.expandPanel(panel = "Open Graph");
+		Site.openSiteConfigurationAdmin(siteURLKey = "test-site-name");
 
 		OpenGraph.configureOpenGraph(
 			customImage = "true",
@@ -204,11 +194,7 @@ definition {
 			key_imageName = "Document_1.jpg",
 			locator1 = "SitePagesEditPage#PREVIEW_IMAGE");
 
-		SitePages.openPagesAdmin(siteURLKey = "test-site-name");
-
-		ProductMenu.gotoPortlet(
-			category = "Configuration",
-			portlet = "Site Settings");
+		Site.openSiteConfigurationAdmin(siteURLKey = "test-site-name");
 
 		Panel.expandPanel(panel = "Open Graph");
 
@@ -245,11 +231,7 @@ definition {
 	test ConfigurePageSpecificAltDescription {
 		var portalURL = PropsUtil.get("portal.url");
 
-		SitePages.openPagesAdmin(siteURLKey = "test-site-name");
-
-		ProductMenu.gotoPortlet(
-			category = "Configuration",
-			portlet = "Site Settings");
+		Site.openSiteConfigurationAdmin(siteURLKey = "test-site-name");
 
 		Panel.expandPanel(panel = "Open Graph");
 
@@ -292,11 +274,7 @@ definition {
 	test ConfigurePageSpecificImage {
 		var portalURL = PropsUtil.get("portal.url");
 
-		SitePages.openPagesAdmin(siteURLKey = "test-site-name");
-
-		ProductMenu.gotoPortlet(
-			category = "Configuration",
-			portlet = "Site Settings");
+		Site.openSiteConfigurationAdmin(siteURLKey = "test-site-name");
 
 		Panel.expandPanel(panel = "Open Graph");
 
@@ -326,11 +304,7 @@ definition {
 			key_imageName = "Document_2.jpg",
 			locator1 = "SitePagesEditPage#PREVIEW_IMAGE");
 
-		SitePages.openPagesAdmin(siteURLKey = "test-site-name");
-
-		ProductMenu.gotoPortlet(
-			category = "Configuration",
-			portlet = "Site Settings");
+		Site.openSiteConfigurationAdmin(siteURLKey = "test-site-name");
 
 		Panel.expandPanel(panel = "Open Graph");
 
