@@ -926,6 +926,10 @@ definition {
 
 	macro openSiteSettingsAdmin {
 		Navigator.openWithAppendToBaseURL(urlAppend = "group/${siteURLKey}/~/control_panel/manage/-/site/settings");
+
+		Click(
+			key_itemName = "Site Configuration",
+			locator1 = "ListGroupItem#ITEM_TEXT");
 	}
 
 	macro openSiteTeamsAdmin {
