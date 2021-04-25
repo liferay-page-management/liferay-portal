@@ -96,9 +96,7 @@ definition {
 
 		Navigator.openSiteURL(siteName = "Site Name");
 
-		ProductMenu.gotoPortlet(
-			category = "Configuration",
-			portlet = "Site Settings");
+		Site.openSiteConfigurationAdmin(siteURLKey = "site-name");
 
 		Site.configureCurrentLanguagesCP(
 			currentSiteLanguages = "English (United States)",
@@ -331,9 +329,7 @@ definition {
 	test DeletePublishTemplate {
 		Navigator.openSiteURL(siteName = "Site Name");
 
-		ProductMenu.gotoPortlet(
-			category = "Configuration",
-			portlet = "Site Settings");
+		Site.openSiteConfigurationAdmin(siteURLKey = "site-name");
 
 		Site.disableRecycleBinCP();
 
@@ -1268,15 +1264,7 @@ definition {
 			baseURL = "http://localhost:9080",
 			siteURLKey = "global");
 
-		ProductMenu.gotoPortlet(
-			category = "Configuration",
-			portlet = "Site Settings");
-
-		var siteID = "siteID";
-
-		Copy(
-			locator1 = "SitesEditSite#SITE_ID",
-			value1 = "siteID");
+		var siteID = Site.getSiteId();
 
 		User.logoutPG(
 			nodePort = "9080",
