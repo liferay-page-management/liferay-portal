@@ -112,6 +112,10 @@ definition {
 			category = "Configuration",
 			portlet = "Site Settings");
 
+		Click(
+			key_url = "site-configuration",
+			locator1 = "ListGroupItem#CONFIGURATION_ITEM_LINK");
+
 		Site.editGoogleAnalyticsIDCP(googleAnalyticsID = '''']);alert(/googleAnalyticsId/);//''');
 
 		Navigator.openURL();
@@ -251,6 +255,10 @@ definition {
 		ProductMenu.gotoPortlet(
 			category = "Configuration",
 			portlet = "Site Settings");
+
+		Click(
+			key_url = "site-configuration",
+			locator1 = "ListGroupItem#CONFIGURATION_ITEM_LINK");
 
 		Site.editPiwikCP(piwik = '''<script>alert(123);</script>''');
 
