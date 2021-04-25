@@ -59,6 +59,10 @@ definition {
 			PortletEntry.inputName(name = "${siteName}");
 
 			Modal.save();
+
+			Click(
+				key_url = "site-configuration",
+				locator1 = "ListGroupItem#CONFIGURATION_ITEM_LINK");
 		}
 
 		if ("${siteType}" == "Site Template") {
@@ -115,6 +119,10 @@ definition {
 
 		PortletEntry.save();
 
+		Click(
+			key_url = "site-configuration",
+			locator1 = "ListGroupItem#CONFIGURATION_ITEM_LINK");
+
 		AssertTextEquals(
 			locator1 = "SitesEditSite#DETAILS_NAME",
 			value1 = "${siteName}");
@@ -128,6 +136,10 @@ definition {
 		PortletEntry.inputName(name = "${siteName}");
 
 		Modal.save();
+
+		Click(
+			key_url = "site-configuration",
+			locator1 = "ListGroupItem#CONFIGURATION_ITEM_LINK");
 
 		AssertTextEquals(
 			locator1 = "SitesEditSite#DETAILS_NAME",
@@ -267,6 +279,10 @@ definition {
 		SelectFrame(value1 = "relative=top");
 
 		PortletEntry.save();
+
+		Click(
+			key_url = "site-configuration",
+			locator1 = "ListGroupItem#CONFIGURATION_ITEM_LINK");
 
 		Click(locator1 = "SitesEditSite#MENU_ADVANCED_TAB");
 
@@ -647,6 +663,10 @@ definition {
 
 		PortletEntry.save();
 
+		Click(
+			key_url = "site-configuration",
+			locator1 = "ListGroupItem#CONFIGURATION_ITEM_LINK");
+
 		AssertTextEquals(
 			locator1 = "TextInput#NAME",
 			value1 = "${siteNameEdit}");
@@ -715,6 +735,10 @@ definition {
 		ProductMenu.gotoPortlet(
 			category = "Configuration",
 			portlet = "Site Settings");
+
+		Click(
+			key_url = "site-configuration",
+			locator1 = "ListGroupItem#CONFIGURATION_ITEM_LINK");
 
 		AssertElementPresent(locator1 = "SitesEditSite#SITE_ID");
 
@@ -885,6 +909,10 @@ definition {
 		ProductMenu.gotoPortlet(
 			category = "Configuration",
 			portlet = "Site Settings");
+
+		Click(
+			key_url = "site-configuration",
+			locator1 = "ListGroupItem#CONFIGURATION_ITEM_LINK");
 
 		Pause(locator1 = "5000");
 
