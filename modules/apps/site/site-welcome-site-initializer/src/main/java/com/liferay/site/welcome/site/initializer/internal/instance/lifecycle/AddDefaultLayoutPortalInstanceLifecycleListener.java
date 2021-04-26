@@ -60,10 +60,8 @@ public class AddDefaultLayoutPortalInstanceLifecycleListener
 			fragmentCollectionContributorRegistration) {
 	}
 
-	@Reference(target = ModuleServiceLifecycle.PORTAL_INITIALIZED, unbind = "-")
-	protected void setModuleServiceLifecycle(
-		ModuleServiceLifecycle moduleServiceLifecycle) {
-	}
+	@Reference(target = ModuleServiceLifecycle.PORTLETS_INITIALIZED)
+	private ModuleServiceLifecycle _moduleServiceLifecycle;
 
 	@Reference
 	private GroupLocalService _groupLocalService;
