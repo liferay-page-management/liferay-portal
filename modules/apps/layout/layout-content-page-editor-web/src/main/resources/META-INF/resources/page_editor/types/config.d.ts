@@ -132,7 +132,6 @@ export interface Config {
 	infoItemSelectorURL: string;
 	layoutConversionWarningMessages: string[] | null;
 	layoutItemSelectorURL: String;
-	layoutMappingEnabled: boolean;
 	layoutType: LayoutTypes[keyof LayoutTypes];
 	lookAndFeelURL: string;
 	mappingFieldsURL: string;
