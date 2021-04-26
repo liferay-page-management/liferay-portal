@@ -100,7 +100,6 @@ export interface Config {
 	discardDraftURL: string;
 	displayPageItemPreviewEnabled: boolean;
 	draft: boolean;
-	dropdownFragmentEnabled: boolean;
 	duplicateItemURL: string;
 	duplicateSegmentsExperienceURL: string;
 	editFragmentEntryLinkCommentURL: string;

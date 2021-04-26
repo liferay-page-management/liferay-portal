@@ -34,9 +34,6 @@ public interface FFLayoutContentPageEditorConfiguration {
 	public boolean displayPageItemPreviewEnabled();
 
 	@Meta.AD(deflt = "false", required = false)
-	public boolean dropdownFragmentEnabled();
-
-	@Meta.AD(deflt = "false", required = false)
 	public boolean layoutMappingEnabled();
 
 }
