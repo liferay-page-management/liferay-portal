@@ -20,6 +20,8 @@ import InfoItemService from '../services/InfoItemService';
 import LayoutService from '../services/LayoutService';
 import getFragmentEntryLinkIdsFromItemId from '../utils/getFragmentEntryLinkIdsFromItemId';
 
+const PORTLET_INSTANCE_SEPARATOR = '_INSTANCE_';
+
 export default function deleteItem({itemId, selectItem = () => {}, store}) {
 	return (dispatch) => {
 		const {fragmentEntryLinks, layoutData, segmentsExperienceId} = store;
@@ -99,7 +101,12 @@ function markItemForDeletion({
 		portletIds,
 		segmentsExperienceId,
 	}).then((response) => {
-		return {...response, portletIds};
+		return {
+			...response,
+			portletIds: portletIds.filter(
+				(portletId) => !portletId.includes(PORTLET_INSTANCE_SEPARATOR)
+			),
+		};
 	});
 }
 
@@ -116,8 +123,12 @@ function findPortletIds(itemId, layoutData, fragmentEntryLinks) {
 			config.fragmentEntryLinkId
 		];
 
-		if (editableValues.portletId && !editableValues.instanceId) {
-			return [editableValues.portletId];
+		if (editableValues.portletId) {
+			return editableValues.instanceId
+				? [
+						`${editableValues.portletId}${PORTLET_INSTANCE_SEPARATOR}${editableValues.instanceId}`,
+				  ]
+				: [editableValues.portletId];
 		}
 	}
 
