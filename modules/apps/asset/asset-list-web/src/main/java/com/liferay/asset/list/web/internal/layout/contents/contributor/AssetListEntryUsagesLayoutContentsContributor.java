@@ -22,9 +22,15 @@ import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.model.AssetListEntryUsage;
 import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.asset.list.service.AssetListEntryUsageLocalService;
+import com.liferay.fragment.model.FragmentEntryLink;
+import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.info.list.provider.InfoListProvider;
 import com.liferay.info.list.provider.InfoListProviderTracker;
 import com.liferay.layout.contents.contributor.LayoutContentsContributor;
+import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
+import com.liferay.layout.util.structure.LayoutStructure;
+import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.reflect.GenericUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -35,6 +41,9 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -68,15 +77,22 @@ public class AssetListEntryUsagesLayoutContentsContributor
 
 		Set<String> uniqueAssetListEntryUsagesKeys = new HashSet<>();
 
-		for (AssetListEntryUsage assetListEntryUsage : assetListEntryUsages) {
-			if (!uniqueAssetListEntryUsagesKeys.contains(
-					_generateUniqueLayoutClassedModelUsageKey(
-						assetListEntryUsage))) {
+		LayoutStructure layoutStructure = _getLayoutStructure(
+			httpServletRequest, plid);
 
-				mappedContentsJSONArray.put(
-					_getMappedContentJSONObject(
-						assetListEntryUsage, httpServletRequest));
+		for (AssetListEntryUsage assetListEntryUsage : assetListEntryUsages) {
+			if (uniqueAssetListEntryUsagesKeys.contains(
+					_generateUniqueLayoutClassedModelUsageKey(
+						assetListEntryUsage)) ||
+				_isFragmentEntryLinkDeleted(
+					assetListEntryUsage, layoutStructure)) {
+
+				continue;
 			}
+
+			mappedContentsJSONArray.put(
+				_getMappedContentJSONObject(
+					assetListEntryUsage, httpServletRequest));
 
 			uniqueAssetListEntryUsagesKeys.add(
 				_generateUniqueLayoutClassedModelUsageKey(assetListEntryUsage));
@@ -105,6 +121,29 @@ public class AssetListEntryUsagesLayoutContentsContributor
 		}
 
 		return typeLabel + " - " + subtypeLabel;
+	}
+
+	private LayoutStructure _getLayoutStructure(
+		HttpServletRequest httpServletRequest, long plid) {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		try {
+			LayoutPageTemplateStructure layoutPageTemplateStructure =
+				_layoutPageTemplateStructureLocalService.
+					fetchLayoutPageTemplateStructure(
+						themeDisplay.getScopeGroupId(), plid, true);
+
+			return LayoutStructure.of(
+				layoutPageTemplateStructure.getData(
+					ParamUtil.getLong(
+						httpServletRequest, "segmentsExperienceId")));
+		}
+		catch (Exception exception) {
+			return LayoutStructure.of(null);
+		}
 	}
 
 	private JSONObject _getMappedContentJSONObject(
@@ -203,6 +242,43 @@ public class AssetListEntryUsagesLayoutContentsContributor
 		}
 	}
 
+	private boolean _isFragmentEntryLinkDeleted(
+		AssetListEntryUsage assetListEntryUsage,
+		LayoutStructure layoutStructure) {
+
+		if (assetListEntryUsage.getContainerType() != _portal.getClassNameId(
+				FragmentEntryLink.class)) {
+
+			return false;
+		}
+
+		FragmentEntryLink fragmentEntryLink =
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				GetterUtil.getLong(assetListEntryUsage.getContainerKey()));
+
+		if (fragmentEntryLink == null) {
+			_assetListEntryUsageLocalService.deleteAssetListEntryUsage(
+				assetListEntryUsage);
+
+			return true;
+		}
+
+		LayoutStructureItem layoutStructureItem =
+			layoutStructure.getLayoutStructureItemByFragmentEntryLinkId(
+				fragmentEntryLink.getFragmentEntryLinkId());
+
+		if (ListUtil.exists(
+				layoutStructure.getDeletedLayoutStructureItems(),
+				deletedLayoutStructureItem ->
+					deletedLayoutStructureItem.containsItemId(
+						layoutStructureItem.getItemId()))) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	@Reference
 	private AssetListEntryLocalService _assetListEntryLocalService;
 
@@ -210,6 +286,16 @@ public class AssetListEntryUsagesLayoutContentsContributor
 	private AssetListEntryUsageLocalService _assetListEntryUsageLocalService;
 
 	@Reference
+	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
+
+	@Reference
 	private InfoListProviderTracker _infoListProviderTracker;
+
+	@Reference
+	private LayoutPageTemplateStructureLocalService
+		_layoutPageTemplateStructureLocalService;
+
+	@Reference
+	private Portal _portal;
 
 }

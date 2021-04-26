@@ -18,6 +18,9 @@ import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.publisher.constants.AssetPublisherPortletKeys;
 import com.liferay.asset.publisher.web.internal.constants.AssetPublisherSelectionStyleConstants;
 import com.liferay.layout.contents.contributor.LayoutContentsContributor;
+import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
+import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -33,6 +36,8 @@ import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.Validator;
@@ -67,6 +72,9 @@ public class AssetPublisherLayoutContentsContributor
 
 		Stream<PortletPreferences> stream = portletPreferences.stream();
 
+		LayoutStructure layoutStructure = _getLayoutStructure(
+			httpServletRequest, plid);
+
 		return stream.filter(
 			portletPreference -> Objects.equals(
 				PortletIdCodec.decodePortletName(
@@ -74,7 +82,7 @@ public class AssetPublisherLayoutContentsContributor
 				AssetPublisherPortletKeys.ASSET_PUBLISHER)
 		).map(
 			portletPreference -> _getLayoutContentJSONObject(
-				httpServletRequest, portletPreference)
+				httpServletRequest, layoutStructure, portletPreference)
 		).filter(
 			Objects::nonNull
 		).collect(
@@ -118,7 +126,7 @@ public class AssetPublisherLayoutContentsContributor
 	}
 
 	private JSONObject _getLayoutContentJSONObject(
-		HttpServletRequest httpServletRequest,
+		HttpServletRequest httpServletRequest, LayoutStructure layoutStructure,
 		PortletPreferences portletPreferences) {
 
 		javax.portlet.PortletPreferences jxPortletPreferences =
@@ -128,7 +136,13 @@ public class AssetPublisherLayoutContentsContributor
 		String selectionStyle = jxPortletPreferences.getValue(
 			"selectionStyle", StringPool.BLANK);
 
-		if (Validator.isNull(selectionStyle)) {
+		if (Validator.isNull(selectionStyle) ||
+			ListUtil.exists(
+				layoutStructure.getDeletedLayoutStructureItems(),
+				deletedLayoutStructureItem ->
+					deletedLayoutStructureItem.contains(
+						portletPreferences.getPortletId()))) {
+
 			return null;
 		}
 
@@ -161,7 +175,8 @@ public class AssetPublisherLayoutContentsContributor
 				AssetPublisherSelectionStyleConstants.TYPE_MANUAL)) {
 
 			return jsonObject.put(
-				"subtype", ResourceActionsUtil.getModelResource(
+				"subtype",
+				ResourceActionsUtil.getModelResource(
 					themeDisplay.getLocale(), AssetEntry.class.getName()));
 		}
 
@@ -176,6 +191,33 @@ public class AssetPublisherLayoutContentsContributor
 
 		return null;
 	}
+
+	private LayoutStructure _getLayoutStructure(
+		HttpServletRequest httpServletRequest, long plid) {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		try {
+			LayoutPageTemplateStructure layoutPageTemplateStructure =
+				_layoutPageTemplateStructureLocalService.
+					fetchLayoutPageTemplateStructure(
+						themeDisplay.getScopeGroupId(), plid, true);
+
+			return LayoutStructure.of(
+				layoutPageTemplateStructure.getData(
+					ParamUtil.getLong(
+						httpServletRequest, "segmentsExperienceId")));
+		}
+		catch (Exception exception) {
+			return LayoutStructure.of(null);
+		}
+	}
+
+	@Reference
+	private LayoutPageTemplateStructureLocalService
+		_layoutPageTemplateStructureLocalService;
 
 	@Reference
 	private Portal _portal;

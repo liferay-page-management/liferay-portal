@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
@@ -259,6 +260,15 @@ public class ContentUtil {
 				continue;
 			}
 
+			if (ListUtil.exists(
+					layoutStructure.getDeletedLayoutStructureItems(),
+					deletedLayoutStructureItem ->
+						deletedLayoutStructureItem.containsItemId(
+							layoutStructureItem.getItemId()))) {
+
+				continue;
+			}
+
 			ContainerStyledLayoutStructureItem
 				containerStyledLayoutStructureItem =
 					(ContainerStyledLayoutStructureItem)layoutStructureItem;
@@ -347,7 +357,7 @@ public class ContentUtil {
 
 		return layoutDisplayPageObjectProviders;
 	}
-	
+
 	private static final Log _log = LogFactoryUtil.getLog(ContentUtil.class);
 
 }
