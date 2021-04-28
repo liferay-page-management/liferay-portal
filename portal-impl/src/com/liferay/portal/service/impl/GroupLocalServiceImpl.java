@@ -299,6 +299,15 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 			}
 		}
 
+		groupKey = StringUtil.trim(groupKey);
+		friendlyName = StringUtil.trim(friendlyName);
+
+		if ((nameMap != null) &&
+			Validator.isNotNull(nameMap.get(LocaleUtil.getDefault()))) {
+
+			nameMap.replace(LocaleUtil.getDefault(), groupKey);
+		}
+
 		long groupId = 0;
 
 		while (true) {
@@ -3746,6 +3755,19 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		}
 
 		validateParentGroup(group.getGroupId(), parentGroupId);
+
+		groupKey = StringUtil.trim(groupKey);
+		friendlyURL = StringUtil.trim(friendlyURL);
+
+		if ((nameMap != null) &&
+			Validator.isNotNull(
+				nameMap.get(
+					LocaleUtil.fromLanguageId(group.getDefaultLanguageId())))) {
+
+			nameMap.replace(
+				LocaleUtil.fromLanguageId(group.getDefaultLanguageId()),
+				groupKey);
+		}
 
 		group.setParentGroupId(parentGroupId);
 		group.setTreePath(group.buildTreePath());
