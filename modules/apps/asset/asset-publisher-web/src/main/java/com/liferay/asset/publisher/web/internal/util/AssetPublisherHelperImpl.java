@@ -1178,6 +1178,17 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 		return false;
 	}
 
+	private String[] _normalizeQueryValues(String[] queryValues) {
+		List<String> normalizedQueryValues = new ArrayList<>();
+
+		for (String queryValue : queryValues) {
+			normalizedQueryValues.add(
+				StringUtil.toLowerCase(StringUtil.trim(queryValue)));
+		}
+
+		return normalizedQueryValues.toArray(new String[0]);
+	}
+
 	private void _removeAndStoreSelection(
 			List<String> assetEntryUuids, PortletPreferences portletPreferences)
 		throws Exception {
@@ -1282,16 +1293,16 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 			}
 			else {
 				if (queryContains && queryAndOperator) {
-					allAssetTagNames = queryValues;
+					allAssetTagNames = _normalizeQueryValues(queryValues);
 				}
 				else if (queryContains && !queryAndOperator) {
-					anyAssetTagNames = queryValues;
+					anyAssetTagNames = _normalizeQueryValues(queryValues);
 				}
 				else if (!queryContains && queryAndOperator) {
-					notAllAssetTagNames = queryValues;
+					notAllAssetTagNames = _normalizeQueryValues(queryValues);
 				}
 				else {
-					notAnyAssetTagNames = queryValues;
+					notAnyAssetTagNames = _normalizeQueryValues(queryValues);
 				}
 			}
 		}
