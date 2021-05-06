@@ -38,6 +38,8 @@ const DEFAULT_WHITELIST = [
 	'.control-menu',
 	'.lfr-add-panel',
 	'.lfr-product-menu-panel',
+	'#banner',
+	'#footer',
 ];
 
 const POPOVER_POSITIONS = {
