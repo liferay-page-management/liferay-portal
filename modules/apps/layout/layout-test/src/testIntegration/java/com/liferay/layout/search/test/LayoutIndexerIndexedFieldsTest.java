@@ -17,6 +17,7 @@ package com.liferay.layout.search.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
@@ -24,6 +25,7 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -191,6 +193,7 @@ public class LayoutIndexerIndexedFieldsTest {
 
 		_populateName(layout, map);
 		_populateDates(layout, map);
+		_populatePublished(layout, map);
 		_populateRoles(layout, map);
 
 		return map;
@@ -212,6 +215,18 @@ public class LayoutIndexerIndexedFieldsTest {
 			map.put(
 				LocalizationUtil.getLocalizedName(Field.NAME, languageId),
 				layout.getName(locale));
+		}
+	}
+
+	private void _populatePublished(Layout layout, Map<String, String> map) {
+		String type = layout.getType();
+
+		if (type.equals(LayoutConstants.TYPE_CONTENT)) {
+			map.put(
+				"contentLayoutPublished",
+				String.valueOf(
+					GetterUtil.getBoolean(
+						layout.getTypeSettingsProperty("published"))));
 		}
 	}
 
