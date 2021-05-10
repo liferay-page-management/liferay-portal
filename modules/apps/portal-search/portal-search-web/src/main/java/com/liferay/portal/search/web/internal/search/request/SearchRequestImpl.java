@@ -115,6 +115,8 @@ public class SearchRequestImpl {
 	protected SearchContext buildSearchContext() {
 		SearchContext searchContext = _searchContextBuilder.getSearchContext();
 
+		searchContext.setAttribute(
+			"contentLayoutPublished", String.valueOf(Boolean.TRUE));
 		searchContext.setAttribute("filterExpired", Boolean.TRUE);
 		searchContext.setAttribute("paginationType", "more");
 
