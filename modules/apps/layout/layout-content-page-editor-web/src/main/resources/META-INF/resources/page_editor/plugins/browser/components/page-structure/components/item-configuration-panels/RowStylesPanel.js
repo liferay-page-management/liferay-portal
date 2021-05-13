@@ -52,6 +52,7 @@ const VERTICAL_ALIGNMENT_OPTIONS = [
 	{label: Liferay.Language.get('top'), value: 'top'},
 	{label: Liferay.Language.get('middle'), value: 'middle'},
 	{label: Liferay.Language.get('bottom'), value: 'bottom'},
+	{label: Liferay.Language.get('stretch'), value: 'stretch'},
 ];
 
 const ROW_STYLE_IDENTIFIERS = {

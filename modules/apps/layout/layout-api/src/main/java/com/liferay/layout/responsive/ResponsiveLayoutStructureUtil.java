@@ -80,9 +80,11 @@ public class ResponsiveLayoutStructureUtil {
 		}
 
 		if ((rowStyledLayoutStructureItem != null) &&
-			Objects.equals(
+			(Objects.equals(
 				rowStyledLayoutStructureItem.getVerticalAlignment(),
-				"middle")) {
+				"middle") || Objects.equals(
+				rowStyledLayoutStructureItem.getVerticalAlignment(),
+				"stretch"))) {
 
 			sb.append("d-flex flex-column ");
 		}
@@ -328,6 +330,9 @@ public class ResponsiveLayoutStructureUtil {
 		}
 		else if (Objects.equals(verticalAlignment, "middle")) {
 			return "center";
+		}
+		else if (Objects.equals(verticalAlignment, "stretch")) {
+			return "stretch";
 		}
 
 		return "start";

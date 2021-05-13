@@ -316,7 +316,14 @@ function FragmentContentInteractionsFilter({
 		props.onMouseOverCapture = hoverEditable;
 	}
 
-	return <div {...props}>{children}</div>;
+	return (
+		<div
+			className="page-editor__fragment-content-interactions-filter"
+			{...props}
+		>
+			{children}
+		</div>
+	);
 }
 
 FragmentContentInteractionsFilter.propTypes = {

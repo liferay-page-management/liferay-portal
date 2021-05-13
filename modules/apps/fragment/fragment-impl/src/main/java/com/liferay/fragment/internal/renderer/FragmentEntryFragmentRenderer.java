@@ -174,7 +174,7 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 
 		sb.append(fragmentIdSB.toString());
 
-		sb.append("\" >");
+		sb.append("\" style=\"height: 100%\" >");
 		sb.append(html);
 		sb.append("</div>");
 

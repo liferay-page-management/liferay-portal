@@ -114,19 +114,37 @@ $dashedBorderWidth: 2px;
 	}
 
 	&__row.align-bottom,
-	&__row.align-middle {
-		.page-editor__col .page-editor__col__border {
+	&__row.align-middle,
+	&__row.align-items-stretch {
+		> .page-editor__col > .page-editor__col__border {
 			display: flex;
 			flex-direction: column;
 		}
 	}
 
-	&__row.align-middle .page-editor__col .page-editor__col__border {
+	&__row.align-middle > .page-editor__col > .page-editor__col__border {
 		justify-content: center;
 	}
 
-	&__row.align-bottom .page-editor__col .page-editor__col__border {
+	&__row.align-bottom > .page-editor__col > .page-editor__col__border {
 		justify-content: flex-end;
+	}
+
+	&__row.align-items-stretch > .page-editor__col > .page-editor__col__border {
+		justify-content: stretch;
+
+		> .page-editor__topper {
+			flex-grow: 1;
+
+			> .page-editor__topper__content
+				> .page-editor__fragment-content-interactions-filter {
+				height: 100%;
+
+				> .page-editor__fragment-content > div {
+					height: 100%;
+				}
+			}
+		}
 	}
 
 	&__collection-item {
