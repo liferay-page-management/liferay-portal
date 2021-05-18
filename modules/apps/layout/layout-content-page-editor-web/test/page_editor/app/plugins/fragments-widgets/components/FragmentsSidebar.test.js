@@ -197,7 +197,10 @@ describe('FragmentsSidebar', () => {
 	it('normalizes fragments and widgets format', () => {
 		renderComponent(STATE);
 
-		expect(TabsPanel).toHaveBeenCalledWith({tabs: NORMALIZED_TABS}, {});
+		expect(TabsPanel).toHaveBeenCalledWith(
+			{displayStyle: 'list', tabs: NORMALIZED_TABS},
+			{}
+		);
 	});
 
 	it('filters fragments and widgets according to a input value', () => {
@@ -259,7 +262,10 @@ describe('FragmentsSidebar', () => {
 		};
 		renderComponent(state);
 
-		expect(TabsPanel).toHaveBeenCalledWith({tabs}, {});
+		expect(TabsPanel).toHaveBeenCalledWith(
+			{displayStyle: 'list', tabs},
+			{}
+		);
 	});
 
 	it('disables a widget when it is not instanceable and it is used', () => {
@@ -285,7 +291,10 @@ describe('FragmentsSidebar', () => {
 		};
 		renderComponent(state);
 
-		expect(TabsPanel).toHaveBeenCalledWith({tabs}, {});
+		expect(TabsPanel).toHaveBeenCalledWith(
+			{displayStyle: 'list', tabs},
+			{}
+		);
 	});
 
 	it('normalizes collection with portlets items', () => {
@@ -317,7 +326,10 @@ describe('FragmentsSidebar', () => {
 		];
 		renderComponent(state);
 
-		expect(TabsPanel).toHaveBeenCalledWith({tabs}, {});
+		expect(TabsPanel).toHaveBeenCalledWith(
+			{displayStyle: 'list', tabs},
+			{}
+		);
 	});
 
 	it('normalizes collection with more collections inside', () => {
@@ -380,7 +392,10 @@ describe('FragmentsSidebar', () => {
 
 		renderComponent(state);
 
-		expect(TabsPanel).toHaveBeenCalledWith({tabs}, {});
+		expect(TabsPanel).toHaveBeenCalledWith(
+			{displayStyle: 'list', tabs},
+			{}
+		);
 	});
 
 	it('hides the fragment preview when it is basic component', () => {
@@ -432,6 +447,9 @@ describe('FragmentsSidebar', () => {
 
 		renderComponent(state);
 
-		expect(TabsPanel).toHaveBeenCalledWith({tabs}, {});
+		expect(TabsPanel).toHaveBeenCalledWith(
+			{displayStyle: 'list', tabs},
+			{}
+		);
 	});
 });
