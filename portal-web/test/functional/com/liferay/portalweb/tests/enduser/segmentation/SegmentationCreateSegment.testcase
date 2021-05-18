@@ -529,29 +529,19 @@ definition {
 			userLastName = "userln2",
 			userScreenName = "usersn2");
 
-		LexiconEntry.gotoAdd();
+		JSONSegmentsentry.addSegment(
+			fieldName = "Screen Name",
+			groupName = "Global",
+			operator = "equals",
+			segmentName = "Segment With User1",
+			text = "usersn1");
 
-		Segmentation.addProperties(propertyOption = "Screen Name");
-
-		Segmentation.fillTitle(titleField = "Segment With User1");
-
-		Segmentation.fillProperty(propertyField = "usersn1");
-
-		Button.clickSave();
-
-		Segmentation.openSegmentsAdmin(siteURLKey = "guest");
-
-		LexiconEntry.gotoAdd();
-
-		Segmentation.addProperties(propertyOption = "Screen Name");
-
-		Segmentation.fillTitle(titleField = "Segment With User2");
-
-		Segmentation.fillProperty(propertyField = "usersn2");
-
-		Button.clickSave();
-
-		Segmentation.openSegmentsAdmin(siteURLKey = "guest");
+		JSONSegmentsentry.addSegment(
+			fieldName = "Screen Name",
+			groupName = "Global",
+			operator = "equals",
+			segmentName = "Segment With User2",
+			text = "usersn2");
 
 		LexiconEntry.gotoAdd();
 
@@ -579,22 +569,87 @@ definition {
 	}
 
 	@description = "This is a test for LPS-130346."
-	@ignore = "true"
 	@priority = "5"
 	test AddSegmentByOtherSegmentsUnableToAddNewSegments {
 		property portal.acceptance = "false";
 
-		// TODO LPS-130346 AddSegmentByOtherSegmentsUnableToAddNewSegments pending implementation
+		LexiconEntry.gotoAdd();
 
+		Segmentation.gotoSidebar(fieldType = "Segments");
+
+		Segmentation.addProperties(propertyOption = "Segment");
+
+		AssertElementNotPresent(locator1 = "Button#PLUS");
+
+		Click(locator1 = "Button#SELECT");
+
+		SelectFrame(locator1 = "IFrame#MODAL_BODY");
+
+		AssertElementNotPresent(locator1 = "Button#PLUS");
+
+		SelectFrame.selectFrameTop();
+
+		Click(locator1 = "Icon#CLOSE");
 	}
 
 	@description = "This is a test for LPS-130347."
-	@ignore = "true"
 	@priority = "5"
 	test AddSegmentByOtherSegmentsWarning {
 		property portal.acceptance = "false";
 
-		// TODO LPS-130347 AddSegmentByOtherSegmentsWarning pending implementation
+		JSONUser.addUser(
+			userEmailAddress = "userea1@liferay.com",
+			userFirstName = "userfn1",
+			userLastName = "userln1",
+			userScreenName = "usersn1");
+
+		JSONUser.addUser(
+			userEmailAddress = "userea2@liferay.com",
+			userFirstName = "userfn2",
+			userLastName = "userln2",
+			userScreenName = "usersn2");
+
+		JSONSegmentsentry.addSegment(
+			fieldName = "First Name",
+			groupName = "Global",
+			operator = "equals",
+			segmentName = "Segment With User1",
+			text = "userfn1");
+
+		JSONSegmentsentry.addSegment(
+			fieldName = "First Name",
+			groupName = "Global",
+			operator = "equals",
+			segmentName = "Segment With User2",
+			text = "userfn2");
+
+		LexiconEntry.gotoAdd();
+
+		Segmentation.gotoSidebar(fieldType = "Segments");
+
+		Segmentation.addProperties(propertyOption = "Segment");
+
+		Segmentation.fillProperty(selectLink = "Segment With User1");
+
+		Segmentation.addProperties(propertyOption = "Segment");
+
+		Segmentation.fillProperty(
+			indexNumber = "2",
+			selectLink = "Segment With User2");
+
+		Segmentation.changeCriterionConjunction(criterionConjunctionItem = "Or");
+
+		Segmentation.fillTitle(titleField = "AddSegmentByOtherSegmentsWarning Test");
+
+		Button.clickSave();
+
+		Segmentation.openSegmentsAdmin(siteURLKey = "guest");
+
+		Segmentation.deleteSegment(entry = "Segment With User1");
+
+		Segmentation.editSegment(entry = "AddSegmentByOtherSegmentsWarning Test");
+
+		Alert.viewErrorMessage(errorMessage = "Delete this condition. It was created from an element that no longer exists.");
 	}
 
 	@description = "This is a test for LPS-130313."
@@ -1385,22 +1440,99 @@ definition {
 		Segmentation.viewSegment(propertyField = "usersn");
 	}
 
-	@description = "This is a test for LPS-130290."
-	@ignore = "true"
+	@description = "This is a test for LPS-132107."
 	@priority = "5"
 	test AddSegmentByUserSite {
 		property portal.acceptance = "false";
 
-		// TODO LPS-130290 AddSegmentByUserSite pending implementation
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		JSONGroup.addGroup(groupName = "Test Site Name");
+
+		JSONGroup.assignUserToGroup(
+			groupName = "Test Site Name",
+			userEmailAddress = "userea@liferay.com");
+
+		LexiconEntry.gotoAdd();
+
+		Segmentation.addProperties(propertyOption = "Site");
+
+		Segmentation.fillTitle(titleField = "AddSegmentByUserSite Test");
+
+		Segmentation.fillProperty(selectLink = "Test Site Name");
+
+		Segmentation.viewMembers(memberName = "userfn userln");
+
+		Button.clickSave();
+
+		Alert.viewSuccessMessage();
+
+		Segmentation.editSegment(entry = "AddSegmentByUserSite Test");
+
+		Segmentation.viewSegment(
+			criterion = "select-input",
+			value = "Test Site Name");
 	}
 
-	@description = "This is a test for LPS-130290."
-	@ignore = "true"
+	@description = "This is a test for LPS-132108."
 	@priority = "5"
 	test AddSegmentByUserSiteOrganizationRole {
 		property portal.acceptance = "false";
+		property test.name.skip.portal.instance = "SegmentationCreateSegment#AddSegmentByUserSiteOrganizationRole";
 
-		// TODO LPS-130290 AddSegmentByUserSiteOrganizationRole pending implementation
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		JSONGroup.addGroup(groupName = "Test Site Name");
+
+		JSONGroup.assignUserToGroup(
+			groupName = "Test Site Name",
+			userEmailAddress = "userea@liferay.com");
+
+		JSONRole.addSiteRole(
+			roleKey = "Site Role Name",
+			roleTitle = "Site Role Name");
+
+		JSONGroup.assignGroupRoleToUser(
+			groupName = "Test Site Name",
+			roleTitle = "Site Role Name",
+			userEmailAddress = "userea@liferay.com");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Configuration",
+			panel = "Control Panel",
+			portlet = "Search");
+
+		SearchAdministration.executeSearchActions(actionsDescription = "Reindex all search indexes.");
+
+		Segmentation.openSegmentsAdmin(siteURLKey = "guest");
+
+		LexiconEntry.gotoAdd();
+
+		Segmentation.addProperties(propertyOption = "Site and Organization Role");
+
+		Segmentation.fillProperty(selectCheckbox = "Site Role Name");
+
+		Segmentation.fillTitle(titleField = "AddSegmentByUserSiteOrganizationRole Test");
+
+		Segmentation.viewMembers(memberName = "userfn userln");
+
+		Button.clickSave();
+
+		Alert.viewSuccessMessage();
+
+		Segmentation.editSegment(entry = "AddSegmentByUserSiteOrganizationRole Test");
+
+		Segmentation.viewSegment(
+			criterion = "select-input",
+			value = "Site Role Name");
 	}
 
 	@description = "This is a test for LPS-130290."
@@ -1410,6 +1542,7 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO LPS-130290 AddSegmentByUserTag pending implementation
+
 	}
 
 	@description = "This is a test for LPS-130290."
@@ -1443,6 +1576,7 @@ definition {
 	@ignore = "true"
 	@priority = "5"
 	test SegmentationCheckMembers {
+
 		// TODO LPS-132013 It is a little bit flaky, waiting for fix
 
 		property portal.acceptance = "true";

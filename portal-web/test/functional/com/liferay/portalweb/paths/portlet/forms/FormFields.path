@@ -49,6 +49,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>FIELD_REQUIRED</td>
+	<td>//label[text()='${key_fieldFieldLabel}']/span[contains(@class,'required')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>PROPERTIES</td>
 	<td>//div[contains(@class,'nav-item')]</td>
 	<td></td>
@@ -347,6 +352,11 @@
 <tr>
 	<td>PARAGRAPH_TITLE</td>
 	<td>//div[(@class='form-group') and contains(@data-field-name,'${key_fieldName}')]//legend</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TOOLBAR_ANY_ITEM_BUTTON</td>
+	<td>//a[contains(@title,"${key_titleName}")]</td>
 	<td></td>
 </tr>
 <tr>

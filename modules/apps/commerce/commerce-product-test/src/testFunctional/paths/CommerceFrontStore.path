@@ -82,6 +82,21 @@
 	<td>MINI_COMPARE_ITEM_CUSTOM_IMAGE</td>
 	<td>//div[contains(@class,'mini-compare active')]//div[contains(@style,'${key_productName}')]</td>
 	<td></td>
+</tr>	
+<tr>
+	<td>FS_PRODUCT_VALUE_PROMO_PRICE</td>
+	<td>//p[@title='${key_productName}']//following-sibling::p[@class='card-text']//span[@class='price-value price-value-promo']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FS_PRODUCT_VALUE_INACTIVE_PRICE</td>
+	<td>//p[@title='${key_productName}']//following-sibling::p[@class='card-text']//span[@class='price-value price-value-inactive']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>MINI_COMPARE_ITEM_REMOVE_BUTTON</td>
+	<td>//div[contains(@class,'mini-compare active')]//div[contains(@style,'${key_productName}')]/../../..//button[contains(@class,'mini-compare-delete')]</td>
+	<td></td>
 </tr>
 </tbody>
 </table>

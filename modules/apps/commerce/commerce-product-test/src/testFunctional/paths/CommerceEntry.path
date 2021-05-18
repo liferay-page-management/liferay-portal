@@ -404,6 +404,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>CHANNELS_GENERAL_ACTIVE_STATUS</td>
+	<td>//div[contains(text(),'${key_entryName}')]/following-sibling::div/span[contains(@class,'label-success')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>CHANNELS_GENERAL_TAB_EDITS</td>
 	<td>//div[contains(text(),'${key_entryName}')]/following-sibling::div[contains(@class,'item-actions')]//a</td>
 	<td></td>
@@ -651,6 +656,16 @@
 <tr>
 	<td>INVENTORY_INPUT</td>
 	<td>//table//tr[contains(.,'${key_inventoryName}')]//input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>WAREHOUSE_INVENTORY_ITEM_QUANTITY</td>
+	<td>//input[contains(@id,'_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_commerceInventoryWarehouseItemQuantity${key_value1}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>INVENTORY_BY_WAREHOUSE_AVAILABLE_LABEL</td>
+	<td>//div[contains(@class,'dnd-tbody')]//div[contains(@class,'dnd-td')][3]</td>
 	<td></td>
 </tr>
 </tbody>

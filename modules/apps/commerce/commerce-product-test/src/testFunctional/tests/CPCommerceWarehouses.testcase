@@ -102,12 +102,52 @@ definition {
 	}
 
 	@description = "This is a test for COMMERCE-6203. Get stock quantity of a SKU"
-	@ignore = "true"
 	@priority = "3"
 	test GetSKUStockQuantity {
 		property portal.acceptance = "false";
 
-		// TODO COMMERCE-6203 GetSKUStockQuantity Pending Implementation
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			portlet = "Products");
+
+		AppBuilderAdmin.searchByItem(itemName = "ABS Sensor");
+
+		Click(
+			key_entryName = "ABS Sensor",
+			locator1 = "CommerceEntry#TABLE_LIST_TITLE");
+
+		CommerceEntry.gotoMenuTab(menuTab = "SKUs");
+
+		Click(
+			key_entryName = "MIN93015",
+			locator1 = "CommerceEntry#TABLE_LIST_TITLE");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+		CommerceEntry.gotoMenuTab(menuTab = "Inventory");
+
+		var count1 = "0";
+		var amount = "0";
+
+		while (IsElementPresent(key_value1 = "${count1}", locator1 = "CommerceEntry#WAREHOUSE_INVENTORY_ITEM_QUANTITY")) {
+			var temp1 = selenium.getAttribute("//input[contains(@id,'_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_commerceInventoryWarehouseItemQuantity${count1}')]@value");
+			var amount = MathUtil.sum("${temp1}", "${amount}");
+			var count1 = MathUtil.sum("${count1}", "1");
+		}
+
+		Refresh();
+
+		CommerceNavigator.gotoPortlet(
+			category = "Inventory Management",
+			portlet = "Inventory");
+
+		AppBuilderAdmin.searchByItem(itemName = "MIN93015");
+
+		AssertTextEquals(
+			locator1 = "CommerceEntry#INVENTORY_BY_WAREHOUSE_AVAILABLE_LABEL",
+			value1 = "${amount}");
 	}
 
 	@description = "This is a test for COMMERCE-6205. Get warehouse names given a SKU"

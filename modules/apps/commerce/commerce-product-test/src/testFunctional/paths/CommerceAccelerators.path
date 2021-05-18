@@ -144,6 +144,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>PRODUCT_CARD_QUANTITY_SELECTOR_INPUT_FIELD_OPTION_VALUE</td>
+	<td>//p[@title='${key_productName}']//../..//input[@class='form-control quantity-selector' and @value='${key_optionValue}']</td>
+	<td></td>
+</tr>
+<tr>
 	<td>PRODUCT_CARD_QUANTITY_SELECTOR_SELECT_FIELD_OPTION_VALUE</td>
 	<td>//p[@title='${key_productName}']//../..//select[(@class='form-control quantity-selector')]//option[@value='${key_optionValue}']</td>
 	<td></td>
@@ -411,6 +416,12 @@
     <td>PRODUCT_CARD_VIEW_ALL_VARIANTS</td>
 	<td>//div[contains(@class,'add-to-cart d-flex my-2 pt-5')]//a[contains(@href,'${key_productName}')]</td>
     <td></td>
+</tr>
+<!--COMPARE-->
+<tr>
+	<td>CHECK_ITEM_COMPARE</td>
+	<td>//div[contains(@class,'mini-compare active')]//div[contains(@style,'${key_productName}')]</td>
+	<td></td>
 </tr>
 </tbody>
 </table>

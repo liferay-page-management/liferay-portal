@@ -38,29 +38,47 @@ public class DDMExpressionFunctionTrackerImpl
 	implements DDMExpressionFunctionTracker {
 
 	@Override
+	public Map<String, DDMExpressionFunction>
+		getCustomDDMExpressionFunctions() {
+
+		Map<String, DDMExpressionFunction> customDDMExpressionFunctions =
+			new HashMap<>();
+
+		for (DDMExpressionFunctionFactory ddmExpressionFunctionFactory :
+				_serviceTrackerMap.values()) {
+
+			DDMExpressionFunction ddmExpressionFunction =
+				ddmExpressionFunctionFactory.create();
+
+			if (!ddmExpressionFunction.isCustomDDMExpressionFunction()) {
+				continue;
+			}
+
+			customDDMExpressionFunctions.put(
+				ddmExpressionFunction.getName(), ddmExpressionFunction);
+		}
+
+		return customDDMExpressionFunctions;
+	}
+
+	@Override
 	public Map<String, DDMExpressionFunctionFactory>
 		getDDMExpressionFunctionFactories(Set<String> functionNames) {
 
-		if (_ddmExpressionFunctionFactoryMap == null) {
-			_ddmExpressionFunctionFactoryMap =
-				ServiceTrackerMapFactory.openSingleValueMap(
-					_bundleContext, DDMExpressionFunctionFactory.class, "name");
-		}
-
 		Map<String, DDMExpressionFunctionFactory>
-			ddmExpressionFunctionFactoriesMap = new HashMap<>();
+			ddmExpressionFunctionFactories = new HashMap<>();
 
 		for (String functionName : functionNames) {
 			DDMExpressionFunctionFactory ddmExpressionFunctionFactory =
-				_ddmExpressionFunctionFactoryMap.getService(functionName);
+				_serviceTrackerMap.getService(functionName);
 
 			if (ddmExpressionFunctionFactory != null) {
-				ddmExpressionFunctionFactoriesMap.put(
+				ddmExpressionFunctionFactories.put(
 					functionName, ddmExpressionFunctionFactory);
 			}
 		}
 
-		return ddmExpressionFunctionFactoriesMap;
+		return ddmExpressionFunctionFactories;
 	}
 
 	/**
@@ -85,18 +103,16 @@ public class DDMExpressionFunctionTrackerImpl
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
-		_bundleContext = bundleContext;
+		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
+			bundleContext, DDMExpressionFunctionFactory.class, "name");
 	}
 
 	@Deactivate
 	protected void deactivate() {
-		if (_ddmExpressionFunctionFactoryMap != null) {
-			_ddmExpressionFunctionFactoryMap.close();
-		}
+		_serviceTrackerMap.close();
 	}
 
-	private BundleContext _bundleContext;
 	private ServiceTrackerMap<String, DDMExpressionFunctionFactory>
-		_ddmExpressionFunctionFactoryMap;
+		_serviceTrackerMap;
 
 }
