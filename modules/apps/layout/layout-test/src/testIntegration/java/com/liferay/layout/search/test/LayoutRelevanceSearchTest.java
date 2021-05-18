@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -81,7 +82,8 @@ public class LayoutRelevanceSearchTest {
 	@Test
 	public void testLayoutRelevanceSearch() throws Exception {
 		List<Layout> fooSearchLayouts = _layoutLocalService.getLayouts(
-			_group.getGroupId(), false, "foo",
+			_group.getGroupId(), _serviceContext.getUserId(), false, "foo",
+			new int[] {WorkflowConstants.STATUS_ANY},
 			new String[] {LayoutConstants.TYPE_CONTENT}, QueryUtil.ALL_POS,
 			QueryUtil.ALL_POS, new LayoutRelevanceComparator());
 
@@ -90,7 +92,8 @@ public class LayoutRelevanceSearchTest {
 			fooSearchLayouts.toString(), 2, fooSearchLayouts.size());
 
 		List<Layout> barSearchLayouts = _layoutLocalService.getLayouts(
-			_group.getGroupId(), false, "bar",
+			_group.getGroupId(), _serviceContext.getUserId(), false, "bar",
+			new int[] {WorkflowConstants.STATUS_ANY},
 			new String[] {LayoutConstants.TYPE_CONTENT}, QueryUtil.ALL_POS,
 			QueryUtil.ALL_POS, new LayoutRelevanceComparator());
 

@@ -15,25 +15,20 @@
 package com.liferay.layout.search.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.layout.util.BaseLayoutSearchTestCase;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
-import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.search.test.util.IndexerFixture;
-import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.users.admin.test.util.search.UserSearchFixture;
 
 import java.util.List;
 import java.util.Locale;
 
 import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,15 +37,7 @@ import org.junit.runner.RunWith;
  * @author Vagner B.C
  */
 @RunWith(Arquillian.class)
-public class LayoutIndexerReindexTest {
-
-	@ClassRule
-	@Rule
-	public static final AggregateTestRule aggregateTestRule =
-		new AggregateTestRule(
-			new LiferayIntegrationTestRule(),
-			PermissionCheckerMethodTestRule.INSTANCE,
-			SynchronousDestinationTestRule.INSTANCE);
+public class LayoutIndexerReindexTest extends BaseLayoutSearchTestCase {
 
 	@Before
 	public void setUp() throws Exception {
@@ -64,6 +51,12 @@ public class LayoutIndexerReindexTest {
 	@Test
 	public void testReindex() throws Exception {
 		Layout layout = layoutFixture.createLayout();
+
+		_layouts.remove(layout);
+
+		layout = publishLayout(layout);
+
+		_layouts.add(layout);
 
 		Locale locale = LocaleThreadLocal.getDefaultLocale();
 
