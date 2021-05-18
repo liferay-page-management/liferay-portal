@@ -27,7 +27,7 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -51,6 +51,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Pavel Savinov
  */
+@DataGuard(scope = DataGuard.Scope.METHOD)
 @RunWith(Arquillian.class)
 @Sync
 public class LayoutRelevanceSearchTest {
@@ -127,7 +128,6 @@ public class LayoutRelevanceSearchTest {
 		indexer.reindex(layout2);
 	}
 
-	@DeleteAfterTestRun
 	private Group _group;
 
 	@Inject

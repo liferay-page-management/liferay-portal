@@ -18,10 +18,9 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.util.BaseLayoutSearchTestCase;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.settings.LocalizedValuesMap;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -29,7 +28,6 @@ import com.liferay.portal.search.test.util.FieldValuesAssert;
 import com.liferay.portal.search.test.util.IndexerFixture;
 import com.liferay.users.admin.test.util.search.UserSearchFixture;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -41,6 +39,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Vagner B.C
  */
+@DataGuard(scope = DataGuard.Scope.METHOD)
 @RunWith(Arquillian.class)
 public class LayoutMultiLanguageSearchTest extends BaseLayoutSearchTestCase {
 
@@ -99,8 +98,6 @@ public class LayoutMultiLanguageSearchTest extends BaseLayoutSearchTestCase {
 
 	protected void setUpLayoutFixture() {
 		layoutFixture = new LayoutFixture(_group);
-
-		_layouts = layoutFixture.getLayouts();
 	}
 
 	protected void setUpLayoutIndexerFixture() {
@@ -113,10 +110,6 @@ public class LayoutMultiLanguageSearchTest extends BaseLayoutSearchTestCase {
 		userSearchFixture.setUp();
 
 		_group = userSearchFixture.addGroup();
-
-		_groups = userSearchFixture.getGroups();
-
-		_users = userSearchFixture.getUsers();
 	}
 
 	protected Locale defaultLocale;
@@ -181,14 +174,5 @@ public class LayoutMultiLanguageSearchTest extends BaseLayoutSearchTestCase {
 	private static final String _TITLE = "title";
 
 	private Group _group;
-
-	@DeleteAfterTestRun
-	private List<Group> _groups;
-
-	@DeleteAfterTestRun
-	private List<Layout> _layouts;
-
-	@DeleteAfterTestRun
-	private List<User> _users;
 
 }

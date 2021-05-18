@@ -21,7 +21,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.search.IndexerRegistry;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.search.test.util.IndexerFixture;
@@ -38,6 +38,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Ricardo Couso
  */
+@DataGuard(scope = DataGuard.Scope.METHOD)
 @RunWith(Arquillian.class)
 public class LayoutPublishedSearchTest extends BaseLayoutSearchTestCase {
 
@@ -84,7 +85,6 @@ public class LayoutPublishedSearchTest extends BaseLayoutSearchTestCase {
 	protected LayoutFixture layoutFixture;
 	protected IndexerFixture<Layout> layoutIndexerFixture;
 
-	@DeleteAfterTestRun
 	private Group _group;
 
 }

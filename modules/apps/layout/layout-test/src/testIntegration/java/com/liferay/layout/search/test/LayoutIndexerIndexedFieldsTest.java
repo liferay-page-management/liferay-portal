@@ -19,11 +19,10 @@ import com.liferay.layout.util.BaseLayoutSearchTestCase;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
@@ -39,7 +38,6 @@ import com.liferay.portal.search.test.util.IndexerFixture;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.users.admin.test.util.search.UserSearchFixture;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -53,6 +51,7 @@ import org.junit.runner.RunWith;
  * @author Igor Fabiano Nazar
  * @author Vagner B.C
  */
+@DataGuard(scope = DataGuard.Scope.METHOD)
 @RunWith(Arquillian.class)
 public class LayoutIndexerIndexedFieldsTest extends BaseLayoutSearchTestCase {
 
@@ -82,11 +81,7 @@ public class LayoutIndexerIndexedFieldsTest extends BaseLayoutSearchTestCase {
 
 		Layout layout = layoutFixture.createLayout("新しい商品");
 
-		_layouts.remove(layout);
-
 		layout = publishLayout(layout);
-
-		_layouts.add(layout);
 
 		String searchTerm = "新しい";
 
@@ -114,8 +109,6 @@ public class LayoutIndexerIndexedFieldsTest extends BaseLayoutSearchTestCase {
 
 	protected void setUpLayoutFixture() {
 		layoutFixture = new LayoutFixture(_group);
-
-		_layouts = layoutFixture.getLayouts();
 	}
 
 	protected void setUpLayoutIndexerFixture() {
@@ -128,10 +121,6 @@ public class LayoutIndexerIndexedFieldsTest extends BaseLayoutSearchTestCase {
 		userSearchFixture.setUp();
 
 		_group = userSearchFixture.addGroup();
-
-		_groups = userSearchFixture.getGroups();
-
-		_users = userSearchFixture.getUsers();
 	}
 
 	protected Locale defaultLocale;
@@ -258,14 +247,5 @@ public class LayoutIndexerIndexedFieldsTest extends BaseLayoutSearchTestCase {
 	}
 
 	private Group _group;
-
-	@DeleteAfterTestRun
-	private List<Group> _groups;
-
-	@DeleteAfterTestRun
-	private List<Layout> _layouts;
-
-	@DeleteAfterTestRun
-	private List<User> _users;
 
 }
