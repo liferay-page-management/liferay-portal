@@ -17,6 +17,7 @@ package com.liferay.portal.upgrade.v7_4_x;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.upgrade.v7_4_x.util.AssetEntryTable;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,8 +27,7 @@ import java.sql.ResultSet;
  */
 public class UpgradeAssetEntry extends UpgradeProcess {
 
-	@Override
-	protected void doUpgrade() throws Exception {
+	protected void deleteMBDiscussionAssetEntries() throws Exception {
 		StringBundler sb = new StringBundler(_CLASS_NAMES.length * 2);
 
 		for (String className : _CLASS_NAMES) {
@@ -49,6 +49,19 @@ public class UpgradeAssetEntry extends UpgradeProcess {
 		runSQL(
 			"delete from AssetEntry where classNameId in (" + sb.toString() +
 				")");
+	}
+
+	@Override
+	protected void doUpgrade() throws Exception {
+		if (!hasColumnType(
+				getTableName(AssetEntryTable.class), "title", "TEXT null")) {
+
+			alter(
+				AssetEntryTable.class,
+				new AlterColumnType("title", "TEXT null"));
+		}
+
+		deleteMBDiscussionAssetEntries();
 	}
 
 	private long _getClassNameId(String className) throws Exception {
