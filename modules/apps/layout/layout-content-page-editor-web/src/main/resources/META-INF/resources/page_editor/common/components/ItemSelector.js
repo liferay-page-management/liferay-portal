@@ -13,16 +13,29 @@
  */
 
 import {ClayButtonWithIcon} from '@clayui/button';
-import {ClayDropDownWithItems} from '@clayui/drop-down';
+import {ClayDropDownWithDrilldown} from '@clayui/drop-down';
 import ClayForm, {ClayInput} from '@clayui/form';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, {useCallback} from 'react';
+import React, {useCallback, useMemo} from 'react';
 
 import {config} from '../../app/config/index';
 import {useSelectorCallback} from '../../app/contexts/StoreContext';
 import {useId} from '../../app/utils/useId';
 import {openItemSelector} from '../../core/openItemSelector';
+
+/*
+ * This is a temporary transform until this bug
+ * https://github.com/liferay/clay/issues/4089
+ * is fixed.
+ */
+const dropDownMenuToDrilldown = (dropDownMenu) =>
+	dropDownMenu
+		.filter((item) => item.type !== 'divider')
+		.map((item) => ({
+			...item,
+			title: item.label,
+		}));
 
 export default function ItemSelector({
 	eventName,
@@ -102,20 +115,40 @@ export default function ItemSelector({
 			a.every((item, index) => item.itemId === b[index].itemId)
 	);
 
-	const selectContentIcon = selectedItem?.title ? 'change' : 'plus';
+	const mainMenu = useMemo(() => {
+		if (!showAddButton || !selectedItem?.title) {
+			return [];
+		}
 
-	const getContentButtonName = (label) =>
-		Liferay.Util.sub(
-			selectedItem?.title
-				? Liferay.Language.get('change-x')
-				: Liferay.Language.get('select-x'),
+		const changeLabel = Liferay.Util.sub(
+			Liferay.Language.get('change-x'),
 			label
 		);
 
-	const contentButtonTitle = getContentButtonName(label);
-	const contentButtonAriaLabel = getContentButtonName(
-		Liferay.Language.get('content-button')
-	);
+		const clearMenuItem = {
+			label: Liferay.Language.get('clear-selection'),
+			onClick: () => onItemSelect({}),
+		};
+
+		if (mappedItemsMenu.length) {
+			return [
+				{child: 'mappedItemsMenu', label: changeLabel},
+				clearMenuItem,
+			];
+		}
+
+		return [
+			{label: changeLabel, onClick: () => openModal()},
+			clearMenuItem,
+		];
+	}, [
+		label,
+		mappedItemsMenu,
+		onItemSelect,
+		openModal,
+		selectedItem,
+		showAddButton,
+	]);
 
 	return (
 		<ClayForm.Group className="mb-2" small>
@@ -143,45 +176,62 @@ export default function ItemSelector({
 				/>
 
 				{showAddButton &&
-					(mappedItemsMenu.length > 0 ? (
-						<ClayDropDownWithItems
-							items={mappedItemsMenu}
+					(mainMenu.length > 0 ? (
+						<ClayDropDownWithDrilldown
+							initialActiveMenu="mainMenu"
+							menus={{
+								mainMenu: dropDownMenuToDrilldown(mainMenu),
+								mappedItemsMenu: dropDownMenuToDrilldown(
+									mappedItemsMenu
+								),
+							}}
 							trigger={
 								<ClayButtonWithIcon
-									aria-label={contentButtonAriaLabel}
+									aria-label={Liferay.Util.sub(
+										Liferay.Language.get('change-x'),
+										label
+									)}
 									className="page-editor__item-selector__content-button"
 									displayType="secondary"
 									small
-									symbol={selectContentIcon}
-									title={contentButtonTitle}
+									symbol="ellipsis-v"
+								/>
+							}
+						/>
+					) : mappedItemsMenu.length > 0 ? (
+						<ClayDropDownWithDrilldown
+							initialActiveMenu="mappedItemsMenu"
+							menus={{
+								mappedItemsMenu: dropDownMenuToDrilldown(
+									mappedItemsMenu
+								),
+							}}
+							trigger={
+								<ClayButtonWithIcon
+									aria-label={Liferay.Util.sub(
+										Liferay.Language.get('select-x'),
+										label
+									)}
+									className="page-editor__item-selector__content-button"
+									displayType="secondary"
+									small
+									symbol="plus"
 								/>
 							}
 						/>
 					) : (
 						<ClayButtonWithIcon
-							aria-label={contentButtonAriaLabel}
+							aria-label={Liferay.Util.sub(
+								Liferay.Language.get('select-x'),
+								label
+							)}
 							className="page-editor__item-selector__content-button"
 							displayType="secondary"
-							onClick={openModal}
+							onClick={() => openModal()}
 							small
-							symbol={selectContentIcon}
-							title={contentButtonTitle}
+							symbol="plus"
 						/>
 					))}
-
-				{selectedItem?.title && (
-					<ClayButtonWithIcon
-						aria-label={Liferay.Language.get(
-							'clear-content-button'
-						)}
-						className="ml-2 page-editor__item-selector__content-button"
-						displayType="secondary"
-						onClick={() => onItemSelect({})}
-						small
-						symbol="times-circle"
-						title={Liferay.Language.get('clear-selection')}
-					/>
-				)}
 			</div>
 		</ClayForm.Group>
 	);
