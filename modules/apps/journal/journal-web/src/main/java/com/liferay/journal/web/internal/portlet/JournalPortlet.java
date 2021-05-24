@@ -71,6 +71,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.upload.LiferayFileItemException;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.translation.security.permission.TranslationPermission;
 import com.liferay.translation.url.provider.TranslationURLProvider;
 import com.liferay.trash.TrashHelper;
@@ -210,12 +211,28 @@ public class JournalPortlet extends MVCPortlet {
 	@Activate
 	@Modified
 	protected void activate(Map<String, Object> properties) {
-		_ddmWebConfiguration = ConfigurableUtil.createConfigurable(
-			DDMWebConfiguration.class, properties);
-		_journalFileUploadsConfiguration = ConfigurableUtil.createConfigurable(
-			JournalFileUploadsConfiguration.class, properties);
-		_journalWebConfiguration = ConfigurableUtil.createConfigurable(
-			JournalWebConfiguration.class, properties);
+		String servicePid = (String)properties.get("service.pid");
+
+		if (StringUtil.equals(
+				servicePid, DDMWebConfiguration.class.getName())) {
+
+			_ddmWebConfiguration = ConfigurableUtil.createConfigurable(
+				DDMWebConfiguration.class, properties);
+		}
+		else if (StringUtil.equals(
+					servicePid,
+					JournalFileUploadsConfiguration.class.getName())) {
+
+			_journalFileUploadsConfiguration =
+				ConfigurableUtil.createConfigurable(
+					JournalFileUploadsConfiguration.class, properties);
+		}
+		else if (StringUtil.equals(
+					servicePid, JournalWebConfiguration.class.getName())) {
+
+			_journalWebConfiguration = ConfigurableUtil.createConfigurable(
+				JournalWebConfiguration.class, properties);
+		}
 	}
 
 	@Override
