@@ -61,6 +61,7 @@ import com.liferay.journal.util.JournalConverter;
 import com.liferay.journal.web.internal.configuration.JournalWebConfiguration;
 import com.liferay.journal.web.internal.helper.JournalDDMTemplateHelper;
 import com.liferay.journal.web.internal.portlet.action.ActionUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -71,6 +72,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.upload.LiferayFileItemException;
+import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.translation.security.permission.TranslationPermission;
 import com.liferay.translation.url.provider.TranslationURLProvider;
@@ -79,6 +81,7 @@ import com.liferay.trash.util.TrashWebKeys;
 
 import java.io.IOException;
 
+import java.util.Dictionary;
 import java.util.Map;
 import java.util.Objects;
 
@@ -89,6 +92,8 @@ import javax.portlet.RenderResponse;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -166,15 +171,16 @@ public class JournalPortlet extends MVCPortlet {
 			DDMFormValuesToMapConverter.class.getName(),
 			_ddmFormValuesToMapConverter);
 		renderRequest.setAttribute(
-			DDMWebConfiguration.class.getName(), _ddmWebConfiguration);
+			DDMWebConfiguration.class.getName(), _getDDMWebConfiguration());
 		renderRequest.setAttribute(
 			FieldsToDDMFormValuesConverter.class.getName(),
 			_fieldsToDDMFormValuesConverter);
 		renderRequest.setAttribute(
 			JournalFileUploadsConfiguration.class.getName(),
-			_journalFileUploadsConfiguration);
+			_getJournalFileUploadsConfiguration());
 		renderRequest.setAttribute(
-			JournalWebConfiguration.class.getName(), _journalWebConfiguration);
+			JournalWebConfiguration.class.getName(),
+			_getJournalWebConfiguration());
 		renderRequest.setAttribute(
 			JournalWebKeys.JOURNAL_CONTENT, _journalContent);
 		renderRequest.setAttribute(
@@ -198,7 +204,8 @@ public class JournalPortlet extends MVCPortlet {
 		resourceRequest.setAttribute(
 			DDMTemplateHelper.class.getName(), _ddmTemplateHelper);
 		resourceRequest.setAttribute(
-			JournalWebConfiguration.class.getName(), _journalWebConfiguration);
+			JournalWebConfiguration.class.getName(),
+			_getJournalWebConfiguration());
 		resourceRequest.setAttribute(
 			TranslationPermission.class.getName(), _translationPermission);
 		resourceRequest.setAttribute(
@@ -335,11 +342,70 @@ public class JournalPortlet extends MVCPortlet {
 	protected void setRelease(Release release) {
 	}
 
+	private Dictionary<String, Object> _getConfigurationProperties(
+		Class<?> configurationClass) {
+
+		Configuration configuration = null;
+
+		try {
+			configuration = _configurationAdmin.getConfiguration(
+				configurationClass.getName(), StringPool.QUESTION);
+		}
+		catch (IOException ioException) {
+			return new HashMapDictionary<>();
+		}
+
+		Dictionary<String, Object> properties = configuration.getProperties();
+
+		if (properties == null) {
+			return new HashMapDictionary<>();
+		}
+
+		return properties;
+	}
+
+	private DDMWebConfiguration _getDDMWebConfiguration() {
+		if (_ddmWebConfiguration == null) {
+			_ddmWebConfiguration = ConfigurableUtil.createConfigurable(
+				DDMWebConfiguration.class,
+				_getConfigurationProperties(DDMWebConfiguration.class));
+		}
+
+		return _ddmWebConfiguration;
+	}
+
+	private JournalFileUploadsConfiguration
+		_getJournalFileUploadsConfiguration() {
+
+		if (_journalFileUploadsConfiguration == null) {
+			_journalFileUploadsConfiguration =
+				ConfigurableUtil.createConfigurable(
+					JournalFileUploadsConfiguration.class,
+					_getConfigurationProperties(
+						JournalFileUploadsConfiguration.class));
+		}
+
+		return _journalFileUploadsConfiguration;
+	}
+
+	private JournalWebConfiguration _getJournalWebConfiguration() {
+		if (_journalWebConfiguration == null) {
+			_journalWebConfiguration = ConfigurableUtil.createConfigurable(
+				JournalWebConfiguration.class,
+				_getConfigurationProperties(JournalWebConfiguration.class));
+		}
+
+		return _journalWebConfiguration;
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(JournalPortlet.class);
 
 	@Reference
 	private AssetDisplayPageFriendlyURLProvider
 		_assetDisplayPageFriendlyURLProvider;
+
+	@Reference
+	private ConfigurationAdmin _configurationAdmin;
 
 	@Reference
 	private DDMFormValuesFactory _ddmFormValuesFactory;
