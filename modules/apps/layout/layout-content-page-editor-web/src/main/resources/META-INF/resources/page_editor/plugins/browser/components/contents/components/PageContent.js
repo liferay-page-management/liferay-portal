@@ -60,6 +60,9 @@ export default function PageContent({
 	const setEditableProcessorUniqueId = useSetEditableProcessorUniqueId();
 	const toControlsId = useToControlsId();
 
+	const isBeingEdited =
+		toControlsId(editableId) === editableProcessorUniqueId;
+
 	let editURL = null;
 	let permissionsURL = null;
 	let viewUsagesURL = null;
@@ -140,7 +143,7 @@ export default function PageContent({
 	};
 
 	const onClickEditInlineText = () => {
-		if (toControlsId(editableId) === editableProcessorUniqueId) {
+		if (isBeingEdited) {
 			return;
 		}
 
@@ -242,7 +245,10 @@ export default function PageContent({
 					</ClayDropDown>
 				) : (
 					<ClayButton
-						className="btn-sm mr-2 text-secondary"
+						className={classNames('btn-sm mr-2 text-secondary', {
+							'not-allowed': isBeingEdited,
+						})}
+						disabled={isBeingEdited}
 						displayType="unstyled"
 						onClick={onClickEditInlineText}
 					>
