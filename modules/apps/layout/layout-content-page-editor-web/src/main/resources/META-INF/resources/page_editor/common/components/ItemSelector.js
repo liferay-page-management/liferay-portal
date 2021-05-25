@@ -166,7 +166,7 @@ export default function ItemSelector({
 		);
 
 		const clearMenuItem = {
-			label: Liferay.Language.get('clear-selection'),
+			label: Liferay.Language.get('remove-item'),
 			onClick: () => onItemSelect({}),
 		};
 
