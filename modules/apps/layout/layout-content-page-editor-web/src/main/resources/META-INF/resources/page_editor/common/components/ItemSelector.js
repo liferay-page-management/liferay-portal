@@ -21,6 +21,8 @@ import React, {useCallback, useMemo} from 'react';
 
 import {config} from '../../app/config/index';
 import {useSelectorCallback} from '../../app/contexts/StoreContext';
+import {selectPageContents} from '../../app/selectors/selectPageContents';
+import {deepEqual} from '../../app/utils/checkDeepEqual';
 import {useId} from '../../app/utils/useId';
 import {openItemSelector} from '../../core/openItemSelector';
 
@@ -115,6 +117,44 @@ export default function ItemSelector({
 			a.every((item, index) => item.itemId === b[index].itemId)
 	);
 
+	const pageContentsMenu = useSelectorCallback(
+		(state) => {
+			if (!selectedItem?.title) {
+				return [];
+			}
+
+			const pageContent = selectPageContents(state)?.find(
+				(content) =>
+					content.classNameId === selectedItem.classNameId &&
+					content.classPK === selectedItem.classPK
+			);
+
+			if (!pageContent) {
+				return [];
+			}
+
+			const pageContentMenu = [];
+
+			if (pageContent.actions.editURL) {
+				pageContentMenu.push({
+					href: pageContent.actions.editURL,
+					label: Liferay.Language.get('edit-item'),
+				});
+			}
+
+			if (pageContent.actions.permissionsURL) {
+				pageContentMenu.push({
+					href: pageContent.actions.permissionsURL,
+					label: Liferay.Language.get('edit-item-permissions'),
+				});
+			}
+
+			return pageContentMenu;
+		},
+		[selectedItem],
+		deepEqual
+	);
+
 	const mainMenu = useMemo(() => {
 		if (!showAddButton || !selectedItem?.title) {
 			return [];
@@ -180,7 +220,14 @@ export default function ItemSelector({
 						<ClayDropDownWithDrilldown
 							initialActiveMenu="mainMenu"
 							menus={{
-								mainMenu: dropDownMenuToDrilldown(mainMenu),
+								mainMenu: [
+									...(config.contentBrowsingEnabled
+										? dropDownMenuToDrilldown(
+												pageContentsMenu
+										  )
+										: []),
+									...dropDownMenuToDrilldown(mainMenu),
+								],
 								mappedItemsMenu: dropDownMenuToDrilldown(
 									mappedItemsMenu
 								),
@@ -232,6 +279,31 @@ export default function ItemSelector({
 							symbol="plus"
 						/>
 					))}
+
+				{config.contentBrowsingEnabled &&
+					!showAddButton &&
+					pageContentsMenu.length > 0 && (
+						<ClayDropDownWithDrilldown
+							initialActiveMenu="pageContentsMenu"
+							menus={{
+								pageContentsMenu: dropDownMenuToDrilldown(
+									pageContentsMenu
+								),
+							}}
+							trigger={
+								<ClayButtonWithIcon
+									aria-label={Liferay.Util.sub(
+										Liferay.Language.get('change-x'),
+										label
+									)}
+									className="page-editor__item-selector__content-button"
+									displayType="secondary"
+									small
+									symbol="ellipsis-v"
+								/>
+							}
+						/>
+					)}
 			</div>
 		</ClayForm.Group>
 	);
