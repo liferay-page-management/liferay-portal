@@ -76,8 +76,9 @@ definition {
 		else {
 			Click(
 				key_fieldLabel = "Content",
-				key_text = "change",
-				locator1 = "Icon#ANY_ITEM_SELECTOR");
+				locator1 = "PageEditor#ITEM_SELECTOR_DROPDOWN_TOGGLE");
+
+			MenuItem.click(menuItem = "Change Item");
 		}
 
 		if (IsElementPresent(key_menuItem = "Select Content",locator1 = "MenuItem#ANY_MENU_ITEM")) {

@@ -1141,8 +1141,9 @@ definition {
 			else {
 				Click(
 					key_fieldLabel = "Source",
-					key_text = "change",
-					locator1 = "Icon#ANY_ITEM_SELECTOR");
+					locator1 = "PageEditor#ITEM_SELECTOR_DROPDOWN_TOGGLE");
+
+				MenuItem.click(menuItem = "Change Item");
 			}
 
 			SelectFrame(locator1 = "IFrame#MODAL_BODY");
@@ -1233,8 +1234,9 @@ definition {
 			else {
 				Click(
 					key_fieldLabel = "Collection",
-					key_text = "change",
-					locator1 = "Icon#ANY_ITEM_SELECTOR");
+					locator1 = "PageEditor#ITEM_SELECTOR_DROPDOWN_TOGGLE");
+
+				MenuItem.click(menuItem = "Change Item");
 			}
 
 			SelectFrame(locator1 = "IFrame#MODAL_BODY");
@@ -1390,8 +1392,9 @@ definition {
 			else {
 				Click(
 					key_fieldLabel = "Content",
-					key_text = "change",
-					locator1 = "Icon#ANY_ITEM_SELECTOR");
+					locator1 = "PageEditor#ITEM_SELECTOR_DROPDOWN_TOGGLE");
+
+				MenuItem.click(menuItem = "Change Item");
 			}
 
 			SelectFrame(locator1 = "IFrame#MODAL_BODY");
@@ -2454,8 +2457,9 @@ definition {
 		else {
 			Click(
 				key_fieldLabel = "Content",
-				key_text = "change",
-				locator1 = "Icon#ANY_ITEM_SELECTOR");
+				locator1 = "PageEditor#ITEM_SELECTOR_DROPDOWN_TOGGLE");
+
+			MenuItem.click(menuItem = "Change Item");
 		}
 
 		SelectFrame(locator1 = "IFrame#MODAL_BODY");
