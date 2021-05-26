@@ -207,10 +207,11 @@ definition {
 				locator1 = "PageEditor#NAV_ITEM_BUTTON",
 				value1 = "Mapping");
 
-			AssertVisible(
+			Click(
 				key_fieldLabel = "Content",
-				key_text = "change",
-				locator1 = "Icon#ANY_ITEM_SELECTOR");
+				locator1 = "PageEditor#ITEM_SELECTOR_DROPDOWN_TOGGLE");
+
+			MenuItem.viewPresent(menuItem = "Change Item");
 
 			PageEditor.clickManagementBar();
 		}
