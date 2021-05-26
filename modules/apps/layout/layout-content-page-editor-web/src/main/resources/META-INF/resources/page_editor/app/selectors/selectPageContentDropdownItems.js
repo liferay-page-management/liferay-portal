@@ -16,7 +16,9 @@ import {openModal} from 'frontend-js-web';
 
 import {selectPageContents} from './selectPageContents';
 
-export const selectPageContentDropdownItems = (classPK) => (state) => {
+export const selectPageContentDropdownItems = (classPK, itemName = '') => (
+	state
+) => {
 	const pageContent = selectPageContents(state)?.find(
 		(pageContent) => pageContent.classPK === classPK
 	);
@@ -32,16 +34,28 @@ export const selectPageContentDropdownItems = (classPK) => (state) => {
 	if (editURL) {
 		dropdownItems.push({
 			href: editURL,
-			label: Liferay.Language.get('edit'),
+			label: itemName
+				? Liferay.Util.sub(Liferay.Language.get('edit-x'), itemName)
+				: Liferay.Language.get('edit'),
 		});
 	}
 
 	if (permissionsURL) {
 		dropdownItems.push({
-			label: Liferay.Language.get('permissions'),
+			label: itemName
+				? Liferay.Util.sub(
+						Liferay.Language.get('x-permissions'),
+						itemName
+				  )
+				: Liferay.Language.get('permissions'),
 			onClick: () =>
 				openModal({
-					title: Liferay.Language.get('permissions'),
+					title: itemName
+						? Liferay.Util.sub(
+								Liferay.Language.get('x-permissions'),
+								itemName
+						  )
+						: Liferay.Language.get('permissions'),
 					url: permissionsURL,
 				}),
 		});
@@ -49,10 +63,20 @@ export const selectPageContentDropdownItems = (classPK) => (state) => {
 
 	if (viewUsagesURL) {
 		dropdownItems.push({
-			label: Liferay.Language.get('view-usages'),
+			label: itemName
+				? Liferay.Util.sub(
+						Liferay.Language.get('view-x-usages'),
+						itemName
+				  )
+				: Liferay.Language.get('view-usages'),
 			onClick: () =>
 				openModal({
-					title: Liferay.Language.get('view-usages'),
+					title: itemName
+						? Liferay.Util.sub(
+								Liferay.Language.get('view-x-usages'),
+								itemName
+						  )
+						: Liferay.Language.get('view-usages'),
 					url: viewUsagesURL,
 				}),
 		});

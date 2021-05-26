@@ -21,8 +21,7 @@ import React, {useCallback, useMemo} from 'react';
 
 import {config} from '../../app/config/index';
 import {useSelectorCallback} from '../../app/contexts/StoreContext';
-import {selectPageContents} from '../../app/selectors/selectPageContents';
-import {deepEqual} from '../../app/utils/checkDeepEqual';
+import {selectPageContentDropdownItems} from '../../app/selectors/selectPageContentDropdownItems';
 import {useId} from '../../app/utils/useId';
 import {openItemSelector} from '../../core/openItemSelector';
 
@@ -103,7 +102,10 @@ export default function ItemSelector({
 						type: 'divider',
 					},
 					{
-						label: `${Liferay.Language.get('select-content')}...`,
+						label: `${Liferay.Util.sub(
+							Liferay.Language.get('select-x'),
+							label
+						)}...`,
 						onClick: () => openModal(),
 					}
 				);
@@ -118,41 +120,14 @@ export default function ItemSelector({
 	);
 
 	const pageContentsMenu = useSelectorCallback(
-		(state) => {
-			if (!selectedItem?.title) {
-				return [];
-			}
-
-			const pageContent = selectPageContents(state)?.find(
-				(content) =>
-					content.classNameId === selectedItem.classNameId &&
-					content.classPK === selectedItem.classPK
-			);
-
-			if (!pageContent) {
-				return [];
-			}
-
-			const pageContentMenu = [];
-
-			if (pageContent.actions.editURL) {
-				pageContentMenu.push({
-					href: pageContent.actions.editURL,
-					label: Liferay.Language.get('edit-item'),
-				});
-			}
-
-			if (pageContent.actions.permissionsURL) {
-				pageContentMenu.push({
-					href: pageContent.actions.permissionsURL,
-					label: Liferay.Language.get('edit-item-permissions'),
-				});
-			}
-
-			return pageContentMenu;
-		},
-		[selectedItem],
-		deepEqual
+		(state) =>
+			(selectedItem?.classPK &&
+				selectPageContentDropdownItems(
+					selectedItem.classPK,
+					label
+				)(state)) ||
+			[],
+		[label, selectedItem]
 	);
 
 	const mainMenu = useMemo(() => {
@@ -160,25 +135,32 @@ export default function ItemSelector({
 			return [];
 		}
 
-		const changeLabel = Liferay.Util.sub(
-			Liferay.Language.get('change-x'),
-			label
-		);
-
 		const clearMenuItem = {
-			label: Liferay.Language.get('remove-item'),
+			label: Liferay.Util.sub(Liferay.Language.get('remove-x'), label),
 			onClick: () => onItemSelect({}),
 		};
 
 		if (mappedItemsMenu.length) {
 			return [
-				{child: 'mappedItemsMenu', label: changeLabel},
+				{
+					child: 'mappedItemsMenu',
+					label: Liferay.Util.sub(
+						Liferay.Language.get('change-x'),
+						label
+					),
+				},
 				clearMenuItem,
 			];
 		}
 
 		return [
-			{label: changeLabel, onClick: () => openModal()},
+			{
+				label: Liferay.Util.sub(
+					Liferay.Language.get('change-x'),
+					label
+				),
+				onClick: () => openModal(),
+			},
 			clearMenuItem,
 		];
 	}, [
