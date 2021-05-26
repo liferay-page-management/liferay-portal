@@ -84,15 +84,15 @@ describe('ItemSelector', () => {
 	it('renders the aria label button correctly when no item is selected', () => {
 		const {getByLabelText} = renderItemSelector({});
 
-		expect(getByLabelText('select-content-button')).toBeInTheDocument();
+		expect(getByLabelText('select-itemSelectorLabel')).toBeInTheDocument();
 	});
 
 	it('renders the aria label button correctly when an item is selected', () => {
 		const selectedItemTitle = 'itemTitle';
 
-		const {getByLabelText} = renderItemSelector({selectedItemTitle});
+		const {getByText} = renderItemSelector({selectedItemTitle});
 
-		expect(getByLabelText('change-content-button')).toBeInTheDocument();
+		expect(getByText('change-itemSelectorLabel')).toBeInTheDocument();
 	});
 
 	it('shows selected item title correctly when receiving it in props', () => {
@@ -116,7 +116,7 @@ describe('ItemSelector', () => {
 	it('calls openItemSelector when there are not mapping items and plus button is clicked', () => {
 		const {getByLabelText} = renderItemSelector({});
 
-		fireEvent.click(getByLabelText('select-content-button'));
+		fireEvent.click(getByLabelText('select-itemSelectorLabel'));
 
 		expect(openItemSelector).toBeCalled();
 	});
@@ -126,11 +126,9 @@ describe('ItemSelector', () => {
 			{classNameId: '001', classPK: '002', title: 'Mapped Item Title'},
 		];
 
-		const {getByLabelText, getByText} = renderItemSelector({
+		const {getByText} = renderItemSelector({
 			mappedInfoItems,
 		});
-
-		fireEvent.click(getByLabelText('select-content-button'));
 
 		expect(getByText('Mapped Item Title')).toBeInTheDocument();
 
@@ -140,11 +138,11 @@ describe('ItemSelector', () => {
 	it('removes selected item correctly when clear button is clicked', () => {
 		const selectedItemTitle = 'itemTitle';
 
-		const {getByLabelText} = renderItemSelector({
+		const {getByLabelText, getByText} = renderItemSelector({
 			selectedItemTitle,
 		});
 
-		fireEvent.click(getByLabelText('clear-content-button'));
+		fireEvent.click(getByText('remove-itemSelectorLabel'));
 
 		expect(getByLabelText('itemSelectorLabel')).toBeEmpty();
 	});
