@@ -501,6 +501,8 @@ public interface LayoutService extends BaseService {
 	public boolean hasPortletId(long plid, String portletId)
 		throws PortalException;
 
+	public Layout publishLayout(long plid) throws Exception;
+
 	/**
 	 * Schedules a range of layouts to be published.
 	 *
