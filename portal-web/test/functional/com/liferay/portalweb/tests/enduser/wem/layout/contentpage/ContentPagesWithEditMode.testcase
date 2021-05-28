@@ -208,7 +208,7 @@ definition {
 				value1 = "Mapping");
 
 			Click(
-				key_fieldLabel = "Content",
+				key_fieldLabel = "Item",
 				locator1 = "PageEditor#ITEM_SELECTOR_DROPDOWN_TOGGLE");
 
 			MenuItem.viewPresent(menuItem = "Change Item");
