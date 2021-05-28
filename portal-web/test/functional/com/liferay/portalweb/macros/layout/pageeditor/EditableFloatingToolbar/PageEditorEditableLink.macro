@@ -77,8 +77,9 @@ definition {
 		else {
 			Click(
 				key_fieldLabel = "Page",
-				key_text = "change",
-				locator1 = "Icon#ANY_ITEM_SELECTOR");
+				locator1 = "PageEditor#ITEM_SELECTOR_DROPDOWN_TOGGLE");
+
+			MenuItem.click(menuItem = "Change Page");
 		}
 
 		SelectFrame(locator1 = "IFrame#MODAL_BODY");
