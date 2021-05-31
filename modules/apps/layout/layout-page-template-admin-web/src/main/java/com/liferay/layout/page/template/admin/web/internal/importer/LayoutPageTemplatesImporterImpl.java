@@ -1064,12 +1064,15 @@ public class LayoutPageTemplatesImporterImpl
 				for (PageElement childPageElement :
 						pageElement.getPageElements()) {
 
-					_processPageElement(
-						layout, layoutStructure, childPageElement,
-						rootLayoutStructureItem.getItemId(), position,
-						warningMessages);
+					LayoutStructureItem layoutStructureItem =
+						_processPageElement(
+							layout, layoutStructure, childPageElement,
+							rootLayoutStructureItem.getItemId(), position,
+							warningMessages);
 
-					position++;
+					if (layoutStructureItem != null) {
+						position++;
+					}
 				}
 			}
 
@@ -1085,7 +1088,7 @@ public class LayoutPageTemplatesImporterImpl
 		_updateLayouts(layoutPageTemplateEntry);
 	}
 
-	private void _processPageElement(
+	private LayoutStructureItem _processPageElement(
 			Layout layout, LayoutStructure layoutStructure,
 			PageElement pageElement, String parentItemId, int position,
 			Set<String> warningMessages)
@@ -1107,25 +1110,29 @@ public class LayoutPageTemplatesImporterImpl
 			layoutStructureItem = layoutStructure.getMainLayoutStructureItem();
 		}
 		else {
-			return;
+			return null;
 		}
 
 		if ((layoutStructureItem == null) ||
 			(pageElement.getPageElements() == null)) {
 
-			return;
+			return null;
 		}
 
 		int childPosition = 0;
 
 		for (PageElement childPageElement : pageElement.getPageElements()) {
-			_processPageElement(
+			LayoutStructureItem childLayoutStructureItem = _processPageElement(
 				layout, layoutStructure, childPageElement,
 				layoutStructureItem.getItemId(), childPosition,
 				warningMessages);
 
-			childPosition++;
+			if (childLayoutStructureItem != null) {
+				childPosition++;
+			}
 		}
+
+		return layoutStructureItem;
 	}
 
 	private void _processPageTemplateEntries(
