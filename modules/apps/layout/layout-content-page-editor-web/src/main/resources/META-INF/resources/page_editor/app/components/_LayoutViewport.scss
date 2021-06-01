@@ -12,10 +12,6 @@
 		padding-right ease $defaultTransitionDuration;
 	will-change: padding-left, padding-right;
 
-	&__resizer {
-		background-color: $light-l2;
-	}
-
 	&--size {
 		&-desktop {
 			padding-right: $sidebarButtonWidth;

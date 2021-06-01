@@ -13,27 +13,34 @@
  */
 
 import classNames from 'classnames';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 
 import debounceRAF from '../../core/debounceRAF';
 import {VIEWPORT_SIZES} from '../config/constants/viewportSizes';
 import {config} from '../config/index';
 import {useSelectItem} from '../contexts/ControlsContext';
-import {GlobalContextFrame} from '../contexts/GlobalContext';
+import {GlobalContextFrame, useGlobalContext} from '../contexts/GlobalContext';
 import {useSelector} from '../contexts/StoreContext';
 import DisabledArea from './DisabledArea';
 import Layout from './Layout';
 import MasterLayout from './MasterLayout';
 
 export default function LayoutViewport() {
-	const handleRef = useRef();
 	const [element, setElement] = useState(null);
+	const globalContext = useGlobalContext();
+	const handleRef = useRef();
 	const [layoutWidth, setLayoutWidth] = useState();
 	const [resizing, setResizing] = useState(false);
 	const selectItem = useSelectItem();
 	const mainItemId = useSelector((state) => state.layoutData.rootItems.main);
 	const masterLayoutData = useSelector(
 		(state) => state.masterLayout?.masterLayoutData
+	);
+	const resizerBackgroundColor = useMemo(
+		() =>
+			globalContext.window.getComputedStyle(globalContext.document.body)
+				.backgroundColor || 'white',
+		[globalContext]
 	);
 	const selectedViewportSize = useSelector(
 		(state) => state.selectedViewportSize
@@ -124,7 +131,10 @@ export default function LayoutViewport() {
 			<div
 				className="page-editor__layout-viewport__resizer"
 				ref={setElement}
-				style={{width: layoutWidth}}
+				style={{
+					backgroundColor: resizerBackgroundColor,
+					width: layoutWidth,
+				}}
 			>
 				<GlobalContextFrame
 					useIframe={selectedViewportSize !== VIEWPORT_SIZES.desktop}
