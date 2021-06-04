@@ -1,0 +1,1288 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x00007fa9ba8b68e1, pid=56639, tid=0x00007fa9de58a640
+#
+# JRE version: Java(TM) SE Runtime Environment (8.0_291-b10) (build 1.8.0_291-b10)
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (25.291-b10 mixed mode linux-amd64 compressed oops)
+# Problematic frame:
+# C  [libawt_xawt.so+0x468e1]  ReadRegionsInList.constprop.5+0x671
+#
+# Core dump written. Default location: /home/p2kmgcl/Projects/community-portal/liferay-portal/portal-web/core or core.56639
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.java.com/bugreport/crash.jsp
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007faa0c7be800):  JavaThread "Test worker" [_thread_in_native, id=56665, stack(0x00007fa9de48a000,0x00007fa9de58b000)]
+
+siginfo: si_signo: 11 (SIGSEGV), si_code: 1 (SEGV_MAPERR), si_addr: 0x0000000000000068
+
+Registers:
+RAX=0x0000000000000000, RBX=0x00007fa9944007c0, RCX=0x0000000000000a00, RDX=0x0000000000000000
+RSP=0x00007fa9de586370, RBP=0x00007fa9de586430, RSI=0x0000000000000000, RDI=0x0000000000000000
+R8 =0x0000000000000000, R9 =0x00007fa994402060, R10=0x0000000000000077, R11=0x00007fa9944027e0
+R12=0x0000000000000000, R13=0x0000000000000000, R14=0x00007fa994400700, R15=0x00007fa9944006b0
+RIP=0x00007fa9ba8b68e1, EFLAGS=0x0000000000010246, CSGSFS=0x002b000000000033, ERR=0x0000000000000004
+  TRAPNO=0x000000000000000e
+
+Top of Stack: (sp=0x00007fa9de586370)
+0x00007fa9de586370:   05a00a0000000000 00007fa9944007c0
+0x00007fa9de586380:   0000000000000a00 000005a000000002
+0x00007fa9de586390:   0000000000000000 00000000000009ff
+0x00007fa9de5863a0:   00007fa99415b1a0 00000000000005a0
+0x00007fa9de5863b0:   00007fa994400660 0000000000000000
+0x00007fa9de5863c0:   00000a0000000000 0000000000000000
+0x00007fa9de5863d0:   0000000000000a00 0000000000000000
+0x00007fa9de5863e0:   0000000000000000 0000000000000000
+0x00007fa9de5863f0:   0000000000000008 0000001000000000
+0x00007fa9de586400:   0000001800000000 05a00a0000000000
+0x00007fa9de586410:   0000000000000a00 0000000000000000
+0x00007fa9de586420:   00007fa9de5864a0 00000000000005a0
+0x00007fa9de586430:   00007fa9de586510 00007fa9ba8b6eb6
+0x00007fa9de586440:   00007fa994400600 00007fa9ba8b6e74
+0x00007fa9de586450:   0000000000420000 0000000000000000
+0x00007fa9de586460:   00007fa99415b1a0 00007fa900000001
+0x00007fa9de586470:   00007fa9000005a0 00007fa99415b1a0
+0x00007fa9de586480:   00007fa9de5865d8 00007fa99415b1a0
+0x00007fa9de586490:   00000000de5865d8 0000000000000000
+0x00007fa9de5864a0:   0000000000000000 00007fa9de5864d4
+0x00007fa9de5864b0:   00007fa900000005 0000000000ff0000
+0x00007fa9de5864c0:   000000000000ff00 00000000000000ff
+0x00007fa9de5864d0:   0000010000000008 05a00a0000000000
+0x00007fa9de5864e0:   0000000000000000 00007faa0c7bea00
+0x00007fa9de5864f0:   0000000000000000 00007fa99415b1a0
+0x00007fa9de586500:   0000000000000a00 000000000000006a
+0x00007fa9de586510:   00007fa9de586650 00007fa9ba8a8213
+0x00007fa9de586520:   00000000000000a8 00007fa9943fd620
+0x00007fa9de586530:   0000000000000000 0000000000000000
+0x00007fa9de586540:   00000000000000a8 00007fa9944000b0
+0x00007fa9de586550:   00007fa994400600 0000000000000000
+0x00007fa9de586560:   0000000000000002 0000000000000000 
+
+Instructions: (pc=0x00007fa9ba8b68e1)
+0x00007fa9ba8b68c1:   49 8d 45 01 45 31 ed 48 89 45 a0 4c 89 e8 4d 89
+0x00007fa9ba8b68d1:   e5 49 89 c4 0f 1f 00 44 89 e6 8b 55 b0 4c 89 ef
+0x00007fa9ba8b68e1:   41 ff 55 68 49 8b 7f 08 0f b6 4d cc 48 98 48 8b
+0x00007fa9ba8b68f1:   57 18 48 8b 77 20 48 21 c2 48 21 c6 48 23 47 28 
+
+Register to memory mapping:
+
+RAX=0x0000000000000000 is an unknown value
+RBX=0x00007fa9944007c0 is an unknown value
+RCX=0x0000000000000a00 is an unknown value
+RDX=0x0000000000000000 is an unknown value
+RSP=0x00007fa9de586370 is pointing into the stack for thread: 0x00007faa0c7be800
+RBP=0x00007fa9de586430 is pointing into the stack for thread: 0x00007faa0c7be800
+RSI=0x0000000000000000 is an unknown value
+RDI=0x0000000000000000 is an unknown value
+R8 =0x0000000000000000 is an unknown value
+R9 =0x00007fa994402060 is an unknown value
+R10=0x0000000000000077 is an unknown value
+R11=0x00007fa9944027e0 is an unknown value
+R12=0x0000000000000000 is an unknown value
+R13=0x0000000000000000 is an unknown value
+R14=0x00007fa994400700 is an unknown value
+R15=0x00007fa9944006b0 is an unknown value
+
+
+Stack: [0x00007fa9de48a000,0x00007fa9de58b000],  sp=0x00007fa9de586370,  free space=1008k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [libawt_xawt.so+0x468e1]  ReadRegionsInList.constprop.5+0x671
+C  [libawt_xawt.so+0x46eb6]  ReadAreaToImage+0x86
+C  [libawt_xawt.so+0x38213]  Java_sun_awt_X11_XRobotPeer_getRGBPixelsImpl+0x273
+j  sun.awt.X11.XRobotPeer.getRGBPixelsImpl(Lsun/awt/X11GraphicsConfig;IIII[I)V+0
+j  sun.awt.X11.XRobotPeer.getRGBPixels(Ljava/awt/Rectangle;)[I+33
+j  java.awt.Robot.createScreenCapture(Ljava/awt/Rectangle;)Ljava/awt/image/BufferedImage;+50
+j  com.liferay.poshi.runner.selenium.LiferaySeleniumUtil.captureScreen(Ljava/lang/String;)V+49
+j  com.liferay.poshi.runner.logger.CommandLogger._takeScreenshot(Ljava/lang/String;I)V+58
+j  com.liferay.poshi.runner.logger.CommandLogger.startCommand(Lorg/dom4j/Element;Lcom/liferay/poshi/runner/logger/SyntaxLogger;)V+16
+j  com.liferay.poshi.runner.logger.PoshiLogger.startCommand(Lorg/dom4j/Element;)V+9
+j  com.liferay.poshi.runner.PoshiRunnerExecutor.runFunctionExecuteElement(Lorg/dom4j/Element;)V+476
+j  com.liferay.poshi.runner.PoshiRunnerExecutor.evaluateConditionalElement(Lorg/dom4j/Element;)Z+109
+j  com.liferay.poshi.runner.PoshiRunnerExecutor.evaluateConditionalElement(Lorg/dom4j/Element;)Z+389
+j  com.liferay.poshi.runner.PoshiRunnerExecutor.runIfElement(Lorg/dom4j/Element;)V+24
+j  com.liferay.poshi.runner.PoshiRunnerExecutor.parseElement(Lorg/dom4j/Element;)V+202
+j  com.liferay.poshi.runner.PoshiRunnerExecutor.runMacroCommandElement(Lorg/dom4j/Element;Ljava/lang/String;)V+78
+j  com.liferay.poshi.runner.PoshiRunnerExecutor.runMacroExecuteElement(Lorg/dom4j/Element;Ljava/lang/String;)V+96
+j  com.liferay.poshi.runner.PoshiRunnerExecutor.parseElement(Lorg/dom4j/Element;)V+120
+j  com.liferay.poshi.runner.PoshiRunnerExecutor.runTaskElement(Lorg/dom4j/Element;)V+10
+j  com.liferay.poshi.runner.PoshiRunnerExecutor.parseElement(Lorg/dom4j/Element;)V+297
+j  com.liferay.poshi.runner.PoshiRunnerExecutor.runTestCaseCommandElement(Lorg/dom4j/Element;Ljava/lang/String;)V+71
+j  com.liferay.poshi.runner.PoshiRunner._runNamespacedClassCommandName(Ljava/lang/String;)V+46
+j  com.liferay.poshi.runner.PoshiRunner._runSetUp()V+55
+j  com.liferay.poshi.runner.PoshiRunner.setUp()V+87
+v  ~StubRoutines::call_stub
+V  [libjvm.so+0x68b16a]  JavaCalls::call_helper(JavaValue*, methodHandle*, JavaCallArguments*, Thread*)+0xe1a
+V  [libjvm.so+0x9a1b98]  Reflection::invoke(instanceKlassHandle, methodHandle, Handle, bool, objArrayHandle, BasicType, objArrayHandle, bool, Thread*)+0xae8
+V  [libjvm.so+0x9a3566]  Reflection::invoke_method(oopDesc*, Handle, objArrayHandle, Thread*)+0x126
+V  [libjvm.so+0x702545]  JVM_InvokeMethod+0x115
+j  sun.reflect.NativeMethodAccessorImpl.invoke0(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+0
+j  sun.reflect.NativeMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+100
+J 3475 C1 sun.reflect.DelegatingMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object; (10 bytes) @ 0x00007fa9fd7c1744 [0x00007fa9fd7c1640+0x104]
+j  java.lang.reflect.Method.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+56
+j  org.junit.runners.model.FrameworkMethod$1.runReflectiveCall()Ljava/lang/Object;+15
+j  org.junit.internal.runners.model.ReflectiveCallable.run()Ljava/lang/Object;+1
+j  org.junit.runners.model.FrameworkMethod.invokeExplosively(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+10
+j  org.junit.internal.runners.statements.RunBefores.invokeMethod(Lorg/junit/runners/model/FrameworkMethod;)V+9
+j  org.junit.internal.runners.statements.RunBefores.evaluate()V+31
+j  org.junit.internal.runners.statements.RunAfters.evaluate()V+12
+j  com.liferay.poshi.runner.PoshiRunner$RetryTestRule$RetryStatement.evaluate()V+4
+j  org.junit.runners.ParentRunner$3.evaluate()V+4
+j  org.junit.runners.BlockJUnit4ClassRunner$1.evaluate()V+11
+j  org.junit.runners.ParentRunner.runLeaf(Lorg/junit/runners/model/Statement;Lorg/junit/runner/Description;Lorg/junit/runner/notification/RunNotifier;)V+17
+j  org.junit.runners.BlockJUnit4ClassRunner.runChild(Lorg/junit/runners/model/FrameworkMethod;Lorg/junit/runner/notification/RunNotifier;)V+38
+j  org.junit.runners.BlockJUnit4ClassRunner.runChild(Ljava/lang/Object;Lorg/junit/runner/notification/RunNotifier;)V+6
+j  org.junit.runners.ParentRunner$4.run()V+12
+j  org.junit.runners.ParentRunner$1.schedule(Ljava/lang/Runnable;)V+1
+j  org.junit.runners.ParentRunner.runChildren(Lorg/junit/runner/notification/RunNotifier;)V+44
+j  org.junit.runners.ParentRunner.access$100(Lorg/junit/runners/ParentRunner;Lorg/junit/runner/notification/RunNotifier;)V+2
+j  org.junit.runners.ParentRunner$2.evaluate()V+8
+j  org.junit.runners.ParentRunner.run(Lorg/junit/runner/notification/RunNotifier;)V+24
+j  org.junit.runners.Suite.runChild(Lorg/junit/runner/Runner;Lorg/junit/runner/notification/RunNotifier;)V+2
+j  org.junit.runners.Suite.runChild(Ljava/lang/Object;Lorg/junit/runner/notification/RunNotifier;)V+6
+j  org.junit.runners.ParentRunner$4.run()V+12
+j  org.junit.runners.ParentRunner$1.schedule(Ljava/lang/Runnable;)V+1
+j  org.junit.runners.ParentRunner.runChildren(Lorg/junit/runner/notification/RunNotifier;)V+44
+j  org.junit.runners.ParentRunner.access$100(Lorg/junit/runners/ParentRunner;Lorg/junit/runner/notification/RunNotifier;)V+2
+j  org.junit.runners.ParentRunner$2.evaluate()V+8
+j  org.junit.internal.runners.statements.RunAfters.evaluate()V+12
+j  org.junit.runners.ParentRunner$3.evaluate()V+4
+j  org.junit.runners.ParentRunner.run(Lorg/junit/runner/notification/RunNotifier;)V+24
+j  org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.runTestClass(Ljava/lang/String;)V+296
+j  org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute(Ljava/lang/String;)V+14
+j  org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute(Ljava/lang/Object;)V+5
+j  org.gradle.api.internal.tasks.testing.junit.AbstractJUnitTestClassProcessor.processTestClass(Lorg/gradle/api/internal/tasks/testing/TestClassRunInfo;)V+26
+j  org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(Lorg/gradle/api/internal/tasks/testing/TestClassRunInfo;)V+5
+v  ~StubRoutines::call_stub
+V  [libjvm.so+0x68b16a]  JavaCalls::call_helper(JavaValue*, methodHandle*, JavaCallArguments*, Thread*)+0xe1a
+V  [libjvm.so+0x9a1b98]  Reflection::invoke(instanceKlassHandle, methodHandle, Handle, bool, objArrayHandle, BasicType, objArrayHandle, bool, Thread*)+0xae8
+V  [libjvm.so+0x9a3566]  Reflection::invoke_method(oopDesc*, Handle, objArrayHandle, Thread*)+0x126
+V  [libjvm.so+0x702545]  JVM_InvokeMethod+0x115
+j  sun.reflect.NativeMethodAccessorImpl.invoke0(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+0
+j  sun.reflect.NativeMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+100
+j  sun.reflect.DelegatingMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+6
+j  java.lang.reflect.Method.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+56
+j  org.gradle.internal.dispatch.ReflectionDispatch.dispatch(Lorg/gradle/internal/dispatch/MethodInvocation;)V+19
+j  org.gradle.internal.dispatch.ReflectionDispatch.dispatch(Ljava/lang/Object;)V+5
+j  org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(Ljava/lang/Object;)V+22
+j  org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(Ljava/lang/Object;Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;+177
+j  com.sun.proxy.$Proxy2.processTestClass(Lorg/gradle/api/internal/tasks/testing/TestClassRunInfo;)V+16
+j  org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(Lorg/gradle/api/internal/tasks/testing/TestClassRunInfo;)V+13
+v  ~StubRoutines::call_stub
+V  [libjvm.so+0x68b16a]  JavaCalls::call_helper(JavaValue*, methodHandle*, JavaCallArguments*, Thread*)+0xe1a
+V  [libjvm.so+0x9a1b98]  Reflection::invoke(instanceKlassHandle, methodHandle, Handle, bool, objArrayHandle, BasicType, objArrayHandle, bool, Thread*)+0xae8
+V  [libjvm.so+0x9a3566]  Reflection::invoke_method(oopDesc*, Handle, objArrayHandle, Thread*)+0x126
+V  [libjvm.so+0x702545]  JVM_InvokeMethod+0x115
+j  sun.reflect.NativeMethodAccessorImpl.invoke0(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+0
+j  sun.reflect.NativeMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+100
+j  sun.reflect.DelegatingMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+6
+j  java.lang.reflect.Method.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+56
+j  org.gradle.internal.dispatch.ReflectionDispatch.dispatch(Lorg/gradle/internal/dispatch/MethodInvocation;)V+19
+j  org.gradle.internal.dispatch.ReflectionDispatch.dispatch(Ljava/lang/Object;)V+5
+j  org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch(Lorg/gradle/internal/dispatch/MethodInvocation;)V+5
+j  org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch(Ljava/lang/Object;)V+5
+j  org.gradle.internal.remote.internal.hub.MessageHub$Handler.run()V+174
+j  org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(Ljava/lang/Runnable;)V+1
+j  org.gradle.internal.concurrent.ManagedExecutorImpl$1.run()V+25
+j  java.util.concurrent.ThreadPoolExecutor.runWorker(Ljava/util/concurrent/ThreadPoolExecutor$Worker;)V+95
+j  java.util.concurrent.ThreadPoolExecutor$Worker.run()V+5
+j  org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run()V+7
+...<more frames>...
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+j  sun.awt.X11.XRobotPeer.getRGBPixelsImpl(Lsun/awt/X11GraphicsConfig;IIII[I)V+0
+j  sun.awt.X11.XRobotPeer.getRGBPixels(Ljava/awt/Rectangle;)[I+33
+j  java.awt.Robot.createScreenCapture(Ljava/awt/Rectangle;)Ljava/awt/image/BufferedImage;+50
+j  com.liferay.poshi.runner.selenium.LiferaySeleniumUtil.captureScreen(Ljava/lang/String;)V+49
+j  com.liferay.poshi.runner.logger.CommandLogger._takeScreenshot(Ljava/lang/String;I)V+58
+j  com.liferay.poshi.runner.logger.CommandLogger.startCommand(Lorg/dom4j/Element;Lcom/liferay/poshi/runner/logger/SyntaxLogger;)V+16
+j  com.liferay.poshi.runner.logger.PoshiLogger.startCommand(Lorg/dom4j/Element;)V+9
+j  com.liferay.poshi.runner.PoshiRunnerExecutor.runFunctionExecuteElement(Lorg/dom4j/Element;)V+476
+j  com.liferay.poshi.runner.PoshiRunnerExecutor.evaluateConditionalElement(Lorg/dom4j/Element;)Z+109
+j  com.liferay.poshi.runner.PoshiRunnerExecutor.evaluateConditionalElement(Lorg/dom4j/Element;)Z+389
+j  com.liferay.poshi.runner.PoshiRunnerExecutor.runIfElement(Lorg/dom4j/Element;)V+24
+j  com.liferay.poshi.runner.PoshiRunnerExecutor.parseElement(Lorg/dom4j/Element;)V+202
+j  com.liferay.poshi.runner.PoshiRunnerExecutor.runMacroCommandElement(Lorg/dom4j/Element;Ljava/lang/String;)V+78
+j  com.liferay.poshi.runner.PoshiRunnerExecutor.runMacroExecuteElement(Lorg/dom4j/Element;Ljava/lang/String;)V+96
+j  com.liferay.poshi.runner.PoshiRunnerExecutor.parseElement(Lorg/dom4j/Element;)V+120
+j  com.liferay.poshi.runner.PoshiRunnerExecutor.runTaskElement(Lorg/dom4j/Element;)V+10
+j  com.liferay.poshi.runner.PoshiRunnerExecutor.parseElement(Lorg/dom4j/Element;)V+297
+j  com.liferay.poshi.runner.PoshiRunnerExecutor.runTestCaseCommandElement(Lorg/dom4j/Element;Ljava/lang/String;)V+71
+j  com.liferay.poshi.runner.PoshiRunner._runNamespacedClassCommandName(Ljava/lang/String;)V+46
+j  com.liferay.poshi.runner.PoshiRunner._runSetUp()V+55
+j  com.liferay.poshi.runner.PoshiRunner.setUp()V+87
+v  ~StubRoutines::call_stub
+j  sun.reflect.NativeMethodAccessorImpl.invoke0(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+0
+j  sun.reflect.NativeMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+100
+J 3475 C1 sun.reflect.DelegatingMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object; (10 bytes) @ 0x00007fa9fd7c1744 [0x00007fa9fd7c1640+0x104]
+j  java.lang.reflect.Method.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+56
+j  org.junit.runners.model.FrameworkMethod$1.runReflectiveCall()Ljava/lang/Object;+15
+j  org.junit.internal.runners.model.ReflectiveCallable.run()Ljava/lang/Object;+1
+j  org.junit.runners.model.FrameworkMethod.invokeExplosively(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+10
+j  org.junit.internal.runners.statements.RunBefores.invokeMethod(Lorg/junit/runners/model/FrameworkMethod;)V+9
+j  org.junit.internal.runners.statements.RunBefores.evaluate()V+31
+j  org.junit.internal.runners.statements.RunAfters.evaluate()V+12
+j  com.liferay.poshi.runner.PoshiRunner$RetryTestRule$RetryStatement.evaluate()V+4
+j  org.junit.runners.ParentRunner$3.evaluate()V+4
+j  org.junit.runners.BlockJUnit4ClassRunner$1.evaluate()V+11
+j  org.junit.runners.ParentRunner.runLeaf(Lorg/junit/runners/model/Statement;Lorg/junit/runner/Description;Lorg/junit/runner/notification/RunNotifier;)V+17
+j  org.junit.runners.BlockJUnit4ClassRunner.runChild(Lorg/junit/runners/model/FrameworkMethod;Lorg/junit/runner/notification/RunNotifier;)V+38
+j  org.junit.runners.BlockJUnit4ClassRunner.runChild(Ljava/lang/Object;Lorg/junit/runner/notification/RunNotifier;)V+6
+j  org.junit.runners.ParentRunner$4.run()V+12
+j  org.junit.runners.ParentRunner$1.schedule(Ljava/lang/Runnable;)V+1
+j  org.junit.runners.ParentRunner.runChildren(Lorg/junit/runner/notification/RunNotifier;)V+44
+j  org.junit.runners.ParentRunner.access$100(Lorg/junit/runners/ParentRunner;Lorg/junit/runner/notification/RunNotifier;)V+2
+j  org.junit.runners.ParentRunner$2.evaluate()V+8
+j  org.junit.runners.ParentRunner.run(Lorg/junit/runner/notification/RunNotifier;)V+24
+j  org.junit.runners.Suite.runChild(Lorg/junit/runner/Runner;Lorg/junit/runner/notification/RunNotifier;)V+2
+j  org.junit.runners.Suite.runChild(Ljava/lang/Object;Lorg/junit/runner/notification/RunNotifier;)V+6
+j  org.junit.runners.ParentRunner$4.run()V+12
+j  org.junit.runners.ParentRunner$1.schedule(Ljava/lang/Runnable;)V+1
+j  org.junit.runners.ParentRunner.runChildren(Lorg/junit/runner/notification/RunNotifier;)V+44
+j  org.junit.runners.ParentRunner.access$100(Lorg/junit/runners/ParentRunner;Lorg/junit/runner/notification/RunNotifier;)V+2
+j  org.junit.runners.ParentRunner$2.evaluate()V+8
+j  org.junit.internal.runners.statements.RunAfters.evaluate()V+12
+j  org.junit.runners.ParentRunner$3.evaluate()V+4
+j  org.junit.runners.ParentRunner.run(Lorg/junit/runner/notification/RunNotifier;)V+24
+j  org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.runTestClass(Ljava/lang/String;)V+296
+j  org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute(Ljava/lang/String;)V+14
+j  org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute(Ljava/lang/Object;)V+5
+j  org.gradle.api.internal.tasks.testing.junit.AbstractJUnitTestClassProcessor.processTestClass(Lorg/gradle/api/internal/tasks/testing/TestClassRunInfo;)V+26
+j  org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(Lorg/gradle/api/internal/tasks/testing/TestClassRunInfo;)V+5
+v  ~StubRoutines::call_stub
+j  sun.reflect.NativeMethodAccessorImpl.invoke0(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+0
+j  sun.reflect.NativeMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+100
+j  sun.reflect.DelegatingMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+6
+j  java.lang.reflect.Method.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+56
+j  org.gradle.internal.dispatch.ReflectionDispatch.dispatch(Lorg/gradle/internal/dispatch/MethodInvocation;)V+19
+j  org.gradle.internal.dispatch.ReflectionDispatch.dispatch(Ljava/lang/Object;)V+5
+j  org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(Ljava/lang/Object;)V+22
+j  org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(Ljava/lang/Object;Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;+177
+j  com.sun.proxy.$Proxy2.processTestClass(Lorg/gradle/api/internal/tasks/testing/TestClassRunInfo;)V+16
+j  org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(Lorg/gradle/api/internal/tasks/testing/TestClassRunInfo;)V+13
+v  ~StubRoutines::call_stub
+j  sun.reflect.NativeMethodAccessorImpl.invoke0(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+0
+j  sun.reflect.NativeMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+100
+j  sun.reflect.DelegatingMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+6
+j  java.lang.reflect.Method.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+56
+j  org.gradle.internal.dispatch.ReflectionDispatch.dispatch(Lorg/gradle/internal/dispatch/MethodInvocation;)V+19
+j  org.gradle.internal.dispatch.ReflectionDispatch.dispatch(Ljava/lang/Object;)V+5
+j  org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch(Lorg/gradle/internal/dispatch/MethodInvocation;)V+5
+j  org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch(Ljava/lang/Object;)V+5
+j  org.gradle.internal.remote.internal.hub.MessageHub$Handler.run()V+174
+j  org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(Ljava/lang/Runnable;)V+1
+j  org.gradle.internal.concurrent.ManagedExecutorImpl$1.run()V+25
+j  java.util.concurrent.ThreadPoolExecutor.runWorker(Ljava/util/concurrent/ThreadPoolExecutor$Worker;)V+95
+j  java.util.concurrent.ThreadPoolExecutor$Worker.run()V+5
+j  org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run()V+7
+j  java.lang.Thread.run()V+11
+v  ~StubRoutines::call_stub
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x00007fa9943fb800 JavaThread "AWT-XAWT" daemon [_thread_blocked, id=57212, stack(0x00007fa9ddd85000,0x00007fa9dde86000)]
+  0x00007fa9943d8800 JavaThread "Java2D Disposer" daemon [_thread_blocked, id=57211, stack(0x00007fa9dd27a000,0x00007fa9dd37b000)]
+  0x00007fa99437b800 JavaThread "Okio Watchdog" daemon [_thread_blocked, id=57012, stack(0x00007fa9dd37b000,0x00007fa9dd47c000)]
+  0x00007fa99437a000 JavaThread "OkHttp ConnectionPool" daemon [_thread_blocked, id=57010, stack(0x00007fa9dd57d000,0x00007fa9dd67e000)]
+  0x00007fa980015000 JavaThread "Keep-Alive-Timer" daemon [_thread_blocked, id=57009, stack(0x00007fa9ddf87000,0x00007fa9de088000)]
+  0x00007fa954010800 JavaThread "Exec Stream Pumper" daemon [_thread_in_native, id=57002, stack(0x00007fa9dd77f000,0x00007fa9dd880000)]
+  0x00007fa95400f800 JavaThread "Exec Stream Pumper" daemon [_thread_in_native, id=57001, stack(0x00007fa9dd981000,0x00007fa9dda82000)]
+  0x00007fa95400d000 JavaThread "process reaper" daemon [_thread_in_native, id=57000, stack(0x00007fa9dc78e000,0x00007fa9dc7c7000)]
+  0x00007fa9942b6000 JavaThread "UrlChecker-2" daemon [_thread_blocked, id=56998, stack(0x00007fa9dd47c000,0x00007fa9dd57d000)]
+  0x00007fa9942b0000 JavaThread "Exec Default Executor" daemon [_thread_blocked, id=56997, stack(0x00007fa9dd880000,0x00007fa9dd981000)]
+  0x00007faa0c824000 JavaThread "/127.0.0.1:54696 to /127.0.0.1:36233 workers Thread 3" [_thread_in_native, id=56667, stack(0x00007fa9de288000,0x00007fa9de389000)]
+  0x00007faa0c820800 JavaThread "/127.0.0.1:54696 to /127.0.0.1:36233 workers Thread 2" [_thread_blocked, id=56666, stack(0x00007fa9de389000,0x00007fa9de48a000)]
+=>0x00007faa0c7be800 JavaThread "Test worker" [_thread_in_native, id=56665, stack(0x00007fa9de48a000,0x00007fa9de58b000)]
+  0x00007faa0c124000 JavaThread "Service Thread" daemon [_thread_blocked, id=56659, stack(0x00007fa9e4619000,0x00007fa9e471a000)]
+  0x00007faa0c116800 JavaThread "C1 CompilerThread3" daemon [_thread_blocked, id=56658, stack(0x00007fa9e471b000,0x00007fa9e481b000)]
+  0x00007faa0c114800 JavaThread "C2 CompilerThread2" daemon [_thread_blocked, id=56657, stack(0x00007fa9e481c000,0x00007fa9e491c000)]
+  0x00007faa0c112800 JavaThread "C2 CompilerThread1" daemon [_thread_blocked, id=56656, stack(0x00007fa9e491d000,0x00007fa9e4a1d000)]
+  0x00007faa0c110800 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, id=56655, stack(0x00007fa9e4a1e000,0x00007fa9e4b1e000)]
+  0x00007faa0c10e000 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=56654, stack(0x00007fa9e4b1e000,0x00007fa9e4c1f000)]
+  0x00007faa0c0a0800 JavaThread "Finalizer" daemon [_thread_blocked, id=56653, stack(0x00007fa9e4c1f000,0x00007fa9e4d20000)]
+  0x00007faa0c09c000 JavaThread "Reference Handler" daemon [_thread_blocked, id=56652, stack(0x00007fa9e4d20000,0x00007fa9e4e21000)]
+  0x00007faa0c01d000 JavaThread "main" [_thread_blocked, id=56642, stack(0x00007faa1145d000,0x00007faa1155d000)]
+
+Other Threads:
+  0x00007faa0c092800 VMThread [stack: 0x00007fa9e4e22000,0x00007fa9e4f22000] [id=56651]
+  0x00007faa0c126800 WatcherThread [stack: 0x00007fa9e4519000,0x00007fa9e4619000] [id=56660]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+heap address: 0x00000000e0000000, size: 512 MB, Compressed Oops mode: 32-bit
+Narrow klass base: 0x0000000000000000, Narrow klass shift: 3
+Compressed class space size: 1073741824 Address: 0x0000000100000000
+
+Heap:
+ PSYoungGen      total 164864K, used 22805K [0x00000000f5580000, 0x0000000100000000, 0x0000000100000000)
+  eden space 159232K, 14% used [0x00000000f5580000,0x00000000f6bc5778,0x00000000ff100000)
+  from space 5632K, 0% used [0x00000000ffa00000,0x00000000ffa00000,0x00000000fff80000)
+  to   space 7680K, 0% used [0x00000000ff100000,0x00000000ff100000,0x00000000ff880000)
+ ParOldGen       total 349696K, used 240899K [0x00000000e0000000, 0x00000000f5580000, 0x00000000f5580000)
+  object space 349696K, 68% used [0x00000000e0000000,0x00000000eeb40c10,0x00000000f5580000)
+ Metaspace       used 22549K, capacity 23420K, committed 23552K, reserved 1069056K
+  class space    used 2772K, capacity 3006K, committed 3072K, reserved 1048576K
+
+Card table byte_map: [0x00007faa1005a000,0x00007faa1015b000] byte_map_base: 0x00007faa0f95a000
+
+Marking Bits: (ParMarkBitMap*) 0x00007faa1267b1c0
+ Begin Bits: [0x00007fa9e7000000, 0x00007fa9e7800000)
+ End Bits:   [0x00007fa9e7800000, 0x00007fa9e8000000)
+
+Polling page: 0x00007faa12abc000
+
+CodeCache: size=245760Kb used=13466Kb max_used=13466Kb free=232293Kb
+ bounds [0x00007fa9fd000000, 0x00007fa9fdd40000, 0x00007faa0c000000]
+ total_blobs=4023 nmethods=3487 adapters=449
+ compilation: enabled
+
+Compilation events (10 events):
+Event: 36.571 Thread 0x00007faa0c116800 4543       3       java.util.logging.LogManager::getProperty (9 bytes)
+Event: 36.571 Thread 0x00007faa0c116800 nmethod 4543 0x00007fa9fdd2fb50 code [0x00007fa9fdd2fcc0, 0x00007fa9fdd2fee8]
+Event: 36.574 Thread 0x00007faa0c116800 4544       1       java.lang.invoke.SimpleMethodHandle::fieldCount (2 bytes)
+Event: 36.574 Thread 0x00007faa0c116800 nmethod 4544 0x00007fa9fdd305d0 code [0x00007fa9fdd30720, 0x00007fa9fdd30830]
+Event: 36.581 Thread 0x00007faa0c116800 4545       3       java.lang.invoke.MethodType::changeReturnType (20 bytes)
+Event: 36.581 Thread 0x00007faa0c116800 nmethod 4545 0x00007fa9fdd30890 code [0x00007fa9fdd30a00, 0x00007fa9fdd30c68]
+Event: 36.589 Thread 0x00007faa0c116800 4546       3       java.util.LinkedList::add (7 bytes)
+Event: 36.589 Thread 0x00007faa0c116800 nmethod 4546 0x00007fa9fdd31310 code [0x00007fa9fdd31480, 0x00007fa9fdd31688]
+Event: 36.591 Thread 0x00007faa0c116800 4548       3       java.util.logging.LogManager$LoggerContext::ensureDefaultLogger (70 bytes)
+Event: 36.591 Thread 0x00007faa0c116800 nmethod 4548 0x00007fa9fdd31c90 code [0x00007fa9fdd31e60, 0x00007fa9fdd326e8]
+
+GC Heap History (10 events):
+Event: 32.791 GC heap before
+{Heap before GC invocations=691 (full 0):
+ PSYoungGen      total 167936K, used 162848K [0x00000000f5580000, 0x0000000100000000, 0x0000000100000000)
+  eden space 161280K, 100% used [0x00000000f5580000,0x00000000ff300000,0x00000000ff300000)
+  from space 6656K, 23% used [0x00000000ff980000,0x00000000ffb08000,0x0000000100000000)
+  to   space 6656K, 0% used [0x00000000ff300000,0x00000000ff300000,0x00000000ff980000)
+ ParOldGen       total 341504K, used 282823K [0x00000000e0000000, 0x00000000f4d80000, 0x00000000f5580000)
+  object space 341504K, 82% used [0x00000000e0000000,0x00000000f1431c28,0x00000000f4d80000)
+ Metaspace       used 13866K, capacity 14144K, committed 14336K, reserved 1062912K
+  class space    used 1648K, capacity 1744K, committed 1792K, reserved 1048576K
+Event: 32.798 GC heap after
+Heap after GC invocations=691 (full 0):
+ PSYoungGen      total 163328K, used 1952K [0x00000000f5580000, 0x00000000fff00000, 0x0000000100000000)
+  eden space 161280K, 0% used [0x00000000f5580000,0x00000000f5580000,0x00000000ff300000)
+  from space 2048K, 95% used [0x00000000ff300000,0x00000000ff4e8000,0x00000000ff500000)
+  to   space 6144K, 0% used [0x00000000ff900000,0x00000000ff900000,0x00000000fff00000)
+ ParOldGen       total 341504K, used 284263K [0x00000000e0000000, 0x00000000f4d80000, 0x00000000f5580000)
+  object space 341504K, 83% used [0x00000000e0000000,0x00000000f1599c28,0x00000000f4d80000)
+ Metaspace       used 13866K, capacity 14144K, committed 14336K, reserved 1062912K
+  class space    used 1648K, capacity 1744K, committed 1792K, reserved 1048576K
+}
+Event: 33.121 GC heap before
+{Heap before GC invocations=692 (full 0):
+ PSYoungGen      total 163328K, used 163232K [0x00000000f5580000, 0x00000000fff00000, 0x0000000100000000)
+  eden space 161280K, 100% used [0x00000000f5580000,0x00000000ff300000,0x00000000ff300000)
+  from space 2048K, 95% used [0x00000000ff300000,0x00000000ff4e8000,0x00000000ff500000)
+  to   space 6144K, 0% used [0x00000000ff900000,0x00000000ff900000,0x00000000fff00000)
+ ParOldGen       total 341504K, used 284263K [0x00000000e0000000, 0x00000000f4d80000, 0x00000000f5580000)
+  object space 341504K, 83% used [0x00000000e0000000,0x00000000f1599c28,0x00000000f4d80000)
+ Metaspace       used 13874K, capacity 14144K, committed 14336K, reserved 1062912K
+  class space    used 1648K, capacity 1744K, committed 1792K, reserved 1048576K
+Event: 33.124 GC heap after
+Heap after GC invocations=692 (full 0):
+ PSYoungGen      total 167936K, used 2240K [0x00000000f5580000, 0x0000000100000000, 0x0000000100000000)
+  eden space 161792K, 0% used [0x00000000f5580000,0x00000000f5580000,0x00000000ff380000)
+  from space 6144K, 36% used [0x00000000ff900000,0x00000000ffb30000,0x00000000fff00000)
+  to   space 5632K, 0% used [0x00000000ff380000,0x00000000ff380000,0x00000000ff900000)
+ ParOldGen       total 341504K, used 285919K [0x00000000e0000000, 0x00000000f4d80000, 0x00000000f5580000)
+  object space 341504K, 83% used [0x00000000e0000000,0x00000000f1737c38,0x00000000f4d80000)
+ Metaspace       used 13874K, capacity 14144K, committed 14336K, reserved 1062912K
+  class space    used 1648K, capacity 1744K, committed 1792K, reserved 1048576K
+}
+Event: 33.485 GC heap before
+{Heap before GC invocations=693 (full 0):
+ PSYoungGen      total 167936K, used 164032K [0x00000000f5580000, 0x0000000100000000, 0x0000000100000000)
+  eden space 161792K, 100% used [0x00000000f5580000,0x00000000ff380000,0x00000000ff380000)
+  from space 6144K, 36% used [0x00000000ff900000,0x00000000ffb30000,0x00000000fff00000)
+  to   space 5632K, 0% used [0x00000000ff380000,0x00000000ff380000,0x00000000ff900000)
+ ParOldGen       total 341504K, used 285919K [0x00000000e0000000, 0x00000000f4d80000, 0x00000000f5580000)
+  object space 341504K, 83% used [0x00000000e0000000,0x00000000f1737c38,0x00000000f4d80000)
+ Metaspace       used 13874K, capacity 14144K, committed 14336K, reserved 1062912K
+  class space    used 1648K, capacity 1744K, committed 1792K, reserved 1048576K
+Event: 33.486 GC heap after
+Heap after GC invocations=693 (full 0):
+ PSYoungGen      total 167424K, used 352K [0x00000000f5580000, 0x00000000fff80000, 0x0000000100000000)
+  eden space 161792K, 0% used [0x00000000f5580000,0x00000000f5580000,0x00000000ff380000)
+  from space 5632K, 6% used [0x00000000ff380000,0x00000000ff3d8000,0x00000000ff900000)
+  to   space 5632K, 0% used [0x00000000ffa00000,0x00000000ffa00000,0x00000000fff80000)
+ ParOldGen       total 341504K, used 288063K [0x00000000e0000000, 0x00000000f4d80000, 0x00000000f5580000)
+  object space 341504K, 84% used [0x00000000e0000000,0x00000000f194fc48,0x00000000f4d80000)
+ Metaspace       used 13874K, capacity 14144K, committed 14336K, reserved 1062912K
+  class space    used 1648K, capacity 1744K, committed 1792K, reserved 1048576K
+}
+Event: 34.224 GC heap before
+{Heap before GC invocations=694 (full 0):
+ PSYoungGen      total 167424K, used 125001K [0x00000000f5580000, 0x00000000fff80000, 0x0000000100000000)
+  eden space 161792K, 77% used [0x00000000f5580000,0x00000000fcf3a4b0,0x00000000ff380000)
+  from space 5632K, 6% used [0x00000000ff380000,0x00000000ff3d8000,0x00000000ff900000)
+  to   space 5632K, 0% used [0x00000000ffa00000,0x00000000ffa00000,0x00000000fff80000)
+ ParOldGen       total 341504K, used 288063K [0x00000000e0000000, 0x00000000f4d80000, 0x00000000f5580000)
+  object space 341504K, 84% used [0x00000000e0000000,0x00000000f194fc48,0x00000000f4d80000)
+ Metaspace       used 20368K, capacity 21152K, committed 21248K, reserved 1067008K
+  class space    used 2528K, capacity 2768K, committed 2816K, reserved 1048576K
+Event: 34.233 GC heap after
+Heap after GC invocations=694 (full 0):
+ PSYoungGen      total 164864K, used 5605K [0x00000000f5580000, 0x0000000100000000, 0x0000000100000000)
+  eden space 159232K, 0% used [0x00000000f5580000,0x00000000f5580000,0x00000000ff100000)
+  from space 5632K, 99% used [0x00000000ffa00000,0x00000000fff79670,0x00000000fff80000)
+  to   space 7680K, 0% used [0x00000000ff100000,0x00000000ff100000,0x00000000ff880000)
+ ParOldGen       total 341504K, used 290119K [0x00000000e0000000, 0x00000000f4d80000, 0x00000000f5580000)
+  object space 341504K, 84% used [0x00000000e0000000,0x00000000f1b51c70,0x00000000f4d80000)
+ Metaspace       used 20368K, capacity 21152K, committed 21248K, reserved 1067008K
+  class space    used 2528K, capacity 2768K, committed 2816K, reserved 1048576K
+}
+Event: 34.233 GC heap before
+{Heap before GC invocations=695 (full 1):
+ PSYoungGen      total 164864K, used 5605K [0x00000000f5580000, 0x0000000100000000, 0x0000000100000000)
+  eden space 159232K, 0% used [0x00000000f5580000,0x00000000f5580000,0x00000000ff100000)
+  from space 5632K, 99% used [0x00000000ffa00000,0x00000000fff79670,0x00000000fff80000)
+  to   space 7680K, 0% used [0x00000000ff100000,0x00000000ff100000,0x00000000ff880000)
+ ParOldGen       total 341504K, used 290119K [0x00000000e0000000, 0x00000000f4d80000, 0x00000000f5580000)
+  object space 341504K, 84% used [0x00000000e0000000,0x00000000f1b51c70,0x00000000f4d80000)
+ Metaspace       used 20368K, capacity 21152K, committed 21248K, reserved 1067008K
+  class space    used 2528K, capacity 2768K, committed 2816K, reserved 1048576K
+Event: 34.680 GC heap after
+Heap after GC invocations=695 (full 1):
+ PSYoungGen      total 164864K, used 0K [0x00000000f5580000, 0x0000000100000000, 0x0000000100000000)
+  eden space 159232K, 0% used [0x00000000f5580000,0x00000000f5580000,0x00000000ff100000)
+  from space 5632K, 0% used [0x00000000ffa00000,0x00000000ffa00000,0x00000000fff80000)
+  to   space 7680K, 0% used [0x00000000ff100000,0x00000000ff100000,0x00000000ff880000)
+ ParOldGen       total 349696K, used 240899K [0x00000000e0000000, 0x00000000f5580000, 0x00000000f5580000)
+  object space 349696K, 68% used [0x00000000e0000000,0x00000000eeb40c10,0x00000000f5580000)
+ Metaspace       used 20368K, capacity 21152K, committed 21248K, reserved 1067008K
+  class space    used 2528K, capacity 2768K, committed 2816K, reserved 1048576K
+}
+
+Deoptimization events (10 events):
+Event: 36.528 Thread 0x00007faa0c7be800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007fa9fda802e0 method=java.util.regex.Pattern$Loop.match(Ljava/util/regex/Matcher;ILjava/lang/CharSequence;)Z @ 113
+Event: 36.528 Thread 0x00007faa0c7be800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007fa9fda802e0 method=java.util.regex.Pattern$Loop.match(Ljava/util/regex/Matcher;ILjava/lang/CharSequence;)Z @ 113
+Event: 36.528 Thread 0x00007faa0c7be800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007fa9fda802e0 method=java.util.regex.Pattern$Loop.match(Ljava/util/regex/Matcher;ILjava/lang/CharSequence;)Z @ 113
+Event: 36.528 Thread 0x00007faa0c7be800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007fa9fda802e0 method=java.util.regex.Pattern$Loop.match(Ljava/util/regex/Matcher;ILjava/lang/CharSequence;)Z @ 113
+Event: 36.528 Thread 0x00007faa0c7be800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007fa9fda802e0 method=java.util.regex.Pattern$Loop.match(Ljava/util/regex/Matcher;ILjava/lang/CharSequence;)Z @ 113
+Event: 36.529 Thread 0x00007faa0c7be800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007fa9fda802e0 method=java.util.regex.Pattern$Loop.match(Ljava/util/regex/Matcher;ILjava/lang/CharSequence;)Z @ 113
+Event: 36.529 Thread 0x00007faa0c7be800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007fa9fda802e0 method=java.util.regex.Pattern$Loop.match(Ljava/util/regex/Matcher;ILjava/lang/CharSequence;)Z @ 113
+Event: 36.529 Thread 0x00007faa0c7be800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007fa9fda802e0 method=java.util.regex.Pattern$Loop.match(Ljava/util/regex/Matcher;ILjava/lang/CharSequence;)Z @ 113
+Event: 36.529 Thread 0x00007faa0c7be800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007fa9fda802e0 method=java.util.regex.Pattern$Loop.match(Ljava/util/regex/Matcher;ILjava/lang/CharSequence;)Z @ 113
+Event: 36.529 Thread 0x00007faa0c7be800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007fa9fda802e0 method=java.util.regex.Pattern$Loop.match(Ljava/util/regex/Matcher;ILjava/lang/CharSequence;)Z @ 113
+
+Classes redefined (0 events):
+No events
+
+Internal exceptions (10 events):
+Event: 33.946 Thread 0x00007faa0c7be800 Implicit null exception at 0x00007fa9fd46f9b6 to 0x00007fa9fd46fbba
+Event: 33.984 Thread 0x00007fa9942b6000 Exception <a 'java/net/ConnectException'> (0x00000000fb961cb8) thrown at [/scratch/jenkins/workspace/8-2-build-linux-amd64/jdk8u291/1294/hotspot/src/share/vm/prims/jni.cpp, line 710]
+Event: 34.016 Thread 0x00007faa0c7be800 Exception <a 'java/lang/IncompatibleClassChangeError': Found class java.lang.Object, but interface was expected> (0x00000000fb532878) thrown at [/scratch/jenkins/workspace/8-2-build-linux-amd64/jdk8u291/1294/hotspot/src/share/vm/interpreter/linkResolver.c
+Event: 34.019 Thread 0x00007faa0c7be800 Exception <a 'java/lang/NoSuchMethodError': java.lang.Object.lambda$or$2(Ljava/util/function/Predicate;Ljava/lang/Object;)Z> (0x00000000fb5423a8) thrown at [/scratch/jenkins/workspace/8-2-build-linux-amd64/jdk8u291/1294/hotspot/src/share/vm/interpreter/li
+Event: 34.082 Thread 0x00007faa0c7be800 Exception <a 'java/lang/NoSuchMethodError': java.lang.Object.lambda$chars$0()Ljava/util/Spliterator$OfInt;> (0x00000000fc51de70) thrown at [/scratch/jenkins/workspace/8-2-build-linux-amd64/jdk8u291/1294/hotspot/src/share/vm/interpreter/linkResolver.cpp, l
+Event: 35.134 Thread 0x00007faa0c7be800 Exception <a 'java/lang/NoSuchMethodError': java.lang.Object.lambda$getResponseFunction$0(Lorg/openqa/selenium/remote/InitialHandshakeResponse;)Lorg/openqa/selenium/remote/ProtocolHandshake$Result;> (0x00000000f56a9370) thrown at [/scratch/jenkins/workspa
+Event: 35.219 Thread 0x00007faa0c7be800 Exception <a 'java/net/SocketTimeoutException': Read timed out> (0x00000000f5a31740) thrown at [/scratch/jenkins/workspace/8-2-build-linux-amd64/jdk8u291/1294/hotspot/src/share/vm/prims/jni.cpp, line 737]
+Event: 35.326 Thread 0x00007faa0c7be800 Exception <a 'java/net/SocketTimeoutException': Read timed out> (0x00000000f5a4bef0) thrown at [/scratch/jenkins/workspace/8-2-build-linux-amd64/jdk8u291/1294/hotspot/src/share/vm/prims/jni.cpp, line 737]
+Event: 36.542 Thread 0x00007faa0c7be800 Exception <a 'java/io/FileNotFoundException'> (0x00000000f5b136e8) thrown at [/scratch/jenkins/workspace/8-2-build-linux-amd64/jdk8u291/1294/hotspot/src/share/vm/prims/jni.cpp, line 710]
+Event: 36.542 Thread 0x00007faa0c7be800 Exception <a 'java/io/FileNotFoundException'> (0x00000000f5b14620) thrown at [/scratch/jenkins/workspace/8-2-build-linux-amd64/jdk8u291/1294/hotspot/src/share/vm/prims/jni.cpp, line 710]
+
+Events (10 events):
+Event: 36.591 loading class java/awt/geom/Dimension2D done
+Event: 36.591 loading class java/awt/Dimension done
+Event: 36.591 loading class sun/awt/X11/XWindowAttributes
+Event: 36.591 loading class sun/awt/X11/XWindowAttributes done
+Event: 36.592 loading class sun/java2d/opengl/OGLRenderQueue
+Event: 36.593 loading class sun/java2d/pipe/RenderQueue
+Event: 36.593 loading class sun/java2d/pipe/RenderQueue done
+Event: 36.593 loading class sun/java2d/opengl/OGLRenderQueue done
+Event: 36.595 loading class sun/awt/X11/XErrorEvent
+Event: 36.595 loading class sun/awt/X11/XErrorEvent done
+
+
+Dynamic libraries:
+e0000000-f5580000 rw-p 00000000 00:00 0 
+f5580000-100000000 rw-p 00000000 00:00 0 
+100000000-100300000 rw-p 00000000 00:00 0 
+100300000-140000000 ---p 00000000 00:00 0 
+55a7d7c00000-55a7d7c01000 r-xp 00000000 103:02 24251469                  /usr/lib/jvm/jdk1.8.0_291/bin/java
+55a7d7e00000-55a7d7e01000 r--p 00000000 103:02 24251469                  /usr/lib/jvm/jdk1.8.0_291/bin/java
+55a7d7e01000-55a7d7e02000 rw-p 00001000 103:02 24251469                  /usr/lib/jvm/jdk1.8.0_291/bin/java
+55a7d82f4000-55a7d8315000 rw-p 00000000 00:00 0                          [heap]
+7fa94c000000-7fa94c021000 rw-p 00000000 00:00 0 
+7fa94c021000-7fa950000000 ---p 00000000 00:00 0 
+7fa954000000-7fa954021000 rw-p 00000000 00:00 0 
+7fa954021000-7fa958000000 ---p 00000000 00:00 0 
+7fa958000000-7fa958028000 rw-p 00000000 00:00 0 
+7fa958028000-7fa95c000000 ---p 00000000 00:00 0 
+7fa95c000000-7fa95c021000 rw-p 00000000 00:00 0 
+7fa95c021000-7fa960000000 ---p 00000000 00:00 0 
+7fa960000000-7fa960021000 rw-p 00000000 00:00 0 
+7fa960021000-7fa964000000 ---p 00000000 00:00 0 
+7fa964000000-7fa964065000 rw-p 00000000 00:00 0 
+7fa964065000-7fa968000000 ---p 00000000 00:00 0 
+7fa968000000-7fa96807c000 rw-p 00000000 00:00 0 
+7fa96807c000-7fa96c000000 ---p 00000000 00:00 0 
+7fa96c000000-7fa96c054000 rw-p 00000000 00:00 0 
+7fa96c054000-7fa970000000 ---p 00000000 00:00 0 
+7fa970000000-7fa970038000 rw-p 00000000 00:00 0 
+7fa970038000-7fa974000000 ---p 00000000 00:00 0 
+7fa974000000-7fa974036000 rw-p 00000000 00:00 0 
+7fa974036000-7fa978000000 ---p 00000000 00:00 0 
+7fa978000000-7fa978028000 rw-p 00000000 00:00 0 
+7fa978028000-7fa97c000000 ---p 00000000 00:00 0 
+7fa97c000000-7fa97c021000 rw-p 00000000 00:00 0 
+7fa97c021000-7fa980000000 ---p 00000000 00:00 0 
+7fa980000000-7fa980031000 rw-p 00000000 00:00 0 
+7fa980031000-7fa984000000 ---p 00000000 00:00 0 
+7fa984000000-7fa984081000 rw-p 00000000 00:00 0 
+7fa984081000-7fa988000000 ---p 00000000 00:00 0 
+7fa988000000-7fa988068000 rw-p 00000000 00:00 0 
+7fa988068000-7fa98c000000 ---p 00000000 00:00 0 
+7fa98c000000-7fa98c078000 rw-p 00000000 00:00 0 
+7fa98c078000-7fa990000000 ---p 00000000 00:00 0 
+7fa990000000-7fa990068000 rw-p 00000000 00:00 0 
+7fa990068000-7fa994000000 ---p 00000000 00:00 0 
+7fa994000000-7fa9946bd000 rw-p 00000000 00:00 0 
+7fa9946bd000-7fa998000000 ---p 00000000 00:00 0 
+7fa998000000-7fa998021000 rw-p 00000000 00:00 0 
+7fa998021000-7fa99c000000 ---p 00000000 00:00 0 
+7fa99c000000-7fa99c021000 rw-p 00000000 00:00 0 
+7fa99c021000-7fa9a0000000 ---p 00000000 00:00 0 
+7fa9a0000000-7fa9a0021000 rw-p 00000000 00:00 0 
+7fa9a0021000-7fa9a4000000 ---p 00000000 00:00 0 
+7fa9a4000000-7fa9a5085000 rw-p 00000000 00:00 0 
+7fa9a5085000-7fa9a8000000 ---p 00000000 00:00 0 
+7fa9a8000000-7fa9a8742000 rw-p 00000000 00:00 0 
+7fa9a8742000-7fa9ac000000 ---p 00000000 00:00 0 
+7fa9ac000000-7fa9ad135000 rw-p 00000000 00:00 0 
+7fa9ad135000-7fa9b0000000 ---p 00000000 00:00 0 
+7fa9b0000000-7fa9b0d2b000 rw-p 00000000 00:00 0 
+7fa9b0d2b000-7fa9b4000000 ---p 00000000 00:00 0 
+7fa9b4000000-7fa9b4021000 rw-p 00000000 00:00 0 
+7fa9b4021000-7fa9b8000000 ---p 00000000 00:00 0 
+7fa9b96b5000-7fa9ba4c6000 rw-p 00000000 00:00 0 
+7fa9ba4c6000-7fa9ba525000 r-xp 00000000 103:02 24251546                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libfontmanager.so
+7fa9ba525000-7fa9ba725000 ---p 0005f000 103:02 24251546                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libfontmanager.so
+7fa9ba725000-7fa9ba728000 r--p 0005f000 103:02 24251546                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libfontmanager.so
+7fa9ba728000-7fa9ba729000 rw-p 00062000 103:02 24251546                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libfontmanager.so
+7fa9ba729000-7fa9ba745000 r--p 00000000 103:02 22159167                  /usr/lib64/libX11.so.6.4.0
+7fa9ba745000-7fa9ba7d5000 r-xp 0001c000 103:02 22159167                  /usr/lib64/libX11.so.6.4.0
+7fa9ba7d5000-7fa9ba869000 r--p 000ac000 103:02 22159167                  /usr/lib64/libX11.so.6.4.0
+7fa9ba869000-7fa9ba86c000 r--p 0013f000 103:02 22159167                  /usr/lib64/libX11.so.6.4.0
+7fa9ba86c000-7fa9ba870000 rw-p 00142000 103:02 22159167                  /usr/lib64/libX11.so.6.4.0
+7fa9ba870000-7fa9ba8cb000 r-xp 00000000 103:02 24251545                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libawt_xawt.so
+7fa9ba8cb000-7fa9baaca000 ---p 0005b000 103:02 24251545                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libawt_xawt.so
+7fa9baaca000-7fa9baacb000 r--p 0005a000 103:02 24251545                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libawt_xawt.so
+7fa9baacb000-7fa9baace000 rw-p 0005b000 103:02 24251545                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libawt_xawt.so
+7fa9baace000-7fa9baad0000 rw-p 00000000 00:00 0 
+7fa9baad0000-7fa9c8000000 r--p 00000000 103:02 22151239                  /usr/lib/locale/locale-archive
+7fa9c8000000-7fa9c8021000 rw-p 00000000 00:00 0 
+7fa9c8021000-7fa9cc000000 ---p 00000000 00:00 0 
+7fa9cc000000-7fa9cc021000 rw-p 00000000 00:00 0 
+7fa9cc021000-7fa9d0000000 ---p 00000000 00:00 0 
+7fa9d0000000-7fa9d0029000 rw-p 00000000 00:00 0 
+7fa9d0029000-7fa9d4000000 ---p 00000000 00:00 0 
+7fa9d4000000-7fa9d40c1000 rw-p 00000000 00:00 0 
+7fa9d40c1000-7fa9d8000000 ---p 00000000 00:00 0 
+7fa9d8000000-7fa9d8021000 rw-p 00000000 00:00 0 
+7fa9d8021000-7fa9dc000000 ---p 00000000 00:00 0 
+7fa9dc01c000-7fa9dc01d000 r--p 00000000 103:02 22159192                  /usr/lib64/libXcomposite.so.1.0.0
+7fa9dc01d000-7fa9dc01e000 r-xp 00001000 103:02 22159192                  /usr/lib64/libXcomposite.so.1.0.0
+7fa9dc01e000-7fa9dc01f000 r--p 00002000 103:02 22159192                  /usr/lib64/libXcomposite.so.1.0.0
+7fa9dc01f000-7fa9dc020000 r--p 00002000 103:02 22159192                  /usr/lib64/libXcomposite.so.1.0.0
+7fa9dc020000-7fa9dc021000 rw-p 00000000 00:00 0 
+7fa9dc021000-7fa9dc023000 r--p 00000000 103:02 22159177                  /usr/lib64/libXfixes.so.3.1.0
+7fa9dc023000-7fa9dc026000 r-xp 00002000 103:02 22159177                  /usr/lib64/libXfixes.so.3.1.0
+7fa9dc026000-7fa9dc027000 r--p 00005000 103:02 22159177                  /usr/lib64/libXfixes.so.3.1.0
+7fa9dc027000-7fa9dc028000 ---p 00006000 103:02 22159177                  /usr/lib64/libXfixes.so.3.1.0
+7fa9dc028000-7fa9dc029000 r--p 00006000 103:02 22159177                  /usr/lib64/libXfixes.so.3.1.0
+7fa9dc029000-7fa9dc02a000 rw-p 00007000 103:02 22159177                  /usr/lib64/libXfixes.so.3.1.0
+7fa9dc02a000-7fa9dc02d000 r--p 00000000 103:02 22159256                  /usr/lib64/libXcursor.so.1.0.2
+7fa9dc02d000-7fa9dc033000 r-xp 00003000 103:02 22159256                  /usr/lib64/libXcursor.so.1.0.2
+7fa9dc033000-7fa9dc035000 r--p 00009000 103:02 22159256                  /usr/lib64/libXcursor.so.1.0.2
+7fa9dc035000-7fa9dc036000 r--p 0000a000 103:02 22159256                  /usr/lib64/libXcursor.so.1.0.2
+7fa9dc036000-7fa9dc037000 rw-p 00000000 00:00 0 
+7fa9dc037000-7fa9dc038000 r--p 00000000 103:02 22159043                  /usr/lib64/libXau.so.6.0.0
+7fa9dc038000-7fa9dc03a000 r-xp 00001000 103:02 22159043                  /usr/lib64/libXau.so.6.0.0
+7fa9dc03a000-7fa9dc03b000 r--p 00003000 103:02 22159043                  /usr/lib64/libXau.so.6.0.0
+7fa9dc03b000-7fa9dc03c000 r--p 00003000 103:02 22159043                  /usr/lib64/libXau.so.6.0.0
+7fa9dc03c000-7fa9dc03d000 rw-p 00000000 00:00 0 
+7fa9dc03d000-7fa9dc049000 r--p 00000000 103:02 22159162                  /usr/lib64/libxcb.so.1.1.0
+7fa9dc049000-7fa9dc05d000 r-xp 0000c000 103:02 22159162                  /usr/lib64/libxcb.so.1.1.0
+7fa9dc05d000-7fa9dc066000 r--p 00020000 103:02 22159162                  /usr/lib64/libxcb.so.1.1.0
+7fa9dc066000-7fa9dc067000 r--p 00028000 103:02 22159162                  /usr/lib64/libxcb.so.1.1.0
+7fa9dc067000-7fa9dc068000 rw-p 00029000 103:02 22159162                  /usr/lib64/libxcb.so.1.1.0
+7fa9dc068000-7fa9dc06a000 r--p 00000000 103:02 22159180                  /usr/lib64/libXi.so.6.1.0
+7fa9dc06a000-7fa9dc075000 r-xp 00002000 103:02 22159180                  /usr/lib64/libXi.so.6.1.0
+7fa9dc075000-7fa9dc078000 r--p 0000d000 103:02 22159180                  /usr/lib64/libXi.so.6.1.0
+7fa9dc078000-7fa9dc079000 r--p 0000f000 103:02 22159180                  /usr/lib64/libXi.so.6.1.0
+7fa9dc079000-7fa9dc07a000 rw-p 00010000 103:02 22159180                  /usr/lib64/libXi.so.6.1.0
+7fa9dc07a000-7fa9dc07c000 r--p 00000000 103:02 22159205                  /usr/lib64/libXtst.so.6.1.0
+7fa9dc07c000-7fa9dc07f000 r-xp 00002000 103:02 22159205                  /usr/lib64/libXtst.so.6.1.0
+7fa9dc07f000-7fa9dc080000 r--p 00005000 103:02 22159205                  /usr/lib64/libXtst.so.6.1.0
+7fa9dc080000-7fa9dc081000 ---p 00006000 103:02 22159205                  /usr/lib64/libXtst.so.6.1.0
+7fa9dc081000-7fa9dc082000 r--p 00006000 103:02 22159205                  /usr/lib64/libXtst.so.6.1.0
+7fa9dc082000-7fa9dc083000 rw-p 00007000 103:02 22159205                  /usr/lib64/libXtst.so.6.1.0
+7fa9dc083000-7fa9dc087000 r--p 00000000 103:02 22159171                  /usr/lib64/libXext.so.6.4.0
+7fa9dc087000-7fa9dc092000 r-xp 00004000 103:02 22159171                  /usr/lib64/libXext.so.6.4.0
+7fa9dc092000-7fa9dc096000 r--p 0000f000 103:02 22159171                  /usr/lib64/libXext.so.6.4.0
+7fa9dc096000-7fa9dc097000 r--p 00012000 103:02 22159171                  /usr/lib64/libXext.so.6.4.0
+7fa9dc097000-7fa9dc098000 rw-p 00013000 103:02 22159171                  /usr/lib64/libXext.so.6.4.0
+7fa9dc0ac000-7fa9dc14c000 r-xp 00000000 103:02 24251537                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libawt.so
+7fa9dc14c000-7fa9dc34b000 ---p 000a0000 103:02 24251537                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libawt.so
+7fa9dc34b000-7fa9dc34c000 r--p 0009f000 103:02 24251537                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libawt.so
+7fa9dc34c000-7fa9dc357000 rw-p 000a0000 103:02 24251537                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libawt.so
+7fa9dc357000-7fa9dc57c000 rw-p 00000000 00:00 0 
+7fa9dc57c000-7fa9dc58e000 r--s 00353000 103:02 24251680                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/resources.jar
+7fa9dc58e000-7fa9dc78e000 rw-p 00000000 00:00 0 
+7fa9dc78e000-7fa9dc791000 ---p 00000000 00:00 0 
+7fa9dc791000-7fa9dc7c7000 rw-p 00000000 00:00 0 
+7fa9dc7c7000-7fa9dc7e3000 r--s 00393000 103:02 24251669                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/ext/cldrdata.jar
+7fa9dc7e3000-7fa9dc9e3000 rw-p 00000000 00:00 0 
+7fa9dc9e3000-7fa9dc9e6000 r--p 00000000 103:02 22151257                  /usr/lib64/libgcc_s-11-20210428.so.1
+7fa9dc9e6000-7fa9dc9f8000 r-xp 00003000 103:02 22151257                  /usr/lib64/libgcc_s-11-20210428.so.1
+7fa9dc9f8000-7fa9dc9fb000 r--p 00015000 103:02 22151257                  /usr/lib64/libgcc_s-11-20210428.so.1
+7fa9dc9fb000-7fa9dc9fc000 ---p 00018000 103:02 22151257                  /usr/lib64/libgcc_s-11-20210428.so.1
+7fa9dc9fc000-7fa9dc9fd000 r--p 00018000 103:02 22151257                  /usr/lib64/libgcc_s-11-20210428.so.1
+7fa9dc9fd000-7fa9dc9fe000 rw-p 00019000 103:02 22151257                  /usr/lib64/libgcc_s-11-20210428.so.1
+7fa9dca00000-7fa9dca02000 r--p 00000000 103:02 22159196                  /usr/lib64/libXrender.so.1.3.0
+7fa9dca02000-7fa9dca09000 r-xp 00002000 103:02 22159196                  /usr/lib64/libXrender.so.1.3.0
+7fa9dca09000-7fa9dca0b000 r--p 00009000 103:02 22159196                  /usr/lib64/libXrender.so.1.3.0
+7fa9dca0b000-7fa9dca0c000 r--p 0000a000 103:02 22159196                  /usr/lib64/libXrender.so.1.3.0
+7fa9dca0c000-7fa9dca0d000 rw-p 0000b000 103:02 22159196                  /usr/lib64/libXrender.so.1.3.0
+7fa9dca0d000-7fa9dca12000 r--s 00041000 103:02 24251665                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/ext/sunjce_provider.jar
+7fa9dca12000-7fa9dca4a000 r-xp 00000000 103:02 24251519                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libsunec.so
+7fa9dca4a000-7fa9dcc49000 ---p 00038000 103:02 24251519                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libsunec.so
+7fa9dcc49000-7fa9dcc4e000 r--p 00037000 103:02 24251519                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libsunec.so
+7fa9dcc4e000-7fa9dcc50000 rw-p 0003c000 103:02 24251519                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libsunec.so
+7fa9dcc50000-7fa9dcc53000 r--p 00000000 103:02 22151863                  /usr/lib64/libnss_files-2.33.so
+7fa9dcc53000-7fa9dcc5a000 r-xp 00003000 103:02 22151863                  /usr/lib64/libnss_files-2.33.so
+7fa9dcc5a000-7fa9dcc5c000 r--p 0000a000 103:02 22151863                  /usr/lib64/libnss_files-2.33.so
+7fa9dcc5c000-7fa9dcc5d000 r--p 0000b000 103:02 22151863                  /usr/lib64/libnss_files-2.33.so
+7fa9dcc5d000-7fa9dcc64000 rw-p 00000000 00:00 0 
+7fa9dcc66000-7fa9dcc70000 r--s 00116000 103:02 24251668                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/ext/localedata.jar
+7fa9dcc70000-7fa9dcc72000 r--s 00009000 103:02 24251664                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/ext/sunec.jar
+7fa9dcc72000-7fa9dcc76000 r--s 00042000 103:02 24251666                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/ext/sunpkcs11.jar
+7fa9dcc76000-7fa9dcc78000 r--s 0001b000 103:02 24251674                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/jce.jar
+7fa9dcc78000-7fa9dce78000 rw-p 00000000 00:00 0 
+7fa9dce78000-7fa9dd078000 rw-p 00000000 00:00 0 
+7fa9dd078000-7fa9dd07b000 ---p 00000000 00:00 0 
+7fa9dd07b000-7fa9dd179000 rw-p 00000000 00:00 0 
+7fa9dd179000-7fa9dd17c000 ---p 00000000 00:00 0 
+7fa9dd17c000-7fa9dd27a000 rw-p 00000000 00:00 0 
+7fa9dd27a000-7fa9dd27d000 ---p 00000000 00:00 0 
+7fa9dd27d000-7fa9dd37b000 rw-p 00000000 00:00 0 
+7fa9dd37b000-7fa9dd37e000 ---p 00000000 00:00 0 
+7fa9dd37e000-7fa9dd47c000 rw-p 00000000 00:00 0 
+7fa9dd47c000-7fa9dd47f000 ---p 00000000 00:00 0 
+7fa9dd47f000-7fa9dd57d000 rw-p 00000000 00:00 0 
+7fa9dd57d000-7fa9dd580000 ---p 00000000 00:00 0 
+7fa9dd580000-7fa9dd67e000 rw-p 00000000 00:00 0 
+7fa9dd67e000-7fa9dd681000 ---p 00000000 00:00 0 
+7fa9dd681000-7fa9dd77f000 rw-p 00000000 00:00 0 
+7fa9dd77f000-7fa9dd782000 ---p 00000000 00:00 0 
+7fa9dd782000-7fa9dd880000 rw-p 00000000 00:00 0 
+7fa9dd880000-7fa9dd883000 ---p 00000000 00:00 0 
+7fa9dd883000-7fa9dd981000 rw-p 00000000 00:00 0 
+7fa9dd981000-7fa9dd984000 ---p 00000000 00:00 0 
+7fa9dd984000-7fa9dda82000 rw-p 00000000 00:00 0 
+7fa9dda82000-7fa9dda85000 ---p 00000000 00:00 0 
+7fa9dda85000-7fa9ddb83000 rw-p 00000000 00:00 0 
+7fa9ddb83000-7fa9ddb86000 ---p 00000000 00:00 0 
+7fa9ddb86000-7fa9ddc84000 rw-p 00000000 00:00 0 
+7fa9ddc84000-7fa9ddc87000 ---p 00000000 00:00 0 
+7fa9ddc87000-7fa9ddd85000 rw-p 00000000 00:00 0 
+7fa9ddd85000-7fa9ddd88000 ---p 00000000 00:00 0 
+7fa9ddd88000-7fa9dde86000 rw-p 00000000 00:00 0 
+7fa9dde86000-7fa9dde89000 ---p 00000000 00:00 0 
+7fa9dde89000-7fa9ddf87000 rw-p 00000000 00:00 0 
+7fa9ddf87000-7fa9ddf8a000 ---p 00000000 00:00 0 
+7fa9ddf8a000-7fa9de288000 rw-p 00000000 00:00 0 
+7fa9de288000-7fa9de28b000 ---p 00000000 00:00 0 
+7fa9de28b000-7fa9de389000 rw-p 00000000 00:00 0 
+7fa9de389000-7fa9de38c000 ---p 00000000 00:00 0 
+7fa9de38c000-7fa9de48a000 rw-p 00000000 00:00 0 
+7fa9de48a000-7fa9de48d000 ---p 00000000 00:00 0 
+7fa9de48d000-7fa9de58b000 rw-p 00000000 00:00 0 
+7fa9de58b000-7fa9de59c000 r-xp 00000000 103:02 24251544                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libnio.so
+7fa9de59c000-7fa9de79b000 ---p 00011000 103:02 24251544                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libnio.so
+7fa9de79b000-7fa9de79c000 r--p 00010000 103:02 24251544                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libnio.so
+7fa9de79c000-7fa9de79d000 rw-p 00011000 103:02 24251544                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libnio.so
+7fa9de79d000-7fa9de79f000 r--s 007c6000 103:02 24120528                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.bytedeco.javacpp-presets/opencv/2.4.10-0.10/f4f81a3f6d0b529610c3123cc3fcdd17bc78696d/opencv-2.4.10-0.10-linux-x86_64.jar
+7fa9de79f000-7fa9de7a0000 r--s 00002000 103:02 23208806                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.apache.ant/ant-launcher/1.7.1/a9cbbcefbbb5e7f97596045268243a8c1c7aafca/ant-launcher-1.7.1.jar
+7fa9de7a0000-7fa9de7b4000 r--s 0012f000 103:02 23208906                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.apache.ant/ant/1.7.1/1d33711018e7649a8427fff62a87f94f4e7d310f/ant-1.7.1.jar
+7fa9de7b4000-7fa9de7b6000 r--s 0001c000 103:02 24907123                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.piccolo2d/piccolo2d-core/1.3.1/fc26e07df20f63205fcd12523095470a637940ba/piccolo2d-core-1.3.1.jar
+7fa9de7b6000-7fa9de7b7000 r--s 0000c000 103:02 24907042                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm/5.0.3/dcc2193db20e19e1feca8b1240dbbc4e190824fa/asm-5.0.3.jar
+7fa9de7b7000-7fa9de7ba000 r--s 0002d000 103:02 22813074                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/isorelax/isorelax/20030108/b21859c352bd959ea22d06b2fe8c93b2e24531b9/isorelax-20030108.jar
+7fa9de7ba000-7fa9de7bf000 r--s 00032000 103:02 18223507                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/com.sun.msv.datatype.xsd/xsdlib/2009.1/838e6093c05de807deaeb5aeb00b6bbf42f83d8e/xsdlib-2009.1.jar
+7fa9de7bf000-7fa9de7ff000 r--s 0029a000 103:02 22943318                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/net.bytebuddy/byte-buddy/1.8.15/cb36fe3c70ead5fcd016856a7efff908402d86b8/byte-buddy-1.8.15.jar
+7fa9de7ff000-7fa9e0000000 rw-p 00000000 00:00 0 
+7fa9e0000000-7fa9e0021000 rw-p 00000000 00:00 0 
+7fa9e0021000-7fa9e4000000 ---p 00000000 00:00 0 
+7fa9e4000000-7fa9e4001000 r--s 00004000 103:02 25166746                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/relaxngDatatype/relaxngDatatype/20020414/de7952cecd05b65e0e4370cc93fc03035175eef5/relaxngDatatype-20020414.jar
+7fa9e4001000-7fa9e4003000 r--s 00013000 103:02 25166971                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/xml-resolver/xml-resolver/1.2/3d0f97750b3a03e0971831566067754ba4bfd68c/xml-resolver-1.2.jar
+7fa9e4003000-7fa9e4005000 r--s 00004000 103:02 22942998                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/javax.xml.stream/stax-api/1.0-2/d6337b0de8b25e53e81b922352fbea9f9f57ba0b/stax-api-1.0-2.jar
+7fa9e4005000-7fa9e4009000 r--s 00029000 103:02 24250384                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.codehaus.woodstox/stax2-api/3.0.3/1f767365ec3a213167c339984278e521c4307ec/stax2-api-3.0.3.jar
+7fa9e4009000-7fa9e400d000 r--s 00021000 103:02 24907127                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.piccolo2d/piccolo2d-extras/1.3.1/b7853cbbaf5cb632a66f980c52722a0fd3bdf222/piccolo2d-extras-1.3.1.jar
+7fa9e400d000-7fa9e400f000 r--s 00012000 103:02 23073675                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/net.minidev/accessors-smart/1.1/a527213f2fea112a04c9bdf0ec0264e34104cd08/accessors-smart-1.1.jar
+7fa9e400f000-7fa9e4015000 r--s 00072000 103:02 24250418                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.codehaus.woodstox/woodstox-core-lgpl/4.0.9/c7725b48981f775a0b6416e016b32c36cbdff177/woodstox-core-lgpl-4.0.9.jar
+7fa9e4015000-7fa9e401e000 r--s 00089000 103:02 22813135                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/javassist/javassist/3.8.0.GA/14abc3c5c1e70cd7e59b6a5dedf41378fafaa968/javassist-3.8.0.GA.jar
+7fa9e401e000-7fa9e401f000 r--s 00002000 103:02 23073967                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/net.sf/jargs/1.0/8cbf18b0411477a8ae6ce14d610ee64c65b21474/jargs-1.0.jar
+7fa9e401f000-7fa9e4022000 r--s 0000c000 103:02 24120290                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.arquillian.rusheye/rusheye-api/1.0.0/c4e4e240383d954b55d0eca9f9e9b2b483ddd2a4/rusheye-api-1.0.0.jar
+7fa9e4022000-7fa9e4023000 r--s 00014000 103:02 17959080                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.14.0/102d7be47241d781ef95f1581d414b0943053130/okio-1.14.0.jar
+7fa9e4023000-7fa9e4028000 r--s 00060000 103:02 17959049                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp/3.11.0/75966e05a49046ca2ae734e5626f28837a8d1e82/okhttp-3.11.0.jar
+7fa9e4028000-7fa9e402a000 r--s 0000c000 103:02 23333833                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-exec/1.3/8dfb9facd0830a27b1b5f29f84593f0aeee7773b/commons-exec-1.3.jar
+7fa9e402a000-7fa9e4030000 r--s 00027000 103:02 25037324                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.seleniumhq.selenium/selenium-api/3.141.59/e006ffd3aa7841e6e9125d9e6691b3a6b7592b05/selenium-api-3.141.59.jar
+7fa9e4030000-7fa9e4035000 r--s 00033000 103:02 24120539                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.bytedeco/javacpp/0.10/3346d5861a21ed4e230d56487694d9a1787dad62/javacpp-0.10.jar
+7fa9e4035000-7fa9e4088000 r--s 00373000 103:02 24120479                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcprov-jdk15on/1.58/2c9aa1c4e3372b447ba5daabade4adf2a2264b12/bcprov-jdk15on-1.58.jar
+7fa9e4088000-7fa9e409a000 r--s 000ae000 103:02 24120426                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15on/1.58/15a760a039b040e767a75c77ffcc4ff62558f903/bcpkix-jdk15on-1.58.jar
+7fa9e409a000-7fa9e409d000 r--s 00033000 103:02 23073668                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/net.lightbody.bmp/mitm/2.1.5/4baade9b14a050396439f07ed2b70e44ffa0882c/mitm-2.1.5.jar
+7fa9e409d000-7fa9e40c4000 r--s 0020e000 103:02 21890577                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/io.netty/netty-all/4.0.51.Final/62e7fe15d645e195e130dcc64165f853bf416897/netty-all-4.0.51.Final.jar
+7fa9e40c4000-7fa9e40c6000 r--s 00010000 103:02 12453980                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/com.jcraft/jzlib/1.1.3/c01428efa717624f7aabf4df319939dda9646b2d/jzlib-1.1.3.jar
+7fa9e40c6000-7fa9e40cb000 r--s 00048000 103:02 21235114                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/dnsjava/dnsjava/2.1.8/eed8a2cbf56cc60d07a189a429ead3067564193c/dnsjava-2.1.8.jar
+7fa9e40cb000-7fa9e40ce000 r--s 0000b000 103:02 10356575                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.8.9/e0e758381a6579cb2029dace23a7209b90ac7232/jackson-annotations-2.8.9.jar
+7fa9e40ce000-7fa9e40d2000 r--s 00042000 103:02 10487778                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.8.9/569b1752705da98f49aabe2911cc956ff7d8ed9d/jackson-core-2.8.9.jar
+7fa9e40d2000-7fa9e40e4000 r--s 0011e000 103:02 10487859                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.8.9/4dfca3975be3c1a98eacb829e70f02e9a71bc159/jackson-databind-2.8.9.jar
+7fa9e40e4000-7fa9e40e6000 r--s 00009000 103:02 24381070                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.hamcrest/hamcrest-core/1.3/42a25dc3219429f0e5d060061f71acb49bf010a0/hamcrest-core-1.3.jar
+7fa9e40e6000-7fa9e40e9000 r--s 0000e000 103:02 18093097                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/com.sun.activation/jakarta.activation/1.2.1/8013606426a73d8ba6b568370877251e91a38b89/jakarta.activation-1.2.1.jar
+7fa9e40e9000-7fa9e40ed000 r--s 0002d000 103:02 23073710                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/net.minidev/json-smart/2.2/53200a9d80fff3106dc435de1350cdd20b757819/json-smart-2.2.jar
+7fa9e40ed000-7fa9e40ef000 r--s 00009000 103:02 25037660                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.25/da76ca59f6a57ee3102f8f9bd9cee742973efa8a/slf4j-api-1.7.25.jar
+7fa9e40ef000-7fa9e40f1000 r--s 00003000 103:02 25037593                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.slf4j/jcl-over-slf4j/1.7.25/f8c32b13ff142a513eeb5b6330b1588dcb2c0461/jcl-over-slf4j-1.7.25.jar
+7fa9e40f1000-7fa9e40f3000 r--s 00001000 103:02 11930153                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/com.google.j2objc/j2objc-annotations/1.3/ba035118bc8bac37d7eff77700720999acd9986d/j2objc-annotations-1.3.jar
+7fa9e40f3000-7fa9e40f5000 r--s 00002000 103:02 11540011                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/com.google.errorprone/error_prone_annotations/2.3.4/dac170e4594de319655ffb62f41cbd6dbb5e601e/error_prone_annotations-2.3.4.jar
+7fa9e40f5000-7fa9e4100000 r--s 0002a000 103:02 24120596                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.checkerframework/checker-qual/3.5.0/2f50520c8abea66fbd8d26e481d3aef5c673b510/checker-qual-3.5.0.jar
+7fa9e4100000-7fa9e4102000 r--s 00003000 103:02 11405820                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/3.0.2/25ea2e8b0c338a877313bd4672d3fe056ea78f0d/jsr305-3.0.2.jar
+7fa9e4102000-7fa9e4103000 r--s 00000000 103:02 11798809                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/com.google.guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/b421526c5f297295adef1c886e5246c39d4ac629/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar
+7fa9e4103000-7fa9e4105000 r--s 00000000 103:02 11667602                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/com.google.guava/failureaccess/1.0.1/1dcf1de382a0bf95a3d8b0849546c88bac1292c9/failureaccess-1.0.1.jar
+7fa9e4105000-7fa9e410d000 r--s 0006e000 103:02 23333849                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-lang3/3.5/6c6c702c89bfff3cd9e80b04d668c5e190d588c6/commons-lang3-3.5.jar
+7fa9e410d000-7fa9e410e000 r--s 0000f000 103:02 24776910                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.json/json/20140107/d1ffca6e2482b002702c6a576166fd685e3370e3/json-20140107.jar
+7fa9e410e000-7fa9e4117000 r--s 0002d000 103:02 25166959                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/xml-apis/xml-apis/1.4.01/3789d9fada2d3d458c4ba2de349d48780f381ee3/xml-apis-1.4.01.jar
+7fa9e4117000-7fa9e412f000 r--s 00115000 103:02 25166915                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/xerces/xercesImpl/2.9.1/7bc7e49ddfe4fb5f193ed37ecc96c12292c8ceb6/xercesImpl-2.9.1.jar
+7fa9e412f000-7fa9e4130000 r--s 00000000 103:02 23073581                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/net.java.dev.msv/msv-testharness/2009.1/85e8e170b59f0a70c17e9bac6f687587554ee9f1/msv-testharness-2009.1.jar
+7fa9e4130000-7fa9e413f000 r--s 00095000 103:02 23073569                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/net.java.dev.msv/msv-core/2009.1/d9f6c53279cffebf62cca691144cc0022b1fe34a/msv-core-2009.1.jar
+7fa9e413f000-7fa9e4144000 r--s 00048000 103:02 21235119                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/dom4j/dom4j/1.6.1/5d3ccc056b6f056dbf0dddfdf43894b9065a8f94/dom4j-1.6.1.jar
+7fa9e4144000-7fa9e414a000 r--s 00050000 103:02 24776922                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.jsoup/jsoup/1.10.2/33ee82e324f4b1e40167f3dc5e01234a1c5cab61/jsoup-1.10.2.jar
+7fa9e414a000-7fa9e414f000 r--s 0004b000 103:02 24250496                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.dom4j/dom4j/2.1.3/a75914155a9f5808963170ec20653668a2ffd2fd/dom4j-2.1.3.jar
+7fa9e414f000-7fa9e4162000 r--s 000b4000 103:02 24120522                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.bytedeco.javacpp-presets/opencv/2.4.10-0.10/a52a775a3d2d578823f86f1c9a347501bc39d9d2/opencv-2.4.10-0.10.jar
+7fa9e4162000-7fa9e416c000 r--s 00054000 103:02 22943198                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/junit/junit/4.13.1/cdd00374f1fee76b11e2a9d127405aa3f6be5b6a/junit-4.13.1.jar
+7fa9e416c000-7fa9e4171000 r--s 00041000 103:02 20841963                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/commons-lang/commons-lang/2.6/ce1edb914c94ebc388f086c6827e8bdeec71ac2/commons-lang-2.6.jar
+7fa9e4171000-7fa9e4175000 r--s 00031000 103:02 20710892                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.6/815893df5f31da2ece4040fe0a12fd44b577afaf/commons-io-2.6.jar
+7fa9e4175000-7fa9e41ec000 r--s 0063b000 103:02 24120294                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.arquillian.rusheye/rusheye-impl/1.0.0/29a167ee32f844a0c3644120ab9f613384b48e28/rusheye-impl-1.0.0.jar
+7fa9e41ec000-7fa9e41f5000 r--s 0009d000 103:02 18093123                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/com.sun.mail/jakarta.mail/1.6.6/31ccb8d59546aa10a38c885fd47ef8b026ab85bf/jakarta.mail-1.6.6.jar
+7fa9e41f5000-7fa9e41f6000 r--s 00002000 103:02 22680899                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/com.liferay/net.jsourcerer.webdriver.JSErrorCollector/0.6/e03fd59747649a26c9304a5e048242ffa97b5f35/net.jsourcerer.webdriver.JSErrorCollector-0.6.jar
+7fa9e41f6000-7fa9e41fb000 r--s 00051000 103:02 17305877                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/com.liferay/jodd.util/6.0.1.LIFERAY-PATCHED-1/c6b99563db5a369037b92646a53f4c23c70d5021/jodd.util-6.0.1.LIFERAY-PATCHED-1.jar
+7fa9e41fb000-7fa9e4200000 r--s 0002a000 103:02 12323250                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/com.jayway.jsonpath/json-path/2.1.0/397bd8076ff9581ad2ebad787da45ba76ee39112/json-path-2.1.0.jar
+7fa9e4200000-7fa9e4234000 r--s 00287000 103:02 11798798                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/30.1-jre/d0c3ce2311c9e36e73228da25a6e99b2ab826f/guava-30.1-jre.jar
+7fa9e4234000-7fa9e4236000 r--s 00004000 103:02 25037543                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.sikuli/sikuli-core/1.2.2/853f8b712b4caa8cd9661ca203567d4201d5a6de/sikuli-core-1.2.2.jar
+7fa9e4236000-7fa9e423b000 r--s 0003a000 103:02 25037539                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.sikuli/sikuli-api/1.2.0/b47ae78b3b7e8538e5f5eb4944e7f8bd700a57d2/sikuli-api-1.2.0.jar
+7fa9e423b000-7fa9e4241000 r--s 0004c000 103:02 25037483                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.seleniumhq.selenium/selenium-remote-driver/3.141.59/1c79ca890c312ff9916bd95df4f0c5182ec722d8/selenium-remote-driver-3.141.59.jar
+7fa9e4241000-7fa9e4245000 r--s 00021000 103:02 25037525                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.seleniumhq.selenium/selenium-support/3.141.59/8735de5049acf0e761defc65ee5837d6541abaf5/selenium-support-3.141.59.jar
+7fa9e4245000-7fa9e4246000 r--s 00003000 103:02 25037504                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.seleniumhq.selenium/selenium-safari-driver/3.141.59/a32b5b88f46ea4b0356079f0d2e2217543923046/selenium-safari-driver-3.141.59.jar
+7fa9e4246000-7fa9e4247000 r--s 00002000 103:02 25037457                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.seleniumhq.selenium/selenium-opera-driver/3.141.59/6b11ed01182bfd8bb62ddeae34cf9eadd3cfc7ff/selenium-opera-driver-3.141.59.jar
+7fa9e4247000-7fa9e4249000 r--s 00003000 103:02 25037412                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.seleniumhq.selenium/selenium-ie-driver/3.141.59/677b9b414a3a9bb2aeea89042a7b326edeb13a82/selenium-ie-driver-3.141.59.jar
+7fa9e4249000-7fa9e424b000 r--s 000c4000 103:02 25037387                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.seleniumhq.selenium/selenium-firefox-driver/3.141.59/a99f2fe2a42747ed9809d4f62f51a9e1b336dde8/selenium-firefox-driver-3.141.59.jar
+7fa9e424b000-7fa9e424c000 r--s 00001000 103:02 25037366                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.seleniumhq.selenium/selenium-edge-driver/3.141.59/fc09c66f2d0b33b0816d770761ad1d599ef0df29/selenium-edge-driver-3.141.59.jar
+7fa9e424c000-7fa9e424e000 r--s 00002000 103:02 25037343                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.seleniumhq.selenium/selenium-chrome-driver/3.141.59/67137314736c6a2f39a8aa59a562e9616ae5f77e/selenium-chrome-driver-3.141.59.jar
+7fa9e424e000-7fa9e4251000 r--s 0001d000 103:02 23073662                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/net.lightbody.bmp/littleproxy/1.1.0-beta-bmp-17/8cd8e0a5b3a1d8325a2ebef44ebc12d626995a05/littleproxy-1.1.0-beta-bmp-17.jar
+7fa9e4251000-7fa9e4252000 r--s 00000000 103:02 25037435                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/org.seleniumhq.selenium/selenium-java/3.141.59/e8e20b741299cb8ffedbd2925a3ab69d08b41063/selenium-java-3.141.59.jar
+7fa9e4252000-7fa9e4256000 r--s 0001e000 103:02 23073652                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/net.lightbody.bmp/browsermob-core/2.1.5/19b2a3f6c911b85793fa2ca4dbfb350dd9c01429/browsermob-core-2.1.5.jar
+7fa9e4256000-7fa9e4259000 r--s 00033000 103:02 22284016                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/com.liferay/com.liferay.poshi.core/1.0.20/e4cf6832a0a7e0160ad0e9f3209e1cbedb5111ee/com.liferay.poshi.core-1.0.20.jar
+7fa9e4259000-7fa9e425c000 r--s 00011000 103:02 11143811                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/com.github.scribejava/scribejava-core/3.2.0/8a48c3373a17c5f69144edbf7211cb3b2498ddd4/scribejava-core-3.2.0.jar
+7fa9e425c000-7fa9e425e000 r--s 00003000 103:02 11143806                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/com.github.lewka/ocular/1.0.5/e0c927725eaade53f624f614788ab20777fc494a/ocular-1.0.5.jar
+7fa9e425e000-7fa9e4263000 r--s 00038000 103:02 22284023                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/com.liferay/com.liferay.poshi.runner/1.0.304/a38cd43351154914d5cd48c99c5e96b576bf7e86/com.liferay.poshi.runner-1.0.304.jar
+7fa9e4263000-7fa9e4274000 r--s 001c6000 103:02 24251679                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/jsse.jar
+7fa9e4274000-7fa9e428a000 r-xp 00000000 103:02 24251529                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libnet.so
+7fa9e428a000-7fa9e4489000 ---p 00016000 103:02 24251529                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libnet.so
+7fa9e4489000-7fa9e448a000 r--p 00015000 103:02 24251529                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libnet.so
+7fa9e448a000-7fa9e448b000 rw-p 00016000 103:02 24251529                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libnet.so
+7fa9e448b000-7fa9e4495000 r--s 00054000 103:02 12585897                  /home/p2kmgcl/Projects/community-portal/liferay-portal/.gradle/wrapper/dists/gradle-6.6.1.LIFERAY-PATCHED-1-bin/3xd0rgrvrh0iahbbrqubjabbr/gradle-6.6.1/lib/plugins/junit-4.13.jar
+7fa9e4495000-7fa9e449a000 r--s 00041000 103:02 12585726                  /home/p2kmgcl/Projects/community-portal/liferay-portal/.gradle/wrapper/dists/gradle-6.6.1.LIFERAY-PATCHED-1-bin/3xd0rgrvrh0iahbbrqubjabbr/gradle-6.6.1/lib/commons-lang-2.6.jar
+7fa9e449a000-7fa9e44a0000 r--s 0004d000 103:02 12585791                  /home/p2kmgcl/Projects/community-portal/liferay-portal/.gradle/wrapper/dists/gradle-6.6.1.LIFERAY-PATCHED-1-bin/3xd0rgrvrh0iahbbrqubjabbr/gradle-6.6.1/lib/kryo-2.24.0.jar
+7fa9e44a0000-7fa9e44a5000 r--s 0001f000 103:02 12585794                  /home/p2kmgcl/Projects/community-portal/liferay-portal/.gradle/wrapper/dists/gradle-6.6.1.LIFERAY-PATCHED-1-bin/3xd0rgrvrh0iahbbrqubjabbr/gradle-6.6.1/lib/native-platform-0.22-milestone-4.jar
+7fa9e44a5000-7fa9e44a7000 r--s 00000000 103:02 12585775                  /home/p2kmgcl/Projects/community-portal/liferay-portal/.gradle/wrapper/dists/gradle-6.6.1.LIFERAY-PATCHED-1-bin/3xd0rgrvrh0iahbbrqubjabbr/gradle-6.6.1/lib/jul-to-slf4j-1.7.28.jar
+7fa9e44a7000-7fa9e44a9000 r--s 00009000 103:02 12585946                  /home/p2kmgcl/Projects/community-portal/liferay-portal/.gradle/wrapper/dists/gradle-6.6.1.LIFERAY-PATCHED-1-bin/3xd0rgrvrh0iahbbrqubjabbr/gradle-6.6.1/lib/slf4j-api-1.7.28.jar
+7fa9e44a9000-7fa9e44ad000 r--s 0001d000 103:02 12585875                  /home/p2kmgcl/Projects/community-portal/liferay-portal/.gradle/wrapper/dists/gradle-6.6.1.LIFERAY-PATCHED-1-bin/3xd0rgrvrh0iahbbrqubjabbr/gradle-6.6.1/lib/plugins/gradle-testing-jvm-6.6.1.jar
+7fa9e44ad000-7fa9e44b5000 r--s 00035000 103:02 12585873                  /home/p2kmgcl/Projects/community-portal/liferay-portal/.gradle/wrapper/dists/gradle-6.6.1.LIFERAY-PATCHED-1-bin/3xd0rgrvrh0iahbbrqubjabbr/gradle-6.6.1/lib/plugins/gradle-testing-base-6.6.1.jar
+7fa9e44b5000-7fa9e44b8000 r--s 0000d000 103:02 12585759                  /home/p2kmgcl/Projects/community-portal/liferay-portal/.gradle/wrapper/dists/gradle-6.6.1.LIFERAY-PATCHED-1-bin/3xd0rgrvrh0iahbbrqubjabbr/gradle-6.6.1/lib/gradle-native-6.6.1.jar
+7fa9e44b8000-7fa9e44c5000 r--s 00065000 103:02 12585731                  /home/p2kmgcl/Projects/community-portal/liferay-portal/.gradle/wrapper/dists/gradle-6.6.1.LIFERAY-PATCHED-1-bin/3xd0rgrvrh0iahbbrqubjabbr/gradle-6.6.1/lib/gradle-base-services-6.6.1.jar
+7fa9e44c5000-7fa9e44cd000 r--s 00032000 103:02 12585756                  /home/p2kmgcl/Projects/community-portal/liferay-portal/.gradle/wrapper/dists/gradle-6.6.1.LIFERAY-PATCHED-1-bin/3xd0rgrvrh0iahbbrqubjabbr/gradle-6.6.1/lib/gradle-messaging-6.6.1.jar
+7fa9e44cd000-7fa9e4509000 r--s 00216000 103:02 12585743                  /home/p2kmgcl/Projects/community-portal/liferay-portal/.gradle/wrapper/dists/gradle-6.6.1.LIFERAY-PATCHED-1-bin/3xd0rgrvrh0iahbbrqubjabbr/gradle-6.6.1/lib/gradle-core-6.6.1.jar
+7fa9e4509000-7fa9e4518000 r--s 00047000 103:02 12585744                  /home/p2kmgcl/Projects/community-portal/liferay-portal/.gradle/wrapper/dists/gradle-6.6.1.LIFERAY-PATCHED-1-bin/3xd0rgrvrh0iahbbrqubjabbr/gradle-6.6.1/lib/gradle-core-api-6.6.1.jar
+7fa9e4518000-7fa9e4519000 ---p 00000000 00:00 0 
+7fa9e4519000-7fa9e4619000 rw-p 00000000 00:00 0 
+7fa9e4619000-7fa9e461c000 ---p 00000000 00:00 0 
+7fa9e461c000-7fa9e471a000 rw-p 00000000 00:00 0 
+7fa9e471a000-7fa9e471b000 ---p 00000000 00:00 0 
+7fa9e471b000-7fa9e471e000 ---p 00000000 00:00 0 
+7fa9e471e000-7fa9e481b000 rw-p 00000000 00:00 0 
+7fa9e481b000-7fa9e481c000 ---p 00000000 00:00 0 
+7fa9e481c000-7fa9e481f000 ---p 00000000 00:00 0 
+7fa9e481f000-7fa9e491c000 rw-p 00000000 00:00 0 
+7fa9e491c000-7fa9e491d000 ---p 00000000 00:00 0 
+7fa9e491d000-7fa9e4920000 ---p 00000000 00:00 0 
+7fa9e4920000-7fa9e4a1d000 rw-p 00000000 00:00 0 
+7fa9e4a1d000-7fa9e4a1e000 ---p 00000000 00:00 0 
+7fa9e4a1e000-7fa9e4a21000 ---p 00000000 00:00 0 
+7fa9e4a21000-7fa9e4b1e000 rw-p 00000000 00:00 0 
+7fa9e4b1e000-7fa9e4b21000 ---p 00000000 00:00 0 
+7fa9e4b21000-7fa9e4c1f000 rw-p 00000000 00:00 0 
+7fa9e4c1f000-7fa9e4c22000 ---p 00000000 00:00 0 
+7fa9e4c22000-7fa9e4d20000 rw-p 00000000 00:00 0 
+7fa9e4d20000-7fa9e4d23000 ---p 00000000 00:00 0 
+7fa9e4d23000-7fa9e4e21000 rw-p 00000000 00:00 0 
+7fa9e4e21000-7fa9e4e22000 ---p 00000000 00:00 0 
+7fa9e4e22000-7fa9e8000000 rw-p 00000000 00:00 0 
+7fa9e8000000-7fa9e8021000 rw-p 00000000 00:00 0 
+7fa9e8021000-7fa9ec000000 ---p 00000000 00:00 0 
+7fa9ec000000-7fa9ec021000 rw-p 00000000 00:00 0 
+7fa9ec021000-7fa9f0000000 ---p 00000000 00:00 0 
+7fa9f0000000-7fa9f0021000 rw-p 00000000 00:00 0 
+7fa9f0021000-7fa9f4000000 ---p 00000000 00:00 0 
+7fa9f4000000-7fa9f4021000 rw-p 00000000 00:00 0 
+7fa9f4021000-7fa9f8000000 ---p 00000000 00:00 0 
+7fa9f8000000-7fa9f8021000 rw-p 00000000 00:00 0 
+7fa9f8021000-7fa9fc000000 ---p 00000000 00:00 0 
+7fa9fc000000-7fa9fc002000 r--s 00006000 103:02 12585762                  /home/p2kmgcl/Projects/community-portal/liferay-portal/.gradle/wrapper/dists/gradle-6.6.1.LIFERAY-PATCHED-1-bin/3xd0rgrvrh0iahbbrqubjabbr/gradle-6.6.1/lib/gradle-process-services-6.6.1.jar
+7fa9fc002000-7fa9fc00a000 r--s 0003c000 103:02 12585755                  /home/p2kmgcl/Projects/community-portal/liferay-portal/.gradle/wrapper/dists/gradle-6.6.1.LIFERAY-PATCHED-1-bin/3xd0rgrvrh0iahbbrqubjabbr/gradle-6.6.1/lib/gradle-logging-6.6.1.jar
+7fa9fc00a000-7fa9fc39f000 rw-p 00000000 00:00 0 
+7fa9fc39f000-7fa9fc57c000 r--s 03e1d000 103:02 24251681                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/rt.jar
+7fa9fc57c000-7fa9fc74d000 rw-p 00000000 00:00 0 
+7fa9fc74d000-7fa9fc74e000 ---p 00000000 00:00 0 
+7fa9fc74e000-7fa9fc84e000 rw-p 00000000 00:00 0 
+7fa9fc84e000-7fa9fc84f000 ---p 00000000 00:00 0 
+7fa9fc84f000-7fa9fc94f000 rw-p 00000000 00:00 0 
+7fa9fc94f000-7fa9fc950000 ---p 00000000 00:00 0 
+7fa9fc950000-7fa9fca50000 rw-p 00000000 00:00 0 
+7fa9fca50000-7fa9fca51000 ---p 00000000 00:00 0 
+7fa9fca51000-7fa9fcb51000 rw-p 00000000 00:00 0 
+7fa9fcb51000-7fa9fcb52000 ---p 00000000 00:00 0 
+7fa9fcb52000-7fa9fcc52000 rw-p 00000000 00:00 0 
+7fa9fcc52000-7fa9fcc53000 ---p 00000000 00:00 0 
+7fa9fcc53000-7fa9fcd53000 rw-p 00000000 00:00 0 
+7fa9fcd53000-7fa9fcd54000 ---p 00000000 00:00 0 
+7fa9fcd54000-7fa9fce54000 rw-p 00000000 00:00 0 
+7fa9fce54000-7fa9fce55000 ---p 00000000 00:00 0 
+7fa9fce55000-7fa9fd000000 rw-p 00000000 00:00 0 
+7fa9fd000000-7fa9fdd40000 rwxp 00000000 00:00 0 
+7fa9fdd40000-7faa0c000000 ---p 00000000 00:00 0 
+7faa0c000000-7faa0c881000 rw-p 00000000 00:00 0 
+7faa0c881000-7faa10000000 ---p 00000000 00:00 0 
+7faa10000000-7faa10001000 r--s 00001000 103:02 10356472                  /home/p2kmgcl/Projects/community-portal/liferay-binaries-cache-2020/.gradle/caches/modules-2/files-2.1/com.deque/axe-selenium/1.1/e4aa7b53a05a40f4d22b68e89f2dab357058cd13/axe-selenium-1.1.jar
+7faa10001000-7faa10002000 r--s 00003000 103:02 12585874                  /home/p2kmgcl/Projects/community-portal/liferay-portal/.gradle/wrapper/dists/gradle-6.6.1.LIFERAY-PATCHED-1-bin/3xd0rgrvrh0iahbbrqubjabbr/gradle-6.6.1/lib/plugins/gradle-testing-junit-platform-6.6.1.jar
+7faa10002000-7faa10004000 r--s 00005000 103:02 12585739                  /home/p2kmgcl/Projects/community-portal/liferay-portal/.gradle/wrapper/dists/gradle-6.6.1.LIFERAY-PATCHED-1-bin/3xd0rgrvrh0iahbbrqubjabbr/gradle-6.6.1/lib/gradle-cli-6.6.1.jar
+7faa10004000-7faa10007000 r--s 0000b000 103:02 12585748                  /home/p2kmgcl/Projects/community-portal/liferay-portal/.gradle/wrapper/dists/gradle-6.6.1.LIFERAY-PATCHED-1-bin/3xd0rgrvrh0iahbbrqubjabbr/gradle-6.6.1/lib/gradle-files-6.6.1.jar
+7faa10007000-7faa10104000 rw-p 00000000 00:00 0 
+7faa10104000-7faa1015a000 rw-p 00000000 00:00 0 
+7faa1015a000-7faa10190000 rw-p 00000000 00:00 0 
+7faa10190000-7faa1051b000 ---p 00000000 00:00 0 
+7faa1051b000-7faa10536000 r-xp 00000000 103:02 24251528                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libzip.so
+7faa10536000-7faa10735000 ---p 0001b000 103:02 24251528                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libzip.so
+7faa10735000-7faa10736000 r--p 0001a000 103:02 24251528                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libzip.so
+7faa10736000-7faa10737000 rw-p 0001b000 103:02 24251528                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libzip.so
+7faa10737000-7faa1073f000 rw-s 00000000 00:25 18505                      /tmp/hsperfdata_p2kmgcl/56639
+7faa1073f000-7faa11013000 r--s 00000000 103:02 3276818                   /var/lib/sss/mc/passwd
+7faa11013000-7faa1103f000 r-xp 00000000 103:02 24251525                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libjava.so
+7faa1103f000-7faa1123f000 ---p 0002c000 103:02 24251525                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libjava.so
+7faa1123f000-7faa11240000 r--p 0002c000 103:02 24251525                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libjava.so
+7faa11240000-7faa11242000 rw-p 0002d000 103:02 24251525                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libjava.so
+7faa11242000-7faa1124f000 r-xp 00000000 103:02 24251514                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libverify.so
+7faa1124f000-7faa1144e000 ---p 0000d000 103:02 24251514                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libverify.so
+7faa1144e000-7faa11450000 r--p 0000c000 103:02 24251514                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libverify.so
+7faa11450000-7faa11451000 rw-p 0000e000 103:02 24251514                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/libverify.so
+7faa11451000-7faa11454000 r--p 00000000 103:02 22152334                  /usr/lib64/librt-2.33.so
+7faa11454000-7faa11458000 r-xp 00003000 103:02 22152334                  /usr/lib64/librt-2.33.so
+7faa11458000-7faa1145a000 r--p 00007000 103:02 22152334                  /usr/lib64/librt-2.33.so
+7faa1145a000-7faa1145b000 r--p 00008000 103:02 22152334                  /usr/lib64/librt-2.33.so
+7faa1145b000-7faa1145c000 rw-p 00009000 103:02 22152334                  /usr/lib64/librt-2.33.so
+7faa1145c000-7faa1145d000 ---p 00000000 00:00 0 
+7faa1145d000-7faa11460000 ---p 00000000 00:00 0 
+7faa11460000-7faa1155d000 rw-p 00000000 00:00 0 
+7faa1155d000-7faa1156c000 r--p 00000000 103:02 22151666                  /usr/lib64/libm-2.33.so
+7faa1156c000-7faa11606000 r-xp 0000f000 103:02 22151666                  /usr/lib64/libm-2.33.so
+7faa11606000-7faa1169e000 r--p 000a9000 103:02 22151666                  /usr/lib64/libm-2.33.so
+7faa1169e000-7faa1169f000 ---p 00141000 103:02 22151666                  /usr/lib64/libm-2.33.so
+7faa1169f000-7faa116a0000 r--p 00141000 103:02 22151666                  /usr/lib64/libm-2.33.so
+7faa116a0000-7faa116a1000 rw-p 00142000 103:02 22151666                  /usr/lib64/libm-2.33.so
+7faa116a1000-7faa12396000 r-xp 00000000 103:02 24251507                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/server/libjvm.so
+7faa12396000-7faa12596000 ---p 00cf5000 103:02 24251507                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/server/libjvm.so
+7faa12596000-7faa1262c000 r--p 00cf5000 103:02 24251507                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/server/libjvm.so
+7faa1262c000-7faa1265d000 rw-p 00d8b000 103:02 24251507                  /usr/lib/jvm/jdk1.8.0_291/jre/lib/amd64/server/libjvm.so
+7faa1265d000-7faa1269a000 rw-p 00000000 00:00 0 
+7faa1269a000-7faa126c0000 r--p 00000000 103:02 22151603                  /usr/lib64/libc-2.33.so
+7faa126c0000-7faa1280d000 r-xp 00026000 103:02 22151603                  /usr/lib64/libc-2.33.so
+7faa1280d000-7faa12859000 r--p 00173000 103:02 22151603                  /usr/lib64/libc-2.33.so
+7faa12859000-7faa1285a000 ---p 001bf000 103:02 22151603                  /usr/lib64/libc-2.33.so
+7faa1285a000-7faa1285d000 r--p 001bf000 103:02 22151603                  /usr/lib64/libc-2.33.so
+7faa1285d000-7faa12860000 rw-p 001c2000 103:02 22151603                  /usr/lib64/libc-2.33.so
+7faa12860000-7faa12869000 rw-p 00000000 00:00 0 
+7faa12869000-7faa1286b000 r--p 00000000 103:02 22151626                  /usr/lib64/libdl-2.33.so
+7faa1286b000-7faa1286d000 r-xp 00002000 103:02 22151626                  /usr/lib64/libdl-2.33.so
+7faa1286d000-7faa1286e000 r--p 00004000 103:02 22151626                  /usr/lib64/libdl-2.33.so
+7faa1286e000-7faa1286f000 r--p 00004000 103:02 22151626                  /usr/lib64/libdl-2.33.so
+7faa1286f000-7faa12870000 rw-p 00000000 00:00 0 
+7faa12870000-7faa12887000 r-xp 00000000 103:02 24521995                  /usr/lib/jvm/jdk1.8.0_291/lib/amd64/jli/libjli.so
+7faa12887000-7faa12a86000 ---p 00017000 103:02 24521995                  /usr/lib/jvm/jdk1.8.0_291/lib/amd64/jli/libjli.so
+7faa12a86000-7faa12a87000 r--p 00016000 103:02 24521995                  /usr/lib/jvm/jdk1.8.0_291/lib/amd64/jli/libjli.so
+7faa12a87000-7faa12a88000 rw-p 00017000 103:02 24521995                  /usr/lib/jvm/jdk1.8.0_291/lib/amd64/jli/libjli.so
+7faa12a88000-7faa12a8f000 r--p 00000000 103:02 22151966                  /usr/lib64/libpthread-2.33.so
+7faa12a8f000-7faa12a9e000 r-xp 00007000 103:02 22151966                  /usr/lib64/libpthread-2.33.so
+7faa12a9e000-7faa12aa2000 r--p 00016000 103:02 22151966                  /usr/lib64/libpthread-2.33.so
+7faa12aa2000-7faa12aa3000 ---p 0001a000 103:02 22151966                  /usr/lib64/libpthread-2.33.so
+7faa12aa3000-7faa12aa4000 r--p 0001a000 103:02 22151966                  /usr/lib64/libpthread-2.33.so
+7faa12aa4000-7faa12aa5000 rw-p 0001b000 103:02 22151966                  /usr/lib64/libpthread-2.33.so
+7faa12aa5000-7faa12aa9000 rw-p 00000000 00:00 0 
+7faa12aa9000-7faa12aab000 r--s 00003000 103:02 12585749                  /home/p2kmgcl/Projects/community-portal/liferay-portal/.gradle/wrapper/dists/gradle-6.6.1.LIFERAY-PATCHED-1-bin/3xd0rgrvrh0iahbbrqubjabbr/gradle-6.6.1/lib/gradle-hashing-6.6.1.jar
+7faa12aab000-7faa12aad000 r--s 00005000 103:02 12585767                  /home/p2kmgcl/Projects/community-portal/liferay-portal/.gradle/wrapper/dists/gradle-6.6.1.LIFERAY-PATCHED-1-bin/3xd0rgrvrh0iahbbrqubjabbr/gradle-6.6.1/lib/gradle-worker-processes-6.6.1.jar
+7faa12aad000-7faa12aae000 r--s 00009000 103:02 12587345                  /home/p2kmgcl/Projects/community-portal/liferay-portal/.gradle/caches/6.6.1/workerMain/gradle-worker.jar
+7faa12aae000-7faa12ab0000 r--p 00000000 103:02 22156815                  /usr/lib64/libnss_sss.so.2
+7faa12ab0000-7faa12ab7000 r-xp 00002000 103:02 22156815                  /usr/lib64/libnss_sss.so.2
+7faa12ab7000-7faa12ab9000 r--p 00009000 103:02 22156815                  /usr/lib64/libnss_sss.so.2
+7faa12ab9000-7faa12aba000 r--p 0000a000 103:02 22156815                  /usr/lib64/libnss_sss.so.2
+7faa12aba000-7faa12abb000 rw-p 0000b000 103:02 22156815                  /usr/lib64/libnss_sss.so.2
+7faa12abb000-7faa12abc000 rw-p 00000000 00:00 0 
+7faa12abc000-7faa12abd000 r--p 00000000 00:00 0 
+7faa12abd000-7faa12abf000 rw-p 00000000 00:00 0 
+7faa12abf000-7faa12ac0000 r--p 00000000 103:02 22151529                  /usr/lib64/ld-2.33.so
+7faa12ac0000-7faa12ae5000 r-xp 00001000 103:02 22151529                  /usr/lib64/ld-2.33.so
+7faa12ae5000-7faa12aef000 r--p 00026000 103:02 22151529                  /usr/lib64/ld-2.33.so
+7faa12aef000-7faa12af1000 r--p 0002f000 103:02 22151529                  /usr/lib64/ld-2.33.so
+7faa12af1000-7faa12af3000 rw-p 00031000 103:02 22151529                  /usr/lib64/ld-2.33.so
+7ffd29493000-7ffd294b9000 rw-p 00000000 00:00 0                          [stack]
+7ffd295f7000-7ffd295fb000 r--p 00000000 00:00 0                          [vvar]
+7ffd295fb000-7ffd295fd000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+
+VM Arguments:
+jvm_args: -Dapp.server.type=tomcat -Dbrowser.type=chrome -Dbrowser.version=86.0 -Dcomponent.names=extra-apps-content-targeting,extra-apps-known-issues,liferay-connected-services-fix-packs,liferay-connected-services-known-issues,liferay-connected-services-notifications,liferay-connected-services-project-administration,liferay-connected-services-subscriptions,liferay-connected-services-user-management,marketplace,marketplace-known-issues,marketplace-plugins-1-2-1-columns-layouttpl,marketplace-plugins-1-3-1-columns-layouttpl,marketplace-plugins-1-3-2-columns-layouttpl,marketplace-plugins-2-1-2-columns-layouttpl,marketplace-plugins-3-2-3-columns-layouttpl,marketplace-plugins-akismet-portlet,marketplace-plugins-antisamy-hook,marketplace-plugins-audit-hook,marketplace-plugins-audit-portlet,marketplace-plugins-calendar-portlet,marketplace-plugins-cas-web,marketplace-plugins-chat-portlet,marketplace-plugins-ddl-form-portlet,marketplace-plugins-drools-web,marketplace-plugins-ehcache-cluster-web,marketplace-plugins-email-to-mb-filter-hook,marketplace-plugins-google-maps-portlet,marketplace-plugins-ip-geocoder-portlet,marketplace-plugins-jasperreports-web,marketplace-plugins-kaleo-designer-portlet,marketplace-plugins-kaleo-forms-portlet,marketplace-plugins-kaleo-web,marketplace-plugins-knowledge-base-portlet,marketplace-plugins-localization-ja-hook,marketplace-plugins-localization-zh-hook,marketplace-plugins-logos-reftagger-portlet,marketplace-plugins-mail-portlet,marketplace-plugins-marketplace-portlet,marketplace-plugins-mb-subscription-manager-portlet,marketplace-plugins-my-subscriptions-portlet,marketplace-plugins-notifications-portlet,marketplace-plugins-opensocial-portlet,marketplace-plugins-reports-portlet,marketplace-plugins-resources-importer-web,marketplace-plugins-saml-portlet,marketplace-plugins-scripting-executor-web,marketplace-plugins-server-manager-web,marketplace-plugins-sharepoint-hook,marketplace-plugins-social-networking-portlet,marketplace-plugins-stocks-portlet,marketplace-plugins-sync-web,marketplace-plugins-theme-loader-web,market-Ddatabase.hypersonic.driver=org.hsqldb.jdbc.JDBCDriver -Ddatabase.hypersonic.password -Ddatabase.hypersonic.schema=lportal -Ddatabase.hypersonic.url=jdbc:hsqldb:/home/p2kmgcl/Projects/community-portal/liferay-portal/../bundles/data/hypersonic/lportal -Ddatabase.hypersonic.username=sa -Ddatabase.mariadb.driver=org.mariadb.jdbc.Driver -Ddatabase.mariadb.password -Ddatabase.mariadb.schema=lportal -Ddatabase.mariadb.url=jdbc:mariadb://localhost:3307/lportal?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false -Ddatabase.mariadb.username=root -Ddatabase.mysql.driver=com.mysql.cj.jdbc.Driver -Ddatabase.mysql.password -Ddatabase.mysql.schema=lportal -Ddatabase.mysql.url=jdbc:mysql://localhost/lportal?characterEncoding=UTF-8&dontTrackOpenResources=true&holdResultsOpenOverStatementClose=true&serverTimezone=GMT&useFastDateParsing=false&useUnicode=true -Ddatabase.mysql.username=root -Ddatabase.postgresql.driver=org.postgresql.Driver -Ddatabase.postgresql.password -Ddatabase.postgresql.schema=lportal -Ddatabase.postgresql.url=jdbc:postgresql://localhost:5432/lportal -Ddatabase.postgresql.username=root -Ddatabase.type=mysql -Ddefault.portal.url=http://localhost:8080 -Dget.location.max.retries=3 -Dget.location.timeout=30 -Dignore.errors.file.name=/home/p2kmgcl/Projects/community-portal/liferay-portal/portal-web/test-ignorable-error-lines.xml -Dip.address=eth0: error fetching interface information: Device not found -Djava.security.manager=worker.org.gradle.process.internal.worker.child.BootstrapSecurityManager -Dliferay.app.server.global.lib.dir=/home/p2kmgcl/Projects/community-portal/liferay-portal/../bundles/tomcat-9.0.43/lib/ext -Dliferay.app.server.portal.lib.dir=/home/p2kmgcl/Projects/community-portal/liferay-portal/../bundles/tomcat-9.0.43/webapps/ROOT/WEB-INF/lib -Dliferay.app.server.portal.web.dir=/home/p2kmgcl/Projects/community-portal/liferay-portal/../bundles/tomcat-9.0.43/webapps/ROOT -Dliferay.home.dir.name=/home/p2kmgcl/Projects/community-portal/liferay-portal/../bundles -Dliferay.portal.branch=master -Dliferay.portal.bundle=latest -Dorg.gradle.native=false -Doutput.dir.name=/home/p2kmgcl/Projects/community-portal/liferay-portal/../bundles/poshi -Dportal.url=http://localhost:8080 -Dproduct.names=extra-apps,liferay-connected-services,marketplace,portal,social-office -Dproject.dir=/home/p2kmgcl/Projects/community-portal/liferay-portal -Drecaptcha.private.key=6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe -Drecaptcha.public.key=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI -Drunner.ext.properties=portal-web/test/test-portal-web-ext.properties -Dsave.screenshot=true -Dselenium.chrome.driver.executable=chromedriver -Dselenium.chrome.driver.version=2.37 -Dselenium.executable.dir=/home/p2kmgcl/Projects/community-portal/liferay-portal/tools/selenium/ -Dselenium.executable.dir.name=../tools/selenium/ -Dtest.assert.warning.exceptions=false -Dtest.base.dir.name=/home/p2kmgcl/Projects/community-portal/liferay-portal/portal-web/test/functional/com/liferay/portalweb/ -Dtest.case.available.property.names=testray.main.component.name,analytics.cloud.enabled,apacheds.blank.user.password.enabled,apacheds.enabled,app.server.bundles.size,app.server.type,app.server.types,blacklist.portal.profile.names.remove,blacklist.saml.algorithms,browser.type,captcha.enabled,cas.enabled,cluster.enabled,cluster.jdbc.ping,cluster.node.ip,cmis.repository.type,commerce.enabled,content.targeting.release,create.osgi.hidden.file,custom.properties,custom.system.properties,data.archive.type,database.bare.enabled,database.jndi.enabled,database.sharding,database.types,databases.size,default.layout.template.id,delete.precompiled.jsps,delete.sidecar.bundle,deploy.latest.marketplace.app.disabled,deploy.lcs.token.file,deploy.license.osgi.directory,direct.deploy.enabled,dummy.socket.proxy.disabled,dxp.license.file,elastic.override.version,elastic.pki.authentication.enabled,elastic.xpack.enabled,elasticsearch.ccr.enabled,elasticsearch.cluster.size,elasticsearch.jdk11.enabled,elasticsearch.ltr.enabled,elasticsearch.multiple.connections,embedded.elasticsearch.only,environment.acceptance,ext.plugins.includes,extraapps.plugins.includes,hook.plugins.includes,hot.deploy.osgi.app.includes,ignore.errors,ignore.errors.delimiter,index.search.spell.checker.enabled,layouttpl.plugins.includes,legacy.database.dump,legacy.plugin.includes,legacy.plugins.social.office.version,license.required,liferay.dependency.jars,liferay.dependency.wars,liferay.training.dependency.jars,marketplace.app.acceptance,marketplace.staging.enabled,minimum.slave.ram,openam.enabled,osgi.app.includes,osgi.module.configuration.file.names,osgi.module.configurations,osgi.modules.includes,plugins.deployment.type,portal.acceptance,portal.acceptance.tomcat.hypersonic,portal.acceptance.tomcat.mysql,portal.acceptance.wildfly.mariadb,portal.context,portal.fixpack.release,portal.hotfix.release,portal.release,portal.release.environment,portal.smoke,portal.ssl.enabled,portal.suite.search.engine,portal.upgrades,portal.-Dtest.case.available.property.values[minimum.slave.ram]=16,32 -Dtest.case.available.property.values[product.team.names]=Echo (Web Experience Management),Lima (Collaboration),Tango (Segmentation / Personalization) -Dtest.case.available.property.values[testray.main.component.name]=Analytics Cloud,App Builder,Shared App Builder,Adaptive Media,Akismet,Announcements,Asset Sharing,Auto Tagging,Blogs,Bookmarks,Bulk Editing,Content Page Review,Depot,Documents Management,Friendly URL Service,Invite Members,IP Geocoder,Item Selector,Knowledge Base,Mentions,Message Boards,Microblogs,My Subscriptions,Notifications,Online Editing,Ratings,Redirect,SEO,Sharepoint,Social Bookmarks,Social Networking,Sync,Translations Management,Twitter,Upgrades Collaboration,Wiki,Commerce,APIs,Application Standards,Auditing,Bundle Blacklist,Clustering,Database Partitioning,Databases,Deployment,Development Tools,Document Library Stores,File Install,Friendly URL,Gogo Shell,IP Address,License,Liferay Faces,Liferay Online,Locale,Localization Hooks,Mobile Device Rules,Portal Services,Rolling Restart,Sample Portlet Plugins,Scheduler,Server Administration,Setup Wizard,Templates Engine,Test Plugins,Theme Loader,Upgrades Core Infrastructure,Util,Data Engine,Dynamic Data Lists,Upgrades Data Engine,Blade Samples,Project Templates,Tools,Forms,Polls,Upgrades Forms,Web Form,AMD Loader,Clay,Remote Apps,Theme,User Interface,Headless,Questions,Grow,Liferay Connected Services,Marketplace,Plugin Installer,Publications,Upgrades Publications,Elasticsearch Impl,Upgrades Search,Web Search,AntiSamy,CAPTCHA,LDAP,Login,Multi Factor Authentication,OAuth 2,Permissions,SAML,Security,Upgrades Security,XSS,A/B Test,Content Dashboard,Content Performance,Page Audit,Personalization,Segmentation,Social Office CE,Social Office EE,Click to Chat,Digital Signature,Export/Import Framework,Site Templates,Staging,Upgrades Staging,Patching Tool,Backend,Functional,Integration,Modules Integration,Modules Unit,Plugins,Portal Web,Service Builder,Smoke,Source,TCK,Unit,Accounts,App Management,Contacts Center,Custom Fields,Instance Settings,Password Policies,Personal Data,Roles,Upgrades User and System Management,User Groups,Users and Organizations,Virtual-Dtest.case.required.property.names=testray.main.component.name -Dtest.class.command.name=MenuDisplay#DefineItemColorStyles -Dtest.console.log.file.name=/home/p2kmgcl/Projects/community-portal/liferay-portal/../bundles/logs/liferay.*.xml -Dtest.console.shut.down.file.name=/home/p2kmgcl/Projects/community-portal/liferay-portal/console-shut-down -Dtest.csv.report.property.names=ignored,portal.acceptance,portal.fixpack.release,portal.release,portal.smoke,portal.upstream,testray.component.names,testray.main.component.name -Dtest.dependencies.dir.name=dependencies -Dtest.name=LocalFile.MenuDisplay#DefineItemColorStyles -Dtest.pause.on.failure=false -Dtest.portal.instance=false -Dtest.poshi.warnings.file.name=/home/p2kmgcl/Projects/community-portal/liferay-portal/poshi-warnings.xml -Dtest.retry.command.wait.time=3 -Dtest.run.environment=CE -Dtest.skip.tear.down=false -Dtest.subrepo.dirs=/home/p2kmgcl/Projects/community-portal/liferay-portal/modules/apps/account/account-test/src/testFunctional,/home/p2kmgcl/Projects/community-portal/liferay-portal/modules/apps/app-builder/app-builder-test/src/testFunctional,/home/p2kmgcl/Projects/community-portal/liferay-portal/modules/apps/bulk/bulk-selection-test/src/testFunctional,/home/p2kmgcl/Projects/community-portal/liferay-portal/modules/apps/calendar/calendar-web-test/src/testFunctional,/home/p2kmgcl/Projects/community-portal/liferay-portal/modules/apps/click-to-chat/click-to-chat-test/src/testFunctional,/home/p2kmgcl/Projects/community-portal/liferay-portal/modules/apps/commerce/commerce-product-test/src/testFunctional,/home/p2kmgcl/Projects/community-portal/liferay-portal/modules/apps/data-engine/data-engine-test/src/testFunctional,/home/p2kmgcl/Projects/community-portal/liferay-portal/modules/apps/depot/depot-test/src/testFunctional,/home/p2kmgcl/Projects/community-portal/liferay-portal/modules/apps/digital-signature/digital-signature-test/src/testFunctional,/home/p2kmgcl/Projects/community-portal/liferay-portal/modules/apps/document-library-opener/document-library-opener-google-drive-test/src/testFunctional,/home/p2kmgcl/Projects/community-portal/liferay-portal/modules/apps/item-selector/item-selector-test/src/testFunctional,/home/p2kmgcl/Projects/community-portal/liferay-portal/modules/apps/layout/layout-admin-web-test/src/testFunctional,/home/p2kmgcl/Projects/community-portal/liferay-portal/modules/apps/layout/layout-content-page-editor-web-test/src/testFunctional,/home/p2kmgcl/Projects/community-portal/liferay-portal/modules/apps/layout/layout-seo-web-test/src/testFunctional,/home/p2kmgcl/Projects/community-portal/liferay-portal/modules/apps/portal-workflow/portal-workflow-test/src/testFunctional,/home/p2kmgcl/Projects/community-portal/liferay-portal/modules/apps/ratings/ratings-test/src/testFunctional,/home/p2kmgcl/Projects/community-portal/liferay-portal/modules/apps/redirect/r-Dtesting.class.method=true -Dtimeout.explicit.wait=120 -Xmx512m -Dfile.encoding=UTF-8 -Duser.country=US -Duser.language=en -Duser.variant -ea 
+java_command: worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Test Executor 1'
+java_class_path (initial): /home/p2kmgcl/Projects/community-portal/liferay-portal/.gradle/caches/6.6.1/workerMain/gradle-worker.jar
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=/usr/lib/jvm/default-java
+PATH=/home/p2kmgcl/.autojump/bin:/home/p2kmgcl/.nvm/versions/node/v10.24.1/bin:/home/p2kmgcl/Projects/chachi-shell/bin:/home/p2kmgcl/Projects/community-portal/config/bin:/home/p2kmgcl/.yarn/bin:/usr/lib/jvm/default-java/bin:/usr/lib/jvm/default-ant/bin:/usr/lib/jvm/default-maven/bin:/home/p2kmgcl/.cargo/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/home/p2kmgcl/bin:/home/p2kmgcl/bin
+USERNAME=p2kmgcl
+SHELL=/bin/zsh
+DISPLAY=:0
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0xadec90], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGBUS: [libjvm.so+0xadec90], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGFPE: [libjvm.so+0x913090], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGPIPE: [libjvm.so+0x913090], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGXFSZ: [libjvm.so+0x913090], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGILL: [libjvm.so+0x913090], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGUSR1: SIG_DFL, sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGUSR2: [libjvm.so+0x912f60], sa_mask[0]=00100000000000000000000000000000, sa_flags=SA_RESTART|SA_SIGINFO
+SIGHUP: [libjvm.so+0x913580], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGINT: [libjvm.so+0x913580], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGTERM: [libjvm.so+0x913580], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGQUIT: [libjvm.so+0x913580], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+
+
+---------------  S Y S T E M  ---------------
+
+OS:Fedora release 34 (Thirty Four)
+
+uname:Linux 5.12.7-300.fc34.x86_64 #1 SMP Wed May 26 12:58:58 UTC 2021 x86_64
+libc:glibc 2.33 NPTL 2.33 
+rlimit: STACK 8192k, CORE infinity, NPROC 127346, NOFILE 524288, AS infinity
+load average:5.62 3.51 2.56
+
+/proc/meminfo:
+MemTotal:       32646372 kB
+MemFree:          765100 kB
+MemAvailable:   17384352 kB
+Buffers:         2361144 kB
+Cached:         14298744 kB
+SwapCached:            0 kB
+Active:         10380532 kB
+Inactive:       17908608 kB
+Active(anon):      67140 kB
+Inactive(anon): 13176548 kB
+Active(file):   10313392 kB
+Inactive(file):  4732060 kB
+Unevictable:     1005292 kB
+Mlocked:            5632 kB
+SwapTotal:       8388604 kB
+SwapFree:        8382716 kB
+Dirty:              1124 kB
+Writeback:             0 kB
+AnonPages:      12634116 kB
+Mapped:          1229588 kB
+Shmem:           1614880 kB
+KReclaimable:    2045244 kB
+Slab:            2322584 kB
+SReclaimable:    2045244 kB
+SUnreclaim:       277340 kB
+KernelStack:       27504 kB
+PageTables:        86436 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:    24711788 kB
+Committed_AS:   31822780 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:       97660 kB
+VmallocChunk:          0 kB
+Percpu:             9696 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:         0 kB
+ShmemHugePages:        0 kB
+ShmemPmdMapped:        0 kB
+FileHugePages:         0 kB
+FilePmdMapped:         0 kB
+CmaTotal:              0 kB
+CmaFree:               0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+Hugetlb:               0 kB
+DirectMap4k:      759536 kB
+DirectMap2M:    18931712 kB
+DirectMap1G:    14680064 kB
+
+
+CPU:total 8 (initial active 8) (4 cores per cpu, 2 threads per core) family 6 model 142 stepping 12, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, avx2, aes, clmul, erms, 3dnowpref, lzcnt, ht, tsc, tscinvbit, bmi1, bmi2, adx
+
+/proc/cpuinfo:
+processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 142
+model name	: Intel(R) Core(TM) i7-10510U CPU @ 1.80GHz
+stepping	: 12
+microcode	: 0xde
+cpu MHz		: 2300.000
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 8
+core id		: 0
+cpu cores	: 4
+apicid		: 0
+initial apicid	: 0
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d arch_capabilities
+vmx flags	: vnmi preemption_timer invvpid ept_x_only ept_ad ept_1gb flexpriority tsc_offset vtpr mtf vapic ept vpid unrestricted_guest ple pml ept_mode_based_exec
+bugs		: spectre_v1 spectre_v2 spec_store_bypass swapgs itlb_multihit srbds
+bogomips	: 4599.93
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 1
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 142
+model name	: Intel(R) Core(TM) i7-10510U CPU @ 1.80GHz
+stepping	: 12
+microcode	: 0xde
+cpu MHz		: 2413.601
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 8
+core id		: 1
+cpu cores	: 4
+apicid		: 2
+initial apicid	: 2
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d arch_capabilities
+vmx flags	: vnmi preemption_timer invvpid ept_x_only ept_ad ept_1gb flexpriority tsc_offset vtpr mtf vapic ept vpid unrestricted_guest ple pml ept_mode_based_exec
+bugs		: spectre_v1 spectre_v2 spec_store_bypass swapgs itlb_multihit srbds
+bogomips	: 4599.93
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 2
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 142
+model name	: Intel(R) Core(TM) i7-10510U CPU @ 1.80GHz
+stepping	: 12
+microcode	: 0xde
+cpu MHz		: 2300.000
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 8
+core id		: 2
+cpu cores	: 4
+apicid		: 4
+initial apicid	: 4
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d arch_capabilities
+vmx flags	: vnmi preemption_timer invvpid ept_x_only ept_ad ept_1gb flexpriority tsc_offset vtpr mtf vapic ept vpid unrestricted_guest ple pml ept_mode_based_exec
+bugs		: spectre_v1 spectre_v2 spec_store_bypass swapgs itlb_multihit srbds
+bogomips	: 4599.93
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 3
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 142
+model name	: Intel(R) Core(TM) i7-10510U CPU @ 1.80GHz
+stepping	: 12
+microcode	: 0xde
+cpu MHz		: 2300.000
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 8
+core id		: 3
+cpu cores	: 4
+apicid		: 6
+initial apicid	: 6
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d arch_capabilities
+vmx flags	: vnmi preemption_timer invvpid ept_x_only ept_ad ept_1gb flexpriority tsc_offset vtpr mtf vapic ept vpid unrestricted_guest ple pml ept_mode_based_exec
+bugs		: spectre_v1 spectre_v2 spec_store_bypass swapgs itlb_multihit srbds
+bogomips	: 4599.93
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 4
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 142
+model name	: Intel(R) Core(TM) i7-10510U CPU @ 1.80GHz
+stepping	: 12
+microcode	: 0xde
+cpu MHz		: 2300.000
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 8
+core id		: 0
+cpu cores	: 4
+apicid		: 1
+initial apicid	: 1
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d arch_capabilities
+vmx flags	: vnmi preemption_timer invvpid ept_x_only ept_ad ept_1gb flexpriority tsc_offset vtpr mtf vapic ept vpid unrestricted_guest ple pml ept_mode_based_exec
+bugs		: spectre_v1 spectre_v2 spec_store_bypass swapgs itlb_multihit srbds
+bogomips	: 4599.93
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 5
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 142
+model name	: Intel(R) Core(TM) i7-10510U CPU @ 1.80GHz
+stepping	: 12
+microcode	: 0xde
+cpu MHz		: 2300.000
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 8
+core id		: 1
+cpu cores	: 4
+apicid		: 3
+initial apicid	: 3
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d arch_capabilities
+vmx flags	: vnmi preemption_timer invvpid ept_x_only ept_ad ept_1gb flexpriority tsc_offset vtpr mtf vapic ept vpid unrestricted_guest ple pml ept_mode_based_exec
+bugs		: spectre_v1 spectre_v2 spec_store_bypass swapgs itlb_multihit srbds
+bogomips	: 4599.93
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 6
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 142
+model name	: Intel(R) Core(TM) i7-10510U CPU @ 1.80GHz
+stepping	: 12
+microcode	: 0xde
+cpu MHz		: 2300.000
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 8
+core id		: 2
+cpu cores	: 4
+apicid		: 5
+initial apicid	: 5
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d arch_capabilities
+vmx flags	: vnmi preemption_timer invvpid ept_x_only ept_ad ept_1gb flexpriority tsc_offset vtpr mtf vapic ept vpid unrestricted_guest ple pml ept_mode_based_exec
+bugs		: spectre_v1 spectre_v2 spec_store_bypass swapgs itlb_multihit srbds
+bogomips	: 4599.93
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 7
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 142
+model name	: Intel(R) Core(TM) i7-10510U CPU @ 1.80GHz
+stepping	: 12
+microcode	: 0xde
+cpu MHz		: 2422.766
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 8
+core id		: 3
+cpu cores	: 4
+apicid		: 7
+initial apicid	: 7
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d arch_capabilities
+vmx flags	: vnmi preemption_timer invvpid ept_x_only ept_ad ept_1gb flexpriority tsc_offset vtpr mtf vapic ept vpid unrestricted_guest ple pml ept_mode_based_exec
+bugs		: spectre_v1 spectre_v2 spec_store_bypass swapgs itlb_multihit srbds
+bogomips	: 4599.93
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+
+
+Memory: 4k page, physical 32646372k(765100k free), swap 8388604k(8382716k free)
+
+vm_info: Java HotSpot(TM) 64-Bit Server VM (25.291-b10) for linux-amd64 JRE (1.8.0_291-b10), built on Apr  7 2021 19:13:06 by "java_re" with gcc 7.3.0
+
+time: Fri Jun  4 12:12:43 2021
+timezone: CEST
+elapsed time: 36.605219 seconds (0d 0h 0m 36s)
+
