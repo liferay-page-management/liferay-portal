@@ -116,6 +116,34 @@ describe('ContentsSidebar', () => {
 		expect(getByText('A paragraph')).toBeInTheDocument();
 	});
 
+	it('does not show empty inline text in content list', () => {
+		const {baseElement} = renderPageContent({
+			fragmentEntryLinks: {
+				...fragmentEntryLinks,
+				39685: {
+					editableTypes: {'element-text': 'text'},
+					editableValues: {
+						[EDITABLE_FRAGMENT_ENTRY_PROCESSOR]: {
+							'element-text': {
+								defaultValue: '\n\tHeading Example\n',
+								en_US: '',
+							},
+						},
+					},
+					fragmentEntryLinkId: '39685',
+					name: 'Heading',
+					segmentsExperienceId: '0',
+				},
+			},
+		});
+
+		expect(
+			baseElement.querySelectorAll(
+				'.page-editor__page-contents__page-content'
+			).length
+		).toBe(2);
+	});
+
 	it('shows inline text corresponding to an experience', () => {
 		const {queryByText} = renderPageContent({
 			fragmentEntryLinks,
