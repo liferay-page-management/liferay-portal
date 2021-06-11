@@ -54,14 +54,16 @@ const HtmlPanel = ({content, title}) => (
 		displayType="unstyled"
 		showCollapseIcon={true}
 	>
-		<ClayPanel.Body>
-			<div
-				className="text-secondary"
-				dangerouslySetInnerHTML={{
-					__html: content,
-				}}
-			></div>
-		</ClayPanel.Body>
+		<span className="c-inner" tabIndex="-1">
+			<ClayPanel.Body>
+				<div
+					className="text-secondary"
+					dangerouslySetInnerHTML={{
+						__html: content,
+					}}
+				></div>
+			</ClayPanel.Body>
+		</span>
 	</ClayPanel>
 );
 
