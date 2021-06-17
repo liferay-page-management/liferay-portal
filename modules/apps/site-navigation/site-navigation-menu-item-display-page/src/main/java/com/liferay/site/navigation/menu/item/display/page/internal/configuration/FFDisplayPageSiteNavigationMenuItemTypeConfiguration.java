@@ -12,19 +12,22 @@
  * details.
  */
 
-package com.liferay.site.navigation.menu.item.layout.constants;
+package com.liferay.site.navigation.menu.item.display.page.internal.configuration;
+
+import aQute.bnd.annotation.metatype.Meta;
+
+import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 
 /**
- * @author Eudaldo Alonso
+ * @author Jürgen Kappler
  */
-public class SiteNavigationMenuItemTypeConstants {
+@ExtendedObjectClassDefinition(generateUI = false)
+@Meta.OCD(
+	id = "com.liferay.site.navigation.menu.item.display.page.internal.configuration.FFDisplayPageSiteNavigationMenuItemTypeConfiguration"
+)
+public interface FFDisplayPageSiteNavigationMenuItemTypeConfiguration {
 
-	public static final String DISPLAY_PAGE = "display_page";
-
-	public static final String LAYOUT = "layout";
-
-	public static final String NODE = "node";
-
-	public static final String URL = "url";
+	@Meta.AD(deflt = "false", required = false)
+	public boolean enabled();
 
 }
