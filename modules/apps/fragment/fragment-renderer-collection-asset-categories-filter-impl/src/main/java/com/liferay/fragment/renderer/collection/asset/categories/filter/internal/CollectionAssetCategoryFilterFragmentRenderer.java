@@ -131,6 +131,16 @@ public class CollectionAssetCategoryFilterFragmentRenderer
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
+		boolean showLabel = GetterUtil.getBoolean(
+			_fragmentEntryConfigurationParser.getFieldValue(
+				fragmentEntryLink.getConfiguration(),
+				fragmentEntryLink.getEditableValues(), themeDisplay.getLocale(),
+				"showLabel"));
+
+		httpServletRequest.setAttribute(
+			CollectionAssetCategoryFilterFragmentRendererWebKeys.SHOW_LABEL,
+			showLabel);
+
 		boolean singleSelection = GetterUtil.getBoolean(
 			_fragmentEntryConfigurationParser.getFieldValue(
 				fragmentEntryLink.getConfiguration(),
