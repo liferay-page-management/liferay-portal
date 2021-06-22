@@ -131,16 +131,16 @@ public class CollectionAssetCategoryFilterFragmentRenderer
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		boolean multipleSelection = GetterUtil.getBoolean(
+		boolean singleSelection = GetterUtil.getBoolean(
 			_fragmentEntryConfigurationParser.getFieldValue(
 				fragmentEntryLink.getConfiguration(),
 				fragmentEntryLink.getEditableValues(), themeDisplay.getLocale(),
-				"multipleSelection"));
+				"singleSelection"));
 
 		httpServletRequest.setAttribute(
 			CollectionAssetCategoryFilterFragmentRendererWebKeys.
-				MULTIPLE_SELECTION,
-			multipleSelection);
+				SINGLE_SELECTION,
+			singleSelection);
 
 		Object sourceObject = _fragmentEntryConfigurationParser.getFieldValue(
 			getConfiguration(fragmentRendererContext),
