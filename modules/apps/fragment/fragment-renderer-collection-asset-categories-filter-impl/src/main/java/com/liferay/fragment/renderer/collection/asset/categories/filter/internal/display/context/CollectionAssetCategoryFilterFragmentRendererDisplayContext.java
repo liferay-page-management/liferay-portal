@@ -203,11 +203,11 @@ public class CollectionAssetCategoryFilterFragmentRendererDisplayContext {
 		return LanguageUtil.get(_httpServletRequest, "select");
 	}
 
-	public boolean isMultipleSelection() {
+	public boolean isSingleSelection() {
 		return GetterUtil.getBoolean(
 			_httpServletRequest.getAttribute(
 				CollectionAssetCategoryFilterFragmentRendererWebKeys.
-					MULTIPLE_SELECTION));
+					SINGLE_SELECTION));
 	}
 
 	private String _getParameterName() {
