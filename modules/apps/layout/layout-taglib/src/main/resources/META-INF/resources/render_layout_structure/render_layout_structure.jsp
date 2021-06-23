@@ -110,6 +110,29 @@ for (String childrenItemId : childrenItemIds) {
 
 					</c:otherwise>
 				</c:choose>
+
+				<%
+				int maxNumberOfItems = Math.min(collectionCount, collectionStyledLayoutStructureItem.getNumberOfItems());
+
+				int numberOfPages = (int)Math.ceil((double)maxNumberOfItems / collectionStyledLayoutStructureItem.getNumberOfItemsPerPage());
+				%>
+
+				<c:if test="<%= paginationEnabled %>">
+					<select id="page_number_<%= collectionStyledLayoutStructureItem.getItemId() %>_selector" onchange="changePageNumber('<%= collectionStyledLayoutStructureItem.getItemId() %>')">
+
+							<%
+							for (int j = 0; j < numberOfPages; j++) {
+								String pageNumber = String.valueOf(j + 1);
+							%>
+
+								<option value="<%= pageNumber %>"><%= pageNumber %></option>
+
+							<%
+							}
+							%>
+
+					</select>
+				</c:if>
 			</div>
 		</c:when>
 		<c:when test="<%= layoutStructureItem instanceof ColumnLayoutStructureItem %>">
