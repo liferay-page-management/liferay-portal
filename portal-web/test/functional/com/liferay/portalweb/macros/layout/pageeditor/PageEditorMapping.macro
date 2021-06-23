@@ -34,15 +34,8 @@ definition {
 				id = "${id}");
 		}
 
-		PageEditor.gotoTab(tabName = "Selection");
-
 		if ((contains("${id}", "image")) || (contains("${id}", "img")) || (contains("${id}", "banner-center"))) {
-			AssertClick(
-				key_navItem = "Image Source",
-				locator1 = "PageEditor#NAV_ITEM_BUTTON",
-				value1 = "Image Source");
-
-			Pause(locator1 = "3000");
+			Navigator.gotoNavTab(navTab = "Image Source");
 
 			if (!(IsSelectedLabel(key_fieldLabel = "Source Selection", locator1 = "Select#GENERIC_SELECT_FIELD", value1 = "Mapping"))) {
 				Select(
@@ -57,10 +50,7 @@ definition {
 			}
 		}
 		else {
-			AssertClick(
-				key_navItem = "Mapping",
-				locator1 = "PageEditor#NAV_ITEM_BUTTON",
-				value1 = "Mapping");
+			Navigator.gotoNavTab(navTab = "Mapping");
 		}
 	}
 
@@ -151,15 +141,8 @@ definition {
 			key_rowPosition = "1",
 			locator1 = "PageEditor#COLLECTION_CELL_NESTED_ELEMENT");
 
-		PageEditor.gotoTab(tabName = "Selection");
-
 		if ((contains("${id}", "image")) || (contains("${id}", "img"))) {
-			AssertClick(
-				key_navItem = "Image Source",
-				locator1 = "PageEditor#NAV_ITEM_BUTTON",
-				value1 = "Image Source");
-
-			Pause(locator1 = "3000");
+			Navigator.gotoNavTab(navTab = "Image Source");
 
 			if (!(IsSelectedLabel(key_fieldLabel = "Source Selection", locator1 = "Select#GENERIC_SELECT_FIELD", value1 = "Mapping"))) {
 				Select(
@@ -174,13 +157,8 @@ definition {
 			}
 		}
 		else {
-			AssertClick(
-				key_navItem = "Mapping",
-				locator1 = "PageEditor#NAV_ITEM_BUTTON",
-				value1 = "Mapping");
+			Navigator.gotoNavTab(navTab = "Mapping");
 		}
-
-		Pause(locator1 = "3000");
 
 		Select(
 			key_fieldLabel = "Field",
