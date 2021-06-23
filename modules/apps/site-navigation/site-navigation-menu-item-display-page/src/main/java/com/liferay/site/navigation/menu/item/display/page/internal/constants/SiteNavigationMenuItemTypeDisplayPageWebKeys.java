@@ -12,19 +12,19 @@
  * details.
  */
 
-package com.liferay.site.navigation.menu.item.layout.constants;
+package com.liferay.site.navigation.menu.item.display.page.internal.constants;
 
 /**
- * @author Eudaldo Alonso
+ * @author Jürgen Kappler
  */
-public class SiteNavigationMenuItemTypeConstants {
+public class SiteNavigationMenuItemTypeDisplayPageWebKeys {
 
-	public static final String DISPLAY_PAGE = "display_page";
+	public static final String INFO_ITEM_SERVICE_TRACKER =
+		"INFO_ITEM_SERVICE_TRACKER";
 
-	public static final String LAYOUT = "layout";
+	public static final String ITEM_SELECTOR = "ITEM_SELECTOR";
 
-	public static final String NODE = "node";
-
-	public static final String URL = "url";
+	public static final String LAYOUT_DISPLAY_PAGE_PROVIDER_TRACKER =
+		"LAYOUT_DISPLAY_PAGE_PROVIDER_TRACKER";
 
 }
