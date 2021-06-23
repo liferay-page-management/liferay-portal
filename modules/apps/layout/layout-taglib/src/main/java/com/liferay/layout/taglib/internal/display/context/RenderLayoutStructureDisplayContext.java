@@ -106,6 +106,10 @@ public class RenderLayoutStructureDisplayContext {
 
 	public static final String PAGE_NUMBER_PARAM_PREFIX = "page_number_";
 
+	public static final String PAGINATION_TYPE_REGULAR = "regular";
+
+	public static final String PAGINATION_TYPE_SIMPLE = "simple";
+
 	public RenderLayoutStructureDisplayContext(
 		Map<String, Object> fieldValues,
 		FragmentEntryProcessorHelper fragmentEntryProcessorHelper,
@@ -186,9 +190,44 @@ public class RenderLayoutStructureDisplayContext {
 			_httpServletRequest);
 		defaultLayoutListRetrieverContext.setSegmentsEntryIds(
 			_getSegmentsEntryIds());
+
+		int end = collectionStyledLayoutStructureItem.getNumberOfItems();
+		int start = 0;
+
+		String paginationType =
+			collectionStyledLayoutStructureItem.getPaginationType();
+
+		if (Objects.equals(paginationType, PAGINATION_TYPE_REGULAR) ||
+			Objects.equals(paginationType, PAGINATION_TYPE_SIMPLE)) {
+
+			Map<String, Integer> paginationMap = _getPaginationMap();
+
+			Integer currentPage = paginationMap.get(
+				PAGE_NUMBER_PARAM_PREFIX +
+					collectionStyledLayoutStructureItem.getItemId());
+
+			if ((currentPage == null) || (currentPage < 1)) {
+				currentPage = 1;
+			}
+
+			int numberOfItems =
+				collectionStyledLayoutStructureItem.getNumberOfItems();
+
+			int numberOfItemsPerPage =
+				collectionStyledLayoutStructureItem.getNumberOfItemsPerPage();
+
+			int listCount = layoutListRetriever.getListCount(
+				listObjectReference, defaultLayoutListRetrieverContext);
+
+			end = Math.min(
+				Math.min(currentPage * numberOfItemsPerPage, numberOfItems),
+				listCount);
+
+			start = (currentPage - 1) * numberOfItemsPerPage;
+		}
+
 		defaultLayoutListRetrieverContext.setPagination(
-			Pagination.of(
-				collectionStyledLayoutStructureItem.getNumberOfItems(), 0));
+			Pagination.of(end, start));
 
 		return layoutListRetriever.getList(
 			listObjectReference, defaultLayoutListRetrieverContext);
