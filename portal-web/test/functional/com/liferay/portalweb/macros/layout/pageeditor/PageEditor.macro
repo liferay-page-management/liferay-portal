@@ -2931,7 +2931,9 @@ definition {
 	}
 
 	macro removeFragmentViaPageStructure {
-		PageEditor.gotoTab(tabName = "Selection");
+		PageEditor.gotoTab(tabName = "Browser");
+
+		Navigator.gotoNavTab(navTab = "Page Elements");
 
 		if (IsElementNotPresent(key_nodeName = "${fragmentName}", locator1 = "Treeview#PAGE_STRUCTURE_TREE_NODE_ACTIVE")) {
 			Click(
@@ -2992,10 +2994,6 @@ definition {
 
 	macro resizeConfigurationPanel {
 		PageEditor.clickConfigurableField(fragmentName = "${fragmentName}");
-
-		AssertElementPresent(
-			key_tabName = "Selection",
-			locator1 = "PageEditor#FRAGMENT_SIDEBAR_TAB_BUTTON_ACTIVE");
 
 		AssertElementPresent(
 			key_nodeName = "${fragmentName}",
