@@ -331,6 +331,16 @@ for (String childrenItemId : childrenItemIds) {
 %>
 
 <aui:script>
+	function setValueInPageNumberSelectors() {
+		const search = new URLSearchParams(window.location.search);
+
+		search.forEach((value, key) => {
+			if (key.startsWith('page_number_')) {
+				document.getElementById(key + '_selector').value = value || 1;
+			}
+		});
+	}
+
 	function changePageNumber(itemId) {
 		if (itemId) {
 			const queryParamName = 'page_number_' + itemId;
@@ -347,4 +357,6 @@ for (String childrenItemId : childrenItemIds) {
 			window.location.search = search;
 		}
 	}
+
+	setValueInPageNumberSelectors();
 </aui:script>
