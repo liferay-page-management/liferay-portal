@@ -1451,6 +1451,10 @@ definition {
 			Click.clickNoWaitForVisible(locator1 = "Fragment#FRAGMENT_HEADER");
 		}
 
+		AssertVisible(
+			key_sidebarButton = "Browser",
+			locator1 = "PageEditor#FRAGMENT_SIDEBAR_TITLE");
+
 		Navigator.gotoNavTab(navTab = "General");
 
 		if (isSet(selectedName)) {
@@ -1555,6 +1559,10 @@ definition {
 		else {
 			Click.clickNoWaitForVisible(locator1 = "Fragment#FRAGMENT_HEADER_ANY");
 		}
+
+		AssertVisible(
+			key_sidebarButton = "Browser",
+			locator1 = "PageEditor#FRAGMENT_SIDEBAR_TITLE");
 
 		Navigator.gotoNavTab(navTab = "General");
 
@@ -1703,6 +1711,10 @@ definition {
 		if (IsNotVisible(locator1 = "Fragment#FRAGMENT_HEADER")) {
 			Click.clickNoWaitForVisible(locator1 = "Fragment#FRAGMENT_HEADER");
 		}
+
+		AssertVisible(
+			key_sidebarButton = "Browser",
+			locator1 = "PageEditor#FRAGMENT_SIDEBAR_TITLE");
 
 		Navigator.gotoNavTab(navTab = "General");
 
@@ -1855,6 +1867,10 @@ definition {
 		if (IsNotVisible(locator1 = "Fragment#FRAGMENT_HEADER")) {
 			Click.clickNoWaitForVisible(locator1 = "Fragment#FRAGMENT_HEADER");
 		}
+
+		AssertVisible(
+			key_sidebarButton = "Browser",
+			locator1 = "PageEditor#FRAGMENT_SIDEBAR_TITLE");
 
 		if ("${panel}" == "General") {
 			Navigator.gotoNavTab(navTab = "General");
@@ -2092,6 +2108,10 @@ definition {
 		if (IsNotVisible(locator1 = "PageEditor#LAYOUT_ELEMENTS_HEADER")) {
 			Click.clickNoWaitForVisible(locator1 = "PageEditor#LAYOUT_ELEMENTS_HEADER");
 		}
+
+		AssertVisible(
+			key_sidebarButton = "Browser",
+			locator1 = "PageEditor#FRAGMENT_SIDEBAR_TITLE");
 
 		if ("${panel}" == "Styles") {
 			Navigator.gotoNavTab(navTab = "Styles");
@@ -2461,6 +2481,10 @@ definition {
 			Click.clickNoWaitForVisible(locator1 = "PageEditor#LAYOUT_ELEMENTS_HEADER");
 		}
 
+		AssertVisible(
+			key_sidebarButton = "Browser",
+			locator1 = "PageEditor#FRAGMENT_SIDEBAR_TITLE");
+
 		if ("${panel}" == "General") {
 			Navigator.gotoNavTab(navTab = "General");
 
@@ -2697,6 +2721,10 @@ definition {
 	macro gotoConfiguration {
 		PageEditor.clickConfigurableField(fragmentName = "${fragmentName}");
 
+		AssertVisible(
+			key_sidebarButton = "Browser",
+			locator1 = "PageEditor#FRAGMENT_SIDEBAR_TITLE");
+
 		AssertElementPresent(
 			key_nodeName = "${fragmentName}",
 			locator1 = "Treeview#PAGE_STRUCTURE_TREE_NODE_ACTIVE");
@@ -2719,6 +2747,10 @@ definition {
 				key_rowPosition = "${rowPosition}",
 				locator1 = "Fragment#CONTENT_FRAGMENT_BODY");
 		}
+
+		AssertVisible(
+			key_sidebarButton = "Browser",
+			locator1 = "PageEditor#FRAGMENT_SIDEBAR_TITLE");
 
 		Navigator.gotoNavTab(navTab = "General");
 	}
@@ -2770,6 +2802,10 @@ definition {
 
 	macro gotoSelectPanel {
 		PageEditor.clickConfigurableField(fragmentName = "${fragmentName}");
+
+		AssertVisible(
+			key_sidebarButton = "Browser",
+			locator1 = "PageEditor#FRAGMENT_SIDEBAR_TITLE");
 
 		Navigator.gotoNavTab(navTab = "General");
 
