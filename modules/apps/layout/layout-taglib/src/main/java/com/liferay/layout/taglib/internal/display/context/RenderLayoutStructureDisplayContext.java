@@ -70,6 +70,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -85,11 +86,15 @@ import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -98,6 +103,8 @@ import javax.servlet.http.HttpServletResponse;
  * @author Rubén Pulido
  */
 public class RenderLayoutStructureDisplayContext {
+
+	public static final String PAGE_NUMBER_PARAM_PREFIX = "page_number_";
 
 	public RenderLayoutStructureDisplayContext(
 		Map<String, Object> fieldValues,
@@ -1213,6 +1220,43 @@ public class RenderLayoutStructureDisplayContext {
 		return StringPool.BLANK;
 	}
 
+	private Map<String, Integer> _getPaginationMap() {
+		if (_paginationMap != null) {
+			return _paginationMap;
+		}
+
+		Map<String, Integer> paginationMap = new HashMap<>();
+
+		HttpServletRequest originalHttpServletRequest =
+			PortalUtil.getOriginalServletRequest(_httpServletRequest);
+
+		Map<String, String[]> parameterMap =
+			originalHttpServletRequest.getParameterMap();
+
+		Set<String> parameterNames = parameterMap.keySet();
+
+		Stream<String> stream = parameterNames.stream();
+
+		Set<String> paginationParameterNames = stream.filter(
+			parameterName -> parameterName.startsWith(PAGE_NUMBER_PARAM_PREFIX)
+		).collect(
+			Collectors.toSet()
+		);
+
+		for (String paginationParameterName : paginationParameterNames) {
+			String[] values = parameterMap.get(paginationParameterName);
+
+			if (ArrayUtil.isNotEmpty(values)) {
+				paginationMap.put(
+					paginationParameterName, GetterUtil.getInteger(values[0]));
+			}
+		}
+
+		_paginationMap = paginationMap;
+
+		return _paginationMap;
+	}
+
 	private long _getPreviewClassNameId() {
 		if (_previewClassNameId != null) {
 			return _previewClassNameId;
@@ -1317,6 +1361,7 @@ public class RenderLayoutStructureDisplayContext {
 		_listObjectReferenceFactoryTracker;
 	private final String _mainItemId;
 	private final String _mode;
+	private Map<String, Integer> _paginationMap;
 	private Long _previewClassNameId;
 	private Long _previewClassPK;
 	private Integer _previewType;
