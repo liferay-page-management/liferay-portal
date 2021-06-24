@@ -1361,7 +1361,9 @@ definition {
 	}
 
 	macro editViaContentPanel {
-		PageEditor.gotoTab(tabName = "Contents");
+		PageEditor.gotoTab(tabName = "Browser");
+
+		Navigator.gotoNavTab(navTab = "Page Content");
 
 		LexiconEntry.gotoFragmentPageContentEllipsisMenuItem(
 			menuItem = "Edit",
