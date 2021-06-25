@@ -34,6 +34,12 @@ for (String childrenItemId : childrenItemIds) {
 			CollectionStyledLayoutStructureItem collectionStyledLayoutStructureItem = (CollectionStyledLayoutStructureItem)layoutStructureItem;
 
 			InfoListRenderer<Object> infoListRenderer = (InfoListRenderer<Object>)renderLayoutStructureDisplayContext.getInfoListRenderer(collectionStyledLayoutStructureItem);
+
+			int collectionCount = renderLayoutStructureDisplayContext.getCollectionCount(collectionStyledLayoutStructureItem);
+
+			String paginationType = collectionStyledLayoutStructureItem.getPaginationType();
+
+			boolean paginationEnabled = FFRenderLayoutStructureConfigurationUtil.collectionDisplayFragmentPaginationEnabled() && (Objects.equals(paginationType, "regular") || Objects.equals(paginationType, "simple"));
 			%>
 
 			<div class="<%= renderLayoutStructureDisplayContext.getCssClass(collectionStyledLayoutStructureItem) %>" style="<%= renderLayoutStructureDisplayContext.getStyle(collectionStyledLayoutStructureItem) %>">
@@ -55,9 +61,13 @@ for (String childrenItemId : childrenItemIds) {
 
 							List<Object> collection = renderLayoutStructureDisplayContext.getCollection(collectionStyledLayoutStructureItem);
 
-							int maxNumberOfItems = Math.min(collection.size(), collectionStyledLayoutStructureItem.getNumberOfItems());
+							int maxNumberOfItemsPerPage = Math.min(collectionCount, collectionStyledLayoutStructureItem.getNumberOfItems());
 
-							int numberOfRows = (int)Math.ceil((double)maxNumberOfItems / collectionStyledLayoutStructureItem.getNumberOfColumns());
+							if (paginationEnabled) {
+								maxNumberOfItemsPerPage = Math.min(collectionCount, collectionStyledLayoutStructureItem.getNumberOfItemsPerPage());
+							}
+
+							int numberOfRows = (int)Math.ceil((double)maxNumberOfItemsPerPage / collectionStyledLayoutStructureItem.getNumberOfColumns());
 
 							for (int i = 0; i < numberOfRows; i++) {
 						%>
@@ -68,7 +78,7 @@ for (String childrenItemId : childrenItemIds) {
 								for (int j = 0; j < collectionStyledLayoutStructureItem.getNumberOfColumns(); j++) {
 									int index = (i * collectionStyledLayoutStructureItem.getNumberOfColumns()) + j;
 
-									if (index >= maxNumberOfItems) {
+									if ((index >= maxNumberOfItemsPerPage) || (index >= collection.size())) {
 										break;
 									}
 
@@ -100,6 +110,29 @@ for (String childrenItemId : childrenItemIds) {
 
 					</c:otherwise>
 				</c:choose>
+
+				<%
+				int maxNumberOfItems = Math.min(collectionCount, collectionStyledLayoutStructureItem.getNumberOfItems());
+
+				int numberOfPages = (int)Math.ceil((double)maxNumberOfItems / collectionStyledLayoutStructureItem.getNumberOfItemsPerPage());
+				%>
+
+				<c:if test="<%= paginationEnabled %>">
+					<select id="page_number_<%= collectionStyledLayoutStructureItem.getItemId() %>_selector" onchange="changePageNumber('<%= collectionStyledLayoutStructureItem.getItemId() %>')">
+
+							<%
+							for (int j = 0; j < numberOfPages; j++) {
+								String pageNumber = String.valueOf(j + 1);
+							%>
+
+								<option value="<%= pageNumber %>"><%= pageNumber %></option>
+
+							<%
+							}
+							%>
+
+					</select>
+				</c:if>
 			</div>
 		</c:when>
 		<c:when test="<%= layoutStructureItem instanceof ColumnLayoutStructureItem %>">
@@ -296,3 +329,34 @@ for (String childrenItemId : childrenItemIds) {
 <%
 }
 %>
+
+<aui:script>
+	function setValueInPageNumberSelectors() {
+		const search = new URLSearchParams(window.location.search);
+
+		search.forEach((value, key) => {
+			if (key.startsWith('page_number_')) {
+				document.getElementById(key + '_selector').value = value || 1;
+			}
+		});
+	}
+
+	function changePageNumber(itemId) {
+		if (itemId) {
+			const queryParamName = 'page_number_' + itemId;
+			const search = new URLSearchParams(window.location.search);
+
+			search.delete(queryParamName);
+
+			var pageNumber = document.getElementById(
+				'page_number_' + itemId + '_selector'
+			).value;
+
+			search.append(queryParamName, pageNumber);
+
+			window.location.search = search;
+		}
+	}
+
+	setValueInPageNumberSelectors();
+</aui:script>

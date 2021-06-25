@@ -46,6 +46,7 @@ import com.liferay.layout.list.retriever.ListObjectReference;
 import com.liferay.layout.list.retriever.ListObjectReferenceFactory;
 import com.liferay.layout.list.retriever.ListObjectReferenceFactoryTracker;
 import com.liferay.layout.responsive.ResponsiveLayoutStructureUtil;
+import com.liferay.layout.taglib.internal.FFRenderLayoutStructureConfigurationUtil;
 import com.liferay.layout.util.constants.LayoutDataItemTypeConstants;
 import com.liferay.layout.util.structure.CollectionStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.ContainerStyledLayoutStructureItem;
@@ -70,6 +71,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -85,11 +87,15 @@ import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -98,6 +104,12 @@ import javax.servlet.http.HttpServletResponse;
  * @author Rubén Pulido
  */
 public class RenderLayoutStructureDisplayContext {
+
+	public static final String PAGE_NUMBER_PARAM_PREFIX = "page_number_";
+
+	public static final String PAGINATION_TYPE_REGULAR = "regular";
+
+	public static final String PAGINATION_TYPE_SIMPLE = "simple";
 
 	public RenderLayoutStructureDisplayContext(
 		Map<String, Object> fieldValues,
@@ -179,11 +191,96 @@ public class RenderLayoutStructureDisplayContext {
 			_httpServletRequest);
 		defaultLayoutListRetrieverContext.setSegmentsEntryIds(
 			_getSegmentsEntryIds());
+
+		int end = collectionStyledLayoutStructureItem.getNumberOfItems();
+		int start = 0;
+
+		String paginationType =
+			collectionStyledLayoutStructureItem.getPaginationType();
+
+		if (FFRenderLayoutStructureConfigurationUtil.
+				collectionDisplayFragmentPaginationEnabled() &&
+			(Objects.equals(paginationType, PAGINATION_TYPE_REGULAR) ||
+			 Objects.equals(paginationType, PAGINATION_TYPE_SIMPLE))) {
+
+			Map<String, Integer> paginationMap = _getPaginationMap();
+
+			Integer currentPage = paginationMap.get(
+				PAGE_NUMBER_PARAM_PREFIX +
+					collectionStyledLayoutStructureItem.getItemId());
+
+			if ((currentPage == null) || (currentPage < 1)) {
+				currentPage = 1;
+			}
+
+			int numberOfItems =
+				collectionStyledLayoutStructureItem.getNumberOfItems();
+
+			int numberOfItemsPerPage =
+				collectionStyledLayoutStructureItem.getNumberOfItemsPerPage();
+
+			int listCount = layoutListRetriever.getListCount(
+				listObjectReference, defaultLayoutListRetrieverContext);
+
+			end = Math.min(
+				Math.min(currentPage * numberOfItemsPerPage, numberOfItems),
+				listCount);
+
+			start = (currentPage - 1) * numberOfItemsPerPage;
+		}
+
 		defaultLayoutListRetrieverContext.setPagination(
-			Pagination.of(
-				collectionStyledLayoutStructureItem.getNumberOfItems(), 0));
+			Pagination.of(end, start));
 
 		return layoutListRetriever.getList(
+			listObjectReference, defaultLayoutListRetrieverContext);
+	}
+
+	public int getCollectionCount(
+		CollectionStyledLayoutStructureItem
+			collectionStyledLayoutStructureItem) {
+
+		JSONObject collectionJSONObject =
+			collectionStyledLayoutStructureItem.getCollectionJSONObject();
+
+		if ((collectionJSONObject == null) ||
+			(collectionJSONObject.length() <= 0)) {
+
+			return 0;
+		}
+
+		ListObjectReference listObjectReference = _getListObjectReference(
+			collectionJSONObject);
+
+		if (listObjectReference == null) {
+			return 0;
+		}
+
+		LayoutListRetriever<?, ListObjectReference> layoutListRetriever =
+			(LayoutListRetriever<?, ListObjectReference>)
+				_layoutListRetrieverTracker.getLayoutListRetriever(
+					collectionJSONObject.getString("type"));
+
+		if (layoutListRetriever == null) {
+			return 0;
+		}
+
+		DefaultLayoutListRetrieverContext defaultLayoutListRetrieverContext =
+			new DefaultLayoutListRetrieverContext();
+
+		defaultLayoutListRetrieverContext.setContextObject(
+			Optional.ofNullable(
+				_httpServletRequest.getAttribute(
+					InfoDisplayWebKeys.INFO_LIST_DISPLAY_OBJECT)
+			).orElse(
+				_httpServletRequest.getAttribute(InfoDisplayWebKeys.INFO_ITEM)
+			));
+		defaultLayoutListRetrieverContext.setHttpServletRequest(
+			_httpServletRequest);
+		defaultLayoutListRetrieverContext.setSegmentsEntryIds(
+			_getSegmentsEntryIds());
+
+		return layoutListRetriever.getListCount(
 			listObjectReference, defaultLayoutListRetrieverContext);
 	}
 
@@ -1213,6 +1310,43 @@ public class RenderLayoutStructureDisplayContext {
 		return StringPool.BLANK;
 	}
 
+	private Map<String, Integer> _getPaginationMap() {
+		if (_paginationMap != null) {
+			return _paginationMap;
+		}
+
+		Map<String, Integer> paginationMap = new HashMap<>();
+
+		HttpServletRequest originalHttpServletRequest =
+			PortalUtil.getOriginalServletRequest(_httpServletRequest);
+
+		Map<String, String[]> parameterMap =
+			originalHttpServletRequest.getParameterMap();
+
+		Set<String> parameterNames = parameterMap.keySet();
+
+		Stream<String> stream = parameterNames.stream();
+
+		Set<String> paginationParameterNames = stream.filter(
+			parameterName -> parameterName.startsWith(PAGE_NUMBER_PARAM_PREFIX)
+		).collect(
+			Collectors.toSet()
+		);
+
+		for (String paginationParameterName : paginationParameterNames) {
+			String[] values = parameterMap.get(paginationParameterName);
+
+			if (ArrayUtil.isNotEmpty(values)) {
+				paginationMap.put(
+					paginationParameterName, GetterUtil.getInteger(values[0]));
+			}
+		}
+
+		_paginationMap = paginationMap;
+
+		return _paginationMap;
+	}
+
 	private long _getPreviewClassNameId() {
 		if (_previewClassNameId != null) {
 			return _previewClassNameId;
@@ -1317,6 +1451,7 @@ public class RenderLayoutStructureDisplayContext {
 		_listObjectReferenceFactoryTracker;
 	private final String _mainItemId;
 	private final String _mode;
+	private Map<String, Integer> _paginationMap;
 	private Long _previewClassNameId;
 	private Long _previewClassPK;
 	private Integer _previewType;
