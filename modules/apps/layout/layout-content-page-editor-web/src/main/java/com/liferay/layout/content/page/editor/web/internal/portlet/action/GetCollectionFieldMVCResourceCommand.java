@@ -31,9 +31,9 @@ import com.liferay.info.item.InfoItemServiceTracker;
 import com.liferay.info.item.provider.InfoItemFieldValuesProvider;
 import com.liferay.info.item.provider.InfoItemFormProvider;
 import com.liferay.info.item.provider.InfoItemObjectProvider;
+import com.liferay.info.list.provider.item.selector.criterion.InfoCollectionProviderItemSelectorCriterion;
 import com.liferay.info.list.provider.item.selector.criterion.InfoItemRelatedListProviderItemSelectorCriterion;
 import com.liferay.info.list.provider.item.selector.criterion.InfoItemRelatedListProviderItemSelectorReturnType;
-import com.liferay.info.list.provider.item.selector.criterion.InfoListProviderItemSelectorCriterion;
 import com.liferay.info.list.provider.item.selector.criterion.InfoListProviderItemSelectorReturnType;
 import com.liferay.info.list.renderer.DefaultInfoListRendererContext;
 import com.liferay.info.list.renderer.InfoListRenderer;
@@ -127,8 +127,7 @@ public class GetCollectionFieldMVCResourceCommand
 				_portal.getHttpServletRequest(resourceRequest),
 				_portal.getHttpServletResponse(resourceResponse), languageId,
 				layoutObjectReference, listStyle, listItemStyle,
-				resourceResponse.getNamespace(), themeDisplay.getPlid(), size,
-				templateKey);
+				resourceResponse.getNamespace(), size, templateKey);
 		}
 		catch (Exception exception) {
 			_log.error("Unable to get collection field", exception);
@@ -147,7 +146,7 @@ public class GetCollectionFieldMVCResourceCommand
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, String languageId,
 			String layoutObjectReference, String listStyle,
-			String listItemStyle, String namespace, long plid, int size,
+			String listItemStyle, String namespace, int size,
 			String templateKey)
 		throws PortalException {
 
@@ -253,7 +252,7 @@ public class GetCollectionFieldMVCResourceCommand
 				jsonObject.put(
 					"customCollectionSelectorURL",
 					_getCustomCollectionSelectorURL(
-						httpServletRequest, itemType, namespace, plid)
+						httpServletRequest, itemType, namespace)
 				).put(
 					"items", jsonArray
 				).put(
@@ -269,7 +268,7 @@ public class GetCollectionFieldMVCResourceCommand
 
 	private String _getCustomCollectionSelectorURL(
 		HttpServletRequest httpServletRequest, String itemType,
-		String namespace, long plid) {
+		String namespace) {
 
 		InfoListItemSelectorCriterion infoListItemSelectorCriterion =
 			new InfoListItemSelectorCriterion();
@@ -279,15 +278,15 @@ public class GetCollectionFieldMVCResourceCommand
 		infoListItemSelectorCriterion.setItemTypes(
 			_getInfoItemFormProviderClassNames());
 
-		InfoListProviderItemSelectorCriterion
-			infoListProviderItemSelectorCriterion =
-				new InfoListProviderItemSelectorCriterion();
+		InfoCollectionProviderItemSelectorCriterion
+			infoCollectionProviderItemSelectorCriterion =
+				new InfoCollectionProviderItemSelectorCriterion();
 
-		infoListProviderItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
-			new InfoListProviderItemSelectorReturnType());
-		infoListProviderItemSelectorCriterion.setItemTypes(
+		infoCollectionProviderItemSelectorCriterion.
+			setDesiredItemSelectorReturnTypes(
+				new InfoListProviderItemSelectorReturnType());
+		infoCollectionProviderItemSelectorCriterion.setItemTypes(
 			_getInfoItemFormProviderClassNames());
-		infoListProviderItemSelectorCriterion.setPlid(plid);
 
 		InfoItemRelatedListProviderItemSelectorCriterion
 			infoItemRelatedListProviderItemSelectorCriterion =
@@ -315,7 +314,7 @@ public class GetCollectionFieldMVCResourceCommand
 		PortletURL infoListSelectorURL = _itemSelector.getItemSelectorURL(
 			RequestBackedPortletURLFactoryUtil.create(httpServletRequest),
 			namespace + "selectInfoList", infoListItemSelectorCriterion,
-			infoListProviderItemSelectorCriterion,
+			infoCollectionProviderItemSelectorCriterion,
 			infoItemRelatedListProviderItemSelectorCriterion);
 
 		if (infoListSelectorURL == null) {

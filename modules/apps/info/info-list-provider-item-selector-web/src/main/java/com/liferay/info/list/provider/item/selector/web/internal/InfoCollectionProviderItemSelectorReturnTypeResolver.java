@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Eeudaldo Alonso
  */
 @Component(service = ItemSelectorReturnTypeResolver.class)
-public class InfoListProviderItemSelectorReturnTypeResolver
+public class InfoCollectionProviderItemSelectorReturnTypeResolver
 	implements ItemSelectorReturnTypeResolver
 		<InfoListProviderItemSelectorReturnType, InfoCollectionProvider<?>> {
 

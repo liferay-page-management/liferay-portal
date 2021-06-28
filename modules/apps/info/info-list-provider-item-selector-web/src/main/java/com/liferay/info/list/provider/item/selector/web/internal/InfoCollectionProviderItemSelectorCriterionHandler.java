@@ -14,7 +14,7 @@
 
 package com.liferay.info.list.provider.item.selector.web.internal;
 
-import com.liferay.info.list.provider.item.selector.criterion.InfoListProviderItemSelectorCriterion;
+import com.liferay.info.list.provider.item.selector.criterion.InfoCollectionProviderItemSelectorCriterion;
 import com.liferay.item.selector.BaseItemSelectorCriterionHandler;
 import com.liferay.item.selector.ItemSelectorCriterionHandler;
 
@@ -24,15 +24,15 @@ import org.osgi.service.component.annotations.Component;
  * @author Eudaldo Alonso
  */
 @Component(service = ItemSelectorCriterionHandler.class)
-public class InfoListProviderItemSelectorCriterionHandler
+public class InfoCollectionProviderItemSelectorCriterionHandler
 	extends BaseItemSelectorCriterionHandler
-		<InfoListProviderItemSelectorCriterion> {
+		<InfoCollectionProviderItemSelectorCriterion> {
 
 	@Override
-	public Class<InfoListProviderItemSelectorCriterion>
+	public Class<InfoCollectionProviderItemSelectorCriterion>
 		getItemSelectorCriterionClass() {
 
-		return InfoListProviderItemSelectorCriterion.class;
+		return InfoCollectionProviderItemSelectorCriterion.class;
 	}
 
 }
