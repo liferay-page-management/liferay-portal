@@ -187,6 +187,8 @@ public class CollectionAssetCategoryFilterFragmentRendererDisplayContext {
 					PortalUtil.getOriginalServletRequest(_httpServletRequest),
 					"categoryId_" + fragmentEntryLinkId);
 			}
+		).put(
+			"showSearch", _isShowSearch()
 		).build();
 
 		return _props;
@@ -237,6 +239,13 @@ public class CollectionAssetCategoryFilterFragmentRendererDisplayContext {
 
 		return CollectionAssetCategoryFilterFragmentRendererWebKeys.
 			CATEGORY_ID + "_" + fragmentEntryLinkId;
+	}
+
+	private boolean _isShowSearch() {
+		return GetterUtil.getBoolean(
+			_httpServletRequest.getAttribute(
+				CollectionAssetCategoryFilterFragmentRendererWebKeys.
+					SHOW_SEARCH));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
