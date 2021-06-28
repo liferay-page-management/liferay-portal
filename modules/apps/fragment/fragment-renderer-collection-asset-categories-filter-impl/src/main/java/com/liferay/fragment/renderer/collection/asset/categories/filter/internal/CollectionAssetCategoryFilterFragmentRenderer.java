@@ -166,6 +166,16 @@ public class CollectionAssetCategoryFilterFragmentRenderer
 			CollectionAssetCategoryFilterFragmentRendererWebKeys.SHOW_LABEL,
 			showLabel);
 
+		boolean showSearch = GetterUtil.getBoolean(
+			_fragmentEntryConfigurationParser.getFieldValue(
+				fragmentEntryLink.getConfiguration(),
+				fragmentEntryLink.getEditableValues(), themeDisplay.getLocale(),
+				"showSearch"));
+
+		httpServletRequest.setAttribute(
+			CollectionAssetCategoryFilterFragmentRendererWebKeys.SHOW_SEARCH,
+			showSearch);
+
 		boolean singleSelection = GetterUtil.getBoolean(
 			_fragmentEntryConfigurationParser.getFieldValue(
 				fragmentEntryLink.getConfiguration(),
