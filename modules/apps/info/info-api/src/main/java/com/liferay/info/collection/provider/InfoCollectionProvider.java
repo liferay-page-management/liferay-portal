@@ -31,6 +31,12 @@ public interface InfoCollectionProvider<T> extends Keyed, Labeled {
 		return (Class<? extends T>)GenericUtil.getGenericClass(this, 1);
 	}
 
+	public default String getCollectionItemClassName() {
+		Class<?> clazz = getCollectionItemClass();
+
+		return clazz.getName();
+	}
+
 	public default boolean isAvailable() {
 		return true;
 	}
