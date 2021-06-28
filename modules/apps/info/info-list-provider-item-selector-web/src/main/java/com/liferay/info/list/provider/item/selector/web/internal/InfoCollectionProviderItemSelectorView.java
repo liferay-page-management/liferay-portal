@@ -22,7 +22,6 @@ import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorView;
 import com.liferay.item.selector.ItemSelectorViewDescriptor;
 import com.liferay.item.selector.ItemSelectorViewDescriptorRenderer;
-import com.liferay.petra.reflect.GenericUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -163,7 +162,7 @@ public class InfoCollectionProviderItemSelectorView
 
 					return JSONUtil.put(
 						"itemType",
-						GenericUtil.getGenericClassName(infoCollectionProvider)
+						infoCollectionProvider.getCollectionItemClassName()
 					).put(
 						"key", infoCollectionProvider.getKey()
 					).put(
@@ -175,8 +174,8 @@ public class InfoCollectionProviderItemSelectorView
 
 				@Override
 				public String getSubtitle(Locale locale) {
-					String className = GenericUtil.getGenericClassName(
-						infoCollectionProvider);
+					String className =
+						infoCollectionProvider.getCollectionItemClassName();
 
 					if (Validator.isNotNull(className)) {
 						return ResourceActionsUtil.getModelResource(
