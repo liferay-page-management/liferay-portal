@@ -26,6 +26,7 @@ import com.liferay.fragment.renderer.collection.asset.categories.filter.internal
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -45,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 import javax.servlet.RequestDispatcher;
@@ -79,15 +81,29 @@ public class CollectionAssetCategoryFilterFragmentRenderer
 			"content.Language", getClass());
 
 		try {
-			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
-				StringUtil.read(
-					getClass(),
-					"/com/liferay/fragment/renderer/collection/asset" +
-						"/categories/filter/internal/dependencies" +
-							"/configuration.json"));
+			String configuration = StringUtil.read(
+				getClass(),
+				"/com/liferay/fragment/renderer/collection/asset/categories" +
+					"/filter/internal/dependencies/configuration.json");
+
+			JSONObject configurationJSONObject =
+				JSONFactoryUtil.createJSONObject(configuration);
+
+			String filterPlaceholder = _getFilterPlaceholder(
+				configuration, fragmentRendererContext, resourceBundle);
+
+			JSONObject filterTypeOptionsJSONObject =
+				_filterTypeOptionsJSONObject(configurationJSONObject);
+
+			if ((filterPlaceholder != null) &&
+				(filterTypeOptionsJSONObject != null)) {
+
+				filterTypeOptionsJSONObject.put(
+					"placeholder", filterPlaceholder);
+			}
 
 			return _fragmentEntryConfigurationParser.translateConfiguration(
-				jsonObject, resourceBundle);
+				configurationJSONObject, resourceBundle);
 		}
 		catch (JSONException jsonException) {
 			return StringPool.BLANK;
@@ -130,6 +146,15 @@ public class CollectionAssetCategoryFilterFragmentRenderer
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
+
+		String label = GetterUtil.getString(
+			_fragmentEntryConfigurationParser.getFieldValue(
+				fragmentEntryLink.getConfiguration(),
+				fragmentEntryLink.getEditableValues(), themeDisplay.getLocale(),
+				"label"));
+
+		httpServletRequest.setAttribute(
+			CollectionAssetCategoryFilterFragmentRendererWebKeys.LABEL, label);
 
 		boolean showLabel = GetterUtil.getBoolean(
 			_fragmentEntryConfigurationParser.getFieldValue(
@@ -267,6 +292,62 @@ public class CollectionAssetCategoryFilterFragmentRenderer
 				FFFragmentRendererCollectionAssetCategoryFilterConfiguration.
 					class,
 				properties);
+	}
+
+	private JSONObject _filterTypeOptionsJSONObject(
+		JSONObject configurationJSONObject) {
+
+		JSONArray fieldsJSONArray = JSONUtil.getValueAsJSONArray(
+			configurationJSONObject, "JSONArray/fieldSets", "JSONObject/0",
+			"JSONArray/fields");
+
+		if (fieldsJSONArray == null) {
+			return null;
+		}
+
+		for (Object fieldObject : fieldsJSONArray) {
+			JSONObject fieldJSONObject = (JSONObject)fieldObject;
+
+			if (Objects.equals(fieldJSONObject.getString("name"), "label") &&
+				fieldJSONObject.has("typeOptions")) {
+
+				return fieldJSONObject.getJSONObject("typeOptions");
+			}
+		}
+
+		return null;
+	}
+
+	private String _getFilterPlaceholder(
+		String configuration, FragmentRendererContext fragmentRendererContext,
+		ResourceBundle resourceBundle) {
+
+		FragmentEntryLink fragmentEntryLink =
+			fragmentRendererContext.getFragmentEntryLink();
+
+		if (fragmentEntryLink == null) {
+			return null;
+		}
+
+		Object sourceObject = _fragmentEntryConfigurationParser.getFieldValue(
+			configuration, fragmentEntryLink.getEditableValues(),
+			resourceBundle.getLocale(), "source");
+
+		if (Validator.isNull(sourceObject) ||
+			!JSONUtil.isValid((String)sourceObject)) {
+
+			return null;
+		}
+
+		try {
+			JSONObject sourceJSONObject = JSONFactoryUtil.createJSONObject(
+				(String)sourceObject);
+
+			return sourceJSONObject.getString("title");
+		}
+		catch (JSONException jsonException) {
+			return null;
+		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
