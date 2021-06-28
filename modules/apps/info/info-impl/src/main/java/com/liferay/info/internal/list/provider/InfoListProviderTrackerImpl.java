@@ -24,6 +24,7 @@ import com.liferay.info.list.provider.InfoListProviderTracker;
 import com.liferay.info.pagination.InfoPage;
 import com.liferay.info.sort.Sort;
 import com.liferay.osgi.util.ServiceTrackerFactory;
+import com.liferay.petra.reflect.GenericUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -222,6 +223,11 @@ public class InfoListProviderTrackerImpl implements InfoListProviderTracker {
 					optionalSort.orElse(null)),
 				collectionQuery.getPagination(),
 				_infoListProvider.getInfoListCount(infoListProviderContext));
+		}
+
+		@Override
+		public String getCollectionItemClassName() {
+			return GenericUtil.getGenericClassName(_infoListProvider);
 		}
 
 		@Override
