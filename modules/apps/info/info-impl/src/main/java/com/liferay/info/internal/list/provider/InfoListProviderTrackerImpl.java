@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 
+import java.util.Dictionary;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -163,7 +164,7 @@ public class InfoListProviderTrackerImpl implements InfoListProviderTracker {
 					(Class<InfoCollectionProvider<?>>)
 						(Class<?>)InfoCollectionProvider.class,
 					infoListProviderInfoCollectionProviderAdapter,
-					new HashMapDictionary<>());
+					_getServiceReferenceProperties(serviceReference));
 
 			_serviceRegistrations.put(serviceReference, serviceRegistration);
 
@@ -189,6 +190,30 @@ public class InfoListProviderTrackerImpl implements InfoListProviderTracker {
 				_serviceRegistrations.remove(serviceReference);
 
 			serviceRegistration.unregister();
+		}
+
+		private Dictionary<String, Object> _getServiceReferenceProperties(
+			ServiceReference<InfoListProvider<?>> serviceReference) {
+
+			Dictionary<String, Object> dictionary = new HashMapDictionary<>();
+
+			for (String key : serviceReference.getPropertyKeys()) {
+				dictionary.put(key, serviceReference.getProperty(key));
+			}
+
+			InfoListProvider<?> infoListProvider = _bundleContext.getService(
+				serviceReference);
+
+			try {
+				dictionary.put(
+					"item.class.name",
+					GenericUtil.getGenericClassName(infoListProvider));
+			}
+			finally {
+				_bundleContext.ungetService(serviceReference);
+			}
+
+			return dictionary;
 		}
 
 		private final BundleContext _bundleContext;
