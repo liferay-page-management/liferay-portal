@@ -251,6 +251,11 @@ public class InfoListProviderTrackerImpl implements InfoListProviderTracker {
 		}
 
 		@Override
+		public Class<?> getCollectionItemClass() {
+			return GenericUtil.getGenericClass(_infoListProvider, 1);
+		}
+
+		@Override
 		public String getCollectionItemClassName() {
 			return GenericUtil.getGenericClassName(_infoListProvider);
 		}
