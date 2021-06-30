@@ -17,6 +17,7 @@ package com.liferay.layout.util.structure;
 import com.liferay.layout.util.constants.LayoutDataItemTypeConstants;
 import com.liferay.petra.lang.HashUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 
 import java.util.Objects;
@@ -188,6 +189,9 @@ public class CollectionStyledLayoutStructureItem
 		if (itemConfigJSONObject.has("collection")) {
 			setCollectionJSONObject(
 				itemConfigJSONObject.getJSONObject("collection"));
+		}
+		else {
+			setCollectionJSONObject(JSONFactoryUtil.createJSONObject());
 		}
 
 		if (itemConfigJSONObject.has("listItemStyle")) {
