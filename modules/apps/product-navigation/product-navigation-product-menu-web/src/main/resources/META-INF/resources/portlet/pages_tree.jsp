@@ -167,12 +167,6 @@ LayoutsTreeDisplayContext layoutsTreeDisplayContext = new LayoutsTreeDisplayCont
 		selPlid="<%= layoutsTreeDisplayContext.getSelPlid() %>"
 		treeId="pagesTree"
 	/>
-
-	<c:if test="<%= layoutsTreeDisplayContext.hasAdministrationPortletPermission() %>">
-		<div class="pages-administration-link">
-			<aui:a cssClass="ml-2" href="<%= layoutsTreeDisplayContext.getAdministrationPortletURL() %>"><%= LanguageUtil.get(request, "go-to-pages-administration") %></aui:a>
-		</div>
-	</c:if>
 </div>
 
 <liferay-frontend:component
