@@ -45,6 +45,7 @@ import com.liferay.product.navigation.control.menu.constants.ProductNavigationCo
 import com.liferay.sites.kernel.util.SitesUtil;
 
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -137,7 +138,9 @@ public class EditLayoutModeProductNavigationControlMenuEntry
 			}
 
 			redirect = _http.setParameter(
-				redirect, "p_l_back_url", themeDisplay.getURLCurrent());
+				redirect, "p_l_back_url",
+				_removePaginationParameters(
+					httpServletRequest, themeDisplay.getURLCurrent()));
 
 			return _http.setParameter(redirect, "p_l_mode", Constants.EDIT);
 		}
@@ -208,6 +211,26 @@ public class EditLayoutModeProductNavigationControlMenuEntry
 		}
 
 		return false;
+	}
+
+	private String _removePaginationParameters(
+		HttpServletRequest httpServletRequest, String url) {
+
+		HttpServletRequest originalHttpServletRequest =
+			_portal.getOriginalServletRequest(httpServletRequest);
+
+		Enumeration<String> enumeration =
+			originalHttpServletRequest.getParameterNames();
+
+		while (enumeration.hasMoreElements()) {
+			String parameterName = enumeration.nextElement();
+
+			if (parameterName.startsWith("page_number_")) {
+				url = _http.removeParameter(url, parameterName);
+			}
+		}
+
+		return url;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
