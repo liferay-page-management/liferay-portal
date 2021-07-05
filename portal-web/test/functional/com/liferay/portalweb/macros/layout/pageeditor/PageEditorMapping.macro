@@ -18,7 +18,7 @@ definition {
 			var offSetY = MathUtil.quotient("${offSetY}","100");
 
 			var elementWidth = selenium.getElementWidth("//div[contains(@class,'page-editor__topper__bar') and contains(.,'${fragmentName}')]//following-sibling::div[contains(@class,'page-editor__topper__content')]//div[contains(@data-lfr-background-image-id,'${id}')]");
-			var offSetX = MathUtil.product("50","${elementWidth}");
+			var offSetX = MathUtil.product("25","${elementWidth}");
 			var offSetX = MathUtil.quotient("${offSetX}","100");
 
 			Click.clickAt(
