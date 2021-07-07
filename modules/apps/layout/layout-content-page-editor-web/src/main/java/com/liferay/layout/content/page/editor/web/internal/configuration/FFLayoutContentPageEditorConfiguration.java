@@ -31,9 +31,6 @@ public interface FFLayoutContentPageEditorConfiguration {
 	public boolean collectionDisplayFragmentPaginationEnabled();
 
 	@Meta.AD(deflt = "false", required = false)
-	public boolean contentBrowsingEnabled();
-
-	@Meta.AD(deflt = "false", required = false)
 	public boolean relatedItemCollectionProvidersEnabled();
 
 }

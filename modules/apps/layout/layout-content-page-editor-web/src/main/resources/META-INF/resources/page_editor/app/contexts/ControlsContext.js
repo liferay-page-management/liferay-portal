@@ -18,7 +18,6 @@ import switchSidebarPanel from '../actions/switchSidebarPanel';
 import {fromControlsId} from '../components/layout-data-items/Collection';
 import {ITEM_ACTIVATION_ORIGINS} from '../config/constants/itemActivationOrigins';
 import {ITEM_TYPES} from '../config/constants/itemTypes';
-import {config} from '../config/index';
 import {useToControlsId} from './CollectionItemContext';
 import {useDispatch, useSelector} from './StoreContext';
 
@@ -189,19 +188,12 @@ const useSelectItem = () => {
 
 			if (
 				itemId &&
-				![
-					config.contentBrowsingEnabled
-						? 'browser'
-						: 'page-structure',
-					'comments',
-				].includes(sidebarPanelId)
+				!['browser', 'comments'].includes(sidebarPanelId)
 			) {
 				storeDispatch(
 					switchSidebarPanel({
 						sidebarOpen: true,
-						sidebarPanelId: config.contentBrowsingEnabled
-							? 'browser'
-							: 'page-structure',
+						sidebarPanelId: 'browser',
 					})
 				);
 			}
