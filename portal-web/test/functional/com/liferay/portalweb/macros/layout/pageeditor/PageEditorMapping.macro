@@ -34,6 +34,10 @@ definition {
 				id = "${id}");
 		}
 
+		if (IsElementPresent(key_sidebarButton = "Comments", locator1 = "PageEditor#FRAGMENT_SIDEBAR_TITLE")) {
+			PageEditor.gotoTab(tabName = "Browser");
+		}
+
 		if ((contains("${id}", "image")) || (contains("${id}", "img")) || (contains("${id}", "banner-center"))) {
 			Navigator.gotoNavTab(navTab = "Image Source");
 
