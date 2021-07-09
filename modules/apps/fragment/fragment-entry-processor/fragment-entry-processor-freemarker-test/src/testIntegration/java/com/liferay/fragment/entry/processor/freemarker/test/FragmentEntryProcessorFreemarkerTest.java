@@ -119,7 +119,7 @@ public class FragmentEntryProcessorFreemarkerTest {
 		Assert.assertNotNull(fragmentEntry);
 	}
 
-	@Test
+	@Test(expected = FragmentEntryContentException.class)
 	public void testAddFragmentEntryWithInvalidFreemarkerVariable()
 		throws Exception {
 
