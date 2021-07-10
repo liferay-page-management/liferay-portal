@@ -18,13 +18,17 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.RequiredLayoutSetPrototypeException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.persistence.LayoutUtil;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.service.base.LayoutSetPrototypeLocalServiceBaseImpl;
@@ -245,6 +249,52 @@ public class LayoutSetPrototypeLocalServiceImpl
 
 		UnicodeProperties settingsUnicodeProperties =
 			layoutSetPrototype.getSettingsProperties();
+
+		boolean oldLayoutsUpdateable = GetterUtil.getBoolean(
+			settingsUnicodeProperties.getProperty("layoutsUpdateable"));
+
+		if (oldLayoutsUpdateable != layoutsUpdateable) {
+			Group group = groupLocalService.getLayoutSetPrototypeGroup(
+				layoutSetPrototype.getCompanyId(), layoutSetPrototypeId);
+
+			List<Layout> layouts = LayoutLocalServiceUtil.getLayouts(
+				group.getGroupId(), true);
+
+			for (Layout layout : layouts) {
+				UnicodeProperties typeSettingsUnicodeProperties =
+					layout.getTypeSettingsProperties();
+
+				if (typeSettingsUnicodeProperties.containsKey(
+						"layoutUpdateable")) {
+
+					typeSettingsUnicodeProperties.setProperty(
+						"layoutUpdateable", String.valueOf(layoutsUpdateable));
+
+					layout.setTypeSettingsProperties(
+						typeSettingsUnicodeProperties);
+
+					List<Layout> childLayouts =
+						LayoutUtil.findBySourcePrototypeLayoutUuid(
+							layout.getUuid());
+
+					for (Layout childLayout : childLayouts) {
+						UnicodeProperties childTypeSettingsUnicodeProperties =
+							childLayout.getTypeSettingsProperties();
+
+						if (childTypeSettingsUnicodeProperties.containsKey(
+								"layoutUpdateable")) {
+
+							childTypeSettingsUnicodeProperties.setProperty(
+								"layoutUpdateable",
+								String.valueOf(layoutsUpdateable));
+
+							childLayout.setTypeSettingsProperties(
+								childTypeSettingsUnicodeProperties);
+						}
+					}
+				}
+			}
+		}
 
 		settingsUnicodeProperties.put(
 			"layoutsUpdateable", String.valueOf(layoutsUpdateable));
