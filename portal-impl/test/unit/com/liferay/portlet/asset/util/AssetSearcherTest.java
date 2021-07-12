@@ -62,11 +62,12 @@ public class AssetSearcherTest {
 	public void testSearchAllAssetCategoryIdsIncludingInternalCategories()
 		throws Exception {
 
-		AssetEntryQuery assetEntryQuery = _getAssetEntryQuery(
-			_PUBLIC_AND_INTERNAL_CATEGORY_IDS_ARRAY, _EMPTY_LONG_ARRAY,
-			_EMPTY_LONG_ARRAY, _EMPTY_LONG_ARRAY);
-
 		AssetSearcher assetSearcher = new AssetSearcher();
+
+		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
+
+		assetEntryQuery.setAllCategoryIds(
+			_PUBLIC_AND_INTERNAL_CATEGORY_IDS_ARRAY);
 
 		assetSearcher.setAssetEntryQuery(assetEntryQuery);
 
@@ -121,11 +122,11 @@ public class AssetSearcherTest {
 	public void testSearchAllAssetCategoryIdsOnlyPublicCategories()
 		throws Exception {
 
-		AssetEntryQuery assetEntryQuery = _getAssetEntryQuery(
-			_PUBLIC_CATEGORY_IDS_ARRAY, _EMPTY_LONG_ARRAY, _EMPTY_LONG_ARRAY,
-			_EMPTY_LONG_ARRAY);
-
 		AssetSearcher assetSearcher = new AssetSearcher();
+
+		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
+
+		assetEntryQuery.setAllCategoryIds(_PUBLIC_CATEGORY_IDS_ARRAY);
 
 		assetSearcher.setAssetEntryQuery(assetEntryQuery);
 
@@ -170,11 +171,12 @@ public class AssetSearcherTest {
 	public void testSearchAnyAssetCategoryIdsIncludingInternalCategories()
 		throws Exception {
 
-		AssetEntryQuery assetEntryQuery = _getAssetEntryQuery(
-			_EMPTY_LONG_ARRAY, _PUBLIC_AND_INTERNAL_CATEGORY_IDS_ARRAY,
-			_EMPTY_LONG_ARRAY, _EMPTY_LONG_ARRAY);
-
 		AssetSearcher assetSearcher = new AssetSearcher();
+
+		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
+
+		assetEntryQuery.setAnyCategoryIds(
+			_PUBLIC_AND_INTERNAL_CATEGORY_IDS_ARRAY);
 
 		assetSearcher.setAssetEntryQuery(assetEntryQuery);
 
@@ -222,11 +224,11 @@ public class AssetSearcherTest {
 	public void testSearchAnyAssetCategoryIdsOnlyPublicCategories()
 		throws Exception {
 
-		AssetEntryQuery assetEntryQuery = _getAssetEntryQuery(
-			_EMPTY_LONG_ARRAY, _PUBLIC_CATEGORY_IDS_ARRAY, _EMPTY_LONG_ARRAY,
-			_EMPTY_LONG_ARRAY);
-
 		AssetSearcher assetSearcher = new AssetSearcher();
+
+		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
+
+		assetEntryQuery.setAnyCategoryIds(_PUBLIC_CATEGORY_IDS_ARRAY);
 
 		assetSearcher.setAssetEntryQuery(assetEntryQuery);
 
@@ -269,11 +271,12 @@ public class AssetSearcherTest {
 	public void testSearchNotAllAssetCategoryIdsIncludingInternalCategories()
 		throws Exception {
 
-		AssetEntryQuery assetEntryQuery = _getAssetEntryQuery(
-			_EMPTY_LONG_ARRAY, _EMPTY_LONG_ARRAY,
-			_PUBLIC_AND_INTERNAL_CATEGORY_IDS_ARRAY, _EMPTY_LONG_ARRAY);
-
 		AssetSearcher assetSearcher = new AssetSearcher();
+
+		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
+
+		assetEntryQuery.setNotAllCategoryIds(
+			_PUBLIC_AND_INTERNAL_CATEGORY_IDS_ARRAY);
 
 		assetSearcher.setAssetEntryQuery(assetEntryQuery);
 
@@ -337,11 +340,11 @@ public class AssetSearcherTest {
 	public void testSearchNotAllAssetCategoryIdsOnlyPublicCategories()
 		throws Exception {
 
-		AssetEntryQuery assetEntryQuery = _getAssetEntryQuery(
-			_EMPTY_LONG_ARRAY, _EMPTY_LONG_ARRAY, _PUBLIC_CATEGORY_IDS_ARRAY,
-			_EMPTY_LONG_ARRAY);
-
 		AssetSearcher assetSearcher = new AssetSearcher();
+
+		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
+
+		assetEntryQuery.setNotAllCategoryIds(_PUBLIC_CATEGORY_IDS_ARRAY);
 
 		assetSearcher.setAssetEntryQuery(assetEntryQuery);
 
@@ -394,11 +397,12 @@ public class AssetSearcherTest {
 	public void testSearchNotAnyAssetCategoryIdsIncludingInternalCategories()
 		throws Exception {
 
-		AssetEntryQuery assetEntryQuery = _getAssetEntryQuery(
-			_EMPTY_LONG_ARRAY, _EMPTY_LONG_ARRAY, _EMPTY_LONG_ARRAY,
-			_PUBLIC_AND_INTERNAL_CATEGORY_IDS_ARRAY);
-
 		AssetSearcher assetSearcher = new AssetSearcher();
+
+		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
+
+		assetEntryQuery.setNotAnyCategoryIds(
+			_PUBLIC_AND_INTERNAL_CATEGORY_IDS_ARRAY);
 
 		assetSearcher.setAssetEntryQuery(assetEntryQuery);
 
@@ -438,11 +442,11 @@ public class AssetSearcherTest {
 	public void testSearchNotAnyAssetCategoryIdsOnlyPublicCategories()
 		throws Exception {
 
-		AssetEntryQuery assetEntryQuery = _getAssetEntryQuery(
-			_EMPTY_LONG_ARRAY, _EMPTY_LONG_ARRAY, _EMPTY_LONG_ARRAY,
-			_PUBLIC_CATEGORY_IDS_ARRAY);
-
 		AssetSearcher assetSearcher = new AssetSearcher();
+
+		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
+
+		assetEntryQuery.setNotAnyCategoryIds(_PUBLIC_CATEGORY_IDS_ARRAY);
 
 		assetSearcher.setAssetEntryQuery(assetEntryQuery);
 
@@ -496,20 +500,6 @@ public class AssetSearcherTest {
 			shouldBooleanClausesList.toString(),
 			expectedShouldBooleanClausesListSize,
 			shouldBooleanClausesList.size());
-	}
-
-	private AssetEntryQuery _getAssetEntryQuery(
-		long[] allCategoryIds, long[] anyCategoryIds, long[] notAllCategoryIds,
-		long[] notAnyCategoryIds) {
-
-		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
-
-		assetEntryQuery.setAllCategoryIds(allCategoryIds);
-		assetEntryQuery.setAnyCategoryIds(anyCategoryIds);
-		assetEntryQuery.setNotAllCategoryIds(notAllCategoryIds);
-		assetEntryQuery.setNotAnyCategoryIds(notAnyCategoryIds);
-
-		return assetEntryQuery;
 	}
 
 	private <T extends Filter> T _getFilter(
@@ -618,8 +608,6 @@ public class AssetSearcherTest {
 		Assert.assertEquals(expectedFieldName, termsFilter.getField());
 		Assert.assertArrayEquals(expectedValueArray, termsFilter.getValues());
 	}
-
-	private static final long[] _EMPTY_LONG_ARRAY = new long[0];
 
 	private static final long _INTERNAL_ASSET_CATEGORY_ID = 42;
 
