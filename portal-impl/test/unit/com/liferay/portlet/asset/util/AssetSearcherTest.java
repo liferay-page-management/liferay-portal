@@ -72,19 +72,14 @@ public class AssetSearcherTest {
 
 		BooleanFilter booleanFilter = new BooleanFilter();
 
-		SearchContext mockSearchContext = Mockito.mock(SearchContext.class);
+		SearchContext searchContext = new SearchContext();
 
-		Mockito.when(
-			mockSearchContext.isIncludeInternalAssetCategories()
-		).thenReturn(
-			true
-		);
+		searchContext.setIncludeInternalAssetCategories(true);
 
 		_mockAssetCategoryLocalServiceUtil();
 		_mockAssetVocabularyLocalServiceUtil();
 
-		assetSearcher.addSearchAssetCategoryIds(
-			booleanFilter, mockSearchContext);
+		assetSearcher.addSearchAssetCategoryIds(booleanFilter, searchContext);
 
 		_assertBooleanClausesListSize(booleanFilter, 2, 0, 0);
 
@@ -136,19 +131,14 @@ public class AssetSearcherTest {
 
 		BooleanFilter booleanFilter = new BooleanFilter();
 
-		SearchContext mockSearchContext = Mockito.mock(SearchContext.class);
+		SearchContext searchContext = new SearchContext();
 
-		Mockito.when(
-			mockSearchContext.isIncludeInternalAssetCategories()
-		).thenReturn(
-			false
-		);
+		searchContext.setIncludeInternalAssetCategories(false);
 
 		_mockAssetCategoryLocalServiceUtil();
 		_mockAssetVocabularyLocalServiceUtil();
 
-		assetSearcher.addSearchAssetCategoryIds(
-			booleanFilter, mockSearchContext);
+		assetSearcher.addSearchAssetCategoryIds(booleanFilter, searchContext);
 
 		_assertBooleanClausesListSize(booleanFilter, 1, 0, 0);
 
@@ -190,19 +180,14 @@ public class AssetSearcherTest {
 
 		BooleanFilter booleanFilter = new BooleanFilter();
 
-		SearchContext mockSearchContext = Mockito.mock(SearchContext.class);
+		SearchContext searchContext = new SearchContext();
 
-		Mockito.when(
-			mockSearchContext.isIncludeInternalAssetCategories()
-		).thenReturn(
-			true
-		);
+		searchContext.setIncludeInternalAssetCategories(true);
 
 		_mockAssetCategoryLocalServiceUtil();
 		_mockAssetVocabularyLocalServiceUtil();
 
-		assetSearcher.addSearchAssetCategoryIds(
-			booleanFilter, mockSearchContext);
+		assetSearcher.addSearchAssetCategoryIds(booleanFilter, searchContext);
 
 		_assertBooleanClausesListSize(booleanFilter, 1, 0, 0);
 
@@ -247,19 +232,14 @@ public class AssetSearcherTest {
 
 		BooleanFilter booleanFilter = new BooleanFilter();
 
-		SearchContext mockSearchContext = Mockito.mock(SearchContext.class);
+		SearchContext searchContext = new SearchContext();
 
-		Mockito.when(
-			mockSearchContext.isIncludeInternalAssetCategories()
-		).thenReturn(
-			false
-		);
+		searchContext.setIncludeInternalAssetCategories(false);
 
 		_mockAssetCategoryLocalServiceUtil();
 		_mockAssetVocabularyLocalServiceUtil();
 
-		assetSearcher.addSearchAssetCategoryIds(
-			booleanFilter, mockSearchContext);
+		assetSearcher.addSearchAssetCategoryIds(booleanFilter, searchContext);
 
 		_assertBooleanClausesListSize(booleanFilter, 1, 0, 0);
 
@@ -299,19 +279,14 @@ public class AssetSearcherTest {
 
 		BooleanFilter booleanFilter = new BooleanFilter();
 
-		SearchContext mockSearchContext = Mockito.mock(SearchContext.class);
+		SearchContext searchContext = new SearchContext();
 
-		Mockito.when(
-			mockSearchContext.isIncludeInternalAssetCategories()
-		).thenReturn(
-			true
-		);
+		searchContext.setIncludeInternalAssetCategories(true);
 
 		_mockAssetCategoryLocalServiceUtil();
 		_mockAssetVocabularyLocalServiceUtil();
 
-		assetSearcher.addSearchAssetCategoryIds(
-			booleanFilter, mockSearchContext);
+		assetSearcher.addSearchAssetCategoryIds(booleanFilter, searchContext);
 
 		_assertBooleanClausesListSize(booleanFilter, 0, 1, 0);
 
@@ -372,19 +347,14 @@ public class AssetSearcherTest {
 
 		BooleanFilter booleanFilter = new BooleanFilter();
 
-		SearchContext mockSearchContext = Mockito.mock(SearchContext.class);
+		SearchContext searchContext = new SearchContext();
 
-		Mockito.when(
-			mockSearchContext.isIncludeInternalAssetCategories()
-		).thenReturn(
-			false
-		);
+		searchContext.setIncludeInternalAssetCategories(false);
 
 		_mockAssetCategoryLocalServiceUtil();
 		_mockAssetVocabularyLocalServiceUtil();
 
-		assetSearcher.addSearchAssetCategoryIds(
-			booleanFilter, mockSearchContext);
+		assetSearcher.addSearchAssetCategoryIds(booleanFilter, searchContext);
 
 		_assertBooleanClausesListSize(booleanFilter, 0, 1, 0);
 
@@ -434,19 +404,14 @@ public class AssetSearcherTest {
 
 		BooleanFilter booleanFilter = new BooleanFilter();
 
-		SearchContext mockSearchContext = Mockito.mock(SearchContext.class);
+		SearchContext searchContext = new SearchContext();
 
-		Mockito.when(
-			mockSearchContext.isIncludeInternalAssetCategories()
-		).thenReturn(
-			true
-		);
+		searchContext.setIncludeInternalAssetCategories(true);
 
 		_mockAssetCategoryLocalServiceUtil();
 		_mockAssetVocabularyLocalServiceUtil();
 
-		assetSearcher.addSearchAssetCategoryIds(
-			booleanFilter, mockSearchContext);
+		assetSearcher.addSearchAssetCategoryIds(booleanFilter, searchContext);
 
 		_assertBooleanClausesListSize(booleanFilter, 0, 2, 0);
 
@@ -483,19 +448,14 @@ public class AssetSearcherTest {
 
 		BooleanFilter booleanFilter = new BooleanFilter();
 
-		SearchContext mockSearchContext = Mockito.mock(SearchContext.class);
+		SearchContext searchContext = new SearchContext();
 
-		Mockito.when(
-			mockSearchContext.isIncludeInternalAssetCategories()
-		).thenReturn(
-			false
-		);
+		searchContext.setIncludeInternalAssetCategories(false);
 
 		_mockAssetCategoryLocalServiceUtil();
 		_mockAssetVocabularyLocalServiceUtil();
 
-		assetSearcher.addSearchAssetCategoryIds(
-			booleanFilter, mockSearchContext);
+		assetSearcher.addSearchAssetCategoryIds(booleanFilter, searchContext);
 
 		_assertBooleanClausesListSize(booleanFilter, 0, 1, 0);
 
