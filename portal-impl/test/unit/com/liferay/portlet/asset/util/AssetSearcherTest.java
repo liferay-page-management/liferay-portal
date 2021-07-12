@@ -56,6 +56,9 @@ public class AssetSearcherTest {
 	@Before
 	public void setUp() throws Exception {
 		RegistryUtil.setRegistry(new BasicRegistryImpl());
+
+		_mockAssetCategoryLocalServiceUtil();
+		_mockAssetVocabularyLocalServiceUtil();
 	}
 
 	@Test
@@ -76,9 +79,6 @@ public class AssetSearcherTest {
 		SearchContext searchContext = new SearchContext();
 
 		searchContext.setIncludeInternalAssetCategories(true);
-
-		_mockAssetCategoryLocalServiceUtil();
-		_mockAssetVocabularyLocalServiceUtil();
 
 		assetSearcher.addSearchAssetCategoryIds(booleanFilter, searchContext);
 
@@ -136,9 +136,6 @@ public class AssetSearcherTest {
 
 		searchContext.setIncludeInternalAssetCategories(false);
 
-		_mockAssetCategoryLocalServiceUtil();
-		_mockAssetVocabularyLocalServiceUtil();
-
 		assetSearcher.addSearchAssetCategoryIds(booleanFilter, searchContext);
 
 		_assertBooleanClausesListSize(booleanFilter, 1, 0, 0);
@@ -185,9 +182,6 @@ public class AssetSearcherTest {
 		SearchContext searchContext = new SearchContext();
 
 		searchContext.setIncludeInternalAssetCategories(true);
-
-		_mockAssetCategoryLocalServiceUtil();
-		_mockAssetVocabularyLocalServiceUtil();
 
 		assetSearcher.addSearchAssetCategoryIds(booleanFilter, searchContext);
 
@@ -238,9 +232,6 @@ public class AssetSearcherTest {
 
 		searchContext.setIncludeInternalAssetCategories(false);
 
-		_mockAssetCategoryLocalServiceUtil();
-		_mockAssetVocabularyLocalServiceUtil();
-
 		assetSearcher.addSearchAssetCategoryIds(booleanFilter, searchContext);
 
 		_assertBooleanClausesListSize(booleanFilter, 1, 0, 0);
@@ -285,9 +276,6 @@ public class AssetSearcherTest {
 		SearchContext searchContext = new SearchContext();
 
 		searchContext.setIncludeInternalAssetCategories(true);
-
-		_mockAssetCategoryLocalServiceUtil();
-		_mockAssetVocabularyLocalServiceUtil();
 
 		assetSearcher.addSearchAssetCategoryIds(booleanFilter, searchContext);
 
@@ -354,9 +342,6 @@ public class AssetSearcherTest {
 
 		searchContext.setIncludeInternalAssetCategories(false);
 
-		_mockAssetCategoryLocalServiceUtil();
-		_mockAssetVocabularyLocalServiceUtil();
-
 		assetSearcher.addSearchAssetCategoryIds(booleanFilter, searchContext);
 
 		_assertBooleanClausesListSize(booleanFilter, 0, 1, 0);
@@ -412,9 +397,6 @@ public class AssetSearcherTest {
 
 		searchContext.setIncludeInternalAssetCategories(true);
 
-		_mockAssetCategoryLocalServiceUtil();
-		_mockAssetVocabularyLocalServiceUtil();
-
 		assetSearcher.addSearchAssetCategoryIds(booleanFilter, searchContext);
 
 		_assertBooleanClausesListSize(booleanFilter, 0, 2, 0);
@@ -455,9 +437,6 @@ public class AssetSearcherTest {
 		SearchContext searchContext = new SearchContext();
 
 		searchContext.setIncludeInternalAssetCategories(false);
-
-		_mockAssetCategoryLocalServiceUtil();
-		_mockAssetVocabularyLocalServiceUtil();
 
 		assetSearcher.addSearchAssetCategoryIds(booleanFilter, searchContext);
 
