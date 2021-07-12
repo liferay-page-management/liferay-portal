@@ -542,28 +542,12 @@ public class AssetSearcherTest {
 		long[] allCategoryIds, long[] anyCategoryIds, long[] notAllCategoryIds,
 		long[] notAnyCategoryIds) {
 
-		AssetEntryQuery assetEntryQuery = Mockito.mock(AssetEntryQuery.class);
+		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
 
-		Mockito.when(
-			assetEntryQuery.getAllCategoryIds()
-		).thenReturn(
-			allCategoryIds
-		);
-		Mockito.when(
-			assetEntryQuery.getAnyCategoryIds()
-		).thenReturn(
-			anyCategoryIds
-		);
-		Mockito.when(
-			assetEntryQuery.getNotAllCategoryIds()
-		).thenReturn(
-			notAllCategoryIds
-		);
-		Mockito.when(
-			assetEntryQuery.getNotAnyCategoryIds()
-		).thenReturn(
-			notAnyCategoryIds
-		);
+		assetEntryQuery.setAllCategoryIds(allCategoryIds);
+		assetEntryQuery.setAnyCategoryIds(anyCategoryIds);
+		assetEntryQuery.setNotAllCategoryIds(notAllCategoryIds);
+		assetEntryQuery.setNotAnyCategoryIds(notAnyCategoryIds);
 
 		return assetEntryQuery;
 	}
