@@ -512,9 +512,9 @@ public class AssetSearcherTest {
 
 		Filter clause = booleanClause.getClause();
 
-		Class<?> clausClazz = clause.getClass();
+		Class<?> clauseClazz = clause.getClass();
 
-		Assert.assertTrue(clausClazz.isAssignableFrom(clazz));
+		Assert.assertTrue(clauseClazz.isAssignableFrom(clazz));
 
 		return (T)booleanClause.getClause();
 	}
