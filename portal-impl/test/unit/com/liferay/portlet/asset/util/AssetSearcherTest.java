@@ -73,7 +73,10 @@ public class AssetSearcherTest {
 		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
 
 		assetEntryQuery.setAllCategoryIds(
-			_PUBLIC_AND_INTERNAL_ASSET_CATEGORY_IDS_ARRAY);
+			new long[] {
+				_INTERNAL_ASSET_CATEGORY_ID, _PUBLIC_ASSET_CATEGORY_ID_1,
+				_PUBLIC_ASSET_CATEGORY_ID_2
+			});
 
 		assetSearcher.setAssetEntryQuery(assetEntryQuery);
 
@@ -128,7 +131,10 @@ public class AssetSearcherTest {
 
 		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
 
-		assetEntryQuery.setAllCategoryIds(_PUBLIC_ASSET_CATEGORY_IDS_ARRAY);
+		assetEntryQuery.setAllCategoryIds(
+			new long[] {
+				_PUBLIC_ASSET_CATEGORY_ID_1, _PUBLIC_ASSET_CATEGORY_ID_2
+			});
 
 		assetSearcher.setAssetEntryQuery(assetEntryQuery);
 
@@ -171,7 +177,10 @@ public class AssetSearcherTest {
 		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
 
 		assetEntryQuery.setAnyCategoryIds(
-			_PUBLIC_AND_INTERNAL_ASSET_CATEGORY_IDS_ARRAY);
+			new long[] {
+				_INTERNAL_ASSET_CATEGORY_ID, _PUBLIC_ASSET_CATEGORY_ID_1,
+				_PUBLIC_ASSET_CATEGORY_ID_2
+			});
 
 		assetSearcher.setAssetEntryQuery(assetEntryQuery);
 
@@ -214,7 +223,10 @@ public class AssetSearcherTest {
 
 		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
 
-		assetEntryQuery.setAnyCategoryIds(_PUBLIC_ASSET_CATEGORY_IDS_ARRAY);
+		assetEntryQuery.setAnyCategoryIds(
+			new long[] {
+				_PUBLIC_ASSET_CATEGORY_ID_1, _PUBLIC_ASSET_CATEGORY_ID_2
+			});
 
 		assetSearcher.setAssetEntryQuery(assetEntryQuery);
 
@@ -255,7 +267,10 @@ public class AssetSearcherTest {
 		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
 
 		assetEntryQuery.setNotAllCategoryIds(
-			_PUBLIC_AND_INTERNAL_ASSET_CATEGORY_IDS_ARRAY);
+			new long[] {
+				_INTERNAL_ASSET_CATEGORY_ID, _PUBLIC_ASSET_CATEGORY_ID_1,
+				_PUBLIC_ASSET_CATEGORY_ID_2
+			});
 
 		assetSearcher.setAssetEntryQuery(assetEntryQuery);
 
@@ -319,7 +334,10 @@ public class AssetSearcherTest {
 
 		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
 
-		assetEntryQuery.setNotAllCategoryIds(_PUBLIC_ASSET_CATEGORY_IDS_ARRAY);
+		assetEntryQuery.setNotAllCategoryIds(
+			new long[] {
+				_PUBLIC_ASSET_CATEGORY_ID_1, _PUBLIC_ASSET_CATEGORY_ID_2
+			});
 
 		assetSearcher.setAssetEntryQuery(assetEntryQuery);
 
@@ -371,7 +389,10 @@ public class AssetSearcherTest {
 		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
 
 		assetEntryQuery.setNotAnyCategoryIds(
-			_PUBLIC_AND_INTERNAL_ASSET_CATEGORY_IDS_ARRAY);
+			new long[] {
+				_INTERNAL_ASSET_CATEGORY_ID, _PUBLIC_ASSET_CATEGORY_ID_1,
+				_PUBLIC_ASSET_CATEGORY_ID_2
+			});
 
 		assetSearcher.setAssetEntryQuery(assetEntryQuery);
 
@@ -404,7 +425,10 @@ public class AssetSearcherTest {
 
 		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
 
-		assetEntryQuery.setNotAnyCategoryIds(_PUBLIC_ASSET_CATEGORY_IDS_ARRAY);
+		assetEntryQuery.setNotAnyCategoryIds(
+			new long[] {
+				_PUBLIC_ASSET_CATEGORY_ID_1, _PUBLIC_ASSET_CATEGORY_ID_2
+			});
 
 		assetSearcher.setAssetEntryQuery(assetEntryQuery);
 
@@ -574,16 +598,9 @@ public class AssetSearcherTest {
 
 	private static final long _INTERNAL_ASSET_VOCABULARY_ID = 43;
 
-	private static final long[] _PUBLIC_AND_INTERNAL_ASSET_CATEGORY_IDS_ARRAY =
-		{44, 45, _INTERNAL_ASSET_CATEGORY_ID};
-
 	private static final long _PUBLIC_ASSET_CATEGORY_ID_1 = 44;
 
 	private static final long _PUBLIC_ASSET_CATEGORY_ID_2 = 45;
-
-	private static final long[] _PUBLIC_ASSET_CATEGORY_IDS_ARRAY = {
-		_PUBLIC_ASSET_CATEGORY_ID_1, _PUBLIC_ASSET_CATEGORY_ID_2
-	};
 
 	private static final long _PUBLIC_ASSET_VOCABULARY_ID = 46;
 
