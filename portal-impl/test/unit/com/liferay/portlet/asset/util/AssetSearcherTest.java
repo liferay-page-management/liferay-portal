@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.search.filter.TermsFilter;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.registry.BasicRegistryImpl;
 import com.liferay.registry.RegistryUtil;
@@ -95,19 +96,12 @@ public class AssetSearcherTest {
 		List<BooleanClause<Filter>> publicCategoriesMustBooleanClauses =
 			publicCategoriesBooleanFilter.getMustBooleanClauses();
 
-		TermsFilter publicCategoryIdTermsFilter1 = _getFilter(
-			TermsFilter.class, publicCategoriesMustBooleanClauses.get(0));
-
 		_verifyTermFilter(
-			publicCategoryIdTermsFilter1, Field.ASSET_CATEGORY_IDS,
-			new String[] {String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_1)});
-
-		TermsFilter publicCategoryIdTermsFilter2 = _getFilter(
-			TermsFilter.class, publicCategoriesMustBooleanClauses.get(1));
-
+			publicCategoriesMustBooleanClauses.get(0), Field.ASSET_CATEGORY_IDS,
+			_PUBLIC_ASSET_CATEGORY_ID_1);
 		_verifyTermFilter(
-			publicCategoryIdTermsFilter2, Field.ASSET_CATEGORY_IDS,
-			new String[] {String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_2)});
+			publicCategoriesMustBooleanClauses.get(1), Field.ASSET_CATEGORY_IDS,
+			_PUBLIC_ASSET_CATEGORY_ID_2);
 
 		BooleanFilter internalCategoriesBooleanFilter = _getFilter(
 			BooleanFilter.class, mustBooleanClauses.get(1));
@@ -117,12 +111,9 @@ public class AssetSearcherTest {
 		List<BooleanClause<Filter>> internalCategoriesMustBooleanClauses =
 			internalCategoriesBooleanFilter.getMustBooleanClauses();
 
-		TermsFilter internalCategoryIdTermsFilter = _getFilter(
-			TermsFilter.class, internalCategoriesMustBooleanClauses.get(0));
-
 		_verifyTermFilter(
-			internalCategoryIdTermsFilter, Field.ASSET_INTERNAL_CATEGORY_IDS,
-			new String[] {String.valueOf(_INTERNAL_ASSET_CATEGORY_ID)});
+			internalCategoriesMustBooleanClauses.get(0),
+			Field.ASSET_INTERNAL_CATEGORY_IDS, _INTERNAL_ASSET_CATEGORY_ID);
 	}
 
 	@Test
@@ -158,19 +149,12 @@ public class AssetSearcherTest {
 		List<BooleanClause<Filter>> publicCategoriesMustBooleanClauses =
 			publicCategoriesBooleanFilter.getMustBooleanClauses();
 
-		TermsFilter publicCategoryIdTermsFilter1 = _getFilter(
-			TermsFilter.class, publicCategoriesMustBooleanClauses.get(0));
-
 		_verifyTermFilter(
-			publicCategoryIdTermsFilter1, Field.ASSET_CATEGORY_IDS,
-			new String[] {String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_1)});
-
-		TermsFilter publicCategoryIdTermsFilter2 = _getFilter(
-			TermsFilter.class, publicCategoriesMustBooleanClauses.get(1));
-
+			publicCategoriesMustBooleanClauses.get(0), Field.ASSET_CATEGORY_IDS,
+			_PUBLIC_ASSET_CATEGORY_ID_1);
 		_verifyTermFilter(
-			publicCategoryIdTermsFilter2, Field.ASSET_CATEGORY_IDS,
-			new String[] {String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_2)});
+			publicCategoriesMustBooleanClauses.get(1), Field.ASSET_CATEGORY_IDS,
+			_PUBLIC_ASSET_CATEGORY_ID_2);
 	}
 
 	@Test
@@ -207,22 +191,12 @@ public class AssetSearcherTest {
 		List<BooleanClause<Filter>> categoryIdsShouldBooleanClauses =
 			categoryIdsQueryBooleanFilter.getShouldBooleanClauses();
 
-		TermsFilter publicCategoryIdTermsFilter1 = _getFilter(
-			TermsFilter.class, categoryIdsShouldBooleanClauses.get(0));
-
 		_verifyTermFilter(
-			publicCategoryIdTermsFilter1, Field.ASSET_CATEGORY_IDS,
-			new String[] {
-				String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_1),
-				String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_2)
-			});
-
-		TermsFilter internalCategoryIdTermsFilter = _getFilter(
-			TermsFilter.class, categoryIdsShouldBooleanClauses.get(1));
-
+			categoryIdsShouldBooleanClauses.get(0), Field.ASSET_CATEGORY_IDS,
+			_PUBLIC_ASSET_CATEGORY_ID_1, _PUBLIC_ASSET_CATEGORY_ID_2);
 		_verifyTermFilter(
-			internalCategoryIdTermsFilter, Field.ASSET_INTERNAL_CATEGORY_IDS,
-			new String[] {String.valueOf(_INTERNAL_ASSET_CATEGORY_ID)});
+			categoryIdsShouldBooleanClauses.get(1),
+			Field.ASSET_INTERNAL_CATEGORY_IDS, _INTERNAL_ASSET_CATEGORY_ID);
 	}
 
 	@Test
@@ -258,15 +232,9 @@ public class AssetSearcherTest {
 		List<BooleanClause<Filter>> categoryIdsShouldBooleanClauses =
 			categoryIdsQueryBooleanFilter.getShouldBooleanClauses();
 
-		TermsFilter publicCategoryIdTermsFilter = _getFilter(
-			TermsFilter.class, categoryIdsShouldBooleanClauses.get(0));
-
 		_verifyTermFilter(
-			publicCategoryIdTermsFilter, Field.ASSET_CATEGORY_IDS,
-			new String[] {
-				String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_1),
-				String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_2)
-			});
+			categoryIdsShouldBooleanClauses.get(0), Field.ASSET_CATEGORY_IDS,
+			_PUBLIC_ASSET_CATEGORY_ID_1, _PUBLIC_ASSET_CATEGORY_ID_2);
 	}
 
 	@Test
@@ -311,19 +279,12 @@ public class AssetSearcherTest {
 		List<BooleanClause<Filter>> publicCategoryIdsMustBooleanClauses =
 			publicCategoryIdsBooleanFilter.getMustBooleanClauses();
 
-		TermsFilter publicCategoryIdTermsFilter1 = _getFilter(
-			TermsFilter.class, publicCategoryIdsMustBooleanClauses.get(0));
-
 		_verifyTermFilter(
-			publicCategoryIdTermsFilter1, Field.ASSET_CATEGORY_IDS,
-			new String[] {String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_1)});
-
-		TermsFilter publicCategoryIdTermsFilter2 = _getFilter(
-			TermsFilter.class, publicCategoryIdsMustBooleanClauses.get(1));
-
+			publicCategoryIdsMustBooleanClauses.get(0),
+			Field.ASSET_CATEGORY_IDS, _PUBLIC_ASSET_CATEGORY_ID_1);
 		_verifyTermFilter(
-			publicCategoryIdTermsFilter2, Field.ASSET_CATEGORY_IDS,
-			new String[] {String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_2)});
+			publicCategoryIdsMustBooleanClauses.get(1),
+			Field.ASSET_CATEGORY_IDS, _PUBLIC_ASSET_CATEGORY_ID_2);
 
 		BooleanFilter internalCategoryIdsBooleanFilter = _getFilter(
 			BooleanFilter.class, categoryIdsMustBooleanClauses.get(1));
@@ -334,12 +295,9 @@ public class AssetSearcherTest {
 		List<BooleanClause<Filter>> internalCategoryIdsMustBooleanClauses =
 			internalCategoryIdsBooleanFilter.getMustBooleanClauses();
 
-		TermsFilter internalCategoryIdTermsFilter = _getFilter(
-			TermsFilter.class, internalCategoryIdsMustBooleanClauses.get(0));
-
 		_verifyTermFilter(
-			internalCategoryIdTermsFilter, Field.ASSET_INTERNAL_CATEGORY_IDS,
-			new String[] {String.valueOf(_INTERNAL_ASSET_CATEGORY_ID)});
+			internalCategoryIdsMustBooleanClauses.get(0),
+			Field.ASSET_INTERNAL_CATEGORY_IDS, _INTERNAL_ASSET_CATEGORY_ID);
 	}
 
 	@Test
@@ -383,19 +341,12 @@ public class AssetSearcherTest {
 		List<BooleanClause<Filter>> publicCategoryIdsMustBooleanClauses =
 			publicCategoryIdsBooleanFilter.getMustBooleanClauses();
 
-		TermsFilter publicCategoryIdTermsFilter1 = _getFilter(
-			TermsFilter.class, publicCategoryIdsMustBooleanClauses.get(0));
-
 		_verifyTermFilter(
-			publicCategoryIdTermsFilter1, Field.ASSET_CATEGORY_IDS,
-			new String[] {String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_1)});
-
-		TermsFilter publicCategoryIdTermsFilter2 = _getFilter(
-			TermsFilter.class, publicCategoryIdsMustBooleanClauses.get(1));
-
+			publicCategoryIdsMustBooleanClauses.get(0),
+			Field.ASSET_CATEGORY_IDS, _PUBLIC_ASSET_CATEGORY_ID_1);
 		_verifyTermFilter(
-			publicCategoryIdTermsFilter2, Field.ASSET_CATEGORY_IDS,
-			new String[] {String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_2)});
+			publicCategoryIdsMustBooleanClauses.get(1),
+			Field.ASSET_CATEGORY_IDS, _PUBLIC_ASSET_CATEGORY_ID_2);
 	}
 
 	@Test
@@ -424,22 +375,12 @@ public class AssetSearcherTest {
 		List<BooleanClause<Filter>> mustNotBooleanClauses =
 			booleanFilter.getMustNotBooleanClauses();
 
-		TermsFilter publicCategoryIdTermsFilter = _getFilter(
-			TermsFilter.class, mustNotBooleanClauses.get(0));
-
 		_verifyTermFilter(
-			publicCategoryIdTermsFilter, Field.ASSET_CATEGORY_IDS,
-			new String[] {
-				String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_1),
-				String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_2)
-			});
-
-		TermsFilter internalCategoryIdTermsFilter = _getFilter(
-			TermsFilter.class, mustNotBooleanClauses.get(1));
-
+			mustNotBooleanClauses.get(0), Field.ASSET_CATEGORY_IDS,
+			_PUBLIC_ASSET_CATEGORY_ID_1, _PUBLIC_ASSET_CATEGORY_ID_2);
 		_verifyTermFilter(
-			internalCategoryIdTermsFilter, Field.ASSET_INTERNAL_CATEGORY_IDS,
-			new String[] {String.valueOf(_INTERNAL_ASSET_CATEGORY_ID)});
+			mustNotBooleanClauses.get(1), Field.ASSET_INTERNAL_CATEGORY_IDS,
+			_INTERNAL_ASSET_CATEGORY_ID);
 	}
 
 	@Test
@@ -467,15 +408,9 @@ public class AssetSearcherTest {
 		List<BooleanClause<Filter>> mustNotBooleanClauses =
 			booleanFilter.getMustNotBooleanClauses();
 
-		TermsFilter publicCategoryIdTermsFilter = _getFilter(
-			TermsFilter.class, mustNotBooleanClauses.get(0));
-
 		_verifyTermFilter(
-			publicCategoryIdTermsFilter, Field.ASSET_CATEGORY_IDS,
-			new String[] {
-				String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_1),
-				String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_2)
-			});
+			mustNotBooleanClauses.get(0), Field.ASSET_CATEGORY_IDS,
+			_PUBLIC_ASSET_CATEGORY_ID_1, _PUBLIC_ASSET_CATEGORY_ID_2);
 	}
 
 	private void _assertBooleanClausesListSize(
@@ -613,11 +548,15 @@ public class AssetSearcherTest {
 	}
 
 	private void _verifyTermFilter(
-		TermsFilter termsFilter, String expectedFieldName,
-		String[] expectedValueArray) {
+		BooleanClause<Filter> booleanClause, String expectedFieldName,
+		long... expectedValuesArray) {
+
+		TermsFilter termsFilter = _getFilter(TermsFilter.class, booleanClause);
 
 		Assert.assertEquals(expectedFieldName, termsFilter.getField());
-		Assert.assertArrayEquals(expectedValueArray, termsFilter.getValues());
+		Assert.assertArrayEquals(
+			ArrayUtil.toStringArray(expectedValuesArray),
+			termsFilter.getValues());
 	}
 
 	private static final long _INTERNAL_ASSET_CATEGORY_ID = 42;
