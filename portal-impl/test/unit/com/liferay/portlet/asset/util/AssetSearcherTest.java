@@ -494,90 +494,92 @@ public class AssetSearcherTest {
 	}
 
 	private void _mockAssetCategoryLocalServiceUtil() {
-		_assetCategoryLocalService = Mockito.mock(
+		AssetCategoryLocalService assetCategoryLocalService = Mockito.mock(
 			AssetCategoryLocalService.class);
 
-		_internalAssetCategory = Mockito.mock(AssetCategory.class);
+		AssetCategory internalAssetCategory = Mockito.mock(AssetCategory.class);
 
-		_publicAssetCategory1 = Mockito.mock(AssetCategory.class);
+		AssetCategory publicAssetCategory1 = Mockito.mock(AssetCategory.class);
 
-		_publicAssetCategory2 = Mockito.mock(AssetCategory.class);
+		AssetCategory publicAssetCategory2 = Mockito.mock(AssetCategory.class);
 
 		Mockito.when(
-			_internalAssetCategory.getVocabularyId()
+			internalAssetCategory.getVocabularyId()
 		).thenReturn(
 			_INTERNAL_ASSET_VOCABULARY_ID
 		);
 		Mockito.when(
-			_publicAssetCategory1.getVocabularyId()
+			publicAssetCategory1.getVocabularyId()
 		).thenReturn(
 			_PUBLIC_ASSET_VOCABULARY_ID
 		);
 		Mockito.when(
-			_publicAssetCategory2.getVocabularyId()
+			publicAssetCategory2.getVocabularyId()
 		).thenReturn(
 			_PUBLIC_ASSET_VOCABULARY_ID
 		);
 
 		Mockito.when(
-			_assetCategoryLocalService.fetchAssetCategory(
+			assetCategoryLocalService.fetchAssetCategory(
 				_INTERNAL_ASSET_CATEGORY_ID)
 		).thenReturn(
-			_internalAssetCategory
+			internalAssetCategory
 		);
 		Mockito.when(
-			_assetCategoryLocalService.fetchAssetCategory(
+			assetCategoryLocalService.fetchAssetCategory(
 				_PUBLIC_ASSET_CATEGORY_ID_1)
 		).thenReturn(
-			_publicAssetCategory1
+			publicAssetCategory1
 		);
 		Mockito.when(
-			_assetCategoryLocalService.fetchAssetCategory(
+			assetCategoryLocalService.fetchAssetCategory(
 				_PUBLIC_ASSET_CATEGORY_ID_2)
 		).thenReturn(
-			_publicAssetCategory2
+			publicAssetCategory2
 		);
 
 		ReflectionTestUtil.setFieldValue(
 			AssetCategoryLocalServiceUtil.class, "_service",
-			_assetCategoryLocalService);
+			assetCategoryLocalService);
 	}
 
 	private void _mockAssetVocabularyLocalServiceUtil() {
-		_assetVocabularyLocalService = Mockito.mock(
+		AssetVocabularyLocalService assetVocabularyLocalService = Mockito.mock(
 			AssetVocabularyLocalService.class);
 
-		_internalAssetVocabulary = Mockito.mock(AssetVocabulary.class);
+		AssetVocabulary internalAssetVocabulary = Mockito.mock(
+			AssetVocabulary.class);
 
-		_publicAssetVocabulary = Mockito.mock(AssetVocabulary.class);
+		AssetVocabulary publicAssetVocabulary = Mockito.mock(
+			AssetVocabulary.class);
 
 		Mockito.when(
-			_internalAssetVocabulary.getVisibilityType()
+			internalAssetVocabulary.getVisibilityType()
 		).thenReturn(
 			AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL
 		);
 		Mockito.when(
-			_publicAssetVocabulary.getVisibilityType()
+			publicAssetVocabulary.getVisibilityType()
 		).thenReturn(
 			AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC
 		);
 
 		Mockito.when(
-			_assetVocabularyLocalService.fetchAssetVocabulary(
+			assetVocabularyLocalService.fetchAssetVocabulary(
 				_INTERNAL_ASSET_VOCABULARY_ID)
 		).thenReturn(
-			_internalAssetVocabulary
+			internalAssetVocabulary
 		);
 		Mockito.when(
-			_assetVocabularyLocalService.fetchAssetVocabulary(
+			assetVocabularyLocalService.fetchAssetVocabulary(
 				_PUBLIC_ASSET_VOCABULARY_ID)
 		).thenReturn(
-			_publicAssetVocabulary
+			publicAssetVocabulary
 		);
 
 		ReflectionTestUtil.setFieldValue(
 			AssetVocabularyLocalServiceUtil.class, "_service",
-			_assetVocabularyLocalService);
+			assetVocabularyLocalService);
 	}
 
 	private void _verifyTermFilter(
@@ -605,13 +607,5 @@ public class AssetSearcherTest {
 	private static final long[] _PUBLIC_CATEGORY_IDS_ARRAY = {
 		_PUBLIC_ASSET_CATEGORY_ID_1, _PUBLIC_ASSET_CATEGORY_ID_2
 	};
-
-	private AssetCategoryLocalService _assetCategoryLocalService;
-	private AssetVocabularyLocalService _assetVocabularyLocalService;
-	private AssetCategory _internalAssetCategory;
-	private AssetVocabulary _internalAssetVocabulary;
-	private AssetCategory _publicAssetCategory1;
-	private AssetCategory _publicAssetCategory2;
-	private AssetVocabulary _publicAssetVocabulary;
 
 }
