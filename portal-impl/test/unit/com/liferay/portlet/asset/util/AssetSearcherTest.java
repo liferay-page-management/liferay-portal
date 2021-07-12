@@ -65,6 +65,8 @@ public class AssetSearcherTest {
 	public void testSearchAllAssetCategoryIdsIncludingInternalCategories()
 		throws Exception {
 
+		BooleanFilter booleanFilter = new BooleanFilter();
+
 		AssetSearcher assetSearcher = new AssetSearcher();
 
 		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
@@ -73,8 +75,6 @@ public class AssetSearcherTest {
 			_PUBLIC_AND_INTERNAL_CATEGORY_IDS_ARRAY);
 
 		assetSearcher.setAssetEntryQuery(assetEntryQuery);
-
-		BooleanFilter booleanFilter = new BooleanFilter();
 
 		SearchContext searchContext = new SearchContext();
 
@@ -89,30 +89,37 @@ public class AssetSearcherTest {
 
 		BooleanFilter publicCategoriesBooleanFilter = _getFilter(
 			BooleanFilter.class, mustBooleanClauses.get(0));
-		BooleanFilter internalCategoriesBooleanFilter = _getFilter(
-			BooleanFilter.class, mustBooleanClauses.get(1));
 
 		_assertBooleanClausesListSize(publicCategoriesBooleanFilter, 2, 0, 0);
-		_assertBooleanClausesListSize(internalCategoriesBooleanFilter, 1, 0, 0);
 
 		List<BooleanClause<Filter>> publicCategoriesMustBooleanClauses =
 			publicCategoriesBooleanFilter.getMustBooleanClauses();
-		List<BooleanClause<Filter>> internalCategoriesMustBooleanClauses =
-			internalCategoriesBooleanFilter.getMustBooleanClauses();
 
 		TermsFilter publicCategoryIdTermsFilter1 = _getFilter(
 			TermsFilter.class, publicCategoriesMustBooleanClauses.get(0));
-		TermsFilter publicCategoryIdTermsFilter2 = _getFilter(
-			TermsFilter.class, publicCategoriesMustBooleanClauses.get(1));
-		TermsFilter internalCategoryIdTermsFilter = _getFilter(
-			TermsFilter.class, internalCategoriesMustBooleanClauses.get(0));
 
 		_verifyTermFilter(
 			publicCategoryIdTermsFilter1, Field.ASSET_CATEGORY_IDS,
 			new String[] {String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_1)});
+
+		TermsFilter publicCategoryIdTermsFilter2 = _getFilter(
+			TermsFilter.class, publicCategoriesMustBooleanClauses.get(1));
+
 		_verifyTermFilter(
 			publicCategoryIdTermsFilter2, Field.ASSET_CATEGORY_IDS,
 			new String[] {String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_2)});
+
+		BooleanFilter internalCategoriesBooleanFilter = _getFilter(
+			BooleanFilter.class, mustBooleanClauses.get(1));
+
+		_assertBooleanClausesListSize(internalCategoriesBooleanFilter, 1, 0, 0);
+
+		List<BooleanClause<Filter>> internalCategoriesMustBooleanClauses =
+			internalCategoriesBooleanFilter.getMustBooleanClauses();
+
+		TermsFilter internalCategoryIdTermsFilter = _getFilter(
+			TermsFilter.class, internalCategoriesMustBooleanClauses.get(0));
+
 		_verifyTermFilter(
 			internalCategoryIdTermsFilter, Field.ASSET_INTERNAL_CATEGORY_IDS,
 			new String[] {String.valueOf(_INTERNAL_ASSET_CATEGORY_ID)});
@@ -122,6 +129,8 @@ public class AssetSearcherTest {
 	public void testSearchAllAssetCategoryIdsOnlyPublicCategories()
 		throws Exception {
 
+		BooleanFilter booleanFilter = new BooleanFilter();
+
 		AssetSearcher assetSearcher = new AssetSearcher();
 
 		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
@@ -129,8 +138,6 @@ public class AssetSearcherTest {
 		assetEntryQuery.setAllCategoryIds(_PUBLIC_CATEGORY_IDS_ARRAY);
 
 		assetSearcher.setAssetEntryQuery(assetEntryQuery);
-
-		BooleanFilter booleanFilter = new BooleanFilter();
 
 		SearchContext searchContext = new SearchContext();
 
@@ -153,12 +160,14 @@ public class AssetSearcherTest {
 
 		TermsFilter publicCategoryIdTermsFilter1 = _getFilter(
 			TermsFilter.class, publicCategoriesMustBooleanClauses.get(0));
-		TermsFilter publicCategoryIdTermsFilter2 = _getFilter(
-			TermsFilter.class, publicCategoriesMustBooleanClauses.get(1));
 
 		_verifyTermFilter(
 			publicCategoryIdTermsFilter1, Field.ASSET_CATEGORY_IDS,
 			new String[] {String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_1)});
+
+		TermsFilter publicCategoryIdTermsFilter2 = _getFilter(
+			TermsFilter.class, publicCategoriesMustBooleanClauses.get(1));
+
 		_verifyTermFilter(
 			publicCategoryIdTermsFilter2, Field.ASSET_CATEGORY_IDS,
 			new String[] {String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_2)});
@@ -168,6 +177,8 @@ public class AssetSearcherTest {
 	public void testSearchAnyAssetCategoryIdsIncludingInternalCategories()
 		throws Exception {
 
+		BooleanFilter booleanFilter = new BooleanFilter();
+
 		AssetSearcher assetSearcher = new AssetSearcher();
 
 		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
@@ -176,8 +187,6 @@ public class AssetSearcherTest {
 			_PUBLIC_AND_INTERNAL_CATEGORY_IDS_ARRAY);
 
 		assetSearcher.setAssetEntryQuery(assetEntryQuery);
-
-		BooleanFilter booleanFilter = new BooleanFilter();
 
 		SearchContext searchContext = new SearchContext();
 
@@ -200,8 +209,6 @@ public class AssetSearcherTest {
 
 		TermsFilter publicCategoryIdTermsFilter1 = _getFilter(
 			TermsFilter.class, categoryIdsShouldBooleanClauses.get(0));
-		TermsFilter internalCategoryIdTermsFilter = _getFilter(
-			TermsFilter.class, categoryIdsShouldBooleanClauses.get(1));
 
 		_verifyTermFilter(
 			publicCategoryIdTermsFilter1, Field.ASSET_CATEGORY_IDS,
@@ -209,6 +216,10 @@ public class AssetSearcherTest {
 				String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_1),
 				String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_2)
 			});
+
+		TermsFilter internalCategoryIdTermsFilter = _getFilter(
+			TermsFilter.class, categoryIdsShouldBooleanClauses.get(1));
+
 		_verifyTermFilter(
 			internalCategoryIdTermsFilter, Field.ASSET_INTERNAL_CATEGORY_IDS,
 			new String[] {String.valueOf(_INTERNAL_ASSET_CATEGORY_ID)});
@@ -218,6 +229,8 @@ public class AssetSearcherTest {
 	public void testSearchAnyAssetCategoryIdsOnlyPublicCategories()
 		throws Exception {
 
+		BooleanFilter booleanFilter = new BooleanFilter();
+
 		AssetSearcher assetSearcher = new AssetSearcher();
 
 		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
@@ -225,8 +238,6 @@ public class AssetSearcherTest {
 		assetEntryQuery.setAnyCategoryIds(_PUBLIC_CATEGORY_IDS_ARRAY);
 
 		assetSearcher.setAssetEntryQuery(assetEntryQuery);
-
-		BooleanFilter booleanFilter = new BooleanFilter();
 
 		SearchContext searchContext = new SearchContext();
 
@@ -262,6 +273,8 @@ public class AssetSearcherTest {
 	public void testSearchNotAllAssetCategoryIdsIncludingInternalCategories()
 		throws Exception {
 
+		BooleanFilter booleanFilter = new BooleanFilter();
+
 		AssetSearcher assetSearcher = new AssetSearcher();
 
 		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
@@ -270,8 +283,6 @@ public class AssetSearcherTest {
 			_PUBLIC_AND_INTERNAL_CATEGORY_IDS_ARRAY);
 
 		assetSearcher.setAssetEntryQuery(assetEntryQuery);
-
-		BooleanFilter booleanFilter = new BooleanFilter();
 
 		SearchContext searchContext = new SearchContext();
 
@@ -294,31 +305,38 @@ public class AssetSearcherTest {
 
 		BooleanFilter publicCategoryIdsBooleanFilter = _getFilter(
 			BooleanFilter.class, categoryIdsMustBooleanClauses.get(0));
-		BooleanFilter internalCategoryIdsBooleanFilter = _getFilter(
-			BooleanFilter.class, categoryIdsMustBooleanClauses.get(1));
 
 		_assertBooleanClausesListSize(publicCategoryIdsBooleanFilter, 2, 0, 0);
-		_assertBooleanClausesListSize(
-			internalCategoryIdsBooleanFilter, 1, 0, 0);
 
 		List<BooleanClause<Filter>> publicCategoryIdsMustBooleanClauses =
 			publicCategoryIdsBooleanFilter.getMustBooleanClauses();
-		List<BooleanClause<Filter>> internalCategoryIdsMustBooleanClauses =
-			internalCategoryIdsBooleanFilter.getMustBooleanClauses();
 
 		TermsFilter publicCategoryIdTermsFilter1 = _getFilter(
 			TermsFilter.class, publicCategoryIdsMustBooleanClauses.get(0));
-		TermsFilter publicCategoryIdTermsFilter2 = _getFilter(
-			TermsFilter.class, publicCategoryIdsMustBooleanClauses.get(1));
-		TermsFilter internalCategoryIdTermsFilter = _getFilter(
-			TermsFilter.class, internalCategoryIdsMustBooleanClauses.get(0));
 
 		_verifyTermFilter(
 			publicCategoryIdTermsFilter1, Field.ASSET_CATEGORY_IDS,
 			new String[] {String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_1)});
+
+		TermsFilter publicCategoryIdTermsFilter2 = _getFilter(
+			TermsFilter.class, publicCategoryIdsMustBooleanClauses.get(1));
+
 		_verifyTermFilter(
 			publicCategoryIdTermsFilter2, Field.ASSET_CATEGORY_IDS,
 			new String[] {String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_2)});
+
+		BooleanFilter internalCategoryIdsBooleanFilter = _getFilter(
+			BooleanFilter.class, categoryIdsMustBooleanClauses.get(1));
+
+		_assertBooleanClausesListSize(
+			internalCategoryIdsBooleanFilter, 1, 0, 0);
+
+		List<BooleanClause<Filter>> internalCategoryIdsMustBooleanClauses =
+			internalCategoryIdsBooleanFilter.getMustBooleanClauses();
+
+		TermsFilter internalCategoryIdTermsFilter = _getFilter(
+			TermsFilter.class, internalCategoryIdsMustBooleanClauses.get(0));
+
 		_verifyTermFilter(
 			internalCategoryIdTermsFilter, Field.ASSET_INTERNAL_CATEGORY_IDS,
 			new String[] {String.valueOf(_INTERNAL_ASSET_CATEGORY_ID)});
@@ -328,6 +346,8 @@ public class AssetSearcherTest {
 	public void testSearchNotAllAssetCategoryIdsOnlyPublicCategories()
 		throws Exception {
 
+		BooleanFilter booleanFilter = new BooleanFilter();
+
 		AssetSearcher assetSearcher = new AssetSearcher();
 
 		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
@@ -335,8 +355,6 @@ public class AssetSearcherTest {
 		assetEntryQuery.setNotAllCategoryIds(_PUBLIC_CATEGORY_IDS_ARRAY);
 
 		assetSearcher.setAssetEntryQuery(assetEntryQuery);
-
-		BooleanFilter booleanFilter = new BooleanFilter();
 
 		SearchContext searchContext = new SearchContext();
 
@@ -367,12 +385,14 @@ public class AssetSearcherTest {
 
 		TermsFilter publicCategoryIdTermsFilter1 = _getFilter(
 			TermsFilter.class, publicCategoryIdsMustBooleanClauses.get(0));
-		TermsFilter publicCategoryIdTermsFilter2 = _getFilter(
-			TermsFilter.class, publicCategoryIdsMustBooleanClauses.get(1));
 
 		_verifyTermFilter(
 			publicCategoryIdTermsFilter1, Field.ASSET_CATEGORY_IDS,
 			new String[] {String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_1)});
+
+		TermsFilter publicCategoryIdTermsFilter2 = _getFilter(
+			TermsFilter.class, publicCategoryIdsMustBooleanClauses.get(1));
+
 		_verifyTermFilter(
 			publicCategoryIdTermsFilter2, Field.ASSET_CATEGORY_IDS,
 			new String[] {String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_2)});
@@ -382,6 +402,8 @@ public class AssetSearcherTest {
 	public void testSearchNotAnyAssetCategoryIdsIncludingInternalCategories()
 		throws Exception {
 
+		BooleanFilter booleanFilter = new BooleanFilter();
+
 		AssetSearcher assetSearcher = new AssetSearcher();
 
 		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
@@ -390,8 +412,6 @@ public class AssetSearcherTest {
 			_PUBLIC_AND_INTERNAL_CATEGORY_IDS_ARRAY);
 
 		assetSearcher.setAssetEntryQuery(assetEntryQuery);
-
-		BooleanFilter booleanFilter = new BooleanFilter();
 
 		SearchContext searchContext = new SearchContext();
 
@@ -406,8 +426,6 @@ public class AssetSearcherTest {
 
 		TermsFilter publicCategoryIdTermsFilter = _getFilter(
 			TermsFilter.class, mustNotBooleanClauses.get(0));
-		TermsFilter internalCategoryIdTermsFilter = _getFilter(
-			TermsFilter.class, mustNotBooleanClauses.get(1));
 
 		_verifyTermFilter(
 			publicCategoryIdTermsFilter, Field.ASSET_CATEGORY_IDS,
@@ -415,6 +433,10 @@ public class AssetSearcherTest {
 				String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_1),
 				String.valueOf(_PUBLIC_ASSET_CATEGORY_ID_2)
 			});
+
+		TermsFilter internalCategoryIdTermsFilter = _getFilter(
+			TermsFilter.class, mustNotBooleanClauses.get(1));
+
 		_verifyTermFilter(
 			internalCategoryIdTermsFilter, Field.ASSET_INTERNAL_CATEGORY_IDS,
 			new String[] {String.valueOf(_INTERNAL_ASSET_CATEGORY_ID)});
@@ -424,6 +446,8 @@ public class AssetSearcherTest {
 	public void testSearchNotAnyAssetCategoryIdsOnlyPublicCategories()
 		throws Exception {
 
+		BooleanFilter booleanFilter = new BooleanFilter();
+
 		AssetSearcher assetSearcher = new AssetSearcher();
 
 		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
@@ -431,8 +455,6 @@ public class AssetSearcherTest {
 		assetEntryQuery.setNotAnyCategoryIds(_PUBLIC_CATEGORY_IDS_ARRAY);
 
 		assetSearcher.setAssetEntryQuery(assetEntryQuery);
-
-		BooleanFilter booleanFilter = new BooleanFilter();
 
 		SearchContext searchContext = new SearchContext();
 
@@ -463,18 +485,22 @@ public class AssetSearcherTest {
 
 		List<BooleanClause<Filter>> mustBooleanClausesList =
 			booleanFilter.getMustBooleanClauses();
-		List<BooleanClause<Filter>> mustNotBooleanClausesList =
-			booleanFilter.getMustNotBooleanClauses();
-		List<BooleanClause<Filter>> shouldBooleanClausesList =
-			booleanFilter.getShouldBooleanClauses();
 
 		Assert.assertEquals(
 			mustBooleanClausesList.toString(),
 			expectedMustBooleanClausesListSize, mustBooleanClausesList.size());
+
+		List<BooleanClause<Filter>> mustNotBooleanClausesList =
+			booleanFilter.getMustNotBooleanClauses();
+
 		Assert.assertEquals(
 			mustNotBooleanClausesList.toString(),
 			expectedMustNotBooleanClausesListSize,
 			mustNotBooleanClausesList.size());
+
+		List<BooleanClause<Filter>> shouldBooleanClausesList =
+			booleanFilter.getShouldBooleanClauses();
+
 		Assert.assertEquals(
 			shouldBooleanClausesList.toString(),
 			expectedShouldBooleanClausesListSize,
@@ -494,30 +520,32 @@ public class AssetSearcherTest {
 	}
 
 	private void _mockAssetCategoryLocalServiceUtil() {
-		AssetCategoryLocalService assetCategoryLocalService = Mockito.mock(
-			AssetCategoryLocalService.class);
-
 		AssetCategory internalAssetCategory = Mockito.mock(AssetCategory.class);
-
-		AssetCategory publicAssetCategory1 = Mockito.mock(AssetCategory.class);
-
-		AssetCategory publicAssetCategory2 = Mockito.mock(AssetCategory.class);
 
 		Mockito.when(
 			internalAssetCategory.getVocabularyId()
 		).thenReturn(
 			_INTERNAL_ASSET_VOCABULARY_ID
 		);
+
+		AssetCategory publicAssetCategory1 = Mockito.mock(AssetCategory.class);
+
 		Mockito.when(
 			publicAssetCategory1.getVocabularyId()
 		).thenReturn(
 			_PUBLIC_ASSET_VOCABULARY_ID
 		);
+
+		AssetCategory publicAssetCategory2 = Mockito.mock(AssetCategory.class);
+
 		Mockito.when(
 			publicAssetCategory2.getVocabularyId()
 		).thenReturn(
 			_PUBLIC_ASSET_VOCABULARY_ID
 		);
+
+		AssetCategoryLocalService assetCategoryLocalService = Mockito.mock(
+			AssetCategoryLocalService.class);
 
 		Mockito.when(
 			assetCategoryLocalService.fetchAssetCategory(
@@ -550,18 +578,10 @@ public class AssetSearcherTest {
 		AssetVocabulary internalAssetVocabulary = Mockito.mock(
 			AssetVocabulary.class);
 
-		AssetVocabulary publicAssetVocabulary = Mockito.mock(
-			AssetVocabulary.class);
-
 		Mockito.when(
 			internalAssetVocabulary.getVisibilityType()
 		).thenReturn(
 			AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL
-		);
-		Mockito.when(
-			publicAssetVocabulary.getVisibilityType()
-		).thenReturn(
-			AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC
 		);
 
 		Mockito.when(
@@ -570,6 +590,16 @@ public class AssetSearcherTest {
 		).thenReturn(
 			internalAssetVocabulary
 		);
+
+		AssetVocabulary publicAssetVocabulary = Mockito.mock(
+			AssetVocabulary.class);
+
+		Mockito.when(
+			publicAssetVocabulary.getVisibilityType()
+		).thenReturn(
+			AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC
+		);
+
 		Mockito.when(
 			assetVocabularyLocalService.fetchAssetVocabulary(
 				_PUBLIC_ASSET_VOCABULARY_ID)
