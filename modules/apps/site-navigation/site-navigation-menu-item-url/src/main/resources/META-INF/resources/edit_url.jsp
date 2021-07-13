@@ -59,11 +59,9 @@ if (siteNavigationMenuItem != null) {
 
 			try {
 				const url = new URL(val);
-
 				return true;
 			}
-			catch (e) {
-			}
+			catch (e) {}
 
 			return false;
 		}
