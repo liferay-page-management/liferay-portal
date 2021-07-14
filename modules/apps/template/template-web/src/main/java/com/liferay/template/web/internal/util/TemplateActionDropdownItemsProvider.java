@@ -48,12 +48,10 @@ public class TemplateActionDropdownItemsProvider {
 
 	public List<DropdownItem> getActionDropdownItems() {
 		return DropdownItemListBuilder.add(
-			() ->
-				DDMTemplatePermission.containsAddTemplatePermission(
-					_themeDisplay.getPermissionChecker(),
-					_themeDisplay.getScopeGroupId(),
-					_ddmTemplate.getClassNameId(),
-					_ddmTemplate.getResourceClassNameId()),
+			() -> DDMTemplatePermission.containsAddTemplatePermission(
+				_themeDisplay.getPermissionChecker(),
+				_themeDisplay.getScopeGroupId(), _ddmTemplate.getClassNameId(),
+				_ddmTemplate.getResourceClassNameId()),
 			dropdownItem -> {
 				dropdownItem.setHref(
 					PortletURLBuilder.createRenderURL(
