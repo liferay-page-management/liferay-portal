@@ -14,16 +14,40 @@
 
 package com.liferay.template.web.internal.display.context;
 
+import com.liferay.dynamic.data.mapping.constants.DDMTemplateConstants;
+import com.liferay.dynamic.data.mapping.model.DDMTemplate;
+import com.liferay.dynamic.data.mapping.service.DDMTemplateServiceUtil;
+import com.liferay.dynamic.data.mapping.util.comparator.TemplateIdComparator;
+import com.liferay.dynamic.data.mapping.util.comparator.TemplateModifiedDateComparator;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemListBuilder;
+import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
+import com.liferay.portal.kernel.dao.search.SearchContainer;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.template.TemplateHandler;
+import com.liferay.portal.kernel.template.TemplateHandlerRegistryUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portlet.display.template.PortletDisplayTemplate;
+import com.liferay.template.web.internal.util.TemplateActionDropdownItemsProvider;
 
 import java.util.List;
 import java.util.Objects;
+
+import javax.portlet.PortletURL;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -41,6 +65,42 @@ public class TemplateDisplayContext {
 
 		_httpServletRequest = PortalUtil.getHttpServletRequest(
 			_liferayPortletRequest);
+
+		_themeDisplay = (ThemeDisplay)liferayPortletRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+	}
+
+	public List<DropdownItem> getDDMTemplateActionDropdownItems(
+		DDMTemplate ddmTemplate) {
+
+		TemplateActionDropdownItemsProvider ddmTemplateActionDropdownItems =
+			new TemplateActionDropdownItemsProvider(
+				ddmTemplate, _httpServletRequest, _liferayPortletResponse);
+
+		return ddmTemplateActionDropdownItems.getActionDropdownItems();
+	}
+
+	public String getDDMTemplateScope(DDMTemplate ddmTemplate)
+		throws PortalException {
+
+		Group group = GroupLocalServiceUtil.getGroup(ddmTemplate.getGroupId());
+
+		return LanguageUtil.get(
+			_httpServletRequest, group.getScopeLabel(_themeDisplay));
+	}
+
+	public String getDDMTemplateType(DDMTemplate ddmTemplate) {
+		String type = ddmTemplate.getType();
+
+		if (!type.equals(DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY)) {
+			return type;
+		}
+
+		TemplateHandler templateHandler =
+			TemplateHandlerRegistryUtil.getTemplateHandler(
+				ddmTemplate.getClassNameId());
+
+		return templateHandler.getName(_themeDisplay.getLocale());
 	}
 
 	public List<NavigationItem> getNavigationItems() {
@@ -68,6 +128,91 @@ public class TemplateDisplayContext {
 		).build();
 	}
 
+	public SearchContainer<DDMTemplate> getTemplateSearchContainer() {
+		if (_ddmTemplateSearchContainer != null) {
+			return _ddmTemplateSearchContainer;
+		}
+
+		SearchContainer<DDMTemplate> ddmTemplateSearchContainer =
+			new SearchContainer<>(
+				_liferayPortletRequest, _getPortletURL(), null,
+				"there-are-no-templates");
+
+		ddmTemplateSearchContainer.setOrderByCol(_getOrderByCol());
+		ddmTemplateSearchContainer.setOrderByComparator(
+			_getTemplateOrderByComparator());
+		ddmTemplateSearchContainer.setOrderByType(_getOrderByType());
+		ddmTemplateSearchContainer.setRowChecker(
+			new EmptyOnClickRowChecker(_liferayPortletResponse));
+
+		List<DDMTemplate> results = DDMTemplateServiceUtil.search(
+			_themeDisplay.getCompanyId(),
+			new long[] {_themeDisplay.getScopeGroupId()},
+			TemplateHandlerRegistryUtil.getClassNameIds(), null,
+			PortalUtil.getClassNameId(PortletDisplayTemplate.class),
+			_getKeywords(), StringPool.BLANK, StringPool.BLANK,
+			WorkflowConstants.STATUS_ANY, ddmTemplateSearchContainer.getStart(),
+			ddmTemplateSearchContainer.getEnd(),
+			ddmTemplateSearchContainer.getOrderByComparator());
+
+		int total = DDMTemplateServiceUtil.searchCount(
+			_themeDisplay.getCompanyId(),
+			new long[] {_themeDisplay.getScopeGroupId()},
+			TemplateHandlerRegistryUtil.getClassNameIds(), null,
+			PortalUtil.getClassNameId(PortletDisplayTemplate.class),
+			_getKeywords(), StringPool.BLANK, StringPool.BLANK,
+			WorkflowConstants.STATUS_ANY);
+
+		ddmTemplateSearchContainer.setResults(results);
+		ddmTemplateSearchContainer.setTotal(total);
+
+		_ddmTemplateSearchContainer = ddmTemplateSearchContainer;
+
+		return _ddmTemplateSearchContainer;
+	}
+
+	private String _getKeywords() {
+		if (_keywords != null) {
+			return _keywords;
+		}
+
+		_keywords = ParamUtil.getString(_httpServletRequest, "keywords");
+
+		return _keywords;
+	}
+
+	private String _getOrderByCol() {
+		if (Validator.isNotNull(_orderByCol)) {
+			return _orderByCol;
+		}
+
+		_orderByCol = ParamUtil.getString(
+			_httpServletRequest, SearchContainer.DEFAULT_ORDER_BY_COL_PARAM,
+			"modified-date");
+
+		return _orderByCol;
+	}
+
+	private String _getOrderByType() {
+		if (Validator.isNotNull(_orderByType)) {
+			return _orderByType;
+		}
+
+		_orderByType = ParamUtil.getString(
+			_httpServletRequest, SearchContainer.DEFAULT_ORDER_BY_TYPE_PARAM,
+			"asc");
+
+		return _orderByType;
+	}
+
+	private PortletURL _getPortletURL() {
+		return PortletURLBuilder.createRenderURL(
+			_liferayPortletResponse
+		).setTabs1(
+			_getTabs1()
+		).build();
+	}
+
 	private String _getTabs1() {
 		if (_tabs1 != null) {
 			return _tabs1;
@@ -79,9 +224,33 @@ public class TemplateDisplayContext {
 		return _tabs1;
 	}
 
+	private OrderByComparator<DDMTemplate> _getTemplateOrderByComparator() {
+		boolean orderByAsc = false;
+
+		if (Objects.equals(_getOrderByType(), "asc")) {
+			orderByAsc = true;
+		}
+
+		OrderByComparator<DDMTemplate> orderByComparator = null;
+
+		if (Objects.equals(_getOrderByCol(), "id")) {
+			orderByComparator = new TemplateIdComparator(orderByAsc);
+		}
+		else if (Objects.equals(_getOrderByCol(), "modified-date")) {
+			orderByComparator = new TemplateModifiedDateComparator(orderByAsc);
+		}
+
+		return orderByComparator;
+	}
+
+	private SearchContainer<DDMTemplate> _ddmTemplateSearchContainer;
 	private final HttpServletRequest _httpServletRequest;
+	private String _keywords;
 	private final LiferayPortletRequest _liferayPortletRequest;
 	private final LiferayPortletResponse _liferayPortletResponse;
+	private String _orderByCol;
+	private String _orderByType;
 	private String _tabs1;
+	private final ThemeDisplay _themeDisplay;
 
 }
