@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.persistence.LayoutUtil;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
@@ -257,7 +256,7 @@ public class LayoutSetPrototypeLocalServiceImpl
 			Group group = groupLocalService.getLayoutSetPrototypeGroup(
 				layoutSetPrototype.getCompanyId(), layoutSetPrototypeId);
 
-			List<Layout> layouts = LayoutLocalServiceUtil.getLayouts(
+			List<Layout> layouts = layoutLocalService.getLayouts(
 				group.getGroupId(), true);
 
 			for (Layout layout : layouts) {
