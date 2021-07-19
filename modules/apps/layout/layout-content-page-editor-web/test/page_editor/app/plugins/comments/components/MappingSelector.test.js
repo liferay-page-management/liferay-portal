@@ -30,7 +30,6 @@ import {config} from '../../../../../../src/main/resources/META-INF/resources/pa
 import {useCollectionConfig} from '../../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/CollectionItemContext';
 import {StoreAPIContextProvider} from '../../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/StoreContext';
 import CollectionService from '../../../../../../src/main/resources/META-INF/resources/page_editor/app/services/CollectionService';
-import InfoItemService from '../../../../../../src/main/resources/META-INF/resources/page_editor/app/services/InfoItemService';
 import MappingSelector from '../../../../../../src/main/resources/META-INF/resources/page_editor/common/components/MappingSelector';
 
 const defaultMappingFields = {
@@ -110,20 +109,6 @@ jest.mock(
 jest.mock(
 	'../../../../../../src/main/resources/META-INF/resources/page_editor/app/services/InfoItemService',
 	() => ({
-		getAvailableInfoItemMappingFields: jest.fn(() =>
-			Promise.resolve([
-				{
-					fields: [
-						{key: 'unmapped', label: 'unmapped'},
-						{
-							key: 'text-field-1',
-							label: 'Text Field 1',
-							type: 'text',
-						},
-					],
-				},
-			])
-		),
 		getAvailableStructureMappingFields: jest.fn(() =>
 			Promise.resolve([
 				{
@@ -202,9 +187,7 @@ describe('MappingSelector', () => {
 	});
 
 	it('renders correct selects in content pages', async () => {
-		await act(async () => {
-			renderMappingSelector({});
-		});
+		renderMappingSelector({});
 
 		expect(getByText(document.body, 'item')).toBeInTheDocument();
 		expect(getByText(document.body, 'field')).toBeInTheDocument();
@@ -215,9 +198,7 @@ describe('MappingSelector', () => {
 	it('renders correct selects in display pages', async () => {
 		config.layoutType = LAYOUT_TYPES.display;
 
-		await act(async () => {
-			renderMappingSelector({});
-		});
+		renderMappingSelector({});
 
 		expect(getByText(document.body, 'field')).toBeInTheDocument();
 		expect(getByText(document.body, 'source')).toBeInTheDocument();
@@ -232,10 +213,8 @@ describe('MappingSelector', () => {
 
 		const sourceTypeSelect = getByLabelText('source');
 
-		await act(async () => {
-			fireEvent.change(sourceTypeSelect, {
-				target: {value: 'structure'},
-			});
+		fireEvent.change(sourceTypeSelect, {
+			target: {value: 'structure'},
 		});
 
 		expect(getByText('field')).toBeInTheDocument();
@@ -249,19 +228,15 @@ describe('MappingSelector', () => {
 
 		const onMappingSelect = jest.fn();
 
-		await act(async () => {
-			renderMappingSelector({
-				mappedItem: infoItem,
-				onMappingSelect,
-			});
+		renderMappingSelector({
+			mappedItem: infoItem,
+			onMappingSelect,
 		});
 
 		const fieldSelect = getByLabelText(document.body, 'field');
 
-		await act(async () => {
-			fireEvent.change(fieldSelect, {
-				target: {value: 'text-field-1'},
-			});
+		fireEvent.change(fieldSelect, {
+			target: {value: 'text-field-1'},
 		});
 
 		expect(onMappingSelect).toBeCalledWith({
@@ -279,26 +254,20 @@ describe('MappingSelector', () => {
 
 		const onMappingSelect = jest.fn();
 
-		await act(async () => {
-			renderMappingSelector({
-				onMappingSelect,
-			});
+		renderMappingSelector({
+			onMappingSelect,
 		});
 
 		const sourceTypeSelect = getByLabelText(document.body, 'source');
 
-		await act(async () => {
-			fireEvent.change(sourceTypeSelect, {
-				target: {value: 'structure'},
-			});
+		fireEvent.change(sourceTypeSelect, {
+			target: {value: 'structure'},
 		});
 
 		const fieldSelect = getByLabelText(document.body, 'field');
 
-		await act(async () => {
-			fireEvent.change(fieldSelect, {
-				target: {value: 'structure-field-1'},
-			});
+		fireEvent.change(fieldSelect, {
+			target: {value: 'structure-field-1'},
 		});
 
 		expect(onMappingSelect).toBeCalledWith({
@@ -309,19 +278,15 @@ describe('MappingSelector', () => {
 	it('calls onMappingSelect with empty object when unmapping', async () => {
 		const onMappingSelect = jest.fn();
 
-		await act(async () => {
-			renderMappingSelector({
-				mappedItem: infoItem,
-				onMappingSelect,
-			});
+		renderMappingSelector({
+			mappedItem: infoItem,
+			onMappingSelect,
 		});
 
 		const fieldSelect = getByLabelText(document.body, 'field');
 
-		await act(async () => {
-			fireEvent.change(fieldSelect, {
-				target: {value: 'unmapped'},
-			});
+		fireEvent.change(fieldSelect, {
+			target: {value: 'unmapped'},
 		});
 
 		expect(onMappingSelect).toBeCalledWith({});
@@ -374,17 +339,11 @@ describe('MappingSelector', () => {
 	it('shows a warning and disables the selector if the fields array is empty', async () => {
 		config.layoutType = LAYOUT_TYPES.content;
 
-		InfoItemService.getAvailableInfoItemMappingFields.mockImplementation(
-			() => Promise.resolve([])
-		);
-
-		await act(async () => {
-			renderMappingSelector({
-				mappedItem: infoItem,
-				mappingFields: {
-					'InfoItemClassNameId-infoItemClassTypeId': [],
-				},
-			});
+		renderMappingSelector({
+			mappedItem: infoItem,
+			mappingFields: {
+				'InfoItemClassNameId-infoItemClassTypeId': [],
+			},
 		});
 
 		const fieldSelect = getByLabelText(document.body, 'field');
@@ -401,13 +360,11 @@ describe('MappingSelector', () => {
 	it('shows type and subtype label when some item is mapped', async () => {
 		config.layoutType = LAYOUT_TYPES.content;
 
-		await act(async () => {
-			renderMappingSelector({
-				mappedItem: {
-					classNameId: 'mappedItemClassNameId',
-					classPK: 'mappedItemClassPK',
-				},
-			});
+		renderMappingSelector({
+			mappedItem: {
+				classNameId: 'mappedItemClassNameId',
+				classPK: 'mappedItemClassPK',
+			},
 		});
 
 		expect(
