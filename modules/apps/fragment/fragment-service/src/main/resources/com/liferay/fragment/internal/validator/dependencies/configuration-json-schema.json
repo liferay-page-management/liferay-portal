@@ -82,6 +82,18 @@
 					"if": {
 						"properties": {
 							"type": {
+								"const": "layoutItemSelector"
+							}
+						}
+					},
+					"then": {
+						"$ref": "#/definitions/fieldLayoutItemSelector"
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"type": {
 								"const": "text"
 							}
 						}
@@ -139,6 +151,7 @@
 						"colorPicker",
 						"collectionSelector",
 						"itemSelector",
+						"layoutItemSelector",
 						"navigationMenuSelector",
 						"select",
 						"text",
@@ -292,6 +305,34 @@
 					},
 					"title": "The Typeoptions Schema",
 					"type": "object"
+				}
+			}
+		},
+		"fieldLayoutItemSelector": {
+			"properties": {
+				"defaultValue": {
+					"additionalProperties": false,
+					"properties": {
+						"type": {
+							"title": "The LayoutItemType Schema",
+							"type": "string"
+						}
+					},
+					"required": [
+					],
+					"title": "The DefaultValue Schema"
+				},
+				"typeOptions": {
+					"additionalProperties": false,
+					"properties": {
+						"layoutItemType": {
+							"title": "The LayoutItemType Schema",
+							"type": "string"
+						}
+					},
+					"required": [
+					],
+					"title": "The TypeOptions Schema"
 				}
 			}
 		},
