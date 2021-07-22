@@ -25,6 +25,17 @@ import {useSelectorCallback} from '../../contexts/StoreContext';
 import getLayoutDataItemLabel from '../../utils/getLayoutDataItemLabel';
 import {useId} from '../../utils/useId';
 
+function getLayoutDataItemLabelWithCollectionName(item, fragmentEntryLinks) {
+	if (
+		item.type === LAYOUT_DATA_ITEM_TYPES.collection &&
+		item.config?.collection?.title
+	) {
+		return item.config.collection.title;
+	}
+
+	return getLayoutDataItemLabel(item, fragmentEntryLinks);
+}
+
 export const LayoutItemSelectorField = ({field, onValueSelect, value}) => {
 	const [active, setActive] = useState(false);
 	const inputId = useId();
@@ -37,7 +48,7 @@ export const LayoutItemSelectorField = ({field, onValueSelect, value}) => {
 				return '';
 			}
 			else if (nextValue.length === 1) {
-				return getLayoutDataItemLabel(
+				return getLayoutDataItemLabelWithCollectionName(
 					state.layoutData.items[nextValue[0]],
 					state.fragmentEntryLinks
 				);
@@ -86,7 +97,7 @@ export const LayoutItemSelectorField = ({field, onValueSelect, value}) => {
 				})
 				.map((item) => ({
 					checked: nextValue.includes(item.itemId),
-					label: getLayoutDataItemLabel(
+					label: getLayoutDataItemLabelWithCollectionName(
 						item,
 						state.fragmentEntryLinks
 					),
