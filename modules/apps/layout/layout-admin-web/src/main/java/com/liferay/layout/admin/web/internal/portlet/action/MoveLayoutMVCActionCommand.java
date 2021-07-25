@@ -116,14 +116,12 @@ public class MoveLayoutMVCActionCommand extends BaseAddLayoutMVCActionCommand {
 
 			MillerColumnsDisplayContext millerColumnsDisplayContext =
 				new MillerColumnsDisplayContext(
-					_ffLayoutTranslationConfiguration,
 					new LayoutsAdminDisplayContext(
 						_layoutConverterConfiguration, _layoutConverterRegistry,
 						_layoutCopyHelper, liferayPortletRequest,
 						liferayPortletResponse, _stagingGroupHelper),
 					liferayPortletRequest, liferayPortletResponse,
-					_translationInfoItemFieldValuesExporterTracker,
-					_translationPermission, _translationURLProvider);
+					_translationInfoItemFieldValuesExporterTracker);
 
 			JSONObject jsonObject = JSONUtil.put(
 				"layoutColumns",
