@@ -1,0 +1,13 @@
+.portlet-template {
+	.input-localized {
+		flex-direction: row-reverse;
+
+		.form-feedback-item {
+			display: none;
+		}
+
+		.input-localized-content {
+			margin-right: 0.5rem;
+		}
+	}
+}
