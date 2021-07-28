@@ -72,6 +72,8 @@ public class InformationTemplatesTemplateDisplayContext
 			).setRedirect(
 				themeDisplay.getURLCurrent()
 			).setParameter(
+				"groupId", themeDisplay.getScopeGroupId()
+			).setParameter(
 				"resourceClassNameId", getResourceClassNameId()
 			).buildString()
 		).put(
