@@ -70,7 +70,7 @@ public abstract class InformationTemplatesManagementToolbarDisplayContext
 			PortletURLBuilder.createActionURL(
 				liferayPortletResponse
 			).setActionName(
-				"/template/update_ddm_template"
+				"/template/add_ddm_template"
 			).setRedirect(
 				themeDisplay.getURLCurrent()
 			).setParameter(
