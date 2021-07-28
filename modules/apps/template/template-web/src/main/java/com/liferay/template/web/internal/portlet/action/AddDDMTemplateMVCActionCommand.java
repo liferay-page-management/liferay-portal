@@ -15,12 +15,16 @@
 package com.liferay.template.web.internal.portlet.action;
 
 import com.liferay.dynamic.data.mapping.constants.DDMTemplateConstants;
+import com.liferay.dynamic.data.mapping.exception.TemplateNameException;
+import com.liferay.dynamic.data.mapping.exception.TemplateScriptException;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateService;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
@@ -36,12 +40,14 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.template.constants.TemplatePortletKeys;
 
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -105,27 +111,59 @@ public class AddDDMTemplateMVCActionCommand extends BaseMVCActionCommand {
 		serviceContext.setAddGroupPermissions(true);
 		serviceContext.setAddGuestPermissions(true);
 
-		DDMTemplate ddmTemplate = _ddmTemplateService.addTemplate(
-			groupId, classNameId, classPK, resourceClassNameId, nameMap,
-			Collections.emptyMap(),
-			DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY, StringPool.BLANK,
-			TemplateConstants.LANG_TYPE_FTL, script, serviceContext);
+		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
+			themeDisplay.getLocale(), AddDDMTemplateMVCActionCommand.class);
 
-		jsonObject.put(
-			"redirectURL",
-			PortletURLBuilder.createRenderURL(
-				_portal.getLiferayPortletResponse(actionResponse)
-			).setMVCPath(
-				"/edit_ddm_template.jsp"
-			).setRedirect(
-				ParamUtil.getString(actionRequest, "redirect")
-			).setParameter(
-				"ddmTemplateId", ddmTemplate.getTemplateId()
-			).buildString());
-	
+		try {
+			DDMTemplate ddmTemplate = _ddmTemplateService.addTemplate(
+				groupId, classNameId, classPK, resourceClassNameId, nameMap,
+				Collections.emptyMap(),
+				DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY, StringPool.BLANK,
+				TemplateConstants.LANG_TYPE_FTL, script, serviceContext);
+
+			jsonObject.put(
+				"redirectURL",
+				PortletURLBuilder.createRenderURL(
+					_portal.getLiferayPortletResponse(actionResponse)
+				).setMVCPath(
+					"/edit_ddm_template.jsp"
+				).setRedirect(
+					ParamUtil.getString(actionRequest, "redirect")
+				).setParameter(
+					"ddmTemplateId", ddmTemplate.getTemplateId()
+				).buildString());
+		}
+		catch (PortalException portalException) {
+			if (portalException instanceof TemplateNameException) {
+				errorJSONObject = JSONUtil.put(
+					"name",
+					ResourceBundleUtil.getString(
+						resourceBundle, "please-enter-a-valid-name"));
+			}
+			else if (portalException instanceof TemplateScriptException) {
+				errorJSONObject = JSONUtil.put(
+					"other",
+					ResourceBundleUtil.getString(
+						resourceBundle, "please-enter-a-valid-script"));
+			}
+			else {
+				errorJSONObject = JSONUtil.put(
+					"other",
+					ResourceBundleUtil.getString(
+						resourceBundle, "an-unexpected-error-occurred"));
+
+				_log.error(portalException.getMessage(), portalException);
+			}
+
+			jsonObject.put("error", errorJSONObject);
+		}
+
 		JSONPortletResponseUtil.writeJSON(
 			actionRequest, actionResponse, jsonObject);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		AddDDMTemplateMVCActionCommand.class);
 
 	@Reference
 	private DDMTemplateService _ddmTemplateService;
