@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.template.web.internal.security.permissions.resource.DDMTemplatePermission;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.portlet.PortletURL;
 
@@ -69,6 +70,10 @@ public class TemplateManagementToolbarDisplayContext
 				dropdownItem.setQuickAction(true);
 			}
 		).build();
+	}
+
+	public Map<String, Object> getAdditionalProps() {
+		return _templateDisplayContext.getAdditionalProps();
 	}
 
 	public String getAvailableActions(DDMTemplate ddmTemplate)

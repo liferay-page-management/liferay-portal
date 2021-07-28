@@ -26,6 +26,7 @@ TemplateManagementToolbarDisplayContext templateManagementToolbarDisplayContext 
 %>
 
 <clay:management-toolbar
+	additionalProps="<%= templateManagementToolbarDisplayContext.getAdditionalProps() %>"
 	managementToolbarDisplayContext="<%= templateManagementToolbarDisplayContext %>"
 	propsTransformer="js/TemplateManagementToolbarPropsTransformer"
 />

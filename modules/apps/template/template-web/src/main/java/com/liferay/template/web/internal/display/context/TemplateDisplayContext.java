@@ -21,12 +21,18 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Lourdes Fernández Besada
  */
 public interface TemplateDisplayContext {
+
+	public default Map<String, Object> getAdditionalProps() {
+		return Collections.<String, Object>emptyMap();
+	}
 
 	public long[] getClassNameIds();
 
