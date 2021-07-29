@@ -170,12 +170,16 @@ public class AssetTagsSelectorDisplayContext {
 		_groupIds = StringUtil.split(
 			ParamUtil.getString(_httpServletRequest, "groupIds"), 0L);
 
-		if (ArrayUtil.isEmpty(_groupIds)) {
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)_httpServletRequest.getAttribute(
-					WebKeys.THEME_DISPLAY);
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)_httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
+		if (ArrayUtil.isEmpty(_groupIds)) {
 			_groupIds = new long[] {themeDisplay.getScopeGroupId()};
+		}
+		else {
+			_groupIds = ArrayUtil.append(
+				_groupIds, themeDisplay.getScopeGroupId());
 		}
 
 		return _groupIds;
