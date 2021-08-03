@@ -15,16 +15,25 @@
 package com.liferay.template.web.internal.display.context;
 
 import com.liferay.dynamic.data.mapping.configuration.DDMWebConfiguration;
+import com.liferay.dynamic.data.mapping.constants.DDMTemplateConstants;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
+import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.template.TemplateHandler;
 import com.liferay.portal.kernel.template.TemplateHandlerRegistryUtil;
+import com.liferay.portal.kernel.template.comparator.TemplateHandlerComparator;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portlet.display.template.PortletDisplayTemplate;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.portlet.PortletURL;
 
 /**
  * @author Lourdes Fernández Besada
@@ -42,11 +51,6 @@ public class WidgetTemplatesTemplateDisplayContext
 			ddmWebConfiguration, liferayPortletRequest, liferayPortletResponse);
 
 		_portletDisplayTemplate = portletDisplayTemplate;
-	}
-
-	@Override
-	public String getAddPermissionActionId() {
-		return ActionKeys.ADD_PORTLET_DISPLAY_TEMPLATE;
 	}
 
 	@Override
@@ -82,19 +86,77 @@ public class WidgetTemplatesTemplateDisplayContext
 	}
 
 	@Override
-	public String getResourceName(long classNameId) {
-		TemplateHandler templateHandler =
-			TemplateHandlerRegistryUtil.getTemplateHandler(classNameId);
-
-		return templateHandler.getResourceName();
-	}
-
-	@Override
-	public String getTemplateType(long classNameId) {
+	public String getTemplateTypeLocalizedLabel(long classNameId) {
 		TemplateHandler templateHandler =
 			TemplateHandlerRegistryUtil.getTemplateHandler(classNameId);
 
 		return templateHandler.getName(themeDisplay.getLocale());
+	}
+
+	@Override
+	protected CreationMenu buildCreationMenu() {
+		List<TemplateHandler> templateHandlersList =
+			_portletDisplayTemplate.getPortletDisplayTemplateHandlers();
+
+		Stream<TemplateHandler> templateHandlerStream =
+			templateHandlersList.stream();
+
+		List<TemplateHandler> allowedTemplateHandlersList =
+			templateHandlerStream.filter(
+				templateHandler -> containsAddPortletDisplayTemplatePermission(
+					templateHandler.getResourceName(),
+					ActionKeys.ADD_PORTLET_DISPLAY_TEMPLATE)
+			).collect(
+				Collectors.toList()
+			);
+
+		if (allowedTemplateHandlersList.isEmpty()) {
+			return null;
+		}
+
+		ListUtil.sort(
+			allowedTemplateHandlersList,
+			new TemplateHandlerComparator(themeDisplay.getLocale()));
+
+		CreationMenu creationMenu = new CreationMenu();
+
+		PortletURL addDDMTemplateURL = PortletURLBuilder.createRenderURL(
+			liferayPortletResponse
+		).setMVCPath(
+			"/edit_ddm_template.jsp"
+		).setRedirect(
+			themeDisplay.getURLCurrent()
+		).setTabs1(
+			getTabs1()
+		).setParameter(
+			"groupId", themeDisplay.getScopeGroupId()
+		).setParameter(
+			"type", DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY
+		).buildPortletURL();
+
+		String resourceClassNameIdParameterValue = String.valueOf(
+			getResourceClassNameId());
+
+		for (TemplateHandler templateHandler : allowedTemplateHandlersList) {
+			addDDMTemplateURL.setParameter(
+				"classNameId",
+				String.valueOf(
+					PortalUtil.getClassNameId(templateHandler.getClassName())));
+			addDDMTemplateURL.setParameter("classPK", "0");
+			addDDMTemplateURL.setParameter(
+				"resourceClassNameId", resourceClassNameIdParameterValue);
+
+			creationMenu.addPrimaryDropdownItem(
+				dropdownItem -> {
+					dropdownItem.setHref(addDDMTemplateURL);
+					dropdownItem.setLabel(
+						LanguageUtil.get(
+							themeDisplay.getLocale(),
+							templateHandler.getName(themeDisplay.getLocale())));
+				});
+		}
+
+		return creationMenu;
 	}
 
 	private long[] _classNameIds;

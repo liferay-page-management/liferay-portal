@@ -15,11 +15,11 @@
 package com.liferay.template.web.internal.display.context;
 
 import com.liferay.dynamic.data.mapping.configuration.DDMWebConfiguration;
-import com.liferay.dynamic.data.mapping.constants.DDMTemplateConstants;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateServiceUtil;
 import com.liferay.dynamic.data.mapping.util.comparator.TemplateIdComparator;
 import com.liferay.dynamic.data.mapping.util.comparator.TemplateModifiedDateComparator;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemListBuilder;
@@ -29,11 +29,14 @@ import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -66,7 +69,7 @@ public abstract class BaseTemplateDisplayContext
 
 		_ddmWebConfiguration = ddmWebConfiguration;
 		this.liferayPortletRequest = liferayPortletRequest;
-		_liferayPortletResponse = liferayPortletResponse;
+		this.liferayPortletResponse = liferayPortletResponse;
 
 		_httpServletRequest = PortalUtil.getHttpServletRequest(
 			liferayPortletRequest);
@@ -75,9 +78,15 @@ public abstract class BaseTemplateDisplayContext
 			WebKeys.THEME_DISPLAY);
 	}
 
-	public abstract String getAddPermissionActionId();
-
 	public abstract long[] getClassNameIds();
+
+	public CreationMenu getCreationMenu() {
+		if (!isAddDDMTemplateEnabled()) {
+			return null;
+		}
+
+		return buildCreationMenu();
+	}
 
 	public List<DropdownItem> getDDMTemplateActionDropdownItems(
 			DDMTemplate ddmTemplate)
@@ -87,7 +96,7 @@ public abstract class BaseTemplateDisplayContext
 			ddmTemplateActionDropdownItemsProvider =
 				new DDMTemplateActionDropdownItemsProvider(
 					isAddDDMTemplateEnabled(), ddmTemplate, _httpServletRequest,
-					_liferayPortletResponse);
+					liferayPortletResponse, getTabs1());
 
 		return ddmTemplateActionDropdownItemsProvider.getActionDropdownItems();
 	}
@@ -103,11 +112,13 @@ public abstract class BaseTemplateDisplayContext
 		}
 
 		return PortletURLBuilder.createRenderURL(
-			_liferayPortletResponse
+			liferayPortletResponse
 		).setMVCPath(
 			"/edit_ddm_template.jsp"
 		).setRedirect(
 			themeDisplay.getURLCurrent()
+		).setTabs1(
+			getTabs1()
 		).setParameter(
 			"ddmTemplateId", ddmTemplate.getTemplateId()
 		).buildString();
@@ -122,23 +133,13 @@ public abstract class BaseTemplateDisplayContext
 			_httpServletRequest, group.getScopeLabel(themeDisplay));
 	}
 
-	public String getDDMTemplateType(DDMTemplate ddmTemplate) {
-		String type = ddmTemplate.getType();
-
-		if (!type.equals(DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY)) {
-			return type;
-		}
-
-		return getTemplateType(ddmTemplate.getClassNameId());
-	}
-
 	public List<NavigationItem> getNavigationItems() {
 		return NavigationItemListBuilder.add(
 			navigationItem -> {
 				navigationItem.setActive(
-					Objects.equals(_getTabs1(), "information-templates"));
+					Objects.equals(getTabs1(), "information-templates"));
 				navigationItem.setHref(
-					_liferayPortletResponse.createRenderURL(), "tabs1",
+					liferayPortletResponse.createRenderURL(), "tabs1",
 					"information-templates");
 				navigationItem.setLabel(
 					LanguageUtil.get(
@@ -147,9 +148,9 @@ public abstract class BaseTemplateDisplayContext
 		).add(
 			navigationItem -> {
 				navigationItem.setActive(
-					Objects.equals(_getTabs1(), "widget-templates"));
+					Objects.equals(getTabs1(), "widget-templates"));
 				navigationItem.setHref(
-					_liferayPortletResponse.createRenderURL(), "tabs1",
+					liferayPortletResponse.createRenderURL(), "tabs1",
 					"widget-templates");
 				navigationItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "widget-templates"));
@@ -159,7 +160,16 @@ public abstract class BaseTemplateDisplayContext
 
 	public abstract long getResourceClassNameId();
 
-	public abstract String getResourceName(long classNameId);
+	public String getTabs1() {
+		if (_tabs1 != null) {
+			return _tabs1;
+		}
+
+		_tabs1 = ParamUtil.getString(
+			liferayPortletRequest, "tabs1", "information-templates");
+
+		return _tabs1;
+	}
 
 	public SearchContainer<DDMTemplate> getTemplateSearchContainer() {
 		if (_ddmTemplateSearchContainer != null) {
@@ -176,7 +186,7 @@ public abstract class BaseTemplateDisplayContext
 			_getTemplateOrderByComparator());
 		ddmTemplateSearchContainer.setOrderByType(_getOrderByType());
 		ddmTemplateSearchContainer.setRowChecker(
-			new EmptyOnClickRowChecker(_liferayPortletResponse));
+			new EmptyOnClickRowChecker(liferayPortletResponse));
 
 		ddmTemplateSearchContainer.setResults(
 			DDMTemplateServiceUtil.search(
@@ -201,7 +211,7 @@ public abstract class BaseTemplateDisplayContext
 		return _ddmTemplateSearchContainer;
 	}
 
-	public abstract String getTemplateType(long classNameId);
+	public abstract String getTemplateTypeLocalizedLabel(long classNameId);
 
 	public boolean isAddDDMTemplateEnabled() {
 		if (!_ddmWebConfiguration.enableTemplateCreation()) {
@@ -219,7 +229,31 @@ public abstract class BaseTemplateDisplayContext
 		return false;
 	}
 
+	protected abstract CreationMenu buildCreationMenu();
+
+	protected boolean containsAddPortletDisplayTemplatePermission(
+		String resourceName, String actionId) {
+
+		try {
+			return PortletPermissionUtil.contains(
+				themeDisplay.getPermissionChecker(),
+				themeDisplay.getScopeGroupId(), themeDisplay.getLayout(),
+				resourceName, actionId, false, false);
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					"Unable to check permission for resource name " +
+						resourceName,
+					portalException);
+			}
+		}
+
+		return false;
+	}
+
 	protected final LiferayPortletRequest liferayPortletRequest;
+	protected final LiferayPortletResponse liferayPortletResponse;
 	protected final ThemeDisplay themeDisplay;
 
 	private String _getKeywords() {
@@ -258,21 +292,10 @@ public abstract class BaseTemplateDisplayContext
 
 	private PortletURL _getPortletURL() {
 		return PortletURLBuilder.createRenderURL(
-			_liferayPortletResponse
+			liferayPortletResponse
 		).setTabs1(
-			_getTabs1()
+			getTabs1()
 		).buildPortletURL();
-	}
-
-	private String _getTabs1() {
-		if (_tabs1 != null) {
-			return _tabs1;
-		}
-
-		_tabs1 = ParamUtil.getString(
-			liferayPortletRequest, "tabs1", "information-templates");
-
-		return _tabs1;
 	}
 
 	private OrderByComparator<DDMTemplate> _getTemplateOrderByComparator() {
@@ -294,11 +317,13 @@ public abstract class BaseTemplateDisplayContext
 		return orderByComparator;
 	}
 
+	private static final Log _log = LogFactoryUtil.getLog(
+		BaseTemplateDisplayContext.class);
+
 	private SearchContainer<DDMTemplate> _ddmTemplateSearchContainer;
 	private final DDMWebConfiguration _ddmWebConfiguration;
 	private final HttpServletRequest _httpServletRequest;
 	private String _keywords;
-	private final LiferayPortletResponse _liferayPortletResponse;
 	private String _orderByCol;
 	private String _orderByType;
 	private String _tabs1;

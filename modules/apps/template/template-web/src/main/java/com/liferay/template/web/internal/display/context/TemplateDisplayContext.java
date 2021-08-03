@@ -15,21 +15,28 @@
 package com.liferay.template.web.internal.display.context;
 
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Lourdes Fernández Besada
  */
 public interface TemplateDisplayContext {
 
-	public String getAddPermissionActionId();
+	public default Map<String, Object> getAdditionalProps() {
+		return Collections.emptyMap();
+	}
 
 	public long[] getClassNameIds();
+
+	public CreationMenu getCreationMenu();
 
 	public List<DropdownItem> getDDMTemplateActionDropdownItems(
 			DDMTemplate ddmTemplate)
@@ -41,17 +48,15 @@ public interface TemplateDisplayContext {
 	public String getDDMTemplateScope(DDMTemplate ddmTemplate)
 		throws PortalException;
 
-	public String getDDMTemplateType(DDMTemplate ddmTemplate);
-
 	public List<NavigationItem> getNavigationItems();
 
 	public long getResourceClassNameId();
 
-	public String getResourceName(long classNameId);
+	public String getTabs1();
 
 	public SearchContainer<DDMTemplate> getTemplateSearchContainer();
 
-	public String getTemplateType(long classNameId);
+	public String getTemplateTypeLocalizedLabel(long classNameId);
 
 	public boolean isAddDDMTemplateEnabled();
 

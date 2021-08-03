@@ -12,7 +12,13 @@
  * details.
  */
 
-export default function propsTransformer({portletNamespace, ...otherProps}) {
+import openTemplateModal from './modal/openTemplateModal';
+
+export default function propsTransformer({
+	additionalProps: {addDDMTemplateURL, itemTypes} = {},
+	portletNamespace,
+	...otherProps
+}) {
 	const deleteSelectedDDMTemplates = () => {
 		if (
 			confirm(
@@ -36,6 +42,17 @@ export default function propsTransformer({portletNamespace, ...otherProps}) {
 
 			if (action === 'deleteSelectedDDMTemplates') {
 				deleteSelectedDDMTemplates();
+			}
+		},
+		onCreateButtonClick(event, {item}) {
+			const action = item?.data?.action;
+
+			if (action === 'addInformationTemplate') {
+				openTemplateModal({
+					addDDMTemplateURL,
+					itemTypes,
+					namespace: portletNamespace,
+				});
 			}
 		},
 	};
