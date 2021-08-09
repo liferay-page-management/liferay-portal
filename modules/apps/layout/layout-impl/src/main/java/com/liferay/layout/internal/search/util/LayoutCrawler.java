@@ -111,13 +111,13 @@ public class LayoutCrawler {
 				return EntityUtils.toString(httpResponse.getEntity());
 			}
 
-			if (_log.isErrorEnabled()) {
-				_log.error("Unable to get layout content");
+			if (_log.isWarnEnabled()) {
+				_log.warn("Unable to get layout content");
 			}
 		}
 		catch (Exception exception) {
-			if (_log.isErrorEnabled()) {
-				_log.error("Unable to get layout content", exception);
+			if (_log.isWarnEnabled()) {
+				_log.warn("Unable to get layout content", exception);
 			}
 		}
 
