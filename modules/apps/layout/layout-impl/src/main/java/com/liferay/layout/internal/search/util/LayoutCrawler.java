@@ -62,7 +62,8 @@ public class LayoutCrawler {
 		).build();
 
 		try {
-			InetAddress inetAddress = _portal.getPortalServerInetAddress(false);
+			InetAddress inetAddress = _portal.getPortalServerInetAddress(
+				_isHttpsEnabled());
 
 			ThemeDisplay themeDisplay = new ThemeDisplay();
 
@@ -106,13 +107,13 @@ public class LayoutCrawler {
 				return EntityUtils.toString(httpResponse.getEntity());
 			}
 
-			if (_log.isWarnEnabled()) {
-				_log.warn("Unable to get layout content");
+			if (_log.isErrorEnabled()) {
+				_log.error("Unable to get layout content");
 			}
 		}
 		catch (Exception exception) {
-			if (_log.isWarnEnabled()) {
-				_log.warn("Unable to get layout content", exception);
+			if (_log.isErrorEnabled()) {
+				_log.error("Unable to get layout content", exception);
 			}
 		}
 
