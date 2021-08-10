@@ -79,10 +79,8 @@ public class LayoutLocalServiceHelper implements IdentifiableOSGiService {
 			String friendlyURL)
 		throws PortalException {
 
-		friendlyURL = getFriendlyURL(friendlyURL);
-
 		if (Validator.isNotNull(friendlyURL)) {
-			return friendlyURL;
+			return getFriendlyURL(friendlyURL);
 		}
 
 		friendlyURL = StringPool.SLASH + getFriendlyURL(name);
@@ -114,7 +112,7 @@ public class LayoutLocalServiceHelper implements IdentifiableOSGiService {
 	}
 
 	public String getFriendlyURL(String friendlyURL) {
-		return FriendlyURLNormalizerUtil.normalizeWithEncoding(friendlyURL);
+		return FriendlyURLNormalizerUtil.normalize(friendlyURL);
 	}
 
 	public Map<Locale, String> getFriendlyURLMap(
