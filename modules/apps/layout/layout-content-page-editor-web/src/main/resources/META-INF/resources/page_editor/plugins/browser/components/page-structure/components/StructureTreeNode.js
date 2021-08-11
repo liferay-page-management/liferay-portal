@@ -53,6 +53,7 @@ import {
 	useDragItem,
 	useDropTarget,
 } from '../../../../../app/utils/drag-and-drop/useDragAndDrop';
+import getControlsId from '../../../../../app/utils/getControlsId';
 import getMappingFieldsKey from '../../../../../app/utils/getMappingFieldsKey';
 
 const HOVER_EXPAND_DELAY = 1000;
@@ -173,8 +174,15 @@ function StructureTreeNodeContent({
 	const hoverItem = useHoverItem();
 	const isDisabled = !node.activable || node.disabled;
 	const nodeRef = useRef();
+	const layoutDataRef = useRef();
 	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
 	const selectItem = useSelectItem();
+
+	useSelector((store) => {
+		layoutDataRef.current = store.layoutData;
+
+		return null;
+	});
 
 	const item = {
 		children: node.children,
@@ -273,8 +281,13 @@ function StructureTreeNodeContent({
 					event.stopPropagation();
 					event.target.focus();
 
+					const itemId = getControlsId({
+						itemId: node.id,
+						layoutData: layoutDataRef.current,
+					});
+
 					if (node.activable) {
-						selectItem(node.id, {
+						selectItem(itemId, {
 							itemType: node.itemType,
 							origin: ITEM_ACTIVATION_ORIGINS.sidebar,
 						});
