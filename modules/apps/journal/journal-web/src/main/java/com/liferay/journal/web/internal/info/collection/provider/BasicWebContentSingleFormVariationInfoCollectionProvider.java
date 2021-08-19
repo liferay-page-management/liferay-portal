@@ -29,11 +29,10 @@ import com.liferay.info.form.InfoForm;
 import com.liferay.info.item.InfoItemServiceTracker;
 import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.info.pagination.InfoPage;
-import com.liferay.info.pagination.Pagination;
-import com.liferay.info.sort.Sort;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.web.internal.search.JournalSearcher;
+import com.liferay.journal.web.internal.util.InfoCollectionProviderUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -41,22 +40,18 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexer;
-import com.liferay.portal.kernel.search.QueryConfig;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portlet.asset.util.comparator.AssetTagNameComparator;
-
-import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -160,21 +155,17 @@ public class BasicWebContentSingleFormVariationInfoCollectionProvider
 	}
 
 	private SearchContext _buildSearchContext(CollectionQuery collectionQuery) {
-		Pagination pagination = collectionQuery.getPagination();
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
 
-		SearchContext searchContext = new SearchContext();
+		DDMStructure ddmStructure = _ddmStructureLocalService.fetchStructure(
+			serviceContext.getScopeGroupId(),
+			_portal.getClassNameId(JournalArticle.class.getName()),
+			"BASIC-WEB-CONTENT", true);
 
-		searchContext.setAndSearch(true);
-		searchContext.setAttributes(
-			HashMapBuilder.<String, Serializable>put(
-				Field.STATUS, WorkflowConstants.STATUS_APPROVED
-			).put(
-				"ddmStructureKey", "BASIC-WEB-CONTENT"
-			).put(
-				"head", true
-			).put(
-				"latest", true
-			).build());
+		SearchContext searchContext =
+			InfoCollectionProviderUtil.getSearchContext(
+				collectionQuery, ddmStructure);
 
 		Optional<Map<String, String[]>> configurationOptional =
 			collectionQuery.getConfigurationOptional();
@@ -198,34 +189,6 @@ public class BasicWebContentSingleFormVariationInfoCollectionProvider
 
 			searchContext.setAttribute(localizedName, title[0]);
 		}
-
-		ServiceContext serviceContext =
-			ServiceContextThreadLocal.getServiceContext();
-
-		searchContext.setCompanyId(serviceContext.getCompanyId());
-
-		searchContext.setEnd(pagination.getEnd());
-		searchContext.setGroupIds(
-			new long[] {serviceContext.getScopeGroupId()});
-
-		Optional<Sort> sortOptional = collectionQuery.getSortOptional();
-
-		if (sortOptional.isPresent()) {
-			Sort sort = sortOptional.get();
-
-			searchContext.setSorts(
-				new com.liferay.portal.kernel.search.Sort(
-					sort.getFieldName(),
-					com.liferay.portal.kernel.search.Sort.LONG_TYPE,
-					sort.isReverse()));
-		}
-
-		searchContext.setStart(pagination.getStart());
-
-		QueryConfig queryConfig = searchContext.getQueryConfig();
-
-		queryConfig.setHighlightEnabled(false);
-		queryConfig.setScoreEnabled(false);
 
 		return searchContext;
 	}
