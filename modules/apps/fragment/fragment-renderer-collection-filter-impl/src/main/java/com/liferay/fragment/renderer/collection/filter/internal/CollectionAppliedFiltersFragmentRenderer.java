@@ -132,9 +132,7 @@ public class CollectionAppliedFiltersFragmentRenderer
 				continue;
 			}
 
-			String[] parameterValue = entry.getValue();
-
-			for (String filterValue : parameterValue) {
+			for (String filterValue : entry.getValue()) {
 				labelList.add(
 					HashMapBuilder.put(
 						"filterFragmentEntryLinkId", parameterData.get(2)
