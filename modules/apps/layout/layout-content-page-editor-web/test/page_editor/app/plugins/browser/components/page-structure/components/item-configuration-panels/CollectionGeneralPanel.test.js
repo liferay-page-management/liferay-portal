@@ -173,7 +173,9 @@ describe('CollectionGeneralPanel', () => {
 			});
 
 			expect(
-				getByText('you-need-at-least-one-item-to-use-pagination')
+				getByText(
+					'you-need-at-least-one-item-to-use-this-configuration'
+				)
 			).toBeInTheDocument();
 		});
 
@@ -239,7 +241,7 @@ describe('CollectionGeneralPanel', () => {
 			});
 
 			expect(
-				getByText('you-need-at-least-one-item-to-use-pagination')
+				getByText('this-collection-has-no-items')
 			).toBeInTheDocument();
 		});
 
