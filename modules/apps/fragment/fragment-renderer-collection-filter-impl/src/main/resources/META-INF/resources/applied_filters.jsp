@@ -17,9 +17,9 @@
 <%@ include file="/init.jsp" %>
 
 <%
-List<Map<String, String>> appliedFilterList = (List)request.getAttribute(CollectionAppliedFiltersFragmentRendererWebKeys.APPLIED_FILTER_LIST);
+CollectionFilterDisplayContext fragmentRendererCollectionFilterDisplayContext = (CollectionFilterDisplayContext)request.getAttribute(CollectionFilterDisplayContext.class.getName());
 
-for (Map<String, String> appliedFilter : appliedFilterList) {
+for (Map<String, String> appliedFilter : fragmentRendererCollectionFilterDisplayContext.getAppliedFilters()) {
 %>
 
 	<span class="label label-lg label-secondary">
@@ -42,12 +42,6 @@ for (Map<String, String> appliedFilter : appliedFilterList) {
 %>
 
 <liferay-frontend:component
-	context='<%=
-		HashMapBuilder.<String, Object>put(
-			"collectionFilterParameterPrefix", CollectionAppliedFiltersFragmentRendererWebKeys.COLLECTION_FILTER_PARAMETER_PREFIX
-		).put(
-			"removeButtonSelector", ".remove-collection-applied-filter-button"
-		).build()
-	%>'
+	context="<%= fragmentRendererCollectionFilterDisplayContext.getCollectionAppliedFiltersProps() %>"
 	module="js/CollectionAppliedFilters"
 />

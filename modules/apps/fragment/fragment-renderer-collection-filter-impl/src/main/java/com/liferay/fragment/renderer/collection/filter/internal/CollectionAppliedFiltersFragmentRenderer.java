@@ -16,19 +16,14 @@ package com.liferay.fragment.renderer.collection.filter.internal;
 
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
+import com.liferay.fragment.renderer.collection.filter.display.context.CollectionFilterDisplayContext;
 import com.liferay.fragment.renderer.collection.filter.internal.configuration.FFFragmentRendererCollectionFilterConfiguration;
-import com.liferay.fragment.renderer.collection.filter.internal.constants.CollectionAppliedFiltersFragmentRendererWebKeys;
-import com.liferay.petra.string.CharPool;
-import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -86,8 +81,8 @@ public class CollectionAppliedFiltersFragmentRenderer
 		HttpServletResponse httpServletResponse) {
 
 		httpServletRequest.setAttribute(
-			CollectionAppliedFiltersFragmentRendererWebKeys.APPLIED_FILTER_LIST,
-			_getAppliedFilters(httpServletRequest));
+			CollectionFilterDisplayContext.class.getName(),
+			new CollectionFilterDisplayContext(httpServletRequest));
 
 		try {
 			RequestDispatcher requestDispatcher =
@@ -106,45 +101,6 @@ public class CollectionAppliedFiltersFragmentRenderer
 			ConfigurableUtil.createConfigurable(
 				FFFragmentRendererCollectionFilterConfiguration.class,
 				properties);
-	}
-
-	private List<Map<String, String>> _getAppliedFilters(
-		HttpServletRequest httpServletRequest) {
-
-		List<Map<String, String>> appliedFilters = new ArrayList<>();
-
-		Map<String, String[]> parameters = httpServletRequest.getParameterMap();
-
-		for (Map.Entry<String, String[]> entry : parameters.entrySet()) {
-			String parameterName = entry.getKey();
-
-			if (!parameterName.startsWith(
-					CollectionAppliedFiltersFragmentRendererWebKeys.
-						COLLECTION_FILTER_PARAMETER_PREFIX)) {
-
-				continue;
-			}
-
-			List<String> parameterData = StringUtil.split(
-				parameterName, CharPool.UNDERLINE);
-
-			if (parameterData.size() != 3) {
-				continue;
-			}
-
-			for (String filterValue : entry.getValue()) {
-				appliedFilters.add(
-					HashMapBuilder.put(
-						"filterFragmentEntryLinkId", parameterData.get(2)
-					).put(
-						"filterType", parameterData.get(1)
-					).put(
-						"filterValue", filterValue
-					).build());
-			}
-		}
-
-		return appliedFilters;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

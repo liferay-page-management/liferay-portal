@@ -19,14 +19,13 @@ import com.liferay.fragment.collection.filter.FragmentCollectionFilterTracker;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
+import com.liferay.fragment.renderer.collection.filter.display.context.CollectionFilterDisplayContext;
 import com.liferay.fragment.renderer.collection.filter.internal.configuration.FFFragmentRendererCollectionFilterConfiguration;
-import com.liferay.fragment.renderer.collection.filter.internal.constants.CollectionAppliedFiltersFragmentRendererWebKeys;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
 import com.liferay.frontend.taglib.servlet.taglib.ComponentTag;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.taglib.servlet.PageContextFactoryUtil;
 
@@ -99,13 +98,16 @@ public class CollectionFilterFragmentRenderer implements FragmentRenderer {
 		try {
 			ComponentTag componentTag = new ComponentTag();
 
+			CollectionFilterDisplayContext
+				fragmentRendererCollectionFilterDisplayContext =
+					new CollectionFilterDisplayContext(httpServletRequest);
+
 			componentTag.setContext(
-				HashMapBuilder.<String, Object>put(
-					"collectionFilterParameterPrefix",
-					CollectionAppliedFiltersFragmentRendererWebKeys.
-						COLLECTION_FILTER_PARAMETER_PREFIX
-				).build());
+				fragmentRendererCollectionFilterDisplayContext.
+					getCollectionFilterRegisterProps());
+
 			componentTag.setModule("js/CollectionFilterRegister");
+
 			componentTag.setServletContext(_servletContext);
 
 			PageContext pageContext = PageContextFactoryUtil.create(
