@@ -20,6 +20,7 @@ import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.fragment.renderer.collection.filter.internal.configuration.FFFragmentRendererCollectionFilterConfiguration;
+import com.liferay.fragment.renderer.collection.filter.internal.constants.CollectionAppliedFiltersFragmentRendererWebKeys;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
 import com.liferay.frontend.taglib.servlet.taglib.ComponentTag;
 import com.liferay.petra.reflect.ReflectionUtil;
@@ -100,13 +101,9 @@ public class CollectionFilterFragmentRenderer implements FragmentRenderer {
 
 			componentTag.setContext(
 				HashMapBuilder.<String, Object>put(
-					"fragmentEntryLinkId",
-					() -> {
-						FragmentEntryLink fragmentEntryLink =
-							fragmentRendererContext.getFragmentEntryLink();
-
-						return fragmentEntryLink.getFragmentEntryLinkId();
-					}
+					"collectionFilterParameterPrefix",
+					CollectionAppliedFiltersFragmentRendererWebKeys.
+						COLLECTION_FILTER_PARAMETER_PREFIX
 				).build());
 			componentTag.setModule("js/CollectionFilterRegister");
 			componentTag.setServletContext(_servletContext);
