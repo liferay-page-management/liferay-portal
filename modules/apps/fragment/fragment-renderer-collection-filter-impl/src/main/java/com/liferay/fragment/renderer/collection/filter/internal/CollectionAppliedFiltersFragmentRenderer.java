@@ -87,7 +87,7 @@ public class CollectionAppliedFiltersFragmentRenderer
 
 		httpServletRequest.setAttribute(
 			CollectionAppliedFiltersFragmentRendererWebKeys.APPLIED_FILTER_LIST,
-			_getAppliedFilterList(httpServletRequest));
+			_getAppliedFilters(httpServletRequest));
 
 		try {
 			RequestDispatcher requestDispatcher =
@@ -108,12 +108,12 @@ public class CollectionAppliedFiltersFragmentRenderer
 				properties);
 	}
 
-	private List<Map<String, String>> _getAppliedFilterList(
+	private List<Map<String, String>> _getAppliedFilters(
 		HttpServletRequest httpServletRequest) {
 
-		Map<String, String[]> parameters = httpServletRequest.getParameterMap();
+		List<Map<String, String>> appliedFilters = new ArrayList<>();
 
-		List<Map<String, String>> labelList = new ArrayList<>();
+		Map<String, String[]> parameters = httpServletRequest.getParameterMap();
 
 		for (Map.Entry<String, String[]> entry : parameters.entrySet()) {
 			String parameterName = entry.getKey();
@@ -133,7 +133,7 @@ public class CollectionAppliedFiltersFragmentRenderer
 			}
 
 			for (String filterValue : entry.getValue()) {
-				labelList.add(
+				appliedFilters.add(
 					HashMapBuilder.put(
 						"filterFragmentEntryLinkId", parameterData.get(2)
 					).put(
@@ -144,7 +144,7 @@ public class CollectionAppliedFiltersFragmentRenderer
 			}
 		}
 
-		return labelList;
+		return appliedFilters;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
