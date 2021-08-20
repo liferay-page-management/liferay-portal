@@ -27,7 +27,7 @@ for (Map<String, String> appliedFilter : fragmentRendererCollectionFilterDisplay
 			<%= appliedFilter.get("filterValue") %>
 		</span>
 		<span class="label-item label-item-after">
-			<button aria-label="Remove filter" class="close remove-collection-applied-filter-button" data-filter-fragment-entry-link-id="<%= appliedFilter.get("filterFragmentEntryLinkId") %>" data-filter-type="<%= appliedFilter.get("filterType") %>" data-filter-value="<%= appliedFilter.get("filterValue") %>" type="button">
+			<button aria-label="<%= LanguageUtil.get(request, "remove-filter") %>" class="close remove-collection-applied-filter-button" data-filter-fragment-entry-link-id="<%= appliedFilter.get("filterFragmentEntryLinkId") %>" data-filter-type="<%= appliedFilter.get("filterType") %>" data-filter-value="<%= appliedFilter.get("filterValue") %>" type="button">
 				<span class="c-inner">
 					<clay:icon
 						symbol="times"

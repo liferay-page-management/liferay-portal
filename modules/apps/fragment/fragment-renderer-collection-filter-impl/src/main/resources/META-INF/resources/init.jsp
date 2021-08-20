@@ -17,7 +17,8 @@
 <%@ taglib uri="http://liferay.com/tld/clay" prefix="clay" %><%@
 taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %>
 
-<%@ page import="com.liferay.fragment.renderer.collection.filter.display.context.CollectionFilterDisplayContext" %>
+<%@ page import="com.liferay.fragment.renderer.collection.filter.display.context.CollectionFilterDisplayContext" %><%@
+page import="com.liferay.portal.kernel.language.LanguageUtil" %>
 
 <%@ page import="java.util.Map" %>
 
