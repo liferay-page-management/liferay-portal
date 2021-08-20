@@ -54,7 +54,9 @@ export default function CollectionAppliedFilters({
 		}
 	);
 
-	return () => {
-		clickHandler.dispose();
+	return {
+		dispose() {
+			clickHandler.dispose();
+		},
 	};
 }
