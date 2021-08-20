@@ -42,6 +42,12 @@ for (Map<String, String> appliedFilter : appliedFilterList) {
 %>
 
 <liferay-frontend:component
-	context='<%= HashMapBuilder.<String, Object>put("collectionFilterParameterPrefix", CollectionAppliedFiltersFragmentRendererWebKeys.COLLECTION_FILTER_PARAMETER_PREFIX).put("removeButtonSelector", ".remove-collection-applied-filter-button").build() %>'
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"collectionFilterParameterPrefix", CollectionAppliedFiltersFragmentRendererWebKeys.COLLECTION_FILTER_PARAMETER_PREFIX
+		).put(
+			"removeButtonSelector", ".remove-collection-applied-filter-button"
+		).build()
+	%>'
 	module="js/CollectionAppliedFilters"
 />
