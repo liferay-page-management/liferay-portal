@@ -17,9 +17,9 @@
 <%@ include file="/init.jsp" %>
 
 <%
-List<HashMap<String, String>> appliedFilterList = (List)request.getAttribute(CollectionAppliedFiltersFragmentRendererWebKeys.APPLIED_FILTER_LIST);
+List<Map<String, String>> appliedFilterList = (List)request.getAttribute(CollectionAppliedFiltersFragmentRendererWebKeys.APPLIED_FILTER_LIST);
 
-for (HashMap<String, String> appliedFilter : appliedFilterList) {
+for (Map<String, String> appliedFilter : appliedFilterList) {
 %>
 
 	<span class="label label-lg label-secondary">

@@ -28,7 +28,6 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -109,12 +108,12 @@ public class CollectionAppliedFiltersFragmentRenderer
 				properties);
 	}
 
-	private List<HashMap<String, String>> _getAppliedFilterList(
+	private List<Map<String, String>> _getAppliedFilterList(
 		HttpServletRequest httpServletRequest) {
 
 		Map<String, String[]> parameters = httpServletRequest.getParameterMap();
 
-		List<HashMap<String, String>> labelList = new ArrayList<>();
+		List<Map<String, String>> labelList = new ArrayList<>();
 
 		for (Map.Entry<String, String[]> entry : parameters.entrySet()) {
 			String parameterName = entry.getKey();
