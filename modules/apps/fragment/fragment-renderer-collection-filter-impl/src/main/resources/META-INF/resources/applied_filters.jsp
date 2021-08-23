@@ -19,27 +19,70 @@
 <%
 CollectionAppliedFiltersFragmentRendererDisplayContext collectionAppliedFiltersFragmentRendererDisplayContext = (CollectionAppliedFiltersFragmentRendererDisplayContext)request.getAttribute(CollectionAppliedFiltersFragmentRendererDisplayContext.class.getName());
 
-for (Map<String, String> appliedFilter : collectionAppliedFiltersFragmentRendererDisplayContext.getAppliedFilters()) {
+List<Map<String, String>> appliedFilters = collectionAppliedFiltersFragmentRendererDisplayContext.getAppliedFilters();
 %>
 
-	<span class="label label-lg label-secondary">
-		<span class="label-item label-item-expand">
-			<%= appliedFilter.get("filterValue") %>
-		</span>
-		<span class="label-item label-item-after">
-			<button aria-label="<%= LanguageUtil.get(request, "remove-filter") %>" class="close remove-collection-applied-filter-button" data-filter-fragment-entry-link-id="<%= appliedFilter.get("filterFragmentEntryLinkId") %>" data-filter-type="<%= appliedFilter.get("filterType") %>" data-filter-value="<%= appliedFilter.get("filterValue") %>" type="button">
-				<span class="c-inner">
-					<clay:icon
-						symbol="times"
-					/>
+<div class="align-items-sm-start align-items-stretch d-flex flex-column flex-sm-row py-1" id="<%= collectionAppliedFiltersFragmentRendererDisplayContext.getFragmentEntryLinkNamespace() %>">
+	<div class="flex-grow-1 overflow-hidden" id="<%= collectionAppliedFiltersFragmentRendererDisplayContext.getFragmentEntryLinkNamespace() %>_filterList" style="max-height: 4em;">
+		<c:choose>
+			<c:when test="<%= appliedFilters.isEmpty() %>">
+				<span class="text-secondary">
+					<liferay-ui:message key="no-active-filters" />
 				</span>
-			</button>
-		</span>
-	</span>
+			</c:when>
+			<c:otherwise>
 
-<%
-}
-%>
+				<%
+				for (Map<String, String> appliedFilter : appliedFilters) {
+				%>
+
+					<span class="label label-lg label-secondary">
+						<span class="label-item label-item-expand">
+							<%= appliedFilter.get("filterValue") %>
+						</span>
+						<span class="label-item label-item-after">
+							<button aria-label="<liferay-ui:message key="remove-filter" />" class="close remove-filter-button" data-filter-fragment-entry-link-id="<%= appliedFilter.get("filterFragmentEntryLinkId") %>" data-filter-type="<%= appliedFilter.get("filterType") %>" data-filter-value="<%= appliedFilter.get("filterValue") %>" type="button">
+								<span class="c-inner">
+									<clay:icon
+										symbol="times"
+									/>
+								</span>
+							</button>
+						</span>
+					</span>
+
+				<%
+				}
+				%>
+
+			</c:otherwise>
+		</c:choose>
+	</div>
+
+	<div class="d-flex flex-grow-1 flex-shrink-0 flex-sm-column-reverse flex-sm-grow-0 justify-content-between justify-content-sm-start ml-sm-2 mt-2 mt-sm-0">
+		<button class="btn btn-link btn-sm d-none flex-shrink-0 p-0 text-secondary" data-show-less-label="<liferay-ui:message key="show-less" />" data-show-more-label="<liferay-ui:message key="show-more" />" id="<%= collectionAppliedFiltersFragmentRendererDisplayContext.getFragmentEntryLinkNamespace() %>_toggleExpand" type="button">
+			<span class="inline-item-expand">
+				<liferay-ui:message key="show-more" />
+			</span>
+			<span class="inline-item inline-item-after ml-0">
+				<clay:icon
+					symbol="angle-down-small"
+				/>
+
+				<clay:icon
+					class="d-none"
+					symbol="angle-up-small"
+				/>
+			</span>
+		</button>
+
+		<c:if test="<%= !appliedFilters.isEmpty() && collectionAppliedFiltersFragmentRendererDisplayContext.showClearFiltersButton() %>">
+			<button class="btn btn-link btn-sm flex-shrink-0 ml-2 p-0 text-secondary" id="<%= collectionAppliedFiltersFragmentRendererDisplayContext.getFragmentEntryLinkNamespace() %>_removeAllFilters" type="button">
+				<liferay-ui:message key="clear-filters" />
+			</button>
+		</c:if>
+	</div>
+</div>
 
 <liferay-frontend:component
 	context="<%= collectionAppliedFiltersFragmentRendererDisplayContext.getCollectionAppliedFiltersProps() %>"

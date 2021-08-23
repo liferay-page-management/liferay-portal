@@ -15,7 +15,12 @@
 package com.liferay.fragment.renderer.collection.filter.internal.display.context;
 
 import com.liferay.fragment.collection.filter.constants.FragmentCollectionFilterConstants;
+import com.liferay.fragment.model.FragmentEntryLink;
+import com.liferay.fragment.renderer.FragmentRendererContext;
+import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
 import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
@@ -31,9 +36,15 @@ import javax.servlet.http.HttpServletRequest;
 public class CollectionAppliedFiltersFragmentRendererDisplayContext {
 
 	public CollectionAppliedFiltersFragmentRendererDisplayContext(
+		FragmentEntryConfigurationParser fragmentEntryConfigurationParser,
+		FragmentRendererContext fragmentRendererContext,
 		HttpServletRequest httpServletRequest) {
 
+		_fragmentEntryConfigurationParser = fragmentEntryConfigurationParser;
+		_fragmentRendererContext = fragmentRendererContext;
 		_httpServletRequest = httpServletRequest;
+
+		_fragmentEntryLink = fragmentRendererContext.getFragmentEntryLink();
 	}
 
 	public List<Map<String, String>> getAppliedFilters() {
@@ -80,12 +91,31 @@ public class CollectionAppliedFiltersFragmentRendererDisplayContext {
 
 		_collectionAppliedFiltersProps = HashMapBuilder.<String, Object>put(
 			"filterPrefix", FragmentCollectionFilterConstants.FILTER_PREFIX
+		).put(
+			"fragmentEntryLinkNamespace", getFragmentEntryLinkNamespace()
 		).build();
 
 		return _collectionAppliedFiltersProps;
 	}
 
+	public String getFragmentEntryLinkNamespace() {
+		return StringBundler.concat(
+			"fragment_", _fragmentEntryLink.getFragmentEntryLinkId(),
+			StringPool.UNDERLINE, _fragmentEntryLink.getNamespace());
+	}
+
+	public boolean showClearFiltersButton() {
+		return (boolean)
+			_fragmentEntryConfigurationParser.getConfigurationFieldValue(
+				_fragmentEntryLink.getEditableValues(), "bool",
+				"showClearFilters");
+	}
+
 	private Map<String, Object> _collectionAppliedFiltersProps;
+	private final FragmentEntryConfigurationParser
+		_fragmentEntryConfigurationParser;
+	private final FragmentEntryLink _fragmentEntryLink;
+	private final FragmentRendererContext _fragmentRendererContext;
 	private final HttpServletRequest _httpServletRequest;
 
 }
