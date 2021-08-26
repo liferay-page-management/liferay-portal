@@ -53,6 +53,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Víctor Galán
  */
+@Ignore
 @RunWith(Arquillian.class)
 public class BasicWebContentSingleFormVariationInfoCollectionProviderTest {
 
