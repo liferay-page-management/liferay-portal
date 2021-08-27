@@ -106,8 +106,16 @@ export default {
 	getCollectionSupportedFilters(collections) {
 		const next = {};
 
-		collections.forEach((collection) => {
-			next[collection.collectionId] = ['category', 'keywords'];
+		const test = {
+			0: ['keywords'],
+			1: ['keywords', 'category'],
+			2: ['category'],
+			3: ['category'],
+			4: ['keywords'],
+		};
+
+		collections.forEach((collection, index) => {
+			next[collection.collectionId] = test[index];
 		});
 
 		return Promise.resolve(next);
