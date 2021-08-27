@@ -29,7 +29,10 @@ export default function SelectCategory({
 	singleSelection = false,
 }) {
 	const [selectedCategoryIds, setSelectedCategoryIds] = useState(() => {
-		const value = getCollectionFilterValue('category', fragmentEntryLinkId);
+		const value = getCollectionFilterValue(
+			'categoryId',
+			fragmentEntryLinkId
+		);
 
 		if (Array.isArray(value)) {
 			return value;
@@ -64,7 +67,7 @@ export default function SelectCategory({
 
 	const onSelectedClick = (selected, id) => {
 		if (selected && singleSelection) {
-			setCollectionFilterValue('category', fragmentEntryLinkId, [id]);
+			setCollectionFilterValue('categoryId', fragmentEntryLinkId, [id]);
 			setSelectedCategoryIds([id]);
 		}
 		else if (selected) {
@@ -121,7 +124,7 @@ export default function SelectCategory({
 					<ClayButton
 						onClick={() =>
 							setCollectionFilterValue(
-								'category',
+								'categoryId',
 								fragmentEntryLinkId,
 								selectedCategoryIds
 							)
