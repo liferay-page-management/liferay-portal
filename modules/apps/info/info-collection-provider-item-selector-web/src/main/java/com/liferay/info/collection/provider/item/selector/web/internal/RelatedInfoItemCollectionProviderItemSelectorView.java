@@ -94,7 +94,8 @@ public class RelatedInfoItemCollectionProviderItemSelectorView
 			new RelatedInfoCollectionProviderItemSelectorDisplayContext(
 				(HttpServletRequest)servletRequest, _infoItemServiceTracker,
 				itemSelectedEventName, _language, portletURL,
-				relatedInfoItemCollectionProviderItemSelectorCriterion));
+				relatedInfoItemCollectionProviderItemSelectorCriterion,
+				relatedInfoItemCollectionProviders));
 		servletRequest.setAttribute(
 			InfoCollectionProviderItemSelectorWebKeys.
 				RELATED_INFO_ITEM_COLLECTION_PROVIDERS,

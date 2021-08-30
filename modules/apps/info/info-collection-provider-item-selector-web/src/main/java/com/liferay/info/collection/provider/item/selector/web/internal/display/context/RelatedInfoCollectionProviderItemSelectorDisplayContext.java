@@ -16,7 +16,6 @@ package com.liferay.info.collection.provider.item.selector.web.internal.display.
 
 import com.liferay.info.collection.provider.RelatedInfoItemCollectionProvider;
 import com.liferay.info.collection.provider.item.selector.criterion.RelatedInfoItemCollectionProviderItemSelectorCriterion;
-import com.liferay.info.collection.provider.item.selector.web.internal.constants.InfoCollectionProviderItemSelectorWebKeys;
 import com.liferay.info.item.InfoItemServiceTracker;
 import com.liferay.info.list.provider.item.selector.criterion.InfoListProviderItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorReturnType;
@@ -32,6 +31,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -51,7 +51,9 @@ public class RelatedInfoCollectionProviderItemSelectorDisplayContext {
 		InfoItemServiceTracker infoItemServiceTracker,
 		String itemSelectedEventName, Language language, PortletURL portletURL,
 		RelatedInfoItemCollectionProviderItemSelectorCriterion
-			relatedInfoItemCollectionProviderItemSelectorCriterion) {
+			relatedInfoItemCollectionProviderItemSelectorCriterion,
+		List<RelatedInfoItemCollectionProvider<?, ?>>
+			relatedInfoItemCollectionProviders) {
 
 		_httpServletRequest = httpServletRequest;
 		_infoItemServiceTracker = infoItemServiceTracker;
@@ -60,6 +62,8 @@ public class RelatedInfoCollectionProviderItemSelectorDisplayContext {
 		_portletURL = portletURL;
 		_relatedInfoItemCollectionProviderItemSelectorCriterion =
 			relatedInfoItemCollectionProviderItemSelectorCriterion;
+		_relatedInfoItemCollectionProviders =
+			relatedInfoItemCollectionProviders;
 	}
 
 	public String getDisplayStyle() {
@@ -129,14 +133,11 @@ public class RelatedInfoCollectionProviderItemSelectorDisplayContext {
 					resourceBundle,
 					"there-are-no-related-items-collection-providers"));
 
-		List<RelatedInfoItemCollectionProvider<?, ?>>
-			relatedInfoItemCollectionProviders =
-				(List<RelatedInfoItemCollectionProvider<?, ?>>)
-					_httpServletRequest.getAttribute(
-						InfoCollectionProviderItemSelectorWebKeys.
-							RELATED_INFO_ITEM_COLLECTION_PROVIDERS);
-
 		String itemType = ParamUtil.getString(_httpServletRequest, "itemType");
+
+		List<RelatedInfoItemCollectionProvider<?, ?>>
+			relatedInfoItemCollectionProviders = new ArrayList<>(
+				_relatedInfoItemCollectionProviders);
 
 		if (Validator.isNotNull(itemType)) {
 			relatedInfoItemCollectionProviders = ListUtil.filter(
@@ -205,5 +206,7 @@ public class RelatedInfoCollectionProviderItemSelectorDisplayContext {
 	private final PortletURL _portletURL;
 	private final RelatedInfoItemCollectionProviderItemSelectorCriterion
 		_relatedInfoItemCollectionProviderItemSelectorCriterion;
+	private final List<RelatedInfoItemCollectionProvider<?, ?>>
+		_relatedInfoItemCollectionProviders;
 
 }
