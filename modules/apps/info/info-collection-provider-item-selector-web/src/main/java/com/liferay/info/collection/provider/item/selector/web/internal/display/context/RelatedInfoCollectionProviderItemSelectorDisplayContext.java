@@ -16,6 +16,7 @@ package com.liferay.info.collection.provider.item.selector.web.internal.display.
 
 import com.liferay.info.collection.provider.RelatedInfoItemCollectionProvider;
 import com.liferay.info.collection.provider.item.selector.criterion.RelatedInfoItemCollectionProviderItemSelectorCriterion;
+import com.liferay.info.collection.provider.item.selector.web.internal.constants.InfoCollectionProviderItemSelectorWebKeys;
 import com.liferay.info.item.InfoItemServiceTracker;
 import com.liferay.info.list.provider.item.selector.criterion.InfoListProviderItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorReturnType;
@@ -31,7 +32,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -130,28 +130,20 @@ public class RelatedInfoCollectionProviderItemSelectorDisplayContext {
 					"there-are-no-related-items-collection-providers"));
 
 		List<RelatedInfoItemCollectionProvider<?, ?>>
-			itemRelatedItemsProviders = new ArrayList<>();
-
-		List<String> itemTypes =
-			_relatedInfoItemCollectionProviderItemSelectorCriterion.
-				getSourceItemTypes();
-
-		for (String itemType : itemTypes) {
-			itemRelatedItemsProviders.addAll(
-				_infoItemServiceTracker.getAllInfoItemServices(
-					(Class<RelatedInfoItemCollectionProvider<?, ?>>)
-						(Class<?>)RelatedInfoItemCollectionProvider.class,
-					itemType));
-		}
+			relatedInfoItemCollectionProviders =
+				(List<RelatedInfoItemCollectionProvider<?, ?>>)
+					_httpServletRequest.getAttribute(
+						InfoCollectionProviderItemSelectorWebKeys.
+							RELATED_INFO_ITEM_COLLECTION_PROVIDERS);
 
 		String keywords = ParamUtil.getString(_httpServletRequest, "keywords");
 
 		if (Validator.isNotNull(keywords)) {
-			itemRelatedItemsProviders = ListUtil.filter(
-				itemRelatedItemsProviders,
-				itemRelatedItemsProvider -> {
+			relatedInfoItemCollectionProviders = ListUtil.filter(
+				relatedInfoItemCollectionProviders,
+				relatedInfoItemCollectionProvider -> {
 					String label = StringUtil.toLowerCase(
-						itemRelatedItemsProvider.getLabel(
+						relatedInfoItemCollectionProvider.getLabel(
 							themeDisplay.getLocale()));
 
 					if (label.contains(StringUtil.toLowerCase(keywords))) {
@@ -164,9 +156,9 @@ public class RelatedInfoCollectionProviderItemSelectorDisplayContext {
 
 		searchContainer.setResults(
 			ListUtil.subList(
-				itemRelatedItemsProviders, searchContainer.getStart(),
+				relatedInfoItemCollectionProviders, searchContainer.getStart(),
 				searchContainer.getEnd()));
-		searchContainer.setTotal(itemRelatedItemsProviders.size());
+		searchContainer.setTotal(relatedInfoItemCollectionProviders.size());
 
 		return searchContainer;
 	}

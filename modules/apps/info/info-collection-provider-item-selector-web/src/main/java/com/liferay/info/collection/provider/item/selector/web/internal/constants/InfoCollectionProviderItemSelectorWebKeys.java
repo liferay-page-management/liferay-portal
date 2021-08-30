@@ -24,4 +24,7 @@ public class InfoCollectionProviderItemSelectorWebKeys {
 			"RELATED_INFO_ITEM_COLLECTION_PROVIDER_ITEM_SELECTOR_DISPLAY_" +
 				"CONTEXT";
 
+	public static final String RELATED_INFO_ITEM_COLLECTION_PROVIDERS =
+		"RELATED_INFO_ITEM_COLLECTION_PROVIDERS";
+
 }
