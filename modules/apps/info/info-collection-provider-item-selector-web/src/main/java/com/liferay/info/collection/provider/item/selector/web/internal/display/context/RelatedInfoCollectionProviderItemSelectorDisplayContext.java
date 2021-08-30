@@ -136,6 +136,24 @@ public class RelatedInfoCollectionProviderItemSelectorDisplayContext {
 						InfoCollectionProviderItemSelectorWebKeys.
 							RELATED_INFO_ITEM_COLLECTION_PROVIDERS);
 
+		String itemType = ParamUtil.getString(_httpServletRequest, "itemType");
+
+		if (Validator.isNotNull(itemType)) {
+			relatedInfoItemCollectionProviders = ListUtil.filter(
+				relatedInfoItemCollectionProviders,
+				relatedInfoItemCollectionProvider -> {
+					if (Objects.equals(
+							relatedInfoItemCollectionProvider.
+								getCollectionItemClassName(),
+							itemType)) {
+
+						return true;
+					}
+
+					return false;
+				});
+		}
+
 		String keywords = ParamUtil.getString(_httpServletRequest, "keywords");
 
 		if (Validator.isNotNull(keywords)) {
