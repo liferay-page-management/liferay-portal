@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.template.info.item.provider.TemplateInfoItemFieldSetProvider;
 
 import java.util.Locale;
 import java.util.Set;
@@ -200,6 +201,9 @@ public class ObjectEntryInfoItemFormProvider
 						).build());
 				}
 			}
+		).infoFieldSetEntry(
+			_templateInfoItemFieldSetProvider.getInfoFieldSet(
+				ObjectEntry.class.getName(), String.valueOf(objectDefinitionId))
 		).labelInfoLocalizedValue(
 			InfoLocalizedValue.singleValue(objectDefinition.getName())
 		).name(
@@ -216,5 +220,8 @@ public class ObjectEntryInfoItemFormProvider
 
 	@Reference
 	private ObjectFieldLocalService _objectFieldLocalService;
+
+	@Reference
+	private TemplateInfoItemFieldSetProvider _templateInfoItemFieldSetProvider;
 
 }
