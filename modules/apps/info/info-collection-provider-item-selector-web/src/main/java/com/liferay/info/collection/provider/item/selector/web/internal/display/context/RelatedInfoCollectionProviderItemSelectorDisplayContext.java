@@ -15,7 +15,6 @@
 package com.liferay.info.collection.provider.item.selector.web.internal.display.context;
 
 import com.liferay.info.collection.provider.RelatedInfoItemCollectionProvider;
-import com.liferay.info.collection.provider.item.selector.criterion.RelatedInfoItemCollectionProviderItemSelectorCriterion;
 import com.liferay.info.item.InfoItemServiceTracker;
 import com.liferay.info.list.provider.item.selector.criterion.InfoListProviderItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorReturnType;
@@ -50,8 +49,6 @@ public class RelatedInfoCollectionProviderItemSelectorDisplayContext {
 		HttpServletRequest httpServletRequest,
 		InfoItemServiceTracker infoItemServiceTracker,
 		String itemSelectedEventName, Language language, PortletURL portletURL,
-		RelatedInfoItemCollectionProviderItemSelectorCriterion
-			relatedInfoItemCollectionProviderItemSelectorCriterion,
 		List<RelatedInfoItemCollectionProvider<?, ?>>
 			relatedInfoItemCollectionProviders) {
 
@@ -60,8 +57,6 @@ public class RelatedInfoCollectionProviderItemSelectorDisplayContext {
 		_itemSelectedEventName = itemSelectedEventName;
 		_language = language;
 		_portletURL = portletURL;
-		_relatedInfoItemCollectionProviderItemSelectorCriterion =
-			relatedInfoItemCollectionProviderItemSelectorCriterion;
 		_relatedInfoItemCollectionProviders =
 			relatedInfoItemCollectionProviders;
 	}
@@ -204,8 +199,6 @@ public class RelatedInfoCollectionProviderItemSelectorDisplayContext {
 	private final String _itemSelectedEventName;
 	private final Language _language;
 	private final PortletURL _portletURL;
-	private final RelatedInfoItemCollectionProviderItemSelectorCriterion
-		_relatedInfoItemCollectionProviderItemSelectorCriterion;
 	private final List<RelatedInfoItemCollectionProvider<?, ?>>
 		_relatedInfoItemCollectionProviders;
 
