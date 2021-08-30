@@ -57,11 +57,11 @@ import java.util.ResourceBundle;
 /**
  * @author Jürgen Kappler
  */
-public class DDMStructureRelatedInfoCollectionProvider
+public class JournalArticleDDMStructureRelatedInfoCollectionProvider
 	implements RelatedInfoItemCollectionProvider<AssetCategory, JournalArticle>,
 			   SingleFormVariationInfoCollectionProvider<JournalArticle> {
 
-	public DDMStructureRelatedInfoCollectionProvider(
+	public JournalArticleDDMStructureRelatedInfoCollectionProvider(
 		DDMStructure ddmStructure,
 		JournalArticleLocalService journalArticleLocalService) {
 
@@ -215,7 +215,7 @@ public class DDMStructureRelatedInfoCollectionProvider
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		DDMStructureRelatedInfoCollectionProvider.class);
+		JournalArticleDDMStructureRelatedInfoCollectionProvider.class);
 
 	private final DDMStructure _ddmStructure;
 	private final JournalArticleLocalService _journalArticleLocalService;
