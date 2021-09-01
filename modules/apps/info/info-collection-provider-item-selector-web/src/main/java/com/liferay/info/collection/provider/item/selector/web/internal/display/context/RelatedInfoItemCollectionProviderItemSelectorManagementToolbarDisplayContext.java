@@ -31,6 +31,8 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.KeyValuePair;
+import com.liferay.portal.kernel.util.KeyValuePairComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -153,29 +155,35 @@ public class
 		Stream<RelatedInfoItemCollectionProvider<?, ?>> stream =
 			relatedInfoItemCollectionProviders.stream();
 
-		List<String> itemTypes = stream.map(
+		List<KeyValuePair> itemTypes = stream.map(
 			InfoCollectionProvider::getCollectionItemClassName
 		).distinct(
+		).map(
+			collectionItemClassName -> new KeyValuePair(
+				collectionItemClassName,
+				ResourceActionsUtil.getModelResource(
+					_themeDisplay.getLocale(), collectionItemClassName))
+		).sorted(
+			new KeyValuePairComparator(false, true)
 		).collect(
 			Collectors.toList()
 		);
 
 		return new DropdownItemList() {
 			{
-				for (String itemType : itemTypes) {
+				for (KeyValuePair itemType : itemTypes) {
 					add(
 						dropdownItem -> {
 							if (Objects.equals(
-									itemType, _getSelectedItemType())) {
+									itemType.getKey(),
+									_getSelectedItemType())) {
 
 								dropdownItem.setActive(true);
 							}
 
 							dropdownItem.setHref(
-								getPortletURL(), "itemType", itemType);
-							dropdownItem.setLabel(
-								ResourceActionsUtil.getModelResource(
-									_themeDisplay.getLocale(), itemType));
+								getPortletURL(), "itemType", itemType.getKey());
+							dropdownItem.setLabel(itemType.getValue());
 						});
 				}
 			}
