@@ -14,20 +14,15 @@
 
 package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
-import com.liferay.fragment.constants.FragmentEntryLinkConstants;
-import com.liferay.fragment.model.FragmentEntryLink;
-import com.liferay.fragment.renderer.DefaultFragmentRendererContext;
 import com.liferay.fragment.renderer.FragmentRendererController;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
+import com.liferay.layout.content.page.editor.web.internal.util.CollectionDisplayUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.ContentUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -35,13 +30,10 @@ import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
-
-import java.util.List;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -81,91 +73,13 @@ public class UpdateCollectionDisplayConfigMVCActionCommand
 
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
-		JSONArray fragmentEntryLinksJSONArray =
-			JSONFactoryUtil.createJSONArray();
-
-		List<FragmentEntryLink> fragmentEntryLinks =
-			_fragmentEntryLinkLocalService.
-				getFragmentEntryLinksBySegmentsExperienceId(
-					themeDisplay.getScopeGroupId(), segmentsExperienceId,
-					themeDisplay.getPlid(), _KEY_FILTER_FRAGMENT_RENDERER);
-
-		for (FragmentEntryLink fragmentEntryLink : fragmentEntryLinks) {
-			JSONObject editableValuesJSONObject =
-				JSONFactoryUtil.createJSONObject(
-					fragmentEntryLink.getEditableValues());
-
-			if (!JSONUtil.isValid(
-					editableValuesJSONObject.getString(
-						_KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR))) {
-
-				continue;
-			}
-
-			JSONObject configurationJSONObject =
-				editableValuesJSONObject.getJSONObject(
-					_KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR);
-
-			if (!configurationJSONObject.has("targetCollections")) {
-				continue;
-			}
-
-			List<String> targetCollections = JSONUtil.toStringList(
-				configurationJSONObject.getJSONArray("targetCollections"));
-
-			if (!targetCollections.contains(itemId)) {
-				continue;
-			}
-
-			targetCollections.remove(itemId);
-
-			configurationJSONObject.put(
-				"targetCollections",
-				JSONUtil.toJSONArray(
-					targetCollections,
-					targetCollectionItemId -> targetCollectionItemId));
-
-			if (targetCollections.isEmpty()) {
-				configurationJSONObject.put("filterKey", StringPool.BLANK);
-			}
-
-			editableValuesJSONObject.put(
-				_KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
-				configurationJSONObject);
-
-			long fragmentEntryLinkId =
-				fragmentEntryLink.getFragmentEntryLinkId();
-
-			fragmentEntryLink =
-				_fragmentEntryLinkLocalService.updateFragmentEntryLink(
-					fragmentEntryLinkId, editableValuesJSONObject.toString());
-
-			DefaultFragmentRendererContext defaultFragmentRendererContext =
-				new DefaultFragmentRendererContext(fragmentEntryLink);
-
-			defaultFragmentRendererContext.setLocale(
-				LocaleUtil.fromLanguageId(languageId));
-
-			defaultFragmentRendererContext.setMode(
-				FragmentEntryLinkConstants.EDIT);
-
-			fragmentEntryLinksJSONArray.put(
-				JSONUtil.put(
-					"content",
-					_fragmentRendererController.render(
-						defaultFragmentRendererContext,
-						_portal.getHttpServletRequest(actionRequest),
-						_portal.getHttpServletResponse(actionResponse))
-				).put(
-					"editableValues", editableValuesJSONObject
-				).put(
-					"fragmentEntryLinkId", String.valueOf(fragmentEntryLinkId)
-				));
-		}
-
 		try {
 			jsonObject.put(
-				"fragmentEntryLinks", fragmentEntryLinksJSONArray
+				"fragmentEntryLinks",
+				CollectionDisplayUtil.unlinkCollectionDisplayRelatedFilters(
+					actionRequest, actionResponse, itemId,
+					_fragmentEntryLinkLocalService, _fragmentRendererController,
+					languageId, _portal, segmentsExperienceId, themeDisplay)
 			).put(
 				"layoutData",
 				LayoutStructureUtil.updateLayoutPageTemplateData(
@@ -195,14 +109,6 @@ public class UpdateCollectionDisplayConfigMVCActionCommand
 		JSONPortletResponseUtil.writeJSON(
 			actionRequest, actionResponse, jsonObject);
 	}
-
-	private static final String _KEY_FILTER_FRAGMENT_RENDERER =
-		"com.liferay.fragment.renderer.collection.filter.internal." +
-			"CollectionFilterFragmentRenderer";
-
-	private static final String _KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR =
-		"com.liferay.fragment.entry.processor.freemarker." +
-			"FreeMarkerFragmentEntryProcessor";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		UpdateCollectionDisplayConfigMVCActionCommand.class);
