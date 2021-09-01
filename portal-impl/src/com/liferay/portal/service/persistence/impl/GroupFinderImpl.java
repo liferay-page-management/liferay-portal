@@ -1192,12 +1192,12 @@ public class GroupFinderImpl
 			if (key.equals("actionId")) {
 				Long companyId = CompanyThreadLocal.getCompanyId();
 
-				Role admin = RoleLocalServiceUtil.fetchRole(
+				Role adminRole = RoleLocalServiceUtil.fetchRole(
 					CompanyThreadLocal.getCompanyId(),
 					RoleConstants.ADMINISTRATOR);
-				Role siteAdmin = RoleLocalServiceUtil.fetchRole(
+				Role siteAdminRole = RoleLocalServiceUtil.fetchRole(
 					companyId, RoleConstants.SITE_ADMINISTRATOR);
-				Role siteOwner = RoleLocalServiceUtil.fetchRole(
+				Role siteOwnerRole = RoleLocalServiceUtil.fetchRole(
 					companyId, RoleConstants.SITE_OWNER);
 
 				ResourceAction resourceAction =
@@ -1206,11 +1206,11 @@ public class GroupFinderImpl
 
 				queryPos.add(
 					RoleLocalServiceUtil.hasUserRole(
-						(Long)params.get("userId"), admin.getRoleId()));
+						(Long)params.get("userId"), adminRole.getRoleId()));
 				queryPos.add(entry.getValue());
 
-				queryPos.add(siteAdmin.getRoleId());
-				queryPos.add(siteOwner.getRoleId());
+				queryPos.add(siteAdminRole.getRoleId());
+				queryPos.add(siteOwnerRole.getRoleId());
 				queryPos.add(resourceAction.getBitwiseValue());
 			}
 			else if (key.equals("active") || key.equals("layout") ||
