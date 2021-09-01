@@ -131,7 +131,7 @@ public class BlogsEntriesWithSameAssetCategoryRelatedInfoItemCollectionProvider
 		ResourceBundle resourceBundle = resourceBundleLoader.loadResourceBundle(
 			locale);
 
-		return LanguageUtil.get(resourceBundle, "blogs-with-this-category");
+		return LanguageUtil.get(resourceBundle, "blogs");
 	}
 
 	private AssetEntryQuery _getAssetEntryQuery(
