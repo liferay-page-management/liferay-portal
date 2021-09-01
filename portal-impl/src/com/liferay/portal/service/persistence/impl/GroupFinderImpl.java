@@ -1200,9 +1200,6 @@ public class GroupFinderImpl
 				Role siteOwner = RoleLocalServiceUtil.fetchRole(
 					companyId, RoleConstants.SITE_OWNER);
 
-				boolean isAdmin = RoleLocalServiceUtil.hasUserRole(
-					(Long)params.get("userId"), admin.getRoleId());
-
 				ResourceAction resourceAction =
 					ResourceActionLocalServiceUtil.getResourceAction(
 						Group.class.getName(), (String)entry.getValue());
