@@ -12,6 +12,7 @@
  * details.
  */
 
+import {usePrevious} from '@liferay/frontend-js-react-web';
 import React, {useCallback, useContext, useEffect} from 'react';
 
 import {updateFragmentEntryLinkContent} from '../actions/index';
@@ -76,9 +77,19 @@ const useCollectionConfig = () => {
 const useGetContent = (fragmentEntryLink, languageId, segmentsExperienceId) => {
 	const context = useContext(CollectionItemContext);
 	const dispatch = useDispatch();
+	const displayPagePreviewItemData = useDisplayPagePreviewItem()?.data ?? {};
 
 	const {className, classPK} = context.collectionItem || {};
 	const toControlsId = useToControlsId();
+
+	const itemClassName = className || displayPagePreviewItemData.className;
+	const itemClassPK = classPK || displayPagePreviewItemData.classPK;
+
+	const {previousItemClassName, previousItemClassPK} =
+		usePrevious({
+			previousItemClassName: itemClassName,
+			previousItemClassPK: itemClassPK,
+		}) || {};
 
 	const fieldSets = fragmentEntryLink.configuration?.fieldSets;
 	const collectionContentId = toControlsId(
@@ -91,10 +102,14 @@ const useGetContent = (fragmentEntryLink, languageId, segmentsExperienceId) => {
 				fieldSet.fields.some((field) => field.localizable)
 			) ?? false;
 
-		if (context.collectionItemIndex != null || hasLocalizable) {
+		if (
+			hasLocalizable ||
+			(previousItemClassName !== itemClassName &&
+				previousItemClassPK !== itemClassPK)
+		) {
 			FragmentService.renderFragmentEntryLinkContent({
-				collectionItemClassName: className,
-				collectionItemClassPK: classPK,
+				collectionItemClassName: itemClassName,
+				collectionItemClassPK: itemClassPK,
 				fragmentEntryLinkId: fragmentEntryLink.fragmentEntryLinkId,
 				languageId,
 				onNetworkStatus: dispatch,
@@ -119,8 +134,12 @@ const useGetContent = (fragmentEntryLink, languageId, segmentsExperienceId) => {
 		fieldSets,
 		fragmentEntryLink.editableValues,
 		fragmentEntryLink.fragmentEntryLinkId,
+		itemClassName,
+		itemClassPK,
 		languageId,
 		segmentsExperienceId,
+		previousItemClassName,
+		previousItemClassPK,
 	]);
 
 	if (context.collectionItemIndex != null) {
