@@ -19,9 +19,11 @@ import PropTypes from 'prop-types';
 import React, {useMemo, useState} from 'react';
 
 import {getLayoutDataItemPropTypes} from '../../prop-types/index';
+import {LAYOUT_DATA_ITEM_TYPES} from '../config/constants/layoutDataItemTypes';
 import {useSelectItem} from '../contexts/ControlsContext';
 import {useDispatch, useSelector} from '../contexts/StoreContext';
 import {useWidgets} from '../contexts/WidgetsContext';
+import deleteCollectionDisplay from '../thunks/deleteCollectionDisplay';
 import deleteItem from '../thunks/deleteItem';
 import duplicateItem from '../thunks/duplicateItem';
 import canBeDuplicated from '../utils/canBeDuplicated';
@@ -98,13 +100,24 @@ export default function ItemActions({item}) {
 
 		if (canBeRemoved(item, layoutData)) {
 			items.push({
-				action: () =>
-					dispatch(
-						deleteItem({
-							itemId: item.itemId,
-							selectItem,
-						})
-					),
+				action: () => {
+					if (item.type === LAYOUT_DATA_ITEM_TYPES.collection) {
+						dispatch(
+							deleteCollectionDisplay({
+								itemId: item.itemId,
+								selectItem,
+							})
+						);
+					}
+					else {
+						dispatch(
+							deleteItem({
+								itemId: item.itemId,
+								selectItem,
+							})
+						);
+					}
+				},
 				icon: 'times-circle',
 				label: Liferay.Language.get('delete'),
 			});
