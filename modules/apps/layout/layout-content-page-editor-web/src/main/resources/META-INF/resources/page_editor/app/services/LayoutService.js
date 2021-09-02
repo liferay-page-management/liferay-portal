@@ -128,10 +128,42 @@ export default {
 	},
 
 	/**
+	 * Marks a Collection Display for deletion
+	 * @param {object} options
+	 * @param {string} options.itemId id of the collection display to be updated
+	 * @param {string} options.languageId Language id
+	 * @param {string[]} options.portletIds List of non instanceable portlets Ids
+	 * contained in the item
+	 * @param {string} options.segmentsExperienceId Segments experience id
+	 * @param {function} options.onNetworkStatus
+	 * @return {Promise<void>}
+	 */
+	markCollectionDisplayForDeletion({
+		itemId,
+		languageId,
+		onNetworkStatus,
+		portletIds,
+		segmentsExperienceId,
+	}) {
+		return layoutServiceFetch(
+			config.markCollectionDisplayForDeletionURL,
+			{
+				body: {
+					itemId,
+					languageId,
+					portletIds,
+					segmentsExperienceId,
+				},
+			},
+			onNetworkStatus
+		);
+	},
+
+	/**
 	 * Marks an item for deletion
 	 * @param {object} options
 	 * @param {string} options.itemId id of the item to be updated
-	 * @param {string} options.portletIds the list of non instanceable portlets Ids
+	 * @param {string[]} options.portletIds the list of non instanceable portlets Ids
 	 * contained in the item
 	 * @param {string} options.segmentsExperienceId Segments experience id
 	 * @param {function} options.onNetworkStatus

@@ -465,6 +465,11 @@ public class ContentPageEditorDisplayContext {
 				"mappingFieldsURL",
 				getResourceURL("/layout_content_page_editor/get_mapping_fields")
 			).put(
+				"markCollectionDisplayForDeletionURL",
+				getFragmentEntryActionURL(
+					"/layout_content_page_editor" +
+						"/mark_collection_display_for_deletion")
+			).put(
 				"markItemForDeletionURL",
 				getFragmentEntryActionURL(
 					"/layout_content_page_editor/mark_item_for_deletion")

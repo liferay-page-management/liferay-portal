@@ -132,6 +132,7 @@ export interface Config {
 	layoutType: LayoutTypes[keyof LayoutTypes];
 	lookAndFeelURL: string;
 	mappingFieldsURL: string;
+	markCollectionDisplayForDeletionURL: string;
 	markItemForDeletionURL: string;
 	masterLayouts: Array<{
 		imagePreviewURL: string;
