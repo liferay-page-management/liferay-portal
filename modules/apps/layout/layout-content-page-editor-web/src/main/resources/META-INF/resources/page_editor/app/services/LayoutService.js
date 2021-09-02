@@ -253,6 +253,31 @@ export default {
 	},
 
 	/**
+	 * Unmarks a collection display for deletion
+	 * @param {object} options
+	 * @param {string} options.itemId Id of the collection display to be updated
+	 * @param {string} options.segmentsExperienceId Segments experience id
+	 * @param {function} options.onNetworkStatus
+	 * @return {Promise<void>}
+	 */
+	unmarkCollectionForDeletion({
+		itemId,
+		onNetworkStatus,
+		segmentsExperienceId,
+	}) {
+		return layoutServiceFetch(
+			config.unmarkCollectionDisplayForDeletionURL,
+			{
+				body: {
+					itemId,
+					segmentsExperienceId,
+				},
+			},
+			onNetworkStatus
+		);
+	},
+
+	/**
 	 * Unmarks an item for deletion
 	 * @param {object} options
 	 * @param {string} options.itemId id of the item to be updated

@@ -187,6 +187,7 @@ export interface Config {
 		toolbarPluginId: string;
 	}>;
 
+	unmarkCollectionDisplayForDeletionURL: string;
 	unmarkItemForDeletionURL: string;
 	updateConfigurationValuesURL: string;
 	updateCollectionDisplayConfigURL: string;
