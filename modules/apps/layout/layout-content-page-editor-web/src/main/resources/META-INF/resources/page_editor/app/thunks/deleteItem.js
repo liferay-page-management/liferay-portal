@@ -14,10 +14,10 @@
 
 import deleteItemAction from '../actions/deleteItem';
 import updatePageContents from '../actions/updatePageContents';
-import {LAYOUT_DATA_ITEM_TYPES} from '../config/constants/layoutDataItemTypes';
 import InfoItemService from '../services/InfoItemService';
 import LayoutService from '../services/LayoutService';
 import getFragmentEntryLinkIdsFromItemId from '../utils/getFragmentEntryLinkIdsFromItemId';
+import getNonInstantiablePortletIds from '../utils/getNonInstantiablePortletIds';
 
 export default function deleteItem({itemId, selectItem = () => {}}) {
 	return (dispatch, getState) => {
@@ -72,7 +72,11 @@ function markItemForDeletion({
 	onNetworkStatus: dispatch,
 	segmentsExperienceId,
 }) {
-	const portletIds = findPortletIds(itemId, layoutData, fragmentEntryLinks);
+	const portletIds = getNonInstantiablePortletIds(
+		itemId,
+		layoutData,
+		fragmentEntryLinks
+	);
 
 	return LayoutService.markItemForDeletion({
 		itemId,
@@ -82,33 +86,4 @@ function markItemForDeletion({
 	}).then((response) => {
 		return {...response, portletIds};
 	});
-}
-
-function findPortletIds(itemId, layoutData, fragmentEntryLinks) {
-	const item = layoutData.items[itemId];
-
-	const {config = {}, children = []} = item;
-
-	if (
-		item.type === LAYOUT_DATA_ITEM_TYPES.fragment &&
-		config.fragmentEntryLinkId
-	) {
-		const {editableValues = {}} = fragmentEntryLinks[
-			config.fragmentEntryLinkId
-		];
-
-		if (editableValues.portletId && !editableValues.instanceId) {
-			return [editableValues.portletId];
-		}
-	}
-
-	const deletedWidgets = [];
-
-	children.forEach((itemId) => {
-		deletedWidgets.push(
-			...findPortletIds(itemId, layoutData, fragmentEntryLinks)
-		);
-	});
-
-	return deletedWidgets;
 }
