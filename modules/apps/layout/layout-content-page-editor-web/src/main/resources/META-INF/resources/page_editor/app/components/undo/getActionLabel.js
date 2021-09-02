@@ -17,6 +17,7 @@ import {
 	ADD_FRAGMENT_ENTRY_LINKS,
 	ADD_ITEM,
 	CHANGE_MASTER_LAYOUT,
+	DELETE_COLLECTION_DISPLAY,
 	DELETE_ITEM,
 	DUPLICATE_ITEM,
 	MOVE_ITEM,
@@ -63,7 +64,7 @@ export default function getActionLabel(
 								action.masterLayoutPlid
 						).name
 				  );
-
+		case DELETE_COLLECTION_DISPLAY:
 		case DELETE_ITEM:
 			return Liferay.Util.sub(
 				Liferay.Language.get('delete-x'),

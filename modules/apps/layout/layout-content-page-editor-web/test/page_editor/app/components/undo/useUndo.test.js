@@ -37,6 +37,7 @@ describe('useUndo', () => {
 		Actions.EDIT_FRAGMENT_ENTRY_LINK_COMMENT,
 		Actions.INIT,
 		Actions.LOAD_REDUCER,
+		Actions.RESTORE_COLLECTION_DISPLAY,
 		Actions.SET_FRAGMENT_EDITABLES,
 		Actions.SWITCH_SIDEBAR_PANEL,
 		Actions.TOGGLE_PERMISSION,

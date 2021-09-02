@@ -22,6 +22,7 @@ import {
 	DELETE_ITEM,
 	DUPLICATE_ITEM,
 	EDIT_FRAGMENT_ENTRY_LINK_COMMENT,
+	RESTORE_COLLECTION_DISPLAY,
 	UPDATE_COLLECTION_DISPLAY_COLLECTION,
 	UPDATE_EDITABLE_VALUES,
 	UPDATE_FRAGMENT_ENTRY_LINK_CONFIGURATION,
@@ -257,6 +258,30 @@ export default function fragmentEntryLinksReducer(
 					comments: nextComments,
 				},
 			};
+		}
+
+		case RESTORE_COLLECTION_DISPLAY: {
+			const newFragmentEntryLinks = {...fragmentEntryLinks};
+
+			action.deletedFragmentEntryLinksIds.forEach(
+				(fragmentEntryLinkId) => {
+					newFragmentEntryLinks[fragmentEntryLinkId] = {
+						...newFragmentEntryLinks[fragmentEntryLinkId],
+						removed: false,
+					};
+				}
+			);
+
+			action.updatedFragmentEntryLinks.forEach(
+				({fragmentEntryLinkId, ...rest}) => {
+					newFragmentEntryLinks[fragmentEntryLinkId] = {
+						...newFragmentEntryLinks[fragmentEntryLinkId],
+						...rest,
+					};
+				}
+			);
+
+			return newFragmentEntryLinks;
 		}
 
 		case UPDATE_COLLECTION_DISPLAY_COLLECTION:

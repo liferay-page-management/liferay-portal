@@ -17,6 +17,7 @@ import {
 	ADD_FRAGMENT_ENTRY_LINKS,
 	ADD_ITEM,
 	CHANGE_MASTER_LAYOUT,
+	DELETE_COLLECTION_DISPLAY,
 	DELETE_ITEM,
 	DUPLICATE_ITEM,
 	MOVE_ITEM,
@@ -33,6 +34,7 @@ import {getItemNameFromAction} from './getItemNameFromAction';
 import * as undoAddFragmentEntryLinks from './undoAddFragmentEntryLinks';
 import * as undoAddItem from './undoAddItem';
 import * as undoChangeMasterLayout from './undoChangeMasterLayout';
+import * as undoDeleteCollectionDisplay from './undoDeleteCollectionDisplay';
 import * as undoDeleteItem from './undoDeleteItem';
 import * as undoDuplicateItem from './undoDuplicateItem';
 import * as undoMoveItem from './undoMoveItem';
@@ -50,6 +52,7 @@ const UNDO_ACTIONS = {
 	[ADD_FRAGMENT_ENTRY_LINKS]: undoAddFragmentEntryLinks,
 	[ADD_ITEM]: undoAddItem,
 	[CHANGE_MASTER_LAYOUT]: undoChangeMasterLayout,
+	[DELETE_COLLECTION_DISPLAY]: undoDeleteCollectionDisplay,
 	[DELETE_ITEM]: undoDeleteItem,
 	[DUPLICATE_ITEM]: undoDuplicateItem,
 	[MOVE_ITEM]: undoMoveItem,
