@@ -108,9 +108,9 @@ const useGetContent = (fragmentEntryLink, languageId, segmentsExperienceId) => {
 				previousItemClassPK !== itemClassPK)
 		) {
 			FragmentService.renderFragmentEntryLinkContent({
-				collectionItemClassName: itemClassName,
-				collectionItemClassPK: itemClassPK,
 				fragmentEntryLinkId: fragmentEntryLink.fragmentEntryLinkId,
+				itemClassName,
+				itemClassPK,
 				languageId,
 				onNetworkStatus: dispatch,
 				segmentsExperienceId,
@@ -226,9 +226,9 @@ const useRenderFragmentContent = () => {
 	return useCallback(
 		({fragmentEntryLinkId, onNetworkStatus, segmentsExperienceId}) => {
 			return FragmentService.renderFragmentEntryLinkContent({
-				collectionItemClassName: className,
-				collectionItemClassPK: classPK,
 				fragmentEntryLinkId,
+				itemClassName: className,
+				itemClassPK: classPK,
 				onNetworkStatus,
 				segmentsExperienceId,
 			}).then(({content}) => {
