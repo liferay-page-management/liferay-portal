@@ -2416,6 +2416,8 @@ definition {
 				value1 = "${linkName}");
 		}
 		else {
+			Refresh();
+
 			AssertTextEquals.assertPartialText(
 				locator1 = "WCD#WEB_CONTENT_CONTENT",
 				value1 = "${webContentContent}");
