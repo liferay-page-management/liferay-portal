@@ -747,6 +747,18 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 			draftLayout.getMasterLayoutPlid(),
 			draftLayout.getStyleBookEntryId(), serviceContext);
 
+		Layout layout = layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		layoutLocalService.updateLayout(
+			layout.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
+			layout.getParentLayoutId(), titleMap, titleMap,
+			layout.getDescriptionMap(), layout.getKeywordsMap(),
+			layout.getRobotsMap(), layout.getType(), layout.isHidden(),
+			layout.getFriendlyURLMap(), layout.getIconImage(), null,
+			layout.getMasterLayoutPlid(), layout.getStyleBookEntryId(),
+			serviceContext);
+
 		return layoutPageTemplateEntry;
 	}
 

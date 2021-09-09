@@ -16,6 +16,7 @@ package com.liferay.redirect.internal.messaging;
 
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.OrderFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
 import com.liferay.portal.kernel.messaging.DestinationNames;
@@ -42,13 +43,14 @@ import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
+ * @author Roberto Díaz
  * @author Alicia García
  */
 @Component(
 	configurationPid = "com.liferay.redirect.internal.configuration.RedirectConfiguration",
 	immediate = true, service = MessageListener.class
 )
-public class RedirectNotFoundEntriesMessageListener
+public class CheckRedirectNotFoundEntriesMessageListener
 	extends BaseMessageListener {
 
 	@Activate
@@ -62,7 +64,9 @@ public class RedirectNotFoundEntriesMessageListener
 		String className = clazz.getName();
 
 		Trigger trigger = _triggerFactory.createTrigger(
-			className, className, null, null, 1, TimeUnit.DAY);
+			className, className, null, null,
+			_redirectConfiguration.checkRedirectNotFoundEntriesInterval(),
+			TimeUnit.HOUR);
 
 		SchedulerEntry schedulerEntry = new SchedulerEntryImpl(
 			className, trigger);
@@ -78,6 +82,46 @@ public class RedirectNotFoundEntriesMessageListener
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
+		_removeMaximumOverflowRedirectNotFoundEntries();
+		_removeOldRedirectNotFoundEntries();
+	}
+
+	private void _removeMaximumOverflowRedirectNotFoundEntries()
+		throws Exception {
+
+		int redirectNotFoundEntriesCount =
+			_redirectNotFoundEntryLocalService.
+				getRedirectNotFoundEntriesCount();
+
+		int maximumNumberOfRedirectNotFoundEntries =
+			_redirectConfiguration.maximumNumberOfRedirectNotFoundEntries();
+
+		if (redirectNotFoundEntriesCount <
+				maximumNumberOfRedirectNotFoundEntries) {
+
+			return;
+		}
+
+		ActionableDynamicQuery actionableDynamicQuery =
+			_redirectNotFoundEntryLocalService.getActionableDynamicQuery();
+
+		actionableDynamicQuery.setAddCriteriaMethod(
+			dynamicQuery -> dynamicQuery.setLimit(
+				maximumNumberOfRedirectNotFoundEntries,
+				redirectNotFoundEntriesCount));
+
+		actionableDynamicQuery.setAddOrderCriteriaMethod(
+			dynamicQuery -> dynamicQuery.addOrder(
+				OrderFactoryUtil.desc("modifiedDate")));
+		actionableDynamicQuery.setPerformActionMethod(
+			(ActionableDynamicQuery.PerformActionMethod<RedirectNotFoundEntry>)
+				_redirectNotFoundEntryLocalService::
+					deleteRedirectNotFoundEntry);
+
+		actionableDynamicQuery.performActions();
+	}
+
+	private void _removeOldRedirectNotFoundEntries() throws Exception {
 		ActionableDynamicQuery actionableDynamicQuery =
 			_redirectNotFoundEntryLocalService.getActionableDynamicQuery();
 
@@ -93,9 +137,9 @@ public class RedirectNotFoundEntriesMessageListener
 				RestrictionsFactoryUtil.lt("modifiedDate", thresholdDate)));
 
 		actionableDynamicQuery.setPerformActionMethod(
-			(RedirectNotFoundEntry redirectNotFoundEntry) ->
-				_redirectNotFoundEntryLocalService.deleteRedirectNotFoundEntry(
-					redirectNotFoundEntry));
+			(ActionableDynamicQuery.PerformActionMethod<RedirectNotFoundEntry>)
+				_redirectNotFoundEntryLocalService::
+					deleteRedirectNotFoundEntry);
 
 		actionableDynamicQuery.performActions();
 	}

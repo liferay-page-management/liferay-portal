@@ -62,7 +62,7 @@ public class ObjectScopeProviderRegistryImpl
 	}
 
 	@Activate
-	protected void activate(final BundleContext bundleContext) {
+	protected void activate(BundleContext bundleContext) {
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
 			bundleContext, ObjectScopeProvider.class,
 			"object.scope.provider.key");

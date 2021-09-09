@@ -21,8 +21,6 @@ public class ObjectRelationshipConstants {
 
 	public static final String TYPE_MANY_TO_MANY = "many_to_many";
 
-	public static final String TYPE_MANY_TO_ONE = "many_to_one";
-
 	public static final String TYPE_ONE_TO_MANY = "one_to_many";
 
 	public static final String TYPE_ONE_TO_ONE = "one_to_one";

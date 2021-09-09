@@ -379,7 +379,7 @@ public class ObjectRelationship implements Serializable {
 	public static enum Type {
 
 		ONE_TO_MANY("one_to_many"), ONE_TO_ONE("one_to_one"),
-		MANY_TO_MANY("many_to_many"), MANY_TO_ONE("many_to_one");
+		MANY_TO_MANY("many_to_many");
 
 		@JsonCreator
 		public static Type create(String value) {

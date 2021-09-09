@@ -13,13 +13,14 @@
  */
 
 import ClayForm, {ClaySelectWithOption} from '@clayui/form';
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 
 import {BACKGROUND_IMAGE_FRAGMENT_ENTRY_PROCESSOR} from '../../../../../../app/config/constants/backgroundImageFragmentEntryProcessor';
 import {EDITABLE_FRAGMENT_ENTRY_PROCESSOR} from '../../../../../../app/config/constants/editableFragmentEntryProcessor';
 import {EDITABLE_TYPES} from '../../../../../../app/config/constants/editableTypes';
 import {VIEWPORT_SIZES} from '../../../../../../app/config/constants/viewportSizes';
 import {config} from '../../../../../../app/config/index';
+import {useGlobalContext} from '../../../../../../app/contexts/GlobalContext';
 import {
 	useDispatch,
 	useSelector,
@@ -310,8 +311,8 @@ function ImagePanelSizeSelector({item}) {
 	const {editableId, fragmentEntryLinkId, type} = item;
 
 	const dispatch = useDispatch();
-	const editables = useSelector((state) => state.editables);
 	const fragmentEntryLinks = useSelector((state) => state.fragmentEntryLinks);
+	const globalContext = useGlobalContext();
 	const languageId = useSelector(selectLanguageId);
 	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
 	const selectedViewportSize = useSelector(
@@ -328,7 +329,25 @@ function ImagePanelSizeSelector({item}) {
 
 	const editableValue = editableValues[processorKey][editableId];
 	const editableConfig = editableValue.config || {};
-	const editableElement = editables?.[item.parentId]?.[item.itemId]?.element;
+
+	const getEditableElement = useCallback(() => {
+		const fragmentElement = globalContext.document.querySelector(
+			`[data-fragment-entry-link-id="${fragmentEntryLinkId}"]`
+		);
+
+		if (!fragmentElement) {
+			return null;
+		}
+
+		return (
+			fragmentElement.querySelector(
+				`lfr-editable[id="${item.itemId}"]`
+			) ||
+			fragmentElement.querySelector(
+				`[data-lfr-editable-id="${item.itemId}"]`
+			)
+		);
+	}, [fragmentEntryLinkId, item.itemId, globalContext.document]);
 
 	const editableContent = selectEditableValueContent(
 		{fragmentEntryLinks, languageId},
@@ -364,8 +383,8 @@ function ImagePanelSizeSelector({item}) {
 		isMappedToInfoItem(editableContent) ||
 		isMappedToCollection(editableContent) ? (
 		<ImageSelectorSize
-			editableElement={editableElement}
 			fieldValue={editableContent}
+			getEditableElement={getEditableElement}
 			imageSizeId={imageSizeId}
 			onImageSizeIdChanged={
 				item.type === EDITABLE_TYPES.image

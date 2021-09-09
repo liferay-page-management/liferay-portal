@@ -12,17 +12,26 @@
  * details.
  */
 
-import {SET_FRAGMENT_EDITABLES} from './types';
+package com.liferay.object.related.models;
 
-export default function setFragmentEditables(
-	fragmentEntryLinkId,
-	itemId,
-	editables
-) {
-	return {
-		editables,
-		fragmentEntryLinkId,
-		itemId,
-		type: SET_FRAGMENT_EDITABLES,
-	};
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.BaseModel;
+
+import java.util.List;
+
+/**
+ * @author Marco Leo
+ * @author Brian Wing Shun Chan
+ */
+public interface ObjectRelatedModelsProvider<T extends BaseModel<T>> {
+
+	public String getClassName();
+
+	public String getObjectRelationshipType();
+
+	public List<T> getRelatedModels(
+			long groupId, long objectRelationshipId, long primaryKey, int start,
+			int end)
+		throws PortalException;
+
 }

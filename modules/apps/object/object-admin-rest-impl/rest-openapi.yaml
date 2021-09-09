@@ -111,7 +111,7 @@ components:
                     format: int64
                     type: integer
                 type:
-                    enum: [one_to_many, one_to_one, many_to_many, many_to_one]
+                    enum: [one_to_many, one_to_one, many_to_many]
                     type: string
         Status:
             properties:
