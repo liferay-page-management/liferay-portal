@@ -169,6 +169,8 @@ definition {
 			AssetPublisherPortlet.configureDisplaySettings(displaySettings = "Ratings");
 
 			IFrame.closeFrame();
+
+			Refresh();
 		}
 
 		task ("View the rating star shown in Asset Publisher") {
@@ -214,6 +216,8 @@ definition {
 			AssetPublisherPortlet.restoreConfigurationTemplatePG(configurationName = "Asset Publisher Configuration Template");
 
 			IFrame.closeFrame();
+
+			Refresh();
 		}
 
 		task ("View the rating star shown in Asset Publisher") {
