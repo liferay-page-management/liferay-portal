@@ -1038,6 +1038,8 @@ definition {
 			AssetPublisherPortlet.configureDisplayTemplatePG(displayTemplate = "Title List");
 
 			IFrame.closeFrame();
+
+			Refresh();
 		}
 
 		task ("View web content displayed at Title List in Asset Publisher at edit mode") {
