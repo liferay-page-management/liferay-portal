@@ -528,8 +528,6 @@ definition {
 					key_deviceType = "${deviceType}",
 					locator1 = "PageEditor#DEVICE_TYPE");
 
-				Pause(locator1 = "3000");
-
 				SelectFrame.selectFrameNoLoading(locator1 = "IFrame#PAGE_EDITOR_GLOBAL_CONTEXT_IFRAME");
 
 				PageEditor.viewFragmentStyle(
