@@ -151,7 +151,8 @@ public class EditDDMTemplateDisplayContext {
 			return _languageType;
 		}
 
-		String languageType = TemplateConstants.LANG_TYPE_FTL;
+		String languageType = ParamUtil.get(
+			_httpServletRequest, "language", TemplateConstants.LANG_TYPE_FTL);
 
 		DDMTemplate ddmTemplate = getDDMTemplate();
 
