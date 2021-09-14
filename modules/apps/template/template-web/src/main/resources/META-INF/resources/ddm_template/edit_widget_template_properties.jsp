@@ -25,7 +25,7 @@ DDMTemplate ddmTemplate = editDDMTemplateDisplayContext.getDDMTemplate();
 <aui:model-context bean="<%= ddmTemplate %>" model="<%= DDMTemplate.class %>" />
 
 <div class="form-group-sm template-properties">
-	<aui:select changesContext="<%= true %>" cssClass="form-control-sm" helpMessage='<%= (ddmTemplate == null) ? StringPool.BLANK : "changing-the-language-does-not-automatically-translate-the-existing-template-script" %>' label="language" name="language">
+	<aui:select changesContext="<%= true %>" cssClass="form-control-sm" helpMessage='<%= (ddmTemplate == null) ? StringPool.BLANK : "changing-the-language-does-not-automatically-translate-the-existing-template-script" %>' label="language" name="languageType">
 
 		<%
 		for (String languageType : editDDMTemplateDisplayContext.getLanguageTypes()) {

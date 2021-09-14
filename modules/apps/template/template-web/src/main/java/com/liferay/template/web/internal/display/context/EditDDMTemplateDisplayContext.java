@@ -135,7 +135,7 @@ public class EditDDMTemplateDisplayContext {
 			).setParameter(
 				"ddmTemplateId", getDDMTemplateId()
 			).setParameter(
-				"language", getLanguageType()
+				"languageType", getLanguageType()
 			).setWindowState(
 				LiferayWindowState.EXCLUSIVE
 			).buildString()
@@ -311,7 +311,7 @@ public class EditDDMTemplateDisplayContext {
 		}
 
 		_languageType = BeanParamUtil.getString(
-			getDDMTemplate(), _httpServletRequest, "language",
+			getDDMTemplate(), _httpServletRequest, "languageType",
 			TemplateConstants.LANG_TYPE_FTL);
 
 		String script = BeanParamUtil.getString(
