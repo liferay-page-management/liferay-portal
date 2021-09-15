@@ -974,6 +974,10 @@ definition {
 			checkboxName = "Required Field",
 			locator1 = "Checkbox#ANY_CHECKBOX");
 
+		WaitForElementPresent(
+			key_fieldFieldLabel = "${fieldFieldLabel}",
+			locator1 = "Icon#ASTERISK_DATE_FIELD");
+
 		Click(locator1 = "Sidebar#BACK");
 	}
 
