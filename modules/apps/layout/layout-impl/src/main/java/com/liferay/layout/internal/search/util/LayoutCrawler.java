@@ -14,9 +14,15 @@
 
 package com.liferay.layout.internal.search.util;
 
+import com.liferay.layout.internal.configuration.LayoutCrawlerConfiguration;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.module.configuration.ConfigurationException;
+import com.liferay.portal.kernel.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.CookieKeys;
@@ -25,6 +31,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.net.InetAddress;
 
@@ -55,11 +62,60 @@ public class LayoutCrawler {
 	public String getLayoutContent(Layout layout, Locale locale)
 		throws Exception {
 
-		InetAddress inetAddress = _portal.getPortalServerInetAddress(
-			_isHttpsEnabled());
+		String connectionProtocol = null;
+		String hostName = null;
+		int port = 0;
 
-		if (inetAddress == null) {
-			return StringPool.BLANK;
+		try {
+			LayoutCrawlerConfiguration layoutCrawlerConfiguration =
+				ConfigurationProviderUtil.getCompanyConfiguration(
+					LayoutCrawlerConfiguration.class, layout.getCompanyId());
+
+			connectionProtocol =
+				layoutCrawlerConfiguration.connectionProtocol();
+			hostName = layoutCrawlerConfiguration.hostname();
+			port = layoutCrawlerConfiguration.port();
+		}
+		catch (ConfigurationException configurationException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					StringBundler.concat(
+						"Unable to get LayoutCrawlerConfiguration for company ",
+						layout.getCompanyId(), ": ", configurationException),
+					configurationException);
+			}
+			else if (_log.isWarnEnabled()) {
+				_log.warn(
+					StringBundler.concat(
+						"Unable to get LayoutCrawlerConfiguration for company ",
+						layout.getCompanyId(), ": ", configurationException));
+			}
+		}
+
+		boolean secure = false;
+
+		if (Validator.isNull(connectionProtocol) ||
+			connectionProtocol.equals("DEFAULT")) {
+
+			secure = _isHttpsEnabled();
+		}
+		else if (connectionProtocol.equals("HTTPS")) {
+			secure = true;
+		}
+
+		if (Validator.isNull(hostName)) {
+			InetAddress inetAddress = _portal.getPortalServerInetAddress(
+				secure);
+
+			if (inetAddress == null) {
+				return StringPool.BLANK;
+			}
+
+			hostName = inetAddress.getHostName();
+		}
+
+		if (port <= 0) {
+			port = _portal.getPortalServerPort(secure);
 		}
 
 		HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
@@ -80,9 +136,9 @@ public class LayoutCrawler {
 		themeDisplay.setLayoutSet(layout.getLayoutSet());
 		themeDisplay.setLocale(locale);
 		themeDisplay.setScopeGroupId(layout.getGroupId());
-		themeDisplay.setServerName(inetAddress.getHostName());
-		themeDisplay.setServerPort(
-			_portal.getPortalServerPort(_isHttpsEnabled()));
+		themeDisplay.setSecure(secure);
+		themeDisplay.setServerName(hostName);
+		themeDisplay.setServerPort(port);
 		themeDisplay.setSiteGroupId(layout.getGroupId());
 
 		HttpGet httpGet = new HttpGet(
@@ -97,7 +153,7 @@ public class LayoutCrawler {
 		BasicClientCookie basicClientCookie = new BasicClientCookie(
 			CookieKeys.GUEST_LANGUAGE_ID, LocaleUtil.toLanguageId(locale));
 
-		basicClientCookie.setDomain(inetAddress.getHostName());
+		basicClientCookie.setDomain(hostName);
 
 		cookieStore.addCookie(basicClientCookie);
 
@@ -129,6 +185,8 @@ public class LayoutCrawler {
 	}
 
 	private static final String _USER_AGENT = "Liferay Page Crawler";
+
+	private static final Log _log = LogFactoryUtil.getLog(LayoutCrawler.class);
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
