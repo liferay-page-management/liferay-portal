@@ -73,7 +73,8 @@ String ppid = ParamUtil.getString(request, "p_p_id");
 
 						<script>
 							if (!themeDisplay.isSignedIn()) {
-								window.location.href = '<%= HtmlUtil.escapeJS(themeDisplay.getURLSignIn()) %>?redirect=<%= URLCodec.encodeURL(currentURL) %>';
+								window.location.href =
+									'<%= HtmlUtil.escapeJS(themeDisplay.getURLSignIn()) %>?redirect=<%= URLCodec.encodeURL(currentURL) %>';
 							}
 						</script>
 					</clay:container-fluid>
