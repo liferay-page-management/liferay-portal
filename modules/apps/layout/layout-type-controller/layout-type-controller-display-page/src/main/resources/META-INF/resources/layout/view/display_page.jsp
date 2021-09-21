@@ -70,6 +70,13 @@ String ppid = ParamUtil.getString(request, "p_p_id");
 						<div class="alert alert-danger">
 							<liferay-ui:message key="you-do-not-have-the-required-permissions-to-view-the-content-of-this-page" />
 						</div>
+
+						<script>
+							if (!themeDisplay.isSignedIn()) {
+								window.location.href =
+									'<%= HtmlUtil.escapeJS(themeDisplay.getURLSignIn()) %>?redirect=<%= URLCodec.encodeURL(currentURL) %>';
+							}
+						</script>
 					</clay:container-fluid>
 				</div>
 			</c:when>
