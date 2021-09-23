@@ -271,7 +271,6 @@ function visit(
 						canUpdateEditables &&
 						canActivateEditable(selectedViewportSize, type),
 					children: [],
-					disabled: !isMasterPage && itemInMasterLayout,
 					dragAndDropHoveredItemId,
 					draggable: false,
 					expanded: childId === activeItemId,
@@ -279,6 +278,7 @@ function visit(
 					hiddenAncestor: hasHiddenAncestor || hidden,
 					icon: EDITABLE_TYPE_ICONS[type],
 					id: childId,
+					isMasterItem: !isMasterPage && itemInMasterLayout,
 					itemType: ITEM_TYPES.editable,
 					mapped: isMapped(editable),
 					name: mappedFieldLabel || editableId,

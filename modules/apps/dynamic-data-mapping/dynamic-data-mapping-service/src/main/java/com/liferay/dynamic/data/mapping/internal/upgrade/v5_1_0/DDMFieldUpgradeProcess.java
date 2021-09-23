@@ -28,6 +28,12 @@ public class DDMFieldUpgradeProcess extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
+		_upgradeDDMStorageLinks();
+
+		_upgradeDDMFields();
+	}
+
+	private void _upgradeDDMFields() throws Exception {
 		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
 				StringBundler.concat(
 					"select DDMStorageLink.classPK, ",
@@ -42,7 +48,8 @@ public class DDMFieldUpgradeProcess extends UpgradeProcess {
 						"update DDMField set parentFieldId = ? where ",
 						"DDMField.storageId = ? and ",
 						"DDMField.structureVersionId = ? and ",
-						"DDMField.fieldName like ? "))) {
+						"DDMField.fieldName like ? and DDMField.priority = ",
+						"?"))) {
 
 			preparedStatement1.setString(1, "CUSTOM-META-TAGS");
 
@@ -56,9 +63,9 @@ public class DDMFieldUpgradeProcess extends UpgradeProcess {
 				try (PreparedStatement preparedStatement3 =
 						connection.prepareStatement(
 							StringBundler.concat(
-								"select DDMField.fieldId from DDMField where ",
-								"DDMField.storageId = ? and ",
-								"DDMField.structureVersionId = ? and ",
+								"select DDMField.fieldId, DDMField.priority ",
+								"from DDMField where DDMField.storageId = ? ",
+								"and DDMField.structureVersionId = ? and ",
 								"DDMField.fieldName like ? "))) {
 
 					preparedStatement3.setLong(1, storageId);
@@ -73,10 +80,39 @@ public class DDMFieldUpgradeProcess extends UpgradeProcess {
 						preparedStatement2.setLong(2, storageId);
 						preparedStatement2.setLong(3, structureVersionId);
 						preparedStatement2.setString(4, "content");
+						preparedStatement2.setLong(
+							5, resultSet2.getLong("priority") + 1);
 
 						preparedStatement2.addBatch();
 					}
 				}
+			}
+
+			preparedStatement2.executeBatch();
+		}
+	}
+
+	private void _upgradeDDMStorageLinks() throws Exception {
+		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
+				StringBundler.concat(
+					"select DDMStructureVersion.structureId, ",
+					"DDMStorageLink.storageLinkId from DDMStorageLink inner ",
+					"join DDMStructureVersion on ",
+					"DDMStructureVersion.structureVersionId = ",
+					"DDMStorageLink.structureVersionId where ",
+					"DDMStorageLink.structureId = 0"));
+			PreparedStatement preparedStatement2 =
+				AutoBatchPreparedStatementUtil.autoBatch(
+					connection.prepareStatement(
+						"update DDMStorageLink set structureId = ? where " +
+							"storageLinkId = ?"));
+			ResultSet resultSet = preparedStatement1.executeQuery()) {
+
+			while (resultSet.next()) {
+				preparedStatement2.setLong(1, resultSet.getLong(1));
+				preparedStatement2.setLong(2, resultSet.getLong(2));
+
+				preparedStatement2.addBatch();
 			}
 
 			preparedStatement2.executeBatch();

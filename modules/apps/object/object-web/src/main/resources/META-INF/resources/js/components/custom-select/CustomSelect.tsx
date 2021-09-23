@@ -18,7 +18,7 @@ import React from 'react';
 import './CustomSelect.scss';
 
 interface ICustomSelectProps extends React.HTMLAttributes<HTMLElement> {
-	contentRight: React.ReactNode;
+	contentRight?: React.ReactNode;
 	value?: string;
 }
 
@@ -37,11 +37,7 @@ const CustomSelect: React.ForwardRefExoticComponent<
 				ref={forwardRef}
 				tabIndex={0}
 			>
-				{value ? (
-					<span>{value}</span>
-				) : (
-					<span className="text-secondary">{placeholder}</span>
-				)}
+				<span>{value || placeholder}</span>
 
 				<div>
 					{contentRight}

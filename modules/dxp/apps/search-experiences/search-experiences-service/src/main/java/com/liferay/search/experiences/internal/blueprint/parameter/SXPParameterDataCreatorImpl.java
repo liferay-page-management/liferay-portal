@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -49,6 +50,8 @@ import com.liferay.search.experiences.blueprint.parameter.StringSXPParameter;
 import com.liferay.search.experiences.blueprint.parameter.contributor.SXPParameterContributor;
 import com.liferay.search.experiences.internal.blueprint.parameter.contributor.CommerceSXPParameterContributor;
 import com.liferay.search.experiences.internal.blueprint.parameter.contributor.ContextSXPParameterContributor;
+import com.liferay.search.experiences.internal.blueprint.parameter.contributor.IpstackSXPParameterContributor;
+import com.liferay.search.experiences.internal.blueprint.parameter.contributor.OpenWeatherMapSXPParameterContributor;
 import com.liferay.search.experiences.internal.blueprint.parameter.contributor.SystemSXPParameterContributor;
 import com.liferay.search.experiences.internal.blueprint.parameter.contributor.TimeSXPParameterContributor;
 import com.liferay.search.experiences.internal.blueprint.parameter.contributor.UserSXPParameterContributor;
@@ -114,6 +117,8 @@ public class SXPParameterDataCreatorImpl implements SXPParameterDataCreator {
 			new CommerceSXPParameterContributor(),
 			new ContextSXPParameterContributor(
 				_groupLocalService, _language, _layoutLocalService),
+			new IpstackSXPParameterContributor(_configurationProvider),
+			new OpenWeatherMapSXPParameterContributor(_configurationProvider),
 			new SystemSXPParameterContributor(),
 			new TimeSXPParameterContributor(_language, _userLocalService),
 			new UserSXPParameterContributor(
@@ -635,6 +640,9 @@ public class SXPParameterDataCreatorImpl implements SXPParameterDataCreator {
 
 		return array;
 	}
+
+	@Reference
+	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private GroupLocalService _groupLocalService;

@@ -503,7 +503,7 @@ definition {
 		}
 
 		task ("View the cards in the Overview tab") {
-			for (var cardTitle : list "Individual Activities,Current Interests,Associated Segments") {
+			for (var cardTitle : list "Individual Events,Current Interests,Associated Segments") {
 				ACCards.viewCards(cardTitle = "${cardTitle}");
 			}
 		}

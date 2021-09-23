@@ -15,7 +15,10 @@
 package com.liferay.search.experiences.blueprint.parameter;
 
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.util.GetterUtil;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -33,6 +36,38 @@ public abstract class BaseSXPParameter implements SXPParameter {
 		SXPParameter sxpParameter = (SXPParameter)object;
 
 		return Objects.equals(name, sxpParameter.getName());
+	}
+
+	@Override
+	public boolean evaluateContains(JSONObject jsonObject) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean evaluateEquals(JSONObject jsonObject) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean evaluateGreaterThan(
+		boolean closedRange, JSONObject jsonObject) {
+
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean evaluateIn(JSONObject jsonObject) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean evaluateInRange(JSONObject jsonObject) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public String evaluateTemplateVariable(Map<String, String> options) {
+		return GetterUtil.getString(getValue());
 	}
 
 	@Override
@@ -61,16 +96,12 @@ public abstract class BaseSXPParameter implements SXPParameter {
 
 	@Override
 	public String toString() {
-		return toString(String.valueOf(getValue()));
-	}
-
-	protected String toString(String valueString) {
 		Class<?> clazz = getClass();
 
 		return StringBundler.concat(
 			"{className=", clazz.getSimpleName(), ", name=", name,
-			", templateVariable=", templateVariable, ", value=", valueString,
-			"}");
+			", templateVariable=", templateVariable, ", value=",
+			evaluateTemplateVariable(null), "}");
 	}
 
 	protected final String name;

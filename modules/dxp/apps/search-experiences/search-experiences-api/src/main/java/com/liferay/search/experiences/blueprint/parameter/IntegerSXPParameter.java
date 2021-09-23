@@ -14,9 +14,8 @@
 
 package com.liferay.search.experiences.blueprint.parameter;
 
-import com.liferay.search.experiences.blueprint.parameter.exception.SXPParameterException;
-
-import java.util.Map;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONObject;
 
 /**
  * @author Petteri Karttunen
@@ -32,22 +31,59 @@ public class IntegerSXPParameter extends BaseSXPParameter {
 	}
 
 	@Override
-	public boolean accept(EvaluationVisitor evaluationVisitor)
-		throws SXPParameterException {
+	public boolean evaluateEquals(JSONObject jsonObject) {
+		int value = jsonObject.getInt("value");
 
-		return evaluationVisitor.visit(this);
+		if (_value.intValue() == value) {
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override
-	public String accept(
-			ToStringVisitor toStringVisitor, Map<String, String> options)
-		throws Exception {
+	public boolean evaluateGreaterThan(
+		boolean closedRange, JSONObject jsonObject) {
 
-		return toStringVisitor.visit(this, options);
+		int value = jsonObject.getInt("value");
+
+		if (closedRange) {
+			if (_value.compareTo(value) >= 0) {
+				return true;
+			}
+
+			return false;
+		}
+		else if (_value.compareTo(value) > 0) {
+			return true;
+		}
+
+		return false;
 	}
 
-	public boolean equalsTo(Integer value) {
-		if (_value.intValue() == value.intValue()) {
+	@Override
+	public boolean evaluateIn(JSONObject jsonObject) {
+		JSONArray jsonArray = jsonObject.getJSONArray("value");
+
+		for (int i = 0; i < jsonArray.length(); i++) {
+			if (_value.intValue() == jsonArray.getInt(i)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	@Override
+	public boolean evaluateInRange(JSONObject jsonObject) {
+		JSONArray jsonArray = jsonObject.getJSONArray("value");
+
+		int lowerBound = jsonArray.getInt(0);
+		int upperBound = jsonArray.getInt(1);
+
+		if ((_value.compareTo(lowerBound) >= 0) &&
+			(_value.compareTo(upperBound) <= 0)) {
+
 			return true;
 		}
 

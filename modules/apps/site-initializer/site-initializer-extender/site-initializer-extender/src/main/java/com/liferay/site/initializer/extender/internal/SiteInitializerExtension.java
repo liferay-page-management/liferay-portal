@@ -32,14 +32,25 @@ import com.liferay.headless.delivery.resource.v1_0.DocumentFolderResource;
 import com.liferay.headless.delivery.resource.v1_0.DocumentResource;
 import com.liferay.headless.delivery.resource.v1_0.StructuredContentFolderResource;
 import com.liferay.journal.service.JournalArticleLocalService;
+import com.liferay.layout.page.template.importer.LayoutPageTemplatesImporter;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
+import com.liferay.layout.util.LayoutCopyHelper;
 import com.liferay.object.admin.rest.resource.v1_0.ObjectDefinitionResource;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.ThemeLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.settings.SettingsFactory;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.remote.app.service.RemoteAppEntryLocalService;
+import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalService;
+import com.liferay.site.navigation.service.SiteNavigationMenuLocalService;
+import com.liferay.site.navigation.type.SiteNavigationMenuItemTypeRegistry;
 import com.liferay.style.book.zip.processor.StyleBookEntryZipProcessor;
 
 import javax.servlet.ServletContext;
@@ -74,16 +85,26 @@ public class SiteInitializerExtension {
 		FragmentsImporter fragmentsImporter,
 		GroupLocalService groupLocalService,
 		JournalArticleLocalService journalArticleLocalService,
-		JSONFactory jsonFactory,
+		JSONFactory jsonFactory, LayoutCopyHelper layoutCopyHelper,
+		LayoutLocalService layoutLocalService,
+		LayoutPageTemplateEntryLocalService layoutPageTemplateEntryLocalService,
+		LayoutPageTemplatesImporter layoutPageTemplatesImporter,
+		LayoutPageTemplateStructureLocalService
+			layoutPageTemplateStructureLocalService,
+		LayoutSetLocalService layoutSetLocalService,
 		ObjectDefinitionResource.Factory objectDefinitionResourceFactory,
-		Portal portal,
+		Portal portal, RemoteAppEntryLocalService remoteAppEntryLocalService,
 		ResourcePermissionLocalService resourcePermissionLocalService,
 		RoleLocalService roleLocalService, SettingsFactory settingsFactory,
+		SiteNavigationMenuItemLocalService siteNavigationMenuItemLocalService,
+		SiteNavigationMenuItemTypeRegistry siteNavigationMenuItemTypeRegistry,
+		SiteNavigationMenuLocalService siteNavigationMenuLocalService,
 		StructuredContentFolderResource.Factory
 			structuredContentFolderResourceFactory,
 		StyleBookEntryZipProcessor styleBookEntryZipProcessor,
 		TaxonomyCategoryResource.Factory taxonomyCategoryResourceFactory,
 		TaxonomyVocabularyResource.Factory taxonomyVocabularyResourceFactory,
+		ThemeLocalService themeLocalService,
 		UserLocalService userLocalService) {
 
 		_dependencyManager = new DependencyManager(bundle.getBundleContext());
@@ -100,12 +121,20 @@ public class SiteInitializerExtension {
 				defaultDDMStructureHelper, dlURLHelper,
 				documentFolderResourceFactory, documentResourceFactory,
 				fragmentsImporter, groupLocalService,
-				journalArticleLocalService, jsonFactory,
+				journalArticleLocalService, jsonFactory, layoutCopyHelper,
+				layoutLocalService, layoutPageTemplateEntryLocalService,
+				layoutPageTemplatesImporter,
+				layoutPageTemplateStructureLocalService, layoutSetLocalService,
 				objectDefinitionResourceFactory, portal,
-				resourcePermissionLocalService, roleLocalService,
-				settingsFactory, structuredContentFolderResourceFactory,
+				remoteAppEntryLocalService, resourcePermissionLocalService,
+				roleLocalService, settingsFactory,
+				siteNavigationMenuItemLocalService,
+				siteNavigationMenuItemTypeRegistry,
+				siteNavigationMenuLocalService,
+				structuredContentFolderResourceFactory,
 				styleBookEntryZipProcessor, taxonomyCategoryResourceFactory,
-				taxonomyVocabularyResourceFactory, userLocalService));
+				taxonomyVocabularyResourceFactory, themeLocalService,
+				userLocalService));
 
 		ServiceDependency serviceDependency =
 			_dependencyManager.createServiceDependency();

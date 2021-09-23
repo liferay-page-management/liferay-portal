@@ -14,9 +14,6 @@
 
 package com.liferay.batch.planner.web.internal.display.context;
 
-import com.liferay.frontend.taglib.clay.servlet.taglib.display.context.SearchContainerManagementToolbarDisplayContext;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
@@ -40,7 +37,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Matija Petanjek
  */
 public class BatchPlannerPlanManagementToolbarDisplayContext
-	extends SearchContainerManagementToolbarDisplayContext {
+	extends BaseSearchContainerManagementToolbarDisplayContext {
 
 	public BatchPlannerPlanManagementToolbarDisplayContext(
 		HttpServletRequest httpServletRequest,
@@ -80,41 +77,6 @@ public class BatchPlannerPlanManagementToolbarDisplayContext
 
 	public List<String> getAvailableActions() {
 		return Arrays.asList("deleteBatchPlannerPlans");
-	}
-
-	@Override
-	public CreationMenu getCreationMenu() {
-		return CreationMenuBuilder.addDropdownItem(
-			dropdownItem -> {
-				dropdownItem.setHref(
-					PortletURLBuilder.createRenderURL(
-						liferayPortletResponse
-					).setMVCRenderCommandName(
-						"/batch_planner/edit_export_batch_planner_plan"
-					).setBackURL(
-						String.valueOf(liferayPortletResponse.createRenderURL())
-					).setNavigation(
-						"export"
-					).buildPortletURL());
-				dropdownItem.setLabel(
-					LanguageUtil.get(httpServletRequest, "export-file"));
-			}
-		).addDropdownItem(
-			dropdownItem -> {
-				dropdownItem.setHref(
-					PortletURLBuilder.createRenderURL(
-						liferayPortletResponse
-					).setMVCRenderCommandName(
-						"/batch_planner/edit_import_batch_planner_plan"
-					).setBackURL(
-						String.valueOf(liferayPortletResponse.createRenderURL())
-					).setNavigation(
-						"import"
-					).buildPortletURL());
-				dropdownItem.setLabel(
-					LanguageUtil.get(httpServletRequest, "import-file"));
-			}
-		).build();
 	}
 
 	@Override

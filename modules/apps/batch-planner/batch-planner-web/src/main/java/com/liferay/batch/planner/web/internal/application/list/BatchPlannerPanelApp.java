@@ -16,10 +16,9 @@ package com.liferay.batch.planner.web.internal.application.list;
 
 import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
+import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.batch.planner.constants.BatchPlannerPortletKeys;
 import com.liferay.portal.kernel.model.Portlet;
-
-import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -31,16 +30,11 @@ import org.osgi.service.component.annotations.Reference;
 	immediate = true,
 	property = {
 		"panel.app.order:Integer=1000",
-		"panel.category.key=applications_menu.applications.batch_engine"
+		"panel.category.key=" + PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_BATCH_PLANNER
 	},
 	service = PanelApp.class
 )
 public class BatchPlannerPanelApp extends BasePanelApp {
-
-	@Override
-	public String getLabel(Locale locale) {
-		return super.getLabel(locale);
-	}
 
 	@Override
 	public String getPortletId() {

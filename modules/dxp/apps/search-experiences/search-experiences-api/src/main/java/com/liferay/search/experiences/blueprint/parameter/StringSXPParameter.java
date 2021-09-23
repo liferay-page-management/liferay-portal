@@ -14,9 +14,10 @@
 
 package com.liferay.search.experiences.blueprint.parameter;
 
-import com.liferay.search.experiences.blueprint.parameter.exception.SXPParameterException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONObject;
 
-import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Petteri Karttunen
@@ -32,18 +33,23 @@ public class StringSXPParameter extends BaseSXPParameter {
 	}
 
 	@Override
-	public boolean accept(EvaluationVisitor evaluationVisitor)
-		throws SXPParameterException {
+	public boolean evaluateEquals(JSONObject jsonObject) {
+		String value = jsonObject.getString("value");
 
-		return evaluationVisitor.visit(this);
+		return Objects.equals(_value, value);
 	}
 
 	@Override
-	public String accept(
-			ToStringVisitor toStringVisitor, Map<String, String> options)
-		throws Exception {
+	public boolean evaluateIn(JSONObject jsonObject) {
+		JSONArray jsonArray = jsonObject.getJSONArray("value");
 
-		return toStringVisitor.visit(this, options);
+		for (int i = 0; i < jsonArray.length(); i++) {
+			if (Objects.equals(_value, jsonArray.getString(i))) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	@Override

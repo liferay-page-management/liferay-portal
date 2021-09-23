@@ -14,16 +14,24 @@
 
 package com.liferay.object.rest.internal.dto.v1_0.converter;
 
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.rest.dto.v1_0.Status;
 import com.liferay.object.rest.internal.dto.v1_0.util.CreatorUtil;
+import com.liferay.object.scope.ObjectScopeProvider;
+import com.liferay.object.scope.ObjectScopeProviderRegistry;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.language.LanguageResources;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
+
+import java.io.Serializable;
 
 import java.util.Map;
 
@@ -47,8 +55,12 @@ public class ObjectEntryDTOConverter
 
 	@Override
 	public ObjectEntry toDTO(
-		DTOConverterContext dtoConverterContext,
-		com.liferay.object.model.ObjectEntry objectEntry) {
+			DTOConverterContext dtoConverterContext,
+			com.liferay.object.model.ObjectEntry objectEntry)
+		throws Exception {
+
+		ObjectDefinition objectDefinition = _getObjectDefinition(
+			dtoConverterContext, objectEntry);
 
 		return new ObjectEntry() {
 			{
@@ -60,7 +72,8 @@ public class ObjectEntryDTOConverter
 				dateModified = objectEntry.getModifiedDate();
 				externalReferenceCode = objectEntry.getExternalReferenceCode();
 				id = objectEntry.getObjectEntryId();
-				properties = (Map)objectEntry.getValues();
+				properties = _filterMap(objectDefinition, objectEntry);
+				scopeKey = _getScopeKey(objectDefinition, objectEntry);
 				status = new Status() {
 					{
 						code = objectEntry.getStatus();
@@ -76,6 +89,66 @@ public class ObjectEntryDTOConverter
 			}
 		};
 	}
+
+	private Map<String, Object> _filterMap(
+		ObjectDefinition objectDefinition,
+		com.liferay.object.model.ObjectEntry objectEntry) {
+
+		Map<String, Serializable> values = objectEntry.getValues();
+
+		values.remove(objectDefinition.getPKObjectFieldName());
+
+		return (Map)values;
+	}
+
+	private ObjectDefinition _getObjectDefinition(
+			DTOConverterContext dtoConverterContext,
+			com.liferay.object.model.ObjectEntry objectEntry)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			(ObjectDefinition)dtoConverterContext.getAttribute(
+				"objectDefinition");
+
+		if (objectDefinition == null) {
+			objectDefinition =
+				_objectDefinitionLocalService.getObjectDefinition(
+					objectEntry.getObjectDefinitionId());
+		}
+
+		return objectDefinition;
+	}
+
+	private String _getScopeKey(
+		ObjectDefinition objectDefinition,
+		com.liferay.object.model.ObjectEntry objectEntry) {
+
+		ObjectScopeProvider objectScopeProvider =
+			_objectScopeProviderRegistry.getObjectScopeProvider(
+				objectDefinition.getScope());
+
+		if (objectScopeProvider.isGroupAware()) {
+			Group group = _groupLocalService.fetchGroup(
+				objectEntry.getGroupId());
+
+			if (group == null) {
+				return null;
+			}
+
+			return group.getGroupKey();
+		}
+
+		return null;
+	}
+
+	@Reference
+	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference
+	private ObjectScopeProviderRegistry _objectScopeProviderRegistry;
 
 	@Reference
 	private Portal _portal;

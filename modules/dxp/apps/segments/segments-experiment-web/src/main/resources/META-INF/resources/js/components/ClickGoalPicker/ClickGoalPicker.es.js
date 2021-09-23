@@ -62,6 +62,18 @@ function ClickGoalPicker({allowEdit = true, onSelectClickGoalTarget, target}) {
 
 	const {isValidTarget, mode, selectedTarget} = state;
 
+	const isSelectedTargetInDOM = document.getElementById(selectedTarget);
+
+	// If the parent passes as a prop an empty target and the old selected target
+	// is not in the DOM anymore we must update it in the Context
+
+	if (!target && selectedTarget && !isSelectedTargetInDOM) {
+		dispatch({
+			selector: target,
+			type: 'selectTarget',
+		});
+	}
+
 	const [selectorInputValue, setSelectorInputValue] = useState(
 		selectedTarget
 	);
@@ -72,13 +84,12 @@ function ClickGoalPicker({allowEdit = true, onSelectClickGoalTarget, target}) {
 
 	useEffect(() => {
 		ref.current = selectedTarget;
-
 		setSelectorInputValue(selectedTarget);
 	}, [selectedTarget]);
 
 	const previousTarget = ref.current;
 
-	if (selectedTarget != previousTarget) {
+	if (selectedTarget !== previousTarget && selectedTarget !== target) {
 		if (onSelectClickGoalTarget) {
 			onSelectClickGoalTarget(selectedTarget);
 		}

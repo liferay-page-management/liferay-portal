@@ -16,25 +16,31 @@ package com.liferay.template.web.internal.info.item.provider;
 
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateLocalService;
+import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldSet;
 import com.liferay.info.field.InfoFieldValue;
+import com.liferay.info.field.type.TextInfoFieldType;
 import com.liferay.info.item.InfoItemFieldValues;
 import com.liferay.info.item.InfoItemServiceTracker;
 import com.liferay.info.item.provider.InfoItemFieldValuesProvider;
-import com.liferay.info.item.provider.InfoItemFormProvider;
 import com.liferay.info.localized.InfoLocalizedValue;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
-import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portlet.display.template.PortletDisplayTemplate;
 import com.liferay.staging.StagingGroupHelper;
 import com.liferay.template.constants.TemplatePortletKeys;
 import com.liferay.template.info.item.provider.TemplateInfoItemFieldSetProvider;
-import com.liferay.template.web.internal.info.item.field.reader.TemplateInfoItemFieldReader;
+import com.liferay.template.model.TemplateEntry;
+import com.liferay.template.service.TemplateEntryLocalService;
+import com.liferay.template.web.internal.portlet.template.TemplateDisplayTemplateTransformer;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -49,20 +55,17 @@ public class TemplateInfoItemFieldSetProviderImpl
 	implements TemplateInfoItemFieldSetProvider {
 
 	@Override
-	public InfoFieldSet getInfoFieldSet(String className, long classPK) {
+	public InfoFieldSet getInfoFieldSet(
+		String infoItemClassName, String infoItemFormVariationKey) {
+
 		return InfoFieldSet.builder(
 		).infoFieldSetEntry(
 			consumer -> {
-				for (DDMTemplate ddmTemplate :
-						_getDDMTemplates(className, classPK)) {
+				for (TemplateEntry templateEntry :
+						_getTemplateEntries(
+							infoItemClassName, infoItemFormVariationKey)) {
 
-					TemplateInfoItemFieldReader templateInfoItemFieldReader =
-						new TemplateInfoItemFieldReader(
-							ddmTemplate,
-							InfoItemFieldValues.builder(
-							).build());
-
-					consumer.accept(templateInfoItemFieldReader.getInfoField());
+					consumer.accept(_getInfoField(templateEntry));
 				}
 			}
 		).labelInfoLocalizedValue(
@@ -73,38 +76,88 @@ public class TemplateInfoItemFieldSetProviderImpl
 	}
 
 	@Override
-	public InfoFieldValue<Object> getInfoFieldValue(
-		DDMTemplate ddmTemplate, Object itemObject) {
+	public List<InfoFieldValue<Object>> getInfoFieldValues(
+		String infoItemClassName, String infoItemFormVariationKey,
+		Object itemObject) {
 
-		if ((ddmTemplate == null) ||
-			(ddmTemplate.getResourceClassNameId() != _portal.getClassNameId(
-				InfoItemFormProvider.class.getName()))) {
+		List<InfoFieldValue<Object>> infoFieldValues = new ArrayList<>();
 
+		for (TemplateEntry templateEntry :
+				_getTemplateEntries(
+					infoItemClassName, infoItemFormVariationKey)) {
+
+			infoFieldValues.add(_getInfoFieldValue(templateEntry, itemObject));
+		}
+
+		return infoFieldValues;
+	}
+
+	private InfoField<?> _getInfoField(TemplateEntry templateEntry) {
+		DDMTemplate ddmTemplate = _ddmTemplateLocalService.fetchDDMTemplate(
+			templateEntry.getDDMTemplateId());
+
+		return InfoField.builder(
+		).infoFieldType(
+			TextInfoFieldType.INSTANCE
+		).name(
+			PortletDisplayTemplate.DISPLAY_STYLE_PREFIX +
+				templateEntry.getTemplateEntryId()
+		).labelInfoLocalizedValue(
+			InfoLocalizedValue.<String>builder(
+			).value(
+				LocaleUtil.getDefault(),
+				ddmTemplate.getName(LocaleUtil.getDefault())
+			).defaultLocale(
+				LocaleUtil.getDefault()
+			).build()
+		).build();
+	}
+
+	private InfoFieldValue<Object> _getInfoFieldValue(
+		TemplateEntry templateEntry, Object itemObject) {
+
+		if (templateEntry == null) {
 			return null;
 		}
 
-		InfoItemFieldValues infoItemFieldValues = InfoItemFieldValues.builder(
-		).build();
-
-		InfoItemFieldValuesProvider<Object> infoItemFieldValuesProvider =
-			_infoItemServiceTracker.getFirstInfoItemService(
-				InfoItemFieldValuesProvider.class,
-				_portal.getClassName(ddmTemplate.getClassNameId()));
-
-		if (infoItemFieldValuesProvider != null) {
-			infoItemFieldValues =
-				infoItemFieldValuesProvider.getInfoItemFieldValues(itemObject);
-		}
-
-		TemplateInfoItemFieldReader templateInfoItemFieldReader =
-			new TemplateInfoItemFieldReader(ddmTemplate, infoItemFieldValues);
-
 		return new InfoFieldValue<>(
-			templateInfoItemFieldReader.getInfoField(),
-			templateInfoItemFieldReader.getValue(itemObject));
+			_getInfoField(templateEntry),
+			() -> {
+				InfoItemFieldValues infoItemFieldValues =
+					InfoItemFieldValues.builder(
+					).build();
+
+				InfoItemFieldValuesProvider<Object>
+					infoItemFieldValuesProvider =
+						_infoItemServiceTracker.getFirstInfoItemService(
+							InfoItemFieldValuesProvider.class,
+							templateEntry.getInfoItemClassName());
+
+				if (infoItemFieldValuesProvider != null) {
+					infoItemFieldValues =
+						infoItemFieldValuesProvider.getInfoItemFieldValues(
+							itemObject);
+				}
+
+				TemplateDisplayTemplateTransformer
+					templateDisplayTemplateTransformer =
+						new TemplateDisplayTemplateTransformer(
+							templateEntry, infoItemFieldValues);
+
+				try {
+					return templateDisplayTemplateTransformer.transform(
+						LocaleUtil.getDefault());
+				}
+				catch (Exception exception) {
+					_log.error("Unable to transform template", exception);
+				}
+
+				return StringPool.BLANK;
+			});
 	}
 
-	private List<DDMTemplate> _getDDMTemplates(String className, long classPK)
+	private List<TemplateEntry> _getTemplateEntries(
+			String infoItemClassName, String infoItemFormVariationKey)
 		throws RuntimeException {
 
 		ServiceContext serviceContext =
@@ -127,12 +180,8 @@ public class TemplateInfoItemFieldSetProviderImpl
 				}
 			}
 
-			return _ddmTemplateLocalService.getTemplates(
-				serviceContext.getCompanyId(),
-				_portal.getCurrentAndAncestorSiteGroupIds(groupId),
-				new long[] {_portal.getClassNameId(className)},
-				new long[] {classPK},
-				_portal.getClassNameId(InfoItemFormProvider.class.getName()),
+			return _templateEntryLocalService.getTemplateEntries(
+				groupId, infoItemClassName, infoItemFormVariationKey,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 		}
 		catch (Exception exception) {
@@ -154,9 +203,9 @@ public class TemplateInfoItemFieldSetProviderImpl
 	private InfoItemServiceTracker _infoItemServiceTracker;
 
 	@Reference
-	private Portal _portal;
+	private StagingGroupHelper _stagingGroupHelper;
 
 	@Reference
-	private StagingGroupHelper _stagingGroupHelper;
+	private TemplateEntryLocalService _templateEntryLocalService;
 
 }

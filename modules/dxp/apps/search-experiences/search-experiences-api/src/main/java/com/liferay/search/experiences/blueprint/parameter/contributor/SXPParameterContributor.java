@@ -33,6 +33,6 @@ public interface SXPParameterContributor {
 	public String getSXPParameterCategoryNameKey();
 
 	public List<SXPParameterContributorDefinition>
-		getSXPParameterContributorDefinitions();
+		getSXPParameterContributorDefinitions(long companyId);
 
 }

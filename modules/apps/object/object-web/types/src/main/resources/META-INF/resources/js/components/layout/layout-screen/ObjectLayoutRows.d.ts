@@ -16,7 +16,7 @@ import React from 'react';
 import {TObjectLayoutRow} from '../types';
 interface IObjectLayoutRowsProps extends React.HTMLAttributes<HTMLElement> {
 	boxIndex: number;
-	objectLayoutRows?: TObjectLayoutRow[];
+	objectLayoutRows: TObjectLayoutRow[];
 	tabIndex: number;
 }
 declare const ObjectLayoutRows: React.FC<IObjectLayoutRowsProps>;

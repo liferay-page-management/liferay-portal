@@ -99,6 +99,13 @@ html#{$cadmin-selector} {
 
 				&--mapped {
 					color: $treeNodeNameMappedColor;
+
+					&.page-editor__page-structure__tree-node__name {
+						&--hidden,
+						&--master-item {
+							color: fade_out($treeNodeNameMappedColor, 0.6);
+						}
+					}
 				}
 			}
 

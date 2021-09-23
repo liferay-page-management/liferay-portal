@@ -32,15 +32,26 @@ import com.liferay.headless.delivery.resource.v1_0.DocumentFolderResource;
 import com.liferay.headless.delivery.resource.v1_0.DocumentResource;
 import com.liferay.headless.delivery.resource.v1_0.StructuredContentFolderResource;
 import com.liferay.journal.service.JournalArticleLocalService;
+import com.liferay.layout.page.template.importer.LayoutPageTemplatesImporter;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
+import com.liferay.layout.util.LayoutCopyHelper;
 import com.liferay.object.admin.rest.resource.v1_0.ObjectDefinitionResource;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.ThemeLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.settings.SettingsFactory;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.remote.app.service.RemoteAppEntryLocalService;
+import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalService;
+import com.liferay.site.navigation.service.SiteNavigationMenuLocalService;
+import com.liferay.site.navigation.type.SiteNavigationMenuItemTypeRegistry;
 import com.liferay.style.book.zip.processor.StyleBookEntryZipProcessor;
 
 import java.util.List;
@@ -87,12 +98,20 @@ public class SiteInitializerExtender
 				_defaultDDMStructureHelper, _dlURLHelper,
 				_documentFolderResourceFactory, _documentResourceFactory,
 				_fragmentsImporter, _groupLocalService,
-				_journalArticleLocalService, _jsonFactory,
-				_objectDefinitionResourceFactory, _portal,
+				_journalArticleLocalService, _jsonFactory, _layoutCopyHelper,
+				_layoutLocalService, _layoutPageTemplateEntryLocalService,
+				_layoutPageTemplatesImporter,
+				_layoutPageTemplateStructureLocalService,
+				_layoutSetLocalService, _objectDefinitionResourceFactory,
+				_portal, _remoteAppEntryLocalService,
 				_resourcePermissionLocalService, _roleLocalService,
-				_settingsFactory, _structuredContentFolderResourceFactory,
+				_settingsFactory, _siteNavigationMenuItemLocalService,
+				_siteNavigationMenuItemTypeRegistry,
+				_siteNavigationMenuLocalService,
+				_structuredContentFolderResourceFactory,
 				_styleBookEntryZipProcessor, _taxonomyCategoryResourceFactory,
-				_taxonomyVocabularyResourceFactory, _userLocalService);
+				_taxonomyVocabularyResourceFactory, _themeLocalService,
+				_userLocalService);
 
 		siteInitializerExtension.start();
 
@@ -183,10 +202,33 @@ public class SiteInitializerExtender
 	private JSONFactory _jsonFactory;
 
 	@Reference
+	private LayoutCopyHelper _layoutCopyHelper;
+
+	@Reference
+	private LayoutLocalService _layoutLocalService;
+
+	@Reference
+	private LayoutPageTemplateEntryLocalService
+		_layoutPageTemplateEntryLocalService;
+
+	@Reference
+	private LayoutPageTemplatesImporter _layoutPageTemplatesImporter;
+
+	@Reference
+	private LayoutPageTemplateStructureLocalService
+		_layoutPageTemplateStructureLocalService;
+
+	@Reference
+	private LayoutSetLocalService _layoutSetLocalService;
+
+	@Reference
 	private ObjectDefinitionResource.Factory _objectDefinitionResourceFactory;
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private RemoteAppEntryLocalService _remoteAppEntryLocalService;
 
 	@Reference
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
@@ -196,6 +238,17 @@ public class SiteInitializerExtender
 
 	@Reference
 	private SettingsFactory _settingsFactory;
+
+	@Reference
+	private SiteNavigationMenuItemLocalService
+		_siteNavigationMenuItemLocalService;
+
+	@Reference
+	private SiteNavigationMenuItemTypeRegistry
+		_siteNavigationMenuItemTypeRegistry;
+
+	@Reference
+	private SiteNavigationMenuLocalService _siteNavigationMenuLocalService;
 
 	@Reference
 	private StructuredContentFolderResource.Factory
@@ -210,6 +263,9 @@ public class SiteInitializerExtender
 	@Reference
 	private TaxonomyVocabularyResource.Factory
 		_taxonomyVocabularyResourceFactory;
+
+	@Reference
+	private ThemeLocalService _themeLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;

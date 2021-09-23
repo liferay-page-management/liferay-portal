@@ -79,7 +79,7 @@ public class SystemSXPParameterContributor implements SXPParameterContributor {
 
 	@Override
 	public List<SXPParameterContributorDefinition>
-		getSXPParameterContributorDefinitions() {
+		getSXPParameterContributorDefinitions(long companyId) {
 
 		return Collections.<SXPParameterContributorDefinition>emptyList();
 	}

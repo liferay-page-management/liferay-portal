@@ -15,6 +15,7 @@
 package com.liferay.template.web.internal.portlet.template;
 
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
+import com.liferay.dynamic.data.mapping.service.DDMTemplateLocalServiceUtil;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.item.InfoItemFieldValues;
@@ -29,8 +30,11 @@ import com.liferay.portal.kernel.template.TemplateHandlerRegistryUtil;
 import com.liferay.portal.kernel.templateparser.TemplateNode;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.templateparser.Transformer;
+import com.liferay.portlet.display.template.PortletDisplayTemplate;
 import com.liferay.portlet.display.template.constants.PortletDisplayTemplateConstants;
+import com.liferay.template.model.TemplateEntry;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -42,9 +46,9 @@ import java.util.Map;
 public class TemplateDisplayTemplateTransformer {
 
 	public TemplateDisplayTemplateTransformer(
-		DDMTemplate ddmTemplate, InfoItemFieldValues infoItemFieldValues) {
+		TemplateEntry templateEntry, InfoItemFieldValues infoItemFieldValues) {
 
-		_ddmTemplate = ddmTemplate;
+		_templateEntry = templateEntry;
 		_infoItemFieldValues = infoItemFieldValues;
 	}
 
@@ -70,16 +74,20 @@ public class TemplateDisplayTemplateTransformer {
 		).put(
 			PortletDisplayTemplateConstants.LOCALE, themeDisplay.getLocale()
 		).put(
-			PortletDisplayTemplateConstants.TEMPLATE_ID,
-			_ddmTemplate.getTemplateId()
-		).put(
 			PortletDisplayTemplateConstants.THEME_DISPLAY, themeDisplay
 		).build();
 
 		for (InfoFieldValue<Object> infoFieldValue :
 				_infoItemFieldValues.getInfoFieldValues()) {
 
-			InfoField infoField = infoFieldValue.getInfoField();
+			InfoField<?> infoField = infoFieldValue.getInfoField();
+
+			if (StringUtil.startsWith(
+					infoField.getName(),
+					PortletDisplayTemplate.DISPLAY_STYLE_PREFIX)) {
+
+				continue;
+			}
 
 			TemplateNode templateNode = new TemplateNode(
 				themeDisplay, infoField.getName(),
@@ -89,23 +97,23 @@ public class TemplateDisplayTemplateTransformer {
 			contextObjects.put(infoField.getName(), templateNode);
 		}
 
-		contextObjects.put(
-			TemplateConstants.CLASS_NAME_ID, _ddmTemplate.getClassNameId());
-
 		TemplateHandler templateHandler =
 			TemplateHandlerRegistryUtil.getTemplateHandler(
 				InfoItemFormProvider.class.getName());
 
 		contextObjects.putAll(templateHandler.getCustomContextObjects());
 
+		DDMTemplate ddmTemplate = DDMTemplateLocalServiceUtil.fetchDDMTemplate(
+			_templateEntry.getDDMTemplateId());
+
 		return transformer.transform(
-			themeDisplay, contextObjects, _ddmTemplate.getScript(),
-			_ddmTemplate.getLanguage(), new UnsyncStringWriter(),
+			themeDisplay, contextObjects, ddmTemplate.getScript(),
+			TemplateConstants.LANG_TYPE_FTL, new UnsyncStringWriter(),
 			themeDisplay.getRequest(), themeDisplay.getResponse());
 	}
 
-	private final DDMTemplate _ddmTemplate;
 	private final InfoItemFieldValues _infoItemFieldValues;
+	private final TemplateEntry _templateEntry;
 
 	private static class TransformerHolder {
 
