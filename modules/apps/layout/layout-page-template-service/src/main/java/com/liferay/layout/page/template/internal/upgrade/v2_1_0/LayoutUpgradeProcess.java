@@ -83,17 +83,14 @@ public class LayoutUpgradeProcess extends UpgradeProcess {
 			while (resultSet.next()) {
 				long companyId = resultSet.getLong("companyId");
 				long userId = resultSet.getLong("userId");
-
-				userId = PortalUtil.getValidUserId(companyId, userId);
-
 				long groupId = resultSet.getLong("groupId");
 				String name = resultSet.getString("name");
 				int type = resultSet.getInt("type_");
 				long layoutPrototypeId = resultSet.getLong("layoutPrototypeId");
 
 				long plid = _getPlid(
-					userId, groupId, name, type, layoutPrototypeId,
-					serviceContext);
+					PortalUtil.getValidUserId(companyId, userId), groupId, name,
+					type, layoutPrototypeId, serviceContext);
 
 				preparedStatement.setLong(1, plid);
 
