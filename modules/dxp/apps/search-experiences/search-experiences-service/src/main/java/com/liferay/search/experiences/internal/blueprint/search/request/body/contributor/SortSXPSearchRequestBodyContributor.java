@@ -214,7 +214,7 @@ public class SortSXPSearchRequestBodyContributor
 	}
 
 	private void _processScriptOptions(
-		ScriptBuilder scriptBuilder, JSONObject jsonObject) {
+		JSONObject jsonObject, ScriptBuilder scriptBuilder) {
 
 		if (jsonObject != null) {
 			for (String key : jsonObject.keySet()) {
@@ -224,7 +224,7 @@ public class SortSXPSearchRequestBodyContributor
 	}
 
 	private void _processScriptParams(
-		ScriptBuilder scriptBuilder, JSONObject jsonObject) {
+		JSONObject jsonObject, ScriptBuilder scriptBuilder) {
 
 		if (jsonObject != null) {
 			for (String key : jsonObject.keySet()) {
@@ -233,7 +233,7 @@ public class SortSXPSearchRequestBodyContributor
 		}
 	}
 
-	private void _processSortOrder(Sort sort, JSONObject jsonObject) {
+	private void _processSortOrder(JSONObject jsonObject, Sort sort) {
 		if (jsonObject.has("order")) {
 			sort.setSortOrder(_toSortOrder(jsonObject.getString("order")));
 		}
@@ -265,7 +265,7 @@ public class SortSXPSearchRequestBodyContributor
 				_toNestedSort(jsonObject.getJSONObject("nested")));
 		}
 
-		_processSortOrder(fieldSort, jsonObject);
+		_processSortOrder(jsonObject, fieldSort);
 
 		return fieldSort;
 	}
@@ -289,7 +289,7 @@ public class SortSXPSearchRequestBodyContributor
 		_processGeoDistanceType(geoDistanceSort, jsonObject);
 		_processGeoLocationPoints(geoDistanceSort, jsonObject.get(field));
 		_processGeoSortMode(geoDistanceSort, jsonObject);
-		_processSortOrder(geoDistanceSort, jsonObject);
+		_processSortOrder(jsonObject, geoDistanceSort);
 
 		return geoDistanceSort;
 	}
@@ -334,8 +334,8 @@ public class SortSXPSearchRequestBodyContributor
 		}
 
 		_processScriptOptions(
-			scriptBuilder, jsonObject.getJSONObject("options"));
-		_processScriptParams(scriptBuilder, jsonObject.getJSONObject("params"));
+			jsonObject.getJSONObject("options"), scriptBuilder);
+		_processScriptParams(jsonObject.getJSONObject("params"), scriptBuilder);
 
 		return scriptBuilder.build();
 	}
@@ -357,7 +357,7 @@ public class SortSXPSearchRequestBodyContributor
 			ScriptSort.ScriptSortType.valueOf(
 				StringUtil.toUpperCase(jsonObject.getString("type"))));
 
-		_processSortOrder(scriptSort, jsonObject);
+		_processSortOrder(jsonObject, scriptSort);
 
 		return scriptSort;
 	}
