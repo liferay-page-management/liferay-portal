@@ -171,11 +171,7 @@ public class SortSXPSearchRequestBodyContributor
 	private void _processGeoLocationPoints(
 		GeoDistanceSort geoDistanceSort, Object object) {
 
-		if (object instanceof String) {
-			geoDistanceSort.addGeoLocationPoints(
-				_geoBuilders.geoLocationPoint((String)object));
-		}
-		else if (object instanceof JSONObject) {
+		if (object instanceof JSONObject) {
 			JSONObject jsonObject = (JSONObject)object;
 
 			geoDistanceSort.addGeoLocationPoints(
@@ -196,6 +192,10 @@ public class SortSXPSearchRequestBodyContributor
 			else {
 				_addGeoLocationPoint(geoDistanceSort, jsonArray);
 			}
+		}
+		else if (object instanceof String) {
+			geoDistanceSort.addGeoLocationPoints(
+				_geoBuilders.geoLocationPoint((String)object));
 		}
 		else {
 			throw new IllegalArgumentException();
