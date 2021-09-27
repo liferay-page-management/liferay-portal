@@ -22,7 +22,6 @@ import com.liferay.fragment.processor.FragmentEntryProcessorContext;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -133,9 +132,7 @@ public class FreeMarkerFragmentEntryProcessor
 				"configuration", configurationValuesJSONObject
 			).put(
 				"fragmentElementId",
-				StringBundler.concat(
-					"fragment-", fragmentEntryLink.getFragmentEntryId(), "-",
-					fragmentEntryLinkNamespace)
+				fragmentEntryProcessorContext.getFragmentElementId()
 			).put(
 				"fragmentEntryLinkNamespace", fragmentEntryLinkNamespace
 			).putAll(
