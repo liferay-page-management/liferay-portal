@@ -75,7 +75,7 @@ public class ObjectDefinitionsDetailsDisplayContext {
 						StringBundler.concat(
 							panelCategory.getLabel(
 								_objectRequestHelper.getLocale()),
-							" >> ",
+							" > ",
 							childPanelCategory.getLabel(
 								_objectRequestHelper.getLocale()))));
 			}
