@@ -52,20 +52,20 @@ public class SortConfiguration implements Serializable {
 	}
 
 	@Schema
-	public String getSortsArrayJSONString() {
-		return sortsArrayJSONString;
+	public String getSortsJSONArrayString() {
+		return sortsJSONArrayString;
 	}
 
-	public void setSortsArrayJSONString(String sortsArrayJSONString) {
-		this.sortsArrayJSONString = sortsArrayJSONString;
+	public void setSortsJSONArrayString(String sortsJSONArrayString) {
+		this.sortsJSONArrayString = sortsJSONArrayString;
 	}
 
 	@JsonIgnore
-	public void setSortsArrayJSONString(
-		UnsafeSupplier<String, Exception> sortsArrayJSONStringUnsafeSupplier) {
+	public void setSortsJSONArrayString(
+		UnsafeSupplier<String, Exception> sortsJSONArrayStringUnsafeSupplier) {
 
 		try {
-			sortsArrayJSONString = sortsArrayJSONStringUnsafeSupplier.get();
+			sortsJSONArrayString = sortsJSONArrayStringUnsafeSupplier.get();
 		}
 		catch (RuntimeException re) {
 			throw re;
@@ -77,7 +77,7 @@ public class SortConfiguration implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String sortsArrayJSONString;
+	protected String sortsJSONArrayString;
 
 	@Override
 	public boolean equals(Object object) {
@@ -106,16 +106,16 @@ public class SortConfiguration implements Serializable {
 
 		sb.append("{");
 
-		if (sortsArrayJSONString != null) {
+		if (sortsJSONArrayString != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"sortsArrayJSONString\": ");
+			sb.append("\"sortsJSONArrayString\": ");
 
 			sb.append("\"");
 
-			sb.append(_escape(sortsArrayJSONString));
+			sb.append(_escape(sortsJSONArrayString));
 
 			sb.append("\"");
 		}
