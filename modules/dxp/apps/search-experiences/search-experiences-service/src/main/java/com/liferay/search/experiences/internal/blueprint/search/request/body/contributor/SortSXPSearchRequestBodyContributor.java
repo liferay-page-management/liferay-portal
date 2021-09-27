@@ -363,9 +363,9 @@ public class SortSXPSearchRequestBodyContributor
 	}
 
 	private Sort _toSort(
-		int i, JSONArray jsonArray, SXPParameterData sxpParameterData) {
+		int index, JSONArray jsonArray, SXPParameterData sxpParameterData) {
 
-		Object object = jsonArray.get(i);
+		Object object = jsonArray.get(index);
 
 		if (object instanceof JSONObject) {
 			return _toSort(
