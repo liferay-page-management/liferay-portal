@@ -85,7 +85,7 @@ public class SortSXPSearchRequestBodyContributor
 		}
 
 		JSONArray jsonArray = _createJSONArray(
-			sortConfiguration.getSortsArrayJSONString());
+			sortConfiguration.getSortsJSONArrayString());
 
 		for (int i = 0; i < jsonArray.length(); i++) {
 			searchRequestBuilder.addSort(
@@ -106,9 +106,9 @@ public class SortSXPSearchRequestBodyContributor
 				jsonArray.getDouble(0), jsonArray.getDouble(1)));
 	}
 
-	private JSONArray _createJSONArray(String sortsArrayJSONString) {
+	private JSONArray _createJSONArray(String sortsJSONArrayString) {
 		try {
-			return _jsonFactory.createJSONArray(sortsArrayJSONString);
+			return _jsonFactory.createJSONArray(sortsJSONArrayString);
 		}
 		catch (JSONException jsonException) {
 			return ReflectionUtil.throwException(jsonException);

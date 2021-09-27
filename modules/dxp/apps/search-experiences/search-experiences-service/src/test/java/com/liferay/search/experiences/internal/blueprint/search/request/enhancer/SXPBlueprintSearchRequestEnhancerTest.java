@@ -264,7 +264,7 @@ public class SXPBlueprintSearchRequestEnhancerTest {
 		configuration.setSortConfiguration(
 			new SortConfiguration() {
 				{
-					sortsArrayJSONString = _read(
+					sortsJSONArrayString = _read(
 						"SXPBlueprintSearchRequestEnhancerTest.testSort.json");
 				}
 			});
