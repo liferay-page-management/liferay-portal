@@ -128,6 +128,7 @@ const useGetContent = (fragmentEntryLink, languageId, segmentsExperienceId) => {
 			(hasLocalizable && languageId !== previousLanguageId)
 		) {
 			FragmentService.renderFragmentEntryLinkContent({
+				collectionItemIndex,
 				fragmentEntryLinkId,
 				itemClassName,
 				itemClassPK,
@@ -146,6 +147,7 @@ const useGetContent = (fragmentEntryLink, languageId, segmentsExperienceId) => {
 		}
 	}, [
 		collectionContentId,
+		collectionItemIndex,
 		dispatch,
 		editableValues,
 		fieldSets,
@@ -243,6 +245,7 @@ const useRenderFragmentContent = () => {
 			return FragmentService.renderFragmentEntryLinkContent({
 				collectionItemClassName,
 				collectionItemClassPK,
+				collectionItemIndex,
 				fragmentEntryLinkId,
 				onNetworkStatus,
 				segmentsExperienceId,
