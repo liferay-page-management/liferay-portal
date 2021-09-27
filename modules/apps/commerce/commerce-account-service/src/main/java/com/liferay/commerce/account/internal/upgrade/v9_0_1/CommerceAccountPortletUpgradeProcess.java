@@ -32,11 +32,11 @@ public class CommerceAccountPortletUpgradeProcess extends UpgradeProcess {
 	@Override
 	protected void doUpgrade() throws Exception {
 		String updateLayout =
-			"UPDATE Layout SET typeSettings = ? WHERE layoutId = ?";
+			"update Layout set typeSettings = ? where layoutId = ?";
 
 		String selectLayout = StringBundler.concat(
-			"SELECT layoutId, typeSettings FROM Layout WHERE typeSettings ",
-			"LIKE '%", _COMMERCE_ACCOUNT_PORTLET, "%'");
+			"select layoutId, typeSettings from Layout where typeSettings ",
+			"like '%", _PORTLET_ID, "%'");
 
 		try (PreparedStatement preparedStatement =
 				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
@@ -52,7 +52,7 @@ public class CommerceAccountPortletUpgradeProcess extends UpgradeProcess {
 				preparedStatement.setString(
 					1,
 					StringUtil.replace(
-						typeSettings, _COMMERCE_ACCOUNT_PORTLET,
+						typeSettings, _PORTLET_ID,
 						AccountPortletKeys.ACCOUNT_ENTRIES_MANAGEMENT));
 
 				preparedStatement.setLong(2, layoutId);
@@ -64,7 +64,7 @@ public class CommerceAccountPortletUpgradeProcess extends UpgradeProcess {
 		}
 	}
 
-	private static final String _COMMERCE_ACCOUNT_PORTLET =
+	private static final String _PORTLET_ID =
 		"com_liferay_commerce_account_web_internal_portlet_" +
 			"CommerceAccountPortlet";
 
