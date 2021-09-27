@@ -376,7 +376,6 @@ public class ObjectDDMStorageAdapter implements DDMStorageAdapter {
 
 			for (Object optionValue : optionValueJSONArray) {
 				sb.append(optionsReferences.get(optionValue.toString()));
-
 				sb.append(StringPool.COMMA_AND_SPACE);
 			}
 

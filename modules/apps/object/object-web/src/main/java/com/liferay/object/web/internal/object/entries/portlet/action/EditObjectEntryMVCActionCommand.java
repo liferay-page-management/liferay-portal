@@ -139,17 +139,21 @@ public class EditObjectEntryMVCActionCommand extends BaseMVCActionCommand {
 
 			Serializable value = entry.getValue();
 
-			if (value != null) {
-				Class<?> clazz = value.getClass();
-
-				if (clazz == ArrayList.class) {
-					String valueString = value.toString();
-
-					ddmFormValuesMap.put(
-						entry.getKey(),
-						valueString.replaceAll("\\[|\\]|\"", StringPool.BLANK));
-				}
+			if (value == null) {
+				continue;
 			}
+
+			Class<?> clazz = value.getClass();
+
+			if (clazz != ArrayList.class) {
+				continue;
+			}
+
+			String valueString = value.toString();
+
+			ddmFormValuesMap.put(
+				entry.getKey(),
+				valueString.replaceAll("\\[|\\]|\"", StringPool.BLANK));
 		}
 
 		return ddmFormValuesMap;
