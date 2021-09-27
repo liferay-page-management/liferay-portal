@@ -89,7 +89,7 @@ public class SortSXPSearchRequestBodyContributor
 
 		for (int i = 0; i < jsonArray.length(); i++) {
 			searchRequestBuilder.addSort(
-				_toSort(i, jsonArray, sxpParameterData));
+				_toSort(jsonArray.get(i), sxpParameterData));
 		}
 	}
 
@@ -362,22 +362,6 @@ public class SortSXPSearchRequestBodyContributor
 		return scriptSort;
 	}
 
-	private Sort _toSort(
-		int index, JSONArray jsonArray, SXPParameterData sxpParameterData) {
-
-		Object object = jsonArray.get(index);
-
-		if (object instanceof JSONObject) {
-			return _toSort(
-				SXPParameterParser.parse((JSONObject)object, sxpParameterData));
-		}
-		else if (object instanceof String) {
-			return _toFieldSort((String)object);
-		}
-
-		throw new IllegalArgumentException();
-	}
-
 	private Sort _toSort(JSONObject jsonObject) {
 		Iterator<String> iterator = jsonObject.keys();
 
@@ -396,6 +380,18 @@ public class SortSXPSearchRequestBodyContributor
 		}
 		else if (object instanceof String) {
 			return _toFieldSort(key, (String)object);
+		}
+
+		throw new IllegalArgumentException();
+	}
+
+	private Sort _toSort(Object object, SXPParameterData sxpParameterData) {
+		if (object instanceof JSONObject) {
+			return _toSort(
+				SXPParameterParser.parse((JSONObject)object, sxpParameterData));
+		}
+		else if (object instanceof String) {
+			return _toFieldSort((String)object);
 		}
 
 		throw new IllegalArgumentException();
