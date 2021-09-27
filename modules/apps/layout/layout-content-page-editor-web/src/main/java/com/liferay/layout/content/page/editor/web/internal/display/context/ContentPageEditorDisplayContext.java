@@ -1529,6 +1529,12 @@ public class ContentPageEditorDisplayContext {
 				DefaultFragmentRendererContext fragmentRendererContext =
 					new DefaultFragmentRendererContext(fragmentEntryLink);
 
+				fragmentRendererContext.
+					setCollectionStyledLayoutStructureItemIds(
+						LayoutStructureUtil.
+							getCollectionStyledLayoutStructureItemIds(
+								fragmentEntryLink.getFragmentEntryLinkId(),
+								_getLayoutStructure()));
 				fragmentRendererContext.setLocale(themeDisplay.getLocale());
 				fragmentRendererContext.setMode(
 					FragmentEntryLinkConstants.EDIT);
