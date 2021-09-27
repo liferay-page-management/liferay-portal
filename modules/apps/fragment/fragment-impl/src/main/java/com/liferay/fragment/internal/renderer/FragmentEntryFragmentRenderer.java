@@ -237,7 +237,7 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 
 		StringBundler cacheKeySB = new StringBundler(5);
 
-		cacheKeySB.append(fragmentEntryLink.getFragmentEntryLinkId());
+		cacheKeySB.append(fragmentRendererContext.getFragmentElementId());
 		cacheKeySB.append(StringPool.DASH);
 		cacheKeySB.append(fragmentRendererContext.getLocale());
 		cacheKeySB.append(StringPool.DASH);
@@ -281,6 +281,8 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 		defaultFragmentEntryProcessorContext.setFieldValues(
 			fieldValuesOptional.orElse(null));
 
+		defaultFragmentEntryProcessorContext.setFragmentElementId(
+			fragmentRendererContext.getFragmentElementId());
 		defaultFragmentEntryProcessorContext.setPreviewClassNameId(
 			fragmentRendererContext.getPreviewClassNameId());
 		defaultFragmentEntryProcessorContext.setPreviewClassPK(
