@@ -103,14 +103,14 @@ public class AssetListEntryStagedModelDataHandler
 			entryElement, ExportImportPathUtil.getModelPath(assetListEntry),
 			assetListEntry);
 
-		_exportReferenceStagedModel(assetListEntry, portletDataContext);
-
 		_exportAssetListEntryAssetEntryRels(portletDataContext, assetListEntry);
 
 		_exportAssetListEntrySegmentsEntryRels(
 			portletDataContext, assetListEntry);
 
 		_exportAssetObjects(portletDataContext, assetListEntry);
+
+		_exportReferenceStagedModel(assetListEntry, portletDataContext);
 	}
 
 	@Override
@@ -165,10 +165,10 @@ public class AssetListEntryStagedModelDataHandler
 				portletDataContext, importedAssetListEntry);
 		}
 
-		importedAssetListEntry.setAssetEntryType(
-			assetListEntry.getAssetEntryType());
 		importedAssetListEntry.setAssetEntrySubtype(
 			_getAssetEntrySubtype(assetListEntry, portletDataContext));
+		importedAssetListEntry.setAssetEntryType(
+			assetListEntry.getAssetEntryType());
 
 		importedAssetListEntry =
 			_assetListEntryLocalService.updateAssetListEntry(
