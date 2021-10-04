@@ -27,6 +27,8 @@ import com.liferay.journal.model.JournalArticleResource;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.service.JournalArticleResourceLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -143,7 +145,8 @@ public class JournalArticleInfoItemObjectProvider
 
 		if (Validator.isNull(version) ||
 			Objects.equals(
-				version, InfoItemIdentifier.VERSION_LATEST_APPROVED)) {
+				version, InfoItemIdentifier.VERSION_LATEST_APPROVED) ||
+			!_isSignedIn()) {
 
 			return _journalArticleLocalService.fetchLatestArticle(classPK);
 		}
@@ -210,6 +213,17 @@ public class JournalArticleInfoItemObjectProvider
 				groupId, journalArticle.getArticleId(),
 				GetterUtil.getDouble(version));
 		}
+	}
+
+	private boolean _isSignedIn() {
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if ((permissionChecker == null) || !permissionChecker.isSignedIn()) {
+			return false;
+		}
+
+		return true;
 	}
 
 	@Reference
