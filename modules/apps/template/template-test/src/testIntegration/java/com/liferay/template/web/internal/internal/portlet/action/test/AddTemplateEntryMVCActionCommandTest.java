@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.template.web.internal.portlet.action.test;
+package com.liferay.template.web.internal.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.dynamic.data.mapping.exception.TemplateNameException;

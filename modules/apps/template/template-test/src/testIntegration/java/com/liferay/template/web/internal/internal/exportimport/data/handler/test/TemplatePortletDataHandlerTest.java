@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.template.web.internal.exportimport.data.handler.test;
+package com.liferay.template.web.internal.internal.exportimport.data.handler.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.dynamic.data.mapping.test.util.DDMTemplateTestUtil;
