@@ -444,6 +444,12 @@ public class LayoutPageTemplateCollectionLocalServiceWrapper
 			getLayoutPageTemplateCollectionsCount();
 	}
 
+	@Override
+	public int getLayoutPageTemplateCollectionsCount(long groupId) {
+		return _layoutPageTemplateCollectionLocalService.
+			getLayoutPageTemplateCollectionsCount(groupId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *

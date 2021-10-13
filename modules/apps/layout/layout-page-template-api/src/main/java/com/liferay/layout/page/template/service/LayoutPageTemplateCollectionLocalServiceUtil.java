@@ -398,6 +398,10 @@ public class LayoutPageTemplateCollectionLocalServiceUtil {
 		return getService().getLayoutPageTemplateCollectionsCount();
 	}
 
+	public static int getLayoutPageTemplateCollectionsCount(long groupId) {
+		return getService().getLayoutPageTemplateCollectionsCount(groupId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *

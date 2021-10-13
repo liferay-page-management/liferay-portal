@@ -341,6 +341,9 @@ public interface LayoutPageTemplateCollectionLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getLayoutPageTemplateCollectionsCount();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getLayoutPageTemplateCollectionsCount(long groupId);
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
