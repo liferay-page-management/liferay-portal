@@ -112,6 +112,35 @@ public class DDMFormValuesJSONDeserializerTest extends BaseDDMTestCase {
 	}
 
 	@Test
+	public void testDeserializationWithInvalidInstanceId() throws Exception {
+		DDMForm ddmForm = DDMFormTestUtil.createDDMForm();
+
+		String serializedDDMFormValues = read(
+			"ddm-form-values-json-deserializer-invalid-instanceId.json");
+
+		DDMFormValues ddmFormValues = deserialize(
+			serializedDDMFormValues, ddmForm);
+
+		Map<String, List<DDMFormFieldValue>> ddmFormFieldValuesMap =
+			ddmFormValues.getDDMFormFieldValuesMap();
+
+		Assert.assertEquals(
+			ddmFormFieldValuesMap.toString(), 1, ddmFormFieldValuesMap.size());
+
+		List<DDMFormFieldValue> ddmFormFieldValues = ddmFormFieldValuesMap.get(
+			"Select1");
+
+		Assert.assertEquals(
+			ddmFormFieldValues.toString(), 1, ddmFormFieldValues.size());
+
+		DDMFormFieldValue validDDMFormFieldValue = ddmFormFieldValues.get(0);
+
+		Assert.assertEquals(
+			ddmFormFieldValues.toString(), "yhar",
+			validDDMFormFieldValue.getInstanceId());
+	}
+
+	@Test
 	public void testDeserializationWithParentRepeatableField()
 		throws Exception {
 
