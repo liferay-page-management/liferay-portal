@@ -98,9 +98,35 @@
 							/>
 						</h6>
 
-						<h6 class="text-default">
-							<strong><liferay-ui:message key="members" /></strong>: <%= siteMySitesDisplayContext.getGroupUsersCounts(group.getGroupId()) %>
-						</h6>
+						<%
+						int usersCount = siteMySitesDisplayContext.getGroupUsersCounts(group.getGroupId());
+						%>
+
+						<c:if test="<%= usersCount > 0 %>">
+							<h6 class="text-default">
+								<strong><liferay-ui:message arguments="<%= usersCount %>" key='<%= (usersCount > 1) ? "x-users" : "x-user" %>' /></strong>
+							</h6>
+						</c:if>
+
+						<%
+						int organizationsCount = siteMySitesDisplayContext.getGroupOrganizationsCount(group.getGroupId());
+						%>
+
+						<c:if test="<%= organizationsCount > 0 %>">
+							<h6 class="text-default">
+								<strong><liferay-ui:message arguments="<%= organizationsCount %>" key='<%= (organizationsCount > 1) ? "x-organizations" : "x-organization" %>' /></strong>
+							</h6>
+						</c:if>
+
+						<%
+						int userGroupsCount = siteMySitesDisplayContext.getGroupUserGroupsCount(group.getGroupId());
+						%>
+
+						<c:if test="<%= userGroupsCount > 0 %>">
+							<h6 class="text-default">
+								<strong><liferay-ui:message arguments="<%= userGroupsCount %>" key='<%= (userGroupsCount > 1) ? "x-user-groups" : "x-user-group" %>' /></strong>
+							</h6>
+						</c:if>
 
 						<c:if test='<%= Objects.equals(siteMySitesDisplayContext.getTabs1(), "my-sites") && PropsValues.LIVE_USERS_ENABLED %>'>
 							<h6 class="text-default">
