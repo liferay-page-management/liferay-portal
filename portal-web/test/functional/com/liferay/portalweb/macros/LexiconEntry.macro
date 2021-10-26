@@ -5,7 +5,7 @@ definition {
 
 		Click.mouseOverClick(locator1 = "Icon#CURRENT_DISPLAY_STYLE");
 
-		if (IsElementNotPresent(locator1 = "MenuItem#ANY_MENU_ITEM")) {
+		if (IsElementNotPresent(locator1 = "MenuItem#ANY_MENU_ITEM", key_menuItem = "")) {
 			Refresh();
 
 			Click.mouseOverClick(locator1 = "Icon#CURRENT_DISPLAY_STYLE");
