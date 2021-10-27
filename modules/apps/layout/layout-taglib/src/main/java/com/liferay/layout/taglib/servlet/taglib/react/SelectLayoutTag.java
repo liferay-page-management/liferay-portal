@@ -428,6 +428,10 @@ public class SelectLayoutTag extends IncludeTag {
 		Layout draftLayout = layout.fetchDraftLayout();
 
 		if (draftLayout != null) {
+			if (_showDraftLayouts) {
+				return false;
+			}
+
 			boolean published = GetterUtil.getBoolean(
 				draftLayout.getTypeSettingsProperty("published"));
 
