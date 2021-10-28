@@ -42,7 +42,7 @@ definition {
 		var javascript = '''
 var element = document.evaluate("${element}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 
-return element.textContent;
+return element.innerText;
 		''';
 
 		var textContent = selenium.getEval("${javascript}");
