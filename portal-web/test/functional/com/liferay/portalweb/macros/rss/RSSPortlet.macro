@@ -53,6 +53,12 @@ definition {
 	}
 
 	macro changeFeedsOrder {
+		Portlet.gotoPortletOptions(
+			portletName = "RSS Publisher",
+			portletOption = "Configuration");
+
+		SelectFrame(locator1 = "IFrame#MODAL_BODY");
+
 		var key_fromRowNumber = "${fromRowNumber}";
 		var key_toRowNumber = "${toRowNumber}";
 
@@ -60,6 +66,8 @@ definition {
 			locator1 = "RSSFeed#FEEDS_1",
 			locator2 = "RSSFeed#FEEDS_2",
 			position = "${offset}");
+
+		PortletEntry.save();
 	}
 
 	macro configureDisplaySettings {
