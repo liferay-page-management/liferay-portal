@@ -17,6 +17,7 @@ dependencies {
 	compileOnly project(":apps:organizations:organizations-item-selector-api")
 	compileOnly project(":apps:petra:petra-portlet-url-builder")
 	compileOnly project(":apps:portal-odata:portal-odata-api")
+	compileOnly project(":apps:product-navigation:product-navigation-control-menu-api")
 	compileOnly project(":apps:roles:roles-admin-api")
 	compileOnly project(":apps:roles:roles-item-selector-api")
 	compileOnly project(":apps:segments:segments-api")
