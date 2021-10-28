@@ -331,6 +331,8 @@ definition {
 				feedRowIndexNumber = "1",
 				feedTitle = "NBA",
 				rowIndexNumber = "2");
+
+			IFrame.closeFrame();
 		}
 
 		task ("Change the order of RSS Feeds") {
@@ -338,8 +340,6 @@ definition {
 				fromRowNumber = "2",
 				offset = "0,-25",
 				toRowNumber = "1");
-
-			PortletEntry.save();
 
 			IFrame.closeFrame();
 		}
