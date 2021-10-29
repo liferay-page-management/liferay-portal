@@ -233,7 +233,11 @@ AssetListEntry assetListEntry = assetListDisplayContext.getAssetListEntry();
 						Array.prototype.forEach.call(
 							selectedItems,
 							(assetEntry) => {
-								assetEntryIds.push(assetEntry.value);
+								if (assetEntry.entityid === undefined) {
+									assetEntryIds.push(assetEntry.value);
+								} else {
+									assetEntryIds.push(assetEntry.entityid);
+								}
 							}
 						);
 
