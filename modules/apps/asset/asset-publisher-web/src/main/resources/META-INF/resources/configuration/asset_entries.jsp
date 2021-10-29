@@ -240,7 +240,11 @@ for (long groupId : groupIds) {
 		var assetEntryIds = [];
 
 		Array.prototype.forEach.call(assetEntryList, (assetEntry) => {
-			assetEntryIds.push(assetEntry.entityid);
+			if (assetEntry.entityid === undefined) {
+				assetEntryIds.push(assetEntry.value);
+			} else {
+				assetEntryIds.push(assetEntry.entityid);
+			}
 
 			assetClassName = assetEntry.assetclassname;
 		});
@@ -267,6 +271,7 @@ for (long groupId : groupIds) {
 			var delegateTarget = event.delegateTarget;
 
 			Liferay.Util.openSelectionModal({
+				customSelectEvent: true,
 				multiple: true,
 				onSelect: function (selectedItems) {
 					if (selectedItems) {
