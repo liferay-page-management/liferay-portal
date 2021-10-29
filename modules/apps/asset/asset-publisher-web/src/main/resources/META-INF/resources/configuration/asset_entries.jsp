@@ -242,7 +242,8 @@ for (long groupId : groupIds) {
 		Array.prototype.forEach.call(assetEntryList, (assetEntry) => {
 			if (assetEntry.entityid === undefined) {
 				assetEntryIds.push(assetEntry.value);
-			} else {
+			}
+			else {
 				assetEntryIds.push(assetEntry.entityid);
 			}
 

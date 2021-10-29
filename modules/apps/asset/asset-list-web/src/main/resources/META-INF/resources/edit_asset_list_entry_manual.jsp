@@ -235,7 +235,8 @@ AssetListEntry assetListEntry = assetListDisplayContext.getAssetListEntry();
 							(assetEntry) => {
 								if (assetEntry.entityid === undefined) {
 									assetEntryIds.push(assetEntry.value);
-								} else {
+								}
+								else {
 									assetEntryIds.push(assetEntry.entityid);
 								}
 							}
