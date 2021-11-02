@@ -424,6 +424,8 @@ public class AssetVocabularyLocalServiceImpl
 	public AssetVocabulary getGroupVocabulary(long groupId, String name)
 		throws PortalException {
 
+		name = StringUtil.toLowerCase(name);
+
 		return assetVocabularyPersistence.findByG_N(groupId, name);
 	}
 
