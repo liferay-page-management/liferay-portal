@@ -34,7 +34,9 @@ if (Validator.isNotNull(portletId) && layout.isSystem() && !layout.isTypeControl
 boolean hasDraft = false;
 boolean isDraft = false;
 
-if (Objects.equals(layout.getType(), LayoutConstants.TYPE_CONTENT) || Objects.equals(layout.getType(), LayoutConstants.TYPE_COLLECTION)) {
+FFProductNavigationControlMenuConfiguration ffProductNavigationControlMenuConfiguration = (FFProductNavigationControlMenuConfiguration)request.getAttribute(ProductNavigationControlMenuWebKeys.FF_PRODUCT_NAVIGATION_CONTROL_MENU_CONFIGURATION);
+
+if (ffProductNavigationControlMenuConfiguration.layoutExperienceSelector() && (Objects.equals(layout.getType(), LayoutConstants.TYPE_CONTENT) || Objects.equals(layout.getType(), LayoutConstants.TYPE_COLLECTION))) {
 	Layout draftLayout = layout.fetchDraftLayout();
 
 	if (draftLayout != null) {

@@ -17,6 +17,7 @@ package com.liferay.segments.web.internal.product.navigation.control.menu;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorWebKeys;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.security.permission.resource.LayoutContentModelResourcePermission;
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -42,6 +43,7 @@ import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsEntryLocalService;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
+import com.liferay.segments.web.internal.configuration.FFSegmentsConfiguration;
 import com.liferay.segments.web.internal.constants.SegmentsWebKeys;
 import com.liferay.sites.kernel.util.SitesUtil;
 
@@ -51,19 +53,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Pablo Molina
  */
 @Component(
+	configurationPid = "com.liferay.segments.web.internal.configuration.FFSegmentsConfiguration",
 	immediate = true,
 	property = {
 		"product.navigation.control.menu.category.key=" + ProductNavigationControlMenuCategoryKeys.TOOLS,
@@ -107,6 +113,10 @@ public class ExperienceSelectorProductNavigationControlMenuEntry
 
 	@Override
 	public boolean isShow(HttpServletRequest httpServletRequest) {
+		if (!_ffSegmentsConfiguration.layoutExperienceSelector()) {
+			return false;
+		}
+
 		String mode = ParamUtil.getString(
 			httpServletRequest, "p_l_mode", Constants.VIEW);
 
@@ -177,6 +187,13 @@ public class ExperienceSelectorProductNavigationControlMenuEntry
 	)
 	public void setServletContext(ServletContext servletContext) {
 		super.setServletContext(servletContext);
+	}
+
+	@Activate
+	@Modified
+	protected void activate(Map<String, Object> properties) {
+		_ffSegmentsConfiguration = ConfigurableUtil.createConfigurable(
+			FFSegmentsConfiguration.class, properties);
 	}
 
 	private HashMap<String, Object> _getDefaultSegmentsExperience(
@@ -287,6 +304,8 @@ public class ExperienceSelectorProductNavigationControlMenuEntry
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ExperienceSelectorProductNavigationControlMenuEntry.class);
+
+	private static volatile FFSegmentsConfiguration _ffSegmentsConfiguration;
 
 	@Reference
 	private Http _http;

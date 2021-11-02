@@ -14,6 +14,7 @@
 
 package com.liferay.product.navigation.control.menu.web.internal;
 
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -21,17 +22,27 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.product.navigation.control.menu.BaseJSPProductNavigationControlMenuEntry;
 import com.liferay.product.navigation.control.menu.ProductNavigationControlMenuEntry;
 import com.liferay.product.navigation.control.menu.constants.ProductNavigationControlMenuCategoryKeys;
+import com.liferay.product.navigation.control.menu.web.internal.configuration.FFProductNavigationControlMenuConfiguration;
+import com.liferay.product.navigation.control.menu.web.internal.constants.ProductNavigationControlMenuWebKeys;
+
+import java.io.IOException;
+
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Eudaldo Alonso
  */
 @Component(
+	configurationPid = "com.liferay.product.navigation.control.menu.web.internal.configuration.FFProductNavigationControlMenuConfiguration",
 	immediate = true,
 	property = {
 		"product.navigation.control.menu.category.key=" + ProductNavigationControlMenuCategoryKeys.TOOLS,
@@ -46,6 +57,20 @@ public class LayoutHeaderProductNavigationControlMenuEntry
 	@Override
 	public String getIconJspPath() {
 		return "/entries/layout_header.jsp";
+	}
+
+	@Override
+	public boolean includeIcon(
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse)
+		throws IOException {
+
+		httpServletRequest.setAttribute(
+			ProductNavigationControlMenuWebKeys.
+				FF_PRODUCT_NAVIGATION_CONTROL_MENU_CONFIGURATION,
+			_ffProductNavigationControlMenuConfiguration);
+
+		return super.includeIcon(httpServletRequest, httpServletResponse);
 	}
 
 	@Override
@@ -73,5 +98,16 @@ public class LayoutHeaderProductNavigationControlMenuEntry
 	public void setServletContext(ServletContext servletContext) {
 		super.setServletContext(servletContext);
 	}
+
+	@Activate
+	@Modified
+	protected void activate(Map<String, Object> properties) {
+		_ffProductNavigationControlMenuConfiguration =
+			ConfigurableUtil.createConfigurable(
+				FFProductNavigationControlMenuConfiguration.class, properties);
+	}
+
+	private static volatile FFProductNavigationControlMenuConfiguration
+		_ffProductNavigationControlMenuConfiguration;
 
 }

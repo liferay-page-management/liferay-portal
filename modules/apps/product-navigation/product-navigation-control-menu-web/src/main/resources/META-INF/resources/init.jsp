@@ -49,6 +49,7 @@ page import="com.liferay.portal.kernel.util.Validator" %><%@
 page import="com.liferay.portal.kernel.workflow.WorkflowConstants" %><%@
 page import="com.liferay.portal.util.PropsValues" %><%@
 page import="com.liferay.product.navigation.control.menu.constants.ProductNavigationControlMenuPortletKeys" %><%@
+page import="com.liferay.product.navigation.control.menu.web.internal.configuration.FFProductNavigationControlMenuConfiguration" %><%@
 page import="com.liferay.product.navigation.control.menu.web.internal.constants.ProductNavigationControlMenuWebKeys" %><%@
 page import="com.liferay.product.navigation.control.menu.web.internal.display.context.AddContentPanelDisplayContext" %>
 
