@@ -31,6 +31,19 @@ definition {
 	@description = "This is for LPS-116078. Can navigate to preview page via page preview info bar but not interact with preview page in style book editor."
 	@priority = "4"
 	test CanNavigateToPreviewPageViaPagePreviewInfoBarButNotAllowInteractWithPreviewPage {
+		task ("Add a widget page") {
+			JSONLayout.addPublicLayout(
+				groupName = "Test Site Name",
+				layoutName = "Test Widget Page Name");
+		}
+
+		task ("Add a Blogs portlet to page") {
+			JSONLayout.addWidgetToPublicLayout(
+				groupName = "Test Site Name",
+				layoutName = "Test Widget Page Name",
+				widgetName = "Blogs");
+		}
+
 		task ("Add a content page") {
 			JSONLayout.addPublicLayout(
 				groupName = "Test Site Name",
@@ -49,19 +62,6 @@ definition {
 				fragmentName = "Banner Center");
 
 			PageEditor.clickPublish();
-		}
-
-		task ("Add a widget page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name");
-		}
-
-		task ("Add a Blogs portlet to page") {
-			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Widget Page Name",
-				widgetName = "Blogs");
 		}
 
 		task ("Add a style book") {
