@@ -134,7 +134,9 @@ definition {
 		task ("Assert can not preview style book") {
 			AssertElementNotPresent(locator1 = "StyleBookEditor#PAGE_PREVIEW_IFRAME");
 
-			AssertVisible(locator1 = "StyleBookEditor#NO_PAGE_MESSAGE");
+			AssertVisible(
+				key_content = "You cannot preview the style book because your site is empty.",
+				locator1 = "StyleBookEditor#EMPTY_SITE_MESSAGE");
 
 			AssertVisible(
 				key_text = "Publish",
