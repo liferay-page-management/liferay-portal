@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.segments.constants.SegmentsExperienceConstants;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -186,9 +187,21 @@ public class ContentLayoutTypeController extends BaseLayoutTypeControllerImpl {
 						layoutFullURL, "p_l_back_url", backURL);
 				}
 
-				httpServletResponse.sendRedirect(
-					_http.addParameter(
-						layoutFullURL, "p_l_mode", Constants.EDIT));
+				layoutFullURL = _http.addParameter(
+					layoutFullURL, "p_l_mode", Constants.EDIT);
+
+				long segmentsExperienceId = ParamUtil.getLong(
+					httpServletRequest, "p_s_e_id",
+					SegmentsExperienceConstants.ID_DEFAULT);
+
+				if (segmentsExperienceId !=
+						SegmentsExperienceConstants.ID_DEFAULT) {
+
+					layoutFullURL = _http.setParameter(
+						layoutFullURL, "p_s_e_id", segmentsExperienceId);
+				}
+
+				httpServletResponse.sendRedirect(layoutFullURL);
 			}
 			else {
 				requestDispatcher.include(httpServletRequest, servletResponse);
