@@ -20,13 +20,36 @@
 List<AssetTag> assetTags = null;
 
 if (showAssetCount && (classNameId > 0)) {
-	assetTags = AssetTagServiceUtil.getTags(scopeGroupId, classNameId, null, 0, maxAssetTags, new AssetTagCountComparator());
+	assetTags = AssetTagServiceUtil.getTags(PortalUtil.getSiteGroupId(scopeGroupId), classNameId, null, 0, maxAssetTags, new AssetTagCountComparator());
 }
 else {
-	assetTags = AssetTagServiceUtil.getGroupTags(scopeGroupId, 0, maxAssetTags, new AssetTagCountComparator());
+	assetTags = AssetTagServiceUtil.getGroupTags(PortalUtil.getSiteGroupId(scopeGroupId), 0, maxAssetTags, new AssetTagCountComparator());
 }
 
 assetTags = ListUtil.sort(assetTags);
+
+List<AssetTag> filteredAssetTags = new ArrayList<>();
+
+for (AssetTag tag : assetTags) {
+	String tagName = tag.getName();
+
+	int count = 0;
+
+	if (classNameId > 0) {
+		count = AssetTagServiceUtil.getVisibleAssetsTagsCount(scopeGroupId, classNameId, tagName);
+	}
+	else {
+		count = AssetTagServiceUtil.getVisibleAssetsTagsCount(scopeGroupId, tagName);
+	}
+
+	if ((count > 0) || showZeroAssetCount) {
+		AssetTag filteredTag = (AssetTag)tag.clone();
+
+		filteredTag.setAssetCount(count);
+
+		filteredAssetTags.add(filteredTag);
+	}
+}
 %>
 
 <liferay-ddm:template-renderer
@@ -38,7 +61,7 @@ assetTags = ListUtil.sort(assetTags);
 	%>'
 	displayStyle="<%= displayStyle %>"
 	displayStyleGroupId="<%= displayStyleGroupId %>"
-	entries="<%= assetTags %>"
+	entries="<%= filteredAssetTags %>"
 >
 	<liferay-asset:asset-tags-navigation
 		classNameId="<%= classNameId %>"
