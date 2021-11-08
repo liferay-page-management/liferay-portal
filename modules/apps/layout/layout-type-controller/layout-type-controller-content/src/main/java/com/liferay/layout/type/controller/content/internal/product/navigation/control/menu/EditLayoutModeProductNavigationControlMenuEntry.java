@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.product.navigation.control.menu.BaseProductNavigationControlMenuEntry;
 import com.liferay.product.navigation.control.menu.ProductNavigationControlMenuEntry;
 import com.liferay.product.navigation.control.menu.constants.ProductNavigationControlMenuCategoryKeys;
+import com.liferay.segments.constants.SegmentsExperienceConstants;
 import com.liferay.sites.kernel.util.SitesUtil;
 import com.liferay.staging.StagingGroupHelper;
 
@@ -136,6 +137,17 @@ public class EditLayoutModeProductNavigationControlMenuEntry
 				}
 
 				redirect = _portal.getLayoutFullURL(draftLayout, themeDisplay);
+			}
+
+			long segmentsExperienceId = ParamUtil.getLong(
+				httpServletRequest, "p_s_e_id",
+				SegmentsExperienceConstants.ID_DEFAULT);
+
+			if (segmentsExperienceId !=
+					SegmentsExperienceConstants.ID_DEFAULT) {
+
+				redirect = _http.setParameter(
+					redirect, "p_s_e_id", segmentsExperienceId);
 			}
 
 			redirect = _http.setParameter(
