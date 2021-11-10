@@ -1,15 +1,22 @@
 @component-name = "portal-wcm"
 definition {
+
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property testray.main.component.name = "Asset Lists";
+
 	setUp {
-		TestCase.setUpPortalInstance();
+		task ("Set up instance and sign in") {
+			TestCase.setUpPortalInstance();
 
-		User.firstLoginPG();
+			User.firstLoginPG();
+		}
 
-		JSONGroup.addGroup(groupName = "Test Site Name");
+		task ("Add a site") {
+			JSONGroup.addGroup(groupName = "Test Site Name");
+		}
 	}
+
 	tearDown {
 		var testPortalInstance = PropsUtil.get("test.portal.instance");
 
@@ -21,23 +28,19 @@ definition {
 		}
 	}
 
-	@description = "This is use case for LPS-129109. This is use case for LPS-129109. No alert shown when view the collection page based on collection with XSS name."
+	@description = "This is use case for LPS-129109. No alert shown when view the collection page based on collection with XSS name."
 	@priority = "4"
 	test ViewCollectionPageBasedOnCollectionWithXSSName {
-		property portal.acceptance = "true";
 
-		task ("Create a manual asset list") {
+		task ("Create a manual collection with XSS name for All Types") {
 			AssetListsAdmin.openAssetListsAdmin(siteURLKey = "test-site-name");
 
 			AssetListsAdmin.addManualSelection(assetListTitle = "<script>alert(123)</script>");
+
+			AssetListsAdmin.configureItemTypeInManualCollection(itemType = "All Types");
 		}
 
-		task ("Select All Types as item type for the collection created") {
-			AssetListsAdmin.configureItemTypeInManualCollection(
-				itemType = "All Types");
-		}
-
-		task ("Add collection page based on dynamic collection") {
+		task ("Add collection page based on manual collection") {
 			SitePages.openPagesAdmin(siteURLKey = "test-site-name");
 
 			ContentPages.addPublicCollectionPage(
@@ -48,7 +51,7 @@ definition {
 			PortletEntry.publish();
 		}
 
-		task ("Navigate to content page via View action") {
+		task ("Navigate to collection page at view mode") {
 			SitePages.gotoPageMenuItem(
 				menuItem = "View",
 				pageName = "Collection Page Name");
