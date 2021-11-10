@@ -1330,35 +1330,7 @@ definition {
 		AssertVisible(locator1 = "Icon#EDIT_PENCIL");
 	}
 
-@description = "This is use case for LPS-129109. Stored XSS with Collection name."
-	@priority = "4"
-	test StoredXSSWithCollectionName {
-		property portal.acceptance = "true";
-
-		task ("Add a dynamic collection") {
-			JSONAssetlist.addDynamicAssetListEntry(
-				groupName = "Test Site Name",
-				title = "<script>alert(123)</script>");
-		}
-
-		task ("Add collection page based on dynamic collection") {
-			SitePages.openPagesAdmin(siteURLKey = "test-site-name");
-
-			ContentPages.addPublicCollectionPage(
-				collectionName = "<script>alert(123)</script>",
-				pageName = "Collection Page Name",
-				tabName = "Collections");
-		}
-
-		task ("Navigate to content page in view mode") {
-			ContentPagesNavigator.openViewContentPage(
-				pageName = "Collection Page Name",
-				siteName = "Test Site Name");
-		}
-
-		AssertAlertNotPresent();
-		
-	}	@description = "This is a test for LPS-110183. Can view information about collection items of collection page."
+	@description = "This is a test for LPS-110183. Can view information about collection items of collection page."
 	@priority = "5"
 	test ViewCollectionItemViaPageFinderAndPageAdmin {
 		property portal.acceptance = "true";
