@@ -460,7 +460,7 @@
 <!--PAGE_CUSTOMIZATION-->
 <tr>
 	<td>PAGE_CUSTOMIZATION_MESSAGE_INFO</td>
-	<td>//li[contains(@class,'control-menu') and contains(@class,'nav-item')]/span[contains(.,'You can customize this page')]</td>
+	<td>//li[contains(@class,'control-menu') and contains(@class,'nav-item')]/span[contains(.,'${key_text}')]</td>
 	<td></td>
 </tr>
 <tr>
