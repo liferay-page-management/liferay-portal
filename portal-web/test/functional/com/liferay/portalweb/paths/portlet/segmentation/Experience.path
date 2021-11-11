@@ -16,6 +16,16 @@
 	<td></td>
 </tr>
 <tr>
+	<td>DROPDOWN_LABEL</td>
+	<td>//div[contains(@class,'dropdown')]//span[contains(@title,'${key_content}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DROPDOWN_MENU</td>
+	<td>//ul[contains(@class,'dropdown-menu')]/li[${key_index}][contains(.,'${key_content}')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>FRAGMENT_HEADING</td>
 	<td>//*[contains(@class, 'component-heading') and contains(@class, 'text-break')]</td>
 	<td></td>
