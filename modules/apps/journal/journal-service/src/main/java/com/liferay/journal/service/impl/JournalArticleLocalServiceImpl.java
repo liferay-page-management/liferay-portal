@@ -4407,9 +4407,12 @@ public class JournalArticleLocalServiceImpl
 			JournalArticle.class.getName(), article.getResourcePrimKey());
 
 		if (visible) {
-			_assetEntryLocalService.updateVisible(
-				JournalArticle.class.getName(), article.getResourcePrimKey(),
-				true);
+			AssetEntry entry = _assetEntryLocalService.getEntry(
+				JournalArticle.class.getName(), article.getResourcePrimKey());
+
+			entry.setTitle(article.getTitleMapAsXML());
+
+			_assetEntryLocalService.updateVisible(entry, true);
 		}
 
 		// Comment
