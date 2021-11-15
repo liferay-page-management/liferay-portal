@@ -137,6 +137,36 @@ definition {
 		}
 	}
 
+	@description = "This is use case for LPS-141762. SQLSyntaxErrorException on AssetEntryLocalServiceUtil.getTopViewedEntries call."
+	@priority = "4"
+	test CallGetTopViewedEntriesWithoutAnyIssue {
+		task ("Add a Web Content Article") {
+			JSONWebcontent.addWebContent(
+				content = "Web Content Content",
+				groupName = "Test Site Name",
+				title = "Web Content Title");
+		}
+        task ("Go to Server Administration and execute Groovy script"){
+            ServerAdministration.openServerAdmin();
+
+            var script = '''
+                import com.liferay.asset.kernel.service.AssetEntryLocalServiceUtil;
+                import com.liferay.asset.kernel.model.AssetEntry;
+                List<AssetEntry> assetEntries = AssetEntryLocalServiceUtil.getTopViewedEntries("com.liferay.journal.model.JournalArticle", false, -1, -1);
+                for(AssetEntry entry : assetEntries) {
+                    out.println(entry);
+                }
+            ''';
+
+            ServerAdministration.executeScript(
+                language = "Groovy",
+                script = "${script}");
+        }
+        task ("Assert there is no error in console") {
+			AssertConsoleTextNotPresent(value1 = "com.liferay.portal.kernel.dao.orm.ORMException: org.hibernate.exception.SQLGrammarException");
+		}
+	}
+
 	@priority = "4"
 	test CannotRepublishExpiredWebContent {
 		property testray.component.names = "Web Content Administration";
