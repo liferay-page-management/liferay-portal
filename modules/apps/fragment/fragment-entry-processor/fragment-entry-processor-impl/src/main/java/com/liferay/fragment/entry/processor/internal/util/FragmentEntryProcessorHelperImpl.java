@@ -16,6 +16,7 @@ package com.liferay.fragment.entry.processor.internal.util;
 
 import com.liferay.asset.info.display.contributor.util.ContentAccessor;
 import com.liferay.asset.info.display.contributor.util.ContentAccessorUtil;
+import com.liferay.asset.info.display.contributor.util.TemplateUtil;
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.entry.processor.helper.FragmentEntryProcessorHelper;
 import com.liferay.fragment.processor.DefaultFragmentEntryProcessorContext;
@@ -588,6 +589,7 @@ public class FragmentEntryProcessorHelperImpl
 
 		template.put(TemplateConstants.WRITER, unsyncStringWriter);
 		template.put("contentAccessorUtil", ContentAccessorUtil.getInstance());
+		template.put("templateUtil", TemplateUtil.getInstance());
 
 		Optional<Map<String, Supplier<Object>>> fieldValueSuppliersOptional =
 			fragmentEntryProcessorContext.getFieldValueSuppliersOptional();
