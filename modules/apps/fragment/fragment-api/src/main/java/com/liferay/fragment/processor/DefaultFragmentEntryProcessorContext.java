@@ -20,6 +20,7 @@ import com.liferay.info.item.InfoItemIdentifier;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,6 +49,13 @@ public class DefaultFragmentEntryProcessorContext
 	@Override
 	public Optional<Map<String, Object>> getFieldValuesOptional() {
 		return Optional.ofNullable(_fieldValues);
+	}
+
+	@Override
+	public Optional<Map<String, Supplier<Object>>>
+		getFieldValueSuppliersOptional() {
+
+		return Optional.ofNullable(_fieldValueSuppliers);
 	}
 
 	@Override
@@ -108,6 +116,12 @@ public class DefaultFragmentEntryProcessorContext
 		_fieldValues = fieldValues;
 	}
 
+	public void setFieldValueSuppliers(
+		Map<String, Supplier<Object>> fieldValueSuppliers) {
+
+		_fieldValueSuppliers = fieldValueSuppliers;
+	}
+
 	public void setFragmentElementId(String fragmentElementId) {
 		_fragmentElementId = fragmentElementId;
 	}
@@ -134,6 +148,7 @@ public class DefaultFragmentEntryProcessorContext
 
 	private Object _displayObject;
 	private Map<String, Object> _fieldValues;
+	private Map<String, Supplier<Object>> _fieldValueSuppliers;
 	private String _fragmentElementId;
 	private final HttpServletRequest _httpServletRequest;
 	private final HttpServletResponse _httpServletResponse;

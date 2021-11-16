@@ -17,6 +17,7 @@ package com.liferay.fragment.processor;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +33,12 @@ public interface FragmentEntryProcessorContext {
 	public Optional<Object> getDisplayObjectOptional();
 
 	public Optional<Map<String, Object>> getFieldValuesOptional();
+
+	public default Optional<Map<String, Supplier<Object>>>
+		getFieldValueSuppliersOptional() {
+
+		return Optional.empty();
+	}
 
 	public String getFragmentElementId();
 

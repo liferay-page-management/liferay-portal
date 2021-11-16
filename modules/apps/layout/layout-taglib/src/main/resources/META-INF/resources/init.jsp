@@ -36,6 +36,8 @@ page import="com.liferay.portal.util.PropsValues" %><%@
 page import="com.liferay.portlet.layoutsadmin.util.LayoutsTreeUtil" %><%@
 page import="com.liferay.taglib.aui.AUIUtil" %>
 
+<%@ page import="java.util.function.Supplier" %>
+
 <liferay-frontend:defineObjects />
 
 <liferay-theme:defineObjects />

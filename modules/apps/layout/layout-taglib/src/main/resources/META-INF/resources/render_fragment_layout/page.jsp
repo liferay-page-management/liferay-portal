@@ -18,6 +18,7 @@
 
 <%
 Map<String, Object> fieldValues = (Map<String, Object>)request.getAttribute("liferay-layout:render-fragment-layout:fieldValues");
+Map<String, Supplier<Object>> fieldValueSuppliers = (Map<String, Supplier<Object>>)request.getAttribute("liferay-layout:render-fragment-layout:fieldValueSuppliers");
 LayoutStructure layoutStructure = (LayoutStructure)request.getAttribute("liferay-layout:render-fragment-layout:layoutStructure");
 String mainItemId = (String)request.getAttribute("liferay-layout:render-fragment-layout:mainItemId");
 String mode = (String)request.getAttribute("liferay-layout:render-fragment-layout:mode");
@@ -36,6 +37,7 @@ try {
 	>
 		<liferay-layout:render-layout-structure
 			fieldValues="<%= fieldValues %>"
+			fieldValueSuppliers="<%= fieldValueSuppliers %>"
 			layoutStructure="<%= layoutStructure %>"
 			mainItemId="<%= mainItemId %>"
 			mode="<%= mode %>"

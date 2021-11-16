@@ -159,8 +159,9 @@ public class RenderLayoutStructureTag extends IncludeTag {
 		RenderLayoutStructureDisplayContext
 			renderLayoutStructureDisplayContext =
 				new RenderLayoutStructureDisplayContext(
-					getFieldValues(), getRequest(), getLayoutStructure(),
-					getMainItemId(), getMode(), isShowPreview());
+					getFieldValues(), getFieldValueSuppliers(), getRequest(),
+					getLayoutStructure(), getMainItemId(), getMode(),
+					isShowPreview());
 
 		_renderLayoutStructure(
 			renderLayoutStructureDisplayContext.getMainChildrenItemIds(),

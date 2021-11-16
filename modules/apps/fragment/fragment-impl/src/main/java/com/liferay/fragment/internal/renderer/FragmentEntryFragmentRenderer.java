@@ -46,6 +46,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -280,6 +281,12 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 
 		defaultFragmentEntryProcessorContext.setFieldValues(
 			fieldValuesOptional.orElse(null));
+
+		Optional<Map<String, Supplier<Object>>> fieldValueSuppliersOptional =
+			fragmentRendererContext.getFieldValueSuppliersOptional();
+
+		defaultFragmentEntryProcessorContext.setFieldValueSuppliers(
+			fieldValueSuppliersOptional.orElse(null));
 
 		defaultFragmentEntryProcessorContext.setFragmentElementId(
 			fragmentRendererContext.getFragmentElementId());

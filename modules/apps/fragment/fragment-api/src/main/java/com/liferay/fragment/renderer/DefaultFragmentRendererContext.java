@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * @author Jorge Ferrer
@@ -43,6 +44,13 @@ public class DefaultFragmentRendererContext implements FragmentRendererContext {
 	@Override
 	public Optional<Map<String, Object>> getFieldValuesOptional() {
 		return Optional.ofNullable(_fieldValues);
+	}
+
+	@Override
+	public Optional<Map<String, Supplier<Object>>>
+		getFieldValueSuppliersOptional() {
+
+		return Optional.ofNullable(_fieldValueSuppliers);
 	}
 
 	@Override
@@ -134,6 +142,12 @@ public class DefaultFragmentRendererContext implements FragmentRendererContext {
 		_fieldValues = fieldValues;
 	}
 
+	public void setFieldValueSuppliers(
+		Map<String, Supplier<Object>> fieldValueSuppliers) {
+
+		_fieldValueSuppliers = fieldValueSuppliers;
+	}
+
 	public void setLocale(Locale locale) {
 		_locale = locale;
 	}
@@ -170,6 +184,7 @@ public class DefaultFragmentRendererContext implements FragmentRendererContext {
 	private List<String> _collectionStyledLayoutStructureItemIds;
 	private Object _displayObject;
 	private Map<String, Object> _fieldValues;
+	private Map<String, Supplier<Object>> _fieldValueSuppliers;
 	private final FragmentEntryLink _fragmentEntryLink;
 	private Locale _locale = LocaleUtil.getMostRelevantLocale();
 	private String _mode = FragmentEntryLinkConstants.VIEW;
