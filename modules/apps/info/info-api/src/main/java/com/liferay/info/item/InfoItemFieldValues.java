@@ -28,6 +28,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * @author Jorge Ferrer
@@ -120,6 +121,21 @@ public class InfoItemFieldValues {
 			InfoField infoField = infoFieldValue.getInfoField();
 
 			map.put(infoField.getName(), infoFieldValue.getValue(locale));
+		}
+
+		return map;
+	}
+
+	public Map<String, Supplier<Object>> getSupplierMap(Locale locale) {
+		Map<String, Supplier<Object>> map = new HashMap<>(
+			_builder._infoFieldValues.size());
+
+		for (InfoFieldValue<Object> infoFieldValue :
+				_builder._infoFieldValues) {
+
+			InfoField infoField = infoFieldValue.getInfoField();
+
+			map.put(infoField.getName(), () -> infoFieldValue.getValue(locale));
 		}
 
 		return map;
