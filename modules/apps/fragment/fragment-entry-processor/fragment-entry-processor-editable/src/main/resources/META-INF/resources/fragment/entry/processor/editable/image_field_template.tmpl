@@ -1,9 +1,11 @@
-[#if .vars["field_name"]??]
-	[#if .vars["field_name"]?is_hash]
-		[#if .vars["field_name"].url??]
-			${.vars["field_name"].url}
+[#assign safeFieldValue=templateUtil.getSafeValueJSONObject(.vars["field_name"])]
+[#if safeFieldValue.value??]
+	[#assign fieldValue=safeFieldValue.value]
+	[#if fieldValue?is_hash]
+		[#if fieldValue.url??]
+			${fieldValue.url}
 		[/#if]
-	[#elseif .vars["field_name"]?is_string]
-		${.vars["field_name"]}
+	[#elseif fieldValue?is_string]
+		${fieldValue}
 	[/#if]
 [/#if]

@@ -1,13 +1,15 @@
-[#if .vars["field_name"]??]
-	[#if contentAccessorUtil.isContentAccessor(.vars["field_name"])]
-		${.vars["field_name"].getContent()}
-	[#elseif .vars["field_name"]?is_date_like]
-		${.vars["field_name"]?datetime?string}
-	[#elseif .vars["field_name"]?is_sequence && .vars["field_name"]?size > 0 && .vars["field_name"]?first?is_hash]
-		${.vars["field_name"]?map(labeled -> labeled.getLabel(locale))?join(", ")}
-	[#elseif .vars["field_name"]?is_sequence]
-		${.vars["field_name"]?join(", ")}
+[#assign safeFieldValue=templateUtil.getSafeValueJSONObject(.vars["field_name"])]
+[#if safeFieldValue.value??]
+	[#assign fieldValue=safeFieldValue.value]	
+	[#if contentAccessorUtil.isContentAccessor(fieldValue)]
+		${fieldValue.getContent()}
+	[#elseif fieldValue?is_date_like]
+		${fieldValue?datetime?string}
+	[#elseif fieldValue?is_sequence && fieldValue?size > 0 && fieldValue?first?is_hash]
+		${fieldValue?map(labeled -> labeled.getLabel(locale))?join(", ")}
+	[#elseif fieldValue?is_sequence]
+		${fieldValue?join(", ")}
 	[#else]
-		${.vars["field_name"]}
+		${fieldValue}
 	[/#if]
 [/#if]

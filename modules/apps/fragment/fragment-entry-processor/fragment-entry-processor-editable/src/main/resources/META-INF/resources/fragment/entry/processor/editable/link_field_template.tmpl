@@ -1,3 +1,5 @@
-[#if .vars["field_name"]??]
-	${.vars["field_name"]}
+[#assign safeFieldValue=templateUtil.getSafeValueJSONObject(.vars["field_name"])]
+[#if safeFieldValue.value??]
+	[#assign fieldValue=safeFieldValue.value]
+	${fieldValue}
 [/#if]
