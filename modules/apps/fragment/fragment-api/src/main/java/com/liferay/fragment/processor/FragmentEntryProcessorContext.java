@@ -32,6 +32,11 @@ public interface FragmentEntryProcessorContext {
 
 	public Optional<Object> getDisplayObjectOptional();
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 *             #getFieldValueSuppliersOptional()}
+	 */
+	@Deprecated
 	public Optional<Map<String, Object>> getFieldValuesOptional();
 
 	public default Optional<Map<String, Supplier<Object>>>

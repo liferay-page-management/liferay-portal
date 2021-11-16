@@ -111,6 +111,11 @@ public class InfoItemFieldValues {
 		return _builder._infoItemReference;
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 *             #getSupplierMap(Locale)}
+	 */
+	@Deprecated
 	public Map<String, Object> getMap(Locale locale) {
 		Map<String, Object> map = new HashMap<>(
 			_builder._infoFieldValues.size());

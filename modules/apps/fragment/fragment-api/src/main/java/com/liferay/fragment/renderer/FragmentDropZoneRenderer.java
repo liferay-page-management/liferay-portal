@@ -40,6 +40,13 @@ public interface FragmentDropZoneRenderer {
 			groupId, plid, mainItemId, mode, showPreview);
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 * 				#getRenderedDropZone(HttpServletRequest,
+	 * 				HttpServletResponse, Map, long,
+	 * 				long, java.lang.String, java.lang.String, boolean)}
+	 */
+	@Deprecated
 	public String renderDropZone(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse,
