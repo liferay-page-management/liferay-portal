@@ -23,14 +23,17 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -121,16 +124,32 @@ public class DropZoneFragmentEntryProcessor implements FragmentEntryProcessor {
 
 		Optional<Map<String, Object>> fieldValuesOptional =
 			fragmentEntryProcessorContext.getFieldValuesOptional();
+		Optional<Map<String, Supplier<Object>>> fieldValueSuppliersOptional =
+			fragmentEntryProcessorContext.getFieldValueSuppliersOptional();
 
 		for (int i = 0; i < elements.size(); i++) {
 			Element element = elements.get(i);
 
-			String dropZoneHTML = _fragmentDropZoneRenderer.renderDropZone(
-				fragmentEntryProcessorContext.getHttpServletRequest(),
-				fragmentEntryProcessorContext.getHttpServletResponse(),
-				fieldValuesOptional.orElse(null),
-				fragmentEntryLink.getGroupId(), 0, dropZoneItemIds.get(i),
-				fragmentEntryProcessorContext.getMode(), true);
+			String dropZoneHTML = StringPool.BLANK;
+
+			if (fieldValueSuppliersOptional.isPresent() &&
+				MapUtil.isNotEmpty(fieldValueSuppliersOptional.get())) {
+
+				dropZoneHTML = _fragmentDropZoneRenderer.getRenderedDropZone(
+					fragmentEntryProcessorContext.getHttpServletRequest(),
+					fragmentEntryProcessorContext.getHttpServletResponse(),
+					fieldValueSuppliersOptional.orElse(null),
+					fragmentEntryLink.getGroupId(), 0, dropZoneItemIds.get(i),
+					fragmentEntryProcessorContext.getMode(), true);
+			}
+			else {
+				dropZoneHTML = _fragmentDropZoneRenderer.renderDropZone(
+					fragmentEntryProcessorContext.getHttpServletRequest(),
+					fragmentEntryProcessorContext.getHttpServletResponse(),
+					fieldValuesOptional.orElse(null),
+					fragmentEntryLink.getGroupId(), 0, dropZoneItemIds.get(i),
+					fragmentEntryProcessorContext.getMode(), true);
+			}
 
 			Element dropZoneElement = new Element("div");
 
