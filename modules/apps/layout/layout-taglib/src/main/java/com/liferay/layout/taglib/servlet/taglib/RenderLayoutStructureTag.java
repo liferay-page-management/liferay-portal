@@ -66,6 +66,7 @@ import com.liferay.taglib.util.IncludeTag;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -79,6 +80,10 @@ public class RenderLayoutStructureTag extends IncludeTag {
 
 	public Map<String, Object> getFieldValues() {
 		return _fieldValues;
+	}
+
+	public Map<String, Supplier<Object>> getFieldValueSuppliers() {
+		return _fieldValueSuppliers;
 	}
 
 	public LayoutStructure getLayoutStructure() {
@@ -99,6 +104,12 @@ public class RenderLayoutStructureTag extends IncludeTag {
 
 	public void setFieldValues(Map<String, Object> fieldValues) {
 		_fieldValues = fieldValues;
+	}
+
+	public void setFieldValueSuppliers(
+		Map<String, Supplier<Object>> fieldValueSuppliers) {
+
+		_fieldValueSuppliers = fieldValueSuppliers;
 	}
 
 	public void setLayoutStructure(LayoutStructure layoutStructure) {
@@ -129,6 +140,7 @@ public class RenderLayoutStructureTag extends IncludeTag {
 		super.cleanUp();
 
 		_fieldValues = null;
+		_fieldValueSuppliers = null;
 		_layoutStructure = null;
 		_mainItemId = null;
 		_mode = FragmentEntryLinkConstants.VIEW;
@@ -823,6 +835,7 @@ public class RenderLayoutStructureTag extends IncludeTag {
 	private static final String _PAGE = "/render_layout_structure/page.jsp";
 
 	private Map<String, Object> _fieldValues;
+	private Map<String, Supplier<Object>> _fieldValueSuppliers;
 	private LayoutStructure _layoutStructure;
 	private String _mainItemId;
 	private String _mode = FragmentEntryLinkConstants.VIEW;
