@@ -65,6 +65,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -588,13 +589,23 @@ public class FragmentEntryProcessorHelperImpl
 		template.put(TemplateConstants.WRITER, unsyncStringWriter);
 		template.put("contentAccessorUtil", ContentAccessorUtil.getInstance());
 
-		Optional<Map<String, Object>> fieldValuesOptional =
-			fragmentEntryProcessorContext.getFieldValuesOptional();
+		Optional<Map<String, Supplier<Object>>> fieldValueSuppliersOptional =
+			fragmentEntryProcessorContext.getFieldValueSuppliersOptional();
 
-		if (fieldValuesOptional.isPresent() &&
-			MapUtil.isNotEmpty(fieldValuesOptional.get())) {
+		if (fieldValueSuppliersOptional.isPresent() &&
+			MapUtil.isNotEmpty(fieldValueSuppliersOptional.get())) {
 
-			template.putAll(fieldValuesOptional.get());
+			template.putAll(fieldValueSuppliersOptional.get());
+		}
+		else {
+			Optional<Map<String, Object>> fieldValuesOptional =
+				fragmentEntryProcessorContext.getFieldValuesOptional();
+
+			if (fieldValuesOptional.isPresent() &&
+				MapUtil.isNotEmpty(fieldValuesOptional.get())) {
+
+				template.putAll(fieldValuesOptional.get());
+			}
 		}
 
 		template.prepare(fragmentEntryProcessorContext.getHttpServletRequest());

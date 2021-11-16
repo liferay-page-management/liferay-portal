@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -40,6 +41,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -257,6 +259,27 @@ public class BackgroundImageFragmentEntryProcessor
 
 			String mappedField = editableValueJSONObject.getString(
 				"mappedField");
+
+			Optional<Map<String, Supplier<Object>>>
+				fieldValueSuppliersOptional =
+					fragmentEntryProcessorContext.
+						getFieldValueSuppliersOptional();
+
+			if (fieldValueSuppliersOptional.isPresent() &&
+				MapUtil.isNotEmpty(fieldValueSuppliersOptional.get())) {
+
+				Map<String, Supplier<Object>> fieldValueSuppliers =
+					fieldValueSuppliersOptional.orElse(new HashMap<>());
+
+				Supplier<Object> fieldValueSupplier = fieldValueSuppliers.get(
+					mappedField);
+
+				if (fieldValueSupplier != null) {
+					return fieldValueSupplier.get();
+				}
+
+				return null;
+			}
 
 			Optional<Map<String, Object>> fieldValuesOptional =
 				fragmentEntryProcessorContext.getFieldValuesOptional();
