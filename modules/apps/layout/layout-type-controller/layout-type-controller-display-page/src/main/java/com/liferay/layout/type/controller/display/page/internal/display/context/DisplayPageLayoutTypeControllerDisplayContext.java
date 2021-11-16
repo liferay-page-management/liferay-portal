@@ -40,6 +40,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -123,7 +124,7 @@ public class DisplayPageLayoutTypeControllerDisplayContext {
 				PortalUtil.getClassNameId(_infoItemDetails.getClassName()));
 	}
 
-	public Map<String, Object> getInfoDisplayFieldsValues() {
+	public Map<String, Supplier<Object>> getInfoDisplayFieldValueSuppliers() {
 		InfoItemFieldValuesProvider<Object> infoItemFieldValuesProvider =
 			(InfoItemFieldValuesProvider)_httpServletRequest.getAttribute(
 				InfoDisplayWebKeys.INFO_ITEM_FIELD_VALUES_PROVIDER);
@@ -139,7 +140,7 @@ public class DisplayPageLayoutTypeControllerDisplayContext {
 			(ThemeDisplay)_httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		return infoItemFieldValues.getMap(themeDisplay.getLocale());
+		return infoItemFieldValues.getSupplierMap(themeDisplay.getLocale());
 	}
 
 	public boolean hasPermission(
