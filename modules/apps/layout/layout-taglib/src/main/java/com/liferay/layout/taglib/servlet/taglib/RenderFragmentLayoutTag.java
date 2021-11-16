@@ -38,6 +38,7 @@ import com.liferay.segments.constants.SegmentsWebKeys;
 import com.liferay.taglib.util.IncludeTag;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
@@ -49,6 +50,10 @@ public class RenderFragmentLayoutTag extends IncludeTag {
 
 	public Map<String, Object> getFieldValues() {
 		return _fieldValues;
+	}
+
+	public Map<String, Supplier<Object>> getFieldValueSuppliers() {
+		return _fieldValueSuppliers;
 	}
 
 	public long getGroupId() {
@@ -73,6 +78,12 @@ public class RenderFragmentLayoutTag extends IncludeTag {
 
 	public void setFieldValues(Map<String, Object> fieldValues) {
 		_fieldValues = fieldValues;
+	}
+
+	public void setFieldValueSuppliers(
+		Map<String, Supplier<Object>> fieldValueSuppliers) {
+
+		_fieldValueSuppliers = fieldValueSuppliers;
 	}
 
 	public void setGroupId(long groupId) {
@@ -107,6 +118,7 @@ public class RenderFragmentLayoutTag extends IncludeTag {
 		super.cleanUp();
 
 		_fieldValues = null;
+		_fieldValueSuppliers = null;
 		_groupId = 0;
 		_layoutStructure = null;
 		_mainItemId = null;
@@ -126,6 +138,9 @@ public class RenderFragmentLayoutTag extends IncludeTag {
 
 		httpServletRequest.setAttribute(
 			"liferay-layout:render-fragment-layout:fieldValues", _fieldValues);
+		httpServletRequest.setAttribute(
+			"liferay-layout:render-fragment-layout:fieldValueSuppliers",
+			_fieldValueSuppliers);
 		httpServletRequest.setAttribute(
 			"liferay-layout:render-fragment-layout:layoutStructure",
 			_getLayoutStructure(httpServletRequest));
@@ -280,6 +295,7 @@ public class RenderFragmentLayoutTag extends IncludeTag {
 		RenderFragmentLayoutTag.class);
 
 	private Map<String, Object> _fieldValues;
+	private Map<String, Supplier<Object>> _fieldValueSuppliers;
 	private long _groupId;
 	private LayoutStructure _layoutStructure;
 	private String _mainItemId;

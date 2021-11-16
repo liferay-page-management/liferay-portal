@@ -183,6 +183,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>fieldValueSuppliers</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<description>Deprecated as of 7.3.0, with no direct replacement.</description>
 			<name>groupId</name>
 			<required>false</required>
