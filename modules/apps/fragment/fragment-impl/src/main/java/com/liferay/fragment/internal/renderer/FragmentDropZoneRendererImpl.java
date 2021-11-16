@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.servlet.PipingServletResponse;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,6 +34,40 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(immediate = true, service = FragmentDropZoneRenderer.class)
 public class FragmentDropZoneRendererImpl implements FragmentDropZoneRenderer {
+
+	@Override
+	public String getRenderedDropZone(
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse,
+			Map<String, Supplier<Object>> fieldValueSuppliers, long groupId,
+			long plid, String mainItemId, String mode, boolean showPreview)
+		throws PortalException {
+
+		UnsyncStringWriter unsyncStringWriter = new UnsyncStringWriter();
+
+		PipingServletResponse pipingServletResponse = new PipingServletResponse(
+			httpServletResponse, unsyncStringWriter);
+
+		try {
+			RenderFragmentLayoutTag renderFragmentLayoutTag =
+				new RenderFragmentLayoutTag();
+
+			renderFragmentLayoutTag.setFieldValueSuppliers(fieldValueSuppliers);
+			renderFragmentLayoutTag.setGroupId(groupId);
+			renderFragmentLayoutTag.setMainItemId(mainItemId);
+			renderFragmentLayoutTag.setMode(mode);
+			renderFragmentLayoutTag.setPlid(plid);
+			renderFragmentLayoutTag.setShowPreview(showPreview);
+
+			renderFragmentLayoutTag.doTag(
+				httpServletRequest, pipingServletResponse);
+		}
+		catch (Exception exception) {
+			throw new FragmentEntryContentException(exception);
+		}
+
+		return unsyncStringWriter.toString();
+	}
 
 	@Override
 	public String renderDropZone(
