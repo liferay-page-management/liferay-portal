@@ -1793,6 +1793,154 @@ definition {
 		}
 	}
 
+	@description = "This is a test for LPS-141753. Portal crashed when click Home link on Product Menu"
+	@priority = "4"
+	test PortalCrashWhenClickHomeLinkInProductMenu {
+		property portal.acceptance = "true";
+
+		task ("Add two navigation menus") {
+			for (var n : list "1,2") {
+				JSONSitenavigation.addSiteNavigationMenu(
+					groupName = "Test Site Name",
+					siteNavigationMenuName = "Navigation Menu Name ${n}");
+			}
+		}
+
+		task ("Add the first URL type item to the first navigation menu") {
+			JSONSitenavigation.addSiteNavigationMenuItem(
+				groupName = "Test Site Name",
+				siteNavigationMenuItemName = "Liferay",
+				siteNavigationMenuName = "Navigation Menu Name 1",
+				type = "url",
+				url = "https://www.liferay.com",
+				useNewTab = "false");
+		}
+
+		task ("Add the second URL type item to the first navigation menu") {
+			JSONSitenavigation.addSiteNavigationMenuItem(
+				groupName = "Test Site Name",
+				siteNavigationMenuItemName = "Oracle",
+				siteNavigationMenuName = "Navigation Menu Name 1",
+				type = "url",
+				url = "https://www.oracle.com/id/index.html",
+				useNewTab = "false");
+		}
+
+		task ("Add the first URL type item to the second navigation menu") {
+			JSONSitenavigation.addSiteNavigationMenuItem(
+				groupName = "Test Site Name",
+				siteNavigationMenuItemName = "Google",
+				siteNavigationMenuName = "Navigation Menu Name 2",
+				type = "url",
+				url = "https://www.google.com",
+				useNewTab = "false");
+		}
+
+		task ("Add the second URL type item to the second navigation menu") {
+			JSONSitenavigation.addSiteNavigationMenuItem(
+				groupName = "Test Site Name",
+				siteNavigationMenuItemName = "Slack",
+				siteNavigationMenuName = "Navigation Menu Name 2",
+				type = "url",
+				url = "https://slack.com/intl/es-es/",
+				useNewTab = "false");
+		}
+
+		task ("Add a master page template") {
+			JSONLayoutpagetemplate.addMasterPageTemplateEntry(
+				groupName = "Test Site Name",
+				masterPageTemplateEntryName = "Custom Masters Page Template");
+		}
+
+		task ("Add a Footer Nav Light fragment to master page") {
+			MastersPageTemplatesAdmin.gotoMasters(masterLayoutName = "Custom Masters Page Template");
+
+			PageEditor.addFragment(
+				collectionName = "Footers",
+				dropTarget = "Footer",
+				fragmentName = "Footer Nav Light",
+				scope = "Master");
+		}
+
+		task ("Select the first navigation menu in Footer Nav Light fragment and publish master") {
+			NavigationMenusWidget.gotoNavigationMenuWidgetConfig();
+
+			NavigationMenusWidget.chooseMenu(menuName = "Navigation Menu Name 1");
+
+			Portlet.saveAndCloseConfig();
+
+			Button.click(button = "Publish Master");
+
+			Alert.viewSuccessMessage();
+		}
+
+		task ("Add a page based on custom masters") {
+			SitePages.openPagesAdmin(siteURLKey = "test-site-name");
+
+			ContentPages.addPage(
+				masterLayoutName = "Custom Masters Page Template",
+				pageName = "Test Page Name");
+
+			AssertVisible(
+				key_tab = "Liferay",
+				locator1 = "NavTab#TAB_LINK");
+
+			PageEditor.clickPublish();
+		}
+
+		task ("Click on Home Link in Product Menu") {
+			ProductMenu.gotoHomePage();
+		}
+
+		task ("Edit the master page") {
+			MastersPageTemplatesAdmin.openMastersAdmin(siteURLKey = "test-site-name");
+
+			MastersPageTemplatesAdmin.gotoMastersEllipsisItem(
+				item = "Edit",
+				masterLayoutName = "Custom Masters Page Template");
+
+			PageEditor.assertFragmentSidebarLoaded();
+		}
+
+		task ("Select the second navigation menu in Footer Nav Light fragment") {
+			NavigationMenusWidget.gotoNavigationMenuWidgetConfig();
+
+			NavigationMenusWidget.chooseMenu(menuName = "Navigation Menu Name 2");
+
+			Portlet.saveAndCloseConfig();
+
+			MastersPageTemplates.propagateChange();
+		}
+
+		task ("Click on Home Link in Product Menu") {
+			ProductMenu.gotoHomePage();
+		}
+
+		task ("Edit the master page") {
+			MastersPageTemplatesAdmin.openMastersAdmin(siteURLKey = "test-site-name");
+
+			MastersPageTemplatesAdmin.gotoMastersEllipsisItem(
+				item = "Edit",
+				masterLayoutName = "Custom Masters Page Template");
+
+			PageEditor.assertFragmentSidebarLoaded();
+		}
+
+		task ("Select the first navigation menu in Footer Nav Light fragment") {
+			NavigationMenusWidget.gotoNavigationMenuWidgetConfig();
+
+			NavigationMenusWidget.chooseMenu(menuName = "Navigation Menu Name 1");
+
+			Portlet.saveAndCloseConfig();
+
+			MastersPageTemplates.propagateChange();
+		}
+
+		task ("Click on Home Link in Product Menu") {
+			ProductMenu.gotoHomePage();
+		}
+	}
+
 	@description = "This is a test for LPS-102566 and LPS-140318. Master page can be used in page, page template and display page, changes in master page will be propagated to page, page template and display page"
 	@priority = "5"
 	test PropagateChangesFromCustomMastersToAllBasedOnCustomMasters {
