@@ -83,7 +83,7 @@ public class AddMultipleDisplayPageTypeSiteNavigationMenuItemMVCActionCommand
 				(ThemeDisplay)actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
 			try {
-				List<InfoItemItemSelectorReturnItem>
+				List<? extends InfoItemHierarchicalReference>
 					infoItemItemSelectorReturnItems = JSONUtil.toList(
 						JSONFactoryUtil.createJSONArray(
 							ParamUtil.getString(actionRequest, "items")),
@@ -99,14 +99,16 @@ public class AddMultipleDisplayPageTypeSiteNavigationMenuItemMVCActionCommand
 								itemJSONObject);
 						});
 
-				for (InfoItemItemSelectorReturnItem
-						infoItemItemSelectorReturnItem :
+				for (InfoItemHierarchicalReference
+						infoItemHierarchicalReference :
 							infoItemItemSelectorReturnItems) {
 
 					_addSiteNavigationMenuItem(
 						themeDisplay.getScopeGroupId(),
-						infoItemItemSelectorReturnItem, serviceContext,
-						siteNavigationMenuId, siteNavigationMenuItemType);
+						(InfoItemItemSelectorReturnItem)
+							infoItemHierarchicalReference,
+						0, serviceContext, siteNavigationMenuId,
+						siteNavigationMenuItemType);
 				}
 			}
 			catch (PortalException portalException) {
@@ -227,8 +229,8 @@ public class AddMultipleDisplayPageTypeSiteNavigationMenuItemMVCActionCommand
 	private void _addSiteNavigationMenuItem(
 			long groupId,
 			InfoItemItemSelectorReturnItem infoItemItemSelectorReturnItem,
-			ServiceContext serviceContext, long siteNavigationMenuId,
-			String siteNavigationMenuItemType)
+			long parentSiteNavigationMenuItemId, ServiceContext serviceContext,
+			long siteNavigationMenuId, String siteNavigationMenuItemType)
 		throws PortalException {
 
 		UnicodeProperties typeSettingsUnicodeProperties = new UnicodeProperties(
@@ -250,9 +252,23 @@ public class AddMultipleDisplayPageTypeSiteNavigationMenuItemMVCActionCommand
 		typeSettingsUnicodeProperties.setProperty(
 			"title", infoItemItemSelectorReturnItem.getTitle());
 
-		_siteNavigationMenuItemService.addSiteNavigationMenuItem(
-			groupId, siteNavigationMenuId, 0L, siteNavigationMenuItemType,
-			typeSettingsUnicodeProperties.toString(), serviceContext);
+		SiteNavigationMenuItem siteNavigationMenuItem =
+			_siteNavigationMenuItemService.addSiteNavigationMenuItem(
+				groupId, siteNavigationMenuId, parentSiteNavigationMenuItemId,
+				siteNavigationMenuItemType,
+				typeSettingsUnicodeProperties.toString(), serviceContext);
+
+		for (InfoItemHierarchicalReference childInfoItemHierarchicalReference :
+				infoItemItemSelectorReturnItem.getChildren()) {
+
+			_addSiteNavigationMenuItem(
+				groupId,
+				(InfoItemItemSelectorReturnItem)
+					childInfoItemHierarchicalReference,
+				siteNavigationMenuItem.getSiteNavigationMenuItemId(),
+				serviceContext, siteNavigationMenuId,
+				siteNavigationMenuItemType);
+		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
