@@ -208,6 +208,19 @@ public class FragmentEntryConfigurationParserImpl
 			configurationValuesJSONObject, configuration, new long[] {0});
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getContextObjects(JSONObject, String)}
+	 */
+	@Deprecated
+	@Override
+	public Map<String, Object> getContextObjects(
+		JSONObject configurationValuesJSONObject, String configuration,
+		long[] segmentsExperienceIds) {
+
+		return getContextObjects(configurationValuesJSONObject, configuration);
+	}
+
 	@Override
 	public Map<String, Object> getContextObjectsMap(
 		JSONObject configurationValuesJSONObject, String configuration,
@@ -253,19 +266,6 @@ public class FragmentEntryConfigurationParserImpl
 		}
 
 		return contextObjects;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getContextObjects(JSONObject, String)}
-	 */
-	@Deprecated
-	@Override
-	public Map<String, Object> getContextObjects(
-		JSONObject configurationValuesJSONObject, String configuration,
-		long[] segmentsExperienceIds) {
-
-		return getContextObjects(configurationValuesJSONObject, configuration);
 	}
 
 	@Override
