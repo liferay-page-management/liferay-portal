@@ -61,6 +61,11 @@ public interface FragmentEntryConfigurationParser {
 			long[] segmentsExperienceIds)
 		throws JSONException;
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 *             #getContextObjectsMap(JSONObject, String, long[])}
+	 */
+	@Deprecated
 	public Map<String, Object> getContextObjects(
 		JSONObject configurationValuesJSONObject, String configuration);
 
