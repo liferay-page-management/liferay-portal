@@ -43,6 +43,18 @@ function AssetCategoriesSelector({
 						inputName={vocabularyInputName}
 						key={vocabulary.id}
 						label={label}
+						onRestrictedItemsChange={(restrictedItems) => {
+							const newVocabulary = {
+								...vocabulary,
+								restrictedItems,
+							};
+
+							onVocabulariesChange([
+								...vocabularies.slice(0, index),
+								newVocabulary,
+								...vocabularies.slice(index + 1),
+							]);
+						}}
 						onSelectedItemsChange={(selectedItems) => {
 							const newVocabulary = {
 								...vocabulary,
@@ -57,6 +69,7 @@ function AssetCategoriesSelector({
 						}}
 						portletURL={portletURL}
 						required={vocabulary.required}
+						restrictedItems={vocabulary.restrictedItems}
 						selectedItems={vocabulary.selectedItems}
 						singleSelect={vocabulary.singleSelect}
 						sourceItemsVocabularyIds={[vocabulary.id]}

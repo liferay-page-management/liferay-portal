@@ -33,14 +33,18 @@ function AssetVocabulariesCategoriesSelector({
 	inputName,
 	label,
 	onSelectedItemsChange = () => {},
+	onRestrictedItemsChange = () => {},
 	portletURL,
 	required,
 	selectedItems = [],
 	singleSelect,
 	sourceItemsVocabularyIds = [],
+	restrictedItems = [],
 	useFallbackInput,
 }) {
 	const [inputValue, setInputValue] = useState('');
+
+	const [restrictedInputValue, setRestrictedInputValue] = useState('');
 
 	const [invalidItems, setInvalidItems] = useState([]);
 
@@ -129,6 +133,51 @@ function AssetVocabulariesCategoriesSelector({
 		setInvalidItems(invalidAddedItems);
 
 		onSelectedItemsChange(current);
+	};
+
+	const handleRestrictedItemsChange = (items) => {
+		const addedItems = getUnique(
+			items.filter(
+				(item) =>
+					!restrictedItems.find(
+						(selectedItem) => selectedItem.value === item.value
+					)
+			),
+			'label'
+		);
+
+		const invalidAddedItems = [];
+
+		const validAddedItems = [];
+
+		addedItems.map((item) => {
+			if (
+				resource.find(
+					(sourceItem) => sourceItem.titleCurrentValue === item.label
+				)
+			) {
+				validAddedItems.push(item);
+			}
+			else {
+				invalidAddedItems.push(item);
+			}
+		});
+
+		const removedItems = restrictedItems.filter(
+			(selectedItem) =>
+				!items.find((item) => item.value === selectedItem.value)
+		);
+
+		const current = [...restrictedItems, ...validAddedItems].filter(
+			(item) =>
+				!removedItems.find(
+					(removedItem) => removedItem.value === item.value
+				)
+		);
+
+		setInvalidItems(invalidAddedItems);
+
+		onRestrictedItemsChange(current);
 	};
 
 	const handleSelectButtonClick = () => {
@@ -230,6 +279,27 @@ function AssetVocabulariesCategoriesSelector({
 							}
 						/>
 
+						{restrictedItems && restrictedItems.length > 0 && (
+							<ClayMultiSelect
+								inputName={inputName}
+								inputValue={restrictedInputValue}
+								items={restrictedItems}
+								onChange={setRestrictedInputValue}
+								onItemsChange={handleRestrictedItemsChange}
+								sourceItems={
+									resource
+										? resource.map((category) => {
+												return {
+													label:
+														category.titleCurrentValue,
+													value: category.categoryId,
+												};
+										  })
+										: []
+								}
+							/>
+						)}
+
 						{invalidItems && invalidItems.length > 0 && (
 							<ClayForm.FeedbackGroup>
 								<ClayForm.FeedbackItem>
@@ -284,9 +354,11 @@ AssetVocabulariesCategoriesSelector.propTypes = {
 	inputName: PropTypes.string.isRequired,
 	label: PropTypes.string,
 	onSelectedItemsChange: PropTypes.func,
+	onRestrictedItemsChange: PropTypes.func,
 	portletURL: PropTypes.string.isRequired,
 	required: PropTypes.bool,
 	selectedItems: PropTypes.array,
+	restrictedItems: PropTypes.array,
 	singleSelect: PropTypes.bool,
 	sourceItemsVocabularyIds: PropTypes.array,
 	useFallbackInput: PropTypes.bool,
