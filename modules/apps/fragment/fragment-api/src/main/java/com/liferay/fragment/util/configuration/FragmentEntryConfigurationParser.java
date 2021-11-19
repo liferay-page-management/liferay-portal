@@ -73,6 +73,10 @@ public interface FragmentEntryConfigurationParser {
 		JSONObject configurationValuesJSONObject, String configuration,
 		long[] segmentsExperienceIds);
 
+	public Map<String, Object> getContextObjectsMap(
+		JSONObject configurationValuesJSONObject, String configuration,
+		long[] segmentsEntryIds);
+
 	public Object getFieldValue(
 		FragmentConfigurationField fragmentConfigurationField, Locale locale,
 		String value);
