@@ -326,17 +326,17 @@ public class AssetCategoriesSelectorTag extends IncludeTag {
 	}
 
 	protected List<String[]> getRestrictedIdsTitles() {
-		HttpServletRequest httpServletRequest = getRequest();
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
 		List<String[]> restrictedIdsTitles = new ArrayList<>();
 
 		if (Validator.isNotNull(_categoryIds) || Validator.isNull(_className)) {
 			return restrictedIdsTitles;
 		}
+
+		HttpServletRequest httpServletRequest = getRequest();
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
 		try {
 			for (AssetVocabulary vocabulary : _getVocabularies()) {
