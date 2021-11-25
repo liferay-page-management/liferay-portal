@@ -379,7 +379,7 @@ definition {
 
 	@description = "This is a test for LPS-132428. Error when configuring Asset Publisher."
 	@priority = "4"
-	test ErrorWhenAddingComponentToBlacklist {
+	test ConfigureAssetPublisherAfterAddingKaleoFormsAdminPortletToBlackList {
 		task ("Add component to blacklist") {
 			ApplicationsMenu.gotoPortlet(
 				category = "Configuration",
