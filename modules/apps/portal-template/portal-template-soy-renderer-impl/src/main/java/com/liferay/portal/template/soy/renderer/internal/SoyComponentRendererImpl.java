@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.template.soy.renderer.ComponentDescriptor;
 import com.liferay.portal.template.soy.renderer.SoyComponentRenderer;
 import com.liferay.portal.template.soy.renderer.SoyRenderer;
+import com.liferay.portal.template.soy.renderer.internal.helper.SoyComponentRendererHelper;
 
 import java.io.IOException;
 import java.io.Writer;

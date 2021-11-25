@@ -18,7 +18,7 @@ import {
 	findObjectFieldIndex,
 	findObjectLayoutRowIndex,
 } from '../../utils/layout';
-import {BoxesVisitor, TabsVisitor} from '../../utils/visitor';
+import {BoxesVisitor} from '../../utils/visitor';
 import {TObjectField, TObjectLayout, TObjectRelationship} from './types';
 
 type TState = {
@@ -312,7 +312,9 @@ const layoutReducer = (state: TState, action: TAction) => {
 			// Change object field inLayout attribute to false to be visible when add field again.
 
 			const objectFieldIds = newState.objectFields.map(({id}) => id);
-			const visitor = new TabsVisitor(newState.objectLayout);
+			const visitor = new BoxesVisitor(
+				newState.objectLayout.objectLayoutTabs[tabIndex]
+			);
 
 			visitor.mapFields((field) => {
 				if (field.objectFieldId) {

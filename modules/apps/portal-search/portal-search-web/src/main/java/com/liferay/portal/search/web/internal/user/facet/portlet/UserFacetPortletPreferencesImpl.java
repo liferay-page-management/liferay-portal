@@ -14,7 +14,7 @@
 
 package com.liferay.portal.search.web.internal.user.facet.portlet;
 
-import com.liferay.portal.search.web.internal.util.PortletPreferencesHelper;
+import com.liferay.portal.search.web.internal.helper.PortletPreferencesHelper;
 
 import java.util.Optional;
 

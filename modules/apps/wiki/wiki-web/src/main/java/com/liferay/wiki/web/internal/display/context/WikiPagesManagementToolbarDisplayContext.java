@@ -43,7 +43,7 @@ import com.liferay.trash.TrashHelper;
 import com.liferay.wiki.constants.WikiWebKeys;
 import com.liferay.wiki.model.WikiNode;
 import com.liferay.wiki.model.WikiPage;
-import com.liferay.wiki.web.internal.display.context.util.WikiURLHelper;
+import com.liferay.wiki.web.internal.display.context.helper.WikiURLHelper;
 import com.liferay.wiki.web.internal.portlet.toolbar.item.WikiPortletToolbarContributor;
 import com.liferay.wiki.web.internal.security.permission.resource.WikiPagePermission;
 

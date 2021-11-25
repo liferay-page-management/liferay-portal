@@ -17,6 +17,7 @@ package com.liferay.portal.search.internal.expando;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.ExpandoQueryContributor;
 import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.search.internal.expando.helper.ExpandoQueryContributorHelper;
 import com.liferay.portal.search.internal.indexer.IndexerProvidedClausesUtil;
 
 import java.util.Arrays;

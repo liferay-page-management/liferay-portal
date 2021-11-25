@@ -1,9 +1,8 @@
+import {useQuery} from '@apollo/client';
 import {useEffect, useState} from 'react';
 import {LiferayTheme} from '../services/liferay';
-import {getAccountFlagByFilter} from '../services/liferay/graphql/account-flags';
-import {getAccountRolesByUserAccountId} from '../services/liferay/graphql/account-roles';
+import {pageGuard} from '../services/liferay/graphql/queries';
 import {PARAMS_KEYS} from '../services/liferay/search-params';
-import useGraphQL from './useGraphQL';
 
 const liferaySiteName = LiferayTheme.getLiferaySiteName();
 
@@ -69,15 +68,12 @@ const usePageGuard = (
 ) => {
 	const [isLoading, setLoading] = useState(true);
 
-	const {data} = useGraphQL([
-		getAccountFlagByFilter({
-			accountKey: externalReferenceCode,
-			name: 'onboarding',
-			userUuid: userAccount.externalReferenceCode,
-			value: 1,
-		}),
-		getAccountRolesByUserAccountId(userAccount.id),
-	]);
+	const {data} = useQuery(pageGuard, {
+		variables: {
+			accountFlagsFilter: `accountKey eq '${externalReferenceCode}' and name eq 'onboarding' and userUuid eq '${userAccount.externalReferenceCode}' and value eq 1`,
+			accountId: userAccount.id
+		},
+	});
 
 	useEffect(() => {
 		if (data) {
@@ -89,8 +85,8 @@ const usePageGuard = (
 				!guard(
 					userAccount.accountBriefs,
 					externalReferenceCode,
-					data.accountFlags,
-					data.accountAccountRoles
+					data.c?.accountFlags?.items,
+					data.accountAccountRoles?.items
 				).validate
 			) {
 				const {
@@ -99,8 +95,8 @@ const usePageGuard = (
 				} = alternativeGuard(
 					userAccount.accountBriefs,
 					externalReferenceCode,
-					data.accountFlags,
-					data.accountAccountRoles
+					data.c?.accountFlags?.items,
+					data.accountAccountRoles?.items
 				);
 
 				if (alternativeValidate) {

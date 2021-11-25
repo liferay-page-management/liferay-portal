@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.PostProcessSearchQueryContributor;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
+import com.liferay.portal.search.internal.indexer.helper.PostProcessSearchQueryContributorHelper;
 
 import java.util.Collection;
 

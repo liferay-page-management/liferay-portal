@@ -23,11 +23,7 @@ export default {
 							{
 								context: 'query',
 								occur: '${configuration.occur}',
-								query: {
-									wrapper: {
-										query: '${configuration.query}',
-									},
-								},
+								query: '${configuration.query}',
 							},
 						],
 					},
@@ -40,36 +36,36 @@ export default {
 				{
 					fields: [
 						{
+							defaultValue: 'must',
 							label: 'Occur',
 							name: 'occur',
-							options: [
-								{
-									label: 'MUST',
-									value: 'must',
-								},
-								{
-									label: 'SHOULD',
-									value: 'should',
-								},
-								{
-									label: 'MUST NOT',
-									value: 'must_not',
-								},
-								{
-									label: 'FILTER',
-									value: 'filter',
-								},
-							],
-							uiType: 'select',
-							valueDefinition: {
-								defaultValueString: 'must',
-								type: 'String',
+							type: 'select',
+							typeOptions: {
+								options: [
+									{
+										label: 'MUST',
+										value: 'must',
+									},
+									{
+										label: 'SHOULD',
+										value: 'should',
+									},
+									{
+										label: 'MUST NOT',
+										value: 'must_not',
+									},
+									{
+										label: 'FILTER',
+										value: 'filter',
+									},
+								],
 							},
 						},
 						{
+							defaultValue: {},
 							label: 'Query',
 							name: 'query',
-							uiType: 'json',
+							type: 'json',
 						},
 					],
 				},

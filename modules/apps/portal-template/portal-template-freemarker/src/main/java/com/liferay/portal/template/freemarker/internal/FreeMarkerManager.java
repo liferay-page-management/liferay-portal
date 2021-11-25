@@ -46,6 +46,7 @@ import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.template.BaseTemplateManager;
 import com.liferay.portal.template.TemplateContextHelper;
 import com.liferay.portal.template.freemarker.configuration.FreeMarkerEngineConfiguration;
+import com.liferay.portal.template.freemarker.internal.helper.FreeMarkerTemplateContextHelper;
 import com.liferay.taglib.TagSupport;
 
 import freemarker.cache.TemplateCache;

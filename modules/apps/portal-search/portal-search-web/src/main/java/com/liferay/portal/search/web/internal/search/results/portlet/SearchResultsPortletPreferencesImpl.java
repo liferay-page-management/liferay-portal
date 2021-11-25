@@ -17,7 +17,7 @@ package com.liferay.portal.search.web.internal.search.results.portlet;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.search.web.internal.util.PortletPreferencesHelper;
+import com.liferay.portal.search.web.internal.helper.PortletPreferencesHelper;
 import com.liferay.portal.util.PropsUtil;
 
 import java.util.Optional;

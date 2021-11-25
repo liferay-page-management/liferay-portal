@@ -206,7 +206,7 @@ function QueryBuilderTab({
 									}
 									searchableTypes={searchableTypes}
 									selectedTypes={
-										frameworkConfig.searchable_asset_types
+										frameworkConfig.searchableAssetTypes
 									}
 								/>
 							</ClayPanel.Body>

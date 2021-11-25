@@ -24,18 +24,12 @@ export default {
 								context: 'query',
 								occur: 'should',
 								query: {
-									wrapper: {
-										query: {
-											multi_match: {
-												boost: '${configuration.boost}',
-												fields:
-													'${configuration.fields}',
-												operator: 'and',
-												query:
-													'${configuration.keywords}',
-												type: '${configuration.type}',
-											},
-										},
+									multi_match: {
+										boost: '${configuration.boost}',
+										fields: '${configuration.fields}',
+										operator: 'and',
+										query: '${configuration.keywords}',
+										type: '${configuration.type}',
 									},
 								},
 							},
@@ -50,8 +44,7 @@ export default {
 				{
 					fields: [
 						{
-							boost: true,
-							fieldMappings: [
+							defaultValue: [
 								{
 									boost: 2.0,
 									field: 'localized_title',
@@ -65,51 +58,52 @@ export default {
 							],
 							label: 'Field',
 							name: 'fields',
-							uiType: 'fieldMappingList',
-						},
-						{
-							label: 'Match Type',
-							name: 'type',
-							options: [
-								{
-									label: 'Best Fields',
-									value: 'best_fields',
-								},
-								{
-									label: 'Most Fields',
-									value: 'most_fields',
-								},
-								{
-									label: 'Cross Fields',
-									value: 'cross_fields',
-								},
-								{
-									label: 'Phrase',
-									value: 'phrase',
-								},
-								{
-									label: 'Phrase Prefix',
-									value: 'phrase_prefix',
-								},
-								{
-									label: 'Boolean Prefix',
-									value: 'bool_prefix',
-								},
-							],
-							uiType: 'select',
-							valueDefinition: {
-								defaultValueString: 'best_fields',
-								type: 'String',
+							type: 'fieldMappingList',
+							typeOptions: {
+								boost: true,
 							},
 						},
 						{
+							defaultValue: 'best_fields',
+							label: 'Match Type',
+							name: 'type',
+							type: 'select',
+							typeOptions: {
+								options: [
+									{
+										label: 'Best Fields',
+										value: 'best_fields',
+									},
+									{
+										label: 'Most Fields',
+										value: 'most_fields',
+									},
+									{
+										label: 'Cross Fields',
+										value: 'cross_fields',
+									},
+									{
+										label: 'Phrase',
+										value: 'phrase',
+									},
+									{
+										label: 'Phrase Prefix',
+										value: 'phrase_prefix',
+									},
+									{
+										label: 'Boolean Prefix',
+										value: 'bool_prefix',
+									},
+								],
+							},
+						},
+						{
+							defaultValue: 10,
 							label: 'Boost',
 							name: 'boost',
-							uiType: 'number',
-							valueDefinition: {
-								defaultValueInteger: 10,
-								minValueInteger: 0,
-								type: 'Integer',
+							type: 'number',
+							typeOptions: {
+								min: 0,
 							},
 						},
 						{
@@ -117,8 +111,10 @@ export default {
 								'If this is set, the search terms entered in the search bar will be replaced by this value.',
 							label: 'Text to Match',
 							name: 'keywords',
-							required: 'false',
-							uiType: 'keywords',
+							type: 'keywords',
+							typeOptions: {
+								required: 'false',
+							},
 						},
 					],
 				},

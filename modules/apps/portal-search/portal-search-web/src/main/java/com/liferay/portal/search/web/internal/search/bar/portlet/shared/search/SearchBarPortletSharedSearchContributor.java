@@ -30,7 +30,7 @@ import com.liferay.portal.search.web.internal.display.context.SearchScopePrefere
 import com.liferay.portal.search.web.internal.search.bar.portlet.SearchBarPortletDestinationUtil;
 import com.liferay.portal.search.web.internal.search.bar.portlet.SearchBarPortletPreferences;
 import com.liferay.portal.search.web.internal.search.bar.portlet.SearchBarPortletPreferencesImpl;
-import com.liferay.portal.search.web.internal.search.bar.portlet.SearchBarPrecedenceHelper;
+import com.liferay.portal.search.web.internal.search.bar.portlet.helper.SearchBarPrecedenceHelper;
 import com.liferay.portal.search.web.internal.util.SearchOptionalUtil;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchContributor;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchSettings;

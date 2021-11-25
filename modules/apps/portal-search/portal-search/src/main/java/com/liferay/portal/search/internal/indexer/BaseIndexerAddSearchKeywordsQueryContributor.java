@@ -17,6 +17,7 @@ package com.liferay.portal.search.internal.indexer;
 import com.liferay.portal.kernel.search.AddSearchKeywordsQueryContributor;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.search.internal.indexer.helper.AddSearchKeywordsQueryContributorHelper;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

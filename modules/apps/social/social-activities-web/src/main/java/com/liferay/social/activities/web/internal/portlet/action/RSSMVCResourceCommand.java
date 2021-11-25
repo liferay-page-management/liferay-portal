@@ -38,7 +38,7 @@ import com.liferay.rss.model.SyndLink;
 import com.liferay.rss.model.SyndModelFactory;
 import com.liferay.rss.util.RSSUtil;
 import com.liferay.social.activities.constants.SocialActivitiesPortletKeys;
-import com.liferay.social.activities.web.internal.util.SocialActivitiesQueryHelper;
+import com.liferay.social.activities.web.internal.helper.SocialActivitiesQueryHelper;
 import com.liferay.social.kernel.model.SocialActivityFeedEntry;
 import com.liferay.social.kernel.model.SocialActivitySet;
 import com.liferay.social.kernel.service.SocialActivityInterpreterLocalService;

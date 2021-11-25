@@ -22,7 +22,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.user.associated.data.constants.UserAssociatedDataPortletKeys;
 import com.liferay.user.associated.data.web.internal.constants.UADWebKeys;
-import com.liferay.user.associated.data.web.internal.util.UADApplicationExportHelper;
+import com.liferay.user.associated.data.web.internal.helper.UADApplicationExportHelper;
 
 import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;

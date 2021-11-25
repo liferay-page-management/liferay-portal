@@ -45,7 +45,7 @@ function SelectTypes({
 		const newSelected = modalSelectedTypes.filter((item) => item !== type);
 
 		onFrameworkConfigChange({
-			searchable_asset_types: newSelected,
+			searchableAssetTypes: newSelected,
 		});
 		setModalSelectedTypes(newSelected);
 	};
@@ -54,7 +54,7 @@ function SelectTypes({
 		onClose();
 
 		onFrameworkConfigChange({
-			searchable_asset_types: modalSelectedTypes,
+			searchableAssetTypes: modalSelectedTypes,
 		});
 	};
 

@@ -70,7 +70,7 @@ List<OrgLabor> orgLabors = OrgLaborServiceUtil.getOrgLabors(organizationId);
 
 <div
 	class="<%=
-		CSSClassNames.builder(
+		CSSClasses.builder(
 			"opening-hours-wrapper"
 		).add(
 			"hide", orgLabors.isEmpty()

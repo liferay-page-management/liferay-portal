@@ -1,8 +1,8 @@
+import {useQuery} from '@apollo/client';
 import classNames from 'classnames';
 import {useState} from 'react';
-import useGraphQL from '~/common/hooks/useGraphQL';
 import {LiferayTheme} from '~/common/services/liferay';
-import {getKoroneikiAccountsByFilter} from '~/common/services/liferay/graphql/koroneiki-accounts';
+import {getKoroneikiAccounts} from '~/common/services/liferay/graphql/queries';
 import {PARAMS_KEYS} from '~/common/services/liferay/search-params';
 import Banner from '../../components/Banner';
 import ProjectCard from '../../components/ProjectCard';
@@ -28,21 +28,31 @@ const getStatus = (slaCurrent, slaFuture) => {
 const Home = ({userAccount}) => {
 	const [keyword, setKeyword] = useState('');
 
-	const {data: koroneikiAccountsData, isLoading} =
-		useGraphQL([
-			getKoroneikiAccountsByFilter({
-				accountKeys: userAccount.accountBriefs.map(
-					({externalReferenceCode}) => externalReferenceCode
-				),
-			}),
-		]) || [];
+	const {data, loading} = useQuery(getKoroneikiAccounts, {
+		variables: {
+			filter: userAccount.accountBriefs
+				.map(
+					(
+						{externalReferenceCode},
+						index,
+						{length: totalAccountBriefs}
+					) =>
+						`accountKey eq '${externalReferenceCode}' ${
+							index + 1 < totalAccountBriefs ? ' or ' : ' '
+						}`
+				)
+				.join(' '),
+		},
+	});
+
+	const koroneikiAccountsData = data?.c?.koroneikiAccounts?.items || [];
 
 	const nextPage = (project) => {
 		window.location.href = `${window.location.origin}${liferaySiteName}/overview?${PARAMS_KEYS.PROJECT_APPLICATION_EXTERNAL_REFERENCE_CODE}=${project.accountKey}`;
 	};
 
 	const projects =
-		koroneikiAccountsData?.koroneikiAccounts.map(
+		koroneikiAccountsData.map(
 			({
 				accountKey,
 				code,
@@ -71,7 +81,7 @@ const Home = ({userAccount}) => {
 				title: userAccount.accountBriefs.find(
 					({externalReferenceCode}) =>
 						externalReferenceCode === accountKey
-				).name,
+				)?.name,
 			})
 		) || [];
 
@@ -112,7 +122,7 @@ const Home = ({userAccount}) => {
 						</div>
 					)}
 
-					{!isLoading ? (
+					{!loading ? (
 						<div
 							className={classNames('d-flex flex-wrap', {
 								'home-projects': !withManyProjects,

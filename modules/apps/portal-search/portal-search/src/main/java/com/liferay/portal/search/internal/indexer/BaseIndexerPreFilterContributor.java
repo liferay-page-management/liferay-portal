@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.PreFilterContributor;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
+import com.liferay.portal.search.internal.indexer.helper.PreFilterContributorHelper;
 
 import java.util.Map;
 

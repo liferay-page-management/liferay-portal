@@ -1,11 +1,11 @@
+import {useQuery} from '@apollo/client';
 import {useContext, useEffect} from 'react';
-import useGraphQL from '~/common/hooks/useGraphQL';
 import {
 	onboardingPageGuard,
 	overviewPageGuard,
 	usePageGuard,
 } from '~/common/hooks/usePageGuard';
-import {getKoroneikiAccountsByFilter} from '~/common/services/liferay/graphql/koroneiki-accounts';
+import {getKoroneikiAccounts} from '~/common/services/liferay/graphql/queries';
 import {AppContext} from '../../context';
 import {actionTypes} from '../../context/reducer';
 import {CUSTOM_EVENTS} from '../../utils/constants';
@@ -18,15 +18,18 @@ const Overview = ({userAccount}) => {
 		onboardingPageGuard,
 		project.accountKey
 	);
-	const {data, isLoading: isLoadingKoroneiki} = useGraphQL([
-		getKoroneikiAccountsByFilter({
-			accountKeys: [project.accountKey],
-		}),
-	]);
+	const {data, isLoading: isLoadingKoroneiki} = useQuery(
+		getKoroneikiAccounts,
+		{
+			variables: {
+				filter: `accountKey eq '${project.accountKey}'`,
+			},
+		}
+	);
 
 	useEffect(() => {
 		if (!isLoading && data) {
-			const koroneikiAccount = data.koroneikiAccounts[0];
+			const koroneikiAccount = data.c?.koroneikiAccounts?.items[0];
 
 			dispatch({
 				payload: koroneikiAccount,
