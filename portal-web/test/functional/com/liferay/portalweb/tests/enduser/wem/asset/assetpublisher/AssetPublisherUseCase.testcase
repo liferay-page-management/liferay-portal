@@ -2140,6 +2140,8 @@ catch (Exception e) {
 		}
 
 		task ("Navigate to Asset Publisher widget display settings") {
+			AssetPublisherPortlet.configureDisplaySettings(displaySettings = "Print");
+
 			Navigator.gotoSitePage(
 				pageName = "Test Page Name",
 				siteName = "Test Site Name");
@@ -2147,6 +2149,8 @@ catch (Exception e) {
 			AssetPublisherPortlet.gotoConfigurationPG();
 
 			Navigator.gotoNavTab(navTab = "Display Settings");
+
+			AssetPublisherPortlet.configureDisplaySettings(displaySettings = "Ratings");
 		}
 	}
 
