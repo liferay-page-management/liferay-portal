@@ -183,7 +183,10 @@ export function ColorPickerField({field, onValueSelect, value}) {
 				{color && (
 					<>
 						{config.tokenReuseEnabled && (
-							<ClayInput.GroupItem shrink>
+							<ClayInput.GroupItem
+								className="page-editor__color-picker-field__action-button"
+								shrink
+							>
 								{isToken ? (
 									<ClayButtonWithIcon
 										className="border-0"
@@ -217,7 +220,13 @@ export function ColorPickerField({field, onValueSelect, value}) {
 							</ClayInput.GroupItem>
 						)}
 
-						<ClayInput.GroupItem shrink>
+						<ClayInput.GroupItem
+							className={classNames({
+								'page-editor__color-picker-field__action-button':
+									config.tokenReuseEnabled,
+							})}
+							shrink
+						>
 							<ClayButtonWithIcon
 								className={classNames({
 									'border-0': config.tokenReuseEnabled,
