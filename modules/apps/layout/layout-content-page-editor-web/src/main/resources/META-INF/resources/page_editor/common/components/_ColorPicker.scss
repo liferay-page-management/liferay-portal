@@ -10,10 +10,16 @@ html#{$cadmin-selector} {
 		}
 
 		.page-editor__color-picker {
-			&__color-palette .sheet-subtitle {
-				border-color: $cadmin-secondary-l3;
-				border-width: 1px 0 0;
-				font-size: 0.75rem;
+			&__color-palette {
+				&:nth-child(2) .sheet-subtitle {
+					border-width: 0;
+				}
+
+				.sheet-subtitle {
+					border-color: $cadmin-secondary-l3;
+					border-width: 1px 0 0;
+					font-size: 0.75rem;
+				}
 			}
 
 			&__empty-result {
