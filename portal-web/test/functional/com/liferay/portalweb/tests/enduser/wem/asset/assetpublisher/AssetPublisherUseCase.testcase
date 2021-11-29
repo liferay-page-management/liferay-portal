@@ -2123,6 +2123,7 @@ catch (Exception e) {
 	test ConfigureAssetPublisherAfterAddingKaleoFormsAdminPortletToBlackList {
 		property test.run.environment = "EE";
 		property test.name.skip.portal.instance = "AssetPublisherUseCase#ConfigureAssetPublisherAfterAddingKaleoFormsAdminPortletToBlackList";
+		
 		task ("Add component to blacklist") {
 			ApplicationsMenu.gotoPortlet(
 				category = "Configuration",
@@ -2151,6 +2152,10 @@ catch (Exception e) {
 			Navigator.gotoNavTab(navTab = "Display Settings");
 
 			AssetPublisherPortlet.configureDisplaySettings(displaySettings = "Ratings");
+		}
+
+		task ("Assert there is not NullPointerException thrown"){
+			AssertConsoleTextNotPresent(value1 = "java.lang.NullPointerException");
 		}
 	}
 
