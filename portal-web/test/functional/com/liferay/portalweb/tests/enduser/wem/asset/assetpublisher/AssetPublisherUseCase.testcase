@@ -227,6 +227,10 @@ definition {
 		}
 
 		task ("Configure the Asset Publisher") {
+			Navigator.gotoSitePage(
+				pageName = "Asset Publisher Page",
+				siteName = "Test Site Name");
+
 			AssetPublisherPortlet.configureDisplaySettings(displaySettings = "Print");
 		}
 
