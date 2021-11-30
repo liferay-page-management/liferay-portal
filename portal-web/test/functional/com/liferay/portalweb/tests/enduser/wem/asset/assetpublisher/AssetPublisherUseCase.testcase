@@ -2140,18 +2140,8 @@ catch (Exception e) {
 				symbolicName = "com.liferay.portal.workflow.kaleo.forms.web.internal.portlet.KaleoFormsAdminPortlet");
 		}
 
-		task ("Navigate to Asset Publisher widget display settings") {
+		task ("Configure the Asset Publisher") {
 			AssetPublisherPortlet.configureDisplaySettings(displaySettings = "Print");
-
-			Navigator.gotoSitePage(
-				pageName = "Test Page Name",
-				siteName = "Test Site Name");
-
-			AssetPublisherPortlet.gotoConfigurationPG();
-
-			Navigator.gotoNavTab(navTab = "Display Settings");
-
-			AssetPublisherPortlet.configureDisplaySettings(displaySettings = "Ratings");
 		}
 
 		task ("Assert there is not NullPointerException thrown"){
