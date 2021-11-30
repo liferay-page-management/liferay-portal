@@ -15,13 +15,22 @@
 package com.liferay.asset.categories.internal.layout.display.page;
 
 import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.model.AssetVocabularyConstants;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.InfoItemHierarchicalReference;
 import com.liferay.layout.display.page.LayoutDisplayPageMultiSelectionProvider;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portlet.asset.util.comparator.AssetVocabularyGroupLocalizedTitleComparator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -76,8 +85,20 @@ public class AssetCategoryLayoutDisplayPageMultiSelectionProvider
 
 		List<T> itemsHierarchy = new ArrayList<>();
 
-		for (List<T> vocabularyItems : itemsByVocabularyIdMap.values()) {
-			itemsHierarchy.addAll(vocabularyItems);
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
+
+		for (long vocabularyId : _getOrderedVocabularyIds(themeDisplay)) {
+			List<T> vocabularyCategoryItems = itemsByVocabularyIdMap.get(
+				vocabularyId);
+
+			if (ListUtil.isEmpty(vocabularyCategoryItems)) {
+				continue;
+			}
+
+			itemsHierarchy.addAll(vocabularyCategoryItems);
 		}
 
 		return itemsHierarchy;
@@ -99,7 +120,33 @@ public class AssetCategoryLayoutDisplayPageMultiSelectionProvider
 		return 0;
 	}
 
+	private List<Long> _getOrderedVocabularyIds(ThemeDisplay themeDisplay) {
+		List<AssetVocabulary> assetVocabularies =
+			_assetVocabularyLocalService.getGroupVocabularies(
+				new long[] {
+					themeDisplay.getCompanyGroupId(),
+					themeDisplay.getScopeGroupId()
+				},
+				new int[] {AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC});
+
+		if (assetVocabularies.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		ListUtil.sort(
+			assetVocabularies,
+			new AssetVocabularyGroupLocalizedTitleComparator(
+				themeDisplay.getScopeGroupId(), themeDisplay.getLocale(),
+				true));
+
+		return ListUtil.toList(
+			assetVocabularies, AssetVocabulary.VOCABULARY_ID_ACCESSOR);
+	}
+
 	@Reference
 	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Reference
+	private AssetVocabularyLocalService _assetVocabularyLocalService;
 
 }
