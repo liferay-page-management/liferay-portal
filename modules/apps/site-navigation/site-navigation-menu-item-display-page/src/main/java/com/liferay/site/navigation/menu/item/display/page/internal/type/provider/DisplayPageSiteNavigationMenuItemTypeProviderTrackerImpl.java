@@ -22,6 +22,7 @@ import com.liferay.info.item.InfoItemServiceTracker;
 import com.liferay.info.item.provider.InfoItemDetailsProvider;
 import com.liferay.info.item.provider.InfoItemFormVariationsProvider;
 import com.liferay.item.selector.ItemSelector;
+import com.liferay.layout.display.page.LayoutDisplayPageMultiSelectionProviderTracker;
 import com.liferay.layout.display.page.LayoutDisplayPageProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProviderTracker;
 import com.liferay.layout.page.template.info.item.capability.DisplayPageInfoItemCapability;
@@ -97,6 +98,10 @@ public class DisplayPageSiteNavigationMenuItemTypeProviderTrackerImpl {
 	private JSPRenderer _jspRenderer;
 
 	@Reference
+	private LayoutDisplayPageMultiSelectionProviderTracker
+		_layoutDisplayPageMultiSelectionProviderTracker;
+
+	@Reference
 	private LayoutDisplayPageProviderTracker _layoutDisplayPageProviderTracker;
 
 	@Reference
@@ -169,7 +174,10 @@ public class DisplayPageSiteNavigationMenuItemTypeProviderTrackerImpl {
 								_infoItemServiceTracker.getFirstInfoItemService(
 									InfoItemFormVariationsProvider.class,
 									infoItemClassDetails.getClassName()),
-								layoutDisplayPageProvider),
+								layoutDisplayPageProvider,
+								_layoutDisplayPageMultiSelectionProviderTracker.
+									getLayoutDisplayPageMultiSelectionProvider(
+										infoItemClassDetails.getClassName())),
 							_itemSelector, _jspRenderer, _portal,
 							_servletContext),
 						HashMapDictionaryBuilder.<String, Object>put(

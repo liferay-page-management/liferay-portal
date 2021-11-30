@@ -17,10 +17,12 @@ package com.liferay.site.navigation.menu.item.display.page.internal.type;
 import com.liferay.info.item.InfoItemClassDetails;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.provider.InfoItemFormVariationsProvider;
+import com.liferay.layout.display.page.LayoutDisplayPageMultiSelectionProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProvider;
 
 import java.util.Locale;
+import java.util.Optional;
 
 /**
  * @author Lourdes Fernández Besada
@@ -30,11 +32,15 @@ public class DisplayPageTypeContext {
 	public DisplayPageTypeContext(
 		InfoItemClassDetails infoItemClassDetails,
 		InfoItemFormVariationsProvider<?> infoItemFormVariationsProvider,
-		LayoutDisplayPageProvider layoutDisplayPageProvider) {
+		LayoutDisplayPageProvider layoutDisplayPageProvider,
+		LayoutDisplayPageMultiSelectionProvider
+			layoutDisplayPageMultiSelectionProvider) {
 
 		_infoItemClassDetails = infoItemClassDetails;
 		_infoItemFormVariationsProvider = infoItemFormVariationsProvider;
 		_layoutDisplayPageProvider = layoutDisplayPageProvider;
+		_layoutDisplayPageMultiSelectionProvider =
+			layoutDisplayPageMultiSelectionProvider;
 	}
 
 	public String getClassName() {
@@ -55,6 +61,12 @@ public class DisplayPageTypeContext {
 		return _infoItemClassDetails.getLabel(locale);
 	}
 
+	public Optional<LayoutDisplayPageMultiSelectionProvider<?>>
+		getLayoutDisplayPageMultiSelectionProviderOptional() {
+
+		return Optional.ofNullable(_layoutDisplayPageMultiSelectionProvider);
+	}
+
 	public LayoutDisplayPageObjectProvider<?>
 		getLayoutDisplayPageObjectProvider(long classPK) {
 
@@ -67,9 +79,19 @@ public class DisplayPageTypeContext {
 		return _layoutDisplayPageProvider;
 	}
 
+	public boolean isMultiSelection() {
+		if (_layoutDisplayPageMultiSelectionProvider != null) {
+			return true;
+		}
+
+		return false;
+	}
+
 	private final InfoItemClassDetails _infoItemClassDetails;
 	private final InfoItemFormVariationsProvider<?>
 		_infoItemFormVariationsProvider;
+	private final LayoutDisplayPageMultiSelectionProvider<?>
+		_layoutDisplayPageMultiSelectionProvider;
 	private final LayoutDisplayPageProvider<?> _layoutDisplayPageProvider;
 
 }
