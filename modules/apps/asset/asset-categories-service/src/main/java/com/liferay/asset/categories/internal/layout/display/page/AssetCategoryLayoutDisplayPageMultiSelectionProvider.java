@@ -27,14 +27,20 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portlet.asset.util.comparator.AssetVocabularyGroupLocalizedTitleComparator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -65,7 +71,7 @@ public class AssetCategoryLayoutDisplayPageMultiSelectionProvider
 
 		Stream<T> stream = toSort.stream();
 
-		Map<Long, List<T>> itemsByVocabularyIdMap = stream.filter(
+		Map<Long, Map<Long, T>> itemsByVocabularyIdMap = stream.filter(
 			infoItemHierarchicalReference ->
 				Objects.equals(
 					getClassName(),
@@ -80,7 +86,10 @@ public class AssetCategoryLayoutDisplayPageMultiSelectionProvider
 
 					return assetCategory.getVocabularyId();
 				},
-				Collectors.toList())
+				Collectors.toMap(
+					infoItemHierarchicalReference -> _getClassPK(
+						infoItemHierarchicalReference),
+					Function.identity()))
 		);
 
 		List<T> itemsHierarchy = new ArrayList<>();
@@ -91,17 +100,59 @@ public class AssetCategoryLayoutDisplayPageMultiSelectionProvider
 		ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
 
 		for (long vocabularyId : _getOrderedVocabularyIds(themeDisplay)) {
-			List<T> vocabularyCategoryItems = itemsByVocabularyIdMap.get(
+			Map<Long, T> itemsByCategoryId = itemsByVocabularyIdMap.get(
 				vocabularyId);
 
-			if (ListUtil.isEmpty(vocabularyCategoryItems)) {
+			if (MapUtil.isEmpty(itemsByCategoryId)) {
 				continue;
 			}
 
-			itemsHierarchy.addAll(vocabularyCategoryItems);
+			Set<Long> categoryIds = itemsByCategoryId.keySet();
+
+			Map<Long, List<T>> itemsByParentCategoryIdMap = new HashMap<>();
+
+			for (T infoItemHierarchicalReference : itemsByCategoryId.values()) {
+				AssetCategory assetCategory =
+					_assetCategoryLocalService.fetchAssetCategory(
+						_getClassPK(infoItemHierarchicalReference));
+
+				long parentCategoryId = _getClosestParentCategoryId(
+					assetCategory, categoryIds);
+
+				List<T> children = itemsByParentCategoryIdMap.get(
+					parentCategoryId);
+
+				if (children == null) {
+					children = new ArrayList<>();
+
+					itemsByParentCategoryIdMap.put(parentCategoryId, children);
+				}
+
+				children.add(infoItemHierarchicalReference);
+			}
+
+			itemsHierarchy.addAll(_getChildren(itemsByParentCategoryIdMap, 0L));
 		}
 
 		return itemsHierarchy;
+	}
+
+	private <T extends InfoItemHierarchicalReference> List<T> _getChildren(
+		Map<Long, List<T>> itemsByParentCategoryIdMap, long parentCategoryId) {
+
+		if (!itemsByParentCategoryIdMap.containsKey(parentCategoryId)) {
+			return Collections.emptyList();
+		}
+
+		List<T> children = itemsByParentCategoryIdMap.get(parentCategoryId);
+
+		for (T item : children) {
+			item.setChildren(
+				(List<InfoItemHierarchicalReference>)_getChildren(
+					itemsByParentCategoryIdMap, _getClassPK(item)));
+		}
+
+		return children;
 	}
 
 	private long _getClassPK(
@@ -118,6 +169,31 @@ public class AssetCategoryLayoutDisplayPageMultiSelectionProvider
 		}
 
 		return 0;
+	}
+
+	private long _getClosestParentCategoryId(
+		AssetCategory assetCategory, Set<Long> availableCategoryIds) {
+
+		String treePath = assetCategory.getTreePath();
+
+		Stream<String> stream = Arrays.stream(treePath.split("/"));
+
+		return stream.filter(
+			s -> Validator.isNotNull(s)
+		).mapToLong(
+			Long::valueOf
+		).filter(
+			categoryId -> !Objects.equals(
+				categoryId, assetCategory.getCategoryId())
+		).boxed(
+		).sorted(
+			Collections.reverseOrder()
+		).filter(
+			parentCategoryId -> availableCategoryIds.contains(parentCategoryId)
+		).findFirst(
+		).orElse(
+			0L
+		);
 	}
 
 	private List<Long> _getOrderedVocabularyIds(ThemeDisplay themeDisplay) {
