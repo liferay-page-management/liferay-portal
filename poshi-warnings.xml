@@ -1,0 +1,644 @@
+<value><![CDATA[LIFERAY_ERROR: Email test@liferay.com will be ignored because it is included in mail.send.blacklist]]></value>
+<value><![CDATA[LIFERAY_ERROR: Skipping email because the sender is not specified]]></value>
+<value><![CDATA[LIFERAY_ERROR: Dependency manager sync timeout after waiting 60s]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Unable to process message {destinationName=liferay/scheduler_dispatch, response=null, responseDestinationName=null, responseId=null, payload=null, values={GROUP_NAME=com.liferay.blogs.web.internal.messaging.CheckEntryMessageListener, companyId=0, groupId=0, DESTINATION_NAME=liferay/scheduler_dispatch, EXCEPTIONS_MAX_SIZE=0, JOB_STATE=com.liferay.portal.kernel.scheduler.JobState@2698cff9, STORAGE_TYPE=MEMORY_CLUSTERED, JOB_NAME=com.liferay.blogs.web.internal.messaging.CheckEntryMessageListener}}]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_journal_content_web_portlet_JournalContentPortlet from com.liferay.journal.content.web_6.0.17 [920] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_dynamic_data_mapping_data_provider_web_portlet_DDMDataProviderPortlet from com.liferay.dynamic.data.mapping.data.provider.web_5.0.11 [538] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_commerce_tax_web_internal_portlet_CommerceTaxMethodPortlet from com.liferay.commerce.tax.web_4.0.10 [1066] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_commerce_pricing_web_internal_portlet_CommerceDiscountPortlet from com.liferay.commerce.pricing.web_4.0.20 [749] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_commerce_address_web_internal_portlet_CommerceCountryPortlet from com.liferay.commerce.address.web_4.0.14 [1165] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_commerce_product_asset_categories_navigation_web_internal_portlet_CPAssetCategoriesNavigationPortlet from com.liferay.commerce.product.asset.categories.navigation.web_4.0.11 [913] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_commerce_product_content_web_internal_portlet_CPCategoryContentPortlet from com.liferay.commerce.product.content.category.web_4.0.10 [1071] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: javax.servlet.ServletException: java.lang.NullPointerException]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: Unable to process message {destinationName=liferay/scheduler_dispatch, response=null, responseDestinationName=null, responseId=null, payload=null, values={GROUP_NAME=com.liferay.commerce.product.definitions.web.internal.messaging.CheckCPInstanceMessageListener, companyId=0, groupId=0, DESTINATION_NAME=liferay/scheduler_dispatch, EXCEPTIONS_MAX_SIZE=0, JOB_STATE=com.liferay.portal.kernel.scheduler.JobState@29ff3c3c, STORAGE_TYPE=MEMORY_CLUSTERED, JOB_NAME=com.liferay.commerce.product.definitions.web.internal.messaging.CheckCPInstanceMessageListener}}]]></value>
+<value><![CDATA[LIFERAY_ERROR: Current URL / generates exception: java.lang.NullPointerException]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_commerce_pricing_web_internal_portlet_CommercePriceListPortlet from com.liferay.commerce.pricing.web_4.0.20 [749] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_commerce_pricing_web_internal_portlet_CommercePromotionPortlet from com.liferay.commerce.pricing.web_4.0.20 [749] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_commerce_catalog_web_internal_portlet_CommerceCatalogsPortlet from com.liferay.commerce.catalog.web_4.0.14 [841] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: java.lang.NullPointerException]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_commerce_product_measurement_unit_web_internal_portlet_CPMeasurementUnitPortlet from com.liferay.commerce.product.measurement.unit.web_4.0.12 [778] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_commerce_product_content_search_web_internal_portlet_CPOptionFacetsPortlet from com.liferay.commerce.product.content.search.web_4.0.13 [1060] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet from com.liferay.commerce.product.definitions.web_7.0.24 [1243] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Service "com.liferay.dynamic.data.mapping.kernel.DDMStructureManager" is unavailable in 60000 milliseconds while setting field "_ddmStructureManager" for class "com.liferay.dynamic.data.mapping.kernel.DDMStructureManagerUtil", will retry...]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_commerce_product_content_web_internal_portlet_CPPublisherPortlet from com.liferay.commerce.product.content.web_4.0.18 [1213] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_commerce_product_content_web_internal_portlet_CPCompareContentMiniPortlet from com.liferay.commerce.product.content.web_4.0.18 [1213] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_commerce_product_content_web_internal_portlet_CPCompareContentPortlet from com.liferay.commerce.product.content.web_4.0.18 [1213] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_commerce_product_content_search_web_internal_portlet_CPSortPortlet from com.liferay.commerce.product.content.search.web_4.0.13 [1060] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_commerce_product_content_search_web_internal_portlet_CPSpecificationOptionFacetsPortlet from com.liferay.commerce.product.content.search.web_4.0.13 [1060] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_commerce_product_options_web_internal_portlet_CPSpecificationOptionsPortlet from com.liferay.commerce.product.options.web_4.0.17 [722] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_commerce_channel_web_internal_portlet_CommerceChannelsPortlet from com.liferay.commerce.channel.web_4.0.15 [1240] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_commerce_product_tax_category_web_internal_portlet_CPTaxCategoryPortlet from com.liferay.commerce.product.tax.category.web_4.0.12 [648] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: Running "Declarative Service Unsatisfied Component Checker" check result: _Bundle {id: 93, name: com.liferay.portal.workflow.kaleo.runtime.scripting.impl, version: 5.0.7}_	Declarative Service {id: 41, name: com.liferay.portal.workflow.kaleo.runtime.scripting.internal.action.ScriptActionExecutor, unsatisfied references: _		{name: _kaleoScriptingEvaluator, target: null}_	}_	Declarative Service {id: 45, name: com.liferay.portal.workflow.kaleo.runtime.scripting.internal.notification.recipient.script.ScriptingNotificationRecipientEvaluator, unsatisfied references: _		{name: _kaleoScriptingEvaluator, target: null}_	}_	Declarative Service {id: 47, name: com.liferay.portal.workflow.kaleo.runtime.scripting.internal.util.ScriptingContextBuilderImpl, unsatisfied references: _		{name: _kaleoWorkflowModelConverter, target: null}_	}_	Declarative Service {id: 44, name: com.liferay.portal.workflow.kaleo.runtime.scripting.internal.condition.ScriptingConditionEvaluator, unsatisfied references: _		{name: _kaleoScriptingEvaluator, target: null}_	}_	Declarative Service {id: 46, name: com.liferay.portal.workflow.kaleo.runtime.scripting.internal.util.KaleoScriptingEvaluator, unsatisfied references: _		{name: _scriptingContextBuilder, target: null}_	}_	Declarative Service {id: 42, name: com.liferay.portal.workflow.kaleo.runtime.scripting.internal.assignment.ScriptingLanguagesKaleoTaskAssignmentSelector, unsatisfied references: _		{name: _kaleoScriptingEvaluator, target: null}_	}_Bundle {id: 109, name: com.liferay.portal.workflow.web, version: 4.0.21}_	Declarative Service {id: 5202, name: com.liferay.portal.workflow.web.internal.portlet.action.SaveWorkflowDefinitionMVCActionCommand, unsatisfied references: _		{name: unproxiedWorkflowDefinitionManager, target: (proxy.bean=false)}_	}_	Declarative Service {id: 5200, name: com.liferay.portal.workflow.web.internal.portlet.action.DuplicateWorkflowDefinitionMVCActionCommand, unsatisfied references: _		{name: unproxiedWorkflowDefinitionManager, target: (proxy.bean=false)}_	}_	Declarative Service {id: 5201, name: com.liferay.portal.workflow.web.internal.portlet.action.RevertWorkflowDefinitionMVCActionCommand, unsatisfied references: _		{name: unproxiedWorkflowDefinitionManager, target: (proxy.bean=false)}_	}_	Declarative Service {id: 5199, name: com.liferay.portal.workflow.web.internal.portlet.action.DeployWorkflowDefinitionMVCActionCommand, unsatisfied references: _		{name: unproxiedWorkflowDefinitionManager, target: (proxy]]></value>
+<value><![CDATA[LIFERAY_ERROR: Running "Spring Extender Unavailable Component Checker" check result: _Bundle {id: 677, name: com.liferay.commerce.payment.service, version: 4.0.19}._	Component with ID 92 is unavailable due to missing required dependencies:_		service dependency [com.liferay.commerce.service.CommerceAddressRestrictionLocalService]_Bundle {id: 1227, name: com.liferay.dispatch.service, version: 3.0.14}._	Component with ID 80 is unavailable due to missing required dependencies:_		service dependency [com.liferay.portal.kernel.model.Release (&(release.bundle.symbolic.name=com.liferay.dispatch.service)(&(release.schema.version>=4.0.0)(!(release.schema.version>=5.0.0)))(|(!(release.state=*))(release.state=0)))]_Bundle {id: 588, name: com.liferay.asset.service, version: 5.0.21}._	Component with ID 28 is unavailable due to missing required dependencies:_		service dependency [com.liferay.portal.kernel.model.Release (&(release.bundle.symbolic.name=com.liferay.asset.service)(&(release.schema.version>=2.1.0)(!(release.schema.version>=3.0.0)))(|(!(release.state=*))(release.state=0)))]_Bundle {id: 382, name: com.liferay.redirect.service, version: 2.0.18}._	Component with ID 14 is unavailable due to missing required dependencies:_		service dependency [com.liferay.portal.kernel.model.Release (&(release.bundle.symbolic.name=com.liferay.redirect.service)(&(release.schema.version>=3.0.0)(!(release.schema.version>=4.0.0)))(|(!(release.state=*))(release.state=0)))]_Bundle {id: 200, name: com.liferay.portal.security.audit.storage.service, version: 6.0.15}._	Component with ID 4 is unavailable due to missing required dependencies:_		service dependency [com.liferay.portal.kernel.model.Release (&(release.bundle.symbolic.name=com.liferay.portal.security.audit.storage.service)(&(release.schema.version>=2.0.0)(!(release.schema.version>=3.0.0)))(|(!(release.state=*))(release.state=0)))]_Bundle {id: 809, name: com.liferay.commerce.wish.list.service, version: 4.0.15}._	Component with ID 95 is unavailable due to missing required dependencies:_		service dependency [com.liferay.commerce.product.permission.CommerceProductViewPermission]_		service dependency [com.liferay.commerce.product.service.CPDefinitionLocalService]_		service dependency [com.liferay.commerce.product.service.CPInstanceLocalService]_		service dependency [com.liferay.commerce.product.service.CProductLocalService]_		service dependency [com.liferay.portal.kernel.model.Release (&(release.bundle.symbolic.name=com.liferay.commerce.]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_product_navigation_control_menu_web_portlet_ProductNavigationControlMenuPortlet from com.liferay.product.navigation.control.menu.web_6.0.23 [518] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_wiki_web_portlet_WikiAdminPortlet from com.liferay.wiki.web_7.0.24 [578] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_wiki_web_portlet_WikiDisplayPortlet from com.liferay.wiki.web_7.0.24 [578] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_wiki_web_portlet_WikiPortlet from com.liferay.wiki.web_7.0.24 [578] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_message_boards_web_portlet_MBAdminPortlet from com.liferay.message.boards.web_5.0.26 [459] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_message_boards_web_portlet_MBPortlet from com.liferay.message.boards.web_5.0.26 [459] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_blogs_web_portlet_BlogsAdminPortlet from com.liferay.blogs.web_6.0.27 [1141] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_blogs_web_portlet_BlogsAgreggatorPortlet from com.liferay.blogs.web_6.0.27 [1141] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_blogs_web_portlet_BlogsPortlet from com.liferay.blogs.web_6.0.27 [1141] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_asset_categories_admin_web_portlet_AssetCategoriesAdminPortlet from com.liferay.asset.categories.admin.web_5.0.24 [647] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_asset_browser_web_portlet_AssetBrowserPortlet from com.liferay.asset.browser.web_5.0.16 [1073] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_asset_list_web_portlet_AssetListPortlet from com.liferay.asset.list.web_3.0.20 [606] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_dynamic_data_mapping_form_report_web_portlet_DDMFormReportPortlet from com.liferay.dynamic.data.mapping.form.report.web_2.0.17 [527] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_journal_web_portlet_JournalPortlet from com.liferay.journal.web_5.0.43 [1101] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: bundle com.liferay.journal.service:7.0.36 (681)[com.liferay.journal.internal.exportimport.data.handler.JournalPortletDataHandler(2790)] : The activate method has thrown an exception ]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent WARNING ]]></value>
+<value><![CDATA[LIFERAY_ERROR: bundle com.liferay.journal.content.web:6.0.17 (920)[com.liferay.journal.content.web.internal.exportimport.data.handler.JournalContentPortletDataHandler(7920)] : Could not get service from ref {com.liferay.exportimport.kernel.lar.PortletDataHandler}={ModuleServiceLifecycle.target=(module.service.lifecycle=portal.initialized), schema.version=4.0.0, javax.portlet.name=com_liferay_journal_web_portlet_JournalPortlet, service.id=16863, service.bundleid=681, service.scope=bundle, component.name=com.liferay.journal.internal.exportimport.data.handler.JournalPortletDataHandler, component.id=2790} ]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: bundle com.liferay.data.engine.rest.impl:3.0.26 (789)[com.liferay.data.engine.rest.internal.content.type.DataDefinitionContentTypeTracker(7394)] : The addDataDefinitionContentType method has thrown an exception ]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: bundle com.liferay.data.engine.rest.impl:3.0.26 (789)[com.liferay.data.engine.rest.internal.content.type.DataDefinitionContentTypeTracker(7394)] : The addDataDefinitionContentType method has thrown an exception ]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_dynamic_data_lists_web_portlet_DDLDisplayPortlet from com.liferay.dynamic.data.lists.web_6.0.22 [774] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_dynamic_data_mapping_form_web_portlet_DDMFormBrowserPortlet from com.liferay.dynamic.data.mapping.form.web_4.0.49 [303] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_dynamic_data_mapping_form_web_portlet_DDMFormAdminPortlet from com.liferay.dynamic.data.mapping.form.web_4.0.49 [303] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_dynamic_data_mapping_form_web_portlet_DDMFormPortlet from com.liferay.dynamic.data.mapping.form.web_4.0.49 [303] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: bundle com.liferay.portal.workflow.kaleo.runtime.impl:6.0.19 (165)[com.liferay.portal.workflow.kaleo.runtime.internal.activator.KaleoActivator(219)] : The activate method has thrown an exception ]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_dynamic_data_mapping_web_portlet_PortletDisplayTemplatePortlet from com.liferay.dynamic.data.mapping.web_5.0.26 [904] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Unable to process message {destinationName=liferay/scheduler_dispatch, response=null, responseDestinationName=null, responseId=null, payload=null, values={GROUP_NAME=com.liferay.calendar.web.internal.messaging.CheckBookingsMessageListener, companyId=0, groupId=0, DESTINATION_NAME=liferay/scheduler_dispatch, EXCEPTIONS_MAX_SIZE=0, JOB_STATE=com.liferay.portal.kernel.scheduler.JobState@40286098, STORAGE_TYPE=MEMORY_CLUSTERED, JOB_NAME=com.liferay.calendar.web.internal.messaging.CheckBookingsMessageListener}}]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Unable to process message {destinationName=liferay/scheduler_dispatch, response=null, responseDestinationName=null, responseId=null, payload=null, values={GROUP_NAME=com.liferay.calendar.web.internal.messaging.CheckBookingsMessageListener, companyId=0, groupId=0, DESTINATION_NAME=liferay/scheduler_dispatch, EXCEPTIONS_MAX_SIZE=0, JOB_STATE=com.liferay.portal.kernel.scheduler.JobState@1bcbc502, STORAGE_TYPE=MEMORY_CLUSTERED, JOB_NAME=com.liferay.calendar.web.internal.messaging.CheckBookingsMessageListener}}]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Unable to process message {destinationName=liferay/scheduler_dispatch, response=null, responseDestinationName=null, responseId=null, payload=null, values={GROUP_NAME=com.liferay.calendar.web.internal.messaging.CheckBookingsMessageListener, companyId=0, groupId=0, DESTINATION_NAME=liferay/scheduler_dispatch, EXCEPTIONS_MAX_SIZE=0, JOB_STATE=com.liferay.portal.kernel.scheduler.JobState@3649c20e, STORAGE_TYPE=MEMORY_CLUSTERED, JOB_NAME=com.liferay.calendar.web.internal.messaging.CheckBookingsMessageListener}}]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Unable to process message {destinationName=liferay/scheduler_dispatch, response=null, responseDestinationName=null, responseId=null, payload=null, values={GROUP_NAME=com.liferay.blogs.web.internal.messaging.CheckEntryMessageListener, companyId=0, groupId=0, DESTINATION_NAME=liferay/scheduler_dispatch, EXCEPTIONS_MAX_SIZE=0, JOB_STATE=com.liferay.portal.kernel.scheduler.JobState@7be3bf5d, STORAGE_TYPE=MEMORY_CLUSTERED, JOB_NAME=com.liferay.blogs.web.internal.messaging.CheckEntryMessageListener}}]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Unable to process message {destinationName=liferay/scheduler_dispatch, response=null, responseDestinationName=null, responseId=null, payload=null, values={GROUP_NAME=com.liferay.blogs.web.internal.messaging.CheckEntryMessageListener, companyId=0, groupId=0, DESTINATION_NAME=liferay/scheduler_dispatch, EXCEPTIONS_MAX_SIZE=0, JOB_STATE=com.liferay.portal.kernel.scheduler.JobState@49db45ed, STORAGE_TYPE=MEMORY_CLUSTERED, JOB_NAME=com.liferay.blogs.web.internal.messaging.CheckEntryMessageListener}}]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Unable to process message {destinationName=liferay/scheduler_dispatch, response=null, responseDestinationName=null, responseId=null, payload=null, values={GROUP_NAME=com.liferay.calendar.web.internal.messaging.CheckBookingsMessageListener, companyId=0, groupId=0, DESTINATION_NAME=liferay/scheduler_dispatch, EXCEPTIONS_MAX_SIZE=0, JOB_STATE=com.liferay.portal.kernel.scheduler.JobState@72f54b17, STORAGE_TYPE=MEMORY_CLUSTERED, JOB_NAME=com.liferay.calendar.web.internal.messaging.CheckBookingsMessageListener}}]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Unable to process message {destinationName=liferay/scheduler_dispatch, response=null, responseDestinationName=null, responseId=null, payload=null, values={GROUP_NAME=com.liferay.document.library.web.internal.messaging.CheckFileEntryMessageListener, companyId=20100, groupId=0, DESTINATION_NAME=liferay/scheduler_dispatch, EXCEPTIONS_MAX_SIZE=0, JOB_STATE=com.liferay.portal.kernel.scheduler.JobState@563f9118, STORAGE_TYPE=MEMORY_CLUSTERED, JOB_NAME=com.liferay.document.library.web.internal.messaging.CheckFileEntryMessageListener}}]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Unable to process message {destinationName=liferay/scheduler_dispatch, response=null, responseDestinationName=null, responseId=null, payload=null, values={GROUP_NAME=com.liferay.journal.web.internal.messaging.CheckArticleMessageListener, companyId=0, groupId=0, DESTINATION_NAME=liferay/scheduler_dispatch, EXCEPTIONS_MAX_SIZE=0, JOB_STATE=com.liferay.portal.kernel.scheduler.JobState@7c1935dd, STORAGE_TYPE=MEMORY_CLUSTERED, JOB_NAME=com.liferay.journal.web.internal.messaging.CheckArticleMessageListener}}]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Unable to process message {destinationName=liferay/scheduler_dispatch, response=null, responseDestinationName=null, responseId=null, payload=null, values={GROUP_NAME=com.liferay.commerce.product.definitions.web.internal.messaging.CheckCPAttachmentFileEntryMessageListener, companyId=0, groupId=0, DESTINATION_NAME=liferay/scheduler_dispatch, EXCEPTIONS_MAX_SIZE=0, JOB_STATE=com.liferay.portal.kernel.scheduler.JobState@ceacbd3, STORAGE_TYPE=MEMORY_CLUSTERED, JOB_NAME=com.liferay.commerce.product.definitions.web.internal.messaging.CheckCPAttachmentFileEntryMessageListener}}]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Unable to process message {destinationName=liferay/scheduler_dispatch, response=null, responseDestinationName=null, responseId=null, payload=null, values={GROUP_NAME=com.liferay.commerce.price.list.internal.messaging.CheckCommerceTierPriceEntryMessageListener, companyId=0, groupId=0, DESTINATION_NAME=liferay/scheduler_dispatch, EXCEPTIONS_MAX_SIZE=0, JOB_STATE=com.liferay.portal.kernel.scheduler.JobState@13fe9f1c, STORAGE_TYPE=MEMORY_CLUSTERED, JOB_NAME=com.liferay.commerce.price.list.internal.messaging.CheckCommerceTierPriceEntryMessageListener}}]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Unable to process message {destinationName=liferay/scheduler_dispatch, response=null, responseDestinationName=null, responseId=null, payload=null, values={GROUP_NAME=com.liferay.blogs.web.internal.messaging.CheckEntryMessageListener, companyId=0, groupId=0, DESTINATION_NAME=liferay/scheduler_dispatch, EXCEPTIONS_MAX_SIZE=0, JOB_STATE=com.liferay.portal.kernel.scheduler.JobState@30509f, STORAGE_TYPE=MEMORY_CLUSTERED, JOB_NAME=com.liferay.blogs.web.internal.messaging.CheckEntryMessageListener}}]]></value>
+<value><![CDATA[LIFERAY_ERROR: transaction rollback: serialization failure]]></value>
+<value><![CDATA[LIFERAY_ERROR: Unable to process message {destinationName=liferay/scheduler_dispatch, response=null, responseDestinationName=null, responseId=null, payload=null, values={GROUP_NAME=com.liferay.blogs.web.internal.messaging.CheckEntryMessageListener, companyId=0, groupId=0, DESTINATION_NAME=liferay/scheduler_dispatch, EXCEPTIONS_MAX_SIZE=0, JOB_STATE=com.liferay.portal.kernel.scheduler.JobState@36eb932a, STORAGE_TYPE=MEMORY_CLUSTERED, JOB_NAME=com.liferay.blogs.web.internal.messaging.CheckEntryMessageListener}}]]></value>
+<value><![CDATA[LIFERAY_ERROR: bundle com.liferay.data.engine.rest.impl:3.0.26 (789)[com.liferay.data.engine.rest.internal.content.type.DataDefinitionContentTypeTracker(7394)] : The removeDataDefinitionContentType method has thrown an exception ]]></value>
+<value><![CDATA[LIFERAY_ERROR: bundle com.liferay.data.engine.rest.impl:3.0.26 (789)[com.liferay.data.engine.rest.internal.content.type.DataDefinitionContentTypeTracker(7394)] : The removeDataDefinitionContentType method has thrown an exception ]]></value>
+<value><![CDATA[LIFERAY_ERROR: Registered driver with driverClassName=com.mysql.jdbc.Driver was not found, trying direct instantiation.]]></value>
+<value><![CDATA[LIFERAY_ERROR: Registered driver with driverClassName=com.mysql.jdbc.Driver was not found, trying direct instantiation.]]></value>
+<value><![CDATA[LIFERAY_ERROR: Email test@liferay.com will be ignored because it is included in mail.send.blacklist]]></value>
+<value><![CDATA[LIFERAY_ERROR: Skipping email because the sender is not specified]]></value>
+<value><![CDATA[LIFERAY_ERROR: Registered driver with driverClassName=com.mysql.jdbc.Driver was not found, trying direct instantiation.]]></value>
+<value><![CDATA[LIFERAY_ERROR: Registered driver with driverClassName=com.mysql.jdbc.Driver was not found, trying direct instantiation.]]></value>
+<value><![CDATA[LIFERAY_ERROR: Registered driver with driverClassName=com.mysql.jdbc.Driver was not found, trying direct instantiation.]]></value>
+<value><![CDATA[LIFERAY_ERROR: Registered driver with driverClassName=com.mysql.jdbc.Driver was not found, trying direct instantiation.]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=1h21s802ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h27s482ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h26s350ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h25s502ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=50m29s906ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=20m29s970ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h43m15ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h24s999ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h26s537ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h24s477ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h25s800ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=14m49s718ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h25s887ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h26s220ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h25s503ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=20m29s150ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=35m30s389ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=27m45s24ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=30m24s8ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m27s947ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=20m29s532ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=20m29s826ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=20m30s396ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Retrograde clock change detected (housekeeper delta=29s870ms), soft-evicting connections from pool.]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=20m29s676ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=20m29s602ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=18m2s834ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=37m989ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=20m30s165ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=12m52s584ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h26s819ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h25s962ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h25s446ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h26s361ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h25s57ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Retrograde clock change detected (housekeeper delta=29s870ms), soft-evicting connections from pool.]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=1h27m10s75ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h26s27ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=20m30s38ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=38m59s898ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=20m30s714ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=20m30s434ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=20m30s439ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=51m951ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=51m947ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=1h32m31s792ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=11m28s466ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h24s689ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h25s806ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h25s807ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h25s564ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h25s918ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h25s404ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h24s879ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h25s906ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h26s26ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=29m26s984ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: {groupId=41442}]]></value>
+<value><![CDATA[LIFERAY_ERROR: {groupId=41455}]]></value>
+<value><![CDATA[LIFERAY_ERROR: {groupId=41672}]]></value>
+<value><![CDATA[LIFERAY_ERROR: Conversion failed: 1,3; <--- java.lang.NumberFormatException: For input string: "1,3"]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=20m28s669ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=20m28s670ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=20m30s31ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=20m30s29ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=16m15s874ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=16m15s874ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=18m23s956ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=8m55s347ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m15s369ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=39m26s567ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=53m13s527ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=4m48s495ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h5m2s875ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=29m45s263ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=30m55s65ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=30m55s64ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=5m29s702ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=5m29s697ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=27m26s146ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=27m26s153ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=30m25s268ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=30m25s268ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=16m36s880ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=16m36s878ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=17m4s224ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=17m4s231ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=17m47s969ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=17m47s976ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h8m46s973ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=1h8m46s973ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h25s922ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h25s926ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h24s573ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h24s570ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h8m35s17ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=1h8m35s23ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=49s317ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=49s320ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h23m32s630ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=1h23m32s635ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=8m34s435ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=8m34s436ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: Registered driver with driverClassName=com.mysql.jdbc.Driver was not found, trying direct instantiation.]]></value>
+<value><![CDATA[LIFERAY_ERROR: Registered driver with driverClassName=com.mysql.jdbc.Driver was not found, trying direct instantiation.]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Retrograde clock change detected (housekeeper delta=29s833ms), soft-evicting connections from pool.]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=4m40s730ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=7m47s316ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=1h24m7s800ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Retrograde clock change detected (housekeeper delta=29s802ms), soft-evicting connections from pool.]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=30m25s346ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=16m12s771ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=16m12s770ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=16m23s121ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=6m2s950ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=6m2s960ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h37s113ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h37s113ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=40m2s708ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=40m2s703ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h30m12s838ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h30m12s851ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h15m2s784ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=1h15m2s784ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h17m27s93ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h17m27s92ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=24m51s660ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=24m51s661ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Retrograde clock change detected (housekeeper delta=29s791ms), soft-evicting connections from pool.]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Retrograde clock change detected (housekeeper delta=29s790ms), soft-evicting connections from pool.]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=35m27s530ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=35m27s535ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=20m30s105ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=20m30s98ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=20m31s226ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=1h3m43s320ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=20m36s32ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=20m31s987ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=4h35m11s700ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=4h35m11s705ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=1h53m51s781ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h53m51s792ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h29m54s344ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=21h34m15s688ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=21h34m15s683ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=7h11m34s748ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=7h11m34s745ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h14m43s930ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=1h14m43s930ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=30m7s125ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=45m4s562ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m14s812ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m14s962ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=1h40m8s988ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h40m8s971ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=55m11s81ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m26s623ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m26s627ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m25s636ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m25s608ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m29s41ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m29s74ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m25s641ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m25s628ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m26s687ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m26s677ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m29s353ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m26s847ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m25s573ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m25s582ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m29s198ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m29s207ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m25s711ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m25s710ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m26s524ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m27s826ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m27s826ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=3h32m15s747ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=3h32m15s742ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h33m47s623ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h33m47s578ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=1h5m13s880ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h5m13s886ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=1h20s904ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=30m26s803ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=30m25s210ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=17m40s498ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=18m25s384ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h25s319ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=21m49s608ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=21m49s605ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h25s289ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=46m56s827ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h25s507ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h25s394ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=16m13s656ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h25s660ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h25s542ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h25s458ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h25s452ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h4m54s325ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=1h4m54s333ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=30m25s299ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=30m25s292ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h25s602ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h24s595ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h25s530ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h26s15ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=20m30s300ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=20m29s987ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h25s23ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h21m58s269ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=20m30s596ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h24s978ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=1h6m1s367ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=20m30s523ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=20m29s343ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=6m2s685ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h26s323ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h25s641ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h24s606ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h24s608ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h25s520ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h25s330ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h25s330ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h25s287ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=32m12s688ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=32m12s688ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h17m20s209ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=30m25s361ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=30m25s359ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m24s650ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m24s647ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=16m8s23ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=16m8s30ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m23s580ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m23s576ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=16m5s618ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=16m5s618ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m23s897ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m23s896ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=23m41s924ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=23m41s928ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m24s108ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m24s108ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=6m10s251ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=6m10s248ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m24s381ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m24s380ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m23s865ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m23s864ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=24m23s942ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=24m23s944ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m23s944ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m23s944ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m24s509ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m24s508ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m24s351ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m24s354ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m23s710ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m23s714ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m24s454ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m24s457ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m24s141ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m24s148ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m23s844ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m23s852ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m23s754ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m23s748ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m23s983ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m23s990ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m23s757ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m23s756ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m23s660ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m24s778ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m24s771ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m23s961ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=12m29s992ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=14m39s331ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=5m28s962ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=8m55s5ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=5m10s833ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m23s946ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m23s52ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m24s409ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m23s729ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m24s521ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m24s42ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m24s277ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m24s117ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m25s308ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m23s894ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m20s268ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m24s3ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m24s211ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m23s728ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m24s125ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m24s466ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m23s692ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m24s146ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m24s620ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=13m27s635ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=13m27s642ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: java.io.FileNotFoundException: /Users/diegohu/Documents/liferay/bundles/tomcat-9.0.53/webapps/ROOT/WEB-INF/shielded-container-lib/portal-impl.jar (No such file or directory)]]></value>
+<value><![CDATA[LIFERAY_ERROR: Registered driver with driverClassName=com.mysql.jdbc.Driver was not found, trying direct instantiation.]]></value>
+<value><![CDATA[LIFERAY_ERROR: Registered driver with driverClassName=com.mysql.jdbc.Driver was not found, trying direct instantiation.]]></value>
+<value><![CDATA[LIFERAY_ERROR: Dependency manager sync timeout after waiting 60s]]></value>
+<value><![CDATA[LIFERAY_ERROR: Portlet com_liferay_commerce_checkout_web_internal_portlet_CommerceCheckoutPortlet from com.liferay.commerce.checkout.web_5.0.21 [1971] failed to initialize]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=9m41s876ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=9m41s916ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=30m23s719ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=30m23s720ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=18m33s420ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=18m33s413ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=18m8s399ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=18m9s684ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=4m15s883ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=4m15s889ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: Error executing FreeMarker template]]></value>
+<value><![CDATA[LIFERAY_ERROR: User ID 20127]]></value>
+<value><![CDATA[LIFERAY_ERROR: Current URL /home1?p_l_back_url=http%3A%2F%2Flocalhost%3A8080%2Fgroup%2Fguest%2F%7E%2Fcontrol_panel%2Fmanage%3Fp_p_id%3Dcom_liferay_layout_admin_web_portlet_GroupPagesPortlet%26p_p_lifecycle%3D0%26p_p_state%3Dmaximized%26p_p_auth%3D6TPp1Jpz]]></value>
+<value><![CDATA[LIFERAY_ERROR: Referer http://localhost:8080/group/guest/~/control_panel/manage?p_p_id=com_liferay_layout_admin_web_portlet_GroupPagesPortlet&p_p_lifecycle=0&p_p_state=maximized&p_p_mode=view&p_r_p_layoutSetBranchId=0&p_r_p_selPlid=0&p_p_auth=6TPp1Jpz]]></value>
+<value><![CDATA[LIFERAY_ERROR: Remote address 127.0.0.1]]></value>
+<value><![CDATA[LIFERAY_ERROR: Exception is null]]></value>
+<value><![CDATA[LIFERAY_ERROR: Error executing FreeMarker template]]></value>
+<value><![CDATA[LIFERAY_ERROR: User ID 20127]]></value>
+<value><![CDATA[LIFERAY_ERROR: Current URL /home1?p_l_back_url=http%3A%2F%2Flocalhost%3A8080%2Fgroup%2Fguest%2F%7E%2Fcontrol_panel%2Fmanage%3Fp_p_id%3Dcom_liferay_layout_admin_web_portlet_GroupPagesPortlet%26p_p_lifecycle%3D0%26p_p_state%3Dmaximized%26p_p_auth%3D6TPp1Jpz]]></value>
+<value><![CDATA[LIFERAY_ERROR: Remote address 127.0.0.1]]></value>
+<value><![CDATA[LIFERAY_ERROR: Exception is null]]></value>
+<value><![CDATA[LIFERAY_ERROR: {groupId=42048}]]></value>
+<value><![CDATA[LIFERAY_ERROR: Duplicate entry '40724-0-metadata-com.liferay.portal.kernel.util.SessionClicks' for key 'IX_A6DD0ECF']]></value>
+<value><![CDATA[LIFERAY_ERROR: {groupId=42225}]]></value>
+<value><![CDATA[LIFERAY_ERROR: {groupId=42230}]]></value>
+<value><![CDATA[LIFERAY_ERROR: {groupId=42239}]]></value>
+<value><![CDATA[LIFERAY_ERROR: {groupId=42264}]]></value>
+<value><![CDATA[LIFERAY_ERROR: {groupId=42273}]]></value>
+<value><![CDATA[LIFERAY_ERROR: {groupId=42278}]]></value>
+<value><![CDATA[LIFERAY_ERROR: {groupId=42372}]]></value>
+<value><![CDATA[LIFERAY_ERROR: {groupId=42476}]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=30m23s728ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=30m23s730ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=30m24s408ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=1h19m24s878ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h19m24s878ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h24s112ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h22s922ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=26m3s830ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=26m3s831ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=5m48s678ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=8m21s584ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=14m49s463ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=14m49s462ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=14m35s565ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=14m35s565ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m16s618ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=14m34s407ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=14m51s842ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=5m43s100ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=5m43s102ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=8m31s825ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m1s54ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m1s54ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=5m9s179ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=5m9s183ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=9m17s45ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=9m17s43ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=14m37s434ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=34m58s394ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=34m58s383ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=12m29s10ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h24s949ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2h24s957ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h43m5s476ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=1h43m5s477ms).]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Connection com.mysql.cj.jdbc.ConnectionImpl@4355483d marked as broken because of SQLSTATE(08S01), ErrorCode(0)]]></value>
+<value><![CDATA[LIFERAY_ERROR: Communications link failure__The last packet successfully received from the server was 1 milliseconds ago. The last packet sent successfully to the server was 1 milliseconds ago. [Sanitized]]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Connection com.mysql.cj.jdbc.ConnectionImpl@26a16931 marked as broken because of SQLSTATE(08S01), ErrorCode(0)]]></value>
+<value><![CDATA[LIFERAY_ERROR: Communications link failure__The last packet successfully received from the server was 1 milliseconds ago. The last packet sent successfully to the server was 1 milliseconds ago. [Sanitized]]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Connection com.mysql.cj.jdbc.ConnectionImpl@69ae6cef marked as broken because of SQLSTATE(08S01), ErrorCode(0)]]></value>
+<value><![CDATA[LIFERAY_ERROR: Communications link failure__The last packet successfully received from the server was 1 milliseconds ago. The last packet sent successfully to the server was 1 milliseconds ago. [Sanitized]]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Connection com.mysql.cj.jdbc.ConnectionImpl@78cd30e7 marked as broken because of SQLSTATE(08S01), ErrorCode(0)]]></value>
+<value><![CDATA[LIFERAY_ERROR: Communications link failure__The last packet successfully received from the server was 1 milliseconds ago. The last packet sent successfully to the server was 1 milliseconds ago. [Sanitized]]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Connection com.mysql.cj.jdbc.ConnectionImpl@4c36c2d7 marked as broken because of SQLSTATE(08S01), ErrorCode(0)]]></value>
+<value><![CDATA[LIFERAY_ERROR: Communications link failure__The last packet successfully received from the server was 1 milliseconds ago. The last packet sent successfully to the server was 1 milliseconds ago. [Sanitized]]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Connection com.mysql.cj.jdbc.ConnectionImpl@638f034b marked as broken because of SQLSTATE(08S01), ErrorCode(0)]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: Communications link failure__The last packet successfully received from the server was 1 milliseconds ago. The last packet sent successfully to the server was 1 milliseconds ago. [Sanitized]]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Connection com.mysql.cj.jdbc.ConnectionImpl@2142a27d marked as broken because of SQLSTATE(08S01), ErrorCode(0)]]></value>
+<value><![CDATA[LIFERAY_ERROR: Communications link failure__The last packet successfully received from the server was 1 milliseconds ago. The last packet sent successfully to the server was 1 milliseconds ago. [Sanitized]]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Connection com.mysql.cj.jdbc.ConnectionImpl@5d2978a marked as broken because of SQLSTATE(08S01), ErrorCode(0)]]></value>
+<value><![CDATA[LIFERAY_ERROR: Communications link failure__The last packet successfully received from the server was 1 milliseconds ago. The last packet sent successfully to the server was 1 milliseconds ago. [Sanitized]]]></value>
+<value><![CDATA[LIFERAY_ERROR: FrameworkEvent ERROR ]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@52a48549 (No operations allowed after connection closed.)]]></value>
+<value><![CDATA[LIFERAY_ERROR: HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@75fa9b2f (No operations allowed after connection closed.)]]></value>
+<value><![CDATA[LIFERAY_ERROR: Registered driver with driverClassName=com.mysql.jdbc.Driver was not found, trying direct instantiation.]]></value>
+<value><![CDATA[LIFERAY_ERROR: Registered driver with driverClassName=com.mysql.jdbc.Driver was not found, trying direct instantiation.]]></value>
