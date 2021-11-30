@@ -15,14 +15,22 @@
 package com.liferay.asset.categories.internal.layout.display.page;
 
 import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.InfoItemHierarchicalReference;
 import com.liferay.layout.display.page.LayoutDisplayPageMultiSelectionProvider;
 import com.liferay.portal.kernel.language.LanguageUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Lourdes Fernández Besada
@@ -46,7 +54,52 @@ public class AssetCategoryLayoutDisplayPageMultiSelectionProvider
 	public <T extends InfoItemHierarchicalReference> List<T> getSortedList(
 		List<T> toSort) {
 
-		return toSort;
+		Stream<T> stream = toSort.stream();
+
+		Map<Long, List<T>> itemsByVocabularyIdMap = stream.filter(
+			infoItemHierarchicalReference ->
+				Objects.equals(
+					getClassName(),
+					infoItemHierarchicalReference.getClassName()) &&
+				(_getClassPK(infoItemHierarchicalReference) > 0)
+		).collect(
+			Collectors.groupingBy(
+				infoItemHierarchicalReference -> {
+					AssetCategory assetCategory =
+						_assetCategoryLocalService.fetchAssetCategory(
+							_getClassPK(infoItemHierarchicalReference));
+
+					return assetCategory.getVocabularyId();
+				},
+				Collectors.toList())
+		);
+
+		List<T> itemsHierarchy = new ArrayList<>();
+
+		for (List<T> vocabularyItems : itemsByVocabularyIdMap.values()) {
+			itemsHierarchy.addAll(vocabularyItems);
+		}
+
+		return itemsHierarchy;
 	}
+
+	private long _getClassPK(
+		InfoItemHierarchicalReference infoItemHierarchicalReference) {
+
+		if (infoItemHierarchicalReference.getInfoItemIdentifier() instanceof
+				ClassPKInfoItemIdentifier) {
+
+			ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
+				(ClassPKInfoItemIdentifier)
+					infoItemHierarchicalReference.getInfoItemIdentifier();
+
+			return classPKInfoItemIdentifier.getClassPK();
+		}
+
+		return 0;
+	}
+
+	@Reference
+	private AssetCategoryLocalService _assetCategoryLocalService;
 
 }
