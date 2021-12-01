@@ -209,6 +209,7 @@ definition {
 	test ConfigureAssetPublisherAfterAddingKaleoFormsAdminPortletToBlackList {
 		property test.name.skip.portal.instance = "AssetPublisherUseCase#ConfigureAssetPublisherAfterAddingKaleoFormsAdminPortletToBlackList";
 		property test.run.environment = "EE";
+		property portal.acceptance = "Tim";
 
 		task ("Add component to blacklist") {
 			ApplicationsMenu.gotoPortlet(
