@@ -14,6 +14,8 @@
 
 package com.liferay.info.item;
 
+import com.liferay.petra.string.StringBundler;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -52,8 +54,20 @@ public class InfoItemHierarchicalReference extends InfoItemReference {
 		return _children;
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), _children);
+	}
+
 	public void setChildren(List<InfoItemHierarchicalReference> children) {
 		_children = children;
+	}
+
+	@Override
+	public String toString() {
+		return StringBundler.concat(
+			"{infoItemReference=", super.toString(), ", _children=", _children,
+			"}");
 	}
 
 	private List<InfoItemHierarchicalReference> _children = new ArrayList<>();
