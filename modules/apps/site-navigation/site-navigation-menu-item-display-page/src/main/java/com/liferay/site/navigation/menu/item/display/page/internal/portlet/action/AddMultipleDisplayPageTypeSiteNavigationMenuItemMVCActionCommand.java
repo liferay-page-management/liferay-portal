@@ -15,6 +15,8 @@
 package com.liferay.site.navigation.menu.item.display.page.internal.portlet.action;
 
 import com.liferay.info.item.InfoItemHierarchicalReference;
+import com.liferay.layout.display.page.LayoutDisplayPageMultiSelectionProvider;
+import com.liferay.layout.display.page.LayoutDisplayPageMultiSelectionProviderTracker;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -98,6 +100,18 @@ public class AddMultipleDisplayPageTypeSiteNavigationMenuItemMVCActionCommand
 							return new InfoItemItemSelectorReturnItem(
 								itemJSONObject);
 						});
+
+				LayoutDisplayPageMultiSelectionProvider<?>
+					layoutDisplayPageMultiSelectionProvider =
+						_layoutDisplayPageMultiSelectionProviderTracker.
+							getLayoutDisplayPageMultiSelectionProvider(
+								siteNavigationMenuItemType);
+
+				if (layoutDisplayPageMultiSelectionProvider != null) {
+					infoItemItemSelectorReturnItems =
+						layoutDisplayPageMultiSelectionProvider.getSortedList(
+							infoItemItemSelectorReturnItems);
+				}
 
 				for (InfoItemHierarchicalReference
 						infoItemHierarchicalReference :
@@ -273,6 +287,10 @@ public class AddMultipleDisplayPageTypeSiteNavigationMenuItemMVCActionCommand
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		AddMultipleDisplayPageTypeSiteNavigationMenuItemMVCActionCommand.class);
+
+	@Reference
+	private LayoutDisplayPageMultiSelectionProviderTracker
+		_layoutDisplayPageMultiSelectionProviderTracker;
 
 	@Reference
 	private Portal _portal;
