@@ -3543,6 +3543,30 @@ definition {
 		AssertElementPresent(locator1 = "PageEditor#EMPTY_MESSAGE");
 	}
 
+	macro viewElementInsideModule {
+		if (!(isSet(position))) {
+			var position = "1";
+		}
+
+		AssertElementPresent(
+			key_columnNumber = "${moduleNumber}",
+			key_elementHeader = "//div[contains(@class,'page-editor')]//li[contains(.,'${elementName}')]",
+			key_position = "${position}",
+			locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
+	}
+
+	macro viewElementOutsideModule {
+		if (!(isSet(position))) {
+			var position = "1";
+		}
+
+		AssertElementNotPresent(
+			key_columnNumber = "${moduleNumber}",
+			key_elementHeader = "//div[contains(@class,'page-editor')]//li[contains(.,'${elementNotPresent}')]",
+			key_position = "${position}",
+			locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
+	}
+
 	macro viewFragment {
 		if (!(isSet(position))) {
 			var position = "1";
