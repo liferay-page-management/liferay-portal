@@ -34,11 +34,11 @@ import org.osgi.service.component.annotations.Reference;
 	immediate = true,
 	property = {
 		"javax.portlet.name=" + LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES,
-		"mvc.command.name=/layout_page_template_admin/reset_merge_fail_count_and_merge"
+		"mvc.command.name=/layout_page_template_admin/reset_merge_fail_count"
 	},
 	service = MVCActionCommand.class
 )
-public class ResetMergeFailCountAndMergeMVCActionCommand
+public class ResetMergeFailCountMVCActionCommand
 	extends BaseMVCActionCommand {
 
 	@Override
