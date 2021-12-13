@@ -781,7 +781,7 @@ definition {
 		}
 	}
 
-	@description = "This is a test for LPS-140834. Stylebook can't be selected when public theme matches master page's theme."
+	@description = "This is a test for LPS-140834. The user could select style book in master page when use public pages theme."
 	@priority = "4"
 	test SelectStyleBookInMasterPageWhenUsePublicPagesTheme {
 		property portal.release = "false";
