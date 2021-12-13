@@ -475,7 +475,7 @@ definition {
 	}
 
 	macro changeCurrentTheme {
-		SitePages.togglePrivacy(privacy = "${pageName}");
+		SitePages.togglePrivacy(privacy = "${privacy}");
 
 		Click(
 			key_pageName = "${pageName}",
