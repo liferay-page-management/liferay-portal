@@ -518,10 +518,4 @@ definition {
 		}
 	}
 
-	macro viewCheckboxChecked {
-		AssertChecked.assertCheckedNotVisible(
-			key_pageName = "${pageName}",
-			locator1 = "SitePages#LIST_GROUP_ITEM_CHECKBOX");
-	}
-
 }
