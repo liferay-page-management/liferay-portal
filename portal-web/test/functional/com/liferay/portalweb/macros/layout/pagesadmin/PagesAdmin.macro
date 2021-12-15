@@ -1,5 +1,18 @@
 definition {
 
+	@summary = "Go to the page creation form through the empty-result-message taglib"
+	macro gotoAddFirstPage {
+		var key_menuItem = "${pageType}";
+
+		Refresh();
+
+		Click(locator1 = "Message#EMPTY_INFO_TAGLIB");
+
+		Click.waitForMenuToggleJSClick(locator1 = "Dropdown#EMPTY_MESSAGE_DROPDOWN");
+
+		Click(locator1 = "MenuItem#DROPDOWN_MENU_ITEM");
+	}
+
 	@summary = "Go to the pageMenuItem of a Site Page. Parent pages hierarchy is required to navigate to child pages."
 	macro gotoPageMenuItem {
 		WaitForPageLoad();
