@@ -122,7 +122,7 @@ definition {
 		}
 
 		task ("Navigate to the Pages admin") {
-			SitePages.openPagesAdmin(siteURLKey = "test-site-name");
+			PagesAdmin.openPagesAdmin(siteURLKey = "test-site-name");
 		}
 
 		task ("Change the user language to ca-ES") {

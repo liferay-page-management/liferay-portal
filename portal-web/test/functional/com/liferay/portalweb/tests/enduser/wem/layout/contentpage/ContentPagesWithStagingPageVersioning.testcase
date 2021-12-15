@@ -41,7 +41,7 @@ definition {
 		property portal.acceptance = "true";
 
 		task ("Add a public content page") {
-			SitePages.openPagesAdmin(siteURLKey = "test-site-name-staging");
+			PagesAdmin.openPagesAdmin(siteURLKey = "test-site-name-staging");
 
 			ContentPages.addPage(pageName = "Test Page Name");
 		}
@@ -114,7 +114,7 @@ definition {
 		property portal.acceptance = "true";
 
 		task ("Add a public content page") {
-			SitePages.openPagesAdmin(siteURLKey = "test-site-name-staging");
+			PagesAdmin.openPagesAdmin(siteURLKey = "test-site-name-staging");
 
 			ContentPages.addPage(pageName = "Test Page Name");
 		}
@@ -228,7 +228,7 @@ definition {
 		property portal.acceptance = "true";
 
 		task ("Add a public content page") {
-			SitePages.openPagesAdmin(siteURLKey = "test-site-name-staging");
+			PagesAdmin.openPagesAdmin(siteURLKey = "test-site-name-staging");
 
 			ContentPages.addPage(pageName = "Public Content Page Name");
 		}
@@ -290,7 +290,7 @@ definition {
 		}
 
 		task ("Add a private content page") {
-			SitePages.openPagesAdmin(siteURLKey = "test-site-name-staging");
+			PagesAdmin.openPagesAdmin(siteURLKey = "test-site-name-staging");
 
 			ContentPages.addPrivatePage(pageName = "Private Content Page Name");
 		}
@@ -358,7 +358,7 @@ definition {
 	@priority = "4"
 	test ViewSitePagesVariationOnlyShownInViewMode {
 		task ("Add a public content page") {
-			SitePages.openPagesAdmin(siteURLKey = "test-site-name-staging");
+			PagesAdmin.openPagesAdmin(siteURLKey = "test-site-name-staging");
 
 			ContentPages.addPage(pageName = "Test Page Name");
 		}
