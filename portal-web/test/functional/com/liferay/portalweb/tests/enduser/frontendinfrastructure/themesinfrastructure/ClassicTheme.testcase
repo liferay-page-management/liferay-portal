@@ -43,7 +43,7 @@ definition {
 			category = "Site Builder",
 			portlet = "Pages");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageMenuItem(
 			menuItem = "Configure",
 			pageName = "Classic Theme Page");
 

@@ -1,5 +1,24 @@
 definition {
 
+	@summary = "Go to the pageMenuItem of a Site Page. Parent pages hierarchy is required to navigate to child pages."
+	macro gotoPageMenuItem {
+		WaitForPageLoad();
+
+		if (isSet(parentPagesHierarchy)) {
+			for (var parentPage : list "${parentPagesHierarchy}") {
+				Click(
+					key_itemName = "${parentPage}",
+					locator1 = "SitePages#LIST_GROUP_ITEM");
+			}
+		}
+
+		Click(
+			key_pageName = "${pageName}",
+			locator1 = "SitePages#LIST_GROUP_ITEM_ELLIPSIS_ICON");
+
+		MenuItem.click(menuItem = "${menuItem}");
+	}
+
 	macro movePageToPageUp {
 		var key_pageName = "${pageName}";
 		var key_pageNameTo = "${pageNameTo}";

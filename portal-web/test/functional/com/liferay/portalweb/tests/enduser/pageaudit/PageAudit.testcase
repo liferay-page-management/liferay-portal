@@ -87,7 +87,7 @@ definition {
 		task ("Add a translation for that page") {
 			PagesAdmin.openPagesAdmin(siteURLKey = "test-site-name");
 
-			SitePages.gotoPageMenuItem(
+			PagesAdmin.gotoPageMenuItem(
 				menuItem = "Configure",
 				pageName = "Content Page");
 

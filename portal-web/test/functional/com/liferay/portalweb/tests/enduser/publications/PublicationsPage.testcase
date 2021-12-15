@@ -36,7 +36,7 @@ definition {
 
 		PagesAdmin.openPagesAdmin(siteURLKey = "guest");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageMenuItem(
 			menuItem = "Configure",
 			pageName = "Test Page");
 
@@ -248,7 +248,7 @@ definition {
 
 		PagesAdmin.openPagesAdmin(siteURLKey = "guest");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageMenuItem(
 			menuItem = "Configure",
 			pageName = "Test Page");
 
@@ -270,7 +270,7 @@ definition {
 
 		PagesAdmin.openPagesAdmin(siteURLKey = "guest");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageMenuItem(
 			menuItem = "Configure",
 			pageName = "Test Page");
 
@@ -284,7 +284,7 @@ definition {
 
 		PagesAdmin.openPagesAdmin(siteURLKey = "guest");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageMenuItem(
 			menuItem = "Configure",
 			pageName = "Test Page");
 

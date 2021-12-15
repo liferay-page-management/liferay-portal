@@ -2203,7 +2203,7 @@ definition {
 
 		PagesAdmin.openPagesAdmin(siteURLKey = "site-name-staging");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageMenuItem(
 			menuItem = "Configure",
 			pageName = "Staging Test Page");
 

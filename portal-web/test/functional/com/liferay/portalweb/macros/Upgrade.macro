@@ -3128,7 +3128,7 @@ definition {
 
 		PagesAdmin.openPagesAdmin(siteURLKey = "test-site-name");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageMenuItem(
 			menuItem = "Configure",
 			pageName = "Test Page Name");
 

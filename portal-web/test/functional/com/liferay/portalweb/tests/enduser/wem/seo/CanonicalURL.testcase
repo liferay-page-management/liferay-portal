@@ -34,7 +34,7 @@ definition {
 
 		PagesAdmin.openPagesAdmin(siteURLKey = "site-name");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageMenuItem(
 			menuItem = "Configure",
 			pageName = "Canonical URL Test Page");
 
@@ -134,7 +134,7 @@ definition {
 
 		PagesAdmin.openPagesAdmin(siteURLKey = "site-name");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageMenuItem(
 			menuItem = "Configure",
 			pageName = "Test Page");
 
@@ -176,7 +176,7 @@ definition {
 
 		PagesAdmin.openPagesAdmin(siteURLKey = "site-name");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageMenuItem(
 			menuItem = "Configure",
 			pageName = "Canonical URL Test Page");
 

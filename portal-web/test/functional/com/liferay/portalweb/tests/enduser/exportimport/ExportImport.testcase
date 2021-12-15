@@ -360,7 +360,7 @@ definition {
 			category = "Site Builder",
 			portlet = "Pages");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageMenuItem(
 			menuItem = "Edit",
 			pageName = "Test Template Content Page");
 
@@ -1223,7 +1223,7 @@ definition {
 
 		PagesAdmin.openPagesAdmin(siteURLKey = "Site Name");
 
-		SitePages.gotoPageMenuItem(
+		PagesAdmin.gotoPageMenuItem(
 			menuItem = "Configure",
 			pageName = "Test Page");
 

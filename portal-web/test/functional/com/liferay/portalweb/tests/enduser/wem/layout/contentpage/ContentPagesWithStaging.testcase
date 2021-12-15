@@ -733,7 +733,7 @@ definition {
 		task ("Preview the draft content page via Pages admin in staging site") {
 			PagesAdmin.openPagesAdmin(siteURLKey = "test-site-name-staging");
 
-			SitePages.gotoPageMenuItem(
+			PagesAdmin.gotoPageMenuItem(
 				menuItem = "Preview Draft",
 				pageName = "Test Page Name");
 
