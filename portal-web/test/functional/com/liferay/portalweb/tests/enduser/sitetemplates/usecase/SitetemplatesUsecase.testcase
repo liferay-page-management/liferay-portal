@@ -158,11 +158,11 @@ definition {
 
 		Page.viewNoPG(pageName = "Site Child Page Name");
 
-		Page.viewNoPage(
+		PagesAdmin.viewNoPage(
 			pageName = "Site Page Name",
 			privacy = "Public Pages");
 
-		Page.viewNoPage(
+		PagesAdmin.viewNoPage(
 			pageName = "Site Child Page Name",
 			privacy = "Public Pages");
 

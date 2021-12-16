@@ -819,18 +819,6 @@ definition {
 		}
 	}
 
-	macro viewNoPage {
-		ProductMenu.gotoPortlet(
-			category = "Site Builder",
-			portlet = "Pages");
-
-		PagesAdmin.togglePrivacy(privacy = "${privacy}");
-
-		AssertElementNotPresent(
-			key_pageName = "${pageName}",
-			locator1 = "SitePages#LIST_GROUP_ITEM");
-	}
-
 	macro viewNoPG {
 		var key_pageName = "${pageName}";
 

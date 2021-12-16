@@ -381,7 +381,7 @@ definition {
 		}
 
 		task ("View first widget page is not shown") {
-			Page.viewNoPage(
+			PagesAdmin.viewNoPage(
 				pageName = "Test Page Name 1",
 				privacy = "Public Pages");
 		}
