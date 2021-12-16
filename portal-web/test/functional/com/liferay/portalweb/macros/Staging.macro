@@ -665,7 +665,7 @@ definition {
 			locator1 = "Staging#STAGING_MENU_ENABLE_PAGE_BUTTON",
 			value1 = "Enable in ${sitePagesVariationName}");
 
-		Page.view(
+		PagesAdmin.view(
 			pageName = "${pageName}",
 			privacy = "${privacy}");
 	}
