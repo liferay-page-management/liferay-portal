@@ -540,7 +540,7 @@ definition {
 
 		ProductMenu.gotoStagingSite(site = "Site Name");
 
-		Page.deleteLogoPG(page = "Staging Test Page");
+		PagesAdmin.deleteLogoPG(page = "Staging Test Page");
 
 		Navigator.gotoStagedSitePage(
 			pageName = "Staging Test Page",

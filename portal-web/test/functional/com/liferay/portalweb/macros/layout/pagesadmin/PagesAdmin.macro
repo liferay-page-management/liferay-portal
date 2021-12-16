@@ -369,6 +369,31 @@ definition {
 		PortletEntry.save();
 	}
 
+	macro deleteLogoPG {
+		ProductMenu.gotoPortlet(
+			category = "Site Builder",
+			portlet = "Pages");
+
+		if (isSet(page)) {
+			PagesAdmin.gotoPageMenuItem(
+				menuItem = "Configure",
+				pageName = "${page}");
+
+			Navigator.gotoNavTab(navTab = "Advanced");
+		}
+		else {
+			LexiconEntry.gotoHeaderMenuItem(menuItem = "Configure");
+
+			Panel.expandPanel(panel = "Logo");
+		}
+
+		AssertClick(
+			locator1 = "Button#DELETE_LAYOUT_LOGO",
+			value1 = "Delete");
+
+		PortletEntry.save();
+	}
+
 	macro deletePage {
 		WaitForPageLoad();
 

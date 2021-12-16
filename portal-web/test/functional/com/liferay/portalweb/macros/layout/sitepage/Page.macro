@@ -260,31 +260,6 @@ definition {
 		Button.clickSave();
 	}
 
-	macro deleteLogoPG {
-		ProductMenu.gotoPortlet(
-			category = "Site Builder",
-			portlet = "Pages");
-
-		if (isSet(page)) {
-			PagesAdmin.gotoPageMenuItem(
-				menuItem = "Configure",
-				pageName = "${page}");
-
-			Navigator.gotoNavTab(navTab = "Advanced");
-		}
-		else {
-			LexiconEntry.gotoHeaderMenuItem(menuItem = "Configure");
-
-			Panel.expandPanel(panel = "Logo");
-		}
-
-		AssertClick(
-			locator1 = "Button#DELETE_LAYOUT_LOGO",
-			value1 = "Delete");
-
-		PortletEntry.save();
-	}
-
 	macro disableMobileDeviceRulesAreInheritedFromPublicPages {
 		Uncheck.uncheckHiddenToggleSwitch(locator1 = "ToggleSwitch#INHERIT_MOBILE_DEVICE_RULES_FROM_PAGE");
 	}
