@@ -108,7 +108,7 @@ definition {
 	test BlacklistModuleWar {
 		property test.name.skip.portal.instance = "BundleBlacklist#BlacklistModuleWar";
 
-		Page.viewCurrentTheme(
+		PagesAdmin.viewCurrentTheme(
 			page = "Public Pages",
 			pageName = "Search",
 			themeName = "Classic Theme");

@@ -128,7 +128,7 @@ definition {
 
 		Theme.viewClassicThemeBackgroundColor();
 
-		Page.viewCurrentTheme(
+		PagesAdmin.viewCurrentTheme(
 			page = "Public Pages",
 			pageName = "Theme Test Page",
 			themeName = "Classic");
@@ -148,7 +148,7 @@ definition {
 
 		Theme.viewTestThemeBackgroundColor();
 
-		Page.viewCurrentTheme(
+		PagesAdmin.viewCurrentTheme(
 			page = "Public Pages",
 			pageName = "Theme Test Page",
 			themeName = "test-theme-7-4");
@@ -201,7 +201,7 @@ definition {
 
 		Theme.viewClassicThemeBackgroundColor();
 
-		Page.viewCurrentTheme(
+		PagesAdmin.viewCurrentTheme(
 			page = "Public Pages",
 			pageName = "Theme Test Page",
 			themeName = "Classic");
@@ -224,7 +224,7 @@ definition {
 
 		Theme.viewClassicThemeBackgroundColor();
 
-		Page.viewCurrentTheme(
+		PagesAdmin.viewCurrentTheme(
 			page = "Public Pages",
 			pageName = "Theme Test Page",
 			themeName = "Classic");
