@@ -137,7 +137,7 @@ definition {
 			pageName = "Test Page Edit",
 			siteName = "Site Name");
 
-		Page.view(
+		PagesAdmin.view(
 			pageName = "Test Page Edit",
 			privacy = "Public Pages");
 	}

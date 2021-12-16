@@ -483,6 +483,24 @@ definition {
 		}
 	}
 
+	macro view {
+		if (IsTextNotEqual(locator1 = "ControlMenu#HEADING", value1 = "Pages")) {
+			ProductMenu.gotoPortlet(
+				category = "Site Builder",
+				portlet = "Pages");
+		}
+
+		PagesAdmin.togglePrivacy(privacy = "${privacy}");
+
+		if (isSet(depth)) {
+			PagesAdmin.expandPageTree(depth = "${depth}");
+		}
+
+		AssertElementPresent(
+			key_itemName = "${pageName}",
+			locator1 = "SitePages#LIST_GROUP_ITEM");
+	}
+
 	macro viewCheckboxChecked {
 		AssertChecked.assertCheckedNotVisible(
 			key_pageName = "${pageName}",
