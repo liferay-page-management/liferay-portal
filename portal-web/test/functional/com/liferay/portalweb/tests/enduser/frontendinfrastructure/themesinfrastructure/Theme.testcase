@@ -99,11 +99,7 @@ definition {
 			groupName = "Guest",
 			layoutName = "Theme Test Page");
 
-		ProductMenu.gotoPortlet(
-			category = "Site Builder",
-			portlet = "Pages");
-
-		Page.changeCurrentTheme(
+		PagesAdmin.changeCurrentTheme(
 			pageName = "Theme Test Page",
 			themeName = "test-theme-7-4");
 
@@ -176,11 +172,7 @@ definition {
 			groupName = "Guest",
 			layoutName = "Theme Test Page");
 
-		ProductMenu.gotoPortlet(
-			category = "Site Builder",
-			portlet = "Pages");
-
-		Page.changeCurrentTheme(
+		PagesAdmin.changeCurrentTheme(
 			pageName = "Theme Test Page",
 			themeName = "test-theme-7-4");
 
