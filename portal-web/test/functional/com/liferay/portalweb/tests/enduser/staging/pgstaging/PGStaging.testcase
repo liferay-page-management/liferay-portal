@@ -524,7 +524,7 @@ definition {
 
 		Navigator.gotoStagedView();
 
-		Page.changeLayoutLogo(
+		PagesAdmin.changeLayoutLogo(
 			logoFile = "Document_3.png",
 			pageName = "Staging Test Page");
 

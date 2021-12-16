@@ -743,7 +743,7 @@ definition {
 
 		Navigator.gotoStagedView();
 
-		Page.changeLayoutLogo(
+		PagesAdmin.changeLayoutLogo(
 			logoFile = "Document_2.png",
 			pageName = "Staging Test Page");
 

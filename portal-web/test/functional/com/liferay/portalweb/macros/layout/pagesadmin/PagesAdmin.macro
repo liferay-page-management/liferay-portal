@@ -299,6 +299,20 @@ definition {
 		WaitForSPARefresh();
 	}
 
+	macro changeLayoutLogo {
+		ProductMenu.gotoPortlet(
+			category = "Site Builder",
+			portlet = "Pages");
+
+		PagesAdmin.gotoPageMenuItem(
+			menuItem = "Configure",
+			pageName = "${pageName}");
+
+		Navigator.gotoNavTab(navTab = "Advanced");
+
+		Page.uploadFileForLogo(logoFile = "${logoFile}");
+	}
+
 	macro checkPage {
 		var key_pageName = "${pageName}";
 
