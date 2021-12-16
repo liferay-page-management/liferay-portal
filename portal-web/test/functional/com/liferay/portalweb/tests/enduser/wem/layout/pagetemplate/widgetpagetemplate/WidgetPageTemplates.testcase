@@ -65,7 +65,7 @@ definition {
 		task ("View page template is added") {
 			Navigator.openSiteURL(siteName = "Site Name");
 
-			Page.viewPageTemplate(
+			PagesAdmin.viewPageTemplate(
 				page = "Site Page",
 				pageTemplateName = "Page Template Name");
 		}
