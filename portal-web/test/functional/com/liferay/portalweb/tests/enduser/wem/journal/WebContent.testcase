@@ -759,7 +759,7 @@ definition {
 
 			WebContentNavigator.gotoAddCP();
 
-			WebContent.addCP(webContentTitle = "Web Content Title");
+			WebContent.addCP(webContentContent = "Web Content Content");
 		}
 
 		task ("Add link to page and verify the URL is correct") {
