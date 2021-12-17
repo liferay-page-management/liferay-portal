@@ -724,7 +724,7 @@ definition {
 
 	@description = "This is a test for LPS-134566. doAsUserId parameter included in page URL when selecting page link from Page Selection menu"
 	@priority = "4"
-	test NotIncludeDoAsUserIDParameterWhenSelectingPageLinkFromSelectionMenu {
+	test ViewDoAsUserIdNotShownInURLFieldAfterAddPageLinkToText {
 		task ("Add new user") {
 			JSONUser.addUser(
 				userEmailAddress = "userea1@liferay.com",
