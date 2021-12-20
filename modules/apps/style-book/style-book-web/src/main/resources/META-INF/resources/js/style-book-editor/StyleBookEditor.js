@@ -106,6 +106,7 @@ export default function ({
 	styleBookEntryId,
 	templatesPreviewEnabled,
 	themeName,
+	tokenReuseEnabled,
 } = {}) {
 	initializeConfig({
 		defaultUserId,
@@ -121,6 +122,7 @@ export default function ({
 		styleBookEntryId,
 		templatesPreviewEnabled,
 		themeName,
+		tokenReuseEnabled,
 	});
 
 	return (
