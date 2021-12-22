@@ -204,6 +204,33 @@ definition {
 		}
 	}
 
+	@description = "This is a use case for LPS-139952. SQLSyntaxErrorException on AssetEntryLocalServiceUtil.getTopViewedEntries call."
+	@priority = "4"
+	test CallGetTopViewedEntriesWithoutAnyIssue {
+		task ("Go to Server Administration") {
+			ServerAdministration.openServerAdmin();
+		}
+
+		task ("Execute script") {
+			var script = '''
+				import com.liferay.asset.kernel.service.AssetEntryLocalServiceUtil;
+				import com.liferay.asset.kernel.model.AssetEntry;
+				List<AssetEntry> assetEntries = AssetEntryLocalServiceUtil.getTopViewedEntries("com.liferay.journal.model.JournalArticle", false, -1, -1);
+				for(AssetEntry entry : assetEntries) {
+					out.println(entry);
+				}
+			''';
+
+			ServerAdministration.executeScript(
+				language = "Groovy",
+				script = "${script}");
+		}
+
+		task ("Assert SQLSyntaxErrorException is not shown") {
+			AssertConsoleTextNotPresent(value1 = "org.hibernate.exception.SQLGrammarException");
+		}
+	}
+
 	@description = "This is a test for LPS-132428. The user could configure Asset Publisher after adding the Kaleo Forms admin portlet to blacklist."
 	@priority = "4"
 	test ConfigureAssetPublisherAfterAddingKaleoFormsAdminPortletToBlackList {
