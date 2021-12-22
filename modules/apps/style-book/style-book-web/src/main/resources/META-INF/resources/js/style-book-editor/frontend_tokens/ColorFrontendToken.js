@@ -14,16 +14,43 @@
 
 import ClayColorPicker from '@clayui/color-picker';
 import ClayForm, {ClayInput} from '@clayui/form';
+import {ColorPicker} from '@liferay/layout-content-page-editor-web';
 import {debounce} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useEffect, useRef, useState} from 'react';
 
+import {config} from '../../style-book-editor/config';
 import {useId} from '../useId';
 
 const debouncedOnValueSelect = debounce(
 	(onValueSelect, value) => onValueSelect(value),
 	300
 );
+
+const getColorFrontendTokens = ({frontendTokenCategories}) => {
+	let tokens = {};
+
+	for (const category of frontendTokenCategories) {
+		for (const tokenSet of category.frontendTokenSets) {
+			for (const token of tokenSet.frontendTokens) {
+				tokens = {
+					...tokens,
+					[token.name]: {
+						editorType: token.editorType,
+						label: token.label,
+						name: token.name,
+						tokenCategoryLabel: category.label,
+						tokenSetLabel: tokenSet.label,
+						value: token.defaultValue,
+						[token.mappings[0].type]: token.mappings[0].value,
+					},
+				};
+			}
+		}
+	}
+
+	return tokens;
+};
 export default function ColorFrontendToken({
 	frontendToken,
 	onValueSelect,
@@ -36,6 +63,8 @@ export default function ColorFrontendToken({
 	const ref = useRef(null);
 	const id = useId();
 
+	const tokenValues = getColorFrontendTokens(config.frontendTokenDefinition);
+
 	useEffect(() => {
 		if (ref.current) {
 			ref.current.style.setProperty(
@@ -45,7 +74,15 @@ export default function ColorFrontendToken({
 		}
 	}, [color]);
 
-	return (
+	return config.tokenReuseEnabled ? (
+		<ColorPicker
+			config={config}
+			field={frontendToken}
+			onValueSelect={onValueSelect}
+			tokenValues={tokenValues}
+			value={value}
+		/>
+	) : (
 		<ClayForm.Group
 			className="style-book-editor__color-frontend-token"
 			ref={ref}
