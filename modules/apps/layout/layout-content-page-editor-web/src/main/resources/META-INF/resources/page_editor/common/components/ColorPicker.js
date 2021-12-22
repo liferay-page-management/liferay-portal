@@ -21,7 +21,7 @@ import {FocusScope} from '@clayui/shared';
 import classNames from 'classnames';
 import {debounce} from 'frontend-js-web';
 import PropTypes from 'prop-types';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import {useId} from '../../app/utils/useId';
 import useControlledState from '../../core/hooks/useControlledState';
@@ -29,6 +29,16 @@ import {ConfigurationFieldPropTypes} from '../../prop-types/index';
 import {DropdownColorPicker} from './DropdownColorPicker';
 
 import './ColorPicker.scss';
+
+const ERROR_MESSAGES = {
+	mutuallyReferenced: Liferay.Language.get(
+		'invalid-value.-tokens-cannot-be-mutually-referenced'
+	),
+	selfReferenced: Liferay.Language.get(
+		'invalid-value.-tokens-cannot-reference-itself'
+	),
+	valueNotExist: Liferay.Language.get('this-token-does-not-exist'),
+};
 
 const MAX_HEX_LENGTH = 7;
 
@@ -39,6 +49,7 @@ const debouncedOnValueSelect = debounce(
 
 export function ColorPicker({
 	config,
+	editedTokenValues,
 	field,
 	onValueSelect,
 	tokenValues,
@@ -56,7 +67,7 @@ export function ColorPicker({
 			: tokenValues[value]?.value
 	);
 	const [customColors, setCustomColors] = useState([value || '']);
-	const [error, setError] = useState(false);
+	const [error, setError] = useState(null);
 	const inputRef = useRef(null);
 	const [isHexadecimal, setIsHexadecimal] = useState(false);
 	const listboxRef = useRef(null);
@@ -96,6 +107,12 @@ export function ColorPicker({
 		}
 	);
 
+	useEffect(() => {
+		if (config.tokenReuseEnabled) {
+			setError(null);
+		}
+	}, [value, config.tokenReuseEnabled]);
+
 	const onSetValue = (value, label, name) => {
 		setColor(value);
 		setTokenLabel(label);
@@ -120,6 +137,18 @@ export function ColorPicker({
 			if (token || isHexadecimal) {
 				nextValue = token?.name || nextValue;
 
+				if (nextValue === field.name) {
+					setError(ERROR_MESSAGES.selfReferenced);
+
+					return;
+				}
+
+				if (editedTokenValues?.[nextValue].name === field.name) {
+					setError(ERROR_MESSAGES.mutuallyReferenced);
+
+					return;
+				}
+
 				setTokenLabel(!isHexadecimal ? token.label : null);
 				onValueSelect(field.name, nextValue);
 
@@ -128,7 +157,7 @@ export function ColorPicker({
 				}
 			}
 			else {
-				setError(true);
+				setError(ERROR_MESSAGES.valueNotExist);
 			}
 		}
 
@@ -137,7 +166,7 @@ export function ColorPicker({
 
 	const onChangeAutocompleteInput = ({target: {value}}) => {
 		if (error) {
-			setError(false);
+			setError(null);
 		}
 
 		setActiveAutocomplete(value.length > 1 && filteredTokenValues.length);
@@ -203,9 +232,9 @@ export function ColorPicker({
 								fieldName={field.name}
 								label={tokenLabel}
 								onSetActive={setActiveColorPicker}
-								onValueChange={({label, name, value}) => {
-									onSetValue(value, label, name);
-								}}
+								onValueChange={({label, name, value}) =>
+									onSetValue(value, label, name)
+								}
 								small
 								value={color}
 							/>
@@ -223,16 +252,13 @@ export function ColorPicker({
 										onChangeActive={setActiveColorPicker}
 										onColorsChange={setCustomColors}
 										onValueChange={(color) => {
-											if (error) {
-												setError(false);
-											}
-
 											debouncedOnValueSelect(
 												onValueSelect,
 												field.name,
 												`#${color}`
 											);
 											setColor(`#${color}`);
+											setIsHexadecimal(true);
 										}}
 										showHex={false}
 										showPalette={false}
@@ -292,6 +318,15 @@ export function ColorPicker({
 															<ClayAutocomplete.Item
 																aria-posinset={
 																	index
+																}
+																disabled={
+																	token.name ===
+																		field.name ||
+																	editedTokenValues?.[
+																		token
+																			.name
+																	]?.name ===
+																		field.name
 																}
 																key={token.name}
 																onClick={() =>
@@ -390,17 +425,9 @@ export function ColorPicker({
 										config={config}
 										fieldName={field.name}
 										onSetActive={setActiveColorPicker}
-										onValueChange={({
-											label,
-											name,
-											value,
-										}) => {
-											if (error) {
-												setError(false);
-											}
-
-											onSetValue(value, label, name);
-										}}
+										onValueChange={({label, name, value}) =>
+											onSetValue(value, label, name)
+										}
 										showSelector={false}
 										small
 										value={color}
@@ -421,16 +448,12 @@ export function ColorPicker({
 									'border-0': config.tokenReuseEnabled,
 								})}
 								displayType="secondary"
-								onClick={() => {
-									if (config.tokenReuseEnabled && error) {
-										setError(false);
-									}
-
+								onClick={() =>
 									onSetValue(
 										'',
 										Liferay.Language.get('default')
-									);
-								}}
+									)
+								}
 								small
 								symbol="times-circle"
 								title={Liferay.Language.get('clear-selection')}
@@ -449,9 +472,7 @@ export function ColorPicker({
 					</div>
 
 					<div className="autofit-col autofit-col-expand">
-						<div className="autofit-section">
-							{Liferay.Language.get('this-token-does-not-exist')}
-						</div>
+						<div className="autofit-section">{error}</div>
 					</div>
 				</div>
 			)}
