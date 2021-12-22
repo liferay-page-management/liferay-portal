@@ -79,7 +79,7 @@ definition {
 		}
 
 		task ("Assert session expired message") {
-			User.viewExpiredSessionErrorMessage(message = "Danger:Due to inactivity, your session has expired. Please save any data you may have entered before refreshing the page.");
+			User.viewExpiredSessionErrorMessage(message = "Danger:Due to inactivity, your session has expired. Before you continue, make sure your entered data is saved locally.");
 		}
 
 		task ("Refresh and sign in") {
@@ -120,7 +120,7 @@ definition {
 		task ("Wait for session expired") {
 			Pause(locator1 = "120000");
 
-			User.viewExpiredSessionErrorMessage(message = "Danger:Due to inactivity, your session has expired. Please save any data you may have entered before refreshing the page.");
+			User.viewExpiredSessionErrorMessage(message = "Danger:Due to inactivity, your session has expired. Before you continue, make sure your entered data is saved locally.");
 		}
 
 		task ("Refresh and assert user sign in present") {

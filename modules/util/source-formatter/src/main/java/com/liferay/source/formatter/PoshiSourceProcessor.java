@@ -21,10 +21,15 @@ import com.liferay.poshi.core.script.PoshiScriptParserException;
 import com.liferay.poshi.core.util.FileUtil;
 import com.liferay.source.formatter.checks.util.SourceUtil;
 import com.liferay.source.formatter.util.DebugUtil;
-import com.liferay.source.formatter.util.SourceFormatterUtil;
 
 import java.io.File;
 import java.io.IOException;
+
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 
 import java.util.List;
 import java.util.Set;
@@ -87,27 +92,37 @@ public class PoshiSourceProcessor extends BaseSourceProcessor {
 		return newContent;
 	}
 
-	private synchronized void _populateFunctionAndMacroFiles() {
+	private synchronized void _populateFunctionAndMacroFiles()
+		throws Exception {
+
 		if (_populated) {
 			return;
 		}
 
-		List<String> functionAndMacroFileNames =
-			SourceFormatterUtil.filterFileNames(
-				getAllFileNames(), new String[0],
-				new String[] {"**/*.function", "**/*.macro"},
-				getSourceFormatterExcludes(), true);
+		Files.walkFileTree(
+			getPortalDir().toPath(),
+			new SimpleFileVisitor<Path>() {
 
-		for (String fileName : functionAndMacroFileNames) {
-			if (fileName.endsWith(".function")) {
-				PoshiContext.setFunctionFileNames(
-					fileName.replaceFirst(".+/(.+)\\.function", "$1"));
-			}
-			else if (fileName.endsWith(".macro")) {
-				PoshiContext.setMacroFileNames(
-					fileName.replaceFirst(".+/(.+)\\.macro", "$1"));
-			}
-		}
+				@Override
+				public FileVisitResult visitFile(
+					Path filePath, BasicFileAttributes basicFileAttributes) {
+
+					String absolutePath = SourceUtil.getAbsolutePath(filePath);
+
+					if (absolutePath.endsWith(".function")) {
+						PoshiContext.setFunctionFileNames(
+							absolutePath.replaceFirst(
+								".+/(.+)\\.function", "$1"));
+					}
+					else if (absolutePath.endsWith(".macro")) {
+						PoshiContext.setMacroFileNames(
+							absolutePath.replaceFirst(".+/(.+)\\.macro", "$1"));
+					}
+
+					return FileVisitResult.CONTINUE;
+				}
+
+			});
 
 		_populated = true;
 	}

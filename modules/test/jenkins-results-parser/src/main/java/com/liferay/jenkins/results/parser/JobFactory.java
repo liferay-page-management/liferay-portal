@@ -33,7 +33,9 @@ public class JobFactory {
 			topLevelBuild.getJobName(), topLevelBuild.getTestSuiteName(),
 			topLevelBuild.getBranchName(),
 			topLevelBuild.getBaseGitRepositoryName(),
-			topLevelBuild.getBuildProfile(), topLevelBuild.getProjectNames());
+			topLevelBuild.getBuildProfile(),
+			_getPortalUpstreamBranchName(topLevelBuild),
+			topLevelBuild.getProjectNames());
 	}
 
 	public static Job newJob(BuildData buildData) {
@@ -79,6 +81,19 @@ public class JobFactory {
 			jobName, testSuiteName, branchName, repositoryName, buildProfile);
 	}
 
+	private static String _getPortalUpstreamBranchName(
+		TopLevelBuild topLevelBuild) {
+
+		String portalUpstreamBranchName = topLevelBuild.getParameterValue(
+			"PORTAL_UPSTREAM_BRANCH_NAME");
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(portalUpstreamBranchName)) {
+			portalUpstreamBranchName = topLevelBuild.getBranchName();
+		}
+
+		return portalUpstreamBranchName;
+	}
+
 	private static boolean _isCentralMergePullRequest(
 		GitWorkingDirectory gitWorkingDirectory) {
 
@@ -104,13 +119,17 @@ public class JobFactory {
 
 		return _newJob(
 			jobName, testSuiteName, branchName, repositoryName, buildProfile,
-			null);
+			null, null);
 	}
 
 	private static Job _newJob(
 		String jobName, String testSuiteName, String branchName,
 		String repositoryName, Job.BuildProfile buildProfile,
-		List<String> projectNames) {
+		String portalUpstreamBranchName, List<String> projectNames) {
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(portalUpstreamBranchName)) {
+			portalUpstreamBranchName = branchName;
+		}
 
 		if (buildProfile == null) {
 			buildProfile = Job.BuildProfile.PORTAL;
@@ -392,7 +411,8 @@ public class JobFactory {
 			_jobs.put(
 				jobKey,
 				new SubrepositoryAcceptancePullRequestJob(
-					jobName, buildProfile, testSuiteName, repositoryName));
+					jobName, buildProfile, testSuiteName, repositoryName,
+					portalUpstreamBranchName));
 
 			return _jobs.get(jobKey);
 		}

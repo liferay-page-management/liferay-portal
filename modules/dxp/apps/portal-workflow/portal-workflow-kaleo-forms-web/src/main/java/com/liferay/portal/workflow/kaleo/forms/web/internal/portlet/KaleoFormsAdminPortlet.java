@@ -25,6 +25,7 @@ import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.storage.StorageEngine;
 import com.liferay.dynamic.data.mapping.util.DDMDisplayRegistry;
 import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -130,7 +131,7 @@ public class KaleoFormsAdminPortlet extends MVCPortlet {
 		_parameterNames = ListUtil.fromArray(
 			"backURL", "ddmStructureId", "ddmStructureName", "ddmTemplateId",
 			"historyKey", "kaleoProcessId", "kaleoTaskFormPairsData", "mvcPath",
-			"redirect", "translatedLanguagesDescription",
+			"redirect", "tabs1", "translatedLanguagesDescription",
 			"translatedLanguagesName", "workflowDefinition");
 
 		for (Locale availableLocale : LanguageUtil.getAvailableLocales()) {
@@ -412,6 +413,19 @@ public class KaleoFormsAdminPortlet extends MVCPortlet {
 			portletSession.setAttribute(
 				parameterName,
 				ParamUtil.getString(resourceRequest, parameterName));
+		}
+
+		if (parameterMap.containsKey("kaleoProcessLinkDDMTemplateId")) {
+			portletSession.setAttribute(
+				StringBundler.concat(
+					ParamUtil.getString(
+						resourceRequest, "kaleoProcessLinkDDMStructureId"),
+					ParamUtil.getString(
+						resourceRequest, "kaleoProcessLinkWorkflowDefinition"),
+					ParamUtil.getString(
+						resourceRequest, "kaleoProcessLinkWorkflowTaskName")),
+				ParamUtil.getString(
+					resourceRequest, "kaleoProcessLinkDDMTemplateId"));
 		}
 	}
 

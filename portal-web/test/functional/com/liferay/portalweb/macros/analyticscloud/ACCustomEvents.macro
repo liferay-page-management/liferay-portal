@@ -24,7 +24,7 @@ definition {
 
 		MouseOver(locator1 = "ACUtils#NAME_LIST");
 
-		Click(locator1 = "ACCustomEvents#BLOCK_HIDE_BUTTON");
+		Click(locator1 = "ACCustomEvents#BLOCK_UNBLOCK_EVENT_BUTTON");
 
 		ACUtils.clickAnyButton(button = "${key_actionButton}");
 	}
@@ -131,18 +131,6 @@ definition {
 		return "${customEventName}";
 	}
 
-	macro hideAllCustomEvents {
-		var key_actionButton = "Block";
-
-		KeyPress(
-			locator1 = "ACSettings#SELECT_ALL_CHECKBOX",
-			value1 = "\SPACE");
-
-		ACUtils.clickAnyButton(button = "${key_actionButton}");
-
-		ACUtils.clickAnyButton(button = "${key_actionButton}");
-	}
-
 	macro hideCustomEvent {
 		var key_actionButton = "Hide";
 		var key_nameList = "${customEventName}";
@@ -155,7 +143,7 @@ definition {
 
 		MouseOver(locator1 = "ACUtils#NAME_LIST");
 
-		Click(locator1 = "ACCustomEvents#BLOCK_HIDE_BUTTON");
+		Click(locator1 = "ACDefinitions#HIDE_UNHIDE_EVENT_BUTTON");
 
 		ACUtils.clickAnyButton(button = "${key_actionButton}");
 	}
@@ -186,7 +174,7 @@ definition {
 
 		MouseOver(locator1 = "ACUtils#NAME_LIST");
 
-		Click(locator1 = "ACCustomEvents#BLOCK_HIDE_BUTTON");
+		Click(locator1 = "ACCustomEvents#BLOCK_UNBLOCK_EVENT_BUTTON");
 	}
 
 	macro viewDataAttribute {

@@ -24,9 +24,9 @@ public class SubrepositoryAcceptancePullRequestJob
 
 	public SubrepositoryAcceptancePullRequestJob(
 		String jobName, BuildProfile buildProfile, String testSuiteName,
-		String repositoryName) {
+		String repositoryName, String portalUpstreamBranchName) {
 
-		super(jobName, buildProfile, repositoryName);
+		super(jobName, buildProfile, repositoryName, portalUpstreamBranchName);
 
 		_testSuiteName = testSuiteName;
 

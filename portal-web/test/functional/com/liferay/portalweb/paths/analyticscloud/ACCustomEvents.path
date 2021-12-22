@@ -62,7 +62,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>BLOCK_HIDE_BUTTON</td>
+	<td>BLOCK_UNBLOCK_EVENT_BUTTON</td>
 	<td>//*[text()='${key_nameList}']/ancestor::tr//div[@class='quick-action-menu']//button[contains(@alt,'${key_actionButton}')]</td>
 	<td></td>
 </tr>

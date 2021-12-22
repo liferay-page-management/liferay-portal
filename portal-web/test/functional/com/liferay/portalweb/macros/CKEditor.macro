@@ -84,7 +84,11 @@ definition {
 
 		SelectFieldText(locator1 = "CKEditor#BODY");
 
-		SelectFrame(value1 = "relative=top");
+		var windowID = selenium.getTitle();
+
+		SelectWindow(locator1 = "title=${windowID}");
+
+		WaitForLiferayEvent.initializeLiferayEventLog();
 
 		Click(
 			key_fieldLabel = "${fieldLabel}",

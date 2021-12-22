@@ -177,11 +177,15 @@ KaleoTaskFormPair initialStateKaleoTaskFormPair = KaleoFormsUtil.getInitialState
 		(event) => {
 			var A = AUI();
 
-			var taskFormPairsParamName = event.taskFormPairsParamName;
-
 			var data = {};
 
-			data[taskFormPairsParamName] = 0;
+			data['<portlet:namespace />kaleoProcessLinkDDMStructureId'] =
+				event.ddmStructureId;
+			data['<portlet:namespace />kaleoProcessLinkDDMTemplateId'] = 0;
+			data['<portlet:namespace />kaleoProcessLinkWorkflowDefinition'] =
+				event.workflowDefinition;
+			data['<portlet:namespace />kaleoProcessLinkWorkflowTaskName'] =
+				event.workflowTaskName;
 
 			A.io.request('<portlet:resourceURL id="saveInPortletSession" />', {
 				after: {

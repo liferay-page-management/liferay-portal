@@ -34,6 +34,57 @@ definition {
 		PortletEntry.publish();
 	}
 
+	macro addCustomElementAllFields {
+		LexiconEntry.gotoAdd();
+
+		Select(
+			locator1 = "Select#TYPE",
+			value1 = "Custom Element");
+
+		RemoteAppsEntry.addCustomElementAllFields(
+			entryCSSURL = "${entryCSSURL}",
+			entryHTMLName = "${entryHTMLName}",
+			entryName = "${entryName}",
+			entryProperties = "${entryProperties}",
+			entryURL = "${entryURL}");
+
+		Click(locator1 = "RemoteAppsEntry#REMOTE_APPS_INSTANCEABLE");
+
+		PortletEntry.publish();
+	}
+
+	macro assertCustomElementFields {
+		AssertTextEquals(
+			custom_entryName = "${entryName}",
+			key_text = "Name",
+			locator1 = "TextInput#ANY",
+			value1 = "${entryName}");
+
+		AssertTextEquals(
+			custom_entryHTMLName = "${entryHTMLName}",
+			key_text = "HTML Element Name",
+			locator1 = "TextInput#ANY",
+			value1 = "${entryHTMLName}");
+
+		AssertTextEquals(
+			custom_entryURL = "${entryURL}",
+			key_id = "customElementURLs",
+			locator1 = "RemoteAppsEntry#URL",
+			value1 = "${entryURL}");
+
+		AssertTextEquals(
+			custom_entryCSSURL = "${entryCSSURL}",
+			key_text = "CSS URL",
+			locator1 = "TextInput#ANY",
+			value1 = "${entryCSSURL}");
+
+		AssertTextEquals(
+			custom_entryProperties = "${entryProperties}",
+			key_text = "Properties",
+			locator1 = "RemoteAppsEntry#REMOTE_APPS_PROPERTIES",
+			value1 = "${entryProperties}");
+	}
+
 	macro assertTableEntryNameNotPresent {
 		AssertElementNotPresent(
 			key_tableEntryName = "${entryName}",
@@ -57,6 +108,30 @@ definition {
 		RemoteApps.goToRemoteAppsPortlet();
 
 		RemoteApps.assertTableEntryNameNotPresent(entryName = "${remoteAppNameToBeRemoved}");
+	}
+
+	macro editCustomElement {
+		Type(
+			key_text = "Name",
+			locator1 = "TextInput#ANY",
+			value1 = "${entryName}");
+
+		Type(
+			key_text = "HTML Element Name",
+			locator1 = "TextInput#ANY",
+			value1 = "${entryHTMLName}");
+
+		Type(
+			key_text = "CSS URL",
+			locator1 = "TextInput#ANY",
+			value1 = "${entryCSSURL}");
+
+		Type(
+			key_text = "Properties",
+			locator1 = "RemoteAppsEntry#REMOTE_APPS_PROPERTIES",
+			value1 = "${entryProperties}");
+
+		PortletEntry.publish();
 	}
 
 	macro getRemoteAppEntryName {

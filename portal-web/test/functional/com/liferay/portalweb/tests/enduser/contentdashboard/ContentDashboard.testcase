@@ -1423,12 +1423,38 @@ definition {
 	@description = "LPS-119966 Given the Content Dashboard
 	When a document is listed in the assets list
 	Then the following metadata are shown: Title, Author (Owner), Subtype, Site or Asset Library, Status, Category 1, Category 2, Modified Date"
-	@ignore = "true"
 	@priority = "3"
 	test DocumentMetadata {
+		task ("Create a category for Audiente and Staged") {
+			JSONCategory.addCategory(
+				groupName = "Global",
+				title = "Category1",
+				vocabularyName = "Audience");
 
-		// TODO LPS-144036 DocumentMetadata pending implementation
+			JSONCategory.addCategory(
+				groupName = "Global",
+				title = "Category2",
+				vocabularyName = "Stage");
+		}
 
+		task ("Create a Document using JSONWS") {
+			JSONDocument.addFile(
+				dmDocumentDescription = "DM Document Description",
+				dmDocumentTitle = "DM Document Title",
+				groupName = "Test Site Name");
+		}
+
+		task ("Navigate to Content Dashboard") {
+			ContentDashboard.goToContentDashboard();
+		}
+
+		task ("Assert columns displayed") {
+			for (var columnHeader : list "Title,Author,Subtype,Site or Asset Library,Status,Audience,Stage,Modified Date") {
+				AssertElementPresent(
+					key_tableHeader = "${columnHeader}",
+					locator1 = "LexiconTable#TABLE_HEADER");
+			}
+		}
 	}
 
 	@description = "Given a document created in site A in the instance, and another one created in the site B
