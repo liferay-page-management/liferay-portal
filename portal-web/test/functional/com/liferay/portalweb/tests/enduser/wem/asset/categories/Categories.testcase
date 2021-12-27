@@ -416,7 +416,7 @@ definition {
 				propertyNumber = "0");
 		}
 
-		task ("Add a property in category") {
+		task ("Add a duplicate property") {
 			LexiconEntry.gotoEntryMenuItem(
 				menuItem = "Edit",
 				rowEntry = "Category Name");
