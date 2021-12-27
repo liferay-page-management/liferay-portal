@@ -398,7 +398,7 @@ definition {
 
 	@description = "This is a test for LPS-143167. DuplicateCategoryPropertyException is not shown on the UI."
 	@priority = "4"
-	test CannotAddDuplicatedCategories {
+	test CannotAddDuplicatedCategoryProperties {
 		task ("Add a category") {
 			JSONCategory.addCategory(
 				groupName = "Test Site Name",
