@@ -450,8 +450,10 @@ export function ColorPicker({
 								displayType="secondary"
 								onClick={() =>
 									onSetValue(
-										'',
-										Liferay.Language.get('default')
+										field.defaultValue ?? '',
+										field.defaultValue
+											? null
+											: Liferay.Language.get('default')
 									)
 								}
 								small
