@@ -423,9 +423,9 @@ definition {
 
 			Navigator.gotoNavUnderline(navUnderline = "Properties");
 
-			var key_pathNumber = "1";
-
 			Click(locator1 = "Button#ADD_ROW_LAST");
+
+			var key_pathNumber = "1";
 
 			Type(
 				locator1 = "CategoriesEditCategory#PROPERTIES_KEY_FIELD",
@@ -438,9 +438,7 @@ definition {
 			Button.clickSave();
 		}
 
-		task ("Assert error message is shown") {
-			Alert.viewErrorMessage(errorMessage = "Error:Please enter a unique property key.");
-		}
+		Alert.viewErrorMessage(errorMessage = "Error:Please enter a unique property key.");
 	}
 
 	@description = "Cannot add a duplicate subcategory."
