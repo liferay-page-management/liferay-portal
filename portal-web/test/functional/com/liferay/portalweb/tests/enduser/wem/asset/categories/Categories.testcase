@@ -437,8 +437,10 @@ definition {
 
 			Button.clickSave();
 		}
-
-		Alert.viewErrorMessage(errorMessage = "Error:Please enter a unique property key.");
+		
+		task ("Assert error message is shown") {
+			Alert.viewErrorMessage(errorMessage = "Error:Please enter a unique property key.");
+		}
 	}
 
 	@description = "Cannot add a duplicate subcategory."
