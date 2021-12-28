@@ -2456,24 +2456,6 @@ definition {
 			value1 = "${webContentContent}");
 	}
 
-	macro viewPGViaWCD {
-		if ("${draft}" == "true") {
-			AssertTextEquals(
-				locator1 = "Message#ERROR_3",
-				value1 = "${webContentTitle} is not approved.");
-		}
-		else if ("${expiredContent}" == "true") {
-			AssertTextEquals(
-				locator1 = "Message#ERROR_3_ALT",
-				value1 = "${webContentTitle} is expired.");
-		}
-		else {
-			AssertTextEquals.assertPartialText(
-				locator1 = "WCD#WEB_CONTENT_CONTENT",
-				value1 = "${webContentContent}");
-		}
-	}
-
 	macro viewRelatedAssetsPGViaWCD {
 		AssertTextEquals(
 			key_relatedAssetTitle = "${relatedAssetTitle}",

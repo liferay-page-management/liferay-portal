@@ -478,7 +478,9 @@ definition {
 			pageName = "Test Page",
 			siteName = "Test Site Name");
 
-		WebContent.viewPGViaWCD(webContentContent = "WC WebContent Content");
+		WebContentDisplayPortlet.view(
+			webContentContent = "WC WebContent Title",
+			webContentTitle = "WC Depot Title");
 	}
 
 	@priority = "4"
@@ -565,7 +567,9 @@ definition {
 			webContentContent = "WebContent Content",
 			webContentTitle = "WebContent Title");
 
-		WebContent.viewPGViaWCD(webContentContent = "WebContent Content");
+		WebContentDisplayPortlet.view(
+			webContentContent = "WebContent Content",
+			webContentTitle = "WebContent Title");
 
 		Portlet.gotoPortletOptions(
 			portletName = "Web Content Display",
@@ -603,7 +607,9 @@ definition {
 			pageName = "Web Content Display Page",
 			siteName = "Test Site Name");
 
-		WebContent.viewPGViaWCD(webContentContent = "WebContent Content");
+		WebContentDisplayPortlet.view(
+			webContentContent = "WebContent Content",
+			webContentTitle = "WebContent Title");
 
 		for (var borderType : list "right,left") {
 			AssertCssValue(
@@ -778,7 +784,9 @@ definition {
 		task ("Assert the user is taken to the Web Content Display Page and the draft version of the Web Content article displays in the Web Content Display widget") {
 			SelectWindow.selectPopUp(locator1 = "null");
 
-			WebContent.viewPGViaWCD(webContentContent = "WC WebContent Content Edit");
+			WebContentDisplayPortlet.view(
+				webContentContent = "WC WebContent Content Edit",
+				webContentTitle = "WC WebContent Title Edit");
 		}
 	}
 
@@ -848,7 +856,9 @@ definition {
 		task ("Assert the user is taken to the Web Content Display Page and the pending version of the Web Content article displays in the Web Content Display widget") {
 			SelectWindow.selectPopUp(locator1 = "null");
 
-			WebContent.viewPGViaWCD(webContentContent = "WC WebContent Content Edit");
+			WebContentDisplayPortlet.view(
+				webContentContent = "WC WebContent Content Edit",
+				webContentTitle = "WC WebContent Title Edit");
 		}
 	}
 
@@ -921,7 +931,9 @@ definition {
 		task ("Assert the user is taken to the Web Content Display Page and the scheduled Web Content article displays in the Web Content Display widget") {
 			SelectWindow.selectPopUp(locator1 = "null");
 
-			WebContent.viewPGViaWCD(webContentContent = "WC WebContent Content");
+			WebContentDisplayPortlet.view(
+				webContentContent = "WC WebContent Content",
+				webContentTitle = "WC WebContent Title");
 		}
 	}
 

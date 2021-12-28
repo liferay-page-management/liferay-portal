@@ -64,7 +64,9 @@ definition {
 			pageName = "Test Page Name",
 			siteName = "Test Site Name");
 
-		WebContent.viewPGViaWCD(webContentContent = "WC Contenido");
+		WebContentDisplayPortlet.view(
+			webContentContent = "WC Contenido",
+			webContentTitle = "WC Title");
 
 		WebContentDisplayPortletNavigator.gotoEdit(
 			menuItem = "Editar contenido web",
@@ -88,7 +90,9 @@ definition {
 			pageName = "Test Page Name",
 			siteName = "Test Site Name");
 
-		WebContent.viewPGViaWCD(webContentContent = "WC Inhalt");
+		WebContentDisplayPortlet.view(
+			webContentContent = "WC Inhalt",
+			webContentTitle = "WC Titel");
 
 		WebContentDisplayPortletNavigator.gotoEdit(
 			menuItem = "Webcontent bearbeiten",
@@ -112,7 +116,9 @@ definition {
 			pageName = "Test Page Name",
 			siteName = "Test Site Name");
 
-		WebContent.viewPGViaWCD(webContentContent = "WC Pitoisuus");
+		WebContentDisplayPortlet.view(
+			webContentContent = "WC Pitoisuus",
+			webContentTitle = "WC Otsikko");
 
 		WebContentDisplayPortletNavigator.gotoEdit(
 			menuItem = "Muokkaa web-sisältöä",
@@ -376,11 +382,13 @@ definition {
 
 			IFrame.closeFrame();
 
-			WebContent.viewPGViaWCD(webContentContent = "Web Content Content");
-
 			var baseURL = PropsUtil.get("portal.url");
 
-			WebContent.viewPGViaWCD(webContentContent = "${baseURL}/web/test-site-name/w/webcontentenglish");
+			for (var content : list "Web Content Content,${baseURL}/web/test-site-name/w/webcontentenglish") {
+				WebContentDisplayPortlet.view(
+					webContentContent = "${content}",
+					webContentTitle = "Web Content Title");
+			}
 		}
 
 		task ("Change the language to Spanish") {
@@ -390,9 +398,11 @@ definition {
 
 			var baseURL = PropsUtil.get("portal.url");
 
-			WebContent.viewPGViaWCD(webContentContent = "Web Content Content");
-
-			WebContent.viewPGViaWCD(webContentContent = "${baseURL}/web/test-site-name/w/webcontentspanish");
+			for (var content : list "Web Content Content,${baseURL}/web/test-site-name/w/webcontentspanish") {
+				WebContentDisplayPortlet.view(
+					webContentContent = "${content}",
+					webContentTitle = "Web Content Title");
+			}
 		}
 	}
 

@@ -616,7 +616,9 @@ definition {
 		}
 
 		task ("View Web Content is shown via WCD") {
-			WebContent.viewPGViaWCD(webContentContent = "Web Content Content");
+			WebContentDisplayPortlet.view(
+				webContentContent = "Web Content Content",
+				webContentTitle = "Web Content Title");
 		}
 
 		task ("View available languages when editing a Web Content") {
@@ -654,7 +656,9 @@ definition {
 		}
 
 		task ("View Web Content is shown via WCD") {
-			WebContent.viewPGViaWCD(webContentContent = "Web Content Content");
+			WebContentDisplayPortlet.view(
+				webContentContent = "Web Content Content",
+				webContentTitle = "Web Content Title");
 		}
 	}
 

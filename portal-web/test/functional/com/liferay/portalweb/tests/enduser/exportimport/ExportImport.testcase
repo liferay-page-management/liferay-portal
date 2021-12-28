@@ -1988,7 +1988,9 @@ definition {
 			webContentContent = "WebContent Content",
 			webContentTitle = "WebContent Title");
 
-		WebContent.viewPGViaWCD(webContentContent = "WebContent Content");
+		WebContentDisplayPortlet.view(
+			webContentContent = "WebContent Content",
+			webContentTitle = "WebContent Title");
 
 		LAR.exportSiteCP(siteScopeName = "Site Name A");
 
@@ -2012,7 +2014,9 @@ definition {
 			pageName = "Test Page",
 			siteName = "Site Name B");
 
-		WebContent.viewPGViaWCD(webContentContent = "WebContent Content");
+		WebContentDisplayPortlet.view(
+			webContentContent = "WebContent Content",
+			webContentTitle = "WebContent Title");
 	}
 
 	@description = "This is a test for LPS-91233."
