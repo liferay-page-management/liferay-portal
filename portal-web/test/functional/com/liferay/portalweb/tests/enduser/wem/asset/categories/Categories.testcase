@@ -425,15 +425,15 @@ definition {
 
 			Click(locator1 = "Button#ADD_ROW_LAST");
 
-			var key_pathNumber = "1";
-
 			Type(
 				locator1 = "CategoriesEditCategory#PROPERTIES_KEY_FIELD",
-				value1 = "Category Property");
+				value1 = "Category Property",
+				key_pathNumber = "1");
 
 			Type(
 				locator1 = "CategoriesEditCategory#PROPERTIES_VALUE_FIELD",
-				value1 = "Category Property");
+				value1 = "Category Property",
+				key_pathNumber = "1");
 
 			Button.clickSave();
 		}
