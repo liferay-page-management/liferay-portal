@@ -396,7 +396,7 @@ definition {
 		}
 	}
 
-	@description = "This is a test for LPS-143167. DuplicateCategoryPropertyException is not shown on the UI."
+	@description = "This is a test for LPS-143167. The user cannot add duplicated categories properties."
 	@priority = "4"
 	test CannotAddDuplicatedCategoryProperties {
 		task ("Add a category") {
