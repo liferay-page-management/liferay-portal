@@ -122,7 +122,7 @@ describe('ColorPicker', () => {
 
 			await wait(() => {
 				expect(getByTitle('value-from-stylebook')).toBeInTheDocument();
-				expect(getByRole('combobox').value).toBe('#ffb46e');
+				expect(getByRole('combobox').value).toBe('#FFB46E');
 				expect(
 					baseElement.querySelector('.clay-color-picker')
 				).toBeInTheDocument();
@@ -148,7 +148,7 @@ describe('ColorPicker', () => {
 			});
 
 			expect(getByTitle('value-from-stylebook')).toBeInTheDocument();
-			expect(getByRole('combobox').value).toBe('#ffb46e');
+			expect(getByRole('combobox').value).toBe('#FFB46E');
 			expect(
 				baseElement.querySelector('.clay-color-picker')
 			).toBeInTheDocument();
