@@ -5,11 +5,11 @@ html#{$cadmin-selector} {
 		.form-group-sm
 			.input-group
 			> .input-group-item
-			> .input-group-text.page-editor__color-picker__input-group-text--rounded-left {
+			> .input-group-text.page-editor__dropdown-color-picker__input-group-text--rounded-left {
 			border-radius: 4px 0 0 4px;
 		}
 
-		.page-editor__color-picker {
+		.page-editor__dropdown-color-picker {
 			&__color-palette .sheet-subtitle {
 				border-color: $cadmin-secondary-l3;
 				border-width: 1px 0 0;
@@ -32,21 +32,24 @@ html#{$cadmin-selector} {
 			}
 
 			&__search-form {
-				& + .page-editor__color-picker__color-palette .sheet-subtitle {
+				&
+					+ .page-editor__dropdown-color-picker__color-palette
+					.sheet-subtitle {
 					border-width: 0;
 				}
 			}
 
 			&__selector {
 				&.btn {
-					padding: 6px 9px;
+					height: 32px;
+					padding-left: 9px;
+					padding-right: 9px;
 				}
 
 				&-splotch {
 					border: 1px solid $cadmin-gray-300;
 					height: 20px;
 					margin-right: 18px;
-					margin-top: 1px;
 					min-width: 20px;
 				}
 			}

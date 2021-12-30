@@ -1,11 +1,14 @@
+@import 'atlas-variables';
+@import 'cadmin-variables';
+
+@import 'DropdownColorPicker';
+
 html#{$cadmin-selector} {
 	.cadmin {
-		.page-editor__color-picker-field {
-			min-height: 32px;
-
+		.page-editor__color-picker {
 			.input-group
 				> .input-group-item
-				> .form-control.page-editor__color-picker-field__autocomplete__input {
+				> .form-control.page-editor__color-picker__autocomplete__input {
 				border-radius: 0 4px 4px 0;
 				font-weight: 600;
 				transition: none;
@@ -25,7 +28,7 @@ html#{$cadmin-selector} {
 			&.has-warning:not(:hover):not(:focus-within):not(.hovered) {
 				.input-group
 					> .input-group-item
-					> .form-control.page-editor__color-picker-field__autocomplete__input {
+					> .form-control.page-editor__color-picker__autocomplete__input {
 					background-color: transparent;
 				}
 			}
@@ -35,12 +38,12 @@ html#{$cadmin-selector} {
 			}
 
 			&:not(:hover):not(:focus-within):not(.hovered) {
-				.page-editor__color-picker-field__action-button {
+				.page-editor__color-picker__action-button {
 					opacity: 0;
 				}
 
 				.clay-color > .input-group-item > .input-group-text,
-				.page-editor__color-picker-field__autocomplete__input {
+				.page-editor__color-picker__autocomplete__input {
 					border-color: transparent;
 				}
 			}

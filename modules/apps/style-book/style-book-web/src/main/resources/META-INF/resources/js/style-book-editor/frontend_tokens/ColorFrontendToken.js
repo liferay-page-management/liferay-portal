@@ -14,19 +14,24 @@
 
 import ClayColorPicker from '@clayui/color-picker';
 import ClayForm, {ClayInput} from '@clayui/form';
+import {ColorPicker} from '@liferay/layout-content-page-editor-web';
 import {debounce} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useEffect, useRef, useState} from 'react';
 
+import {config} from '../../style-book-editor/config';
 import {useId} from '../useId';
 
 const debouncedOnValueSelect = debounce(
 	(onValueSelect, value) => onValueSelect(value),
 	300
 );
+
 export default function ColorFrontendToken({
 	frontendToken,
+	frontendTokensValues,
 	onValueSelect,
+	tokenValues,
 	value,
 }) {
 	const {label} = frontendToken;
@@ -45,7 +50,16 @@ export default function ColorFrontendToken({
 		}
 	}, [color]);
 
-	return (
+	return config.tokenReuseEnabled ? (
+		<ColorPicker
+			config={config}
+			editedTokenValues={frontendTokensValues}
+			field={frontendToken}
+			onValueSelect={onValueSelect}
+			tokenValues={tokenValues}
+			value={value}
+		/>
+	) : (
 		<ClayForm.Group
 			className="style-book-editor__color-frontend-token"
 			ref={ref}
