@@ -937,17 +937,10 @@ ${httpUtil.URLtoString(request.getAttribute("CTX").getResource(".").toURI().crea
 			pageName = "Web Content Display Page",
 			siteName = "Test Site Name");
 
-		WebContentDisplayPortlet.searchWebContent(
-			webContentSearchValue = "&quot;WC WebContent Title&quot;",
-			webContentTitle = "WC WebContent Title");
-
-		Navigator.gotoSitePage(
-			pageName = "Web Content Display Page",
-			siteName = "Test Site Name");
-
-		WebContentDisplayPortlet.searchForNoWebContent(
-			webContentSearchValue = "&quot;WC2 WebContent2 Title2&quot;",
-			webContentTitle = "WC2 WebContent2 Title2");
+			WebContentDisplayPortlet.searchWebContent(
+				filterResultList = '''1 Results for Web Content Title,0 Results for Web2 Content2 Title2,1 Results for "Web Content Title",0 Results for "Web2 Content2 Title2"''',
+				searchTermList = '''Web Content Title,Web2 Content2 Title2,"Web Content Title","Web2 Content2 Title2"''');
+		}
 	}
 
 	@priority = "5"
