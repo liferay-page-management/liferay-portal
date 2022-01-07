@@ -79,7 +79,8 @@ definition {
 			pageName = "Test New Page Name",
 			siteName = "Site Name");
 
-		WebContentDisplayPortlet.changeWebContent(
+		WebContentDisplayPortlet.selectWebContent(
+			changeWebContent = "true",
 			depotName = "Test Depot Name 2",
 			webContentTitle = "WC WebContent Title 2");
 
@@ -525,9 +526,10 @@ definition {
 		PageEditor.addWidget(portletName = "Web Content Display");
 
 		WebContentDisplayPortlet.selectWebContent(
-			contentPage = "true",
 			depotName = "Test Depot Name",
 			webContentTitle = "WC WebContent Title");
+
+		IFrame.closeFrame();
 
 		PageEditor.clickPublish();
 
@@ -562,11 +564,10 @@ definition {
 		PageEditor.addWidget(portletName = "Web Content Display");
 
 		WebContentDisplayPortlet.selectWebContent(
-			contentPage = "true",
 			depotName = "Test Depot Name",
 			webContentTitle = "WC WebContent Title");
 
-		Refresh();
+		IFrame.closeFrame();
 
 		WebContentDisplayPortlet.view(
 			webContentContent = "WC WebContent Depot",
