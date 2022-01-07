@@ -1486,7 +1486,7 @@ ${runtimeInstance}
 				pageName = "Web Content Display Page",
 				siteName = "Test Site Name");
 
-			WebContent.viewNoContentAsGuestPGViaWCD(portletName = "Web Content Display");
+			WebContentDisplayPortlet.viewContentNotPresentAsGuest();
 		}
 	}
 

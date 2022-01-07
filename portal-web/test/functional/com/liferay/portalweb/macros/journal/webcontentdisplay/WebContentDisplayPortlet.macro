@@ -500,6 +500,16 @@ definition {
 			value1 = "${scopeSelection}");
 	}
 
+	macro viewContentNotPresentAsGuest {
+		AssertTextNotPresent(
+			locator1 = "Message#ERROR",
+			value1 = "The selected web content no longer exists.");
+
+		AssertElementNotPresent(
+			key_portletName = "Web Content Display",
+			locator1 = "Portlet#BODY");
+	}
+
 	macro viewContentPageBreak {
 		AssertClick(
 			locator1 = "Pagination#PAGE_2",
