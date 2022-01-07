@@ -35,6 +35,9 @@ import com.liferay.portal.kernel.model.LayoutFriendlyURL;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.VirtualLayoutConstants;
 import com.liferay.portal.kernel.portlet.LayoutFriendlyURLSeparatorComposite;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutFriendlyURLLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -42,6 +45,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.servlet.InactiveRequestHandler;
 import com.liferay.portal.kernel.servlet.PortalMessages;
 import com.liferay.portal.kernel.servlet.ServletContextPool;
@@ -175,6 +179,23 @@ public class FriendlyURLServlet extends HttpServlet {
 						requestContext);
 
 			Layout layout = layoutFriendlyURLSeparatorComposite.getLayout();
+
+			User user = portal.getUser(httpServletRequest);
+
+			if (user == null) {
+				user = userLocalService.getDefaultUser(
+					portal.getCompanyId(httpServletRequest));
+			}
+
+			PermissionChecker permissionChecker =
+				PermissionCheckerFactoryUtil.create(user);
+
+			boolean hasViewPermission = LayoutPermissionUtil.contains(
+				permissionChecker, layout, ActionKeys.VIEW);
+
+			if (!hasViewPermission) {
+				throw new NoSuchLayoutException();
+			}
 
 			defaultLayout = layout;
 
