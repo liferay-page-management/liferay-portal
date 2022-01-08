@@ -361,28 +361,6 @@ definition {
 		WebContent.viewPGViaWCD(webContentContent = "WC WebContent Content");
 	}
 
-	@priority = "5"
-	test AddWebContentViaAddContentPanel {
-		property portal.acceptance = "true";
-		property testray.component.names = "Web Content Display,Training";
-
-		JSONWebcontent.addWebContent(
-			content = "WC WebContent Content",
-			groupName = "Test Site Name",
-			title = "WC WebContent Title");
-
-		Navigator.gotoSitePage(
-			pageName = "Web Content Display Page",
-			siteName = "Test Site Name");
-
-		Content.addPG(
-			assetTitle = "WC WebContent Title",
-			pageName = "Web Content Display Page",
-			webContentContent = "WC WebContent Content");
-
-		WebContent.viewPGViaWCD(webContentContent = "WC WebContent Content");
-	}
-
 	@description = "This is a use case for LPS-70386."
 	@priority = "5"
 	test AddWebContentWithPortletURL {
