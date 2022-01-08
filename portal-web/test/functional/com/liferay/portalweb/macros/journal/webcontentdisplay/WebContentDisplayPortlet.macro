@@ -1,35 +1,10 @@
 definition {
 
-
-
-
 	macro configureScopePG {
+		MouseOver(locator1 = "Portlet#PORTLET_CONTENT");
 
-			AssertClick(
-				key_groupTab = "Asset Library",
-				locator1 = "ItemSelector#NAVIGATION_GROUP_TAB",
-				value1 = "Asset Library");
-
-			Click(
-				key_card = "${depotName}",
-				locator1 = "Card#CARD_TITLE");
-
-			Click(locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME");
-
-			SelectFrame(locator1 = "IFrame#MODAL_BODY");
-
-			AssertTextEquals(
-				key_card = "${webContentTitle} (${depotName})",
-				locator1 = "Card#CARD_TITLE",
-				value1 = "${webContentTitle} (${depotName})");
-		}
-
-		PortletEntry.save();
-	}
-
-	macro configureScopePG {
 		Portlet.gotoPortletOptions(
-			portletName = "${portletName}",
+			portletName = "Web Content Display",
 			portletOption = "Configuration");
 
 		SelectFrame(locator1 = "IFrame#MODAL_BODY");
@@ -44,14 +19,10 @@ definition {
 	}
 
 	macro configureSetupPG {
-		Pause(locator1 = "3000");
-
 		SelectFrame(locator1 = "IFrame#MODAL_BODY");
 
 		if (isSet(userToolNameList)) {
 			for (var userToolName : list "${userToolNameList}") {
-				Pause(locator1 = "3000");
-
 				Check.checkToggleSwitch(
 					key_fieldName = "${userToolName}",
 					locator1 = "Portlet#CONFIGURATION_CHECKBOX");
@@ -60,8 +31,6 @@ definition {
 
 		if (isSet(metadataNameList)) {
 			for (var metadataName : list "${metadataNameList}") {
-				Pause(locator1 = "3000");
-
 				Check.checkToggleSwitch(
 					key_fieldName = "${metadataName}",
 					locator1 = "Portlet#CONFIGURATION_CHECKBOX");
@@ -69,8 +38,12 @@ definition {
 		}
 
 		if ("${enableViewCountIncrement}" == "true") {
-			Check.checkToggleSwitch(locator1 = "WCDConfiguration#ENABLE_VIEW_COUNT_INCREMENT_CHECKBOX");
+			Check.checkToggleSwitch(
+				key_toggleSwitchLabel = "View Count Increment",
+				locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
 		}
+
+		PortletEntry.save();
 
 		SelectFrame(value1 = "relative=top");
 	}
@@ -165,7 +138,8 @@ definition {
 		SelectFrame(locator1 = "IFrame#MODAL_BODY");
 
 		AssertClick.assertTextClickAtAndPause(
-			locator1 = "WCDConfiguration#SELECT_WEB_CONTENT_BUTTON",
+			buttonId = "webContentSelector",
+			locator1 = "Button#BUTTON_ID",
 			value1 = "Select");
 
 		SelectFrame.selectSecondFrame(locator1 = "IFrame#MODAL_BODY");
@@ -191,7 +165,7 @@ definition {
 
 	macro removeWebContent {
 		Portlet.gotoPortletOptions(
-			portletName = "${portletName}",
+			portletName = "Web Content Display",
 			portletOption = "Configuration");
 
 		SelectFrame(locator1 = "IFrame#MODAL_BODY");
@@ -474,6 +448,8 @@ definition {
 	}
 
 	macro viewConfigureScopePG {
+		MouseOver(locator1 = "Portlet#PORTLET_CONTENT");
+
 		var key_portletName = "Web Content Display";
 
 		if ("${scopeSelectionDefault}" == "true") {
@@ -488,7 +464,7 @@ definition {
 		}
 
 		Portlet.gotoPortletOptions(
-			portletName = "${portletName}",
+			portletName = "Web Content Display",
 			portletOption = "Configuration");
 
 		SelectFrame(locator1 = "IFrame#MODAL_BODY");
@@ -536,11 +512,10 @@ definition {
 		Alert.viewWarningSpecific(warningMessage = "Do you want to Select Another web content?");
 	}
 
-	macro viewEnabledFileTypesPGViaWCD {
-		for (var fileType : list "${fileTypes}") {
-			var key_fileType = "${fileType}";
-
+	macro viewEnabledFileTypes {
+		for (var fileType : list "${fileTypeList}") {
 			AssertTextEquals.assertPartialText(
+				key_fileType = "${fileType}",
 				locator1 = "WCD#DOCUMENT_CONVERSION_TYPE",
 				value1 = "${fileType}");
 		}

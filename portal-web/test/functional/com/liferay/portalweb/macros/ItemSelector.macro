@@ -933,7 +933,8 @@ definition {
 		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
 
 		AssertClick(
-			locator1 = "WCDConfiguration#SELECT_WEB_CONTENT_BUTTON",
+			buttonId = "webContentSelector",
+			locator1 = "Button#BUTTON_ID",
 			value1 = "Select");
 
 		WaitForElementPresent(locator1 = "IFrame#MODAL_BODY");
