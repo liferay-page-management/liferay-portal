@@ -161,7 +161,7 @@ definition {
 			pageName = "Test Page Name",
 			siteName = "Test Site Name");
 
-		Content.addPG(assetTitle = "WC Title");
+		WidgetPages.addPG(assetTitle = "WC Title");
 
 		LanguagePortlet.selectLanguagePG(
 			locale = "es_ES",

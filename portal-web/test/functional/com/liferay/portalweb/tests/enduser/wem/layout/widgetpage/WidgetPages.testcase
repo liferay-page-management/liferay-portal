@@ -156,6 +156,8 @@ definition {
 		}
 	}
 
+			WidgetPages.addNewPG(assetType = "Basic Web Content");
+			WidgetPages.viewAddContentTitle(entryTitleList = "Web Content Title");
 	@description = "The user can add a Blogs portlet to private page."
 	@priority = "4"
 	test AddWidgetToPrivatePage {

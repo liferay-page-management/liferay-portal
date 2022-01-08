@@ -356,7 +356,7 @@ definition {
 			pageName = "Test Page",
 			siteName = "Test Site Name");
 
-		Content.addPG(assetTitle = "WC WebContent Title");
+		WidgetPages.addPG(assetTitle = "WC WebContent Title");
 
 		WebContentDisplayPortlet.view(
 			webContentContent = "FFFFFF",

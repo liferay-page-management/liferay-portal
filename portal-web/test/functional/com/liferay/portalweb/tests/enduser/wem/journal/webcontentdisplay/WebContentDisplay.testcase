@@ -760,8 +760,8 @@ ${httpUtil.URLtoString(request.getAttribute("CTX").getResource(".").toURI().crea
 				pageName = "Test Page Name",
 				siteName = "Test Site Name");
 
-			Content.addPG(
-				assetTitle = "WC WebContent Title",
+			WidgetPages.addPG(
+				assetTitle = "Web Content Title",
 				pageName = "Test Page Name");
 		}
 
@@ -1490,9 +1490,10 @@ ${runtimeInstance}
 		}
 	}
 
-	@priority = "4"
-	test ViewPortletWCDShowAvailableLocales {
-		property testray.component.names = "Localization,Web Content Display";
+			WidgetPages.addPG(
+				assetTitle = "Web Content Title",
+				pageName = "Test Page Name",
+				webContentContent = "Web Content Content");
 
 		JSONWebcontent.addWebContent(
 			content = "WC WebContent Content",

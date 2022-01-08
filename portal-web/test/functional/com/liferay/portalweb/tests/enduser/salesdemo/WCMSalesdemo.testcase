@@ -81,7 +81,7 @@ definition {
 
 		Navigator.gotoPage(pageName = "Test Page Name");
 
-		Content.addPG(
+		WidgetPages.addPG(
 			assetTitle = "DHS Title",
 			webContentContent = "DHS Content");
 
