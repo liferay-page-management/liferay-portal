@@ -34,7 +34,6 @@ definition {
 			locator1 = "ControlMenuAddPanel#ADD_PORTLET_LINK");
 	}
 
-
 	macro switchToggleControls {
 		Click(
 			key_status = "${status}",
