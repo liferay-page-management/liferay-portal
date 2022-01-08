@@ -112,7 +112,7 @@
 <!--ASSET_TABLE-->
 <tr>
 	<td>ASSET_TABLE_CHECKBOX</td>
-	<td>//tr[contains(.,'${key_assetTitle}')]/td//input[@type='checkbox']</td>
+	<td>//li[contains(.,'${key_assetTitle}')]//input[@type='checkbox']</td>
 	<td></td>
 </tr>
 <tr>
