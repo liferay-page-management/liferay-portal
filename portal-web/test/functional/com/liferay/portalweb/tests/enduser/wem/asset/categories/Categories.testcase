@@ -970,4 +970,48 @@ definition {
 		}
 	}
 
+	@description = "This is a use case for LPS-142234. Sites can't validate required Asset Vocabularies"
+	@priority = "4"
+	test ViewSitesCannotValidateRequiredAssetVocabularies {
+		task ("Add a vocabulary with associated asset type") {
+			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
+
+			Vocabulary.gotoAddVocabulary();
+
+			PortletEntry.inputName(name = "Vocabulary Name 1");
+
+			Vocabulary.addAssociatedAssetType(
+				assetType = "Site",
+				required = "true");
+
+			Button.clickNoError(button = "Save");
+
+			AssertConfirm.assertPartialConfirmation(value1 = "Are you sure you want to create this vocabulary with public visibility?");
+		}
+
+		task ("Add a category") {
+			JSONCategory.addCategory(
+				groupName = "Test Site Name",
+				title = "Category Name",
+				vocabularyName = "Vocabulary Name 1");
+		}
+
+		task ("Go to Categorization settings") {
+			ProductMenu.gotoPortlet(
+				category = "Configuration",
+				portlet = "Site Settings");
+
+			SystemSettings.gotoConfiguration(
+				configurationCategory = "Assets",
+				configurationName = "Categorization",
+				configurationScope = "Site Scope");
+
+			Button.click(button = "Save");
+		}
+
+		task ("Assert error message is shown") {
+			Alert.viewErrorMessage(errorMessage = "Error: Please select at least one category for Vocabulary Name 1.");
+		}
+	}
+
 }
