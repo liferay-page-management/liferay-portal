@@ -252,13 +252,13 @@ definition {
 				pageName = "Test Page 2",
 				pageType = "Public Pages");
 
-			Button.clickPublish();
+			PortletEntry.publish();
 		}
 
 		task ("Copy the Web Content") {
-			LexiconEntry.gotoEntryMenuItem(
-				menuItem = "Copy",
-				rowEntry = "WC WebContent 1");
+			WebContentNavigator.gotoEntryMenuItem(
+				entry = "WC WebContent 1",
+				menuItem = "Copy");
 		}
 
 		task ("Add the second web content and select the display page template in web content") {
@@ -272,7 +272,7 @@ definition {
 				pageName = "Test Page 2",
 				pageType = "Public Pages");
 
-			Button.clickPublish();
+			PortletEntry.publish();
 		}
 
 		task ("View the friendly URL shown in address") {
