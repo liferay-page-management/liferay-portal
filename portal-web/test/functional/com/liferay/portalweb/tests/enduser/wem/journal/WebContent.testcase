@@ -215,7 +215,7 @@ definition {
 			version = "1.1");
 	}
 
-	@description = "This is a test for LPS-141766. Copied Web Contents don't have FriendlyURLEntries."
+	@description = "This is a test for LPS-141766. The user could view associated display page from copy of web content."
 	@priority = "4"
 	test ViewAssociatedDisplayPageFromCopyOfWebContent {
 		task ("Add two Public Pages and Add an Asset Publisher to each page") {
