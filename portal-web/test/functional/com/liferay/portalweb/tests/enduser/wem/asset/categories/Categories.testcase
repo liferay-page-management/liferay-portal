@@ -976,17 +976,10 @@ definition {
 		task ("Add a vocabulary with associated asset type") {
 			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
 
-			Vocabulary.gotoAddVocabulary();
-
-			PortletEntry.inputName(name = "Vocabulary Name 1");
-
-			Vocabulary.addAssociatedAssetType(
+			Vocabulary.addWithAssociatedAssetTypeCP(
 				assetType = "Site",
-				required = "true");
-
-			Button.clickNoError(button = "Save");
-
-			AssertConfirm.assertPartialConfirmation(value1 = "Are you sure you want to create this vocabulary with public visibility?");
+				required = "true",
+				vocabularyName = "Vocabulary Name 1");
 		}
 
 		task ("Add a category") {
