@@ -944,6 +944,71 @@ main();
 		}
 	}
 
+	@description = "This is a test for LPS-142166. Fragment with item selector breaks when being added to a page."
+	@priority = "4"
+	test FragmentWithItemSelectorBreaksWhenAddingToPage {
+		task ("Create a blog entry") {
+			ProductMenu.gotoPortlet(
+				category = "Content & Data",
+				portlet = "Blogs");
+
+			Blogs.addEntry(
+				entryContent = "Blogs Entry Content",
+				entryTitle = "Blogs Entry Title");
+		}
+
+		task ("Add a fragment with Item Selector in configuration text field") {
+			FragmentsAdminNavigator.openFragmentsAdmin(siteURLKey = "test-site-name");
+
+			FragmentsAdmin.addFragment(fragmentName = "Fragment Name");
+
+			FragmentsEditor.gotoConfigurationTab();
+
+			var jsonSnippet = '''
+{
+"fieldSets": [{
+    "fields": [{
+        "label": "select-content",
+        "name": "itemSelector1",
+        "type": "itemSelector",
+        "typeOptions": {
+    "itemType" : "com.liferay.blogs.model.BlogsEntry",
+        }
+    }]
+}]
+}
+			''';
+
+			FragmentsEditor.typeConfigurationEditor(content = "${jsonSnippet}");
+
+			FragmentsEditor.waitForAutoSave();
+
+			FragmentsEditor.gotoCodeTab();
+
+			var htmlSnippet = '''
+<div class="fragment_name">
+  [#if configuration.itemSelector1.content??]
+       ${configuration.itemSelector1.content}
+  [/#if]
+</div>
+			''';
+
+			FragmentsEditor.typeHtmlEditor(content = "${htmlSnippet}");
+
+			FragmentsEditor.publish();
+		}
+
+		task ("Add the fragment to page") {
+			ContentPagesNavigator.openEditContentPage(
+				pageName = "Test Page Name",
+				siteName = "Test Site Name");
+
+			PageEditor.addFragment(
+				collectionName = "Collection Name",
+				fragmentName = "Fragment Name");
+		}
+	}
+
 	@description = "This is a test for LPS-100751. View placeholder in fragment configuration without default value."
 	@priority = "5"
 	@uitest
