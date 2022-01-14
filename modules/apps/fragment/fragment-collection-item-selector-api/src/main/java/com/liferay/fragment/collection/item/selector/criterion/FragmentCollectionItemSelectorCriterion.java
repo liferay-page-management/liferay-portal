@@ -21,4 +21,24 @@ import com.liferay.item.selector.BaseItemSelectorCriterion;
  */
 public class FragmentCollectionItemSelectorCriterion
 	extends BaseItemSelectorCriterion {
+
+	public long getGroupId() {
+		return _groupId;
+	}
+
+	public String getPreviewURLTemplate() {
+		return _previewURLTemplate;
+	}
+
+	public void setGroupId(long groupId) {
+		_groupId = groupId;
+	}
+
+	public void setPreviewURLTemplate(String previewURLTemplate) {
+		_previewURLTemplate = previewURLTemplate;
+	}
+
+	private long _groupId;
+	private String _previewURLTemplate;
+
 }
