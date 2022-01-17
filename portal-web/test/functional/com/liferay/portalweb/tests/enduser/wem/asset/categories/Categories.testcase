@@ -943,33 +943,6 @@ definition {
 		}
 	}
 
-	@description = "View the navigation."
-	@priority = "3"
-	test ViewNavigation {
-		task ("Add a category") {
-			JSONCategory.addCategory(
-				groupName = "Test Site Name",
-				title = "Category Name",
-				vocabularyName = "Vocabulary Name");
-		}
-
-		task ("Add a subcategory") {
-			JSONCategory.addSubcategory(
-				groupName = "Test Site Name",
-				parentCategoryName = "Category Name",
-				title = "Subcategory Name",
-				vocabularyName = "Vocabulary Name");
-		}
-
-		task ("View the navigation") {
-			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
-
-			Category.viewNavigationCP(
-				categoryName = "Category Name",
-				vocabularyName = "Vocabulary Name");
-		}
-	}
-
 	@description = "This is a use case for LPS-142234. The user could view error message when save site settings without required category."
 	@priority = "4"
 	test ViewErrorMessageWhenSaveSiteSettingsWithoutRequiredCategory {
@@ -995,7 +968,7 @@ definition {
 			Click(
 				key_itemName = "Assets",
 				locator1 = "ListGroupItem#ITEM_TEXT");
-			
+
 			Navigator.gotoNavTab(navTab = "Categorization");
 
 			Button.click(button = "Save");
@@ -1003,6 +976,33 @@ definition {
 
 		task ("Assert error message is shown") {
 			Alert.viewErrorMessage(errorMessage = "Error: Please select at least one category for Vocabulary Name 1.");
+		}
+	}
+
+	@description = "View the navigation."
+	@priority = "3"
+	test ViewNavigation {
+		task ("Add a category") {
+			JSONCategory.addCategory(
+				groupName = "Test Site Name",
+				title = "Category Name",
+				vocabularyName = "Vocabulary Name");
+		}
+
+		task ("Add a subcategory") {
+			JSONCategory.addSubcategory(
+				groupName = "Test Site Name",
+				parentCategoryName = "Category Name",
+				title = "Subcategory Name",
+				vocabularyName = "Vocabulary Name");
+		}
+
+		task ("View the navigation") {
+			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
+
+			Category.viewNavigationCP(
+				categoryName = "Category Name",
+				vocabularyName = "Vocabulary Name");
 		}
 	}
 
