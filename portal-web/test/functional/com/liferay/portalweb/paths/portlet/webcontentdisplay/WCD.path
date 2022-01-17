@@ -53,9 +53,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td></td>
-</tr>
-<tr>
 	<td>WEB_CONTENT_CONTENT</td>
 	<td>//div[contains(@class,'journal-content-article')]</td>
 	<td></td>

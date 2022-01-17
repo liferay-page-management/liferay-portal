@@ -177,7 +177,9 @@ definition {
 
 		IFrame.closeFrame();
 
-		WebContentDisplayPortlet.viewImageFieldViaWCD();
+		WebContentDisplayPortlet.viewMedia(
+			imageFileName = "Document_2.jpeg",
+			webContentTitle = "WC WebContent Title");
 
 		Staging.gotoPublishToLive();
 
@@ -187,7 +189,9 @@ definition {
 			pageName = "Staging Test Page",
 			siteName = "Test Site Name");
 
-		WebContentDisplayPortlet.viewImageFieldViaWCD();
+		WebContentDisplayPortlet.viewMedia(
+			imageFileName = "Document_2.jpeg",
+			webContentTitle = "WC WebContent Title");
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name-staging");
 
