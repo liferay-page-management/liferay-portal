@@ -219,7 +219,7 @@ definition {
 			pageName = "Web Content Page",
 			siteName = "Test Site Name");
 
-		Content.addNewPG(assetType = "Basic Web Content");
+		WidgetPages.addNewPG(assetType = "Basic Web Content");
 
 		WebContent.addCP(
 			webContentContent = "WC WebContent Content",
@@ -227,15 +227,7 @@ definition {
 
 		PortletEntry.publish();
 
-		Click.clickAt(locator1 = "ControlMenu#ADD");
-
-		AssertElementPresent(locator1 = "ControlMenuAddPanel#SIDEBAR_HEADER");
-
-		Navigator.gotoNavTab(navTab = "Content");
-
-		AssertVisible(
-			key_entryTitle = "WC WebContent Title",
-			locator1 = "ControlMenuAddPanel#ASSET_ENTRY");
+		WidgetPages.viewAddContentTitle(entryTitleList = "Web Content Title");
 	}
 
 	@priority = "4"
@@ -760,9 +752,7 @@ ${httpUtil.URLtoString(request.getAttribute("CTX").getResource(".").toURI().crea
 				pageName = "Test Page Name",
 				siteName = "Test Site Name");
 
-			Content.addPG(
-				assetTitle = "WC WebContent Title",
-				pageName = "Test Page Name");
+			WidgetPages.addPG(assetTitle = "Web Content Title");
 		}
 
 		task ("Enable the Related Assets in WCD") {
