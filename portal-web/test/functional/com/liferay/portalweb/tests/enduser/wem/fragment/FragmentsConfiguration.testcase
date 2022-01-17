@@ -946,7 +946,7 @@ main();
 
 	@description = "This is a test for LPS-142166. Fragment with item selector breaks when being added to a page."
 	@priority = "4"
-	test FragmentWithItemSelectorBreaksWhenAddingToPage {
+	test DisplayBlogsEntryWhenItemTypeIsBlogsEntry {
 		task ("Create a blog entry") {
 			HeadlessBlog.addBlogEntry(
 				content = "Blogs Entry Content",
