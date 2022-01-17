@@ -972,7 +972,7 @@ definition {
 
 	@description = "This is a use case for LPS-142234. The user could view error message when save site settings without required category."
 	@priority = "4"
-	test ViewSitesCannotValidateRequiredAssetVocabularies {
+	test ViewErrorMessageWhenSaveSiteSettingsWithoutRequiredCategory {
 		task ("Add a vocabulary with associated asset type") {
 			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
 
