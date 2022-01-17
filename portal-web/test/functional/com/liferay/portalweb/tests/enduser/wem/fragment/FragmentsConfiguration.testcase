@@ -963,16 +963,20 @@ main();
 
 			var jsonSnippet = '''
 {
-"fieldSets": [{
-    "fields": [{
-        "label": "select-content",
-        "name": "itemSelector1",
-        "type": "itemSelector",
-        "typeOptions": {
-    "itemType" : "com.liferay.blogs.model.BlogsEntry",
-        }
-    }]
-}]
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"label": "Item",
+					"name": "itemSelectorName",
+					"type": "itemSelector",
+					"typeOptions": {
+						"itemType": "com.liferay.blogs.model.BlogsEntry"
+					}
+				}
+			]
+		}
+	]
 }
 			''';
 
@@ -983,10 +987,12 @@ main();
 			FragmentsEditor.gotoCodeTab();
 
 			var htmlSnippet = '''
-<div class="fragment_name">
-  [#if configuration.itemSelector1.content??]
-       ${configuration.itemSelector1.content}
-  [/#if]
+<div class="fragment-blogs">
+	[#if configuration.itemSelectorName.content??]
+		${configuration.itemSelectorName.content}
+	[#else]
+		<div class="portlet-msg-info">The selected content will be shown here.</div>
+	[/#if]
 </div>
 			''';
 
