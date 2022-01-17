@@ -998,6 +998,8 @@ main();
 
 			FragmentsEditor.typeHtmlEditor(content = "${htmlSnippet}");
 
+			FragmentsEditor.waitForAutoSave();
+
 			FragmentsEditor.publish();
 		}
 
