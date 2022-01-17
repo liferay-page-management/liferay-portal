@@ -970,7 +970,7 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-142234. Sites can't validate required Asset Vocabularies"
+	@description = "This is a use case for LPS-142234. The user could view error message when save site settings without required category."
 	@priority = "4"
 	test ViewSitesCannotValidateRequiredAssetVocabularies {
 		task ("Add a vocabulary with associated asset type") {
