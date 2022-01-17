@@ -990,14 +990,13 @@ definition {
 		}
 
 		task ("Go to Categorization settings") {
-			ProductMenu.gotoPortlet(
-				category = "Configuration",
-				portlet = "Site Settings");
+			Site.openSiteSettingsAdmin(siteURLKey = "test-site-name");
 
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Assets",
-				configurationName = "Categorization",
-				configurationScope = "Site Scope");
+			Click(
+				key_itemName = "Assets",
+				locator1 = "ListGroupItem#ITEM_TEXT");
+			
+			Navigator.gotoNavTab(navTab = "Categorization");
 
 			Button.click(button = "Save");
 		}
