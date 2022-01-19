@@ -1659,6 +1659,76 @@ definition {
 		}
 	}
 
+	@description = "This is a use case for LPS-141570. Asset publisher with dynamic selection won't display the non-searchable web contents."
+	@priority = "4"
+	test ViewNonSearchableWebContentWithDynamicSelection {
+		task ("Add a web content") {
+			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
+
+			WebContentNavigator.gotoAddCP();
+
+			WebContent.addCP(
+				webContentContent = "WC WebContent Content 1",
+				webContentTitle = "WC WebContent Title 1");
+
+			PortletEntry.publish();
+		}
+
+		task ("Add a web content with searchable disabled") {
+			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
+
+			WebContentNavigator.gotoAddCP();
+
+			WebContent.addCP(
+				webContentContent = "WC WebContent Content 2",
+				webContentTitle = "WC WebContent Title 2");
+
+			Panel.expandPanel(panel = "Search");
+
+			Uncheck.uncheckToggleSwitch(
+				key_toggleSwitchLabel = "Searchable",
+				locator1 = "WC#WC_SEARCHABLE");
+
+			PortletEntry.publish();
+		}
+
+		task ("Assert both Web Content are present in AP") {
+			Navigator.gotoSitePage(
+				pageName = "Asset Publisher Page",
+				siteName = "Test Site Name");
+
+			AssetPublisherPortlet.viewAssetPG(
+				assetContent = "WC WebContent Content 1",
+				assetTitle = "WC WebContent Title 1");
+
+			AssetPublisherPortlet.viewAssetPG(
+				assetContent = "WC WebContent Content 2",
+				assetTitle = "WC WebContent Title 2");
+		}
+
+		task ("Uncheck Search with Index Configuration") {
+			APNavigator.openToConfigInSystemSettings(portlet = "Asset Publisher");
+
+			FormFields.disableCheckbox(fieldName = "searchWithIndex");
+
+			SystemSettings.saveConfiguration();
+		}
+
+		task ("Assert both Web Content are present in AP") {
+			Navigator.gotoSitePage(
+				pageName = "Asset Publisher Page",
+				siteName = "Test Site Name");
+
+			AssetPublisherPortlet.viewAssetPG(
+				assetContent = "WC WebContent Content 1",
+				assetTitle = "WC WebContent Title 1");
+
+			AssetPublisherPortlet.viewAssetPG(
+				assetContent = "WC WebContent Content 2",
+				assetTitle = "WC WebContent Title 2");
+		}
+	}
+
 	@description = "This is a test for LPS-126190. The user could receive a notification email when the Dynamic Subscription Limit is set to 0 in Asset Publisher."
 	@priority = "4"
 	test ViewNotificationEmailWhenSetDynamicSubscriptionLimitToZero {
