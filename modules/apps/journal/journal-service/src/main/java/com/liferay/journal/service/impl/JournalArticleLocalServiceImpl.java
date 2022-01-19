@@ -5668,6 +5668,8 @@ public class JournalArticleLocalServiceImpl
 
 		articleId = StringUtil.toUpperCase(StringUtil.trim(articleId));
 
+		serviceContext.setAttribute("articleId", articleId);
+
 		byte[] smallImageBytes = null;
 
 		try {
