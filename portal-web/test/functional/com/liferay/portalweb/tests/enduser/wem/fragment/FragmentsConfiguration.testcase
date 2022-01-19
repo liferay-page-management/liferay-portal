@@ -1011,6 +1011,10 @@ main();
 			PageEditor.addFragment(
 				collectionName = "Collection Name",
 				fragmentName = "Fragment Name");
+
+			PageEditor.viewFragmentMessageInfo(
+				fragmentName = "Fragment Name",
+				messageInfo = "The selected content will be shown here.");
 		}
 	}
 
