@@ -35,8 +35,8 @@ export function DropdownColorPicker({
 	colors,
 	config,
 	disabled,
-	fieldName = '',
 	label = null,
+	onTokenIsDisabled = () => {},
 	onValueChange = () => {},
 	onSetActive,
 	showSelector = true,
@@ -166,10 +166,10 @@ export function DropdownColorPicker({
 						colors={filteredColors}
 						config={config}
 						dropdownContainerRef={dropdownContainerRef}
-						fieldName={fieldName}
 						onKeyDown={handleKeyDownWrapper}
 						onSetActive={onSetActive}
 						onSetSearchValue={setSearchValue}
+						onTokenIsDisabled={onTokenIsDisabled}
 						onValueChange={onValueChange}
 						triggerElementRef={triggerElementRef}
 					/>
@@ -211,7 +211,6 @@ export function DropdownColorPicker({
 								colors={filteredColors}
 								config={config}
 								dropdownContainerRef={dropdownContainerRef}
-								fieldName={fieldName}
 								onKeyDown={handleKeyDownWrapper}
 								onSetActive={onSetActive}
 								onSetSearchValue={setSearchValue}
@@ -230,10 +229,10 @@ const Wrapper = ({
 	colors,
 	config,
 	dropdownContainerRef,
-	fieldName,
 	onKeyDown,
 	onSetActive,
 	onSetSearchValue,
+	onTokenIsDisabled = () => {},
 	onValueChange,
 	triggerElementRef,
 }) => {
@@ -278,9 +277,9 @@ const Wrapper = ({
 											>
 												<Splotch
 													config={config}
-													disabled={
-														name === fieldName
-													}
+													disabled={onTokenIsDisabled(
+														name
+													)}
 													onClick={() => {
 														onValueChange({
 															label,
@@ -364,9 +363,9 @@ DropdownColorPicker.propTypes = {
 	active: PropTypes.bool.isRequired,
 	colors: PropTypes.shape({}).isRequired,
 	disabled: PropTypes.bool,
-	fieldName: PropTypes.string,
 	label: PropTypes.string,
 	onSetActive: PropTypes.func.isRequired,
+	onTokenIsDisabled: PropTypes.func,
 	onValueChange: PropTypes.func,
 	showSelector: PropTypes.bool,
 	small: PropTypes.bool,
