@@ -1016,6 +1016,12 @@ main();
 				fragmentName = "Fragment Name",
 				messageInfo = "The selected content will be shown here.");
 		}
+
+		task ("Select Blog Entry in Fragment") {
+			PageEditor.editFragmentItem(
+				entryTitle = "Blogs Entry Title",
+				fragmentName = "Fragment Name");
+		}
 	}
 
 	@description = "This is a test for LPS-100751. View placeholder in fragment configuration without default value."

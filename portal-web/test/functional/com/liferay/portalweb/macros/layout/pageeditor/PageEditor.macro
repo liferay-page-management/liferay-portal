@@ -1853,6 +1853,39 @@ definition {
 		Click(locator1 = "Button#UPDATE");
 	}
 
+	macro editFragmentItem {
+		var key_fragmentName = "${fragmentName}";
+
+		PageEditor.clickConfigurableField(fragmentName = "${fragmentName}");
+
+		AssertVisible(
+			key_sidebarButton = "Browser",
+			locator1 = "PageEditor#FRAGMENT_SIDEBAR_TITLE");
+
+		Navigator.gotoNavTab(navTab = "General");
+
+		if (IsTextEqual(key_fieldLabel = "Item", locator1 = "PageEditor#ITEM_SELECTOR_CONTENT_INPUT", value1 = "")) {
+			Click(
+				key_fieldLabel = "Item",
+				key_text = "plus",
+				locator1 = "Icon#ANY_ITEM_SELECTOR");
+		}
+		else {
+			Click(
+				key_fieldLabel = "Item",
+				key_text = "change",
+				locator1 = "Icon#ANY_ITEM_SELECTOR");
+		}
+
+		SelectFrame(locator1 = "IFrame#MODAL_BODY");
+
+		LexiconCard.clickCard(card = "${entryTitle}");
+
+		PageEditor.viewItemSelectorText(
+			fieldLabel = "Item",
+			text = "${entryTitle}");
+	}
+
 	macro editContentDisplay {
 		var key_fragmentName = "${fragmentName}";
 
