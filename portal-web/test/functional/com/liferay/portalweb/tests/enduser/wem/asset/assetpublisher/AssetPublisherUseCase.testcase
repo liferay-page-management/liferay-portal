@@ -1694,13 +1694,11 @@ definition {
 				pageName = "Asset Publisher Page",
 				siteName = "Test Site Name");
 
-			AssetPublisherPortlet.viewAssetPG(
-				assetContent = "WC WebContent Content 1",
-				assetTitle = "WC WebContent Title 1");
-
-			AssetPublisherPortlet.viewAssetPG(
-				assetContent = "WC WebContent Content 2",
-				assetTitle = "WC WebContent Title 2");
+			for (var text : list "1,2") {
+				AssetPublisherPortlet.viewAssetPG(
+					assetContent = "WC WebContent Content ${text}",
+					assetTitle = "WC WebContent Title ${text}");
+			}
 		}
 
 		task ("Uncheck Search with Index Configuration") {
@@ -1716,13 +1714,11 @@ definition {
 				pageName = "Asset Publisher Page",
 				siteName = "Test Site Name");
 
-			AssetPublisherPortlet.viewAssetPG(
-				assetContent = "WC WebContent Content 1",
-				assetTitle = "WC WebContent Title 1");
-
-			AssetPublisherPortlet.viewAssetPG(
-				assetContent = "WC WebContent Content 2",
-				assetTitle = "WC WebContent Title 2");
+			for (var text : list "1,2") {
+				AssetPublisherPortlet.viewAssetPG(
+					assetContent = "WC WebContent Content ${text}",
+					assetTitle = "WC WebContent Title ${text}");
+			}
 		}
 	}
 
