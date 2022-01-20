@@ -1684,7 +1684,7 @@ definition {
 
 			Uncheck.uncheckToggleSwitch(
 				key_toggleSwitchLabel = "Searchable",
-				locator1 = "WC#WC_SEARCHABLE");
+				locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
 
 			PortletEntry.publish();
 		}

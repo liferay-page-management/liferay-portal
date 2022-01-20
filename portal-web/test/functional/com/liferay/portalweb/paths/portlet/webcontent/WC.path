@@ -174,11 +174,6 @@
 	<td>//span//span[contains(.,'${key_tagName}')]</td>
 	<td></td>
 </tr>
-<tr>
-	<td>WC_SEARCHABLE</td>
-	<td>//input[contains(@id,'_com_liferay_journal_web_portlet_JournalPortlet_indexable')]</td>
-	<td></td>
-</tr>
 </tbody>
 </table>
 </body>
