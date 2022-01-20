@@ -1018,9 +1018,13 @@ main();
 		}
 
 		task ("Select Blog Entry in Fragment") {
-			PageEditor.editFragmentItem(
-				entryTitle = "Blogs Entry Title",
-				fragmentName = "Fragment Name");
+			PageEditor.gotoSelectPanel(fragmentName = "Fragment Name");
+
+			LexiconCard.clickCard(card = "Blogs Entry Title");
+
+			PageEditor.viewItemSelectorText(
+				fieldLabel = "Item",
+				text = "Blogs Entry Title");
 		}
 	}
 
