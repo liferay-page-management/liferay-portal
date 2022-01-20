@@ -1659,7 +1659,7 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-141570. Asset publisher with dynamic selection won't display the non-searchable web contents."
+	@description = "This is a use case for LPS-141570. The user could view non-searchable web content in Asset Publisher after disable search with index."
 	@priority = "4"
 	test ViewNonSearchableWebContentAfterDisableSearchWithIndex {
 		task ("Add a web content") {
