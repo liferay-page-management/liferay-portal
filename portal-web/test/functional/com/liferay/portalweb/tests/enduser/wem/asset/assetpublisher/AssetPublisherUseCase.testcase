@@ -1661,7 +1661,7 @@ definition {
 
 	@description = "This is a use case for LPS-141570. Asset publisher with dynamic selection won't display the non-searchable web contents."
 	@priority = "4"
-	test ViewNonSearchableWebContentWithDynamicSelection {
+	test ViewNonSearchableWebContentAfterDisableSearchWithIndex {
 		task ("Add a web content") {
 			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 
