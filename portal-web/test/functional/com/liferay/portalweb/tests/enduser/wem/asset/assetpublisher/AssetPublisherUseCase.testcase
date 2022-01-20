@@ -1662,6 +1662,8 @@ definition {
 	@description = "This is a use case for LPS-141570. The user could view non-searchable web content in Asset Publisher after disable search with index."
 	@priority = "4"
 	test ViewNonSearchableWebContentAfterDisableSearchWithIndex {
+		property test.name.skip.portal.instance = "AssetPublisherUseCase#ViewNonSearchableWebContentAfterDisableSearchWithIndex";
+
 		task ("Add a web content") {
 			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 
