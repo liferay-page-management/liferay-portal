@@ -1026,6 +1026,14 @@ main();
 				fieldLabel = "Item",
 				text = "Blogs Entry Title");
 		}
+
+		task ("View the displayed content in Fragment") {
+			AssertTextEquals(
+				fragmentName = "blogs",
+				index = "1",
+				locator1 = "Fragment#FRAGMENT_BODY",
+				value1 = "Blogs Entry Content");
+		}
 	}
 
 	@description = "This is a test for LPS-100751. View placeholder in fragment configuration without default value."
