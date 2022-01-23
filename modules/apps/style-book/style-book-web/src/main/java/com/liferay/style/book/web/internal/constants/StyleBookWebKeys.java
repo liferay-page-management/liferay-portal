@@ -24,4 +24,7 @@ public class StyleBookWebKeys {
 
 	public static final String ITEM_SELECTOR = "ITEM_SELECTOR";
 
+	public static final String RENDER_FRAGMENT_ENTRY_LINK_URL =
+		"RENDER_FRAGMENT_ENTRY_LINK_URL";
+
 }
