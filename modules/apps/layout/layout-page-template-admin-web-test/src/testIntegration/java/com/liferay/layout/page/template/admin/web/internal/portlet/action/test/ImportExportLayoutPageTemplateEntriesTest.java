@@ -251,6 +251,28 @@ public class ImportExportLayoutPageTemplateEntriesTest {
 	}
 
 	@Test
+	public void testImportExportLayoutPageTemplateEntryContainerLinkMappedToLayoutWithFriendlyURL()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addLayout(_group.getGroupId());
+
+		Map<String, String> stringValuesMap = HashMapBuilder.put(
+			"FRIENDLY_URL", String.valueOf(layout.getFriendlyURL())
+		).put(
+			"PLID", String.valueOf(layout.getPlid())
+		).build();
+
+		File expectedFile = _generateZipFile(
+			"container/link_mapped_layout/friendly_url/expected", null,
+			stringValuesMap);
+		File inputFile = _generateZipFile(
+			"container/link_mapped_layout/friendly_url/input", null,
+			stringValuesMap);
+
+		_validateImportExport(expectedFile, inputFile);
+	}
+
+	@Test
 	public void testImportExportLayoutPageTemplateEntryContainerLinkMappedToLayoutWithPlid()
 		throws Exception {
 
