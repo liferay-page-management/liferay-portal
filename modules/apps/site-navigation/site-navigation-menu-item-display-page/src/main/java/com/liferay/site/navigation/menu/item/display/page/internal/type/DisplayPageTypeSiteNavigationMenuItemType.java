@@ -472,6 +472,10 @@ public class DisplayPageTypeSiteNavigationMenuItemType
 
 		httpServletRequest.setAttribute(
 			SiteNavigationMenuItemTypeDisplayPageWebKeys.
+				ASSET_DISPLAY_PAGE_FRIENDLY_URL_PROVIDER,
+			_assetDisplayPageFriendlyURLProvider);
+		httpServletRequest.setAttribute(
+			SiteNavigationMenuItemTypeDisplayPageWebKeys.
 				DISPLAY_PAGE_TYPE_CONTEXT,
 			_displayPageTypeContext);
 		httpServletRequest.setAttribute(

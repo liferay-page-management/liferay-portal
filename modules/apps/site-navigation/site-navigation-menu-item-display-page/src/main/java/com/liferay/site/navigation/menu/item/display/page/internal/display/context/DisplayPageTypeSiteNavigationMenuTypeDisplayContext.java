@@ -14,6 +14,7 @@
 
 package com.liferay.site.navigation.menu.item.display.page.internal.display.context;
 
+import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.item.InfoItemFieldValues;
@@ -25,6 +26,7 @@ import com.liferay.item.selector.criteria.info.item.criterion.InfoItemItemSelect
 import com.liferay.layout.display.page.LayoutDisplayPageInfoItemFieldValuesProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -68,6 +70,11 @@ public class DisplayPageTypeSiteNavigationMenuTypeDisplayContext {
 	public DisplayPageTypeSiteNavigationMenuTypeDisplayContext(
 		HttpServletRequest httpServletRequest) {
 
+		_assetDisplayPageFriendlyURLProvider =
+			(AssetDisplayPageFriendlyURLProvider)
+				httpServletRequest.getAttribute(
+					SiteNavigationMenuItemTypeDisplayPageWebKeys.
+						ASSET_DISPLAY_PAGE_FRIENDLY_URL_PROVIDER);
 		_displayPageTypeContext =
 			(DisplayPageTypeContext)httpServletRequest.getAttribute(
 				SiteNavigationMenuItemTypeDisplayPageWebKeys.
@@ -353,6 +360,26 @@ public class DisplayPageTypeSiteNavigationMenuTypeDisplayContext {
 		return _type;
 	}
 
+	public boolean hasDisplayPage() throws PortalException {
+		if (_hasDisplayPage != null) {
+			return _hasDisplayPage;
+		}
+
+		boolean hasDisplayPage = true;
+
+		if (Validator.isNull(
+				_assetDisplayPageFriendlyURLProvider.getFriendlyURL(
+					_displayPageTypeContext.getClassName(), getClassPK(),
+					_themeDisplay))) {
+
+			hasDisplayPage = false;
+		}
+
+		_hasDisplayPage = hasDisplayPage;
+
+		return _hasDisplayPage;
+	}
+
 	public boolean isFFMultipleSelectionEnabled() {
 		return FFDisplayPageSiteNavigationMenuItemConfigurationUtil.
 			multipleSelectionEnabled();
@@ -388,10 +415,13 @@ public class DisplayPageTypeSiteNavigationMenuTypeDisplayContext {
 		return _layoutDisplayPageObjectProvider;
 	}
 
+	private final AssetDisplayPageFriendlyURLProvider
+		_assetDisplayPageFriendlyURLProvider;
 	private Long _classNameId;
 	private Long _classPK;
 	private Long _classTypeId;
 	private final DisplayPageTypeContext _displayPageTypeContext;
+	private Boolean _hasDisplayPage;
 	private final ItemSelector _itemSelector;
 	private LayoutDisplayPageObjectProvider<?> _layoutDisplayPageObjectProvider;
 	private JSONObject _localizedNamesJSONObject;
