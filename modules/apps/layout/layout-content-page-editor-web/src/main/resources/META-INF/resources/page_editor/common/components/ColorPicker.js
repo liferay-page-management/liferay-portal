@@ -110,6 +110,9 @@ export function ColorPicker({
 		}
 	}, [value, config.tokenReuseEnabled]);
 
+	const tokenIsDisabled = (name) =>
+		name === field.name || editedTokenValues?.[name]?.name === field.name;
+
 	const onSetValue = (value, label, name) => {
 		setColor(value);
 		setTokenLabel(label);
@@ -178,6 +181,7 @@ export function ColorPicker({
 	};
 
 	const onClickAutocompleteItem = ({label, name, value}) => {
+		setActiveAutocomplete(false);
 		onSetValue(value, label, name);
 	};
 
@@ -232,9 +236,9 @@ export function ColorPicker({
 								active={activeColorPicker}
 								colors={colors}
 								config={config}
-								fieldName={field.name}
 								label={tokenLabel}
 								onSetActive={setActiveColorPicker}
+								onTokenIsDisabled={tokenIsDisabled}
 								onValueChange={({label, name, value}) =>
 									onSetValue(value, label, name)
 								}
@@ -329,15 +333,9 @@ export function ColorPicker({
 																aria-posinset={
 																	index
 																}
-																disabled={
-																	token.name ===
-																		field.name ||
-																	editedTokenValues?.[
-																		token
-																			.name
-																	]?.name ===
-																		field.name
-																}
+																disabled={tokenIsDisabled(
+																	token.name
+																)}
 																key={token.name}
 																onClick={() =>
 																	onClickAutocompleteItem(
@@ -433,8 +431,8 @@ export function ColorPicker({
 										active={activeColorPicker}
 										colors={colors}
 										config={config}
-										fieldName={field.name}
 										onSetActive={setActiveColorPicker}
+										onTokenIsDisabled={tokenIsDisabled}
 										onValueChange={({label, name, value}) =>
 											onSetValue(value, label, name)
 										}
