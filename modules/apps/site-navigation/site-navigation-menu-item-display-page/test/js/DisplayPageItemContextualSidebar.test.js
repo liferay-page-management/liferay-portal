@@ -34,6 +34,7 @@ const LOCALES = [
 ];
 
 const renderContextualSidebar = ({
+	hasDisplayPage = true,
 	item = {},
 	localizedNames = {},
 	subtype,
@@ -44,6 +45,7 @@ const renderContextualSidebar = ({
 		<DisplayPageItemContextualSidebar
 			chooseItemProps={{}}
 			defaultLanguageId={DEFAULT_LANGUAGE_ID}
+			hasDisplayPage={hasDisplayPage}
 			item={item}
 			itemSubtype={subtype}
 			itemType={type}
@@ -111,5 +113,11 @@ describe('DisplayPageItemContextualSidebar', () => {
 			expect(screen.getByText(title)).toBeInTheDocument();
 			expect(screen.getByText(value)).toBeInTheDocument();
 		});
+	});
+
+	it('renders feedback message when item does not have display page', () => {
+		renderContextualSidebar({hasDisplayPage: false});
+
+		expect(screen.getByRole('alert')).toBeInTheDocument();
 	});
 });
