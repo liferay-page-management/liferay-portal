@@ -57,6 +57,9 @@ export function ColorPicker({
 	const id = useId();
 
 	const [activeAutocomplete, setActiveAutocomplete] = useState(false);
+	const [activeDropdownColorPicker, setActiveDropdownColorPicker] = useState(
+		false
+	);
 	const [activeColorPicker, setActiveColorPicker] = useState(false);
 	const buttonsRef = useRef(null);
 	const [color, setColor] = useControlledState(
@@ -246,19 +249,20 @@ export function ColorPicker({
 					'has-error': error,
 					'hovered':
 						!config.tokenReuseEnabled ||
+						activeAutocomplete ||
 						activeColorPicker ||
-						activeAutocomplete,
+						activeDropdownColorPicker,
 				})}
 			>
 				{config.tokenReuseEnabled ? (
 					tokenLabel ? (
 						<ClayInput.GroupItem>
 							<DropdownColorPicker
-								active={activeColorPicker}
+								active={activeDropdownColorPicker}
 								colors={colors}
 								config={config}
 								label={tokenLabel}
-								onSetActive={setActiveColorPicker}
+								onSetActive={setActiveDropdownColorPicker}
 								onValueChange={({label, name, value}) =>
 									onSetValue(value, label, name)
 								}
@@ -280,7 +284,7 @@ export function ColorPicker({
 										dropDownContainerProps={{
 											className: 'cadmin',
 										}}
-										onChangeActive={setActiveColorPicker}
+										onActiveChange={setActiveColorPicker}
 										onColorsChange={setCustomColors}
 										onValueChange={(color) => {
 											debouncedOnValueSelect(
@@ -389,10 +393,10 @@ export function ColorPicker({
 					<>
 						<ClayInput.GroupItem prepend shrink>
 							<DropdownColorPicker
-								active={activeColorPicker}
+								active={activeDropdownColorPicker}
 								colors={colors}
 								config={config}
-								onSetActive={setActiveColorPicker}
+								onSetActive={setActiveDropdownColorPicker}
 								onValueChange={({name, value}) => {
 									setColor(value);
 									onValueSelect(field.name, name);
@@ -448,10 +452,12 @@ export function ColorPicker({
 									/>
 								) : (
 									<DropdownColorPicker
-										active={activeColorPicker}
+										active={activeDropdownColorPicker}
 										colors={colors}
 										config={config}
-										onSetActive={setActiveColorPicker}
+										onSetActive={
+											setActiveDropdownColorPicker
+										}
 										onValueChange={({label, name, value}) =>
 											onSetValue(value, label, name)
 										}
