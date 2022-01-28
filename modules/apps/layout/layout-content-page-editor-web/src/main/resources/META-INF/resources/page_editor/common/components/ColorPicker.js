@@ -420,7 +420,9 @@ export function ColorPicker({
 					</>
 				)}
 
-				{color && (
+				{((color && !config.tokenReuseEnabled) ||
+					(config.tokenReuseEnabled &&
+						(!tokenLabel || (tokenLabel && color)))) && (
 					<>
 						{config.tokenReuseEnabled && (
 							<ClayInput.GroupItem
