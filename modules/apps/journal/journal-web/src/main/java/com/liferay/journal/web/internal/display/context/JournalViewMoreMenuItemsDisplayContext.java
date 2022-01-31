@@ -17,6 +17,7 @@ package com.liferay.journal.web.internal.display.context;
 import com.liferay.depot.util.SiteConnectedGroupGroupProviderUtil;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.util.comparator.StructureModifiedDateComparator;
+import com.liferay.dynamic.data.mapping.util.comparator.StructureNameComparator;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemListBuilder;
 import com.liferay.journal.constants.JournalPortletKeys;
@@ -229,7 +230,16 @@ public class JournalViewMoreMenuItemsDisplayContext {
 			orderByAsc = true;
 		}
 
-		return new StructureModifiedDateComparator(orderByAsc);
+		OrderByComparator<DDMStructure> orderByComparator = null;
+
+		if (_orderByCol.equals("name")) {
+			orderByComparator = new StructureNameComparator(orderByAsc);
+		}
+		else if (_orderByCol.equals("modified-date")) {
+			orderByComparator = new StructureModifiedDateComparator(orderByAsc);
+		}
+
+		return orderByComparator;
 	}
 
 	private List<DDMStructure> _ddmStructures;
