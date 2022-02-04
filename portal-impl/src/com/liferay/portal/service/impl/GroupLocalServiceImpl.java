@@ -141,6 +141,7 @@ import com.liferay.portal.kernel.util.GroupThreadLocal;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.MethodHandler;
@@ -3888,40 +3889,50 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 			String oldLanguageIds =
 				oldTypeSettingsUnicodeProperties.getProperty(
 					PropsKeys.LOCALES, StringPool.BLANK);
+
 			String defaultLanguageId =
 				typeSettingsUnicodeProperties.getProperty(
 					"languageId",
 					LocaleUtil.toLanguageId(LocaleUtil.getDefault()));
 
-			validateLanguageIds(
-				companyGroup.getGroupId(), defaultLanguageId, newLanguageIds);
+			Locale defaultLocale = LocaleUtil.fromLanguageId(defaultLanguageId);
 
-			if (!Objects.equals(
-					group.getDefaultLanguageId(), defaultLanguageId)) {
+			Locale oldLocale = LocaleThreadLocal.getSiteDefaultLocale();
 
-				Locale defaultLocale = LocaleUtil.fromLanguageId(
-					defaultLanguageId);
+			LocaleThreadLocal.setSiteDefaultLocale(defaultLocale);
 
-				Map<Locale, String> oldNameMap = group.getNameMap();
+			try {
+				validateLanguageIds(
+					companyGroup.getGroupId(), defaultLanguageId,
+					newLanguageIds);
 
-				group.setNameMap(oldNameMap, defaultLocale);
+				if (!Objects.equals(
+						group.getDefaultLanguageId(), defaultLanguageId)) {
 
-				Map<Locale, String> oldDescriptionMap =
-					group.getDescriptionMap();
+					Map<Locale, String> oldNameMap = group.getNameMap();
 
-				group.setDescriptionMap(oldDescriptionMap, defaultLocale);
+					group.setNameMap(oldNameMap, defaultLocale);
 
-				Map<Locale, String> nameMap = group.getNameMap();
+					Map<Locale, String> oldDescriptionMap =
+						group.getDescriptionMap();
 
-				if ((nameMap != null) &&
-					Validator.isNotNull(nameMap.get(defaultLocale))) {
+					group.setDescriptionMap(oldDescriptionMap, defaultLocale);
 
-					group.setGroupKey(nameMap.get(defaultLocale));
+					Map<Locale, String> nameMap = group.getNameMap();
+
+					if ((nameMap != null) &&
+						Validator.isNotNull(nameMap.get(defaultLocale))) {
+
+						group.setGroupKey(nameMap.get(defaultLocale));
+					}
+				}
+
+				if (!Objects.equals(oldLanguageIds, newLanguageIds)) {
+					LanguageUtil.resetAvailableGroupLocales(groupId);
 				}
 			}
-
-			if (!Objects.equals(oldLanguageIds, newLanguageIds)) {
-				LanguageUtil.resetAvailableGroupLocales(groupId);
+			finally {
+				LocaleThreadLocal.setSiteDefaultLocale(oldLocale);
 			}
 		}
 
