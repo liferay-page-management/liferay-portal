@@ -18,6 +18,7 @@
 
 <%
 String eventName = ParamUtil.getString(request, "eventName", liferayPortletResponse.getNamespace() + "selectMasterLayout");
+long masterLayoutPlid = ParamUtil.getLong(request, "masterLayoutPlid");
 
 SelectLayoutPageTemplateEntryDisplayContext selectLayoutPageTemplateEntryDisplayContext = new SelectLayoutPageTemplateEntryDisplayContext(request);
 
@@ -34,7 +35,7 @@ List<LayoutPageTemplateEntry> masterLayoutPageTemplateEntries = selectLayoutPage
 			<li class="card-page-item card-page-item-asset">
 				<div class="form-check form-check-card">
 					<clay:vertical-card
-						verticalCard="<%= new SelectMasterLayoutVerticalCard(masterLayoutPageTemplateEntry, renderRequest) %>"
+						verticalCard="<%= new SelectMasterLayoutVerticalCard(masterLayoutPageTemplateEntry, renderRequest, Objects.equals(masterLayoutPageTemplateEntry.getPlid(), masterLayoutPlid)) %>"
 					/>
 				</div>
 			</li>
@@ -46,42 +47,7 @@ List<LayoutPageTemplateEntry> masterLayoutPageTemplateEntries = selectLayoutPage
 	</ul>
 </aui:form>
 
-<aui:script require="frontend-js-web/liferay/delegate/delegate.es as delegateModule">
-	var delegate = delegateModule.default;
-
-	var delegateHandler = delegate(
-		document.body,
-		'click',
-		'.select-master-layout-option',
-		(event) => {
-			var activeCards = document.querySelectorAll('.form-check-card.active');
-
-			if (activeCards.length) {
-				activeCards.forEach((card) => {
-					card.classList.remove('active');
-				});
-			}
-
-			var newSelectedCard = event.delegateTarget.closest('.form-check-card');
-
-			if (newSelectedCard) {
-				newSelectedCard.classList.add('active');
-			}
-
-			Liferay.Util.getOpener().Liferay.fire(
-				'<%= HtmlUtil.escape(eventName) %>',
-				{
-					data: event.delegateTarget.dataset,
-				}
-			);
-		}
-	);
-
-	var onDestroyPortlet = function () {
-		delegateHandler.dipose();
-
-		Liferay.detach('destroyPortlet', onDestroyPortlet);
-	};
-
-	Liferay.on('destroyPortlet', onDestroyPortlet);
-</aui:script>
+<liferay-frontend:component
+	context='<%= HashMapBuilder.<String, Object>put("eventName", HtmlUtil.escape(eventName)).put("selector", ".select-master-layout-option").build() %>'
+	module="js/SelectCardHandler"
+/>

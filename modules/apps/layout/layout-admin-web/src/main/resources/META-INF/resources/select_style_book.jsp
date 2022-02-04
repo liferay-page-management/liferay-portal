@@ -17,20 +17,9 @@
 <%@ include file="/init.jsp" %>
 
 <%
-boolean editableMasterLayout = ParamUtil.getBoolean(request, "editableMasterLayout");
-String eventName = ParamUtil.getString(request, "eventName", liferayPortletResponse.getNamespace() + "selectStyleBook");
+SelectStyleBookEntryDisplayContext selectStyleBookEntryDisplayContext = new SelectStyleBookEntryDisplayContext(request, layoutsAdminDisplayContext.getSelLayout(), liferayPortletResponse);
 
-SelectLayoutPageTemplateEntryDisplayContext selectLayoutPageTemplateEntryDisplayContext = new SelectLayoutPageTemplateEntryDisplayContext(request);
-
-String defaultStyleBookLabel = LanguageUtil.get(resourceBundle, "default-style-book");
-
-if (editableMasterLayout) {
-	defaultStyleBookLabel = LanguageUtil.get(resourceBundle, "inherited-from-master");
-}
-
-StyleBookEntry layoutStyleBookEntry = DefaultStyleBookEntryUtil.getDefaultStyleBookEntry(layoutsAdminDisplayContext.getSelLayout());
-
-List<StyleBookEntry> styleBookEntries = selectLayoutPageTemplateEntryDisplayContext.getStyleBookEntries();
+List<StyleBookEntry> styleBookEntries = selectStyleBookEntryDisplayContext.getStyleBookEntries();
 %>
 
 <aui:form cssClass="container-fluid container-fluid-max-xl container-view" name="fm">
@@ -38,7 +27,7 @@ List<StyleBookEntry> styleBookEntries = selectLayoutPageTemplateEntryDisplayCont
 		<li class="card-page-item card-page-item-asset">
 			<div class="form-check form-check-card">
 				<clay:vertical-card
-					verticalCard="<%= new DefaultStylebookLayoutVerticalCard(defaultStyleBookLabel, layoutStyleBookEntry, renderRequest) %>"
+					verticalCard="<%= new DefaultStylebookLayoutVerticalCard(selectStyleBookEntryDisplayContext.getDefaultStyleBookLabel(), selectStyleBookEntryDisplayContext.getDefaultStyleBookEntry(), renderRequest, Objects.equals(selectStyleBookEntryDisplayContext.getStyleBookEntryId(), 0L)) %>"
 				/>
 			</div>
 		</li>
@@ -50,7 +39,7 @@ List<StyleBookEntry> styleBookEntries = selectLayoutPageTemplateEntryDisplayCont
 			<li class="card-page-item card-page-item-asset">
 				<div class="form-check form-check-card">
 					<clay:vertical-card
-						verticalCard="<%= new SelectStylebookLayoutVerticalCard(styleBookEntry, renderRequest) %>"
+						verticalCard="<%= new SelectStylebookLayoutVerticalCard(styleBookEntry, renderRequest, Objects.equals(styleBookEntry.getStyleBookEntryId(), selectStyleBookEntryDisplayContext.getStyleBookEntryId())) %>"
 					/>
 				</div>
 			</li>
@@ -62,42 +51,7 @@ List<StyleBookEntry> styleBookEntries = selectLayoutPageTemplateEntryDisplayCont
 	</ul>
 </aui:form>
 
-<aui:script require="frontend-js-web/liferay/delegate/delegate.es as delegateModule">
-	var delegate = delegateModule.default;
-
-	var delegateHandler = delegate(
-		document.body,
-		'click',
-		'.select-master-layout-option',
-		(event) => {
-			var activeCards = document.querySelectorAll('.form-check-card.active');
-
-			if (activeCards.length) {
-				activeCards.forEach((card) => {
-					card.classList.remove('active');
-				});
-			}
-
-			var newSelectedCard = event.delegateTarget.closest('.form-check-card');
-
-			if (newSelectedCard) {
-				newSelectedCard.classList.add('active');
-			}
-
-			Liferay.Util.getOpener().Liferay.fire(
-				'<%= HtmlUtil.escape(eventName) %>',
-				{
-					data: event.delegateTarget.dataset,
-				}
-			);
-		}
-	);
-
-	var onDestroyPortlet = function () {
-		delegateHandler.dispose();
-
-		Liferay.detach('destroyPortlet', onDestroyPortlet);
-	};
-
-	Liferay.on('destroyPortlet', onDestroyPortlet);
-</aui:script>
+<liferay-frontend:component
+	context="<%= selectStyleBookEntryDisplayContext.getContext() %>"
+	module="js/SelectCardHandler"
+/>

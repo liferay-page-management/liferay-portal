@@ -31,18 +31,28 @@ import javax.portlet.RenderRequest;
 public class SelectStylebookLayoutVerticalCard implements VerticalCard {
 
 	public SelectStylebookLayoutVerticalCard(
-		StyleBookEntry styleBookEntry, RenderRequest renderRequest) {
+		StyleBookEntry styleBookEntry, RenderRequest renderRequest,
+		boolean selected) {
 
 		_styleBookEntry = styleBookEntry;
 
 		_themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
+
+		_selected = selected;
 	}
 
 	@Override
 	public String getCssClass() {
-		return "select-master-layout-option card-interactive " +
-			"card-interactive-secondary";
+		String cssClass =
+			"select-style-book-option card-interactive " +
+				"card-interactive-secondary";
+
+		if (_selected) {
+			cssClass += " active";
+		}
+
+		return cssClass;
 	}
 
 	@Override
@@ -70,6 +80,16 @@ public class SelectStylebookLayoutVerticalCard implements VerticalCard {
 	}
 
 	@Override
+	public String getStickerCssClass() {
+		return "select-style-book-option-sticker sticker-primary";
+	}
+
+	@Override
+	public String getStickerIcon() {
+		return "check-circle";
+	}
+
+	@Override
 	public String getSubtitle() {
 		return StringPool.DASH;
 	}
@@ -84,6 +104,7 @@ public class SelectStylebookLayoutVerticalCard implements VerticalCard {
 		return false;
 	}
 
+	private final boolean _selected;
 	private final StyleBookEntry _styleBookEntry;
 	private final ThemeDisplay _themeDisplay;
 
