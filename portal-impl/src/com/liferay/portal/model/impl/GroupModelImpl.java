@@ -1424,7 +1424,7 @@ public class GroupModelImpl extends BaseModelImpl<Group> implements GroupModel {
 			return "";
 		}
 
-		Locale defaultLocale = LocaleUtil.getDefault();
+		Locale defaultLocale = LocaleUtil.getSiteDefault();
 
 		return LocalizationUtil.getDefaultLanguageId(xml, defaultLocale);
 	}
