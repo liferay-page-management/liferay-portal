@@ -183,7 +183,7 @@ const CreateLayoutPageTemplateEntryModal = ({observer, onClose}) => {
 							}
 							id={`${config.portletNamespace}layoutPageTemplateCollectionId`}
 							name={Liferay.Language.get(
-								'page-template-collection'
+								'page-template-set'
 							)}
 						>
 							<select
