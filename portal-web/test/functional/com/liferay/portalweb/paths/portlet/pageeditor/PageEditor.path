@@ -825,6 +825,12 @@
 	<td>//li[contains(@class,'page-contents__page-content')][.//span[normalize-space(text())='${key_itemName}']]//button[*[name()='svg'][contains(@class,'icon-pencil')]]</td>
 	<td></td>
 </tr>
+<!--PAGE_ELEMENTS_PANEL-->
+<tr>
+	<td>PAGE_ELEMENTS_ITEM</td>
+	<td>xpath=(//div[contains(@class,'node-list-item__node')][.//div[contains(@class,'tree-node__name')][normalize-space(text())='${key_itemName}']])[${key_index}]</td>
+	<td></td>
+</tr>
 <!--PAGE_DESIGN_OPTIONS-->
 <tr>
 	<td>MORE_LINK</td>
