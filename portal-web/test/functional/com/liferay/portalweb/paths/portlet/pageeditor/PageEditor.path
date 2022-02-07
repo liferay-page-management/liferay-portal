@@ -609,12 +609,12 @@
 </tr>
 <tr>
 	<td>GRID_COLUMN</td>
-	<td>xpath=(//div[contains(@class,'page-editor__topper__bar') and contains(.,'Grid')]//following-sibling::div[contains(@class,'page-editor__topper__content')])[${key_position}]//div[contains(@class,'page-editor__col')][${key_columnNumber}]</td>
+	<td>xpath=(//div[contains(@class,'page-editor__topper__content')])[${key_position}]//div[contains(@class,'page-editor__col')][${key_columnNumber}]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>GRID_COLUMN_EMPTY</td>
-	<td>xpath=(//div[contains(@class,'page-editor__topper__bar') and contains(.,'Grid')]//following-sibling::div[contains(@class,'page-editor__topper__content')])[${key_position}]//div[contains(@class,'page-editor__row')][contains(@class,'empty')]</td>
+	<td>xpath=(//div[contains(@class,'page-editor__topper__content')])[${key_position}]//div[contains(@class,'page-editor__row')][contains(@class,'empty')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -735,22 +735,22 @@
 </tr>
 <tr>
 	<td>GRID_CONFIGURATION_COLUMNS_NO_GUTTER</td>
-	<td>xpath=(//div[contains(@class,'page-editor__topper__bar') and contains(.,'Grid')]//following-sibling::div[contains(@class,'page-editor__topper__content')])[${key_position}]//div[contains(@class,'page-editor__row') and contains(@class,'no-gutters')]</td>
+	<td>xpath=(//div[contains(@class,'page-editor__topper__content')])[${key_position}]//div[contains(@class,'page-editor__row') and contains(@class,'no-gutters')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>GRID_CONFIGURATION_INVERSE_ORDER</td>
-	<td>xpath=(//div[contains(@class,'page-editor__topper__bar') and contains(.,'Grid')]//following-sibling::div[contains(@class,'page-editor__topper__content')])[${key_position}]//div[contains(@class,'page-editor__row') and contains(@class,'flex-column-reverse')]</td>
+	<td>xpath=(//div[contains(@class,'page-editor__topper__content')])[${key_position}]//div[contains(@class,'page-editor__row') and contains(@class,'flex-column-reverse')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>GRID_CONFIGURATION_LAYOUT</td>
-	<td>xpath=(//div[contains(@class,'page-editor__topper__bar') and contains(.,'Grid')]//following-sibling::div[contains(@class,'page-editor__topper__content')])[${key_position}]//div[contains(@class,'col-${key_layout}')]</td>
+	<td>xpath=(//div[contains(@class,'page-editor__topper__content')])[${key_position}]//div[contains(@class,'col-${key_layout}')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>GRID_CONFIGURATION_VERTICAL_ALIGNMENT</td>
-	<td>xpath=(//div[contains(@class,'page-editor__topper__bar') and contains(.,'Grid')]//following-sibling::div[contains(@class,'page-editor__topper__content')])[${key_position}]//div[contains(@class,'page-editor__row') and contains(@class,'${key_verticalAlignment}')]</td>
+	<td>xpath=(//div[contains(@class,'page-editor__topper__content')])[${key_position}]//div[contains(@class,'page-editor__row') and contains(@class,'${key_verticalAlignment}')]</td>
 	<td></td>
 </tr>
 <!--MANAGEMENT_BAR-->
