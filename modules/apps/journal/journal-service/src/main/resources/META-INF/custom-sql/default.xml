@@ -414,7 +414,7 @@
 	<sql id="com.liferay.journal.service.persistence.JournalFolderFinder.countA_ByG_U_F">
 		<![CDATA[
 			 SELECT
-			COUNT(DISTINCT JournalArticle.articleId) AS COUNT_VALUE
+				COUNT(DISTINCT JournalArticle.articleId) AS COUNT_VALUE
 			 FROM
 				(
 					SELECT
