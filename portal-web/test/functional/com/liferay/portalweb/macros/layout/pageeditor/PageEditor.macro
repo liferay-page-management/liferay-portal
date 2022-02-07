@@ -958,12 +958,18 @@ definition {
 			var index = "1";
 		}
 
-		var key_fragmentName = "${fragmentName}";
-		var key_index = "${index}";
+		PageEditor.assertFragmentSidebarLoaded();
 
-		if (IsNotVisible(locator1 = "Fragment#FRAGMENT_HEADER_ANY")) {
-			Click.clickNoWaitForVisible(locator1 = "Fragment#FRAGMENT_HEADER_ANY");
+		if (IsElementNotPresent(locator1 = "PageEditor#FRAGMENT_SIDEBAR_TITLE", key_sidebarButton = "Browser")) {
+			Click(
+				key_tabName = "Browser",
+				locator1 = "PageEditor#FRAGMENT_SIDEBAR_TAB_BUTTON");
 		}
+
+		Click(
+			key_index = "${index}",
+			key_itemName = "${fragmentName}",
+			locator1 = "PageEditor#PAGE_ELEMENTS_ITEM");
 	}
 
 	macro clickDiscardDraft {
