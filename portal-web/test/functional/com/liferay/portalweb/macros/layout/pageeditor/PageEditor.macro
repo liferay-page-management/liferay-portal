@@ -1492,7 +1492,9 @@ definition {
 				locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
 		}
 		else {
-			Click.clickNoWaitForVisible(locator1 = "Fragment#FRAGMENT_HEADER_ANY");
+			PageEditor.clickConfigurableField(
+				fragmentName = "${fragmentName}",
+				index = "${index}");
 		}
 
 		AssertVisible(
@@ -1579,7 +1581,9 @@ definition {
 
 				Refresh();
 
-				Click.clickNoWaitForVisible(locator1 = "Fragment#FRAGMENT_HEADER_ANY");
+				PageEditor.clickConfigurableField(
+					fragmentName = "${fragmentName}",
+					index = "${index}");
 
 				PageEditor.viewItemSelectorText(
 					fieldLabel = "Collection",
@@ -2254,9 +2258,9 @@ definition {
 			var key_index = "1";
 		}
 
-		if (IsNotVisible(locator1 = "Fragment#FRAGMENT_HEADER_ANY")) {
-			Click.clickNoWaitForVisible(locator1 = "Fragment#FRAGMENT_HEADER_ANY");
-		}
+		PageEditor.clickConfigurableField(
+			fragmentName = "${fragmentName}",
+			index = "${index}");
 
 		AssertVisible(
 			key_sidebarButton = "Browser",
@@ -2551,16 +2555,9 @@ definition {
 	macro editLayoutGrid {
 		var key_fragmentName = "Grid";
 
-		if (isSet(position)) {
-			var key_index = "${position}";
-		}
-		else {
-			var key_index = "1";
-		}
-
-		if (IsNotVisible(locator1 = "Fragment#FRAGMENT_HEADER_ANY")) {
-			Click.clickNoWaitForVisible(locator1 = "Fragment#FRAGMENT_HEADER_ANY");
-		}
+		PageEditor.clickConfigurableField(
+			fragmentName = "Grid",
+			index = "${position}");
 
 		AssertVisible(
 			key_sidebarButton = "Browser",
@@ -3003,7 +3000,9 @@ definition {
 	macro gotoDuplicate {
 		var key_fragmentName = "${fragmentName}";
 
-		PageEditor.clickConfigurableField(fragmentName = "${fragmentName}");
+		PageEditor.clickConfigurableField(
+			fragmentName = "${fragmentName}",
+			index = "${position}");
 
 		Click.waitForMenuToggleJSClick(locator1 = "Fragment#FRAGMENT_HEADER_ELLIPSIS");
 
@@ -3801,9 +3800,17 @@ definition {
 	}
 
 	macro viewDuplicateFragment {
+		if (!(isSet(position))) {
+			var position = "2";
+		}
+
+		PageEditor.clickConfigurableField(
+			fragmentName = "${fragmentName}",
+			index = "${position}");
+
 		AssertElementPresent(
 			key_fragmentName = "${fragmentName}",
-			key_index = "2",
+			key_index = "1",
 			locator1 = "Fragment#FRAGMENT_HEADER_ANY");
 	}
 
@@ -3866,6 +3873,10 @@ definition {
 		if (!(isSet(position))) {
 			var position = "1";
 		}
+
+		PageEditor.clickConfigurableField(
+			fragmentName = "${fragmentName}",
+			index = "${position}");
 
 		AssertElementPresent(
 			key_fragmentName = "${fragmentName}",
