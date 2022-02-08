@@ -27,4 +27,6 @@ public interface DDMFormFieldInfoFieldConverter {
 
 	public InfoField convert(DDMFormField ddmFormField);
 
+	public InfoField convert(DDMFormField ddmFormField, String name);
+
 }
