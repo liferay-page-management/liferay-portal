@@ -1022,6 +1022,12 @@ public class Entity implements Comparable<Entity> {
 		return _dynamicUpdateEnabled;
 	}
 
+	public boolean isGroup() {
+		String pkVariableName = getPKVariableName();
+
+		return pkVariableName.equals("groupId");
+	}
+
 	public boolean isGroupedModel() {
 		String pkVariableName = getPKVariableName();
 

@@ -947,7 +947,7 @@ public class ${entity.name}ModelImpl extends BaseModelImpl<${entity.name}> imple
 		<#if entityColumn.localized>
 			@Override
 			public void set${entityColumn.methodName}(String ${entityColumn.name}, Locale locale) {
-				<#if entity.isGroupedModel()>
+				<#if entity.isGroupedModel() || entity.isGroup()>
 					set${entityColumn.methodName}(${entityColumn.name}, locale, LocaleUtil.getSiteDefault());
 				<#else>
 					set${entityColumn.methodName}(${entityColumn.name}, locale, LocaleUtil.getDefault());
@@ -974,7 +974,7 @@ public class ${entity.name}ModelImpl extends BaseModelImpl<${entity.name}> imple
 
 			@Override
 			public void set${entityColumn.methodName}Map(Map<Locale, String> ${entityColumn.name}Map) {
-				<#if entity.isGroupedModel()>
+				<#if entity.isGroupedModel() || entity.isGroup()>
 					set${entityColumn.methodName}Map(${entityColumn.name}Map, LocaleUtil.getSiteDefault());
 				<#else>
 					set${entityColumn.methodName}Map(${entityColumn.name}Map, LocaleUtil.getDefault());
@@ -1451,7 +1451,7 @@ public class ${entity.name}ModelImpl extends BaseModelImpl<${entity.name}> imple
 						return "";
 					}
 
-					<#if entity.isGroupedModel()>
+					<#if entity.isGroupedModel() || entity.isGroup()>
 						Locale defaultLocale = LocaleUtil.getSiteDefault();
 					<#else>
 						Locale defaultLocale = LocaleUtil.getDefault();
@@ -1477,7 +1477,7 @@ public class ${entity.name}ModelImpl extends BaseModelImpl<${entity.name}> imple
 		@Override
 		@SuppressWarnings("unused")
 		public void prepareLocalizedFieldsForImport(Locale defaultImportLocale) throws LocaleException {
-			<#if entity.isGroupedModel()>
+			<#if entity.isGroupedModel() || entity.isGroup()>
 				Locale defaultLocale = LocaleUtil.getSiteDefault();
 			<#else>
 				Locale defaultLocale = LocaleUtil.getDefault();
