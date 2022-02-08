@@ -63,37 +63,6 @@ import java.rmi.RemoteException;
 @Deprecated
 public class LayoutPageTemplateStructureServiceSoap {
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 #updateLayoutPageTemplateStructureData(long, long, long,
-	 String)}
-	 */
-	@Deprecated
-	public static
-		com.liferay.layout.page.template.model.LayoutPageTemplateStructureSoap
-				updateLayoutPageTemplateStructure(
-					long groupId, long classNameId, long classPK,
-					long segmentsExperienceId, String data)
-			throws RemoteException {
-
-		try {
-			com.liferay.layout.page.template.model.LayoutPageTemplateStructure
-				returnValue =
-					LayoutPageTemplateStructureServiceUtil.
-						updateLayoutPageTemplateStructure(
-							groupId, classNameId, classPK, segmentsExperienceId,
-							data);
-
-			return com.liferay.layout.page.template.model.
-				LayoutPageTemplateStructureSoap.toSoapModel(returnValue);
-		}
-		catch (Exception exception) {
-			_log.error(exception, exception);
-
-			throw new RemoteException(exception.getMessage());
-		}
-	}
-
 	public static
 		com.liferay.layout.page.template.model.LayoutPageTemplateStructureSoap
 				updateLayoutPageTemplateStructureData(
