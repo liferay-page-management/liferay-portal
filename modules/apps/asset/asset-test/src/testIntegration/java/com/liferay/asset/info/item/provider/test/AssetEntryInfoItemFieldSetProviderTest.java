@@ -108,11 +108,14 @@ public class AssetEntryInfoItemFieldSetProviderTest {
 		InfoFieldSet infoFieldSet =
 			_assetEntryInfoItemFieldSetProvider.getInfoFieldSet(assetEntry);
 
-		InfoFieldSetEntry infoFieldSetEntry = infoFieldSet.getInfoFieldSetEntry(
+		String namespacedVocabularyName = _addNamespace(
 			assetVocabulary.getName());
 
+		InfoFieldSetEntry infoFieldSetEntry = infoFieldSet.getInfoFieldSetEntry(
+			namespacedVocabularyName);
+
 		Assert.assertEquals(
-			assetVocabulary.getName(), infoFieldSetEntry.getName());
+			namespacedVocabularyName, infoFieldSetEntry.getName());
 	}
 
 	@Test
@@ -133,11 +136,14 @@ public class AssetEntryInfoItemFieldSetProviderTest {
 		InfoFieldSet infoFieldSet =
 			_assetEntryInfoItemFieldSetProvider.getInfoFieldSet(assetEntry);
 
-		InfoFieldSetEntry infoFieldSetEntry = infoFieldSet.getInfoFieldSetEntry(
+		String namespacedVocabularyName = _addNamespace(
 			assetVocabulary.getName());
 
+		InfoFieldSetEntry infoFieldSetEntry = infoFieldSet.getInfoFieldSetEntry(
+			namespacedVocabularyName);
+
 		Assert.assertEquals(
-			assetVocabulary.getName(), infoFieldSetEntry.getName());
+			namespacedVocabularyName, infoFieldSetEntry.getName());
 	}
 
 	@Test
@@ -161,7 +167,8 @@ public class AssetEntryInfoItemFieldSetProviderTest {
 			_assetEntryInfoItemFieldSetProvider.getInfoFieldSet(assetEntry);
 
 		Assert.assertNull(
-			infoFieldSet.getInfoFieldSetEntry(assetVocabulary.getName()));
+			infoFieldSet.getInfoFieldSetEntry(
+				_addNamespace(assetVocabulary.getName())));
 	}
 
 	@Test
@@ -187,11 +194,14 @@ public class AssetEntryInfoItemFieldSetProviderTest {
 				JournalArticle.class.getName(), classTypeId,
 				_group.getGroupId());
 
-		InfoFieldSetEntry infoFieldSetEntry = infoFieldSet.getInfoFieldSetEntry(
+		String namespacedVocabularyName = _addNamespace(
 			assetVocabulary.getName());
 
+		InfoFieldSetEntry infoFieldSetEntry = infoFieldSet.getInfoFieldSetEntry(
+			namespacedVocabularyName);
+
 		Assert.assertEquals(
-			assetVocabulary.getName(), infoFieldSetEntry.getName());
+			namespacedVocabularyName, infoFieldSetEntry.getName());
 	}
 
 	@Test
@@ -210,7 +220,8 @@ public class AssetEntryInfoItemFieldSetProviderTest {
 			assetEntry.getEntryId(), assetCategory.getCategoryId());
 
 		List<InfoFieldValue<Object>> filteredInfoFieldValues =
-			_getInfoFieldValues(assetEntry, assetVocabulary.getName());
+			_getInfoFieldValues(
+				assetEntry, _addNamespace(assetVocabulary.getName()));
 
 		Category category = _getCategory(filteredInfoFieldValues);
 
@@ -268,7 +279,8 @@ public class AssetEntryInfoItemFieldSetProviderTest {
 			new long[] {assetCategory.getCategoryId()});
 
 		List<InfoFieldValue<Object>> filteredInfoFieldValues =
-			_getInfoFieldValues(assetEntry, assetVocabulary.getName());
+			_getInfoFieldValues(
+				assetEntry, _addNamespace(assetVocabulary.getName()));
 
 		Assert.assertEquals(
 			filteredInfoFieldValues.toString(), 0,
@@ -288,7 +300,8 @@ public class AssetEntryInfoItemFieldSetProviderTest {
 			new long[] {assetCategory.getCategoryId()});
 
 		List<InfoFieldValue<Object>> filteredInfoFieldValues =
-			_getInfoFieldValues(assetEntry, assetVocabulary.getName());
+			_getInfoFieldValues(
+				assetEntry, _addNamespace(assetVocabulary.getName()));
 
 		Assert.assertEquals(
 			filteredInfoFieldValues.toString(), 1,
@@ -351,6 +364,10 @@ public class AssetEntryInfoItemFieldSetProviderTest {
 			null, null, visibilityTypePublic, new ServiceContext());
 	}
 
+	private String _addNamespace(String name) {
+		return _VOCABULARY_PREFIX + name;
+	}
+
 	private Category _getCategory(
 		List<InfoFieldValue<Object>> filteredInfoFieldValues) {
 
@@ -374,6 +391,8 @@ public class AssetEntryInfoItemFieldSetProviderTest {
 				return Objects.equals(fieldName, infoField.getName());
 			});
 	}
+
+	private static final String _VOCABULARY_PREFIX = "_VOCABULARY_";
 
 	@Inject
 	private AssetCategoryLocalService _assetCategoryLocalService;

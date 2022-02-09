@@ -114,6 +114,74 @@ public class JournalArticleInfoItemFormProviderTest {
 		InfoField infoField = iterator.next();
 
 		Assert.assertEquals(
+			SelectInfoFieldType.INSTANCE, infoField.getInfoFieldType());
+		Assert.assertEquals(_addDDMNamespace("boolean"), infoField.getName());
+		Assert.assertFalse(infoField.isLocalizable());
+
+		infoField = iterator.next();
+
+		Assert.assertEquals(
+			TextInfoFieldType.INSTANCE, infoField.getInfoFieldType());
+		Assert.assertEquals(_addDDMNamespace("DDM_Text"), infoField.getName());
+		Assert.assertTrue(infoField.isLocalizable());
+
+		infoField = iterator.next();
+
+		Assert.assertEquals(
+			TextInfoFieldType.INSTANCE, infoField.getInfoFieldType());
+		Assert.assertEquals(_addDDMNamespace("HTML"), infoField.getName());
+		Assert.assertTrue(infoField.isLocalizable());
+
+		Optional<Boolean> htmlAttributeOptional =
+			infoField.getAttributeOptional(TextInfoFieldType.HTML);
+
+		Assert.assertTrue(htmlAttributeOptional.get());
+
+		Optional<Boolean> multilineAttributeOptional =
+			infoField.getAttributeOptional(TextInfoFieldType.MULTILINE);
+
+		Assert.assertTrue(multilineAttributeOptional.get());
+
+		infoField = iterator.next();
+
+		Assert.assertEquals(
+			ImageInfoFieldType.INSTANCE, infoField.getInfoFieldType());
+		Assert.assertEquals(_addDDMNamespace("image"), infoField.getName());
+		Assert.assertTrue(infoField.isLocalizable());
+
+		infoField = iterator.next();
+
+		Assert.assertEquals(
+			NumberInfoFieldType.INSTANCE, infoField.getInfoFieldType());
+		Assert.assertEquals(_addDDMNamespace("integer"), infoField.getName());
+		Assert.assertTrue(infoField.isLocalizable());
+
+		infoField = iterator.next();
+
+		Assert.assertEquals(
+			TextInfoFieldType.INSTANCE, infoField.getInfoFieldType());
+		Assert.assertEquals(_addDDMNamespace("TextBox"), infoField.getName());
+		Assert.assertTrue(infoField.isLocalizable());
+
+		htmlAttributeOptional = infoField.getAttributeOptional(
+			TextInfoFieldType.HTML);
+
+		Assert.assertFalse(htmlAttributeOptional.isPresent());
+
+		multilineAttributeOptional = infoField.getAttributeOptional(
+			TextInfoFieldType.MULTILINE);
+
+		Assert.assertTrue(multilineAttributeOptional.get());
+
+		infoField = iterator.next();
+
+		Assert.assertEquals(
+			CategoriesInfoFieldType.INSTANCE, infoField.getInfoFieldType());
+		Assert.assertEquals(_VOCABULARY_PREFIX + "topic", infoField.getName());
+
+		infoField = iterator.next();
+
+		Assert.assertEquals(
 			TextInfoFieldType.INSTANCE, infoField.getInfoFieldType());
 		Assert.assertEquals("authorName", infoField.getName());
 		Assert.assertFalse(infoField.isLocalizable());
@@ -128,13 +196,6 @@ public class JournalArticleInfoItemFormProviderTest {
 		infoField = iterator.next();
 
 		Assert.assertEquals(
-			SelectInfoFieldType.INSTANCE, infoField.getInfoFieldType());
-		Assert.assertEquals("boolean", infoField.getName());
-		Assert.assertFalse(infoField.isLocalizable());
-
-		infoField = iterator.next();
-
-		Assert.assertEquals(
 			CategoriesInfoFieldType.INSTANCE, infoField.getInfoFieldType());
 		Assert.assertEquals("categories", infoField.getName());
 		Assert.assertFalse(infoField.isLocalizable());
@@ -143,18 +204,11 @@ public class JournalArticleInfoItemFormProviderTest {
 
 		Assert.assertEquals(
 			TextInfoFieldType.INSTANCE, infoField.getInfoFieldType());
-		Assert.assertEquals("DDM_Text", infoField.getName());
-		Assert.assertTrue(infoField.isLocalizable());
-
-		infoField = iterator.next();
-
-		Assert.assertEquals(
-			TextInfoFieldType.INSTANCE, infoField.getInfoFieldType());
 		Assert.assertEquals("description", infoField.getName());
 		Assert.assertTrue(infoField.isLocalizable());
 
-		Optional<Boolean> htmlAttributeOptional =
-			infoField.getAttributeOptional(TextInfoFieldType.HTML);
+		htmlAttributeOptional = infoField.getAttributeOptional(
+			TextInfoFieldType.HTML);
 
 		Assert.assertTrue(htmlAttributeOptional.get());
 
@@ -178,37 +232,6 @@ public class JournalArticleInfoItemFormProviderTest {
 			DateInfoFieldType.INSTANCE, infoField.getInfoFieldType());
 		Assert.assertEquals("expirationDate", infoField.getName());
 		Assert.assertFalse(infoField.isLocalizable());
-
-		infoField = iterator.next();
-
-		Assert.assertEquals(
-			TextInfoFieldType.INSTANCE, infoField.getInfoFieldType());
-		Assert.assertEquals("HTML", infoField.getName());
-		Assert.assertTrue(infoField.isLocalizable());
-
-		htmlAttributeOptional = infoField.getAttributeOptional(
-			TextInfoFieldType.HTML);
-
-		Assert.assertTrue(htmlAttributeOptional.get());
-
-		Optional<Boolean> multilineAttributeOptional =
-			infoField.getAttributeOptional(TextInfoFieldType.MULTILINE);
-
-		Assert.assertTrue(multilineAttributeOptional.get());
-
-		infoField = iterator.next();
-
-		Assert.assertEquals(
-			ImageInfoFieldType.INSTANCE, infoField.getInfoFieldType());
-		Assert.assertEquals("image", infoField.getName());
-		Assert.assertTrue(infoField.isLocalizable());
-
-		infoField = iterator.next();
-
-		Assert.assertEquals(
-			NumberInfoFieldType.INSTANCE, infoField.getInfoFieldType());
-		Assert.assertEquals("integer", infoField.getName());
-		Assert.assertTrue(infoField.isLocalizable());
 
 		infoField = iterator.next();
 
@@ -249,32 +272,8 @@ public class JournalArticleInfoItemFormProviderTest {
 
 		Assert.assertEquals(
 			TextInfoFieldType.INSTANCE, infoField.getInfoFieldType());
-		Assert.assertEquals("TextBox", infoField.getName());
-		Assert.assertTrue(infoField.isLocalizable());
-
-		htmlAttributeOptional = infoField.getAttributeOptional(
-			TextInfoFieldType.HTML);
-
-		Assert.assertFalse(htmlAttributeOptional.isPresent());
-
-		multilineAttributeOptional = infoField.getAttributeOptional(
-			TextInfoFieldType.MULTILINE);
-
-		Assert.assertTrue(multilineAttributeOptional.get());
-
-		infoField = iterator.next();
-
-		Assert.assertEquals(
-			TextInfoFieldType.INSTANCE, infoField.getInfoFieldType());
 		Assert.assertEquals("title", infoField.getName());
 		Assert.assertTrue(infoField.isLocalizable());
-
-		infoField = iterator.next();
-
-		Assert.assertEquals(
-			CategoriesInfoFieldType.INSTANCE, infoField.getInfoFieldType());
-		Assert.assertEquals(
-			"topic", StringUtil.toLowerCase(infoField.getName()));
 
 		Assert.assertFalse(iterator.hasNext());
 	}
@@ -306,7 +305,7 @@ public class JournalArticleInfoItemFormProviderTest {
 			infoItemFieldValues.getInfoFieldValues();
 
 		Assert.assertEquals(
-			infoFieldValues.toString(), 19, infoFieldValues.size());
+			infoFieldValues.toString(), 27, infoFieldValues.size());
 
 		InfoFieldValue<Object> descriptionInfoFieldValue =
 			infoItemFieldValues.getInfoFieldValue("description");
@@ -329,7 +328,7 @@ public class JournalArticleInfoItemFormProviderTest {
 			titleInfoFieldValue.getValue(LocaleUtil.SPAIN));
 
 		InfoFieldValue<Object> ddmTextInfoFieldValue =
-			infoItemFieldValues.getInfoFieldValue("DDM_Text");
+			infoItemFieldValues.getInfoFieldValue(_addDDMNamespace("DDM_Text"));
 
 		Assert.assertEquals(
 			"Some text",
@@ -339,7 +338,8 @@ public class JournalArticleInfoItemFormProviderTest {
 			ddmTextInfoFieldValue.getValue(LocaleUtil.SPAIN));
 
 		Collection<InfoFieldValue<Object>> ddmTextInfoFieldValues =
-			infoItemFieldValues.getInfoFieldValues("DDM_Text");
+			infoItemFieldValues.getInfoFieldValues(
+				_addDDMNamespace("DDM_Text"));
 
 		Iterator<InfoFieldValue<Object>> ddmTextInfoFieldValuesIterator =
 			ddmTextInfoFieldValues.iterator();
@@ -364,10 +364,11 @@ public class JournalArticleInfoItemFormProviderTest {
 			"Un poco más de texto",
 			secondDDMTextInfoFieldValue.getValue(LocaleUtil.SPAIN));
 
-		Assert.assertNotNull(infoItemFieldValues.getInfoFieldValue("boolean"));
+		Assert.assertNotNull(
+			infoItemFieldValues.getInfoFieldValue(_addDDMNamespace("boolean")));
 
 		InfoFieldValue<Object> imageInfoFieldValue =
-			infoItemFieldValues.getInfoFieldValue("image");
+			infoItemFieldValues.getInfoFieldValue(_addDDMNamespace("image"));
 
 		WebImage webImage = (WebImage)imageInfoFieldValue.getValue(
 			LocaleUtil.getDefault());
@@ -384,21 +385,26 @@ public class JournalArticleInfoItemFormProviderTest {
 
 		Assert.assertNotNull(webImage.getUrl());
 
-		Assert.assertNotNull(infoItemFieldValues.getInfoFieldValue("integer"));
+		Assert.assertNotNull(
+			infoItemFieldValues.getInfoFieldValue(_addDDMNamespace("integer")));
 
 		InfoFieldValue<Object> textBoxInfoFieldValue =
-			infoItemFieldValues.getInfoFieldValue("TextBox");
+			infoItemFieldValues.getInfoFieldValue(_addDDMNamespace("TextBox"));
 
 		Assert.assertEquals(
 			"A lot of text",
 			textBoxInfoFieldValue.getValue(LocaleUtil.getDefault()));
 
 		InfoFieldValue<Object> htmlInfoFieldValue =
-			infoItemFieldValues.getInfoFieldValue("HTML");
+			infoItemFieldValues.getInfoFieldValue(_addDDMNamespace("HTML"));
 
 		Assert.assertEquals(
 			"<p><strong>Bold text</strong></p>",
 			htmlInfoFieldValue.getValue(LocaleUtil.getDefault()));
+	}
+
+	private String _addDDMNamespace(String name) {
+		return _DDM_STRUCTURE_FIELD_PREFIX + name;
 	}
 
 	private JournalArticle _getJournalArticle() throws Exception {
@@ -463,6 +469,11 @@ public class JournalArticleInfoItemFormProviderTest {
 	private String _readFileToString(String s) throws Exception {
 		return new String(FileUtil.getBytes(getClass(), s));
 	}
+
+	private static final String _DDM_STRUCTURE_FIELD_PREFIX =
+		"_DDM_STRUCTURE_FIELD_";
+
+	private static final String _VOCABULARY_PREFIX = "_VOCABULARY_";
 
 	@Inject(filter = "ddm.form.deserializer.type=json")
 	private DDMFormDeserializer _ddmFormDeserializer;
