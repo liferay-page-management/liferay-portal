@@ -467,7 +467,7 @@ function MappingFieldSelect({fieldType, fields, onValueSelect, value}) {
 				disabled={!(fields && !!fields.length)}
 				id={mappingSelectorFieldSelectId}
 				onChange={onValueSelect}
-				value={value}
+				value={computeValue(value, fields)}
 			>
 				{fields && !!fields.length && (
 					<>
@@ -525,6 +525,26 @@ function MappingFieldSelect({fieldType, fields, onValueSelect, value}) {
 			)}
 		</ClayForm.Group>
 	);
+}
+
+function computeValue(value, fields) {
+	if (!value || !fields?.length) {
+		return value;
+	}
+
+	const PREFIXES = ['', '_DDM_STRUCTURE_FIELD_', '_VOCABULARY_'];
+
+	const flattenField = fields.flatMap((fieldSet) => fieldSet.fields);
+
+	for (const prefix of PREFIXES) {
+		const prefixedValue = `${prefix}${value}`;
+
+		if (flattenField.find((field) => field.key === prefixedValue)) {
+			return prefixedValue;
+		}
+	}
+
+	return value;
 }
 
 MappingSelector.propTypes = {
