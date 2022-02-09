@@ -95,7 +95,14 @@ public class DDMFormValuesInfoFieldValuesProviderImpl
 		_addNestedFields(groupedModel, ddmFormFieldValue, infoFieldValues);
 
 		_getInfoFieldValue(
-			groupedModel, ddmFormFieldValue
+			groupedModel, ddmFormFieldValue, ddmFormFieldValue.getName()
+		).map(
+			infoFieldValues::add
+		);
+
+		_getInfoFieldValue(
+			groupedModel, ddmFormFieldValue,
+			_DDM_STRUCTURE_FIELD_PREFIX + ddmFormFieldValue.getName()
 		).map(
 			infoFieldValues::add
 		);
@@ -121,7 +128,8 @@ public class DDMFormValuesInfoFieldValuesProviderImpl
 
 	private Optional<InfoFieldValue<InfoLocalizedValue<Object>>>
 		_getInfoFieldValue(
-			GroupedModel groupedModel, DDMFormFieldValue ddmFormFieldValue) {
+			GroupedModel groupedModel, DDMFormFieldValue ddmFormFieldValue,
+			String name) {
 
 		Value value = ddmFormFieldValue.getValue();
 
@@ -133,7 +141,8 @@ public class DDMFormValuesInfoFieldValuesProviderImpl
 			new InfoFieldValue<>(
 				_ddmFormFieldInfoFieldConverter.convert(
 					_ddmBeanTranslator.translate(
-						ddmFormFieldValue.getDDMFormField())),
+						ddmFormFieldValue.getDDMFormField()),
+					name),
 				InfoLocalizedValue.builder(
 				).defaultLocale(
 					value.getDefaultLocale()
@@ -271,6 +280,9 @@ public class DDMFormValuesInfoFieldValuesProviderImpl
 			return valueString;
 		}
 	}
+
+	private static final String _DDM_STRUCTURE_FIELD_PREFIX =
+		"_DDM_STRUCTURE_FIELD_";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DDMFormValuesInfoFieldValuesProviderImpl.class);

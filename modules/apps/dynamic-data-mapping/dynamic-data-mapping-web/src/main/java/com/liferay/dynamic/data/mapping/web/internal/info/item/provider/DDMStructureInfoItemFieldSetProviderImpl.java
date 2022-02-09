@@ -74,7 +74,9 @@ public class DDMStructureInfoItemFieldSetProviderImpl
 
 							unsafeConsumer.accept(
 								_ddmFormFieldInfoFieldConverter.convert(
-									ddmFormField));
+									ddmFormField,
+									_DDM_STRUCTURE_FIELD_PREFIX +
+										ddmFormField.getName()));
 						}
 					}
 				}
@@ -92,6 +94,9 @@ public class DDMStructureInfoItemFieldSetProviderImpl
 				"Caught unexpected exception", portalException);
 		}
 	}
+
+	private static final String _DDM_STRUCTURE_FIELD_PREFIX =
+		"_DDM_STRUCTURE_FIELD_";
 
 	private static final String[] _SELECTABLE_DDM_STRUCTURE_FIELDS = {
 		DDMFormFieldTypeConstants.CHECKBOX,
