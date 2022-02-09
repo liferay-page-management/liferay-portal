@@ -87,22 +87,13 @@ public class AssetEntryInfoItemFieldSetProviderImpl
 
 		for (AssetVocabulary assetVocabulary : assetVocabularies) {
 			infoFieldValues.add(
-				new InfoFieldValue<>(
-					InfoField.builder(
-					).infoFieldType(
-						CategoriesInfoFieldType.INSTANCE
-					).name(
-						assetVocabulary.getName()
-					).labelInfoLocalizedValue(
-						InfoLocalizedValue.<String>builder(
-						).values(
-							assetVocabulary.getTitleMap()
-						).build()
-					).build(),
-					() -> _getCategories(
-						_filterByVocabularyId(
-							assetEntry.getCategories(),
-							assetVocabulary.getVocabularyId()))));
+				_createInfoFieldValue(
+					assetEntry, assetVocabulary, assetVocabulary.getName()));
+
+			infoFieldValues.add(
+				_createInfoFieldValue(
+					assetEntry, assetVocabulary,
+					_VOCABULARY_PREFIX + assetVocabulary.getName()));
 		}
 
 		infoFieldValues.add(
@@ -145,6 +136,27 @@ public class AssetEntryInfoItemFieldSetProviderImpl
 		catch (PortalException portalException) {
 			throw new RuntimeException(portalException);
 		}
+	}
+
+	private InfoFieldValue<Object> _createInfoFieldValue(
+		AssetEntry assetEntry, AssetVocabulary assetVocabulary, String name) {
+
+		return new InfoFieldValue<>(
+			InfoField.builder(
+			).infoFieldType(
+				CategoriesInfoFieldType.INSTANCE
+			).name(
+				name
+			).labelInfoLocalizedValue(
+				InfoLocalizedValue.<String>builder(
+				).values(
+					assetVocabulary.getTitleMap()
+				).build()
+			).build(),
+			() -> _getCategories(
+				_filterByVocabularyId(
+					assetEntry.getCategories(),
+					assetVocabulary.getVocabularyId())));
 	}
 
 	private List<AssetCategory> _filterByVisibilityType(
@@ -201,7 +213,7 @@ public class AssetEntryInfoItemFieldSetProviderImpl
 					).infoFieldType(
 						CategoriesInfoFieldType.INSTANCE
 					).name(
-						assetVocabulary.getName()
+						_VOCABULARY_PREFIX + assetVocabulary.getName()
 					).labelInfoLocalizedValue(
 						InfoLocalizedValue.<String>builder(
 						).values(
@@ -285,6 +297,8 @@ public class AssetEntryInfoItemFieldSetProviderImpl
 
 		return tags;
 	}
+
+	private static final String _VOCABULARY_PREFIX = "_VOCABULARY_";
 
 	@Reference
 	private AssetVocabularyLocalService _assetVocabularyLocalService;
