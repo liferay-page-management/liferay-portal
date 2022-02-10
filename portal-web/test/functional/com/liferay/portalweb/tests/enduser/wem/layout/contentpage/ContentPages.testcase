@@ -102,6 +102,7 @@ definition {
 	@priority = "5"
 	test CannotEditInViewMode {
 		property portal.acceptance = "true";
+		property testray.component.names = "Site Pages Administration";
 
 		task ("Navigate to the content page") {
 			ContentPagesNavigator.openViewContentPage(
@@ -127,6 +128,16 @@ definition {
 
 		task ("Assert the page cannot be edited by asserting the fragments side bar is not present") {
 			AssertElementNotPresent(locator1 = "PageEditor#FRAGMENT_SIDEBAR_BODY");
+		}
+
+		task ("View alert message while delete a single content page") {
+			PagesAdmin.openPagesAdmin(siteURLKey = "test-site-name");
+
+			PagesAdmin.deletePage(pageName = "Test Content Page Name");
+
+			AssertTextEquals(
+				locator1 = "Message#EMPTY_INFO_TAGLIB_TITLE",
+				value1 = "No Pages yet.");
 		}
 	}
 
