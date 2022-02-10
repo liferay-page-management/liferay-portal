@@ -1,8 +1,8 @@
 definition {
 
 	macro closeMessage {
-		if ((IsElementPresent(locator1 = "Message#${messageType}")) && (IsVisible(locator1 = "Message#${messageType}")) && (IsVisible(locator1 = "Icon#CLOSE"))) {
-			Click(locator1 = "Icon#CLOSE");
+		if ((IsElementPresent(locator1 = "Message#${messageType}")) && (IsVisible(locator1 = "Message#${messageType}")) && (IsVisible(locator1 = "Message#MESSAGE_CLOSE"))) {
+			Click(locator1 = "Message#MESSAGE_CLOSE");
 		}
 	}
 
