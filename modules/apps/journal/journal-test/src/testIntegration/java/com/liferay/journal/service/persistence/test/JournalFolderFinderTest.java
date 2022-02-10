@@ -24,17 +24,23 @@ import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.spring.orm.LastSessionRecorderHelperUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.transaction.Propagation;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Assert;
@@ -71,12 +77,26 @@ public class JournalFolderFinderTest {
 			_group.getGroupId(), _folder1.getFolderId(), "Article 1",
 			StringPool.BLANK);
 
-		JournalArticle article = JournalTestUtil.addArticle(
+		JournalArticle article2 = JournalTestUtil.addArticle(
 			_group.getGroupId(), _folder1.getFolderId(), "Article 2",
 			StringPool.BLANK);
 
+		JournalArticle article3 = JournalTestUtil.addArticleWithWorkflow(
+			_group.getGroupId(), 0, "Article 3", "", true);
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				article3.getGroupId(), TestPropsValues.getUserId());
+
+		JournalArticleLocalServiceUtil.updateStatus(
+			TestPropsValues.getUserId(), article3,
+			WorkflowConstants.STATUS_SCHEDULED, article3.getUrlTitle(),
+			serviceContext, new HashMap<>());
+
+		JournalTestUtil.updateArticleWithWorkflow(article3, true);
+
 		JournalArticleLocalServiceUtil.moveArticleToTrash(
-			TestPropsValues.getUserId(), article);
+			TestPropsValues.getUserId(), article2);
 	}
 
 	@Test
@@ -103,6 +123,40 @@ public class JournalFolderFinderTest {
 			2,
 			_journalFolderFinder.countF_A_ByG_F(
 				_group.getGroupId(), _folder1.getFolderId(), queryDefinition));
+	}
+
+	@Test
+	public void testFilterFindF_A_ByG_F_L() throws Exception {
+		QueryDefinition<Object> queryDefinition = new QueryDefinition<>();
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
+
+		queryDefinition.setStatus(WorkflowConstants.STATUS_APPROVED);
+
+		List<Object> results = _journalFolderFinder.filterFindF_A_ByG_F_L(
+			_group.getGroupId(), 0, LocaleUtil.US, queryDefinition);
+
+		for (Object result : results) {
+			if (result instanceof JournalArticle) {
+				JournalArticle article = (JournalArticle)result;
+
+				JournalArticle latestArticle =
+					JournalArticleLocalServiceUtil.fetchLatestArticle(
+						article.getResourcePrimKey());
+
+				Assert.assertEquals(
+					results.toString(), article.getTitle(),
+					latestArticle.getTitle());
+			}
+		}
+
+		queryDefinition.setStatus(WorkflowConstants.STATUS_SCHEDULED);
+
+		results = _journalFolderFinder.filterFindF_A_ByG_F_L(
+			_group.getGroupId(), 0, LocaleUtil.US, queryDefinition);
+
+		Assert.assertTrue(results.isEmpty());
 	}
 
 	@Test
