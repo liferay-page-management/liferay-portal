@@ -1302,12 +1302,20 @@ definition {
 	@priority = "4"
 	@uitest
 	test SingleAssetPublishLayoutScopedContent {
+		property testray.component.names = "Site Pages Administration";
+
 		JSONLayout.addWidgetToPublicLayout(
 			column = "1",
 			groupName = "Site Name (Staging)",
 			layoutName = "Staging Test Page",
 			site = "false",
 			widgetName = "Blogs");
+
+		JSONLayout.addPublicLayout(
+			groupName = "Site Name (Staging)",
+			layoutName = "Child Test Page",
+			parentLayoutName = "Staging Test Page",
+			site = "false");
 
 		Navigator.gotoStagedSitePage(
 			pageName = "Staging Test Page",
@@ -1335,6 +1343,14 @@ definition {
 			locator1 = "Icon#ROW_VERTICAL_ELLIPSIS");
 
 		MenuItem.viewNotPresent(menuItem = "Publish to Live");
+
+		task ("View alert when delete a page with child and scoped content") {
+			PagesAdmin.openPagesAdmin(siteURLKey = "site-name-staging");
+
+			PagesAdmin.deletePage(
+				hasChidrenAndScopedContent = "true",
+				pageName = "Staging Test Page");
+		}
 	}
 
 	@description = "This test covers LPS-92578. It ensures that DM succeeds to publish to live when file exists in the recycle bin."
