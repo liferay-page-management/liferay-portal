@@ -341,6 +341,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>MESSAGE_CLOSE</td>
+	<td>//div[contains(@class,'alert')]//*[*[name()='svg'][contains(@class,'lexicon-icon-times')]]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>NO_COMMENTS</td>
 	<td>//div[contains(.,'No comments yet')]</td>
 	<td></td>
