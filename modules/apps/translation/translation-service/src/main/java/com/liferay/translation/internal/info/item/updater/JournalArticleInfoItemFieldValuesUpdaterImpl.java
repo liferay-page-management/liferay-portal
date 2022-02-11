@@ -341,7 +341,9 @@ public class JournalArticleInfoItemFieldValuesUpdaterImpl
 		for (Map.Entry<String, List<String>> entry :
 				contentFieldMap.entrySet()) {
 
-			Field field = ddmFields.get(entry.getKey());
+			String key = _removeNamespace(entry.getKey());
+
+			Field field = ddmFields.get(key);
 
 			if (field != null) {
 				field.setValues(
@@ -350,9 +352,9 @@ public class JournalArticleInfoItemFieldValuesUpdaterImpl
 						entry.getValue(),
 						value -> _getSerializable(field, value, targetLocale)));
 			}
-			else if (ddmStructure.hasField(entry.getKey())) {
+			else if (ddmStructure.hasField(key)) {
 				_addNewTranslatedDDMField(
-					ddmStructure, targetLocale, entry.getKey(), ddmFields,
+					ddmStructure, targetLocale, key, ddmFields,
 					entry.getValue());
 			}
 		}
@@ -391,6 +393,10 @@ public class JournalArticleInfoItemFieldValuesUpdaterImpl
 		return false;
 	}
 
+	private String _removeNamespace(String name) {
+		return StringUtil.removeSubstring(name, _DDM_STRUCTURE_FIELD_PREFIX);
+	}
+
 	private void _updateFieldsDisplay(Fields ddmFields, String fieldName) {
 		String fieldsDisplayValue = StringBundler.concat(
 			fieldName, DDM.INSTANCE_SEPARATOR, StringUtil.randomString());
@@ -405,6 +411,9 @@ public class JournalArticleInfoItemFieldValuesUpdaterImpl
 
 		fieldsDisplayField.setValue(StringUtil.merge(fieldsDisplayValues));
 	}
+
+	private static final String _DDM_STRUCTURE_FIELD_PREFIX =
+		"_DDM_STRUCTURE_FIELD_";
 
 	@Reference
 	private AssetEntryLocalService _assetEntryLocalService;
