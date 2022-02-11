@@ -46,6 +46,7 @@ import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.InfoListItemSelectorReturnType;
 import com.liferay.item.selector.criteria.info.item.criterion.InfoListItemSelectorCriterion;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
+import com.liferay.layout.content.page.editor.web.internal.util.FFLayoutContentPageEditorConfigurationUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.LayoutObjectReferenceUtil;
 import com.liferay.layout.list.retriever.ClassedModelListObjectReference;
 import com.liferay.layout.list.retriever.DefaultLayoutListRetrieverContext;
@@ -120,6 +121,10 @@ public class GetCollectionFieldMVCResourceCommand
 			resourceRequest, "languageId", themeDisplay.getLanguageId());
 
 		int activePage = ParamUtil.getInteger(resourceRequest, "activePage");
+		boolean displayAllItems = ParamUtil.getBoolean(
+			resourceRequest, "displayAllItems");
+		boolean displayAllPages = ParamUtil.getBoolean(
+			resourceRequest, "displayAllPages");
 		String layoutObjectReference = ParamUtil.getString(
 			resourceRequest, "layoutObjectReference");
 		String listStyle = ParamUtil.getString(resourceRequest, "listStyle");
@@ -131,14 +136,21 @@ public class GetCollectionFieldMVCResourceCommand
 		int numberOfItemsPerPage = ParamUtil.getInteger(
 			resourceRequest, "numberOfItemsPerPage");
 
-		if (numberOfItemsPerPage >
-				PropsValues.SEARCH_CONTAINER_PAGE_MAX_DELTA) {
+		if ((numberOfItemsPerPage <= 0) ||
+			(numberOfItemsPerPage >
+				PropsValues.SEARCH_CONTAINER_PAGE_MAX_DELTA)) {
 
 			numberOfItemsPerPage = PropsValues.SEARCH_CONTAINER_PAGE_MAX_DELTA;
 		}
 
+		int numberOfPages = ParamUtil.getInteger(
+			resourceRequest, "numberOfPages");
+
 		String paginationType = ParamUtil.getString(
 			resourceRequest, "paginationType");
+
+		boolean paginationEnabled = _isPaginationEnabled(paginationType);
+
 		boolean showAllItems = ParamUtil.getBoolean(
 			resourceRequest, "showAllItems");
 		String templateKey = ParamUtil.getString(
@@ -148,10 +160,11 @@ public class GetCollectionFieldMVCResourceCommand
 			jsonObject = _getCollectionFieldsJSONObject(
 				_portal.getHttpServletRequest(resourceRequest),
 				_portal.getHttpServletResponse(resourceResponse), activePage,
-				languageId, layoutObjectReference, listStyle, listItemStyle,
+				displayAllItems, displayAllPages, languageId,
+				layoutObjectReference, listStyle, listItemStyle,
 				resourceResponse.getNamespace(), numberOfItems,
-				numberOfItemsPerPage, paginationType, showAllItems,
-				templateKey);
+				numberOfItemsPerPage, numberOfPages, paginationEnabled,
+				showAllItems, templateKey);
 		}
 		catch (Exception exception) {
 			_log.error("Unable to get collection field", exception);
@@ -192,10 +205,11 @@ public class GetCollectionFieldMVCResourceCommand
 	private JSONObject _getCollectionFieldsJSONObject(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, int activePage,
-			String languageId, String layoutObjectReference, String listStyle,
+			boolean displayAllItems, boolean displayAllPages, String languageId,
+			String layoutObjectReference, String listStyle,
 			String listItemStyle, String namespace, int numberOfItems,
-			int numberOfItemsPerPage, String paginationType,
-			boolean showAllItems, String templateKey)
+			int numberOfItemsPerPage, int numberOfPages,
+			boolean paginationEnabled, boolean showAllItems, String templateKey)
 		throws PortalException {
 
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
@@ -233,33 +247,19 @@ public class GetCollectionFieldMVCResourceCommand
 					listObjectReferenceFactory.getListObjectReference(
 						layoutObjectReferenceJSONObject);
 
-				int end = numberOfItems;
-				int start = 0;
-
 				int listCount = layoutListRetriever.getListCount(
 					listObjectReference, defaultLayoutListRetrieverContext);
 
-				if (Objects.equals(paginationType, "numeric") ||
-					Objects.equals(paginationType, "simple")) {
-
-					if (activePage < 1) {
-						activePage = 1;
-					}
-
-					if (showAllItems) {
-						numberOfItems = Integer.MAX_VALUE;
-					}
-
-					end = Math.min(
-						Math.min(
-							activePage * numberOfItemsPerPage, numberOfItems),
-						listCount);
-
-					start = (activePage - 1) * numberOfItemsPerPage;
+				if (activePage < 1) {
+					activePage = 1;
 				}
 
-				defaultLayoutListRetrieverContext.setPagination(
-					Pagination.of(end, start));
+				Pagination pagination = _getPagination(
+					activePage, listCount, displayAllPages, displayAllItems,
+					numberOfItems, numberOfItemsPerPage, numberOfPages,
+					paginationEnabled, showAllItems);
+
+				defaultLayoutListRetrieverContext.setPagination(pagination);
 
 				// LPS-111037
 
@@ -353,7 +353,11 @@ public class GetCollectionFieldMVCResourceCommand
 					layoutListRetriever.getListCount(
 						listObjectReference, defaultLayoutListRetrieverContext)
 				).put(
-					"totalNumberOfItems", Math.min(listCount, numberOfItems)
+					"totalNumberOfItems",
+					_getTotalNumberOfItems(
+						listCount, displayAllPages, displayAllItems,
+						numberOfItems, numberOfItemsPerPage, numberOfPages,
+						paginationEnabled)
 				);
 			}
 		}
@@ -550,6 +554,91 @@ public class GetCollectionFieldMVCResourceCommand
 		}
 
 		return infoItemClassNames;
+	}
+
+	private Pagination _getPagination(
+		int activePage, int count, boolean displayAllPages,
+		boolean displayAllItems, int numberOfItems, int numberOfItemsPerPage,
+		int numberOfPages, boolean paginationEnabled, boolean showAllItems) {
+
+		int end = numberOfItems;
+		int start = 0;
+
+		if (FFLayoutContentPageEditorConfigurationUtil.
+				paginationImprovementsEnabled()) {
+
+			if (paginationEnabled) {
+				int maxNumberOfItems = count;
+
+				if (!displayAllPages && (numberOfPages > 0)) {
+					maxNumberOfItems = numberOfPages * numberOfItemsPerPage;
+				}
+
+				end = Math.min(
+					Math.min(
+						activePage * numberOfItemsPerPage, maxNumberOfItems),
+					count);
+
+				start = (activePage - 1) * numberOfItemsPerPage;
+			}
+			else if (displayAllItems) {
+				end = count;
+			}
+		}
+		else {
+			if (paginationEnabled) {
+				int maxNumberOfItems = numberOfItems;
+
+				if (showAllItems) {
+					maxNumberOfItems = count;
+				}
+
+				end = Math.min(
+					Math.min(
+						activePage * numberOfItemsPerPage, maxNumberOfItems),
+					count);
+
+				start = (activePage - 1) * numberOfItemsPerPage;
+			}
+		}
+
+		return Pagination.of(end, start);
+	}
+
+	private int _getTotalNumberOfItems(
+		int count, boolean displayAllPages, boolean displayAllItems,
+		int numberOfItems, int numberOfItemsPerPage, int numberOfPages,
+		boolean paginationEnabled) {
+
+		if (FFLayoutContentPageEditorConfigurationUtil.
+				paginationImprovementsEnabled()) {
+
+			if (!paginationEnabled) {
+				if (displayAllItems) {
+					return count;
+				}
+
+				return Math.min(count, numberOfItems);
+			}
+
+			if (displayAllPages || (numberOfPages <= 0)) {
+				return count;
+			}
+
+			return Math.min(count, numberOfPages * numberOfItemsPerPage);
+		}
+
+		return Math.min(count, numberOfItems);
+	}
+
+	private boolean _isPaginationEnabled(String paginationType) {
+		if (Objects.equals(paginationType, "numeric") ||
+			Objects.equals(paginationType, "simple")) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
