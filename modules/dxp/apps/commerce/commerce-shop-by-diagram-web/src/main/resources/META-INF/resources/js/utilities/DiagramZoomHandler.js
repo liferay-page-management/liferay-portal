@@ -44,11 +44,7 @@ class DiagramZoomHandler {
 		this._currentScale = d3event.transform.k;
 
 		if (d3event.sourceEvent) {
-			this._updateZoomState(
-				this._currentScale,
-				d3event.transform,
-				d3event
-			);
+			this._updateZoomState(this._currentScale);
 		}
 
 		this._d3zoomWrapper.attr('transform', d3event.transform);
@@ -58,16 +54,12 @@ class DiagramZoomHandler {
 		window.removeEventListener('click', this._handleClickOutside);
 	}
 
-	updateZoom(scale) {
+	updateZoom(scale, duration = 800) {
 		this._currentScale = scale;
 
-		this._animateZoom();
-	}
-
-	_animateZoom() {
 		const transition = this._d3diagramWrapper
 			.transition()
-			.duration(800)
+			.duration(duration)
 			.tween(
 				'resize',
 				window.ResizeObserver
@@ -75,12 +67,21 @@ class DiagramZoomHandler {
 					: () => this._d3diagramWrapper.dispatch('toggle')
 			);
 
-		this._d3diagramWrapper
-			.transition(transition)
-			.call(this._zoom.scaleTo, this._currentScale);
+		return new Promise((resolve) => {
+			this._d3diagramWrapper
+				.transition(transition)
+				.call(this._zoom.scaleTo, this._currentScale)
+				.on('end', resolve);
+		});
 	}
 
-	_recenterViewport(x, y, duration) {
+	_recenterViewport(x, y, duration, k) {
+		if (k) {
+			this._currentScale = k;
+		}
+
+		this._updateZoomState(this._currentScale);
+
 		return new Promise((resolve) => {
 			this._d3diagramWrapper
 				.transition(
@@ -88,7 +89,7 @@ class DiagramZoomHandler {
 				)
 				.call(
 					this._zoom.transform,
-					d3ZoomIdentity.translate(x, y).scale(this._currentScale)
+					d3ZoomIdentity.translate(x, y).scale(k)
 				)
 				.on('end', resolve);
 		});

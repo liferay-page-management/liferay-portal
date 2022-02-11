@@ -184,7 +184,6 @@ definition {
 	@priority = "5"
 	test CheckFieldBlurredWhenFieldLosesFocus {
 		property proxy.server.enabled = "true";
-		property portal.upstream = "quarantine";
 
 		task ("Get formId of form") {
 			var formId = JSONDDMForm.getFormInstanceId(
@@ -236,7 +235,9 @@ definition {
 		}
 
 		task ("Click the header title") {
-			Click(locator1 = "ControlMenu#HEADING");
+			Click(
+				key_formName = "Created Form Name",
+				locator1 = "Form#PUBLISH_FORM_NAME_FIELD");
 		}
 
 		task ("Wait for sending requests") {

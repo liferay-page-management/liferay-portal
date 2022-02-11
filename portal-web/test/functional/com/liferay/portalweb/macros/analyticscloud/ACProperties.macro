@@ -60,13 +60,19 @@ definition {
 
 	@summary = "Asserts the property saved in settings"
 	macro assertNewCreatedProperty {
-		AssertTextEquals(
+		WaitForElementPresent(locator1 = "ACSettings#PROPERTY_NAME");
+
+		AssertTextEquals.assertPartialText(
 			locator1 = "ACSettings#PROPERTY_NAME",
 			value1 = "${propertyName}");
 	}
 
 	macro assertNoProperties {
 		AssertElementPresent(locator1 = "ACSettings#NO_PROPERTIES_FOUND");
+
+		for (var key_messageValue : list "Create a property to get started.,Access our documentation to learn more.") {
+			AssertElementPresent(locator1 = "ACSettings#PROPERTIES_DEFAULT_SECONDARY_DESCRIPTION");
+		}
 	}
 
 	macro assertPropertyHeader {

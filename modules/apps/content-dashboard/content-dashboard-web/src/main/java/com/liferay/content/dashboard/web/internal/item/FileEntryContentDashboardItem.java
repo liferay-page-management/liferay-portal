@@ -69,7 +69,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Alejandro Tardín
  */
 public class FileEntryContentDashboardItem
-	extends ContentDashboardBaseItem<FileEntry> {
+	extends BaseContentDashboardItem<FileEntry> {
 
 	public FileEntryContentDashboardItem(
 		List<AssetCategory> assetCategories, List<AssetTag> assetTags,

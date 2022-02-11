@@ -241,6 +241,10 @@ definition {
 	@description = "Feature ID: Legacy | Automation ID: LRAC-8320 | Test Summary: Property field is displayed in empty state when no property is available"
 	@priority = "4"
 	test PropertyFieldWhenNoProperty {
+		task ("Connect the DXP to AC") {
+			ACDXPSettings.connectDXPtoAnalyticsCloud();
+		}
+
 		task ("AC launch and delete all properties") {
 			ACUtils.launchAC();
 
@@ -248,7 +252,7 @@ definition {
 		}
 
 		task ("Asset that no longer properties exists") {
-			AssertElementPresent(locator1 = "ACSettings#NO_PROPERTIES_FOUND");
+			ACProperties.assertNoProperties();
 		}
 
 		task ("Asset that there are no more properties on the sites page") {
@@ -265,12 +269,8 @@ definition {
 	}
 
 	@description = "Feature ID: Legacy | Automation ID: LRAC-8323 | Test Summary: A user lost access to a given property (because the admin removed the user's access or someone deleted the property of the system)"
-	@ignore = "true"
 	@priority = "4"
 	test UserLostAccess {
-
-		// AC Bug ticket: LRAC-10434
-
 		task ("AC launch and go to the porpreties menu") {
 			ACUtils.launchAC();
 
@@ -339,12 +339,8 @@ definition {
 	}
 
 	@description = "Feature ID: Legacy | Automation ID: LRAC-8322 | Test Summary: A user (independent of user role) should only see the properties they are invited to by the AC admin or the properties which the user is owner"
-	@ignore = "true"
 	@priority = "4"
 	test UserShouldOnlySeePropertiesAreInvitedByACAdminOrPropertiesWhichUserOwner {
-
-		// AC Bug ticket: LRAC-10434
-
 		task ("AC launch and go to the porpreties menu") {
 			ACUtils.launchAC();
 

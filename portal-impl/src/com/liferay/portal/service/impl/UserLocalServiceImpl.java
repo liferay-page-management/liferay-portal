@@ -318,7 +318,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		updateLastLogin(
 			defaultAdminUser.getUserId(), defaultAdminUser.getLoginIP());
 
-		updatePasswordReset(defaultAdminUser.getUserId(), false);
+		updatePasswordReset(
+			defaultAdminUser.getUserId(), _isPasswordReset(companyId));
 
 		return defaultAdminUser;
 	}
@@ -1234,18 +1235,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		}
 
 		user.setPasswordEncrypted(true);
-
-		PasswordPolicy passwordPolicy = defaultUser.getPasswordPolicy();
-
-		if ((passwordPolicy != null) && passwordPolicy.isChangeable() &&
-			passwordPolicy.isChangeRequired()) {
-
-			user.setPasswordReset(true);
-		}
-		else {
-			user.setPasswordReset(false);
-		}
-
+		user.setPasswordReset(_isPasswordReset(companyId));
 		user.setScreenName(screenName);
 		user.setEmailAddress(emailAddress);
 
@@ -4795,18 +4785,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			}
 
 			user.setPasswordEncrypted(true);
-
-			PasswordPolicy passwordPolicy = defaultUser.getPasswordPolicy();
-
-			if ((passwordPolicy != null) && passwordPolicy.isChangeable() &&
-				passwordPolicy.isChangeRequired()) {
-
-				user.setPasswordReset(true);
-			}
-			else {
-				user.setPasswordReset(false);
-			}
-
+			user.setPasswordReset(_isPasswordReset(companyId));
 			user.setScreenName(screenName);
 			user.setLanguageId(locale.toString());
 			user.setTimeZoneId(defaultUser.getTimeZoneId());
@@ -7518,6 +7497,26 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 					ticket.getExtraInfo(), new Date());
 			}
 		}
+	}
+
+	private boolean _isPasswordReset(long companyId) {
+		try {
+			PasswordPolicy passwordPolicy =
+				_passwordPolicyLocalService.getDefaultPasswordPolicy(companyId);
+
+			if ((passwordPolicy != null) && passwordPolicy.isChangeable() &&
+				passwordPolicy.isChangeRequired()) {
+
+				return true;
+			}
+		}
+		catch (PortalException portalException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(portalException, portalException);
+			}
+		}
+
+		return false;
 	}
 
 	private boolean _isPasswordUnchanged(

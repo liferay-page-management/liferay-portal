@@ -1608,6 +1608,10 @@ public class VerifyProperties extends VerifyProcess {
 		"company.settings.form.identification",
 		"company.settings.form.miscellaneous", "company.settings.form.social",
 		"control.panel.home.portlet.id", "convert.processes",
+		"default.guest.public.layout.column-1",
+		"default.guest.public.layout.column-2",
+		"default.guest.public.layout.column-3",
+		"default.guest.public.layout.column-4",
 		"default.guest.public.layout.wap.color.scheme.id",
 		"default.guest.public.layout.wap.theme.id",
 		"default.user.private.layout.wap.color.scheme.id",
@@ -1657,6 +1661,8 @@ public class VerifyProperties extends VerifyProcess {
 			"configuration.jsp",
 		"editor.wysiwyg.portal-web.docroot.html.portlet.login.configuration." +
 			"jsp",
+		"editor.wysiwyg.portal-web.docroot.html.portlet.mail.edit.jsp",
+		"editor.wysiwyg.portal-web.docroot.html.portlet.mail.edit_message.jsp",
 		"editor.wysiwyg.portal-web.docroot.html.portlet.message_boards." +
 			"configuration.jsp",
 		"editor.wysiwyg.portal-web.docroot.html.portlet.message_boards." +
@@ -1794,6 +1800,10 @@ public class VerifyProperties extends VerifyProcess {
 		"module.framework.register.liferay.services", "msn.login",
 		"msn.password", "multicast.group.address[\"hibernate\"]",
 		"multicast.group.port[\"hibernate\"]",
+		"multi.value.map.com.liferay.portal.convert." +
+			"ConvertPermissionAlgorithm.convertResourcePermission",
+		"multi.value.map.com.liferay.portal.convert." +
+			"ConvertPermissionAlgorithm.convertRoles",
 		"net.sf.ehcache.configurationResourceName",
 		"net.sf.ehcache.configurationResourceName.peerProviderProperties",
 		"openoffice.server.enabled", "openoffice.server.host",
@@ -1832,7 +1842,8 @@ public class VerifyProperties extends VerifyProcess {
 		"permissions.user.check.algorithm", "persistence.provider",
 		"plugin.notifications.enabled", "plugin.notifications.packages.ignored",
 		"plugin.repositories.trusted", "plugin.repositories.untrusted",
-		"plugin.types", "ratings.max.score", "ratings.min.score",
+		"plugin.types", "pop.server.notifications.interval",
+		"ratings.max.score", "ratings.min.score",
 		"redirect.url.domains.allowed", "redirect.url.ips.allowed",
 		"redirect.url.security.mode", "sandbox.deploy.dir",
 		"sandbox.deploy.enabled", "sandbox.deploy.interval",

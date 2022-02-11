@@ -20,6 +20,7 @@ import {FRAGMENT_CONFIGURATION_ROLES} from '../../../../../app/config/constants/
 import {ITEM_TYPES} from '../../../../../app/config/constants/itemTypes';
 import {LAYOUT_DATA_ITEM_TYPES} from '../../../../../app/config/constants/layoutDataItemTypes';
 import {VIEWPORT_SIZES} from '../../../../../app/config/constants/viewportSizes';
+import {config} from '../../../../../app/config/index';
 import selectCanUpdateEditables from '../../../../../app/selectors/selectCanUpdateEditables';
 import selectCanUpdateItemConfiguration from '../../../../../app/selectors/selectCanUpdateItemConfiguration';
 import {CollectionAppliedFiltersGeneralPanel} from '../components/item-configuration-panels/CollectionAppliedFiltersGeneralPanel';
@@ -33,6 +34,7 @@ import {FragmentGeneralPanel} from '../components/item-configuration-panels/Frag
 import {FragmentStylesPanel} from '../components/item-configuration-panels/FragmentStylesPanel';
 import ImageSourcePanel from '../components/item-configuration-panels/ImageSourcePanel';
 import {MappingPanel} from '../components/item-configuration-panels/MappingPanel';
+import {OldCollectionGeneralPanel} from '../components/item-configuration-panels/OldCollectionGeneralPanel';
 import {RowGeneralPanel} from '../components/item-configuration-panels/RowGeneralPanel';
 import {RowStylesPanel} from '../components/item-configuration-panels/RowStylesPanel';
 
@@ -64,7 +66,9 @@ export const PANELS = {
 		priority: 2,
 	},
 	[PANEL_IDS.collectionGeneral]: {
-		component: CollectionGeneralPanel,
+		component: config.paginationImprovementsEnabled
+			? CollectionGeneralPanel
+			: OldCollectionGeneralPanel,
 		label: Liferay.Language.get('general'),
 		priority: 0,
 	},
@@ -182,9 +186,7 @@ export function selectPanels(activeItemId, activeItemType, state) {
 	}
 	else if (activeItem.type === LAYOUT_DATA_ITEM_TYPES.container) {
 		panelsIds = {
-			[PANEL_IDS.containerGeneral]:
-				state.selectedViewportSize === VIEWPORT_SIZES.desktop &&
-				canUpdateItemConfiguration,
+			[PANEL_IDS.containerGeneral]: canUpdateItemConfiguration,
 			[PANEL_IDS.containerStyles]: canUpdateItemConfiguration,
 		};
 	}
@@ -199,7 +201,6 @@ export function selectPanels(activeItemId, activeItemType, state) {
 			[PANEL_IDS.fragmentStyles]: canUpdateItemConfiguration,
 			[PANEL_IDS.fragmentGeneral]:
 				fragmentEntryKey !== COLLECTION_FILTER_FRAGMENT_ENTRY_KEY &&
-				state.selectedViewportSize === VIEWPORT_SIZES.desktop &&
 				canUpdateItemConfiguration &&
 				fieldSets.some(
 					(fieldSet) =>

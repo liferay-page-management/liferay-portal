@@ -15,7 +15,7 @@
 package com.liferay.blogs.web.internal.layout.display.page;
 
 import com.liferay.blogs.model.BlogsEntry;
-import com.liferay.blogs.service.BlogsEntryService;
+import com.liferay.blogs.service.BlogsEntryLocalService;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProvider;
@@ -43,10 +43,12 @@ public class BlogsLayoutDisplayPageProvider
 			InfoItemReference infoItemReference) {
 
 		try {
-			BlogsEntry blogsEntry = _blogsEntryService.getEntry(
+			BlogsEntry blogsEntry = _blogsEntryLocalService.fetchBlogsEntry(
 				infoItemReference.getClassPK());
 
-			if (blogsEntry.isDraft() || blogsEntry.isInTrash()) {
+			if ((blogsEntry == null) || blogsEntry.isDraft() ||
+				blogsEntry.isInTrash()) {
+
 				return null;
 			}
 
@@ -62,7 +64,7 @@ public class BlogsLayoutDisplayPageProvider
 		getLayoutDisplayPageObjectProvider(long groupId, String urlTitle) {
 
 		try {
-			BlogsEntry blogsEntry = _blogsEntryService.getEntry(
+			BlogsEntry blogsEntry = _blogsEntryLocalService.getEntry(
 				groupId, urlTitle);
 
 			if (blogsEntry.isInTrash()) {
@@ -82,6 +84,6 @@ public class BlogsLayoutDisplayPageProvider
 	}
 
 	@Reference
-	private BlogsEntryService _blogsEntryService;
+	private BlogsEntryLocalService _blogsEntryLocalService;
 
 }

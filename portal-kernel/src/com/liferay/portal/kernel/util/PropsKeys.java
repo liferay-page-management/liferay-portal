@@ -739,9 +739,6 @@ public interface PropsKeys {
 	public static final String DEFAULT_GUEST_PUBLIC_LAYOUT_NAME =
 		"default.guest.public.layout.name";
 
-	public static final String DEFAULT_GUEST_PUBLIC_LAYOUT_PREFIX =
-		"default.guest.public.layout.";
-
 	public static final String
 		DEFAULT_GUEST_PUBLIC_LAYOUT_REGULAR_COLOR_SCHEME_ID =
 			"default.guest.public.layout.regular.color.scheme.id";
@@ -2112,8 +2109,6 @@ public interface PropsKeys {
 	public static final String MODULE_FRAMEWORK_WEB_START_LEVEL =
 		"module.framework.web.start.level";
 
-	public static final String MULTI_VALUE_MAP = "multi.value.map.";
-
 	public static final String MY_SITES_DIRECTORY_SITE_EXCLUDES =
 		"my.sites.directory.site.excludes";
 
@@ -2398,9 +2393,6 @@ public interface PropsKeys {
 
 	public static final String POP_SERVER_NOTIFICATIONS_ENABLED =
 		"pop.server.notifications.enabled";
-
-	public static final String POP_SERVER_NOTIFICATIONS_INTERVAL =
-		"pop.server.notifications.interval";
 
 	public static final String POP_SERVER_SUBDOMAIN = "pop.server.subdomain";
 

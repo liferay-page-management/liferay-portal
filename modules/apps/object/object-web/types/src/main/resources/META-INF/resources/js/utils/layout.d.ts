@@ -12,7 +12,7 @@
  * details.
  */
 
-import {TObjectLayoutRow} from '../components/layout/types';
+import {TObjectLayoutRow} from '../components/Layout/types';
 export declare function findObjectLayoutRowIndex(
 	objectLayoutRows: TObjectLayoutRow[],
 	fieldSize: number

@@ -49,6 +49,12 @@ public class CollectionStyledLayoutStructureItem
 				_collectionJSONObject,
 				collectionStyledLayoutStructureItem._collectionJSONObject) ||
 			!Objects.equals(
+				_displayAllItems,
+				collectionStyledLayoutStructureItem._displayAllItems) ||
+			!Objects.equals(
+				_displayAllPages,
+				collectionStyledLayoutStructureItem._displayAllPages) ||
+			!Objects.equals(
 				_listStyle, collectionStyledLayoutStructureItem._listStyle) ||
 			!Objects.equals(
 				_numberOfColumns,
@@ -56,6 +62,9 @@ public class CollectionStyledLayoutStructureItem
 			!Objects.equals(
 				_numberOfItems,
 				collectionStyledLayoutStructureItem._numberOfItems) ||
+			!Objects.equals(
+				_numberOfItemsPerPage,
+				collectionStyledLayoutStructureItem._numberOfItemsPerPage) ||
 			!Objects.equals(
 				_numberOfItemsPerPage,
 				collectionStyledLayoutStructureItem._numberOfItemsPerPage) ||
@@ -83,6 +92,10 @@ public class CollectionStyledLayoutStructureItem
 		return jsonObject.put(
 			"collection", _collectionJSONObject
 		).put(
+			"displayAllItems", _displayAllItems
+		).put(
+			"displayAllPages", _displayAllPages
+		).put(
 			"listItemStyle", _listItemStyle
 		).put(
 			"listStyle", _listStyle
@@ -92,6 +105,8 @@ public class CollectionStyledLayoutStructureItem
 			"numberOfItems", _numberOfItems
 		).put(
 			"numberOfItemsPerPage", _numberOfItemsPerPage
+		).put(
+			"numberOfPages", _numberOfPages
 		).put(
 			"paginationType", _paginationType
 		).put(
@@ -134,6 +149,10 @@ public class CollectionStyledLayoutStructureItem
 		return _numberOfItemsPerPage;
 	}
 
+	public int getNumberOfPages() {
+		return _numberOfPages;
+	}
+
 	public String getPaginationType() {
 		return _paginationType;
 	}
@@ -147,12 +166,43 @@ public class CollectionStyledLayoutStructureItem
 		return HashUtil.hash(0, getItemId());
 	}
 
+	public boolean isDisplayAllItems() {
+		return _displayAllItems;
+	}
+
+	public boolean isDisplayAllPages() {
+		return _displayAllPages;
+	}
+
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 *             #isDisplayAllItems()}
+	 */
+	@Deprecated
 	public boolean isShowAllItems() {
 		return _showAllItems;
 	}
 
 	public void setCollectionJSONObject(JSONObject collectionJSONObject) {
 		_collectionJSONObject = collectionJSONObject;
+	}
+
+	public void setDisplayAllItems(Boolean displayAllItems) {
+		if (displayAllItems == null) {
+			_displayAllItems = false;
+		}
+		else {
+			_displayAllItems = displayAllItems;
+		}
+	}
+
+	public void setDisplayAllPages(Boolean displayAllPages) {
+		if (displayAllPages == null) {
+			_displayAllPages = true;
+		}
+		else {
+			_displayAllPages = displayAllPages;
+		}
 	}
 
 	/**
@@ -182,10 +232,19 @@ public class CollectionStyledLayoutStructureItem
 		_numberOfItemsPerPage = numberOfItemsPerPage;
 	}
 
+	public void setNumberOfPages(int numberOfPages) {
+		_numberOfPages = numberOfPages;
+	}
+
 	public void setPaginationType(String paginationType) {
 		_paginationType = paginationType;
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 *             #setDisplayAllItems(Boolean)}
+	 */
+	@Deprecated
 	public void setShowAllItems(Boolean showAllItems) {
 		if (showAllItems == null) {
 			_showAllItems = false;
@@ -206,6 +265,16 @@ public class CollectionStyledLayoutStructureItem
 		if (itemConfigJSONObject.has("collection")) {
 			setCollectionJSONObject(
 				itemConfigJSONObject.getJSONObject("collection"));
+		}
+
+		if (itemConfigJSONObject.has("displayAllItems")) {
+			setDisplayAllItems(
+				itemConfigJSONObject.getBoolean("displayAllItems"));
+		}
+
+		if (itemConfigJSONObject.has("displayAllPages")) {
+			setDisplayAllPages(
+				itemConfigJSONObject.getBoolean("displayAllPages"));
 		}
 
 		if (itemConfigJSONObject.has("showAllItems")) {
@@ -233,6 +302,10 @@ public class CollectionStyledLayoutStructureItem
 				itemConfigJSONObject.getInt("numberOfItemsPerPage"));
 		}
 
+		if (itemConfigJSONObject.has("numberOfPages")) {
+			setNumberOfPages(itemConfigJSONObject.getInt("numberOfPages"));
+		}
+
 		if (itemConfigJSONObject.has("paginationType")) {
 			setPaginationType(itemConfigJSONObject.getString("paginationType"));
 		}
@@ -243,11 +316,14 @@ public class CollectionStyledLayoutStructureItem
 	}
 
 	private JSONObject _collectionJSONObject;
+	private boolean _displayAllItems;
+	private boolean _displayAllPages;
 	private String _listItemStyle;
 	private String _listStyle;
 	private int _numberOfColumns = 1;
 	private int _numberOfItems = 5;
 	private int _numberOfItemsPerPage = 5;
+	private int _numberOfPages = 5;
 	private String _paginationType;
 	private boolean _showAllItems;
 	private String _templateKey;

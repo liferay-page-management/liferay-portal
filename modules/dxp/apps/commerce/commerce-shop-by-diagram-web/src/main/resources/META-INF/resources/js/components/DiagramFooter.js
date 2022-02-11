@@ -26,6 +26,7 @@ function DiagramFooter({
 }) {
 	function _handleZoomUpdate(value) {
 		chartInstance.current?.updateZoom(value);
+
 		updateCurrentZoom(value);
 	}
 

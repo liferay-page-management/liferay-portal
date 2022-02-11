@@ -110,12 +110,8 @@ definition {
 	}
 
 	@description = "Feature ID: Legacy | Automation ID: LRAC-9037 | Test Summary: As an Business User, a Property with a duplicate name should have an incrementing identifier appended to it's name"
-	@ignore = "true"
 	@priority = "3"
 	test AutoRenamePropertyWhenDuplicateWithExistingOne {
-
-		// AC Bug ticket: LRAC-10434
-
 		var propertyNameList = "AC Test Property,AC Test Property (1)";
 
 		task ("Add a new property on AC") {
@@ -459,12 +455,8 @@ definition {
 	}
 
 	@description = "Feature ID: Legacy | Automation ID: LRAC-8145 | Test Summary: Owner can create a new property"
-	@ignore = "true"
 	@priority = "5"
 	test OwnerCanCreateNewProperty {
-
-		// AC Bug ticket: LRAC-10434
-
 		ACUtils.launchAC();
 
 		ACNavigation.goToSettings();
@@ -585,32 +577,6 @@ definition {
 			ACSettings.goToProperties();
 
 			ACUtils.assertItemsName(itemList = "This is a property with a big name to ckeck the limit of a name!!");
-		}
-	}
-
-	@description = "Feature ID: Legacy | Automation ID: LRAC-9109 | Test Summary: Property field is displayed in empty state when no property is available"
-	@ignore = "true"
-	@priority = "3"
-	test PropertyFieldDisplayedWhenNoPropertyAvailable {
-
-		// AC Bug ticket: LRAC-10434
-
-		task ("Go to properties") {
-			ACUtils.launchAC();
-
-			ACNavigation.goToSettings();
-
-			ACSettings.goToProperties();
-		}
-
-		task ("Delete all properties") {
-			ACSettings.deleteAllProperties();
-		}
-
-		task ("assert empty state on properties page") {
-			ACSettings.goToProperties();
-
-			ACProperties.assertNoProperties();
 		}
 	}
 

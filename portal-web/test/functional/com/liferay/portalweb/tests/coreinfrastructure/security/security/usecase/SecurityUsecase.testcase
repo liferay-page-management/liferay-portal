@@ -28,21 +28,24 @@ definition {
 	@priority = "4"
 	test CreateUserViaJSONWSAPIUI {
 		var portalURL = PropsUtil.get("portal.url");
+		var userfn = "testfUI";
+		var userln = "testlUI";
+		var key_userScreenName = "testui";
 
 		task ("Add user via JSONWSUI") {
 			Navigator.openSpecificURL(url = "${portalURL}/api/jsonws?contextName=&signature=/user/add-user-31-long-boolean-java.lang.String-java.lang.String-boolean-java.lang.String-java.lang.String-long-java.lang.String-java.util.Locale-java.lang.String-java.lang.String-java.lang.String-long-long-boolean-int-int-int-java.lang.String-%5BJ-%5BJ-%5BJ-%5BJ-java.util.List-java.util.List-java.util.List-java.util.List-java.util.List-boolean-com.liferay.portal.kernel.service.ServiceContext");
 
 			JSONUser.addUserByJSONWSUI(
-				userFirstName = "testfUI",
-				userLastName = "testlUI");
+				userFirstName = "${userfn}",
+				userLastName = "${userln}");
 		}
 
 		task ("Assert message present in HTLM source") {
 			Pause(locator1 = "3000");
 
 			User.viewWelcomeMEssageHTML(
-				userfn = "testfUI",
-				userln = "testfUI");
+				userfn = "${userfn}",
+				userln = "${userln}");
 		}
 
 		task ("Assert user created in users page") {
@@ -50,15 +53,10 @@ definition {
 
 			User.openUsersAdmin();
 
-			var key_userScreenName = "testui";
-
 			User.viewUserTableName(
-				userfn = "testfUI",
-				userln = "testfUI");
-
-			AssertTextEquals(
-				locator1 = "UsersAndOrganizations#USER_TABLE_NAME",
-				value1 = "${userfn} ${userln}");
+				key_userScreenName = "${key_userScreenName}",
+				userfn = "${userfn}",
+				userln = "${userln}");
 		}
 	}
 

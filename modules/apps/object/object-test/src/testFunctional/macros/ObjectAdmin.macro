@@ -976,6 +976,12 @@ definition {
 		AssertElementPresent(locator1 = "ObjectAdmin#FIELD_SEARCHABLE_LANGUAGE_OPTION");
 	}
 
+	macro viewFieldValueDisabled {
+		AssertElementPresent(
+			key_fieldValue = "${fieldValue}",
+			locator1 = "ObjectAdmin#VIEW_FIELD_VALUE_DISABLED");
+	}
+
 	macro viewObjectPresentOnSite {
 		ProductMenuHelper.openProductMenu();
 

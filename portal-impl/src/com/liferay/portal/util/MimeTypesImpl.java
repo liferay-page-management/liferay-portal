@@ -14,22 +14,22 @@
 
 package com.liferay.portal.util;
 
+import com.liferay.petra.io.unsync.UnsyncBufferedInputStream;
+import com.liferay.petra.string.CharPool;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
-import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.MimeTypes;
-import com.liferay.portal.kernel.util.SetUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import java.net.URL;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,14 +43,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.tika.detect.DefaultDetector;
 import org.apache.tika.detect.Detector;
-import org.apache.tika.io.CloseShieldInputStream;
-import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MimeTypesReaderMetKeys;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import org.xml.sax.InputSource;
@@ -62,31 +59,23 @@ import org.xml.sax.InputSource;
  */
 public class MimeTypesImpl implements MimeTypes, MimeTypesReaderMetKeys {
 
-	public MimeTypesImpl() {
-		_detector = new DefaultDetector(
-			org.apache.tika.mime.MimeTypes.getDefaultMimeTypes());
+	public void afterPropertiesSet() throws Exception {
+		read(
+			org.apache.tika.mime.MimeTypes.class.getResourceAsStream(
+				"tika-mimetypes.xml"),
+			_extensionsMap);
 
-		_webImageMimeTypes = SetUtil.fromArray(
-			PropsValues.MIME_TYPES_WEB_IMAGES);
-	}
+		Map<String, Set<String>> extensionsMap = new HashMap<>();
 
-	public void afterPropertiesSet() {
-		URL url = org.apache.tika.mime.MimeTypes.class.getResource(
-			"tika-mimetypes.xml");
+		read(
+			MimeTypesImpl.class.getResourceAsStream(
+				"/tika/custom-mimetypes.xml"),
+			extensionsMap);
 
-		Class<?> clazz = getClass();
-
-		ClassLoader classLoader = clazz.getClassLoader();
-
-		URL customMimeTypesURL = classLoader.getResource(
-			"tika/custom-mimetypes.xml");
-
-		try {
-			read(url.openStream(), _extensionsMap);
-			read(customMimeTypesURL.openStream(), _customExtensionsMap);
-		}
-		catch (Exception exception) {
-			_log.error("Unable to populate extensions map", exception);
+		for (Map.Entry<String, Set<String>> entry : extensionsMap.entrySet()) {
+			for (String mimeType : entry.getValue()) {
+				_contentTypes.put(mimeType, entry.getKey());
+			}
 		}
 	}
 
@@ -97,16 +86,12 @@ public class MimeTypesImpl implements MimeTypes, MimeTypesReaderMetKeys {
 
 	@Override
 	public String getContentType(File file, String fileName) {
-		if ((file == null) || !file.exists()) {
-			return getContentType(fileName);
-		}
-
-		try (InputStream inputStream = TikaInputStream.get(file)) {
+		try (InputStream inputStream = new FileInputStream(file)) {
 			return getContentType(inputStream, fileName);
 		}
-		catch (IOException ioException) {
+		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {
-				_log.warn(ioException, ioException);
+				_log.warn(exception, exception);
 			}
 		}
 
@@ -115,47 +100,29 @@ public class MimeTypesImpl implements MimeTypes, MimeTypesReaderMetKeys {
 
 	@Override
 	public String getContentType(InputStream inputStream, String fileName) {
-		if (inputStream == null) {
-			return getContentType(fileName);
+		String contentType = _contentTypes.get(_getExtension(fileName));
+
+		if (contentType != null) {
+			return contentType;
 		}
 
-		String contentType = null;
+		Metadata metadata = new Metadata();
 
-		try (TikaInputStream tikaInputStream = TikaInputStream.get(
-				new CloseShieldInputStream(inputStream))) {
-
-			contentType = getCustomContentType(FileUtil.getExtension(fileName));
-
-			if (ContentTypes.APPLICATION_OCTET_STREAM.equals(contentType)) {
-				Metadata metadata = new Metadata();
-
-				metadata.set(
-					Metadata.RESOURCE_NAME_KEY, HtmlUtil.escapeURL(fileName));
-
-				contentType = String.valueOf(
-					_detector.detect(tikaInputStream, metadata));
-			}
-
-			if (contentType.contains("tika")) {
-				if (_log.isDebugEnabled()) {
-					_log.debug("Retrieved invalid content type " + contentType);
-				}
-
-				contentType = getContentType(fileName);
-			}
-
-			if (contentType.contains("tika")) {
-				if (_log.isDebugEnabled()) {
-					_log.debug("Retrieved invalid content type " + contentType);
-				}
-
-				contentType = ContentTypes.APPLICATION_OCTET_STREAM;
-			}
+		if (Validator.isNotNull(fileName)) {
+			metadata.set(
+				Metadata.RESOURCE_NAME_KEY, HtmlUtil.escapeURL(fileName));
 		}
-		catch (Exception exception) {
-			_log.error(exception, exception);
 
-			contentType = ContentTypes.APPLICATION_OCTET_STREAM;
+		if ((inputStream != null) && !inputStream.markSupported()) {
+			inputStream = new UnsyncBufferedInputStream(inputStream);
+		}
+
+		try {
+			contentType = String.valueOf(
+				_detector.detect(inputStream, metadata));
+		}
+		catch (IOException ioException) {
+			_log.error(ioException, ioException);
 		}
 
 		return contentType;
@@ -163,36 +130,7 @@ public class MimeTypesImpl implements MimeTypes, MimeTypesReaderMetKeys {
 
 	@Override
 	public String getContentType(String fileName) {
-		if (Validator.isNull(fileName)) {
-			return ContentTypes.APPLICATION_OCTET_STREAM;
-		}
-
-		String contentType = null;
-
-		try {
-			contentType = getCustomContentType(FileUtil.getExtension(fileName));
-
-			if (ContentTypes.APPLICATION_OCTET_STREAM.equals(contentType)) {
-				Metadata metadata = new Metadata();
-
-				metadata.set(
-					Metadata.RESOURCE_NAME_KEY, HtmlUtil.escapeURL(fileName));
-
-				contentType = String.valueOf(_detector.detect(null, metadata));
-			}
-
-			if (!contentType.contains("tika")) {
-				return contentType;
-			}
-			else if (_log.isDebugEnabled()) {
-				_log.debug("Retrieved invalid content type " + contentType);
-			}
-		}
-		catch (Exception exception) {
-			_log.error(exception, exception);
-		}
-
-		return ContentTypes.APPLICATION_OCTET_STREAM;
+		return getContentType((InputStream)null, fileName);
 	}
 
 	@Override
@@ -215,29 +153,6 @@ public class MimeTypesImpl implements MimeTypes, MimeTypesReaderMetKeys {
 		return extensions;
 	}
 
-	@Override
-	public boolean isWebImage(String mimeType) {
-		return _webImageMimeTypes.contains(mimeType);
-	}
-
-	protected String getCustomContentType(String extension) {
-		if (Validator.isNull(extension)) {
-			return ContentTypes.APPLICATION_OCTET_STREAM;
-		}
-
-		for (Map.Entry<String, Set<String>> entry :
-				_customExtensionsMap.entrySet()) {
-
-			Set<String> set = entry.getValue();
-
-			if (set.contains(".".concat(extension))) {
-				return entry.getKey();
-			}
-		}
-
-		return ContentTypes.APPLICATION_OCTET_STREAM;
-	}
-
 	protected void read(
 			InputStream inputStream, Map<String, Set<String>> extensionsMap)
 		throws Exception {
@@ -256,71 +171,42 @@ public class MimeTypesImpl implements MimeTypes, MimeTypesReaderMetKeys {
 			throw new SystemException("Invalid configuration file");
 		}
 
-		NodeList nodeList = element.getChildNodes();
+		NodeList nodeList = element.getElementsByTagName(MIME_TYPE_TAG);
 
 		for (int i = 0; i < nodeList.getLength(); i++) {
-			Node node = nodeList.item(i);
-
-			if (node.getNodeType() != Node.ELEMENT_NODE) {
-				continue;
-			}
-
-			Element childElement = (Element)node;
-
-			if (MIME_TYPE_TAG.equals(childElement.getTagName())) {
-				readMimeType(childElement, extensionsMap);
-			}
+			readMimeType((Element)nodeList.item(i), extensionsMap);
 		}
 	}
 
 	protected void readMimeType(
 		Element element, Map<String, Set<String>> extensionsMap) {
 
-		Set<String> mimeTypes = new HashSet<>();
-
 		Set<String> extensions = new HashSet<>();
 
-		String name = element.getAttribute(MIME_TYPE_TYPE_ATTR);
+		NodeList globNodeList = element.getElementsByTagName(GLOB_TAG);
 
-		mimeTypes.add(name);
+		for (int i = 0; i < globNodeList.getLength(); i++) {
+			Element globElement = (Element)globNodeList.item(i);
 
-		NodeList nodeList = element.getChildNodes();
+			boolean regex = GetterUtil.getBoolean(
+				globElement.getAttribute(ISREGEX_ATTR));
 
-		for (int i = 0; i < nodeList.getLength(); i++) {
-			Node node = nodeList.item(i);
-
-			if (node.getNodeType() != Node.ELEMENT_NODE) {
+			if (regex) {
 				continue;
 			}
 
-			Element childElement = (Element)node;
+			String pattern = globElement.getAttribute(PATTERN_ATTR);
 
-			if (ALIAS_TAG.equals(childElement.getTagName())) {
-				String alias = childElement.getAttribute(ALIAS_TYPE_ATTR);
-
-				mimeTypes.add(alias);
+			if (!pattern.startsWith("*")) {
+				continue;
 			}
-			else if (GLOB_TAG.equals(childElement.getTagName())) {
-				boolean regex = GetterUtil.getBoolean(
-					childElement.getAttribute(ISREGEX_ATTR));
 
-				if (regex) {
-					continue;
-				}
+			String extension = pattern.substring(1);
 
-				String pattern = childElement.getAttribute(PATTERN_ATTR);
+			if (!extension.contains("*") && !extension.contains("?") &&
+				!extension.contains("[")) {
 
-				if (!pattern.startsWith("*")) {
-					continue;
-				}
-
-				String extension = pattern.substring(1);
-
-				if (!extension.contains("*") && !extension.contains("?") &&
-					!extension.contains("[")) {
-
-					extensions.add(extension);
-				}
+				extensions.add(extension);
 			}
 		}
 
@@ -334,17 +220,37 @@ public class MimeTypesImpl implements MimeTypes, MimeTypesReaderMetKeys {
 			extensions = Collections.singleton(iterator.next());
 		}
 
-		for (String mimeType : mimeTypes) {
-			extensionsMap.put(mimeType, extensions);
+		extensionsMap.put(
+			element.getAttribute(MIME_TYPE_TYPE_ATTR), extensions);
+
+		NodeList aliasNodeList = element.getElementsByTagName(ALIAS_TAG);
+
+		for (int i = 0; i < aliasNodeList.getLength(); i++) {
+			Element aliasElement = (Element)aliasNodeList.item(i);
+
+			extensionsMap.put(
+				aliasElement.getAttribute(ALIAS_TYPE_ATTR), extensions);
 		}
+	}
+
+	private String _getExtension(String fileName) {
+		if (fileName == null) {
+			return null;
+		}
+
+		int pos = fileName.lastIndexOf(CharPool.PERIOD);
+
+		if (pos > 0) {
+			return StringUtil.toLowerCase(fileName.substring(pos));
+		}
+
+		return null;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(MimeTypesImpl.class);
 
-	private final Map<String, Set<String>> _customExtensionsMap =
-		new HashMap<>();
-	private final Detector _detector;
+	private final Map<String, String> _contentTypes = new HashMap<>();
+	private final Detector _detector = new DefaultDetector();
 	private final Map<String, Set<String>> _extensionsMap = new HashMap<>();
-	private final Set<String> _webImageMimeTypes;
 
 }

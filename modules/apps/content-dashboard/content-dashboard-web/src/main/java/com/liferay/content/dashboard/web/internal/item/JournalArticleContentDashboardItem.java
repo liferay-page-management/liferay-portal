@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Cristina González
  */
 public class JournalArticleContentDashboardItem
-	extends ContentDashboardBaseItem<JournalArticle> {
+	extends BaseContentDashboardItem<JournalArticle> {
 
 	public JournalArticleContentDashboardItem(
 		List<AssetCategory> assetCategories, List<AssetTag> assetTags,
