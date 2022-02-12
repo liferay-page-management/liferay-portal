@@ -174,6 +174,11 @@ public class CollectionStyledLayoutStructureItem
 		return _displayAllPages;
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 *             #isDisplayAllItems()}
+	 */
+	@Deprecated
 	public boolean isShowAllItems() {
 		return _showAllItems;
 	}
@@ -235,6 +240,11 @@ public class CollectionStyledLayoutStructureItem
 		_paginationType = paginationType;
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 *             #setDisplayAllItems(Boolean)}
+	 */
+	@Deprecated
 	public void setShowAllItems(Boolean showAllItems) {
 		if (showAllItems == null) {
 			_showAllItems = false;
@@ -293,8 +303,7 @@ public class CollectionStyledLayoutStructureItem
 		}
 
 		if (itemConfigJSONObject.has("numberOfPages")) {
-			setNumberOfPages(
-				itemConfigJSONObject.getInt("numberOfPages"));
+			setNumberOfPages(itemConfigJSONObject.getInt("numberOfPages"));
 		}
 
 		if (itemConfigJSONObject.has("paginationType")) {
