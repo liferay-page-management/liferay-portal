@@ -25,7 +25,7 @@ export default function Collapse({
 	children,
 	label,
 	open,
-	stylesAccuracyEnabled = config.stylesAccuracyEnabled,
+	stylesAccuracyEnabled = config.stylesAccuracyEnabled ?? true,
 }) {
 	const [isOpen, setIsOpen] = useState(open);
 	const collapseIcon = isOpen
@@ -65,6 +65,7 @@ export default function Collapse({
 					}
 				)}
 				onClick={handleClick}
+				type="button"
 			>
 				<span className="c-inner text-truncate" tabIndex="-1">
 					{label}

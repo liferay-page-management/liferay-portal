@@ -4,6 +4,46 @@
 
 $collapseMarginBottom: $pageEditorSpacing * 2;
 
+@mixin page-editor-collapse() {
+	.page-editor__collapse {
+		cursor: pointer;
+
+		.collapse-icon {
+			border-bottom: 1px solid $cadmin-light;
+			border-radius: 0;
+			color: $cadmin-secondary;
+			font-size: 0.75rem;
+			height: 32px;
+			margin-bottom: 16px;
+			width: 100%;
+
+			&:hover {
+				color: $cadmin-dark;
+			}
+
+			.collapse-icon-open {
+				color: $cadmin-dark;
+			}
+		}
+
+		.sheet-subtitle {
+			line-height: inherit;
+		}
+
+		.page-editor__collapse {
+			margin-left: 16px;
+
+			.collapse-icon {
+				border-bottom: none;
+			}
+
+			> .page-editor__collapse-content {
+				margin-left: 16px;
+			}
+		}
+	}
+}
+
 html#{$cadmin-selector} {
 	.cadmin {
 		.page-editor__collapse-old {
@@ -28,42 +68,8 @@ html#{$cadmin-selector} {
 			}
 		}
 
-		.page-editor__collapse {
-			cursor: pointer;
-
-			.collapse-icon {
-				border-bottom: 1px solid $cadmin-light;
-				border-radius: 0;
-				color: $cadmin-secondary;
-				font-size: 0.75rem;
-				height: 32px;
-				margin-bottom: 16px;
-				width: 100%;
-
-				&:hover {
-					color: $cadmin-dark;
-				}
-
-				.collapse-icon-open {
-					color: $cadmin-dark;
-				}
-			}
-
-			.sheet-subtitle {
-				line-height: inherit;
-			}
-
-			.page-editor__collapse {
-				margin-left: 16px;
-
-				.collapse-icon {
-					border-bottom: none;
-				}
-
-				> .page-editor__collapse-content {
-					margin-left: 16px;
-				}
-			}
-		}
+		@include page-editor-collapse();
 	}
 }
+
+@include page-editor-collapse();
