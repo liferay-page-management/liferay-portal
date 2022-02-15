@@ -9,15 +9,10 @@ html#{$cadmin-selector} {
 		.page-editor__collapse {
 			cursor: pointer;
 
-			.ellipsis {
-				overflow: hidden;
-				text-overflow: ellipsis;
-				white-space: nowrap;
-			}
-
 			.collapse-icon {
 				background: none;
-				border-color: $cadmin-secondary-l3;
+				border: none;
+				color: $cadmin-gray-600;
 				font-size: 12px;
 				margin-bottom: $collapseMarginBottom;
 				padding-left: 0;
@@ -25,7 +20,7 @@ html#{$cadmin-selector} {
 				width: 100%;
 			}
 
-			.page-editor__collapse {
+			.page-editor__collapse-old {
 				margin-left: 16px;
 
 				> .page-editor__collapse-content {
