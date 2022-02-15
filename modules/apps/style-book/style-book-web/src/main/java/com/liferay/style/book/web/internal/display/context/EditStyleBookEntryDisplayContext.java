@@ -193,6 +193,9 @@ public class EditStyleBookEntryDisplayContext {
 		).put(
 			"styleBookEntryId", _getStyleBookEntryId()
 		).put(
+			"stylesAccuracyEnabled",
+			FFStyleBookConfigurationUtil.stylesAccuracyEnabled()
+		).put(
 			"templatesPreviewEnabled",
 			FFStyleBookConfigurationUtil.templatesPreviewEnabled()
 		).put(

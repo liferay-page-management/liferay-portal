@@ -180,6 +180,7 @@ export interface Config {
 		name: string;
 		styleBookEntryId: string;
 	}>;
+	stylesAccuracyEnabled: boolean;
 	themeColorCssClasses: string[];
 	toolbarId: string;
 
