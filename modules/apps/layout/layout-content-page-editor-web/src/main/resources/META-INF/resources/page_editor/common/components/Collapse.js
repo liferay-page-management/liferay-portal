@@ -17,9 +17,25 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 
-export default function Collapse({children, label, open}) {
+import {config} from '../../app/config/index';
+
+import './Collapse.scss';
+
+export default function Collapse({
+	children,
+	label,
+	open,
+	stylesAccuracyEnabled = config.stylesAccuracyEnabled,
+}) {
 	const [isOpen, setIsOpen] = useState(open);
-	const collapseIcon = isOpen ? 'angle-down-small' : 'angle-right-small';
+	const collapseIcon = isOpen
+		? stylesAccuracyEnabled
+			? 'angle-down'
+			: 'angle-down-small'
+		: stylesAccuracyEnabled
+		? 'angle-right'
+		: 'angle-right-small';
+
 	const collapseIconClassName = isOpen ? 'open' : 'closed';
 
 	useEffect(() => {
@@ -32,10 +48,10 @@ export default function Collapse({children, label, open}) {
 
 	return (
 		<div
-			className={classNames(
-				'panel-group-flush',
-				'page-editor__collapse panel-group'
-			)}
+			className={classNames('panel-group panel-group-flush', {
+				'page-editor__collapse': stylesAccuracyEnabled,
+				'page-editor__collapse-old': !stylesAccuracyEnabled,
+			})}
 		>
 			<button
 				aria-expanded={isOpen}
@@ -50,7 +66,7 @@ export default function Collapse({children, label, open}) {
 				)}
 				onClick={handleClick}
 			>
-				<span className="c-inner ellipsis" tabIndex="-1">
+				<span className="c-inner text-truncate" tabIndex="-1">
 					{label}
 
 					<span className={`collapse-icon-${collapseIconClassName}`}>
