@@ -31,6 +31,10 @@ import org.osgi.service.component.annotations.Modified;
 )
 public class FFStyleBookConfigurationUtil {
 
+	public static boolean stylesAccuracyEnabled() {
+		return _ffStyleBookConfiguration.stylesAccuracyEnabled();
+	}
+
 	public static boolean templatesPreviewEnabled() {
 		return _ffStyleBookConfiguration.templatesPreviewEnabled();
 	}

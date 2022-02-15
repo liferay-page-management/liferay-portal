@@ -582,6 +582,9 @@ public class ContentPageEditorDisplayContext {
 			).put(
 				"styleBooks", _getStyleBooks()
 			).put(
+				"stylesAccuracyEnabled",
+				_ffLayoutContentPageEditorConfiguration.stylesAccuracyEnabled()
+			).put(
 				"themeColorsCssClasses", _getThemeColorsCssClasses()
 			).put(
 				"tokenReuseEnabled",
