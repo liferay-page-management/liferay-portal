@@ -50,10 +50,10 @@ export function SelectTree({
 	items,
 	multiSelection,
 	onItems,
-	selectedCategory,
+	selectedCategoryIds,
 }) {
 	const [selectedKeys, setSelectionChange] = useState(
-		new Set(selectedCategory)
+		new Set(selectedCategoryIds)
 	);
 
 	const isComputePreSelectedRef = useRef(false);
