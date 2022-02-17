@@ -17,37 +17,6 @@ import {ClayCheckbox} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import React, {useMemo, useRef, useState} from 'react';
 
-function performFilter(value, tree) {
-	const getItems = (previous, item) => {
-		if (!item.vocabulary && item.name.toLowerCase().indexOf(value) !== -1) {
-			const immutableItem = {...item};
-
-			if (Array.isArray(immutableItem.children)) {
-				immutableItem.children = immutableItem.children.reduce(
-					getItems,
-					[]
-				);
-			}
-
-			previous.push(immutableItem);
-
-			return previous;
-		}
-
-		if (Array.isArray(item.children)) {
-			const children = item.children.reduce(getItems, []);
-
-			if (children.length) {
-				previous.push({...item, children});
-			}
-		}
-
-		return previous;
-	};
-
-	return tree.reduce(getItems, []);
-}
-
 function visit(nodes, callback) {
 	nodes.forEach((node) => {
 		callback(node);
@@ -91,12 +60,26 @@ export function SelectTree({
 
 	const selectedItemsRef = useRef({});
 
+	const nodeByName = (items, name) => {
+		return items.reduce(function reducer(acc, item) {
+			if (!item.vocabulary && item.name.match(new RegExp(name, 'i'))) {
+				acc.push(item);
+			}
+
+			if (item.children) {
+				acc.concat(item.children.reduce(reducer, acc));
+			}
+
+			return acc;
+		}, []);
+	};
+
 	const filteredItems = useMemo(() => {
 		if (!filterQuery) {
 			return items;
 		}
 
-		return performFilter(filterQuery.toLowerCase(), [...items]);
+		return nodeByName(items, filterQuery);
 	}, [items, filterQuery]);
 
 	const handleMultipleSelectionChange = (selection, item) => {
