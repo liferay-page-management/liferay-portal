@@ -121,6 +121,10 @@ export function SelectTree({
 	const handleSingleSelectionChange = (event, item) => {
 		event.preventDefault();
 
+		if (item.disabled) {
+			return;
+		}
+
 		Liferay.Util.getOpener().Liferay.fire(itemSelectorSaveEvent, {
 			data: {
 				[item.id]: {
