@@ -348,10 +348,10 @@ definition {
 
 		SelectFrame(value1 = "relative=top");
 
-		if ("${pageAddTag}" == "true") {
-			WikiPage.addTagPGCmd(tagNameList = "${tagNameList}");
+		if (isSet(addTagList)) {
+			WikiPage.addTagPGCmd(tagNameList = "${addTagList}");
 
-			WikiPage.viewTagViaAddPG(tagNameList = "${tagNameList}");
+			WikiPage.viewTagViaAddPG(tagNameList = "${addTagList}");
 		}
 
 		PortletEntry.publish();
