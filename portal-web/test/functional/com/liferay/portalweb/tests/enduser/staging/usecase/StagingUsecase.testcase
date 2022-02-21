@@ -1220,13 +1220,10 @@ definition {
 
 		Navigator.openSiteURL(siteName = "Site Name");
 
-		BlogsNavigator.gotoEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
 		BlogsEntry.viewTagPG(
+			entryContent = "Blogs Entry Content",
 			entryTitle = "Blogs Entry Title",
-			tagName = "stagingtag");
+			tagNameList = "stagingtag");
 
 		Navigator.gotoSitePage(
 			pageName = "Staging Test Page",

@@ -1540,38 +1540,34 @@ definition {
 		}
 	}
 
+	macro viewTagNotPresentPG {
+		for (var tagName : list "${tagNameList}") {
+			var lowerCaseTagName = StringUtil.lowerCase("${tagName}");
+
+			AssertElementNotPresent(
+				key_entryTitle = "${entryTitle}",
+				key_tagName = "${lowerCaseTagName}",
+				locator1 = "BlogsEntry#TAG");
+		}
+	}
+
 	macro viewTagPG {
 		var key_entryTitle = "${entryTitle}";
 
-		if (isSet(tagNameList)) {
-			for (var tagName : list "${tagNameList}") {
-				var tagName = StringUtil.lowerCase("${tagName}");
-				var key_tagName = "${tagName}";
+		for (var tagName : list "${tagNameList}") {
+			var key_tagName = StringUtil.lowerCase("${tagName}");
 
-				AssertClick(
-					locator1 = "BlogsEntry#TAG",
-					value1 = "${tagName}");
-
-				AssertTextEquals.assertPartialText(
-					locator1 = "BlogsEntry#TAG_FILTER_TITLE",
-					value1 = "Entries with tag ${tagName}");
-
-				AssertTextEquals(
-					locator1 = "BlogsEntry#TITLE",
-					value1 = "${entryTitle}");
-			}
-		}
-		else {
-			var key_tagName = "${tagName}";
-			var tagName = StringUtil.upperCase("${tagName}");
+			BlogsNavigator.gotoEntryPG(
+				entryContent = "${entryContent}",
+				entryTitle = "${entryTitle}");
 
 			AssertClick(
 				locator1 = "BlogsEntry#TAG",
-				value1 = "${tagName}");
+				value1 = "${key_tagName}");
 
 			AssertTextEquals.assertPartialText(
 				locator1 = "BlogsEntry#TAG_FILTER_TITLE",
-				value1 = "${tagName}");
+				value1 = "Entries with tag ${key_tagName}");
 
 			AssertTextEquals(
 				locator1 = "BlogsEntry#TITLE",
