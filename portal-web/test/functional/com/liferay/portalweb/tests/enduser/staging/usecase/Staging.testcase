@@ -813,7 +813,7 @@ definition {
 			category = "Categorization",
 			portlet = "Tags");
 
-		Tag.viewCP(tagName = "tag name");
+		Tag.viewCP(tagNameList = "tag name");
 
 		Navigator.gotoStagedSitePage(
 			pageName = "Staging Test Page",
