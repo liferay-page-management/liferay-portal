@@ -61,6 +61,27 @@ definition {
 		Alert.viewRequiredField();
 	}
 
+	macro deleteCP {
+		PortletEntry.deleteViaMenuItem(rowEntry = "${tagName}");
+
+		Alert.viewSuccessMessage();
+	}
+
+	macro editMenu {
+		LexiconEntry.gotoEntryMenuItem(
+			menuItem = "Edit",
+			rowEntry = "${tagMenuName}");
+
+		PortletEntry.inputName(name = "${tagNameEdit}");
+
+		if (!(isSet(configureWithoutSave))) {
+			PortletEntry.save();
+		}
+		else {
+			Button.clickCancel();
+		}
+	}
+
 	macro gotoMerge {
 		if ("${mergeMethod}" == "menuItem") {
 			LexiconEntry.gotoEntryMenuItem(
