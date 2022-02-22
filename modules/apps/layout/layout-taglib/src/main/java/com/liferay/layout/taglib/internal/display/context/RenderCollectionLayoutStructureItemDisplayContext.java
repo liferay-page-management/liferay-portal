@@ -36,7 +36,7 @@ import com.liferay.layout.list.retriever.ListObjectReferenceFactory;
 import com.liferay.layout.list.retriever.ListObjectReferenceFactoryTracker;
 import com.liferay.layout.taglib.internal.servlet.ServletContextUtil;
 import com.liferay.layout.taglib.internal.util.FFRenderCollectionLayoutStructureItemConfigurationUtil;
-import com.liferay.layout.util.structure.CollectionPaginationHelper;
+import com.liferay.layout.util.CollectionPaginationHelper;
 import com.liferay.layout.util.structure.CollectionStyledLayoutStructureItem;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;

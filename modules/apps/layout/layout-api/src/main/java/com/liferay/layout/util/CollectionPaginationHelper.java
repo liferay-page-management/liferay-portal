@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.layout.util.structure;
+package com.liferay.layout.util;
 
 import com.liferay.info.pagination.Pagination;
 

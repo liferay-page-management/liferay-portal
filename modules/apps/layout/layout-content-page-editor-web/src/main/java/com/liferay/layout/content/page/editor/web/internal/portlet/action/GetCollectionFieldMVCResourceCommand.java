@@ -54,7 +54,7 @@ import com.liferay.layout.list.retriever.LayoutListRetrieverTracker;
 import com.liferay.layout.list.retriever.ListObjectReference;
 import com.liferay.layout.list.retriever.ListObjectReferenceFactory;
 import com.liferay.layout.list.retriever.ListObjectReferenceFactoryTracker;
-import com.liferay.layout.util.structure.CollectionPaginationHelper;
+import com.liferay.layout.util.CollectionPaginationHelper;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.io.unsync.UnsyncStringWriter;
