@@ -20,6 +20,7 @@ import com.liferay.application.list.constants.ApplicationListWebKeys;
 import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
 import com.liferay.exportimport.kernel.exception.RemoteExportException;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
+import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -33,16 +34,20 @@ import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.impl.VirtualLayout;
+import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.util.PropsValues;
+import com.liferay.product.navigation.product.menu.constants.ProductNavigationProductMenuPortletKeys;
 import com.liferay.product.navigation.product.menu.display.context.ProductMenuDisplayContext;
 import com.liferay.product.navigation.site.administration.internal.application.list.SiteAdministrationPanelCategory;
 import com.liferay.product.navigation.site.administration.internal.constants.SiteAdministrationWebKeys;
@@ -57,6 +62,7 @@ import java.util.ResourceBundle;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
+import javax.portlet.RenderRequest;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -298,6 +304,31 @@ public class SiteAdministrationPanelCategoryDisplayContext {
 			_themeDisplay.getUser());
 
 		return _notificationsCount;
+	}
+
+	public String getPageTreeURL(
+		HttpServletRequest httpServletRequest, String selPpid) {
+
+		return PortletURLBuilder.create(
+			PortletURLFactoryUtil.create(
+				httpServletRequest,
+				ProductNavigationProductMenuPortletKeys.
+					PRODUCT_NAVIGATION_PRODUCT_MENU,
+				RenderRequest.RENDER_PHASE)
+		).setMVCPath(
+			"/portlet/pages_tree.jsp"
+		).setRedirect(
+			ParamUtil.getString(
+				httpServletRequest, "redirect", _themeDisplay.getURLCurrent())
+		).setBackURL(
+			ParamUtil.getString(
+				httpServletRequest, "p_l_back_url",
+				_themeDisplay.getURLCurrent())
+		).setParameter(
+			"selPpid", selPpid
+		).setWindowState(
+			LiferayWindowState.EXCLUSIVE
+		).buildString();
 	}
 
 	public PanelCategory getPanelCategory() {
