@@ -3,92 +3,53 @@
 html#{$cadmin-selector} {
 	.cadmin {
 		.navigation-menu-items-tree {
-			color: $cadmin-white;
-			font-size: 14px;
 			padding-left: 2rem;
 			padding-top: 1rem;
 
-			.component-expander {
-				&:hover {
-					color: $cadmin-secondary-l1;
-				}
-				.lexicon-icon {
-					background-color: $cadmin-dark-l2;
-					border-radius: 2px;
-					height: 12px;
-					padding: 3px;
-					width: 12px;
-				}
-			}
-
-			.treeview-link {
-				padding-left: 3rem;
-
-				&:hover {
-					background-color: transparent;
-					text-decoration: underline;
-				}
-			}
-
-			.lfr-treeview-node-list {
-				border-left: none;
-				padding-left: 22px;
-
-				.lfr-treeview-node-list {
-					border-left: 1px solid $cadmin-gray-800;
-					margin-bottom: 6px;
-					margin-top: 6px;
+			.treeview-dark {
+				> .treeview-item > .treeview-link {
+					color: $cadmin-white;
 				}
 
-				.lfr-treeview-node-list-item {
-					margin: 0;
-					margin-bottom: 4px;
-					margin-top: 4px;
-					padding-left: 16px;
+				.component-expander {
+					color: $cadmin-gray-400;
 
-					.lfr-treeview-node-list-item__node {
-						margin-left: 0;
-						padding-left: 4px;
+					&:hover {
+						color: $cadmin-gray-400;
 					}
 
-					.lfr-treeview-node-list-item__button {
-						background-color: transparent;
-						margin-left: -5px;
-						margin-top: -3px;
-					}
-
-					.lfr-treeview-node-list-item__button-icon {
+					.lexicon-icon {
 						background-color: $cadmin-gray-800;
 						border-radius: 2px;
-						color: #999;
 						height: 12px;
+						padding: 3px;
 						width: 12px;
 					}
 				}
 
-				.lfr-treeview-node-list-item__children {
-					padding-left: 0;
-				}
-			}
-
-			.navigation-menu-items-tree-node {
-				color: $cadmin-gray-500;
-
-				a {
+				.treeview-link {
+					background-color: transparent;
 					color: $cadmin-gray-500;
 
 					&:hover {
 						color: $cadmin-white;
-						text-decoration: none;
+						text-decoration: underline;
 					}
-				}
 
-				&.selected {
-					color: $cadmin-white;
-					font-weight: 600;
-
-					a {
+					&.selected {
 						color: $cadmin-white;
+						font-weight: $cadmin-font-weight-semi-bold;
+					}
+
+					a,
+					button {
+						color: inherit;
+						text-decoration: none;
+
+						&:hover,
+						&:focus {
+							color: inherit;
+						}
 					}
 				}
 			}
