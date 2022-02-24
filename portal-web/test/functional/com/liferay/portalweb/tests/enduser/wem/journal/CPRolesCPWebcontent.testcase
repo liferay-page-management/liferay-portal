@@ -615,6 +615,7 @@ definition {
 	@priority = "4"
 	test ViewWebContentPortletSiteRole {
 		Permissions.setUpSiteRoleLoginUserCP(
+			newPassword = "test",
 			pageName = "Web Content Page",
 			portletName = "Web Content",
 			roleTitle = "Roles Siterole Name",
