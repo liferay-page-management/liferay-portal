@@ -1,0 +1,32 @@
+definition {
+
+	macro setPreferencesXML {
+		Variables.assertDefined(parameterList = "${nameList},${valueList}");
+
+		var xml = "<portlet-preferences>";
+		var list1 = ListUtil.newListFromString("${nameList}");
+		var list2 = ListUtil.newListFromString("${valueList}");
+		var size = ListUtil.size("${list1}");
+		var i = "0";
+
+		while ("${i}" != "${size}") {
+			var name = ListUtil.get("${list1}", "${i}");
+			var value = ListUtil.get("${list2}", "${i}");
+			var xml = StringUtil.add("${xml}", "<preference>", "");
+			var xml = StringUtil.add("${xml}", "<name>", "");
+			var xml = StringUtil.add("${xml}", "${name}", "");
+			var xml = StringUtil.add("${xml}", "</name>", "");
+			var xml = StringUtil.add("${xml}", "<value>", "");
+			var xml = StringUtil.add("${xml}", "${value}", "");
+			var xml = StringUtil.add("${xml}", "</value>", "");
+			var xml = StringUtil.add("${xml}", "</preference>", "");
+			var i = ${i} + 1;
+			var i = StringUtil.valueOf("${i}");
+		}
+
+		var xml = StringUtil.add("${xml}", "</portlet-preferences>", "");
+
+		return "${xml}";
+	}
+
+}

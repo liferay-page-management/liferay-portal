@@ -1,0 +1,23 @@
+definition {
+
+	@summary = "Directly calls the JSON WS API to update portletPreferences"
+	macro _updatePreferences {
+		Variables.assertDefined(parameterList = "${groupId},${ownerId},${ownerType},${plid},${portletId},${xml}");
+
+		var portalURL = JSONCompany.getPortalURL();
+
+		var curl = '''
+			${portalURL}/api/jsonws/portletpreferences/update-preferences \
+				-u test@liferay.com:test \
+				-d groupId=${groupId} \
+				-d ownerId=${ownerId} \
+				-d ownerType=${ownerType} \
+				-d plid=${plid} \
+				-d portletId=${portletId} \
+				-d xml=${xml}
+		''';
+
+		JSONCurlUtil.post("${curl}");
+	}
+
+}
