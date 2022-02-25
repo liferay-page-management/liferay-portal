@@ -55,6 +55,15 @@ public class PortletPreferencesServiceWrapper
 	}
 
 	@Override
+	public String getPortletPreferencesXML(
+			long groupId, long plid, String portletId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _portletPreferencesService.getPortletPreferencesXML(
+			groupId, plid, portletId);
+	}
+
+	@Override
 	public void restoreArchivedPreferences(
 			long groupId, com.liferay.portal.kernel.model.Layout layout,
 			String portletId, long portletItemId,

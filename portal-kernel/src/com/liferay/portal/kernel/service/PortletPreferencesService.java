@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.model.PortletItem;
 import com.liferay.portal.kernel.model.PortletPreferences;
 import com.liferay.portal.kernel.security.access.control.AccessControlled;
 import com.liferay.portal.kernel.transaction.Isolation;
+import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 
 import org.osgi.annotation.versioning.ProviderType;
@@ -60,6 +61,11 @@ public interface PortletPreferencesService extends BaseService {
 	 * @return the OSGi service identifier
 	 */
 	public String getOSGiServiceIdentifier();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public String getPortletPreferencesXML(
+			long groupId, long plid, String portletId)
+		throws PortalException;
 
 	public void restoreArchivedPreferences(
 			long groupId, Layout layout, String portletId, long portletItemId,

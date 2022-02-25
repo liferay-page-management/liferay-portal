@@ -51,6 +51,13 @@ public class PortletPreferencesServiceUtil {
 		return getService().getOSGiServiceIdentifier();
 	}
 
+	public static String getPortletPreferencesXML(
+			long groupId, long plid, String portletId)
+		throws PortalException {
+
+		return getService().getPortletPreferencesXML(groupId, plid, portletId);
+	}
+
 	public static void restoreArchivedPreferences(
 			long groupId, com.liferay.portal.kernel.model.Layout layout,
 			String portletId, long portletItemId,
