@@ -69,7 +69,7 @@ public class PortletPreferencesServiceImpl
 	}
 
 	@Override
-	public String getPortletPreferencesXML(
+	public String getPreferencesXML(
 			long companyId, long groupId, long ownerId, int ownerType,
 			long plid, String portletId)
 		throws PortalException {
