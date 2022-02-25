@@ -160,6 +160,20 @@ public class PortletPreferencesServiceImpl
 		copyPreferences(jxPortletPreferences, archivedJxPortletPreferences);
 	}
 
+	@Override
+	public PortletPreferences updatePreferences(
+			long groupId, long ownerId, int ownerType, long plid,
+			String portletId, String xml)
+		throws PortalException {
+
+		PortletPermissionUtil.check(
+			getPermissionChecker(), groupId, plid, portletId,
+			ActionKeys.CONFIGURATION);
+
+		return _portletPreferencesLocalService.updatePreferences(
+			ownerId, ownerType, plid, portletId, xml);
+	}
+
 	protected void copyPreferences(
 		javax.portlet.PortletPreferences sourceJxPortletPreferences,
 		javax.portlet.PortletPreferences targetJxPortletPreferences) {
