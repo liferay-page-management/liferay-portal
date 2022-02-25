@@ -1,0 +1,28 @@
+definition {
+
+	@summary = "Update portletPreferences."
+	macro updatePreferences {
+		Variables.assertDefined(parameterList = "${groupId},${nameList},${plid},${portletId},${valueList}");
+
+		if (!(isSet(ownerId))) {
+			var ownerId = "0";
+		}
+
+		if (!(isSet(ownerType))) {
+			var ownerType = "3";
+		}
+
+		var xml = JSONPortletPreferencesSetter.setPreferencesXML(
+			nameList = "${nameList}",
+			valueList = "${valueList}");
+
+		JSONPortletPreferencesAPI._updatePreferences(
+			groupId = "${groupId}",
+			ownerId = "${ownerId}",
+			ownerType = "${ownerType}",
+			plid = "${plid}",
+			portletId = "${portletId}",
+			xml = "${xml}");
+	}
+
+}
