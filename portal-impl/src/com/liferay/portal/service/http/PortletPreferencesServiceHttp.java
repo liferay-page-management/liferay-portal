@@ -289,6 +289,43 @@ public class PortletPreferencesServiceHttp {
 		}
 	}
 
+	public static void updatePreferences(
+			HttpPrincipal httpPrincipal, long groupId, long plid,
+			String portletId, String name, String value)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				PortletPreferencesServiceUtil.class, "updatePreferences",
+				_updatePreferencesParameterTypes6);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, groupId, plid, portletId, name, value);
+
+			try {
+				TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(
 		PortletPreferencesServiceHttp.class);
 
@@ -317,6 +354,10 @@ public class PortletPreferencesServiceHttp {
 		new Class[] {
 			long.class, long.class, String.class, String.class,
 			javax.portlet.PortletPreferences.class
+		};
+	private static final Class<?>[] _updatePreferencesParameterTypes6 =
+		new Class[] {
+			long.class, long.class, String.class, String.class, String.class
 		};
 
 }

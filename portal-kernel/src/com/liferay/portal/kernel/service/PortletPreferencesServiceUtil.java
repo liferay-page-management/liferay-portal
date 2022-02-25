@@ -98,6 +98,14 @@ public class PortletPreferencesServiceUtil {
 			userId, groupId, name, portletId, jxPortletPreferences);
 	}
 
+	public static void updatePreferences(
+			long groupId, long plid, String portletId, String name,
+			String value)
+		throws PortalException {
+
+		getService().updatePreferences(groupId, plid, portletId, name, value);
+	}
+
 	public static PortletPreferencesService getService() {
 		return _service;
 	}

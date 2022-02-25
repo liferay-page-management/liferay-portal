@@ -108,6 +108,16 @@ public class PortletPreferencesServiceWrapper
 	}
 
 	@Override
+	public void updatePreferences(
+			long groupId, long plid, String portletId, String name,
+			String value)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_portletPreferencesService.updatePreferences(
+			groupId, plid, portletId, name, value);
+	}
+
+	@Override
 	public PortletPreferencesService getWrappedService() {
 		return _portletPreferencesService;
 	}

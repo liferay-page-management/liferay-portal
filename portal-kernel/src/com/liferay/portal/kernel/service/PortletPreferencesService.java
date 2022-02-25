@@ -88,4 +88,9 @@ public interface PortletPreferencesService extends BaseService {
 			javax.portlet.PortletPreferences jxPortletPreferences)
 		throws PortalException;
 
+	public void updatePreferences(
+			long groupId, long plid, String portletId, String name,
+			String value)
+		throws PortalException;
+
 }
