@@ -19,12 +19,16 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.PortletItem;
 import com.liferay.portal.kernel.model.PortletPreferences;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactory;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.PortletItemLocalService;
+import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
@@ -63,6 +67,28 @@ public class PortletPreferencesServiceImpl
 			ownerId, ownerType, plid, portletItem.getPortletId());
 
 		_portletItemLocalService.deletePortletItem(portletItemId);
+	}
+
+	@Override
+	public String getPortletPreferencesXML(
+			long groupId, long plid, String portletId)
+		throws PortalException {
+
+		PortletPermissionUtil.check(
+			getPermissionChecker(), groupId, plid, portletId,
+			ActionKeys.CONFIGURATION);
+
+		int ownerType = PortletKeys.PREFS_OWNER_TYPE_LAYOUT;
+
+		long ownerId = 0;
+
+		Group group = _groupLocalService.getGroup(groupId);
+
+		javax.portlet.PortletPreferences portletPreferences =
+			_portletPreferencesLocalService.getPreferences(
+				group.getCompanyId(), ownerId, ownerType, plid, portletId);
+
+		return _portletPreferencesFactory.toXML(portletPreferences);
 	}
 
 	@Override
@@ -189,7 +215,16 @@ public class PortletPreferencesServiceImpl
 	private static final Log _log = LogFactoryUtil.getLog(
 		PortletPreferencesServiceImpl.class);
 
+	@BeanReference(type = PortletPreferencesFactory.class)
+	private static PortletPreferencesFactory _portletPreferencesFactory;
+
+	@BeanReference(type = GroupLocalService.class)
+	private GroupLocalService _groupLocalService;
+
 	@BeanReference(type = PortletItemLocalService.class)
 	private PortletItemLocalService _portletItemLocalService;
+
+	@BeanReference(type = PortletPreferencesLocalService.class)
+	private PortletPreferencesLocalService _portletPreferencesLocalService;
 
 }
