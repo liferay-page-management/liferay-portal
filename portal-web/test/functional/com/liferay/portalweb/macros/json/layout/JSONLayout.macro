@@ -100,6 +100,25 @@ definition {
 			layoutId = "${layoutId}",
 			privateLayout = "true",
 			typeSettings = "${typeSettings}");
+
+		if (!(isSet(assetSelection))) {
+			var assetSelection = "dynamic";
+		}
+
+		if (("${widgetName}" == "Asset Publisher") && ("${assetSelection}" == "dynamic")) {
+			var plid = JSONLayout.getPlid(
+				groupName = "${groupName}",
+				layoutName = "${layoutName}",
+				privateLayout = "true",
+				site = "${site}");
+
+			JSONPortletPreferences.updatePreferences(
+				groupId = "${groupId}",
+				name = "selectionStyle",
+				plid = "${plid}",
+				portletId = "${portletId}",
+				value = "${assetSelection}");
+		}
 	}
 
 	@summary = "Add a widget to a public layout via widgetName"
@@ -134,6 +153,25 @@ definition {
 			layoutId = "${layoutId}",
 			privateLayout = "false",
 			typeSettings = "${typeSettings}");
+
+		if (!(isSet(assetSelection))) {
+			var assetSelection = "dynamic";
+		}
+
+		if (("${widgetName}" == "Asset Publisher") && ("${assetSelection}" == "dynamic")) {
+			var plid = JSONLayout.getPlid(
+				groupName = "${groupName}",
+				layoutName = "${layoutName}",
+				privateLayout = "false",
+				site = "${site}");
+
+			JSONPortletPreferences.updatePreferences(
+				groupId = "${groupId}",
+				name = "selectionStyle",
+				plid = "${plid}",
+				portletId = "${portletId}",
+				value = "${assetSelection}");
+		}
 	}
 
 	@summary = "Delete a public site page under an existing site via groupName"
