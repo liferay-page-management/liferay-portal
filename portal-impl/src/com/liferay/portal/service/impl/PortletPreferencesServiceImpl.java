@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.PortletItem;
 import com.liferay.portal.kernel.model.PortletPreferences;
@@ -71,22 +70,17 @@ public class PortletPreferencesServiceImpl
 
 	@Override
 	public String getPortletPreferencesXML(
-			long groupId, long plid, String portletId)
+			long companyId, long groupId, long ownerId, int ownerType,
+			long plid, String portletId)
 		throws PortalException {
 
 		PortletPermissionUtil.check(
 			getPermissionChecker(), groupId, plid, portletId,
 			ActionKeys.CONFIGURATION);
 
-		int ownerType = PortletKeys.PREFS_OWNER_TYPE_LAYOUT;
-
-		long ownerId = 0;
-
-		Group group = _groupLocalService.getGroup(groupId);
-
 		javax.portlet.PortletPreferences portletPreferences =
 			_portletPreferencesLocalService.getPreferences(
-				group.getCompanyId(), ownerId, ownerType, plid, portletId);
+				companyId, ownerId, ownerType, plid, portletId);
 
 		return _portletPreferencesFactory.toXML(portletPreferences);
 	}
