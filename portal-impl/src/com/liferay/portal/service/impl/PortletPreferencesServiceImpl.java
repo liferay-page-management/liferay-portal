@@ -14,6 +14,7 @@
 
 package com.liferay.portal.service.impl;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -164,6 +165,33 @@ public class PortletPreferencesServiceImpl
 				portletId);
 
 		copyPreferences(jxPortletPreferences, archivedJxPortletPreferences);
+	}
+
+	@Override
+	public void updatePreferences(
+			long groupId, long plid, String portletId, String name,
+			String value)
+		throws PortalException {
+
+		long ownerId = 0;
+
+		int ownerType = PortletKeys.PREFS_OWNER_TYPE_LAYOUT;
+
+		StringBundler sb = new StringBundler(10);
+
+		sb.append("<portlet-preferences>");
+		sb.append("<preference>");
+		sb.append("<name>");
+		sb.append(name);
+		sb.append("</name>");
+		sb.append("<value>");
+		sb.append(value);
+		sb.append("</value>");
+		sb.append("</preference>");
+		sb.append("</portlet-preferences>");
+
+		_portletPreferencesLocalService.updatePreferences(
+			ownerId, ownerType, plid, portletId, sb.toString());
 	}
 
 	protected void copyPreferences(
