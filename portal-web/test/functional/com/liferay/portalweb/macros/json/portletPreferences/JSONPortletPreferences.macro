@@ -1,0 +1,15 @@
+definition {
+
+	@summary = "Update portletPreferences."
+	macro updatePreferences {
+		Variables.assertDefined(parameterList = "${groupId},${name},${plid},${portletId},${value}");
+
+		JSONPortletPreferencesAPI._updatePreferences(
+			groupId = "${groupId}",
+			name = "${name}",
+			plid = "${plid}",
+			portletId = "${portletId}",
+			value = "${value}");
+	}
+
+}
