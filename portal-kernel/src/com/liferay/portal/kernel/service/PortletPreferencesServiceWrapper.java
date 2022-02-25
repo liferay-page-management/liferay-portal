@@ -55,6 +55,16 @@ public class PortletPreferencesServiceWrapper
 	}
 
 	@Override
+	public String getPreferencesXML(
+			long companyId, long groupId, long ownerId, int ownerType,
+			long plid, String portletId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _portletPreferencesService.getPreferencesXML(
+			companyId, groupId, ownerId, ownerType, plid, portletId);
+	}
+
+	@Override
 	public void restoreArchivedPreferences(
 			long groupId, com.liferay.portal.kernel.model.Layout layout,
 			String portletId, long portletItemId,
@@ -96,6 +106,16 @@ public class PortletPreferencesServiceWrapper
 
 		_portletPreferencesService.updateArchivePreferences(
 			userId, groupId, name, portletId, jxPortletPreferences);
+	}
+
+	@Override
+	public PortletPreferences updatePreferences(
+			long groupId, long ownerId, int ownerType, long plid,
+			String portletId, String xml)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _portletPreferencesService.updatePreferences(
+			groupId, ownerId, ownerType, plid, portletId, xml);
 	}
 
 	@Override
