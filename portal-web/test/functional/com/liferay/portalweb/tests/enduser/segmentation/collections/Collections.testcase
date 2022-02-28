@@ -100,6 +100,8 @@ definition {
 			JSONLayout.addWidgetToPublicLayout(
 				groupName = "Test Site Name",
 				layoutName = "Test Page Name",
+				nameList = "selectionStyle",
+				valueList = "asset-list",
 				widgetName = "Asset Publisher");
 		}
 
@@ -232,6 +234,8 @@ definition {
 			JSONLayout.addWidgetToPublicLayout(
 				groupName = "Test Site Name",
 				layoutName = "Test Page Name",
+				nameList = "selectionStyle",
+				valueList = "asset-list",
 				widgetName = "Asset Publisher");
 		}
 
@@ -378,6 +382,8 @@ definition {
 			JSONLayout.addWidgetToPublicLayout(
 				groupName = "Test Site Name",
 				layoutName = "Test Page Name",
+				nameList = "selectionStyle",
+				valueList = "asset-list",
 				widgetName = "Asset Publisher");
 		}
 
@@ -476,6 +482,8 @@ definition {
 			JSONLayout.addWidgetToPublicLayout(
 				groupName = "Test Site Name",
 				layoutName = "Test Page Name",
+				nameList = "selectionStyle",
+				valueList = "asset-list",
 				widgetName = "Asset Publisher");
 		}
 
@@ -668,6 +676,8 @@ definition {
 			JSONLayout.addWidgetToPublicLayout(
 				groupName = "Test Site Name",
 				layoutName = "Test Page Name",
+				nameList = "selectionStyle",
+				valueList = "asset-list",
 				widgetName = "Asset Publisher");
 		}
 
@@ -1212,6 +1222,8 @@ definition {
 			JSONLayout.addWidgetToPublicLayout(
 				groupName = "Test Site Name",
 				layoutName = "Test Page Name",
+				nameList = "selectionStyle",
+				valueList = "asset-list",
 				widgetName = "Asset Publisher");
 		}
 
@@ -1325,6 +1337,8 @@ definition {
 			JSONLayout.addWidgetToPublicLayout(
 				groupName = "Test Site Name",
 				layoutName = "Test Page Name",
+				nameList = "selectionStyle",
+				valueList = "asset-list",
 				widgetName = "Asset Publisher");
 		}
 
@@ -1441,6 +1455,8 @@ definition {
 			JSONLayout.addWidgetToPublicLayout(
 				groupName = "Test Site Name",
 				layoutName = "Test Page Name",
+				nameList = "selectionStyle",
+				valueList = "asset-list",
 				widgetName = "Asset Publisher");
 		}
 
@@ -1984,6 +2000,8 @@ definition {
 			JSONLayout.addWidgetToPublicLayout(
 				groupName = "Test Site Name",
 				layoutName = "Test Page Name",
+				nameList = "selectionStyle",
+				valueList = "asset-list",
 				widgetName = "Asset Publisher");
 		}
 
@@ -2068,6 +2086,8 @@ definition {
 			JSONLayout.addWidgetToPublicLayout(
 				groupName = "Test Site Name",
 				layoutName = "Test Page Name",
+				nameList = "selectionStyle",
+				valueList = "asset-list",
 				widgetName = "Asset Publisher");
 		}
 
@@ -2175,6 +2195,8 @@ definition {
 			JSONLayout.addWidgetToPublicLayout(
 				groupName = "Test Site Name",
 				layoutName = "Test Page Name",
+				nameList = "selectionStyle",
+				valueList = "asset-list",
 				widgetName = "Asset Publisher");
 		}
 
@@ -2592,6 +2614,8 @@ definition {
 			JSONLayout.addWidgetToPublicLayout(
 				groupName = "Test Site Name",
 				layoutName = "Test Page Name",
+				nameList = "selectionStyle",
+				valueList = "asset-list",
 				widgetName = "Asset Publisher");
 		}
 
@@ -2713,6 +2737,8 @@ definition {
 			JSONLayout.addWidgetToPublicLayout(
 				groupName = "Test Site Name",
 				layoutName = "Test Page Name",
+				nameList = "selectionStyle",
+				valueList = "asset-list",
 				widgetName = "Asset Publisher");
 		}
 
@@ -2890,6 +2916,8 @@ definition {
 			JSONLayout.addWidgetToPublicLayout(
 				groupName = "Test Site Name",
 				layoutName = "Test Page Name",
+				nameList = "selectionStyle",
+				valueList = "asset-list",
 				widgetName = "Asset Publisher");
 		}
 
@@ -3085,6 +3113,8 @@ definition {
 			JSONLayout.addWidgetToPublicLayout(
 				groupName = "Test Site Name",
 				layoutName = "Test Page Name",
+				nameList = "selectionStyle",
+				valueList = "asset-list",
 				widgetName = "Asset Publisher");
 		}
 
@@ -3187,6 +3217,8 @@ definition {
 			JSONLayout.addWidgetToPublicLayout(
 				groupName = "Test Site Name",
 				layoutName = "Test Page Name",
+				nameList = "selectionStyle",
+				valueList = "asset-list",
 				widgetName = "Asset Publisher");
 		}
 
@@ -3278,6 +3310,8 @@ definition {
 			JSONLayout.addWidgetToPublicLayout(
 				groupName = "Test Site Name",
 				layoutName = "Test Page Name",
+				nameList = "selectionStyle",
+				valueList = "asset-list",
 				widgetName = "Asset Publisher");
 		}
 
@@ -3507,6 +3541,8 @@ definition {
 			JSONLayout.addWidgetToPublicLayout(
 				groupName = "Test Site Name",
 				layoutName = "Test Page Name",
+				nameList = "selectionStyle",
+				valueList = "asset-list",
 				widgetName = "Asset Publisher");
 		}
 
@@ -3606,6 +3642,8 @@ definition {
 			JSONLayout.addWidgetToPublicLayout(
 				groupName = "Test Site Name",
 				layoutName = "Asset Publisher Page",
+				nameList = "selectionStyle",
+				valueList = "asset-list",
 				widgetName = "Asset Publisher");
 		}
 
@@ -3715,6 +3753,8 @@ definition {
 			JSONLayout.addWidgetToPublicLayout(
 				groupName = "Test Site Name",
 				layoutName = "Asset Publisher Page",
+				nameList = "selectionStyle",
+				valueList = "asset-list",
 				widgetName = "Asset Publisher");
 		}
 
