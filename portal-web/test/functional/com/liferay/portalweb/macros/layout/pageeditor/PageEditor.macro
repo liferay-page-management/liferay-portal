@@ -210,6 +210,16 @@ definition {
 				locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
 
 			Click(locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_SEARCH_CLEAR_BUTTON");
+
+			if ("${portletName}" == "Asset Publisher") {
+				if (!(isSet(selectionStyle))) {
+					var selectionStyle = "Dynamic";
+				}
+
+				if ("${selectionStyle}" == "Dynamic") {
+					AssetPublisherPortlet.configureDynamicAssetSelectionPG(portletName = "Asset Publisher");
+				}
+			}
 		}
 	}
 
@@ -303,6 +313,16 @@ definition {
 					locator1 = "PageEditor#CONTAINER_CONTAINER_NESTED_ELEMENT");
 
 				Click(locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_SEARCH_CLEAR_BUTTON");
+
+				if ("${portletName}" == "Asset Publisher") {
+					if (!(isSet(selectionStyle))) {
+						var selectionStyle = "Dynamic";
+					}
+
+					if ("${selectionStyle}" == "Dynamic") {
+						AssetPublisherPortlet.configureDynamicAssetSelectionPG(portletName = "Asset Publisher");
+					}
+				}
 			}
 		}
 		else {
@@ -416,6 +436,16 @@ definition {
 				locator1 = "Fragment#FRAGMENT_BODY_IN_FRAGMENT");
 
 			Click(locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_SEARCH_CLEAR_BUTTON");
+
+			if ("${portletName}" == "Asset Publisher") {
+				if (!(isSet(selectionStyle))) {
+					var selectionStyle = "Dynamic";
+				}
+
+				if ("${selectionStyle}" == "Dynamic") {
+					AssetPublisherPortlet.configureDynamicAssetSelectionPG(portletName = "Asset Publisher");
+				}
+			}
 		}
 	}
 
@@ -511,6 +541,16 @@ definition {
 				locator1 = "Fragment#FRAGMENT_BODY_IN_FRAGMENT");
 
 			Click(locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_SEARCH_CLEAR_BUTTON");
+
+			if ("${portletName}" == "Asset Publisher") {
+				if (!(isSet(selectionStyle))) {
+					var selectionStyle = "Dynamic";
+				}
+
+				if ("${selectionStyle}" == "Dynamic") {
+					AssetPublisherPortlet.configureDynamicAssetSelectionPG(portletName = "Asset Publisher");
+				}
+			}
 		}
 	}
 
@@ -873,6 +913,16 @@ definition {
 			position = "${position}");
 
 		Click(locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_SEARCH_CLEAR_BUTTON");
+
+		if ("${portletName}" == "Asset Publisher") {
+			if (!(isSet(selectionStyle))) {
+				var selectionStyle = "Dynamic";
+			}
+
+			if ("${selectionStyle}" == "Dynamic") {
+				AssetPublisherPortlet.configureDynamicAssetSelectionPG(portletName = "Asset Publisher");
+			}
+		}
 	}
 
 	macro assertAutoImageResolution {
