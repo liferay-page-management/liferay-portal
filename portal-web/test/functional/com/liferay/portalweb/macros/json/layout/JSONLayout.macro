@@ -89,11 +89,18 @@ definition {
 			layoutName = "${layoutName}",
 			privateLayout = "true");
 
+		var portletId = JSONLayoutUtil._generateWidget(widgetName = "${widgetName}");
+
+		if (isSet(remoteAppEntryId)) {
+			var portletId = StringUtil.replace("${portletId}", "remoteAppEntryId", "${remoteAppEntryId}");
+		}
+
 		var typeSettings = JSONLayoutSetter.setTypeSettings(
+			column = "${column}",
 			groupId = "${groupId}",
 			layoutName = "${layoutName}",
-			privateLayout = "true",
-			widgetName = "${widgetName}");
+			portletId = "${portletId}",
+			privateLayout = "true");
 
 		JSONLayoutAPI._updateTypeSettings(
 			groupId = "${groupId}",
@@ -121,13 +128,18 @@ definition {
 			layoutName = "${layoutName}",
 			privateLayout = "false");
 
+		var portletId = JSONLayoutUtil._generateWidget(widgetName = "${widgetName}");
+
+		if (isSet(remoteAppEntryId)) {
+			var portletId = StringUtil.replace("${portletId}", "remoteAppEntryId", "${remoteAppEntryId}");
+		}
+
 		var typeSettings = JSONLayoutSetter.setTypeSettings(
 			column = "${column}",
 			groupId = "${groupId}",
 			layoutName = "${layoutName}",
-			privateLayout = "false",
-			remoteAppEntryId = "${remoteAppEntryId}",
-			widgetName = "${widgetName}");
+			portletId = "${portletId}",
+			privateLayout = "false");
 
 		JSONLayoutAPI._updateTypeSettings(
 			groupId = "${groupId}",
