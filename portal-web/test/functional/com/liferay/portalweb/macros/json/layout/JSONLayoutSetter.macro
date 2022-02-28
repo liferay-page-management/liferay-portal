@@ -111,15 +111,14 @@ definition {
 				typeSettings = "${typeSettings}");
 		}
 
-		if (isSet(widgetName)) {
+		if (isSet(portletId)) {
 			var typeSettings = JSONLayoutUtil._addWidgetToTypeSettings(
 				column = "${column}",
-				remoteAppEntryId = "${remoteAppEntryId}",
-				typeSettings = "${typeSettings}",
-				widgetName = "${widgetName}");
+				portletId = "${portletId}",
+				typeSettings = "${typeSettings}");
 		}
 
-		if (!(isSet(layoutTemplate)) && !(isSet(widgetName))) {
+		if (!(isSet(layoutTemplate)) && !(isSet(portletId))) {
 			fail("typeSettings will not be updated.");
 		}
 

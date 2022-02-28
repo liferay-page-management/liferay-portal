@@ -10,19 +10,13 @@ definition {
 
 		Variables.assertDefined(parameterList = "${typeSettings}");
 
-		var widget = JSONLayoutUtil._generateWidget(widgetName = "${widgetName}");
-
-		if (isSet(remoteAppEntryId)) {
-			var widget = StringUtil.replace("${widget}", "remoteAppEntryId", "${remoteAppEntryId}");
-		}
-
 		if (contains("${typeSettings}", "column-${column}=")) {
-			var typeSettings = StringUtil.regexReplaceFirst("${typeSettings}", "(column-${column}=[^%]*)", "$1,${widget}");
+			var typeSettings = StringUtil.regexReplaceFirst("${typeSettings}", "(column-${column}=[^%]*)", "$1,${portletId}");
 		}
 		else {
 			var typeSettings = '''${typeSettings}column-${column}''';
 
-			var typeSettings = '''${typeSettings}=${widget}''';
+			var typeSettings = '''${typeSettings}=${portletId}''';
 		}
 
 		return "${typeSettings}";
