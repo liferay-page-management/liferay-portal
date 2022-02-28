@@ -59,6 +59,16 @@ definition {
 		Click.clickAt(locator1 = "ControlMenuAddPanel#CLOSE_ADD_PANEL");
 
 		AssertElementPresent(locator1 = "Home#PORTLET");
+
+		if ("${portletName}" == "Asset Publisher") {
+			if (!(isSet(selectionStyle))) {
+				var selectionStyle = "Dynamic";
+			}
+
+			if ("${selectionStyle}" == "Dynamic") {
+				AssetPublisherPortlet.configureDynamicAssetSelectionPG(portletName = "Asset Publisher");
+			}
+		}
 	}
 
 	macro addPGCmd {
