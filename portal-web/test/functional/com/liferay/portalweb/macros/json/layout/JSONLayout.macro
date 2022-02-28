@@ -107,6 +107,30 @@ definition {
 			layoutId = "${layoutId}",
 			privateLayout = "true",
 			typeSettings = "${typeSettings}");
+
+		if ("${widgetName}" == "Asset Publisher") {
+			if (!(isSet(nameList))) {
+				var nameList = "selectionStyle";
+				var valueList = "dynamic";
+			}
+
+			if (!(contains("${valueList}", "asset-list"))) {
+				var plid = JSONLayout.getPlid(
+					groupName = "${groupName}",
+					layoutName = "${layoutName}",
+					privateLayout = "true",
+					site = "${site}");
+
+				JSONPortletPreferences.updatePreferences(
+					groupId = "${groupId}",
+					nameList = "${nameList}",
+					ownerId = "${ownerId}",
+					ownerType = "${ownerType}",
+					plid = "${plid}",
+					portletId = "${portletId}",
+					valueList = "${valueList}");
+			}
+		}
 	}
 
 	@summary = "Add a widget to a public layout via widgetName"
@@ -146,6 +170,30 @@ definition {
 			layoutId = "${layoutId}",
 			privateLayout = "false",
 			typeSettings = "${typeSettings}");
+
+		if ("${widgetName}" == "Asset Publisher") {
+			if (!(isSet(nameList))) {
+				var nameList = "selectionStyle";
+				var valueList = "dynamic";
+			}
+
+			if (!(contains("${valueList}", "asset-list"))) {
+				var plid = JSONLayout.getPlid(
+					groupName = "${groupName}",
+					layoutName = "${layoutName}",
+					privateLayout = "false",
+					site = "${site}");
+
+				JSONPortletPreferences.updatePreferences(
+					groupId = "${groupId}",
+					nameList = "${nameList}",
+					ownerId = "${ownerId}",
+					ownerType = "${ownerType}",
+					plid = "${plid}",
+					portletId = "${portletId}",
+					valueList = "${valueList}");
+			}
+		}
 	}
 
 	@summary = "Delete a public site page under an existing site via groupName"
