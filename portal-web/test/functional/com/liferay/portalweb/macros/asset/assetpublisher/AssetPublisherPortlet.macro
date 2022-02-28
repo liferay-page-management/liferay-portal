@@ -308,7 +308,7 @@ definition {
 
 		Panel.expandPanel(panel = "Asset Selection");
 
-		Click(locator1 = "APConfiguration#ASSET_SELECTION_ASSET_LIST");
+		Check(locator1 = "APConfiguration#ASSET_SELECTION_ASSET_LIST");
 
 		Alert.viewSuccessMessage();
 
@@ -411,7 +411,7 @@ definition {
 
 		Navigator.gotoNavTab(navTab = "Asset Selection");
 
-		Click(locator1 = "APConfiguration#ASSET_SELECTION_DYNAMIC");
+		Check(locator1 = "APConfiguration#ASSET_SELECTION_DYNAMIC");
 
 		Alert.viewSuccessMessage();
 
@@ -485,7 +485,7 @@ definition {
 
 		Navigator.gotoNavTab(navTab = "Asset Selection");
 
-		Click(locator1 = "APConfiguration#ASSET_SELECTION_MANUAL");
+		Check(locator1 = "APConfiguration#ASSET_SELECTION_MANUAL");
 
 		if (isSet(depotName)) {
 			Panel.expandPanel(panel = "Scope");
@@ -999,7 +999,7 @@ definition {
 
 		Panel.expandPanel(panel = "Asset Selection");
 
-		Click(locator1 = "APConfiguration#ASSET_SELECTION_ASSET_LIST");
+		Check(locator1 = "APConfiguration#ASSET_SELECTION_ASSET_LIST");
 
 		Alert.viewSuccessMessage();
 
@@ -1439,7 +1439,7 @@ definition {
 
 		Navigator.gotoNavTab(navTab = "Asset Selection");
 
-		Click(locator1 = "APConfiguration#ASSET_SELECTION_DYNAMIC");
+		Check(locator1 = "APConfiguration#ASSET_SELECTION_DYNAMIC");
 
 		for (var panel : list "Source,Filter,Custom User Attributes,Ordering") {
 			AssertElementPresent(
@@ -1511,7 +1511,7 @@ definition {
 
 		Panel.expandPanel(panel = "Asset Entries");
 
-		Click(locator1 = "APConfiguration#ASSET_SELECTION_MANUAL");
+		Check(locator1 = "APConfiguration#ASSET_SELECTION_MANUAL");
 
 		AssertElementNotPresent(locator1 = "APConfiguration#SOURCE_DROPDOWN");
 
