@@ -3742,6 +3742,8 @@ definition {
 		task ("Configure the Asset Publisher to show full content") {
 			Navigator.gotoPage(pageName = "Asset Publisher");
 
+			AssetPublisherPortlet.configureDynamicAssetSelectionPG(portletName = "Asset Publisher");
+
 			AssetPublisherPortlet.configureAssetLinkBehaviorPG(assetLinkBehavior = "Show Full Content");
 		}
 
@@ -5812,6 +5814,8 @@ definition {
 			webContentTitle = "Web Content Title");
 
 		Navigator.gotoPage(pageName = "Asset Publisher");
+
+		AssetPublisherPortlet.configureDynamicAssetSelectionPG(portletName = "Asset Publisher");
 
 		AssetPublisherPortlet.viewAssetPG(
 			assetContent = "This is a HTML field",
