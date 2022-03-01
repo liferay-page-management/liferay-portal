@@ -3744,6 +3744,8 @@ definition {
 		task ("Configure the Asset Publisher to show full content") {
 			Navigator.gotoPage(pageName = "Asset Publisher");
 
+			AssetPublisherPortlet.configureDynamicAssetSelectionPG(portletName = "Asset Publisher");
+
 			AssetPublisherPortlet.configureAssetLinkBehaviorPG(assetLinkBehavior = "Show Full Content");
 		}
 
@@ -5155,6 +5157,8 @@ definition {
 	macro viewSpecificDisplayPageTemplateViaAssetPublisher {
 		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/Document Display Page");
 
+		AssetPublisherPortlet.configureDynamicAssetSelectionPG(portletName = "Asset Publisher");
+
 		AssetPublisherPortlet.clickAssetTitle(assetTitle = "DM Document Title");
 
 		AssertElementPresent(
@@ -5814,6 +5818,8 @@ definition {
 			webContentTitle = "Web Content Title");
 
 		Navigator.gotoPage(pageName = "Asset Publisher");
+
+		AssetPublisherPortlet.configureDynamicAssetSelectionPG(portletName = "Asset Publisher");
 
 		AssetPublisherPortlet.viewAssetPG(
 			assetContent = "This is a HTML field",
