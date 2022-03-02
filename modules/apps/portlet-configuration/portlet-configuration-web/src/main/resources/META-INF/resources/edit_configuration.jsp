@@ -33,3 +33,5 @@
 	%>
 
 </div>
+
+<aui:script use="liferay-form" />
