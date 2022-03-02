@@ -184,9 +184,12 @@ definition {
 		task ("Can hide portlet header of future visible portlets on widget page when Toggle Controls is closed") {
 			WidgetPages.viewToggleControls(status = "hidden");
 
-			Portlet.addPG(
-				pageName = "Test Page Name",
-				portletName = "Asset Publisher");
+			JSONLayout.addWidgetToPublicLayout(
+				groupName = "Test Site Name 1",
+				layoutName = "Test Page Name",
+				widgetName = "Asset Publisher");
+
+			Refresh();
 
 			MouseOver(
 				key_portletName = "Asset Publisher",
