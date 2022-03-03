@@ -1,12 +1,12 @@
 definition {
 
 	macro getLoadTime {
-		WaitForPageLoad();
+		WaitForPageLoad(locator1 = "1000");
 
 		var javascript = '''
 const [entry] = performance.getEntriesByType("navigation");
 
-const loadTime = Math.round(entry.domComplete - entry.startTime);
+const loadTime = Math.round(entry.loadEventEnd - entry.startTime);
 
 return loadTime.toString();
 		''';
@@ -16,7 +16,7 @@ return loadTime.toString();
 	}
 
 	macro getRenderTime {
-		WaitForPageLoad();
+		WaitForPageLoad(locator1 = "1000");
 
 		var javascript = '''
 const [entry] = performance.getEntriesByType("navigation");
@@ -31,7 +31,7 @@ return renderTime.toString();
 	}
 
 	macro getResponseTime {
-		WaitForPageLoad();
+		WaitForPageLoad(locator1 = "1000");
 
 		var javascript = '''
 const [entry] = performance.getEntriesByType("navigation");
