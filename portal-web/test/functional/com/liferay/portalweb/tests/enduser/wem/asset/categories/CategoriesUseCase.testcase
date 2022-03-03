@@ -278,6 +278,28 @@ definition {
 		}
 	}
 
+	@description = "This is a test for LPS-141953. The user can add a vocabulary via Groovy script in Server Administration."
+	@priority = "4"
+	test AddVocabularyWithGroovyScript {
+		task ("Execute groovy script to add the vocabulary") {
+			ServerAdministration.openServerAdmin();
+
+			var script = TestCase.getFileContent(fileName = "addVocabulary.groovy");
+
+			ServerAdministration.executeScript(
+				language = "Groovy",
+				script = "${script}");
+
+			ServerAdministration.viewOutputField(valueName = "vocabulary name: test groovy vocabulary");
+		}
+
+		task ("View vocabulary is shown in Categories Admin") {
+			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
+
+			Vocabulary.viewCP(vocabularyName = "Test Groovy Vocabulary");
+		}
+	}
+
 	@description = "Add a web content with a category from parent site."
 	@priority = "4"
 	test AddWebContentWithCategoryFromParentSite {
