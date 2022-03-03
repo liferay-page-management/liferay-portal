@@ -1,0 +1,48 @@
+definition {
+
+	macro getLoadTime {
+		WaitForPageLoad();
+
+		var javascript = '''
+const [entry] = performance.getEntriesByType("navigation");
+
+const loadTime = Math.round(entry.domComplete - entry.startTime);
+
+return loadTime.toString();
+		''';
+		var loadTime = selenium.getEval("${javascript}");
+
+		return "${loadTime}";
+	}
+
+	macro getRenderTime {
+		WaitForPageLoad();
+
+		var javascript = '''
+const [entry] = performance.getEntriesByType("navigation");
+
+const renderTime = Math.round(entry.domComplete - entry.domInteractive);
+
+return renderTime.toString();
+		''';
+		var renderTime = selenium.getEval("${javascript}");
+
+		return "${renderTime}";
+	}
+
+	macro getResponseTime {
+		WaitForPageLoad();
+
+		var javascript = '''
+const [entry] = performance.getEntriesByType("navigation");
+
+const responseTime = Math.round(entry.responseEnd - entry.requestStart);
+
+return responseTime.toString();
+		''';
+		var responseTime = selenium.getEval("${javascript}");
+
+		return "${responseTime}";
+	}
+
+}
