@@ -4,11 +4,11 @@ definition {
 		WaitForPageLoad(locator1 = "1000");
 
 		var javascript = '''
-const [entry] = performance.getEntriesByType("navigation");
+			const [entry] = performance.getEntriesByType("navigation");
 
-const loadTime = Math.round(entry.loadEventEnd - entry.startTime);
+			const loadTime = Math.round(entry.loadEventEnd - entry.startTime);
 
-return loadTime.toString();
+			return loadTime.toString();
 		''';
 		var loadTime = selenium.getEval("${javascript}");
 
@@ -19,11 +19,11 @@ return loadTime.toString();
 		WaitForPageLoad(locator1 = "1000");
 
 		var javascript = '''
-const [entry] = performance.getEntriesByType("navigation");
+			const [entry] = performance.getEntriesByType("navigation");
 
-const renderTime = Math.round(entry.domComplete - entry.domInteractive);
+			const renderTime = Math.round(entry.domComplete - entry.domInteractive);
 
-return renderTime.toString();
+			return renderTime.toString();
 		''';
 		var renderTime = selenium.getEval("${javascript}");
 
@@ -34,11 +34,11 @@ return renderTime.toString();
 		WaitForPageLoad(locator1 = "1000");
 
 		var javascript = '''
-const [entry] = performance.getEntriesByType("navigation");
+			const [entry] = performance.getEntriesByType("navigation");
 
-const responseTime = Math.round(entry.responseEnd - entry.requestStart);
+			const responseTime = Math.round(entry.responseEnd - entry.requestStart);
 
-return responseTime.toString();
+			return responseTime.toString();
 		''';
 		var responseTime = selenium.getEval("${javascript}");
 
