@@ -112,6 +112,36 @@ definition {
 		}
 	}
 
+	@description = "This is a test for LPS-143302. The user cannot access the navigation menu when preview a page within a Style Books."
+	@priority = "4"
+	test CannotNavigateWhenPreviewPage {
+		task ("Add a widget page") {
+			JSONLayout.addPublicLayout(
+				groupName = "Test Site Name",
+				layoutName = "Test Page Name");
+		}
+
+		task ("Define Minium as current theme for the widget page") {
+			PagesAdmin.openPagesAdmin(siteURLKey = "test-site-name");
+
+			PagesAdmin.changeWidgetPageCurrentTheme(
+				pageName = "Test Page Name",
+				themeName = "Minium");
+		}
+
+		task ("Add a style book") {
+			StyleBooksAdmin.openStyleBooksAdmin(siteURLKey = "test-site-name");
+
+			StyleBooksAdmin.addStyleBooks(styleBookName = "Test Style Book Name");
+		}
+
+		task ("View cannot navigate when preview the page") {
+			SelectFrame.selectFrameNoLoading(locator1 = "StyleBookEditor#PAGE_PREVIEW_IFRAME");
+
+			StyleBooks.viewPreviewPageUneditable();
+		}
+	}
+
 	@description = "This is a test for LPS-137065. The user cannot preview the effects of styles on draft changes."
 	@priority = "4"
 	test CannotPreviewStyleBookOnDraftChanges {
