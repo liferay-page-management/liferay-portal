@@ -1,0 +1,60 @@
+@component-name = "portal-wcm"
+definition {
+
+	property portal.release = "true";
+	property portal.upstream = "true";
+	property testray.main.component.name = "Site Pages Administration";
+
+	setUp {
+		task ("Sign In") {
+			User.firstLoginPG();
+		}
+	}
+
+	tearDown {
+		JSONGroup.deleteGroupByName(groupName = "Test Site Name");
+	}
+
+	@description = "This is a use case for LPS-123587. Test the loading time when admin visit the Pages admin with hundreds of pages."
+	@priority = "5"
+	test TestLoadingTimeWhenHundredsOfPagesInSite {
+		task ("Add five hundred pages via Groovy script") {
+			ServerAdministration.openServerAdmin();
+
+			var script = TestCase.getFileContent(fileName = "AddLayouts.groovy");
+
+			ServerAdministration.executeScript(
+				language = "Groovy",
+				script = "${script}");
+		}
+
+		task ("Test the loading time when visit the Pages admin") {
+			PagesAdmin.openPagesAdmin(siteURLKey = "test-site-name");
+
+			var responseTime = Performance.getResponseTime();
+
+			var renderTime = Performance.getRenderTime();
+
+			var loadTime = Performance.getLoadTime();
+
+			echo("Response Time: ${responseTime}ms");
+
+			echo("Render Time: ${renderTime}ms");
+
+			echo("Load Time: ${loadTime}ms");
+
+			if (("${responseTime}" == "0") || ("${renderTime}" == "0") || ("${loadTime}" == "0")) {
+				fail("Test is required to update");
+			}
+
+			var result1 = MathUtil.isLessThan("${responseTime}", "2000");
+			var result2 = MathUtil.isLessThan("${renderTime}", "2000");
+			var result3 = MathUtil.isLessThan("${loadTime}", "4000");
+
+			if (("${result1}" == "false") || ("${result2}" == "false") || ("${result3}" == "false")) {
+				fail("Performance is required to improve");
+			}
+		}
+	}
+
+}
