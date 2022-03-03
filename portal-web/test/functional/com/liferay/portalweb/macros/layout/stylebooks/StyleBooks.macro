@@ -158,6 +158,10 @@ definition {
 			value1 = "${previewType}");
 	}
 
+	macro viewPreviewPageUneditable {
+		AssertElementPresent(locator1 = "StyleBookEditor#PREVIEW_PAGE_UNEDITABLE");
+	}
+
 	macro waitForAutoSave {
 		Pause(locator1 = "1000");
 
