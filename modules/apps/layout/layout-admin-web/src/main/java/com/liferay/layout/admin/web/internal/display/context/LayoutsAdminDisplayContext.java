@@ -425,10 +425,6 @@ public class LayoutsAdminDisplayContext {
 	}
 
 	public Layout getDraftLayout(Layout layout) throws Exception {
-		if (!layout.isTypeContent()) {
-			return null;
-		}
-
 		UnicodeProperties unicodeProperties =
 			layout.getTypeSettingsProperties();
 
