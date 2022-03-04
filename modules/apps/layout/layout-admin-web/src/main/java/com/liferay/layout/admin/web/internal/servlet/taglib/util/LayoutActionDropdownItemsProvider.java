@@ -62,10 +62,9 @@ public class LayoutActionDropdownItemsProvider {
 	}
 
 	public List<DropdownItem> getActionDropdownItems(
-			Layout layout, boolean includeAddChildPageAction)
-		throws Exception {
+		Layout layout, boolean includeAddChildPageAction) {
 
-		Layout draftLayout = _layoutsAdminDisplayContext.getDraftLayout(layout);
+		Layout draftLayout = layout.fetchDraftLayout();
 
 		return DropdownItemListBuilder.addGroup(
 			dropdownGroupItem -> {
