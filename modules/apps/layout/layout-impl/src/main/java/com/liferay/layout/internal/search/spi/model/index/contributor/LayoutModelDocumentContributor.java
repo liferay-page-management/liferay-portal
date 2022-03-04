@@ -90,6 +90,13 @@ public class LayoutModelDocumentContributor
 			return;
 		}
 
+		boolean published = GetterUtil.getBoolean(
+			layout.getTypeSettingsProperty("published"));
+
+		if (!published) {
+			return;
+		}
+
 		Set<Locale> locales = LanguageUtil.getAvailableLocales(
 			layout.getGroupId());
 
