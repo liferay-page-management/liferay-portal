@@ -446,8 +446,6 @@ public class LayoutsAdminDisplayContext {
 
 		draftLayout = _layoutCopyHelper.copyLayout(layout, draftLayout);
 
-		serviceContext.setAttribute("published", Boolean.TRUE);
-
 		LayoutLocalServiceUtil.updateStatus(
 			draftLayout.getUserId(), draftLayout.getPlid(),
 			WorkflowConstants.STATUS_APPROVED, serviceContext);
