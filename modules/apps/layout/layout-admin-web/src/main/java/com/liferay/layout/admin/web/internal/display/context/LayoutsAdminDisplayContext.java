@@ -454,9 +454,11 @@ public class LayoutsAdminDisplayContext {
 
 		serviceContext.setAttribute("published", Boolean.TRUE);
 
-		return LayoutLocalServiceUtil.updateStatus(
+		LayoutLocalServiceUtil.updateStatus(
 			draftLayout.getUserId(), draftLayout.getPlid(),
 			WorkflowConstants.STATUS_APPROVED, serviceContext);
+
+		return draftLayout;
 	}
 
 	public String getEditLayoutURL(Layout layout) throws Exception {
