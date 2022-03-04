@@ -15,6 +15,8 @@
 package com.liferay.portal.kernel.model;
 
 import com.liferay.exportimport.kernel.staging.StagingUtil;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -37,6 +39,7 @@ import java.lang.reflect.Method;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -219,6 +222,28 @@ public class LayoutStagingHandler implements InvocationHandler, Serializable {
 			return layoutRevision;
 		}
 
+		if (layout.isTypeContent()) {
+			DynamicQuery dynamicQuery =
+				LayoutRevisionLocalServiceUtil.dynamicQuery();
+
+			dynamicQuery.add(
+				RestrictionsFactoryUtil.eq("companyId", layout.getCompanyId()));
+			dynamicQuery.add(
+				RestrictionsFactoryUtil.eq("groupId", layout.getGroupId()));
+			dynamicQuery.add(
+				RestrictionsFactoryUtil.eq("plid", layout.getPlid()));
+
+			long layoutRevisionsCount =
+				LayoutRevisionLocalServiceUtil.dynamicQueryCount(dynamicQuery);
+
+			if (layoutRevisionsCount == 0) {
+				_initializeLayoutRevisionsForUpgradedContentLayout(layout);
+
+				return LayoutRevisionLocalServiceUtil.fetchLatestLayoutRevision(
+					layoutSetBranchId, layout.getPlid());
+			}
+		}
+
 		LayoutBranch layoutBranch =
 			LayoutBranchLocalServiceUtil.getMasterLayoutBranch(
 				layoutSetBranchId, layout.getPlid(), serviceContext);
@@ -262,6 +287,37 @@ public class LayoutStagingHandler implements InvocationHandler, Serializable {
 		return LayoutTypePortletFactoryUtil.create(
 			_layoutProxyProviderFunction.apply(
 				new LayoutStagingHandler(_layout, _layoutRevision)));
+	}
+
+	private void _initializeLayoutRevisionsForUpgradedContentLayout(
+			Layout layout)
+		throws PortalException {
+
+		List<LayoutSetBranch> layoutSetBranches =
+			LayoutSetBranchLocalServiceUtil.getLayoutSetBranches(
+				layout.getGroupId(), layout.isPrivateLayout());
+
+		for (LayoutSetBranch layoutSetBranch : layoutSetBranches) {
+			ServiceContext serviceContext =
+				ServiceContextThreadLocal.getServiceContext();
+
+			LayoutBranch layoutBranch =
+				LayoutBranchLocalServiceUtil.getMasterLayoutBranch(
+					layoutSetBranch.getLayoutSetBranchId(), layout.getPlid(),
+					serviceContext);
+
+			LayoutRevisionLocalServiceUtil.addLayoutRevision(
+				layout.getUserId(), layoutSetBranch.getLayoutSetBranchId(),
+				layoutBranch.getLayoutBranchId(),
+				LayoutRevisionConstants.DEFAULT_PARENT_LAYOUT_REVISION_ID, true,
+				layout.getPlid(), LayoutConstants.DEFAULT_PLID,
+				layout.isPrivateLayout(), layout.getName(), layout.getTitle(),
+				layout.getDescription(), layout.getKeywords(),
+				layout.getRobots(), layout.getTypeSettings(),
+				layout.getIconImage(), layout.getIconImageId(),
+				layout.getThemeId(), layout.getColorSchemeId(), layout.getCss(),
+				serviceContext);
+		}
 	}
 
 	private boolean _isBelongsToLayout(
