@@ -248,8 +248,7 @@ public class GetCollectionFieldMVCResourceCommand
 
 		Pagination pagination = _collectionPaginationHelper.getPagination(
 			activePage, listCount, displayAllPages, displayAllItems,
-			numberOfItems, numberOfItemsPerPage, numberOfPages, paginationType,
-			showAllItems);
+			numberOfItems, numberOfItemsPerPage, numberOfPages, paginationType);
 
 		defaultLayoutListRetrieverContext.setPagination(pagination);
 
@@ -349,8 +348,7 @@ public class GetCollectionFieldMVCResourceCommand
 			"totalNumberOfItems",
 			_collectionPaginationHelper.getTotalNumberOfItems(
 				listCount, displayAllPages, displayAllItems, numberOfItems,
-				numberOfItemsPerPage, numberOfPages, paginationType,
-				showAllItems)
+				numberOfItemsPerPage, numberOfPages, paginationType)
 		);
 
 		return jsonObject;
