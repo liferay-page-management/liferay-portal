@@ -413,21 +413,22 @@ const Collection = React.memo(
 					</>
 				)}
 
-				{collectionConfig.paginationType && (
-					<CollectionPagination
-						activePage={activePage}
-						collectionConfig={collectionConfig}
-						collectionId={item.itemId}
-						onPageChange={setActivePage}
-						totalNumberOfItems={
-							collection.fakeCollection ? 0 : numberOfItems
-						}
-						totalPages={getNumberOfPages(
-							collection,
-							collectionConfig
-						)}
-					/>
-				)}
+				{collectionConfig.collection &&
+					collectionConfig.paginationType && (
+						<CollectionPagination
+							activePage={activePage}
+							collectionConfig={collectionConfig}
+							collectionId={item.itemId}
+							onPageChange={setActivePage}
+							totalNumberOfItems={
+								collection.fakeCollection ? 0 : numberOfItems
+							}
+							totalPages={getNumberOfPages(
+								collection,
+								collectionConfig
+							)}
+						/>
+					)}
 			</div>
 		);
 	})
