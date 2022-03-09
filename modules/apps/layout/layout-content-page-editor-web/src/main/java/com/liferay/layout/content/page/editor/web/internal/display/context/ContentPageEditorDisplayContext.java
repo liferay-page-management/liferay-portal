@@ -521,10 +521,6 @@ public class ContentPageEditorDisplayContext {
 					return list;
 				}
 			).put(
-				"paginationImprovementsEnabled",
-				_ffLayoutContentPageEditorConfiguration.
-					paginationImprovementsEnabled()
-			).put(
 				"pending",
 				() -> {
 					Layout publishedLayout = _getPublishedLayout();
