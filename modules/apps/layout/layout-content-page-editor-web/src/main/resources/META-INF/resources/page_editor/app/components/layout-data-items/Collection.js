@@ -101,9 +101,17 @@ const Grid = ({
 			collectionLength,
 			getNumberOfItems(collection, collectionConfig)
 		) || 1;
+
 	const numberOfRows = Math.ceil(
 		maxNumberOfItems / collectionConfig.numberOfColumns
 	);
+
+	const numberOfItemsDisplayed = collectionConfig.paginationType
+		? Math.min(
+				collectionConfig.numberOfItemsPerPage,
+				collection.totalNumberOfItems
+		  )
+		: collection.totalNumberOfItems;
 
 	return (
 		<>
@@ -145,8 +153,7 @@ const Grid = ({
 					)}
 				</ClayLayout.Row>
 			))}
-			{collection.totalNumberOfItems >
-				config.maxNumberOfItemsEditMode && (
+			{numberOfItemsDisplayed > config.maxNumberOfItemsEditMode && (
 				<ClayAlert
 					className="border-0 mb-0"
 					displayType="info"
