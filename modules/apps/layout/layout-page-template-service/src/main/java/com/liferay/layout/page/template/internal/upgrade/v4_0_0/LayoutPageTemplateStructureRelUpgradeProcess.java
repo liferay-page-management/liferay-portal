@@ -83,6 +83,10 @@ public class LayoutPageTemplateStructureRelUpgradeProcess
 								numberOfItems / (double)numberOfItemsPerPage));
 					}
 				}
+				else {
+					collectionStyledLayoutStructureItem.setPaginationType(
+						CollectionPaginationHelper.PAGINATION_TYPE_NONE);
+				}
 			}
 		}
 
