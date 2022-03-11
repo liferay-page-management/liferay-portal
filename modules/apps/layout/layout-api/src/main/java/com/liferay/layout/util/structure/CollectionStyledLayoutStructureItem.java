@@ -294,6 +294,9 @@ public class CollectionStyledLayoutStructureItem
 		if (itemConfigJSONObject.has("paginationType")) {
 			setPaginationType(itemConfigJSONObject.getString("paginationType"));
 		}
+		else {
+			setPaginationType(CollectionPaginationHelper.PAGINATION_TYPE_NONE);
+		}
 
 		if (itemConfigJSONObject.has("templateKey")) {
 			setTemplateKey(itemConfigJSONObject.getString("templateKey"));
