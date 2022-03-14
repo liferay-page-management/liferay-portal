@@ -590,4 +590,34 @@ definition {
 		}
 	}
 
+	test ViewLayoutOfGridInMobileViewport {
+		property custom.properties = "feature.flag.LPS-119551=true";
+
+		task ("Add a Grid to a content page") {
+			ContentPagesNavigator.openEditContentPage(
+				pageName = "Test Content Page Name",
+				siteName = "Test Site Name");
+
+			PageEditor.addFragment(
+				collectionName = "Layout Elements",
+				fragmentName = "Grid");
+		}
+
+		task ("View the Layout is 3 Modules per Row in Desktop viewport") {
+			PageEditor.viewGridStyle(
+				layout = "4",
+				position = "1");
+		}
+
+		task ("View the Layout is 1 Module per Row in Langscape Phone viewport") {
+			PageEditor.switchViewport(deviceType = "Landscape Phone");
+
+			SelectFrame.selectFrameNoLoading(locator1 = "IFrame#PAGE_EDITOR_GLOBAL_CONTEXT_IFRAME");
+
+			PageEditor.viewGridStyle(
+				layout = "12",
+				position = "1");
+		}
+	}
+
 }
