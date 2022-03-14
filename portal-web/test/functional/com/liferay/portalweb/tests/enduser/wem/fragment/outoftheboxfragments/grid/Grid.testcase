@@ -592,6 +592,7 @@ definition {
 
 	test ViewLayoutOfGridInMobileViewport {
 		property custom.properties = "feature.flag.LPS-119551=true";
+		property portal.acceptance = "tim";
 
 		task ("Add a Grid to a content page") {
 			ContentPagesNavigator.openEditContentPage(
