@@ -64,7 +64,7 @@ String wrapperCssClass = (String)request.getAttribute("liferay-journal:journal-a
 		XPathResult.FIRST_ORDERED_NODE_TYPE,
 		null
 	).singleNodeValue;
-	if (isEdit == false) {
+	if (!isEdit) {
 		matchingElement.setAttribute('hidden', true);
 	}
 </script>
