@@ -73,7 +73,7 @@ definition {
 
 		Page.gotoChildPagePG(
 			childPageName = "Knowledge Base Display Page",
-			pageName = "Home");
+			parentPageName = "Home");
 
 		Portlet.addPG(portletName = "Knowledge Base Display");
 
