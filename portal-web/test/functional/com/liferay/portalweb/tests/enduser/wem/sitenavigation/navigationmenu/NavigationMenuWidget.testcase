@@ -674,6 +674,10 @@ definition {
 		}
 
 		task ("Assert only 2 levels shown in Navigation Menu") {
+			Click(
+				key_pageName = "Home",
+				locator1 = "Home#PAGE");
+
 			MouseOver(
 				key_pageName = "Home",
 				locator1 = "Home#PAGE");
@@ -705,6 +709,10 @@ definition {
 		}
 
 		task ("Assert only 2 levels shown in Navigation Menu") {
+			Click(
+				key_pageName = "Home",
+				locator1 = "Home#PAGE");
+
 			MouseOver(
 				key_pageName = "Home",
 				locator1 = "Home#PAGE");
