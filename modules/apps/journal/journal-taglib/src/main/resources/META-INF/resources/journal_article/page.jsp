@@ -55,12 +55,18 @@ String wrapperCssClass = (String)request.getAttribute("liferay-journal:journal-a
 </c:choose>
 
 <script type="text/javascript">
-	 var isEdit = document.body.classList.contains('has-edit-mode-menu');
-	 const xpath = "//div[contains(text(),'expired')]";
-	 var matchingElement = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-	 if (isEdit==false) {
-		 matchingElement.setAttribute("hidden", true);
-	 }
+	var isEdit = document.body.classList.contains('has-edit-mode-menu');
+	const xpath = "//div[contains(text(),'expired')]";
+	var matchingElement = document.evaluate(
+		xpath,
+		document,
+		null,
+		XPathResult.FIRST_ORDERED_NODE_TYPE,
+		null
+	).singleNodeValue;
+	if (isEdit == false) {
+		matchingElement.setAttribute('hidden', true);
+	}
 </script>
 
 <liferay-util:dynamic-include key="com.liferay.journal.taglib#/journal_article/page.jsp#post" />
