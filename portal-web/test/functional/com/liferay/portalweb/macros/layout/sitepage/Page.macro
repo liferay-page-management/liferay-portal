@@ -132,21 +132,15 @@ definition {
 	}
 
 	macro gotoChildPagePG {
-		var key_pageName = "${pageName}";
+		var key_pageName = "${parentPageName}";
 
-		ClickNoError(locator1 = "Home#PAGE");
-
-		MouseOver(locator1 = "Home#SITE_NAME");
+		Click(locator1 = "Home#PAGE");
 
 		MouseOver(locator1 = "NavigationMenusWidget#CHILD_TOGGLE");
 
-		AssertVisible(
-			key_childPageName = "${childPageName}",
-			locator1 = "Home#PAGE_CHILD_PAGE");
+		MenuItem.viewVisible(menuItem = "${childPageName}");
 
-		Click(
-			key_childPageName = "${childPageName}",
-			locator1 = "Home#PAGE_CHILD_PAGE");
+		MenuItem.click(menuItem = "${childPageName}");
 	}
 
 	macro gotoCollectionEntryEllipsisItem {
