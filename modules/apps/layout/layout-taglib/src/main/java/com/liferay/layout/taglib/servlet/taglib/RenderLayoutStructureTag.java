@@ -262,6 +262,10 @@ public class RenderLayoutStructureTag extends IncludeTag {
 				for (int i = 0; i < numberOfRows; i++) {
 					RowTag rowTag = new RowTag();
 
+					if (!collectionStyledLayoutStructureItem.isGutters()) {
+						rowTag.setCssClass("no-gutters");
+					}
+
 					rowTag.setPageContext(pageContext);
 
 					rowTag.doStartTag();
