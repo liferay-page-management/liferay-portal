@@ -14,6 +14,7 @@
 
 import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
+import classNames from 'classnames';
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 
 import {COLUMN_SIZE_MODULE_PER_ROW_SIZES} from '../../config/constants/columnSizes';
@@ -131,7 +132,14 @@ const Grid = ({
 	return (
 		<>
 			{Array.from({length: numberOfRows}).map((_, i) => (
-				<ClayLayout.Row key={`row-${i}`}>
+				<ClayLayout.Row
+					className={classNames('', {
+						'no-gutters':
+							config.featureFlagLps119551 &&
+							!collectionConfig.gutters,
+					})}
+					key={`row-${i}`}
+				>
 					{Array.from({length: collectionConfig.numberOfColumns}).map(
 						(_, j) => {
 							const key = `col-${i}-${j}`;
