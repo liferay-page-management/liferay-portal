@@ -5,6 +5,7 @@
 				"definition": {
 					"layout": {
 						"borderWidth": 0,
+						"flexWrap": "FlexWrap",
 						"htmlTag": "Div",
 						"marginBottom": 0,
 						"marginLeft": 0,
