@@ -3505,6 +3505,9 @@ components:
                             deprecated: true
                             enum: [Block, FlexColumn, FlexRow]
                             type: string
+                        flexWrap:
+                            enum: [NoWrap, Wrap, WrapReverse]
+                            type: string
                         htmlTag:
                             enum: [Article, Aside, Div, Footer, Header, Main, Nav, Section]
                             type: string
