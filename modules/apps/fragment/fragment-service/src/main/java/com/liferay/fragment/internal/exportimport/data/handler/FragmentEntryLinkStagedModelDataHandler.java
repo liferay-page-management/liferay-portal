@@ -112,6 +112,18 @@ public class FragmentEntryLinkStagedModelDataHandler
 
 		fragmentEntryLink.setEditableValues(editableValues);
 
+		FragmentEntry fragmentEntry =
+			_fragmentEntryLocalService.fetchFragmentEntry(
+				fragmentEntryLink.getFragmentEntryId());
+
+		if (fragmentEntry != null) {
+			fragmentEntryLinkElement.addAttribute(
+				"fragment-entry-group-id",
+				String.valueOf(fragmentEntry.getGroupId()));
+			fragmentEntryLinkElement.addAttribute(
+				"fragment-entry-key", fragmentEntry.getFragmentEntryKey());
+		}
+
 		portletDataContext.addClassedModel(
 			fragmentEntryLinkElement,
 			ExportImportPathUtil.getModelPath(fragmentEntryLink),
