@@ -31,6 +31,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -332,6 +333,13 @@ public class ContainerLayoutStructureItemImporter
 
 				containerStyledLayoutStructureItem.updateItemConfig(jsonObject);
 			}
+		}
+
+		boolean nonindexable = GetterUtil.getBoolean(
+			definitionMap.get("nonindexable"));
+
+		if (nonindexable) {
+			containerStyledLayoutStructureItem.setNonindexed(nonindexable);
 		}
 
 		return containerStyledLayoutStructureItem;
