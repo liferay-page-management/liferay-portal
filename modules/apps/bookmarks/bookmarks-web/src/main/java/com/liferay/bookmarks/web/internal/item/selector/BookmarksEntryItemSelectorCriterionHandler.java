@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
 /**
- * @author
+ * @author Yang Cao
  */
 @Component(enabled = false, service = ItemSelectorCriterionHandler.class)
 public class BookmarksEntryItemSelectorCriterionHandler

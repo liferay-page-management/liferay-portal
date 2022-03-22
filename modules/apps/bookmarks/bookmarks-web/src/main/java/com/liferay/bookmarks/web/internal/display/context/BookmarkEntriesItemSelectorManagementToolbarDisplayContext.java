@@ -14,6 +14,7 @@
 
 package com.liferay.bookmarks.web.internal.display.context;
 
+import com.liferay.bookmarks.model.BookmarksEntry;
 import com.liferay.frontend.taglib.clay.servlet.taglib.display.context.SearchContainerManagementToolbarDisplayContext;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
@@ -22,19 +23,19 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * @author
+ * @author Yang Cao
  */
 public class BookmarkEntriesItemSelectorManagementToolbarDisplayContext
 	extends SearchContainerManagementToolbarDisplayContext {
 
 	public BookmarkEntriesItemSelectorManagementToolbarDisplayContext(
+		HttpServletRequest httpServletRequest,
 		LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse,
-		HttpServletRequest httpServletRequest,
-		SearchContainer searchContainer) {
+		SearchContainer<BookmarksEntry> searchContainer) {
 
 		super(
-			liferayPortletRequest, liferayPortletResponse, httpServletRequest,
+			httpServletRequest, liferayPortletRequest, liferayPortletResponse,
 			searchContainer);
 	}
 

@@ -14,15 +14,14 @@
 
 package com.liferay.bookmarks.item.selector.web.internal;
 
+import com.liferay.bookmarks.item.selector.criterion.BookmarksItemSelectorCriterion;
+import com.liferay.bookmarks.item.selector.web.internal.display.context.BookmarksItemSelectorViewDisplayContext;
+import com.liferay.bookmarks.service.BookmarksEntryLocalService;
 import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorReturnTypeResolverHandler;
 import com.liferay.item.selector.ItemSelectorView;
 import com.liferay.item.selector.criteria.FileEntryItemSelectorReturnType;
 import com.liferay.item.selector.criteria.URLItemSelectorReturnType;
-import com.liferay.bookmarks.item.selector.criterion.BookmarksItemSelectorCriterion;
-import com.liferay.bookmarks.item.selector.web.internal.constants.BookmarksItemSelectorWebKeys;
-import com.liferay.bookmarks.item.selector.web.internal.display.context.BookmarksItemSelectorViewDisplayContext;
-import com.liferay.bookmarks.service.BookmarksEntryLocalService;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -45,7 +44,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author
+ * @author Yang Cao
  */
 @Component(
 	enabled = false, property = "item.selector.view.order:Integer=100",
@@ -55,7 +54,9 @@ public class BookmarksItemSelectorView
 	implements ItemSelectorView<BookmarksItemSelectorCriterion> {
 
 	@Override
-	public Class<BookmarksItemSelectorCriterion> getItemSelectorCriterionClass() {
+	public Class<BookmarksItemSelectorCriterion>
+		getItemSelectorCriterionClass() {
+
 		return BookmarksItemSelectorCriterion.class;
 	}
 
@@ -81,21 +82,17 @@ public class BookmarksItemSelectorView
 	@Override
 	public void renderHTML(
 			ServletRequest servletRequest, ServletResponse servletResponse,
-			BookmarksItemSelectorCriterion BookmarksItemSelectorCriterion,
+			BookmarksItemSelectorCriterion bookmarksItemSelectorCriterion,
 			PortletURL portletURL, String itemSelectedEventName, boolean search)
 		throws IOException, ServletException {
 
-		BookmarksItemSelectorViewDisplayContext
-			BookmarksItemSelectorViewDisplayContext =
-				new BookmarksItemSelectorViewDisplayContext(
-					BookmarksItemSelectorCriterion, this,
-					_itemSelectorReturnTypeResolverHandler,
-					itemSelectedEventName, search, portletURL, _bookmarksEntryLocalService);
-
 		servletRequest.setAttribute(
-			BookmarksItemSelectorWebKeys.
-				BOOKMARKS_ITEM_SELECTOR_VIEW_DISPLAY_CONTEXT,
-			BookmarksItemSelectorViewDisplayContext);
+			BookmarksItemSelectorViewDisplayContext.class.getName(),
+			new BookmarksItemSelectorViewDisplayContext(
+				bookmarksItemSelectorCriterion, this,
+				_bookmarksEntryLocalService,
+				_itemSelectorReturnTypeResolverHandler, itemSelectedEventName,
+				search, portletURL));
 
 		ServletContext servletContext = getServletContext();
 
@@ -128,11 +125,11 @@ public class BookmarksItemSelectorView
 				new FileEntryItemSelectorReturnType(),
 				new URLItemSelectorReturnType()));
 
-	private ItemSelectorReturnTypeResolverHandler
-		_itemSelectorReturnTypeResolverHandler;
-
 	@Reference
 	private BookmarksEntryLocalService _bookmarksEntryLocalService;
+
+	private ItemSelectorReturnTypeResolverHandler
+		_itemSelectorReturnTypeResolverHandler;
 
 	@Reference
 	private Language _language;
