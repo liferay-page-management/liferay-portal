@@ -180,6 +180,38 @@ public class PageRowDefinition implements Serializable {
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Integer modulesPerRow;
 
+	@Schema(
+		description = "A flag that indicates whether the page row is indexable or not."
+	)
+	public Boolean getNonindexable() {
+		return nonindexable;
+	}
+
+	public void setNonindexable(Boolean nonindexable) {
+		this.nonindexable = nonindexable;
+	}
+
+	@JsonIgnore
+	public void setNonindexable(
+		UnsafeSupplier<Boolean, Exception> nonindexableUnsafeSupplier) {
+
+		try {
+			nonindexable = nonindexableUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField(
+		description = "A flag that indicates whether the page row is indexable or not."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Boolean nonindexable;
+
 	@Schema(description = "The page row's number of columns.")
 	public Integer getNumberOfColumns() {
 		return numberOfColumns;
@@ -410,6 +442,16 @@ public class PageRowDefinition implements Serializable {
 			sb.append("\"modulesPerRow\": ");
 
 			sb.append(modulesPerRow);
+		}
+
+		if (nonindexable != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"nonindexable\": ");
+
+			sb.append(nonindexable);
 		}
 
 		if (numberOfColumns != null) {

@@ -155,6 +155,16 @@ public class PageFragmentInstanceDefinitionSerDes {
 			sb.append("]");
 		}
 
+		if (pageFragmentInstanceDefinition.getNonindexable() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"nonindexable\": ");
+
+			sb.append(pageFragmentInstanceDefinition.getNonindexable());
+		}
+
 		if (pageFragmentInstanceDefinition.getWidgetInstances() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -254,6 +264,16 @@ public class PageFragmentInstanceDefinitionSerDes {
 					pageFragmentInstanceDefinition.getFragmentViewports()));
 		}
 
+		if (pageFragmentInstanceDefinition.getNonindexable() == null) {
+			map.put("nonindexable", null);
+		}
+		else {
+			map.put(
+				"nonindexable",
+				String.valueOf(
+					pageFragmentInstanceDefinition.getNonindexable()));
+		}
+
 		if (pageFragmentInstanceDefinition.getWidgetInstances() == null) {
 			map.put("widgetInstances", null);
 		}
@@ -328,6 +348,12 @@ public class PageFragmentInstanceDefinitionSerDes {
 						).toArray(
 							size -> new FragmentViewport[size]
 						));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "nonindexable")) {
+				if (jsonParserFieldValue != null) {
+					pageFragmentInstanceDefinition.setNonindexable(
+						(Boolean)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "widgetInstances")) {

@@ -119,6 +119,27 @@ public class PageRowDefinition implements Cloneable, Serializable {
 
 	protected Integer modulesPerRow;
 
+	public Boolean getNonindexable() {
+		return nonindexable;
+	}
+
+	public void setNonindexable(Boolean nonindexable) {
+		this.nonindexable = nonindexable;
+	}
+
+	public void setNonindexable(
+		UnsafeSupplier<Boolean, Exception> nonindexableUnsafeSupplier) {
+
+		try {
+			nonindexable = nonindexableUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean nonindexable;
+
 	public Integer getNumberOfColumns() {
 		return numberOfColumns;
 	}

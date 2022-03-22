@@ -150,6 +150,16 @@ public class PageSectionDefinitionSerDes {
 			sb.append(String.valueOf(pageSectionDefinition.getLayout()));
 		}
 
+		if (pageSectionDefinition.getNonindexable() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"nonindexable\": ");
+
+			sb.append(pageSectionDefinition.getNonindexable());
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -234,6 +244,15 @@ public class PageSectionDefinitionSerDes {
 				"layout", String.valueOf(pageSectionDefinition.getLayout()));
 		}
 
+		if (pageSectionDefinition.getNonindexable() == null) {
+			map.put("nonindexable", null);
+		}
+		else {
+			map.put(
+				"nonindexable",
+				String.valueOf(pageSectionDefinition.getNonindexable()));
+		}
+
 		return map;
 	}
 
@@ -307,6 +326,12 @@ public class PageSectionDefinitionSerDes {
 				if (jsonParserFieldValue != null) {
 					pageSectionDefinition.setLayout(
 						LayoutSerDes.toDTO((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "nonindexable")) {
+				if (jsonParserFieldValue != null) {
+					pageSectionDefinition.setNonindexable(
+						(Boolean)jsonParserFieldValue);
 				}
 			}
 		}
