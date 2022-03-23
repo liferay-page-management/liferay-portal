@@ -42,9 +42,13 @@ export const ACTIONS = {
 						)
 					)
 				) {
-					const input = document.createElement('input');
+					let input = form.elements[`${portletNamespace}rowIds`];
 
-					input.name = `${portletNamespace}rowIds`;
+					if (!input) {
+						input = document.createElement('input');
+						input.name = `${portletNamespace}rowIds`;
+					}
+
 					input.value = selectedItems.map((item) => item.value);
 
 					form.appendChild(input);
@@ -79,17 +83,19 @@ export const ACTIONS = {
 					return;
 				}
 
-				const input = document.createElement('input');
+				let input = form.elements[`${portletNamespace}rowIds`];
 
-				input.name = `${portletNamespace}rowIds`;
+				if (!input) {
+					input = document.createElement('input');
+					input.name = `${portletNamespace}rowIds`;
+				}
+
 				input.value = selectedItems.map((item) => item.value);
 				input.setAttribute('type', 'hidden');
 
 				form.appendChild(input);
 
 				submitForm(form, exportFragmentCollectionsURL);
-
-				form.removeChild(input);
 
 				processed = true;
 			},
