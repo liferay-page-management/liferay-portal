@@ -8,6 +8,7 @@
 	"landscapeMobile": {
 	},
 	"modulesPerRow": 6,
+	"nonindexed": false,
 	"numberOfColumns": 6,
 	"portraitMobile": {
 		"modulesPerRow": 3,

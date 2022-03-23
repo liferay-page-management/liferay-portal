@@ -23,6 +23,7 @@
 					},
 					"gutters": true,
 					"modulesPerRow": 1,
+					"nonindexed": false,
 					"numberOfColumns": 1,
 					"reverseOrder": false,
 					"rowViewports": [
@@ -93,6 +94,7 @@
 										"marginLeft": 0,
 										"marginRight": 0,
 										"marginTop": 0,
+										"nonindexed": false,
 										"opacity": 100,
 										"paddingBottom": 0,
 										"paddingLeft": 0,
