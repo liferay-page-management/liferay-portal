@@ -16,10 +16,12 @@ package com.liferay.journal.web.internal.upload;
 
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.util.DLValidator;
+import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.journal.configuration.JournalFileUploadsConfiguration;
 import com.liferay.journal.constants.JournalConstants;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
+import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.exception.ImageTypeException;
@@ -75,7 +77,18 @@ public class ImageJournalUploadFileEntryHandler
 
 		long folderId = ParamUtil.getLong(uploadPortletRequest, "folderId");
 
-		if (resourcePrimKey != 0) {
+		JournalArticle article = _journalArticleLocalService.fetchLatestArticle(
+			resourcePrimKey);
+
+		String className = null;
+
+		if (article != null) {
+			className = article.getClassName();
+		}
+
+		if ((resourcePrimKey != 0) && (className != null) &&
+			!className.equals(DDMStructure.class.getName())) {
+
 			_journalArticleModelResourcePermission.check(
 				themeDisplay.getPermissionChecker(), resourcePrimKey,
 				ActionKeys.UPDATE);
@@ -226,6 +239,9 @@ public class ImageJournalUploadFileEntryHandler
 
 	@Reference
 	private DLValidator _dlValidator;
+
+	@Reference
+	private JournalArticleLocalService _journalArticleLocalService;
 
 	private ModelResourcePermission<JournalArticle>
 		_journalArticleModelResourcePermission;
