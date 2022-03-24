@@ -41,7 +41,8 @@
 							},
 							"id": "portraitMobile"
 						}
-					]
+					],
+					"nonindexed": false
 				},
 				"type": "Fragment"
 			}

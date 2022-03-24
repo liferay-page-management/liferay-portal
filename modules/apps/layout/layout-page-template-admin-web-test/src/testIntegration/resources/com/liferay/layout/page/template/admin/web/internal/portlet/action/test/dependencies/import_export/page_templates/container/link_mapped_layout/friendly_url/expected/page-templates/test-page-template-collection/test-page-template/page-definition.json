@@ -44,7 +44,8 @@
 						"paddingRight": 0,
 						"paddingTop": 0,
 						"widthType": "Fluid"
-					}
+					},
+					"nonindexed": false
 				},
 				"type": "Section"
 			}

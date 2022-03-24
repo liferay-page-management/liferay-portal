@@ -23,6 +23,7 @@
 					},
 					"gutters": true,
 					"modulesPerRow": 1,
+					"nonindexed": false,
 					"numberOfColumns": 1,
 					"reverseOrder": false,
 					"rowViewports": [
@@ -101,7 +102,8 @@
 										"paddingTop": 0,
 										"shadow": "None",
 										"widthType": "Fluid"
-									}
+									},
+									"nonindexed": false
 								},
 								"pageElements": [
 									{
@@ -144,7 +146,8 @@
 												"shadow": "shadow-none",
 												"textAlign": "none",
 												"width": "w-auto"
-											}
+											},
+											"nonindexed": false
 										},
 										"type": "Fragment"
 									}

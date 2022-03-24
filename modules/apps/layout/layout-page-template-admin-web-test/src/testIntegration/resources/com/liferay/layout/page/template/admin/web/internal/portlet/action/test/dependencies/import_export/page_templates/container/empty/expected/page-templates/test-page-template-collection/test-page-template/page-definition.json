@@ -35,7 +35,8 @@
 						"paddingTop": 0,
 						"shadow": "None",
 						"widthType": "Fluid"
-					}
+					},
+					"nonindexed": false
 				},
 				"type": "Section"
 			}

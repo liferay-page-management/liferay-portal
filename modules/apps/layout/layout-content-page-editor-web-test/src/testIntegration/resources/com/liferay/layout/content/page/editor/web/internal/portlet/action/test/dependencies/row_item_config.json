@@ -5,6 +5,7 @@
 		}
 	},
 	"modulesPerRow": 6,
+	"nonindexed": false,
 	"numberOfColumns": 6,
 	"portraitMobile": {
 		"styles": {

@@ -35,7 +35,8 @@
 						"paddingTop": 0,
 						"shadow": "None",
 						"widthType": "Fluid"
-					}
+					},
+					"nonindexed": false
 				},
 				"pageElements": [
 					{
@@ -77,7 +78,8 @@
 								"paddingTop": 0,
 								"shadow": "None",
 								"widthType": "Fluid"
-							}
+							},
+							"nonindexed": false
 						},
 						"type": "Section"
 					},
@@ -126,7 +128,8 @@
 								"paddingTop": 0,
 								"shadow": "None",
 								"widthType": "Fluid"
-							}
+							},
+							"nonindexed": false
 						},
 						"type": "Section"
 					}
