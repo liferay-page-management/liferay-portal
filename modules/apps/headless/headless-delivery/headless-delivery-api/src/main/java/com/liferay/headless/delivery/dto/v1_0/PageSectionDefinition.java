@@ -281,6 +281,38 @@ public class PageSectionDefinition implements Serializable {
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Layout layout;
 
+	@Schema(
+		description = "A flag that indicates whether the page section is indexable or not."
+	)
+	public Boolean getNonindexed() {
+		return nonindexed;
+	}
+
+	public void setNonindexed(Boolean nonindexed) {
+		this.nonindexed = nonindexed;
+	}
+
+	@JsonIgnore
+	public void setNonindexed(
+		UnsafeSupplier<Boolean, Exception> nonindexedUnsafeSupplier) {
+
+		try {
+			nonindexed = nonindexedUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField(
+		description = "A flag that indicates whether the page section is indexable or not."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Boolean nonindexed;
+
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -391,6 +423,16 @@ public class PageSectionDefinition implements Serializable {
 			sb.append("\"layout\": ");
 
 			sb.append(String.valueOf(layout));
+		}
+
+		if (nonindexed != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"nonindexed\": ");
+
+			sb.append(nonindexed);
 		}
 
 		sb.append("}");

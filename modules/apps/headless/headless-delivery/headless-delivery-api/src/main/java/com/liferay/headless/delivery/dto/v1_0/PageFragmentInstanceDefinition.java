@@ -220,6 +220,38 @@ public class PageFragmentInstanceDefinition implements Serializable {
 	protected FragmentViewport[] fragmentViewports;
 
 	@Schema(
+		description = "A flag that indicates whether the page fragment instance is indexable or not."
+	)
+	public Boolean getNonindexed() {
+		return nonindexed;
+	}
+
+	public void setNonindexed(Boolean nonindexed) {
+		this.nonindexed = nonindexed;
+	}
+
+	@JsonIgnore
+	public void setNonindexed(
+		UnsafeSupplier<Boolean, Exception> nonindexedUnsafeSupplier) {
+
+		try {
+			nonindexed = nonindexedUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField(
+		description = "A flag that indicates whether the page fragment instance is indexable or not."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Boolean nonindexed;
+
+	@Schema(
 		description = "A list of widget instances of the page fragment instance."
 	)
 	@Valid
@@ -350,6 +382,16 @@ public class PageFragmentInstanceDefinition implements Serializable {
 			}
 
 			sb.append("]");
+		}
+
+		if (nonindexed != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"nonindexed\": ");
+
+			sb.append(nonindexed);
 		}
 
 		if (widgetInstances != null) {

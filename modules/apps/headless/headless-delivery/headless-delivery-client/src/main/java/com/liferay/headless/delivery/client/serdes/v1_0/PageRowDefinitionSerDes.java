@@ -112,6 +112,16 @@ public class PageRowDefinitionSerDes {
 			sb.append(pageRowDefinition.getModulesPerRow());
 		}
 
+		if (pageRowDefinition.getNonindexed() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"nonindexed\": ");
+
+			sb.append(pageRowDefinition.getNonindexed());
+		}
+
 		if (pageRowDefinition.getNumberOfColumns() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -234,6 +244,15 @@ public class PageRowDefinitionSerDes {
 				String.valueOf(pageRowDefinition.getModulesPerRow()));
 		}
 
+		if (pageRowDefinition.getNonindexed() == null) {
+			map.put("nonindexed", null);
+		}
+		else {
+			map.put(
+				"nonindexed",
+				String.valueOf(pageRowDefinition.getNonindexed()));
+		}
+
 		if (pageRowDefinition.getNumberOfColumns() == null) {
 			map.put("numberOfColumns", null);
 		}
@@ -329,6 +348,12 @@ public class PageRowDefinitionSerDes {
 				if (jsonParserFieldValue != null) {
 					pageRowDefinition.setModulesPerRow(
 						Integer.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "nonindexed")) {
+				if (jsonParserFieldValue != null) {
+					pageRowDefinition.setNonindexed(
+						(Boolean)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "numberOfColumns")) {

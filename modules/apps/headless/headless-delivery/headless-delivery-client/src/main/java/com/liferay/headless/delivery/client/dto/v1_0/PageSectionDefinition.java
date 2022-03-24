@@ -187,6 +187,27 @@ public class PageSectionDefinition implements Cloneable, Serializable {
 
 	protected Layout layout;
 
+	public Boolean getNonindexed() {
+		return nonindexed;
+	}
+
+	public void setNonindexed(Boolean nonindexed) {
+		this.nonindexed = nonindexed;
+	}
+
+	public void setNonindexed(
+		UnsafeSupplier<Boolean, Exception> nonindexedUnsafeSupplier) {
+
+		try {
+			nonindexed = nonindexedUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean nonindexed;
+
 	@Override
 	public PageSectionDefinition clone() throws CloneNotSupportedException {
 		return (PageSectionDefinition)super.clone();
