@@ -69,8 +69,6 @@ PortletURL portletURL = renderResponse.createRenderURL();
 			message="rename"
 			url="javascript:;"
 		/>
-
-		<li aria-hidden="true" class="dropdown-divider" role="presentation"></li>
 	</c:if>
 
 	<c:if test="<%= SiteNavigationMenuPermission.contains(permissionChecker, siteNavigationMenu, ActionKeys.PERMISSIONS) && siteNavigationAdminDisplayContext.hasEditPermission() %>">
