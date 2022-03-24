@@ -335,11 +335,11 @@ public class ContainerLayoutStructureItemImporter
 			}
 		}
 
-		boolean nonindexable = GetterUtil.getBoolean(
-			definitionMap.get("nonindexable"));
+		boolean nonindexed = GetterUtil.getBoolean(
+			definitionMap.get("nonindexed"));
 
-		if (nonindexable) {
-			containerStyledLayoutStructureItem.setNonindexed(nonindexable);
+		if (nonindexed) {
+			containerStyledLayoutStructureItem.setNonindexed(nonindexed);
 		}
 
 		return containerStyledLayoutStructureItem;

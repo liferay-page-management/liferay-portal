@@ -67,7 +67,7 @@ public class ContainerLayoutStructureItemMapper
 								getLinkJSONObject(),
 							saveMappingConfiguration);
 						layout = _toLayout(containerStyledLayoutStructureItem);
-						nonindexable =
+						nonindexed =
 							containerStyledLayoutStructureItem.isNonindexed();
 
 						setFragmentStyle(

@@ -19,11 +19,7 @@
 					"type": "string"
 				}
 			},
-			"required": [
-				"className",
-				"fieldName",
-				"fieldValue"
-			],
+			"required": ["className", "fieldName", "fieldValue"],
 			"title": "The ClassFieldReference Schema",
 			"type": "object"
 		},
@@ -47,20 +43,14 @@
 								"type": "string"
 							}
 						},
-						"required": [
-							"fieldName",
-							"fieldValue"
-						],
+						"required": ["fieldName", "fieldValue"],
 						"type": "object"
 					},
 					"title": "The fields Schema",
 					"type": "array"
 				}
 			},
-			"required": [
-				"className",
-				"fields"
-			],
+			"required": ["className", "fields"],
 			"title": "The ClassFieldsReference Schema",
 			"type": "object"
 		},
@@ -72,9 +62,7 @@
 					"type": "string"
 				}
 			},
-			"required": [
-				"className"
-			],
+			"required": ["className"],
 			"title": "The ClassNameReference Schema",
 			"type": "object"
 		},
@@ -90,10 +78,7 @@
 					"type": "integer"
 				}
 			},
-			"required": [
-				"className",
-				"classPK"
-			],
+			"required": ["className", "classPK"],
 			"title": "The ClassPKReference Schema",
 			"type": "object"
 		},
@@ -118,27 +103,19 @@
 					"type": "string"
 				}
 			},
-			"required": [
-				"columnViewportDefinition",
-				"id"
-			],
+			"required": ["columnViewportDefinition", "id"],
 			"type": "object"
 		},
 		"ContextReference": {
 			"additionalProperties": false,
 			"properties": {
 				"contextSource": {
-					"enum": [
-						"CollectionItem",
-						"DisplayPageItem"
-					],
+					"enum": ["CollectionItem", "DisplayPageItem"],
 					"title": "The contextSource Schema",
 					"type": "string"
 				}
 			},
-			"required": [
-				"contextSource"
-			],
+			"required": ["contextSource"],
 			"title": "The ContextReference Schema",
 			"type": "object"
 		},
@@ -158,9 +135,7 @@
 					"type": "string"
 				}
 			},
-			"required": [
-				"key"
-			],
+			"required": ["key"],
 			"title": "The fragment Schema",
 			"type": "object"
 		},
@@ -382,12 +357,7 @@
 				},
 				"target": {
 					"deprecationMessage": "Deprecated as of Cavanaugh (7.4.x), replaced by FragmentLinkValue.target",
-					"enum": [
-						"Blank",
-						"Parent",
-						"Self",
-						"Top"
-					],
+					"enum": ["Blank", "Parent", "Self", "Top"],
 					"title": "The target Schema",
 					"type": "string"
 				},
@@ -420,12 +390,7 @@
 					]
 				},
 				"target": {
-					"enum": [
-						"Blank",
-						"Parent",
-						"Self",
-						"Top"
-					],
+					"enum": ["Blank", "Parent", "Self", "Top"],
 					"title": "The target Schema",
 					"type": "string"
 				}
@@ -485,9 +450,7 @@
 					}
 				}
 			},
-			"required": [
-				"mapping"
-			],
+			"required": ["mapping"],
 			"title": "The FragmentMappedValue Schema",
 			"type": "object"
 		},
@@ -502,9 +465,7 @@
 					"type": "array"
 				}
 			},
-			"required": [
-				"allowedFragments"
-			],
+			"required": ["allowedFragments"],
 			"title": "The FragmentSettingsAllowed Schema",
 			"type": "object"
 		},
@@ -519,9 +480,7 @@
 					"type": "array"
 				}
 			},
-			"required": [
-				"unallowedFragments"
-			],
+			"required": ["unallowedFragments"],
 			"title": "The FragmentSettingsUnallowed Schema",
 			"type": "object"
 		},
@@ -700,10 +659,7 @@
 					"type": "string"
 				}
 			},
-			"required": [
-				"fragmentViewportStyle",
-				"id"
-			],
+			"required": ["fragmentViewportStyle", "id"],
 			"title": "The FragmentViewport Schema",
 			"type": "object"
 		},
@@ -760,18 +716,12 @@
 							"type": "object"
 						},
 						"collectionType": {
-							"enum": [
-								"Collection",
-								"CollectionProvider"
-							],
+							"enum": ["Collection", "CollectionProvider"],
 							"title": "The collectionType Schema",
 							"type": "string"
 						}
 					},
-					"required": [
-						"collectionReference",
-						"collectionType"
-					],
+					"required": ["collectionReference", "collectionType"],
 					"title": "The collectionConfig Schema",
 					"type": "object"
 				},
@@ -822,12 +772,7 @@
 					"type": "integer"
 				},
 				"paginationType": {
-					"enum": [
-						"None",
-						"Numeric",
-						"Regular",
-						"Simple"
-					],
+					"enum": ["None", "Numeric", "Regular", "Simple"],
 					"title": "The paginationType Schema",
 					"type": "string"
 				},
@@ -1131,9 +1076,7 @@
 					"type": "string"
 				}
 			},
-			"required": [
-				"type"
-			],
+			"required": ["type"],
 			"title": "The PageElement Schema",
 			"type": "object"
 		},
@@ -1159,9 +1102,7 @@
 								"$ref": "#/definitions/FragmentField"
 							}
 						},
-						"required": [
-							"id"
-						],
+						"required": ["id"],
 						"type": "object"
 					},
 					"title": "The fragmentFields Schema",
@@ -1177,8 +1118,8 @@
 					"title": "The fragmentViewports Schema",
 					"type": "array"
 				},
-				"nonindexable": {
-					"title": "The nonindexable Schema",
+				"nonindexed": {
+					"title": "The nonindexed Schema",
 					"type": "boolean"
 				},
 				"widgetInstances": {
@@ -1218,8 +1159,8 @@
 					"title": "The modulesPerRow Schema",
 					"type": "integer"
 				},
-				"nonindexable": {
-					"title": "The nonindexable Schema",
+				"nonindexed": {
+					"title": "The nonindexed Schema",
 					"type": "boolean"
 				},
 				"numberOfColumns": {
@@ -1401,19 +1342,12 @@
 							"type": "integer"
 						},
 						"containerType": {
-							"enum": [
-								"Fixed",
-								"Fluid"
-							],
+							"enum": ["Fixed", "Fluid"],
 							"title": "The containerType Schema",
 							"type": "string"
 						},
 						"contentDisplay": {
-							"enum": [
-								"Block",
-								"FlexColumn",
-								"FlexRow"
-							],
+							"enum": ["Block", "FlexColumn", "FlexRow"],
 							"title": "The contentDisplay Schema",
 							"type": "string"
 						},
@@ -1444,57 +1378,25 @@
 							"type": "string"
 						},
 						"marginBottom": {
-							"enum": [
-								0,
-								1,
-								2,
-								4,
-								6,
-								8,
-								10
-							],
+							"enum": [0, 1, 2, 4, 6, 8, 10],
 							"minimum": 0,
 							"title": "The marginBottom Schema",
 							"type": "integer"
 						},
 						"marginLeft": {
-							"enum": [
-								0,
-								1,
-								2,
-								4,
-								6,
-								8,
-								10
-							],
+							"enum": [0, 1, 2, 4, 6, 8, 10],
 							"minimum": 0,
 							"title": "The marginLeft Schema",
 							"type": "integer"
 						},
 						"marginRight": {
-							"enum": [
-								0,
-								1,
-								2,
-								4,
-								6,
-								8,
-								10
-							],
+							"enum": [0, 1, 2, 4, 6, 8, 10],
 							"minimum": 0,
 							"title": "The marginRight Schema",
 							"type": "integer"
 						},
 						"marginTop": {
-							"enum": [
-								0,
-								1,
-								2,
-								4,
-								6,
-								8,
-								10
-							],
+							"enum": [0, 1, 2, 4, 6, 8, 10],
 							"minimum": 0,
 							"title": "The marginTop Schema",
 							"type": "integer"
@@ -1506,71 +1408,31 @@
 							"type": "integer"
 						},
 						"paddingBottom": {
-							"enum": [
-								0,
-								1,
-								2,
-								4,
-								6,
-								8,
-								10
-							],
+							"enum": [0, 1, 2, 4, 6, 8, 10],
 							"minimum": 0,
 							"title": "The paddingBottom Schema",
 							"type": "integer"
 						},
 						"paddingHorizontal": {
-							"enum": [
-								0,
-								1,
-								2,
-								4,
-								6,
-								8,
-								10
-							],
+							"enum": [0, 1, 2, 4, 6, 8, 10],
 							"minimum": 0,
 							"title": "The paddingHorizontal Schema",
 							"type": "integer"
 						},
 						"paddingLeft": {
-							"enum": [
-								0,
-								1,
-								2,
-								4,
-								6,
-								8,
-								10
-							],
+							"enum": [0, 1, 2, 4, 6, 8, 10],
 							"minimum": 0,
 							"title": "The paddingLeft Schema",
 							"type": "integer"
 						},
 						"paddingRight": {
-							"enum": [
-								0,
-								1,
-								2,
-								4,
-								6,
-								8,
-								10
-							],
+							"enum": [0, 1, 2, 4, 6, 8, 10],
 							"minimum": 0,
 							"title": "The paddingRight Schema",
 							"type": "integer"
 						},
 						"paddingTop": {
-							"enum": [
-								0,
-								1,
-								2,
-								4,
-								6,
-								8,
-								10
-							],
+							"enum": [0, 1, 2, 4, 6, 8, 10],
 							"minimum": 0,
 							"title": "The paddingTop Schema",
 							"type": "integer"
@@ -1587,10 +1449,7 @@
 							"type": "string"
 						},
 						"widthType": {
-							"enum": [
-								"Fixed",
-								"Fluid"
-							],
+							"enum": ["Fixed", "Fluid"],
 							"title": "The widthType Schema",
 							"type": "string"
 						}
@@ -1598,8 +1457,8 @@
 					"title": "The layout Schema",
 					"type": "object"
 				},
-				"nonindexable": {
-					"title": "The nonindexable Schema",
+				"nonindexed": {
+					"title": "The nonindexed Schema",
 					"type": "boolean"
 				}
 			},
@@ -1625,9 +1484,7 @@
 					"type": "object"
 				}
 			},
-			"required": [
-				"widgetInstance"
-			],
+			"required": ["widgetInstance"],
 			"title": "The PageWidgetInstanceDefinition Schema",
 			"type": "object"
 		},
@@ -1658,10 +1515,7 @@
 					"type": "object"
 				}
 			},
-			"required": [
-				"id",
-				"rowViewportDefinition"
-			],
+			"required": ["id", "rowViewportDefinition"],
 			"title": "The RowViewport Schema",
 			"type": "object"
 		},
@@ -1694,19 +1548,14 @@
 								"type": "string"
 							}
 						},
-						"required": [
-							"actionKeys",
-							"roleKey"
-						],
+						"required": ["actionKeys", "roleKey"],
 						"type": "object"
 					},
 					"title": "The widgetPermissions Schema",
 					"type": "array"
 				}
 			},
-			"required": [
-				"widgetName"
-			],
+			"required": ["widgetName"],
 			"title": "The WidgetInstance Schema",
 			"type": "object"
 		}
@@ -1744,9 +1593,7 @@
 							"type": "string"
 						}
 					},
-					"required": [
-						"key"
-					],
+					"required": ["key"],
 					"title": "The masterPage Schema",
 					"type": "object"
 				},
@@ -1762,9 +1609,7 @@
 							"type": "string"
 						}
 					},
-					"required": [
-						"key"
-					],
+					"required": ["key"],
 					"title": "The styleBook Schema",
 					"type": "object"
 				},
@@ -1785,9 +1630,7 @@
 			"type": "number"
 		}
 	},
-	"required": [
-		"pageElement"
-	],
+	"required": ["pageElement"],
 	"title": "The PageDefinition Schema",
 	"type": "object"
 }

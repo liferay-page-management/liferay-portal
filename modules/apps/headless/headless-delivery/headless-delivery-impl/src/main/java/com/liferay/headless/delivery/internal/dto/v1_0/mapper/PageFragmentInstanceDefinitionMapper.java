@@ -119,7 +119,7 @@ public class PageFragmentInstanceDefinitionMapper {
 				fragmentStyle = pageFragmentInstanceDefinitionFragmentStyle;
 				fragmentViewports =
 					pageFragmentInstanceDefinitionFragmentViewports;
-				nonindexable = fragmentStyledLayoutStructureItem.isNonindexed();
+				nonindexed = fragmentStyledLayoutStructureItem.isNonindexed();
 				widgetInstances = _getWidgetInstances(fragmentEntryLink);
 			}
 		};

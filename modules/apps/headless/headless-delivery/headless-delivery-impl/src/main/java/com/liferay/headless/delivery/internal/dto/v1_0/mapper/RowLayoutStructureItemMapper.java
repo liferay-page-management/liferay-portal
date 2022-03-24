@@ -57,7 +57,7 @@ public class RowLayoutStructureItemMapper
 						gutters = rowStyledLayoutStructureItem.isGutters();
 						modulesPerRow =
 							rowStyledLayoutStructureItem.getModulesPerRow();
-						nonindexable =
+						nonindexed =
 							rowStyledLayoutStructureItem.isNonindexed();
 						numberOfColumns =
 							rowStyledLayoutStructureItem.getNumberOfColumns();

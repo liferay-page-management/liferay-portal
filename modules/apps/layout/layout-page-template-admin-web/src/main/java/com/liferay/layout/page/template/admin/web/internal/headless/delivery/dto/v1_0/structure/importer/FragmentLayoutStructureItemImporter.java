@@ -174,11 +174,11 @@ public class FragmentLayoutStructureItemImporter
 			}
 		}
 
-		boolean nonindexable = GetterUtil.getBoolean(
-			definitionMap.get("nonindexable"));
+		boolean nonindexed = GetterUtil.getBoolean(
+			definitionMap.get("nonindexed"));
 
-		if (nonindexable) {
-			fragmentStyledLayoutStructureItem.setNonindexed(nonindexable);
+		if (nonindexed) {
+			fragmentStyledLayoutStructureItem.setNonindexed(nonindexed);
 		}
 
 		return fragmentStyledLayoutStructureItem;
