@@ -1,1 +1,18 @@
 @import '../site_navigation_menu_editor/components/App';
+
+.site-navigation-menu-action {
+	display: flex;
+
+	.c-inner {
+		display: block;
+		flex-grow: 0;
+	}
+
+	.taglib-text-icon {
+		margin-left: 18px;
+	}
+
+	&-no-icon {
+		padding-left: 32px;
+	}
+}

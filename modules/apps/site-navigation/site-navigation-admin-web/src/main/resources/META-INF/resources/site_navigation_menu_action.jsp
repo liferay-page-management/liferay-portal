@@ -40,6 +40,9 @@ PortletURL portletURL = renderResponse.createRenderURL();
 		</portlet:renderURL>
 
 		<liferay-ui:icon
+			icon="pencil"
+			linkCssClass="site-navigation-menu-action"
+			markupView="lexicon"
 			message="edit"
 			url="<%= editSiteNavigationMenuURL %>"
 		/>
@@ -53,7 +56,7 @@ PortletURL portletURL = renderResponse.createRenderURL();
 		</portlet:actionURL>
 
 		<liferay-ui:icon
-			cssClass='<%= liferayPortletResponse.getNamespace() + "update-site-navigation-menu-action-option" %>'
+			cssClass='<%= "site-navigation-menu-action-no-icon " + liferayPortletResponse.getNamespace() + "update-site-navigation-menu-action-option" %>'
 			data='<%=
 				HashMapBuilder.<String, Object>put(
 					"form-submit-url", updateSiteNavigationMenuURL.toString()
@@ -80,6 +83,9 @@ PortletURL portletURL = renderResponse.createRenderURL();
 		/>
 
 		<liferay-ui:icon
+			icon="password-policies"
+			linkCssClass="site-navigation-menu-action"
+			markupView="lexicon"
 			message="permissions"
 			method="get"
 			url="<%= permissionsMenuURL %>"
@@ -96,6 +102,9 @@ PortletURL portletURL = renderResponse.createRenderURL();
 		</portlet:actionURL>
 
 		<liferay-ui:icon-delete
+			icon="trash"
+			linkCssClass="site-navigation-menu-action"
+			showIcon="<%= true %>"
 			trash="<%= false %>"
 			url="<%= deleteSiteNavigationMenuURL %>"
 		/>
