@@ -130,7 +130,7 @@ PersonalMenuEntryHelper personalMenuEntryHelper = (PersonalMenuEntryHelper)reque
 
 							<%
 							for (PanelCategory panelCategory : panelCategoryRegistry.getChildPanelCategories(PanelCategoryKeys.CONTROL_PANEL)) {
-								List<PanelApp> panelApps = panelAppRegistry.getPanelApps(panelCategory);
+								List<PanelApp> panelApps = panelAppRegistry.getPanelApps(themeDisplay.getCompanyId(), panelCategory);
 							%>
 
 								<c:if test="<%= !panelApps.isEmpty() %>">
@@ -205,7 +205,7 @@ PersonalMenuEntryHelper personalMenuEntryHelper = (PersonalMenuEntryHelper)reque
 
 							<%
 							for (PanelCategory panelCategory : panelCategoryRegistry.getChildPanelCategories(PanelCategoryKeys.COMMERCE)) {
-								List<PanelApp> panelApps = panelAppRegistry.getPanelApps(panelCategory);
+								List<PanelApp> panelApps = panelAppRegistry.getPanelApps(themeDisplay.getCompanyId(), panelCategory);
 							%>
 
 								<c:if test="<%= !panelApps.isEmpty() %>">
@@ -280,7 +280,7 @@ PersonalMenuEntryHelper personalMenuEntryHelper = (PersonalMenuEntryHelper)reque
 
 							<%
 							for (PanelCategory panelCategory : panelCategoryRegistry.getChildPanelCategories(PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS)) {
-								List<PanelApp> panelApps = panelAppRegistry.getPanelApps(panelCategory);
+								List<PanelApp> panelApps = panelAppRegistry.getPanelApps(themeDisplay.getCompanyId(), panelCategory);
 							%>
 
 								<c:if test="<%= !panelApps.isEmpty() %>">
@@ -350,7 +350,7 @@ PersonalMenuEntryHelper personalMenuEntryHelper = (PersonalMenuEntryHelper)reque
 				for (String panelCategoryKey : (String[])request.getAttribute(RolesAdminWebKeys.PANEL_CATEGORY_KEYS)) {
 					PanelCategory panelCategory = panelCategoryRegistry.getPanelCategory(panelCategoryKey);
 
-					List<PanelApp> panelApps = panelAppRegistry.getPanelApps(panelCategory);
+					List<PanelApp> panelApps = panelAppRegistry.getPanelApps(themeDisplay.getCompanyId(), panelCategory);
 				%>
 
 					<c:if test="<%= !panelApps.isEmpty() %>">
@@ -425,7 +425,7 @@ PersonalMenuEntryHelper personalMenuEntryHelper = (PersonalMenuEntryHelper)reque
 
 					<%
 					for (PanelCategory panelCategory : panelCategoryRegistry.getChildPanelCategories(PanelCategoryKeys.SITE_ADMINISTRATION)) {
-						List<PanelApp> panelApps = panelAppRegistry.getPanelApps(panelCategory);
+						List<PanelApp> panelApps = panelAppRegistry.getPanelApps(themeDisplay.getCompanyId(), panelCategory);
 					%>
 
 						<c:if test="<%= !panelApps.isEmpty() %>">
@@ -589,7 +589,7 @@ PersonalMenuEntryHelper personalMenuEntryHelper = (PersonalMenuEntryHelper)reque
 				for (PanelCategory panelCategory : panelCategories) {
 				%>
 
-					<c:if test="<%= !ListUtil.isEmpty(panelAppRegistry.getPanelApps(panelCategory)) %>">
+					<c:if test="<%= !ListUtil.isEmpty(panelAppRegistry.getPanelApps(themeDisplay.getCompanyId(), panelCategory)) %>">
 						<li class="nav-item permission-navigation-section">
 							<a class="collapse-icon nav-link permission-navigation-item-header toggler-header toggler-header-collapsed" href="javascript:;">
 								<liferay-ui:message key="<%= panelCategory.getLabel(locale) %>" />
@@ -607,7 +607,7 @@ PersonalMenuEntryHelper personalMenuEntryHelper = (PersonalMenuEntryHelper)reque
 									<div class="permission-navigation-item-content">
 
 										<%
-										for (PanelApp panelApp : panelAppRegistry.getPanelApps(panelCategory)) {
+										for (PanelApp panelApp : panelAppRegistry.getPanelApps(themeDisplay.getCompanyId(), panelCategory)) {
 											Portlet panelAppPortlet = PortletLocalServiceUtil.getPortletById(company.getCompanyId(), panelApp.getPortletId());
 
 											editPermissionsResourceURL.setParameter("portletResource", panelAppPortlet.getPortletId());
