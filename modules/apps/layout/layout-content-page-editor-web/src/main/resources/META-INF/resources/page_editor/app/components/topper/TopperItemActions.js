@@ -48,20 +48,22 @@ export default function TopperItemActions({item}) {
 	const dropdownItems = useMemo(() => {
 		const items = [];
 
-		items.push({
-			action: () => {
-				updateItemStyle({
-					dispatch,
-					itemId: item.itemId,
-					segmentsExperienceId,
-					selectedViewportSize,
-					styleName: 'display',
-					styleValue: 'none',
-				});
-			},
-			icon: 'hidden',
-			label: Liferay.Language.get('hide-fragment'),
-		});
+		if(item.type !== "drop-zone"){
+			items.push({
+				action: () => {
+					updateItemStyle({
+						dispatch,
+						itemId: item.itemId,
+						segmentsExperienceId,
+						selectedViewportSize,
+						styleName: 'display',
+						styleValue: 'none',
+					});
+				},
+				icon: 'hidden',
+				label: Liferay.Language.get('hide-fragment'),
+			});
+		}
 
 		if (canBeSaved(item, layoutData)) {
 			items.push({
