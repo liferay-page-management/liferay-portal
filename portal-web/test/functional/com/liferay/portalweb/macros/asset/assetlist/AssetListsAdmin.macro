@@ -415,6 +415,12 @@ definition {
 			listEntry = "${assetListTitle}");
 	}
 
+	macro gotoPersonalizedVariation {
+		Click(
+			key_variation = "${variationName}",
+			locator1 = "AssetLists#VARIATION_TITLE");
+	}
+
 	macro openAssetListsAdmin {
 		Navigator.openWithAppendToBaseURL(urlAppend = "group/${siteURLKey}/~/control_panel/manage?p_p_id=com_liferay_asset_list_web_portlet_AssetListPortlet");
 	}
@@ -613,7 +619,7 @@ definition {
 		}
 
 		if (isSet(personalizedVariation)) {
-			Navigator.gotoNavTab(navTab = "${personalizedVariation}");
+			AssetListsAdmin.gotoPersonalizedVariation(variationName = "${personalizedVariation}");
 		}
 
 		WaitForLiferayEvent.initializeLiferayEventLog();
@@ -642,7 +648,7 @@ definition {
 			locator1 = "AssetLists#ASSET_LIST_ENTRY_TITLE");
 
 		if (isSet(personalizedVariation)) {
-			Navigator.gotoNavTab(navTab = "${personalizedVariation}");
+			AssetListsAdmin.gotoPersonalizedVariation(variationName = "${personalizedVariation}");
 		}
 
 		WaitForLiferayEvent.initializeLiferayEventLog();
@@ -707,7 +713,7 @@ definition {
 			locator1 = "AssetLists#ASSET_LIST_ENTRY_TITLE");
 
 		if (isSet(personalizedVariation)) {
-			Navigator.gotoNavTab(navTab = "${personalizedVariation}");
+			AssetListsAdmin.gotoPersonalizedVariation(variationName = "${personalizedVariation}");
 		}
 
 		WaitForLiferayEvent.initializeLiferayEventLog();
