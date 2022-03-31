@@ -14,6 +14,7 @@
 
 package com.liferay.commerce.product.content.web.internal.info;
 
+import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.type.BooleanInfoFieldType;
 import com.liferay.info.field.type.DateInfoFieldType;
@@ -31,6 +32,8 @@ public interface CPDefinitionInfoItemFields {
 		accountGroupFilterEnabledInfoField = InfoField.builder(
 		).infoFieldType(
 			BooleanInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"accountGroupFilterEnabled"
 		).labelInfoLocalizedValue(
@@ -42,6 +45,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			BooleanInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"approved"
 		).labelInfoLocalizedValue(
@@ -52,6 +57,8 @@ public interface CPDefinitionInfoItemFields {
 		availableIndividuallyInfoField = InfoField.builder(
 		).infoFieldType(
 			BooleanInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"availableIndividually"
 		).labelInfoLocalizedValue(
@@ -62,6 +69,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			TextInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"categories"
 		).labelInfoLocalizedValue(
@@ -72,6 +81,8 @@ public interface CPDefinitionInfoItemFields {
 		channelFilterEnabledInfoField = InfoField.builder(
 		).infoFieldType(
 			BooleanInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"channelFilterEnabled"
 		).labelInfoLocalizedValue(
@@ -82,6 +93,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			NumberInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"companyId"
 		).labelInfoLocalizedValue(
@@ -92,6 +105,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			NumberInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"cpDefinitionId"
 		).labelInfoLocalizedValue(
@@ -102,6 +117,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			NumberInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"cProductId"
 		).labelInfoLocalizedValue(
@@ -112,6 +129,8 @@ public interface CPDefinitionInfoItemFields {
 		cpTaxCategoryIdInfoField = InfoField.builder(
 		).infoFieldType(
 			NumberInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"cpTaxCategoryId"
 		).labelInfoLocalizedValue(
@@ -122,6 +141,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			DateInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"createDate"
 		).labelInfoLocalizedValue(
@@ -132,6 +153,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			TextInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"ddmStructureKey"
 		).labelInfoLocalizedValue(
@@ -142,6 +165,8 @@ public interface CPDefinitionInfoItemFields {
 		defaultLanguageIdInfoField = InfoField.builder(
 		).infoFieldType(
 			TextInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"defaultLanguageId"
 		).labelInfoLocalizedValue(
@@ -152,6 +177,8 @@ public interface CPDefinitionInfoItemFields {
 		deliveryMaxSubscriptionCyclesInfoField = InfoField.builder(
 		).infoFieldType(
 			NumberInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"deliveryMaxSubscriptionCycles"
 		).labelInfoLocalizedValue(
@@ -163,6 +190,8 @@ public interface CPDefinitionInfoItemFields {
 		deliverySubscriptionEnabledInfoField = InfoField.builder(
 		).infoFieldType(
 			BooleanInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"deliverySubscriptionEnabled"
 		).labelInfoLocalizedValue(
@@ -174,6 +203,8 @@ public interface CPDefinitionInfoItemFields {
 		deliverySubscriptionLengthInfoField = InfoField.builder(
 		).infoFieldType(
 			NumberInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"deliverySubscriptionLength"
 		).labelInfoLocalizedValue(
@@ -185,6 +216,8 @@ public interface CPDefinitionInfoItemFields {
 		deliverySubscriptionTypeInfoField = InfoField.builder(
 		).infoFieldType(
 			TextInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"deliverySubscriptionType"
 		).labelInfoLocalizedValue(
@@ -195,6 +228,8 @@ public interface CPDefinitionInfoItemFields {
 		deliverySubscriptionTypeSettingsInfoField = InfoField.builder(
 		).infoFieldType(
 			TextInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"deliverySubscriptionTypeSettings"
 		).labelInfoLocalizedValue(
@@ -206,6 +241,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			BooleanInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"denied"
 		).labelInfoLocalizedValue(
@@ -216,6 +253,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			NumberInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"depth"
 		).labelInfoLocalizedValue(
@@ -226,6 +265,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			TextInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"description"
 		).labelInfoLocalizedValue(
@@ -236,6 +277,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			DateInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"displayDate"
 		).labelInfoLocalizedValue(
@@ -246,6 +289,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			URLInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"displayPageURL"
 		).labelInfoLocalizedValue(
@@ -256,6 +301,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			BooleanInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"draft"
 		).labelInfoLocalizedValue(
@@ -266,6 +313,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			DateInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"expirationDate"
 		).labelInfoLocalizedValue(
@@ -276,6 +325,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			BooleanInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"expired"
 		).labelInfoLocalizedValue(
@@ -286,6 +337,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			BooleanInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"freeShipping"
 		).labelInfoLocalizedValue(
@@ -296,6 +349,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			NumberInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"groupId"
 		).labelInfoLocalizedValue(
@@ -306,6 +361,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			NumberInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"height"
 		).labelInfoLocalizedValue(
@@ -316,6 +373,8 @@ public interface CPDefinitionInfoItemFields {
 		ignoreSKUCombinationsInfoField = InfoField.builder(
 		).infoFieldType(
 			BooleanInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"ignoreSKUCombinations"
 		).labelInfoLocalizedValue(
@@ -326,6 +385,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			BooleanInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"inactive"
 		).labelInfoLocalizedValue(
@@ -336,6 +397,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			BooleanInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"incomplete"
 		).labelInfoLocalizedValue(
@@ -346,6 +409,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			DateInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"lastPublishDate"
 		).labelInfoLocalizedValue(
@@ -356,6 +421,8 @@ public interface CPDefinitionInfoItemFields {
 		maxSubscriptionCyclesInfoField = InfoField.builder(
 		).infoFieldType(
 			NumberInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"maxSubscriptionCycles"
 		).labelInfoLocalizedValue(
@@ -366,6 +433,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			TextInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"metaDescription"
 		).labelInfoLocalizedValue(
@@ -376,6 +445,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			TextInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"metaKeywords"
 		).labelInfoLocalizedValue(
@@ -386,6 +457,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			TextInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"metaTitle"
 		).labelInfoLocalizedValue(
@@ -396,6 +469,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			DateInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"modifiedDate"
 		).labelInfoLocalizedValue(
@@ -406,6 +481,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			TextInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"name"
 		).labelInfoLocalizedValue(
@@ -416,6 +493,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			BooleanInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"pending"
 		).labelInfoLocalizedValue(
@@ -426,6 +505,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			TextInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"productTypeName"
 		).labelInfoLocalizedValue(
@@ -436,6 +517,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			BooleanInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"published"
 		).labelInfoLocalizedValue(
@@ -446,6 +529,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			BooleanInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"scheduled"
 		).labelInfoLocalizedValue(
@@ -456,6 +541,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			BooleanInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"shippable"
 		).labelInfoLocalizedValue(
@@ -466,6 +553,8 @@ public interface CPDefinitionInfoItemFields {
 		shippingExtraPriceInfoField = InfoField.builder(
 		).infoFieldType(
 			NumberInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"shippingExtraPrice"
 		).labelInfoLocalizedValue(
@@ -476,6 +565,8 @@ public interface CPDefinitionInfoItemFields {
 		shipSeparatelyPriceInfoField = InfoField.builder(
 		).infoFieldType(
 			BooleanInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"shipSeperately"
 		).labelInfoLocalizedValue(
@@ -486,6 +577,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			TextInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"shortDescription"
 		).labelInfoLocalizedValue(
@@ -496,6 +589,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			TextInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"stagedModelType"
 		).labelInfoLocalizedValue(
@@ -506,6 +601,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			TextInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"statusByUserId"
 		).labelInfoLocalizedValue(
@@ -516,6 +613,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			TextInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"statusByUserName"
 		).labelInfoLocalizedValue(
@@ -526,6 +625,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			TextInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"statusByUserUuid"
 		).labelInfoLocalizedValue(
@@ -536,6 +637,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			DateInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"statusDate"
 		).labelInfoLocalizedValue(
@@ -546,6 +649,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			TextInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"status"
 		).labelInfoLocalizedValue(
@@ -556,6 +661,8 @@ public interface CPDefinitionInfoItemFields {
 		subscriptionEnabledInfoField = InfoField.builder(
 		).infoFieldType(
 			BooleanInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"subscriptionEnabled"
 		).labelInfoLocalizedValue(
@@ -566,6 +673,8 @@ public interface CPDefinitionInfoItemFields {
 		subscriptionLengthInfoField = InfoField.builder(
 		).infoFieldType(
 			NumberInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"subscriptionLength"
 		).labelInfoLocalizedValue(
@@ -576,6 +685,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			TextInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"subscriptionType"
 		).labelInfoLocalizedValue(
@@ -586,6 +697,8 @@ public interface CPDefinitionInfoItemFields {
 		subscriptionTypeSettingsInfoField = InfoField.builder(
 		).infoFieldType(
 			TextInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"subscriptionTypeSettings"
 		).labelInfoLocalizedValue(
@@ -596,6 +709,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			BooleanInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"taxExempt"
 		).labelInfoLocalizedValue(
@@ -606,6 +721,8 @@ public interface CPDefinitionInfoItemFields {
 		telcoOrElectronicsInfoField = InfoField.builder(
 		).infoFieldType(
 			BooleanInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"telcoOrElectronics"
 		).labelInfoLocalizedValue(
@@ -616,6 +733,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			NumberInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"userId"
 		).labelInfoLocalizedValue(
@@ -626,6 +745,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			TextInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"userName"
 		).labelInfoLocalizedValue(
@@ -636,6 +757,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			TextInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"userUuid"
 		).labelInfoLocalizedValue(
@@ -646,6 +769,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			TextInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"uuid"
 		).labelInfoLocalizedValue(
@@ -656,6 +781,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			NumberInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"version"
 		).labelInfoLocalizedValue(
@@ -666,6 +793,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			NumberInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"weight"
 		).labelInfoLocalizedValue(
@@ -676,6 +805,8 @@ public interface CPDefinitionInfoItemFields {
 		InfoField.builder(
 		).infoFieldType(
 			NumberInfoFieldType.INSTANCE
+		).namespace(
+			CPDefinition.class.getSimpleName()
 		).name(
 			"width"
 		).labelInfoLocalizedValue(
