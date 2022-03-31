@@ -1020,7 +1020,7 @@ definition {
 
 			AssertTextEquals(
 				locator1 = "PageEditor#FRAGMENT_SIDEBAR_CENTER_TEXT",
-				value1 = "There are no comments yet.");
+				value1 = "No Results Found");
 
 			PageEditor.changeExperience(newExperience = "New Experience Name");
 

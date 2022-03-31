@@ -3671,11 +3671,11 @@ definition {
 
 			AssertTextEquals(
 				locator1 = "PageEditor#FRAGMENT_SIDEBAR_CENTER_TEXT",
-				value1 = "There are no comments yet.");
+				value1 = "No Results Found");
 
 			AssertTextEquals(
 				locator1 = "PageEditor#FRAGMENT_SIDEBAR_SECONDARY_TEXT",
-				value1 = "Select a fragment to add a comment.");
+				value1 = "Try again with a different search.");
 		}
 
 		if (isSet(key_fragmentName)) {
