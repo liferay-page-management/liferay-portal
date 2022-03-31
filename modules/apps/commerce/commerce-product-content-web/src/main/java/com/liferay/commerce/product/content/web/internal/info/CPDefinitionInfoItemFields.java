@@ -26,27 +26,22 @@ import com.liferay.info.localized.InfoLocalizedValue;
 /**
  * @author Eudaldo Alonso
  */
-public interface CPDefinitionInfoItemFields {
+public class CPDefinitionInfoItemFields {
 
 	public static final InfoField<BooleanInfoFieldType>
-		accountGroupFilterEnabledInfoField = InfoField.builder(
-		).infoFieldType(
-			BooleanInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
-		).name(
-			"accountGroupFilterEnabled"
-		).labelInfoLocalizedValue(
-			InfoLocalizedValue.localize(
-				CPDefinitionInfoItemFields.class,
-				"account-group-filter-enabled")
-		).build();
+		accountGroupFilterEnabledInfoField =
+			BuilderStaticHolder._builder.infoFieldType(
+				BooleanInfoFieldType.INSTANCE
+			).name(
+				"accountGroupFilterEnabled"
+			).labelInfoLocalizedValue(
+				InfoLocalizedValue.localize(
+					CPDefinitionInfoItemFields.class,
+					"account-group-filter-enabled")
+			).build();
 	public static final InfoField<BooleanInfoFieldType> approvedInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			BooleanInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"approved"
 		).labelInfoLocalizedValue(
@@ -54,23 +49,18 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "approved")
 		).build();
 	public static final InfoField<BooleanInfoFieldType>
-		availableIndividuallyInfoField = InfoField.builder(
-		).infoFieldType(
-			BooleanInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
-		).name(
-			"availableIndividually"
-		).labelInfoLocalizedValue(
-			InfoLocalizedValue.localize(
-				CPDefinitionInfoItemFields.class, "available-individually")
-		).build();
+		availableIndividuallyInfoField =
+			BuilderStaticHolder._builder.infoFieldType(
+				BooleanInfoFieldType.INSTANCE
+			).name(
+				"availableIndividually"
+			).labelInfoLocalizedValue(
+				InfoLocalizedValue.localize(
+					CPDefinitionInfoItemFields.class, "available-individually")
+			).build();
 	public static final InfoField<TextInfoFieldType> categoriesInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"categories"
 		).labelInfoLocalizedValue(
@@ -78,23 +68,18 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "all-categories")
 		).build();
 	public static final InfoField<BooleanInfoFieldType>
-		channelFilterEnabledInfoField = InfoField.builder(
-		).infoFieldType(
-			BooleanInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
-		).name(
-			"channelFilterEnabled"
-		).labelInfoLocalizedValue(
-			InfoLocalizedValue.localize(
-				CPDefinitionInfoItemFields.class, "channel-filter-enabled")
-		).build();
+		channelFilterEnabledInfoField =
+			BuilderStaticHolder._builder.infoFieldType(
+				BooleanInfoFieldType.INSTANCE
+			).name(
+				"channelFilterEnabled"
+			).labelInfoLocalizedValue(
+				InfoLocalizedValue.localize(
+					CPDefinitionInfoItemFields.class, "channel-filter-enabled")
+			).build();
 	public static final InfoField<NumberInfoFieldType> companyIdInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			NumberInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"companyId"
 		).labelInfoLocalizedValue(
@@ -102,11 +87,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "company-id")
 		).build();
 	public static final InfoField<NumberInfoFieldType> cpDefinitionIdInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			NumberInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"cpDefinitionId"
 		).labelInfoLocalizedValue(
@@ -114,11 +96,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "cpDefinitionId")
 		).build();
 	public static final InfoField<NumberInfoFieldType> cProductIdInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			NumberInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"cProductId"
 		).labelInfoLocalizedValue(
@@ -126,11 +105,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "cProductId")
 		).build();
 	public static final InfoField<NumberInfoFieldType>
-		cpTaxCategoryIdInfoField = InfoField.builder(
-		).infoFieldType(
+		cpTaxCategoryIdInfoField = BuilderStaticHolder._builder.infoFieldType(
 			NumberInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"cpTaxCategoryId"
 		).labelInfoLocalizedValue(
@@ -138,11 +114,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "cpTaxCategoryId")
 		).build();
 	public static final InfoField<DateInfoFieldType> createDateInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			DateInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"createDate"
 		).labelInfoLocalizedValue(
@@ -150,11 +123,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "create-date")
 		).build();
 	public static final InfoField<TextInfoFieldType> ddmStructureKeyInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"ddmStructureKey"
 		).labelInfoLocalizedValue(
@@ -162,11 +132,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "ddm-structure-key")
 		).build();
 	public static final InfoField<TextInfoFieldType>
-		defaultLanguageIdInfoField = InfoField.builder(
-		).infoFieldType(
+		defaultLanguageIdInfoField = BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"defaultLanguageId"
 		).labelInfoLocalizedValue(
@@ -174,75 +141,63 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "default-languageId")
 		).build();
 	public static final InfoField<NumberInfoFieldType>
-		deliveryMaxSubscriptionCyclesInfoField = InfoField.builder(
-		).infoFieldType(
-			NumberInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
-		).name(
-			"deliveryMaxSubscriptionCycles"
-		).labelInfoLocalizedValue(
-			InfoLocalizedValue.localize(
-				CPDefinitionInfoItemFields.class,
-				"delivery-max-subscription-cycles")
-		).build();
+		deliveryMaxSubscriptionCyclesInfoField =
+			BuilderStaticHolder._builder.infoFieldType(
+				NumberInfoFieldType.INSTANCE
+			).name(
+				"deliveryMaxSubscriptionCycles"
+			).labelInfoLocalizedValue(
+				InfoLocalizedValue.localize(
+					CPDefinitionInfoItemFields.class,
+					"delivery-max-subscription-cycles")
+			).build();
 	public static final InfoField<BooleanInfoFieldType>
-		deliverySubscriptionEnabledInfoField = InfoField.builder(
-		).infoFieldType(
-			BooleanInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
-		).name(
-			"deliverySubscriptionEnabled"
-		).labelInfoLocalizedValue(
-			InfoLocalizedValue.localize(
-				CPDefinitionInfoItemFields.class,
-				"delivery-subscription-enabled")
-		).build();
+		deliverySubscriptionEnabledInfoField =
+			BuilderStaticHolder._builder.infoFieldType(
+				BooleanInfoFieldType.INSTANCE
+			).name(
+				"deliverySubscriptionEnabled"
+			).labelInfoLocalizedValue(
+				InfoLocalizedValue.localize(
+					CPDefinitionInfoItemFields.class,
+					"delivery-subscription-enabled")
+			).build();
 	public static final InfoField<NumberInfoFieldType>
-		deliverySubscriptionLengthInfoField = InfoField.builder(
-		).infoFieldType(
-			NumberInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
-		).name(
-			"deliverySubscriptionLength"
-		).labelInfoLocalizedValue(
-			InfoLocalizedValue.localize(
-				CPDefinitionInfoItemFields.class,
-				"delivery-subscription-length")
-		).build();
+		deliverySubscriptionLengthInfoField =
+			BuilderStaticHolder._builder.infoFieldType(
+				NumberInfoFieldType.INSTANCE
+			).name(
+				"deliverySubscriptionLength"
+			).labelInfoLocalizedValue(
+				InfoLocalizedValue.localize(
+					CPDefinitionInfoItemFields.class,
+					"delivery-subscription-length")
+			).build();
 	public static final InfoField<TextInfoFieldType>
-		deliverySubscriptionTypeInfoField = InfoField.builder(
-		).infoFieldType(
-			TextInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
-		).name(
-			"deliverySubscriptionType"
-		).labelInfoLocalizedValue(
-			InfoLocalizedValue.localize(
-				CPDefinitionInfoItemFields.class, "delivery-subscription-type")
-		).build();
+		deliverySubscriptionTypeInfoField =
+			BuilderStaticHolder._builder.infoFieldType(
+				TextInfoFieldType.INSTANCE
+			).name(
+				"deliverySubscriptionType"
+			).labelInfoLocalizedValue(
+				InfoLocalizedValue.localize(
+					CPDefinitionInfoItemFields.class,
+					"delivery-subscription-type")
+			).build();
 	public static final InfoField<TextInfoFieldType>
-		deliverySubscriptionTypeSettingsInfoField = InfoField.builder(
-		).infoFieldType(
-			TextInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
-		).name(
-			"deliverySubscriptionTypeSettings"
-		).labelInfoLocalizedValue(
-			InfoLocalizedValue.localize(
-				CPDefinitionInfoItemFields.class,
-				"delivery-subscription-type-settings")
-		).build();
+		deliverySubscriptionTypeSettingsInfoField =
+			BuilderStaticHolder._builder.infoFieldType(
+				TextInfoFieldType.INSTANCE
+			).name(
+				"deliverySubscriptionTypeSettings"
+			).labelInfoLocalizedValue(
+				InfoLocalizedValue.localize(
+					CPDefinitionInfoItemFields.class,
+					"delivery-subscription-type-settings")
+			).build();
 	public static final InfoField<BooleanInfoFieldType> deniedInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			BooleanInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"denied"
 		).labelInfoLocalizedValue(
@@ -250,11 +205,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "denied")
 		).build();
 	public static final InfoField<NumberInfoFieldType> depthInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			NumberInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"depth"
 		).labelInfoLocalizedValue(
@@ -262,11 +214,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "depth")
 		).build();
 	public static final InfoField<TextInfoFieldType> descriptionInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"description"
 		).labelInfoLocalizedValue(
@@ -274,11 +223,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "description")
 		).build();
 	public static final InfoField<DateInfoFieldType> displayDateInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			DateInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"displayDate"
 		).labelInfoLocalizedValue(
@@ -286,11 +232,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "display-date")
 		).build();
 	public static final InfoField<URLInfoFieldType> displayPageUrlInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			URLInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"displayPageURL"
 		).labelInfoLocalizedValue(
@@ -298,11 +241,8 @@ public interface CPDefinitionInfoItemFields {
 				"com.liferay.asset.info.display.impl", "display-page-url")
 		).build();
 	public static final InfoField<BooleanInfoFieldType> draftInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			BooleanInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"draft"
 		).labelInfoLocalizedValue(
@@ -310,11 +250,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "draft")
 		).build();
 	public static final InfoField<DateInfoFieldType> expirationDateInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			DateInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"expirationDate"
 		).labelInfoLocalizedValue(
@@ -322,11 +259,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "expiration-date")
 		).build();
 	public static final InfoField<BooleanInfoFieldType> expiredInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			BooleanInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"expired"
 		).labelInfoLocalizedValue(
@@ -334,11 +268,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "expired")
 		).build();
 	public static final InfoField<BooleanInfoFieldType> freeShippingInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			BooleanInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"freeShipping"
 		).labelInfoLocalizedValue(
@@ -346,11 +277,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "free-shipping")
 		).build();
 	public static final InfoField<NumberInfoFieldType> groupIdInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			NumberInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"groupId"
 		).labelInfoLocalizedValue(
@@ -358,11 +286,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "group-id")
 		).build();
 	public static final InfoField<NumberInfoFieldType> heightInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			NumberInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"height"
 		).labelInfoLocalizedValue(
@@ -370,23 +295,18 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "height")
 		).build();
 	public static final InfoField<BooleanInfoFieldType>
-		ignoreSKUCombinationsInfoField = InfoField.builder(
-		).infoFieldType(
-			BooleanInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
-		).name(
-			"ignoreSKUCombinations"
-		).labelInfoLocalizedValue(
-			InfoLocalizedValue.localize(
-				CPDefinitionInfoItemFields.class, "ignore-sku-combinations")
-		).build();
+		ignoreSKUCombinationsInfoField =
+			BuilderStaticHolder._builder.infoFieldType(
+				BooleanInfoFieldType.INSTANCE
+			).name(
+				"ignoreSKUCombinations"
+			).labelInfoLocalizedValue(
+				InfoLocalizedValue.localize(
+					CPDefinitionInfoItemFields.class, "ignore-sku-combinations")
+			).build();
 	public static final InfoField<BooleanInfoFieldType> inactiveInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			BooleanInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"inactive"
 		).labelInfoLocalizedValue(
@@ -394,11 +314,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "inactive")
 		).build();
 	public static final InfoField<BooleanInfoFieldType> incompleteInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			BooleanInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"incomplete"
 		).labelInfoLocalizedValue(
@@ -406,11 +323,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "incomplete")
 		).build();
 	public static final InfoField<DateInfoFieldType> lastPublishDateInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			DateInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"lastPublishDate"
 		).labelInfoLocalizedValue(
@@ -418,23 +332,18 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "last-publish-date")
 		).build();
 	public static final InfoField<NumberInfoFieldType>
-		maxSubscriptionCyclesInfoField = InfoField.builder(
-		).infoFieldType(
-			NumberInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
-		).name(
-			"maxSubscriptionCycles"
-		).labelInfoLocalizedValue(
-			InfoLocalizedValue.localize(
-				CPDefinitionInfoItemFields.class, "max-subscription-cycles")
-		).build();
+		maxSubscriptionCyclesInfoField =
+			BuilderStaticHolder._builder.infoFieldType(
+				NumberInfoFieldType.INSTANCE
+			).name(
+				"maxSubscriptionCycles"
+			).labelInfoLocalizedValue(
+				InfoLocalizedValue.localize(
+					CPDefinitionInfoItemFields.class, "max-subscription-cycles")
+			).build();
 	public static final InfoField<TextInfoFieldType> metaDescriptionInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"metaDescription"
 		).labelInfoLocalizedValue(
@@ -442,11 +351,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "meta-description")
 		).build();
 	public static final InfoField<TextInfoFieldType> metaKeywordsInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"metaKeywords"
 		).labelInfoLocalizedValue(
@@ -454,11 +360,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "meta-keywords")
 		).build();
 	public static final InfoField<TextInfoFieldType> metaTitleInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"metaTitle"
 		).labelInfoLocalizedValue(
@@ -466,11 +369,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "meta-title")
 		).build();
 	public static final InfoField<DateInfoFieldType> modifiedDateInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			DateInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"modifiedDate"
 		).labelInfoLocalizedValue(
@@ -478,11 +378,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "modified-date")
 		).build();
 	public static final InfoField<TextInfoFieldType> nameInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"name"
 		).labelInfoLocalizedValue(
@@ -490,11 +387,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "name")
 		).build();
 	public static final InfoField<BooleanInfoFieldType> pendingInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			BooleanInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"pending"
 		).labelInfoLocalizedValue(
@@ -502,11 +396,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "pending")
 		).build();
 	public static final InfoField<TextInfoFieldType> productTypeNameInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"productTypeName"
 		).labelInfoLocalizedValue(
@@ -514,11 +405,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "product-type")
 		).build();
 	public static final InfoField<BooleanInfoFieldType> publishedInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			BooleanInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"published"
 		).labelInfoLocalizedValue(
@@ -526,11 +414,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "published")
 		).build();
 	public static final InfoField<BooleanInfoFieldType> scheduledInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			BooleanInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"scheduled"
 		).labelInfoLocalizedValue(
@@ -538,11 +423,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "scheduled")
 		).build();
 	public static final InfoField<BooleanInfoFieldType> shippableInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			BooleanInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"shippable"
 		).labelInfoLocalizedValue(
@@ -550,35 +432,28 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "shippable")
 		).build();
 	public static final InfoField<NumberInfoFieldType>
-		shippingExtraPriceInfoField = InfoField.builder(
-		).infoFieldType(
-			NumberInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
-		).name(
-			"shippingExtraPrice"
-		).labelInfoLocalizedValue(
-			InfoLocalizedValue.localize(
-				CPDefinitionInfoItemFields.class, "shipping-extra-price")
-		).build();
+		shippingExtraPriceInfoField =
+			BuilderStaticHolder._builder.infoFieldType(
+				NumberInfoFieldType.INSTANCE
+			).name(
+				"shippingExtraPrice"
+			).labelInfoLocalizedValue(
+				InfoLocalizedValue.localize(
+					CPDefinitionInfoItemFields.class, "shipping-extra-price")
+			).build();
 	public static final InfoField<BooleanInfoFieldType>
-		shipSeparatelyPriceInfoField = InfoField.builder(
-		).infoFieldType(
-			BooleanInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
-		).name(
-			"shipSeperately"
-		).labelInfoLocalizedValue(
-			InfoLocalizedValue.localize(
-				CPDefinitionInfoItemFields.class, "ship-separately")
-		).build();
+		shipSeparatelyPriceInfoField =
+			BuilderStaticHolder._builder.infoFieldType(
+				BooleanInfoFieldType.INSTANCE
+			).name(
+				"shipSeperately"
+			).labelInfoLocalizedValue(
+				InfoLocalizedValue.localize(
+					CPDefinitionInfoItemFields.class, "ship-separately")
+			).build();
 	public static final InfoField<TextInfoFieldType> shortDescriptionInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"shortDescription"
 		).labelInfoLocalizedValue(
@@ -586,11 +461,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "short-description")
 		).build();
 	public static final InfoField<TextInfoFieldType> stagedModelTypeInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"stagedModelType"
 		).labelInfoLocalizedValue(
@@ -598,11 +470,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "staged-model-type")
 		).build();
 	public static final InfoField<TextInfoFieldType> statusByUserIdInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"statusByUserId"
 		).labelInfoLocalizedValue(
@@ -610,11 +479,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "status-by-userId")
 		).build();
 	public static final InfoField<TextInfoFieldType> statusByUserNameInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"statusByUserName"
 		).labelInfoLocalizedValue(
@@ -622,11 +488,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "status-by-userName")
 		).build();
 	public static final InfoField<TextInfoFieldType> statusByUserUuidInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"statusByUserUuid"
 		).labelInfoLocalizedValue(
@@ -634,11 +497,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "status-by-userUuid")
 		).build();
 	public static final InfoField<DateInfoFieldType> statusDateInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			DateInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"statusDate"
 		).labelInfoLocalizedValue(
@@ -646,11 +506,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "status-date")
 		).build();
 	public static final InfoField<TextInfoFieldType> statusInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"status"
 		).labelInfoLocalizedValue(
@@ -658,35 +515,28 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "status")
 		).build();
 	public static final InfoField<BooleanInfoFieldType>
-		subscriptionEnabledInfoField = InfoField.builder(
-		).infoFieldType(
-			BooleanInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
-		).name(
-			"subscriptionEnabled"
-		).labelInfoLocalizedValue(
-			InfoLocalizedValue.localize(
-				CPDefinitionInfoItemFields.class, "subscription-enabled")
-		).build();
+		subscriptionEnabledInfoField =
+			BuilderStaticHolder._builder.infoFieldType(
+				BooleanInfoFieldType.INSTANCE
+			).name(
+				"subscriptionEnabled"
+			).labelInfoLocalizedValue(
+				InfoLocalizedValue.localize(
+					CPDefinitionInfoItemFields.class, "subscription-enabled")
+			).build();
 	public static final InfoField<NumberInfoFieldType>
-		subscriptionLengthInfoField = InfoField.builder(
-		).infoFieldType(
-			NumberInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
-		).name(
-			"subscriptionLength"
-		).labelInfoLocalizedValue(
-			InfoLocalizedValue.localize(
-				CPDefinitionInfoItemFields.class, "subscription-length")
-		).build();
+		subscriptionLengthInfoField =
+			BuilderStaticHolder._builder.infoFieldType(
+				NumberInfoFieldType.INSTANCE
+			).name(
+				"subscriptionLength"
+			).labelInfoLocalizedValue(
+				InfoLocalizedValue.localize(
+					CPDefinitionInfoItemFields.class, "subscription-length")
+			).build();
 	public static final InfoField<TextInfoFieldType> subscriptionTypeInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"subscriptionType"
 		).labelInfoLocalizedValue(
@@ -694,23 +544,19 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "subscription-type")
 		).build();
 	public static final InfoField<TextInfoFieldType>
-		subscriptionTypeSettingsInfoField = InfoField.builder(
-		).infoFieldType(
-			TextInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
-		).name(
-			"subscriptionTypeSettings"
-		).labelInfoLocalizedValue(
-			InfoLocalizedValue.localize(
-				CPDefinitionInfoItemFields.class, "subscription-type-settings")
-		).build();
+		subscriptionTypeSettingsInfoField =
+			BuilderStaticHolder._builder.infoFieldType(
+				TextInfoFieldType.INSTANCE
+			).name(
+				"subscriptionTypeSettings"
+			).labelInfoLocalizedValue(
+				InfoLocalizedValue.localize(
+					CPDefinitionInfoItemFields.class,
+					"subscription-type-settings")
+			).build();
 	public static final InfoField<BooleanInfoFieldType> taxExemptInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			BooleanInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"taxExempt"
 		).labelInfoLocalizedValue(
@@ -718,23 +564,18 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "tax-exempt")
 		).build();
 	public static final InfoField<BooleanInfoFieldType>
-		telcoOrElectronicsInfoField = InfoField.builder(
-		).infoFieldType(
-			BooleanInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
-		).name(
-			"telcoOrElectronics"
-		).labelInfoLocalizedValue(
-			InfoLocalizedValue.localize(
-				CPDefinitionInfoItemFields.class, "telco-or-electronics")
-		).build();
+		telcoOrElectronicsInfoField =
+			BuilderStaticHolder._builder.infoFieldType(
+				BooleanInfoFieldType.INSTANCE
+			).name(
+				"telcoOrElectronics"
+			).labelInfoLocalizedValue(
+				InfoLocalizedValue.localize(
+					CPDefinitionInfoItemFields.class, "telco-or-electronics")
+			).build();
 	public static final InfoField<NumberInfoFieldType> userIdInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			NumberInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"userId"
 		).labelInfoLocalizedValue(
@@ -742,11 +583,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "userId")
 		).build();
 	public static final InfoField<TextInfoFieldType> userNameInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"userName"
 		).labelInfoLocalizedValue(
@@ -754,11 +592,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "author-name")
 		).build();
 	public static final InfoField<TextInfoFieldType> userUuidInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"userUuid"
 		).labelInfoLocalizedValue(
@@ -766,11 +601,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "userUuid")
 		).build();
 	public static final InfoField<TextInfoFieldType> uuidInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"uuid"
 		).labelInfoLocalizedValue(
@@ -778,11 +610,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "uuid")
 		).build();
 	public static final InfoField<NumberInfoFieldType> versionInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			NumberInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"version"
 		).labelInfoLocalizedValue(
@@ -790,11 +619,8 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "version")
 		).build();
 	public static final InfoField<NumberInfoFieldType> weightInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			NumberInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"weight"
 		).labelInfoLocalizedValue(
@@ -802,16 +628,20 @@ public interface CPDefinitionInfoItemFields {
 				CPDefinitionInfoItemFields.class, "weight")
 		).build();
 	public static final InfoField<NumberInfoFieldType> widthInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			NumberInfoFieldType.INSTANCE
-		).namespace(
-			CPDefinition.class.getSimpleName()
 		).name(
 			"width"
 		).labelInfoLocalizedValue(
 			InfoLocalizedValue.localize(
 				CPDefinitionInfoItemFields.class, "width")
 		).build();
+
+	private static class BuilderStaticHolder {
+
+		private static final InfoField.NamespacedBuilder _builder =
+			InfoField.builder(CPDefinition.class.getSimpleName());
+
+	}
 
 }
