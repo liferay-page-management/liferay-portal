@@ -25,7 +25,6 @@ import com.liferay.info.field.type.TextInfoFieldType;
 import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.function.UnsafeTriConsumer;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
