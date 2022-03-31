@@ -16,21 +16,17 @@ package com.liferay.asset.info.internal.item;
 
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.info.field.InfoField;
-import com.liferay.info.field.type.ImageInfoFieldType;
 import com.liferay.info.field.type.TextInfoFieldType;
 import com.liferay.info.localized.InfoLocalizedValue;
 
 /**
  * @author Jorge Ferrer
  */
-public interface AssetEntryInfoItemFields {
+public class AssetEntryInfoItemFields {
 
 	public static final InfoField<TextInfoFieldType> createDateInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			AssetEntry.class.getSimpleName()
 		).name(
 			"createDate"
 		).labelInfoLocalizedValue(
@@ -38,11 +34,8 @@ public interface AssetEntryInfoItemFields {
 				AssetEntryInfoItemFields.class, "create-date")
 		).build();
 	public static final InfoField<TextInfoFieldType> descriptionInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			AssetEntry.class.getSimpleName()
 		).name(
 			"description"
 		).labelInfoLocalizedValue(
@@ -50,11 +43,8 @@ public interface AssetEntryInfoItemFields {
 				AssetEntryInfoItemFields.class, "description")
 		).build();
 	public static final InfoField<TextInfoFieldType> displayPageURLInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			AssetEntry.class.getSimpleName()
 		).name(
 			"displayPageURL"
 		).labelInfoLocalizedValue(
@@ -62,11 +52,8 @@ public interface AssetEntryInfoItemFields {
 				AssetEntryInfoItemFields.class, "display-page-url")
 		).build();
 	public static final InfoField<TextInfoFieldType> expirationDateInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			AssetEntry.class.getSimpleName()
 		).name(
 			"expirationDate"
 		).labelInfoLocalizedValue(
@@ -74,11 +61,8 @@ public interface AssetEntryInfoItemFields {
 				AssetEntryInfoItemFields.class, "expiration-date")
 		).build();
 	public static final InfoField<TextInfoFieldType> modifiedDateInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			AssetEntry.class.getSimpleName()
 		).name(
 			"modifiedDate"
 		).labelInfoLocalizedValue(
@@ -86,11 +70,8 @@ public interface AssetEntryInfoItemFields {
 				AssetEntryInfoItemFields.class, "modified-date")
 		).build();
 	public static final InfoField<TextInfoFieldType> summaryInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			AssetEntry.class.getSimpleName()
 		).name(
 			"summary"
 		).labelInfoLocalizedValue(
@@ -98,61 +79,54 @@ public interface AssetEntryInfoItemFields {
 				AssetEntryInfoItemFields.class, "summary")
 		).build();
 	public static final InfoField<TextInfoFieldType> titleInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			AssetEntry.class.getSimpleName()
 		).name(
 			"title"
 		).labelInfoLocalizedValue(
 			InfoLocalizedValue.localize(AssetEntryInfoItemFields.class, "title")
 		).build();
 	public static final InfoField<TextInfoFieldType> urlInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			AssetEntry.class.getSimpleName()
 		).name(
 			"url"
 		).labelInfoLocalizedValue(
 			InfoLocalizedValue.localize(AssetEntryInfoItemFields.class, "url")
 		).build();
 	public static final InfoField<TextInfoFieldType> userNameInfoField =
-		InfoField.builder(
-		).infoFieldType(
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			AssetEntry.class.getSimpleName()
 		).name(
 			"userName"
 		).labelInfoLocalizedValue(
 			InfoLocalizedValue.localize(
 				AssetEntryInfoItemFields.class, "user-name")
 		).build();
-	public static final InfoField userProfileImageInfoField = InfoField.builder(
-	).infoFieldType(
-		ImageInfoFieldType.INSTANCE
-	).namespace(
-		AssetEntry.class.getSimpleName()
-	).name(
-		"userProfileImage"
-	).labelInfoLocalizedValue(
-		InfoLocalizedValue.localize(
-			AssetEntryInfoItemFields.class, "user-profile-image")
-	).build();
-	public static final InfoField<TextInfoFieldType> viewCountInfoField =
-		InfoField.builder(
-		).infoFieldType(
+	public static final InfoField userProfileImageInfoField =
+		BuilderStaticHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
-		).namespace(
-			AssetEntry.class.getSimpleName()
+		).name(
+			"userProfileImage"
+		).labelInfoLocalizedValue(
+			InfoLocalizedValue.localize(
+				AssetEntryInfoItemFields.class, "user-profile-image")
+		).build();
+	public static final InfoField<TextInfoFieldType> viewCountInfoField =
+		BuilderStaticHolder._builder.infoFieldType(
+			TextInfoFieldType.INSTANCE
 		).name(
 			"viewName"
 		).labelInfoLocalizedValue(
 			InfoLocalizedValue.localize(
 				AssetEntryInfoItemFields.class, "view-count")
 		).build();
+
+	private static class BuilderStaticHolder {
+
+		private static final InfoField.NamespacedBuilder _builder =
+			InfoField.builder(AssetEntry.class.getSimpleName());
+
+	}
 
 }
