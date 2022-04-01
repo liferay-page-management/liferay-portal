@@ -156,6 +156,10 @@ definition {
 	}
 
 	macro save {
+		WaitForElementNotPresent(
+			key_text = "Save",
+			locator1 = "Button#ANY_DISABLED");
+
 		Click.javaScriptClick(
 			key_text = "Save",
 			locator1 = "Button#ANY");
