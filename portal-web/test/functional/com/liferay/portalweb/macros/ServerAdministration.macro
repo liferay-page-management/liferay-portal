@@ -252,9 +252,17 @@ definition {
 			locator1 = "ServerAdministrationProperties#PORTAL_SYSTEM_PROPERTY_TITLE",
 			value1 = "${propertyTitle}");
 
+		Search.searchCP(searchTerm = "${propertyName}");
+
 		AssertTextEquals.assertPartialText(
 			locator1 = "ServerAdministrationProperties#PORTAL_SYSTEM_PROPERTY_NAME",
 			value1 = "${propertyName}");
+
+		if (isSet(propertyValue)) {
+			AssertTextEquals(
+				locator1 = "ServerAdministrationProperties#PORTAL_SYSTEM_PROPERTY_VALUE",
+				value1 = "${propertyValue}");
+		}
 	}
 
 }
