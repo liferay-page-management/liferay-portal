@@ -522,6 +522,11 @@
 	<td>//label/input[@type='checkbox']</td>
 	<td></td>
 </tr>
+<tr>
+	<td>FRAGMENT_TRAZEPOID_BLOCKS</td>
+	<td>//div[contains(@class,'spacing-selector')]//div[contains(@class,'${key_type}-${key_position}')]/button</td>
+	<td></td>
+</tr>
 <!--MAPPING_PANEL-->
 <tr>
 	<td>MAPPING_PANEL_TYPE_LABEL</td>
