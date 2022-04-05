@@ -20,18 +20,21 @@ import com.liferay.portal.kernel.portlet.configuration.icon.PortletConfiguration
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.JavaConstants;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.util.comparator.PortletConfigurationIconComparator;
 import com.liferay.taglib.servlet.PipingServletResponseFactory;
 import com.liferay.taglib.ui.IconMenuTag;
 import com.liferay.taglib.ui.IconTag;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
@@ -128,10 +131,99 @@ public class IconOptionsTag extends IconTag {
 		iconMenuTag.setShowWhenSingleIcon(true);
 		iconMenuTag.setTriggerCssClass("component-action");
 
-		iconMenuTag.doBodyTag(
-			pageContext, this::_processPortletConfigurationIcons);
+		_renderIconMenuTagBody(iconMenuTag);
 
 		return EVAL_PAGE;
+	}
+
+	private void _renderIconMenuTagBody(IconMenuTag iconMenuTag){
+		try {
+			HttpServletRequest httpServletRequest =
+				(HttpServletRequest)pageContext.getRequest();
+
+			PortletRequest portletRequest =
+				(PortletRequest)httpServletRequest.getAttribute(
+					JavaConstants.JAVAX_PORTLET_REQUEST);
+
+			PortletResponse portletResponse =
+				(PortletResponse)httpServletRequest.getAttribute(
+					JavaConstants.JAVAX_PORTLET_RESPONSE);
+
+			List <IconTag> iconTags = new ArrayList<>();
+			boolean hasIcons = false;
+
+			for (PortletConfigurationIcon portletConfigurationIcon :
+				_portletConfigurationIcons) {
+
+				boolean include = portletConfigurationIcon.include(
+					httpServletRequest,
+					PipingServletResponseFactory.createPipingServletResponse(
+						pageContext));
+
+				if (include) {
+					continue;
+				}
+
+				IconTag iconTag = new IconTag();
+
+				if (Validator.isNotNull(portletConfigurationIcon.getIconCssClass())){
+					hasIcons = true;
+
+					iconTag.setIcon("password-policies");
+					iconTag.setIconCssClass(
+						portletConfigurationIcon.getIconCssClass());
+					iconTag.setMarkupView("lexicon");
+				}
+
+				iconTag.setAlt(portletConfigurationIcon.getAlt());
+				iconTag.setAriaRole(portletConfigurationIcon.getAriaRole());
+				iconTag.setCssClass(portletConfigurationIcon.getCssClass());
+				iconTag.setData(portletConfigurationIcon.getData());
+				iconTag.setId(portletConfigurationIcon.getId());
+				iconTag.setImage(portletConfigurationIcon.getImage());
+				iconTag.setImageHover(portletConfigurationIcon.getImageHover());
+				iconTag.setLabel(portletConfigurationIcon.isLabel());
+				iconTag.setLang(portletConfigurationIcon.getLang());
+				iconTag.setLinkCssClass(
+					"dropdown-item " +
+					portletConfigurationIcon.getLinkCssClass());
+				iconTag.setLocalizeMessage(false);
+				iconTag.setMessage(
+					portletConfigurationIcon.getMessage(portletRequest));
+				iconTag.setMethod(portletConfigurationIcon.getMethod());
+				iconTag.setOnClick(
+					portletConfigurationIcon.getOnClick(
+						portletRequest, portletResponse));
+				iconTag.setSrc(portletConfigurationIcon.getSrc());
+				iconTag.setSrcHover(portletConfigurationIcon.getSrcHover());
+				iconTag.setTarget(portletConfigurationIcon.getTarget());
+				iconTag.setToolTip(portletConfigurationIcon.isToolTip());
+				iconTag.setUrl(
+					portletConfigurationIcon.getURL(
+						portletRequest, portletResponse));
+				iconTag.setUseDialog(portletConfigurationIcon.isUseDialog());
+
+				iconTags.add(iconTag);
+			}
+
+			if(hasIcons){
+				iconMenuTag.setDropdownCssClass("dropdown-menu-indicator-start");
+			}
+
+			iconMenuTag.doBodyTag(pageContext, pageContext -> {
+				iconTags.forEach(iconTag -> {
+					try {
+						iconTag.doTag(pageContext);
+					}
+					catch (JspException e) {
+						e.printStackTrace();
+					}
+				});
+				});
+		}
+		catch (Exception exception) {
+			ReflectionUtil.throwException(exception);
+		}
 	}
 
 	@Override
@@ -147,7 +239,7 @@ public class IconOptionsTag extends IconTag {
 			"liferay-ui:icon:showArrow", String.valueOf(_showArrow));
 	}
 
-	private void _processPortletConfigurationIcons(PageContext pageContext) {
+	/*private void _processPortletConfigurationIcons(PageContext pageContext) {
 		try {
 			HttpServletRequest httpServletRequest =
 				(HttpServletRequest)pageContext.getRequest();
@@ -173,6 +265,9 @@ public class IconOptionsTag extends IconTag {
 				}
 
 				IconTag iconTag = new IconTag();
+
+				iconTag.setIcon("password-policies");
+				iconTag.setMarkupView("lexicon");
 
 				iconTag.setAlt(portletConfigurationIcon.getAlt());
 				iconTag.setAriaRole(portletConfigurationIcon.getAriaRole());
@@ -210,7 +305,7 @@ public class IconOptionsTag extends IconTag {
 		catch (Exception exception) {
 			ReflectionUtil.throwException(exception);
 		}
-	}
+	}*/
 
 	private String _direction = "right";
 	private List<PortletConfigurationIcon> _portletConfigurationIcons;

@@ -49,6 +49,11 @@ public class PermissionsPortletConfigurationIcon
 	extends BasePortletConfigurationIcon {
 
 	@Override
+	public String getIconCssClass() {
+		return "dropdown-item-indicator-start";
+	}
+
+	@Override
 	public String getMessage(PortletRequest portletRequest) {
 		return LanguageUtil.get(
 			getResourceBundle(getLocale(portletRequest)), "permissions");
