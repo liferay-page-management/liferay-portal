@@ -1335,6 +1335,64 @@ definition {
 		}
 	}
 
+	macro configureTrapezoidBlocks {
+		if (isSet(marginPositionList)) {
+			var list1 = ListUtil.newListFromString("${marginPositionList}");
+			var list2 = ListUtil.newListFromString("${marginValueList}");
+			var size = ListUtil.size("${list1}");
+			var i = "0";
+
+			while ("${i}" != "${size}") {
+				var marginPosition = ListUtil.get("${list1}", "${i}");
+				var marginValue = ListUtil.get("${list2}", "${i}");
+
+				Click(
+					key_position = "${marginPosition}",
+					key_type = "margin",
+					locator1 = "PageEditor#FRAGMENT_TRAZEPOID_BLOCKS");
+
+				MenuItem.click(menuItem = "${marginValue}");
+
+				AssertTextEquals(
+					key_position = "${marginPosition}",
+					key_type = "margin",
+					locator1 = "PageEditor#FRAGMENT_TRAZEPOID_BLOCKS",
+					value1 = "${marginValue}");
+
+				var i = ${i} + 1;
+				var i = StringUtil.valueOf("${i}");
+			}
+		}
+
+		if (isSet(paddingPositionList)) {
+			var list1 = ListUtil.newListFromString("${paddingPositionList}");
+			var list2 = ListUtil.newListFromString("${paddingValueList}");
+			var size = ListUtil.size("${list1}");
+			var i = "0";
+
+			while ("${i}" != "${size}") {
+				var paddingPosition = ListUtil.get("${list1}", "${i}");
+				var paddingValue = ListUtil.get("${list2}", "${i}");
+
+				Click(
+					key_position = "${paddingPosition}",
+					key_type = "padding",
+					locator1 = "PageEditor#FRAGMENT_TRAZEPOID_BLOCKS");
+
+				MenuItem.click(menuItem = "${paddingValue}");
+
+				AssertTextEquals(
+					key_position = "${paddingPosition}",
+					key_type = "padding",
+					locator1 = "PageEditor#FRAGMENT_TRAZEPOID_BLOCKS",
+					value1 = "${paddingValue}");
+
+				var i = ${i} + 1;
+				var i = StringUtil.valueOf("${i}");
+			}
+		}
+	}
+
 	macro createPageTemplate {
 		Click(
 			key_text = "page-template",
