@@ -35,6 +35,58 @@ definition {
 		}
 	}
 
+	@description = "This is a test for LPS-141412. The user could define the margin and padding styles of fragment via trapezoid blocks."
+	@priority = "5"
+	test configureFragmentViaTrapezoidBlocks {
+		task ("Execute groovy script to enable feature flag") {
+			ServerAdministration.openServerAdmin();
+
+			var script = TestCase.getFileContent(fileName = "featureFlagLPS141410.groovy");
+
+			ServerAdministration.executeScript(
+				language = "Groovy",
+				script = "${script}");
+
+			ServerAdministration.viewProperties(
+				propertyName = "feature.flag.LPS-141410",
+				propertyTitle = "Portal Properties",
+				propertyValue = "true");
+		}
+
+		task ("Add a Heading fragment to a content page") {
+			ContentPagesNavigator.openEditContentPage(
+				pageName = "Test Page Name",
+				siteName = "Test Site Name");
+
+			PageEditor.addFragment(
+				collectionName = "Basic Components",
+				fragmentName = "Heading");
+		}
+
+		task ("Define the margin and padding styles via trapzoid blocks") {
+			PageEditor.gotoStyle(fragmentName = "Heading");
+
+			PageEditor.configureTrapezoidBlocks(
+				marginPositionList = "left,right,top,bottom",
+				marginValueList = "4,1,10,6",
+				paddingPositionList = "left,right,top,bottom",
+				paddingValueList = "7,3,2,8");
+		}
+
+		task ("Vie margin and padding styles are applied to Heading fragment") {
+			PageEditor.viewFragmentStyle(
+				fragmentName = "heading",
+				marginBottom = "6",
+				marginLeft = "4",
+				marginRight = "1",
+				marginTop = "10",
+				paddingBottom = "8",
+				paddingLeft = "7",
+				paddingRight = "3",
+				paddingTop = "2");
+		}
+	}
+
 	@description = "This is a test for LPS-140266. The user could look for color samples via scroll bar."
 	@priority = "4"
 	@uitest
