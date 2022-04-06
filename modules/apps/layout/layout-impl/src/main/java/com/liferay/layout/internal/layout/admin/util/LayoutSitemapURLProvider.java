@@ -118,7 +118,8 @@ public class LayoutSitemapURLProvider implements SitemapURLProvider {
 		if (!GetterUtil.getBoolean(
 				typeSettingsUnicodeProperties.getProperty(
 					LayoutTypePortletConstants.SITEMAP_INCLUDE),
-				true)) {
+				true) ||
+			!_isPublished(layout)) {
 
 			return;
 		}
@@ -136,6 +137,23 @@ public class LayoutSitemapURLProvider implements SitemapURLProvider {
 				element, alternateURL, typeSettingsUnicodeProperties,
 				layout.getModifiedDate(), layoutFullURL, alternateURLs);
 		}
+	}
+
+	private boolean _isPublished(Layout layout) {
+		if (!layout.isTypeContent()) {
+			return true;
+		}
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		if ((draftLayout == null) ||
+			GetterUtil.getBoolean(
+				draftLayout.getTypeSettingsProperty("published"))) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	@Reference
