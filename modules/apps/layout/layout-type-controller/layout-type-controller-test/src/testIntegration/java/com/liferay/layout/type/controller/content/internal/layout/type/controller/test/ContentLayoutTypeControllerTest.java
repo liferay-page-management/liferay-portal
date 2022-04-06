@@ -52,6 +52,7 @@ import java.util.Collections;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -117,6 +118,31 @@ public class ContentLayoutTypeControllerTest {
 
 		layoutTypeController.includeLayoutContent(
 			_httpServletRequest, _httpServletResponse, layout);
+	}
+
+	@Test
+	public void testContentLayoutTypeControllerNoPublishedPagePermissionUser()
+		throws Exception {
+
+		LayoutTypeController layoutTypeController =
+			LayoutTypeControllerTracker.getLayoutTypeController(
+				LayoutConstants.TYPE_CONTENT);
+
+		Layout layout = _layoutLocalService.addLayout(
+			_user.getUserId(), _group.getGroupId(), false, 0, 0, 0,
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			LayoutConstants.TYPE_CONTENT, StringPool.BLANK, false, false,
+			Collections.emptyMap(), 0, _serviceContext);
+
+		_initThemeDisplay(_user);
+
+		Assert.assertFalse(
+			layoutTypeController.includeLayoutContent(
+				_httpServletRequest, _httpServletResponse, layout));
 	}
 
 	private ThemeDisplay _initThemeDisplay(User user) throws Exception {
