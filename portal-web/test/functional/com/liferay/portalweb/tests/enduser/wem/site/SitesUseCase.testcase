@@ -546,15 +546,6 @@ definition {
 			PortalSettings.editVirtualHostCP(virtualHostName = "www.able.com");
 		}
 
-		task ("Enable require strangers in instance settings") {
-			PortalSettings.gotoConfiguration(
-				configurationCategory = "User Authentication",
-				configurationName = "General",
-				configurationScope = "Virtual Instance Scope");
-
-			PortalSettings.editConfigurationAuthenticationGeneral(enableRequireStrangers = "true");
-		}
-
 		task ("Edit Email Verification Notification in instance settings") {
 			PortalSettings.editConfigurationUsersEmailNotificationsCP(
 				configurationName = "Email Verification Notification",
