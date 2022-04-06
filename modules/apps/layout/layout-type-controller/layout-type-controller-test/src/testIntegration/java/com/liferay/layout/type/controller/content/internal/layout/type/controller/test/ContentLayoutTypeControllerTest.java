@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -137,6 +138,73 @@ public class ContentLayoutTypeControllerTest {
 			RandomTestUtil.randomLocaleStringMap(),
 			LayoutConstants.TYPE_CONTENT, StringPool.BLANK, false, false,
 			Collections.emptyMap(), 0, _serviceContext);
+
+		_initThemeDisplay(_user);
+
+		Assert.assertFalse(
+			layoutTypeController.includeLayoutContent(
+				_httpServletRequest, _httpServletResponse, layout));
+	}
+
+	@Test
+	public void testContentLayoutTypeControllerPublishedPageGuestUser()
+		throws Exception {
+
+		LayoutTypeController layoutTypeController =
+			LayoutTypeControllerTracker.getLayoutTypeController(
+				LayoutConstants.TYPE_CONTENT);
+
+		Layout layout = _layoutLocalService.addLayout(
+			_user.getUserId(), _group.getGroupId(), false, 0, 0, 0,
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			LayoutConstants.TYPE_CONTENT, StringPool.BLANK, false, false,
+			Collections.emptyMap(), 0, _serviceContext);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		Assert.assertNotNull(draftLayout);
+
+		_layoutLocalService.updateStatus(
+			_user.getUserId(), draftLayout.getPlid(),
+			WorkflowConstants.STATUS_APPROVED, _serviceContext);
+
+		_initThemeDisplay(
+			_userLocalService.getDefaultUser(_group.getCompanyId()));
+
+		Assert.assertFalse(
+			layoutTypeController.includeLayoutContent(
+				_httpServletRequest, _httpServletResponse, layout));
+	}
+
+	@Test
+	public void testContentLayoutTypeControllerPublishedPagePermissionUser()
+		throws Exception {
+
+		LayoutTypeController layoutTypeController =
+			LayoutTypeControllerTracker.getLayoutTypeController(
+				LayoutConstants.TYPE_CONTENT);
+
+		Layout layout = _layoutLocalService.addLayout(
+			_user.getUserId(), _group.getGroupId(), false, 0, 0, 0,
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			LayoutConstants.TYPE_CONTENT, StringPool.BLANK, false, false,
+			Collections.emptyMap(), 0, _serviceContext);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		Assert.assertNotNull(draftLayout);
+
+		_layoutLocalService.updateStatus(
+			_user.getUserId(), draftLayout.getPlid(),
+			WorkflowConstants.STATUS_APPROVED, _serviceContext);
 
 		_initThemeDisplay(_user);
 
