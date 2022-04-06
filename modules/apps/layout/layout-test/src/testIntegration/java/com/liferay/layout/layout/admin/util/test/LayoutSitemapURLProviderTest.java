@@ -119,21 +119,6 @@ public class LayoutSitemapURLProviderTest {
 	public void testLayoutSitemapURLProviderContentLayoutTypeNoPublished()
 		throws Exception {
 
-		Document document = _saxReader.createDocument();
-
-		document.setXMLEncoding("UTF-8");
-
-		Element rootElement = document.addElement(
-			"urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
-
-		rootElement.addAttribute(
-			"xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-		rootElement.addAttribute(
-			"xsi:schemaLocation",
-			"http://www.w3.org/1999/xhtml " +
-				"http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd");
-		rootElement.addAttribute("xmlns:xhtml", "http://www.w3.org/1999/xhtml");
-
 		Layout layout = _layoutLocalService.addLayout(
 			_user.getUserId(), _group.getGroupId(), false, 0, 0, 0,
 			RandomTestUtil.randomLocaleStringMap(),
@@ -148,6 +133,8 @@ public class LayoutSitemapURLProviderTest {
 			SitemapURLProviderRegistryUtil.getSitemapURLProvider(
 				Layout.class.getName());
 
+		Element rootElement = _getRootElement();
+
 		layoutSitemapURLProvider.visitLayout(
 			rootElement, layout.getUuid(), _layoutSet, _themeDisplay);
 
@@ -157,21 +144,6 @@ public class LayoutSitemapURLProviderTest {
 	@Test
 	public void testLayoutSitemapURLProviderContentLayoutTypePublished()
 		throws Exception {
-
-		Document document = _saxReader.createDocument();
-
-		document.setXMLEncoding("UTF-8");
-
-		Element rootElement = document.addElement(
-			"urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
-
-		rootElement.addAttribute(
-			"xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-		rootElement.addAttribute(
-			"xsi:schemaLocation",
-			"http://www.w3.org/1999/xhtml " +
-				"http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd");
-		rootElement.addAttribute("xmlns:xhtml", "http://www.w3.org/1999/xhtml");
 
 		Layout layout = _layoutLocalService.addLayout(
 			_user.getUserId(), _group.getGroupId(), false, 0, 0, 0,
@@ -194,6 +166,8 @@ public class LayoutSitemapURLProviderTest {
 		SitemapURLProvider layoutSitemapURLProvider =
 			SitemapURLProviderRegistryUtil.getSitemapURLProvider(
 				Layout.class.getName());
+
+		Element rootElement = _getRootElement();
 
 		layoutSitemapURLProvider.visitLayout(
 			rootElement, layout.getUuid(), _layoutSet, _themeDisplay);
@@ -228,21 +202,6 @@ public class LayoutSitemapURLProviderTest {
 	public void testLayoutSitemapURLProviderPortletLayoutType()
 		throws Exception {
 
-		Document document = _saxReader.createDocument();
-
-		document.setXMLEncoding("UTF-8");
-
-		Element rootElement = document.addElement(
-			"urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
-
-		rootElement.addAttribute(
-			"xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-		rootElement.addAttribute(
-			"xsi:schemaLocation",
-			"http://www.w3.org/1999/xhtml " +
-				"http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd");
-		rootElement.addAttribute("xmlns:xhtml", "http://www.w3.org/1999/xhtml");
-
 		Layout layout = _layoutLocalService.addLayout(
 			_user.getUserId(), _group.getGroupId(), false, 0, 0, 0,
 			RandomTestUtil.randomLocaleStringMap(),
@@ -256,6 +215,8 @@ public class LayoutSitemapURLProviderTest {
 		SitemapURLProvider layoutSitemapURLProvider =
 			SitemapURLProviderRegistryUtil.getSitemapURLProvider(
 				Layout.class.getName());
+
+		Element rootElement = _getRootElement();
 
 		layoutSitemapURLProvider.visitLayout(
 			rootElement, layout.getUuid(), _layoutSet, _themeDisplay);
@@ -284,6 +245,25 @@ public class LayoutSitemapURLProviderTest {
 				layoutLocalizedURL,
 				alternateURLsMap.containsValue(layoutLocalizedURL));
 		}
+	}
+
+	private Element _getRootElement() {
+		Document document = _saxReader.createDocument();
+
+		document.setXMLEncoding("UTF-8");
+
+		Element rootElement = document.addElement(
+			"urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
+
+		rootElement.addAttribute(
+			"xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+		rootElement.addAttribute(
+			"xsi:schemaLocation",
+			"http://www.w3.org/1999/xhtml " +
+				"http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd");
+		rootElement.addAttribute("xmlns:xhtml", "http://www.w3.org/1999/xhtml");
+
+		return rootElement;
 	}
 
 	private Company _company;
