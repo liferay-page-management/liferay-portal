@@ -21,6 +21,7 @@ import com.liferay.layout.security.permission.resource.LayoutContentModelResourc
 import com.liferay.layout.type.controller.BaseLayoutTypeControllerImpl;
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -36,6 +37,7 @@ import com.liferay.portal.kernel.servlet.PipingServletResponse;
 import com.liferay.portal.kernel.servlet.TransferHeadersHelper;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -119,6 +121,17 @@ public class ContentLayoutTypeController extends BaseLayoutTypeControllerImpl {
 
 			if (!hasUpdatePermissions) {
 				layoutMode = Constants.VIEW;
+			}
+		}
+
+		if (!_isPublished(layout)) {
+			if (hasUpdatePermissions == null) {
+				hasUpdatePermissions = _hasUpdatePermissions(
+					themeDisplay.getPermissionChecker(), layout);
+			}
+
+			if (!hasUpdatePermissions) {
+				throw new NoSuchLayoutException();
 			}
 		}
 
@@ -324,6 +337,23 @@ public class ContentLayoutTypeController extends BaseLayoutTypeControllerImpl {
 			if (_log.isDebugEnabled()) {
 				_log.debug(portalException);
 			}
+		}
+
+		return false;
+	}
+
+	private boolean _isPublished(Layout layout) {
+		if (!layout.isTypeContent()) {
+			return true;
+		}
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		if ((draftLayout == null) ||
+			GetterUtil.getBoolean(
+				draftLayout.getTypeSettingsProperty("published"))) {
+
+			return true;
 		}
 
 		return false;
