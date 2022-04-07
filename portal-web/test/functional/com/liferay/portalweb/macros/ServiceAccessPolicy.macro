@@ -89,9 +89,10 @@ definition {
 	}
 
 	macro openServiceAccessPolicyAdmin {
-		Navigator.openWithAppendToBaseURL(
-			baseURL = "${baseURL}",
-			urlAppend = "group/control_panel/manage?p_p_id=com_liferay_portal_security_service_access_policy_web_portlet_SAPPortlet");
+		ApplicationsMenu.gotoPortlet(
+			category = "Security",
+			panel = "Control Panel",
+			portlet = "Service Access Policy");
 	}
 
 	macro openToServiceAccessPolicy {
