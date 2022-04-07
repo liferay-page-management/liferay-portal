@@ -538,7 +538,12 @@ definition {
 		}
 
 		task ("Edit virtual instance in instance settings") {
-			PortalSettings.gotoConfiguration(
+			ApplicationsMenu.gotoPortlet(
+				category = "Configuration",
+				panel = "Control Panel",
+				portlet = "Instance Settings");
+
+			SystemSettings.gotoConfiguration(
 				configurationCategory = "Instance Configuration",
 				configurationName = "General",
 				configurationScope = "Virtual Instance Scope");

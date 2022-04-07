@@ -606,7 +606,10 @@ definition {
 	}
 
 	macro gotoConfiguration {
-		PortalSettings.openInstanceSettingsAdmin(baseURL = "${baseURL}");
+		ApplicationsMenu.gotoPortlet(
+			category = "Configuration",
+			panel = "Control Panel",
+			portlet = "Instance Settings");
 
 		SystemSettings.gotoConfiguration(
 			configurationCategory = "${configurationCategory}",
