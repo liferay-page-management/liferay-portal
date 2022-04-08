@@ -650,6 +650,12 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<description>A CSS class for styling the dropdown.</description>
+			<name>dropdownCssClass</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<description>Whether to disable the icon menu.</description>
 			<name>disabled</name>
 			<required>false</required>
