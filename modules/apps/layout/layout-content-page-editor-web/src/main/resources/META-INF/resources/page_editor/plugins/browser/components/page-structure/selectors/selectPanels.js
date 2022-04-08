@@ -199,7 +199,6 @@ export function selectPanels(activeItemId, activeItemType, state) {
 	else if (activeItem.type === LAYOUT_DATA_ITEM_TYPES.container) {
 		panelsIds = {
 			[PANEL_IDS.containerAdvanced]:
-				config.fragmentAdvancedOptionsEnabled &&
 				state.selectedViewportSize === VIEWPORT_SIZES.desktop,
 			[PANEL_IDS.containerGeneral]: true,
 			[PANEL_IDS.containerStyles]: true,
@@ -213,7 +212,6 @@ export function selectPanels(activeItemId, activeItemType, state) {
 
 		panelsIds = {
 			[PANEL_IDS.fragmentAdvanced]:
-				config.fragmentAdvancedOptionsEnabled &&
 				state.selectedViewportSize === VIEWPORT_SIZES.desktop,
 			[PANEL_IDS.fragmentStyles]: true,
 			[PANEL_IDS.fragmentGeneral]:
@@ -232,8 +230,7 @@ export function selectPanels(activeItemId, activeItemType, state) {
 			[PANEL_IDS.rowStyles]: true,
 			[PANEL_IDS.rowGeneral]: true,
 			[PANEL_IDS.rowAdvanced]:
-				state.selectedViewportSize === VIEWPORT_SIZES.desktop &&
-				config.fragmentAdvancedOptionsEnabled,
+				state.selectedViewportSize === VIEWPORT_SIZES.desktop,
 		};
 	}
 
