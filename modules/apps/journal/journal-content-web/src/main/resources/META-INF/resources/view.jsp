@@ -58,6 +58,9 @@ if (journalContentDisplayContext.isShowArticle()) {
 						<c:when test="<%= (selectedArticle != null) && selectedArticle.isInTrash() %>">
 							<liferay-ui:message arguments="<%= HtmlUtil.escape(selectedArticle.getTitle(locale)) %>" key="the-web-content-article-x-was-moved-to-the-recycle-bin" />
 						</c:when>
+						<c:when test="<%= (selectedArticle != null) && (selectedArticle.getGroupId() != themeDisplay.getScopeGroupId()) %>">
+							<liferay-ui:message arguments="<%= HtmlUtil.escape(selectedArticle.getTitle(locale)) %>" key="the-web-content-article-x-does-not-belong-to-the-scope-of-this-widget" />
+						</c:when>
 						<c:when test="<%= (selectedArticle != null) && (selectedArticle.getDDMStructure() == null) %>">
 							<liferay-ui:message arguments="<%= HtmlUtil.escape(selectedArticle.getTitle(locale)) %>" key="is-temporarily-unavailable" />
 						</c:when>
