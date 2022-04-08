@@ -159,10 +159,16 @@ public class JournalContentExportImportPortletPreferencesProcessor
 			return portletPreferences;
 		}
 
-		long previousScopeGroupId = portletDataContext.getScopeGroupId();
+		if (articleGroupId != portletDataContext.getScopeGroupId()) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					StringBundler.concat(
+						"Web content with group ID ", articleGroupId, " does ",
+						"not belong to the scope of the widget with scope ",
+						"group ID ", portletDataContext.getScopeGroupId()));
+			}
 
-		if (articleGroupId != previousScopeGroupId) {
-			portletDataContext.setScopeGroupId(articleGroupId);
+			return portletPreferences;
 		}
 
 		JournalArticle article = null;
@@ -189,8 +195,6 @@ public class JournalContentExportImportPortletPreferencesProcessor
 						" refers to an invalid article ID ", articleId));
 			}
 
-			portletDataContext.setScopeGroupId(previousScopeGroupId);
-
 			return portletPreferences;
 		}
 
@@ -198,8 +202,6 @@ public class JournalContentExportImportPortletPreferencesProcessor
 				portletDataContext.getParameterMap(),
 				PortletDataHandlerKeys.PORTLET_DATA) &&
 			MergeLayoutPrototypesThreadLocal.isInProgress()) {
-
-			portletDataContext.setScopeGroupId(previousScopeGroupId);
 
 			return portletPreferences;
 		}
@@ -255,8 +257,6 @@ public class JournalContentExportImportPortletPreferencesProcessor
 				throw portletDataException;
 			}
 		}
-
-		portletDataContext.setScopeGroupId(previousScopeGroupId);
 
 		return portletPreferences;
 	}
