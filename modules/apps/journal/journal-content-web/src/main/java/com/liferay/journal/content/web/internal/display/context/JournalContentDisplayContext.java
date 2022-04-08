@@ -179,8 +179,13 @@ public class JournalContentDisplayContext {
 			}
 		}
 
-		_article = JournalArticleLocalServiceUtil.fetchLatestArticle(
-			articleResourcePrimKey, WorkflowConstants.STATUS_ANY, true);
+		JournalArticle article =
+			JournalArticleLocalServiceUtil.fetchLatestArticle(
+				articleResourcePrimKey, WorkflowConstants.STATUS_ANY, true);
+
+		if (article.getGroupId() == _themeDisplay.getScopeGroupId()) {
+			_article = article;
+		}
 
 		return _article;
 	}
@@ -1061,7 +1066,12 @@ public class JournalContentDisplayContext {
 				assetRendererFactory.getAssetRenderer(
 					assetEntry.getClassPK(), previewType);
 
-			return (JournalArticle)assetRenderer.getAssetObject();
+			JournalArticle article =
+				(JournalArticle)assetRenderer.getAssetObject();
+
+			if (article.getGroupId() == _themeDisplay.getScopeGroupId()) {
+				return article;
+			}
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
