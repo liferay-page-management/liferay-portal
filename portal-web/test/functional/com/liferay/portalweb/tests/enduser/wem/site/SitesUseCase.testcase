@@ -1190,6 +1190,7 @@ definition {
 	@priority = "4"
 	test ViewSiteLogo {
 		property portal.upstream = "true";
+		property private.pages.enabled = "true";
 
 		task ("Add a new site and a public page in it") {
 			JSONGroup.addGroup(groupName = "Site Name");

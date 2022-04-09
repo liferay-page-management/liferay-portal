@@ -853,6 +853,8 @@ definition {
 
 	@priority = "3"
 	test StagingSiteLogo {
+		property private.pages.enabled = "true";
+
 		Page.viewDefaultLogoPG();
 
 		Navigator.openSiteURL(siteName = "Site Name");

@@ -503,6 +503,8 @@ definition {
 	@description = "This test asserts that a user can disable site admin to use their own logo."
 	@priority = "3"
 	test CanDisableSiteAdminToUseTheirOwnLogo {
+		property private.pages.enabled = "true";
+
 		PortalSettings.gotoConfiguration(
 			configurationCategory = "Instance Configuration",
 			configurationName = "Appearance",
