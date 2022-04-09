@@ -10550,6 +10550,29 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 			</then>
 		</if>
 
+		<get-testcase-property property.name="private.pages.enabled" />
+		<get-testcase-property property.name="testray.main.component.name" />
+
+		<if>
+			<or>
+				<equals arg1="${private.pages.enabled}" arg2="true" />
+				<equals arg1="${testray.main.component.name}" arg2="Batch Engine" />
+				<equals arg1="${testray.main.component.name}" arg2="Commerce" />
+				<equals arg1="${testray.main.component.name}" arg2="Order Management" />
+				<equals arg1="${testray.main.component.name}" arg2="Product Info Management" />
+				<equals arg1="${testray.main.component.name}" arg2="Shopping Experience" />
+				<equals arg1="${testray.main.component.name}" arg2="Customer Portal" />
+				<equals arg1="${testray.main.component.name}" arg2="Masterclass" />
+				<equals arg1="${testray.main.component.name}" arg2="Raylife" />
+				<equals arg1="${testray.main.component.name}" arg2="Team Extranet" />
+				<equals arg1="${testray.main.component.name}" arg2="Site Templates" />
+			</or>
+			<then>
+				<echo append="true" file="portal-impl/src/portal-ext.properties">
+configuration.override.com.liferay.release.feature.flag.web.internal.configuration.ReleaseFeatureFlagConfiguration_disabledReleaseFeatureFlags=["DEACTIVATE_PRIVATE_PAGES"]</echo>
+			</then>
+		</if>
+
 		<apply-portal-ext-properties />
 	</target>
 
