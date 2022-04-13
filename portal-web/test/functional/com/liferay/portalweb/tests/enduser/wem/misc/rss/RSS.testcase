@@ -140,7 +140,7 @@ definition {
 		}
 
 		task ("View the RSS Feed is not shown") {
-			RSSPortlet.viewDeleteFeed(feedTitle = "General Announcement");
+			RSSPortlet.viewNoFeedTitle(feedTitle = "General Announcement");
 		}
 
 		task ("Add a RSS Feed with a validate URL") {
@@ -385,7 +385,6 @@ definition {
 				var position = ${position} + 1;
 			}
 		}
-
 	}
 
 	@description = "Can delete a RSS Feed via RSS Publisher configuration."
@@ -417,7 +416,7 @@ definition {
 		}
 
 		task ("View the RSS Feed is not shwon") {
-			RSSPortlet.viewDeleteFeed(feedTitle = "Latimes : Technology News");
+			RSSPortlet.viewNoFeedTitle(feedTitle = "Latimes : Technology News");
 		}
 	}
 

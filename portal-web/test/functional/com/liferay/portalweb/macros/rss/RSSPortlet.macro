@@ -172,14 +172,6 @@ definition {
 			value1 = "${feedContentTitle}");
 	}
 
-	macro viewDeleteFeed {
-		var key_feedTitle = "${feedTitle}";
-
-		AssertTextNotPresent(
-			locator1 = "RSSFeed#FEEDS_TITLE",
-			value1 = "${feedTitle}");
-	}
-
 	macro viewDisplayFeedTitle {
 		if (!(isSet(position))) {
 			var position = "1";
