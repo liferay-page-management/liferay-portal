@@ -41,6 +41,7 @@ import com.liferay.layout.util.structure.CollectionStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.ColumnLayoutStructureItem;
 import com.liferay.layout.util.structure.ContainerStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
+import com.liferay.layout.util.structure.FormLayoutStructureItem;
 import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
@@ -669,6 +670,23 @@ public class RenderLayoutStructureTag extends IncludeTag {
 		jspWriter.write("</div></div></div>");
 	}
 
+	private void _renderFormLayoutStructureItem(
+			LayoutStructureItem layoutStructureItem,
+			RenderLayoutStructureDisplayContext
+				renderLayoutStructureDisplayContext)
+		throws Exception {
+
+		JspWriter jspWriter = pageContext.getOut();
+
+		jspWriter.write("<form>");
+
+		_renderLayoutStructure(
+			layoutStructureItem.getChildrenItemIds(),
+			renderLayoutStructureDisplayContext);
+
+		jspWriter.write("</form>");
+	}
+
 	private void _renderFragmentStyledLayoutStructureItem(
 			int collectionElementIndex, LayoutStructureItem layoutStructureItem,
 			RenderLayoutStructureDisplayContext
@@ -793,6 +811,10 @@ public class RenderLayoutStructureTag extends IncludeTag {
 						DropZoneLayoutStructureItem) {
 
 				_renderDropZoneLayoutStructureItem(
+					layoutStructureItem, renderLayoutStructureDisplayContext);
+			}
+			else if (layoutStructureItem instanceof FormLayoutStructureItem) {
+				_renderFormLayoutStructureItem(
 					layoutStructureItem, renderLayoutStructureDisplayContext);
 			}
 			else if (layoutStructureItem instanceof
