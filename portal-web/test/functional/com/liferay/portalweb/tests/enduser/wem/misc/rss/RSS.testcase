@@ -331,6 +331,20 @@ definition {
 				feedRowIndexNumber = "1",
 				feedTitle = "NBA",
 				rowIndexNumber = "2");
+
+			IFrame.closeFrame();
+		}
+
+		task ("View Feeds titles are shown") {
+			var position = "1";
+
+			for (var feedTitle : list "Technology,NBA") {
+				RSSPortlet.viewDisplayFeedTitle(
+					feedTitle = "${feedTitle}",
+					position = "${position}");
+
+				var position = ${position} + 1;
+			}
 		}
 
 		task ("Change the order of RSS Feeds") {
@@ -338,10 +352,6 @@ definition {
 				fromRowNumber = "2",
 				offset = "0,-25",
 				toRowNumber = "1");
-
-			PortletEntry.save();
-
-			IFrame.closeFrame();
 		}
 
 		task ("View the new order of RSS Feeds") {
@@ -354,7 +364,22 @@ definition {
 				feedRowIndexNumber = "1",
 				feedTitle = "Technology",
 				rowIndexNumber = "2");
+
+			IFrame.closeFrame();
 		}
+
+		task ("View Feeds titles are shown in the new order") {
+			var position = "1";
+
+			for (var feedTitle : list "NBA,Technology") {
+				RSSPortlet.viewDisplayFeedTitle(
+					feedTitle = "${feedTitle}",
+					position = "${position}");
+
+				var position = ${position} + 1;
+			}
+		}
+
 	}
 
 	@description = "Can delete a RSS Feed via RSS Publisher configuration."
