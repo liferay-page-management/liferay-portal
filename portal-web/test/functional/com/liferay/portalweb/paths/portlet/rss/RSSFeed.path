@@ -33,7 +33,7 @@
 <!--FEEDS-->
 <tr>
 	<td>FEEDS_TITLE</td>
-	<td>//h3[@class='feed-title']/a[contains(.,'${key_feedTitle}')]</td>
+	<td>xpath=(//div[contains(@class,'feed')]//h3[contains(@class,'title')]/a)[${key_index}]</td>
 	<td></td>
 </tr>
 <tr>

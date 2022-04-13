@@ -110,8 +110,14 @@ definition {
 		}
 
 		task ("View displayed titles on RSS Publisher") {
+			var position = "1";
+
 			for (var feedTitle : list "Technology,Reuters : Sports News,Latimes : Technology News") {
-				RSSPortlet.viewDisplayFeedTitle(feedTitle = "${feedTitle}");
+				RSSPortlet.viewDisplayFeedTitle(
+					feedTitle = "${feedTitle}",
+					position = "${position}");
+
+				var position = ${position} + 1;
 			}
 		}
 	}

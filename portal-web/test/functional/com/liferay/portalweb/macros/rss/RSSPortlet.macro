@@ -138,9 +138,12 @@ definition {
 	}
 
 	macro openFeed {
-		var key_feedTitle = "${feedTitle}";
+		if (!(isSet(position))) {
+			var position = "1";
+		}
 
 		AssertClick.assertPartialTextClickAt(
+			key_index = "${position}",
 			locator1 = "RSSFeed#FEEDS_TITLE",
 			value1 = "${feedTitle}");
 
@@ -178,9 +181,12 @@ definition {
 	}
 
 	macro viewDisplayFeedTitle {
-		var key_feedTitle = "${feedTitle}";
+		if (!(isSet(position))) {
+			var position = "1";
+		}
 
 		AssertTextEquals.assertPartialText(
+			key_index = "${position}",
 			locator1 = "RSSFeed#FEEDS_TITLE",
 			value1 = "${feedTitle}");
 	}
@@ -221,24 +227,13 @@ definition {
 	}
 
 	macro viewNoFeedTitle {
-		var key_feedTitle = "${feedTitle}";
+		if (!(isSet(position))) {
+			var position = "1";
+		}
 
-		AssertElementNotPresent(locator1 = "RSSFeed#FEEDS_TITLE");
-	}
-
-	macro viewPG {
-		var key_feedRowIndexNumber = "${feedRowIndexNumber}";
-		var key_rowIndexNumber = "${rowIndexNumber}";
-
-		SelectFrame(value1 = "relative=top");
-
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
-
-		AssertElementPresent(locator1 = "RSSFeed#FEEDS_DEFAULT");
-
-		AssertTextEquals(
-			locator1 = "RSSFeed#FEEDS_TITLE_NAME_FIELD",
-			value1 = "${feedTitle}");
+		AssertElementNotPresent(
+			key_index = "${position}",
+			locator1 = "RSSFeed#FEEDS_TITLE");
 	}
 
 	macro viewPortletConfigurationInfo {
