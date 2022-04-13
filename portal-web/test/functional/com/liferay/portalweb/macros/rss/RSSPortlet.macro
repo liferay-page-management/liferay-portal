@@ -183,6 +183,21 @@ definition {
 			value1 = "${feedEntryContent}");
 	}
 
+	macro viewFeedsOrder {
+		var key_feedRowIndexNumber = "${feedRowIndexNumber}";
+		var key_rowIndexNumber = "${rowIndexNumber}";
+
+		SelectFrame(value1 = "relative=top");
+
+		SelectFrame(locator1 = "IFrame#MODAL_BODY");
+
+		AssertElementPresent(locator1 = "RSSFeed#FEEDS_DEFAULT");
+
+		AssertTextEquals(
+			locator1 = "RSSFeed#FEEDS_TITLE_NAME_FIELD",
+			value1 = "${feedTitle}");
+	}
+
 	macro viewNavigationDisplayFeedTitle {
 		var key_feedTitle = "${feedTitle}";
 

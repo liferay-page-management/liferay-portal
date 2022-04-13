@@ -322,12 +322,12 @@ definition {
 		}
 
 		task ("View order of RSS Feeds") {
-			RSSPortlet.viewPG(
+			RSSPortlet.viewFeedsOrder(
 				feedRowIndexNumber = "0",
 				feedTitle = "Technology",
 				rowIndexNumber = "1");
 
-			RSSPortlet.viewPG(
+			RSSPortlet.viewFeedsOrder(
 				feedRowIndexNumber = "1",
 				feedTitle = "NBA",
 				rowIndexNumber = "2");
@@ -345,16 +345,12 @@ definition {
 		}
 
 		task ("View the new order of RSS Feeds") {
-			Portlet.gotoPortletOptions(
-				portletName = "RSS Publisher",
-				portletOption = "Configuration");
-
-			RSSPortlet.viewPG(
+			RSSPortlet.viewFeedsOrder(
 				feedRowIndexNumber = "0",
 				feedTitle = "NBA",
 				rowIndexNumber = "1");
 
-			RSSPortlet.viewPG(
+			RSSPortlet.viewFeedsOrder(
 				feedRowIndexNumber = "1",
 				feedTitle = "Technology",
 				rowIndexNumber = "2");
