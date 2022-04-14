@@ -157,21 +157,6 @@ public class FragmentEntryLinkLocalServiceWrapper
 			deleteLayoutPageTemplateEntryFragmentEntryLinks(groupId, plid);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 #deleteLayoutPageTemplateEntryFragmentEntryLinks(long, long)}
-	 */
-	@Deprecated
-	@Override
-	public java.util.List<FragmentEntryLink>
-		deleteLayoutPageTemplateEntryFragmentEntryLinks(
-			long groupId, long classNameId, long classPK) {
-
-		return _fragmentEntryLinkLocalService.
-			deleteLayoutPageTemplateEntryFragmentEntryLinks(
-				groupId, classNameId, classPK);
-	}
-
 	@Override
 	public java.util.List<FragmentEntryLink>
 		deleteLayoutPageTemplateEntryFragmentEntryLinks(
@@ -346,20 +331,6 @@ public class FragmentEntryLinkLocalServiceWrapper
 				groupId, fragmentEntryId);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 #getFragmentEntryLinksCountByPlid(long, long)}
-	 */
-	@Deprecated
-	@Override
-	public int getClassedModelFragmentEntryLinksCount(
-		long groupId, long classNameId, long classPK) {
-
-		return _fragmentEntryLinkLocalService.
-			getClassedModelFragmentEntryLinksCount(
-				groupId, classNameId, classPK);
-	}
-
 	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
@@ -436,19 +407,6 @@ public class FragmentEntryLinkLocalServiceWrapper
 
 		return _fragmentEntryLinkLocalService.getFragmentEntryLinks(
 			type, start, end, orderByComparator);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 #getFragmentEntryLinksByPlid(long, long)}
-	 */
-	@Deprecated
-	@Override
-	public java.util.List<FragmentEntryLink> getFragmentEntryLinks(
-		long groupId, long classNameId, long classPK) {
-
-		return _fragmentEntryLinkLocalService.getFragmentEntryLinks(
-			groupId, classNameId, classPK);
 	}
 
 	@Override
