@@ -10570,6 +10570,10 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 				<echo append="true" file="portal-impl/src/portal-ext.properties">
 configuration.override.com.liferay.release.feature.flag.web.internal.configuration.ReleaseFeatureFlagConfiguration_disabledReleaseFeatureFlags=["DEACTIVATE_PRIVATE_PAGES"]</echo>
 			</then>
+			<else>
+				<echo append="true" file="portal-impl/src/portal-ext.properties">
+configuration.override.com.liferay.release.feature.flag.web.internal.configuration.ReleaseFeatureFlagConfiguration_disabledReleaseFeatureFlags=[""]</echo>
+			</else>
 		</if>
 
 		<apply-portal-ext-properties />
