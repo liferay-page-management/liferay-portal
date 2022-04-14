@@ -22,12 +22,6 @@
 		<tag-class>com.liferay.product.navigation.taglib.servlet.taglib.ProductNavigationPersonalMenuTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
-			<description>Deprecated as of 7.3.0, with no direct replacement.</description>
-			<name>expanded</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
 			<description></description>
 			<name>label</name>
 			<required>false</required>

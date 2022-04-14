@@ -18,7 +18,6 @@ import com.liferay.item.selector.criteria.group.criterion.GroupItemSelectorCrite
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portlet.usersadmin.search.GroupSearch;
-import com.liferay.site.item.selector.criterion.SiteItemSelectorCriterion;
 
 import javax.portlet.PortletException;
 import javax.portlet.PortletRequest;
@@ -33,7 +32,7 @@ public interface SitesItemSelectorViewDisplayContext {
 	public String getDisplayStyle();
 
 	public default GroupItemSelectorCriterion getGroupItemSelectorCriterion() {
-		return getSiteItemSelectorCriterion();
+		return null;
 	}
 
 	public String getGroupName(Group group) throws PortalException;
@@ -47,15 +46,6 @@ public interface SitesItemSelectorViewDisplayContext {
 	public PortletResponse getPortletResponse();
 
 	public PortletURL getPortletURL() throws PortletException;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getGroupItemSelectorCriterion()}
-	 */
-	@Deprecated
-	public default SiteItemSelectorCriterion getSiteItemSelectorCriterion() {
-		return new SiteItemSelectorCriterion();
-	}
 
 	public boolean isShowChildSitesLink();
 

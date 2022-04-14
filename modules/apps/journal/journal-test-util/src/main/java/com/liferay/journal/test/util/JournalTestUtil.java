@@ -24,10 +24,8 @@ import com.liferay.journal.constants.JournalFeedConstants;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFeed;
-import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalArticleLocalServiceUtil;
 import com.liferay.journal.service.JournalFeedLocalServiceUtil;
-import com.liferay.journal.service.JournalFolderLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
@@ -722,85 +720,6 @@ public class JournalTestUtil {
 			ddmStructureKey, ddmTemplateKey, rendererTemplateKey, delta,
 			orderByCol, orderByType, friendlyURL, targetPortletId, contentField,
 			feedFormat, feedVersion, serviceContext);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             JournalFolderFixture#addFolder(long, long, long, String)}
-	 */
-	@Deprecated
-	public static JournalFolder addFolder(
-			long userId, long groupId, long parentFolderId, String name)
-		throws Exception {
-
-		JournalFolderFixture journalFolderFixture = new JournalFolderFixture(
-			JournalFolderLocalServiceUtil.getService());
-
-		return journalFolderFixture.addFolder(
-			userId, groupId, parentFolderId, name);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             JournalFolderFixture#addFolder(long, long, String)}
-	 */
-	@Deprecated
-	public static JournalFolder addFolder(
-			long groupId, long parentFolderId, String name)
-		throws Exception {
-
-		JournalFolderFixture journalFolderFixture = new JournalFolderFixture(
-			JournalFolderLocalServiceUtil.getService());
-
-		return journalFolderFixture.addFolder(groupId, parentFolderId, name);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             JournalFolderFixture#addFolder(long, String)}
-	 */
-	@Deprecated
-	public static JournalFolder addFolder(long groupId, String name)
-		throws Exception {
-
-		JournalFolderFixture journalFolderFixture = new JournalFolderFixture(
-			JournalFolderLocalServiceUtil.getService());
-
-		return journalFolderFixture.addFolder(groupId, name);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             JournalFolderFixture#addFolder(long, String, ServiceContext)}
-	 */
-	@Deprecated
-	public static JournalFolder addFolder(
-			long parentFolderId, String name, ServiceContext serviceContext)
-		throws Exception {
-
-		JournalFolderFixture journalFolderFixture = new JournalFolderFixture(
-			JournalFolderLocalServiceUtil.getService());
-
-		return journalFolderFixture.addFolder(
-			parentFolderId, name, serviceContext);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             JournalFolderFixture#addFolder(long, String, String,
-	 *             ServiceContext)}
-	 */
-	@Deprecated
-	public static JournalFolder addFolder(
-			long parentFolderId, String name, String description,
-			ServiceContext serviceContext)
-		throws Exception {
-
-		JournalFolderFixture journalFolderFixture = new JournalFolderFixture(
-			JournalFolderLocalServiceUtil.getService());
-
-		return journalFolderFixture.addFolder(
-			parentFolderId, name, description, serviceContext);
 	}
 
 	public static Element addMetadataElement(

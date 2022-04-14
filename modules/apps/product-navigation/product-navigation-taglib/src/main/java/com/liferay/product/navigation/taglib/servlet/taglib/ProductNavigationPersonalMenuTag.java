@@ -38,22 +38,6 @@ public class ProductNavigationPersonalMenuTag extends IncludeTag {
 		return _user;
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	public boolean isExpanded() {
-		return _expanded;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	public void setExpanded(boolean expanded) {
-		_expanded = expanded;
-	}
-
 	public void setLabel(String label) {
 		_label = label;
 	}
@@ -77,7 +61,6 @@ public class ProductNavigationPersonalMenuTag extends IncludeTag {
 	protected void cleanUp() {
 		super.cleanUp();
 
-		_expanded = false;
 		_label = null;
 		_size = null;
 		_user = null;
@@ -108,7 +91,6 @@ public class ProductNavigationPersonalMenuTag extends IncludeTag {
 
 	private static final String _PAGE = "/personal_menu/page.jsp";
 
-	private boolean _expanded;
 	private String _label;
 	private String _size;
 	private User _user;
