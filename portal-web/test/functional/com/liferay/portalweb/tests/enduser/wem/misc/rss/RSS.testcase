@@ -335,9 +335,9 @@ definition {
 
 		task ("Change the order of RSS Feeds") {
 			RSSPortlet.changeFeedsOrder(
-				fromRowNumber = "2",
-				offset = "0,-25",
-				toRowNumber = "1");
+				fromRowNumber = "1",
+				offset = "0,50",
+				toRowNumber = "2");
 
 			PortletEntry.save();
 
