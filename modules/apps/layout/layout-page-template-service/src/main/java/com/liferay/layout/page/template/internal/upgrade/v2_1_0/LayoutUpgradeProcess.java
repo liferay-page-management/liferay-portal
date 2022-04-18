@@ -37,6 +37,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -62,6 +63,33 @@ public class LayoutUpgradeProcess extends UpgradeProcess {
 	protected void doUpgrade() throws Exception {
 		_upgradeSchema();
 		_upgradeLayout();
+	}
+
+	private List<Long> _getFragmentEntryLinks(
+			long groupId, long classNameId, long classPK)
+		throws Exception {
+
+		List<Long> fragmentEntryLinkIds = new ArrayList<>();
+
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				"select fragmentEntryLinkId from FragmentEntryLink where " +
+					"groupId = ? and classNameId = ? and classPK = ?")) {
+
+			preparedStatement.setLong(1, groupId);
+			preparedStatement.setLong(2, classNameId);
+			preparedStatement.setLong(3, classPK);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					long fragmentEntryLinkId = resultSet.getLong(
+						"fragmentEntryLinkId");
+
+					fragmentEntryLinkIds.add(fragmentEntryLinkId);
+				}
+			}
+		}
+
+		return fragmentEntryLinkIds;
 	}
 
 	private long _getPlid(
@@ -143,16 +171,18 @@ public class LayoutUpgradeProcess extends UpgradeProcess {
 
 				preparedStatement.addBatch();
 
-				List<FragmentEntryLink> fragmentEntryLinks =
-					_fragmentEntryLinkLocalService.getFragmentEntryLinks(
-						groupId,
-						PortalUtil.getClassNameId(
-							LayoutPageTemplateEntry.class),
-						layoutPageTemplateEntryId);
+				List<Long> fragmentEntryLinks = _getFragmentEntryLinks(
+					groupId,
+					PortalUtil.getClassNameId(LayoutPageTemplateEntry.class),
+					layoutPageTemplateEntryId);
 
 				Layout draftLayout = _layoutLocalService.fetchDraftLayout(plid);
 
-				for (FragmentEntryLink fragmentEntryLink : fragmentEntryLinks) {
+				for (long fragmentEntryLinkId : fragmentEntryLinks) {
+					FragmentEntryLink fragmentEntryLink =
+						_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+							fragmentEntryLinkId);
+
 					fragmentEntryLink.setClassNameId(
 						PortalUtil.getClassNameId(Layout.class));
 					fragmentEntryLink.setClassPK(plid);

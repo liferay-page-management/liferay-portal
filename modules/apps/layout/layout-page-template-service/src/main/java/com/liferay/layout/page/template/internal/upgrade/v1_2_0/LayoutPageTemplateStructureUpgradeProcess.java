@@ -14,8 +14,6 @@
 
 package com.liferay.layout.page.template.internal.upgrade.v1_2_0;
 
-import com.liferay.fragment.model.FragmentEntryLink;
-import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.util.structure.LayoutStructure;
@@ -37,6 +35,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -46,10 +45,8 @@ import java.util.List;
 public class LayoutPageTemplateStructureUpgradeProcess extends UpgradeProcess {
 
 	public LayoutPageTemplateStructureUpgradeProcess(
-		FragmentEntryLinkLocalService fragmentEntryLinkLocalService,
 		LayoutLocalService layoutLocalService) {
 
-		_fragmentEntryLinkLocalService = fragmentEntryLinkLocalService;
 		_layoutLocalService = layoutLocalService;
 	}
 
@@ -62,13 +59,13 @@ public class LayoutPageTemplateStructureUpgradeProcess extends UpgradeProcess {
 	}
 
 	private String _generateLayoutPageTemplateStructureData(
-		long groupId, long classNameId, long classPK) {
+			long groupId, long classNameId, long classPK)
+		throws Exception {
 
-		List<FragmentEntryLink> fragmentEntryLinks =
-			_fragmentEntryLinkLocalService.getFragmentEntryLinks(
-				groupId, classNameId, classPK);
+		List<Long> fragmentEntryLinkIds = _getFragmentEntryLinks(
+			groupId, classNameId, classPK);
 
-		if (fragmentEntryLinks.isEmpty()) {
+		if (fragmentEntryLinkIds.isEmpty()) {
 			LayoutStructure layoutStructure = new LayoutStructure();
 
 			layoutStructure.addRootLayoutStructureItem();
@@ -85,15 +82,42 @@ public class LayoutPageTemplateStructureUpgradeProcess extends UpgradeProcess {
 			layoutStructure.addContainerStyledLayoutStructureItem(
 				rootLayoutStructureItem.getItemId(), 0);
 
-		for (int i = 0; i < fragmentEntryLinks.size(); i++) {
-			FragmentEntryLink fragmentEntryLink = fragmentEntryLinks.get(i);
+		for (int i = 0; i < fragmentEntryLinkIds.size(); i++) {
+			long fragmentEntryLinkId = fragmentEntryLinkIds.get(i);
 
 			layoutStructure.addFragmentStyledLayoutStructureItem(
-				fragmentEntryLink.getFragmentEntryLinkId(),
+				fragmentEntryLinkId,
 				containerStyledLayoutStructureItem.getItemId(), i);
 		}
 
 		return layoutStructure.toString();
+	}
+
+	private List<Long> _getFragmentEntryLinks(
+			long groupId, long classNameId, long classPK)
+		throws Exception {
+
+		List<Long> fragmentEntryLinkIds = new ArrayList<>();
+
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				"select fragmentEntryLinkId from FragmentEntryLink where " +
+					"groupId = ? and classNameId = ? and classPK = ?")) {
+
+			preparedStatement.setLong(1, groupId);
+			preparedStatement.setLong(2, classNameId);
+			preparedStatement.setLong(3, classPK);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					long fragmentEntryLinkId = resultSet.getLong(
+						"fragmentEntryLinkId");
+
+					fragmentEntryLinkIds.add(fragmentEntryLinkId);
+				}
+			}
+		}
+
+		return fragmentEntryLinkIds;
 	}
 
 	private void _updateLayoutPageTemplateStructure(
@@ -199,7 +223,6 @@ public class LayoutPageTemplateStructureUpgradeProcess extends UpgradeProcess {
 	private static final Log _log = LogFactoryUtil.getLog(
 		LayoutPageTemplateStructureUpgradeProcess.class);
 
-	private final FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
 	private final LayoutLocalService _layoutLocalService;
 
 }
