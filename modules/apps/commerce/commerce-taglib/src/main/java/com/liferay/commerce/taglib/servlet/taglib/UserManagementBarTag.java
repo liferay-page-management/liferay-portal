@@ -14,11 +14,11 @@
 
 package com.liferay.commerce.taglib.servlet.taglib;
 
-import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
 import com.liferay.commerce.taglib.servlet.taglib.internal.servlet.ServletContextUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.PortletCategoryKeys;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.util.IncludeTag;
 
@@ -86,8 +86,9 @@ public class UserManagementBarTag extends IncludeTag {
 			ServletContextUtil.getPanelCategoryRegistry());
 
 		return panelCategoryHelper.getNotificationsCount(
-			PanelCategoryKeys.USER, themeDisplay.getPermissionChecker(),
-			themeDisplay.getScopeGroup(), themeDisplay.getUser());
+			PortletCategoryKeys.USER_MY_ACCOUNT,
+			themeDisplay.getPermissionChecker(), themeDisplay.getScopeGroup(),
+			themeDisplay.getUser());
 	}
 
 	@Override

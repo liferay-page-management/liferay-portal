@@ -18,16 +18,20 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalArticleLocalServiceUtil;
+import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.journal.service.JournalFolderLocalServiceUtil;
+import com.liferay.journal.test.util.JournalFolderFixture;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.SynchronousMailTestRule;
 import com.liferay.subscription.test.util.BaseSubscriptionRootContainerModelTestCase;
 
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
@@ -46,6 +50,15 @@ public class JournalSubscriptionRootContainerModelTest
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(), SynchronousMailTestRule.INSTANCE);
 
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		_journalFolderFixture = new JournalFolderFixture(
+			_journalFolderLocalService);
+	}
+
 	@Override
 	protected long addBaseModel(long userId, long containerModelId)
 		throws Exception {
@@ -60,7 +73,7 @@ public class JournalSubscriptionRootContainerModelTest
 	protected long addContainerModel(long userId, long containerModelId)
 		throws Exception {
 
-		JournalFolder folder = JournalTestUtil.addFolder(
+		JournalFolder folder = _journalFolderFixture.addFolder(
 			userId, group.getGroupId(), containerModelId,
 			RandomTestUtil.randomString());
 
@@ -89,5 +102,10 @@ public class JournalSubscriptionRootContainerModelTest
 
 		JournalTestUtil.updateArticleWithWorkflow(userId, article, true);
 	}
+
+	private JournalFolderFixture _journalFolderFixture;
+
+	@Inject
+	private JournalFolderLocalService _journalFolderLocalService;
 
 }

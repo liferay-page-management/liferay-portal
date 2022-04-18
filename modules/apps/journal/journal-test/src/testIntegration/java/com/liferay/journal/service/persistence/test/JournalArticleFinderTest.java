@@ -23,7 +23,9 @@ import com.liferay.journal.constants.JournalArticleConstants;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalArticleLocalServiceUtil;
+import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.journal.service.persistence.JournalArticleFinder;
+import com.liferay.journal.test.util.JournalFolderFixture;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.journal.util.comparator.ArticleCreateDateComparator;
 import com.liferay.journal.util.comparator.ArticleDisplayDateComparator;
@@ -92,7 +94,11 @@ public class JournalArticleFinderTest {
 		_ddmStructure = DDMStructureTestUtil.addStructure(
 			_group.getGroupId(), JournalArticle.class.getName());
 
-		_folder = JournalTestUtil.addFolder(_group.getGroupId(), "Folder 1");
+		_journalFolderFixture = new JournalFolderFixture(
+			_journalFolderLocalService);
+
+		_folder = _journalFolderFixture.addFolder(
+			_group.getGroupId(), "Folder 1");
 
 		_basicWebContentDDMStructure = DDMStructureTestUtil.addStructure(
 			_group.getGroupId(), JournalArticle.class.getName());
@@ -110,7 +116,7 @@ public class JournalArticleFinderTest {
 
 		_articles.add(article);
 
-		JournalFolder folder = JournalTestUtil.addFolder(
+		JournalFolder folder = _journalFolderFixture.addFolder(
 			_group.getGroupId(), "Folder 2");
 
 		DDMTemplate ddmTemplate = DDMTemplateTestUtil.addTemplate(
@@ -350,7 +356,7 @@ public class JournalArticleFinderTest {
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), TestPropsValues.getUserId());
 
-		JournalFolder folder = JournalTestUtil.addFolder(
+		JournalFolder folder = _journalFolderFixture.addFolder(
 			_group.getGroupId(), "Localized folder 1");
 
 		List<Long> folderIds = new ArrayList<>();
@@ -770,5 +776,10 @@ public class JournalArticleFinderTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	private JournalFolderFixture _journalFolderFixture;
+
+	@Inject
+	private JournalFolderLocalService _journalFolderLocalService;
 
 }

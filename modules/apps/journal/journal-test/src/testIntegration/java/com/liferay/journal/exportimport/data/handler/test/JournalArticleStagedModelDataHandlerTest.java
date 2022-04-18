@@ -37,8 +37,10 @@ import com.liferay.journal.model.JournalArticleResource;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalArticleLocalServiceUtil;
 import com.liferay.journal.service.JournalArticleResourceLocalServiceUtil;
+import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.journal.service.JournalFolderLocalServiceUtil;
 import com.liferay.journal.service.persistence.JournalArticleResourceUtil;
+import com.liferay.journal.test.util.JournalFolderFixture;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -59,6 +61,7 @@ import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.xml.Element;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.ArrayList;
@@ -68,6 +71,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -93,6 +97,15 @@ public class JournalArticleStagedModelDataHandlerTest
 	@Override
 	public boolean isAssetPrioritySupported() {
 		return true;
+	}
+
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		_journalFolderFixture = new JournalFolderFixture(
+			_journalFolderLocalService);
 	}
 
 	@Test
@@ -512,7 +525,7 @@ public class JournalArticleStagedModelDataHandlerTest
 		addDependentStagedModel(
 			dependentStagedModelsMap, DDMTemplate.class, ddmTemplate);
 
-		JournalFolder folder = JournalTestUtil.addFolder(
+		JournalFolder folder = _journalFolderFixture.addFolder(
 			stagingGroup.getGroupId(), RandomTestUtil.randomString());
 
 		addDependentStagedModel(
@@ -542,7 +555,7 @@ public class JournalArticleStagedModelDataHandlerTest
 		addDependentStagedModel(
 			dependentStagedModelsMap, DDMStructure.class, ddmStructure);
 
-		JournalFolder folder = JournalTestUtil.addFolder(
+		JournalFolder folder = _journalFolderFixture.addFolder(
 			group.getGroupId(), RandomTestUtil.randomString());
 
 		addDependentStagedModel(
@@ -792,5 +805,10 @@ public class JournalArticleStagedModelDataHandlerTest
 		Assert.assertEquals(
 			article.getSmallImageURL(), importedArticle.getSmallImageURL());
 	}
+
+	private JournalFolderFixture _journalFolderFixture;
+
+	@Inject
+	private JournalFolderLocalService _journalFolderLocalService;
 
 }

@@ -16,7 +16,6 @@ package com.liferay.application.list.my.account.permissions.test;
 
 import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
-import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.LayoutConstants;
@@ -34,6 +33,7 @@ import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.PortletCategoryKeys;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -158,7 +158,7 @@ public class PanelAppMyAccountPermissionsTest {
 			_bundleContext.registerService(
 				PanelApp.class, new TestPanelApp(portletId),
 				HashMapDictionaryBuilder.put(
-					"panel.category.key", PanelCategoryKeys.USER_MY_ACCOUNT
+					"panel.category.key", PortletCategoryKeys.USER_MY_ACCOUNT
 				).build()));
 	}
 

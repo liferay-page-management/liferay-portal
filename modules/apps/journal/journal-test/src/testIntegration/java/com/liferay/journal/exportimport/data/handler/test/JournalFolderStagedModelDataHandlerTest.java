@@ -18,14 +18,16 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.test.util.lar.BaseStagedModelDataHandlerTestCase;
 import com.liferay.journal.model.JournalFolder;
+import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.journal.service.JournalFolderLocalServiceUtil;
-import com.liferay.journal.test.util.JournalTestUtil;
+import com.liferay.journal.test.util.JournalFolderFixture;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.DateTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.HashMap;
@@ -33,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -49,6 +52,15 @@ public class JournalFolderStagedModelDataHandlerTest
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
+
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		_journalFolderFixture = new JournalFolderFixture(
+			_journalFolderLocalService);
+	}
 
 	@Test
 	public void testDoubleExportImport() throws Exception {
@@ -94,7 +106,7 @@ public class JournalFolderStagedModelDataHandlerTest
 		Map<String, List<StagedModel>> dependentStagedModelsMap =
 			new HashMap<>();
 
-		JournalFolder folder = JournalTestUtil.addFolder(
+		JournalFolder folder = _journalFolderFixture.addFolder(
 			group.getGroupId(), RandomTestUtil.randomString());
 
 		addDependentStagedModel(
@@ -114,7 +126,7 @@ public class JournalFolderStagedModelDataHandlerTest
 
 		JournalFolder folder = (JournalFolder)dependentStagedModels.get(0);
 
-		return JournalTestUtil.addFolder(
+		return _journalFolderFixture.addFolder(
 			group.getGroupId(), folder.getFolderId(),
 			RandomTestUtil.randomString());
 	}
@@ -168,5 +180,10 @@ public class JournalFolderStagedModelDataHandlerTest
 		Assert.assertEquals(
 			folder.getDescription(), importedFolder.getDescription());
 	}
+
+	private JournalFolderFixture _journalFolderFixture;
+
+	@Inject
+	private JournalFolderLocalService _journalFolderLocalService;
 
 }

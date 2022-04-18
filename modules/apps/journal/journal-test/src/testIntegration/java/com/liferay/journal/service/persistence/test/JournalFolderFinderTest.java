@@ -19,7 +19,9 @@ import com.liferay.asset.kernel.service.AssetEntryLocalServiceUtil;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalArticleLocalServiceUtil;
+import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.journal.service.persistence.JournalFolderFinder;
+import com.liferay.journal.test.util.JournalFolderFixture;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
@@ -62,9 +64,13 @@ public class JournalFolderFinderTest {
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
 
-		_folder1 = JournalTestUtil.addFolder(_group.getGroupId(), "Folder 1");
+		_journalFolderFixture = new JournalFolderFixture(
+			_journalFolderLocalService);
 
-		_folder2 = JournalTestUtil.addFolder(
+		_folder1 = _journalFolderFixture.addFolder(
+			_group.getGroupId(), "Folder 1");
+
+		_folder2 = _journalFolderFixture.addFolder(
 			_group.getGroupId(), _folder1.getFolderId(), "Folder 2");
 
 		JournalTestUtil.addArticle(
@@ -200,5 +206,10 @@ public class JournalFolderFinderTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	private JournalFolderFixture _journalFolderFixture;
+
+	@Inject
+	private JournalFolderLocalService _journalFolderLocalService;
 
 }

@@ -30,7 +30,9 @@ import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalArticleLocalServiceUtil;
 import com.liferay.journal.service.JournalArticleResourceLocalServiceUtil;
 import com.liferay.journal.service.JournalArticleServiceUtil;
+import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.journal.service.JournalFolderServiceUtil;
+import com.liferay.journal.test.util.JournalFolderFixture;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -239,6 +241,9 @@ public class JournalArticleTrashHandlerTest
 		UserTestUtil.setUser(TestPropsValues.getUser());
 
 		super.setUp();
+
+		_journalFolderFixture = new JournalFolderFixture(
+			_journalFolderLocalService);
 	}
 
 	@Test
@@ -434,7 +439,7 @@ public class JournalArticleTrashHandlerTest
 			Group group, long parentBaseModelId, ServiceContext serviceContext)
 		throws Exception {
 
-		return JournalTestUtil.addFolder(
+		return _journalFolderFixture.addFolder(
 			group.getGroupId(), parentBaseModelId,
 			RandomTestUtil.randomString(_FOLDER_NAME_MAX_LENGTH));
 	}
@@ -474,6 +479,11 @@ public class JournalArticleTrashHandlerTest
 
 	@Inject(filter = "ddm.form.deserializer.type=xsd")
 	private DDMFormDeserializer _ddmFormDeserializer;
+
+	private JournalFolderFixture _journalFolderFixture;
+
+	@Inject
+	private JournalFolderLocalService _journalFolderLocalService;
 
 	@Inject
 	private TrashHelper _trashHelper;

@@ -19,6 +19,8 @@ import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalArticleLocalServiceUtil;
+import com.liferay.journal.service.JournalFolderLocalService;
+import com.liferay.journal.test.util.JournalFolderFixture;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.ClassedModel;
@@ -26,9 +28,11 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.ratings.test.util.BaseRatingsTestCase;
 
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
@@ -43,6 +47,15 @@ public class JournalArticleRatingsTest extends BaseRatingsTestCase {
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
+
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		_journalFolderFixture = new JournalFolderFixture(
+			_journalFolderLocalService);
+	}
 
 	@Override
 	protected BaseModel<?> addBaseModel(
@@ -75,7 +88,7 @@ public class JournalArticleRatingsTest extends BaseRatingsTestCase {
 			Group group, ServiceContext serviceContext)
 		throws Exception {
 
-		return JournalTestUtil.addFolder(
+		return _journalFolderFixture.addFolder(
 			group.getGroupId(), JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			RandomTestUtil.randomString(10));
 	}
@@ -86,5 +99,10 @@ public class JournalArticleRatingsTest extends BaseRatingsTestCase {
 
 		return article.getResourcePrimKey();
 	}
+
+	private JournalFolderFixture _journalFolderFixture;
+
+	@Inject
+	private JournalFolderLocalService _journalFolderLocalService;
 
 }

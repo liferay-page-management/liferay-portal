@@ -45,7 +45,9 @@ import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalArticleLocalServiceUtil;
 import com.liferay.journal.service.JournalArticleServiceUtil;
+import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.journal.service.JournalFolderServiceUtil;
+import com.liferay.journal.test.util.JournalFolderFixture;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
@@ -157,6 +159,9 @@ public class JournalArticleSearchTest extends BaseSearchTestCase {
 			TestPropsValues.getCompanyId(),
 			PortletKeys.PREFS_OWNER_TYPE_COMPANY,
 			PortletPreferencesFactoryUtil.toXML(portalPreferences));
+
+		_journalFolderFixture = new JournalFolderFixture(
+			_journalFolderLocalService);
 
 		_journalServiceConfiguration =
 			ConfigurationProviderUtil.getCompanyConfiguration(
@@ -530,7 +535,7 @@ public class JournalArticleSearchTest extends BaseSearchTestCase {
 			BaseModel<?> parentBaseModel, ServiceContext serviceContext)
 		throws Exception {
 
-		return JournalTestUtil.addFolder(
+		return _journalFolderFixture.addFolder(
 			(Long)parentBaseModel.getPrimaryKeyObj(),
 			RandomTestUtil.randomString(), serviceContext);
 	}
@@ -540,7 +545,7 @@ public class JournalArticleSearchTest extends BaseSearchTestCase {
 			Group group, ServiceContext serviceContext)
 		throws Exception {
 
-		return JournalTestUtil.addFolder(
+		return _journalFolderFixture.addFolder(
 			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			RandomTestUtil.randomString(), serviceContext);
 	}
@@ -754,6 +759,11 @@ public class JournalArticleSearchTest extends BaseSearchTestCase {
 	private DDMIndexer _ddmIndexer;
 
 	private DDMStructure _ddmStructure;
+	private JournalFolderFixture _journalFolderFixture;
+
+	@Inject
+	private JournalFolderLocalService _journalFolderLocalService;
+
 	private JournalServiceConfiguration _journalServiceConfiguration;
 	private String _originalPortalPreferencesXML;
 

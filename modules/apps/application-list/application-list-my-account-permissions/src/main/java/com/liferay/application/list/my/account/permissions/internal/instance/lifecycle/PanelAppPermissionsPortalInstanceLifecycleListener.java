@@ -17,7 +17,6 @@ package com.liferay.application.list.my.account.permissions.internal.instance.li
 import com.liferay.application.list.PanelApp;
 import com.liferay.application.list.PanelAppRegistry;
 import com.liferay.application.list.PanelCategoryRegistry;
-import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
 import com.liferay.application.list.my.account.permissions.internal.PanelAppMyAccountPermissions;
 import com.liferay.portal.instance.lifecycle.BasePortalInstanceLifecycleListener;
@@ -25,6 +24,7 @@ import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.service.PortletLocalService;
+import com.liferay.portal.kernel.util.PortletCategoryKeys;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,7 @@ public class PanelAppPermissionsPortalInstanceLifecycleListener
 			_panelAppRegistry, _panelCategoryRegistry);
 
 		List<PanelApp> panelApps = panelCategoryHelper.getAllPanelApps(
-			PanelCategoryKeys.USER_MY_ACCOUNT);
+			PortletCategoryKeys.USER_MY_ACCOUNT);
 
 		List<Portlet> portlets = new ArrayList<>(panelApps.size());
 

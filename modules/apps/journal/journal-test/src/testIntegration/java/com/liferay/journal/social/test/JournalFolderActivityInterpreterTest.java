@@ -18,17 +18,20 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.model.JournalFolder;
+import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.journal.service.JournalFolderLocalServiceUtil;
-import com.liferay.journal.test.util.JournalTestUtil;
+import com.liferay.journal.test.util.JournalFolderFixture;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.social.activity.test.util.BaseSocialActivityInterpreterTestCase;
 import com.liferay.social.kernel.model.SocialActivityConstants;
 import com.liferay.social.kernel.model.SocialActivityInterpreter;
 
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
@@ -45,9 +48,18 @@ public class JournalFolderActivityInterpreterTest
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
 
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		_journalFolderFixture = new JournalFolderFixture(
+			_journalFolderLocalService);
+	}
+
 	@Override
 	protected void addActivities() throws Exception {
-		_folder = JournalTestUtil.addFolder(
+		_folder = _journalFolderFixture.addFolder(
 			group.getGroupId(), RandomTestUtil.randomString());
 
 		JournalFolderLocalServiceUtil.moveFolderToTrash(
@@ -96,5 +108,9 @@ public class JournalFolderActivityInterpreterTest
 	}
 
 	private JournalFolder _folder;
+	private JournalFolderFixture _journalFolderFixture;
+
+	@Inject
+	private JournalFolderLocalService _journalFolderLocalService;
 
 }

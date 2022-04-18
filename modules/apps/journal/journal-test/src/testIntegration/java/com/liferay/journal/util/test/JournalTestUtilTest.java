@@ -25,6 +25,8 @@ import com.liferay.journal.exception.NoSuchArticleException;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalArticleLocalServiceUtil;
+import com.liferay.journal.service.JournalFolderLocalService;
+import com.liferay.journal.test.util.JournalFolderFixture;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -43,6 +45,7 @@ import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.kernel.xml.UnsecureSAXReaderUtil;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.lang.reflect.Method;
@@ -78,6 +81,9 @@ public class JournalTestUtilTest {
 		_group = GroupTestUtil.addGroup();
 
 		_transformMethod = JournalTestUtil.getJournalUtilTransformMethod();
+
+		_journalFolderFixture = new JournalFolderFixture(
+			_journalFolderLocalService);
 	}
 
 	@Test
@@ -103,7 +109,7 @@ public class JournalTestUtilTest {
 
 	@Test
 	public void testAddArticleWithFolder() throws Exception {
-		JournalFolder folder = JournalTestUtil.addFolder(
+		JournalFolder folder = _journalFolderFixture.addFolder(
 			_group.getGroupId(), 0, "Test Folder");
 
 		Assert.assertNotNull(
@@ -224,7 +230,8 @@ public class JournalTestUtilTest {
 	@Test
 	public void testAddFolder() throws Exception {
 		Assert.assertNotNull(
-			JournalTestUtil.addFolder(_group.getGroupId(), 0, "Test Folder"));
+			_journalFolderFixture.addFolder(
+				_group.getGroupId(), 0, "Test Folder"));
 	}
 
 	@Test
@@ -315,6 +322,11 @@ public class JournalTestUtilTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	private JournalFolderFixture _journalFolderFixture;
+
+	@Inject
+	private JournalFolderLocalService _journalFolderLocalService;
 
 	private Method _transformMethod;
 

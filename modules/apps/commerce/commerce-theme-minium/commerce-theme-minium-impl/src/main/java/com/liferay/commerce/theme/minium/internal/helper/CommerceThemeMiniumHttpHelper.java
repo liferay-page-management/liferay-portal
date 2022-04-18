@@ -16,7 +16,6 @@ package com.liferay.commerce.theme.minium.internal.helper;
 
 import com.liferay.application.list.PanelAppRegistry;
 import com.liferay.application.list.PanelCategoryRegistry;
-import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
 import com.liferay.commerce.account.util.CommerceAccountHelper;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -25,6 +24,7 @@ import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.PortletCategoryKeys;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import java.util.Locale;
@@ -66,7 +66,7 @@ public class CommerceThemeMiniumHttpHelper {
 			_panelAppRegistry, _panelCategoryRegistry);
 
 		return panelCategoryHelper.getNotificationsCount(
-			PanelCategoryKeys.USER_MY_ACCOUNT,
+			PortletCategoryKeys.USER_MY_ACCOUNT,
 			themeDisplay.getPermissionChecker(), themeDisplay.getScopeGroup(),
 			themeDisplay.getUser());
 	}

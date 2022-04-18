@@ -23,7 +23,9 @@ import com.liferay.dynamic.data.mapping.test.util.DDMTemplateTestUtil;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalArticleLocalServiceUtil;
+import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.journal.service.JournalFolderLocalServiceUtil;
+import com.liferay.journal.test.util.JournalFolderFixture;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -51,6 +53,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.Locale;
@@ -104,6 +107,9 @@ public class JournalIndexerTest {
 			TestPropsValues.getCompanyId(),
 			PortletKeys.PREFS_OWNER_TYPE_COMPANY,
 			PortletPreferencesFactoryUtil.toXML(portalPreferences));
+
+		_journalFolderFixture = new JournalFolderFixture(
+			_journalFolderLocalService);
 	}
 
 	@After
@@ -133,7 +139,7 @@ public class JournalIndexerTest {
 
 		assertSearchCount(0, _group.getGroupId(), searchContext);
 
-		JournalFolder folder = JournalTestUtil.addFolder(
+		JournalFolder folder = _journalFolderFixture.addFolder(
 			_group.getGroupId(), RandomTestUtil.randomString());
 
 		JournalArticle article = JournalTestUtil.addArticleWithWorkflow(
@@ -164,7 +170,7 @@ public class JournalIndexerTest {
 
 		assertSearchCount(0, _group.getGroupId(), searchContext);
 
-		JournalFolder folder = JournalTestUtil.addFolder(
+		JournalFolder folder = _journalFolderFixture.addFolder(
 			_group.getGroupId(), RandomTestUtil.randomString());
 
 		JournalArticle article1 = JournalTestUtil.addArticleWithWorkflow(
@@ -225,7 +231,7 @@ public class JournalIndexerTest {
 
 		assertSearchCount(0, _group.getGroupId(), searchContext);
 
-		JournalFolder folder = JournalTestUtil.addFolder(
+		JournalFolder folder = _journalFolderFixture.addFolder(
 			_group.getGroupId(), RandomTestUtil.randomString());
 
 		String content = "Liferay Architectural Approach";
@@ -300,7 +306,7 @@ public class JournalIndexerTest {
 
 		assertSearchCount(0, _group.getGroupId(), searchContext);
 
-		JournalFolder folder = JournalTestUtil.addFolder(
+		JournalFolder folder = _journalFolderFixture.addFolder(
 			_group.getGroupId(), RandomTestUtil.randomString());
 
 		JournalArticle article = JournalTestUtil.addArticleWithWorkflow(
@@ -461,7 +467,7 @@ public class JournalIndexerTest {
 
 		assertSearchCount(0, _group.getGroupId(), searchContext);
 
-		JournalFolder folder = JournalTestUtil.addFolder(
+		JournalFolder folder = _journalFolderFixture.addFolder(
 			_group.getGroupId(), RandomTestUtil.randomString());
 
 		JournalTestUtil.addArticleWithWorkflow(
@@ -518,7 +524,7 @@ public class JournalIndexerTest {
 
 		assertSearchCount(0, _group.getGroupId(), searchContext2);
 
-		JournalFolder folder = JournalTestUtil.addFolder(
+		JournalFolder folder = _journalFolderFixture.addFolder(
 			_group.getGroupId(), RandomTestUtil.randomString());
 
 		JournalArticle article = JournalTestUtil.addArticleWithWorkflow(
@@ -596,7 +602,7 @@ public class JournalIndexerTest {
 
 		assertSearchCount(0, _group.getGroupId(), searchContext);
 
-		JournalFolder folder = JournalTestUtil.addFolder(
+		JournalFolder folder = _journalFolderFixture.addFolder(
 			_group.getGroupId(), RandomTestUtil.randomString());
 
 		String content = "Liferay Architectural Approach";
@@ -663,7 +669,7 @@ public class JournalIndexerTest {
 
 		searchContext1.setKeywords("Architectural");
 
-		JournalFolder folder1 = JournalTestUtil.addFolder(
+		JournalFolder folder1 = _journalFolderFixture.addFolder(
 			_group.getGroupId(), RandomTestUtil.randomString());
 
 		searchContext1.setFolderIds(new long[] {folder1.getFolderId()});
@@ -675,7 +681,7 @@ public class JournalIndexerTest {
 
 		searchContext2.setKeywords("Architectural");
 
-		JournalFolder folder2 = JournalTestUtil.addFolder(
+		JournalFolder folder2 = _journalFolderFixture.addFolder(
 			_group.getGroupId(), RandomTestUtil.randomString());
 
 		searchContext2.setFolderIds(new long[] {folder2.getFolderId()});
@@ -750,7 +756,7 @@ public class JournalIndexerTest {
 
 		assertSearchCount(0, _group.getGroupId(), searchContext2);
 
-		JournalFolder folder = JournalTestUtil.addFolder(
+		JournalFolder folder = _journalFolderFixture.addFolder(
 			_group.getGroupId(), RandomTestUtil.randomString());
 
 		JournalArticle article = JournalTestUtil.addArticleWithWorkflow(
@@ -789,6 +795,11 @@ public class JournalIndexerTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	private JournalFolderFixture _journalFolderFixture;
+
+	@Inject
+	private JournalFolderLocalService _journalFolderLocalService;
 
 	private String _originalPortalPreferencesXML;
 

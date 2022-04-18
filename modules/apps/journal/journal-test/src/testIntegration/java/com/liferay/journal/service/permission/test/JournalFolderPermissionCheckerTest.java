@@ -17,7 +17,8 @@ package com.liferay.journal.service.permission.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.journal.constants.JournalConstants;
 import com.liferay.journal.model.JournalFolder;
-import com.liferay.journal.test.util.JournalTestUtil;
+import com.liferay.journal.service.JournalFolderLocalService;
+import com.liferay.journal.test.util.JournalFolderFixture;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -65,10 +66,13 @@ public class JournalFolderPermissionCheckerTest extends BasePermissionTestCase {
 
 	@Override
 	protected void doSetUp() throws Exception {
-		_folder = JournalTestUtil.addFolder(
+		_journalFolderFixture = new JournalFolderFixture(
+			_journalFolderLocalService);
+
+		_folder = _journalFolderFixture.addFolder(
 			group.getGroupId(), RandomTestUtil.randomString());
 
-		_subfolder = JournalTestUtil.addFolder(
+		_subfolder = _journalFolderFixture.addFolder(
 			group.getGroupId(), _folder.getFolderId(),
 			RandomTestUtil.randomString());
 	}
@@ -83,6 +87,11 @@ public class JournalFolderPermissionCheckerTest extends BasePermissionTestCase {
 		_journalFolderModelResourcePermission;
 
 	private JournalFolder _folder;
+	private JournalFolderFixture _journalFolderFixture;
+
+	@Inject
+	private JournalFolderLocalService _journalFolderLocalService;
+
 	private JournalFolder _subfolder;
 
 }

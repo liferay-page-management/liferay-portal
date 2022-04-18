@@ -17,8 +17,9 @@ package com.liferay.journal.search.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalFolder;
+import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.journal.service.JournalFolderLocalServiceUtil;
-import com.liferay.journal.test.util.JournalTestUtil;
+import com.liferay.journal.test.util.JournalFolderFixture;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -27,6 +28,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.search.test.util.BaseSearchTestCase;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import org.junit.Before;
@@ -52,6 +54,9 @@ public class JournalFolderSearchTest extends BaseSearchTestCase {
 		UserTestUtil.setUser(TestPropsValues.getUser());
 
 		super.setUp();
+
+		_journalFolderFixture = new JournalFolderFixture(
+			_journalFolderLocalService);
 	}
 
 	@Override
@@ -146,7 +151,8 @@ public class JournalFolderSearchTest extends BaseSearchTestCase {
 			folderId = parentFolder.getFolderId();
 		}
 
-		return JournalTestUtil.addFolder(folderId, keywords, serviceContext);
+		return _journalFolderFixture.addFolder(
+			folderId, keywords, serviceContext);
 	}
 
 	@Override
@@ -164,7 +170,7 @@ public class JournalFolderSearchTest extends BaseSearchTestCase {
 			BaseModel<?> parentBaseModel, ServiceContext serviceContext)
 		throws Exception {
 
-		return JournalTestUtil.addFolder(
+		return _journalFolderFixture.addFolder(
 			(Long)parentBaseModel.getPrimaryKeyObj(),
 			RandomTestUtil.randomString(), serviceContext);
 	}
@@ -174,7 +180,7 @@ public class JournalFolderSearchTest extends BaseSearchTestCase {
 			Group group, ServiceContext serviceContext)
 		throws Exception {
 
-		return JournalTestUtil.addFolder(
+		return _journalFolderFixture.addFolder(
 			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			RandomTestUtil.randomString(), serviceContext);
 	}
@@ -196,5 +202,10 @@ public class JournalFolderSearchTest extends BaseSearchTestCase {
 
 		return JournalFolderLocalServiceUtil.updateJournalFolder(folder);
 	}
+
+	private JournalFolderFixture _journalFolderFixture;
+
+	@Inject
+	private JournalFolderLocalService _journalFolderLocalService;
 
 }

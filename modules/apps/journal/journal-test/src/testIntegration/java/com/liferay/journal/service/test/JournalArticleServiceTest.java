@@ -36,6 +36,8 @@ import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.service.JournalArticleLocalServiceUtil;
 import com.liferay.journal.service.JournalArticleServiceUtil;
+import com.liferay.journal.service.JournalFolderLocalService;
+import com.liferay.journal.test.util.JournalFolderFixture;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -133,6 +135,9 @@ public class JournalArticleServiceTest {
 			TestPropsValues.getCompanyId(),
 			PortletKeys.PREFS_OWNER_TYPE_COMPANY,
 			PortletPreferencesFactoryUtil.toXML(portalPreferences));
+
+		_journalFolderFixture = new JournalFolderFixture(
+			_journalFolderLocalService);
 	}
 
 	@After
@@ -248,7 +253,7 @@ public class JournalArticleServiceTest {
 		Group group = GroupTestUtil.addGroup();
 
 		try {
-			JournalFolder parentFolder = JournalTestUtil.addFolder(
+			JournalFolder parentFolder = _journalFolderFixture.addFolder(
 				group.getGroupId(), RandomTestUtil.randomString());
 
 			JournalArticle article = JournalTestUtil.addArticle(
@@ -884,6 +889,11 @@ public class JournalArticleServiceTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	private JournalFolderFixture _journalFolderFixture;
+
+	@Inject
+	private JournalFolderLocalService _journalFolderLocalService;
 
 	private String _keyword;
 	private JournalArticle _latestArticle;

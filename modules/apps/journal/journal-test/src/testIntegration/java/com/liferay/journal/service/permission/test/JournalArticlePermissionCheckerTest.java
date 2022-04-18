@@ -19,6 +19,8 @@ import com.liferay.journal.configuration.JournalServiceConfiguration;
 import com.liferay.journal.constants.JournalConstants;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
+import com.liferay.journal.service.JournalFolderLocalService;
+import com.liferay.journal.test.util.JournalFolderFixture;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -106,7 +108,10 @@ public class JournalArticlePermissionCheckerTest
 			group.getGroupId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString());
 
-		JournalFolder folder = JournalTestUtil.addFolder(
+		_journalFolderFixture = new JournalFolderFixture(
+			_journalFolderLocalService);
+
+		JournalFolder folder = _journalFolderFixture.addFolder(
 			group.getGroupId(), RandomTestUtil.randomString());
 
 		_subarticle = JournalTestUtil.addArticle(
@@ -126,6 +131,11 @@ public class JournalArticlePermissionCheckerTest
 		_journalArticleModelResourcePermission;
 
 	private JournalArticle _article;
+	private JournalFolderFixture _journalFolderFixture;
+
+	@Inject
+	private JournalFolderLocalService _journalFolderLocalService;
+
 	private JournalServiceConfiguration _journalServiceConfiguration;
 	private JournalArticle _subarticle;
 

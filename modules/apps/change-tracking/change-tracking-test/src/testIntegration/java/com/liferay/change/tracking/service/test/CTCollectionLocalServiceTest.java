@@ -29,6 +29,7 @@ import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.service.JournalFolderLocalService;
+import com.liferay.journal.test.util.JournalFolderFixture;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
@@ -84,6 +85,8 @@ public class CTCollectionLocalServiceTest {
 			JournalArticle.class);
 		_journalFolderClassNameId = _classNameLocalService.getClassNameId(
 			JournalFolder.class);
+		_journalFolderFixture = new JournalFolderFixture(
+			_journalFolderLocalService);
 		_layoutClassNameId = _classNameLocalService.getClassNameId(
 			Layout.class);
 	}
@@ -255,11 +258,11 @@ public class CTCollectionLocalServiceTest {
 				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
 					_ctCollection1.getCtCollectionId())) {
 
-			ctJournalFolder = JournalTestUtil.addFolder(
+			ctJournalFolder = _journalFolderFixture.addFolder(
 				_group.getGroupId(), conflictingFolderName);
 		}
 
-		JournalFolder productionJournalFolder = JournalTestUtil.addFolder(
+		JournalFolder productionJournalFolder = _journalFolderFixture.addFolder(
 			_group.getGroupId(), conflictingFolderName);
 
 		try (SafeCloseable safeCloseable =
@@ -580,5 +583,7 @@ public class CTCollectionLocalServiceTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	private JournalFolderFixture _journalFolderFixture;
 
 }

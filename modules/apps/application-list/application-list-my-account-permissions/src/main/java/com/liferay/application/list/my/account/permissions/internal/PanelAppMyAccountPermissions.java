@@ -15,7 +15,6 @@
 package com.liferay.application.list.my.account.permissions.internal;
 
 import com.liferay.application.list.PanelApp;
-import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.osgi.util.ServiceTrackerFactory;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -35,6 +34,7 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.util.PortletCategoryKeys;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.PrefsProps;
 
@@ -98,7 +98,7 @@ public class PanelAppMyAccountPermissions {
 
 		String filter = StringBundler.concat(
 			"(&(objectClass=", PanelApp.class.getName(), ")",
-			"(panel.category.key=", PanelCategoryKeys.USER_MY_ACCOUNT,
+			"(panel.category.key=", PortletCategoryKeys.USER_MY_ACCOUNT,
 			"*)(!(depot.panel.app.wrapper=*)))");
 
 		_serviceTracker = ServiceTrackerFactory.open(

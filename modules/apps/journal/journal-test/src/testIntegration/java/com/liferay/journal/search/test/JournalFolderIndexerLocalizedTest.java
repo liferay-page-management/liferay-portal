@@ -17,7 +17,8 @@ package com.liferay.journal.search.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalFolder;
-import com.liferay.journal.test.util.JournalTestUtil;
+import com.liferay.journal.service.JournalFolderLocalService;
+import com.liferay.journal.test.util.JournalFolderFixture;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.search.Document;
@@ -78,6 +79,9 @@ public class JournalFolderIndexerLocalizedTest {
 
 		GroupTestUtil.updateDisplaySettings(
 			_group.getGroupId(), availableLocales, LocaleUtil.JAPAN);
+
+		_journalFolderFixture = new JournalFolderFixture(
+			_journalFolderLocalService);
 	}
 
 	@Test
@@ -146,7 +150,7 @@ public class JournalFolderIndexerLocalizedTest {
 			ServiceContext serviceContext, String title, String description)
 		throws Exception {
 
-		JournalTestUtil.addFolder(
+		_journalFolderFixture.addFolder(
 			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID, title, description,
 			serviceContext);
 	}
@@ -204,5 +208,9 @@ public class JournalFolderIndexerLocalizedTest {
 	private Group _group;
 
 	private Indexer<JournalFolder> _indexer;
+	private JournalFolderFixture _journalFolderFixture;
+
+	@Inject
+	private JournalFolderLocalService _journalFolderLocalService;
 
 }

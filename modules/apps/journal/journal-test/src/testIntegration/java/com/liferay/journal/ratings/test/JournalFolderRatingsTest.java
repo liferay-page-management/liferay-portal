@@ -17,15 +17,18 @@ package com.liferay.journal.ratings.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalFolder;
+import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.journal.service.JournalFolderLocalServiceUtil;
-import com.liferay.journal.test.util.JournalTestUtil;
+import com.liferay.journal.test.util.JournalFolderFixture;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.ratings.test.util.BaseRatingsTestCase;
 
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
@@ -41,12 +44,21 @@ public class JournalFolderRatingsTest extends BaseRatingsTestCase {
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
 
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		_journalFolderFixture = new JournalFolderFixture(
+			_journalFolderLocalService);
+	}
+
 	@Override
 	protected BaseModel<?> addBaseModel(
 			BaseModel<?> parentBaseModel, ServiceContext serviceContext)
 		throws Exception {
 
-		return JournalTestUtil.addFolder(
+		return _journalFolderFixture.addFolder(
 			group.getGroupId(), JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			RandomTestUtil.randomString(10));
 	}
@@ -64,5 +76,10 @@ public class JournalFolderRatingsTest extends BaseRatingsTestCase {
 	protected Class<?> getBaseModelClass() {
 		return JournalFolder.class;
 	}
+
+	private JournalFolderFixture _journalFolderFixture;
+
+	@Inject
+	private JournalFolderLocalService _journalFolderLocalService;
 
 }

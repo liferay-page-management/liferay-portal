@@ -24,7 +24,9 @@ import com.liferay.exportimport.test.util.lar.BasePortletDataHandlerTestCase;
 import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
+import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.journal.service.JournalFolderLocalServiceUtil;
+import com.liferay.journal.test.util.JournalFolderFixture;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -71,6 +73,9 @@ public class JournalPortletDataHandlerTest
 	public void setUp() throws Exception {
 		super.setUp();
 
+		_journalFolderFixture = new JournalFolderFixture(
+			_journalFolderLocalService);
+
 		CompanyThreadLocal.setCompanyId(TestPropsValues.getCompanyId());
 
 		PortalPreferences portalPreferences =
@@ -113,10 +118,10 @@ public class JournalPortletDataHandlerTest
 	public void testDeleteAllFolders() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
-		JournalFolder parentFolder = JournalTestUtil.addFolder(
+		JournalFolder parentFolder = _journalFolderFixture.addFolder(
 			group.getGroupId(), "parent");
 
-		JournalFolder childFolder = JournalTestUtil.addFolder(
+		JournalFolder childFolder = _journalFolderFixture.addFolder(
 			group.getGroupId(), parentFolder.getFolderId(), "child");
 
 		JournalFolderLocalServiceUtil.moveFolderToTrash(
@@ -149,7 +154,7 @@ public class JournalPortletDataHandlerTest
 	protected void addStagedModels() throws Exception {
 		Layout layout = LayoutTestUtil.addTypePortletLayout(stagingGroup);
 
-		JournalFolder folder = JournalTestUtil.addFolder(
+		JournalFolder folder = _journalFolderFixture.addFolder(
 			stagingGroup.getGroupId(), RandomTestUtil.randomString());
 
 		JournalTestUtil.addArticle(
@@ -182,6 +187,11 @@ public class JournalPortletDataHandlerTest
 	protected String getPortletId() {
 		return JournalPortletKeys.JOURNAL;
 	}
+
+	private JournalFolderFixture _journalFolderFixture;
+
+	@Inject
+	private JournalFolderLocalService _journalFolderLocalService;
 
 	@Inject(filter = "javax.portlet.name=" + JournalPortletKeys.JOURNAL)
 	private PortletDataHandler _journalPortletDataHandler;

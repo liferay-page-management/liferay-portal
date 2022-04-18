@@ -18,15 +18,19 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
+import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.journal.service.JournalFolderLocalServiceUtil;
+import com.liferay.journal.test.util.JournalFolderFixture;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.notifications.test.util.BaseUserNotificationTestCase;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.SynchronousMailTestRule;
 
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
@@ -44,6 +48,15 @@ public class JournalUserNotificationTest extends BaseUserNotificationTestCase {
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(), SynchronousMailTestRule.INSTANCE);
 
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		_journalFolderFixture = new JournalFolderFixture(
+			_journalFolderLocalService);
+	}
+
 	@Override
 	protected BaseModel<?> addBaseModel() throws Exception {
 		return JournalTestUtil.addArticleWithWorkflow(
@@ -52,7 +65,7 @@ public class JournalUserNotificationTest extends BaseUserNotificationTestCase {
 
 	@Override
 	protected void addContainerModel() throws Exception {
-		_folder = JournalTestUtil.addFolder(
+		_folder = _journalFolderFixture.addFolder(
 			group.getGroupId(), RandomTestUtil.randomString());
 	}
 
@@ -76,5 +89,9 @@ public class JournalUserNotificationTest extends BaseUserNotificationTestCase {
 	}
 
 	private JournalFolder _folder;
+	private JournalFolderFixture _journalFolderFixture;
+
+	@Inject
+	private JournalFolderLocalService _journalFolderLocalService;
 
 }

@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortletCategoryKeys;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -101,7 +102,8 @@ public class RoleDisplayContext {
 					_httpServletRequest, "access-in-site-administration");
 			}
 			else if (panelCategoryHelper.containsPortlet(
-						portlet.getPortletId(), PanelCategoryKeys.USER)) {
+						portlet.getPortletId(),
+						PortletCategoryKeys.USER_MY_ACCOUNT)) {
 
 				actionLabel = LanguageUtil.get(
 					_httpServletRequest, "access-in-my-account");
