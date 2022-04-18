@@ -357,6 +357,9 @@ public class ContentPageEditorDisplayContext {
 				"featureFlagLps132571",
 				GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-132571"))
 			).put(
+				"featureFlagLps150277",
+				GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-150277"))
+			).put(
 				"fragmentAdvancedOptionsEnabled",
 				_ffLayoutContentPageEditorConfiguration.
 					fragmentAdvancedOptionsEnabled()
