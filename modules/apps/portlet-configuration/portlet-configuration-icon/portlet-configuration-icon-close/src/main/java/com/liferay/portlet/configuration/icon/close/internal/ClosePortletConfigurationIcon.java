@@ -35,8 +35,8 @@ public class ClosePortletConfigurationIcon
 	extends BasePortletConfigurationIcon {
 
 	@Override
-	public String getCssClass() {
-		return "item-remove portlet-close portlet-close-icon";
+	public String getIconCssClass() {
+		return "trash";
 	}
 
 	@Override
