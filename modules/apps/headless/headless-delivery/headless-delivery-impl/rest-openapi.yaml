@@ -3347,6 +3347,19 @@ components:
             description:
                 Represent a definition of a Page form.
             properties:
+                fragmentStyle:
+                    allOf:
+                        - $ref: "#/components/schemas/FragmentStyle"
+                    # @review
+                    description:
+                        The fragment style of a Page form.
+                fragmentViewports:
+                    # @review
+                    description:
+                        A list of fragment viewports of a Page form.
+                    items:
+                        $ref: "#/components/schemas/FragmentViewport"
+                    type: array
                 source:
                     # @review
                     description:
