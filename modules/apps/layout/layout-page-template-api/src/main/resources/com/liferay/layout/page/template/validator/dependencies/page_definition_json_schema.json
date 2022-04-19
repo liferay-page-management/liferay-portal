@@ -1218,6 +1218,10 @@
 					"title": "The fragmentViewports Schema",
 					"type": "array"
 				},
+				"indexed": {
+					"title": "The indexed Schema",
+					"type": "boolean"
+				},
 				"source": {
 					"properties": {
 						"itemReference": {

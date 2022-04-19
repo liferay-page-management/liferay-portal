@@ -51,6 +51,7 @@ public class FormLayoutStructureItemMapper
 			{
 				definition = new PageFormDefinition() {
 					{
+						indexed = formStyledLayoutStructureItem.isIndexed();
 						source = new Source() {
 							{
 								itemReference = _toItemReference(
