@@ -768,109 +768,105 @@ definition {
 	test FilterResultsOfCollectionDisplayByKeywords {
 		property portal.acceptance = "true";
 
-		task ("Add a web content") {
-			JSONWebcontent.addWebContent(
-				content = "Levis 501",
-				groupName = "Test Site Name",
-				title = "Levis 501");
+		task ("Given a Marketer has created a collection page for a given Collection") {
+			task ("Add a web content, blog and document") {
+				JSONWebcontent.addWebContent(
+					content = "Levis 501",
+					groupName = "Test Site Name",
+					title = "Levis 501");
+
+				HeadlessBlog.addBlogEntry(
+					content = "LeBron VIII",
+					groupName = "Test Site Name",
+					title = "LeBron VIII");
+
+				JSONDocument.addFile(
+					dmDocumentTitle = "AirPods",
+					groupName = "Test Site Name");
+			}
+
+			task ("Add a dynamic collection for All Types") {
+				JSONAssetlist.addDynamicAssetListEntryWithItemType(
+					groupName = "Test Site Name",
+					itemType = "All Types",
+					title = "Dynamic Collection");
+			}
+
+			task ("Add a Collection Display fragment to a content page") {
+				JSONLayout.addPublicLayout(
+					groupName = "Test Site Name",
+					layoutName = "Test Page Name",
+					type = "content");
+
+				ContentPagesNavigator.openEditContentPage(
+					pageName = "Test Page Name",
+					siteName = "Test Site Name");
+
+				PageEditor.addFragment(
+					collectionName = "Content Display",
+					fragmentName = "Collection Display");
+			}
+
+			task ("Select the dynamic collection in Collection Display") {
+				PageEditor.editCollectionDisplay(
+					assetListName = "Dynamic Collection",
+					fragmentName = "Collection Display");
+			}
+
+			task ("Add a Content Display to Collection Display") {
+				PageEditor.addFragmentToCollectionDisplay(
+					collectionName = "Content Display",
+					entryTitle = "Levis 501",
+					fragmentName = "Content Display");
+			}
+
+			task ("Add a Collection Filter above the Collection Display") {
+				PageEditor.addFragment(
+					collectionName = "Content Display",
+					dropTarget = "Header",
+					fragmentName = "Collection Filter",
+					targetFragmentName = "Collection Display");
+			}
+
+			task ("Select the dynamic collection as Target Collection") {
+				PageEditor.editCollectionFilter(
+					fragmentName = "Collection Filter",
+					targetCollection = "Dynamic Collection");
+			}
+
+			task ("View the None is selected in Filter field") {
+				AssertSelectedLabel(
+					key_fieldLabel = "Filter",
+					locator1 = "Select#GENERIC_SELECT_FIELD",
+					value1 = "None");
+			}
+
+			task ("Publish the page") {
+				PageEditor.clickPublish();
+			}
+
+			task ("View the Collection Filter doesn't appear at view mode") {
+				ContentPagesNavigator.openViewContentPage(
+					pageName = "Test Page Name",
+					siteName = "Test Site Name");
+
+				AssertElementNotPresent(
+					index = "1",
+					locator1 = "PageEditor#COLLECTION_FILTER_SEARCH_FIELD");
+			}
+
+			task ("Select the Keywords type in Collection Filter") {
+				ContentPagesNavigator.openEditContentPage(
+					pageName = "Test Page Name",
+					siteName = "Test Site Name");
+
+				PageEditor.editCollectionFilter(
+					filter = "Keywords",
+					fragmentName = "Collection Filter");
+			}
 		}
 
-		task ("Add a blog") {
-			HeadlessBlog.addBlogEntry(
-				content = "LeBron VIII",
-				groupName = "Test Site Name",
-				title = "LeBron VIII");
-		}
-
-		task ("Add a document") {
-			JSONDocument.addFile(
-				dmDocumentTitle = "AirPods",
-				groupName = "Test Site Name");
-		}
-
-		task ("Add a dynamic collection with All Types") {
-			JSONAssetlist.addDynamicAssetListEntryWithItemType(
-				groupName = "Test Site Name",
-				itemType = "All Types",
-				title = "Dynamic Collection");
-		}
-
-		task ("Add a content page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Page Name",
-				type = "content");
-		}
-
-		task ("Add a Collection Display fragment to page") {
-			ContentPagesNavigator.openEditContentPage(
-				pageName = "Test Page Name",
-				siteName = "Test Site Name");
-
-			PageEditor.addFragment(
-				collectionName = "Content Display",
-				fragmentName = "Collection Display");
-		}
-
-		task ("Select the dynamic collection in Collection Display") {
-			PageEditor.editCollectionDisplay(
-				assetListName = "Dynamic Collection",
-				fragmentName = "Collection Display");
-		}
-
-		task ("Add a Content Display to Collection Display") {
-			PageEditor.addFragmentToCollectionDisplay(
-				collectionName = "Content Display",
-				entryTitle = "Levis 501",
-				fragmentName = "Content Display");
-		}
-
-		task ("Add a Collection Filter above the Collection Display") {
-			PageEditor.addFragment(
-				collectionName = "Content Display",
-				dropTarget = "Header",
-				fragmentName = "Collection Filter",
-				targetFragmentName = "Collection Display");
-		}
-
-		task ("Select the dynamic collection as Target Collection") {
-			PageEditor.editCollectionFilter(
-				fragmentName = "Collection Filter",
-				targetCollection = "Dynamic Collection");
-		}
-
-		task ("View the None is selected in Filter field") {
-			AssertSelectedLabel(
-				key_fieldLabel = "Filter",
-				locator1 = "Select#GENERIC_SELECT_FIELD",
-				value1 = "None");
-		}
-
-		task ("Publish the page") {
-			PageEditor.clickPublish();
-		}
-
-		task ("View the Collection Filter doesn't appear at view mode") {
-			ContentPagesNavigator.openViewContentPage(
-				pageName = "Test Page Name",
-				siteName = "Test Site Name");
-
-			AssertElementNotPresent(
-				index = "1",
-				locator1 = "PageEditor#COLLECTION_FILTER_SEARCH_FIELD");
-		}
-
-		task ("Select the Keywords type in Collection Filter") {
-			ContentPagesNavigator.openEditContentPage(
-				pageName = "Test Page Name",
-				siteName = "Test Site Name");
-
-			PageEditor.editCollectionFilter(
-				filter = "Keywords",
-				fragmentName = "Collection Filter");
-		}
-
-		task ("Filter results of Collection Display by keywords at Preview mode") {
+		task ("When a User searches the keywords in Collection Filter at Preview mode") {
 			PageEditor.openPreviewMode();
 
 			SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
@@ -886,7 +882,9 @@ definition {
 			}
 
 			Page.searchInCollectionFilter(searchTerm = "Levis");
+		}
 
+		task ("Then the user could see the filters results in Collection Display at Preview mode") {
 			ContentPages.viewFragmentTextInCollectionDisplay(text = "Levis 501");
 
 			IFrame.closeFrame();
@@ -894,7 +892,7 @@ definition {
 			PageEditor.clickPublish();
 		}
 
-		task ("Filter results of Collection Display by keywords at View mode") {
+		task ("When a User searches the keywords in Collection Filter at View mode") {
 			ContentPagesNavigator.openViewContentPage(
 				pageName = "Test Page Name",
 				siteName = "Test Site Name");
@@ -910,7 +908,9 @@ definition {
 			}
 
 			Page.searchInCollectionFilter(searchTerm = "LeBron");
+		}
 
+		task ("Then the user could see the filters results in Collection Display at View mode") {
 			ContentPages.viewFragmentTextInCollectionDisplay(text = "LeBron VIII");
 		}
 	}
