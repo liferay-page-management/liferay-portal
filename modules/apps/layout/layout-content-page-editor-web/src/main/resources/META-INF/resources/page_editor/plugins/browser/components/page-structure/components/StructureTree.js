@@ -279,6 +279,21 @@ function isItemHidden(item, selectedViewportSize) {
 	return responsiveConfig.styles.display === 'none';
 }
 
+function isHidable(item, fragmentEntryLinks, layoutData) {
+	if (!isRemovable(item, layoutData)) {
+		return false;
+	}
+
+	if (item.type !== LAYOUT_DATA_ITEM_TYPES.fragment) {
+		return true;
+	}
+
+	const fragmentEntryLink =
+		fragmentEntryLinks[item.config.fragmentEntryLinkId];
+
+	return fragmentEntryLink.fragmentType !== 'input';
+}
+
 function isRemovable(item, layoutData) {
 	if (
 		item.type === LAYOUT_DATA_ITEM_TYPES.dropZone ||
@@ -380,6 +395,7 @@ function visit(
 					dragAndDropHoveredItemId,
 					draggable: false,
 					expanded: childId === activeItemId,
+					hidable: false,
 					hidden: false,
 					hiddenAncestor: hasHiddenAncestor || hidden,
 					icon: EDITABLE_TYPE_ICONS[type],
@@ -489,6 +505,9 @@ function visit(
 		expanded:
 			item.itemId === activeItemId ||
 			dragAndDropHoveredItemId === item.itemId,
+		hidable:
+			!itemInMasterLayout &&
+			isHidable(item, fragmentEntryLinks, layoutData),
 		hidden,
 		hiddenAncestor: hasHiddenAncestor,
 		icon,
