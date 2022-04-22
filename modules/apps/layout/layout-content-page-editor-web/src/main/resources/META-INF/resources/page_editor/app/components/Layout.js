@@ -243,7 +243,7 @@ const LayoutDataItemInteractionFilter = ({componentRef, item}) => {
 	useSetCollectionActiveItemContext(item.itemId);
 
 	const activationOrigin = useActivationOrigin();
-	const isActive = useIsActive()(item.itemId);
+	const isActive = useIsActive(item.itemId);
 	const isMounted = useIsMounted();
 
 	useEffect(() => {

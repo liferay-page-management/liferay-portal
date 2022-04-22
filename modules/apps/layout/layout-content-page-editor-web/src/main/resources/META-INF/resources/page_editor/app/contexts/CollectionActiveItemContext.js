@@ -42,7 +42,7 @@ export function CollectionActiveItemContextProvider({children}) {
 export function useSetCollectionActiveItemContext(itemId) {
 	const activeItemId = useActiveItemId();
 	const activeItemType = useActiveItemType();
-	const isActive = useIsActive();
+	const isActive = useIsActive(itemId);
 	const collectionContext = useContext(CollectionItemContext);
 	const setState = useContext(CollectionActiveItemDispatchContext);
 
@@ -52,7 +52,7 @@ export function useSetCollectionActiveItemContext(itemId) {
 	);
 
 	if (
-		isActive(itemId) ||
+		isActive ||
 		(item &&
 			item.type === LAYOUT_DATA_ITEM_TYPES.fragment &&
 			activeItemType === ITEM_TYPES.editable &&

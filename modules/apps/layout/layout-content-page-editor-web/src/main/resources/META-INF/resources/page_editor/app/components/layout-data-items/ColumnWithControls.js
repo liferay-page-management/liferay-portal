@@ -14,7 +14,7 @@
 
 import {useEventListener} from '@liferay/frontend-js-react-web';
 import classNames from 'classnames';
-import React, {useCallback, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 
 import {getLayoutDataItemPropTypes} from '../../../prop-types/index';
 import {VIEWPORT_SIZES} from '../../config/constants/viewportSizes';
@@ -78,7 +78,7 @@ const ColumnWithControls = React.forwardRef(({children, item}, ref) => {
 
 	const dispatch = useDispatch();
 	const globalContext = useGlobalContext();
-	const isActive = useIsActive();
+	const parentItemIsActive = useIsActive(item.parentId);
 	const resizing = useResizing();
 	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
 	const setCanDrag = useSetCanDrag();
@@ -92,12 +92,6 @@ const ColumnWithControls = React.forwardRef(({children, item}, ref) => {
 	const resizeInfoRef = useRef();
 
 	const columnIndex = parentItem.children.indexOf(item.itemId);
-
-	const parentItemIsActive = useMemo(
-		() =>
-			layoutData.items[item.parentId] ? isActive(item.parentId) : false,
-		[isActive, item.parentId, layoutData.items]
-	);
 
 	const responsiveRowConfig = getResponsiveConfig(
 		parentItem.config,

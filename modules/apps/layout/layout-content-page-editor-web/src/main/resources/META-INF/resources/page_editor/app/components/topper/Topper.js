@@ -89,15 +89,15 @@ export default function Topper({
 	const canUpdateItemConfiguration = useSelector(
 		selectCanUpdateItemConfiguration
 	);
-	const isHovered = useIsHovered();
-	const isActive = useIsActive();
+	const isHovered = useIsHovered(item.itemId);
+	const isActive = useIsActive(item.itemId);
 
 	if (canUpdatePageStructure || canUpdateItemConfiguration) {
 		return (
 			<MemoizedTopperContent
-				isActive={isActive(item.itemId)}
+				isActive={isActive}
 				isDropTarget={isDropTarget}
-				isHovered={isHovered(item.itemId)}
+				isHovered={isHovered}
 				item={item}
 				{...props}
 			>
