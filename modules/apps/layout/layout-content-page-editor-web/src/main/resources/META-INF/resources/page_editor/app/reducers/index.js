@@ -14,6 +14,7 @@
 
 import baseReducer from './baseReducer';
 import collectionsReducer from './collectionsReducer';
+import controlsReducer from './controlsReducer';
 import defaultFragmentEntryLinksReducer from './defaultFragmentEntryLinksReducer';
 import fragmentEntryLinksReducer from './fragmentEntryLinksReducer';
 import fragmentsReducer from './fragmentsReducer';
@@ -32,6 +33,7 @@ import undoReducer from './undoReducer';
 const combinedReducer = (state, action) =>
 	Object.entries({
 		collections: collectionsReducer,
+		controls: controlsReducer,
 		fragmentEntryLinks: fragmentEntryLinksReducer,
 		fragments: fragmentsReducer,
 		languageId: languageIdReducer,
