@@ -12,113 +12,81 @@
  * details.
  */
 
-import React, {useCallback, useContext, useReducer} from 'react';
+import {useCallback} from 'react';
 
-import switchSidebarPanel from '../actions/switchSidebarPanel';
+import {UPDATE_CONTROLS_ITEM} from '../actions/types';
 import {fromControlsId} from '../components/layout-data-items/Collection';
 import {ITEM_ACTIVATION_ORIGINS} from '../config/constants/itemActivationOrigins';
 import {ITEM_TYPES} from '../config/constants/itemTypes';
 import {useToControlsId} from './CollectionItemContext';
-import {useDispatch, useSelector} from './StoreContext';
+import {useDispatch, useSelector, useSelectorCallback} from './StoreContext';
 
-const ACTIVE_INITIAL_STATE = {
-	activationOrigin: null,
-	activeItemId: null,
-	activeItemType: null,
-};
+export function useActivationOrigin() {
+	return useSelector((state) => state.controls.active?.activationOrigin);
+}
 
-const HOVER_INITIAL_STATE = {
-	hoveredItemId: null,
-};
-
-const HOVER_ITEM = 'HOVER_ITEM';
-const SELECT_ITEM = 'SELECT_ITEM';
-
-const ActiveStateContext = React.createContext(ACTIVE_INITIAL_STATE);
-const ActiveDispatchContext = React.createContext(() => {});
-
-const HoverStateContext = React.createContext(HOVER_INITIAL_STATE);
-const HoverDispatchContext = React.createContext(() => {});
-
-const reducer = (state, action) => {
-	const {itemId, itemType, origin, type} = action;
-	let nextState = state;
-
-	if (type === HOVER_ITEM && itemId !== nextState.hoveredItemId) {
-		nextState = {
-			...nextState,
-			activationOrigin: origin,
-			hoveredItemId: itemId,
-			hoveredItemType: itemType,
-		};
-	}
-	else if (type === SELECT_ITEM && itemId !== nextState.activeItemId) {
-		nextState = {
-			...nextState,
-			activationOrigin: origin,
-			activeItemId: itemId,
-			activeItemType: itemType,
-		};
-	}
-
-	return nextState;
-};
-
-const ActiveProvider = ({children, initialState}) => {
-	const [state, dispatch] = useReducer(reducer, initialState);
-
-	return (
-		<ActiveDispatchContext.Provider value={dispatch}>
-			<ActiveStateContext.Provider value={state}>
-				{children}
-			</ActiveStateContext.Provider>
-		</ActiveDispatchContext.Provider>
+export function useActiveItemId() {
+	return useSelector((state) =>
+		fromControlsId(state.controls.active?.itemId)
 	);
-};
+}
 
-const HoverProvider = ({children, initialState}) => {
-	const [state, dispatch] = useReducer(reducer, initialState);
+export function useActiveItemType() {
+	return useSelector((state) => state.controls.active?.itemType);
+}
 
-	return (
-		<HoverDispatchContext.Provider value={dispatch}>
-			<HoverStateContext.Provider value={state}>
-				{children}
-			</HoverStateContext.Provider>
-		</HoverDispatchContext.Provider>
+export function useIsActive(itemId) {
+	const toControlsId = useToControlsId();
+
+	return useSelectorCallback(
+		(state) => state.controls.active?.itemId === toControlsId(itemId),
+		[itemId, toControlsId]
 	);
-};
+}
 
-const ControlsProvider = ({
-	activeInitialState = ACTIVE_INITIAL_STATE,
-	hoverInitialState = HOVER_INITIAL_STATE,
-	children,
-}) => {
-	return (
-		<ActiveProvider initialState={activeInitialState}>
-			<HoverProvider initialState={hoverInitialState}>
-				{children}
-			</HoverProvider>
-		</ActiveProvider>
+export function useIsActiveCallback() {
+	const activeItemId = useSelector((state) => state.controls.active?.itemId);
+	const toControlsId = useToControlsId();
+
+	return useCallback((itemId) => activeItemId === toControlsId(itemId), [
+		activeItemId,
+		toControlsId,
+	]);
+}
+
+export function useHoveringOrigin() {
+	return useSelector((state) => state.controls.hover?.activationOrigin);
+}
+
+export function useHoveredItemId() {
+	return useSelector((state) => fromControlsId(state.controls.hover?.itemId));
+}
+
+export function useHoveredItemType() {
+	return useSelector((state) => state.controls.hover?.itemType);
+}
+
+export function useIsHovered(itemId) {
+	const toControlsId = useToControlsId();
+
+	return useSelectorCallback(
+		(state) => state.controls.hover?.itemId === toControlsId(itemId),
+		[itemId, toControlsId]
 	);
-};
+}
 
-const useActivationOrigin = () =>
-	useContext(ActiveStateContext).activationOrigin;
+export function useIsHoveredCallback() {
+	const activeItemId = useSelector((state) => state.controls.hover?.itemId);
+	const toControlsId = useToControlsId();
 
-const useActiveItemId = () =>
-	fromControlsId(useContext(ActiveStateContext).activeItemId);
+	return useCallback((itemId) => activeItemId === toControlsId(itemId), [
+		activeItemId,
+		toControlsId,
+	]);
+}
 
-const useActiveItemType = () => useContext(ActiveStateContext).activeItemType;
-
-const useHoveredItemId = () =>
-	fromControlsId(useContext(HoverStateContext).hoveredItemId);
-
-const useHoveredItemType = () => useContext(HoverStateContext).hoveredItemType;
-
-const useHoveringOrigin = () => useContext(HoverStateContext).activationOrigin;
-
-const useHoverItem = () => {
-	const dispatch = useContext(HoverDispatchContext);
+export function useHoverItem() {
+	const dispatch = useDispatch();
 	const toControlsId = useToControlsId();
 
 	return useCallback(
@@ -132,41 +100,18 @@ const useHoverItem = () => {
 			}
 		) =>
 			dispatch({
+				activationOrigin: origin,
 				itemId: toControlsId(itemId),
 				itemType,
-				origin,
-				type: HOVER_ITEM,
+				namespace: 'hover',
+				type: UPDATE_CONTROLS_ITEM,
 			}),
 		[dispatch, toControlsId]
 	);
-};
+}
 
-const useIsActive = () => {
-	const {activeItemId} = useContext(ActiveStateContext);
-	const toControlsId = useToControlsId();
-
-	return useCallback((itemId) => activeItemId === toControlsId(itemId), [
-		activeItemId,
-		toControlsId,
-	]);
-};
-
-const useIsHovered = () => {
-	const {hoveredItemId} = useContext(HoverStateContext);
-	const toControlsId = useToControlsId();
-
-	return useCallback((itemId) => hoveredItemId === toControlsId(itemId), [
-		hoveredItemId,
-		toControlsId,
-	]);
-};
-
-const useSelectItem = () => {
-	const activeDispatch = useContext(ActiveDispatchContext);
-	const sidebarPanelId = useSelector((state) =>
-		state.sidebar?.open ? state.sidebar?.panelId : null
-	);
-	const storeDispatch = useDispatch();
+export function useSelectItem() {
+	const dispatch = useDispatch();
 	const toControlsId = useToControlsId();
 
 	return useCallback(
@@ -178,38 +123,14 @@ const useSelectItem = () => {
 			} = {
 				itemType: ITEM_TYPES.layoutDataItem,
 			}
-		) => {
-			activeDispatch({
+		) =>
+			dispatch({
+				activationOrigin: origin,
 				itemId: toControlsId(itemId),
 				itemType,
-				origin,
-				type: SELECT_ITEM,
-			});
-
-			if (itemId && !['browser', 'comments'].includes(sidebarPanelId)) {
-				storeDispatch(
-					switchSidebarPanel({
-						sidebarOpen: true,
-						sidebarPanelId: 'browser',
-					})
-				);
-			}
-		},
-		[activeDispatch, sidebarPanelId, storeDispatch, toControlsId]
+				namespace: 'active',
+				type: UPDATE_CONTROLS_ITEM,
+			}),
+		[dispatch, toControlsId]
 	);
-};
-
-export {
-	ControlsProvider,
-	reducer,
-	useActivationOrigin,
-	useActiveItemId,
-	useActiveItemType,
-	useHoveredItemId,
-	useHoveredItemType,
-	useHoveringOrigin,
-	useHoverItem,
-	useIsActive,
-	useIsHovered,
-	useSelectItem,
-};
+}

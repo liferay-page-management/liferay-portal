@@ -12,7 +12,7 @@
  * details.
  */
 
-import {SWITCH_SIDEBAR_PANEL} from '../actions/types';
+import {SWITCH_SIDEBAR_PANEL, UPDATE_CONTROLS_ITEM} from '../actions/types';
 
 const DEFAULT_PANEL_ID = 'fragments-widgets';
 
@@ -21,16 +21,27 @@ export const INITIAL_STATE = {
 	panelId: DEFAULT_PANEL_ID,
 };
 
-export default function sidebarReducer(sidebarStatus = INITIAL_STATE, action) {
+export default function sidebarReducer(state = INITIAL_STATE, action) {
 	if (action.type === SWITCH_SIDEBAR_PANEL) {
 		return {
 			open: action.sidebarOpen,
 			panelId:
 				action.sidebarPanelId === undefined
-					? sidebarStatus.panelId
+					? state.panelId
 					: action.sidebarPanelId,
 		};
 	}
+	else if (
+		action.type === UPDATE_CONTROLS_ITEM &&
+		action.namespace === 'active' &&
+		action.itemId &&
+		!['browser', 'comments'].includes(state.panelId)
+	) {
+		return {
+			open: true,
+			panelId: 'browser',
+		};
+	}
 
-	return sidebarStatus;
+	return state;
 }

@@ -21,7 +21,6 @@ import {INIT} from '../actions/types';
 import {LAYOUT_TYPES} from '../config/constants/layoutTypes';
 import {config} from '../config/index';
 import {CollectionActiveItemContextProvider} from '../contexts/CollectionActiveItemContext';
-import {ControlsProvider} from '../contexts/ControlsContext';
 import {DisplayPagePreviewItemContextProvider} from '../contexts/DisplayPagePreviewItemContext';
 import {EditableProcessorContextProvider} from '../contexts/EditableProcessorContext';
 import {GlobalContextProvider} from '../contexts/GlobalContext';
@@ -74,49 +73,45 @@ export default function App({state}) {
 
 			<URLParser />
 
-			<ControlsProvider>
-				<CollectionActiveItemContextProvider>
-					<DragAndDropContextProvider>
-						<EditableProcessorContextProvider>
-							<DisplayPagePreviewItemContextProvider>
-								<WidgetsContextProvider>
-									{displayPagePreviewItemSelectorWrapper ? (
-										<ReactPortal
-											container={
-												displayPagePreviewItemSelectorWrapper
-											}
-										>
-											<DisplayPagePreviewItemSelector
-												dark
-											/>
-										</ReactPortal>
-									) : null}
+			<CollectionActiveItemContextProvider>
+				<DragAndDropContextProvider>
+					<EditableProcessorContextProvider>
+						<DisplayPagePreviewItemContextProvider>
+							<WidgetsContextProvider>
+								{displayPagePreviewItemSelectorWrapper ? (
+									<ReactPortal
+										container={
+											displayPagePreviewItemSelectorWrapper
+										}
+									>
+										<DisplayPagePreviewItemSelector dark />
+									</ReactPortal>
+								) : null}
 
-									<DragPreview />
+								<DragPreview />
 
-									<StyleErrorsContextProvider>
-										<Toolbar />
+								<StyleErrorsContextProvider>
+									<Toolbar />
 
-										<ShortcutManager />
+									<ShortcutManager />
 
-										<GlobalContextProvider>
-											{config.featureFlagLps132571 ? (
-												<CommonStylesManager />
-											) : null}
+									<GlobalContextProvider>
+										{config.featureFlagLps132571 ? (
+											<CommonStylesManager />
+										) : null}
 
-											<LayoutViewport />
+										<LayoutViewport />
 
-											<StyleBookContextProvider>
-												<Sidebar />
-											</StyleBookContextProvider>
-										</GlobalContextProvider>
-									</StyleErrorsContextProvider>
-								</WidgetsContextProvider>
-							</DisplayPagePreviewItemContextProvider>
-						</EditableProcessorContextProvider>
-					</DragAndDropContextProvider>
-				</CollectionActiveItemContextProvider>
-			</ControlsProvider>
+										<StyleBookContextProvider>
+											<Sidebar />
+										</StyleBookContextProvider>
+									</GlobalContextProvider>
+								</StyleErrorsContextProvider>
+							</WidgetsContextProvider>
+						</DisplayPagePreviewItemContextProvider>
+					</EditableProcessorContextProvider>
+				</DragAndDropContextProvider>
+			</CollectionActiveItemContextProvider>
 		</StoreContextProvider>
 	);
 }
