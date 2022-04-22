@@ -30,7 +30,7 @@ export default function CollectionPagination({
 	totalNumberOfItems,
 	totalPages,
 }) {
-	const isActive = useIsActive();
+	const isActive = useIsActive(collectionId);
 	const {
 		displayAllPages,
 		numberOfItemsPerPage,
@@ -57,7 +57,7 @@ export default function CollectionPagination({
 				'page-editor__collection__pagination d-flex',
 				{
 					'page-editor__collection__pagination__overlay':
-						totalNumberOfItems < 1 || !isActive(collectionId),
+						totalNumberOfItems < 1 || !isActive,
 					'pt-3 pb-2': paginationType === 'numeric',
 					'py-3': paginationType === 'simple',
 				}
