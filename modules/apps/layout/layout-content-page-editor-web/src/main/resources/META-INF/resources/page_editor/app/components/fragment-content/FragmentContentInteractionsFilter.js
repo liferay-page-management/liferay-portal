@@ -29,8 +29,8 @@ import {
 	useHoveredItemId,
 	useHoveredItemType,
 	useHoveringOrigin,
-	useIsActive,
-	useIsHovered,
+	useIsActiveCallback,
+	useIsHoveredCallback,
 	useSelectItem,
 } from '../../contexts/ControlsContext';
 import {useSetEditableProcessorUniqueId} from '../../contexts/EditableProcessorContext';
@@ -68,8 +68,8 @@ function FragmentContentInteractionsFilter({
 	const hoveredItemType = useHoveredItemType();
 	const hoveringOrigin = useHoveringOrigin();
 	const hoverItem = useHoverItem();
-	const isActive = useIsActive();
-	const isHovered = useIsHovered();
+	const isActive = useIsActiveCallback();
+	const isHovered = useIsHoveredCallback();
 	const languageId = useSelector(selectLanguageId);
 	const selectItem = useSelectItem();
 	const selectedViewportSize = useSelector(
