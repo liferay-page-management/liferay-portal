@@ -65,10 +65,6 @@ public class BookmarksEntryItemSelectorView
 		return InfoItemItemSelectorCriterion.class;
 	}
 
-	public ServletContext getServletContext() {
-		return _servletContext;
-	}
-
 	@Override
 	public List<ItemSelectorReturnType> getSupportedItemSelectorReturnTypes() {
 		return _supportedItemSelectorReturnTypes;
@@ -101,11 +97,8 @@ public class BookmarksEntryItemSelectorView
 			BookmarkEntriesItemSelectorDisplayContext.class.getName(),
 			bookmarkEntriesItemSelectorDisplayContext);
 
-		ServletContext servletContext = getServletContext();
-
 		RequestDispatcher requestDispatcher =
-			servletContext.getRequestDispatcher(
-				"/select_entries.jsp");
+			_servletContext.getRequestDispatcher("/select_entries.jsp");
 
 		requestDispatcher.include(servletRequest, servletResponse);
 	}
@@ -117,7 +110,9 @@ public class BookmarksEntryItemSelectorView
 	@Reference
 	private Language _language;
 
-	@Reference(target = "(osgi.web.symbolicname=com.liferay.bookmarks.item.selector.web)")
+	@Reference(
+		target = "(osgi.web.symbolicname=com.liferay.bookmarks.item.selector.web)"
+	)
 	private ServletContext _servletContext;
 
 }

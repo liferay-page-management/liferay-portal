@@ -104,11 +104,6 @@ public class BookmarkEntriesItemSelectorDisplayContext {
 				_portletRequest, getPortletURL(), null,
 				"no-entries-were-found");
 
-		String orderByColName = ParamUtil.getString(
-			_httpServletRequest, "orderByCol", "name");
-
-		entriesSearchContainer.setOrderByCol(orderByColName);
-
 		String orderByColUrl = ParamUtil.getString(
 			_httpServletRequest, "orderByCol", "url");
 
