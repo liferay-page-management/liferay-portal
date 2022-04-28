@@ -299,6 +299,10 @@ public class RenderLayoutStructureDisplayContext {
 			StyledLayoutStructureItem styledLayoutStructureItem)
 		throws Exception {
 
+		if (!styledLayoutStructureItem.isVisible(_themeDisplay)) {
+			return "d-none";
+		}
+
 		StringBundler cssClassSB = new StringBundler(35);
 
 		String align = styledLayoutStructureItem.getAlign();
