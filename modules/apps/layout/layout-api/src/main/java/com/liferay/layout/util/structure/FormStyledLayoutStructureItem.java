@@ -25,6 +25,10 @@ import java.util.Objects;
  */
 public class FormStyledLayoutStructureItem extends StyledLayoutStructureItem {
 
+	public static final int DISPLAY_PAGE_ITEM_TYPE = 1;
+
+	public static final int OTHER_ITEM_TYPE = 2;
+
 	public FormStyledLayoutStructureItem(String parentItemId) {
 		super(parentItemId);
 	}
@@ -45,7 +49,8 @@ public class FormStyledLayoutStructureItem extends StyledLayoutStructureItem {
 		if (!Objects.equals(
 				_classNameId, formStyledLayoutStructureItem._classNameId) ||
 			!Objects.equals(
-				_classTypeId, formStyledLayoutStructureItem._classTypeId)) {
+				_classTypeId, formStyledLayoutStructureItem._classTypeId) ||
+			!Objects.equals(_source, formStyledLayoutStructureItem._source)) {
 
 			return false;
 		}
@@ -71,12 +76,18 @@ public class FormStyledLayoutStructureItem extends StyledLayoutStructureItem {
 			"classTypeId", _classTypeId
 		).put(
 			"indexed", _indexed
+		).put(
+			"source", _source
 		);
 	}
 
 	@Override
 	public String getItemType() {
 		return LayoutDataItemTypeConstants.TYPE_FORM;
+	}
+
+	public int getSource() {
+		return _source;
 	}
 
 	@Override
@@ -100,6 +111,10 @@ public class FormStyledLayoutStructureItem extends StyledLayoutStructureItem {
 		_indexed = indexed;
 	}
 
+	public void setSource(int source) {
+		_source = source;
+	}
+
 	@Override
 	public void updateItemConfig(JSONObject itemConfigJSONObject) {
 		super.updateItemConfig(itemConfigJSONObject);
@@ -115,10 +130,15 @@ public class FormStyledLayoutStructureItem extends StyledLayoutStructureItem {
 		if (itemConfigJSONObject.has("indexed")) {
 			setIndexed(itemConfigJSONObject.getBoolean("indexed"));
 		}
+
+		if (itemConfigJSONObject.has("source")) {
+			setSource(itemConfigJSONObject.getInt("source"));
+		}
 	}
 
 	private long _classNameId;
 	private long _classTypeId;
 	private boolean _indexed = true;
+	private int _source = DISPLAY_PAGE_ITEM_TYPE;
 
 }
