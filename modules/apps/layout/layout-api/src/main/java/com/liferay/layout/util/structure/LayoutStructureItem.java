@@ -18,6 +18,7 @@ import com.liferay.petra.lang.HashUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import java.util.ArrayList;
@@ -121,6 +122,10 @@ public abstract class LayoutStructureItem {
 	@Override
 	public int hashCode() {
 		return HashUtil.hash(0, getItemId());
+	}
+
+	public boolean isVisible(ThemeDisplay themeDisplay) {
+		return true;
 	}
 
 	public void setChildrenItemIds(List<String> childrenItemIds) {
