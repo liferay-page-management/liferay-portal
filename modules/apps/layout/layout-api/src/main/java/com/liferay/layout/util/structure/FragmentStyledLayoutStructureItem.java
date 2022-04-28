@@ -18,10 +18,18 @@ import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalServiceUtil;
 import com.liferay.layout.util.constants.LayoutDataItemTypeConstants;
 import com.liferay.petra.lang.HashUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.portlet.PortletIdCodec;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.util.PropsValues;
 
 import java.util.Objects;
 
@@ -93,6 +101,56 @@ public class FragmentStyledLayoutStructureItem
 
 	public boolean isIndexed() {
 		return _indexed;
+	}
+
+	@Override
+	public boolean isVisible(ThemeDisplay themeDisplay) {
+		if (PropsValues.LAYOUT_SHOW_PORTLET_ACCESS_DENIED) {
+			return true;
+		}
+
+		FragmentEntryLink fragmentEntryLink =
+			FragmentEntryLinkLocalServiceUtil.fetchFragmentEntryLink(
+				getFragmentEntryLinkId());
+
+		if (fragmentEntryLink == null) {
+			return true;
+		}
+
+		JSONObject fragmentEntryJSONObject = null;
+
+		try {
+			fragmentEntryJSONObject = JSONFactoryUtil.createJSONObject(
+				fragmentEntryLink.getEditableValues());
+		}
+		catch (JSONException jsonException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(jsonException, jsonException);
+			}
+
+			return true;
+		}
+
+		String portletId = PortletIdCodec.encode(
+			fragmentEntryJSONObject.getString("portletId"),
+			fragmentEntryJSONObject.getString("instanceId"));
+
+		if (Validator.isNull(portletId)) {
+			return true;
+		}
+
+		try {
+			return PortletPermissionUtil.contains(
+				themeDisplay.getPermissionChecker(), themeDisplay.getLayout(),
+				portletId, ActionKeys.VIEW);
+		}
+		catch (PortalException portalException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(portalException, portalException);
+			}
+
+			return true;
+		}
 	}
 
 	public void setFragmentEntryLinkId(long fragmentEntryLinkId) {
