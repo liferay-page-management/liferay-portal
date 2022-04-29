@@ -17,7 +17,7 @@ import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, {useMemo} from 'react';
+import React from 'react';
 
 import {getLayoutDataItemPropTypes} from '../../../prop-types/index';
 import {switchSidebarPanel} from '../../actions/index';
@@ -116,7 +116,6 @@ function TopperContent({
 	const commentsPanelId = config.sidebarPanels?.comments?.sidebarPanelId;
 	const dispatch = useDispatch();
 	const editableProcessorUniqueId = useEditableProcessorUniqueId();
-	const layoutData = useSelector((state) => state.layoutData);
 	const hoverItem = useHoverItem();
 	const {
 		isOverTarget,
@@ -128,9 +127,10 @@ function TopperContent({
 	const selectItem = useSelectItem();
 	const topperLabelId = useId();
 
-	const isHighlighted = useMemo(
-		() => isItemHighlighted(item, layoutData, targetItemId, targetPosition),
-		[item, layoutData, targetItemId, targetPosition]
+	const isHighlighted = useSelectorCallback(
+		({layoutData}) =>
+			isItemHighlighted(item, layoutData, targetItemId, targetPosition),
+		[item, targetItemId, targetPosition]
 	);
 
 	const canBeDragged = canUpdatePageStructure && !editableProcessorUniqueId;
