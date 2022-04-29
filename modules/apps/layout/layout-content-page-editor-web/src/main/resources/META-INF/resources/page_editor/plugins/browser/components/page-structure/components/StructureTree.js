@@ -21,7 +21,6 @@ import getAllPortals from '../../../../../app/components/layout-data-items/getAl
 import hasDropZoneChild from '../../../../../app/components/layout-data-items/hasDropZoneChild';
 import {EDITABLE_FRAGMENT_ENTRY_PROCESSOR} from '../../../../../app/config/constants/editableFragmentEntryProcessor';
 import {EDITABLE_TYPES} from '../../../../../app/config/constants/editableTypes';
-import {FORM_MAPPING_SOURCES} from '../../../../../app/config/constants/formMappingSources';
 import {ITEM_TYPES} from '../../../../../app/config/constants/itemTypes';
 import {LAYOUT_DATA_ITEM_TYPES} from '../../../../../app/config/constants/layoutDataItemTypes';
 import {LAYOUT_TYPES} from '../../../../../app/config/constants/layoutTypes';
@@ -36,6 +35,7 @@ import canActivateEditable from '../../../../../app/utils/canActivateEditable';
 import {DragAndDropContextProvider} from '../../../../../app/utils/drag-and-drop/useDragAndDrop';
 import isMapped from '../../../../../app/utils/editable-value/isMapped';
 import isMappedToCollection from '../../../../../app/utils/editable-value/isMappedToCollection';
+import {formIsMapped} from '../../../../../app/utils/formIsMapped';
 import getMappingFieldsKey from '../../../../../app/utils/getMappingFieldsKey';
 import {getResponsiveConfig} from '../../../../../app/utils/getResponsiveConfig';
 import getSelectedField from '../../../../../app/utils/getSelectedField';
@@ -507,19 +507,4 @@ function visit(
 		removable: !itemInMasterLayout && isRemovable(item, layoutData),
 		type: item.type,
 	};
-}
-
-function formIsMapped(item) {
-	if (item.config.classNameId && item.config.classNameId !== '0') {
-		return true;
-	}
-
-	if (config.layoutType === LAYOUT_TYPES.display) {
-		return (
-			item.config.mappingSource === FORM_MAPPING_SOURCES.displayPage ||
-			item.config.mappingSource === undefined
-		);
-	}
-
-	return false;
 }
