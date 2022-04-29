@@ -15,10 +15,13 @@
 import React from 'react';
 
 import {useSelectorCallback} from '../../contexts/StoreContext';
+import {formIsMapped} from '../../utils/formIsMapped';
 import isItemEmpty from '../../utils/isItemEmpty';
 import ContainerWithControls from './ContainerWithControls';
 
 const FormWithControls = React.forwardRef(({children, item, ...rest}, ref) => {
+	const isMapped = formIsMapped(item);
+
 	const isEmpty = useSelectorCallback(
 		(state) =>
 			isItemEmpty(item, state.layoutData, state.selectedViewportSize),
@@ -32,7 +35,11 @@ const FormWithControls = React.forwardRef(({children, item, ...rest}, ref) => {
 				isDropTarget={!isEmpty}
 				item={item}
 			>
-				{isEmpty ? <FormEmptyState /> : children}
+				{isEmpty || isMapped ? (
+					<FormEmptyState isMapped={isMapped} />
+				) : (
+					children
+				)}
 			</ContainerWithControls>
 		</form>
 	);
@@ -40,11 +47,15 @@ const FormWithControls = React.forwardRef(({children, item, ...rest}, ref) => {
 
 export default FormWithControls;
 
-function FormEmptyState() {
+function FormEmptyState({isMapped}) {
 	return (
 		<div className="page-editor__no-fragments-message">
 			<div className="page-editor__no-fragments-message__title">
-				{Liferay.Language.get('place-fragments-here')}
+				{isMapped
+					? Liferay.Language.get('place-fragments-here')
+					: Liferay.Language.get(
+							'select-a-content-type-to-start-creating-the-form'
+					  )}
 			</div>
 		</div>
 	);
