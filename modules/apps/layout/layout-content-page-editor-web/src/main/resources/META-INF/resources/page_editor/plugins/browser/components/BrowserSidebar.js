@@ -33,11 +33,11 @@ const TABS_IDS = {
 
 const TABS = [
 	{
-		component: <PageStructureSidebar />,
+		Component: PageStructureSidebar,
 		label: Liferay.Language.get('page-elements'),
 	},
 	{
-		component: <ContentsSidebar />,
+		Component: ContentsSidebar,
 		label: Liferay.Language.get('page-content'),
 	},
 ];
@@ -92,7 +92,7 @@ export default function BrowserSidebar({title}) {
 						id={getTabPanelId(index)}
 						key={index}
 					>
-						{tab.component}
+						{activeTabId === index ? <tab.Component /> : null}
 					</ClayTabs.TabPane>
 				))}
 			</ClayTabs.Content>
