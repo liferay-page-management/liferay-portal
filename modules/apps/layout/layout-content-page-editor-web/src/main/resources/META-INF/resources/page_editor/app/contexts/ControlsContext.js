@@ -22,30 +22,30 @@ import {useToControlsId} from './CollectionItemContext';
 import {useDispatch, useSelector, useSelectorCallback} from './StoreContext';
 
 export function useActivationOrigin() {
-	return useSelector((state) => state.controls.active?.activationOrigin);
+	return useSelector((state) => state.controls?.active?.activationOrigin);
 }
 
 export function useActiveItemId() {
 	return useSelector((state) =>
-		fromControlsId(state.controls.active?.itemId)
+		fromControlsId(state.controls?.active?.itemId)
 	);
 }
 
 export function useActiveItemType() {
-	return useSelector((state) => state.controls.active?.itemType);
+	return useSelector((state) => state.controls?.active?.itemType);
 }
 
 export function useIsActive(itemId) {
 	const toControlsId = useToControlsId();
 
 	return useSelectorCallback(
-		(state) => state.controls.active?.itemId === toControlsId(itemId),
+		(state) => state.controls?.active?.itemId === toControlsId(itemId),
 		[itemId, toControlsId]
 	);
 }
 
 export function useIsActiveCallback() {
-	const activeItemId = useSelector((state) => state.controls.active?.itemId);
+	const activeItemId = useSelector((state) => state.controls?.active?.itemId);
 	const toControlsId = useToControlsId();
 
 	return useCallback((itemId) => activeItemId === toControlsId(itemId), [
@@ -55,28 +55,30 @@ export function useIsActiveCallback() {
 }
 
 export function useHoveringOrigin() {
-	return useSelector((state) => state.controls.hover?.activationOrigin);
+	return useSelector((state) => state.controls?.hover?.activationOrigin);
 }
 
 export function useHoveredItemId() {
-	return useSelector((state) => fromControlsId(state.controls.hover?.itemId));
+	return useSelector((state) =>
+		fromControlsId(state.controls?.hover?.itemId)
+	);
 }
 
 export function useHoveredItemType() {
-	return useSelector((state) => state.controls.hover?.itemType);
+	return useSelector((state) => state.controls?.hover?.itemType);
 }
 
 export function useIsHovered(itemId) {
 	const toControlsId = useToControlsId();
 
 	return useSelectorCallback(
-		(state) => state.controls.hover?.itemId === toControlsId(itemId),
+		(state) => state.controls?.hover?.itemId === toControlsId(itemId),
 		[itemId, toControlsId]
 	);
 }
 
 export function useIsHoveredCallback() {
-	const activeItemId = useSelector((state) => state.controls.hover?.itemId);
+	const activeItemId = useSelector((state) => state.controls?.hover?.itemId);
 	const toControlsId = useToControlsId();
 
 	return useCallback((itemId) => activeItemId === toControlsId(itemId), [

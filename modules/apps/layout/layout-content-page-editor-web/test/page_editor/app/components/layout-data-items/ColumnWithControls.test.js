@@ -22,10 +22,7 @@ import {ColumnWithControls} from '../../../../../src/main/resources/META-INF/res
 import {getNextLayoutData} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/components/layout-data-items/ColumnWithControls';
 import {LAYOUT_DATA_ITEM_TYPES} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/layoutDataItemTypes';
 import {VIEWPORT_SIZES} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/viewportSizes';
-import {
-	ControlsProvider,
-	useSelectItem,
-} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/ControlsContext';
+import {useSelectItem} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/ControlsContext';
 import {StoreAPIContextProvider} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/StoreContext';
 
 const LAYOUT_DATA = {
@@ -97,24 +94,20 @@ const renderColumn = ({
 
 	return render(
 		<DndProvider backend={HTML5Backend}>
-			<ControlsProvider>
-				<StoreAPIContextProvider
-					getState={() => ({
-						layoutData,
-						permissions: {
-							LOCKED_SEGMENTS_EXPERIMENT: lockedExperience,
-							UPDATE: hasUpdatePermissions,
-						},
-						selectedViewportSize: VIEWPORT_SIZES.desktop,
-					})}
-				>
-					<AutoSelect />
+			<StoreAPIContextProvider
+				getState={() => ({
+					layoutData,
+					permissions: {
+						LOCKED_SEGMENTS_EXPERIMENT: lockedExperience,
+						UPDATE: hasUpdatePermissions,
+					},
+					selectedViewportSize: VIEWPORT_SIZES.desktop,
+				})}
+			>
+				<AutoSelect />
 
-					<ColumnWithControls
-						item={columnIndex ? columnB : columnA}
-					/>
-				</StoreAPIContextProvider>
-			</ControlsProvider>
+				<ColumnWithControls item={columnIndex ? columnB : columnA} />
+			</StoreAPIContextProvider>
 		</DndProvider>
 	);
 };
