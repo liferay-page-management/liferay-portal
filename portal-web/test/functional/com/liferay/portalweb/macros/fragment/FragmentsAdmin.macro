@@ -45,9 +45,16 @@ definition {
 			card = "${entry}",
 			item = "Delete");
 
-		AssertTextEquals(
-			locator1 = "Modal#BODY",
-			value1 = "Deleting a fragment is an action impossible to revert. It will be removed from the fragments set and it will not be possible to recover it.");
+		if ("${navBar}" == "Resources") {
+			AssertTextEquals(
+				locator1 = "Modal#BODY",
+				value1 = "Are you sure you want to delete this? It will be deleted immediately.");
+		}
+		else {
+			AssertTextEquals(
+				locator1 = "Modal#BODY",
+				value1 = "Deleting a fragment is an action impossible to revert. It will be removed from the fragments set and it will not be possible to recover it.");
+		}
 
 		Click(
 			key_text = "Delete",
