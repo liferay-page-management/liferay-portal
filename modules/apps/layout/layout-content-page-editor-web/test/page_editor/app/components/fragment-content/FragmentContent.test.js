@@ -22,10 +22,7 @@ import {act, render} from '@testing-library/react';
 import FragmentContent from '../../../../../src/main/resources/META-INF/resources/page_editor/app/components/fragment-content/FragmentContent';
 import {BACKGROUND_IMAGE_FRAGMENT_ENTRY_PROCESSOR} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/backgroundImageFragmentEntryProcessor';
 import {VIEWPORT_SIZES} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/viewportSizes';
-import {
-	ControlsProvider,
-	useSelectItem,
-} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/ControlsContext';
+import {useSelectItem} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/ControlsContext';
 import {EditableProcessorContextProvider} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/EditableProcessorContext';
 import {StoreAPIContextProvider} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/StoreContext';
 import resolveEditableValue from '../../../../../src/main/resources/META-INF/resources/page_editor/app/utils/editable-value/resolveEditableValue';
@@ -122,6 +119,11 @@ const renderFragmentContent = ({
 	viewportSize = VIEWPORT_SIZES.desktop,
 }) => {
 	const state = {
+		controls: {
+			active: {
+				itemId: activeItemId,
+			},
+		},
 		fragmentEntryLinks: {
 			[FRAGMENT_ENTRY_LINK_ID]: fragmentEntryLink,
 		},
@@ -145,16 +147,14 @@ const renderFragmentContent = ({
 	return render(
 		<StoreAPIContextProvider dispatch={() => {}} getState={() => state}>
 			<EditableProcessorContextProvider>
-				<ControlsProvider>
-					<AutoSelect />
+				<AutoSelect />
 
-					<FragmentContent
-						elementRef={ref}
-						fragmentEntryLinkId={FRAGMENT_ENTRY_LINK_ID}
-						getPortals={() => []}
-						item={item}
-					/>
-				</ControlsProvider>
+				<FragmentContent
+					elementRef={ref}
+					fragmentEntryLinkId={FRAGMENT_ENTRY_LINK_ID}
+					getPortals={() => []}
+					item={item}
+				/>
 			</EditableProcessorContextProvider>
 		</StoreAPIContextProvider>
 	);

@@ -22,10 +22,7 @@ import {ContainerWithControls} from '../../../../../src/main/resources/META-INF/
 import {config} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/config';
 import {LAYOUT_DATA_ITEM_TYPES} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/layoutDataItemTypes';
 import {VIEWPORT_SIZES} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/viewportSizes';
-import {
-	ControlsProvider,
-	useSelectItem,
-} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/ControlsContext';
+import {useSelectItem} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/ControlsContext';
 import {StoreAPIContextProvider} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/StoreContext';
 import getLayoutDataItemClassName from '../../../../../src/main/resources/META-INF/resources/page_editor/app/utils/getLayoutDataItemClassName';
 import getLayoutDataItemTopperUniqueClassName from '../../../../../src/main/resources/META-INF/resources/page_editor/app/utils/getLayoutDataItemTopperUniqueClassName';
@@ -78,24 +75,22 @@ const renderContainer = ({
 
 	return render(
 		<DndProvider backend={HTML5Backend}>
-			<ControlsProvider>
-				<StoreAPIContextProvider
-					getState={() => ({
-						permissions: {
-							LOCKED_SEGMENTS_EXPERIMENT: lockedExperience,
-							UPDATE: hasUpdatePermissions,
-						},
-						selectedViewportSize: VIEWPORT_SIZES.desktop,
-					})}
-				>
-					<AutoSelect />
+			<StoreAPIContextProvider
+				getState={() => ({
+					permissions: {
+						LOCKED_SEGMENTS_EXPERIMENT: lockedExperience,
+						UPDATE: hasUpdatePermissions,
+					},
+					selectedViewportSize: VIEWPORT_SIZES.desktop,
+				})}
+			>
+				<AutoSelect />
 
-					<ContainerWithControls
-						item={container}
-						layoutData={layoutData}
-					/>
-				</StoreAPIContextProvider>
-			</ControlsProvider>
+				<ContainerWithControls
+					item={container}
+					layoutData={layoutData}
+				/>
+			</StoreAPIContextProvider>
 		</DndProvider>
 	);
 };

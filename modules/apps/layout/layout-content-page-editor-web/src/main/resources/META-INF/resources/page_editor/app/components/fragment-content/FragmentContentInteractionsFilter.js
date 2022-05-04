@@ -69,7 +69,7 @@ function FragmentContentInteractionsFilter({
 
 	const activeItemId = useSelectorCallback(
 		(state) =>
-			siblingIds.includes(state.controls.active?.itemId)
+			siblingIds.includes(state.controls?.active?.itemId)
 				? state.controls.active.itemId
 				: null,
 		[siblingIds]
@@ -82,7 +82,7 @@ function FragmentContentInteractionsFilter({
 
 	const hoveredItemId = useSelectorCallback(
 		(state) =>
-			siblingIds.includes(state.controls.hover?.itemId)
+			siblingIds.includes(state.controls?.hover?.itemId)
 				? state.controls.hover.itemId
 				: null,
 		[siblingIds]
@@ -152,9 +152,9 @@ function FragmentContentInteractionsFilter({
 
 	useSelectorCallback(
 		(state) => {
-			const hoveredItemId = state.controls.hover?.itemId;
-			const hoveredItemType = state.controls.hover?.itemType;
-			const hoveringOrigin = state.controls.hover?.activationOrigin;
+			const hoveredItemId = state.controls?.hover?.itemId;
+			const hoveredItemType = state.controls?.hover?.itemType;
+			const hoveringOrigin = state.controls?.hover?.activationOrigin;
 
 			editables.forEach((editable) => {
 				if (editableValues) {
@@ -252,8 +252,8 @@ function FragmentContentInteractionsFilter({
 
 	const activeEditable = useSelectorCallback(
 		(state) => {
-			const activationOrigin = state.controls.active?.activationOrigin;
-			const activeItemType = state.controls.active?.itemType;
+			const activationOrigin = state.controls?.active?.activationOrigin;
+			const activeItemType = state.controls?.active?.itemType;
 
 			let activeEditable;
 

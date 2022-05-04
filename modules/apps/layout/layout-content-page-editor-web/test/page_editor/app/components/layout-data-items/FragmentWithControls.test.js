@@ -22,10 +22,7 @@ import FragmentWithControls from '../../../../../src/main/resources/META-INF/res
 import {config} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/config';
 import {LAYOUT_DATA_ITEM_TYPES} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/layoutDataItemTypes';
 import {VIEWPORT_SIZES} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/viewportSizes';
-import {
-	ControlsProvider,
-	useSelectItem,
-} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/ControlsContext';
+import {useSelectItem} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/ControlsContext';
 import {EditableProcessorContextProvider} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/EditableProcessorContext';
 import {StoreAPIContextProvider} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/StoreContext';
 import getLayoutDataItemTopperUniqueClassName from '../../../../../src/main/resources/META-INF/resources/page_editor/app/utils/getLayoutDataItemTopperUniqueClassName';
@@ -95,29 +92,32 @@ const renderFragment = ({
 
 	return render(
 		<DndProvider backend={HTML5Backend}>
-			<ControlsProvider>
-				<StoreAPIContextProvider
-					getState={() => ({
-						fragmentEntryLinks: {
-							[fragmentEntryLink.fragmentEntryLinkId]: fragmentEntryLink,
+			<StoreAPIContextProvider
+				getState={() => ({
+					controls: {
+						active: {
+							itemId: activeItemId,
 						},
-						permissions: {
-							LOCKED_SEGMENTS_EXPERIMENT: lockedExperience,
-							UPDATE: hasUpdatePermissions,
-						},
-						selectedViewportSize: VIEWPORT_SIZES.desktop,
-					})}
-				>
-					<EditableProcessorContextProvider>
-						<AutoSelect />
+					},
+					fragmentEntryLinks: {
+						[fragmentEntryLink.fragmentEntryLinkId]: fragmentEntryLink,
+					},
+					permissions: {
+						LOCKED_SEGMENTS_EXPERIMENT: lockedExperience,
+						UPDATE: hasUpdatePermissions,
+					},
+					selectedViewportSize: VIEWPORT_SIZES.desktop,
+				})}
+			>
+				<EditableProcessorContextProvider>
+					<AutoSelect />
 
-						<FragmentWithControls
-							item={fragment}
-							layoutData={layoutData}
-						/>
-					</EditableProcessorContextProvider>
-				</StoreAPIContextProvider>
-			</ControlsProvider>
+					<FragmentWithControls
+						item={fragment}
+						layoutData={layoutData}
+					/>
+				</EditableProcessorContextProvider>
+			</StoreAPIContextProvider>
 		</DndProvider>
 	);
 };
