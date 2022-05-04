@@ -13,16 +13,12 @@
  */
 
 import classNames from 'classnames';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback} from 'react';
 
 import useSetRef from '../../../core/hooks/useSetRef';
 import {getLayoutDataItemPropTypes} from '../../../prop-types/index';
 import {FREEMARKER_FRAGMENT_ENTRY_PROCESSOR} from '../../config/constants/freemarkerFragmentEntryProcessor';
 import {config} from '../../config/index';
-import {
-	useHoveredItemId,
-	useHoveredItemType,
-} from '../../contexts/ControlsContext';
 import {useSelector, useSelectorCallback} from '../../contexts/StoreContext';
 import {getFrontendTokenValue} from '../../utils/getFrontendTokenValue';
 import getLayoutDataItemTopperUniqueClassName from '../../utils/getLayoutDataItemTopperUniqueClassName';
@@ -37,7 +33,50 @@ import isHovered from './isHovered';
 const FIELD_TYPES = ['itemSelector', 'collectionSelector'];
 
 const FragmentWithControls = React.forwardRef(({item}, ref) => {
-	const [hovered, setHovered] = useState(false);
+	const hovered = useSelectorCallback(
+		(state) => {
+			const fragmentEntryLink =
+				state.fragmentEntryLinks[item.config.fragmentEntryLinkId];
+
+			if (fragmentEntryLink) {
+				const mappedEditableValues = [];
+
+				fragmentEntryLink.configuration?.fieldSets?.forEach(
+					(fieldSet) => {
+						fieldSet.fields.forEach((field) => {
+							if (FIELD_TYPES.includes(field.type)) {
+								mappedEditableValues.push(field.name);
+							}
+						});
+					}
+				);
+
+				return mappedEditableValues
+					.filter(
+						(fieldName) =>
+							fragmentEntryLink.editableValues[
+								FREEMARKER_FRAGMENT_ENTRY_PROCESSOR
+							]?.[fieldName]?.classPK
+					)
+					.map(
+						(fieldName) =>
+							fragmentEntryLink.editableValues[
+								FREEMARKER_FRAGMENT_ENTRY_PROCESSOR
+							]?.[fieldName] || {}
+					)
+					.some((editableValue) =>
+						isHovered({
+							editableValue,
+							hoveredItemId: state.controls.hover?.itemId,
+							hoveredItemType: state.controls.hover?.itemType,
+						})
+					);
+			}
+
+			return false;
+		},
+		[item.config.fragmentEntryLinkId]
+	);
 	const selectedViewportSize = useSelector(
 		(state) => state.selectedViewportSize
 	);
@@ -71,36 +110,29 @@ const FragmentWithControls = React.forwardRef(({item}, ref) => {
 	style.width = width;
 
 	return (
-		<>
-			<HoverHandler
-				fragmentEntryLink={fragmentEntryLink}
-				hovered={hovered}
-				setHovered={setHovered}
-			/>
-			<Topper
-				className={classNames({
-					[getLayoutDataItemTopperUniqueClassName(item.itemId)]:
-						config.featureFlagLps132571 &&
-						!hasInnerCommonStyles(fragmentEntryLink),
-					[`mb-${marginBottom}`]: isValidSpacingOption(marginBottom),
-					[`ml-${marginLeft}`]: isValidSpacingOption(marginLeft),
-					[`mr-${marginRight}`]: isValidSpacingOption(marginRight),
-					[`mt-${marginTop}`]: isValidSpacingOption(marginTop),
-					'page-editor__topper--hovered': hovered,
-				})}
+		<Topper
+			className={classNames({
+				[getLayoutDataItemTopperUniqueClassName(item.itemId)]:
+					config.featureFlagLps132571 &&
+					!hasInnerCommonStyles(fragmentEntryLink),
+				[`mb-${marginBottom}`]: isValidSpacingOption(marginBottom),
+				[`ml-${marginLeft}`]: isValidSpacingOption(marginLeft),
+				[`mr-${marginRight}`]: isValidSpacingOption(marginRight),
+				[`mt-${marginTop}`]: isValidSpacingOption(marginTop),
+				'page-editor__topper--hovered': hovered,
+			})}
+			item={item}
+			itemElement={itemElement}
+			style={style}
+		>
+			<FragmentContent
+				elementRef={setRef}
+				fragmentEntryLinkId={item.config.fragmentEntryLinkId}
+				getPortals={getPortals}
 				item={item}
-				itemElement={itemElement}
-				style={style}
-			>
-				<FragmentContent
-					elementRef={setRef}
-					fragmentEntryLinkId={item.config.fragmentEntryLinkId}
-					getPortals={getPortals}
-					item={item}
-					withinTopper
-				/>
-			</Topper>
-		</>
+				withinTopper
+			/>
+		</Topper>
 	);
 });
 
@@ -111,61 +143,3 @@ FragmentWithControls.propTypes = {
 };
 
 export default FragmentWithControls;
-
-const HoverHandler = ({fragmentEntryLink, hovered, setHovered}) => {
-	const hoveredItemType = useHoveredItemType();
-	const hoveredItemId = useHoveredItemId();
-
-	const mappedEditableValues = useMemo(() => {
-		const fieldNames = [];
-
-		if (fragmentEntryLink) {
-			fragmentEntryLink.configuration?.fieldSets?.forEach((fieldSet) => {
-				fieldSet.fields.forEach((field) => {
-					if (FIELD_TYPES.includes(field.type)) {
-						fieldNames.push(field.name);
-					}
-				});
-			});
-
-			const filteredFieldNames = fieldNames.filter(
-				(fieldName) =>
-					fragmentEntryLink.editableValues[
-						FREEMARKER_FRAGMENT_ENTRY_PROCESSOR
-					]?.[fieldName]?.classPK
-			);
-
-			return filteredFieldNames.map(
-				(fieldName) =>
-					fragmentEntryLink.editableValues[
-						FREEMARKER_FRAGMENT_ENTRY_PROCESSOR
-					]?.[fieldName] || {}
-			);
-		}
-	}, [fragmentEntryLink]);
-
-	useEffect(() => {
-		if (mappedEditableValues.length) {
-			const someEditableIsHovered = mappedEditableValues.some(
-				(editableValue) =>
-					isHovered({
-						editableValue,
-						hoveredItemId,
-						hoveredItemType,
-					})
-			);
-
-			if (hovered !== someEditableIsHovered) {
-				setHovered(someEditableIsHovered);
-			}
-		}
-	}, [
-		hoveredItemType,
-		hoveredItemId,
-		mappedEditableValues,
-		setHovered,
-		hovered,
-	]);
-
-	return null;
-};
