@@ -67,8 +67,8 @@ const FragmentWithControls = React.forwardRef(({item}, ref) => {
 					.some((editableValue) =>
 						isHovered({
 							editableValue,
-							hoveredItemId: state.controls.hover?.itemId,
-							hoveredItemType: state.controls.hover?.itemType,
+							hoveredItemId: state.controls?.hover?.itemId,
+							hoveredItemType: state.controls?.hover?.itemType,
 						})
 					);
 			}

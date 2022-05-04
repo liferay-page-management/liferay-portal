@@ -22,10 +22,7 @@ import {CollectionWithControls} from '../../../../../src/main/resources/META-INF
 import {LAYOUT_DATA_ITEM_TYPES} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/layoutDataItemTypes';
 import {VIEWPORT_SIZES} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/viewportSizes';
 import {config} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/config/index';
-import {
-	ControlsProvider,
-	useSelectItem,
-} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/ControlsContext';
+import {useSelectItem} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/ControlsContext';
 import {StoreAPIContextProvider} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/StoreContext';
 import getLayoutDataItemClassName from '../../../../../src/main/resources/META-INF/resources/page_editor/app/utils/getLayoutDataItemClassName';
 import getLayoutDataItemTopperUniqueClassName from '../../../../../src/main/resources/META-INF/resources/page_editor/app/utils/getLayoutDataItemTopperUniqueClassName';
@@ -60,25 +57,23 @@ const renderCollection = ({
 
 	return render(
 		<DndProvider backend={HTML5Backend}>
-			<ControlsProvider>
-				<StoreAPIContextProvider
-					dispatch={() => {}}
-					getState={() => ({
-						permissions: {
-							LOCKED_SEGMENTS_EXPERIMENT: lockedSegment,
-							UPDATE: hasUpdatePermission,
-						},
-						selectedViewportSize: viewportSize,
-					})}
-				>
-					<AutoSelector />
+			<StoreAPIContextProvider
+				dispatch={() => {}}
+				getState={() => ({
+					permissions: {
+						LOCKED_SEGMENTS_EXPERIMENT: lockedSegment,
+						UPDATE: hasUpdatePermission,
+					},
+					selectedViewportSize: viewportSize,
+				})}
+			>
+				<AutoSelector />
 
-					<CollectionWithControls
-						item={collection}
-						layoutData={layoutData}
-					/>
-				</StoreAPIContextProvider>
-			</ControlsProvider>
+				<CollectionWithControls
+					item={collection}
+					layoutData={layoutData}
+				/>
+			</StoreAPIContextProvider>
 		</DndProvider>
 	);
 };

@@ -35,8 +35,8 @@ const CollectionWithControls = React.forwardRef(({children, item}, ref) => {
 
 			return isHovered({
 				editableValue: isMapped ? item.config.collection : {},
-				hoveredItemId: state.controls.hover?.itemId,
-				hoveredItemType: state.controls.hover?.itemType,
+				hoveredItemId: state.controls?.hover?.itemId,
+				hoveredItemType: state.controls?.hover?.itemType,
 			});
 		},
 		[item.type, item.config?.collection]

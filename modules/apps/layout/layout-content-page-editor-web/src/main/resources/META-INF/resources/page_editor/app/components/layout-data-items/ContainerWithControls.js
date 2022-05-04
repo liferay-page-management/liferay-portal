@@ -37,8 +37,8 @@ const ContainerWithControls = React.forwardRef(({children, item}, ref) => {
 		(state) =>
 			isHovered({
 				editableValue: item.config?.styles?.backgroundImage || {},
-				hoveredItemId: state.controls.hover?.itemId,
-				hoveredItemType: state.controls.hover?.itemType,
+				hoveredItemId: state.controls?.hover?.itemId,
+				hoveredItemType: state.controls?.hover?.itemType,
 			}),
 		[item.config?.styles?.backgroundImage]
 	);

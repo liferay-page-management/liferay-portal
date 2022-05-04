@@ -27,7 +27,7 @@ import {DragAndDropContextProvider} from '../../../../src/main/resources/META-IN
 jest.mock(
 	'../../../../src/main/resources/META-INF/resources/page_editor/app/services/CollectionService',
 	() => ({
-		getCollectionField: jest.fn(),
+		getCollectionField: jest.fn(() => Promise.resolve({})),
 		getCollectionMappingFields: jest.fn(() =>
 			Promise.resolve([
 				{key: 'field-1', label: 'Field 1', type: 'text'},
