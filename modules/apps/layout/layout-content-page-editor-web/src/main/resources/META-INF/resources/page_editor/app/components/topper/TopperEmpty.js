@@ -21,17 +21,23 @@ import selectCanUpdatePageStructure from '../../selectors/selectCanUpdatePageStr
 import {TARGET_POSITIONS} from '../../utils/drag-and-drop/constants/targetPositions';
 import {useDropTarget} from '../../utils/drag-and-drop/useDragAndDrop';
 
-export default function ({children, ...props}) {
+const MemoizedTopperEmptyContent = React.memo(TopperEmptyContent);
+
+export default function TopperEmpty({children, item}) {
 	const canUpdatePageStructure = useSelector(selectCanUpdatePageStructure);
 
 	return canUpdatePageStructure ? (
-		<TopperEmpty {...props}>{children}</TopperEmpty>
+		<MemoizedTopperEmptyContent item={item}>
+			{children}
+		</MemoizedTopperEmptyContent>
 	) : (
 		children
 	);
 }
 
-function TopperEmpty({children, item}) {
+TopperEmpty.displayName = 'TopperEmpty';
+
+function TopperEmptyContent({children, item}) {
 	const containerRef = useRef(null);
 
 	const {isOverTarget, targetPosition, targetRef} = useDropTarget(item);
@@ -44,41 +50,36 @@ function TopperEmpty({children, item}) {
 			return child;
 		}
 
-		return (
-			<>
-				{React.cloneElement(child, {
-					...child.props,
-					className: classNames(child.props.className, {
-						'drag-over-bottom':
-							isOverTarget &&
-							targetPosition === TARGET_POSITIONS.BOTTOM,
-						'drag-over-middle':
-							isOverTarget &&
-							targetPosition === TARGET_POSITIONS.MIDDLE,
-						'drag-over-top':
-							isOverTarget &&
-							targetPosition === TARGET_POSITIONS.TOP,
-						'page-editor__topper': true,
-					}),
-					ref: (node) => {
-						containerRef.current = node;
-						targetRef(node);
+		return React.cloneElement(child, {
+			...child.props,
+			className: classNames(child.props.className, {
+				'drag-over-bottom':
+					isOverTarget && targetPosition === TARGET_POSITIONS.BOTTOM,
+				'drag-over-middle':
+					isOverTarget && targetPosition === TARGET_POSITIONS.MIDDLE,
+				'drag-over-top':
+					isOverTarget && targetPosition === TARGET_POSITIONS.TOP,
+				'page-editor__topper': true,
+			}),
+			ref: (node) => {
+				containerRef.current = node;
+				targetRef(node);
 
-						// Call the original ref, if any.
+				// Call the original ref, if any.
 
-						if (typeof child.ref === 'function') {
-							child.ref(node);
-						}
-						else if (child.ref && 'current' in child.ref) {
-							child.ref.current = node;
-						}
-					},
-				})}
-			</>
-		);
+				if (typeof child.ref === 'function') {
+					child.ref(node);
+				}
+				else if (child.ref && 'current' in child.ref) {
+					child.ref.current = node;
+				}
+			},
+		});
 	});
 }
 
-TopperEmpty.propTypes = {
+TopperEmptyContent.propTypes = {
 	item: getLayoutDataItemPropTypes().isRequired,
 };
+
+TopperEmptyContent.displayName = 'TopperEmptyContent';
