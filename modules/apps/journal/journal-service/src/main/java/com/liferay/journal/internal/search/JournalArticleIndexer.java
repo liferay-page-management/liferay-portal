@@ -51,6 +51,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Html;
+import com.liferay.portal.kernel.util.HtmlParser;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -407,7 +408,7 @@ public class JournalArticleIndexer extends BaseIndexer<JournalArticle> {
 			content = _html.stripHtml(articleDisplay.getDescription());
 
 			if (Validator.isBlank(content)) {
-				content = _html.extractText(articleDisplay.getContent());
+				content = _htmlParser.extractText(articleDisplay.getContent());
 			}
 
 			String snippet = document.get(
@@ -600,6 +601,9 @@ public class JournalArticleIndexer extends BaseIndexer<JournalArticle> {
 
 	@Reference
 	private Html _html;
+
+	@Reference
+	private HtmlParser _htmlParser;
 
 	@Reference
 	private IndexWriterHelper _indexWriterHelper;
