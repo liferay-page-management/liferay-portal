@@ -330,6 +330,11 @@ public class JournalArticleIndexer extends BaseIndexer<JournalArticle> {
 			journalArticleResourceLocalService;
 	}
 
+	@Reference(unbind = "-")
+	protected void setJournalContent(JournalContent journalContent) {
+		_journalContent = journalContent;
+	}
+
 	@Reference(
 		target = "(indexer.class.name=com.liferay.journal.model.JournalArticle)"
 	)
