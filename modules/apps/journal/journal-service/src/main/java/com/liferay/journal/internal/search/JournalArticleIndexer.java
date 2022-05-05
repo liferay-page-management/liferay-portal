@@ -17,9 +17,11 @@ package com.liferay.journal.internal.search;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.journal.configuration.JournalServiceConfiguration;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.journal.model.JournalArticleDisplay;
 import com.liferay.journal.model.JournalArticleResource;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.service.JournalArticleResourceLocalService;
+import com.liferay.journal.util.JournalContent;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -29,6 +31,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.portlet.PortletRequestModel;
 import com.liferay.portal.kernel.search.BaseIndexer;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Document;
@@ -38,17 +41,23 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
+import com.liferay.portal.kernel.search.highlight.HighlightUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Html;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.batch.BatchIndexingHelper;
 import com.liferay.portal.search.model.uid.UIDFactory;
@@ -59,8 +68,10 @@ import com.liferay.portal.search.spi.model.query.contributor.helper.KeywordQuery
 import com.liferay.portal.search.spi.model.result.contributor.ModelVisibilityContributor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import javax.portlet.PortletRequest;
@@ -221,12 +232,14 @@ public class JournalArticleIndexer extends BaseIndexer<JournalArticle> {
 				Field.TITLE);
 		}
 
-		String content = _getDDMContentSummary(document, snippetLocale);
+		String content = _getDDMContentSummary(
+			document, snippetLocale, portletRequest, portletResponse);
 
 		if (Validator.isBlank(content) &&
 			!snippetLocale.equals(defaultLocale)) {
 
-			content = _getDDMContentSummary(document, defaultLocale);
+			content = _getDDMContentSummary(
+				document, defaultLocale, portletRequest, portletResponse);
 		}
 
 		content = HtmlUtil.unescape(
@@ -324,6 +337,24 @@ public class JournalArticleIndexer extends BaseIndexer<JournalArticle> {
 	@Reference
 	protected UIDFactory uidFactory;
 
+	private JournalArticleDisplay _createArticleDisplay(
+		Document document, Locale snippetLocale, PortletRequest portletRequest,
+		PortletResponse portletResponse) {
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)portletRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		long groupId = GetterUtil.getLong(document.get(Field.GROUP_ID));
+		String articleId = document.get(Field.ARTICLE_ID);
+		double version = GetterUtil.getDouble(document.get(Field.VERSION));
+
+		return _journalContent.getDisplay(
+			groupId, articleId, version, null, Constants.VIEW,
+			LocaleUtil.toLanguageId(snippetLocale), 1,
+			new PortletRequestModel(portletRequest, portletResponse),
+			themeDisplay);
+	}
+
 	private void _deleteDocument(JournalArticle article) throws Exception {
 		if ((article.getCtCollectionId() == 0) &&
 			!CTCollectionThreadLocal.isProductionMode()) {
@@ -355,7 +386,8 @@ public class JournalArticleIndexer extends BaseIndexer<JournalArticle> {
 	}
 
 	private String _getDDMContentSummary(
-		Document document, Locale snippetLocale) {
+		Document document, Locale snippetLocale, PortletRequest portletRequest,
+		PortletResponse portletResponse) {
 
 		String content = StringPool.BLANK;
 
@@ -369,10 +401,27 @@ public class JournalArticleIndexer extends BaseIndexer<JournalArticle> {
 				return content;
 			}
 
-			content = document.get(
+			JournalArticleDisplay articleDisplay = _createArticleDisplay(
+				document, snippetLocale, portletRequest, portletResponse);
+
+			content = _html.stripHtml(articleDisplay.getDescription());
+
+			if (Validator.isBlank(content)) {
+				content = _html.extractText(articleDisplay.getContent());
+			}
+
+			String snippet = document.get(
 				snippetLocale,
-				Field.SNIPPET + StringPool.UNDERLINE + Field.CONTENT,
-				Field.CONTENT);
+				Field.SNIPPET + StringPool.UNDERLINE + Field.CONTENT);
+
+			Set<String> highlights = new HashSet<>();
+
+			HighlightUtil.addSnippet(document, highlights, snippet, "temp");
+
+			content = HighlightUtil.highlight(
+				content, ArrayUtil.toStringArray(highlights),
+				HighlightUtil.HIGHLIGHT_TAG_OPEN,
+				HighlightUtil.HIGHLIGHT_TAG_CLOSE);
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
@@ -550,6 +599,9 @@ public class JournalArticleIndexer extends BaseIndexer<JournalArticle> {
 	private ConfigurationProvider _configurationProvider;
 
 	@Reference
+	private Html _html;
+
+	@Reference
 	private IndexWriterHelper _indexWriterHelper;
 
 	private JournalArticleLocalService _journalArticleLocalService;
@@ -562,6 +614,7 @@ public class JournalArticleIndexer extends BaseIndexer<JournalArticle> {
 
 	private JournalArticleResourceLocalService
 		_journalArticleResourceLocalService;
+	private JournalContent _journalContent;
 
 	@Reference(
 		target = "(indexer.class.name=com.liferay.journal.model.JournalArticle)"
