@@ -20,6 +20,7 @@ import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalArticleResource;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.service.JournalArticleResourceLocalService;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
@@ -42,8 +43,12 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.batch.BatchIndexingHelper;
 import com.liferay.portal.search.model.uid.UIDFactory;
@@ -51,7 +56,6 @@ import com.liferay.portal.search.spi.model.index.contributor.ModelDocumentContri
 import com.liferay.portal.search.spi.model.query.contributor.KeywordQueryContributor;
 import com.liferay.portal.search.spi.model.query.contributor.ModelPreFilterContributor;
 import com.liferay.portal.search.spi.model.query.contributor.helper.KeywordQueryContributorHelper;
-import com.liferay.portal.search.spi.model.result.contributor.ModelSummaryContributor;
 import com.liferay.portal.search.spi.model.result.contributor.ModelVisibilityContributor;
 
 import java.util.ArrayList;
@@ -190,7 +194,49 @@ public class JournalArticleIndexer extends BaseIndexer<JournalArticle> {
 		Document document, Locale locale, String snippet,
 		PortletRequest portletRequest, PortletResponse portletResponse) {
 
-		return modelSummaryContributor.getSummary(document, locale, snippet);
+		Locale defaultLocale = LocaleUtil.fromLanguageId(
+			document.get("defaultLanguageId"));
+
+		Locale snippetLocale = _getSnippetLocale(document, locale);
+
+		String localizedTitleName = Field.getLocalizedName(locale, Field.TITLE);
+
+		if ((snippetLocale == null) &&
+			(document.getField(localizedTitleName) == null)) {
+
+			snippetLocale = defaultLocale;
+		}
+		else {
+			snippetLocale = locale;
+		}
+
+		String title = document.get(
+			snippetLocale, Field.SNIPPET + StringPool.UNDERLINE + Field.TITLE,
+			Field.TITLE);
+
+		if (Validator.isBlank(title) && !snippetLocale.equals(defaultLocale)) {
+			title = document.get(
+				defaultLocale,
+				Field.SNIPPET + StringPool.UNDERLINE + Field.TITLE,
+				Field.TITLE);
+		}
+
+		String content = _getDDMContentSummary(document, snippetLocale);
+
+		if (Validator.isBlank(content) &&
+			!snippetLocale.equals(defaultLocale)) {
+
+			content = _getDDMContentSummary(document, defaultLocale);
+		}
+
+		content = HtmlUtil.unescape(
+			StringUtil.replace(content, "<br />", StringPool.NEW_LINE));
+
+		Summary summary = new Summary(snippetLocale, title, content);
+
+		summary.setMaxContentLength(200);
+
+		return summary;
 	}
 
 	@Override
@@ -273,11 +319,6 @@ public class JournalArticleIndexer extends BaseIndexer<JournalArticle> {
 	@Reference(
 		target = "(indexer.class.name=com.liferay.journal.model.JournalArticle)"
 	)
-	protected ModelSummaryContributor modelSummaryContributor;
-
-	@Reference(
-		target = "(indexer.class.name=com.liferay.journal.model.JournalArticle)"
-	)
 	protected ModelVisibilityContributor modelVisibilityContributor;
 
 	@Reference
@@ -311,6 +352,59 @@ public class JournalArticleIndexer extends BaseIndexer<JournalArticle> {
 		}
 
 		return latestIndexableArticle;
+	}
+
+	private String _getDDMContentSummary(
+		Document document, Locale snippetLocale) {
+
+		String content = StringPool.BLANK;
+
+		try {
+			content = document.get(
+				snippetLocale,
+				Field.SNIPPET + StringPool.UNDERLINE + Field.DESCRIPTION,
+				Field.DESCRIPTION);
+
+			if (!Validator.isBlank(content)) {
+				return content;
+			}
+
+			content = document.get(
+				snippetLocale,
+				Field.SNIPPET + StringPool.UNDERLINE + Field.CONTENT,
+				Field.CONTENT);
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+		}
+
+		return content;
+	}
+
+	private Locale _getSnippetLocale(Document document, Locale locale) {
+		String prefix = Field.SNIPPET + StringPool.UNDERLINE;
+
+		String localizedAssetCategoryTitlesName =
+			prefix +
+				Field.getLocalizedName(locale, Field.ASSET_CATEGORY_TITLES);
+		String localizedContentName =
+			prefix + Field.getLocalizedName(locale, Field.CONTENT);
+		String localizedDescriptionName =
+			prefix + Field.getLocalizedName(locale, Field.DESCRIPTION);
+		String localizedTitleName =
+			prefix + Field.getLocalizedName(locale, Field.TITLE);
+
+		if ((document.getField(localizedAssetCategoryTitlesName) != null) ||
+			(document.getField(localizedContentName) != null) ||
+			(document.getField(localizedDescriptionName) != null) ||
+			(document.getField(localizedTitleName) != null)) {
+
+			return locale;
+		}
+
+		return null;
 	}
 
 	private void _reindexArticles(long companyId) throws Exception {
