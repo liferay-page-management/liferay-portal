@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.portlet.PortletRequest;
@@ -32,8 +33,8 @@ import javax.portlet.PortletRequest;
 public interface JournalHelper {
 
 	public String buildURLPattern(
-			JournalArticle article, Boolean privateLayout,
-			ThemeDisplay themeDisplay)
+		JournalArticle article, Boolean privateLayout,
+		ThemeDisplay themeDisplay, Locale locale)
 		throws PortalException;
 
 	public String diffHtml(
