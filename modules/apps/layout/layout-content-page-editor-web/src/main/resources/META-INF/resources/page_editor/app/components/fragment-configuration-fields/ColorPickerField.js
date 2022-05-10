@@ -18,17 +18,20 @@ import React from 'react';
 import {ColorPicker} from '../../../common/components/ColorPicker/ColorPicker';
 import {useStyleBook} from '../../../plugins/page-design-options/hooks/useStyleBook';
 import {ConfigurationFieldPropTypes} from '../../../prop-types/index';
+import {useActiveItemId} from '../../contexts/ControlsContext';
 import {useSelector} from '../../contexts/StoreContext';
 import selectCanDetachTokenValues from '../../selectors/selectCanDetachTokenValues';
 import {ColorPaletteField} from './ColorPaletteField';
 
 export function ColorPickerField({field, onValueSelect, value}) {
+	const activeItemId = useActiveItemId();
 	const {tokenValues} = useStyleBook();
 
 	const canDetachTokenValues = useSelector(selectCanDetachTokenValues);
 
 	return Object.keys(tokenValues).length ? (
 		<ColorPicker
+			activeItemId={activeItemId}
 			canDetachTokenValues={canDetachTokenValues}
 			field={field}
 			onValueSelect={onValueSelect}
