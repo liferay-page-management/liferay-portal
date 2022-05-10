@@ -18,13 +18,16 @@ import React from 'react';
 import {ColorPicker} from '../../../common/components/ColorPicker/ColorPicker';
 import {useStyleBook} from '../../../plugins/page-design-options/hooks/useStyleBook';
 import {ConfigurationFieldPropTypes} from '../../../prop-types/index';
+import {useActiveItemId} from '../../contexts/ControlsContext';
 import {ColorPaletteField} from './ColorPaletteField';
 
 export function ColorPickerField({field, onValueSelect, value}) {
+	const activeItemId = useActiveItemId();
 	const {tokenValues} = useStyleBook();
 
 	return Object.keys(tokenValues).length ? (
 		<ColorPicker
+			activeItemId={activeItemId}
 			field={field}
 			onValueSelect={onValueSelect}
 			tokenValues={tokenValues}

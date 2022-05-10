@@ -23,7 +23,6 @@ import {debounce} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useRef, useState} from 'react';
 
-import {useActiveItemId} from '../../../app/contexts/ControlsContext';
 import {
 	useDeleteStyleError,
 	useSetStyleError,
@@ -54,13 +53,13 @@ function usePropsFirst(value, {forceProp = false}) {
 }
 
 export function ColorPicker({
+	activeItemId,
 	editedTokenValues,
 	field,
 	onValueSelect,
 	tokenValues,
 	value,
 }) {
-	const activeItemId = useActiveItemId();
 	const colors = {};
 	const id = useId();
 	const deleteStyleError = useDeleteStyleError();
@@ -485,6 +484,7 @@ export function ColorPicker({
 }
 
 ColorPicker.propTypes = {
+	activeItemId: PropTypes.string,
 	field: PropTypes.shape(ConfigurationFieldPropTypes).isRequired,
 	onValueSelect: PropTypes.func.isRequired,
 	tokenValues: PropTypes.shape({}).isRequired,
