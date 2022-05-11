@@ -78,11 +78,11 @@ export function useIsHovered(itemId) {
 }
 
 export function useIsHoveredCallback() {
-	const activeItemId = useSelector((state) => state.controls?.hover?.itemId);
+	const hoveredItemId = useSelector((state) => state.controls?.hover?.itemId);
 	const toControlsId = useToControlsId();
 
-	return useCallback((itemId) => activeItemId === toControlsId(itemId), [
-		activeItemId,
+	return useCallback((itemId) => hoveredItemId === toControlsId(itemId), [
+		hoveredItemId,
 		toControlsId,
 	]);
 }
