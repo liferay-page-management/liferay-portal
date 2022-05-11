@@ -19,6 +19,7 @@ import com.liferay.journal.util.JournalHelper;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 import java.util.List;
 import java.util.Locale;
@@ -26,7 +27,6 @@ import java.util.Map;
 
 import javax.portlet.PortletRequest;
 
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -37,12 +37,12 @@ import org.osgi.service.component.annotations.Reference;
 public class JournalHelperUtil {
 
 	public static String buildURLPattern(
-		JournalArticle article, Boolean privateLayout,
-		ThemeDisplay themeDisplay, Locale locale)
+			JournalArticle article, Boolean privateLayout,
+			ThemeDisplay themeDisplay, Locale locale, String separator)
 		throws PortalException {
 
 		return _journalHelper.buildURLPattern(
-			article, privateLayout, themeDisplay, locale);
+			article, privateLayout, themeDisplay, locale, separator);
 	}
 
 	public static String getAbsolutePath(
