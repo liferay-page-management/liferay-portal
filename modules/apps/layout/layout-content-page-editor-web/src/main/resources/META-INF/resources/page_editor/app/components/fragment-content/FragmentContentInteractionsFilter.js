@@ -69,10 +69,12 @@ function FragmentContentInteractionsFilter({
 
 	const activeItemId = useSelectorCallback(
 		(state) =>
-			siblingIds.includes(state.controls?.active?.itemId)
+			siblingIds
+				.map((itemId) => toControlsId(itemId))
+				.includes(state.controls?.active?.itemId)
 				? state.controls.active.itemId
 				: null,
-		[siblingIds]
+		[siblingIds, toControlsId]
 	);
 
 	const isActive = useCallback(
@@ -82,10 +84,12 @@ function FragmentContentInteractionsFilter({
 
 	const hoveredItemId = useSelectorCallback(
 		(state) =>
-			siblingIds.includes(state.controls?.hover?.itemId)
+			siblingIds
+				.map((itemId) => toControlsId(itemId))
+				.includes(state.controls?.hover?.itemId)
 				? state.controls.hover.itemId
 				: null,
-		[siblingIds]
+		[siblingIds, toControlsId]
 	);
 
 	const isHovered = useCallback(
