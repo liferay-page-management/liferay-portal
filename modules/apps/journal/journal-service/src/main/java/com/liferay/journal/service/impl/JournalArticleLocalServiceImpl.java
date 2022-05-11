@@ -140,6 +140,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.portlet.PortletRequestModel;
+import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.repository.capabilities.TemporaryFileEntriesCapability;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -8947,8 +8948,9 @@ public class JournalArticleLocalServiceImpl
 			friendlyURLMap.put(
 				LocaleUtil.toLanguageId(locale),
 				JournalHelperUtil.buildURLPattern(
-					article, false, themeDisplay, locale
-				));
+					article, false, themeDisplay, locale,
+					FriendlyURLResolverConstants.
+						URL_SEPARATOR_JOURNAL_ARTICLE));
 		}
 
 		return friendlyURLMap;
