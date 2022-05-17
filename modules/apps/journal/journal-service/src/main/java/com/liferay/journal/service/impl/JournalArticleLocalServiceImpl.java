@@ -8945,9 +8945,9 @@ public class JournalArticleLocalServiceImpl
 			friendlyURLMap.put(
 				LocaleUtil.toLanguageId(locale),
 				JournalHelperUtil.buildURLPattern(
-					article, false, themeDisplay, locale,
-					FriendlyURLResolverConstants.
-						URL_SEPARATOR_JOURNAL_ARTICLE));
+					article, locale, false,
+					FriendlyURLResolverConstants.URL_SEPARATOR_JOURNAL_ARTICLE,
+					themeDisplay));
 		}
 
 		return friendlyURLMap;
