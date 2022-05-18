@@ -90,8 +90,8 @@ export default function Topper({children, item, ...props}) {
 	if (canUpdatePageStructure || canUpdateItemConfiguration) {
 		return (
 			<MemoizedTopperContent
-				isActive={isActive(item.itemId)}
-				isHovered={isHovered(item.itemId)}
+				isActive={isActive}
+				isHovered={isHovered}
 				item={item}
 				{...props}
 			>
