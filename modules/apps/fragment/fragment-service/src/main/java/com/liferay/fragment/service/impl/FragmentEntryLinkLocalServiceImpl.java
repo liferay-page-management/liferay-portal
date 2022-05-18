@@ -25,6 +25,11 @@ import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
 import com.liferay.fragment.service.base.FragmentEntryLinkLocalServiceBaseImpl;
 import com.liferay.fragment.service.persistence.FragmentCollectionPersistence;
 import com.liferay.fragment.service.persistence.FragmentEntryPersistence;
+import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
+import com.liferay.layout.util.structure.DeletedLayoutStructureItem;
+import com.liferay.layout.util.structure.LayoutStructure;
+import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -53,17 +58,23 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -542,6 +553,8 @@ public class FragmentEntryLinkLocalServiceImpl
 
 		fragmentEntryLink.setHtml(fragmentEntry.getHtml());
 
+		_updateLayoutPageTemplateStructure(fragmentEntryLink);
+
 		// LPS-132154 Set configuration before processing the HTML
 
 		fragmentEntryLink.setConfiguration(fragmentEntry.getConfiguration());
@@ -567,6 +580,77 @@ public class FragmentEntryLinkLocalServiceImpl
 			fragmentEntryLink);
 
 		_updateFragmentEntryLinkLayout(fragmentEntryLink);
+	}
+
+	private void _addOrRestoreDropZoneLayoutStructureItem(
+		LayoutStructure layoutStructure,
+		LayoutStructureItem parentLayoutStructureItem) {
+
+		LayoutStructureItem existingLayoutStructureItem = null;
+
+		List<DeletedLayoutStructureItem> deletedLayoutStructureItems =
+			layoutStructure.getDeletedLayoutStructureItems();
+
+		for (DeletedLayoutStructureItem deletedLayoutStructureItem :
+				deletedLayoutStructureItems) {
+
+			LayoutStructureItem layoutStructureItem =
+				layoutStructure.getLayoutStructureItem(
+					deletedLayoutStructureItem.getItemId());
+
+			if (Objects.equals(
+					layoutStructureItem.getParentItemId(),
+					parentLayoutStructureItem.getItemId())) {
+
+				existingLayoutStructureItem = layoutStructureItem;
+
+				break;
+			}
+		}
+
+		if (existingLayoutStructureItem != null) {
+			layoutStructure.unmarkLayoutStructureItemForDeletion(
+				existingLayoutStructureItem.getItemId());
+		}
+		else {
+			layoutStructure.addFragmentDropZoneLayoutStructureItem(
+				parentLayoutStructureItem.getItemId(), -1);
+		}
+	}
+
+	private Document _getDocument(String html) {
+		Document document = Jsoup.parseBodyFragment(html);
+
+		Document.OutputSettings outputSettings = new Document.OutputSettings();
+
+		outputSettings.prettyPrint(false);
+
+		document.outputSettings(outputSettings);
+
+		return document;
+	}
+
+	private LayoutStructure _getLayoutStructure(
+		FragmentEntryLink fragmentEntryLink) {
+
+		LayoutPageTemplateStructure layoutPageTemplateStructure =
+			_layoutPageTemplateStructureLocalService.
+				fetchLayoutPageTemplateStructure(
+					fragmentEntryLink.getGroupId(),
+					fragmentEntryLink.getPlid());
+
+		if (layoutPageTemplateStructure == null) {
+			return null;
+		}
+
+		String data = layoutPageTemplateStructure.getData(
+			fragmentEntryLink.getSegmentsExperienceId());
+
+		if (Validator.isNull(data)) {
+			return null;
+		}
+
+		return LayoutStructure.of(data);
 	}
 
 	private String _getProcessedHTML(
@@ -719,6 +803,73 @@ public class FragmentEntryLinkLocalServiceImpl
 		_layoutLocalService.updateLayout(layout);
 	}
 
+	private void _updateLayoutPageTemplateStructure(
+			FragmentEntryLink fragmentEntryLink)
+		throws PortalException {
+
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		String processedHTML =
+			_fragmentEntryProcessorRegistry.processFragmentEntryLinkHTML(
+				fragmentEntryLink,
+				new DefaultFragmentEntryProcessorContext(
+					serviceContext.getRequest(), serviceContext.getResponse(),
+					FragmentEntryLinkConstants.EDIT,
+					serviceContext.getLocale()));
+
+		Document document = _getDocument(processedHTML);
+
+		Elements elements = document.select("lfr-drop-zone");
+
+		if (elements.size() <= 0) {
+			return;
+		}
+
+		LayoutStructure layoutStructure = _getLayoutStructure(
+			fragmentEntryLink);
+
+		if (layoutStructure == null) {
+			return;
+		}
+
+		LayoutStructureItem parentLayoutStructureItem =
+			layoutStructure.getLayoutStructureItemByFragmentEntryLinkId(
+				fragmentEntryLink.getFragmentEntryLinkId());
+
+		if (parentLayoutStructureItem == null) {
+			return;
+		}
+
+		List<String> childrenItemIds =
+			parentLayoutStructureItem.getChildrenItemIds();
+
+		if (childrenItemIds.size() == elements.size()) {
+			return;
+		}
+
+		if (childrenItemIds.size() > elements.size()) {
+			List<String> childrenItemIdsToRemove = childrenItemIds.subList(
+				elements.size(), childrenItemIds.size());
+
+			childrenItemIdsToRemove.forEach(
+				itemId -> layoutStructure.markLayoutStructureItemForDeletion(
+					itemId, Collections.emptyList()));
+		}
+		else {
+			for (int i = childrenItemIds.size(); i < elements.size(); i++) {
+				_addOrRestoreDropZoneLayoutStructureItem(
+					layoutStructure, parentLayoutStructureItem);
+			}
+		}
+
+		_layoutPageTemplateStructureLocalService.
+			updateLayoutPageTemplateStructureData(
+				fragmentEntryLink.getGroupId(), fragmentEntryLink.getPlid(),
+				fragmentEntryLink.getSegmentsExperienceId(),
+				layoutStructure.toString());
+	}
+
 	private static final String[] _FRAGMENT_ENTRY_PROCESSOR_KEYS = {
 		"com.liferay.fragment.entry.processor.editable." +
 			"EditableFragmentEntryProcessor"
@@ -750,6 +901,10 @@ public class FragmentEntryLinkLocalServiceImpl
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
+
+	@ServiceReference(type = LayoutPageTemplateStructureLocalService.class)
+	private LayoutPageTemplateStructureLocalService
+		_layoutPageTemplateStructureLocalService;
 
 	@Reference
 	private Portal _portal;
