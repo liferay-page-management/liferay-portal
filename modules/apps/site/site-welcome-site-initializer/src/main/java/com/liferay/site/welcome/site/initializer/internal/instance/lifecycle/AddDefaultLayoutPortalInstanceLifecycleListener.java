@@ -14,6 +14,7 @@
 
 package com.liferay.site.welcome.site.initializer.internal.instance.lifecycle;
 
+import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.fragment.contributor.FragmentCollectionContributorRegistration;
 import com.liferay.portal.instance.lifecycle.BasePortalInstanceLifecycleListener;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
@@ -27,6 +28,7 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
+import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -102,6 +104,11 @@ public class AddDefaultLayoutPortalInstanceLifecycleListener
 	protected void setModuleServiceLifecycle(
 		ModuleServiceLifecycle moduleServiceLifecycle) {
 	}
+
+	@Reference(
+		target = "(indexer.class.name=com.liferay.document.library.kernel.model.DLFileEntry)"
+	)
+	protected Indexer<DLFileEntry> indexer;
 
 	private User _getUser(long companyId) throws PortalException {
 		Role role = _roleLocalService.fetchRole(
