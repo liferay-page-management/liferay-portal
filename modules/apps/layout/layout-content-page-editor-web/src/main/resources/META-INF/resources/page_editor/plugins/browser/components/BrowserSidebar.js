@@ -23,6 +23,7 @@ import {
 } from '../../../app/contexts/ControlsContext';
 import {useId} from '../../../app/utils/useId';
 import SidebarPanelHeader from '../../../common/components/SidebarPanelHeader';
+import {ActiveConfigurationPanelContextProvider} from '../contexts/ActiveConfigurationPanelContext';
 import ContentsSidebar from './contents/components/ContentsSidebar';
 import PageStructureSidebar from './page-structure/components/PageStructureSidebar';
 
@@ -81,21 +82,23 @@ export default function BrowserSidebar({title}) {
 				))}
 			</ClayTabs>
 
-			<ClayTabs.Content
-				activeIndex={activeTabId}
-				className="page-editor__sidebar__browser__tab-content"
-				fade
-			>
-				{TABS.map((tab, index) => (
-					<ClayTabs.TabPane
-						aria-labelledby={getTabId(index)}
-						id={getTabPanelId(index)}
-						key={index}
-					>
-						{activeTabId === index ? <tab.Component /> : null}
-					</ClayTabs.TabPane>
-				))}
-			</ClayTabs.Content>
+			<ActiveConfigurationPanelContextProvider>
+				<ClayTabs.Content
+					activeIndex={activeTabId}
+					className="page-editor__sidebar__browser__tab-content"
+					fade
+				>
+					{TABS.map((tab, index) => (
+						<ClayTabs.TabPane
+							aria-labelledby={getTabId(index)}
+							id={getTabPanelId(index)}
+							key={index}
+						>
+							{activeTabId === index ? <tab.Component /> : null}
+						</ClayTabs.TabPane>
+					))}
+				</ClayTabs.Content>
+			</ActiveConfigurationPanelContextProvider>
 		</div>
 	);
 }
