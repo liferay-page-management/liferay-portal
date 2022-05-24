@@ -15,7 +15,7 @@
 import ClayAlert from '@clayui/alert';
 import ClayTabs from '@clayui/tabs';
 import PropTypes from 'prop-types';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo} from 'react';
 
 import {useCollectionActiveItemContext} from '../../../../../app/contexts/CollectionActiveItemContext';
 import {CollectionItemContext} from '../../../../../app/contexts/CollectionItemContext';
@@ -30,6 +30,10 @@ import {
 import selectCanViewItemConfiguration from '../../../../../app/selectors/selectCanViewItemConfiguration';
 import {deepEqual} from '../../../../../app/utils/checkDeepEqual';
 import {useId} from '../../../../../app/utils/useId';
+import {
+	useActivePanel,
+	useSetActivePanel,
+} from '../../../contexts/ActiveConfigurationPanelContext';
 import {PANELS, selectPanels} from '../selectors/selectPanels';
 import PageStructureSidebarSection from './PageStructureSidebarSection';
 
@@ -40,19 +44,17 @@ export default function ItemConfiguration() {
 		selectCanViewItemConfiguration
 	);
 
-	const [activePanel, setActivePanel] = useState({});
-
 	return canViewItemConfiguration ? (
 		<CollectionItemContext.Provider value={collectionContext}>
-			<ItemConfigurationContent
-				activePanel={activePanel}
-				setActivePanel={setActivePanel}
-			/>
+			<ItemConfigurationContent />
 		</CollectionItemContext.Provider>
 	) : null;
 }
 
-function ItemConfigurationContent({activePanel, setActivePanel}) {
+function ItemConfigurationContent() {
+	const activePanel = useActivePanel();
+	const setActivePanel = useSetActivePanel();
+
 	const activeItemId = useActiveItemId();
 	const activeItemType = useActiveItemType();
 
