@@ -14,17 +14,26 @@
 
 package com.liferay.layout.admin.web.internal.display.context;
 
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
+import com.liferay.item.selector.ItemSelector;
+import com.liferay.item.selector.criteria.FileEntryItemSelectorReturnType;
+import com.liferay.item.selector.criteria.file.criterion.FileItemSelectorCriterion;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
@@ -39,6 +48,8 @@ import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
 
 import java.util.Map;
 import java.util.Objects;
+
+import javax.portlet.PortletURL;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -58,6 +69,12 @@ public class LayoutLookAndFeelDisplayContext {
 
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
+	}
+
+	public Map<String, Object> getChangeFaviconButtonAdditionalProps() {
+		return HashMapBuilder.<String, Object>put(
+			"url", _getItemSelectorURL()
+		).build();
 	}
 
 	public Map<String, Object> getChangeMasterLayoutButtonAdditionalProps() {
@@ -126,6 +143,42 @@ public class LayoutLookAndFeelDisplayContext {
 		).build();
 	}
 
+	public String getFaviconFileEntryTitle() {
+		Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();
+
+		if (selLayout.getFaviconFileEntryId() > 0) {
+			FileEntry fileEntry;
+
+			try {
+				fileEntry = DLAppLocalServiceUtil.getFileEntry(
+					selLayout.getFaviconFileEntryId());
+
+				return fileEntry.getTitle();
+			}
+			catch (PortalException portalException) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(portalException);
+				}
+			}
+		}
+
+		if (hasEditableMasterLayout() &&
+			(selLayout.getMasterLayoutPlid() > 0)) {
+
+			Layout masterLayout = LayoutLocalServiceUtil.fetchLayout(
+				selLayout.getMasterLayoutPlid());
+
+			if ((masterLayout != null) &&
+				(masterLayout.getFaviconFileEntryId() > 0)) {
+
+				return LanguageUtil.get(
+					_httpServletRequest, "favicon-from-master");
+			}
+		}
+
+		return LanguageUtil.get(_httpServletRequest, "favicon-from-theme");
+	}
+
 	public String getMasterLayoutName() {
 		if (_masterLayoutName != null) {
 			return _masterLayoutName;
@@ -148,6 +201,10 @@ public class LayoutLookAndFeelDisplayContext {
 		_masterLayoutName = masterLayoutName;
 
 		return _masterLayoutName;
+	}
+
+	public String getSelectFaviconEventName() {
+		return _liferayPortletResponse.getNamespace() + "selectImage";
 	}
 
 	public String getStyleBookEntryName() {
@@ -252,6 +309,26 @@ public class LayoutLookAndFeelDisplayContext {
 
 		return _hasStyleBooks;
 	}
+
+	private String _getItemSelectorURL() {
+		ItemSelector itemSelector =
+			_layoutsAdminDisplayContext.getItemSelector();
+
+		FileItemSelectorCriterion itemSelectorCriterion =
+			new FileItemSelectorCriterion();
+
+		itemSelectorCriterion.setDesiredItemSelectorReturnTypes(
+			new FileEntryItemSelectorReturnType());
+
+		PortletURL itemSelectorURL = itemSelector.getItemSelectorURL(
+			RequestBackedPortletURLFactoryUtil.create(_httpServletRequest),
+			getSelectFaviconEventName(), itemSelectorCriterion);
+
+		return itemSelectorURL.toString();
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		LayoutLookAndFeelDisplayContext.class);
 
 	private Boolean _hasEditableMasterLayout;
 	private Boolean _hasMasterLayout;

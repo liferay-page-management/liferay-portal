@@ -568,6 +568,10 @@ public class LayoutsAdminDisplayContext {
 			group.getGroupId(), isPrivateLayout());
 	}
 
+	public ItemSelector getItemSelector() {
+		return _itemSelector;
+	}
+
 	public String getKeywords() {
 		if (_keywords != null) {
 			return _keywords;
