@@ -16,13 +16,26 @@ import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-export default function Undo({onRedo = () => {}, onUndo = () => {}}) {
+import {
+	useOnRedo,
+	useOnUndo,
+	useRedoHistory,
+	useUndoHistory,
+} from './StyleBookContext';
+
+export default function Undo() {
+	const onUndo = useOnUndo();
+	const onRedo = useOnRedo();
+	const redoHistory = useRedoHistory();
+	const undoHistory = useUndoHistory();
+
 	return (
 		<>
 			<ClayButton.Group className="flex-nowrap">
 				<ClayButtonWithIcon
 					aria-label={Liferay.Language.get('undo')}
 					className="btn-monospaced"
+					disabled={!undoHistory || !undoHistory.length}
 					displayType="secondary"
 					onClick={onUndo}
 					small
@@ -33,6 +46,7 @@ export default function Undo({onRedo = () => {}, onUndo = () => {}}) {
 				<ClayButtonWithIcon
 					aria-label={Liferay.Language.get('redo')}
 					className="btn-monospaced"
+					disabled={!redoHistory || !redoHistory.length}
 					displayType="secondary"
 					onClick={onRedo}
 					small

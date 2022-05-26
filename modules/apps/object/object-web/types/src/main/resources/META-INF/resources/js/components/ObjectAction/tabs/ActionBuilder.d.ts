@@ -14,4 +14,20 @@
 
 /// <reference types="react" />
 
-export declare function DefaultFilterScreen(): JSX.Element;
+import {FormError} from '../../../hooks/useForm';
+import {CustomItem} from '../../Form/CustomSelect/CustomSelect';
+export default function ActionBuilder({
+	errors,
+	objectActionExecutors,
+	objectActionTriggers,
+	setValues,
+	values,
+}: IProps): JSX.Element;
+interface IProps {
+	errors: FormError<ObjectAction & ObjectActionParameters>;
+	objectActionExecutors: CustomItem[];
+	objectActionTriggers: CustomItem[];
+	setValues: (values: Partial<ObjectAction>) => void;
+	values: Partial<ObjectAction>;
+}
+export {};

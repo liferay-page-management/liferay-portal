@@ -290,7 +290,10 @@
 		</app-server-properties-update>
 
 		<if>
-			<equals arg1="${app.server.weblogic.version}" arg2="12.2.1" />
+			<or>
+				<equals arg1="${app.server.weblogic.version}" arg2="12.2.1" />
+				<equals arg1="${app.server.weblogic.version}" arg2="14.1.1" />
+			</or>
 			<then>
 				<antcall target="unzip-weblogic-custom" />
 			</then>
@@ -332,6 +335,71 @@
 		<ant inheritAll="false" target="deploy" />
 
 		<app-server-properties-reset />
+	</target>
+
+	<target name="create-weblogic-domain">
+		<property name="app.server.weblogic.template.dir" value="${app.server.weblogic.wlserver.dir}/common/templates/wls" />
+
+		<echo file="${app.server.weblogic.dir}/remove-domain.sh">
+#/bin/sh
+
+if [ -d "${app.server.weblogic.instance.dir}" ]; then
+	rm -r ${app.server.weblogic.instance.dir}
+fi
+		</echo>
+
+		<exec executable="/bin/bash">
+			<arg value="${app.server.weblogic.dir}/remove-domain.sh" />
+		</exec>
+
+		<echo file="${app.server.weblogic.dir}/create-weblogic-domain.py"><![CDATA[
+readTemplate('${app.server.weblogic.template.dir}/wls.jar')
+
+set('Name', '${app.server.weblogic.instance.name}')
+
+cd('/Security/%s/User/%s' % ('${app.server.weblogic.instance.name}', 'weblogic'))
+
+set('UserPassword', 'testing123')
+
+cd('/Servers/AdminServer')
+
+set('ListenAddress', '')
+set('ListenPort', 8080)
+
+writeDomain('${app.server.weblogic.instance.dir}')
+
+closeTemplate()
+
+		]]></echo>
+
+		<var name="source.command" value="source" />
+
+		<echo file="${app.server.weblogic.dir}/create-weblogic-domain.sh">
+			<![CDATA[
+				#!/bin/sh
+
+				export MW_HOME="${app.server.weblogic.dir}"
+				export USER_MEM_ARGS="${app.server.weblogic.jvm.mem}"
+				export WL_HOME="${app.server.weblogic.wlserver.dir}"
+
+				${source.command} ${MW_HOME}/oracle/oracle_common/common/bin/commEnv.sh
+
+				export CLASSPATH=${FMWCONFIG_CLASSPATH}
+
+				${env.JAVA_HOME}/bin/java weblogic.WLST create-weblogic-domain.py
+
+				echo finished executing create-weblogic-domain.py..
+			]]>
+		</echo>
+
+		<chmod
+			file="${app.server.weblogic.dir}/create-weblogic-domain.sh"
+			perm="744"
+		/>
+
+		<exec dir="${app.server.weblogic.dir}" executable="sh">
+			<arg value="create-weblogic-domain.sh" />
+		</exec>
 	</target>
 
 	<target name="dist">
@@ -448,6 +516,93 @@ release was successful.</echo>
 		/>
 
 		<echo file="tools/servers/tomcat/bin/setenv.bat">set "CATALINA_OPTS=%CATALINA_OPTS% ${app.server.tomcat.jvm.args} ${app.server.tomcat.jvm.mem}"</echo>
+	</target>
+
+	<target name="install-weblogic14-setup-files">
+		<echo file="${app.server.weblogic.dir}/oraInst.loc">
+inventory_loc=${app.server.weblogic.dir}/oraInventory
+inst_group=appserver
+		</echo>
+
+		<echo file="${app.server.weblogic.dir}/create_swap.sh">
+			<![CDATA[
+#!/bin/sh
+
+swapsize=1024
+
+grep -q "swapfile" /etc/fstab
+
+if [ $? -ne 0 ]
+then
+	echo "Adding swapfile."
+
+	fallocate -l ${swapsize}M /swapfile
+
+	chmod 600 /swapfile
+
+	mkswap /swapfile
+
+	swapon /swapfile
+
+	echo "/swapfile none swap defaults 0 0" >> /etc/fstab
+fi
+
+cat /proc/swaps
+cat /proc/meminfo | grep Swap
+]]>
+		</echo>
+
+		<echo file="${app.server.weblogic.dir}/create_user.sh">
+			<![CDATA[
+#!/bin/bash
+
+if id appserver &>/dev/null
+then
+	echo ""
+else
+	echo "Adding user appserver."
+
+	sudo useradd appserver
+
+	echo -e "liferay123\nliferay123" | sudo passwd appserver
+fi
+			]]>
+		</echo>
+
+		<echo file="${app.server.weblogic.dir}/install_weblogic.sh">
+			<![CDATA[
+#!/bin/bash
+
+export JAVA_HOME=/opt/java/jdk8-x64
+export PATH=$JAVA_HOME/bin:$PATH
+
+java -jar ${app.server.weblogic.dir}/${app.server.weblogic.jar.name} -ignoreSysPrereqs -silent ORACLE_BASE=${app.server.weblogic.dir} ORACLE_HOME=${app.server.weblogic.dir}/oracle JAVA_HOME=/opt/java/jdk8-x64 INVENTORY_LOCATION=${app.server.weblogic.dir}/oraInventory INSTALL_TYPE='Complete with Examples' -invPtrLoc ${app.server.weblogic.dir}/oraInst.loc
+			]]>
+		</echo>
+
+		<exec executable="/bin/bash">
+			<arg value="${app.server.weblogic.dir}/create_swap.sh" />
+		</exec>
+
+		<exec executable="/bin/bash">
+			<arg value="${app.server.weblogic.dir}/create_user.sh" />
+		</exec>
+
+		<execute dir="${app.server.weblogic.dir}">
+			<![CDATA[
+				rm -fr ${app.server.weblogic.dir}/oraInventory
+
+				mkdir ${app.server.weblogic.dir}/oraInventory
+
+				rm -fr ${app.server.weblogic.dir}/oracle
+
+				mkdir ${app.server.weblogic.dir}/oracle
+
+				sudo chown -R appserver: ${app.server.weblogic.dir}
+
+				su appserver -c "/bin/sh install_weblogic.sh"
+			]]>
+		</execute>
 	</target>
 
 	<target name="prepare-generated-files">
@@ -1395,41 +1550,11 @@ closeTemplate()
 	</target>
 
 	<target name="unzip-weblogic-custom">
-		<if>
-			<not>
-				<available file="${app.server.parent.dir}/${app.server.weblogic.custom.zip.name}" />
-			</not>
-			<then>
-				<trycatch>
-					<try>
-						<mkdir dir="${app.server.parent.dir}" />
+		<antcall target="unzip-weblogic-custom-${app.server.weblogic.version.build}" />
+	</target>
 
-						<mirrors-get
-							dest="${app.server.parent.dir}/${app.server.weblogic.custom.zip.name}"
-							src="http://files.liferay.com/private/apps/oracle/weblogicas/12/${app.server.weblogic.custom.zip.name}"
-							verbose="true"
-						/>
-					</try>
-					<catch>
-						<fail>
-.
-
-Please download the Weblogic custom zip file from
-http://mirrors/files.liferay.com/private/apps/oracle/weblogicas/12 and
-place it here: ${app.server.parent.dir}/${app.server.weblogic.custom.zip.name}. Then rerun
-this task.
-						</fail>
-					</catch>
-				</trycatch>
-			</then>
-		</if>
-
-		<delete dir="${app.server.weblogic.dir}" />
-
-		<unzip
-			dest="${app.server.weblogic.dir}"
-			src="${app.server.parent.dir}/${app.server.weblogic.custom.zip.name}"
-		/>
+	<target name="unzip-weblogic-custom-12213">
+		<antcall target="unzip-weblogic-zip-files" />
 
 		<if>
 			<os family="unix" />
@@ -1532,6 +1657,129 @@ this task.
 		</if>
 
 		<set-weblogic-log-levels />
+	</target>
+
+	<target name="unzip-weblogic-custom-14110">
+		<antcall target="unzip-weblogic-zip-files" />
+
+		<antcall target="install-weblogic14-setup-files" />
+
+		<antcall target="create-weblogic-domain" />
+
+		<execute dir="${app.server.weblogic.instance.dir}/nodemanager">
+			sed -i "s;SecureListener=.*;SecureListener=false;g" nodemanager.properties
+
+			sed -i "s;NativeVersionManager=.*;NativeVersionManager=false;g" nodemanager.properties
+		</execute>
+
+		<replace
+			file="${app.server.weblogic.instance.dir}/startWebLogic.sh"
+		>
+			<replacetoken><![CDATA[# Any changes to this script may be lost when adding extensions to this configuration.]]></replacetoken>
+			<replacevalue expandProperties="true">
+				<![CDATA[
+					# Any changes to this script may be lost when adding extensions to this configuration.
+					export DERBY_FLAG="false"
+					export JAVA_OPTIONS="${JAVA_OPTIONS} ${app.server.weblogic.jvm.args} -da:org.apache.lucene... -da:org.aspectj... "
+					export MW_HOME="${app.server.weblogic.dir}"
+					export USER_MEM_ARGS="${app.server.weblogic.jvm.mem}"
+				]]>
+			</replacevalue>
+		</replace>
+
+		<replace
+			file="${app.server.weblogic.instance.dir}/startWebLogic.sh"
+		>
+			<replacefilter
+				token="$${app.server.weblogic.dir}"
+				value="${app.server.weblogic.dir}"
+			/>
+		</replace>
+
+		<copy
+			file="${app.server.weblogic.instance.dir}/startWebLogic.sh"
+			tofile="${app.server.weblogic.instance.dir}/stopWebLogic.sh"
+		/>
+
+		<replace
+			file="${app.server.weblogic.instance.dir}/stopWebLogic.sh"
+		>
+			<replacefilter
+				token="startWebLogic"
+				value="stopWebLogic"
+			/>
+		</replace>
+
+		<chmod
+			perm="a+x"
+		>
+			<fileset
+				dir="${app.server.weblogic.bin.dir}"
+			>
+				<include name="**/*.sh" />
+			</fileset>
+		</chmod>
+
+		<replace
+			file="${app.server.weblogic.instance.dir}/bin/setDomainEnv.sh"
+		>
+			<replacetoken><![CDATA[JAVA_PROPERTIES="${JAVA_PROPERTIES} ${CLUSTER_PROPERTIES}"]]></replacetoken>
+			<replacevalue><![CDATA[JAVA_PROPERTIES="-Dfile.encoding=utf8 ${JAVA_PROPERTIES} ${CLUSTER_PROPERTIES}"]]></replacevalue>
+		</replace>
+
+		<chmod
+			dir="${app.server.weblogic.instance.dir}"
+			includes="**/*.sh"
+			perm="744"
+		/>
+
+		<set-weblogic-log-levels />
+	</target>
+
+	<target name="unzip-weblogic-zip-files">
+		<if>
+			<equals arg1="${app.server.weblogic.version.build}" arg2="12213" />
+			<then>
+				<property name="app.server.zip" value="${app.server.weblogic.custom.zip.name}" />
+			</then>
+			<else>
+				<property name="app.server.zip" value="${app.server.weblogic.zip.name}" />
+			</else>
+		</if>
+
+		<if>
+			<not>
+				<available file="${app.server.parent.dir}/${app.server.weblogic.custom.zip.name}" />
+			</not>
+			<then>
+				<trycatch>
+					<try>
+						<mkdir dir="${app.server.parent.dir}" />
+
+						<mirrors-get
+							dest="${app.server.parent.dir}/${app.server.weblogic.custom.zip.name}"
+							src="http://files.liferay.com/private/apps/oracle/weblogicas/${app.server.weblogic.version.number}/${app.server.zip}"
+							verbose="true"
+						/>
+					</try>
+					<catch>
+						<fail>
+Please download the Weblogic custom zip file from
+http://mirrors/files.liferay.com/private/apps/oracle/weblogicas/${app.server.weblogic.version.number} and
+place it here: ${app.server.parent.dir}/${app.server.weblogic.custom.zip.name}. Then rerun
+this task.
+						</fail>
+					</catch>
+				</trycatch>
+			</then>
+		</if>
+
+		<delete dir="${app.server.weblogic.dir}" />
+
+		<unzip
+			dest="${app.server.weblogic.dir}"
+			src="${app.server.parent.dir}/${app.server.weblogic.custom.zip.name}"
+		/>
 	</target>
 
 	<target name="unzip-websphere">

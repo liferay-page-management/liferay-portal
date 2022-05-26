@@ -14,18 +14,17 @@
 
 /// <reference types="react" />
 
-export declare function ModalAddDefaultFilterColumn({
-	editingFilter,
-	editingObjectFieldName,
-	header,
-	observer,
-	onClose,
+import {CustomItem} from '../Form/CustomSelect/CustomSelect';
+export default function EditObjectAction({
+	objectAction: {id, ...values},
+	objectActionExecutors,
+	objectActionTriggers,
+	readOnly,
 }: IProps): JSX.Element;
 interface IProps {
-	editingFilter: boolean;
-	editingObjectFieldName: string;
-	header: string;
-	observer: any;
-	onClose: () => void;
+	objectAction: ObjectAction;
+	objectActionExecutors: CustomItem[];
+	objectActionTriggers: CustomItem[];
+	readOnly?: boolean;
 }
 export {};

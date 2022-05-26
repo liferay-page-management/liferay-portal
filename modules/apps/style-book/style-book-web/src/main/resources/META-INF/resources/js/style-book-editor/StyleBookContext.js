@@ -16,11 +16,14 @@ import {openToast} from 'frontend-js-web';
 import React, {useCallback, useContext, useReducer} from 'react';
 
 import {
+	ADD_REDO_ACTION,
+	ADD_UNDO_ACTION,
 	LOADING,
 	SET_DRAFT_STATUS,
 	SET_PREVIEW_LAYOUT,
 	SET_PREVIEW_LAYOUT_TYPE,
 	SET_TOKEN_VALUE,
+	UPDATE_UNDO_REDO_HISTORY,
 } from './constants/actionTypes';
 import {DRAFT_STATUS} from './constants/draftStatusConstants';
 import reducer from './reducer';
@@ -33,6 +36,8 @@ export const StyleBookStoreContext = React.createContext({
 	loading: true,
 	previewLayout: {},
 	previewLayoutType: null,
+	redoHistory: [],
+	undoHistory: [],
 });
 
 export function StyleBookContextProvider({children, initialState}) {
@@ -71,39 +76,69 @@ export function usePreviewLayoutType() {
 	return useContext(StyleBookStoreContext).previewLayoutType;
 }
 
+export function useRedoHistory() {
+	return useContext(StyleBookStoreContext).redoHistory;
+}
+
+export function useUndoHistory() {
+	return useContext(StyleBookStoreContext).undoHistory;
+}
+
+function internalSaveTokenValue({dispatch, frontendTokensValues, name, value}) {
+	dispatch({
+		type: SET_DRAFT_STATUS,
+		value: DRAFT_STATUS.saving,
+	});
+
+	return saveDraft({...frontendTokensValues, [name]: value})
+		.then(() => {
+			dispatch({
+				type: SET_DRAFT_STATUS,
+				value: DRAFT_STATUS.draftSaved,
+			});
+
+			dispatch({
+				name,
+				type: SET_TOKEN_VALUE,
+				value,
+			});
+		})
+		.catch((error) => {
+			if (process.env.NODE_ENV === 'development') {
+				console.error(error);
+			}
+
+			dispatch({
+				type: SET_DRAFT_STATUS,
+				value: DRAFT_STATUS.notSaved,
+			});
+
+			openToast({
+				message: error.message,
+				type: 'danger',
+			});
+		});
+}
+
 export function useSaveTokenValue() {
 	const dispatch = useDispatch();
 	const frontendTokensValues = useFrontendTokensValues();
 
 	return (name, value) => {
-		dispatch({
+		const previousValue = frontendTokensValues[name];
+
+		internalSaveTokenValue({
+			dispatch,
+			frontendTokensValues,
 			name,
-			type: SET_TOKEN_VALUE,
 			value,
-		});
-
-		saveDraft({...frontendTokensValues, [name]: value})
-			.then(() => {
-				dispatch({
-					type: SET_DRAFT_STATUS,
-					value: DRAFT_STATUS.draftSaved,
-				});
-			})
-			.catch((error) => {
-				if (process.env.NODE_ENV === 'development') {
-					console.error(error);
-				}
-
-				dispatch({
-					type: SET_DRAFT_STATUS,
-					value: DRAFT_STATUS.notSaved,
-				});
-
-				openToast({
-					message: error.message,
-					type: 'danger',
-				});
+		}).then(() => {
+			dispatch({
+				name,
+				type: ADD_UNDO_ACTION,
+				value: previousValue,
 			});
+		});
 	};
 }
 
@@ -127,4 +162,61 @@ export function useSetPreviewLayoutType() {
 
 	return (layoutType) =>
 		dispatch({layoutType, type: SET_PREVIEW_LAYOUT_TYPE});
+}
+
+export function useOnUndo() {
+	const dispatch = useDispatch();
+	const frontendTokensValues = useFrontendTokensValues();
+	const undoHistory = useUndoHistory();
+
+	return () => {
+		const [lastUndo, ...undos] = undoHistory;
+		const previousValue = frontendTokensValues[lastUndo.name];
+
+		internalSaveTokenValue({
+			dispatch,
+			frontendTokensValues,
+			name: lastUndo.name,
+			value: lastUndo.value,
+		}).then(() => {
+			dispatch({
+				type: UPDATE_UNDO_REDO_HISTORY,
+				undoHistory: undos,
+			});
+			dispatch({
+				name: lastUndo.name,
+				type: ADD_REDO_ACTION,
+				value: previousValue,
+			});
+		});
+	};
+}
+
+export function useOnRedo() {
+	const dispatch = useDispatch();
+	const frontendTokensValues = useFrontendTokensValues();
+	const redoHistory = useRedoHistory();
+
+	return () => {
+		const [lastRedo, ...redos] = redoHistory;
+		const previousValue = frontendTokensValues[lastRedo.name];
+
+		internalSaveTokenValue({
+			dispatch,
+			frontendTokensValues,
+			name: lastRedo.name,
+			value: lastRedo.value,
+		}).then(() => {
+			dispatch({
+				redoHistory: redos,
+				type: UPDATE_UNDO_REDO_HISTORY,
+			});
+			dispatch({
+				isRedo: true,
+				name: lastRedo.name,
+				type: ADD_UNDO_ACTION,
+				value: previousValue,
+			});
+		});
+	};
 }

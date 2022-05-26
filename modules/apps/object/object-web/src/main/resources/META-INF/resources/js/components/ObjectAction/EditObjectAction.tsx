@@ -12,28 +12,38 @@
  * details.
  */
 
-/// <reference types="react" />
+import React from 'react';
 
-import 'codemirror/mode/groovy/groovy';
-import {CustomItem} from './Form/CustomSelect/CustomSelect';
-export default function ObjectActionFormBase({
-	objectAction: initialValues,
+import {CustomItem} from '../Form/CustomSelect/CustomSelect';
+import ObjectAction from './index';
+
+export default function EditObjectAction({
+	objectAction: {id, ...values},
 	objectActionExecutors,
 	objectActionTriggers,
 	readOnly,
-	requestParams: {method, url},
-	successMessage,
-}: IProps): JSX.Element;
+}: IProps) {
+	return (
+		<ObjectAction
+			objectAction={values}
+			objectActionExecutors={objectActionExecutors}
+			objectActionTriggers={objectActionTriggers}
+			readOnly={readOnly}
+			requestParams={{
+				method: 'PUT',
+				url: `/o/object-admin/v1.0/object-actions/${id}`,
+			}}
+			successMessage={Liferay.Language.get(
+				'the-object-action-was-updated-successfully'
+			)}
+			title={Liferay.Language.get('action')}
+		/>
+	);
+}
+
 interface IProps {
-	objectAction: Partial<ObjectAction>;
+	objectAction: ObjectAction;
 	objectActionExecutors: CustomItem[];
 	objectActionTriggers: CustomItem[];
 	readOnly?: boolean;
-	requestParams: {
-		method: string;
-		url: string;
-	};
-	successMessage: string;
-	title: string;
 }
-export {};

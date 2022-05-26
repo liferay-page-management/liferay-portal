@@ -12,17 +12,35 @@
  * details.
  */
 
-/// <reference types="react" />
+import React from 'react';
 
-import {CustomItem} from './Form/CustomSelect/CustomSelect';
+import {CustomItem} from '../Form/CustomSelect/CustomSelect';
+import ObjectAction from './index';
+
 export default function AddObjectAction({
 	apiURL,
-	objectActionExecutors,
-	objectActionTriggers,
-}: IProps): JSX.Element;
+	objectActionExecutors = [],
+	objectActionTriggers = [],
+}: IProps) {
+	return (
+		<ObjectAction
+			objectAction={{active: true}}
+			objectActionExecutors={objectActionExecutors}
+			objectActionTriggers={objectActionTriggers}
+			requestParams={{
+				method: 'POST',
+				url: apiURL,
+			}}
+			successMessage={Liferay.Language.get(
+				'the-object-action-was-created-successfully'
+			)}
+			title={Liferay.Language.get('new-action')}
+		/>
+	);
+}
+
 interface IProps {
 	apiURL: string;
 	objectActionExecutors: CustomItem[];
 	objectActionTriggers: CustomItem[];
 }
-export {};

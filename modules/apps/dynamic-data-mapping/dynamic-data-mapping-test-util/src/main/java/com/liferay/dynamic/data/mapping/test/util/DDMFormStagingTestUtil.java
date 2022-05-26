@@ -19,20 +19,17 @@ import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.service.StagingLocalServiceUtil;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.exportimport.kernel.staging.constants.StagingConstants;
-import com.liferay.petra.reflect.ReflectionUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.persistence.GroupUtil;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.util.PropsValues;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
 /**
  * @author Victor Ware
@@ -67,38 +64,42 @@ public class DDMFormStagingTestUtil {
 			Group remoteLiveGroup, Group remoteStagingGroup)
 		throws Exception {
 
-		setPortalProperty(
-			"TUNNELING_SERVLET_SHARED_SECRET",
-			"F0E1D2C3B4A5968778695A4B3C2D1E0F");
+		try (SafeCloseable safeCloseable1 =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"TUNNELING_SERVLET_SHARED_SECRET",
+					"F0E1D2C3B4A5968778695A4B3C2D1E0F");
+			SafeCloseable safeCloseable2 =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"TUNNELING_SERVLET_SHARED_SECRET_HEX", true)) {
 
-		setPortalProperty("TUNNELING_SERVLET_SHARED_SECRET_HEX", true);
+			ServiceContext serviceContext =
+				ServiceContextTestUtil.getServiceContext();
 
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext();
+			serviceContext.setAddGroupPermissions(true);
+			serviceContext.setAddGuestPermissions(true);
+			serviceContext.setScopeGroupId(remoteStagingGroup.getGroupId());
 
-		serviceContext.setAddGroupPermissions(true);
-		serviceContext.setAddGuestPermissions(true);
-		serviceContext.setScopeGroupId(remoteStagingGroup.getGroupId());
+			addStagingAttribute(
+				serviceContext,
+				StagingUtil.getStagedPortletId(
+					DDMPortletKeys.DYNAMIC_DATA_MAPPING_FORM),
+				true);
+			addStagingAttribute(
+				serviceContext, PortletDataHandlerKeys.PORTLET_DATA_ALL, false);
+			addStagingAttribute(
+				serviceContext, PortletDataHandlerKeys.PORTLET_SETUP_ALL,
+				false);
 
-		addStagingAttribute(
-			serviceContext,
-			StagingUtil.getStagedPortletId(
-				DDMPortletKeys.DYNAMIC_DATA_MAPPING_FORM),
-			true);
-		addStagingAttribute(
-			serviceContext, PortletDataHandlerKeys.PORTLET_DATA_ALL, false);
-		addStagingAttribute(
-			serviceContext, PortletDataHandlerKeys.PORTLET_SETUP_ALL, false);
+			UserTestUtil.setUser(TestPropsValues.getUser());
 
-		UserTestUtil.setUser(TestPropsValues.getUser());
+			StagingLocalServiceUtil.enableRemoteStaging(
+				TestPropsValues.getUserId(), remoteStagingGroup, false, false,
+				"localhost", PortalUtil.getPortalServerPort(false),
+				PortalUtil.getPathContext(), false,
+				remoteLiveGroup.getGroupId(), serviceContext);
 
-		StagingLocalServiceUtil.enableRemoteStaging(
-			TestPropsValues.getUserId(), remoteStagingGroup, false, false,
-			"localhost", PortalUtil.getPortalServerPort(false),
-			PortalUtil.getPathContext(), false, remoteLiveGroup.getGroupId(),
-			serviceContext);
-
-		GroupUtil.clearCache();
+			GroupUtil.clearCache();
+		}
 	}
 
 	protected static void addStagingAttribute(
@@ -107,22 +108,6 @@ public class DDMFormStagingTestUtil {
 		serviceContext.setAttribute(
 			StagingConstants.STAGED_PREFIX + key + StringPool.DOUBLE_DASH,
 			String.valueOf(value));
-	}
-
-	protected static void setPortalProperty(String propertyName, Object value)
-		throws Exception {
-
-		Field field = ReflectionUtil.getDeclaredField(
-			PropsValues.class, propertyName);
-
-		field.setAccessible(true);
-
-		Field modifiersField = Field.class.getDeclaredField("modifiers");
-
-		modifiersField.setAccessible(true);
-		modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-
-		field.set(null, value);
 	}
 
 }

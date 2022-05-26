@@ -12,9 +12,27 @@
  * details.
  */
 
-export declare function useChannel(): inputChannelObject;
-interface inputChannelObject {
-	onData: Function;
-	sendData: Function;
-}
-export {};
+import {gql} from '@apollo/client';
+
+export const CreateSuiteCaseBatch = gql`
+	mutation createSuiteCaseBatch($data: InputC_SuiteCase!) {
+		createSuiteCaseBatch(SuiteCase: $data)
+			@rest(
+				bodyKey: "SuiteCase"
+				bodySerializer: "suitecase"
+				method: "POST"
+				path: "suitescaseses/batch"
+				type: "C_SuiteCase"
+			) {
+			id
+		}
+	}
+`;
+
+export const DeleteSuiteCase = gql`
+	mutation deleteSuiteCase($id: Long) {
+		c {
+			deleteSuiteCase(suiteId: $id)
+		}
+	}
+`;

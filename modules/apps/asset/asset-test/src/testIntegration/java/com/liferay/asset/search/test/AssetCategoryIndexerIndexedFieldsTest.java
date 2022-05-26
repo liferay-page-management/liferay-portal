@@ -125,12 +125,14 @@ public class AssetCategoryIndexerIndexedFieldsTest {
 				searchRequestBuilderFactory.builder(
 				).companyId(
 					_group.getCompanyId()
+				).fetchSourceIncludes(
+					new String[] {"*_sortable"}
+				).fields(
+					StringPool.STAR
 				).groupIds(
 					_group.getGroupId()
 				).locale(
 					locale
-				).fields(
-					StringPool.STAR
 				).modelIndexerClasses(
 					AssetCategory.class
 				).queryString(

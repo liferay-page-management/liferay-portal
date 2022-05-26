@@ -13,11 +13,14 @@
  */
 
 import {
+	ADD_REDO_ACTION,
+	ADD_UNDO_ACTION,
 	LOADING,
 	SET_DRAFT_STATUS,
 	SET_PREVIEW_LAYOUT,
 	SET_PREVIEW_LAYOUT_TYPE,
 	SET_TOKEN_VALUE,
+	UPDATE_UNDO_REDO_HISTORY,
 } from './constants/actionTypes';
 
 export default function reducer(state, action) {
@@ -58,6 +61,47 @@ export default function reducer(state, action) {
 					...state.frontendTokensValues,
 					[name]: value,
 				},
+			};
+		}
+
+		case ADD_UNDO_ACTION: {
+			const {isRedo = false, name, value} = action;
+
+			const nextRedoHistory = isRedo ? state.redoHistory : [];
+
+			return {
+				...state,
+				redoHistory: nextRedoHistory,
+				undoHistory: [
+					{
+						name,
+						value,
+					},
+					...state.undoHistory,
+				],
+			};
+		}
+
+		case ADD_REDO_ACTION: {
+			const {name, value} = action;
+
+			return {
+				...state,
+				redoHistory: [
+					{
+						name,
+						value,
+					},
+					...state.redoHistory,
+				],
+			};
+		}
+
+		case UPDATE_UNDO_REDO_HISTORY: {
+			return {
+				...state,
+				redoHistory: action.redoHistory ?? state.redoHistory,
+				undoHistory: action.undoHistory ?? state.undoHistory,
 			};
 		}
 

@@ -1522,7 +1522,8 @@ public abstract class TopLevelBuild extends BaseBuild {
 	protected Element getJobSummaryListElement(
 		boolean success, List<String> jobVariants) {
 
-		Element jobSummaryListElement = Dom4JUtil.getNewElement("ul");
+		Element batchListElement = null;
+		String batchName = null;
 
 		List<Build> builds = new ArrayList<>();
 
@@ -1536,13 +1537,24 @@ public abstract class TopLevelBuild extends BaseBuild {
 			builds.addAll(getDownstreamBuilds(null));
 		}
 
-		Element batchListElement = null;
-		String batchName = null;
+		int count = 0;
+		Element jobSummaryListElement = Dom4JUtil.getNewElement("ul");
 
 		for (Build build : builds) {
 			String result = build.getResult();
 
 			if (result.equals("SUCCESS") == success) {
+				count++;
+
+				if (count > _MAX_JOB_SUMMARY_LIST_SIZE) {
+					Element jobSummaryListItemElement = Dom4JUtil.getNewElement(
+						"li", jobSummaryListElement);
+
+					jobSummaryListItemElement.addText("...");
+
+					break;
+				}
+
 				if (build instanceof DownstreamBuild) {
 					DownstreamBuild downstreamBuild = (DownstreamBuild)build;
 
@@ -2111,6 +2123,8 @@ public abstract class TopLevelBuild extends BaseBuild {
 			//
 			new GenericFailureMessageGenerator()
 		};
+
+	private static final int _MAX_JOB_SUMMARY_LIST_SIZE = 500;
 
 	private static final long _MILLIS_DOWNSTREAM_BUILDS_LISTING_INTERVAL =
 		1000 * 60 * 5;

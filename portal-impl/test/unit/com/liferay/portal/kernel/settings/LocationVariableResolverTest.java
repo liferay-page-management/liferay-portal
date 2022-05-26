@@ -14,23 +14,42 @@
 
 package com.liferay.portal.kernel.settings;
 
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.SetUtil;
+import com.liferay.portal.test.rule.LiferayUnitTestRule;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 /**
  * @author Iván Zaera
  */
 public class LocationVariableResolverTest {
+
+	@ClassRule
+	@Rule
+	public static final LiferayUnitTestRule liferayUnitTestRule =
+		LiferayUnitTestRule.INSTANCE;
 
 	@Before
 	public void setUp() throws Exception {
@@ -99,6 +118,58 @@ public class LocationVariableResolverTest {
 	public void testResolveVariableWithInvalidFile() {
 		_locationVariableResolver.resolve(
 			"${file:bad_file_uri_without_slashes.txt}");
+	}
+
+	@Test
+	public void testResolveVariableWithLanguage() throws Exception {
+		JSONObject expectedValueJSONObject = JSONFactoryUtil.createJSONObject();
+		String invalidKey = "invalid-key";
+		String validKey = "valid-key";
+
+		LanguageUtil languageUtil = new LanguageUtil();
+
+		Language language = Mockito.mock(Language.class);
+
+		Set<Locale> locales = SetUtil.fromArray(
+			LocaleUtil.ENGLISH, LocaleUtil.FRENCH, LocaleUtil.GERMAN);
+
+		Mockito.when(
+			language.getCompanyAvailableLocales(Matchers.anyLong())
+		).thenReturn(
+			locales
+		);
+
+		Mockito.when(
+			language.get((Locale)Matchers.any(), Matchers.eq(invalidKey))
+		).thenReturn(
+			invalidKey
+		);
+
+		for (Locale locale : locales) {
+			String value = validKey + "_" + locale.getLanguage();
+
+			Mockito.when(
+				language.get(Matchers.eq(locale), Matchers.eq(validKey))
+			).thenReturn(
+				value
+			);
+
+			expectedValueJSONObject.put(LocaleUtil.toLanguageId(locale), value);
+		}
+
+		languageUtil.setLanguage(language);
+
+		String json = _locationVariableResolver.resolve(
+			String.format("${language:%s}", validKey));
+
+		Assert.assertTrue(JSONUtil.isValid(json));
+		Assert.assertEquals(expectedValueJSONObject.toString(), json);
+
+		json = _locationVariableResolver.resolve(
+			String.format("${language:%s}", invalidKey));
+
+		Assert.assertTrue(JSONUtil.isValid(json));
+		Assert.assertEquals("{}", json);
 	}
 
 	@Test

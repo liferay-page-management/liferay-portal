@@ -22,14 +22,144 @@ definition {
 		CommerceConfiguration.commerceTearDown();
 	}
 
-	@description = "[Please Update]"
-	@ignore = "Test Stub"
+	@description = "COMMERCE-8146. As a buyer, I want to add two or more or all products to my cart directly from the Shop by Diagram"
 	@priority = "4"
 	test AddMultipleSKUToTheCart {
 		property portal.acceptance = "false";
 
-		// TODO COMMERCE-8146 AddMultipleSKUToTheCart pending implementation
+		task ("Given a Buyer account is created") {
+			CommerceAcceleratorsInitializer.inviteNewMemberWithRoleToAccount(
+				accountName = "Commerce Account",
+				emailAddress = "buyer@liferay.com",
+				role = "Buyer",
+				userFirstName = "Buyer",
+				userLastName = "User",
+				userScreenName = "buyeruser");
 
+			ApplicationsMenu.gotoPortlet(
+				category = "Users",
+				panel = "Control Panel",
+				portlet = "Users and Organizations");
+
+			CommerceLogin.editPasswordCP(
+				newPassword = "ttest",
+				requirePasswordReset = "true",
+				userScreenName = "buyeruser");
+		}
+
+		task ("And a Diagram with the "Type" set to "Default", an image (Commerce_Black.jpg) uploaded as "Diagram File" and 3 mapped pins, then disable ABS Sensor") {
+			CommerceProducts.openProductsAdmin();
+
+			CPCommerceCatalog.newProductsEntry(
+				productCatalog = "Master",
+				productName = "Diagram Test",
+				productType = "Diagram");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Diagram");
+
+			CommerceProductImages.addDiagramImages(
+				imageTitles = "Black",
+				productType = "Diagram");
+
+			CommerceDiagram.addPin(
+				pinNumber = "1",
+				position = "0,150",
+				quantity = "1",
+				selectType = "Linked to a SKU",
+				sku = "MIN93015");
+
+			CommerceDiagram.addPin(
+				pinNumber = "2",
+				position = "150,100",
+				quantity = "1",
+				selectType = "Linked to a SKU",
+				sku = "MIN93016A");
+
+			CommerceDiagram.addPin(
+				pinNumber = "3",
+				position = "0,100",
+				quantity = "1",
+				selectType = "Linked to a SKU",
+				sku = "MIN93017");
+
+			Button.clickPublish();
+
+			Alert.viewSuccessMessage();
+
+			CommerceProducts.openProductsAdmin();
+
+			CommerceNavigator.searchEntry(entryName = "ABS Sensor");
+
+			CommerceNavigator.gotoEntry(entryName = "ABS Sensor");
+
+			CommerceEntry.gotoMenuTab(menuTab = "SKUs");
+
+			CommerceNavigator.gotoEntry(entryName = "MIN93015");
+
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Inventory");
+
+			var n = "1";
+
+			for (var key_inventoryName : list "Italy,United States - Northeast,United States - Southwest") {
+				Type(
+					locator1 = "CommerceEntry#INVENTORY_INPUT",
+					value1 = "0");
+
+				Click(
+					key_indexNumber = "${n}",
+					key_text = "Save",
+					locator1 = "Button#ANY_N");
+
+				var n = ${n} + 1;
+			}
+
+			Refresh();
+
+			CommerceEntry.gotoMenuTab(menuTab = "Configuration");
+
+			Uncheck.uncheckToggleSwitch(
+				key_toggleSwitchLabel = "Allow Back Orders",
+				locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+
+			Button.clickPublish();
+		}
+
+		task ("When a Buyer goes on the Product Details page of the product on Minium") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				newPassword = "test",
+				password = "ttest",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+
+			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "Diagram Test");
+		}
+
+		task ("Then the Buyer will be able to click the checkboxes on the right, below the "Mapped products" section") {
+			Check.checkToggleSwitch(locator1 = "CommerceDiagrams#DIAGRAM_MAPPED_PRODUCTS_CONTENT_SELECT_ALL_CHECKBOX");
+		}
+
+		task ("And the Buyer can add to the cart only the available products") {
+			var n = "2";
+
+			for (var key_productName : list "MIN93016A,MIN93017") {
+				AssertChecked.assertCheckedNotVisible(
+					key_pinNumber = "${n}",
+					locator1 = "CommerceDiagrams#DIAGRAM_MAPPED_PRODUCTS_CONTENT_SPECIFIC_CHECKBOX");
+
+				var n = ${n} + 1;
+			}
+		}
+
+		task ("And verify that the ABS Sensor checkbox is not clickable") {
+			AssertNotChecked.assertNotCheckedNotVisible(
+				key_pinNumber = "1",
+				key_productName = "ABS Sensor",
+				locator1 = "CommerceDiagrams#DIAGRAM_MAPPED_PRODUCTS_CONTENT_SPECIFIC_CHECKBOX_DISABLED");
+		}
 	}
 
 	@description = "[Please Update]"
@@ -280,14 +410,173 @@ definition {
 		}
 	}
 
-	@description = "[Please Update]"
-	@ignore = "Test Stub"
+	@description = "COMMERCE-8147. Verify all pin information mapping with mapped products, and a buyer can navigate from a diagram to a related diagram"
 	@priority = "4"
 	test VerifyAllPinTypeAndMappedProductInformation {
 		property portal.acceptance = "false";
 
-		// TODO COMMERCE-8147 VerifyAllPinTypeAndMappedProductInformation pending implementation
+		task ("Given a Buyer account is created") {
+			CommerceAcceleratorsInitializer.inviteNewMemberWithRoleToAccount(
+				accountName = "Commerce Account",
+				emailAddress = "buyer@liferay.com",
+				role = "Buyer",
+				userFirstName = "Buyer",
+				userLastName = "User",
+				userScreenName = "buyeruser");
 
+			ApplicationsMenu.gotoPortlet(
+				category = "Users",
+				panel = "Control Panel",
+				portlet = "Users and Organizations");
+
+			CommerceLogin.editPasswordCP(
+				newPassword = "ttest",
+				requirePasswordReset = "true",
+				userScreenName = "buyeruser");
+		}
+
+		task ("And two Diagrams with the "Type" set to "Default", two images uploaded as "Diagram File", and three pins for "Diagram 1" and two mapped pins for "Diagram 2"") {
+			for (var num : list "1,2") {
+				CommerceJSONProductsAPI._addCommerceProduct(
+					catalogName = "Master",
+					productName = "Diagram${num}",
+					productType = "diagram");
+			}
+
+			CommerceProducts.openProductsAdmin();
+
+			CommerceNavigator.searchEntry(entryName = "Diagram1");
+
+			CommerceNavigator.gotoEntry(entryName = "Diagram1");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Diagram");
+
+			CommerceProductImages.addDiagramImages(
+				imageTitles = "Black",
+				productType = "Diagram");
+
+			CommerceDiagram.addPin(
+				pinNumber = "1",
+				position = "0,150",
+				quantity = "1",
+				selectType = "Linked to a SKU",
+				sku = "MIN93015");
+
+			CommerceDiagram.addPin(
+				diagram = "Diagram2",
+				pinNumber = "2",
+				position = "150,100",
+				quantity = "1",
+				selectType = "Linked to a Diagram");
+
+			CommerceDiagram.addPin(
+				label = "Test Product",
+				pinNumber = "3",
+				position = "0,100",
+				quantity = "1",
+				selectType = "Not Linked to a Catalog");
+
+			Button.clickPublish();
+
+			Alert.viewSuccessMessage();
+
+			CommerceProducts.openProductsAdmin();
+
+			CommerceNavigator.searchEntry(entryName = "Diagram2");
+
+			CommerceNavigator.gotoEntry(entryName = "Diagram2");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Diagram");
+
+			CommerceProductImages.addDiagramImages(
+				imageTitles = "White",
+				productType = "Diagram");
+
+			CommerceDiagram.addPin(
+				pinNumber = "1",
+				position = "0,150",
+				quantity = "1",
+				selectType = "Linked to a SKU",
+				sku = "MIN93016A");
+
+			CommerceDiagram.addPin(
+				pinNumber = "2",
+				position = "150,100",
+				quantity = "1",
+				selectType = "Linked to a SKU",
+				sku = "MIN93017");
+
+			Button.clickPublish();
+
+			Alert.viewSuccessMessage();
+		}
+
+		task ("When a Buyer goes on the Product Details page of "Diagram 1" on Minium") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				newPassword = "test",
+				password = "ttest",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+
+			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "Diagram1");
+		}
+
+		task ("Then if the Buyer clicks on a pin linked to MIN93015(ABS Sensor), the information that we can find inside are (SKU, Name, Quantity) and into the Mapped Product section (Pin number, SKU, Name)") {
+			CommerceDiagram.viewPinInProduct(pinNumber = "1");
+
+			CommerceDiagram.assertPinToolTipInfoInProduct(
+				productName = "ABS Sensor",
+				selectedType = "Linked to a SKU",
+				sku = "MIN93015");
+
+			for (var productName : list "MIN93015,ABS Sensor") {
+				CommerceDiagram.viewMappedProducts(
+					pinNumber = "1",
+					productName = "${productName}");
+			}
+		}
+
+		task ("And if the Buyer clicks on a pin linked to "Test Product", the information that we can find inside are (Name, Quantity) and into the Mapped Product section (Pin number, Name)") {
+			CommerceDiagram.viewPinInProduct(pinNumber = "3");
+
+			CommerceDiagram.assertPinToolTipInfoInProduct(
+				productName = "Test Product",
+				selectedType = "Not Linked to a Catalog");
+
+			CommerceDiagram.viewMappedProducts(
+				pinNumber = "3",
+				productName = "Test Product");
+		}
+
+		task ("And if the Buyer clicks on the pin linked the "Diagram 2", the information that we can find inside are (Name) and into the Mapped Product section (Pin number, Name)") {
+			CommerceDiagram.viewPinInProduct(pinNumber = "2");
+
+			CommerceDiagram.assertPinToolTipInfoInProduct(
+				productName = "Diagram2",
+				selectedType = "Linked to a Diagram");
+
+			CommerceDiagram.viewMappedProducts(
+				pinNumber = "2",
+				productName = "Diagram2");
+		}
+
+		task ("And if the Buyer clicks the "View" button, the Buyer will be redirected to the "Diagram 2" details page") {
+			Click(locator1 = "CommerceDiagrams#DIAGRAM_PRODUCT_TOOLTIP_LINKED_VIEW");
+
+			AssertElementPresent(
+				key_productName = "Diagram2",
+				locator1 = "CommerceDiagrams#DIAGRAM_PRODUCT_DETAIL_NAME");
+		}
+
+		task ("And the Buyer can see the two pins on the "Diagram 2" detail page after the redirect") {
+			for (var pinNumber : list "1,2") {
+				AssertElementPresent(
+					key_pinNumber = "${pinNumber}",
+					locator1 = "CommerceDiagrams#DIAGRAM_PIN");
+			}
+		}
 	}
 
 	@description = "COMMERCE-8265. Breadcrumb widget works with Product Details widget."
@@ -345,14 +634,162 @@ definition {
 		}
 	}
 
-	@description = "[Please Update]"
-	@ignore = "Test Stub"
+	@description = "COMMERCE-8358. As a buyer, I want to see all the diagrams that a product is compatible with on the product detail page."
 	@priority = "4"
 	test VerifyIfDiagramWithProductPublisherWidgets {
 		property portal.acceptance = "false";
 
-		// TODO COMMERCE-8358 VerifyIfDiagramWithProductPublisherWidgets pending implementation
+		task ("Given a Buyer account is created") {
+			CommerceAcceleratorsInitializer.inviteNewMemberWithRoleToAccount(
+				accountName = "Commerce Account",
+				emailAddress = "buyer@liferay.com",
+				role = "Buyer",
+				userFirstName = "Buyer",
+				userLastName = "User",
+				userScreenName = "buyeruser");
 
+			ApplicationsMenu.gotoPortlet(
+				category = "Users",
+				panel = "Control Panel",
+				portlet = "Users and Organizations");
+
+			CommerceLogin.editPasswordCP(
+				newPassword = "ttest",
+				requirePasswordReset = "true",
+				userScreenName = "buyeruser");
+		}
+
+		task ("And a Diagram with the "Type" set to "Default", a png image uploaded as "Diagram File" and one pin linked to an SKU (MIN93015) within the image") {
+			CommerceProducts.openProductsAdmin();
+
+			CPCommerceCatalog.newProductsEntry(
+				productCatalog = "Master",
+				productName = "Diagram1",
+				productType = "Diagram");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Diagram");
+
+			CommerceProductImages.addDiagramImages(
+				imageTitles = "Black",
+				productType = "Diagram");
+
+			CommerceDiagram.addPin(
+				pinNumber = "1",
+				quantity = "1",
+				selectType = "Linked to a SKU",
+				sku = "MIN93015");
+
+			Button.clickPublish();
+
+			Alert.viewSuccessMessage();
+		}
+
+		task ("When the Buyer goes on Minium catalog page") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				newPassword = "test",
+				password = "ttest",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+		}
+
+		task ("And search and open for the "Abs sensor" product") {
+			CommerceNavigator.searchCatalog(productName = "ABS Sensor");
+
+			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "ABS Sensor");
+		}
+
+		task ("Then at the bottom of the page, we can see the widget "Product Publisher" that contains the Diagram that we created before") {
+			AssertElementPresent(
+				key_productName = "diagram1",
+				locator1 = "CommerceDiagrams#PUBLISHER_PORTLET_DIAGRAM_PRODUCT_LINKED_PRODUCT_NAME");
+		}
+
+		task ("And at the bottom of the page we click on the linked Diagram that we created before") {
+			Click(
+				key_productName = "diagram1",
+				locator1 = "CommerceDiagrams#PUBLISHER_PORTLET_DIAGRAM_PRODUCT_LINKED_PRODUCT_NAME");
+		}
+
+		task ("Then we will be redirected to the Diagram details page") {
+			AssertElementPresent(
+				key_productName = "Diagram1",
+				locator1 = "CommerceDiagrams#DIAGRAM_PRODUCT_DETAIL_NAME");
+		}
+
+		task ("When the Buyer goes on Minium catalog page") {
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+		}
+
+		task ("And search and open for an product that is not linked to any diagram (e.g U-Joint)") {
+			CommerceNavigator.searchCatalog(productName = "U-Joint");
+
+			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "U-Joint");
+		}
+
+		task ("Then at the bottom of the page, the widget "Product Publisher" is without Diagram") {
+			AssertElementNotPresent(
+				key_productName = "Diagram1",
+				locator1 = "CommerceDiagrams#PUBLISHER_PORTLET_DIAGRAM_PRODUCT_LINKED_PRODUCT_NAME");
+		}
+
+		task ("Given that the Diagram is configured into the visibility with the Account Groups") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "test@liferay.com",
+				userLoginFullName = "Test Test");
+
+			AccountGroups.openAccountGroupsAdmin();
+
+			AccountGroups.addCP(
+				accountGroupDescription = "This is an Account Group.",
+				accountGroupName = "Test Account Group");
+
+			CommerceProducts.openProductsAdmin();
+
+			CommerceNavigator.searchEntry(entryName = "Diagram1");
+
+			CommerceNavigator.gotoEntry(entryName = "Diagram1");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Visibility");
+
+			CommerceDiagram.addAccountGroups(
+				accountGroupNames = "Test Account Group",
+				productName = "Diagram1");
+		}
+
+		task ("And the account group linked to this Diagram does not contain the buyer") {
+			AccountGroups.openAccountGroupsAdmin();
+
+			LexiconEntry.gotoEntry(rowEntry = "Test Account Group");
+
+			AccountGroups.viewDefault(tabName = "Accounts");
+		}
+
+		task ("When the Buyer goes on Minium catalog page") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+		}
+
+		task ("And search and open for the "Abs sensor" product") {
+			CommerceNavigator.searchCatalog(productName = "ABS Sensor");
+
+			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "ABS Sensor");
+		}
+
+		task ("Then at the bottom of the page, the widget "Product Publisher" is without Diagram") {
+			AssertElementNotPresent(
+				key_productName = "Diagram1",
+				locator1 = "CommerceDiagrams#PUBLISHER_PORTLET_DIAGRAM_PRODUCT_LINKED_PRODUCT_NAME");
+		}
 	}
 
 	@description = "COMMERCE-8565. Add Product Name and Description to the default Diagram product renderer."
@@ -396,14 +833,185 @@ definition {
 		}
 	}
 
-	@description = "[Please Update]"
-	@ignore = "Test Stub"
+	@description = "COMMERCE-8153. Verify the visibility rules"
 	@priority = "4"
 	test VerifyTheVisibilityRules {
 		property portal.acceptance = "false";
 
-		// TODO COMMERCE-8153 VerifyTheVisibilityRules pending implementation
+		task ("Given the Minium site with two buyer users, and an account group with the buyer A") {
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Commerce Account 1",
+				accountType = "Business",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "buyera@liferay.com",
+				userFirstName = "Buyer",
+				userLastName = "User",
+				userRole = "Buyer",
+				userScreenName = "buyeruser",
+				userSiteMembership = "Minium");
 
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Commerce Account 2",
+				accountType = "Business",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "buyerb@liferay.com",
+				userFirstName = "Buyer",
+				userLastName = "User 2",
+				userRole = "Buyer",
+				userScreenName = "buyeruser2",
+				userSiteMembership = "Minium");
+
+			AccountGroups.openAccountGroupsAdmin();
+
+			AccountGroups.addCP(accountGroupName = "Account Group");
+
+			Navigator.gotoNavTab(navTab = "Accounts");
+
+			AccountGroups.addAssignee(
+				accountGroupName = "Account Group",
+				assigneeNames = "Commerce Account 1",
+				assigneeType = "Accounts");
+		}
+
+		task ("Given two Diagrams with the "Type" set to "Default," two images uploaded as "Diagram File"") {
+			CommerceProducts.openProductsAdmin();
+
+			CPCommerceCatalog.newProductsEntry(
+				productCatalog = "Master",
+				productName = "Diagram Test 1",
+				productType = "Diagram");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Diagram");
+
+			CommerceProductImages.addDiagramImages(
+				imageTitles = "Black",
+				productType = "Diagram");
+
+			Button.clickPublish();
+
+			CommerceProducts.openProductsAdmin();
+
+			CPCommerceCatalog.newProductsEntry(
+				productCatalog = "Master",
+				productName = "Diagram Test 2",
+				productType = "Diagram");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Diagram");
+
+			CommerceProductImages.addDiagramImages(
+				imageTitles = "White",
+				productType = "Diagram");
+
+			Button.clickPublish();
+		}
+
+		task ("And for Diagram Test 1, create two pins, where the first is linked to an SKU (MIN93015), and the second one is linked to a Diagram (Diagram Test 2)") {
+			CommerceNavigator.gotoPortlet(
+				category = "Product Management",
+				portlet = "Products");
+
+			CommerceNavigator.searchEntry(entryName = "Diagram");
+
+			CommerceNavigator.gotoEntry(entryName = "Diagram Test 1");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Diagram");
+
+			CommerceDiagram.addPin(
+				pinNumber = "1",
+				position = "0,150",
+				quantity = "1",
+				selectType = "Linked to a SKU",
+				sku = "MIN93015");
+
+			CommerceDiagram.addPin(
+				diagram = "Diagram Test 2",
+				pinNumber = "2",
+				position = "150,100",
+				selectType = "Linked to a Diagram");
+
+			Button.clickPublish();
+
+			Alert.viewSuccessMessage();
+		}
+
+		task ("And for Diagram Test 2, create a visibility rule") {
+			CommerceNavigator.gotoPortlet(
+				category = "Product Management",
+				portlet = "Products");
+
+			CommerceNavigator.searchEntry(entryName = "Diagram");
+
+			CommerceNavigator.gotoEntry(entryName = "Diagram Test 2");
+
+			CommerceDiagram.setVisibility(
+				checkboxName = "Account Group",
+				name = "Account Groups",
+				webContentTitle = "Add Account Group Relation to Diagram Test 2");
+		}
+
+		task ("When the Buyer A goes on the Minimum catalog page and searches for "Diagram"") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyera@liferay.com");
+
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
+			CommerceNavigator.searchCatalog(productName = "Diagram");
+		}
+
+		task ("Then Buyer A can see both Diagram Test 1 and 2,  and if Buyer A opens the Diagram Test 1 can see the two pins") {
+			CommerceAcceleratorsInitializer.viewMiniumCardName(productName = "Diagram Test 1");
+
+			CommerceAcceleratorsInitializer.viewMiniumCardName(productName = "Diagram Test 2");
+
+			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "Diagram Test 1");
+
+			AssertElementPresent(
+				key_pinNumber = "1",
+				locator1 = "CommerceDiagrams#DIAGRAM_PIN");
+
+			AssertElementPresent(
+				key_pinNumber = "2",
+				locator1 = "CommerceDiagrams#DIAGRAM_PIN");
+		}
+
+		task ("When the Buyer B goes on the Minimum catalog page and searches for "Diagram"") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyerb@liferay.com");
+
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
+			CommerceNavigator.searchCatalog(productName = "Diagram");
+		}
+
+		task ("Then Buyer B can see only Diagram Test 1, and if Buyer B opens the Diagram 1 can see only one pin (MIN93015), the second one related to the diagram is not present") {
+			CommerceAcceleratorsInitializer.viewMiniumCardName(productName = "Diagram Test 1");
+
+			AssertElementNotPresent(
+				key_productName = "Diagram Test 2",
+				locator1 = "CommerceAccelerators#PRODUCT_CARD_NAME");
+
+			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "Diagram Test 1");
+
+			AssertElementPresent(
+				key_pinNumber = "1",
+				locator1 = "CommerceDiagrams#DIAGRAM_PIN");
+
+			AssertElementNotPresent(
+				key_pinNumber = "2",
+				locator1 = "CommerceDiagrams#DIAGRAM_PIN");
+		}
 	}
 
 	@description = "COMMERCE-8566. Tooltip pin information can be seen on the product with diagrams, if click the product name, it can redirect to the product details page."
@@ -449,6 +1057,7 @@ definition {
 		task ("Then the tooltip should display the SKU (MIN93015) and the name of the product (ABS Sensor)") {
 			CommerceDiagram.assertPinToolTipInfoInProduct(
 				productName = "ABS Sensor",
+				selectedType = "Linked to a SKU",
 				sku = "MIN93015");
 		}
 

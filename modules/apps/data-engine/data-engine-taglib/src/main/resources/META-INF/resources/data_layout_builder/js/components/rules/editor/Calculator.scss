@@ -156,6 +156,11 @@
 			.calculator-buttons-numbers {
 				margin-right: 4px;
 				width: 153px;
+
+				.btn:focus,
+				.btn.focus {
+					z-index: 1;
+				}
 			}
 
 			.calculator-buttons-operators {

@@ -75,7 +75,7 @@ export default function SiteIconPackConfiguration({
 			</ClayLayout.ContentRow>
 
 			<ClayLayout.ContentRow className="mb-2" containerElement="code">
-				{window.location.host + getSpritemapPath()}
+				{`/o/icons/site/${Liferay.ThemeDisplay.getSiteGroupId()}.svg`}
 			</ClayLayout.ContentRow>
 
 			<label className="form-control-label">
@@ -85,6 +85,9 @@ export default function SiteIconPackConfiguration({
 
 				<ClayInput
 					onChange={(event) => setSearchQuery(event.target.value)}
+					onKeyPress={(event) =>
+						event.key === 'Enter' && event.preventDefault()
+					}
 					placeholder={Liferay.Language.get('search-available-icons')}
 					type="text"
 					value={searchQuery}

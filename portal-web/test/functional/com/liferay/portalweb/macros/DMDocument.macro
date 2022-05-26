@@ -864,6 +864,22 @@ definition {
 		}
 	}
 
+	macro assertNoZipFileFromTempFolder {
+		var liferayHome = PropsUtil.get("liferay.home.dir.name");
+		var fileName = StringUtil.split("**/${fileNamePattern}");
+
+		var tempFile = "${liferayHome}/${appServer}/temp/${fileName}";
+
+		var tempFileExists = FileUtil.exists("${tempFile}");
+
+		if ("${tempFileExists}" == "false") {
+			echo("There are no temporary zip files");
+		}
+		else {
+			fail("There is a temporary zip file");
+		}
+	}
+
 	macro cancelCheckoutCP {
 		var key_dmDocumentTitle = "${dmDocumentTitle}";
 
@@ -1266,6 +1282,12 @@ definition {
 		}
 	}
 
+	macro deleteDocumentLibraryFolder {
+		var liferayHome = PropsUtil.get("liferay.home.dir.name");
+
+		FileUtil.delete("${liferayHome}/data/document_library");
+	}
+
 	macro deletePG {
 		var key_dmDocumentTitle = "${dmDocumentTitle}";
 
@@ -1294,6 +1316,12 @@ definition {
 		AssertElementNotPresent(
 			key_mgDocumentTitle = "${mgDocumentTitle}",
 			locator1 = "MediaGallery#IMAGE_TITLE");
+	}
+
+	macro deleteTempFolder {
+		var liferayHome = PropsUtil.get("liferay.home.dir.name");
+
+		FileUtil.delete("${liferayHome}/${appServer}/temp");
 	}
 
 	macro deleteVersion {
@@ -1625,6 +1653,22 @@ definition {
 				Type(
 					locator1 = "TextInput#IMAGE_DESCRIPTION",
 					value1 = "${imageDescriptionEdit}");
+			}
+		}
+
+		if (isSet(updateAutoTags)) {
+			Panel.expandPanel(panel = "Categorization");
+
+			if ("${updateAutoTags}" == "disabled") {
+				FormFields.disableCheckbox(fieldName = "Update Auto Tags");
+			}
+			else if ("${updateAutoTags}" == "hidden") {
+				AssertElementNotPresent(
+					key_fieldName = "Update Auto Tags",
+					locator1 = "FormFields#CHECKBOX_LABEL");
+			}
+			else {
+				FormFields.enableCheckbox(fieldName = "Update Auto Tags");
 			}
 		}
 

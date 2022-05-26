@@ -83,6 +83,8 @@ export default function ({
 							getMostRecentLayout(config.previewOptions)
 					)
 				)?.type,
+				redoHistory: [],
+				undoHistory: [],
 			}}
 		>
 			<StyleBookEditor />

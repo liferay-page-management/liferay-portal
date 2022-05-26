@@ -68,6 +68,26 @@
 	<td></td>
 </tr>
 <tr>
+	<td>DIAGRAM_MAPPED_PRODUCTS_CONTENT_SELECT_ALL_CHECKBOX</td>
+	<td>//div[contains(@class,'card')][contains(.,'Mapped Products')]//tr[@class]//th//input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DIAGRAM_MAPPED_PRODUCTS_CONTENT_SPECIFIC</td>
+	<td>//div[contains(@class,'card')][contains(.,'Mapped Products')]//tr[@class][${key_pinNumber}]//td[contains(.,'${key_productName}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DIAGRAM_MAPPED_PRODUCTS_CONTENT_SPECIFIC_CHECKBOX</td>
+	<td>//div[contains(@class,'card')][contains(.,'Mapped Products')]//tr[@class][${key_pinNumber}]//td[contains(.,'${key_productName}')]/preceding-sibling::*//input[@type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DIAGRAM_MAPPED_PRODUCTS_CONTENT_SPECIFIC_CHECKBOX_DISABLED</td>
+	<td>//div[contains(@class,'card')][contains(.,'Mapped Products')]//tr[@class][${key_pinNumber}]//td[contains(.,'${key_productName}')]/preceding-sibling::*//input[@disabled and @type='checkbox']</td>
+	<td></td>
+</tr>
+<tr>
 	<td>DIAGRAM_IMAGE_SVG_SPECIFIC</td>
 	<td>//div[contains(@class,'view-wrapper')]//*[name()='g']//*[name()='${key_imageItem}']</td>
 	<td></td>
@@ -103,6 +123,11 @@
 	<td>//div[contains(@class,'portlet-content')]//p[contains(text(),'${key_productDescription}')]</td>
 	<td></td>
 </tr>
+<tr>
+	<td>PUBLISHER_PORTLET_DIAGRAM_PRODUCT_LINKED_PRODUCT_NAME</td>
+	<td>//div[contains(@class,'product-publisher')]//div[contains(@class,'portlet-content')]//p//a[contains(@href,'${key_productName}')]</td>
+	<td></td>
+</tr>
 <!--DIAGRAM_PRODUCT_TOOLTIP-->
 <tr>
 	<td>DIAGRAM_PRODUCT_TOOLTIP</td>
@@ -117,6 +142,21 @@
 <tr>
 	<td>DIAGRAM_PRODUCT_TOOLTIP_LINKED_PRODUCT_NAME</td>
 	<td>//div[contains(@class,'diagram-tooltip')]//p//a[contains(text(),'${key_productName}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DIAGRAM_PRODUCT_TOOLTIP_LINKED_VIEW</td>
+	<td>//div[contains(@class,'diagram-tooltip')]//div//a[contains(text(),'View')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DIAGRAM_PRODUCT_TOOLTIP_QUANTITY</td>
+	<td>//div[contains(@class,'diagram-tooltip')]//p[contains(text(),'Quantity')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DIAGRAM_PRODUCT_TOOLTIP_UNLINKED_PRODUCT_NAME</td>
+	<td>//div[contains(@class,'diagram-tooltip')]//h4[contains(text(),'${key_productName}')]</td>
 	<td></td>
 </tr>
 <!--DIAGRAM_SETTINGS-->

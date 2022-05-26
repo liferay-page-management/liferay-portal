@@ -12,8 +12,17 @@
  * details.
  */
 
-import React from 'react';
-declare const DropdownWithDeleteButton: React.FC<React.HTMLAttributes<
-	HTMLElement
->>;
-export default DropdownWithDeleteButton;
+/// <reference types="react" />
+
+import {CustomItem} from '../Form/CustomSelect/CustomSelect';
+export default function AddObjectAction({
+	apiURL,
+	objectActionExecutors,
+	objectActionTriggers,
+}: IProps): JSX.Element;
+interface IProps {
+	apiURL: string;
+	objectActionExecutors: CustomItem[];
+	objectActionTriggers: CustomItem[];
+}
+export {};

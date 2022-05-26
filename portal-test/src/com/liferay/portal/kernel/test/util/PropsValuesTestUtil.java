@@ -14,40 +14,35 @@
 
 package com.liferay.portal.kernel.test.util;
 
-import com.liferay.petra.lang.SafeClosable;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.util.PropsValues;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 /**
  * @author Shuyang Zhou
  */
 public class PropsValuesTestUtil {
 
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
-	 *             #swapWithSafeCloseable(String, Object)}
-	 */
-	@Deprecated
-	public static SafeClosable swap(String propsKeysFieldName, Object value) {
-		String propsKeysName = ReflectionTestUtil.getFieldValue(
-			PropsKeys.class, propsKeysFieldName);
+	public static void setPortalProperty(String propertyName, Object value)
+		throws Exception {
 
-		String originalPropsValue = PropsUtil.get(propsKeysName);
+		Field field = ReflectionUtil.getDeclaredField(
+			PropsValues.class, propertyName);
 
-		PropsUtil.set(propsKeysName, String.valueOf(value));
+		field.setAccessible(true);
 
-		Object originalValue = ReflectionTestUtil.getAndSetFieldValue(
-			PropsValues.class, propsKeysFieldName, value);
+		Field modifiersField = Field.class.getDeclaredField("modifiers");
 
-		return () -> {
-			PropsUtil.set(propsKeysName, originalPropsValue);
+		modifiersField.setAccessible(true);
+		modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
 
-			ReflectionTestUtil.setFieldValue(
-				PropsValues.class, propsKeysFieldName, originalValue);
-		};
+		field.set(null, value);
 	}
 
 	public static SafeCloseable swapWithSafeCloseable(
