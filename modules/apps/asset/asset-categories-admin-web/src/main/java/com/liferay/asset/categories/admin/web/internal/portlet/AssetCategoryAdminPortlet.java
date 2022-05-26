@@ -62,7 +62,6 @@ import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portlet.asset.util.AssetVocabularySettingsHelper;
 
@@ -229,26 +228,6 @@ public class AssetCategoryAdminPortlet extends MVCPortlet {
 		sendRedirect(actionRequest, actionResponse);
 	}
 
-	public void editProperties(
-			ActionRequest actionRequest, ActionResponse actionResponse)
-		throws Exception {
-
-		long categoryId = ParamUtil.getLong(actionRequest, "categoryId");
-
-		AssetCategory category = _assetCategoryService.fetchCategory(
-			categoryId);
-
-		String[] categoryProperties = _getCategoryProperties(actionRequest);
-
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-			AssetCategory.class.getName(), actionRequest);
-
-		_assetCategoryService.updateCategory(
-			categoryId, category.getParentCategoryId(), category.getTitleMap(),
-			category.getDescriptionMap(), category.getVocabularyId(),
-			categoryProperties, serviceContext);
-	}
-
 	public void editVocabulary(
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
@@ -401,34 +380,6 @@ public class AssetCategoryAdminPortlet extends MVCPortlet {
 		}
 
 		return false;
-	}
-
-	private String[] _getCategoryProperties(ActionRequest actionRequest) {
-		int[] categoryPropertiesIndexes = StringUtil.split(
-			ParamUtil.getString(actionRequest, "categoryPropertiesIndexes"), 0);
-
-		String[] categoryProperties =
-			new String[categoryPropertiesIndexes.length];
-
-		for (int i = 0; i < categoryPropertiesIndexes.length; i++) {
-			int categoryPropertiesIndex = categoryPropertiesIndexes[i];
-
-			String key = ParamUtil.getString(
-				actionRequest, "key" + categoryPropertiesIndex);
-
-			if (Validator.isNull(key)) {
-				continue;
-			}
-
-			String value = ParamUtil.getString(
-				actionRequest, "value" + categoryPropertiesIndex);
-
-			categoryProperties[i] =
-				key + AssetCategoryConstants.PROPERTY_KEY_VALUE_SEPARATOR +
-					value;
-		}
-
-		return categoryProperties;
 	}
 
 	private String[] _getCategoryProperties(
