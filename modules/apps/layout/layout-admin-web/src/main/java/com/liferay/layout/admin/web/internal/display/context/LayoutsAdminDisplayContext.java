@@ -36,7 +36,6 @@ import com.liferay.layout.util.template.LayoutConverter;
 import com.liferay.layout.util.template.LayoutConverterRegistry;
 import com.liferay.petra.content.ContentUtil;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
@@ -86,7 +85,6 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -468,13 +466,10 @@ public class LayoutsAdminDisplayContext {
 	public String getFaviconImage() {
 		LayoutSet layoutSet = getSelLayoutSet();
 
-		if (layoutSet.getFaviconFileEntryId() > 0) {
-			String faviconImage = _getFileEntryImage(
-				layoutSet.getFaviconFileEntryId());
+		String faviconImage = layoutSet.getFavicon();
 
-			if (faviconImage != null) {
-				return faviconImage;
-			}
+		if (faviconImage != null) {
+			return faviconImage;
 		}
 
 		Theme theme = layoutSet.getTheme();
@@ -1902,31 +1897,6 @@ public class LayoutsAdminDisplayContext {
 
 		return HttpComponentsUtil.setParameter(
 			layoutFullURL, "p_l_mode", Constants.EDIT);
-	}
-
-	private String _getFileEntryImage(long fileEntryId) {
-		FileEntry fileEntry = null;
-
-		try {
-			fileEntry = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
-		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(portalException);
-			}
-		}
-
-		if (fileEntry == null) {
-			return StringPool.BLANK;
-		}
-
-		return HtmlUtil.escape(
-			StringBundler.concat(
-				PortalUtil.getPathContext(), "/documents/",
-				fileEntry.getRepositoryId(), StringPool.SLASH,
-				fileEntry.getFolderId(), StringPool.SLASH,
-				URLCodec.encodeURL(HtmlUtil.unescape(fileEntry.getTitle())),
-				StringPool.SLASH, URLCodec.encodeURL(fileEntry.getUuid())));
 	}
 
 	private long[] _getGroupIds() {
