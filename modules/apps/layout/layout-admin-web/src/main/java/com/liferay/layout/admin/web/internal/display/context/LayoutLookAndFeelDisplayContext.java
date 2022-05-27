@@ -211,7 +211,7 @@ public class LayoutLookAndFeelDisplayContext {
 			return StringPool.BLANK;
 		}
 
-		return theme.getContextPath() + theme.getImagesPath() + "/favicon.ico";
+		return _layoutsAdminDisplayContext.getThemeFavicon(theme);
 	}
 
 	public String getMasterLayoutName() {
