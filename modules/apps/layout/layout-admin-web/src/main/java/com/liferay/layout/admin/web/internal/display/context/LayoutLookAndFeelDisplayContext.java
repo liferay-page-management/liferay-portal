@@ -67,19 +67,6 @@ public class LayoutLookAndFeelDisplayContext {
 			WebKeys.THEME_DISPLAY);
 	}
 
-	public Map<String, Object> getChangeMasterLayoutButtonAdditionalProps() {
-		return HashMapBuilder.<String, Object>put(
-			"url",
-			() -> PortletURLBuilder.createRenderURL(
-				_liferayPortletResponse
-			).setMVCPath(
-				"/select_master_layout.jsp"
-			).setWindowState(
-				LiferayWindowState.POP_UP
-			).buildString()
-		).build();
-	}
-
 	public Map<String, Object> getChangeStyleBookButtonAdditionalProps() {
 		return HashMapBuilder.<String, Object>put(
 			"url",
@@ -100,36 +87,6 @@ public class LayoutLookAndFeelDisplayContext {
 			).setWindowState(
 				LiferayWindowState.POP_UP
 			).buildString()
-		).build();
-	}
-
-	public Map<String, Object> getEditMasterLayoutButtonAdditionalProps() {
-		return HashMapBuilder.<String, Object>put(
-			"editMasterLayoutURL",
-			() -> {
-				if (!hasMasterLayout()) {
-					return StringPool.BLANK;
-				}
-
-				Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();
-
-				Layout masterLayout = LayoutLocalServiceUtil.getLayout(
-					selLayout.getMasterLayoutPlid());
-
-				String editLayoutURL = HttpComponentsUtil.addParameter(
-					HttpComponentsUtil.addParameter(
-						PortalUtil.getLayoutFullURL(selLayout, _themeDisplay),
-						"p_l_mode", Constants.EDIT),
-					"p_l_back_url",
-					ParamUtil.getString(_httpServletRequest, "redirect"));
-
-				return HttpComponentsUtil.addParameter(
-					HttpComponentsUtil.addParameter(
-						PortalUtil.getLayoutFullURL(
-							masterLayout.fetchDraftLayout(), _themeDisplay),
-						"p_l_mode", Constants.EDIT),
-					"p_l_back_url", editLayoutURL);
-			}
 		).build();
 	}
 
@@ -211,6 +168,59 @@ public class LayoutLookAndFeelDisplayContext {
 		}
 
 		return _layoutsAdminDisplayContext.getThemeFavicon(theme);
+	}
+
+	public Map<String, Object> getMasterLayoutConfigurationProps() {
+		return HashMapBuilder.<String, Object>put(
+			"changeMasterLayoutURL",
+			PortletURLBuilder.createRenderURL(
+				_liferayPortletResponse
+			).setMVCPath(
+				"/select_master_layout.jsp"
+			).setWindowState(
+				LiferayWindowState.POP_UP
+			).buildString()
+		).put(
+			"editMasterLayoutURL",
+			() -> {
+				if (!hasMasterLayout()) {
+					return StringPool.BLANK;
+				}
+
+				Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();
+
+				Layout masterLayout = LayoutLocalServiceUtil.getLayout(
+					selLayout.getMasterLayoutPlid());
+
+				String editLayoutURL = HttpComponentsUtil.addParameter(
+					HttpComponentsUtil.addParameter(
+						PortalUtil.getLayoutFullURL(selLayout, _themeDisplay),
+						"p_l_mode", Constants.EDIT),
+					"p_l_back_url",
+					ParamUtil.getString(_httpServletRequest, "redirect"));
+
+				return HttpComponentsUtil.addParameter(
+					HttpComponentsUtil.addParameter(
+						PortalUtil.getLayoutFullURL(
+							masterLayout.fetchDraftLayout(), _themeDisplay),
+						"p_l_mode", Constants.EDIT),
+					"p_l_back_url", editLayoutURL);
+			}
+		).put(
+			"masterLayoutName", getMasterLayoutName()
+		).put(
+			"masterLayoutPlid",
+			() -> {
+				if (hasMasterLayout()) {
+					Layout selLayout =
+						_layoutsAdminDisplayContext.getSelLayout();
+
+					return String.valueOf(selLayout.getMasterLayoutPlid());
+				}
+
+				return StringPool.BLANK;
+			}
+		).build();
 	}
 
 	public String getMasterLayoutName() {
