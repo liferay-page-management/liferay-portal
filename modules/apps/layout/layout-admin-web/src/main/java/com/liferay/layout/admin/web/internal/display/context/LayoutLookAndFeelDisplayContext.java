@@ -67,12 +67,6 @@ public class LayoutLookAndFeelDisplayContext {
 			WebKeys.THEME_DISPLAY);
 	}
 
-	public Map<String, Object> getChangeFaviconButtonAdditionalProps() {
-		return HashMapBuilder.<String, Object>put(
-			"url", _layoutsAdminDisplayContext.getFileEntryItemSelectorURL()
-		).build();
-	}
-
 	public Map<String, Object> getChangeMasterLayoutButtonAdditionalProps() {
 		return HashMapBuilder.<String, Object>put(
 			"url",
@@ -109,12 +103,6 @@ public class LayoutLookAndFeelDisplayContext {
 		).build();
 	}
 
-	public Map<String, Object> getClearFaviconButtonAdditionalProps() {
-		return HashMapBuilder.<String, Object>put(
-			"faviconFileEntryTitleValue", _getClearFaviconButtonFileEntryTitle()
-		).build();
-	}
-
 	public Map<String, Object> getEditMasterLayoutButtonAdditionalProps() {
 		return HashMapBuilder.<String, Object>put(
 			"editMasterLayoutURL",
@@ -142,6 +130,19 @@ public class LayoutLookAndFeelDisplayContext {
 						"p_l_mode", Constants.EDIT),
 					"p_l_back_url", editLayoutURL);
 			}
+		).build();
+	}
+
+	public Map<String, Object> getFaviconConfigurationProps() {
+		return HashMapBuilder.<String, Object>put(
+			"faviconImage", getFaviconImage()
+		).put(
+			"faviconTitle", getFaviconFileEntryTitle()
+		).put(
+			"fileEntryItemSelectorURL",
+			_layoutsAdminDisplayContext.getFileEntryItemSelectorURL()
+		).put(
+			"isClearFaviconButtonEnabled", isClearFaviconButtonEnabled()
 		).build();
 	}
 
@@ -347,34 +348,6 @@ public class LayoutLookAndFeelDisplayContext {
 		}
 
 		return false;
-	}
-
-	private String _getClearFaviconButtonFileEntryTitle() {
-		Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();
-
-		if (hasEditableMasterLayout() &&
-			(selLayout.getMasterLayoutPlid() > 0)) {
-
-			Layout masterLayout = LayoutLocalServiceUtil.fetchLayout(
-				selLayout.getMasterLayoutPlid());
-
-			if ((masterLayout != null) &&
-				(masterLayout.getFaviconFileEntryId() > 0)) {
-
-				return LanguageUtil.get(
-					_httpServletRequest, "favicon-from-master");
-			}
-		}
-
-		LayoutSet layoutSet = selLayout.getLayoutSet();
-
-		if (layoutSet.getFaviconFileEntryId() > 0) {
-			return LanguageUtil.format(
-				_themeDisplay.getLocale(), "favicon-from-x",
-				_layoutsAdminDisplayContext.getRootNodeName());
-		}
-
-		return LanguageUtil.get(_httpServletRequest, "favicon-from-theme");
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
