@@ -12,19 +12,15 @@
  * details.
  */
 
-package com.liferay.client.extension.uad.constants;
+package com.liferay.portal.kernel.client.extension;
 
 /**
- * @author Brian Wing Shun Chan
- * @generated
+ * @author Iván Zaera Avellón
  */
-public class ClientExtensionUADConstants {
+public interface ThemeCSSURLs {
 
-	public static final String[] USER_ID_FIELD_NAMES_CLIENT_EXTENSION_ENTRY = {
-		"userId", "statusByUserId"
-	};
+	public String getMain();
 
-	public static final String[]
-		USER_ID_FIELD_NAMES_CLIENT_EXTENSION_ENTRY_REL = {"userId"};
+	public String getPortal();
 
 }

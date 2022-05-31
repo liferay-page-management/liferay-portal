@@ -12,19 +12,21 @@
  * details.
  */
 
-package com.liferay.client.extension.uad.constants;
+package com.liferay.portal.kernel.client.extension;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
- * @author Brian Wing Shun Chan
- * @generated
+ * @author Iván Zaera Avellón
  */
-public class ClientExtensionUADConstants {
+public interface ThemeClientExtensions {
 
-	public static final String[] USER_ID_FIELD_NAMES_CLIENT_EXTENSION_ENTRY = {
-		"userId", "statusByUserId"
-	};
+	public String getFaviconURL(HttpServletRequest httpServletRequest);
 
-	public static final String[]
-		USER_ID_FIELD_NAMES_CLIENT_EXTENSION_ENTRY_REL = {"userId"};
+	public ThemeCSSURLs getThemeCSSURLs(HttpServletRequest httpServletRequest);
+
+	public List<String> getThemeJSURLs(HttpServletRequest httpServletRequest);
 
 }

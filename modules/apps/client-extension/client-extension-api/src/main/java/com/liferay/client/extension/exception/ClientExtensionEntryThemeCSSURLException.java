@@ -12,19 +12,30 @@
  * details.
  */
 
-package com.liferay.client.extension.uad.constants;
+package com.liferay.client.extension.exception;
+
+import com.liferay.portal.kernel.exception.PortalException;
 
 /**
  * @author Brian Wing Shun Chan
- * @generated
  */
-public class ClientExtensionUADConstants {
+public class ClientExtensionEntryThemeCSSURLException extends PortalException {
 
-	public static final String[] USER_ID_FIELD_NAMES_CLIENT_EXTENSION_ENTRY = {
-		"userId", "statusByUserId"
-	};
+	public ClientExtensionEntryThemeCSSURLException() {
+	}
 
-	public static final String[]
-		USER_ID_FIELD_NAMES_CLIENT_EXTENSION_ENTRY_REL = {"userId"};
+	public ClientExtensionEntryThemeCSSURLException(String msg) {
+		super(msg);
+	}
+
+	public ClientExtensionEntryThemeCSSURLException(
+		String msg, Throwable throwable) {
+
+		super(msg, throwable);
+	}
+
+	public ClientExtensionEntryThemeCSSURLException(Throwable throwable) {
+		super(throwable);
+	}
 
 }

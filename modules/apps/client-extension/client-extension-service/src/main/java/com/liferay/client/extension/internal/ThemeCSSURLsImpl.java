@@ -12,19 +12,31 @@
  * details.
  */
 
-package com.liferay.client.extension.uad.constants;
+package com.liferay.client.extension.internal;
+
+import com.liferay.portal.kernel.client.extension.ThemeCSSURLs;
 
 /**
- * @author Brian Wing Shun Chan
- * @generated
+ * @author Iván Zaera Avellón
  */
-public class ClientExtensionUADConstants {
+public class ThemeCSSURLsImpl implements ThemeCSSURLs {
 
-	public static final String[] USER_ID_FIELD_NAMES_CLIENT_EXTENSION_ENTRY = {
-		"userId", "statusByUserId"
-	};
+	public ThemeCSSURLsImpl(String main, String portal) {
+		_main = main;
+		_portal = portal;
+	}
 
-	public static final String[]
-		USER_ID_FIELD_NAMES_CLIENT_EXTENSION_ENTRY_REL = {"userId"};
+	@Override
+	public String getMain() {
+		return _main;
+	}
+
+	@Override
+	public String getPortal() {
+		return _portal;
+	}
+
+	private final String _main;
+	private final String _portal;
 
 }
