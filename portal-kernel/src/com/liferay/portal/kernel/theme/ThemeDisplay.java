@@ -60,6 +60,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -189,6 +190,15 @@ public class ThemeDisplay
 
 	public String getCDNHost() {
 		return _cdnHost;
+	}
+
+	public String getClayCSSURL() {
+		if (Validator.isNotNull(_clayCSSURL)) {
+			return _clayCSSURL;
+		}
+
+		return PortalUtil.getStaticResourceURL(
+			getRequest(), getPathThemeCss() + "/clay.css");
 	}
 
 	public ColorScheme getColorScheme() {
@@ -531,6 +541,24 @@ public class ThemeDisplay
 	 */
 	public Locale getLocale() {
 		return _locale;
+	}
+
+	public String getMainCSSURL() {
+		if (Validator.isNotNull(_mainCSSURL)) {
+			return _mainCSSURL;
+		}
+
+		return PortalUtil.getStaticResourceURL(
+			getRequest(), getPathThemeCss() + "/main.css");
+	}
+
+	public String getMainJSURL() {
+		if (Validator.isNotNull(_mainCSSURL)) {
+			return _mainJSURL;
+		}
+
+		return PortalUtil.getStaticResourceURL(
+			getRequest(), getPathThemeJavaScript() + "/main.js");
 	}
 
 	public String getPathApplet() {
@@ -1267,6 +1295,10 @@ public class ThemeDisplay
 		_cdnHost = cdnHost;
 	}
 
+	public void setClayCSSURL(String clayCSSURL) {
+		_clayCSSURL = clayCSSURL;
+	}
+
 	public void setCompany(Company company) throws PortalException {
 		_company = company;
 		_companyGroupId = company.getGroupId();
@@ -1455,6 +1487,14 @@ public class ThemeDisplay
 
 		setPathThemeTemplates(
 			cdnBaseURL + themeStaticResourcePath + theme.getTemplatesPath());
+	}
+
+	public void setMainCSSURL(String mainCSSURL) {
+		_mainCSSURL = mainCSSURL;
+	}
+
+	public void setMainJSURL(String mainJSURL) {
+		_mainJSURL = mainJSURL;
 	}
 
 	public void setPathApplet(String pathApplet) {
@@ -1856,6 +1896,7 @@ public class ThemeDisplay
 	private String _cdnBaseURL;
 	private String _cdnDynamicResourcesHost = StringPool.BLANK;
 	private String _cdnHost = StringPool.BLANK;
+	private String _clayCSSURL;
 	private ColorScheme _colorScheme;
 	private Company _company;
 	private long _companyGroupId;
@@ -1895,6 +1936,8 @@ public class ThemeDisplay
 	private boolean _lifecycleRender;
 	private boolean _lifecycleResource;
 	private Locale _locale;
+	private String _mainCSSURL;
+	private String _mainJSURL;
 	private String _pathApplet = StringPool.BLANK;
 	private String _pathCms = StringPool.BLANK;
 	private String _pathColorSchemeImages = StringPool.BLANK;
