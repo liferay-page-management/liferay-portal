@@ -143,6 +143,7 @@ page import="com.liferay.portal.kernel.util.WebKeys" %><%@
 page import="com.liferay.portal.kernel.webserver.WebServerServletTokenUtil" %><%@
 page import="com.liferay.portal.kernel.workflow.WorkflowConstants" %><%@
 page import="com.liferay.portal.util.LayoutTypeControllerTracker" %><%@
+page import="com.liferay.portal.util.PropsUtil" %><%@
 page import="com.liferay.portal.util.PropsValues" %><%@
 page import="com.liferay.segments.exception.RequiredSegmentsExperienceException" %><%@
 page import="com.liferay.site.navigation.model.SiteNavigationMenu" %><%@

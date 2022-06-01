@@ -193,6 +193,15 @@ else {
 	</div>
 </clay:sheet-section>
 
+<c:if test='<%= !GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-153457")) %>'>
+	<clay:sheet-section>
+		<react:component
+			module="js/layout/look_and_feel/CSSExtensionConfiguration"
+			props="<%= layoutLookAndFeelDisplayContext.getCSSExtensionConfigurationProps() %>"
+		/>
+	</clay:sheet-section>
+</c:if>
+
 <aui:script>
 	Liferay.Util.toggleRadio(
 		'<portlet:namespace />regularInheritLookAndFeel',
