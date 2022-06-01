@@ -18,6 +18,9 @@ import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryServiceUtil;
 import com.liferay.asset.kernel.service.AssetVocabularyServiceUtil;
 import com.liferay.asset.list.model.AssetListEntry;
+import com.liferay.client.extension.constants.ClientExtensionEntryConstants;
+import com.liferay.client.extension.item.selector.ClientExtensionItemSelectorReturnType;
+import com.liferay.client.extension.item.selector.criterion.ClientExtensionItemSelectorCriterion;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.exportimport.kernel.staging.LayoutStagingUtil;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
@@ -89,6 +92,7 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.util.RobotsUtil;
 import com.liferay.portlet.layoutsadmin.display.context.GroupDisplayContextHelper;
@@ -506,9 +510,28 @@ public class LayoutsAdminDisplayContext {
 		itemSelectorCriterion.setDesiredItemSelectorReturnTypes(
 			new FileEntryItemSelectorReturnType());
 
+		if (!GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-153457"))) {
+			PortletURL itemSelectorURL = _itemSelector.getItemSelectorURL(
+				RequestBackedPortletURLFactoryUtil.create(httpServletRequest),
+				getSelectFaviconEventName(), itemSelectorCriterion);
+
+			return itemSelectorURL.toString();
+		}
+
+		ClientExtensionItemSelectorCriterion
+			clientExtensionItemSelectorCriterion =
+				new ClientExtensionItemSelectorCriterion();
+
+		clientExtensionItemSelectorCriterion.setType(
+			ClientExtensionEntryConstants.TYPE_THEME_FAVICON);
+
+		clientExtensionItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
+			new ClientExtensionItemSelectorReturnType());
+
 		PortletURL itemSelectorURL = _itemSelector.getItemSelectorURL(
 			RequestBackedPortletURLFactoryUtil.create(httpServletRequest),
-			getSelectFaviconEventName(), itemSelectorCriterion);
+			getSelectFaviconEventName(), itemSelectorCriterion,
+			clientExtensionItemSelectorCriterion);
 
 		return itemSelectorURL.toString();
 	}

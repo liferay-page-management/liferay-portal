@@ -27,14 +27,20 @@ export default function propsTransformer({
 			openSelectionModal({
 				onSelect(selectedItem) {
 					if (selectedItem) {
+						const faviconClientExtensionEntryId = document.getElementById(
+							`${portletNamespace}faviconClientExtensionEntryId`
+						);
+
+						const faviconClientExtensionEntryType = document.getElementById(
+							`${portletNamespace}faviconClientExtensionEntryType`
+						);
+
 						const faviconFileEntryId = document.getElementById(
 							`${portletNamespace}faviconFileEntryId`
 						);
-
 						const faviconFileEntryImage = document.getElementById(
 							`${portletNamespace}faviconFileEntryImage`
 						);
-
 						const faviconFileEntryTitle = document.getElementById(
 							`${portletNamespace}faviconFileEntryTitle`
 						);
@@ -42,13 +48,26 @@ export default function propsTransformer({
 						if (
 							selectedItem &&
 							selectedItem.value &&
+							faviconClientExtensionEntryId &&
 							faviconFileEntryId &&
 							faviconFileEntryImage &&
 							faviconFileEntryTitle
 						) {
 							const itemValue = JSON.parse(selectedItem.value);
 
-							faviconFileEntryId.value = itemValue.fileEntryId;
+							if (
+								selectedItem.returnType ===
+								'com.liferay.client.extension.item.selector.ClientExtensionItemSelectorReturnType'
+							) {
+								faviconClientExtensionEntryId.value =
+									itemValue.clientExtensionEntryId;
+								faviconClientExtensionEntryType.value =
+									itemValue.type;
+							}
+							else {
+								faviconFileEntryId.value =
+									itemValue.fileEntryId;
+							}
 
 							if (itemValue.url) {
 								faviconFileEntryImage.src = itemValue.url;
@@ -57,7 +76,8 @@ export default function propsTransformer({
 								faviconFileEntryImage.classList.add('d-none');
 							}
 
-							faviconFileEntryTitle.innerHTML = itemValue.title;
+							faviconFileEntryTitle.innerHTML =
+								itemValue.title || itemValue.name;
 						}
 					}
 				},

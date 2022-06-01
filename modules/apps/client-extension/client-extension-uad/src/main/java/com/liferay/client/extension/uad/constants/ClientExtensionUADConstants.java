@@ -24,4 +24,7 @@ public class ClientExtensionUADConstants {
 		"userId", "statusByUserId"
 	};
 
+	public static final String[]
+		USER_ID_FIELD_NAMES_CLIENT_EXTENSION_ENTRY_REL = {"userId"};
+
 }
