@@ -53,12 +53,13 @@ LayoutSet selLayoutSet = layoutsAdminDisplayContext.getSelLayoutSet();
 						'<portlet:namespace />faviconFileEntryTitle'
 					);
 
-					if (faviconFileEntryId &&
+					if (
+						faviconFileEntryId &&
 						faviconFileEntryImage &&
 						faviconFileEntryTitle &&
 						selectedItem &&
-						selectedItem.value) {
-
+						selectedItem.value
+					) {
 						const itemValue = JSON.parse(selectedItem.value);
 
 						faviconFileEntryId.value = itemValue.fileEntryId;
