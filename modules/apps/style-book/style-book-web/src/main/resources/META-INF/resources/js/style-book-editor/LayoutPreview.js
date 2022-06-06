@@ -24,6 +24,7 @@ import {
 	usePreviewLayoutType,
 	useSetLoading,
 } from './StyleBookContext';
+import {config} from './config';
 import {LAYOUT_TYPES} from './constants/layoutTypes';
 
 export default function LayoutPreview() {
@@ -41,14 +42,32 @@ export default function LayoutPreview() {
 			const root = iframeRef.current.contentDocument.documentElement;
 
 			if (root) {
-				root.removeAttribute('style');
+				Object.entries(frontendTokensValues).forEach(
+					([name, tokenValue]) => {
+						const frontendToken = config.frontendTokens[name];
 
-				Object.values(frontendTokensValues).forEach(
-					({cssVariableMapping, value}) => {
-						root.style.setProperty(
-							`--${cssVariableMapping}`,
-							value
-						);
+						if (!frontendToken) {
+							return;
+						}
+
+						if (!tokenValue) {
+							const cssVariableMapping = frontendToken.mappings.find(
+								(mapping) => mapping.type === 'cssVariable'
+							);
+
+							root.style.setProperty(
+								`--${cssVariableMapping.value}`,
+								frontendToken.defaultValue
+							);
+						}
+						else {
+							const {cssVariableMapping, value} = tokenValue;
+
+							root.style.setProperty(
+								`--${cssVariableMapping}`,
+								value
+							);
+						}
 					}
 				);
 

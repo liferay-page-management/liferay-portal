@@ -27,12 +27,32 @@ export default function Sidebar() {
 
 	useEffect(() => {
 		if (sidebarRef.current) {
-			Object.values(frontendTokensValues).forEach(
-				({cssVariableMapping, value}) => {
-					sidebarRef.current.style.setProperty(
-						`--${cssVariableMapping}`,
-						value
-					);
+			Object.entries(frontendTokensValues).forEach(
+				([name, tokenValue]) => {
+					const frontendToken = config.frontendTokens[name];
+
+					if (!frontendToken) {
+						return;
+					}
+
+					if (!tokenValue) {
+						const cssVariableMapping = frontendToken.mappings.find(
+							(mapping) => mapping.type === 'cssVariable'
+						);
+
+						sidebarRef.current.style.setProperty(
+							`--${cssVariableMapping.value}`,
+							frontendToken.defaultValue
+						);
+					}
+					else {
+						const {cssVariableMapping, value} = tokenValue;
+
+						sidebarRef.current.style.setProperty(
+							`--${cssVariableMapping}`,
+							value
+						);
+					}
 				}
 			);
 		}
