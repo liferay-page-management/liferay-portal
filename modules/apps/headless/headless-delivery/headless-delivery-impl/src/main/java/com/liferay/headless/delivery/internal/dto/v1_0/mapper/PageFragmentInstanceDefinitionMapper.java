@@ -163,16 +163,16 @@ public class PageFragmentInstanceDefinitionMapper {
 		try {
 			return new HashMap<String, Object>() {
 				{
+					JSONObject editableValuesJSONObject =
+						JSONFactoryUtil.createJSONObject(
+							fragmentEntryLink.getEditableValues());
+
 					JSONObject jsonObject =
-						_fragmentEntryConfigurationParser.
-							getConfigurationJSONObject(
-								fragmentEntryLink.getConfiguration(),
-								fragmentEntryLink.getEditableValues(),
-								LocaleUtil.getMostRelevantLocale());
+						editableValuesJSONObject.getJSONObject(
+							"com.liferay.fragment.entry.processor.freemarker." +
+								"FreeMarkerFragmentEntryProcessor");
 
-					Set<String> keys = jsonObject.keySet();
-
-					for (String key : keys) {
+					for (String key : jsonObject.keySet()) {
 						Object value = jsonObject.get(key);
 
 						if (value instanceof JSONObject) {
