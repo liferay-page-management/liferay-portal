@@ -60,6 +60,7 @@ export default function ({
 		featureFlagLps142363,
 		fragmentCollectionPreviewURL,
 		frontendTokenDefinition,
+		frontendTokens: flattenFrontendTokenValues(frontendTokenDefinition),
 		isPrivateLayoutsEnabled,
 		namespace,
 		previewOptions,
@@ -112,4 +113,20 @@ function getMostRecentLayout(previewOptions) {
 	}
 
 	return null;
+}
+
+function flattenFrontendTokenValues(frontendTokenDefinition) {
+	const frontendTokens = {};
+
+	for (const category of frontendTokenDefinition.frontendTokenCategories) {
+		for (const tokenSet of category.frontendTokenSets) {
+			for (const token of tokenSet.frontendTokens) {
+				frontendTokens[token.name] = {
+					...token,
+				};
+			}
+		}
+	}
+
+	return frontendTokens;
 }
