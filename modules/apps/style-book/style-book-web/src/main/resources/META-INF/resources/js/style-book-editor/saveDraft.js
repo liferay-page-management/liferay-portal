@@ -17,9 +17,17 @@ import {fetch, objectToFormData} from 'frontend-js-web';
 import {config} from './config';
 
 export default function saveDraft(frontendTokensValues) {
+	const nextFrontendTokenValues = {...frontendTokensValues};
+
+	Object.entries(([key, value]) => {
+		if (value) {
+			nextFrontendTokenValues[key] = value;
+		}
+	});
+
 	const body = objectToFormData({
 		[`${config.namespace}frontendTokensValues`]: JSON.stringify(
-			frontendTokensValues
+			nextFrontendTokenValues
 		),
 		[`${config.namespace}styleBookEntryId`]: config.styleBookEntryId,
 	});

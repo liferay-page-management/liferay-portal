@@ -173,14 +173,10 @@ export function useOnUndo() {
 		const [lastUndo, ...undos] = undoHistory;
 		const previousValue = frontendTokensValues[lastUndo.name];
 
-		if (!lastUndo.value) {
-			delete frontendTokensValues[lastUndo.name];
-		}
-
 		internalSaveTokenValues({
 			dispatch,
 			frontendTokensValues,
-			tokens: lastUndo.value ? {[lastUndo.name]: lastUndo.value} : {},
+			tokens: {[lastUndo.name]: lastUndo.value},
 		}).then(() => {
 			dispatch({
 				type: UPDATE_UNDO_REDO_HISTORY,
