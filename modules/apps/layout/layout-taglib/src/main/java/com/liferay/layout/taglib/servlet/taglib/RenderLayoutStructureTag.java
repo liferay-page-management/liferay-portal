@@ -748,6 +748,9 @@ public class RenderLayoutStructureTag extends IncludeTag {
 
 		jspWriter.write("<form action=\"/c/info/info-item/create\" class=\"");
 
+		FormStyledLayoutStructureItem formStyledLayoutStructureItem =
+			(FormStyledLayoutStructureItem)layoutStructureItem;
+
 		if (renderLayoutStructureDisplayContext.isCommonStylesFFEnabled()) {
 			jspWriter.write(
 				LayoutStructureItemCSSUtil.getLayoutStructureItemUniqueCssClass(
@@ -760,13 +763,23 @@ public class RenderLayoutStructureTag extends IncludeTag {
 		else {
 			jspWriter.write(
 				renderLayoutStructureDisplayContext.getCssClass(
-					(FormStyledLayoutStructureItem)layoutStructureItem));
+					formStyledLayoutStructureItem));
 		}
 
 		jspWriter.write("\" method=\"POST=\" style=\"");
 		jspWriter.write(
 			renderLayoutStructureDisplayContext.getStyle(
-				(FormStyledLayoutStructureItem)layoutStructureItem));
+				formStyledLayoutStructureItem));
+		jspWriter.write("\">");
+
+		jspWriter.write("<input name=\"classNameId\" type=\"hidden\" value=\"");
+		jspWriter.write(
+			String.valueOf(formStyledLayoutStructureItem.getClassNameId()));
+		jspWriter.write("\">");
+
+		jspWriter.write("<input name=\"classTypeId\" type=\"hidden\" value=\"");
+		jspWriter.write(
+			String.valueOf(formStyledLayoutStructureItem.getClassTypeId()));
 		jspWriter.write("\">");
 
 		_renderLayoutStructure(
