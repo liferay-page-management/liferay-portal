@@ -27,6 +27,7 @@ import com.liferay.info.internal.util.ItemClassNameServiceReferenceMapper;
 import com.liferay.info.item.InfoItemClassDetails;
 import com.liferay.info.item.InfoItemServiceTracker;
 import com.liferay.info.item.capability.InfoItemCapability;
+import com.liferay.info.item.creator.InfoItemCreator;
 import com.liferay.info.item.provider.InfoItemCapabilitiesProvider;
 import com.liferay.info.item.provider.InfoItemDetailsProvider;
 import com.liferay.info.item.provider.InfoItemFieldValuesProvider;
@@ -36,6 +37,7 @@ import com.liferay.info.item.provider.InfoItemObjectProvider;
 import com.liferay.info.item.provider.InfoItemObjectVariationProvider;
 import com.liferay.info.item.provider.InfoItemPermissionProvider;
 import com.liferay.info.item.provider.InfoItemWorkflowProvider;
+import com.liferay.info.item.provider.InfoRequestFieldValuesProvider;
 import com.liferay.info.item.provider.filter.InfoItemServiceFilter;
 import com.liferay.info.item.renderer.InfoItemRenderer;
 import com.liferay.info.item.selector.InfoItemSelector;
@@ -257,16 +259,17 @@ public class InfoItemServiceTrackerImpl implements InfoItemServiceTracker {
 		Class<?>[] serviceClasses = new Class<?>[] {
 			InfoCollectionProvider.class, InfoCollectionTextFormatter.class,
 			InfoFilterProvider.class, InfoItemCapabilitiesProvider.class,
-			InfoItemDetailsProvider.class, InfoItemFieldValuesProvider.class,
-			InfoItemFieldValuesUpdater.class, InfoItemFormProvider.class,
-			InfoItemFormVariationsProvider.class,
+			InfoItemCreator.class, InfoItemDetailsProvider.class,
+			InfoItemFieldValuesProvider.class, InfoItemFieldValuesUpdater.class,
+			InfoItemFormProvider.class, InfoItemFormVariationsProvider.class,
 			InfoItemFriendlyURLProvider.class, InfoItemFriendlyURLUpdater.class,
 			InfoItemIdentifierTranslator.class, InfoItemLanguagesProvider.class,
 			InfoItemObjectProvider.class, InfoItemObjectVariationProvider.class,
 			InfoItemPermissionProvider.class, InfoItemRenderer.class,
 			InfoItemSelector.class, InfoItemWorkflowProvider.class,
-			InfoListRenderer.class, InfoRequestItemProvider.class,
-			InfoTextFormatter.class, RelatedInfoItemCollectionProvider.class
+			InfoListRenderer.class, InfoRequestFieldValuesProvider.class,
+			InfoRequestItemProvider.class, InfoTextFormatter.class,
+			RelatedInfoItemCollectionProvider.class
 		};
 
 		for (Class<?> serviceClass : serviceClasses) {
