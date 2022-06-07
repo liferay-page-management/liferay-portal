@@ -203,6 +203,7 @@ const SaveFragmentCompositionModal = ({onCloseModal}) => {
 							<ClayInput
 								component="textarea"
 								id={descriptionInputId}
+								maxlength="4000"
 								onChange={(event) =>
 									setDescription(event.target.value)
 								}
