@@ -136,6 +136,7 @@ const SaveFragmentCompositionModal = ({onCloseModal}) => {
 							<ClayInput
 								autoFocus
 								id={nameInputId}
+								maxlength={config.getFragmentCompositionNameMaxLength}
 								onChange={(event) =>
 									setName(event.target.value)
 								}
@@ -202,7 +203,7 @@ const SaveFragmentCompositionModal = ({onCloseModal}) => {
 
 							<ClayInput
 								component="textarea"
-								id={descriptionInputId}
+								maxlength={config.getFragmentCompositionDescriptionMaxLength}
 								onChange={(event) =>
 									setDescription(event.target.value)
 								}
