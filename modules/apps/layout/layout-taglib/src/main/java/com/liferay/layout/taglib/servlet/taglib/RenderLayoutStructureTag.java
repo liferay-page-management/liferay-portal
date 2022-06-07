@@ -763,7 +763,7 @@ public class RenderLayoutStructureTag extends IncludeTag {
 					(FormStyledLayoutStructureItem)layoutStructureItem));
 		}
 
-		jspWriter.write("\" style=\"");
+		jspWriter.write("\" method=\"POST=\" style=\"");
 		jspWriter.write(
 			renderLayoutStructureDisplayContext.getStyle(
 				(FormStyledLayoutStructureItem)layoutStructureItem));
