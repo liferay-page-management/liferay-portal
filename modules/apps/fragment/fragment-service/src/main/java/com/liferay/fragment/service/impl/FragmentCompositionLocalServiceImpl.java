@@ -15,6 +15,7 @@
 package com.liferay.fragment.service.impl;
 
 import com.liferay.fragment.exception.DuplicateFragmentCompositionKeyException;
+import com.liferay.fragment.exception.FragmentCompositionDescriptionException;
 import com.liferay.fragment.exception.FragmentCompositionNameException;
 import com.liferay.fragment.model.FragmentComposition;
 import com.liferay.fragment.service.base.FragmentCompositionLocalServiceBaseImpl;
@@ -74,6 +75,7 @@ public class FragmentCompositionLocalServiceImpl
 		fragmentCompositionKey = _getFragmentCompositionKey(
 			fragmentCompositionKey);
 
+		validateDescription(description);
 		validate(name);
 		validateFragmentCompositionKey(groupId, fragmentCompositionKey);
 
@@ -292,6 +294,7 @@ public class FragmentCompositionLocalServiceImpl
 			fragmentCompositionPersistence.findByPrimaryKey(
 				fragmentCompositionId);
 
+		validateDescription(description);
 		validate(name);
 
 		User user = _userLocalService.getUser(userId);
@@ -324,6 +327,16 @@ public class FragmentCompositionLocalServiceImpl
 		fragmentComposition.setName(name);
 
 		return fragmentCompositionPersistence.update(fragmentComposition);
+	}
+
+	protected void validateDescription(String description) throws PortalException {
+		int descriptionMaxLength = ModelHintsUtil.getMaxLength(
+			FragmentComposition.class.getName(), "description");
+
+		if (description.length() > descriptionMaxLength) {
+			throw new FragmentCompositionDescriptionException(
+				"Maximum length of description exceeded");
+		}
 	}
 
 	protected void validate(String name) throws PortalException {
