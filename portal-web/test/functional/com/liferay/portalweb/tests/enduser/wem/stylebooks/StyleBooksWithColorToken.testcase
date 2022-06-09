@@ -129,7 +129,9 @@ definition {
 		}
 
 		task ("Cancel the publish process") {
-			PageEditor.clickPublish(publishing = "Cancel");
+			Modal.publish(
+				action = "Cancel",
+				warningMessage = "Some of the fields have invalid values. If you continue publishing, the latest valid values will display.");
 		}
 
 		task ("View the invalid color token is still shown in Text Color field") {
@@ -313,7 +315,9 @@ definition {
 		}
 
 		task ("Continue the publish process") {
-			PageEditor.clickPublish(publishing = "Continue");
+			Modal.publish(
+				action = "Continue",
+				warningMessage = "Some of the fields have invalid values. If you continue publishing, the latest valid values will display.");
 		}
 
 		task ("View the Text Color of Heading is the #DA1414 in view mode") {
