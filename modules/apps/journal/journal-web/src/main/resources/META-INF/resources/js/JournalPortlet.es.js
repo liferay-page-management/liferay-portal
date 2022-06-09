@@ -18,6 +18,9 @@ import {LocaleChangedHandler} from './LocaleChangedHandler.es';
 
 const AUTO_SAVE_DELAY = 1500;
 
+const LAYOUT_RENDERER_NAMESPACE =
+	'_com_liferay_journal_web_portlet_JournalPortlet_dataEngineLayoutRenderer';
+
 export default function _JournalPortlet({
 	articleId: initialArticleId,
 	autoSaveDraftEnabled,
@@ -166,6 +169,12 @@ export default function _JournalPortlet({
 		}
 
 		if (editingDefaultValues) {
+			Liferay.component(LAYOUT_RENDERER_NAMESPACE)
+				.reactComponentRef.current.getFields()
+				.forEach((field) => {
+					field.required = false;
+				});
+
 			actionInput.value = articleId
 				? '/journal/update_data_engine_default_values'
 				: '/journal/add_data_engine_default_values';
