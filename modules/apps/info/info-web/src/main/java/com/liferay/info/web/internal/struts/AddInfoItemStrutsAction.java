@@ -37,7 +37,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Rubén Pulido
  */
 @Component(
-	immediate = true, property = "path=/info/info-item/create",
+	immediate = true, property = "path=/info/add_info_item",
 	service = StrutsAction.class
 )
 public class AddInfoItemStrutsAction implements StrutsAction {
