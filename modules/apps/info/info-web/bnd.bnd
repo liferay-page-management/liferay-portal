@@ -1,0 +1,5 @@
+Bundle-Name: Liferay Info Web
+Bundle-SymbolicName: com.liferay.info.web
+Bundle-Version: 1.0.0
+Web-ContextPath: /info-web
+-dsannotations-options: inherit
