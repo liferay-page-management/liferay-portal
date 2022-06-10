@@ -40,7 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 	immediate = true, property = "path=/info/info-item/create",
 	service = StrutsAction.class
 )
-public class CreateInfoItemStrutsAction implements StrutsAction {
+public class AddInfoItemStrutsAction implements StrutsAction {
 
 	@Override
 	public String execute(
@@ -103,7 +103,7 @@ public class CreateInfoItemStrutsAction implements StrutsAction {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		CreateInfoItemStrutsAction.class);
+		AddInfoItemStrutsAction.class);
 
 	@Reference
 	private InfoItemServiceTracker _infoItemServiceTracker;
