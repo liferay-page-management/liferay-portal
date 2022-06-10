@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.info.internal.request.helper;
+package com.liferay.info.web.internal.helper;
 
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldValue;
