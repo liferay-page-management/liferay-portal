@@ -171,7 +171,16 @@ public class AssetTagsSelectorDisplayContext {
 				(ThemeDisplay)_httpServletRequest.getAttribute(
 					WebKeys.THEME_DISPLAY);
 
-			_groupIds = new long[] {themeDisplay.getScopeGroupId()};
+			Group group = themeDisplay.getScopeGroup();
+
+			if (group.isLayout()) {
+				_groupIds = new long[] {
+					group.getGroupId(), group.getParentGroupId()
+				};
+			}
+			else {
+				_groupIds = new long[] {group.getGroupId()};
+			}
 		}
 
 		return _groupIds;
