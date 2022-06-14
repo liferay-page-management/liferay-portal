@@ -24,11 +24,12 @@ import java.util.List;
 public class InputTemplateNode extends LinkedHashMap<String, Object> {
 
 	public InputTemplateNode(
-		String errorMessage, String helpText, String label, String name,
-		boolean required, boolean showHelpText, boolean showLabel, String type,
-		String value) {
+		String errorMessage, String dataType, String helpText, String label,
+		String name, boolean required, boolean showHelpText, boolean showLabel,
+		String type, String value) {
 
 		_errorMessage = errorMessage;
+		_dataType = dataType;
 		_helpText = helpText;
 		_label = label;
 		_name = name;
@@ -39,6 +40,7 @@ public class InputTemplateNode extends LinkedHashMap<String, Object> {
 		_value = value;
 
 		put("errorMessage", errorMessage);
+		put("dataType", dataType);
 		put("helpText", helpText);
 		put("label", label);
 		put("name", name);
@@ -53,6 +55,10 @@ public class InputTemplateNode extends LinkedHashMap<String, Object> {
 
 	public void addOption(String label, String value) {
 		_options.add(new Option(label, value));
+	}
+
+	public String getDataType() {
+		return _dataType;
 	}
 
 	public String getErrorMessage() {
@@ -115,6 +121,7 @@ public class InputTemplateNode extends LinkedHashMap<String, Object> {
 
 	}
 
+	private final String _dataType;
 	private final String _errorMessage;
 	private final String _helpText;
 	private final String _label;
