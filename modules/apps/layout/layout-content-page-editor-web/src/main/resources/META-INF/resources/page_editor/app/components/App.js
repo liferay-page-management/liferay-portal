@@ -100,9 +100,7 @@ export default function App({state}) {
 										<ShortcutManager />
 
 										<GlobalContextProvider>
-											{config.featureFlagLps132571 ? (
-												<CommonStylesManager />
-											) : null}
+											<CommonStylesManager />
 
 											<LayoutViewport />
 
