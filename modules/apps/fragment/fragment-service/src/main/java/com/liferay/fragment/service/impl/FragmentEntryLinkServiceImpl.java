@@ -28,7 +28,6 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.LayoutPermission;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
 
 import java.util.Objects;
 
@@ -57,11 +56,7 @@ public class FragmentEntryLinkServiceImpl
 			String rendererKey, ServiceContext serviceContext)
 		throws PortalException {
 
-		boolean checkLayoutRestrictedUpdatePermission = GetterUtil.getBoolean(
-			PropsUtil.get("feature.flag.LPS-132571"));
-
-		_checkPermission(
-			groupId, plid, false, checkLayoutRestrictedUpdatePermission);
+		_checkPermission(groupId, plid, false);
 
 		return fragmentEntryLinkLocalService.addFragmentEntryLink(
 			getUserId(), groupId, originalFragmentEntryLinkId, fragmentEntryId,
@@ -77,8 +72,7 @@ public class FragmentEntryLinkServiceImpl
 			fragmentEntryLinkPersistence.findByPrimaryKey(fragmentEntryLinkId);
 
 		_checkPermission(
-			fragmentEntryLink.getGroupId(), fragmentEntryLink.getPlid(), false,
-			false);
+			fragmentEntryLink.getGroupId(), fragmentEntryLink.getPlid(), false);
 
 		return fragmentEntryLinkLocalService.deleteFragmentEntryLink(
 			fragmentEntryLinkId);
@@ -102,20 +96,15 @@ public class FragmentEntryLinkServiceImpl
 		FragmentEntryLink fragmentEntryLink =
 			fragmentEntryLinkPersistence.findByPrimaryKey(fragmentEntryLinkId);
 
-		boolean checkLayoutRestrictedUpdatePermission = GetterUtil.getBoolean(
-			PropsUtil.get("feature.flag.LPS-132571"));
-
 		_checkPermission(
-			fragmentEntryLink.getGroupId(), fragmentEntryLink.getPlid(), true,
-			checkLayoutRestrictedUpdatePermission);
+			fragmentEntryLink.getGroupId(), fragmentEntryLink.getPlid(), true);
 
 		return fragmentEntryLinkLocalService.updateFragmentEntryLink(
 			fragmentEntryLinkId, editableValues, updateClassedModel);
 	}
 
 	private void _checkPermission(
-			long groupId, long plid, boolean checkUpdateLayoutContentPermission,
-			boolean checkLayoutRestrictedUpdatePermission)
+			long groupId, long plid, boolean checkUpdateLayoutContentPermission)
 		throws PortalException {
 
 		String className = Layout.class.getName();
@@ -147,8 +136,7 @@ public class FragmentEntryLinkServiceImpl
 		}
 
 		if (!Objects.equals(className, Layout.class.getName()) ||
-			(!checkUpdateLayoutContentPermission &&
-			 !checkLayoutRestrictedUpdatePermission)) {
+			!checkUpdateLayoutContentPermission) {
 
 			throw new PrincipalException.MustHavePermission(
 				getUserId(), className, classPK, ActionKeys.UPDATE);
@@ -164,8 +152,7 @@ public class FragmentEntryLinkServiceImpl
 			return;
 		}
 
-		if (checkLayoutRestrictedUpdatePermission &&
-			_layoutPermission.containsLayoutRestrictedUpdatePermission(
+		if (_layoutPermission.containsLayoutRestrictedUpdatePermission(
 				getPermissionChecker(), classPK)) {
 
 			return;
