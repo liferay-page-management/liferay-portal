@@ -78,6 +78,52 @@ DDMStructure ddmStructure = journalEditArticleDisplayContext.getDDMStructure();
 	ignoreRequestValue="<%= journalEditArticleDisplayContext.isChangeStructure() %>"
 />
 
+<script>
+	var categorationRoot = document.querySelectorAll(
+		'#_com_liferay_journal_web_portlet_JournalPortlet_mvfr___assetCategoriesSelector .form-group'
+	);
+	var vocabularyTitle = categorationRoot[0].textContent.split('Required')[0];
+	var categoriesNotification = document.createElement('div');
+	categoriesNotification.classList.add(
+		'alert',
+		'alert-dismissible',
+		'alert-danger'
+	);
+	categoriesNotification.setAttribute('role', 'alert');
+	categoriesNotification.innerHTML = `
+			<button aria-label="<%= LanguageUtil.get(request, "close") %>" class="close" data-dismiss="liferay-alert" type="button">
+				<aui:icon image="times" markupView="lexicon" />
+
+				<span class="sr-only"><%= LanguageUtil.get(request, "close") %></span>
+			</button>
+
+			<span class="alert-indicator">
+				<svg aria-hidden="true" class="lexicon-icon lexicon-icon-times">
+					<use xlink:href="<%= themeDisplay.getPathThemeImages() %>/clay/icons.svg#exclamation-full"></use>
+				</svg>
+			</span>
+
+			<strong class="lead">Error:</strong>
+	`;
+	categoriesNotification.innerHTML +=
+		'<liferay-ui:message arguments="' + vocabularyTitle + '" key="please-select-at-least-one-category-for-x" translateArguments="<%= false %>" />';
+
+	document.getElementsByClassName('btn-primary')[0].onclick = function () {
+		if (categorationRoot[0].innerText.includes('Required')) {
+			if (
+				!document.getElementsByClassName('alert-danger').length &&
+				!categorationRoot[0].querySelectorAll(
+					'.input-group .input-group-item .input-group .input-group-item .form-control-inset'
+				)[0].value
+			) {
+				document
+					.querySelector('#categorizationContent')
+					.before(categoriesNotification);
+			}
+		}
+	};
+</script>
+
 <c:if test='<%= GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-150762")) && (article != null) %>'>
 
 	<%
