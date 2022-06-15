@@ -380,7 +380,12 @@ public class FreeMarkerFragmentEntryProcessor
 			_fragmentEntryConfigurationParser.getFieldValue(
 				fragmentEntryLink.getEditableValues(),
 				new FragmentConfigurationField(
-					"inputHelpText", "string", "", true, "text"),
+					"inputHelpText", "string",
+					LanguageUtil.get(
+						locale,
+						"guide-your-users-to-fill-in-the-field-by-adding-" +
+							"help-text-here"),
+					true, "text"),
 				locale));
 		String inputLabel = GetterUtil.getString(
 			_fragmentEntryConfigurationParser.getFieldValue(
