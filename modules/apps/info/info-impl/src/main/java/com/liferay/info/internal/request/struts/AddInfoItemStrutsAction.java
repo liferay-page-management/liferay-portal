@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.struts.StrutsAction;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
@@ -37,6 +38,7 @@ import com.liferay.portal.kernel.util.Validator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.liferay.portal.kernel.util.WebKeys;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
@@ -74,7 +76,12 @@ public class AddInfoItemStrutsAction implements StrutsAction {
 				throw new InfoFormException();
 			}
 
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
 			infoItemCreator.createFromInfoItemFieldValues(
+				themeDisplay.getScopeGroupId(),
 				InfoItemFieldValues.builder(
 				).infoFieldValues(
 					_infoRequestFieldValuesProviderHelper.getInfoFieldValues(
