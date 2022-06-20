@@ -2370,7 +2370,8 @@ public class ObjectEntryLocalServiceImpl
 				if (!StringUtil.equals(
 						String.valueOf(value), entryValueString)) {
 
-					throw new ObjectEntryValuesException.ExceedsIntegerSize();
+					throw new ObjectEntryValuesException.ExceedsIntegerSize(
+						9, objectField.getName());
 				}
 			}
 		}
