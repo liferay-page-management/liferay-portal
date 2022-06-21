@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import java.util.Objects;
 import java.util.concurrent.Callable;
 
 import javax.portlet.ActionRequest;
@@ -85,6 +86,10 @@ public abstract class BaseContentPageEditorTransactionalMVCActionCommand
 		ActionRequest actionRequest, Exception exception) {
 
 		String errorMessage = "an-unexpected-error-occurred";
+
+		if (Objects.nonNull(exception)) {
+			errorMessage = exception.getMessage();
+		}
 
 		if (exception instanceof PortletIdException) {
 			errorMessage =
