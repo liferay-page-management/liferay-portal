@@ -218,10 +218,11 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 	}
 
 	private String _renderFragmentEntry(
-		long fragmentEntryId, FragmentEntryLink fragmentEntryLink, String css,
-		String html, Optional<InfoForm> infoFormOptional, String js,
-		String configuration, String namespace, String fragmentElementId,
-		String mode, HttpServletRequest httpServletRequest, Locale locale) {
+		String configuration, String css, String fragmentElementId,
+		long fragmentEntryId, FragmentEntryLink fragmentEntryLink, String html,
+		HttpServletRequest httpServletRequest,
+		Optional<InfoForm> infoFormOptional, String js, Locale locale,
+		String mode, String namespace) {
 
 		StringBundler sb = new StringBundler(22);
 
@@ -403,13 +404,13 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 		}
 
 		content = _renderFragmentEntry(
-			fragmentEntryLink.getFragmentEntryId(), fragmentEntryLink, css,
-			html, fragmentRendererContext.getInfoFormOptional(),
-			fragmentEntryLink.getJs(), configurationJSONObject.toString(),
-			fragmentEntryLink.getNamespace(),
+			configurationJSONObject.toString(), css,
 			fragmentRendererContext.getFragmentElementId(),
-			fragmentRendererContext.getMode(), httpServletRequest,
-			fragmentRendererContext.getLocale());
+			fragmentEntryLink.getFragmentEntryId(), fragmentEntryLink, html,
+			httpServletRequest, fragmentRendererContext.getInfoFormOptional(),
+			fragmentEntryLink.getJs(), fragmentRendererContext.getLocale(),
+			fragmentRendererContext.getMode(),
+			fragmentEntryLink.getNamespace());
 
 		if (_isCacheable(fragmentEntryLink, fragmentRendererContext)) {
 			portalCache.put(cacheKeySB.toString(), content);
