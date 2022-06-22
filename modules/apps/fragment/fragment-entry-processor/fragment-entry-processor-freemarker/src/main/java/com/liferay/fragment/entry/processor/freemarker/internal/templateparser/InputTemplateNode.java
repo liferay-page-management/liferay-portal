@@ -25,17 +25,21 @@ public class InputTemplateNode extends LinkedHashMap<String, Object> {
 
 	public InputTemplateNode(
 		String dataType, String errorMessage, String helpText, String label,
-		String name, boolean required, boolean showHelpText, boolean showLabel,
+		String maxIntegerPart, String minIntegerPart, String name,
+		boolean required, boolean showHelpText, boolean showLabel, String step,
 		String type, String value) {
 
 		_dataType = dataType;
 		_errorMessage = errorMessage;
 		_helpText = helpText;
 		_label = label;
+		_maxIntegerPart = maxIntegerPart;
+		_minIntegerPart = minIntegerPart;
 		_name = name;
 		_required = required;
 		_showHelpText = showHelpText;
 		_showLabel = showLabel;
+		_step = step;
 		_type = type;
 		_value = value;
 
@@ -43,10 +47,13 @@ public class InputTemplateNode extends LinkedHashMap<String, Object> {
 		put("errorMessage", errorMessage);
 		put("helpText", helpText);
 		put("label", label);
+		put("maxIntegerPart", maxIntegerPart);
+		put("minIntegerPart", minIntegerPart);
 		put("name", name);
 		put("required", required);
 		put("showHelpText", showHelpText);
 		put("showLabel", showLabel);
+		put("step", step);
 		put("type", type);
 		put("value", value);
 
@@ -81,8 +88,20 @@ public class InputTemplateNode extends LinkedHashMap<String, Object> {
 		return _value;
 	}
 
+	public String getMaxIntegerPart() {
+		return _maxIntegerPart;
+	}
+
+	public String getMinIntegerPart() {
+		return _minIntegerPart;
+	}
+
 	public List<InputTemplateNode.Option> getOptions() {
 		return _options;
+	}
+
+	public String getStep() {
+		return _step;
 	}
 
 	public String getType() {
@@ -125,11 +144,14 @@ public class InputTemplateNode extends LinkedHashMap<String, Object> {
 	private final String _errorMessage;
 	private final String _helpText;
 	private final String _label;
+	private final String _maxIntegerPart;
+	private final String _minIntegerPart;
 	private final String _name;
 	private final List<InputTemplateNode.Option> _options = new ArrayList<>();
 	private final boolean _required;
 	private final boolean _showHelpText;
 	private final boolean _showLabel;
+	private final String _step;
 	private final String _type;
 	private final String _value;
 
