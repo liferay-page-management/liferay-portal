@@ -791,8 +791,6 @@ definition {
 				item = "Edit",
 				styleBookName = "Test Style Book Name");
 
-			Pause(locator1 = "3000");
-
 			StyleBooks.selectForm(formName = "Buttons");
 
 			StyleBooks.expandSection(sectionName = "Button Primary");

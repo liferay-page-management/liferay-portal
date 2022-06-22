@@ -80,6 +80,8 @@ definition {
 	}
 
 	macro selectForm {
+		WaitForElementPresent(locator1 = "StyleBookEditor#STYLE_BOOK_EDITOR_SIDEBAR");
+
 		Click(locator1 = "StyleBookEditor#FORM_CONTROL_SELECT_BUTTON");
 
 		MenuItem.click(menuItem = "${formName}");
@@ -172,7 +174,7 @@ definition {
 	}
 
 	macro waitForAutoSave {
-		Pause(locator1 = "1000");
+		WaitForElementNotPresent(locator1 = "StyleBookEditor#DRAFT_SAVING_MESSAGE");
 
 		AssertVisible(locator1 = "StyleBookEditor#DRAFT_SAVED_MESSAGE");
 	}
