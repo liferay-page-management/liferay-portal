@@ -22,15 +22,63 @@ public class NumberInfoFieldType implements InfoFieldType {
 	public static final Attribute<NumberInfoFieldType, Boolean> DECIMAL =
 		new Attribute<>();
 
-	public static final NumberInfoFieldType INSTANCE =
-		new NumberInfoFieldType();
+	public static final NumberInfoFieldType INSTANCE = new Builder().build();
+
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public Integer getDecimalPartMaxLength() {
+		return _builder._decimalPartMaxLength;
+	}
+
+	public Long getIntegerPartMaxValue() {
+		return _builder._integerPartMaxValue;
+	}
+
+	public Long getIntegerPartMinValue() {
+		return _builder._integerPartMinValue;
+	}
 
 	@Override
 	public String getName() {
 		return "number";
 	}
 
-	private NumberInfoFieldType() {
+	public static class Builder {
+
+		public NumberInfoFieldType build() {
+			return new NumberInfoFieldType(this);
+		}
+
+		public Builder decimalPartMaxLength(int decimalPartMaxLength) {
+			_decimalPartMaxLength = decimalPartMaxLength;
+
+			return this;
+		}
+
+		public Builder integerPartMaxValue(long integerPartMaxValue) {
+			_integerPartMaxValue = integerPartMaxValue;
+
+			return this;
+		}
+
+		public Builder integerPartMinValue(long integerPartMinValue) {
+			_integerPartMinValue = integerPartMinValue;
+
+			return this;
+		}
+
+		private Integer _decimalPartMaxLength;
+		private Long _integerPartMaxValue;
+		private Long _integerPartMinValue;
+
 	}
+
+	private NumberInfoFieldType(Builder builder) {
+		_builder = builder;
+	}
+
+	private final Builder _builder;
 
 }
