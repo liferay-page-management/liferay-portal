@@ -58,10 +58,13 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
+import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -247,8 +250,9 @@ public class FreeMarkerFragmentEntryProcessor
 						"input",
 						new InputTemplateNode(
 							StringPool.BLANK, StringPool.BLANK,
+							StringPool.BLANK, StringPool.BLANK,
 							StringPool.BLANK, StringPool.BLANK, "name", false,
-							false, false, "type", "value")
+							false, false, StringPool.BLANK, "type", "value")
 					).put(
 						"layoutMode", Constants.VIEW
 					).putAll(
@@ -330,6 +334,27 @@ public class FreeMarkerFragmentEntryProcessor
 		}
 
 		return message;
+	}
+
+	private String _getStep(Integer decimalPartMaxLength) {
+		if (decimalPartMaxLength == null) {
+			return StringPool.BLANK;
+		}
+
+		if (decimalPartMaxLength <= 0) {
+			return "0";
+		}
+
+		StringBundler sb = new StringBundler(3);
+
+		sb.append("0.");
+		sb.append(
+			StringUtil.merge(
+				Collections.nCopies(decimalPartMaxLength - 1, "0"),
+				StringPool.BLANK));
+		sb.append("1");
+
+		return sb.toString();
 	}
 
 	private boolean _isFreemarkerTemplate(String html) {
@@ -426,6 +451,9 @@ public class FreeMarkerFragmentEntryProcessor
 					"inputShowLabel", "boolean", "true", false, "checkbox"),
 				locale));
 
+		String maxIntegerPart = StringPool.BLANK;
+		String minIntegerPart = StringPool.BLANK;
+		String step = StringPool.BLANK;
 		String type = "type";
 
 		if (infoField != null) {
@@ -434,6 +462,9 @@ public class FreeMarkerFragmentEntryProcessor
 			type = infoFieldType.getName();
 
 			if (infoFieldType instanceof NumberInfoFieldType) {
+				NumberInfoFieldType numberInfoFieldType =
+					(NumberInfoFieldType)infoFieldType;
+
 				dataType = "integer";
 
 				Optional<Boolean> decimalOptional =
@@ -442,12 +473,30 @@ public class FreeMarkerFragmentEntryProcessor
 				if (decimalOptional.orElse(false)) {
 					dataType = "decimal";
 				}
+
+				if (numberInfoFieldType.getIntegerPartMaxValue() != null) {
+					maxIntegerPart = String.valueOf(
+						numberInfoFieldType.getIntegerPartMaxValue());
+				}
+
+				if (numberInfoFieldType.getIntegerPartMinValue() != null) {
+					minIntegerPart = String.valueOf(
+						numberInfoFieldType.getIntegerPartMinValue());
+				}
+
+				Integer decimalPartMaxLength =
+					numberInfoFieldType.getDecimalPartMaxLength();
+
+				if (decimalPartMaxLength != null) {
+					step = _getStep(decimalPartMaxLength);
+				}
 			}
 		}
 
 		InputTemplateNode inputTemplateNode = new InputTemplateNode(
-			dataType, errorMessage, inputHelpText, inputLabel, name, required,
-			inputShowHelpText, inputShowLabel, type, "value");
+			dataType, errorMessage, inputHelpText, inputLabel, maxIntegerPart,
+			minIntegerPart, name, required, inputShowHelpText, inputShowLabel,
+			step, type, "value");
 
 		if ((infoField != null) &&
 			(infoField.getInfoFieldType() instanceof SelectInfoFieldType)) {
