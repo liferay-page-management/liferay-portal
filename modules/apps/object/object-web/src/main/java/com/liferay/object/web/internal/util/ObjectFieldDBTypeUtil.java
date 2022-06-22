@@ -26,6 +26,7 @@ import com.liferay.info.localized.bundle.FunctionInfoLocalizedValue;
 import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeEntryLocalServiceUtil;
 import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.constants.ObjectFieldValidationConstants;
 import com.liferay.object.model.ObjectField;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -74,18 +75,48 @@ public class ObjectFieldDBTypeUtil {
 		}
 		else if (Objects.equals(
 					objectField.getBusinessType(),
-					ObjectFieldConstants.BUSINESS_TYPE_DECIMAL) ||
-				 Objects.equals(
-					 objectField.getBusinessType(),
-					 ObjectFieldConstants.BUSINESS_TYPE_INTEGER) ||
-				 Objects.equals(
-					 objectField.getBusinessType(),
-					 ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER) ||
-				 Objects.equals(
-					 objectField.getBusinessType(),
-					 ObjectFieldConstants.BUSINESS_TYPE_PRECISION_DECIMAL)) {
+					ObjectFieldConstants.BUSINESS_TYPE_DECIMAL)) {
 
 			return NumberInfoFieldType.INSTANCE;
+		}
+		else if (Objects.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_INTEGER)) {
+
+			return NumberInfoFieldType.builder(
+			).decimalPartMaxLength(
+				0
+			).integerPartMaxValue(
+				999_999_999
+			).integerPartMinValue(
+				-999_999_999
+			).build();
+		}
+		else if (Objects.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER)) {
+
+			return NumberInfoFieldType.builder(
+			).decimalPartMaxLength(
+				0
+			).integerPartMaxValue(
+				ObjectFieldValidationConstants.MAX_SAFE_LONG
+			).integerPartMinValue(
+				ObjectFieldValidationConstants.MIN_SAFE_LONG
+			).build();
+		}
+		else if (Objects.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_PRECISION_DECIMAL)) {
+
+			return NumberInfoFieldType.builder(
+			).decimalPartMaxLength(
+				16
+			).integerPartMaxValue(
+				99_999_999_999_999L
+			).integerPartMinValue(
+				-99_999_999_999_999L
+			).build();
 		}
 		else if (Objects.equals(
 					objectField.getBusinessType(),
