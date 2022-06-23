@@ -16,6 +16,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ACTIVE_TAB_NAVIGATION</td>
+	<td>//nav[contains(@role,'navigation')]//li[contains(@class,'list-item') and contains(@class,'active')][normalize-space()='${key_tab}']</td>
+	<td></td>
+</tr>
+<tr>
 	<td>NAV_TABS</td>
 	<td>//*[contains(@class,'nav-tabs')]//*[contains(.,'${key_tab}')]</td>
 	<td></td>
@@ -23,6 +28,11 @@
 <tr>
 	<td>TAB_LINK</td>
 	<td>//*[contains(@class,'nav-link') and normalize-space()='${key_tab}'][not(contains(@id,'ProductMenu') or contains(@href,'site_administration'))]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TAB_NAVIGATION</td>
+	<td>//nav[contains(@role,'navigation')]//li[contains(@class,'list-item')][normalize-space()='${key_tab}']</td>
 	<td></td>
 </tr>
 </tbody>
