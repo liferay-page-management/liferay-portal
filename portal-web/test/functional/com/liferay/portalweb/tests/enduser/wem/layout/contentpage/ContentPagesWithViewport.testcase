@@ -88,14 +88,16 @@ definition {
 		}
 
 		task ("Then the page creator could customize styles of Heading fragment in the Tablet viewport") {
-			task ("View the Advanced tab is not shown on sidebar") {
+			task ("View the Advanced tab is shown on sidebar") {
 				SelectFrame.selectFrameNoLoading(locator1 = "IFrame#PAGE_EDITOR_GLOBAL_CONTEXT_IFRAME");
 
 				PageEditor.clickConfigurableField(fragmentName = "Heading");
 
 				SelectFrameTop();
 
-				Navigator.viewNoNavTab(navTab = "Advanced");
+				AssertElementPresent(
+					key_tab = "Advanced",
+					locator1 = "NavTab#TAB_LINK");
 			}
 
 			task ("View only the Frame section is available on General panel") {
