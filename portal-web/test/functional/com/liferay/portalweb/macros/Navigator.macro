@@ -99,6 +99,16 @@ definition {
 		AssertElementPresent(locator1 = "NavBar#ACTIVE_NAV_ITEM_LINK");
 	}
 
+	macro gotoNavListItem {
+		var key_tab = "${navTab}";
+
+		AssertClick(
+			locator1 = "NavTab#TAB_NAVIGATION",
+			value1 = "${navTab}");
+
+		AssertElementPresent(locator1 = "NavTab#ACTIVE_TAB_NAVIGATION");
+	}
+
 	macro gotoNavNested {
 		var key_navNested = "${navNested}";
 
