@@ -48,6 +48,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
@@ -627,9 +628,27 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 				if (Validator.isNotNull(viewURL) &&
 					!Objects.equals(viewURL, noSuchEntryRedirect)) {
 
-					viewURL = HttpComponentsUtil.setParameter(
-						viewURL, "redirect",
-						_portal.getCurrentURL(liferayPortletRequest));
+					Portlet portlet = liferayPortletRequest.getPortlet();
+					String currentURL = _portal.getCurrentURL(
+						liferayPortletRequest);
+
+					if (Objects.equals(
+							portlet.getPortletName(),
+							AssetPublisherPortletKeys.RELATED_ASSETS) &&
+						currentURL.contains(
+							liferayPortletRequest.getPortletName())) {
+
+						viewURL = HttpComponentsUtil.setParameter(
+							viewURL, "redirect",
+							liferayPortletRequest.getHttpServletRequest(
+							).getHeader(
+								"Referer"
+							));
+					}
+					else {
+						viewURL = HttpComponentsUtil.setParameter(
+							viewURL, "redirect", currentURL);
+					}
 				}
 			}
 			catch (Exception exception) {
