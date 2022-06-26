@@ -14,6 +14,7 @@
 
 package com.liferay.fragment.helper;
 
+import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
 
 import java.util.Locale;
@@ -22,6 +23,9 @@ import java.util.Locale;
  * @author Eudaldo Alonso
  */
 public interface FragmentEntryLinkHelper {
+
+	public FragmentEntry getContributedFragmentEntry(
+		FragmentEntryLink fragmentEntryLink);
 
 	public String getFragmentEntryName(
 		FragmentEntryLink fragmentEntryLink, Locale locale);

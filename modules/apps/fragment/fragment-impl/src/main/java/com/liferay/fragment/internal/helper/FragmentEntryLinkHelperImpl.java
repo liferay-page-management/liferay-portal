@@ -37,6 +37,17 @@ import org.osgi.service.component.annotations.Reference;
 public class FragmentEntryLinkHelperImpl implements FragmentEntryLinkHelper {
 
 	@Override
+	public FragmentEntry getContributedFragmentEntry(
+		FragmentEntryLink fragmentEntryLink) {
+
+		Map<String, FragmentEntry> fragmentCollectionContributorEntries =
+			_fragmentCollectionContributorTracker.getFragmentEntries();
+
+		return fragmentCollectionContributorEntries.get(
+			fragmentEntryLink.getRendererKey());
+	}
+
+	@Override
 	public String getFragmentEntryName(
 		FragmentEntryLink fragmentEntryLink, Locale locale) {
 
@@ -48,17 +59,12 @@ public class FragmentEntryLinkHelperImpl implements FragmentEntryLinkHelper {
 			return fragmentEntry.getName();
 		}
 
-		String rendererKey = fragmentEntryLink.getRendererKey();
-
-		if (Validator.isNull(rendererKey)) {
+		if (Validator.isNull(fragmentEntryLink.getRendererKey())) {
 			return StringPool.BLANK;
 		}
 
-		Map<String, FragmentEntry> fragmentEntries =
-			_fragmentCollectionContributorTracker.getFragmentEntries(locale);
-
-		FragmentEntry contributedFragmentEntry = fragmentEntries.get(
-			rendererKey);
+		FragmentEntry contributedFragmentEntry = getContributedFragmentEntry(
+			fragmentEntryLink);
 
 		if (contributedFragmentEntry != null) {
 			return contributedFragmentEntry.getName();

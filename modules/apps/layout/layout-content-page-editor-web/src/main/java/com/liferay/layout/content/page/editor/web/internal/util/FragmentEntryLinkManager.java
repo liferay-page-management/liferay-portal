@@ -270,7 +270,8 @@ public class FragmentEntryLinkManager {
 					}
 
 					FragmentRenderer fragmentRenderer =
-						_fragmentRendererTracker.getFragmentRenderer(rendererKey);
+						_fragmentRendererTracker.getFragmentRenderer(
+							rendererKey);
 
 					if (fragmentRenderer != null) {
 						return fragmentRenderer.getKey();
@@ -462,6 +463,9 @@ public class FragmentEntryLinkManager {
 	private FragmentEntryConfigurationParser _fragmentEntryConfigurationParser;
 
 	@Reference
+	private FragmentEntryLinkHelper _fragmentEntryLinkHelper;
+
+	@Reference
 	private FragmentEntryLinkListenerTracker _fragmentEntryLinkListenerTracker;
 
 	@Reference
@@ -478,9 +482,6 @@ public class FragmentEntryLinkManager {
 
 	@Reference
 	private InfoItemServiceTracker _infoItemServiceTracker;
-
-	@Reference
-	private FragmentEntryLinkHelper _fragmentEntryLinkHelper;
 
 	@Reference
 	private ItemSelector _itemSelector;
