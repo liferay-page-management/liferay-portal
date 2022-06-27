@@ -32,9 +32,12 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -169,6 +172,35 @@ public class FragmentEntryInputTemplateNodeContextHelper {
 			inputShowHelpText, inputShowLabel, type, "value");
 
 		if ((infoField != null) &&
+			(infoField.getInfoFieldType() instanceof NumberInfoFieldType)) {
+
+			InfoFieldType infoFieldType = infoField.getInfoFieldType();
+
+			NumberInfoFieldType numberInfoFieldType =
+				(NumberInfoFieldType)infoFieldType;
+
+			if (numberInfoFieldType.getIntegerPartMaxValue() != null) {
+				inputTemplateNode.addAttribute(
+					"maxIntegerPart",
+					String.valueOf(
+						numberInfoFieldType.getIntegerPartMaxValue()));
+			}
+
+			if (numberInfoFieldType.getIntegerPartMinValue() != null) {
+				inputTemplateNode.addAttribute(
+					"minIntegerPart",
+					String.valueOf(
+						numberInfoFieldType.getIntegerPartMinValue()));
+			}
+
+			if (numberInfoFieldType.getDecimalPartMaxLength() != null) {
+				inputTemplateNode.addAttribute(
+					"step",
+					_getStep(numberInfoFieldType.getDecimalPartMaxLength()));
+			}
+		}
+
+		if ((infoField != null) &&
 			(infoField.getInfoFieldType() instanceof SelectInfoFieldType)) {
 
 			Optional<List<SelectInfoFieldType.Option>> optionsOptional =
@@ -222,6 +254,27 @@ public class FragmentEntryInputTemplateNodeContextHelper {
 		}
 
 		return StringPool.BLANK;
+	}
+
+	private String _getStep(Integer decimalPartMaxLength) {
+		if (decimalPartMaxLength == null) {
+			return StringPool.BLANK;
+		}
+
+		if (decimalPartMaxLength <= 0) {
+			return "0";
+		}
+
+		StringBundler sb = new StringBundler(3);
+
+		sb.append("0.");
+		sb.append(
+			StringUtil.merge(
+				Collections.nCopies(decimalPartMaxLength - 1, "0"),
+				StringPool.BLANK));
+		sb.append("1");
+
+		return sb.toString();
 	}
 
 	private final FragmentCollectionContributorTracker
