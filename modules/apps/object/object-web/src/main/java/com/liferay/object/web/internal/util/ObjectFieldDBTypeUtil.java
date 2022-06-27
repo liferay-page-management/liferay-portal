@@ -30,6 +30,8 @@ import com.liferay.object.constants.ObjectFieldValidationConstants;
 import com.liferay.object.model.ObjectField;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -86,10 +88,10 @@ public class ObjectFieldDBTypeUtil {
 			return NumberInfoFieldType.builder(
 			).decimalPartMaxLength(
 				0
-			).integerPartMaxValue(
-				999_999_999
-			).integerPartMinValue(
-				-999_999_999
+			).maxValue(
+				BigDecimal.valueOf(999_999_999)
+			).minValue(
+				BigDecimal.valueOf(-999_999_999)
 			).build();
 		}
 		else if (Objects.equals(
@@ -99,10 +101,10 @@ public class ObjectFieldDBTypeUtil {
 			return NumberInfoFieldType.builder(
 			).decimalPartMaxLength(
 				0
-			).integerPartMaxValue(
-				ObjectFieldValidationConstants.MAX_SAFE_LONG
-			).integerPartMinValue(
-				ObjectFieldValidationConstants.MIN_SAFE_LONG
+			).maxValue(
+				BigDecimal.valueOf(ObjectFieldValidationConstants.MAX_SAFE_LONG)
+			).minValue(
+				BigDecimal.valueOf(ObjectFieldValidationConstants.MIN_SAFE_LONG)
 			).build();
 		}
 		else if (Objects.equals(
@@ -112,10 +114,10 @@ public class ObjectFieldDBTypeUtil {
 			return NumberInfoFieldType.builder(
 			).decimalPartMaxLength(
 				16
-			).integerPartMaxValue(
-				99_999_999_999_999L
-			).integerPartMinValue(
-				-99_999_999_999_999L
+			).maxValue(
+				BigDecimal.valueOf(99_999_999_999_999L)
+			).minValue(
+				BigDecimal.valueOf(-99_999_999_999_999L)
 			).build();
 		}
 		else if (Objects.equals(
