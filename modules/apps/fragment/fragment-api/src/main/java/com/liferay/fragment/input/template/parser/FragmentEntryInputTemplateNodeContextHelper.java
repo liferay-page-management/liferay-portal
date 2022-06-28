@@ -36,6 +36,8 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -174,26 +176,27 @@ public class FragmentEntryInputTemplateNodeContextHelper {
 		if ((infoField != null) &&
 			(infoField.getInfoFieldType() instanceof NumberInfoFieldType)) {
 
-			InfoFieldType infoFieldType = infoField.getInfoFieldType();
+			Optional<BigDecimal> maxValueOptional =
+				infoField.getAttributeOptional(NumberInfoFieldType.MAX_VALUE);
 
-			NumberInfoFieldType numberInfoFieldType =
-				(NumberInfoFieldType)infoFieldType;
+			maxValueOptional.ifPresent(
+				maxValue -> inputTemplateNode.addAttribute(
+					"max", String.valueOf(maxValue)));
 
-			if (numberInfoFieldType.getMaxValue() != null) {
-				inputTemplateNode.addAttribute(
-					"max", String.valueOf(numberInfoFieldType.getMaxValue()));
-			}
+			Optional<BigDecimal> minValueOptional =
+				infoField.getAttributeOptional(NumberInfoFieldType.MIN_VALUE);
 
-			if (numberInfoFieldType.getMinValue() != null) {
-				inputTemplateNode.addAttribute(
-					"min", String.valueOf(numberInfoFieldType.getMinValue()));
-			}
+			minValueOptional.ifPresent(
+				minValue -> inputTemplateNode.addAttribute(
+					"min", String.valueOf(minValue)));
 
-			if (numberInfoFieldType.getDecimalPartMaxLength() != null) {
-				inputTemplateNode.addAttribute(
-					"step",
-					_getStep(numberInfoFieldType.getDecimalPartMaxLength()));
-			}
+			Optional<Integer> decimalPartMaxLengthOptional =
+				infoField.getAttributeOptional(
+					NumberInfoFieldType.DECIMAL_PART_MAX_LENGTH);
+
+			decimalPartMaxLengthOptional.ifPresent(
+				decimalPartMaxLength -> inputTemplateNode.addAttribute(
+					"step", _getStep(decimalPartMaxLength)));
 		}
 
 		if ((infoField != null) &&

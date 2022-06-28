@@ -56,7 +56,47 @@ public class ObjectFieldDBTypeUtil {
 
 		if (Objects.equals(
 				objectField.getBusinessType(),
-				ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
+				ObjectFieldConstants.BUSINESS_TYPE_INTEGER)) {
+
+			finalStep.attribute(
+				NumberInfoFieldType.DECIMAL_PART_MAX_LENGTH, 0
+			).attribute(
+				NumberInfoFieldType.MAX_VALUE, BigDecimal.valueOf(999_999_999)
+			).attribute(
+				NumberInfoFieldType.MIN_VALUE, BigDecimal.valueOf(-999_999_999)
+			);
+		}
+		else if (Objects.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER)) {
+
+			finalStep.attribute(
+				NumberInfoFieldType.DECIMAL_PART_MAX_LENGTH, 0
+			).attribute(
+				NumberInfoFieldType.MAX_VALUE,
+				BigDecimal.valueOf(ObjectFieldValidationConstants.MAX_SAFE_LONG)
+			).attribute(
+				NumberInfoFieldType.MIN_VALUE,
+				BigDecimal.valueOf(ObjectFieldValidationConstants.MIN_SAFE_LONG)
+			);
+		}
+		else if (Objects.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_PRECISION_DECIMAL)) {
+
+			finalStep.attribute(
+				NumberInfoFieldType.DECIMAL_PART_MAX_LENGTH, 16
+			).attribute(
+				NumberInfoFieldType.MAX_VALUE,
+				new BigDecimal("99999999999999.9999999999999999")
+			).attribute(
+				NumberInfoFieldType.MIN_VALUE,
+				new BigDecimal("-99999999999999.9999999999999999")
+			);
+		}
+		else if (Objects.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
 
 			finalStep.attribute(
 				SelectInfoFieldType.OPTIONS, _getOptions(objectField));
@@ -77,48 +117,18 @@ public class ObjectFieldDBTypeUtil {
 		}
 		else if (Objects.equals(
 					objectField.getBusinessType(),
-					ObjectFieldConstants.BUSINESS_TYPE_DECIMAL)) {
+					ObjectFieldConstants.BUSINESS_TYPE_DECIMAL) ||
+				 Objects.equals(
+					 objectField.getBusinessType(),
+					 ObjectFieldConstants.BUSINESS_TYPE_INTEGER) ||
+				 Objects.equals(
+					 objectField.getBusinessType(),
+					 ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER) ||
+				 Objects.equals(
+					 objectField.getBusinessType(),
+					 ObjectFieldConstants.BUSINESS_TYPE_PRECISION_DECIMAL)) {
 
 			return NumberInfoFieldType.INSTANCE;
-		}
-		else if (Objects.equals(
-					objectField.getBusinessType(),
-					ObjectFieldConstants.BUSINESS_TYPE_INTEGER)) {
-
-			return NumberInfoFieldType.builder(
-			).decimalPartMaxLength(
-				0
-			).maxValue(
-				BigDecimal.valueOf(999_999_999)
-			).minValue(
-				BigDecimal.valueOf(-999_999_999)
-			).build();
-		}
-		else if (Objects.equals(
-					objectField.getBusinessType(),
-					ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER)) {
-
-			return NumberInfoFieldType.builder(
-			).decimalPartMaxLength(
-				0
-			).maxValue(
-				BigDecimal.valueOf(ObjectFieldValidationConstants.MAX_SAFE_LONG)
-			).minValue(
-				BigDecimal.valueOf(ObjectFieldValidationConstants.MIN_SAFE_LONG)
-			).build();
-		}
-		else if (Objects.equals(
-					objectField.getBusinessType(),
-					ObjectFieldConstants.BUSINESS_TYPE_PRECISION_DECIMAL)) {
-
-			return NumberInfoFieldType.builder(
-			).decimalPartMaxLength(
-				16
-			).maxValue(
-				new BigDecimal("99999999999999.9999999999999999")
-			).minValue(
-				new BigDecimal("-99999999999999.9999999999999999")
-			).build();
 		}
 		else if (Objects.equals(
 					objectField.getBusinessType(),
