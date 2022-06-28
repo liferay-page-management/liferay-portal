@@ -115,9 +115,9 @@ public class ObjectFieldDBTypeUtil {
 			).decimalPartMaxLength(
 				16
 			).maxValue(
-				BigDecimal.valueOf(99_999_999_999_999L)
+				new BigDecimal("99999999999999.9999999999999999")
 			).minValue(
-				BigDecimal.valueOf(-99_999_999_999_999L)
+				new BigDecimal("-99999999999999.9999999999999999")
 			).build();
 		}
 		else if (Objects.equals(
