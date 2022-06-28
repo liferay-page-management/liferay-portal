@@ -14,6 +14,8 @@
 
 package com.liferay.info.field.type;
 
+import java.math.BigDecimal;
+
 /**
  * @author Alejandro Tardín
  */
@@ -32,12 +34,12 @@ public class NumberInfoFieldType implements InfoFieldType {
 		return _builder._decimalPartMaxLength;
 	}
 
-	public Long getIntegerPartMaxValue() {
-		return _builder._integerPartMaxValue;
+	public BigDecimal getMaxValue() {
+		return _builder._maxValue;
 	}
 
-	public Long getIntegerPartMinValue() {
-		return _builder._integerPartMinValue;
+	public BigDecimal getMinValue() {
+		return _builder._minValue;
 	}
 
 	@Override
@@ -57,21 +59,21 @@ public class NumberInfoFieldType implements InfoFieldType {
 			return this;
 		}
 
-		public Builder integerPartMaxValue(long integerPartMaxValue) {
-			_integerPartMaxValue = integerPartMaxValue;
+		public Builder maxValue(BigDecimal maxValue) {
+			_maxValue = maxValue;
 
 			return this;
 		}
 
-		public Builder integerPartMinValue(long integerPartMinValue) {
-			_integerPartMinValue = integerPartMinValue;
+		public Builder minValue(BigDecimal minValue) {
+			_minValue = minValue;
 
 			return this;
 		}
 
 		private Integer _decimalPartMaxLength;
-		private Long _integerPartMaxValue;
-		private Long _integerPartMinValue;
+		private BigDecimal _maxValue;
+		private BigDecimal _minValue;
 
 	}
 
