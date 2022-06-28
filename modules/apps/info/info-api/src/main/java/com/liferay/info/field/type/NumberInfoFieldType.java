@@ -24,63 +24,24 @@ public class NumberInfoFieldType implements InfoFieldType {
 	public static final Attribute<NumberInfoFieldType, Boolean> DECIMAL =
 		new Attribute<>();
 
-	public static final NumberInfoFieldType INSTANCE = new Builder().build();
+	public static final Attribute<NumberInfoFieldType, Integer>
+		DECIMAL_PART_MAX_LENGTH = new Attribute<>();
 
-	public static Builder builder() {
-		return new Builder();
-	}
+	public static final NumberInfoFieldType INSTANCE =
+		new NumberInfoFieldType();
 
-	public Integer getDecimalPartMaxLength() {
-		return _builder._decimalPartMaxLength;
-	}
+	public static final Attribute<NumberInfoFieldType, BigDecimal> MAX_VALUE =
+		new Attribute<>();
 
-	public BigDecimal getMaxValue() {
-		return _builder._maxValue;
-	}
-
-	public BigDecimal getMinValue() {
-		return _builder._minValue;
-	}
+	public static final Attribute<NumberInfoFieldType, BigDecimal> MIN_VALUE =
+		new Attribute<>();
 
 	@Override
 	public String getName() {
 		return "number";
 	}
 
-	public static class Builder {
-
-		public NumberInfoFieldType build() {
-			return new NumberInfoFieldType(this);
-		}
-
-		public Builder decimalPartMaxLength(int decimalPartMaxLength) {
-			_decimalPartMaxLength = decimalPartMaxLength;
-
-			return this;
-		}
-
-		public Builder maxValue(BigDecimal maxValue) {
-			_maxValue = maxValue;
-
-			return this;
-		}
-
-		public Builder minValue(BigDecimal minValue) {
-			_minValue = minValue;
-
-			return this;
-		}
-
-		private Integer _decimalPartMaxLength;
-		private BigDecimal _maxValue;
-		private BigDecimal _minValue;
-
+	private NumberInfoFieldType() {
 	}
-
-	private NumberInfoFieldType(Builder builder) {
-		_builder = builder;
-	}
-
-	private final Builder _builder;
 
 }
