@@ -179,18 +179,14 @@ public class FragmentEntryInputTemplateNodeContextHelper {
 			NumberInfoFieldType numberInfoFieldType =
 				(NumberInfoFieldType)infoFieldType;
 
-			if (numberInfoFieldType.getIntegerPartMaxValue() != null) {
+			if (numberInfoFieldType.getMaxValue() != null) {
 				inputTemplateNode.addAttribute(
-					"maxIntegerPart",
-					String.valueOf(
-						numberInfoFieldType.getIntegerPartMaxValue()));
+					"max", String.valueOf(numberInfoFieldType.getMaxValue()));
 			}
 
-			if (numberInfoFieldType.getIntegerPartMinValue() != null) {
+			if (numberInfoFieldType.getMinValue() != null) {
 				inputTemplateNode.addAttribute(
-					"minIntegerPart",
-					String.valueOf(
-						numberInfoFieldType.getIntegerPartMinValue()));
+					"min", String.valueOf(numberInfoFieldType.getMinValue()));
 			}
 
 			if (numberInfoFieldType.getDecimalPartMaxLength() != null) {
