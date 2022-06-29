@@ -26,8 +26,11 @@ import com.liferay.info.localized.bundle.FunctionInfoLocalizedValue;
 import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeEntryLocalServiceUtil;
 import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.constants.ObjectFieldValidationConstants;
 import com.liferay.object.model.ObjectField;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.math.BigDecimal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +56,43 @@ public class ObjectFieldDBTypeUtil {
 
 		if (Objects.equals(
 				objectField.getBusinessType(),
-				ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
+				ObjectFieldConstants.BUSINESS_TYPE_INTEGER)) {
+
+			finalStep.attribute(
+				NumberInfoFieldType.MAX_VALUE, BigDecimal.valueOf(999_999_999)
+			).attribute(
+				NumberInfoFieldType.MIN_VALUE, BigDecimal.valueOf(-999_999_999)
+			);
+		}
+		else if (Objects.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER)) {
+
+			finalStep.attribute(
+				NumberInfoFieldType.MAX_VALUE,
+				BigDecimal.valueOf(ObjectFieldValidationConstants.MAX_SAFE_LONG)
+			).attribute(
+				NumberInfoFieldType.MIN_VALUE,
+				BigDecimal.valueOf(ObjectFieldValidationConstants.MIN_SAFE_LONG)
+			);
+		}
+		else if (Objects.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_PRECISION_DECIMAL)) {
+
+			finalStep.attribute(
+				NumberInfoFieldType.DECIMAL_PART_MAX_LENGTH, 16
+			).attribute(
+				NumberInfoFieldType.MAX_VALUE,
+				new BigDecimal("99999999999999.9999999999999999")
+			).attribute(
+				NumberInfoFieldType.MIN_VALUE,
+				new BigDecimal("-99999999999999.9999999999999999")
+			);
+		}
+		else if (Objects.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
 
 			finalStep.attribute(
 				SelectInfoFieldType.OPTIONS, _getOptions(objectField));
