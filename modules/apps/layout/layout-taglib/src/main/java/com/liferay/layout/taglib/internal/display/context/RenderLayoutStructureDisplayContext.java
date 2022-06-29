@@ -65,6 +65,7 @@ import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -675,6 +676,32 @@ public class RenderLayoutStructureDisplayContext {
 
 				return true;
 			}
+		}
+
+		return false;
+	}
+
+	public boolean showFormStyledLayoutStructureItemSuccessMessage(
+		FormStyledLayoutStructureItem formStyledLayoutStructureItem) {
+
+		if (!SessionMessages.contains(
+				_httpServletRequest,
+				formStyledLayoutStructureItem.getItemId())) {
+
+			return false;
+		}
+
+		SessionMessages.remove(
+			_httpServletRequest, formStyledLayoutStructureItem.getItemId());
+
+		JSONObject successMessageJSONObject =
+			formStyledLayoutStructureItem.getSuccessMessageJSONObject();
+
+		if ((successMessageJSONObject == null) ||
+			(successMessageJSONObject.length() == 0) ||
+			successMessageJSONObject.has("message")) {
+
+			return true;
 		}
 
 		return false;

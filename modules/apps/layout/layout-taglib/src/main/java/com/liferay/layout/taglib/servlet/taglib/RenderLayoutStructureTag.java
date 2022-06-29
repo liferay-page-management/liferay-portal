@@ -53,7 +53,6 @@ import com.liferay.layout.util.structure.RowStyledLayoutStructureItem;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.io.unsync.UnsyncStringWriter;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.layoutconfiguration.util.RuntimePageUtil;
 import com.liferay.portal.kernel.model.Layout;
@@ -65,7 +64,6 @@ import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutTemplateLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.PipingServletResponse;
 import com.liferay.portal.kernel.servlet.SessionErrors;
-import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.template.StringTemplateResource;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
@@ -923,8 +921,9 @@ public class RenderLayoutStructureTag extends IncludeTag {
 					continue;
 				}
 
-				if (_showFormStyledLayoutStructureItemSuccessMessage(
-						formStyledLayoutStructureItem)) {
+				if (renderLayoutStructureDisplayContext.
+						showFormStyledLayoutStructureItemSuccessMessage(
+							formStyledLayoutStructureItem)) {
 
 					_renderFormStyledLayoutStructureItemSuccessMessage(
 						formStyledLayoutStructureItem,
@@ -1080,31 +1079,6 @@ public class RenderLayoutStructureTag extends IncludeTag {
 		}
 
 		jspWriter.write("</div>");
-	}
-
-	private boolean _showFormStyledLayoutStructureItemSuccessMessage(
-		FormStyledLayoutStructureItem formStyledLayoutStructureItem) {
-
-		if (!SessionMessages.contains(
-				getRequest(), formStyledLayoutStructureItem.getItemId())) {
-
-			return false;
-		}
-
-		SessionMessages.remove(
-			getRequest(), formStyledLayoutStructureItem.getItemId());
-
-		JSONObject successMessageJSONObject =
-			formStyledLayoutStructureItem.getSuccessMessageJSONObject();
-
-		if ((successMessageJSONObject != null) &&
-			((successMessageJSONObject.length() == 0) ||
-			 successMessageJSONObject.has("message"))) {
-
-			return true;
-		}
-
-		return false;
 	}
 
 	private LayoutTypePortlet _updateLayoutTemplate(
