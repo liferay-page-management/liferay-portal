@@ -439,7 +439,7 @@ public class RenderLayoutStructureDisplayContext {
 			formStyledLayoutStructureItem.getSuccessMessageJSONObject();
 
 		if (successMessageJSONObject == null) {
-			return null;
+			return _themeDisplay.getURLCurrent();
 		}
 
 		String redirect = null;
@@ -451,6 +451,10 @@ public class RenderLayoutStructureDisplayContext {
 		else if (successMessageJSONObject.has("layout")) {
 			redirect = _getFormStyledLayoutStructureItemLayoutRedirect(
 				successMessageJSONObject);
+		}
+
+		if (Validator.isNull(redirect)) {
+			redirect = _themeDisplay.getURLCurrent();
 		}
 
 		return redirect;
