@@ -89,9 +89,7 @@ public class AddInfoItemStrutsAction implements StrutsAction {
 
 			redirect = ParamUtil.getString(httpServletRequest, "redirect");
 
-			if (Validator.isNull(redirect)) {
-				SessionMessages.add(httpServletRequest, formItemId);
-			}
+			SessionMessages.add(httpServletRequest, formItemId);
 		}
 		catch (CaptchaException captchaException) {
 			if (_log.isDebugEnabled()) {
