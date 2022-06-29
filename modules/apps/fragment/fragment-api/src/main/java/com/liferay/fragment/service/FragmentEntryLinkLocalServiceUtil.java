@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import java.io.Serializable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides the local service utility for FragmentEntryLink. This utility wraps
@@ -499,6 +500,15 @@ public class FragmentEntryLinkLocalServiceUtil {
 		long groupId, long plid) {
 
 		return getService().getFragmentEntryLinksCountByPlid(groupId, plid);
+	}
+
+	public static Map<Long, Long>
+		getGroupIdFragmentEntryLinkCountsMapByFragmentEntryId(
+			long fragmentEntryId) {
+
+		return getService().
+			getGroupIdFragmentEntryLinkCountsMapByFragmentEntryId(
+				fragmentEntryId);
 	}
 
 	public static

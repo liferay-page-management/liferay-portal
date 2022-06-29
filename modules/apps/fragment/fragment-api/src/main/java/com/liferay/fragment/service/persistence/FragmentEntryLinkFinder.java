@@ -73,4 +73,6 @@ public interface FragmentEntryLinkFinder {
 				<com.liferay.fragment.model.FragmentEntryLink>
 					orderByComparator);
 
+	public java.util.Map<Long, Long> findMapG_CByF(long fragmentEntryId);
+
 }

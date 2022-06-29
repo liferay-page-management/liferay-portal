@@ -569,6 +569,16 @@ public class FragmentEntryLinkLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.Map<Long, Long>
+		getGroupIdFragmentEntryLinkCountsMapByFragmentEntryId(
+			long fragmentEntryId) {
+
+		return _fragmentEntryLinkLocalService.
+			getGroupIdFragmentEntryLinkCountsMapByFragmentEntryId(
+				fragmentEntryId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 
