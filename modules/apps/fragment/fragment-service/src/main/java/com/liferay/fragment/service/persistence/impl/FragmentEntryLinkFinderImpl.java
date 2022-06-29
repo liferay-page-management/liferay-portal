@@ -26,8 +26,10 @@ import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -71,6 +73,9 @@ public class FragmentEntryLinkFinderImpl
 
 	public static final String FIND_BY_G_F_P_L =
 		FragmentEntryLinkFinder.class.getName() + ".findByG_F_P_L";
+
+	public static final String FIND_MAP_G_C_BY_F =
+		FragmentEntryLinkFinder.class.getName() + ".findMapG_CByF";
 
 	@Override
 	public int countByG_F(long groupId, long fragmentEntryId) {
@@ -324,6 +329,46 @@ public class FragmentEntryLinkFinderImpl
 
 			return (List<FragmentEntryLink>)QueryUtil.list(
 				sqlQuery, getDialect(), start, end);
+		}
+		catch (Exception exception) {
+			throw new SystemException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	@Override
+	public Map<Long, Long> findMapG_CByF(long fragmentEntryId) {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			String sql = _customSQL.get(getClass(), FIND_MAP_G_C_BY_F);
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			sqlQuery.addScalar("groupId", Type.LONG);
+
+			sqlQuery.addScalar(COUNT_COLUMN_NAME, Type.LONG);
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(fragmentEntryId);
+
+			Map<Long, Long> groupIdCounts = new HashMap<>();
+
+			Iterator<Object[]> iterator = sqlQuery.iterate();
+
+			while (iterator.hasNext()) {
+				Object[] groupIdCountArray = iterator.next();
+
+				groupIdCounts.put(
+					(Long)groupIdCountArray[0], (Long)groupIdCountArray[1]);
+			}
+
+			return groupIdCounts;
 		}
 		catch (Exception exception) {
 			throw new SystemException(exception);

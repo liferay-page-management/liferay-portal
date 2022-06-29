@@ -396,4 +396,16 @@
 				)
 		]]>
 	</sql>
+	<sql id="com.liferay.fragment.service.persistence.FragmentEntryLinkFinder.findMapG_CByF">
+		<![CDATA[
+			SELECT
+				groupId, COUNT(*) AS COUNT_VALUE
+			FROM
+				FragmentEntryLink
+			WHERE
+				FragmentEntryLink.fragmentEntryId = ?
+			GROUP BY
+				FragmentEntryLink.groupId
+		]]>
+	</sql>
 </custom-sql>
