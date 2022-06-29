@@ -17,7 +17,6 @@ package com.liferay.fragment.web.internal.display.context;
 import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.model.FragmentEntry;
-import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalServiceUtil;
 import com.liferay.fragment.service.FragmentEntryLocalServiceUtil;
 import com.liferay.fragment.web.internal.security.permission.resource.FragmentPermission;
@@ -35,11 +34,10 @@ import com.liferay.portal.kernel.util.comparator.GroupNameComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
@@ -183,17 +181,21 @@ public class GroupFragmentEntryLinkDisplayContext {
 			return _groupFragmentEntryUsages;
 		}
 
-		List<FragmentEntryLink> fragmentEntryLinks =
+		_groupFragmentEntryUsages = new HashMap<>();
+
+		Map<Long, Long> groupIdFragmentEntryLinkCounts =
 			FragmentEntryLinkLocalServiceUtil.
-				getFragmentEntryLinksByFragmentEntryId(getFragmentEntryId());
+				getGroupIdFragmentEntryLinkCountsMapByFragmentEntryId(
+					getFragmentEntryId());
 
-		Stream<FragmentEntryLink> stream = fragmentEntryLinks.stream();
+		for (Map.Entry<Long, Long> groupIdFragmentEntryLinkCountsEntry :
+				groupIdFragmentEntryLinkCounts.entrySet()) {
 
-		_groupFragmentEntryUsages = stream.collect(
-			Collectors.groupingBy(
-				fragmentEntryLink -> GroupLocalServiceUtil.fetchGroup(
-					fragmentEntryLink.getGroupId()),
-				Collectors.counting()));
+			_groupFragmentEntryUsages.put(
+				GroupLocalServiceUtil.fetchGroup(
+					groupIdFragmentEntryLinkCountsEntry.getKey()),
+				groupIdFragmentEntryLinkCountsEntry.getValue());
+		}
 
 		return _groupFragmentEntryUsages;
 	}
