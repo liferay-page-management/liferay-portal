@@ -60,6 +60,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -394,6 +395,14 @@ public class FragmentEntryLinkLocalServiceImpl
 	@Override
 	public int getFragmentEntryLinksCountByPlid(long groupId, long plid) {
 		return fragmentEntryLinkPersistence.countByG_P(groupId, plid);
+	}
+
+	@Override
+	public Map<Long, Long>
+		getGroupIdFragmentEntryLinkCountsMapByFragmentEntryId(
+			long fragmentEntryId) {
+
+		return fragmentEntryLinkFinder.findMapG_CByF(fragmentEntryId);
 	}
 
 	@Override
