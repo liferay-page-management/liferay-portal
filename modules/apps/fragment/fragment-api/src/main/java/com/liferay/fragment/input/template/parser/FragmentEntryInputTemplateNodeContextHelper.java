@@ -186,6 +186,8 @@ public class FragmentEntryInputTemplateNodeContextHelper {
 			}
 
 			if (infoField.getInfoFieldType() instanceof SelectInfoFieldType) {
+				List<InputTemplateNode.Option> optionsList = new ArrayList<>();
+
 				Optional<List<SelectInfoFieldType.Option>> optionsOptional =
 					infoField.getAttributeOptional(SelectInfoFieldType.OPTIONS);
 
@@ -193,9 +195,12 @@ public class FragmentEntryInputTemplateNodeContextHelper {
 					optionsOptional.orElse(new ArrayList<>());
 
 				for (SelectInfoFieldType.Option option : options) {
-					inputTemplateNode.addOption(
-						option.getLabel(locale), option.getValue());
+					optionsList.add(
+						new InputTemplateNode.Option(
+							option.getLabel(locale), option.getValue()));
 				}
+
+				inputTemplateNode.addAttribute("options", optionsList);
 			}
 		}
 
