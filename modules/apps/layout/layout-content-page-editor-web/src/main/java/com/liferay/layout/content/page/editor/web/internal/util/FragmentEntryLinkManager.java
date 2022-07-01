@@ -18,6 +18,7 @@ import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.contributor.FragmentCollectionContributorTracker;
 import com.liferay.fragment.entry.processor.util.EditableFragmentEntryProcessorUtil;
+import com.liferay.fragment.helper.FragmentEntryLinkHelper;
 import com.liferay.fragment.listener.FragmentEntryLinkListener;
 import com.liferay.fragment.listener.FragmentEntryLinkListenerTracker;
 import com.liferay.fragment.model.FragmentEntry;
@@ -44,6 +45,7 @@ import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructureItemCSSUtil;
 import com.liferay.layout.util.structure.LayoutStructureItemUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.comment.Comment;
 import com.liferay.portal.kernel.comment.CommentManager;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -156,48 +158,61 @@ public class FragmentEntryLinkManager {
 			defaultFragmentRendererContext.setInfoForm(
 				_getInfoForm(fragmentEntryLink, layoutStructure));
 
-			String configuration = _fragmentRendererController.getConfiguration(
-				defaultFragmentRendererContext);
-
-			FragmentEntry fragmentEntry = _getFragmentEntry(
-				fragmentEntryLink, themeDisplay.getLocale());
-
-			String fragmentEntryKey = null;
-			String name = null;
+			String content = _fragmentRendererController.render(
+				defaultFragmentRendererContext, httpServletRequest,
+				httpServletResponse);
 
 			JSONObject editableValuesJSONObject =
 				JSONFactoryUtil.createJSONObject(
 					fragmentEntryLink.getEditableValues());
 
-			String portletId = editableValuesJSONObject.getString("portletId");
+			if (fragmentEntryLink.isTypePortlet()) {
+				String portletId = editableValuesJSONObject.getString(
+					"portletId");
 
-			if (fragmentEntry != null) {
-				fragmentEntryKey = fragmentEntry.getFragmentEntryKey();
-				name = fragmentEntry.getName();
+				return JSONUtil.put(
+					"comments",
+					_getFragmentEntryLinkCommentsJSONArray(
+						fragmentEntryLink, httpServletRequest)
+				).put(
+					"configuration", JSONFactoryUtil.createJSONObject()
+				).put(
+					"content", content
+				).put(
+					"cssClass",
+					LayoutStructureItemCSSUtil.getFragmentEntryLinkCssClass(
+						fragmentEntryLink)
+				).put(
+					"defaultConfigurationValues",
+					JSONFactoryUtil.createJSONObject()
+				).put(
+					"editableTypes", StringPool.BLANK
+				).put(
+					"editableValues", JSONFactoryUtil.createJSONObject()
+				).put(
+					"fragmentEntryId", 0
+				).put(
+					"fragmentEntryKey", StringPool.BLANK
+				).put(
+					"fragmentEntryLinkId",
+					String.valueOf(fragmentEntryLink.getFragmentEntryLinkId())
+				).put(
+					"fragmentEntryType",
+					FragmentConstants.getTypeLabel(
+						FragmentConstants.TYPE_PORTLET)
+				).put(
+					"name",
+					_portal.getPortletTitle(portletId, themeDisplay.getLocale())
+				).put(
+					"portletId", portletId
+				).put(
+					"segmentsExperienceId",
+					String.valueOf(fragmentEntryLink.getSegmentsExperienceId())
+				);
 			}
-			else {
-				String rendererKey = fragmentEntryLink.getRendererKey();
 
-				if (Validator.isNull(rendererKey)) {
-					rendererKey =
-						FragmentRendererConstants.
-							FRAGMENT_ENTRY_FRAGMENT_RENDERER_KEY;
-				}
-
-				FragmentRenderer fragmentRenderer =
-					_fragmentRendererTracker.getFragmentRenderer(rendererKey);
-
-				if (fragmentRenderer != null) {
-					fragmentEntryKey = fragmentRenderer.getKey();
-
-					name = fragmentRenderer.getLabel(themeDisplay.getLocale());
-				}
-
-				if (Validator.isNotNull(portletId)) {
-					name = _portal.getPortletTitle(
-						portletId, themeDisplay.getLocale());
-				}
-			}
+			String configuration = _fragmentRendererController.getConfiguration(
+				defaultFragmentRendererContext);
 
 			JSONObject configurationJSONObject =
 				JSONFactoryUtil.createJSONObject(configuration);
@@ -206,9 +221,8 @@ public class FragmentEntryLinkManager {
 				addFragmentEntryLinkFieldsSelectorURL(
 					_itemSelector, httpServletRequest, configurationJSONObject);
 
-			String content = _fragmentRendererController.render(
-				defaultFragmentRendererContext, httpServletRequest,
-				httpServletResponse);
+			FragmentEntry fragmentEntry = _getFragmentEntry(
+				fragmentEntryLink, themeDisplay.getLocale());
 
 			return JSONUtil.put(
 				"comments",
@@ -241,7 +255,30 @@ public class FragmentEntryLinkManager {
 					return 0;
 				}
 			).put(
-				"fragmentEntryKey", fragmentEntryKey
+				"fragmentEntryKey",
+				() -> {
+					if (fragmentEntry != null) {
+						return fragmentEntry.getFragmentEntryKey();
+					}
+
+					String rendererKey = fragmentEntryLink.getRendererKey();
+
+					if (Validator.isNull(rendererKey)) {
+						rendererKey =
+							FragmentRendererConstants.
+								FRAGMENT_ENTRY_FRAGMENT_RENDERER_KEY;
+					}
+
+					FragmentRenderer fragmentRenderer =
+						_fragmentRendererTracker.getFragmentRenderer(
+							rendererKey);
+
+					if (fragmentRenderer != null) {
+						return fragmentRenderer.getKey();
+					}
+
+					return StringPool.BLANK;
+				}
 			).put(
 				"fragmentEntryLinkId",
 				String.valueOf(fragmentEntryLink.getFragmentEntryLinkId())
@@ -266,9 +303,9 @@ public class FragmentEntryLinkManager {
 					return null;
 				}
 			).put(
-				"name", name
-			).put(
-				"portletId", portletId
+				"name",
+				_fragmentEntryLinkHelper.getFragmentEntryName(
+					fragmentEntryLink, themeDisplay.getLocale())
 			).put(
 				"segmentsExperienceId",
 				String.valueOf(fragmentEntryLink.getSegmentsExperienceId())
@@ -424,6 +461,9 @@ public class FragmentEntryLinkManager {
 
 	@Reference
 	private FragmentEntryConfigurationParser _fragmentEntryConfigurationParser;
+
+	@Reference
+	private FragmentEntryLinkHelper _fragmentEntryLinkHelper;
 
 	@Reference
 	private FragmentEntryLinkListenerTracker _fragmentEntryLinkListenerTracker;
