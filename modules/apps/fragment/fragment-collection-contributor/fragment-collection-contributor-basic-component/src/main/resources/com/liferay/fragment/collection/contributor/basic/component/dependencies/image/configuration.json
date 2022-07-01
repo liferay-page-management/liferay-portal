@@ -20,6 +20,12 @@
 							}
 						]
 					}
+				},
+				{
+					"defaultValue": false,
+					"label": "enable-lazy-loading",
+					"name": "enableLazyLoading",
+					"type": "checkbox"
 				}
 			],
 			"label": "image-options"
