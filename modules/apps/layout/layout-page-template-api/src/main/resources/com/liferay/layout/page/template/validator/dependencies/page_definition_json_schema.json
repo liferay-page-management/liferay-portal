@@ -1596,6 +1596,10 @@
 					"title": "The backgroundImage Schema",
 					"type": "object"
 				},
+				"contentVisibility": {
+					"title": "The Content Visibility Schema",
+					"type": "string"
+				},
 				"cssClasses": {
 					"items": {
 						"type": "string"
