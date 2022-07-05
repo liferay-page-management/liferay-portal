@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -144,7 +145,10 @@ public class JournalEditDDMStructuresDisplayContext {
 	public String getDefaultLanguageId() {
 		DDMForm ddmForm = getDDMForm();
 
-		if ((ddmForm == null) || (ddmForm.getDefaultLocale() == null)) {
+		if ((ddmForm == null) || (ddmForm.getDefaultLocale() == null) ||
+			!Objects.equals(
+				ddmForm.getDefaultLocale(), LocaleUtil.getSiteDefault())) {
+
 			return LocaleUtil.toLanguageId(LocaleUtil.getSiteDefault());
 		}
 
