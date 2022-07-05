@@ -26,6 +26,7 @@ import com.liferay.headless.delivery.internal.dto.v1_0.mapper.util.StyledLayoutS
 import com.liferay.layout.page.template.util.AlignConverter;
 import com.liferay.layout.page.template.util.BorderRadiusConverter;
 import com.liferay.layout.page.template.util.ContentDisplayConverter;
+import com.liferay.layout.page.template.util.ContentVisibilityConverter;
 import com.liferay.layout.page.template.util.FlexWrapConverter;
 import com.liferay.layout.page.template.util.HtmlTagConverter;
 import com.liferay.layout.page.template.util.JustifyConverter;
@@ -81,6 +82,19 @@ public class ContainerLayoutStructureItemMapper
 							containerStyledLayoutStructureItem.isIndexed();
 						layout = _toLayout(containerStyledLayoutStructureItem);
 
+						setContentVisibility(
+							() -> {
+								String contentVisibility =
+									containerStyledLayoutStructureItem.
+										getContentVisibility();
+
+								if (Validator.isNull(contentVisibility)) {
+									return null;
+								}
+
+								return ContentVisibilityConverter.
+									convertToExternalValue(contentVisibility);
+							});
 						setFragmentStyle(
 							() -> {
 								JSONObject itemConfigJSONObject =
