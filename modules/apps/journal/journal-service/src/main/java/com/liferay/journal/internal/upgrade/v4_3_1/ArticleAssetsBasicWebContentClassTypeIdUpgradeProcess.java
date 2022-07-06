@@ -115,7 +115,7 @@ public class ArticleAssetsBasicWebContentClassTypeIdUpgradeProcess
 		Group companyGroup = _groupLocalService.getCompanyGroup(companyId);
 		String structureKey = "BASIC-WEB-CONTENT";
 
-		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
+		DDMStructure ddmStructure = _ddmStructureLocalService.fetchStructure(
 			companyGroup.getGroupId(),
 			PortalUtil.getClassNameId(JournalArticle.class.getName()),
 			structureKey);
