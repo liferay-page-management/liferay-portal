@@ -91,12 +91,7 @@ public class ArticleAssetsBasicWebContentClassTypeIdUpgradeProcess
 			long classNameId = PortalUtil.getClassNameId(
 				JournalArticle.class.getName());
 
-			if (_isUpgradeNeeded(classNameId)) {
-				_companyLocalService.forEachCompanyId(
-					companyId -> _updateDefaultDraftArticleAssets(
-						companyId, classNameId));
-			}
-			else {
+			if (!_isUpgradeNeeded(classNameId)) {
 				if (_log.isInfoEnabled()) {
 					_log.info(
 						StringBundler.concat(
@@ -104,7 +99,13 @@ public class ArticleAssetsBasicWebContentClassTypeIdUpgradeProcess
 							"classNameId = ", classNameId,
 							" and classTypeId = 0"));
 				}
+
+				return;
 			}
+
+			_companyLocalService.forEachCompanyId(
+				companyId -> _updateDefaultDraftArticleAssets(
+					companyId, classNameId));
 		}
 	}
 
@@ -120,92 +121,84 @@ public class ArticleAssetsBasicWebContentClassTypeIdUpgradeProcess
 			PortalUtil.getClassNameId(JournalArticle.class.getName()),
 			structureKey);
 
-		long basicWebContentStructureId;
-
-		if (ddmStructure != null) {
-			basicWebContentStructureId = ddmStructure.getStructureId();
-
-			if (hasColumnType(
-					AssetEntryTable.INSTANCE.getName(), "companyId",
-					"LONG null") &&
-				hasColumnType(
-					AssetEntryTable.INSTANCE.getName(), "classNameId",
-					"LONG null") &&
-				hasColumnType(
-					AssetEntryTable.INSTANCE.getName(), "classTypeId",
-					"LONG null")) {
-
-				try (PreparedStatement preparedStatement =
-						connection.prepareStatement(
-							StringBundler.concat(
-								"update AssetEntry set classTypeId = ? where ",
-								"companyId = ? and classNameId = ? and ",
-								"classTypeId = ?"))) {
-
-					preparedStatement.setLong(1, basicWebContentStructureId);
-					preparedStatement.setLong(2, companyId);
-					preparedStatement.setLong(3, classNameId);
-					preparedStatement.setLong(4, 0);
-
-					preparedStatement.executeUpdate();
-				}
-				catch (SQLException sqlException) {
-					if (_log.isWarnEnabled()) {
-						_log.warn(sqlException);
-					}
-				}
-			}
-			else {
-				try (PreparedStatement preparedStatement =
-						connection.prepareStatement(
-							StringBundler.concat(
-								"select resourcePrimKey, indexable from ",
-								"JournalArticle where companyId = ", companyId,
-								" and ddmtemplatekey = 'BASIC-WEB-CONTENT' "));
-					ResultSet resultSet = preparedStatement.executeQuery()) {
-
-					while (resultSet.next()) {
-						long resourcePrimKey = resultSet.getLong(
-							"resourcePrimKey");
-
-						AssetEntry assetEntry =
-							_assetEntryLocalService.fetchEntry(
-								JournalArticle.class.getName(),
-								resourcePrimKey);
-
-						if (assetEntry == null) {
-							if (_log.isWarnEnabled()) {
-								_log.warn(
-									StringBundler.concat(
-										"Journal article with resource ",
-										"primary key ", resourcePrimKey,
-										" does not have associated asset ",
-										"entry"));
-							}
-
-							continue;
-						}
-
-						long classTypeId = assetEntry.getClassTypeId();
-
-						if (classTypeId != basicWebContentStructureId) {
-							assetEntry.setClassTypeId(
-								basicWebContentStructureId);
-
-							_assetEntryLocalService.updateAssetEntry(
-								assetEntry);
-						}
-					}
-				}
-			}
-		}
-		else {
+		if (ddmStructure == null) {
 			if (_log.isWarnEnabled()) {
 				_log.warn(
 					StringBundler.concat(
 						"No DDMStructure with structure key ", structureKey,
 						" found in Global site", companyGroup.getGroupId(),
 						" for companyId ", companyId));
+			}
+
+			return;
+		}
+
+		long basicWebContentStructureId = ddmStructure.getStructureId();
+
+		if (hasColumnType(
+				AssetEntryTable.INSTANCE.getName(), "companyId", "LONG null") &&
+			hasColumnType(
+				AssetEntryTable.INSTANCE.getName(), "classNameId",
+				"LONG null") &&
+			hasColumnType(
+				AssetEntryTable.INSTANCE.getName(), "classTypeId",
+				"LONG null")) {
+
+			try (PreparedStatement preparedStatement =
+					connection.prepareStatement(
+						StringBundler.concat(
+							"update AssetEntry set classTypeId = ? where ",
+							"companyId = ? and classNameId = ? and ",
+							"classTypeId = ?"))) {
+
+				preparedStatement.setLong(1, basicWebContentStructureId);
+				preparedStatement.setLong(2, companyId);
+				preparedStatement.setLong(3, classNameId);
+				preparedStatement.setLong(4, 0);
+
+				preparedStatement.executeUpdate();
+			}
+			catch (SQLException sqlException) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(sqlException);
+				}
+			}
+		}
+		else {
+			try (PreparedStatement preparedStatement =
+					connection.prepareStatement(
+						StringBundler.concat(
+							"select resourcePrimKey, indexable from ",
+							"JournalArticle where companyId = ", companyId,
+							" and ddmtemplatekey = 'BASIC-WEB-CONTENT' "));
+				ResultSet resultSet = preparedStatement.executeQuery()) {
+
+				while (resultSet.next()) {
+					long resourcePrimKey = resultSet.getLong("resourcePrimKey");
+
+					AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
+						JournalArticle.class.getName(), resourcePrimKey);
+
+					if (assetEntry == null) {
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								StringBundler.concat(
+									"Journal article with resource primary ",
+									"key ", resourcePrimKey, " does not have ",
+									"associated asset entry"));
+						}
+
+						continue;
+					}
+
+					long classTypeId = assetEntry.getClassTypeId();
+
+					if (classTypeId != basicWebContentStructureId) {
+						assetEntry.setClassTypeId(basicWebContentStructureId);
+
+						_assetEntryLocalService.updateAssetEntry(assetEntry);
+					}
+				}
 			}
 		}
 	}
