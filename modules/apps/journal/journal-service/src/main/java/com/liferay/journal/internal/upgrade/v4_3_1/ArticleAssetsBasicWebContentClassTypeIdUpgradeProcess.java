@@ -134,6 +134,11 @@ public class ArticleAssetsBasicWebContentClassTypeIdUpgradeProcess
 
 		long basicWebContentStructureId = ddmStructure.getStructureId();
 
+		/*
+		LPS-155301 Query is for performance, but we cannot guarantee that the
+		table will be changed in the future, so use Actionable Dynamic Query as
+		fallback in case it does
+		 */
 		if (hasColumnType(
 				AssetEntryTable.INSTANCE.getName(), "companyId", "LONG null") &&
 			hasColumnType(
