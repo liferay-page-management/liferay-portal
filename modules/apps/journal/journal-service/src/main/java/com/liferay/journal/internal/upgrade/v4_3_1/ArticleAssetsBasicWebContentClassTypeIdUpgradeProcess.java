@@ -126,26 +126,26 @@ public class ArticleAssetsBasicWebContentClassTypeIdUpgradeProcess
 			basicWebContentStructureId = ddmStructure.getStructureId();
 
 			if (hasColumnType(
-					AssetEntryTable.INSTANCE.getName(), "classTypeId",
-					"LONG null") &&
-				hasColumnType(
 					AssetEntryTable.INSTANCE.getName(), "companyId",
 					"LONG null") &&
 				hasColumnType(
 					AssetEntryTable.INSTANCE.getName(), "classNameId",
+					"LONG null") &&
+				hasColumnType(
+					AssetEntryTable.INSTANCE.getName(), "classTypeId",
 					"LONG null")) {
 
 				try (PreparedStatement preparedStatement =
 						connection.prepareStatement(
 							StringBundler.concat(
 								"update AssetEntry set classTypeId = ? where ",
-								"classTypeId = ? and companyId = ? and ",
-								"classNameId = ?"))) {
+								"companyId = ? and classNameId = ? and ",
+								"classTypeId = ?"))) {
 
 					preparedStatement.setLong(1, basicWebContentStructureId);
-					preparedStatement.setLong(2, 0);
-					preparedStatement.setLong(3, companyId);
-					preparedStatement.setLong(4, classNameId);
+					preparedStatement.setLong(2, companyId);
+					preparedStatement.setLong(3, classNameId);
+					preparedStatement.setLong(4, 0);
 
 					preparedStatement.executeUpdate();
 				}
