@@ -21,6 +21,9 @@ import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.Property;
+import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -58,29 +61,26 @@ public class ArticleAssetsBasicWebContentClassTypeIdUpgradeProcess
 	}
 
 	private boolean _isUpgradeNeeded(long classNameId) throws Exception {
-		if (hasColumnType(
-				AssetEntryTable.INSTANCE.getName(), "companyId", "LONG null") &&
-			hasColumnType(
-				AssetEntryTable.INSTANCE.getName(), "classNameId",
-				"LONG null")) {
+		ActionableDynamicQuery actionableDynamicQuery =
+			_assetEntryLocalService.getActionableDynamicQuery();
 
-			try (PreparedStatement preparedStatement =
-					connection.prepareStatement(
-						StringBundler.concat(
-							"select count(*) from AssetEntry where ",
-							"classTypeId = 0 and classNameId = ", classNameId));
-				ResultSet resultSet = preparedStatement.executeQuery()) {
+		actionableDynamicQuery.setAddCriteriaMethod(
+			dynamicQuery -> {
+				Property classNameIdProperty = PropertyFactoryUtil.forName(
+					"classNameId");
 
-				if (resultSet.next()) {
-					int count = resultSet.getInt(1);
+				dynamicQuery.add(classNameIdProperty.eq(classNameId));
 
-					if (count > 0) {
-						return true;
-					}
-				}
+				Property classTypeIdProperty = PropertyFactoryUtil.forName(
+					"classTypeId");
 
-				return false;
-			}
+				dynamicQuery.add(classTypeIdProperty.eq(0L));
+			});
+
+		long count = actionableDynamicQuery.performCount();
+
+		if (count > 0) {
+			return true;
 		}
 
 		return false;
