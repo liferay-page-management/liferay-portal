@@ -34,7 +34,6 @@ import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.PortalUtil;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -165,41 +164,35 @@ public class ArticleAssetsBasicWebContentClassTypeIdUpgradeProcess
 			}
 		}
 		else {
-			try (PreparedStatement preparedStatement =
-					connection.prepareStatement(
-						StringBundler.concat(
-							"select resourcePrimKey, indexable from ",
-							"JournalArticle where companyId = ", companyId,
-							" and ddmtemplatekey = 'BASIC-WEB-CONTENT' "));
-				ResultSet resultSet = preparedStatement.executeQuery()) {
+			ActionableDynamicQuery actionableDynamicQuery =
+				_assetEntryLocalService.getActionableDynamicQuery();
 
-				while (resultSet.next()) {
-					long resourcePrimKey = resultSet.getLong("resourcePrimKey");
+			actionableDynamicQuery.setAddCriteriaMethod(
+				dynamicQuery -> {
+					Property companyIdProperty = PropertyFactoryUtil.forName(
+						"companyId");
 
-					AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
-						JournalArticle.class.getName(), resourcePrimKey);
+					dynamicQuery.add(companyIdProperty.eq(companyId));
 
-					if (assetEntry == null) {
-						if (_log.isWarnEnabled()) {
-							_log.warn(
-								StringBundler.concat(
-									"Journal article with resource primary ",
-									"key ", resourcePrimKey, " does not have ",
-									"associated asset entry"));
-						}
+					Property classNameIdProperty = PropertyFactoryUtil.forName(
+						"classNameId");
 
-						continue;
-					}
+					dynamicQuery.add(classNameIdProperty.eq(classNameId));
 
-					long classTypeId = assetEntry.getClassTypeId();
+					Property classTypeIdProperty = PropertyFactoryUtil.forName(
+						"classTypeId");
 
-					if (classTypeId != basicWebContentStructureId) {
-						assetEntry.setClassTypeId(basicWebContentStructureId);
+					dynamicQuery.add(classTypeIdProperty.eq(0L));
+				});
 
-						_assetEntryLocalService.updateAssetEntry(assetEntry);
-					}
-				}
-			}
+			actionableDynamicQuery.setPerformActionMethod(
+				(AssetEntry assetEntry) -> {
+					assetEntry.setClassTypeId(basicWebContentStructureId);
+
+					_assetEntryLocalService.updateAssetEntry(assetEntry);
+				});
+
+			actionableDynamicQuery.performActions();
 		}
 	}
 
