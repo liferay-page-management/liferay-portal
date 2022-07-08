@@ -27,6 +27,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.PaginationBarTag;
 import com.liferay.frontend.taglib.clay.servlet.taglib.RowTag;
 import com.liferay.frontend.taglib.servlet.taglib.ComponentTag;
 import com.liferay.info.constants.InfoDisplayWebKeys;
+import com.liferay.info.constants.InfoFormConstants;
 import com.liferay.info.form.InfoForm;
 import com.liferay.info.list.renderer.DefaultInfoListRendererContext;
 import com.liferay.info.list.renderer.InfoListRenderer;
@@ -77,6 +78,7 @@ import com.liferay.portal.util.PropsValues;
 import com.liferay.taglib.util.IncludeTag;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
@@ -819,10 +821,28 @@ public class RenderLayoutStructureTag extends IncludeTag {
 				getRequest(), formStyledLayoutStructureItem.getItemId());
 		}
 
+		Map<String, String> formParameterMap =
+			(Map<String, String>)SessionMessages.get(
+				getRequest(),
+				InfoFormConstants.INFO_FORM_PARAMETER_MAP +
+					formStyledLayoutStructureItem.getItemId());
+
+		SessionMessages.add(
+			getRequest(), InfoFormConstants.INFO_FORM_PARAMETER_MAP,
+			formParameterMap);
+
+		SessionMessages.remove(
+			getRequest(),
+			InfoFormConstants.INFO_FORM_PARAMETER_MAP +
+				formStyledLayoutStructureItem.getItemId());
+
 		_renderLayoutStructure(
 			formStyledLayoutStructureItem.getChildrenItemIds(),
 			collectionElementIndex, infoForm,
 			renderLayoutStructureDisplayContext);
+
+		SessionMessages.remove(
+			getRequest(), InfoFormConstants.INFO_FORM_PARAMETER_MAP);
 
 		jspWriter.write("</form>");
 	}
