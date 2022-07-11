@@ -15,7 +15,6 @@
 import {ADD_FRAGMENT_COMPOSITION, INIT} from '../actions/types';
 import {LAYOUT_DATA_ITEM_TYPE_LABELS} from '../config/constants/layoutDataItemTypeLabels';
 import {LAYOUT_DATA_ITEM_TYPES} from '../config/constants/layoutDataItemTypes';
-import {config} from '../config/index';
 
 const CONTENT_DISPLAY_COLLECTION_ID = 'content-display';
 
@@ -117,27 +116,25 @@ export default function fragmentsReducer(fragments = [], action) {
 				);
 			}
 
-			if (config.featureFlagLps150277) {
-				newFragments.splice(2, 0, {
-					fragmentCollectionId: 'form-components',
-					fragmentEntries: [
-						{
-							data: {
-								itemType: LAYOUT_DATA_ITEM_TYPES.form,
-							},
-							icon: 'container',
-							itemId: 'form',
-							label:
-								LAYOUT_DATA_ITEM_TYPE_LABELS[
-									LAYOUT_DATA_ITEM_TYPES.form
-								],
-							type: 'form',
+			newFragments.splice(2, 0, {
+				fragmentCollectionId: 'form-components',
+				fragmentEntries: [
+					{
+						data: {
+							itemType: LAYOUT_DATA_ITEM_TYPES.form,
 						},
-						...formComponentsCollection.fragmentEntries,
-					],
-					name: Liferay.Language.get('form-components'),
-				});
-			}
+						icon: 'container',
+						itemId: 'form',
+						label:
+							LAYOUT_DATA_ITEM_TYPE_LABELS[
+								LAYOUT_DATA_ITEM_TYPES.form
+							],
+						type: 'form',
+					},
+					...formComponentsCollection.fragmentEntries,
+				],
+				name: Liferay.Language.get('form-components'),
+			});
 
 			newFragments.splice(3, 0, {
 				...(contentDisplayCollection ||
