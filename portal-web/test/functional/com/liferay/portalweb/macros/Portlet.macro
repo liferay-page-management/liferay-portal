@@ -1,7 +1,12 @@
 definition {
 
 	macro _clickAddPortlet {
+		if (!(isSet(index))) {
+			var index = "1";
+		}
+
 		Click.clickNoWaitForVisible(
+			key_index = "${index}",
 			key_portletName = "${portletName}",
 			locator1 = "ControlMenuAddPanel#ADD_PORTLET_LINK");
 	}
@@ -27,7 +32,9 @@ definition {
 
 			Refresh();
 
-			Portlet.addPGCmd(portletName = "${portletName}");
+			Portlet.addPGCmd(
+				index = "${index}",
+				portletName = "${portletName}");
 		}
 
 		var key_portletName = "${portletName}";
@@ -41,7 +48,9 @@ definition {
 			var portletName = "Where are the Liferay members?";
 		}
 
-		Portlet.addPGCmd(portletName = "${portletName}");
+		Portlet.addPGCmd(
+			index = "${index}",
+			portletName = "${portletName}");
 
 		var i = "1";
 		var key_portletName = "${portletName}";
@@ -53,7 +62,9 @@ definition {
 
 			Refresh();
 
-			Portlet.addPGCmd(portletName = "${portletName}");
+			Portlet.addPGCmd(
+				index = "${index}",
+				portletName = "${portletName}");
 		}
 
 		Click.clickAt(locator1 = "ControlMenuAddPanel#CLOSE_ADD_PANEL");
@@ -87,7 +98,9 @@ definition {
 			locator1 = "NavBar#APPLICATION_SEARCH_FIELD",
 			value1 = "${portletName}");
 
-		Portlet._clickAddPortlet(portletName = "${portletName}");
+		Portlet._clickAddPortlet(
+			index = "${index}",
+			portletName = "${portletName}");
 
 		var key_portletName = "${portletName}";
 
@@ -666,6 +679,10 @@ definition {
 	}
 
 	macro viewCannotAddPG {
+		if (!(isSet(index))) {
+			var index = "1";
+		}
+
 		if (IsNotVisible(locator1 = "ControlMenuAddPanel#CLOSE_ADD_PANEL")) {
 			Click.clickAt(locator1 = "ControlMenu#ADD");
 		}
@@ -681,6 +698,7 @@ definition {
 			value1 = "${portletName}");
 
 		AssertElementNotPresent(
+			key_index = "${index}",
 			key_portletName = "${portletName}",
 			locator1 = "ControlMenuAddPanel#ADD_PORTLET_LINK");
 	}

@@ -17,6 +17,10 @@ definition {
 	}
 
 	macro addRecentContent {
+		if (!(isSet(index))) {
+			var index = "1";
+		}
+
 		Click(locator1 = "ControlMenu#ADD");
 
 		AssertElementPresent(locator1 = "ControlMenuAddPanel#SIDEBAR_HEADER");
@@ -28,6 +32,7 @@ definition {
 			value1 = "${assetTitle}");
 
 		Click.clickNoWaitForVisible(
+			key_index = "${index}",
 			key_portletName = "${assetTitle}",
 			locator1 = "ControlMenuAddPanel#ADD_PORTLET_LINK");
 	}
