@@ -181,12 +181,18 @@ public class ManageLayoutProductNavigationControlMenuEntry
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_getLayoutPageTemplateEntry(layout);
 
-		if (layout.isTypeControlPanel() || (layoutPageTemplateEntry == null) ||
-			(layoutPageTemplateEntry.getType() ==
-				LayoutPageTemplateEntryTypeConstants.TYPE_MASTER_LAYOUT) ||
+		if (layout.isTypeControlPanel() ||
 			isEmbeddedPersonalApplicationLayout(layout) ||
 			!(themeDisplay.isShowLayoutTemplatesIcon() ||
 			  themeDisplay.isShowPageSettingsIcon())) {
+
+			return false;
+		}
+
+		if (layout.isTypeContent() &&
+			((layoutPageTemplateEntry == null) ||
+			 (layoutPageTemplateEntry.getType() ==
+				 LayoutPageTemplateEntryTypeConstants.TYPE_MASTER_LAYOUT))) {
 
 			return false;
 		}
