@@ -178,7 +178,12 @@ public class ManageLayoutProductNavigationControlMenuEntry
 
 		Layout layout = themeDisplay.getLayout();
 
-		if (layout.isTypeControlPanel() || _isMasterLayout(layout) ||
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_getLayoutPageTemplateEntry(layout);
+
+		if (layout.isTypeControlPanel() || (layoutPageTemplateEntry == null) ||
+			(layoutPageTemplateEntry.getType() ==
+				LayoutPageTemplateEntryTypeConstants.TYPE_MASTER_LAYOUT) ||
 			isEmbeddedPersonalApplicationLayout(layout) ||
 			!(themeDisplay.isShowLayoutTemplatesIcon() ||
 			  themeDisplay.isShowPageSettingsIcon())) {
@@ -196,11 +201,7 @@ public class ManageLayoutProductNavigationControlMenuEntry
 		return super.isShow(httpServletRequest);
 	}
 
-	private boolean _isMasterLayout(Layout layout) {
-		if (layout.getMasterLayoutPlid() > 0) {
-			return false;
-		}
-
+	private LayoutPageTemplateEntry _getLayoutPageTemplateEntry(Layout layout) {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryLocalService.
 				fetchLayoutPageTemplateEntryByPlid(layout.getPlid());
@@ -211,14 +212,7 @@ public class ManageLayoutProductNavigationControlMenuEntry
 					fetchLayoutPageTemplateEntryByPlid(layout.getClassPK());
 		}
 
-		if ((layoutPageTemplateEntry == null) ||
-			(layoutPageTemplateEntry.getType() !=
-				LayoutPageTemplateEntryTypeConstants.TYPE_MASTER_LAYOUT)) {
-
-			return false;
-		}
-
-		return true;
+		return layoutPageTemplateEntry;
 	}
 
 	private static final String _TMPL_CONTENT = StringUtil.read(
