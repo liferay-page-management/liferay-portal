@@ -35,7 +35,7 @@
 
 <tr>
 	<td>ADD_PORTLET_LINK</td>
-	<td>//li[contains(@class,'add-panel')][*//*[contains(@class,'title')][normalize-space(text())='${key_portletName}']]//button[contains(@class,'item-add')]</td>
+	<td>xpath=(//li[contains(@class,'add-panel')][*//*[contains(@class,'title')][normalize-space(text())='${key_portletName}']]//button[contains(@class,'item-add')])[${key_index}]</td>
 	<td></td>
 </tr>
 <tr>
