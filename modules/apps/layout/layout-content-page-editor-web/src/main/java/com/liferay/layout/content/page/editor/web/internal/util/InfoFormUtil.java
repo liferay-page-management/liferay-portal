@@ -14,6 +14,7 @@
 
 package com.liferay.layout.content.page.editor.web.internal.util;
 
+import com.liferay.document.library.kernel.model.DLFileEntryConstants;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldSet;
 import com.liferay.info.field.InfoFieldSetEntry;
@@ -23,16 +24,21 @@ import com.liferay.info.field.type.NumberInfoFieldType;
 import com.liferay.info.field.type.SelectInfoFieldType;
 import com.liferay.info.field.type.TextInfoFieldType;
 import com.liferay.info.form.InfoForm;
+import com.liferay.info.item.InfoItemServiceTracker;
+import com.liferay.info.item.provider.InfoItemFormProvider;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -87,6 +93,62 @@ public class InfoFormUtil {
 		}
 
 		return JSONUtil.put("fieldSets", fieldSetsJSONArray);
+	}
+
+	public static List<InfoField<?>> getEditableInfoFields(
+			String formVariationKey, long groupId,
+			InfoItemServiceTracker infoItemServiceTracker, String itemClassName)
+		throws Exception {
+
+		// LPS-111037
+
+		if (Objects.equals(
+				DLFileEntryConstants.getClassName(), itemClassName)) {
+
+			itemClassName = FileEntry.class.getName();
+		}
+
+		InfoItemFormProvider<?> infoItemFormProvider =
+			infoItemServiceTracker.getFirstInfoItemService(
+				InfoItemFormProvider.class, itemClassName);
+
+		if (infoItemFormProvider == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to get info item form provider for class " +
+						itemClassName);
+			}
+
+			return Collections.emptyList();
+		}
+
+		List<InfoField<?>> infoFields = new ArrayList<>();
+
+		InfoForm infoForm = infoItemFormProvider.getInfoForm(
+			formVariationKey, groupId);
+
+		for (InfoFieldSetEntry infoFieldSetEntry :
+				infoForm.getInfoFieldSetEntries()) {
+
+			if (infoFieldSetEntry instanceof InfoField) {
+				InfoField<?> infoField = (InfoField<?>)infoFieldSetEntry;
+
+				if (infoField.isEditable()) {
+					infoFields.add(infoField);
+				}
+			}
+			else if (infoFieldSetEntry instanceof InfoFieldSet) {
+				InfoFieldSet infoFieldSet = (InfoFieldSet)infoFieldSetEntry;
+
+				for (InfoField<?> infoField : infoFieldSet.getAllInfoFields()) {
+					if (infoField.isEditable()) {
+						infoFields.add(infoField);
+					}
+				}
+			}
+		}
+
+		return infoFields;
 	}
 
 	private static String _getDataType(InfoFieldType infoFieldType) {
