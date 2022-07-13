@@ -3534,6 +3534,12 @@ return	Array.from(getWebElement("(//div[@aria-label='${fragmentName}'])[${index}
 		}
 	}
 
+	macro gotoEllipsisMenuItemInControlMenu {
+		Click(locator1 = "ControlMenu#ELLIPSIS_ICON");
+
+		MenuItem.click(menuItem = "${menuItem}");
+	}
+
 	macro gotoEllipsisMenuItemInItemSelector {
 		Click(
 			key_fieldLabel = "${fieldLabel}",
