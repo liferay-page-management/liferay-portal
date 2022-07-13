@@ -31,6 +31,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ELLIPSIS_ICON</td>
+	<td>//*[@data-qa-id='controlMenu']//ul[contains(@class,'control-menu')]//*[name()='svg'][contains(@class,'icon-ellipsis-v')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>HEADING</td>
 	<td>//*[@data-qa-id='headerTitle']</td>
 	<td></td>
