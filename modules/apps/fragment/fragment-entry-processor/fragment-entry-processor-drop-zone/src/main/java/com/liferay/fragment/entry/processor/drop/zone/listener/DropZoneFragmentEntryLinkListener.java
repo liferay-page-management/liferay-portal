@@ -37,6 +37,7 @@ import java.util.Objects;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import org.osgi.service.component.annotations.Component;
@@ -89,7 +90,7 @@ public class DropZoneFragmentEntryLinkListener
 
 	private void _addOrRestoreDropZoneLayoutStructureItem(
 		LayoutStructure layoutStructure,
-		LayoutStructureItem parentLayoutStructureItem) {
+		LayoutStructureItem parentLayoutStructureItem, int position) {
 
 		LayoutStructureItem existingLayoutStructureItem = null;
 
@@ -119,7 +120,7 @@ public class DropZoneFragmentEntryLinkListener
 		}
 		else {
 			layoutStructure.addFragmentDropZoneLayoutStructureItem(
-				parentLayoutStructureItem.getItemId(), -1);
+				parentLayoutStructureItem.getItemId(), position);
 		}
 	}
 
@@ -212,9 +213,13 @@ public class DropZoneFragmentEntryLinkListener
 					itemId, Collections.emptyList()));
 		}
 		else {
-			for (int i = childrenItemIds.size(); i < elements.size(); i++) {
-				_addOrRestoreDropZoneLayoutStructureItem(
-					layoutStructure, parentLayoutStructureItem);
+			for (int i = 0; i < elements.size(); i++) {
+				Element element = elements.get(i);
+
+				if (!element.hasAttr("uuid")) {
+					_addOrRestoreDropZoneLayoutStructureItem(
+						layoutStructure, parentLayoutStructureItem, i);
+				}
 			}
 		}
 
