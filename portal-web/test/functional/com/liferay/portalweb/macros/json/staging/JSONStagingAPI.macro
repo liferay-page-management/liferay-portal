@@ -17,7 +17,7 @@ definition {
 				-d serviceContext=${serviceContext}
 		''';
 
-		com.liferay.poshi.runner.util.JSONCurlUtil.post("${curl}");
+		var results = JSONCurlUtil.post("${curl}", "$");
 	}
 
 	macro _enableRemoteStaging {
