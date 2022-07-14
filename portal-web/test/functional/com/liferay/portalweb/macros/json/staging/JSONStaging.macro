@@ -41,8 +41,6 @@ definition {
 			branchingPublic = "${branchingPublic}",
 			groupId = "${groupId}",
 			unCheckedContent = "${unCheckedContent}");
-
-		Alert.viewSuccessMessage();
 	}
 
 	@summary = "Activate remote staging with or without page versioning with all content"
