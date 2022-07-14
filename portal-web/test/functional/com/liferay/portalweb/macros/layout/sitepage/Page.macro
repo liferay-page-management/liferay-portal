@@ -204,6 +204,7 @@ definition {
 
 		if (isSet(searchTerm)) {
 			Type(
+				key_type = "text",
 				locator1 = "MenuItem#SEARCH_FIELD",
 				value1 = "${searchTerm}");
 		}
