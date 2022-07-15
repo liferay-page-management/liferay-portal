@@ -214,6 +214,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>JAVASCRIPT_EXTENSION</td>
+	<td>//div[contains(@class,'sheet-section')]//tr[contains(.,'${key_insertion}')]//following-sibling::tr//td[normalize-space(text())='${key_entryName}']</td>
+	<td></td>
+</tr>
+<tr>
 	<td></td>
 	<td></td>
 	<td></td>
