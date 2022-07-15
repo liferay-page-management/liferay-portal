@@ -50,6 +50,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.ArrayList;
@@ -274,11 +275,16 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 							formStyledLayoutStructureItem.
 								getChildrenItemIds())));
 
-				addedFragmentEntryLinks.addAll(
-					_addFormChildrenItems(
-						formItemId, httpServletRequest, httpServletResponse,
-						jsonObject, layoutStructure, segmentsExperienceId,
-						themeDisplay));
+				String classNameId = itemConfigJSONObject.getString(
+					"classNameId");
+
+				if (Validator.isNotNull(classNameId)) {
+					addedFragmentEntryLinks.addAll(
+						_addFormChildrenItems(
+							formItemId, httpServletRequest, httpServletResponse,
+							jsonObject, layoutStructure, segmentsExperienceId,
+							themeDisplay));
+				}
 			}
 
 			layoutPageTemplateStructure =
