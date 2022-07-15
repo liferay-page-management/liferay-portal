@@ -30,6 +30,7 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocal
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureService;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -80,6 +81,41 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 		JSONPortletResponseUtil.writeJSON(
 			actionRequest, actionResponse,
 			_updateFormItemConfig(actionRequest, actionResponse));
+	}
+
+	private FragmentEntryLink _addFragmentEntryLink(
+			String formItemId, FragmentEntry fragmentEntry,
+			FragmentEntryProcessorContext fragmentEntryProcessorContext,
+			LayoutStructure layoutStructure, long segmentsExperienceId,
+			ServiceContext serviceContext, ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		FragmentEntryLink fragmentEntryLink =
+			_fragmentEntryLinkService.addFragmentEntryLink(
+				themeDisplay.getScopeGroupId(), 0,
+				fragmentEntry.getFragmentEntryId(), segmentsExperienceId,
+				themeDisplay.getPlid(), fragmentEntry.getCss(),
+				fragmentEntry.getHtml(), fragmentEntry.getJs(),
+				fragmentEntry.getConfiguration(), null, StringPool.BLANK, 0,
+				fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(),
+				serviceContext);
+
+		String processedHTML =
+			_fragmentEntryProcessorRegistry.processFragmentEntryLinkHTML(
+				fragmentEntryLink, fragmentEntryProcessorContext);
+
+		JSONObject editableValuesJSONObject =
+			_fragmentEntryProcessorRegistry.getDefaultEditableValuesJSONObject(
+				processedHTML, fragmentEntryLink.getConfiguration());
+
+		fragmentEntryLink = _fragmentEntryLinkService.updateFragmentEntryLink(
+			fragmentEntryLink.getFragmentEntryLinkId(),
+			editableValuesJSONObject.toString());
+
+		layoutStructure.addFragmentStyledLayoutStructureItem(
+			fragmentEntryLink.getFragmentEntryLinkId(), formItemId, 0);
+
+		return fragmentEntryLink;
 	}
 
 	private JSONObject _updateFormItemConfig(
@@ -138,44 +174,19 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 						"error-some-fragments-are-missing", "submit-button"));
 			}
 			else {
-				ServiceContext serviceContext = ServiceContextFactory.getInstance(
-					actionRequest);
-
-				FragmentEntryLink fragmentEntryLink =
-					_fragmentEntryLinkService.addFragmentEntryLink(
-						themeDisplay.getScopeGroupId(), 0,
-						fragmentEntry.getFragmentEntryId(),
-						segmentsExperienceId, themeDisplay.getPlid(),
-						fragmentEntry.getCss(), fragmentEntry.getHtml(),
-						fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
-						null, StringPool.BLANK, 0,
-						fragmentEntry.getFragmentEntryKey(),
-						fragmentEntry.getType(), serviceContext);
-
 				FragmentEntryProcessorContext fragmentEntryProcessorContext =
 					new DefaultFragmentEntryProcessorContext(
 						httpServletRequest, httpServletResponse,
 						FragmentEntryLinkConstants.EDIT,
 						LocaleUtil.getMostRelevantLocale());
 
-				String processedHTML =
-					_fragmentEntryProcessorRegistry.
-						processFragmentEntryLinkHTML(
-							fragmentEntryLink, fragmentEntryProcessorContext);
+				ServiceContext serviceContext =
+					ServiceContextFactory.getInstance(actionRequest);
 
-				JSONObject editableValuesJSONObject =
-					_fragmentEntryProcessorRegistry.
-						getDefaultEditableValuesJSONObject(
-							processedHTML,
-							fragmentEntryLink.getConfiguration());
-
-				fragmentEntryLink =
-					_fragmentEntryLinkService.updateFragmentEntryLink(
-						fragmentEntryLink.getFragmentEntryLinkId(),
-						editableValuesJSONObject.toString());
-
-				layoutStructure.addFragmentStyledLayoutStructureItem(
-					fragmentEntryLink.getFragmentEntryLinkId(), formItemId, 0);
+				FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+					formItemId, fragmentEntry, fragmentEntryProcessorContext,
+					layoutStructure, segmentsExperienceId, serviceContext,
+					themeDisplay);
 
 				addedFragmentEntryLinks.add(fragmentEntryLink);
 			}
