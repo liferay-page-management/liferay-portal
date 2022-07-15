@@ -14,25 +14,43 @@
 
 package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
+import com.liferay.fragment.constants.FragmentEntryLinkConstants;
+import com.liferay.fragment.contributor.FragmentCollectionContributorTracker;
+import com.liferay.fragment.model.FragmentEntry;
+import com.liferay.fragment.model.FragmentEntryLink;
+import com.liferay.fragment.processor.DefaultFragmentEntryProcessorContext;
+import com.liferay.fragment.processor.FragmentEntryProcessorContext;
+import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
+import com.liferay.fragment.service.FragmentEntryLinkService;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
+import com.liferay.layout.content.page.editor.web.internal.util.FragmentEntryLinkManager;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureService;
 import com.liferay.layout.util.structure.LayoutStructure;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -57,10 +75,12 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 
 		JSONPortletResponseUtil.writeJSON(
 			actionRequest, actionResponse,
-			_updateFormItemConfig(actionRequest));
+			_updateFormItemConfig(actionRequest, actionResponse));
 	}
 
-	private JSONObject _updateFormItemConfig(ActionRequest actionRequest) {
+	private JSONObject _updateFormItemConfig(
+		ActionRequest actionRequest, ActionResponse actionResponse) {
+
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
@@ -83,6 +103,51 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 			layoutStructure.updateItemConfig(
 				JSONFactoryUtil.createJSONObject(itemConfig), formItemId);
 
+			FragmentEntry fragmentEntry =
+				_fragmentCollectionContributorTracker.getFragmentEntry(
+					"INPUTS-submit-button");
+
+			ServiceContext serviceContext = ServiceContextFactory.getInstance(
+				actionRequest);
+
+			FragmentEntryLink fragmentEntryLink =
+				_fragmentEntryLinkService.addFragmentEntryLink(
+					themeDisplay.getScopeGroupId(), 0,
+					fragmentEntry.getFragmentEntryId(), segmentsExperienceId,
+					themeDisplay.getPlid(), fragmentEntry.getCss(),
+					fragmentEntry.getHtml(), fragmentEntry.getJs(),
+					fragmentEntry.getConfiguration(), null, StringPool.BLANK, 0,
+					fragmentEntry.getFragmentEntryKey(),
+					fragmentEntry.getType(), serviceContext);
+
+			HttpServletRequest httpServletRequest =
+				_portal.getHttpServletRequest(actionRequest);
+			HttpServletResponse httpServletResponse =
+				_portal.getHttpServletResponse(actionResponse);
+
+			FragmentEntryProcessorContext fragmentEntryProcessorContext =
+				new DefaultFragmentEntryProcessorContext(
+					httpServletRequest, httpServletResponse,
+					FragmentEntryLinkConstants.EDIT,
+					LocaleUtil.getMostRelevantLocale());
+
+			String processedHTML =
+				_fragmentEntryProcessorRegistry.processFragmentEntryLinkHTML(
+					fragmentEntryLink, fragmentEntryProcessorContext);
+
+			JSONObject editableValuesJSONObject =
+				_fragmentEntryProcessorRegistry.
+					getDefaultEditableValuesJSONObject(
+						processedHTML, fragmentEntryLink.getConfiguration());
+
+			fragmentEntryLink =
+				_fragmentEntryLinkService.updateFragmentEntryLink(
+					fragmentEntryLink.getFragmentEntryLinkId(),
+					editableValuesJSONObject.toString());
+
+			layoutStructure.addFragmentStyledLayoutStructureItem(
+				fragmentEntryLink.getFragmentEntryLinkId(), formItemId, 0);
+
 			layoutPageTemplateStructure =
 				_layoutPageTemplateStructureService.
 					updateLayoutPageTemplateStructureData(
@@ -92,7 +157,16 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 			LayoutStructure updatedLayoutStructure = LayoutStructure.of(
 				layoutPageTemplateStructure.getData(segmentsExperienceId));
 
-			jsonObject.put("layoutData", updatedLayoutStructure.toJSONObject());
+			jsonObject.put(
+				"addedFragmentEntryLinks",
+				JSONUtil.put(
+					String.valueOf(fragmentEntryLink.getFragmentEntryLinkId()),
+					_fragmentEntryLinkManager.getFragmentEntryLinkJSONObject(
+						fragmentEntryLink, httpServletRequest,
+						httpServletResponse, updatedLayoutStructure))
+			).put(
+				"layoutData", updatedLayoutStructure.toJSONObject()
+			);
 		}
 		catch (Exception exception) {
 			_log.error(exception);
@@ -112,11 +186,27 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 		UpdateFormItemConfigMVCActionCommand.class);
 
 	@Reference
+	private FragmentCollectionContributorTracker
+		_fragmentCollectionContributorTracker;
+
+	@Reference
+	private FragmentEntryLinkManager _fragmentEntryLinkManager;
+
+	@Reference
+	private FragmentEntryLinkService _fragmentEntryLinkService;
+
+	@Reference
+	private FragmentEntryProcessorRegistry _fragmentEntryProcessorRegistry;
+
+	@Reference
 	private LayoutPageTemplateStructureLocalService
 		_layoutPageTemplateStructureLocalService;
 
 	@Reference
 	private LayoutPageTemplateStructureService
 		_layoutPageTemplateStructureService;
+
+	@Reference
+	private Portal _portal;
 
 }
