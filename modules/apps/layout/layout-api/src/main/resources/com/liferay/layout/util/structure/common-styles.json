@@ -688,6 +688,7 @@
 				]
 			},
 			{
+				"cssProperty": "color",
 				"cssTemplate": "color: {value} !important;",
 				"dataType": "string",
 				"label": "text-color",
@@ -729,6 +730,7 @@
 		"label": "background",
 		"styles": [
 			{
+				"cssProperty": "background-color",
 				"cssTemplate": "background-color: {value} !important;",
 				"dataType": "string",
 				"label": "background-color",
@@ -803,6 +805,7 @@
 				]
 			},
 			{
+				"cssProperty": "border-color",
 				"cssTemplate": "border-color: {value} !important;",
 				"dataType": "string",
 				"label": "border-color",
