@@ -461,9 +461,10 @@ definition {
 			Panel.expandPanel(panel = "JavaScript");
 
 			AssertTextEquals(
-				key_sectionTitle = "JavaScript Extensions",
-				locator1 = "PagesAdmin#SECTION_SUBTITLE",
-				value1 = "No JavaScript extensions were loaded.");
+				key_entryName = "InnerText",
+				key_insertion = "Page bottom",
+				locator1 = "PagesAdmin#JAVASCRIPT_EXTENSION",
+				value1 = "InnerText");
 		}
 	}
 
