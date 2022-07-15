@@ -101,6 +101,10 @@
 	chooseSpecificDisplayPage.addEventListener('click', (event) => {
 		Liferay.Util.openSelectionModal({
 			onSelect: function (selectedItem) {
+				if (!selectedItem || !selectedItem.value) {
+					return;
+				}
+
 				assetDisplayPageIdInput.value = '';
 
 				pagesContainerInput.value = '';
