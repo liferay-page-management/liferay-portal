@@ -107,37 +107,37 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 					themeDisplay.getLocale(),
 					"error-your-form-could-not-be-loaded-because-fragments-" +
 						"are-not-available"));
+
+			return Collections.emptyList();
 		}
-		else {
-			FragmentEntry fragmentEntry =
-				_fragmentCollectionContributorTracker.getFragmentEntry(
-					"INPUTS-submit-button");
 
-			FragmentEntryProcessorContext fragmentEntryProcessorContext =
-				new DefaultFragmentEntryProcessorContext(
-					httpServletRequest, httpServletResponse,
-					FragmentEntryLinkConstants.EDIT,
-					LocaleUtil.getMostRelevantLocale());
+		FragmentEntry fragmentEntry =
+			_fragmentCollectionContributorTracker.getFragmentEntry(
+				"INPUTS-submit-button");
 
-			ServiceContext serviceContext = ServiceContextFactory.getInstance(
-				httpServletRequest);
+		FragmentEntryProcessorContext fragmentEntryProcessorContext =
+			new DefaultFragmentEntryProcessorContext(
+				httpServletRequest, httpServletResponse,
+				FragmentEntryLinkConstants.EDIT,
+				LocaleUtil.getMostRelevantLocale());
 
-			FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
-				formItemId, fragmentEntry, fragmentEntryProcessorContext,
-				layoutStructure, segmentsExperienceId, serviceContext,
-				themeDisplay);
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			httpServletRequest);
 
-			if (fragmentEntryLink == null) {
-				jsonObject.put(
-					"errorMessage",
-					LanguageUtil.format(
-						themeDisplay.getLocale(),
-						"error-some-fragments-are-missing", "submit-button"));
-			}
-			else {
-				return ListUtil.fromArray(fragmentEntryLink);
-			}
+		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+			formItemId, fragmentEntry, fragmentEntryProcessorContext,
+			layoutStructure, segmentsExperienceId, serviceContext,
+			themeDisplay);
+
+		if (fragmentEntryLink != null) {
+			return ListUtil.fromArray(fragmentEntryLink);
 		}
+
+		jsonObject.put(
+			"errorMessage",
+			LanguageUtil.format(
+				themeDisplay.getLocale(), "error-some-fragments-are-missing",
+				"submit-button"));
 
 		return Collections.emptyList();
 	}
