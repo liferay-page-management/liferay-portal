@@ -90,6 +90,10 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 			ServiceContext serviceContext, ThemeDisplay themeDisplay)
 		throws PortalException {
 
+		if (fragmentEntry == null) {
+			return null;
+		}
+
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkService.addFragmentEntryLink(
 				themeDisplay.getScopeGroupId(), 0,
@@ -147,10 +151,6 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 				_fragmentCollectionContributorTracker.
 					getFragmentCollectionContributor("INPUTS");
 
-			FragmentEntry fragmentEntry =
-				_fragmentCollectionContributorTracker.getFragmentEntry(
-					"INPUTS-submit-button");
-
 			HttpServletRequest httpServletRequest =
 				_portal.getHttpServletRequest(actionRequest);
 			HttpServletResponse httpServletResponse =
@@ -166,14 +166,11 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 						"error-your-form-could-not-be-loaded-because-" +
 							"fragments-are-not-available"));
 			}
-			else if (fragmentEntry == null) {
-				jsonObject.put(
-					"errorMessage",
-					LanguageUtil.format(
-						themeDisplay.getLocale(),
-						"error-some-fragments-are-missing", "submit-button"));
-			}
 			else {
+				FragmentEntry fragmentEntry =
+					_fragmentCollectionContributorTracker.getFragmentEntry(
+						"INPUTS-submit-button");
+
 				FragmentEntryProcessorContext fragmentEntryProcessorContext =
 					new DefaultFragmentEntryProcessorContext(
 						httpServletRequest, httpServletResponse,
@@ -188,7 +185,17 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 					layoutStructure, segmentsExperienceId, serviceContext,
 					themeDisplay);
 
-				addedFragmentEntryLinks.add(fragmentEntryLink);
+				if (fragmentEntryLink == null) {
+					jsonObject.put(
+						"errorMessage",
+						LanguageUtil.format(
+							themeDisplay.getLocale(),
+							"error-some-fragments-are-missing",
+							"submit-button"));
+				}
+				else {
+					addedFragmentEntryLinks.add(fragmentEntryLink);
+				}
 			}
 
 			layoutPageTemplateStructure =
