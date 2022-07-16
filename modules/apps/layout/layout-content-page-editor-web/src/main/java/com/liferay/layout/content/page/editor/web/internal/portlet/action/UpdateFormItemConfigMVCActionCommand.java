@@ -17,6 +17,7 @@ package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.contributor.FragmentCollectionContributor;
 import com.liferay.fragment.contributor.FragmentCollectionContributorTracker;
+import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.processor.DefaultFragmentEntryProcessorContext;
@@ -153,8 +154,8 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 
 			FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
 				formItemId, fragmentEntry, fragmentEntryProcessorContext,
-				layoutStructure, segmentsExperienceId, serviceContext,
-				themeDisplay);
+				infoField, layoutStructure, segmentsExperienceId,
+				serviceContext, themeDisplay);
 
 			if (fragmentEntryLink == null) {
 				missingInputTypes.add(
@@ -171,7 +172,7 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 				"INPUTS-submit-button");
 
 		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
-			formItemId, fragmentEntry, fragmentEntryProcessorContext,
+			formItemId, fragmentEntry, fragmentEntryProcessorContext, null,
 			layoutStructure, segmentsExperienceId, serviceContext,
 			themeDisplay);
 
@@ -198,8 +199,9 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 	private FragmentEntryLink _addFragmentEntryLink(
 			String formItemId, FragmentEntry fragmentEntry,
 			FragmentEntryProcessorContext fragmentEntryProcessorContext,
-			LayoutStructure layoutStructure, long segmentsExperienceId,
-			ServiceContext serviceContext, ThemeDisplay themeDisplay)
+			InfoField<?> infoField, LayoutStructure layoutStructure,
+			long segmentsExperienceId, ServiceContext serviceContext,
+			ThemeDisplay themeDisplay)
 		throws Exception {
 
 		if (fragmentEntry == null) {
@@ -223,6 +225,23 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 		JSONObject editableValuesJSONObject =
 			_fragmentEntryProcessorRegistry.getDefaultEditableValuesJSONObject(
 				processedHTML, fragmentEntryLink.getConfiguration());
+
+		if (infoField != null) {
+			JSONObject jsonObject = editableValuesJSONObject.getJSONObject(
+				FragmentEntryProcessorConstants.
+					KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR);
+
+			if (jsonObject == null) {
+				jsonObject = JSONFactoryUtil.createJSONObject();
+
+				editableValuesJSONObject.put(
+					FragmentEntryProcessorConstants.
+						KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
+					jsonObject);
+			}
+
+			jsonObject.put("inputFieldId", infoField.getUniqueId());
+		}
 
 		fragmentEntryLink = _fragmentEntryLinkService.updateFragmentEntryLink(
 			fragmentEntryLink.getFragmentEntryLinkId(),
