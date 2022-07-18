@@ -15,6 +15,7 @@
 package com.liferay.site.admin.web.internal.portlet.action;
 
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
+import com.liferay.portal.kernel.exception.LayoutSetVirtualHostException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCActionCommand;
@@ -34,6 +35,8 @@ import com.liferay.portal.kernel.util.WebKeys;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -85,17 +88,32 @@ public class EditSiteURLMVCActionCommand
 		Set<Locale> availableLocales = LanguageUtil.getAvailableLocales(
 			liveGroup.getGroupId());
 
-		_layoutSetService.updateVirtualHosts(
-			liveGroup.getGroupId(), false,
-			ActionUtil.toTreeMap(
-				actionRequest, "publicVirtualHost", availableLocales));
+		TreeMap<String, String> publicVirtualHosts = ActionUtil.toTreeMap(
+			actionRequest, "publicVirtualHost", availableLocales);
+		TreeMap<String, String> privateVirtualHosts = ActionUtil.toTreeMap(
+			actionRequest, "privateVirtualHost", availableLocales);
+
+		_checkVirtualHostNames(publicVirtualHosts, privateVirtualHosts);
 
 		_layoutSetService.updateVirtualHosts(
-			liveGroup.getGroupId(), true,
-			ActionUtil.toTreeMap(
-				actionRequest, "privateVirtualHost", availableLocales));
+			liveGroup.getGroupId(), false, publicVirtualHosts);
+
+		_layoutSetService.updateVirtualHosts(
+			liveGroup.getGroupId(), true, privateVirtualHosts);
 
 		if (liveGroup.hasStagingGroup()) {
+			TreeMap<String, String> stagingPublicVirtualHosts =
+				ActionUtil.toTreeMap(
+					actionRequest, "stagingPublicVirtualHost",
+					availableLocales);
+			TreeMap<String, String> stagingPrivateVirtualHosts =
+				ActionUtil.toTreeMap(
+					actionRequest, "stagingPrivateVirtualHost",
+					availableLocales);
+
+			_checkVirtualHostNames(
+				stagingPublicVirtualHosts, stagingPrivateVirtualHosts);
+
 			Group stagingGroup = liveGroup.getStagingGroup();
 
 			friendlyURL = ParamUtil.getString(
@@ -106,16 +124,10 @@ public class EditSiteURLMVCActionCommand
 				stagingGroup.getGroupId(), friendlyURL);
 
 			_layoutSetService.updateVirtualHosts(
-				stagingGroup.getGroupId(), false,
-				ActionUtil.toTreeMap(
-					actionRequest, "stagingPublicVirtualHost",
-					availableLocales));
+				stagingGroup.getGroupId(), false, stagingPublicVirtualHosts);
 
 			_layoutSetService.updateVirtualHosts(
-				stagingGroup.getGroupId(), true,
-				ActionUtil.toTreeMap(
-					actionRequest, "stagingPrivateVirtualHost",
-					availableLocales));
+				stagingGroup.getGroupId(), true, stagingPrivateVirtualHosts);
 		}
 
 		if (!redirect) {
@@ -125,6 +137,21 @@ public class EditSiteURLMVCActionCommand
 		actionRequest.setAttribute(
 			WebKeys.REDIRECT,
 			_getSiteAdministrationURL(actionRequest, liveGroup));
+	}
+
+	private void _checkVirtualHostNames(
+			TreeMap<String, String> publicVirtualHosts,
+			TreeMap<String, String> privateVirtualHosts)
+		throws Exception {
+
+		TreeSet<String> treeSet = new TreeSet<>();
+
+		treeSet.addAll(publicVirtualHosts.keySet());
+		treeSet.retainAll(privateVirtualHosts.keySet());
+
+		if (!treeSet.isEmpty()) {
+			throw new LayoutSetVirtualHostException();
+		}
 	}
 
 	private String _getSiteAdministrationURL(
