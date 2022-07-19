@@ -6,6 +6,8 @@
 	labelName = "languageUtil.format(" + localeVariable + ", \"download-x\", \"" + label + "\", false)"
 />
 
-<a href="${getVariableReferenceCode(variableName)}">
-	${getVariableReferenceCode(labelName)}
-</a>
+${r"<#if"} (${variableName})?? && (${labelName})??>
+	<a href="${getVariableReferenceCode(variableName)}">
+		${getVariableReferenceCode(labelName)}
+	</a>
+${r"</#if>"}

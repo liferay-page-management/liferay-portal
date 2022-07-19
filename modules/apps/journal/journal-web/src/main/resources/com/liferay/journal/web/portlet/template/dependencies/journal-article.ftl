@@ -5,12 +5,14 @@
 	variableFriendlyUrl = name + ".getFriendlyUrl()"
 />
 
-${r"<#assign"}
-	webContentData = jsonFactoryUtil.createJSONObject(${variableData})
-${r"/>"}
+${r"<#if"} (${variableData})?? && (${variableFriendlyUrl})??>
+	${r"<#assign"}
+		webContentData = jsonFactoryUtil.createJSONObject(${variableData})
+	${r"/>"}
 
-${r"<#if"} webContentData?? && webContentData.title??>
-	<a href="${getVariableReferenceCode(variableFriendlyUrl)}">
-		${r"${webContentData.title}"}
-	</a>
+	${r"<#if"} webContentData?? && webContentData.title??>
+		<a href="${getVariableReferenceCode(variableFriendlyUrl)}">
+			${r"${webContentData.title}"}
+		</a>
+	${r"</#if>"}
 ${r"</#if>"}
