@@ -14,6 +14,7 @@
 
 package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
+import com.liferay.document.library.kernel.model.DLFileEntryConstants;
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.contributor.FragmentCollectionContributor;
 import com.liferay.fragment.contributor.FragmentCollectionContributorTracker;
@@ -23,6 +24,9 @@ import com.liferay.fragment.processor.DefaultFragmentEntryProcessorContext;
 import com.liferay.fragment.processor.FragmentEntryProcessorContext;
 import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
 import com.liferay.fragment.service.FragmentEntryLinkService;
+import com.liferay.info.field.InfoField;
+import com.liferay.info.field.InfoFieldSet;
+import com.liferay.info.field.InfoFieldSetEntry;
 import com.liferay.info.field.type.BooleanInfoFieldType;
 import com.liferay.info.field.type.DateInfoFieldType;
 import com.liferay.info.field.type.FileInfoFieldType;
@@ -31,6 +35,9 @@ import com.liferay.info.field.type.NumberInfoFieldType;
 import com.liferay.info.field.type.RelationshipInfoFieldType;
 import com.liferay.info.field.type.SelectInfoFieldType;
 import com.liferay.info.field.type.TextInfoFieldType;
+import com.liferay.info.form.InfoForm;
+import com.liferay.info.item.InfoItemServiceTracker;
+import com.liferay.info.item.provider.InfoItemFormProvider;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.layout.content.page.editor.web.internal.util.FragmentEntryLinkManager;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
@@ -51,6 +58,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -201,6 +209,66 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 			fragmentEntryLink.getFragmentEntryLinkId(), formItemId, -1);
 
 		return fragmentEntryLink;
+	}
+
+	private List<InfoField<?>> _getEditableInfoFields(
+			FormStyledLayoutStructureItem formStyledLayoutStructureItem,
+			long groupId)
+		throws Exception {
+
+		String itemClassName = _portal.getClassName(
+			formStyledLayoutStructureItem.getClassNameId());
+
+		// LPS-111037
+
+		if (Objects.equals(
+				DLFileEntryConstants.getClassName(), itemClassName)) {
+
+			itemClassName = FileEntry.class.getName();
+		}
+
+		InfoItemFormProvider<?> infoItemFormProvider =
+			_infoItemServiceTracker.getFirstInfoItemService(
+				InfoItemFormProvider.class, itemClassName);
+
+		if (infoItemFormProvider == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to get info item form provider for class " +
+						itemClassName);
+			}
+
+			return Collections.emptyList();
+		}
+
+		List<InfoField<?>> infoFields = new ArrayList<>();
+
+		InfoForm infoForm = infoItemFormProvider.getInfoForm(
+			String.valueOf(formStyledLayoutStructureItem.getClassTypeId()),
+			groupId);
+
+		for (InfoFieldSetEntry infoFieldSetEntry :
+				infoForm.getInfoFieldSetEntries()) {
+
+			if (infoFieldSetEntry instanceof InfoField) {
+				InfoField<?> infoField = (InfoField<?>)infoFieldSetEntry;
+
+				if (infoField.isEditable()) {
+					infoFields.add(infoField);
+				}
+			}
+			else if (infoFieldSetEntry instanceof InfoFieldSet) {
+				InfoFieldSet infoFieldSet = (InfoFieldSet)infoFieldSetEntry;
+
+				for (InfoField<?> infoField : infoFieldSet.getAllInfoFields()) {
+					if (infoField.isEditable()) {
+						infoFields.add(infoField);
+					}
+				}
+			}
+		}
+
+		return infoFields;
 	}
 
 	private String _getFragmentEntryKey(InfoFieldType infoFieldType) {
@@ -398,6 +466,9 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 
 	@Reference
 	private FragmentEntryProcessorRegistry _fragmentEntryProcessorRegistry;
+
+	@Reference
+	private InfoItemServiceTracker _infoItemServiceTracker;
 
 	@Reference
 	private LayoutPageTemplateStructureLocalService
