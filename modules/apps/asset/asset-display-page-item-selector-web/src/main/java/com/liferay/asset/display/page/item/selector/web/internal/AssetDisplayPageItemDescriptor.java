@@ -16,8 +16,8 @@ package com.liferay.asset.display.page.item.selector.web.internal;
 
 import com.liferay.item.selector.ItemSelectorViewDescriptor;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.language.LanguageUtil;
 
 import java.util.Date;
 import java.util.Locale;
@@ -49,6 +49,11 @@ public class AssetDisplayPageItemDescriptor
 	}
 
 	@Override
+	public Date getModifiedDate() {
+		return _layoutPageTemplateEntry.getModifiedDate();
+	}
+
+	@Override
 	public String getPayload() {
 		return JSONUtil.put(
 			"id",
@@ -63,19 +68,17 @@ public class AssetDisplayPageItemDescriptor
 
 	@Override
 	public String getSubtitle(Locale locale) {
-		Date createDate = _layoutPageTemplateEntry.getCreateDate();
-
-		String createDateDescription = LanguageUtil.getTimeDescription(
-			_httpServletRequest,
-			System.currentTimeMillis() - createDate.getTime(), true);
-
-		return LanguageUtil.format(
-			_httpServletRequest, "x-ago", createDateDescription);
+		return StringPool.BLANK;
 	}
 
 	@Override
 	public String getTitle(Locale locale) {
 		return _layoutPageTemplateEntry.getName();
+	}
+
+	@Override
+	public String getUserName() {
+		return _layoutPageTemplateEntry.getUserName();
 	}
 
 	private final HttpServletRequest _httpServletRequest;
