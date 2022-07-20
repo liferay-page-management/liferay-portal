@@ -48,7 +48,6 @@ import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -109,11 +108,12 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 	}
 
 	private List<FragmentEntryLink> _addFormChildrenItems(
-			String formItemId, HttpServletRequest httpServletRequest,
+			FormStyledLayoutStructureItem formStyledLayoutStructureItem,
+			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, JSONObject jsonObject,
 			LayoutStructure layoutStructure, long segmentsExperienceId,
 			ThemeDisplay themeDisplay)
-		throws PortalException {
+		throws Exception {
 
 		FragmentCollectionContributor fragmentCollectionContributor =
 			_fragmentCollectionContributorTracker.
@@ -130,10 +130,6 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 			return Collections.emptyList();
 		}
 
-		FragmentEntry fragmentEntry =
-			_fragmentCollectionContributorTracker.getFragmentEntry(
-				"INPUTS-submit-button");
-
 		FragmentEntryProcessorContext fragmentEntryProcessorContext =
 			new DefaultFragmentEntryProcessorContext(
 				httpServletRequest, httpServletResponse,
@@ -146,10 +142,36 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 		Collection<String> missingInputTypes = new TreeSet<>();
 		List<FragmentEntryLink> addedFragmentEntryLinks = new ArrayList<>();
 
+		for (InfoField<?> infoField :
+				_getEditableInfoFields(
+					formStyledLayoutStructureItem,
+					themeDisplay.getScopeGroupId())) {
+
+			InfoFieldType infoFieldType = infoField.getInfoFieldType();
+
+			FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+				formStyledLayoutStructureItem.getItemId(),
+				_fragmentCollectionContributorTracker.getFragmentEntry(
+					_getFragmentEntryKey(infoFieldType)),
+				fragmentEntryProcessorContext, layoutStructure,
+				segmentsExperienceId, serviceContext, themeDisplay);
+
+			if (fragmentEntryLink == null) {
+				missingInputTypes.add(
+					infoFieldType.getLabel(themeDisplay.getLocale()));
+
+				continue;
+			}
+
+			addedFragmentEntryLinks.add(fragmentEntryLink);
+		}
+
 		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
-			formItemId, fragmentEntry, fragmentEntryProcessorContext,
-			layoutStructure, segmentsExperienceId, serviceContext,
-			themeDisplay);
+			formStyledLayoutStructureItem.getItemId(),
+			_fragmentCollectionContributorTracker.getFragmentEntry(
+				"INPUTS-submit-button"),
+			fragmentEntryProcessorContext, layoutStructure,
+			segmentsExperienceId, serviceContext, themeDisplay);
 
 		if (fragmentEntryLink == null) {
 			missingInputTypes.add(
@@ -177,7 +199,7 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 			FragmentEntryProcessorContext fragmentEntryProcessorContext,
 			LayoutStructure layoutStructure, long segmentsExperienceId,
 			ServiceContext serviceContext, ThemeDisplay themeDisplay)
-		throws PortalException {
+		throws Exception {
 
 		if (fragmentEntry == null) {
 			return null;
@@ -376,9 +398,9 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 				if (formStyledLayoutStructureItem.getClassNameId() > 0) {
 					addedFragmentEntryLinks.addAll(
 						_addFormChildrenItems(
-							formItemId, httpServletRequest, httpServletResponse,
-							jsonObject, layoutStructure, segmentsExperienceId,
-							themeDisplay));
+							formStyledLayoutStructureItem, httpServletRequest,
+							httpServletResponse, jsonObject, layoutStructure,
+							segmentsExperienceId, themeDisplay));
 				}
 			}
 
