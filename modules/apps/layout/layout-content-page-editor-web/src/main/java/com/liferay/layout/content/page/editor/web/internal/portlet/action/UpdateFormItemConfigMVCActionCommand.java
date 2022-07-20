@@ -89,6 +89,59 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 			_updateFormItemConfig(actionRequest, actionResponse));
 	}
 
+	private List<FragmentEntryLink> _addFormChildrenItems(
+			String formItemId, HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse, JSONObject jsonObject,
+			LayoutStructure layoutStructure, long segmentsExperienceId,
+			ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		FragmentCollectionContributor fragmentCollectionContributor =
+			_fragmentCollectionContributorTracker.
+				getFragmentCollectionContributor("INPUTS");
+
+		FragmentEntry fragmentEntry =
+			_fragmentCollectionContributorTracker.getFragmentEntry(
+				"INPUTS-submit-button");
+
+		if (fragmentCollectionContributor == null) {
+			jsonObject.put(
+				"errorMessage",
+				LanguageUtil.get(
+					themeDisplay.getLocale(),
+					"your-form-could-not-be-loaded-because-fragments-are-not-" +
+						"available"));
+		}
+		else if (fragmentEntry == null) {
+			jsonObject.put(
+				"errorMessage",
+				LanguageUtil.format(
+					themeDisplay.getLocale(),
+					"some-fragments-are-missing-x-could-not-be-added-to-your-" +
+						"form-because-they-are-not-available",
+					"submit-button"));
+		}
+		else {
+			FragmentEntryProcessorContext fragmentEntryProcessorContext =
+				new DefaultFragmentEntryProcessorContext(
+					httpServletRequest, httpServletResponse,
+					FragmentEntryLinkConstants.EDIT,
+					LocaleUtil.getMostRelevantLocale());
+
+			ServiceContext serviceContext = ServiceContextFactory.getInstance(
+				httpServletRequest);
+
+			FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+				formItemId, fragmentEntry, fragmentEntryProcessorContext,
+				layoutStructure, segmentsExperienceId, serviceContext,
+				themeDisplay);
+
+			return ListUtil.fromArray(fragmentEntryLink);
+		}
+
+		return Collections.emptyList();
+	}
+
 	private FragmentEntryLink _addFragmentEntryLink(
 			String formItemId, FragmentEntry fragmentEntry,
 			FragmentEntryProcessorContext fragmentEntryProcessorContext,
@@ -196,49 +249,11 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 					ListUtil.copy(
 						formStyledLayoutStructureItem.getChildrenItemIds()));
 
-				FragmentCollectionContributor fragmentCollectionContributor =
-					_fragmentCollectionContributorTracker.
-						getFragmentCollectionContributor("INPUTS");
-
-				FragmentEntry fragmentEntry =
-					_fragmentCollectionContributorTracker.getFragmentEntry(
-						"INPUTS-submit-button");
-
-				if (fragmentCollectionContributor == null) {
-					jsonObject.put(
-						"errorMessage",
-						LanguageUtil.get(
-							themeDisplay.getLocale(),
-							"your-form-could-not-be-loaded-because-fragments-" +
-								"are-not-available"));
-				}
-				else if (fragmentEntry == null) {
-					jsonObject.put(
-						"errorMessage",
-						LanguageUtil.format(
-							themeDisplay.getLocale(),
-							"some-fragments-are-missing-x-could-not-be-added-" +
-								"to-your-form-because-they-are-not-available",
-							"submit-button"));
-				}
-				else {
-					FragmentEntryProcessorContext
-						fragmentEntryProcessorContext =
-							new DefaultFragmentEntryProcessorContext(
-								httpServletRequest, httpServletResponse,
-								FragmentEntryLinkConstants.EDIT,
-								LocaleUtil.getMostRelevantLocale());
-
-					ServiceContext serviceContext =
-						ServiceContextFactory.getInstance(actionRequest);
-
-					FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
-						formItemId, fragmentEntry,
-						fragmentEntryProcessorContext, layoutStructure,
-						segmentsExperienceId, serviceContext, themeDisplay);
-
-					addedFragmentEntryLinks.add(fragmentEntryLink);
-				}
+				addedFragmentEntryLinks.addAll(
+					_addFormChildrenItems(
+						formItemId, httpServletRequest, httpServletResponse,
+						jsonObject, layoutStructure, segmentsExperienceId,
+						themeDisplay));
 			}
 
 			layoutPageTemplateStructure =
