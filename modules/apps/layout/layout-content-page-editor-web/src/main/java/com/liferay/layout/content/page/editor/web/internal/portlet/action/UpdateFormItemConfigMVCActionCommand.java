@@ -31,7 +31,6 @@ import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -45,6 +44,9 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -107,46 +109,64 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 				_fragmentCollectionContributorTracker.getFragmentEntry(
 					"INPUTS-submit-button");
 
-			ServiceContext serviceContext = ServiceContextFactory.getInstance(
-				actionRequest);
-
-			FragmentEntryLink fragmentEntryLink =
-				_fragmentEntryLinkService.addFragmentEntryLink(
-					themeDisplay.getScopeGroupId(), 0,
-					fragmentEntry.getFragmentEntryId(), segmentsExperienceId,
-					themeDisplay.getPlid(), fragmentEntry.getCss(),
-					fragmentEntry.getHtml(), fragmentEntry.getJs(),
-					fragmentEntry.getConfiguration(), null, StringPool.BLANK, 0,
-					fragmentEntry.getFragmentEntryKey(),
-					fragmentEntry.getType(), serviceContext);
-
 			HttpServletRequest httpServletRequest =
 				_portal.getHttpServletRequest(actionRequest);
 			HttpServletResponse httpServletResponse =
 				_portal.getHttpServletResponse(actionResponse);
 
-			FragmentEntryProcessorContext fragmentEntryProcessorContext =
-				new DefaultFragmentEntryProcessorContext(
-					httpServletRequest, httpServletResponse,
-					FragmentEntryLinkConstants.EDIT,
-					LocaleUtil.getMostRelevantLocale());
+			List<FragmentEntryLink> addedFragmentEntryLinks = new ArrayList<>();
 
-			String processedHTML =
-				_fragmentEntryProcessorRegistry.processFragmentEntryLinkHTML(
-					fragmentEntryLink, fragmentEntryProcessorContext);
+			if (fragmentEntry == null) {
+				jsonObject.put(
+					"errorMessage",
+					LanguageUtil.format(
+						themeDisplay.getLocale(),
+						"some-fragments-are-missing-x-could-not-be-added-to-" +
+							"your-form-because-they-are-not-available",
+						"submit-button"));
+			}
+			else {
+				ServiceContext serviceContext =
+					ServiceContextFactory.getInstance(actionRequest);
 
-			JSONObject editableValuesJSONObject =
-				_fragmentEntryProcessorRegistry.
-					getDefaultEditableValuesJSONObject(
-						processedHTML, fragmentEntryLink.getConfiguration());
+				FragmentEntryLink fragmentEntryLink =
+					_fragmentEntryLinkService.addFragmentEntryLink(
+						themeDisplay.getScopeGroupId(), 0,
+						fragmentEntry.getFragmentEntryId(),
+						segmentsExperienceId, themeDisplay.getPlid(),
+						fragmentEntry.getCss(), fragmentEntry.getHtml(),
+						fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
+						null, StringPool.BLANK, 0,
+						fragmentEntry.getFragmentEntryKey(),
+						fragmentEntry.getType(), serviceContext);
 
-			fragmentEntryLink =
-				_fragmentEntryLinkService.updateFragmentEntryLink(
-					fragmentEntryLink.getFragmentEntryLinkId(),
-					editableValuesJSONObject.toString());
+				FragmentEntryProcessorContext fragmentEntryProcessorContext =
+					new DefaultFragmentEntryProcessorContext(
+						httpServletRequest, httpServletResponse,
+						FragmentEntryLinkConstants.EDIT,
+						LocaleUtil.getMostRelevantLocale());
 
-			layoutStructure.addFragmentStyledLayoutStructureItem(
-				fragmentEntryLink.getFragmentEntryLinkId(), formItemId, 0);
+				String processedHTML =
+					_fragmentEntryProcessorRegistry.
+						processFragmentEntryLinkHTML(
+							fragmentEntryLink, fragmentEntryProcessorContext);
+
+				JSONObject editableValuesJSONObject =
+					_fragmentEntryProcessorRegistry.
+						getDefaultEditableValuesJSONObject(
+							processedHTML,
+							fragmentEntryLink.getConfiguration());
+
+				fragmentEntryLink =
+					_fragmentEntryLinkService.updateFragmentEntryLink(
+						fragmentEntryLink.getFragmentEntryLinkId(),
+						editableValuesJSONObject.toString());
+
+				layoutStructure.addFragmentStyledLayoutStructureItem(
+					fragmentEntryLink.getFragmentEntryLinkId(), formItemId, 0);
+
+				addedFragmentEntryLinks.add(fragmentEntryLink);
+			}
 
 			layoutPageTemplateStructure =
 				_layoutPageTemplateStructureService.
@@ -159,11 +179,26 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 
 			jsonObject.put(
 				"addedFragmentEntryLinks",
-				JSONUtil.put(
-					String.valueOf(fragmentEntryLink.getFragmentEntryLinkId()),
-					_fragmentEntryLinkManager.getFragmentEntryLinkJSONObject(
-						fragmentEntryLink, httpServletRequest,
-						httpServletResponse, updatedLayoutStructure))
+				() -> {
+					JSONObject addedFragmentEntryLinksJSONObject =
+						JSONFactoryUtil.createJSONObject();
+
+					for (FragmentEntryLink addedFragmentEntryLink :
+							addedFragmentEntryLinks) {
+
+						addedFragmentEntryLinksJSONObject.put(
+							String.valueOf(
+								addedFragmentEntryLink.
+									getFragmentEntryLinkId()),
+							_fragmentEntryLinkManager.
+								getFragmentEntryLinkJSONObject(
+									addedFragmentEntryLink, httpServletRequest,
+									httpServletResponse,
+									updatedLayoutStructure));
+					}
+
+					return addedFragmentEntryLinksJSONObject;
+				}
 			).put(
 				"layoutData", updatedLayoutStructure.toJSONObject()
 			);
