@@ -19,6 +19,8 @@ import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.contributor.FragmentCollectionContributor;
 import com.liferay.fragment.contributor.FragmentCollectionContributorTracker;
 import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
+import com.liferay.fragment.listener.FragmentEntryLinkListener;
+import com.liferay.fragment.listener.FragmentEntryLinkListenerTracker;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.processor.DefaultFragmentEntryProcessorContext;
@@ -429,6 +431,21 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 						themeDisplay.getScopeGroupId(), themeDisplay.getPlid(),
 						segmentsExperienceId, layoutStructure.toString());
 
+			List<FragmentEntryLinkListener> fragmentEntryLinkListeners =
+				_fragmentEntryLinkListenerTracker.
+					getFragmentEntryLinkListeners();
+
+			for (FragmentEntryLink addedFragmentEntryLink :
+					addedFragmentEntryLinks) {
+
+				for (FragmentEntryLinkListener fragmentEntryLinkListener :
+						fragmentEntryLinkListeners) {
+
+					fragmentEntryLinkListener.onAddFragmentEntryLink(
+						addedFragmentEntryLink);
+				}
+			}
+
 			LayoutStructure updatedLayoutStructure = LayoutStructure.of(
 				layoutPageTemplateStructure.getData(segmentsExperienceId));
 
@@ -498,6 +515,9 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 	@Reference
 	private FragmentCollectionContributorTracker
 		_fragmentCollectionContributorTracker;
+
+	@Reference
+	private FragmentEntryLinkListenerTracker _fragmentEntryLinkListenerTracker;
 
 	@Reference
 	private FragmentEntryLinkManager _fragmentEntryLinkManager;
