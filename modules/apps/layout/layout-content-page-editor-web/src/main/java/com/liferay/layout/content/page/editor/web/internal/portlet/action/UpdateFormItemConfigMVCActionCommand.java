@@ -251,11 +251,13 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 					ListUtil.copy(
 						formStyledLayoutStructureItem.getChildrenItemIds()));
 
-				addedFragmentEntryLinks.addAll(
-					_addFormChildrenItems(
-						formItemId, httpServletRequest, httpServletResponse,
-						jsonObject, layoutStructure, segmentsExperienceId,
-						themeDisplay));
+				if (formStyledLayoutStructureItem.getClassNameId() > 0) {
+					addedFragmentEntryLinks.addAll(
+						_addFormChildrenItems(
+							formItemId, httpServletRequest, httpServletResponse,
+							jsonObject, layoutStructure, segmentsExperienceId,
+							themeDisplay));
+				}
 			}
 
 			layoutPageTemplateStructure =
