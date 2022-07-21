@@ -14,7 +14,7 @@
  */
 --%>
 
-<%@ include file="/html/portal/init.jsp" %>
+<%@ include file="/init.jsp" %>
 
 <%
 String currentURL = PortalUtil.getCurrentURL(request);
@@ -34,8 +34,6 @@ else if (currentURL.startsWith(themeDisplay.getPathMain() + "/portal/verify_emai
 		referer = themeDisplay.getPathMain();
 	}
 }
-
-String ticketKey = ParamUtil.getString(request, "ticketKey");
 %>
 
 <div class="sheet sheet-lg">
@@ -48,7 +46,7 @@ String ticketKey = ParamUtil.getString(request, "ticketKey");
 			</div>
 
 			<div class="autofit-col">
-				<%@ include file="/html/portal/select_language.jspf" %>
+				<liferay-util:include page="/html/portal/select_language.jspf" />
 			</div>
 		</div>
 	</div>
@@ -71,15 +69,15 @@ String ticketKey = ParamUtil.getString(request, "ticketKey");
 				</div>
 			</c:if>
 
-			<aui:input autoFocus="<%= true %>" class="lfr-input-text-container" label="email-verification-code" name="ticketKey" size="36" type="text" value="<%= ticketKey %>" />
+			<aui:input autoFocus="<%= true %>" class="lfr-input-text-container" label="email-verification-code" name="ticketKey" size="36" type="text" value='<%= ParamUtil.getString(request, "ticketKey") %>' />
 
 			<aui:button-row>
-				<aui:button type="submit" value="verify" />
+				<aui:button cssClass="mr-2" type="submit" value="verify" />
 
 				<c:if test="<%= themeDisplay.isSignedIn() && !user.isEmailAddressVerified() %>">
-					<aui:button href='<%= themeDisplay.getPathMain() + "/portal/verify_email_address?p_l_id=" + layout.getPlid() + "&cmd=" + Constants.SEND + "&referer=" + URLCodec.encodeURL(referer) %>' value="send-new-verification-code" />
+					<aui:button cssClass="mr-2" href='<%= themeDisplay.getPathMain() + "/portal/verify_email_address?p_l_id=" + layout.getPlid() + "&cmd=" + Constants.SEND + "&referer=" + URLCodec.encodeURL(referer) %>' value="send-new-verification-code" />
 
-					<aui:button href='<%= themeDisplay.getPathMain() + "/portal/update_email_address?p_l_id=" + layout.getPlid() + "&referer=" + URLCodec.encodeURL(referer) %>' value="change-email-address" />
+					<aui:button cssClass="mr-2" href='<%= themeDisplay.getPathMain() + "/portal/update_email_address?p_l_id=" + layout.getPlid() + "&referer=" + URLCodec.encodeURL(referer) %>' value="change-email-address" />
 
 					<aui:button href='<%= themeDisplay.getPathMain() + "/portal/logout " %>' type="cancel" />
 				</c:if>

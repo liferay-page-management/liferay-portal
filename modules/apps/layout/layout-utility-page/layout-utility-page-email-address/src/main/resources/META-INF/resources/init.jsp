@@ -14,30 +14,24 @@
  */
 --%>
 
-<%@ include file="/html/common/init.jsp" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<%@ page import="com.liferay.admin.kernel.util.PortalProductMenuApplicationType" %><%@
-page import="com.liferay.exportimport.kernel.lar.DefaultConfigurationPortletDataHandler" %><%@
-page import="com.liferay.portal.kernel.cluster.ClusterExecutorUtil" %><%@
-page import="com.liferay.portal.kernel.cluster.ClusterNode" %><%@
-page import="com.liferay.portal.kernel.dao.db.DBManagerUtil" %><%@
-page import="com.liferay.portal.kernel.dao.db.DBType" %><%@
-page import="com.liferay.portal.kernel.exception.LayoutPermissionException" %><%@
-page import="com.liferay.portal.kernel.exception.PortletActiveException" %><%@
-page import="com.liferay.portal.kernel.exception.RequiredLayoutException" %><%@
-page import="com.liferay.portal.kernel.exception.RequiredRoleException" %><%@
-page import="com.liferay.portal.kernel.exception.UserActiveException" %><%@
-page import="com.liferay.portal.kernel.exception.UserEmailAddressException" %><%@
-page import="com.liferay.portal.kernel.exception.UserLockoutException" %><%@
-page import="com.liferay.portal.kernel.exception.UserPasswordException" %><%@
-page import="com.liferay.portal.kernel.exception.UserReminderQueryException" %><%@
-page import="com.liferay.portal.kernel.license.util.LicenseManagerUtil" %><%@
-page import="com.liferay.portal.kernel.portlet.PortletConfigurationLayoutUtil" %><%@
+<%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
+
+<%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %><%@
+taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %><%@
+taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %><%@
+taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
+
+<%@ page import="com.liferay.portal.kernel.security.auth.AuthTokenUtil" %><%@
 page import="com.liferay.portal.kernel.service.LayoutLocalServiceUtil" %><%@
-page import="com.liferay.portal.kernel.servlet.HttpHeaders" %><%@
-page import="com.liferay.portal.kernel.util.ClassUtil" %><%@
-page import="com.liferay.portal.kernel.util.ProgressTracker" %><%@
-page import="com.liferay.portal.setup.SetupWizardUtil" %><%@
-page import="com.liferay.portal.util.LicenseUtil" %><%@
-page import="com.liferay.portal.util.MaintenanceUtil" %><%@
-page import="com.liferay.portlet.configuration.kernel.util.PortletConfigurationApplicationType" %>
+page import="com.liferay.portal.kernel.servlet.SessionErrors" %><%@
+page import="com.liferay.portal.kernel.util.Constants" %><%@
+page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
+page import="com.liferay.portal.kernel.util.PortalUtil" %><%@
+page import="com.liferay.portal.kernel.util.URLCodec" %><%@
+page import="com.liferay.portal.kernel.util.WebKeys" %>
+
+<liferay-theme:defineObjects />
+
+<portlet:defineObjects />
