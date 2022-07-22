@@ -26,48 +26,45 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author Jürgen Kappler
  */
-public class VerifyEmailAddressDisplayContext {
+public class VerifyEmailAddressDisplayContext
+	extends BaseEmailAddressDisplayContext {
 
 	public VerifyEmailAddressDisplayContext(
 		HttpServletRequest httpServletRequest, ThemeDisplay themeDisplay) {
 
-		_httpServletRequest = httpServletRequest;
-		_themeDisplay = themeDisplay;
+		super(httpServletRequest, themeDisplay);
 	}
 
 	public String getReferer() throws PortalException {
-		String currentURL = PortalUtil.getCurrentURL(_httpServletRequest);
+		String currentURL = PortalUtil.getCurrentURL(httpServletRequest);
 
 		String referer = ParamUtil.getString(
-			_httpServletRequest, WebKeys.REFERER, currentURL);
+			httpServletRequest, WebKeys.REFERER, currentURL);
 
 		if (referer.equals(
-				_themeDisplay.getPathMain() + "/portal/update_email_address")) {
+				themeDisplay.getPathMain() + "/portal/update_email_address")) {
 
 			referer =
-				_themeDisplay.getPathMain() + "?doAsUserId=" +
-					_themeDisplay.getDoAsUserId();
+				themeDisplay.getPathMain() + "?doAsUserId=" +
+					themeDisplay.getDoAsUserId();
 		}
 		else if (currentURL.startsWith(
-					_themeDisplay.getPathMain() +
+					themeDisplay.getPathMain() +
 						"/portal/verify_email_address")) {
 
-			long requestPlid = ParamUtil.getLong(_httpServletRequest, "p_l_id");
+			long requestPlid = ParamUtil.getLong(httpServletRequest, "p_l_id");
 
 			if (requestPlid > 0) {
 				referer = PortalUtil.getLayoutURL(
 					LayoutLocalServiceUtil.getLayout(requestPlid),
-					_themeDisplay);
+					themeDisplay);
 			}
 			else {
-				referer = _themeDisplay.getPathMain();
+				referer = themeDisplay.getPathMain();
 			}
 		}
 
 		return referer;
 	}
-
-	private final HttpServletRequest _httpServletRequest;
-	private final ThemeDisplay _themeDisplay;
 
 }

@@ -26,26 +26,26 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author Lourdes Fernández Besada
  */
-public class UpdateEmailAddressDisplayContext {
+public class UpdateEmailAddressDisplayContext
+	extends BaseEmailAddressDisplayContext {
 
 	public UpdateEmailAddressDisplayContext(
 		HttpServletRequest httpServletRequest, ThemeDisplay themeDisplay) {
 
-		_httpServletRequest = httpServletRequest;
-		_themeDisplay = themeDisplay;
+		super(httpServletRequest, themeDisplay);
 	}
 
 	public String getReferer() {
 		String referer = ParamUtil.getString(
-			_httpServletRequest, WebKeys.REFERER,
-			PortalUtil.getCurrentURL(_httpServletRequest));
+			httpServletRequest, WebKeys.REFERER,
+			PortalUtil.getCurrentURL(httpServletRequest));
 
 		if (referer.equals(
-				_themeDisplay.getPathMain() + "/portal/update_email_address")) {
+				themeDisplay.getPathMain() + "/portal/update_email_address")) {
 
 			referer =
-				_themeDisplay.getPathMain() + "?doAsUserId=" +
-					_themeDisplay.getDoAsUserId();
+				themeDisplay.getPathMain() + "?doAsUserId=" +
+					themeDisplay.getDoAsUserId();
 		}
 
 		return referer;
@@ -53,38 +53,38 @@ public class UpdateEmailAddressDisplayContext {
 
 	public String getUserEmailAddressExceptionMessageKey() {
 		if (SessionErrors.contains(
-				_httpServletRequest,
+				httpServletRequest,
 				UserEmailAddressException.MustBeEqual.class.getName())) {
 
 			return "the-email-addresses-you-entered-do-not-match";
 		}
 
 		if (SessionErrors.contains(
-				_httpServletRequest,
+				httpServletRequest,
 				UserEmailAddressException.MustNotBeDuplicate.class.getName())) {
 
 			return "the-email-address-you-requested-is-already-taken";
 		}
 
 		if (SessionErrors.contains(
-				_httpServletRequest,
+				httpServletRequest,
 				UserEmailAddressException.MustNotBeNull.class.getName())) {
 
 			return "please-enter-an-email-address";
 		}
 
 		if (SessionErrors.contains(
-				_httpServletRequest,
+				httpServletRequest,
 				UserEmailAddressException.MustNotBePOP3User.class.getName()) ||
 			SessionErrors.contains(
-				_httpServletRequest,
+				httpServletRequest,
 				UserEmailAddressException.MustNotBeReserved.class.getName())) {
 
 			return "the-email-address-you-requested-is-reserved";
 		}
 
 		if (SessionErrors.contains(
-				_httpServletRequest,
+				httpServletRequest,
 				UserEmailAddressException.MustNotUseCompanyMx.class.
 					getName())) {
 
@@ -94,8 +94,5 @@ public class UpdateEmailAddressDisplayContext {
 
 		return "please-enter-a-valid-email-address";
 	}
-
-	private final HttpServletRequest _httpServletRequest;
-	private final ThemeDisplay _themeDisplay;
 
 }
