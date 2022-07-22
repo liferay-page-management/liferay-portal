@@ -15,14 +15,37 @@
 package com.liferay.layout.utility.page.email.address.internal.struts;
 
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.model.Ticket;
+import com.liferay.portal.kernel.model.TicketConstants;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
+import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextFactory;
+import com.liferay.portal.kernel.service.TicketLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.PipingServletResponse;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.theme.ThemeUtil;
+import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortletKeys;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+
+import java.util.List;
+
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletURL;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -47,6 +70,68 @@ public class VerifyEmailAddressStrutsAction implements StrutsAction {
 
 	@Override
 	public String execute(
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse)
+		throws Exception {
+
+		String cmd = ParamUtil.getString(httpServletRequest, Constants.CMD);
+
+		if (Validator.isNull(cmd)) {
+			_includeView(httpServletRequest, httpServletResponse);
+
+			return null;
+		}
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		if (themeDisplay.isSignedIn() && cmd.equals(Constants.SEND)) {
+			_sendEmailAddressVerification(httpServletRequest, themeDisplay);
+
+			_includeView(httpServletRequest, httpServletResponse);
+
+			return null;
+		}
+
+		try {
+			_verifyEmailAddress(httpServletRequest);
+
+			if (!themeDisplay.isSignedIn()) {
+				PortletURL portletURL = PortletURLFactoryUtil.create(
+					httpServletRequest, PortletKeys.LOGIN,
+					PortletRequest.RENDER_PHASE);
+
+				httpServletResponse.sendRedirect(portletURL.toString());
+
+				return null;
+			}
+
+			String referer = ParamUtil.getString(
+				httpServletRequest, WebKeys.REFERER,
+				_portal.getCurrentURL(httpServletRequest));
+
+			httpServletResponse.sendRedirect(referer);
+		}
+		catch (Exception exception) {
+			if (exception instanceof PortalException ||
+				exception instanceof SystemException) {
+
+				SessionErrors.add(httpServletRequest, exception.getClass());
+
+				_includeView(httpServletRequest, httpServletResponse);
+
+				return null;
+			}
+
+			_portal.sendError(
+				exception, httpServletRequest, httpServletResponse);
+		}
+
+		return null;
+	}
+
+	private void _includeView(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
 		throws Exception {
@@ -85,16 +170,59 @@ public class VerifyEmailAddressStrutsAction implements StrutsAction {
 		contentElement.html(unsyncStringWriter.toString());
 
 		ServletResponseUtil.write(httpServletResponse, document.html());
+	}
 
-		return null;
+	private void _sendEmailAddressVerification(
+			HttpServletRequest httpServletRequest, ThemeDisplay themeDisplay)
+		throws Exception {
+
+		User user = themeDisplay.getUser();
+
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			httpServletRequest);
+
+		List<Ticket> tickets = _ticketLocalService.getTickets(
+			themeDisplay.getCompanyId(), User.class.getName(), user.getUserId(),
+			TicketConstants.TYPE_EMAIL_ADDRESS);
+
+		if (ListUtil.isEmpty(tickets)) {
+			_userLocalService.sendEmailAddressVerification(
+				user, user.getEmailAddress(), serviceContext);
+		}
+		else {
+			Ticket ticket = tickets.get(0);
+
+			_userLocalService.sendEmailAddressVerification(
+				user, ticket.getExtraInfo(), serviceContext);
+		}
+	}
+
+	private void _verifyEmailAddress(HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		AuthTokenUtil.checkCSRFToken(
+			httpServletRequest, VerifyEmailAddressStrutsAction.class.getName());
+
+		String ticketKey = ParamUtil.getString(httpServletRequest, "ticketKey");
+
+		_userLocalService.verifyEmailAddress(ticketKey);
 	}
 
 	@Reference
 	private LayoutSetLocalService _layoutSetLocalService;
 
+	@Reference
+	private Portal _portal;
+
 	@Reference(
 		target = "(osgi.web.symbolicname=com.liferay.layout.utility.page.email.address)"
 	)
 	private ServletContext _servletContext;
+
+	@Reference
+	private TicketLocalService _ticketLocalService;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }
