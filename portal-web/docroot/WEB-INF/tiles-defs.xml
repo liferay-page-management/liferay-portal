@@ -68,11 +68,6 @@
 		<put name="content" value="/portal/test.jsp" />
 	</definition>
 
-	<definition extends="portal" name="portal.update_email_address">
-		<put name="title" value="email-address" />
-		<put name="content" value="/portal/update_email_address.jsp" />
-	</definition>
-
 	<definition extends="portal" name="portal.update_password">
 		<put name="title" value="new-password" />
 		<put name="content" value="/portal/update_password.jsp" />
@@ -81,10 +76,5 @@
 	<definition extends="portal" name="portal.update_reminder_query">
 		<put name="title" value="password-reminder" />
 		<put name="content" value="/portal/update_reminder_query.jsp" />
-	</definition>
-
-	<definition extends="portal" name="portal.verify_email_address">
-		<put name="title" value="verify-email-address" />
-		<put name="content" value="/portal/verify_email_address.jsp" />
 	</definition>
 </tiles-definitions>
