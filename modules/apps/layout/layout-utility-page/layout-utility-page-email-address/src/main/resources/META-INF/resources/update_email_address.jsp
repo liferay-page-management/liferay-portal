@@ -30,7 +30,13 @@ UpdateEmailAddressDisplayContext updateEmailAddressDisplayContext = new UpdateEm
 			</div>
 
 			<div class="autofit-col">
-				<liferay-util:include page="/html/portal/select_language.jspf" />
+				<div class="float-right">
+					<liferay-ui:language
+						formAction="<%= updateEmailAddressDisplayContext.getUpdateLanguageFormAction() %>"
+						languageId="<%= themeDisplay.getLanguageId() %>"
+						languageIds="<%= updateEmailAddressDisplayContext.getLanguageIds() %>"
+					/>
+				</div>
 			</div>
 		</div>
 	</div>

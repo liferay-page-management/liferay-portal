@@ -32,7 +32,13 @@ String referer = verifyEmailAddressDisplayContext.getReferer();
 			</div>
 
 			<div class="autofit-col">
-				<liferay-util:include page="/html/portal/select_language.jspf" />
+				<div class="float-right">
+					<liferay-ui:language
+						formAction="<%= verifyEmailAddressDisplayContext.getUpdateLanguageFormAction() %>"
+						languageId="<%= themeDisplay.getLanguageId() %>"
+						languageIds="<%= verifyEmailAddressDisplayContext.getLanguageIds() %>"
+					/>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -14,7 +14,12 @@
 
 package com.liferay.layout.utility.page.email.address.internal.display.context;
 
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,6 +33,24 @@ public class BaseEmailAddressDisplayContext {
 
 		this.httpServletRequest = httpServletRequest;
 		this.themeDisplay = themeDisplay;
+	}
+
+	public String[] getLanguageIds() {
+		return LocaleUtil.toLanguageIds(
+			LanguageUtil.getAvailableLocales(themeDisplay.getSiteGroupId()));
+	}
+
+	public String getUpdateLanguageFormAction() {
+		String updateLanguageFormAction = HttpComponentsUtil.addParameter(
+			themeDisplay.getPathMain() + "/portal/update_language", "p_l_id",
+			themeDisplay.getPlid());
+
+		String updateLanguageRedirect = HttpComponentsUtil.addParameter(
+			PortalUtil.getCurrentURL(httpServletRequest), "ticketKey",
+			ParamUtil.getString(httpServletRequest, "ticketKey"));
+
+		return HttpComponentsUtil.addParameter(
+			updateLanguageFormAction, "redirect", updateLanguageRedirect);
 	}
 
 	protected final HttpServletRequest httpServletRequest;
