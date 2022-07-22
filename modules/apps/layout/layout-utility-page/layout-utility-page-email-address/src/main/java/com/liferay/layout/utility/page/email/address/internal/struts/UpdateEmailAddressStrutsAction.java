@@ -15,14 +15,29 @@
 package com.liferay.layout.utility.page.email.address.internal.struts;
 
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.exception.UserEmailAddressException;
 import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextFactory;
+import com.liferay.portal.kernel.service.UserService;
 import com.liferay.portal.kernel.servlet.PipingServletResponse;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.theme.ThemeUtil;
+import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.URLCodec;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portlet.admin.util.AdminUtil;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -47,6 +62,66 @@ public class UpdateEmailAddressStrutsAction implements StrutsAction {
 
 	@Override
 	public String execute(
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse)
+		throws Exception {
+
+		String cmd = ParamUtil.getString(httpServletRequest, Constants.CMD);
+
+		if (Validator.isNull(cmd)) {
+			_includeView(httpServletRequest, httpServletResponse);
+
+			return null;
+		}
+
+		try {
+			_updateEmailAddress(httpServletRequest);
+
+			String referer = ParamUtil.getString(
+				httpServletRequest, WebKeys.REFERER,
+				_portal.getCurrentURL(httpServletRequest));
+
+			httpServletResponse.sendRedirect(referer);
+		}
+		catch (Exception exception) {
+			if (exception instanceof UserEmailAddressException) {
+				SessionErrors.add(httpServletRequest, exception.getClass());
+
+				_includeView(httpServletRequest, httpServletResponse);
+
+				return null;
+			}
+			else if (exception instanceof NoSuchUserException ||
+					 exception instanceof PrincipalException) {
+
+				SessionErrors.add(httpServletRequest, exception.getClass());
+
+				ThemeDisplay themeDisplay =
+					(ThemeDisplay)httpServletRequest.getAttribute(
+						WebKeys.THEME_DISPLAY);
+
+				StringBundler sb = new StringBundler(3);
+
+				sb.append(themeDisplay.getPathMain());
+				sb.append("/portal/error?redirect=");
+				sb.append(
+					URLCodec.encodeURL(httpServletRequest.getRequestURI()));
+
+				httpServletResponse.sendRedirect(sb.toString());
+
+				return null;
+			}
+
+			_portal.sendError(
+				exception, httpServletRequest, httpServletResponse);
+
+			return null;
+		}
+
+		return null;
+	}
+
+	private void _includeView(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
 		throws Exception {
@@ -85,16 +160,43 @@ public class UpdateEmailAddressStrutsAction implements StrutsAction {
 		contentElement.html(unsyncStringWriter.toString());
 
 		ServletResponseUtil.write(httpServletResponse, document.html());
+	}
 
-		return null;
+	private void _updateEmailAddress(HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		AuthTokenUtil.checkCSRFToken(
+			httpServletRequest, UpdateEmailAddressStrutsAction.class.getName());
+
+		long userId = _portal.getUserId(httpServletRequest);
+
+		String password = AdminUtil.getUpdateUserPassword(
+			httpServletRequest, userId);
+
+		String emailAddress1 = ParamUtil.getString(
+			httpServletRequest, "emailAddress1");
+		String emailAddress2 = ParamUtil.getString(
+			httpServletRequest, "emailAddress2");
+
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			httpServletRequest);
+
+		_userService.updateEmailAddress(
+			userId, password, emailAddress1, emailAddress2, serviceContext);
 	}
 
 	@Reference
 	private LayoutSetLocalService _layoutSetLocalService;
 
+	@Reference
+	private Portal _portal;
+
 	@Reference(
 		target = "(osgi.web.symbolicname=com.liferay.layout.utility.page.email.address)"
 	)
 	private ServletContext _servletContext;
+
+	@Reference
+	private UserService _userService;
 
 }
