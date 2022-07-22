@@ -14,12 +14,10 @@
  */
 --%>
 
-<%@ include file="/html/portal/init.jsp" %>
+<%@ include file="/init.jsp" %>
 
 <%
-String currentURL = PortalUtil.getCurrentURL(request);
-
-String referer = ParamUtil.getString(request, WebKeys.REFERER, currentURL);
+String referer = ParamUtil.getString(request, WebKeys.REFERER, PortalUtil.getCurrentURL(request));
 
 if (referer.equals(themeDisplay.getPathMain() + "/portal/update_email_address")) {
 	referer = themeDisplay.getPathMain() + "?doAsUserId=" + themeDisplay.getDoAsUserId();
@@ -36,7 +34,7 @@ if (referer.equals(themeDisplay.getPathMain() + "/portal/update_email_address"))
 			</div>
 
 			<div class="autofit-col">
-				<%@ include file="/html/portal/select_language.jspf" %>
+				<liferay-util:include page="/html/portal/select_language.jspf" />
 			</div>
 		</div>
 	</div>
@@ -80,7 +78,7 @@ if (referer.equals(themeDisplay.getPathMain() + "/portal/update_email_address"))
 			</aui:fieldset>
 
 			<aui:button-row>
-				<aui:button type="submit" />
+				<aui:button cssClass="mr-2" type="submit" />
 
 				<aui:button href="<%= themeDisplay.getPathMain() %>" type="cancel" />
 			</aui:button-row>
