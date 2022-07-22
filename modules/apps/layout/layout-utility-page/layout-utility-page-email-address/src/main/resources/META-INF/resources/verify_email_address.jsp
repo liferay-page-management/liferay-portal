@@ -17,23 +17,9 @@
 <%@ include file="/init.jsp" %>
 
 <%
-String currentURL = PortalUtil.getCurrentURL(request);
+VerifyEmailAddressDisplayContext verifyEmailAddressDisplayContext = new VerifyEmailAddressDisplayContext(request, themeDisplay);
 
-String referer = ParamUtil.getString(request, WebKeys.REFERER, currentURL);
-
-if (referer.equals(themeDisplay.getPathMain() + "/portal/update_email_address")) {
-	referer = themeDisplay.getPathMain() + "?doAsUserId=" + themeDisplay.getDoAsUserId();
-}
-else if (currentURL.startsWith(themeDisplay.getPathMain() + "/portal/verify_email_address")) {
-	long requestPlid = ParamUtil.getLong(request, "p_l_id");
-
-	if (requestPlid > 0) {
-		referer = PortalUtil.getLayoutURL(LayoutLocalServiceUtil.getLayout(requestPlid), themeDisplay);
-	}
-	else {
-		referer = themeDisplay.getPathMain();
-	}
-}
+String referer = verifyEmailAddressDisplayContext.getReferer();
 %>
 
 <div class="sheet sheet-lg">
