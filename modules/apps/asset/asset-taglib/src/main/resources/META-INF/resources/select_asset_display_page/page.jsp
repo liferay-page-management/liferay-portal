@@ -82,25 +82,25 @@
 </div>
 
 <aui:script sandbox="<%= true %>">
-	var assetDisplayPageIdInput = document.getElementById(
+	const assetDisplayPageIdInput = document.getElementById(
 		'<portlet:namespace />assetDisplayPageIdInput'
 	);
-	var chooseSpecificDisplayPage = document.getElementById(
+	const chooseSpecificDisplayPage = document.getElementById(
 		'<portlet:namespace />chooseSpecificDisplayPage'
 	);
-	var pagesContainerInput = document.getElementById(
+	const pagesContainerInput = document.getElementById(
 		'<portlet:namespace />pagesContainerInput'
 	);
-	var previewSpecificDisplayPageButton = document.getElementById(
+	const previewSpecificDisplayPageButton = document.getElementById(
 		'<portlet:namespace />previewSpecificDisplayPageButton'
 	);
-	var specificDisplayPageNameInput = document.getElementById(
+	const specificDisplayPageNameInput = document.getElementById(
 		'<portlet:namespace />specificDisplayPageNameInput'
 	);
 
 	chooseSpecificDisplayPage.addEventListener('click', (event) => {
 		Liferay.Util.openSelectionModal({
-			onSelect: function (selectedItem) {
+			onSelect: (selectedItem) => {
 				if (!selectedItem || !selectedItem.value) {
 					return;
 				}
@@ -133,7 +133,7 @@
 		});
 	});
 
-	var previewDefaultDisplayPageButton = document.getElementById(
+	const previewDefaultDisplayPageButton = document.getElementById(
 		'<portlet:namespace />previewDefaultDisplayPageButton'
 	);
 
