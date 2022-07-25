@@ -5006,6 +5006,8 @@ return	Array.from(getWebElement("(//div[@aria-label='${fragmentName}'])[${index}
 	}
 
 	macro viewItemSelectorText {
+		IFrame.selectTopFrame();
+
 		AssertTextEquals(
 			key_fieldLabel = "${fieldLabel}",
 			locator1 = "PageEditor#ITEM_SELECTOR_CONTENT_INPUT",
