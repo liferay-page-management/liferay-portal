@@ -160,6 +160,8 @@ public class UpdateEmailAddressStrutsAction implements StrutsAction {
 		contentElement.html(unsyncStringWriter.toString());
 
 		ServletResponseUtil.write(httpServletResponse, document.html());
+
+		SessionErrors.clear(httpServletRequest);
 	}
 
 	private void _updateEmailAddress(HttpServletRequest httpServletRequest)

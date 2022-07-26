@@ -170,6 +170,8 @@ public class VerifyEmailAddressStrutsAction implements StrutsAction {
 		contentElement.html(unsyncStringWriter.toString());
 
 		ServletResponseUtil.write(httpServletResponse, document.html());
+
+		SessionErrors.clear(httpServletRequest);
 	}
 
 	private void _sendEmailAddressVerification(
