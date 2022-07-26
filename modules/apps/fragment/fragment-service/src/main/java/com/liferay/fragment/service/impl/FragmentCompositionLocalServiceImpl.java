@@ -342,7 +342,7 @@ public class FragmentCompositionLocalServiceImpl
 
 		if (description.length() > descriptionMaxLength) {
 			throw new FragmentCompositionDescriptionException(
-				"Maximum length of description exceeded");
+				"maximum-length-of-description-exceeded");
 		}
 	}
 
@@ -371,7 +371,7 @@ public class FragmentCompositionLocalServiceImpl
 			name.contains(StringPool.SLASH)) {
 
 			throw new FragmentCompositionNameException(
-				"Name contains invalid characters");
+				"name-contains-invalid-characters");
 		}
 
 		int nameMaxLength = ModelHintsUtil.getMaxLength(
@@ -379,7 +379,7 @@ public class FragmentCompositionLocalServiceImpl
 
 		if (name.length() > nameMaxLength) {
 			throw new FragmentCompositionNameException(
-				"Maximum length of name exceeded");
+				"maximum-length-of-name-exceeded");
 		}
 	}
 
