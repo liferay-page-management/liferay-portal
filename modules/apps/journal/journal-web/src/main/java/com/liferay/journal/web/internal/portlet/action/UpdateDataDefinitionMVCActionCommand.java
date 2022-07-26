@@ -21,11 +21,10 @@ import com.liferay.data.engine.rest.resource.exception.DataDefinitionValidationE
 import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
 import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.model.JournalArticle;
-import com.liferay.journal.model.JournalArticleTable;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.service.persistence.JournalArticleUtil;
-import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.servlet.SessionErrors;
@@ -129,15 +128,9 @@ public class UpdateDataDefinitionMVCActionCommand
 			actionRequest, "ddmStructureKey");
 
 		List<JournalArticle> journalArticles =
-			_journalArticleLocalService.dslQuery(
-				DSLQueryFactoryUtil.select(
-					JournalArticleTable.INSTANCE
-				).from(
-					JournalArticleTable.INSTANCE
-				).where(
-					JournalArticleTable.INSTANCE.DDMStructureKey.eq(
-						ddmStructureKey)
-				));
+			_journalArticleLocalService.getArticlesByStructureId(
+				themeDisplay.getScopeGroupId(), ddmStructureKey,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
 		for (JournalArticle journalArticle : journalArticles) {
 			JournalArticleUtil.clearCache(journalArticle);
