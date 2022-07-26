@@ -155,6 +155,7 @@ for (int i = 0; i < openSearchInstances.size(); i++) {
 			</liferay-ui:search-container-row>
 
 			<liferay-ui:search-iterator
+				markupView="deprecated"
 				paginate="<%= false %>"
 			/>
 

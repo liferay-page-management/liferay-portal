@@ -21,6 +21,7 @@ EditRolePermissionsResourceDisplayContext editRolePermissionsResourceDisplayCont
 %>
 
 <liferay-ui:search-iterator
+	markupView="deprecated"
 	paginate="<%= false %>"
 	searchContainer="<%= editRolePermissionsResourceDisplayContext.getSearchContainer() %>"
 />

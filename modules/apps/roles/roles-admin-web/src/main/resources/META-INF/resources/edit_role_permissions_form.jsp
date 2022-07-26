@@ -135,6 +135,7 @@ if (Validator.isNotNull(portletResource)) {
 					<aui:input name="relatedPortletResources" type="hidden" value="<%= StringUtil.merge(editRolePermissionsFormDisplayContext.getRelatedPortletResources()) %>" />
 
 					<liferay-ui:search-iterator
+						markupView="deprecated"
 						paginate="<%= false %>"
 						searchContainer="<%= editRolePermissionsFormDisplayContext.getSearchContainer() %>"
 					/>

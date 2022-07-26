@@ -97,6 +97,7 @@ String[] rankingNames = rankingNamesList.toArray(new String[0]);
 		</c:if>
 
 		<liferay-ui:search-iterator
+			markupView="deprecated"
 			paginate="<%= false %>"
 			searchContainer="<%= searchContainer %>"
 		/>

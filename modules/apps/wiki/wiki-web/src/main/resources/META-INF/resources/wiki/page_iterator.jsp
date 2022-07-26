@@ -267,6 +267,7 @@ for (int i = 0; i < pages.size(); i++) {
 />
 
 <liferay-ui:search-iterator
+	markupView="deprecated"
 	paginate='<%= navigation.equals("history") ? false : true %>'
 	searchContainer="<%= searchContainer %>"
 />

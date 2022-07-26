@@ -130,6 +130,7 @@ else {
 		<c:choose>
 			<c:when test="<%= statsUserRendered %>">
 				<liferay-ui:search-iterator
+					markupView="deprecated"
 					paginate="<%= false %>"
 					searchContainer="<%= searchContainer %>"
 				/>

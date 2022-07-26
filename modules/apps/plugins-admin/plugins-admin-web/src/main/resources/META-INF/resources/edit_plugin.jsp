@@ -211,6 +211,7 @@ renderResponse.setTitle(title);
 										</liferay-ui:search-container-row>
 
 										<liferay-ui:search-iterator
+											markupView="deprecated"
 											type="more"
 										/>
 									</liferay-ui:search-container>

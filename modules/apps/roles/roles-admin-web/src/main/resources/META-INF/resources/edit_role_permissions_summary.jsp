@@ -32,6 +32,7 @@ SearchContainer<PermissionDisplay> searchContainer = editRolePermissionsSummaryD
 
 		<clay:sheet-section>
 			<liferay-ui:search-iterator
+				markupView="deprecated"
 				paginate="<%= false %>"
 				searchContainer="<%= searchContainer %>"
 				searchResultCssClass="show-quick-actions-on-hover table table-autofit"
