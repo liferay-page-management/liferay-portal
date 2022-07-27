@@ -206,6 +206,7 @@ create table DDMStructure (
 	version VARCHAR(75) null,
 	name STRING null,
 	description TEXT null,
+	defaultExpirationDate DATE null,
 	definition TEXT null,
 	storageType VARCHAR(75) null,
 	type_ INTEGER,

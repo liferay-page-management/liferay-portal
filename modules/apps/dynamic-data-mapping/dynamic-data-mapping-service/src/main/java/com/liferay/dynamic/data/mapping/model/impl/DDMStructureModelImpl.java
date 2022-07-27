@@ -89,8 +89,9 @@ public class DDMStructureModelImpl
 		{"parentStructureId", Types.BIGINT}, {"classNameId", Types.BIGINT},
 		{"structureKey", Types.VARCHAR}, {"version", Types.VARCHAR},
 		{"name", Types.VARCHAR}, {"description", Types.CLOB},
-		{"definition", Types.CLOB}, {"storageType", Types.VARCHAR},
-		{"type_", Types.INTEGER}, {"lastPublishDate", Types.TIMESTAMP}
+		{"defaultExpirationDate", Types.TIMESTAMP}, {"definition", Types.CLOB},
+		{"storageType", Types.VARCHAR}, {"type_", Types.INTEGER},
+		{"lastPublishDate", Types.TIMESTAMP}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -115,6 +116,7 @@ public class DDMStructureModelImpl
 		TABLE_COLUMNS_MAP.put("version", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("description", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("defaultExpirationDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("definition", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("storageType", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("type_", Types.INTEGER);
@@ -122,7 +124,7 @@ public class DDMStructureModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table DDMStructure (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,structureId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,versionUserId LONG,versionUserName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,parentStructureId LONG,classNameId LONG,structureKey VARCHAR(75) null,version VARCHAR(75) null,name STRING null,description TEXT null,definition TEXT null,storageType VARCHAR(75) null,type_ INTEGER,lastPublishDate DATE null,primary key (structureId, ctCollectionId))";
+		"create table DDMStructure (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,structureId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,versionUserId LONG,versionUserName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,parentStructureId LONG,classNameId LONG,structureKey VARCHAR(75) null,version VARCHAR(75) null,name STRING null,description TEXT null,defaultExpirationDate DATE null,definition TEXT null,storageType VARCHAR(75) null,type_ INTEGER,lastPublishDate DATE null,primary key (structureId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP = "drop table DDMStructure";
 
@@ -382,6 +384,12 @@ public class DDMStructureModelImpl
 		attributeSetterBiConsumers.put(
 			"description",
 			(BiConsumer<DDMStructure, String>)DDMStructure::setDescription);
+		attributeGetterFunctions.put(
+			"defaultExpirationDate", DDMStructure::getDefaultExpirationDate);
+		attributeSetterBiConsumers.put(
+			"defaultExpirationDate",
+			(BiConsumer<DDMStructure, Date>)
+				DDMStructure::setDefaultExpirationDate);
 		attributeGetterFunctions.put("definition", DDMStructure::getDefinition);
 		attributeSetterBiConsumers.put(
 			"definition",
@@ -1005,6 +1013,21 @@ public class DDMStructureModelImpl
 
 	@JSON
 	@Override
+	public Date getDefaultExpirationDate() {
+		return _defaultExpirationDate;
+	}
+
+	@Override
+	public void setDefaultExpirationDate(Date defaultExpirationDate) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_defaultExpirationDate = defaultExpirationDate;
+	}
+
+	@JSON
+	@Override
 	public String getDefinition() {
 		if (_definition == null) {
 			return "";
@@ -1257,6 +1280,7 @@ public class DDMStructureModelImpl
 		ddmStructureImpl.setVersion(getVersion());
 		ddmStructureImpl.setName(getName());
 		ddmStructureImpl.setDescription(getDescription());
+		ddmStructureImpl.setDefaultExpirationDate(getDefaultExpirationDate());
 		ddmStructureImpl.setDefinition(getDefinition());
 		ddmStructureImpl.setStorageType(getStorageType());
 		ddmStructureImpl.setType(getType());
@@ -1304,6 +1328,8 @@ public class DDMStructureModelImpl
 		ddmStructureImpl.setName(this.<String>getColumnOriginalValue("name"));
 		ddmStructureImpl.setDescription(
 			this.<String>getColumnOriginalValue("description"));
+		ddmStructureImpl.setDefaultExpirationDate(
+			this.<Date>getColumnOriginalValue("defaultExpirationDate"));
 		ddmStructureImpl.setDefinition(
 			this.<String>getColumnOriginalValue("definition"));
 		ddmStructureImpl.setStorageType(
@@ -1485,6 +1511,16 @@ public class DDMStructureModelImpl
 			ddmStructureCacheModel.description = null;
 		}
 
+		Date defaultExpirationDate = getDefaultExpirationDate();
+
+		if (defaultExpirationDate != null) {
+			ddmStructureCacheModel.defaultExpirationDate =
+				defaultExpirationDate.getTime();
+		}
+		else {
+			ddmStructureCacheModel.defaultExpirationDate = Long.MIN_VALUE;
+		}
+
 		ddmStructureCacheModel.definition = getDefinition();
 
 		String definition = ddmStructureCacheModel.definition;
@@ -1633,6 +1669,7 @@ public class DDMStructureModelImpl
 	private String _nameCurrentLanguageId;
 	private String _description;
 	private String _descriptionCurrentLanguageId;
+	private Date _defaultExpirationDate;
 	private String _definition;
 	private String _storageType;
 	private int _type;
@@ -1685,6 +1722,8 @@ public class DDMStructureModelImpl
 		_columnOriginalValues.put("version", _version);
 		_columnOriginalValues.put("name", _name);
 		_columnOriginalValues.put("description", _description);
+		_columnOriginalValues.put(
+			"defaultExpirationDate", _defaultExpirationDate);
 		_columnOriginalValues.put("definition", _definition);
 		_columnOriginalValues.put("storageType", _storageType);
 		_columnOriginalValues.put("type_", _type);
@@ -1749,13 +1788,15 @@ public class DDMStructureModelImpl
 
 		columnBitmasks.put("description", 131072L);
 
-		columnBitmasks.put("definition", 262144L);
+		columnBitmasks.put("defaultExpirationDate", 262144L);
 
-		columnBitmasks.put("storageType", 524288L);
+		columnBitmasks.put("definition", 524288L);
 
-		columnBitmasks.put("type_", 1048576L);
+		columnBitmasks.put("storageType", 1048576L);
 
-		columnBitmasks.put("lastPublishDate", 2097152L);
+		columnBitmasks.put("type_", 2097152L);
+
+		columnBitmasks.put("lastPublishDate", 4194304L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

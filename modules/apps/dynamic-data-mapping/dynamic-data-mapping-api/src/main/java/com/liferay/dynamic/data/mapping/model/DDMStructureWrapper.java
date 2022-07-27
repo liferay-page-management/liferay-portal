@@ -63,6 +63,7 @@ public class DDMStructureWrapper
 		attributes.put("version", getVersion());
 		attributes.put("name", getName());
 		attributes.put("description", getDescription());
+		attributes.put("defaultExpirationDate", getDefaultExpirationDate());
 		attributes.put("definition", getDefinition());
 		attributes.put("storageType", getStorageType());
 		attributes.put("type", getType());
@@ -179,6 +180,13 @@ public class DDMStructureWrapper
 
 		if (description != null) {
 			setDescription(description);
+		}
+
+		Date defaultExpirationDate = (Date)attributes.get(
+			"defaultExpirationDate");
+
+		if (defaultExpirationDate != null) {
+			setDefaultExpirationDate(defaultExpirationDate);
 		}
 
 		String definition = (String)attributes.get("definition");
@@ -321,6 +329,16 @@ public class DDMStructureWrapper
 	@Override
 	public long getDefaultDDMStructureLayoutId() {
 		return model.getDefaultDDMStructureLayoutId();
+	}
+
+	/**
+	 * Returns the default expiration date of this ddm structure.
+	 *
+	 * @return the default expiration date of this ddm structure
+	 */
+	@Override
+	public Date getDefaultExpirationDate() {
+		return model.getDefaultExpirationDate();
 	}
 
 	@Override
@@ -901,6 +919,16 @@ public class DDMStructureWrapper
 	@Override
 	public void setDDMForm(DDMForm ddmForm) {
 		model.setDDMForm(ddmForm);
+	}
+
+	/**
+	 * Sets the default expiration date of this ddm structure.
+	 *
+	 * @param defaultExpirationDate the default expiration date of this ddm structure
+	 */
+	@Override
+	public void setDefaultExpirationDate(Date defaultExpirationDate) {
+		model.setDefaultExpirationDate(defaultExpirationDate);
 	}
 
 	/**

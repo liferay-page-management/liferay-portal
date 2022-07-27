@@ -159,6 +159,8 @@ public class DDMStructurePersistenceTest {
 
 		newDDMStructure.setDescription(RandomTestUtil.randomString());
 
+		newDDMStructure.setDefaultExpirationDate(RandomTestUtil.nextDate());
+
 		newDDMStructure.setDefinition(RandomTestUtil.randomString());
 
 		newDDMStructure.setStorageType(RandomTestUtil.randomString());
@@ -220,6 +222,10 @@ public class DDMStructurePersistenceTest {
 		Assert.assertEquals(
 			existingDDMStructure.getDescription(),
 			newDDMStructure.getDescription());
+		Assert.assertEquals(
+			Time.getShortTimestamp(
+				existingDDMStructure.getDefaultExpirationDate()),
+			Time.getShortTimestamp(newDDMStructure.getDefaultExpirationDate()));
 		Assert.assertEquals(
 			existingDDMStructure.getDefinition(),
 			newDDMStructure.getDefinition());
@@ -392,8 +398,8 @@ public class DDMStructurePersistenceTest {
 			"userId", true, "userName", true, "versionUserId", true,
 			"versionUserName", true, "createDate", true, "modifiedDate", true,
 			"parentStructureId", true, "classNameId", true, "structureKey",
-			true, "version", true, "name", true, "storageType", true, "type",
-			true, "lastPublishDate", true);
+			true, "version", true, "name", true, "defaultExpirationDate", true,
+			"storageType", true, "type", true, "lastPublishDate", true);
 	}
 
 	@Test
@@ -726,6 +732,8 @@ public class DDMStructurePersistenceTest {
 		ddmStructure.setName(RandomTestUtil.randomString());
 
 		ddmStructure.setDescription(RandomTestUtil.randomString());
+
+		ddmStructure.setDefaultExpirationDate(RandomTestUtil.nextDate());
 
 		ddmStructure.setDefinition(RandomTestUtil.randomString());
 

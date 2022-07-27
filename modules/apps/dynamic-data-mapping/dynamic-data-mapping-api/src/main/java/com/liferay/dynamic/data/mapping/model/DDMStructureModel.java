@@ -557,6 +557,20 @@ public interface DDMStructureModel
 		Map<Locale, String> descriptionMap, Locale defaultLocale);
 
 	/**
+	 * Returns the default expiration date of this ddm structure.
+	 *
+	 * @return the default expiration date of this ddm structure
+	 */
+	public Date getDefaultExpirationDate();
+
+	/**
+	 * Sets the default expiration date of this ddm structure.
+	 *
+	 * @param defaultExpirationDate the default expiration date of this ddm structure
+	 */
+	public void setDefaultExpirationDate(Date defaultExpirationDate);
+
+	/**
 	 * Returns the definition of this ddm structure.
 	 *
 	 * @return the definition of this ddm structure

@@ -72,6 +72,10 @@ public class DDMStructureTable extends BaseTable<DDMStructureTable> {
 		"name", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<DDMStructureTable, Clob> description = createColumn(
 		"description", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
+	public final Column<DDMStructureTable, Date> defaultExpirationDate =
+		createColumn(
+			"defaultExpirationDate", Date.class, Types.TIMESTAMP,
+			Column.FLAG_DEFAULT);
 	public final Column<DDMStructureTable, Clob> definition = createColumn(
 		"definition", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
 	public final Column<DDMStructureTable, String> storageType = createColumn(

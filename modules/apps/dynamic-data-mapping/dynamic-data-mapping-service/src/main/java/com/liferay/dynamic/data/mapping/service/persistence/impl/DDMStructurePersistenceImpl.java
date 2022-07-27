@@ -11117,6 +11117,7 @@ public class DDMStructurePersistenceImpl
 		ctStrictColumnNames.add("version");
 		ctStrictColumnNames.add("name");
 		ctStrictColumnNames.add("description");
+		ctStrictColumnNames.add("defaultExpirationDate");
 		ctStrictColumnNames.add("definition");
 		ctStrictColumnNames.add("storageType");
 		ctStrictColumnNames.add("type_");

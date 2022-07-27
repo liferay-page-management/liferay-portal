@@ -230,6 +230,7 @@
 		<field localized="true" name="description" type="String">
 			<hint-collection name="CLOB" />
 		</field>
+		<field name="defaultExpirationDate" type="Date" />
 		<field name="definition" type="String">
 			<hint-collection name="CLOB" />
 		</field>

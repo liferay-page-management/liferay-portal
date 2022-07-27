@@ -77,7 +77,7 @@ public class DDMStructureCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(45);
+		StringBundler sb = new StringBundler(47);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -115,6 +115,8 @@ public class DDMStructureCacheModel
 		sb.append(name);
 		sb.append(", description=");
 		sb.append(description);
+		sb.append(", defaultExpirationDate=");
+		sb.append(defaultExpirationDate);
 		sb.append(", definition=");
 		sb.append(definition);
 		sb.append(", storageType=");
@@ -208,6 +210,14 @@ public class DDMStructureCacheModel
 			ddmStructureImpl.setDescription(description);
 		}
 
+		if (defaultExpirationDate == Long.MIN_VALUE) {
+			ddmStructureImpl.setDefaultExpirationDate(null);
+		}
+		else {
+			ddmStructureImpl.setDefaultExpirationDate(
+				new Date(defaultExpirationDate));
+		}
+
 		if (definition == null) {
 			ddmStructureImpl.setDefinition("");
 		}
@@ -270,6 +280,7 @@ public class DDMStructureCacheModel
 		version = objectInput.readUTF();
 		name = objectInput.readUTF();
 		description = (String)objectInput.readObject();
+		defaultExpirationDate = objectInput.readLong();
 		definition = (String)objectInput.readObject();
 		storageType = objectInput.readUTF();
 
@@ -354,6 +365,8 @@ public class DDMStructureCacheModel
 			objectOutput.writeObject(description);
 		}
 
+		objectOutput.writeLong(defaultExpirationDate);
+
 		if (definition == null) {
 			objectOutput.writeObject("");
 		}
@@ -393,6 +406,7 @@ public class DDMStructureCacheModel
 	public String version;
 	public String name;
 	public String description;
+	public long defaultExpirationDate;
 	public String definition;
 	public String storageType;
 	public int type;
