@@ -451,6 +451,7 @@
 		<column name="version" type="String" />
 		<column localized="true" name="name" type="String" />
 		<column localized="true" name="description" type="String" />
+		<column name="defaultExpirationDate" type="Date" />
 		<column name="definition" type="String" />
 		<column name="storageType" type="String" />
 		<column name="type" type="int" />
