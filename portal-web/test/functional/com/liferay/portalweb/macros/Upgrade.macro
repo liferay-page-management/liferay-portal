@@ -4082,13 +4082,9 @@ definition {
 
 	macro viewContributedFragmentStyle {
 		task ("Navigate to page in view mode") {
-			ApplicationsMenu.gotoSite(site = "Test Site Name");
-
-			Navigator._gotoPage(pageName = "Test Fragment Content Page");
-
-			Pause(locator1 = "5000");
-
-			Refresh();
+			ContentPagesNavigator.openViewContentPage(
+				pageName = "Test Fragment Content Page",
+				siteName = "Test Site Name");
 
 			WaitForPageLoad();
 		}
