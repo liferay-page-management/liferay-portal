@@ -56,6 +56,7 @@ definition {
 	test ViewContributedFragmentStyleAfterUpgrade721 {
 		property data.archive.type = "data-archive-contributed-fragments";
 		property database.types = "mariadb,mysql,postgresql";
+		property portal.acceptance = "tim";
 		property portal.version = "7.2.1";
 
 		Upgrade.viewContributedFragmentStyle();
@@ -65,6 +66,7 @@ definition {
 	test ViewContributedFragmentStyleAfterUpgrade72101 {
 		property data.archive.type = "data-archive-contributed-fragments";
 		property database.types = "db2,mariadb,mysql,oracle,postgresql,sqlserver,sybase";
+		property portal.acceptance = "tim";
 		property portal.version = "7.2.10.1";
 
 		Upgrade.viewContributedFragmentStyle();
