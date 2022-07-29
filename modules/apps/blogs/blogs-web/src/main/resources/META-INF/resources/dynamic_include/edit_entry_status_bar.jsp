@@ -32,14 +32,14 @@ BlogsPortletInstanceConfiguration blogsPortletInstanceConfiguration = BlogsPortl
 			<li class="nav-item">
 				<c:choose>
 					<c:when test="<%= entry != null %>">
-						<small class="text-capitalize text-muted" id="<portlet:namespace />saveStatus">
+						<span class="text-capitalize text-muted" id="<portlet:namespace />saveStatus">
 							<aui:workflow-status markupView="lexicon" showHelpMessage="<%= false %>" showIcon="<%= false %>" showLabel="<%= false %>" status="<%= entry.getStatus() %>" />
 
 							<liferay-ui:message arguments="<%= LanguageUtil.getTimeDescription(request, System.currentTimeMillis() - entry.getStatusDate().getTime(), true) %>" key="x-ago" translateArguments="<%= false %>" />
-						</small>
+						</span>
 					</c:when>
 					<c:otherwise>
-						<small class="text-capitalize text-muted" id="<portlet:namespace />saveStatus"></small>
+						<span class="text-capitalize text-muted" id="<portlet:namespace />saveStatus"></span>
 					</c:otherwise>
 				</c:choose>
 
