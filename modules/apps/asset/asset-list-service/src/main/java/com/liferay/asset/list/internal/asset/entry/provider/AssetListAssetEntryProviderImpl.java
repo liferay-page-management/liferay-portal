@@ -19,6 +19,7 @@ import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.asset.kernel.model.ClassType;
+import com.liferay.asset.kernel.model.ClassTypeField;
 import com.liferay.asset.kernel.model.ClassTypeReader;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
@@ -384,9 +385,38 @@ public class AssetListAssetEntryProviderImpl
 							_getFieldReference(
 								ddmStructure, ddmStructureFieldName),
 							LocaleUtil.getMostRelevantLocale()));
+				}
+			}
+			else {
+				AssetRendererFactory<?> assetRendererFactory =
+					AssetRendererFactoryRegistryUtil.
+						getAssetRendererFactoryByClassNameId(
+							assetEntryQuery.getClassNameIds()[0]);
+
+				ClassTypeReader classTypeReader =
+					assetRendererFactory.getClassTypeReader();
+
+				try {
+					ClassType classType = classTypeReader.getClassType(
+						classTypeIds[0], LocaleUtil.getMostRelevantLocale());
+
+					ClassTypeField classTypeField = classType.getClassTypeField(
+						ddmStructureFieldName);
+
+					assetEntryQuery.setAttribute(
+						"ddmStructureFieldName",
+						DDMIndexerUtil.encodeName(
+							classTypeField.getClassTypeId(),
+							classTypeField.getFieldReference(),
+							LocaleUtil.getMostRelevantLocale()));
 
 					assetEntryQuery.setAttribute(
 						"ddmStructureFieldValue", ddmStructureFieldValue);
+				}
+				catch (PortalException portalException) {
+					if (_log.isWarnEnabled()) {
+						_log.warn(portalException);
+					}
 				}
 			}
 		}
