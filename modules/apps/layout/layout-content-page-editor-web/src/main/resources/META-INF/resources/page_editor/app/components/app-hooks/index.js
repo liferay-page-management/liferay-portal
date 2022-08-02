@@ -16,6 +16,7 @@ import {useBackURL} from './useBackURL';
 import {useExtendSession} from './useExtendSession';
 import {useLanguageDirection} from './useLanguageDirection';
 import {usePortletConfigurationListener} from './usePortletConfigurationListener';
+import {usePreviewURL} from './usePreviewURL';
 import {useURLParser} from './useURLParser';
 
 const HOOKS = [
@@ -24,6 +25,7 @@ const HOOKS = [
 	useLanguageDirection,
 	usePortletConfigurationListener,
 	useURLParser,
+	usePreviewURL,
 ];
 
 export default function AppHooks() {
