@@ -14,13 +14,13 @@
 
 import {useCallback, useEffect} from 'react';
 
-import switchSidebarPanel from '../actions/switchSidebarPanel';
-import {HIGHLIGHTED_COMMENT_ID_KEY} from '../config/constants/highlightedCommentIdKey';
-import {useSelectItem} from '../contexts/ControlsContext';
-import {useDispatch, useSelector} from '../contexts/StoreContext';
-import getFragmentItem from '../utils/getFragmentItem';
+import switchSidebarPanel from '../../actions/switchSidebarPanel';
+import {HIGHLIGHTED_COMMENT_ID_KEY} from '../../config/constants/highlightedCommentIdKey';
+import {useSelectItem} from '../../contexts/ControlsContext';
+import {useDispatch, useSelector} from '../../contexts/StoreContext';
+import getFragmentItem from '../../utils/getFragmentItem';
 
-export default function URLParser() {
+export function useURLParser() {
 	const fragmentEntryLinks = useSelector((state) => state.fragmentEntryLinks);
 	const layoutData = useSelector((state) => state.layoutData);
 	const dispatch = useDispatch();
@@ -89,6 +89,4 @@ export default function URLParser() {
 			});
 		}
 	}, [selectFragment]);
-
-	return null;
 }
