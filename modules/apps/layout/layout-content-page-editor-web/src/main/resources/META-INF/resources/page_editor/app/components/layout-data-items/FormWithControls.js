@@ -84,7 +84,7 @@ function FormEmptyState({isMapped, item}) {
 		return (
 			<div className="page-editor__no-fragments-state">
 				<p className="m-0 page-editor__no-fragments-state__message">
-					{Liferay.Language.get('place-fragments-here')}
+					{Liferay.Language.get('place-fragments-or-widgets-here')}
 				</p>
 			</div>
 		);
