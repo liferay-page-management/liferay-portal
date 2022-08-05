@@ -253,8 +253,8 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 				"errorMessage",
 				_language.format(
 					themeDisplay.getLocale(),
-					"some-fragments-are-missing.-x-fields-do-not-have-an-" +
-						"associated-fragment",
+					"some-fragments-are-missing.-x-fields-may-not-have-an-" +
+						"associated-fragment-or-may-not-be-available-in-master",
 					missingInputTypes.first()));
 		}
 		else if (missingInputTypes.size() > 1) {
@@ -262,8 +262,9 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 				"errorMessage",
 				_language.format(
 					themeDisplay.getLocale(),
-					"some-fragments-are-missing.-x-and-x-fields-do-not-have-" +
-						"an-associated-fragment",
+					"some-fragments-are-missing.-x-and-x-fields-may-not-have-" +
+						"an-associated-fragment-or-may-not-be-available-in-" +
+							"master",
 					new String[] {
 						StringUtil.merge(
 							missingInputTypes.headSet(missingInputTypes.last()),
