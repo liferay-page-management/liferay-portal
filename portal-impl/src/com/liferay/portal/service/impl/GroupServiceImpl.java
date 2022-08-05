@@ -688,7 +688,13 @@ public class GroupServiceImpl extends GroupServiceBaseImpl {
 			UserBag userBag = UserBagFactoryUtil.create(userId);
 
 			if (ArrayUtil.contains(classNames, Group.class.getName())) {
-				for (Group group : userBag.getUserGroups()) {
+				for (long groupId : userBag.getUserGroupIds()) {
+					Group group = groupLocalService.fetchGroup(groupId);
+
+					if (group == null) {
+						continue;
+					}
+
 					if (groupLocalService.isLiveGroupActive(group) &&
 						group.isSite() && userSiteGroups.add(group) &&
 						(userSiteGroups.size() == max)) {
@@ -704,7 +710,13 @@ public class GroupServiceImpl extends GroupServiceBaseImpl {
 			}
 
 			if (ArrayUtil.contains(classNames, Organization.class.getName())) {
-				for (Group group : userBag.getUserOrgGroups()) {
+				for (long groupId : userBag.getUserOrgGroupIds()) {
+					Group group = groupLocalService.fetchGroup(groupId);
+
+					if (group == null) {
+						continue;
+					}
+
 					if (groupLocalService.isLiveGroupActive(group) &&
 						group.isSite() && userSiteGroups.add(group) &&
 						(userSiteGroups.size() == max)) {
