@@ -45,7 +45,8 @@ export default function URLParser() {
 				)
 			) || {fragmentEntryLinkId: null};
 
-			const {itemId} = getFragmentItem(layoutData, fragmentEntryLinkId);
+			const {itemId} =
+				getFragmentItem(layoutData, fragmentEntryLinkId) || {};
 
 			if (itemId) {
 				selectItem(itemId);
