@@ -24,9 +24,9 @@ definition {
 
 		task ("Add a company Object with attachment fields") {
 			ObjectAdmin.addObjectViaAPI(
-				labelName = "Upload Object",
-				objectName = "UploadObject",
-				pluralLabelName = "Upload Object");
+				labelName = "Purchase Order",
+				objectName = "PurchaseOrder",
+				pluralLabelName = "Purchase Orders");
 
 			ObjectAdmin.addObjectFieldViaAPI(
 				fieldBusinessType = "Attachment",
@@ -35,7 +35,7 @@ definition {
 				fieldType = "Long",
 				fileSource = "userComputer",
 				isRequired = "false",
-				objectName = "UploadObject",
+				objectName = "PurchaseOrder",
 				showFilesInDocumentsAndMedia = "true");
 
 			ObjectAdmin.addObjectFieldViaAPI(
@@ -45,7 +45,7 @@ definition {
 				fieldType = "Long",
 				fileSource = "userComputer",
 				isRequired = "false",
-				objectName = "UploadObject");
+				objectName = "PurchaseOrder");
 
 			ObjectAdmin.addObjectFieldViaAPI(
 				fieldBusinessType = "Attachment",
@@ -54,9 +54,9 @@ definition {
 				fieldType = "Long",
 				fileSource = "documentsAndMedia",
 				isRequired = "false",
-				objectName = "UploadObject");
+				objectName = "PurchaseOrder");
 
-			ObjectAdmin.publishObjectViaAPI(objectName = "UploadObject");
+			ObjectAdmin.publishObjectViaAPI(objectName = "PurchaseOrder");
 		}
 
 		task ("Enable Inputs Fragment collection in Gogo Shell") {
@@ -105,7 +105,7 @@ definition {
 					fragmentName = "Form Container");
 
 				PageEditor.editFormContainer(
-					contentType = "Upload Object",
+					contentType = "Purchase Order",
 					panel = "General");
 
 				PageEditor.addFragmentToFormContainer(
@@ -154,7 +154,7 @@ definition {
 					fragmentName = "Form Container");
 
 				PageEditor.editFormContainer(
-					contentType = "Upload Object",
+					contentType = "Purchase Order",
 					panel = "General");
 			}
 
@@ -306,7 +306,7 @@ definition {
 					fragmentName = "Form Container");
 
 				PageEditor.editFormContainer(
-					contentType = "Upload Object",
+					contentType = "Purchase Order",
 					panel = "General");
 			}
 
@@ -391,7 +391,7 @@ definition {
 					fragmentName = "Form Container");
 
 				PageEditor.editFormContainer(
-					contentType = "Upload Object",
+					contentType = "Purchase Order",
 					panel = "General");
 			}
 
@@ -451,7 +451,7 @@ definition {
 					fragmentName = "Form Container");
 
 				PageEditor.editFormContainer(
-					contentType = "Upload Object",
+					contentType = "Purchase Order",
 					panel = "General");
 			}
 
