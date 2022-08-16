@@ -1209,9 +1209,14 @@ public class ContentPageEditorDisplayContext {
 					"fragmentEntries", entry.getValue()
 				).put(
 					"name",
-					() -> LanguageUtil.get(
-						themeDisplay.getLocale(),
-						"fragment.collection.label." + entry.getKey())
+					() -> {
+						String collectionKey = StringUtil.toLowerCase(
+							entry.getKey());
+
+						return LanguageUtil.get(
+							themeDisplay.getLocale(),
+							"fragment.collection.label." + collectionKey);
+					}
 				).build());
 		}
 
