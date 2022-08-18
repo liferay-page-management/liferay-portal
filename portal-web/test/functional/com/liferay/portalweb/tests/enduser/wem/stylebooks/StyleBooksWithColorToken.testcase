@@ -109,7 +109,7 @@ definition {
 			PageEditor.detachToken(fieldLabel = "Text Color");
 		}
 
-		task ("View error message after type an invalid color token in Text Color field") {
+		task ("Type an invalid color token in Text Color field") {
 			Type(
 				key_text = "Text Color",
 				locator1 = "TextInput#ANY",
@@ -118,21 +118,12 @@ definition {
 			Click(
 				key_sidebarButton = "Browser",
 				locator1 = "PageEditor#FRAGMENT_SIDEBAR_TITLE");
-
-			AssertVisible(
-				key_alertMessage = "This token does not exist.",
-				key_fieldLabel = "Text Color",
-				locator1 = "TextInput#ALERT_MESSAGE");
 		}
 
-		task ("Cancel the publish process") {
-			PageEditor.publish(action = "Cancel");
-		}
-
-		task ("View the invalid color token is still shown in Text Color field") {
+		task ("View previous value is restored in Text Color field") {
 			InputField.viewText(
 				fieldLabel = "Text Color",
-				text = "aaa");
+				text = "#2E5AAC");
 		}
 
 		task ("Type an valid color token in Text Color field then publish") {
