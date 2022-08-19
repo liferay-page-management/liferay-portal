@@ -34,7 +34,7 @@ const createButton = ({action, buttonClass, label, type = 'submit'}) => {
 export default function ({currentURL, namespace, redirect}) {
 	const formSheet = document.querySelector('.lfr-form-content .sheet');
 
-	formSheet.classList.add('border-0');
+	formSheet.classList.add('border-1');
 
 	const openerWindow = getOpener();
 
