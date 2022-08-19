@@ -54,7 +54,7 @@ public class AssetCategoriesForAssetEntryRelatedInfoItemCollectionProvider
 
 		if (!(relatedItem instanceof AssetEntry)) {
 			return InfoPage.of(
-				Collections.emptyList(), collectionQuery.getPagination(), 0);
+				Collections.emptyList(), collectionQuery.getPagination(), 1);
 		}
 
 		AssetEntry assetEntry = (AssetEntry)relatedItem;
