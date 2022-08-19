@@ -38,8 +38,10 @@ import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalServiceUtil;
+import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -234,6 +236,17 @@ public class JournalUtil {
 				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
 		}
 
+		if (!LayoutPermissionUtil.contains(
+				themeDisplay.getPermissionChecker(), layout, ActionKeys.VIEW)) {
+
+			layout = _searchFirstLayoutHasViewPermission(themeDisplay, false);
+
+			if (layout == null) {
+				layout = _searchFirstLayoutHasViewPermission(
+					themeDisplay, true);
+			}
+		}
+
 		if (layout != null) {
 			return layout.getPlid();
 		}
@@ -411,6 +424,48 @@ public class JournalUtil {
 		}
 
 		return recentArticles;
+	}
+
+	private static Layout _searchFirstLayoutHasViewPermission(
+		ThemeDisplay themeDisplay, boolean privateLayout) {
+
+		boolean hasNextPart = true;
+
+		int start = 0;
+		int end = 0;
+		int interval = 20;
+
+		while (hasNextPart) {
+			end = start + interval;
+
+			List<Layout> layouts = LayoutLocalServiceUtil.getLayouts(
+				themeDisplay.getScopeGroupId(), privateLayout,
+				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, false, start, end);
+
+			for (Layout nextLayout : layouts) {
+				try {
+					if (LayoutPermissionUtil.contains(
+							themeDisplay.getPermissionChecker(), nextLayout,
+							ActionKeys.VIEW)) {
+
+						return nextLayout;
+					}
+				}
+				catch (PortalException portalException) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(portalException);
+					}
+				}
+			}
+
+			start = start + interval;
+
+			if (layouts.size() < interval) {
+				hasNextPart = false;
+			}
+		}
+
+		return null;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(JournalUtil.class);
