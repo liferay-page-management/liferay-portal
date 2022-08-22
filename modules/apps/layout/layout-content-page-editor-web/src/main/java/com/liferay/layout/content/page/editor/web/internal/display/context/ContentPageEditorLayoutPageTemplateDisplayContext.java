@@ -39,6 +39,7 @@ import com.liferay.layout.content.page.editor.sidebar.panel.ContentPageEditorSid
 import com.liferay.layout.content.page.editor.web.internal.configuration.PageEditorConfiguration;
 import com.liferay.layout.content.page.editor.web.internal.util.FragmentEntryLinkManager;
 import com.liferay.layout.content.page.editor.web.internal.util.MappingContentUtil;
+import com.liferay.layout.element.LayoutElementTracker;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
@@ -81,7 +82,7 @@ public class ContentPageEditorLayoutPageTemplateDisplayContext
 		FrontendTokenDefinitionRegistry frontendTokenDefinitionRegistry,
 		HttpServletRequest httpServletRequest,
 		InfoItemServiceTracker infoItemServiceTracker,
-		ItemSelector itemSelector,
+		ItemSelector itemSelector, LayoutElementTracker layoutElementTracker,
 		PageEditorConfiguration pageEditorConfiguration,
 		boolean pageIsDisplayPage, PortletRequest portletRequest,
 		RenderResponse renderResponse,
@@ -94,9 +95,9 @@ public class ContentPageEditorLayoutPageTemplateDisplayContext
 			fragmentCollectionContributorTracker, fragmentEntryLinkManager,
 			fragmentRendererTracker, frontendTokenDefinitionRegistry,
 			httpServletRequest, infoItemServiceTracker, itemSelector,
-			pageEditorConfiguration, portletRequest, renderResponse,
-			segmentsConfigurationProvider, segmentsExperienceManager,
-			stagingGroupHelper);
+			layoutElementTracker, pageEditorConfiguration, portletRequest,
+			renderResponse, segmentsConfigurationProvider,
+			segmentsExperienceManager, stagingGroupHelper);
 
 		_itemSelector = itemSelector;
 		_pageIsDisplayPage = pageIsDisplayPage;

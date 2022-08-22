@@ -66,6 +66,8 @@ import com.liferay.layout.content.page.editor.web.internal.util.MappingTypesUtil
 import com.liferay.layout.content.page.editor.web.internal.util.StyleBookEntryUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
+import com.liferay.layout.element.LayoutElement;
+import com.liferay.layout.element.LayoutElementTracker;
 import com.liferay.layout.item.selector.criterion.LayoutItemSelectorCriterion;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.info.item.capability.EditPageInfoItemCapability;
@@ -152,6 +154,7 @@ import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -187,7 +190,7 @@ public class ContentPageEditorDisplayContext {
 		FrontendTokenDefinitionRegistry frontendTokenDefinitionRegistry,
 		HttpServletRequest httpServletRequest,
 		InfoItemServiceTracker infoItemServiceTracker,
-		ItemSelector itemSelector,
+		ItemSelector itemSelector, LayoutElementTracker layoutElementTracker,
 		PageEditorConfiguration pageEditorConfiguration,
 		PortletRequest portletRequest, RenderResponse renderResponse,
 		SegmentsConfigurationProvider segmentsConfigurationProvider,
@@ -201,6 +204,7 @@ public class ContentPageEditorDisplayContext {
 		_fragmentRendererTracker = fragmentRendererTracker;
 		_frontendTokenDefinitionRegistry = frontendTokenDefinitionRegistry;
 		_itemSelector = itemSelector;
+		_layoutElementTracker = layoutElementTracker;
 		_pageEditorConfiguration = pageEditorConfiguration;
 		_renderResponse = renderResponse;
 		_segmentsConfigurationProvider = segmentsConfigurationProvider;
@@ -948,6 +952,69 @@ public class ContentPageEditorDisplayContext {
 	protected final StagingGroupHelper stagingGroupHelper;
 	protected final ThemeDisplay themeDisplay;
 
+	private List<Map<String, Object>> _addLayoutElements(
+		Map<String, Map<String, Object>> fragmentCollectionMap) {
+
+		for (LayoutElement layoutElement :
+				_layoutElementTracker.getLayoutElements()) {
+
+			if (!_isAllowedFragmentEntryKey(layoutElement.getKey())) {
+				continue;
+			}
+
+			Map<String, Object> fragmentCollection =
+				fragmentCollectionMap.computeIfAbsent(
+					layoutElement.getCollectionKey(),
+					key -> HashMapBuilder.<String, Object>put(
+						"fragmentCollectionId", layoutElement.getCollectionKey()
+					).put(
+						"name",
+						() -> {
+							String string = StringUtil.toLowerCase(
+								layoutElement.getCollectionKey());
+
+							return LanguageUtil.get(
+								themeDisplay.getLocale(),
+								"fragment.collection.label." + string);
+						}
+					).build());
+
+			List<Map<String, Object>> collectionItems =
+				(List<Map<String, Object>>)fragmentCollection.computeIfAbsent(
+					"fragmentEntries", key -> new LinkedList<>());
+
+			collectionItems.add(
+				0,
+				HashMapBuilder.<String, Object>put(
+					"fragmentEntryKey", layoutElement.getKey()
+				).put(
+					"icon", layoutElement.getIcon()
+				).put(
+					"itemType", layoutElement.getType()
+				).put(
+					"name", layoutElement.getLabel(themeDisplay.getLocale())
+				).build());
+		}
+
+		List<Map<String, Object>> systemFragmentCollections =
+			new LinkedList<>();
+
+		for (String collectionKey : _SORTED_FRAGMENT_COLLECTION_KEYS) {
+			Map<String, Object> fragmentCollection =
+				fragmentCollectionMap.remove(collectionKey);
+
+			if (fragmentCollection == null) {
+				continue;
+			}
+
+			systemFragmentCollections.add(fragmentCollection);
+		}
+
+		systemFragmentCollections.addAll(fragmentCollectionMap.values());
+
+		return systemFragmentCollections;
+	}
+
 	private String _getAssetCategoryTreeNodeItemSelectorURL() {
 		ItemSelectorCriterion itemSelectorCriterion =
 			new AssetCategoryTreeNodeItemSelectorCriterion();
@@ -1151,8 +1218,9 @@ public class ContentPageEditorDisplayContext {
 		).buildString();
 	}
 
-	private List<Map<String, Object>> _getDynamicFragments() {
-		List<Map<String, Object>> dynamicFragments = new ArrayList<>();
+	private Map<String, Map<String, Object>> _getDynamicFragments() {
+		Map<String, Map<String, Object>> dynamicFragments =
+			new LinkedHashMap<>();
 
 		Map<String, List<Map<String, Object>>> fragmentCollectionMap =
 			new HashMap<>();
@@ -1202,7 +1270,8 @@ public class ContentPageEditorDisplayContext {
 		for (Map.Entry<String, List<Map<String, Object>>> entry :
 				fragmentCollectionMap.entrySet()) {
 
-			dynamicFragments.add(
+			dynamicFragments.put(
+				entry.getKey(),
 				HashMapBuilder.<String, Object>put(
 					"fragmentCollectionId", entry.getKey()
 				).put(
@@ -1218,9 +1287,11 @@ public class ContentPageEditorDisplayContext {
 		return dynamicFragments;
 	}
 
-	private List<Map<String, Object>> _getFragmentCollectionContributors() {
-		List<Map<String, Object>> fragmentCollectionContributorsMap =
-			new ArrayList<>();
+	private Map<String, Map<String, Object>>
+		_getFragmentCollectionContributors() {
+
+		Map<String, Map<String, Object>> fragmentCollectionContributorsMap =
+			new LinkedHashMap<>();
 
 		List<FragmentCollectionContributor> fragmentCollectionContributors =
 			_fragmentCollectionContributorTracker.
@@ -1267,7 +1338,8 @@ public class ContentPageEditorDisplayContext {
 					return name1.compareTo(name2);
 				});
 
-			fragmentCollectionContributorsMap.add(
+			fragmentCollectionContributorsMap.put(
+				fragmentCollectionContributor.getFragmentCollectionKey(),
 				HashMapBuilder.<String, Object>put(
 					"fragmentCollectionId",
 					fragmentCollectionContributor.getFragmentCollectionKey()
@@ -1289,8 +1361,13 @@ public class ContentPageEditorDisplayContext {
 		List<Map<String, Object>> allFragmentCollections = new ArrayList<>();
 
 		if (includeSystem) {
-			allFragmentCollections.addAll(_getFragmentCollectionContributors());
-			allFragmentCollections.addAll(_getDynamicFragments());
+			Map<String, Map<String, Object>> systemFragmentCollections =
+				_getFragmentCollectionContributors();
+
+			systemFragmentCollections.putAll(_getDynamicFragments());
+
+			allFragmentCollections.addAll(
+				_addLayoutElements(systemFragmentCollections));
 		}
 
 		List<FragmentCollection> fragmentCollections =
@@ -2187,6 +2264,10 @@ public class ContentPageEditorDisplayContext {
 		}
 	}
 
+	private static final String[] _SORTED_FRAGMENT_COLLECTION_KEYS = {
+		"layout-elements", "BASIC_COMPONENT", "INPUTS", "content-display"
+	};
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		ContentPageEditorDisplayContext.class);
 
@@ -2207,6 +2288,7 @@ public class ContentPageEditorDisplayContext {
 	private Long _groupId;
 	private ItemSelectorCriterion _imageItemSelectorCriterion;
 	private final ItemSelector _itemSelector;
+	private final LayoutElementTracker _layoutElementTracker;
 	private LayoutStructure _layoutStructure;
 	private Integer _layoutType;
 	private LayoutStructure _masterLayoutStructure;

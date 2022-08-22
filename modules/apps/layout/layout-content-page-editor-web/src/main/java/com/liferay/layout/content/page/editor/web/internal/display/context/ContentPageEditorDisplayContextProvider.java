@@ -23,6 +23,7 @@ import com.liferay.layout.content.page.editor.constants.ContentPageEditorWebKeys
 import com.liferay.layout.content.page.editor.sidebar.panel.ContentPageEditorSidebarPanel;
 import com.liferay.layout.content.page.editor.web.internal.configuration.PageEditorConfiguration;
 import com.liferay.layout.content.page.editor.web.internal.util.FragmentEntryLinkManager;
+import com.liferay.layout.element.LayoutElementTracker;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
@@ -75,7 +76,7 @@ public class ContentPageEditorDisplayContextProvider {
 				_fragmentCollectionContributorTracker,
 				_fragmentEntryLinkManager, _fragmentRendererTracker,
 				_frontendTokenDefinitionRegistry, httpServletRequest,
-				_infoItemServiceTracker, _itemSelector,
+				_infoItemServiceTracker, _itemSelector, _layoutElementTracker,
 				_pageEditorConfiguration, portletRequest, renderResponse,
 				_segmentsConfigurationProvider,
 				new SegmentsExperienceManager(_segmentsExperienceLocalService),
@@ -103,8 +104,8 @@ public class ContentPageEditorDisplayContextProvider {
 			_fragmentCollectionContributorTracker, _fragmentEntryLinkManager,
 			_fragmentRendererTracker, _frontendTokenDefinitionRegistry,
 			httpServletRequest, _infoItemServiceTracker, _itemSelector,
-			_pageEditorConfiguration, pageIsDisplayPage, portletRequest,
-			renderResponse, _segmentsConfigurationProvider,
+			_layoutElementTracker, _pageEditorConfiguration, pageIsDisplayPage,
+			portletRequest, renderResponse, _segmentsConfigurationProvider,
 			new SegmentsExperienceManager(_segmentsExperienceLocalService),
 			_stagingGroupHelper);
 	}
@@ -158,6 +159,9 @@ public class ContentPageEditorDisplayContextProvider {
 
 	@Reference
 	private ItemSelector _itemSelector;
+
+	@Reference
+	private LayoutElementTracker _layoutElementTracker;
 
 	@Reference
 	private LayoutPageTemplateEntryLocalService
