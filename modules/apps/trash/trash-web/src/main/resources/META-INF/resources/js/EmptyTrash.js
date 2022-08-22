@@ -1,4 +1,3 @@
-<%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -12,17 +11,23 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
---%>
 
-<%@ include file="/init.jsp" %>
+import {fetch} from 'frontend-js-web';
 
-<liferay-ui:icon
-	id="emptyTrashButton"
-	message="empty-the-recycle-bin"
-	url="javascript:void(0);"
-/>
+export default function ({emptyTrashURL, namespace}) {
+	const emptyTrashButton = document.getElementById(
+		`${namespace}emptyTrashButton`
+	);
 
-<liferay-frontend:component
-	context="<%= trashDisplayContext.getTrashButtonContext() %>"
-	module="js/EmptyTrash"
-/>
+	const onClick = () => {
+		fetch(emptyTrashURL).then(() => window.location.reload());
+	};
+
+	emptyTrashButton?.addEventListener('click', onClick);
+
+	return {
+		dispose() {
+			emptyTrashButton?.removeEventListener('click', onClick);
+		},
+	};
+}

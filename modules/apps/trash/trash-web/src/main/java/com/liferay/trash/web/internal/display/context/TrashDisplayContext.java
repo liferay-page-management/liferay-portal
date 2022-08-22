@@ -38,6 +38,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.trash.TrashHandler;
 import com.liferay.portal.kernel.trash.TrashHandlerRegistryUtil;
 import com.liferay.portal.kernel.trash.TrashRenderer;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -60,6 +61,7 @@ import com.liferay.trash.web.internal.servlet.taglib.util.TrashViewContentAction
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.portlet.PortletURL;
@@ -416,6 +418,26 @@ public class TrashDisplayContext {
 		}
 
 		return portletURL;
+	}
+
+	public Map<String, Object> getTrashButtonContext() {
+		return HashMapBuilder.<String, Object>put(
+			"emptyTrashURL",
+			() -> PortletURLBuilder.createActionURL(
+				_liferayPortletResponse
+			).setActionName(
+				"emptyTrash"
+			).setParameter(
+				"groupId",
+				() -> {
+					ThemeDisplay themeDisplay =
+						(ThemeDisplay)_httpServletRequest.getAttribute(
+							WebKeys.THEME_DISPLAY);
+
+					return themeDisplay.getScopeGroupId();
+				}
+			).buildString()
+		).build();
 	}
 
 	public SearchContainer<TrashedModel> getTrashContainerSearchContainer()
