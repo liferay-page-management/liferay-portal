@@ -697,7 +697,10 @@
 				"label": "text-color",
 				"name": "textColor",
 				"responsive": false,
-				"type": "colorPicker"
+				"type": "colorPicker",
+				"typeOptions": {
+					"defaultLabel": "inherited"
+				}
 			},
 			{
 				"cssTemplate": "text-align: {value} !important;",

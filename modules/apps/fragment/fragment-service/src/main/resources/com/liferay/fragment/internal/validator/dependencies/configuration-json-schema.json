@@ -257,6 +257,15 @@
 					"title": "The DefaultValue schema",
 					"type": "string"
 				}
+			},
+			"typeOptions": {
+				"additionalProperties": false,
+				"properties": {
+					"defaultLabel": {
+						"title": "The DefaultLabel Schema",
+						"type": "string"
+					}
+				}
 			}
 		},
 		"fieldItemSelector": {

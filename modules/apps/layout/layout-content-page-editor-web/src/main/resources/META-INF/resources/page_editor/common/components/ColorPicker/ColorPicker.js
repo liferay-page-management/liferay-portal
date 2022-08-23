@@ -35,9 +35,7 @@ import {parseColorValue} from './parseColorValue';
 
 import './ColorPicker.scss';
 
-export const DEFAULT_TOKEN_LABEL = Liferay.FeatureFlags['LPS-143206']
-	? Liferay.Language.get('inherited')
-	: Liferay.Language.get('default');
+export const DEFAULT_TOKEN_LABEL = Liferay.Language.get('default');
 
 const debouncedOnValueSelect = debounce(
 	(onValueSelect, fieldName, value) => onValueSelect(fieldName, value),
