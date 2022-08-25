@@ -2135,6 +2135,8 @@ public abstract class BaseWebDriverImpl implements LiferaySelenium, WebDriver {
 				_totalPauseDuration + " ms");
 
 		_webDriver.quit();
+
+		System.out.println("browser is closed");
 	}
 
 	@Override
