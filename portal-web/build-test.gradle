@@ -46,6 +46,7 @@ apply plugin: "com.liferay.poshi.runner.resources.defaults"
 
 poshiRunner {
 	openCVVersion = "2.4.10-0.10"
+	version = "1.0.370"
 }
 
 task updateGradleCache
