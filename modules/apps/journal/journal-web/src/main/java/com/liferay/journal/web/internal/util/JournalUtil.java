@@ -429,26 +429,26 @@ public class JournalUtil {
 	private static Layout _searchFirstLayoutHasViewPermission(
 		ThemeDisplay themeDisplay, boolean privateLayout) {
 
-		boolean hasNextPart = true;
+		boolean hasNext = true;
 
 		int start = 0;
 		int end = 0;
 		int interval = 20;
 
-		while (hasNextPart) {
+		while (hasNext) {
 			end = start + interval;
 
 			List<Layout> layouts = LayoutLocalServiceUtil.getLayouts(
 				themeDisplay.getScopeGroupId(), privateLayout,
 				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, false, start, end);
 
-			for (Layout nextLayout : layouts) {
+			for (Layout layout : layouts) {
 				try {
 					if (LayoutPermissionUtil.contains(
-							themeDisplay.getPermissionChecker(), nextLayout,
+							themeDisplay.getPermissionChecker(), layout,
 							ActionKeys.VIEW)) {
 
-						return nextLayout;
+						return layout;
 					}
 				}
 				catch (PortalException portalException) {
@@ -461,7 +461,7 @@ public class JournalUtil {
 			start = start + interval;
 
 			if (layouts.size() < interval) {
-				hasNextPart = false;
+				hasNext = false;
 			}
 		}
 
