@@ -68,6 +68,8 @@ definition {
 	@description = "This is a test for LPS-96795. If not giving the individual content's update permission, content author with Update Page Content permission could only go to the edit mode."
 	@priority = "2"
 	test CannotEditAssetWithoutAssetUpdatePermission {
+		property test.name.skip.portal.instance = "ContentPagesWithPermissions#CannotEditAssetWithoutAssetUpdatePermission";
+
 		task ("Define the permissions of new role") {
 			Permissions.definePermissionViaJSONAPI(
 				resourceAction = "VIEW",
@@ -212,6 +214,8 @@ definition {
 	@description = "This is a test for LPS-140136. As a page viewer with only page view permission, the draft actions are invisible."
 	@priority = "4"
 	test CannotPreviewAndDiscardDraftAsUserWithoutUpdatePermission {
+		property test.name.skip.portal.instance = "ContentPagesWithPermissions#CannotPreviewAndDiscardDraftAsUserWithoutUpdatePermission";
+
 		task ("Define the permissions of new role") {
 			for (var resourceActionIndex : list "ACCESS_IN_CONTROL_PANEL,VIEW") {
 				Permissions.definePermissionViaJSONAPI(
@@ -323,6 +327,8 @@ definition {
 	@description = "This is a test for LPS-103454. Content author having permission to update blog entry could see edit icon in the content page displaying the blog and could edit blog in editmode. "
 	@priority = "4"
 	test EditBlogsEntryWithBlogEntryUpdatePermission {
+		property test.name.skip.portal.instance = "ContentPagesWithPermissions#EditBlogsEntryWithBlogEntryUpdatePermission";
+
 		task ("Define the permissions of new role") {
 			Permissions.definePermissionViaJSONAPI(
 				resourceAction = "UPDATE",
@@ -398,6 +404,7 @@ definition {
 	@priority = "5"
 	test EditContentWithCreateAndUpdateWebContentPermissions {
 		property portal.acceptance = "true";
+		property test.name.skip.portal.instance = "ContentPagesWithPermissions#EditContentWithCreateAndUpdateWebContentPermissions";
 
 		task ("Define the permissions of site role") {
 			Permissions.definePermissionViaJSONAPI(
