@@ -567,6 +567,7 @@ definition {
 	@priority = "5"
 	test EditContentWithUpdateWebContentAndUpdatePageContentPermissions {
 		property portal.acceptance = "true";
+		property test.name.skip.portal.instance = "ContentPagesWithPermissions#EditContentWithUpdateWebContentAndUpdatePageContentPermissions";
 
 		task ("Define the permissions of new user") {
 			Permissions.definePermissionViaJSONAPI(
@@ -717,6 +718,7 @@ definition {
 	@priority = "5"
 	test EditContentWithWebContentArticleUpdatePermission {
 		property portal.acceptance = "true";
+		property test.name.skip.portal.instance = "ContentPagesWithPermissions#EditContentWithWebContentArticleUpdatePermission";
 
 		task ("Define the permissions of new user") {
 			Permissions.definePermissionViaJSONAPI(
@@ -826,6 +828,7 @@ definition {
 	@priority = "5"
 	test EditInlineContentWithUpdatePageContentPermission {
 		property portal.acceptance = "true";
+		property test.name.skip.portal.instance = "ContentPagesWithPermissions#EditInlineContentWithUpdatePageContentPermission";
 
 		task ("Define the permissions of new user") {
 			Permissions.definePermissionViaJSONAPI(
@@ -911,6 +914,8 @@ definition {
 	@description = "This is a test for LPS-125388. The new user can edit specific content page as site member with update permission."
 	@priority = "4"
 	test EditSpecificContentPageAsSiteMemberWithUpdatePermission {
+		property test.name.skip.portal.instance = "ContentPagesWithPermissions#EditSpecificContentPageAsSiteMemberWithUpdatePermission";
+
 		task ("Grant Update permission of specific content page to Site Member") {
 			PagesAdmin.openPagesAdmin(siteURLKey = "test-site-name");
 
