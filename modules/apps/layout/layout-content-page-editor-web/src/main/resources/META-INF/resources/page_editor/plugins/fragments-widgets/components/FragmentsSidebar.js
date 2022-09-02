@@ -132,13 +132,9 @@ export default function FragmentsSidebar() {
 	const fragments = useSelector((state) => state.fragments);
 	const widgets = useSelector((state) => state.widgets);
 
-	const [
-		activeTabId,
-		setActiveTabId,
-	] = useSessionState(
+	const [activeTabId, setActiveTabId] = useSessionState(
 		`${config.portletNamespace}_fragments-sidebar_active-tab-id`,
-		COLLECTION_IDS.fragments,
-		{persistEnabled: Liferay.FeatureFlags['LPS-153452']}
+		COLLECTION_IDS.fragments
 	);
 
 	const [displayStyle, setDisplayStyle] = useSessionState(
