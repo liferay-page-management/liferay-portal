@@ -3,9 +3,11 @@ definition {
 	macro changeDisplayStyle {
 		WaitForPageLoad();
 
-		Click.mouseOverClick(locator1 = "Icon#CURRENT_DISPLAY_STYLE");
+		if (IsElementNotPresent(key_text = StringUtil.lowerCase("${displayStyle}"), locator1 = "ManagementBar#ANY_ICON")) {
+			Click.mouseOverClick(locator1 = "Icon#CURRENT_DISPLAY_STYLE");
 
-		MenuItem.click(menuItem = StringUtil.upperCaseFirstLetter("${displayStyle}"));
+			MenuItem.click(menuItem = StringUtil.upperCaseFirstLetter("${displayStyle}"));
+		}
 	}
 
 	macro changeExportDisplayStyle {
