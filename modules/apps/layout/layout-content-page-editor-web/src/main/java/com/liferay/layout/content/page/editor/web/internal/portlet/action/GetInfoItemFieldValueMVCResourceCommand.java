@@ -35,9 +35,11 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.Objects;
@@ -153,8 +155,27 @@ public class GetInfoItemFieldValueMVCResourceCommand
 			}
 		}
 		else {
-			value = _fragmentEntryProcessorHelper.formatMappedValue(
-				value, LocaleUtil.fromLanguageId(languageId));
+			String editableTypeOptions = ParamUtil.getString(
+				resourceRequest, "editableTypeOptions");
+
+			JSONObject editableTypeOptionsJSONObject =
+				JSONFactoryUtil.createJSONObject(editableTypeOptions);
+
+			String dateFormat = editableTypeOptionsJSONObject.getString(
+				"dateFormat");
+
+			if (Validator.isNull(dateFormat)) {
+				value = _fragmentEntryProcessorHelper.formatMappedValue(
+					value, null, LocaleUtil.fromLanguageId(languageId));
+			}
+			else {
+				value = _fragmentEntryProcessorHelper.formatMappedValue(
+					value,
+					HashMapBuilder.<String, Object>put(
+						"dateFormat", dateFormat
+					).build(),
+					LocaleUtil.fromLanguageId(languageId));
+			}
 		}
 
 		jsonObject.put("fieldValue", value);

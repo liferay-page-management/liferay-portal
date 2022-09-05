@@ -34,6 +34,9 @@ public interface FragmentEntryProcessorHelper {
 
 	public String formatMappedValue(Object value, Locale locale);
 
+	public String formatMappedValue(
+		Object value, Map<String, Object> formatOptions, Locale locale);
+
 	public String getEditableValue(JSONObject jsonObject, Locale locale);
 
 	public long getFileEntryId(
