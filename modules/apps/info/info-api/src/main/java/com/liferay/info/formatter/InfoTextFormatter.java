@@ -15,6 +15,7 @@
 package com.liferay.info.formatter;
 
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author Jorge Ferrer
@@ -22,5 +23,8 @@ import java.util.Locale;
 public interface InfoTextFormatter<T> {
 
 	public String format(T t, Locale locale);
+
+	public String formatWithOptions(
+		T t, Map<String, Object> formatOptions, Locale locale);
 
 }
