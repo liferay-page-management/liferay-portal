@@ -14,11 +14,7 @@
 
 package com.liferay.product.navigation.control.menu.web.internal;
 
-import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.info.constants.InfoDisplayWebKeys;
-import com.liferay.info.field.InfoFieldValue;
-import com.liferay.info.item.InfoItemFieldValues;
-import com.liferay.info.item.provider.InfoItemFieldValuesProvider;
 import com.liferay.layout.security.permission.resource.LayoutContentModelResourcePermission;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
@@ -188,47 +184,11 @@ public class LayoutHeaderProductNavigationControlMenuEntry
 			return _portal.getPortletTitle(portletId, themeDisplay.getLocale());
 		}
 
-		if (layout.isTypeAssetDisplay()) {
-			Object infoItem = httpServletRequest.getAttribute(
-				InfoDisplayWebKeys.INFO_ITEM);
+		String infoItemName = (String)httpServletRequest.getAttribute(
+			InfoDisplayWebKeys.INFO_ITEM_NAME);
 
-			InfoItemFieldValuesProvider<Object> infoItemFieldValuesProvider =
-				(InfoItemFieldValuesProvider)httpServletRequest.getAttribute(
-					InfoDisplayWebKeys.INFO_ITEM_FIELD_VALUES_PROVIDER);
-
-			if ((infoItem != null) && (infoItemFieldValuesProvider != null)) {
-				InfoItemFieldValues infoItemFieldValues =
-					infoItemFieldValuesProvider.getInfoItemFieldValues(
-						infoItem);
-
-				InfoFieldValue<Object> titleInfoFieldValue =
-					infoItemFieldValues.getInfoFieldValue("title");
-
-				if (titleInfoFieldValue != null) {
-					return HtmlUtil.escape(
-						String.valueOf(
-							titleInfoFieldValue.getValue(
-								themeDisplay.getLocale())));
-				}
-
-				InfoFieldValue<Object> nameInfoFieldValue =
-					infoItemFieldValues.getInfoFieldValue("name");
-
-				if (nameInfoFieldValue != null) {
-					return HtmlUtil.escape(
-						String.valueOf(
-							nameInfoFieldValue.getValue(
-								themeDisplay.getLocale())));
-				}
-			}
-
-			AssetEntry assetEntry = (AssetEntry)httpServletRequest.getAttribute(
-				WebKeys.LAYOUT_ASSET_ENTRY);
-
-			if (assetEntry != null) {
-				return HtmlUtil.escape(
-					assetEntry.getTitle(themeDisplay.getLanguageId()));
-			}
+		if (Validator.isNotNull(infoItemName) && layout.isTypeAssetDisplay()) {
+			return HtmlUtil.escape(infoItemName);
 		}
 
 		return HtmlUtil.escape(layout.getName(themeDisplay.getLocale()));

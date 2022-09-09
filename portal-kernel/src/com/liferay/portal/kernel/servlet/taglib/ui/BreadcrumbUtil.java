@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CookieKeys;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -101,7 +102,8 @@ public class BreadcrumbUtil {
 		}
 
 		if (hasAll || ArrayUtil.contains(types, ENTRY_TYPE_LAYOUT)) {
-			breadcrumbEntries.addAll(getLayoutBreadcrumbEntries(themeDisplay));
+			breadcrumbEntries.addAll(
+				getLayoutBreadcrumbEntries(httpServletRequest, themeDisplay));
 		}
 
 		if (hasAll || ArrayUtil.contains(types, ENTRY_TYPE_PORTLET)) {
@@ -146,7 +148,7 @@ public class BreadcrumbUtil {
 	}
 
 	public static List<BreadcrumbEntry> getLayoutBreadcrumbEntries(
-			ThemeDisplay themeDisplay)
+			HttpServletRequest httpServletRequest, ThemeDisplay themeDisplay)
 		throws Exception {
 
 		List<BreadcrumbEntry> breadcrumbEntries = new ArrayList<>();
@@ -157,7 +159,7 @@ public class BreadcrumbUtil {
 
 		if (!group.isLayoutPrototype()) {
 			_addLayoutBreadcrumbEntries(
-				breadcrumbEntries, themeDisplay, layout);
+				breadcrumbEntries, httpServletRequest, layout, themeDisplay);
 		}
 
 		return breadcrumbEntries;
@@ -309,16 +311,17 @@ public class BreadcrumbUtil {
 	}
 
 	private static void _addLayoutBreadcrumbEntries(
-			List<BreadcrumbEntry> breadcrumbEntries, ThemeDisplay themeDisplay,
-			Layout layout)
+			List<BreadcrumbEntry> breadcrumbEntries,
+			HttpServletRequest httpServletRequest, Layout layout,
+			ThemeDisplay themeDisplay)
 		throws Exception {
 
 		if (layout.getParentLayoutId() !=
 				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID) {
 
 			_addLayoutBreadcrumbEntries(
-				breadcrumbEntries, themeDisplay,
-				LayoutLocalServiceUtil.getParentLayout(layout));
+				breadcrumbEntries, httpServletRequest,
+				LayoutLocalServiceUtil.getParentLayout(layout), themeDisplay);
 		}
 
 		BreadcrumbEntry breadcrumbEntry = new BreadcrumbEntry();
@@ -338,6 +341,13 @@ public class BreadcrumbUtil {
 
 			layoutName = LanguageUtil.get(
 				themeDisplay.getLocale(), "control-panel");
+		}
+
+		String infoItemName = (String)httpServletRequest.getAttribute(
+			"INFO_ITEM_NAME");
+
+		if (Validator.isNotNull(infoItemName) && layout.isTypeAssetDisplay()) {
+			layoutName = HtmlUtil.escape(infoItemName);
 		}
 
 		breadcrumbEntry.setTitle(layoutName);
