@@ -504,7 +504,8 @@ public class FragmentCollectionManager {
 				masterDropZoneLayoutStructureItem, themeDisplay));
 
 		Map<String, List<Map<String, Object>>> layoutElementMapsListMap =
-			ObjectUtil.getLayoutElementMapsListMap(themeDisplay.getCompanyId());
+			ObjectUtil.getLayoutElementMapsListMap(
+				themeDisplay.getCompanyId(), themeDisplay.getScopeGroup());
 
 		for (Map.Entry<String, List<Map<String, Object>>> entry :
 				layoutElementMapsListMap.entrySet()) {

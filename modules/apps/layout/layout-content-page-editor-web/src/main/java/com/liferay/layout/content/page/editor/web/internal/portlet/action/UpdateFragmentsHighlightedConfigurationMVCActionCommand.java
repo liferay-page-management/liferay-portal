@@ -107,7 +107,8 @@ public class UpdateFragmentsHighlightedConfigurationMVCActionCommand
 			WebKeys.THEME_DISPLAY);
 
 		Map<String, Map<String, Object>> layoutElementMaps =
-			_getLayoutElementMaps(themeDisplay.getCompanyId());
+			_getLayoutElementMaps(
+				themeDisplay.getCompanyId(), themeDisplay.getScopeGroup());
 
 		if (layoutElementMaps.containsKey(fragmentEntryKey)) {
 			return fragmentEntryKey;
@@ -207,7 +208,8 @@ public class UpdateFragmentsHighlightedConfigurationMVCActionCommand
 			}
 
 			Map<String, Map<String, Object>> layoutElementMaps =
-				_getLayoutElementMaps(themeDisplay.getCompanyId());
+				_getLayoutElementMaps(
+					themeDisplay.getCompanyId(), themeDisplay.getScopeGroup());
 
 			if (layoutElementMaps.containsKey(key)) {
 				Map<String, Object> layoutElementMap = layoutElementMaps.get(
@@ -328,7 +330,7 @@ public class UpdateFragmentsHighlightedConfigurationMVCActionCommand
 	}
 
 	private Map<String, Map<String, Object>> _getLayoutElementMaps(
-		long companyId) {
+		long companyId, Group group) {
 
 		if (_layoutElementMaps != null) {
 			return _layoutElementMaps;
@@ -337,7 +339,7 @@ public class UpdateFragmentsHighlightedConfigurationMVCActionCommand
 		Map<String, Map<String, Object>> layoutElementMaps = new HashMap<>();
 
 		Map<String, List<Map<String, Object>>> layoutElementMapsListMap =
-			ObjectUtil.getLayoutElementMapsListMap(companyId);
+			ObjectUtil.getLayoutElementMapsListMap(companyId, group);
 
 		for (Map.Entry<String, List<Map<String, Object>>> entry :
 				layoutElementMapsListMap.entrySet()) {

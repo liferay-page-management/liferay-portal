@@ -1803,7 +1803,7 @@ public class ContentPageEditorDisplayContext {
 		}
 
 		_hideInputFragments = ObjectUtil.hideInputFragments(
-			themeDisplay.getCompanyId());
+			themeDisplay.getCompanyId(), themeDisplay.getScopeGroup());
 
 		return _hideInputFragments;
 	}
