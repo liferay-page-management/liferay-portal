@@ -13,6 +13,7 @@
  */
 
 import ClayForm, {ClayInput} from '@clayui/form';
+import ClayIcon from '@clayui/icon';
 import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 
@@ -28,6 +29,7 @@ export function ImageSelectorDescription({
 		setImageDescriptionInputElement,
 	] = useState();
 
+	const helpTextId = useId();
 	const imageDescriptionInputId = useId();
 
 	useEffect(() => {
@@ -39,12 +41,21 @@ export function ImageSelectorDescription({
 	return (
 		<ClayForm.Group>
 			<label htmlFor={imageDescriptionInputId}>
-				{Liferay.Language.get('image-description')}
+				<span>{Liferay.Language.get('image-description')}</span>
+
+				<ClayIcon
+					className="lfr-portal-tooltip ml-1 text-secondary"
+					data-title={Liferay.Language.get(
+						'this-value-is-used-for-alt-text'
+					)}
+					symbol="question-circle-full"
+				/>
 			</label>
 
 			<ClayInput.Group small>
 				<ClayInput.GroupItem>
 					<ClayInput
+						aria-describedby={helpTextId}
 						id={imageDescriptionInputId}
 						onBlur={(event) => {
 							onImageDescriptionChanged(event.target.value);
