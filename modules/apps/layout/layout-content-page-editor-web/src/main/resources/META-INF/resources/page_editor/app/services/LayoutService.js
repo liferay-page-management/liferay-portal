@@ -143,6 +143,7 @@ export default {
 	 * @return {Promise<void>}
 	 */
 	markItemForDeletion({
+		fragmentEntryLinkIds,
 		itemId,
 		onNetworkStatus,
 		portletIds = [],
@@ -152,6 +153,7 @@ export default {
 			config.markItemForDeletionURL,
 			{
 				body: {
+					fragmentEntryLinkIds,
 					itemId,
 					portletIds,
 					segmentsExperienceId,

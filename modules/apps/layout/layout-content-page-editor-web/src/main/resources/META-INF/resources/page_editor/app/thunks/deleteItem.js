@@ -90,7 +90,10 @@ function markItemForDeletion({
 }) {
 	const portletIds = findPortletIds(itemId, layoutData, fragmentEntryLinks);
 
+	const fragmentEntryLinkIds = findFragmentEntryLinkIds(itemId, layoutData);
+
 	return LayoutService.markItemForDeletion({
+		fragmentEntryLinkIds,
 		itemId,
 		onNetworkStatus: dispatch,
 		portletIds,
@@ -98,6 +101,27 @@ function markItemForDeletion({
 	}).then((response) => {
 		return {...response, portletIds};
 	});
+}
+
+function findFragmentEntryLinkIds(itemId, layoutData) {
+	const item = layoutData.items[itemId];
+
+	const {config = {}, children = []} = item;
+
+	const deletedFragments = [];
+
+	if (
+		item.type === LAYOUT_DATA_ITEM_TYPES.fragment &&
+		config.fragmentEntryLinkId
+	) {
+		deletedFragments.push(config.fragmentEntryLinkId);
+	}
+
+	children.forEach((itemId) => {
+		deletedFragments.push(...findFragmentEntryLinkIds(itemId, layoutData));
+	});
+
+	return deletedFragments;
 }
 
 function findPortletIds(itemId, layoutData, fragmentEntryLinks) {
