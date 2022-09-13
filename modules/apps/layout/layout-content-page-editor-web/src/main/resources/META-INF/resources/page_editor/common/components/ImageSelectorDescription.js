@@ -28,6 +28,7 @@ export function ImageSelectorDescription({
 		setImageDescriptionInputElement,
 	] = useState();
 
+	const helpTextId = useId();
 	const imageDescriptionInputId = useId();
 
 	useEffect(() => {
@@ -45,6 +46,7 @@ export function ImageSelectorDescription({
 			<ClayInput.Group small>
 				<ClayInput.GroupItem>
 					<ClayInput
+						aria-describedby={helpTextId}
 						id={imageDescriptionInputId}
 						onBlur={(event) => {
 							onImageDescriptionChanged(event.target.value);
@@ -59,6 +61,10 @@ export function ImageSelectorDescription({
 					<CurrentLanguageFlag />
 				</ClayInput.GroupItem>
 			</ClayInput.Group>
+
+			<p className="m-0 mt-1 small text-secondary" id={helpTextId}>
+				{Liferay.Language.get('this-value-is-used-for-alt-text')}
+			</p>
 		</ClayForm.Group>
 	);
 }
