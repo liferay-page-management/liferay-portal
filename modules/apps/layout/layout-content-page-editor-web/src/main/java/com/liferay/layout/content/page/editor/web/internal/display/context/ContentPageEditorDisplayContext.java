@@ -53,6 +53,7 @@ import com.liferay.layout.content.page.editor.web.internal.util.FragmentCollecti
 import com.liferay.layout.content.page.editor.web.internal.util.FragmentEntryLinkManager;
 import com.liferay.layout.content.page.editor.web.internal.util.MappingContentUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.MappingTypesUtil;
+import com.liferay.layout.content.page.editor.web.internal.util.ObjectUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.StyleBookEntryUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
@@ -1189,7 +1190,8 @@ public class ContentPageEditorDisplayContext {
 
 		for (long fragmentEntryLinkId : fragmentLayoutStructureItems.keySet()) {
 			if (fragmentEntryLinksMap.containsKey(
-					String.valueOf(fragmentEntryLinkId))) {
+					String.valueOf(fragmentEntryLinkId)) ||
+				_hideInputFragments()) {
 
 				continue;
 			}
@@ -1795,6 +1797,17 @@ public class ContentPageEditorDisplayContext {
 		return false;
 	}
 
+	private boolean _hideInputFragments() {
+		if (_hideInputFragments != null) {
+			return _hideInputFragments;
+		}
+
+		_hideInputFragments = ObjectUtil.hideInputFragments(
+			themeDisplay.getCompanyId());
+
+		return _hideInputFragments;
+	}
+
 	private boolean _isConversionDraft() {
 		Layout publishedLayout = _getPublishedLayout();
 
@@ -1869,6 +1882,7 @@ public class ContentPageEditorDisplayContext {
 	private final FrontendTokenDefinitionRegistry
 		_frontendTokenDefinitionRegistry;
 	private Long _groupId;
+	private Boolean _hideInputFragments;
 	private ItemSelectorCriterion _imageItemSelectorCriterion;
 	private final ItemSelector _itemSelector;
 	private LayoutStructure _layoutStructure;
