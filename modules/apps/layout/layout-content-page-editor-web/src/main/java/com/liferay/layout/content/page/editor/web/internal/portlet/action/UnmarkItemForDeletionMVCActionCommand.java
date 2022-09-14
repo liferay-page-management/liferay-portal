@@ -14,6 +14,7 @@
 
 package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
+import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -27,6 +28,7 @@ import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Víctor Galán
@@ -52,7 +54,12 @@ public class UnmarkItemForDeletionMVCActionCommand
 
 		long segmentsExperienceId = ParamUtil.getLong(
 			actionRequest, "segmentsExperienceId");
+		long fragmentEntryLinkIds = ParamUtil.getLong(
+			actionRequest, "fragmentEntryLinkIds");
 		String itemId = ParamUtil.getString(actionRequest, "itemId");
+
+		fragmentEntryLinkLocalService.updateDeleted(
+			fragmentEntryLinkIds, false);
 
 		return JSONUtil.put(
 			"layoutData",
@@ -63,5 +70,8 @@ public class UnmarkItemForDeletionMVCActionCommand
 					layoutStructure.unmarkLayoutStructureItemForDeletion(
 						itemId)));
 	}
+
+	@Reference
+	protected FragmentEntryLinkLocalService fragmentEntryLinkLocalService;
 
 }
