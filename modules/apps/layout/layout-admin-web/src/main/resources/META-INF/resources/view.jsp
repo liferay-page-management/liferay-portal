@@ -37,48 +37,55 @@ portletDisplay.setShowStagingIcon(false);
 	propsTransformer="js/LayoutsManagementToolbarPropsTransformer"
 />
 
-<liferay-ui:error exception="<%= LayoutTypeException.class %>">
+<c:choose>
+	<c:when test='<%= Objects.equals(layoutsAdminDisplayContext.getTabs1(), "utility-pages") %>'>
+		<liferay-util:include page="/view_utility_pages.jsp" servletContext="<%= application %>" />
+	</c:when>
+	<c:otherwise>
+		<liferay-ui:error exception="<%= LayoutTypeException.class %>">
 
-	<%
-	LayoutTypeException lte = (LayoutTypeException)errorException;
-	%>
+			<%
+			LayoutTypeException lte = (LayoutTypeException)errorException;
+			%>
 
-	<c:if test="<%= lte.getType() == LayoutTypeException.FIRST_LAYOUT %>">
-		<liferay-ui:message arguments='<%= "layout.types." + lte.getLayoutType() %>' key="the-first-page-cannot-be-of-type-x" />
-	</c:if>
-</liferay-ui:error>
+			<c:if test="<%= lte.getType() == LayoutTypeException.FIRST_LAYOUT %>">
+				<liferay-ui:message arguments='<%= "layout.types." + lte.getLayoutType() %>' key="the-first-page-cannot-be-of-type-x" />
+			</c:if>
+		</liferay-ui:error>
 
-<liferay-ui:error exception="<%= RequiredSegmentsExperienceException.MustNotDeleteSegmentsExperienceReferencedBySegmentsExperiments.class %>" message="this-page-cannot-be-deleted-because-it-has-ab-tests-in-progress" />
+		<liferay-ui:error exception="<%= RequiredSegmentsExperienceException.MustNotDeleteSegmentsExperienceReferencedBySegmentsExperiments.class %>" message="this-page-cannot-be-deleted-because-it-has-ab-tests-in-progress" />
 
-<aui:form cssClass="container-fluid container-fluid-max-xl" name="fm">
-	<c:choose>
-		<c:when test="<%= layoutsAdminDisplayContext.hasLayouts() %>">
+		<aui:form cssClass="container-fluid container-fluid-max-xl" name="fm">
 			<c:choose>
-				<c:when test="<%= layoutsAdminDisplayContext.isSearch() %>">
-					<liferay-util:include page="/flattened_view.jsp" servletContext="<%= application %>" />
+				<c:when test="<%= layoutsAdminDisplayContext.hasLayouts() %>">
+					<c:choose>
+						<c:when test="<%= layoutsAdminDisplayContext.isSearch() %>">
+							<liferay-util:include page="/flattened_view.jsp" servletContext="<%= application %>" />
+						</c:when>
+						<c:otherwise>
+
+							<%
+							MillerColumnsDisplayContext millerColumnsDisplayContext = (MillerColumnsDisplayContext)request.getAttribute(LayoutAdminWebKeys.MILLER_COLUMNS_DISPLAY_CONTEXT);
+							%>
+
+							<div>
+								<react:component
+									module="js/layout/Layout"
+									props="<%= millerColumnsDisplayContext.getLayoutData() %>"
+								/>
+							</div>
+						</c:otherwise>
+					</c:choose>
 				</c:when>
 				<c:otherwise>
-
-					<%
-					MillerColumnsDisplayContext millerColumnsDisplayContext = (MillerColumnsDisplayContext)request.getAttribute(LayoutAdminWebKeys.MILLER_COLUMNS_DISPLAY_CONTEXT);
-					%>
-
-					<div>
-						<react:component
-							module="js/layout/Layout"
-							props="<%= millerColumnsDisplayContext.getLayoutData() %>"
-						/>
-					</div>
+					<liferay-frontend:empty-result-message
+						actionDropdownItems="<%= layoutsAdminDisplayContext.isShowAddRootLayoutButton() ? layoutsAdminDisplayContext.getAddLayoutDropdownItems() : null %>"
+						buttonCssClass="secondary"
+						description='<%= LanguageUtil.get(request, "fortunately-it-is-very-easy-to-add-new-ones") %>'
+						elementType='<%= LanguageUtil.get(request, "pages") %>'
+					/>
 				</c:otherwise>
 			</c:choose>
-		</c:when>
-		<c:otherwise>
-			<liferay-frontend:empty-result-message
-				actionDropdownItems="<%= layoutsAdminDisplayContext.isShowAddRootLayoutButton() ? layoutsAdminDisplayContext.getAddLayoutDropdownItems() : null %>"
-				buttonCssClass="secondary"
-				description='<%= LanguageUtil.get(request, "fortunately-it-is-very-easy-to-add-new-ones") %>'
-				elementType='<%= LanguageUtil.get(request, "pages") %>'
-			/>
-		</c:otherwise>
-	</c:choose>
-</aui:form>
+		</aui:form>
+	</c:otherwise>
+</c:choose>
