@@ -52,10 +52,10 @@ public class UnmarkItemForDeletionMVCActionCommand
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		long segmentsExperienceId = ParamUtil.getLong(
-			actionRequest, "segmentsExperienceId");
 		long[] fragmentEntryLinkIds = ParamUtil.getLongValues(
 			actionRequest, "fragmentEntryLinkIds");
+		long segmentsExperienceId = ParamUtil.getLong(
+			actionRequest, "segmentsExperienceId");
 		String itemId = ParamUtil.getString(actionRequest, "itemId");
 
 		for (long fragmentEntryLinkId : fragmentEntryLinkIds) {
