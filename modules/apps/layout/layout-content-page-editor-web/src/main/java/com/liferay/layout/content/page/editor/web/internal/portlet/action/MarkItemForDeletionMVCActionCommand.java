@@ -56,13 +56,16 @@ public class MarkItemForDeletionMVCActionCommand
 
 		long segmentsExperienceId = ParamUtil.getLong(
 			actionRequest, "segmentsExperienceId");
-		long fragmentEntryLinkIds = ParamUtil.getLong(
+		long[] fragmentEntryLinkIds = ParamUtil.getLongValues(
 			actionRequest, "fragmentEntryLinkIds");
 		String itemId = ParamUtil.getString(actionRequest, "itemId");
 		String[] portletIds = ParamUtil.getStringValues(
 			actionRequest, "portletIds");
 
-		fragmentEntryLinkLocalService.updateDeleted(fragmentEntryLinkIds, true);
+		for (long fragmentEntryLinkId : fragmentEntryLinkIds) {
+			fragmentEntryLinkLocalService.updateDeleted(
+				fragmentEntryLinkId, true);
+		}
 
 		return JSONUtil.put(
 			"layoutData",

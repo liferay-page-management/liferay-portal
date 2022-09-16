@@ -54,12 +54,14 @@ public class UnmarkItemForDeletionMVCActionCommand
 
 		long segmentsExperienceId = ParamUtil.getLong(
 			actionRequest, "segmentsExperienceId");
-		long fragmentEntryLinkIds = ParamUtil.getLong(
+		long[] fragmentEntryLinkIds = ParamUtil.getLongValues(
 			actionRequest, "fragmentEntryLinkIds");
 		String itemId = ParamUtil.getString(actionRequest, "itemId");
 
-		fragmentEntryLinkLocalService.updateDeleted(
-			fragmentEntryLinkIds, false);
+		for (long fragmentEntryLinkId : fragmentEntryLinkIds) {
+			fragmentEntryLinkLocalService.updateDeleted(
+				fragmentEntryLinkId, true);
+		}
 
 		return JSONUtil.put(
 			"layoutData",
