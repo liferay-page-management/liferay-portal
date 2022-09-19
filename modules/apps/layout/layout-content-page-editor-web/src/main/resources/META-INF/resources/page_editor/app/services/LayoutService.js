@@ -235,11 +235,17 @@ export default {
 	 * @param {function} options.onNetworkStatus
 	 * @return {Promise<void>}
 	 */
-	unmarkItemForDeletion({itemId, onNetworkStatus, segmentsExperienceId}) {
+	unmarkItemForDeletion({
+		fragmentEntryLinkIds,
+		itemId,
+		onNetworkStatus,
+		segmentsExperienceId,
+	}) {
 		return layoutServiceFetch(
 			config.unmarkItemForDeletionURL,
 			{
 				body: {
+					fragmentEntryLinkIds,
 					itemId,
 					segmentsExperienceId,
 				},

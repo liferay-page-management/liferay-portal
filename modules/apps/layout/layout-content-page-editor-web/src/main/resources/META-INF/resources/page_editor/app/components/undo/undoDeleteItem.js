@@ -14,6 +14,7 @@
 
 import addItem from '../../actions/addItem';
 import updatePageContents from '../../actions/updatePageContents';
+import {LAYOUT_DATA_ITEM_TYPES} from '../../config/constants/layoutDataItemTypes';
 import InfoItemService from '../../services/InfoItemService';
 import LayoutService from '../../services/LayoutService';
 import getFragmentEntryLinkIdsFromItemId from '../../utils/getFragmentEntryLinkIdsFromItemId';
@@ -21,8 +22,14 @@ import getFragmentEntryLinkIdsFromItemId from '../../utils/getFragmentEntryLinkI
 function undoAction({action, store}) {
 	const {itemId, portletIds} = action;
 
+	const fragmentEntryLinkIds = findFragmentEntryLinkIds(
+		itemId,
+		store.layoutData
+	);
+
 	return (dispatch) => {
 		return LayoutService.unmarkItemForDeletion({
+			fragmentEntryLinkIds,
 			itemId,
 			onNetworkStatus: dispatch,
 			segmentsExperienceId: store.segmentsExperienceId,
@@ -55,6 +62,27 @@ function undoAction({action, store}) {
 				});
 			});
 	};
+}
+
+function findFragmentEntryLinkIds(itemId, layoutData) {
+	const item = layoutData.items[itemId];
+
+	const {config = {}, children = []} = item;
+
+	const deletedFragments = [];
+
+	if (
+		item.type === LAYOUT_DATA_ITEM_TYPES.fragment &&
+		config.fragmentEntryLinkId
+	) {
+		deletedFragments.push(config.fragmentEntryLinkId);
+	}
+
+	children.forEach((itemId) => {
+		deletedFragments.push(...findFragmentEntryLinkIds(itemId, layoutData));
+	});
+
+	return deletedFragments;
 }
 
 function getDerivedStateForUndo({action}) {
