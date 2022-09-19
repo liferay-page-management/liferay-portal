@@ -60,7 +60,7 @@ public class UnmarkItemForDeletionMVCActionCommand
 
 		for (long fragmentEntryLinkId : fragmentEntryLinkIds) {
 			fragmentEntryLinkLocalService.updateDeleted(
-				fragmentEntryLinkId, true);
+				fragmentEntryLinkId, false);
 		}
 
 		return JSONUtil.put(
