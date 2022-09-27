@@ -103,12 +103,6 @@ public class PortletCategoryManagerImpl implements PortletCategoryManager {
 					httpServletRequest, highlightedPortletCategory),
 				httpServletRequest, portletCategory, themeDisplay);
 
-		if (!GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-158737"))) {
-			return JSONUtil.toJSONArray(
-				new ArrayList<>(portletCategoryJSONObjectsMap.values()),
-				portletCategoryJSONObject -> portletCategoryJSONObject);
-		}
-
 		List<String> sortedPortletCategoryKeys = _getSortedPortletCategoryKeys(
 			_portletPreferencesFactory.getPortalPreferences(
 				httpServletRequest));
@@ -315,9 +309,7 @@ public class PortletCategoryManagerImpl implements PortletCategoryManager {
 
 		Layout layout = themeDisplay.getLayout();
 
-		if (GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-158737")) &&
-			Objects.equals(portletCategory.getName(), "category.highlighted")) {
-
+		if (Objects.equals(portletCategory.getName(), "category.highlighted")) {
 			portletIds = highlightedPortletIds;
 		}
 

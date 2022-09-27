@@ -146,10 +146,6 @@ public class FragmentCollectionManager {
 				).build());
 		}
 
-		if (!GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-158737"))) {
-			return allFragmentCollectionMapsList;
-		}
-
 		List<String> sortedFragmentCollectionKeys =
 			getSortedFragmentCollectionKeys(portalPreferences);
 
