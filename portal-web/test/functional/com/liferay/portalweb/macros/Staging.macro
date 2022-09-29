@@ -511,7 +511,7 @@ definition {
 	macro deactivateStagingCP {
 		LexiconEntry.gotoHeaderMenuItem(menuItem = "Staging Configuration");
 
-		if (IsVisible(checkboxName = "Enabled", locator1 = "Checkbox#ANY_CHECKBOX")) {
+		if (IsElementPresent(checkboxName = "Enabled", locator1 = "Checkbox#ANY_CHECKBOX")) {
 			Check.checkHiddenToggleSwitch(locator1 = "SiteSettingsStaging#NONE_RADIO");
 
 			AssertClickNoError(
