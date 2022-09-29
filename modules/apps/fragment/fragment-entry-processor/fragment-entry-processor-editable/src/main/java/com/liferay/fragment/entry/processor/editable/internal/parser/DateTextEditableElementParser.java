@@ -15,10 +15,17 @@
 package com.liferay.fragment.entry.processor.editable.internal.parser;
 
 import com.liferay.fragment.entry.processor.editable.parser.EditableElementParser;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
+import java.util.Date;
 import java.util.ResourceBundle;
 
 import org.jsoup.nodes.Element;
@@ -47,6 +54,28 @@ public class DateTextEditableElementParser extends TextEditableElementParser {
 		}
 
 		return html;
+	}
+
+	@Override
+	public void replace(
+		Element element, String value, JSONObject configJSONObject) {
+
+		String dateFormat = configJSONObject.getString("dateFormat");
+
+		if (Validator.isNotNull(dateFormat)) {
+			try {
+				DateFormat initialPattern = new SimpleDateFormat(
+					"MM/dd/yy hh:mm a", LocaleUtil.US);
+
+				Date dateFormatted = initialPattern.parse(value);
+
+				DateFormat dateFormatPattern = new SimpleDateFormat(dateFormat);
+
+				element.html(dateFormatPattern.format(dateFormatted));
+			}
+			catch (ParseException parseException) {
+			}
+		}
 	}
 
 	@Override

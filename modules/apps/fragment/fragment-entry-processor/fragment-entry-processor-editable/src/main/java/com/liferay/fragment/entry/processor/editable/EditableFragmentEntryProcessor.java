@@ -40,6 +40,8 @@ import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.text.ParseException;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -304,7 +306,11 @@ public class EditableFragmentEntryProcessor implements FragmentEntryProcessor {
 				configJSONObject = localizedJSONObject;
 			}
 
-			editableElementParser.replace(element, value, configJSONObject);
+			try {
+				editableElementParser.replace(element, value, configJSONObject);
+			}
+			catch (ParseException parseException) {
+			}
 
 			if (!Objects.equals(
 					fragmentEntryProcessorContext.getMode(),

@@ -20,6 +20,8 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.GetterUtil;
 
+import java.text.ParseException;
+
 import java.util.Locale;
 
 import org.jsoup.nodes.Element;
@@ -64,7 +66,8 @@ public interface EditableElementParser {
 	 * @param configJSONObject the configuration values
 	 */
 	public default void replace(
-		Element element, String value, JSONObject configJSONObject) {
+			Element element, String value, JSONObject configJSONObject)
+		throws ParseException {
 
 		replace(element, value);
 	}
