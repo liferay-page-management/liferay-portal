@@ -59,7 +59,8 @@ public class ControlPanelLayoutTypeAccessPolicy
 				permissionChecker, themeDisplay.getScopeGroupId(), portlet) ||
 			isAccessGrantedByRuntimePortlet(httpServletRequest) ||
 			isAccessGrantedByPortletAuthenticationToken(
-				httpServletRequest, layout, portlet)) {
+				httpServletRequest, layout, portlet) ||
+			hasAccessPermission(httpServletRequest, layout, portlet)) {
 
 			return;
 		}
