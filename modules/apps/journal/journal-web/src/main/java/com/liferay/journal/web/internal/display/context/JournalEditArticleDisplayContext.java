@@ -74,7 +74,6 @@ import com.liferay.site.item.selector.criterion.SiteItemSelectorCriterion;
 import com.liferay.site.util.RecentGroupManager;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -446,7 +445,58 @@ public class JournalEditArticleDisplayContext {
 				_themeDisplay.getCompanyId(), 0, Boolean.TRUE)
 		).put(
 			"sites",
-			Collections.emptyList()
+			() -> {
+				RecentGroupManager recentGroupManager =
+					RecentGroupManagerUtil.getRecentGroupManager();
+
+				List<Group> recentGroups = ListUtil.subList(
+					recentGroupManager.getRecentGroups(_httpServletRequest), 0,
+					_MAX_SITES);
+
+				JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+
+				for (Group group : recentGroups) {
+					jsonArray.put(
+						JSONUtil.put(
+							"groupId", group.getGroupId()
+						).put(
+							"name",
+							group.getDescriptiveName(_themeDisplay.getLocale())
+						));
+				}
+
+				if (recentGroups.size() == _MAX_SITES) {
+					return jsonArray;
+				}
+
+				int max = _MAX_SITES - recentGroups.size();
+
+				List<Group> groups = GroupLocalServiceUtil.getGroups(
+					_themeDisplay.getCompanyId(),
+					GroupConstants.DEFAULT_PARENT_GROUP_ID, true);
+
+				for (Group group : groups) {
+					if (max == 0) {
+						break;
+					}
+
+					if (recentGroups.contains(group)) {
+						continue;
+					}
+
+					max -= 1;
+
+					jsonArray.put(
+						JSONUtil.put(
+							"groupId", group.getGroupId()
+						).put(
+							"name",
+							group.getDescriptiveName(_themeDisplay.getLocale())
+						));
+				}
+
+				return jsonArray;
+			}
 		).build();
 	}
 
