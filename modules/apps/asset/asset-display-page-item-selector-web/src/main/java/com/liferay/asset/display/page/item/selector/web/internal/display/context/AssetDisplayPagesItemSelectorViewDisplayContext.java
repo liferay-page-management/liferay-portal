@@ -86,7 +86,7 @@ public class AssetDisplayPagesItemSelectorViewDisplayContext {
 				() ->
 					LayoutPageTemplateEntryServiceUtil.
 						getLayoutPageTemplateEntries(
-							_themeDisplay.getScopeGroupId(),
+							_getGroupId(),
 							_assetDisplayPageSelectorCriterion.getClassNameId(),
 							_assetDisplayPageSelectorCriterion.getClassTypeId(),
 							_getKeywords(),
@@ -99,7 +99,7 @@ public class AssetDisplayPagesItemSelectorViewDisplayContext {
 								getOrderByComparator()),
 				LayoutPageTemplateEntryServiceUtil.
 					getLayoutPageTemplateEntriesCount(
-						_themeDisplay.getScopeGroupId(),
+						_getGroupId(),
 						_assetDisplayPageSelectorCriterion.getClassNameId(),
 						_assetDisplayPageSelectorCriterion.getClassTypeId(),
 						_getKeywords(),
@@ -111,7 +111,7 @@ public class AssetDisplayPagesItemSelectorViewDisplayContext {
 				() ->
 					LayoutPageTemplateEntryServiceUtil.
 						getLayoutPageTemplateEntries(
-							_themeDisplay.getScopeGroupId(),
+							_getGroupId(),
 							_assetDisplayPageSelectorCriterion.getClassNameId(),
 							_assetDisplayPageSelectorCriterion.getClassTypeId(),
 							LayoutPageTemplateEntryTypeConstants.
@@ -123,7 +123,7 @@ public class AssetDisplayPagesItemSelectorViewDisplayContext {
 								getOrderByComparator()),
 				LayoutPageTemplateEntryServiceUtil.
 					getLayoutPageTemplateEntriesCount(
-						_themeDisplay.getScopeGroupId(),
+						_getGroupId(),
 						_assetDisplayPageSelectorCriterion.getClassNameId(),
 						_assetDisplayPageSelectorCriterion.getClassTypeId(),
 						LayoutPageTemplateEntryTypeConstants.TYPE_DISPLAY_PAGE,
@@ -148,6 +148,16 @@ public class AssetDisplayPagesItemSelectorViewDisplayContext {
 			_httpServletRequest, "orderByType", "asc");
 
 		return _orderByType;
+	}
+
+	private long _getGroupId() {
+		long groupId = _assetDisplayPageSelectorCriterion.getGroupId();
+
+		if (groupId <= 0) {
+			groupId = _themeDisplay.getScopeGroupId();
+		}
+
+		return groupId;
 	}
 
 	private String _getKeywords() {

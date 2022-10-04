@@ -25,6 +25,7 @@ public class AssetDisplayPageSelectorCriterion
 	public AssetDisplayPageSelectorCriterion() {
 		_classNameId = 0;
 		_classTypeId = 0;
+		_groupId = 0;
 	}
 
 	public long getClassNameId() {
@@ -35,6 +36,10 @@ public class AssetDisplayPageSelectorCriterion
 		return _classTypeId;
 	}
 
+	public long getGroupId() {
+		return _groupId;
+	}
+
 	public void setClassNameId(long classNameId) {
 		_classNameId = classNameId;
 	}
@@ -43,7 +48,12 @@ public class AssetDisplayPageSelectorCriterion
 		_classTypeId = classTypeId;
 	}
 
+	public void setGroupId(long groupId) {
+		_groupId = groupId;
+	}
+
 	private long _classNameId;
 	private long _classTypeId;
+	private long _groupId;
 
 }
