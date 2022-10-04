@@ -423,8 +423,32 @@ public class JournalEditArticleDisplayContext {
 	}
 
 	public Map<String, Object> getDisplayPagePreviewContext() {
+		String selectDisplayPageEventName =
+			_liferayPortletResponse.getNamespace() + "selectDisplayPage";
+		String selectSiteEventName =
+			_liferayPortletResponse.getNamespace() + "selectSite";
+
 		return HashMapBuilder.<String, Object>put(
-			"itemSelectorURL",
+			"selectDisplayPageEventName", selectDisplayPageEventName
+		).put(
+			"selectDisplayPageURL",
+			() -> PortletURLBuilder.createRenderURL(
+				_liferayPortletResponse
+			).setMVCRenderCommandName(
+				"/journal/select_display_page"
+			).setParameter(
+				"classTypeId", getDDMStructureId()
+			).setParameter(
+				"eventName", selectDisplayPageEventName
+			).buildString()
+		).put(
+			"selectSiteEventName", selectSiteEventName
+		).put(
+			"siteCount",
+			() -> GroupLocalServiceUtil.getGroupsCount(
+				_themeDisplay.getCompanyId(), 0, Boolean.TRUE)
+		).put(
+			"siteItemSelectorURL",
 			() -> {
 				SiteItemSelectorCriterion siteItemSelectorCriterion =
 					new SiteItemSelectorCriterion();
@@ -436,13 +460,8 @@ public class JournalEditArticleDisplayContext {
 					_itemSelector.getItemSelectorURL(
 						RequestBackedPortletURLFactoryUtil.create(
 							_httpServletRequest),
-						_liferayPortletResponse.getNamespace() + "selectSite",
-						siteItemSelectorCriterion));
+						selectSiteEventName, siteItemSelectorCriterion));
 			}
-		).put(
-			"siteCount",
-			() -> GroupLocalServiceUtil.getGroupsCount(
-				_themeDisplay.getCompanyId(), 0, Boolean.TRUE)
 		).put(
 			"sites",
 			() -> {
