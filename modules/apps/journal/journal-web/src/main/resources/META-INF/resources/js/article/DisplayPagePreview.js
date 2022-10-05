@@ -21,6 +21,7 @@ import React, {useMemo, useState} from 'react';
 
 export default function DisplayPagePreview({
 	namespace,
+	previewURL,
 	selectDisplayPageEventName,
 	selectDisplayPageURL,
 	selectSiteEventName,
@@ -113,9 +114,10 @@ export default function DisplayPagePreview({
 			</ClayDropDown>
 
 			{selectedSite?.groupId && (
-				<DisplayPageInput
+				<DisplayPageSelector
 					displayPageSelected={displayPageSelected}
 					namespace={namespace}
+					previewURL={previewURL}
 					selectDisplayPageEventName={selectDisplayPageEventName}
 					selectDisplayPageURL={selectDisplayPageURL}
 					selectedSite={selectedSite}
@@ -126,9 +128,10 @@ export default function DisplayPagePreview({
 	);
 }
 
-function DisplayPageInput({
+function DisplayPageSelector({
 	displayPageSelected,
 	namespace,
+	previewURL,
 	selectDisplayPageEventName,
 	selectDisplayPageURL,
 	selectedSite,
@@ -143,8 +146,8 @@ function DisplayPageInput({
 			},
 			onSelect(selectedItem) {
 				setDisplayPageSelected({
-					id: selectedItem.id,
 					name: selectedItem.name,
+					plid: selectedItem.plid,
 				});
 			},
 			selectEventName: selectDisplayPageEventName,
@@ -157,7 +160,7 @@ function DisplayPageInput({
 
 	return (
 		<div className="mb-3 mt-2">
-			<ClayForm.Group>
+			<ClayForm.Group className="mb-2">
 				<label className="sr-only" htmlFor={displayPageId}>
 					{Liferay.Language.get('display-page')}
 				</label>
@@ -195,6 +198,18 @@ function DisplayPageInput({
 					</ClayInput.GroupItem>
 				</ClayInput.Group>
 			</ClayForm.Group>
+
+			<ClayButton
+				disabled={!displayPageSelected}
+				displayType="secondary"
+				onClick={() => {
+					window.location.href = createPortletURL(previewURL, {
+						selPlid: displayPageSelected?.plid,
+					}).toString();
+				}}
+			>
+				{Liferay.Language.get('preview')}
+			</ClayButton>
 		</div>
 	);
 }
