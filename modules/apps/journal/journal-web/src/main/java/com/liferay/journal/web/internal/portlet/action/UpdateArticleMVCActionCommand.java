@@ -106,6 +106,106 @@ public class UpdateArticleMVCActionCommand extends BaseMVCActionCommand {
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
+		_processAction(actionRequest);
+	}
+
+	private String _getFriendlyURLChangedMessage(
+		ActionRequest actionRequest, Map<Locale, String> originalFriendlyURLMap,
+		Map<Locale, String> currentFriendlyURLMap) {
+
+		List<String> messages = new ArrayList<>();
+
+		HttpServletRequest httpServletRequest = _portal.getHttpServletRequest(
+			actionRequest);
+
+		for (Map.Entry<Locale, String> entry :
+				currentFriendlyURLMap.entrySet()) {
+
+			Locale locale = entry.getKey();
+
+			String originalFriendlyURL = originalFriendlyURLMap.get(locale);
+
+			String normalizedOriginalFriendlyURL =
+				_friendlyURLNormalizer.normalizeWithEncoding(
+					originalFriendlyURL);
+
+			String currentFriendlyURL = entry.getValue();
+
+			if (Validator.isNotNull(originalFriendlyURL) &&
+				!currentFriendlyURL.equals(normalizedOriginalFriendlyURL)) {
+
+				messages.add(
+					_language.format(
+						httpServletRequest, "for-locale-x-x-was-changed-to-x",
+						new Object[] {
+							"<strong>" + locale.getLanguage() + "</strong>",
+							"<strong>" + _html.escapeURL(originalFriendlyURL) +
+								"</strong>",
+							"<strong>" + currentFriendlyURL + "</strong>"
+						}));
+			}
+		}
+
+		if (!messages.isEmpty()) {
+			messages.add(
+				0,
+				_language.get(
+					httpServletRequest,
+					"the-following-friendly-urls-were-changed-to-ensure-" +
+						"uniqueness"));
+		}
+
+		return StringUtil.merge(messages, "<br />");
+	}
+
+	private String _getSaveAndContinueRedirect(
+			ActionRequest actionRequest, JournalArticle article,
+			String redirect)
+		throws Exception {
+
+		return PortletURLBuilder.create(
+			PortletURLFactoryUtil.create(
+				actionRequest, JournalPortletKeys.JOURNAL,
+				PortletRequest.RENDER_PHASE)
+		).setMVCPath(
+			"/edit_article.jsp"
+		).setRedirect(
+			redirect
+		).setPortletResource(
+			ParamUtil.getString(actionRequest, "portletResource")
+		).setParameter(
+			"articleId", article.getArticleId()
+		).setParameter(
+			"folderId", article.getFolderId()
+		).setParameter(
+			"groupId", article.getGroupId()
+		).setParameter(
+			"languageId",
+			() -> {
+				String languageId = ParamUtil.getString(
+					actionRequest, "languageId");
+
+				if (Validator.isNotNull(languageId)) {
+					return languageId;
+				}
+
+				return null;
+			}
+		).setParameter(
+			"referringPortletResource",
+			ParamUtil.getString(actionRequest, "referringPortletResource")
+		).setParameter(
+			"resourcePrimKey", article.getResourcePrimKey()
+		).setParameter(
+			"version", article.getVersion()
+		).setWindowState(
+			actionRequest.getWindowState()
+		).buildString();
+	}
+
+	private JournalArticle _processAction(ActionRequest actionRequest)
+		throws Exception {
+
 		UploadException uploadException =
 			(UploadException)actionRequest.getAttribute(
 				WebKeys.UPLOAD_EXCEPTION);
@@ -444,100 +544,8 @@ public class UpdateArticleMVCActionCommand extends BaseMVCActionCommand {
 		if (hideDefaultSuccessMessage) {
 			hideDefaultSuccessMessage(actionRequest);
 		}
-	}
 
-	private String _getFriendlyURLChangedMessage(
-		ActionRequest actionRequest, Map<Locale, String> originalFriendlyURLMap,
-		Map<Locale, String> currentFriendlyURLMap) {
-
-		List<String> messages = new ArrayList<>();
-
-		HttpServletRequest httpServletRequest = _portal.getHttpServletRequest(
-			actionRequest);
-
-		for (Map.Entry<Locale, String> entry :
-				currentFriendlyURLMap.entrySet()) {
-
-			Locale locale = entry.getKey();
-
-			String originalFriendlyURL = originalFriendlyURLMap.get(locale);
-
-			String normalizedOriginalFriendlyURL =
-				_friendlyURLNormalizer.normalizeWithEncoding(
-					originalFriendlyURL);
-
-			String currentFriendlyURL = entry.getValue();
-
-			if (Validator.isNotNull(originalFriendlyURL) &&
-				!currentFriendlyURL.equals(normalizedOriginalFriendlyURL)) {
-
-				messages.add(
-					_language.format(
-						httpServletRequest, "for-locale-x-x-was-changed-to-x",
-						new Object[] {
-							"<strong>" + locale.getLanguage() + "</strong>",
-							"<strong>" + _html.escapeURL(originalFriendlyURL) +
-								"</strong>",
-							"<strong>" + currentFriendlyURL + "</strong>"
-						}));
-			}
-		}
-
-		if (!messages.isEmpty()) {
-			messages.add(
-				0,
-				_language.get(
-					httpServletRequest,
-					"the-following-friendly-urls-were-changed-to-ensure-" +
-						"uniqueness"));
-		}
-
-		return StringUtil.merge(messages, "<br />");
-	}
-
-	private String _getSaveAndContinueRedirect(
-			ActionRequest actionRequest, JournalArticle article,
-			String redirect)
-		throws Exception {
-
-		return PortletURLBuilder.create(
-			PortletURLFactoryUtil.create(
-				actionRequest, JournalPortletKeys.JOURNAL,
-				PortletRequest.RENDER_PHASE)
-		).setMVCPath(
-			"/edit_article.jsp"
-		).setRedirect(
-			redirect
-		).setPortletResource(
-			ParamUtil.getString(actionRequest, "portletResource")
-		).setParameter(
-			"articleId", article.getArticleId()
-		).setParameter(
-			"folderId", article.getFolderId()
-		).setParameter(
-			"groupId", article.getGroupId()
-		).setParameter(
-			"languageId",
-			() -> {
-				String languageId = ParamUtil.getString(
-					actionRequest, "languageId");
-
-				if (Validator.isNotNull(languageId)) {
-					return languageId;
-				}
-
-				return null;
-			}
-		).setParameter(
-			"referringPortletResource",
-			ParamUtil.getString(actionRequest, "referringPortletResource")
-		).setParameter(
-			"resourcePrimKey", article.getResourcePrimKey()
-		).setParameter(
-			"version", article.getVersion()
-		).setWindowState(
-			actionRequest.getWindowState()
-		).buildString();
+		return article;
 	}
 
 	private void _sendEditArticleRedirect(
