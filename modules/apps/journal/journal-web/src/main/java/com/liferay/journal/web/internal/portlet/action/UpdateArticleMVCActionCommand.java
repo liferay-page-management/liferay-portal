@@ -38,11 +38,13 @@ import com.liferay.layout.service.LayoutClassedModelUsageLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
@@ -51,10 +53,12 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.MultiSessionMessages;
 import com.liferay.portal.kernel.upload.LiferayFileItemException;
 import com.liferay.portal.kernel.upload.UploadException;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
 import com.liferay.portal.kernel.util.Html;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
@@ -106,7 +110,45 @@ public class UpdateArticleMVCActionCommand extends BaseMVCActionCommand {
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		_processAction(actionRequest);
+		HttpServletRequest httpServletRequest = _portal.getHttpServletRequest(
+			actionRequest);
+
+		try {
+			if (Objects.equals(
+					httpServletRequest.getHeader(HttpHeaders.ACCEPT),
+					ContentTypes.APPLICATION_JSON)) {
+
+				JournalArticle journalArticle = _processAction(actionRequest);
+
+				MultiSessionMessages.clear(actionRequest);
+
+				JSONPortletResponseUtil.writeJSON(
+					actionRequest, actionResponse,
+					JSONUtil.put(
+						"classPK", journalArticle.getResourcePrimKey()
+					).put(
+						"version", journalArticle.getVersion()
+					));
+			}
+			else {
+				_processAction(actionRequest);
+			}
+		}
+		catch (Exception exception) {
+			if (Objects.equals(
+					httpServletRequest.getHeader(HttpHeaders.ACCEPT),
+					ContentTypes.APPLICATION_JSON)) {
+
+				MultiSessionMessages.clear(actionRequest);
+
+				JSONPortletResponseUtil.writeJSON(
+					actionRequest, actionResponse,
+					JSONUtil.put("error", exception.getMessage()));
+			}
+			else {
+				throw exception;
+			}
+		}
 	}
 
 	private String _getFriendlyURLChangedMessage(
