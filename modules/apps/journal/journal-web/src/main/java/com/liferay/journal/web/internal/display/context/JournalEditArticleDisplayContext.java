@@ -435,6 +435,8 @@ public class JournalEditArticleDisplayContext {
 			_liferayPortletResponse.getNamespace() + "selectSite";
 
 		return HashMapBuilder.<String, Object>put(
+			"newArticle", _article == null
+		).put(
 			"previewURL",
 			() -> {
 				LiferayPortletURL getPagePreviewURL =
