@@ -92,8 +92,9 @@ export default function DisplayPagePreview({
 							)}
 						</ClayDropDown.Caption>
 
+<div className="w-100 d-flex">
 						<ClayButton
-							className="w-100"
+							className="flex-grow-1 mx-3"
 							displayType="secondary"
 							onClick={() => {
 								openSelectionModal({
@@ -117,6 +118,7 @@ export default function DisplayPagePreview({
 						>
 							{Liferay.Language.get('more')}
 						</ClayButton>
+						</div>
 					</>
 				)}
 			</ClayDropDown>
