@@ -82,13 +82,13 @@ export default function DisplayPagePreview({
 					</ClayDropDown.Item>
 				))}
 
-				{siteCount > sites.length && (
+				{siteCount - 1 > sites.length && (
 					<>
 						<ClayDropDown.Caption>
 							{sub(
 								Liferay.Language.get('showing-x-of-x-items'),
 								sites.length,
-								siteCount
+								siteCount - 1
 							)}
 						</ClayDropDown.Caption>
 
