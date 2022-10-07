@@ -20,6 +20,7 @@ import {
 	createPortletURL,
 	openModal,
 	openSelectionModal,
+	openToast,
 	sub,
 } from 'frontend-js-web';
 import React, {useMemo, useState} from 'react';
@@ -92,32 +93,34 @@ export default function DisplayPagePreview({
 							)}
 						</ClayDropDown.Caption>
 
-<div className="w-100 d-flex">
-						<ClayButton
-							className="flex-grow-1 mx-3"
-							displayType="secondary"
-							onClick={() => {
-								openSelectionModal({
-									containerProps: {
-										className: 'cadmin',
-									},
-									onSelect(selectedItem) {
-										setSelectedSite({
-											groupId: selectedItem.groupid,
-											name:
-												selectedItem.groupdescriptivename,
-										});
-									},
-									selectEventName: selectSiteEventName,
-									title: Liferay.Language.get('select-site'),
-									url: siteItemSelectorURL,
-								});
-							}}
-							small
-							type="button"
-						>
-							{Liferay.Language.get('more')}
-						</ClayButton>
+						<div className="d-flex w-100">
+							<ClayButton
+								className="flex-grow-1 mx-3"
+								displayType="secondary"
+								onClick={() => {
+									openSelectionModal({
+										containerProps: {
+											className: 'cadmin',
+										},
+										onSelect(selectedItem) {
+											setSelectedSite({
+												groupId: selectedItem.groupid,
+												name:
+													selectedItem.groupdescriptivename,
+											});
+										},
+										selectEventName: selectSiteEventName,
+										title: Liferay.Language.get(
+											'select-site'
+										),
+										url: siteItemSelectorURL,
+									});
+								}}
+								small
+								type="button"
+							>
+								{Liferay.Language.get('more')}
+							</ClayButton>
 						</div>
 					</>
 				)}
@@ -244,14 +247,34 @@ function DisplayPageSelector({
 						method: form.method,
 					})
 						.then((response) => response.json())
-						.then(({classPK, version}) => {
-							openModal({
-								title: Liferay.Language.get('preview'),
-								url: createPortletURL(previewURL, {
-									classPK,
-									selPlid: displayPageSelected?.plid,
-									version,
-								}).toString(),
+						.then(({classPK, error, version}) => {
+							if (error) {
+								openToast({
+									message: Liferay.Language.get(
+										'web-content-could-not-be-previewed-due-to-an-error-when-generating-the-draft'
+									),
+									title: Liferay.Language.get('error'),
+									type: 'danger',
+								});
+							}
+							else {
+								openModal({
+									title: Liferay.Language.get('preview'),
+									url: createPortletURL(previewURL, {
+										classPK,
+										selPlid: displayPageSelected?.plid,
+										version,
+									}).toString(),
+								});
+							}
+						})
+						.catch(() => {
+							openToast({
+								message: Liferay.Language.get(
+									'web-content-could-not-be-previewed-due-to-an-error-when-generating-the-draft'
+								),
+								title: Liferay.Language.get('error'),
+								type: 'danger',
 							});
 						});
 				}}
