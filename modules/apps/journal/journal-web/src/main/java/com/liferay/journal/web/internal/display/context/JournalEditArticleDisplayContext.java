@@ -14,6 +14,7 @@
 
 package com.liferay.journal.web.internal.display.context;
 
+import com.liferay.asset.display.page.item.selector.criterion.AssetDisplayPageSelectorCriterion;
 import com.liferay.dynamic.data.mapping.form.renderer.constants.DDMFormRendererConstants;
 import com.liferay.dynamic.data.mapping.form.values.factory.DDMFormValuesFactory;
 import com.liferay.dynamic.data.mapping.item.selector.DDMTemplateItemSelectorReturnType;
@@ -27,6 +28,7 @@ import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.util.DDMFormValuesToMapConverter;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.URLItemSelectorReturnType;
+import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
 import com.liferay.journal.constants.JournalArticleConstants;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
@@ -37,7 +39,6 @@ import com.liferay.journal.web.internal.configuration.FFJournalAutoSaveDraftConf
 import com.liferay.journal.web.internal.security.permission.resource.JournalArticlePermission;
 import com.liferay.journal.web.internal.security.permission.resource.JournalFolderPermission;
 import com.liferay.journal.web.internal.util.RecentGroupManagerUtil;
-import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanParamUtil;
@@ -52,21 +53,17 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
-import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.GroupServiceUtil;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalServiceUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -89,7 +86,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.portlet.PortletRequest;
 import javax.portlet.RenderResponse;
 
 import javax.servlet.http.HttpServletRequest;
@@ -470,20 +466,32 @@ public class JournalEditArticleDisplayContext {
 			"selectDisplayPageEventName", selectDisplayPageEventName
 		).put(
 			"selectDisplayPageURL",
-			() -> PortletURLBuilder.createRenderURL(
-				_liferayPortletResponse
-			).setMVCRenderCommandName(
-				"/journal/select_display_page"
-			).setParameter(
-				"classTypeId", getDDMStructureId()
-			).setParameter(
-				"eventName", selectDisplayPageEventName
-			).buildString()
+			() -> {
+				AssetDisplayPageSelectorCriterion
+					assetDisplayPageSelectorCriterion =
+						new AssetDisplayPageSelectorCriterion();
+
+				assetDisplayPageSelectorCriterion.setClassNameId(
+					PortalUtil.getClassNameId(JournalArticle.class));
+				assetDisplayPageSelectorCriterion.setClassTypeId(
+					getDDMStructureId());
+				assetDisplayPageSelectorCriterion.
+					setDesiredItemSelectorReturnTypes(
+						new UUIDItemSelectorReturnType());
+
+				return PortletURLBuilder.create(
+					_itemSelector.getItemSelectorURL(
+						RequestBackedPortletURLFactoryUtil.create(
+							_httpServletRequest),
+						selectDisplayPageEventName,
+						assetDisplayPageSelectorCriterion)
+				).buildString();
+			}
 		).put(
 			"selectSiteEventName", selectSiteEventName
 		).put(
 			"siteCount",
-			() -> GroupLocalServiceUtil.getGroupsCount(
+			() -> GroupServiceUtil.getGroupsCount(
 				_themeDisplay.getCompanyId(), 0, Boolean.TRUE)
 		).put(
 			"siteItemSelectorURL",
@@ -532,7 +540,7 @@ public class JournalEditArticleDisplayContext {
 
 				int max = _MAX_SITES - recentGroups.size();
 
-				List<Group> groups = GroupLocalServiceUtil.getGroups(
+				List<Group> groups = GroupServiceUtil.getGroups(
 					_themeDisplay.getCompanyId(),
 					GroupConstants.DEFAULT_PARENT_GROUP_ID, true);
 

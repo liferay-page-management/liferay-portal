@@ -151,13 +151,14 @@ public class AssetDisplayPagesItemSelectorViewDisplayContext {
 	}
 
 	private long _getGroupId() {
-		long groupId = _assetDisplayPageSelectorCriterion.getGroupId();
-
-		if (groupId <= 0) {
-			groupId = _themeDisplay.getScopeGroupId();
+		if (Validator.isNotNull(_groupId)) {
+			return _groupId;
 		}
 
-		return groupId;
+		_groupId = ParamUtil.getLong(
+			_httpServletRequest, "groupId", _themeDisplay.getScopeGroupId());
+
+		return _groupId;
 	}
 
 	private String _getKeywords() {
@@ -221,6 +222,7 @@ public class AssetDisplayPagesItemSelectorViewDisplayContext {
 		_assetDisplayPageSearchContainer;
 	private final AssetDisplayPageSelectorCriterion
 		_assetDisplayPageSelectorCriterion;
+	private Long _groupId;
 	private final HttpServletRequest _httpServletRequest;
 	private final String _itemSelectedEventName;
 	private String _keywords;

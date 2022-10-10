@@ -153,6 +153,13 @@ function DisplayPageSelector({
 	const displayPageId = `${namespace}displayPageId`;
 
 	const openDisplayPageSelector = () => {
+		const url = new URL(selectDisplayPageURL);
+
+		url.searchParams.set(
+			`${getPortletNamespace(Liferay.PortletKeys.ITEM_SELECTOR)}groupId`,
+			selectedSite.groupId
+		);
+
 		openSelectionModal({
 			containerProps: {
 				className: 'cadmin',
@@ -168,9 +175,7 @@ function DisplayPageSelector({
 				Liferay.Language.get('select-x'),
 				Liferay.Language.get('display-page')
 			),
-			url: createPortletURL(selectDisplayPageURL, {
-				groupId: selectedSite.groupId,
-			}),
+			url,
 		});
 	};
 
