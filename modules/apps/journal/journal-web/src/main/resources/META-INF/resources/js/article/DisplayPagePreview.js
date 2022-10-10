@@ -18,6 +18,7 @@ import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import {
 	createPortletURL,
+	getPortletNamespace,
 	openModal,
 	openSelectionModal,
 	openToast,
@@ -29,6 +30,7 @@ export default function DisplayPagePreview({
 	newArticle,
 	portletNamespace: namespace,
 	previewURL,
+	saveAsDraftURL,
 	selectDisplayPageEventName,
 	selectDisplayPageURL,
 	selectSiteEventName,
@@ -131,6 +133,7 @@ export default function DisplayPagePreview({
 				namespace={namespace}
 				newArticle={newArticle}
 				previewURL={previewURL}
+				saveAsDraftURL={saveAsDraftURL}
 				selectDisplayPageEventName={selectDisplayPageEventName}
 				selectDisplayPageURL={selectDisplayPageURL}
 				selectedSite={selectedSite}
@@ -145,6 +148,7 @@ function DisplayPageSelector({
 	namespace,
 	newArticle,
 	previewURL,
+	saveAsDraftURL,
 	selectDisplayPageEventName,
 	selectDisplayPageURL,
 	selectedSite,
@@ -228,14 +232,6 @@ function DisplayPageSelector({
 				disabled={!displayPageSelected}
 				displayType="secondary"
 				onClick={() => {
-					const actionInput = document.getElementById(
-						`${namespace}javax-portlet-action`
-					);
-
-					actionInput.value = newArticle
-						? '/journal/add_article'
-						: '/journal/update_article';
-
 					const formDateInput = document.getElementById(
 						`${namespace}formDate`
 					);
@@ -244,11 +240,15 @@ function DisplayPageSelector({
 
 					const form = document.getElementById(`${namespace}fm1`);
 
-					return Liferay.Util.fetch(form.action, {
-						body: new FormData(form),
-						headers: {
-							Accept: 'application/json',
-						},
+					const formData = new FormData(form);
+
+					formData.append(
+						`${namespace}cmd`,
+						newArticle ? 'add' : 'update'
+					);
+
+					return Liferay.Util.fetch(saveAsDraftURL, {
+						body: formData,
 						method: form.method,
 					})
 						.then((response) => response.json())
