@@ -22,6 +22,7 @@ import PropTypes from 'prop-types';
 import React, {useCallback, useMemo} from 'react';
 
 const ROOT_ITEM_ID = '0';
+const NOT_DROPPABLE_TYPES = ['url', 'link_to_layout'];
 
 export default function PagesTree({
 	config,
@@ -29,7 +30,7 @@ export default function PagesTree({
 	items,
 	selectedLayoutId,
 }) {
-	const {loadMoreItemsURL, maxPageSize, namespace} = config;
+	const {loadMoreItemsURL, maxPageSize, moveItemURL, namespace} = config;
 
 	const onLoadMore = useCallback(
 		(item, initialCursor = 1) => {
@@ -65,6 +66,25 @@ export default function PagesTree({
 		[isPrivateLayoutsTree, loadMoreItemsURL, maxPageSize, namespace]
 	);
 
+	const onItemMove = useCallback(
+		(item, parentItem) => {
+			if (NOT_DROPPABLE_TYPES.includes(parentItem.type)) {
+				return false;
+			}
+
+			return fetch(moveItemURL, {
+				body: Liferay.Util.objectToURLSearchParams({
+					['parentPlid']: parentItem.plid,
+					['plid']: item.plid,
+				}),
+				method: 'post',
+			}).catch(() => {
+				openErrorToast();
+			});
+		},
+		[moveItemURL]
+	);
+
 	const [
 		expandedKeys,
 		setExpandedKeys,
@@ -75,10 +95,12 @@ export default function PagesTree({
 			<ClayTreeView
 				defaultItems={items}
 				displayType="dark"
+				dragAndDrop
 				expandedKeys={new Set(expandedKeys)}
 				onExpandedChange={(keys) => {
 					setExpandedKeys(Array.from(keys));
 				}}
+				onItemMove={onItemMove}
 				onLoadMore={onLoadMore}
 			>
 				{(item, selection, expand, load) => (
