@@ -33,6 +33,8 @@ public class DDMFormFieldTypeConstants {
 
 	public static final String DDM_IMAGE = "ddm-image";
 
+	public static final String DECIMAL = "ddm-decimal";
+
 	public static final String DOCUMENT_LIBRARY = "document_library";
 
 	public static final String FIELDSET = "fieldset";
