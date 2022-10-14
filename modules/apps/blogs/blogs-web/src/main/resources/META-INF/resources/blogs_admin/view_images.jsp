@@ -16,6 +16,12 @@
 
 <%@ include file="/blogs_admin/init.jsp" %>
 
+<%@ taglib uri="http://liferay.com/tld/document-library" prefix="liferay-document-library" %>
+
+<liferay-document-library:repository-browser />
+
+<%--
+
 <%
 int delta = ParamUtil.getInteger(request, SearchContainer.DEFAULT_DELTA_PARAM);
 String orderByCol = ParamUtil.getString(request, "orderByCol", "title");
@@ -110,3 +116,4 @@ String displayStyle = blogImagesManagementToolbarDisplayContext.getDisplayStyle(
 		</liferay-ui:search-container>
 	</aui:form>
 </clay:container-fluid>
+--%>
