@@ -15,7 +15,10 @@
 package com.liferay.layout.taglib.internal.util;
 
 import com.liferay.layout.taglib.internal.servlet.ServletContextUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.segments.constants.SegmentsWebKeys;
 import com.liferay.segments.manager.SegmentsExperienceManager;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,7 +35,16 @@ public class SegmentsExperienceUtil {
 			httpServletRequest, "segmentsExperienceId", -1);
 
 		if (selectedSegmentsExperienceId != -1) {
-			return selectedSegmentsExperienceId;
+			long[] currentSegmentsExperienceIds = GetterUtil.getLongValues(
+				httpServletRequest.getAttribute(
+					SegmentsWebKeys.SEGMENTS_EXPERIENCE_IDS));
+
+			if (ArrayUtil.contains(
+					currentSegmentsExperienceIds,
+					selectedSegmentsExperienceId)) {
+
+				return selectedSegmentsExperienceId;
+			}
 		}
 
 		SegmentsExperienceManager segmentsExperienceManager =

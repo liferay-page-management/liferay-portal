@@ -25,11 +25,14 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.segments.constants.SegmentsEntryConstants;
+import com.liferay.segments.constants.SegmentsWebKeys;
 import com.liferay.segments.manager.SegmentsExperienceManager;
 import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.segments.model.SegmentsExperience;
@@ -86,7 +89,14 @@ public class SegmentsExperienceSelectorDisplayContext {
 		long segmentsExperienceId = ParamUtil.getLong(
 			_httpServletRequest, "segmentsExperienceId", -1);
 
-		if (segmentsExperienceId == -1) {
+		long[] currentSegmentsExperienceIds = GetterUtil.getLongValues(
+			_httpServletRequest.getAttribute(
+				SegmentsWebKeys.SEGMENTS_EXPERIENCE_IDS));
+
+		if ((segmentsExperienceId == -1) ||
+			!ArrayUtil.contains(
+				currentSegmentsExperienceIds, segmentsExperienceId)) {
+
 			segmentsExperienceId =
 				_segmentsExperienceManager.getSegmentsExperienceId(
 					_httpServletRequest);
