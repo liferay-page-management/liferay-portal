@@ -20,6 +20,7 @@ import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -34,6 +35,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.text.DecimalFormat;
@@ -161,7 +163,10 @@ public class TemplateNode extends LinkedHashMap<String, Object> {
 	public String getData() {
 		String type = getType();
 
-		if (type.equals("color") || type.equals("ddm-color")) {
+		if (type.equals("checkbox_multiple")) {
+			return _getMultipleOptionData();
+		}
+		else if (type.equals("color") || type.equals("ddm-color")) {
 			return _getColorData();
 		}
 		else if (type.equals("ddm-decimal") || type.equals("ddm-number") ||
@@ -179,6 +184,9 @@ public class TemplateNode extends LinkedHashMap<String, Object> {
 		}
 		else if (type.equals("geolocation")) {
 			return _getGeolocationData();
+		}
+		else if (type.equals("radio") || type.equals("select")) {
+			return _getOptionData();
 		}
 
 		return (String)get("data");
@@ -455,6 +463,39 @@ public class TemplateNode extends LinkedHashMap<String, Object> {
 		return (String)get("data");
 	}
 
+	private String _getMultipleOptionData() {
+		String data = (String)get("data");
+
+		if (Validator.isNull(data)) {
+			return StringPool.BLANK;
+		}
+
+		JSONArray dataJSONArray = null;
+
+		try {
+			dataJSONArray = JSONFactoryUtil.createJSONArray(data);
+		}
+		catch (JSONException jsonException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(jsonException);
+			}
+		}
+
+		if (dataJSONArray == null) {
+			return StringPool.BLANK;
+		}
+
+		Map<String, String> optionsMap = getOptionsMap();
+
+		String[] optionsDataArray = new String[dataJSONArray.length()];
+
+		for (int i = 0; i < dataJSONArray.length(); i++) {
+			optionsDataArray[i] = optionsMap.get(dataJSONArray.getString(i));
+		}
+
+		return StringUtil.merge(optionsDataArray, StringPool.COMMA);
+	}
+
 	private String _getNumericData() {
 		String data = (String)get("data");
 
@@ -466,6 +507,22 @@ public class TemplateNode extends LinkedHashMap<String, Object> {
 		decimalFormat.setParseBigDecimal(true);
 
 		return decimalFormat.format(GetterUtil.getDouble(data));
+	}
+
+	private String _getOptionData() {
+		String data = (String)get("data");
+
+		if (Validator.isNull(data)) {
+			return StringPool.BLANK;
+		}
+
+		Map<String, String> optionsMap = getOptionsMap();
+
+		if (optionsMap != null) {
+			data = optionsMap.get(data);
+		}
+
+		return data;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(TemplateNode.class);
