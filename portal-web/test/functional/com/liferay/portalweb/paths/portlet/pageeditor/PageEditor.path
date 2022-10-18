@@ -1000,6 +1000,11 @@
 	<td>//div[contains(@class,'page-editor__collapse')][button[normalize-space()='Text']]//button[@aria-pressed='true'][*[name()='svg'][contains(@class,'lexicon-icon-${key_text}')]]</td>
 	<td></td>
 </tr>
+<tr>
+	<td>FIELDSET_ICON</td>
+	<td>//label[normalize-space(text())='${key_fieldLabel}']/parent::div/parent::div//*[*[name()='svg'][contains(@class,'lexicon-icon-${key_text}')]] | //span[normalize-space(text())='${key_fieldLabel}']/ancestor::div[contains(@class,'page-editor__select')]//*[*[name()='svg'][contains(@class,'lexicon-icon-${key_text}')]]</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>
