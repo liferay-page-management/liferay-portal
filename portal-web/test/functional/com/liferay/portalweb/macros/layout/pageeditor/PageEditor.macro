@@ -1221,7 +1221,7 @@ definition {
 		if (isSet(backgroundColor)) {
 			PageEditor.selectColorSwatchItem(
 				colorSwatchItem = "${backgroundColor}",
-				fieldLabel = "Background Color");
+				valuesFromToken = "Background Color");
 
 			PageEditor.waitForAutoSave();
 		}
@@ -1229,7 +1229,7 @@ definition {
 		if (isSet(borderColor)) {
 			PageEditor.selectColorSwatchItem(
 				colorSwatchItem = "${borderColor}",
-				fieldLabel = "Border Color");
+				valuesFromToken = "Border Color");
 
 			PageEditor.waitForAutoSave();
 		}
@@ -2963,7 +2963,7 @@ definition {
 			if (isSet(backgroundColor)) {
 				PageEditor.selectColorSwatchItem(
 					colorSwatchItem = "${backgroundColor}",
-					fieldLabel = "Background Color");
+					valuesFromToken = "Background Color");
 
 				PageEditor.waitForAutoSave();
 			}
@@ -3064,7 +3064,7 @@ definition {
 			if (isSet(borderColor)) {
 				PageEditor.selectColorSwatchItem(
 					colorSwatchItem = "${borderColor}",
-					fieldLabel = "Border Color");
+					valuesFromToken = "Border Color");
 
 				PageEditor.waitForAutoSave();
 			}
@@ -3312,7 +3312,7 @@ definition {
 			if (isSet(backgroundColor)) {
 				PageEditor.selectColorSwatchItem(
 					colorSwatchItem = "${backgroundColor}",
-					fieldLabel = "Background Color");
+					valuesFromToken = "Background Color");
 
 				PageEditor.waitForAutoSave();
 			}
@@ -3413,7 +3413,7 @@ definition {
 			if (isSet(borderColor)) {
 				PageEditor.selectColorSwatchItem(
 					colorSwatchItem = "${borderColor}",
-					fieldLabel = "Border Color");
+					valuesFromToken = "Border Color");
 
 				PageEditor.waitForAutoSave();
 			}
@@ -3621,7 +3621,7 @@ definition {
 			if (isSet(hoveredItemColor)) {
 				PageEditor.selectColorSwatchItem(
 					colorSwatchItem = "${hoveredItemColor}",
-					fieldLabel = "Hovered Item Color");
+					valuesFromToken = "Hovered Item Color");
 
 				PageEditor.waitForAutoSave();
 			}
@@ -3629,7 +3629,7 @@ definition {
 			if (isSet(selectedItemColor)) {
 				PageEditor.selectColorSwatchItem(
 					colorSwatchItem = "${selectedItemColor}",
-					fieldLabel = "Selected Item Color");
+					valuesFromToken = "Selected Item Color");
 
 				PageEditor.waitForAutoSave();
 			}

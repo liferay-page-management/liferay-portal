@@ -14,7 +14,7 @@ definition {
 		if (isSet(colorPicker)) {
 			PageEditor.selectColorSwatchItem(
 				colorSwatchItem = "${colorPicker}",
-				fieldLabel = "${fieldLabel}");
+				valuesFromToken = "${fieldLabel}");
 		}
 		else {
 			Click(
