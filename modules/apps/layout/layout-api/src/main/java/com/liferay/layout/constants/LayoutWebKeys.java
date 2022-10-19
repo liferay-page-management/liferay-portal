@@ -21,4 +21,6 @@ public class LayoutWebKeys {
 
 	public static final String LAYOUT_STRUCTURE = "LAYOUT_STRUCTURE";
 
+	public static final String RETURN_LAYOUTS_AS_ARRAY =
+		"RETURN_LAYOUTS_AS_ARRAY";
 }
