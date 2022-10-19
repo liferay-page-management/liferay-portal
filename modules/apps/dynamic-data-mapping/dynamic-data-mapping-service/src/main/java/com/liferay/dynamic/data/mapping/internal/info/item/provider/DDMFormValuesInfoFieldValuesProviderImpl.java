@@ -25,7 +25,6 @@ import com.liferay.dynamic.data.mapping.kernel.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.kernel.DDMFormValues;
 import com.liferay.dynamic.data.mapping.kernel.LocalizedValue;
 import com.liferay.dynamic.data.mapping.kernel.Value;
-import com.liferay.dynamic.data.mapping.model.DDMFormFieldType;
 import com.liferay.dynamic.data.mapping.storage.constants.FieldConstants;
 import com.liferay.dynamic.data.mapping.util.DDMBeanTranslator;
 import com.liferay.info.field.InfoFieldValue;
@@ -38,7 +37,6 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.GroupedModel;
@@ -49,6 +47,7 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.text.DateFormat;
@@ -211,13 +210,15 @@ public class DDMFormValuesInfoFieldValuesProviderImpl
 
 		try {
 			if (Objects.equals(
-					ddmFormFieldValue.getType(), DDMFormFieldType.CHECKBOX) ||
+					ddmFormFieldValue.getType(),
+					DDMFormFieldTypeConstants.CHECKBOX) ||
 				Objects.equals(ddmFormFieldValue.getType(), "boolean")) {
 
 				return GetterUtil.getBoolean(valueString);
 			}
 			else if (Objects.equals(
-						ddmFormFieldValue.getType(), DDMFormFieldType.DATE) ||
+						ddmFormFieldValue.getType(),
+						DDMFormFieldTypeConstants.DATE) ||
 					 Objects.equals(ddmFormFieldValue.getType(), "date")) {
 
 				if (Validator.isNull(valueString)) {
@@ -238,10 +239,10 @@ public class DDMFormValuesInfoFieldValuesProviderImpl
 			}
 			else if (Objects.equals(
 						ddmFormFieldValue.getType(),
-						DDMFormFieldType.DECIMAL) ||
+						DDMFormFieldTypeConstants.DECIMAL) ||
 					 Objects.equals(
 						 ddmFormFieldValue.getType(),
-						 DDMFormFieldType.NUMERIC)) {
+						 DDMFormFieldTypeConstants.NUMERIC)) {
 
 				if (Validator.isNull(valueString)) {
 					return null;
@@ -263,7 +264,8 @@ public class DDMFormValuesInfoFieldValuesProviderImpl
 				return numberFormat.format(numberFormat.parse(valueString));
 			}
 			else if (Objects.equals(
-						ddmFormFieldValue.getType(), DDMFormFieldType.IMAGE) ||
+						ddmFormFieldValue.getType(),
+						DDMFormFieldTypeConstants.IMAGE) ||
 					 Objects.equals(ddmFormFieldValue.getType(), "image")) {
 
 				return _getWebImage(_jsonFactory.createJSONObject(valueString));
@@ -271,6 +273,27 @@ public class DDMFormValuesInfoFieldValuesProviderImpl
 			else if (Objects.equals(
 						ddmFormFieldValue.getType(),
 						DDMFormFieldTypeConstants.SELECT)) {
+
+				if (Validator.isNull(valueString)) {
+					return null;
+				}
+
+				DDMFormField ddmFormField = ddmFormFieldValue.getDDMFormField();
+
+				DDMFormFieldOptions ddmFormFieldOptions =
+					ddmFormField.getDDMFormFieldOptions();
+
+				LocalizedValue localizedValue =
+					ddmFormFieldOptions.getOptionLabels(valueString);
+
+				return localizedValue.getString(locale);
+			}
+			else if (Objects.equals(
+						ddmFormFieldValue.getType(),
+						DDMFormFieldTypeConstants.CHECKBOX_MULTIPLE) ||
+					 Objects.equals(
+						 ddmFormFieldValue.getType(),
+						 DDMFormFieldTypeConstants.SELECT)) {
 
 				if (Validator.isNull(valueString)) {
 					return null;
@@ -297,18 +320,18 @@ public class DDMFormValuesInfoFieldValuesProviderImpl
 				DDMFormFieldOptions ddmFormFieldOptions =
 					ddmFormField.getDDMFormFieldOptions();
 
-				JSONArray optionLabelsJSONArray =
-					_jsonFactory.createJSONArray();
+				String[] optionLabelsJSONArray =
+					new String[optionReferencesJSONArray.length()];
 
 				for (int i = 0; i < optionReferencesJSONArray.length(); i++) {
 					LocalizedValue localizedValue =
 						ddmFormFieldOptions.getOptionLabels(
 							optionReferencesJSONArray.getString(i));
 
-					optionLabelsJSONArray.put(localizedValue.getString(locale));
+					optionLabelsArray[i] = localizedValue.getString(locale);
 				}
 
-				return JSONUtil.toString(optionLabelsJSONArray);
+				return StringUtil.merge(optionLabelsArray, StringPool.COMMA);
 			}
 
 			return SanitizerUtil.sanitize(
