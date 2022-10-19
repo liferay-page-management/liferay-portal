@@ -554,7 +554,7 @@ public class LayoutsTreeImpl implements LayoutsTree {
 		return jsonObject.toString();
 	}
 
-	private JSONObject _toJSONObject(
+	private JSONArray _toJSONArray(
 			HttpServletRequest httpServletRequest, long groupId,
 			LayoutTreeNodes layoutTreeNodes, LayoutSetBranch layoutSetBranch)
 		throws Exception {
@@ -562,7 +562,7 @@ public class LayoutsTreeImpl implements LayoutsTree {
 		if (_log.isDebugEnabled()) {
 			_log.debug(
 				StringBundler.concat(
-					"_toJSON(groupId=", groupId, ", layoutTreeNodes=",
+					"_toJSONArray(groupId=", groupId, ", layoutTreeNodes=",
 					layoutTreeNodes, StringPool.CLOSE_PARENTHESIS));
 		}
 
@@ -578,15 +578,30 @@ public class LayoutsTreeImpl implements LayoutsTree {
 		boolean mobile = _browserSniffer.isMobile(httpServletRequest);
 
 		for (LayoutTreeNode layoutTreeNode : layoutTreeNodes) {
-			JSONObject childrenJSONObject = _toJSONObject(
-				httpServletRequest, groupId,
-				layoutTreeNode.getChildLayoutTreeNodes(), layoutSetBranch);
+			LayoutTreeNodes childLayoutTreeNodes =
+				layoutTreeNode.getChildLayoutTreeNodes();
+
+			JSONSerializable childrenJSONSerializable = _toJSONSerializable(
+				httpServletRequest, groupId, childLayoutTreeNodes,
+				layoutSetBranch);
 
 			Layout layout = layoutTreeNode.getLayout();
 
-			JSONObject jsonObject = JSONUtil.put(
-				"children", childrenJSONObject
-			).put(
+			JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+
+			if (childrenJSONSerializable instanceof JSONArray) {
+				JSONArray childrenJSONArray =
+					(JSONArray)childrenJSONSerializable;
+
+				if (childrenJSONArray.length() > 0) {
+					jsonObject.put("children", childrenJSONSerializable);
+				}
+			}
+			else {
+				jsonObject.put("children", childrenJSONSerializable);
+			}
+
+			jsonObject.put(
 				"contentDisplayPage", layout.isContentDisplayPage()
 			).put(
 				"deleteable",
@@ -646,7 +661,9 @@ public class LayoutsTreeImpl implements LayoutsTree {
 				"icon", layout.getIcon()
 			).put(
 				"name", layoutName
-			).put(
+			);
+
+			jsonObject.put(
 				"parentable",
 				LayoutPermissionUtil.contains(
 					themeDisplay.getPermissionChecker(), layout,
@@ -733,11 +750,7 @@ public class LayoutsTreeImpl implements LayoutsTree {
 			jsonArray.put(jsonObject);
 		}
 
-		return JSONUtil.put(
-			"layouts", jsonArray
-		).put(
-			"total", layoutTreeNodes.getTotal()
-		);
+		return jsonArray;
 	}
 
 	private JSONObject _toJSONObject(
