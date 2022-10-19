@@ -16,6 +16,8 @@ package com.liferay.layout.internal.util;
 
 import com.liferay.exportimport.kernel.staging.LayoutStagingUtil;
 import com.liferay.exportimport.kernel.staging.Staging;
+import com.liferay.layout.action.provider.LayoutActionProvider;
+import com.liferay.layout.constants.LayoutWebKeys;
 import com.liferay.layout.security.permission.resource.LayoutContentModelResourcePermission;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -593,6 +595,19 @@ public class LayoutsTreeImpl implements LayoutsTree {
 			Layout layout = layoutTreeNode.getLayout();
 
 			JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+
+			if (GetterUtil.getBoolean(
+					httpServletRequest.getAttribute(
+						LayoutWebKeys.RETURN_LAYOUTS_AS_ARRAY))) {
+
+				LayoutActionProvider layoutActionProvider =
+					(LayoutActionProvider)httpServletRequest.getAttribute(
+						LayoutWebKeys.LAYOUT_ACTION_PROVIDER);
+
+				jsonObject.put(
+					"actions",
+					layoutActionProvider.getActionsJSONArray(layout));
+			}
 
 			if (childrenJSONSerializable instanceof JSONArray) {
 				JSONArray childrenJSONArray =
