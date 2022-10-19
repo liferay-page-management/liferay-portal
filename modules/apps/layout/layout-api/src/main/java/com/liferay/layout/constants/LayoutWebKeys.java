@@ -19,6 +19,9 @@ package com.liferay.layout.constants;
  */
 public class LayoutWebKeys {
 
+	public static final String LAYOUT_ACTION_PROVIDER =
+		"LAYOUT_ACTION_PROVIDER";
+
 	public static final String LAYOUT_STRUCTURE = "LAYOUT_STRUCTURE";
 
 	public static final String RETURN_LAYOUTS_AS_ARRAY =
