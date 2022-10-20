@@ -12,3 +12,12 @@
 .forms-select-from-list .dropdown-item {
 	cursor: pointer;
 }
+
+.forms-select-from-list .required-input-picklist {
+	height: 1px;
+}
+
+.forms-select-from-list .required-input-picklist input {
+	opacity: 0%;
+	padding: 0px;
+}
