@@ -2,6 +2,7 @@ Bundle-Name: Liferay Layout API
 Bundle-SymbolicName: com.liferay.layout.api
 Bundle-Version: 22.0.1
 Export-Package:\
+	com.liferay.layout.action.provider,\
 	com.liferay.layout.adaptive.media,\
 	com.liferay.layout.configuration,\
 	com.liferay.layout.constants,\
