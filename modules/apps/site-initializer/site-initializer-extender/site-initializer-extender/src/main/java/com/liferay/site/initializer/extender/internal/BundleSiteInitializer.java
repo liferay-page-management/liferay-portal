@@ -69,7 +69,7 @@ import com.liferay.journal.constants.JournalArticleConstants;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
-import com.liferay.layout.importer.LayoutPageTemplatesImporter;
+import com.liferay.layout.importer.LayoutsImporter;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
@@ -228,7 +228,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 		LayoutCopyHelper layoutCopyHelper,
 		LayoutLocalService layoutLocalService,
 		LayoutPageTemplateEntryLocalService layoutPageTemplateEntryLocalService,
-		LayoutPageTemplatesImporter layoutPageTemplatesImporter,
+		LayoutsImporter layoutsImporter,
 		LayoutPageTemplateStructureLocalService
 			layoutPageTemplateStructureLocalService,
 		LayoutSetLocalService layoutSetLocalService,
@@ -293,7 +293,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 		_layoutLocalService = layoutLocalService;
 		_layoutPageTemplateEntryLocalService =
 			layoutPageTemplateEntryLocalService;
-		_layoutPageTemplatesImporter = layoutPageTemplatesImporter;
+		_layoutsImporter = layoutsImporter;
 		_layoutPageTemplateStructureLocalService =
 			layoutPageTemplateStructureLocalService;
 		_layoutSetLocalService = layoutSetLocalService;
@@ -854,7 +854,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 							getDefaultSegmentsExperienceData());
 
 					for (int i = 0; i < jsonArray.length(); i++) {
-						_layoutPageTemplatesImporter.importPageElement(
+						_layoutsImporter.importPageElement(
 							draftLayout, layoutStructure,
 							layoutStructure.getMainItemId(),
 							jsonArray.getString(i), i);
@@ -994,7 +994,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 			}
 		}
 
-		_layoutPageTemplatesImporter.importFile(
+		_layoutsImporter.importFile(
 			serviceContext.getUserId(), serviceContext.getScopeGroupId(),
 			zipWriter.getFile(), true);
 	}
@@ -4188,10 +4188,10 @@ public class BundleSiteInitializer implements SiteInitializer {
 	private final LayoutLocalService _layoutLocalService;
 	private final LayoutPageTemplateEntryLocalService
 		_layoutPageTemplateEntryLocalService;
-	private final LayoutPageTemplatesImporter _layoutPageTemplatesImporter;
 	private final LayoutPageTemplateStructureLocalService
 		_layoutPageTemplateStructureLocalService;
 	private final LayoutSetLocalService _layoutSetLocalService;
+	private final LayoutsImporter _layoutsImporter;
 	private final ListTypeDefinitionResource _listTypeDefinitionResource;
 	private final ListTypeDefinitionResource.Factory
 		_listTypeDefinitionResourceFactory;

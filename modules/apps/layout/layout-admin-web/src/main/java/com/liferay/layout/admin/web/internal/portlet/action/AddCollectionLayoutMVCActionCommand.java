@@ -22,7 +22,7 @@ import com.liferay.info.list.provider.item.selector.criterion.InfoListProviderIt
 import com.liferay.item.selector.criteria.InfoListItemSelectorReturnType;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.admin.web.internal.handler.LayoutExceptionRequestHandler;
-import com.liferay.layout.importer.LayoutPageTemplatesImporter;
+import com.liferay.layout.importer.LayoutsImporter;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.layout.util.structure.LayoutStructure;
@@ -253,7 +253,7 @@ public class AddCollectionLayoutMVCActionCommand
 			LayoutStructure layoutStructure = LayoutStructure.of(
 				layoutPageTemplateStructure.getDefaultSegmentsExperienceData());
 
-			_layoutPageTemplatesImporter.importPageElement(
+			_layoutsImporter.importPageElement(
 				layout, layoutStructure, layoutStructure.getMainItemId(),
 				pageElementJSON, 0);
 		}
@@ -272,14 +272,14 @@ public class AddCollectionLayoutMVCActionCommand
 	private LayoutLocalService _layoutLocalService;
 
 	@Reference
-	private LayoutPageTemplatesImporter _layoutPageTemplatesImporter;
-
-	@Reference
 	private LayoutPageTemplateStructureLocalService
 		_layoutPageTemplateStructureLocalService;
 
 	@Reference
 	private LayoutService _layoutService;
+
+	@Reference
+	private LayoutsImporter _layoutsImporter;
 
 	@Reference
 	private Portal _portal;

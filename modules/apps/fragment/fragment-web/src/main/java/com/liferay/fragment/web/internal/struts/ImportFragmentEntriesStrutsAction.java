@@ -16,8 +16,8 @@ package com.liferay.fragment.web.internal.struts;
 
 import com.liferay.fragment.importer.FragmentsImporter;
 import com.liferay.fragment.importer.FragmentsImporterResultEntry;
-import com.liferay.layout.importer.LayoutPageTemplatesImporter;
-import com.liferay.layout.importer.LayoutPageTemplatesImporterResultEntry;
+import com.liferay.layout.importer.LayoutsImporter;
+import com.liferay.layout.importer.LayoutsImporterResultEntry;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -112,28 +112,25 @@ public class ImportFragmentEntriesStrutsAction implements StrutsAction {
 			JSONArray pageTemplatesImportResultJSONArray =
 				_jsonFactory.createJSONArray();
 
-			List<LayoutPageTemplatesImporterResultEntry>
+			List<LayoutsImporterResultEntry>
 				layoutPageTemplatesImporterResultEntries =
-					_layoutPageTemplatesImporter.importFile(
+					_layoutsImporter.importFile(
 						themeDisplay.getUserId(), groupId, 0L, file, true);
 
-			for (LayoutPageTemplatesImporterResultEntry
-					layoutPageTemplatesImporterResultEntry :
-						layoutPageTemplatesImporterResultEntries) {
+			for (LayoutsImporterResultEntry layoutsImporterResultEntry :
+					layoutPageTemplatesImporterResultEntries) {
 
 				pageTemplatesImportResultJSONArray.put(
 					JSONUtil.put(
 						"errorMessage",
-						layoutPageTemplatesImporterResultEntry.getErrorMessage()
+						layoutsImporterResultEntry.getErrorMessage()
 					).put(
-						"name", layoutPageTemplatesImporterResultEntry.getName()
+						"name", layoutsImporterResultEntry.getName()
 					).put(
 						"status",
 						() -> {
-							LayoutPageTemplatesImporterResultEntry.Status
-								status =
-									layoutPageTemplatesImporterResultEntry.
-										getStatus();
+							LayoutsImporterResultEntry.Status status =
+								layoutsImporterResultEntry.getStatus();
 
 							return status.getLabel();
 						}
@@ -160,7 +157,7 @@ public class ImportFragmentEntriesStrutsAction implements StrutsAction {
 	private Language _language;
 
 	@Reference
-	private LayoutPageTemplatesImporter _layoutPageTemplatesImporter;
+	private LayoutsImporter _layoutsImporter;
 
 	@Reference
 	private Portal _portal;
