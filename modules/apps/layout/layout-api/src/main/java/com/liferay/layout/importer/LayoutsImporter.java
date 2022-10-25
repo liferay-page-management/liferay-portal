@@ -36,6 +36,10 @@ public interface LayoutsImporter {
 			File file, boolean overwrite)
 		throws Exception;
 
+	public List<LayoutsImporterResultEntry> importLayoutUtilityPageEntry(
+			long userId, long groupId, File file, boolean overwrite)
+		throws Exception;
+
 	public List<FragmentEntryLink> importPageElement(
 			Layout layout, LayoutStructure layoutStructure, String parentItemId,
 			String pageElementJSON, int position)
