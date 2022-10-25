@@ -34,6 +34,7 @@ import com.liferay.info.item.provider.InfoItemFormVariationsProvider;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.importer.LayoutsImporter;
 import com.liferay.layout.importer.LayoutsImporterResultEntry;
+import com.liferay.layout.internal.exception.DropzoneLayoutStructureItemException;
 import com.liferay.layout.internal.headless.delivery.dto.v1_0.structure.importer.LayoutStructureItemImporter;
 import com.liferay.layout.internal.headless.delivery.dto.v1_0.structure.importer.LayoutStructureItemImporterContext;
 import com.liferay.layout.internal.headless.delivery.dto.v1_0.structure.importer.LayoutStructureItemImporterTracker;
@@ -120,7 +121,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Jürgen Kappler
  */
 @Component(immediate = true, service = LayoutsImporter.class)
-public class LayoutPageTemplatesImporterImpl implements LayoutsImporter {
+public class LayoutsImporterImpl implements LayoutsImporter {
 
 	@Override
 	public void importFile(
@@ -1394,7 +1395,7 @@ public class LayoutPageTemplatesImporterImpl implements LayoutsImporter {
 	};
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		LayoutPageTemplatesImporterImpl.class);
+		LayoutsImporterImpl.class);
 
 	private static final ObjectMapper _objectMapper = new ObjectMapper();
 	private static final TransactionConfig _transactionConfig =
