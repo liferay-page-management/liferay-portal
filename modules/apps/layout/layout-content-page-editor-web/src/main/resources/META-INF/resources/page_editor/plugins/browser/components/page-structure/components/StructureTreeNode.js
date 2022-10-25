@@ -24,6 +24,7 @@ import {fromControlsId} from '../../../../../app/components/layout-data-items/Co
 import {ITEM_ACTIVATION_ORIGINS} from '../../../../../app/config/constants/itemActivationOrigins';
 import {ITEM_TYPES} from '../../../../../app/config/constants/itemTypes';
 import {LAYOUT_DATA_ITEM_TYPES} from '../../../../../app/config/constants/layoutDataItemTypes';
+import {VIEWPORT_SIZES} from '../../../../../app/config/constants/viewportSizes';
 import {
 	useActivationOrigin,
 	useActiveItemId,
@@ -352,7 +353,11 @@ function StructureTreeNodeContent({
 						setEditingName(true);
 					}
 				}}
-				ref={handlerRef}
+				ref={
+					selectedViewportSize === VIEWPORT_SIZES.desktop
+						? handlerRef
+						: null
+				}
 				role="button"
 			/>
 
