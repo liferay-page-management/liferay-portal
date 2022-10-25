@@ -12,20 +12,22 @@
  * details.
  */
 
-package com.liferay.layout.page.template.exception;
+package com.liferay.layout.exception;
 
 import com.liferay.portal.kernel.exception.PortalException;
 
 /**
  * @author Rubén Pulido
  */
-public class PageTemplateValidatorException extends PortalException {
+public class DisplayPageTemplateValidatorException extends PortalException {
 
-	public PageTemplateValidatorException(String msg, Throwable throwable) {
+	public DisplayPageTemplateValidatorException(
+		String msg, Throwable throwable) {
+
 		super(msg, throwable);
 	}
 
-	public PageTemplateValidatorException(Throwable throwable) {
+	public DisplayPageTemplateValidatorException(Throwable throwable) {
 		super(throwable);
 	}
 

@@ -12,11 +12,11 @@
  * details.
  */
 
-package com.liferay.layout.page.template.admin.web.internal.headless.delivery.dto.v1_0.structure.importer.helper;
+package com.liferay.layout.internal.headless.delivery.dto.v1_0.structure.importer.helper;
 
-import com.liferay.layout.page.template.admin.web.internal.importer.PortletConfigurationImporterTracker;
-import com.liferay.layout.page.template.importer.PortletConfigurationImporter;
-import com.liferay.layout.page.template.importer.PortletPreferencesPortletConfigurationImporter;
+import com.liferay.layout.internal.importer.PortletConfigurationImporterTracker;
+import com.liferay.layout.importer.PortletConfigurationImporter;
+import com.liferay.layout.importer.PortletPreferencesPortletConfigurationImporter;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;

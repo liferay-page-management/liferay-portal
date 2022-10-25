@@ -12,18 +12,21 @@
  * details.
  */
 
-package com.liferay.layout.page.template.importer;
+package com.liferay.layout.exception;
 
-import java.util.Map;
+import com.liferay.portal.kernel.exception.PortalException;
 
 /**
- * @author Jürgen Kappler
+ * @author Rubén Pulido
  */
-public interface PortletConfigurationImporter {
+public class MasterPageValidatorException extends PortalException {
 
-	public String getPortletName();
+	public MasterPageValidatorException(String msg, Throwable throwable) {
+		super(msg, throwable);
+	}
 
-	public void importPortletConfiguration(
-		long plid, String portletId, Map<String, Object> portletConfiguration);
+	public MasterPageValidatorException(Throwable throwable) {
+		super(throwable);
+	}
 
 }

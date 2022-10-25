@@ -14,7 +14,7 @@
 
 package com.liferay.layout.page.template.admin.web.internal.importer;
 
-import com.liferay.layout.page.template.importer.PortletConfigurationImporter;
+import com.liferay.layout.importer.PortletConfigurationImporter;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

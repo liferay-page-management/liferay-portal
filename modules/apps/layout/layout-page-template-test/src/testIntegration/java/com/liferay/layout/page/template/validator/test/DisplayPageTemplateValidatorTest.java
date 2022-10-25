@@ -14,8 +14,8 @@
 
 package com.liferay.layout.page.template.validator.test;
 
-import com.liferay.layout.page.template.exception.DisplayPageTemplateValidatorException;
-import com.liferay.layout.page.template.validator.DisplayPageTemplateValidator;
+import com.liferay.layout.exception.DisplayPageTemplateValidatorException;
+import com.liferay.layout.validator.DisplayPageTemplateValidator;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 

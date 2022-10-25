@@ -12,21 +12,18 @@
  * details.
  */
 
-package com.liferay.layout.page.template.importer;
+package com.liferay.layout.importer;
 
 import java.util.Map;
-
-import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * @author Jürgen Kappler
  */
-@ProviderType
-public interface PortletPreferencesPortletConfigurationImporter {
+public interface PortletConfigurationImporter {
+
+	public String getPortletName();
 
 	public void importPortletConfiguration(
-			long plid, String portletId,
-			Map<String, Object> portletConfiguration)
-		throws Exception;
+		long plid, String portletId, Map<String, Object> portletConfiguration);
 
 }

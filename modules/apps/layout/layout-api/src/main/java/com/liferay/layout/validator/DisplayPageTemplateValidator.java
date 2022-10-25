@@ -12,9 +12,9 @@
  * details.
  */
 
-package com.liferay.layout.page.template.validator;
+package com.liferay.layout.validator;
 
-import com.liferay.layout.page.template.exception.MasterPageValidatorException;
+import com.liferay.layout.page.template.exception.DisplayPageTemplateValidatorException;
 import com.liferay.portal.json.validator.JSONValidator;
 import com.liferay.portal.json.validator.JSONValidatorException;
 import com.liferay.portal.kernel.util.Validator;
@@ -22,26 +22,27 @@ import com.liferay.portal.kernel.util.Validator;
 /**
  * @author Rubén Pulido
  */
-public class MasterPageValidator {
+public class DisplayPageTemplateValidator {
 
-	public static void validateMasterPage(String masterPageJSON)
-		throws MasterPageValidatorException {
+	public static void validateDisplayPageTemplate(
+			String displayPageTemplateJSON)
+		throws DisplayPageTemplateValidatorException {
 
-		if (Validator.isNull(masterPageJSON)) {
+		if (Validator.isNull(displayPageTemplateJSON)) {
 			return;
 		}
 
 		try {
-			_jsonValidator.validate(masterPageJSON);
+			_jsonValidator.validate(displayPageTemplateJSON);
 		}
 		catch (JSONValidatorException jsonValidatorException) {
-			throw new MasterPageValidatorException(
+			throw new DisplayPageTemplateValidatorException(
 				jsonValidatorException.getMessage(), jsonValidatorException);
 		}
 	}
 
 	private static final JSONValidator _jsonValidator = new JSONValidator(
-		MasterPageValidator.class.getResourceAsStream(
-			"dependencies/master_page_json_schema.json"));
+		DisplayPageTemplateValidator.class.getResourceAsStream(
+			"dependencies/display_page_template_json_schema.json"));
 
 }
