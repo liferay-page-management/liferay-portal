@@ -1,5 +1,3 @@
-<%@ page import="com.liferay.layout.importer.LayoutsImporterResultEntry" %>
-
 <%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
@@ -104,8 +102,7 @@ ImportDisplayContext importDisplayContext = new ImportDisplayContext(request, re
 						%>
 
 							<li>
-								<span class="<%= dialogType %>-info"><%= HtmlUtil.escape(importDisplayContext.getWarningMessage(
-									layoutsImporterResultEntry.getName())) %></span>
+								<span class="<%= dialogType %>-info"><%= HtmlUtil.escape(importDisplayContext.getWarningMessage(layoutsImporterResultEntry.getName())) %></span>
 
 								<ul>
 
@@ -147,8 +144,7 @@ ImportDisplayContext importDisplayContext = new ImportDisplayContext(request, re
 						%>
 
 							<li>
-								<span class="<%= dialogType %>-info"><%= HtmlUtil.escape(
-									layoutsImporterResultEntry.getErrorMessage()) %></span>
+								<span class="<%= dialogType %>-info"><%= HtmlUtil.escape(layoutsImporterResultEntry.getErrorMessage()) %></span>
 							</li>
 
 						<%

@@ -12,9 +12,9 @@
  * details.
  */
 
-package com.liferay.layout.page.template.admin.web.internal.importer;
+package com.liferay.layout.internal.headless.delivery.dto.v1_0.structure.importer;
 
-import com.liferay.layout.importer.PortletConfigurationImporter;
+import com.liferay.headless.delivery.dto.v1_0.PageElement;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,34 +27,34 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 /**
  * @author Jürgen Kappler
  */
-@Component(service = PortletConfigurationImporterTracker.class)
-public class PortletConfigurationImporterTracker {
+@Component(service = LayoutStructureItemImporterTracker.class)
+public class LayoutStructureItemImporterTracker {
 
-	public PortletConfigurationImporter getPortletConfigurationImporter(
-		String portletName) {
+	public LayoutStructureItemImporter getLayoutStructureItemImporter(
+		PageElement.Type type) {
 
-		return _portletConfigurationImporters.get(portletName);
+		return _layoutStructureItemImporters.get(type);
 	}
 
 	@Reference(
 		cardinality = ReferenceCardinality.MULTIPLE,
 		policy = ReferencePolicy.DYNAMIC
 	)
-	protected void setPortletConfigurationImporter(
-		PortletConfigurationImporter portletConfigurationImporter) {
+	protected void setLayoutStructureItemImporter(
+		LayoutStructureItemImporter layoutStructureItemImporter) {
 
-		_portletConfigurationImporters.put(
-			portletConfigurationImporter.getPortletName(),
-			portletConfigurationImporter);
+		_layoutStructureItemImporters.put(
+			layoutStructureItemImporter.getPageElementType(),
+			layoutStructureItemImporter);
 	}
 
-	protected void unsetPortletConfigurationImporter(
-		PortletConfigurationImporter portletConfigurationImporter) {
+	protected void unsetLayoutStructureItemImporter(
+		LayoutStructureItemImporter layoutStructureItemImporter) {
 
-		_portletConfigurationImporters.remove(portletConfigurationImporter);
+		_layoutStructureItemImporters.remove(layoutStructureItemImporter);
 	}
 
-	private final Map<String, PortletConfigurationImporter>
-		_portletConfigurationImporters = new ConcurrentHashMap<>();
+	private final Map<PageElement.Type, LayoutStructureItemImporter>
+		_layoutStructureItemImporters = new ConcurrentHashMap<>();
 
 }

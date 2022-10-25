@@ -12,30 +12,26 @@
  * details.
  */
 
-package com.liferay.layout.page.template.admin.web.internal.exception;
+package com.liferay.layout.internal.headless.delivery.dto.v1_0.structure.importer;
 
-import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.headless.delivery.dto.v1_0.PageElement;
+import com.liferay.layout.util.structure.LayoutStructure;
+import com.liferay.layout.util.structure.LayoutStructureItem;
+
+import java.util.Set;
 
 /**
  * @author Jürgen Kappler
  */
-public class DropzoneLayoutStructureItemException extends PortalException {
+public interface LayoutStructureItemImporter {
 
-	public DropzoneLayoutStructureItemException() {
-	}
+	public LayoutStructureItem addLayoutStructureItem(
+			LayoutStructure layoutStructure,
+			LayoutStructureItemImporterContext
+				layoutStructureItemImporterContext,
+			PageElement pageElement, Set<String> warningMessages)
+		throws Exception;
 
-	public DropzoneLayoutStructureItemException(String msg) {
-		super(msg);
-	}
-
-	public DropzoneLayoutStructureItemException(
-		String msg, Throwable throwable) {
-
-		super(msg, throwable);
-	}
-
-	public DropzoneLayoutStructureItemException(Throwable throwable) {
-		super(throwable);
-	}
+	public PageElement.Type getPageElementType();
 
 }
