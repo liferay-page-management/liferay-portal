@@ -23,9 +23,12 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.PasswordPolicyLocalService;
 import com.liferay.portal.kernel.service.permission.PasswordPolicyPermission;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
+
+import java.util.Map;
 
 import javax.portlet.PortletRequest;
 
@@ -48,6 +51,15 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class DeletePasswordPolicyPortletConfigurationIcon
 	extends BaseJSPPortletConfigurationIcon {
+
+	@Override
+	public Map<String, Object> getData() {
+		return HashMapBuilder.<String, Object>put(
+			"action", "deletePasswordPolicy"
+		).put(
+			"globalAction", true
+		).build();
+	}
 
 	@Override
 	public String getJspPath() {

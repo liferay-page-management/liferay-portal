@@ -29,10 +29,13 @@ import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.permission.GroupPermission;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.staging.constants.StagingConfigurationPortletKeys;
 import com.liferay.staging.constants.StagingProcessesPortletKeys;
+
+import java.util.Map;
 
 import javax.portlet.PortletRequest;
 
@@ -47,6 +50,20 @@ import org.osgi.service.component.annotations.Reference;
 @Component(immediate = true, service = PortletConfigurationIcon.class)
 public class StagingPortletConfigurationIcon
 	extends BaseJSPPortletConfigurationIcon {
+
+	@Override
+	public Map<String, Object> getData() {
+		return HashMapBuilder.<String, Object>put(
+			"action", "staging"
+		).put(
+			"globalAction", true
+		).build();
+	}
+
+	@Override
+	public String getIconCssClass() {
+		return "portlet-export-import portlet-export-import-icon";
+	}
 
 	@Override
 	public String getJspPath() {

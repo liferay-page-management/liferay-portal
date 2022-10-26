@@ -24,7 +24,10 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.permission.GroupPermission;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
+
+import java.util.Map;
 
 import javax.portlet.PortletRequest;
 
@@ -43,6 +46,15 @@ public class ExportImportPortletConfigurationIcon
 	@Override
 	public String getCssClass() {
 		return "portlet-export-import portlet-export-import-icon";
+	}
+
+	@Override
+	public Map<String, Object> getData() {
+		return HashMapBuilder.<String, Object>put(
+			"action", "exportImport"
+		).put(
+			"globalAction", true
+		).build();
 	}
 
 	@Override

@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.portlet.configuration.icon.BaseJSPPortletConfig
 import com.liferay.portal.kernel.portlet.configuration.icon.PortletConfigurationIcon;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.workflow.configuration.WorkflowDefinitionConfiguration;
@@ -53,6 +54,15 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class DuplicateDefinitionPortletConfigurationIcon
 	extends BaseJSPPortletConfigurationIcon {
+
+	@Override
+	public Map<String, Object> getData() {
+		return HashMapBuilder.<String, Object>put(
+			"action", "duplicateDefinition"
+		).put(
+			"globalAction", true
+		).build();
+	}
 
 	@Override
 	public String getJspPath() {
