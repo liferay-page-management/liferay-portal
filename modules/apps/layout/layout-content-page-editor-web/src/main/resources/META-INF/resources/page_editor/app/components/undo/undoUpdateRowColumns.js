@@ -22,7 +22,7 @@ function undoAction({action}) {
 	return async (dispatch, getState) => {
 		const {segmentsExperienceId} = getState();
 
-		for (const columnId of deletedColumnIds) {
+		for (const columnId of deletedColumnIds.reverse()) {
 			await LayoutService.unmarkItemForDeletion({
 				itemId: columnId,
 				onNetworkStatus: dispatch,
