@@ -52,9 +52,9 @@ public class StagingPortletConfigurationIcon
 	extends BaseJSPPortletConfigurationIcon {
 
 	@Override
-	public Map<String, Object> getData() {
+	public Map<String, Object> getContenxt(PortletRequest portletRequest) {
 		return HashMapBuilder.<String, Object>put(
-			"action", "staging"
+			"action", getNamespace(portletRequest) + "staging"
 		).put(
 			"globalAction", true
 		).build();

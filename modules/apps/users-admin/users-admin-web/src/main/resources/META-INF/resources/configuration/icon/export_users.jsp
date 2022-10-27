@@ -29,7 +29,9 @@ int status = GetterUtil.getInteger(request.getAttribute(UsersAdminWebKeys.STATUS
 		Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__ = {};
 	}
 
-	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__['exportUsers'] = function () {
+	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
+		'<portlet:namespace />exportUsers'
+	] = function () {
 		Liferay.Util.openConfirmModal({
 			message:
 				'<liferay-ui:message key="warning-this-csv-file-contains-user-supplied-inputs" unicode="<%= true %>" />',

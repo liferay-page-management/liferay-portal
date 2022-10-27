@@ -44,9 +44,9 @@ public class TemplateImportScriptConfigurationIcon
 	extends BaseJSPPortletConfigurationIcon {
 
 	@Override
-	public Map<String, Object> getData() {
+	public Map<String, Object> getContenxt(PortletRequest portletRequest) {
 		return HashMapBuilder.<String, Object>put(
-			"action", "templateImportScript"
+			"action", getNamespace(portletRequest) + "templateImportScript"
 		).put(
 			"globalAction", true
 		).build();

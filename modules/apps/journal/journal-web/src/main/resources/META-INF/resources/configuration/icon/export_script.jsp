@@ -22,7 +22,7 @@
 	}
 
 	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
-		'journalDDMTemplateExportScript'
+		'<portlet:namespace />journalDDMTemplateExportScript'
 	] = function () {
 		Liferay.fire('<portlet:namespace />exportScript');
 	};

@@ -47,9 +47,9 @@ public class ImportPortletConfigurationIcon
 	extends BaseJSPPortletConfigurationIcon {
 
 	@Override
-	public Map<String, Object> getData() {
+	public Map<String, Object> getContenxt(PortletRequest portletRequest) {
 		return HashMapBuilder.<String, Object>put(
-			"action", "import"
+			"action", getNamespace(portletRequest) + "import"
 		).put(
 			"globalAction", true
 		).build();

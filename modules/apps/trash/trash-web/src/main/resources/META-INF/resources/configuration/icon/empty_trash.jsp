@@ -25,7 +25,9 @@
 		Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__ = {};
 	}
 
-	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__['emptyTrash'] = function () {
+	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
+		'<portlet:namespace />emptyTrash'
+	] = function () {
 		Liferay.Util.openConfirmModal({
 			message:
 				'<liferay-ui:message key="are-you-sure-you-want-to-empty-the-recycle-bin" />',

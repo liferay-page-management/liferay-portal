@@ -30,7 +30,7 @@ long recordSetId = ParamUtil.getLong(request, liferayPortletResponse.getNamespac
 	}
 
 	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
-		'exportRecordSet'
+		'<portlet:namespace />exportRecordSet'
 	] = function () {
 		<portlet:namespace />exportRecordSet('<%= exportRecordSetURL %>');
 	};

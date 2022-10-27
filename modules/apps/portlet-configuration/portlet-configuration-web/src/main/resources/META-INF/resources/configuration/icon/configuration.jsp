@@ -21,7 +21,9 @@
 		Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__ = {};
 	}
 
-	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__['configuration'] = function () {
+	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
+		'<portlet:namespace />configuration'
+	] = function () {
 		<%= portletDisplay.getURLConfigurationJS() %>;
 	};
 </aui:script>

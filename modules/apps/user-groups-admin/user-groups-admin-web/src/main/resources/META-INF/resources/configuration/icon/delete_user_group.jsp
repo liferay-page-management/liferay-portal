@@ -26,7 +26,7 @@ UserGroup userGroup = ActionUtil.getUserGroup(renderRequest);
 	}
 
 	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
-		'deleteUserGroup'
+		'<portlet:namespace />deleteUserGroup'
 	] = function () {
 		<portlet:namespace />doDeleteUserGroup(
 			'<%= UserGroup.class.getName() %>',

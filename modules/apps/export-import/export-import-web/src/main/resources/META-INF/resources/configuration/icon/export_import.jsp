@@ -21,7 +21,9 @@
 		Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__ = {};
 	}
 
-	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__['exportImport'] = function () {
+	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
+		'<portlet:namespace />exportImport'
+	] = function () {
 		Liferay.Portlet.openModal({
 			iframeBodyCssClass: '',
 			namespace: '<portlet:namespace />',

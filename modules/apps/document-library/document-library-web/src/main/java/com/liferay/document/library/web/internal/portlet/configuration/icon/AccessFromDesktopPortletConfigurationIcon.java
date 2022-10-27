@@ -53,9 +53,9 @@ public class AccessFromDesktopPortletConfigurationIcon
 	extends BaseJSPPortletConfigurationIcon {
 
 	@Override
-	public Map<String, Object> getData() {
+	public Map<String, Object> getContenxt(PortletRequest portletRequest) {
 		return HashMapBuilder.<String, Object>put(
-			"action", "accessFromDesktop"
+			"action", getNamespace(portletRequest) + "accessFromDesktop"
 		).put(
 			"globalAction", true
 		).build();

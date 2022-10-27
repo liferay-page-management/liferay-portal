@@ -44,9 +44,10 @@ public class JournalDDMTemplateImportScriptConfigurationIcon
 	extends BaseJSPPortletConfigurationIcon {
 
 	@Override
-	public Map<String, Object> getData() {
+	public Map<String, Object> getContenxt(PortletRequest portletRequest) {
 		return HashMapBuilder.<String, Object>put(
-			"action", "journalDDMTemplateImportScript"
+			"action",
+			getNamespace(portletRequest) + "journalDDMTemplateImportScript"
 		).put(
 			"globalAction", true
 		).build();

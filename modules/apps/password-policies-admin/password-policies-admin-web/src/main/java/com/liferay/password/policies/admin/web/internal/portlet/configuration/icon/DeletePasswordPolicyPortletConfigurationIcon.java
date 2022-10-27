@@ -53,9 +53,9 @@ public class DeletePasswordPolicyPortletConfigurationIcon
 	extends BaseJSPPortletConfigurationIcon {
 
 	@Override
-	public Map<String, Object> getData() {
+	public Map<String, Object> getContenxt(PortletRequest portletRequest) {
 		return HashMapBuilder.<String, Object>put(
-			"action", "deletePasswordPolicy"
+			"action", getNamespace(portletRequest) + "deletePasswordPolicy"
 		).put(
 			"globalAction", true
 		).build();

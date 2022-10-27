@@ -39,9 +39,9 @@ public class RefreshPortletConfigurationIcon
 	extends BaseJSPPortletConfigurationIcon {
 
 	@Override
-	public Map<String, Object> getData() {
+	public Map<String, Object> getContenxt(PortletRequest portletRequest) {
 		return HashMapBuilder.<String, Object>put(
-			"action", "refresh"
+			"action", getNamespace(portletRequest) + "refresh"
 		).put(
 			"globalAction", true
 		).build();

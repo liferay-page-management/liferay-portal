@@ -22,7 +22,7 @@
 	}
 
 	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
-		'exportFormInstance'
+		'<portlet:namespace />exportFormInstance'
 	] = function () {
 		Liferay.fire('openExportFormModal', {
 			exportFormURL:

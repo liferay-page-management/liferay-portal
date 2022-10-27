@@ -42,7 +42,7 @@
 	}
 
 	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
-		'importDataDefinition'
+		'<portlet:namespace />importDataDefinition'
 	] = function () {
 		Liferay.componentReady(
 			'<portlet:namespace />importDataDefinitionModal'

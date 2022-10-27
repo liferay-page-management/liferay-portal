@@ -39,17 +39,17 @@ public class ConfigurationPortletConfigurationIcon
 	extends BaseJSPPortletConfigurationIcon {
 
 	@Override
-	public String getCssClass() {
-		return "portlet-configuration portlet-configuration-icon";
-	}
-
-	@Override
-	public Map<String, Object> getData() {
+	public Map<String, Object> getContenxt(PortletRequest portletRequest) {
 		return HashMapBuilder.<String, Object>put(
-			"action", "configuration"
+			"action", getNamespace(portletRequest) + "configuration"
 		).put(
 			"globalAction", true
 		).build();
+	}
+
+	@Override
+	public String getCssClass() {
+		return "portlet-configuration portlet-configuration-icon";
 	}
 
 	@Override

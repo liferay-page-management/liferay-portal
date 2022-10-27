@@ -41,7 +41,7 @@ DLAccessFromDesktopDisplayContext dlAccessFromDesktopDisplayContext = new DLAcce
 	}
 
 	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
-		'accessFromDesktop'
+		'<portlet:namespace />accessFromDesktop'
 	] = function () {
 		var webdavContentContainer = document.getElementById(
 			'<%= dlAccessFromDesktopDisplayContext.getRandomNamespace() %>webDav'

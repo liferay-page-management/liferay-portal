@@ -22,7 +22,7 @@
 	}
 
 	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
-		'duplicateDefinition'
+		'<portlet:namespace />duplicateDefinition'
 	] = function () {
 		Liferay.fire('<portlet:namespace />duplicateDefinition');
 	};

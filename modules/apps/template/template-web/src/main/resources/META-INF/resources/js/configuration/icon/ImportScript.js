@@ -22,7 +22,7 @@ export default function ({namespace}) {
 	}
 
 	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
-		'templateImportScript'
+		`${namespace}templateImportScript`
 	] = function () {
 		fileInput.click();
 	};

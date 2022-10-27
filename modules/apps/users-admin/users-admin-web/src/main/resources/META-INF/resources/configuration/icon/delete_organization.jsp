@@ -32,7 +32,7 @@ if (Validator.isNull(backURL)) {
 	}
 
 	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
-		'deleteOrganization'
+		'<portlet:namespace />deleteOrganization'
 	] = function () {
 		<portlet:namespace />deleteOrganization(
 			'<%= organization.getOrganizationId() %>',

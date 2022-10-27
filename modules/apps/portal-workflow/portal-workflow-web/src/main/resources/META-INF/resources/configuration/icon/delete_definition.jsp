@@ -22,7 +22,7 @@
 	}
 
 	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
-		'deleteDefinition'
+		'<portlet:namespace />deleteDefinition'
 	] = function () {
 		<portlet:namespace />confirmDeleteDefinition(
 			'<%=

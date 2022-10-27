@@ -26,7 +26,9 @@
 		Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__ = {};
 	}
 
-	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__['refresh'] = function () {
+	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
+		'<portlet:namespace />refresh'
+	] = function () {
 		Liferay.Portlet.refresh('#p_p_id_<%= portletDisplay.getId() %>_');
 	};
 </aui:script>

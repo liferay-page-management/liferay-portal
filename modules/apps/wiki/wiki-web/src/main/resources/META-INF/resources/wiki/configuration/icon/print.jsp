@@ -34,7 +34,9 @@ WikiPage wikiPage = ActionUtil.getPage(liferayPortletRequest);
 		Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__ = {};
 	}
 
-	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__['print'] = function () {
+	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
+		'<portlet:namespace />print'
+	] = function () {
 		window.open(
 			'<%= printURL %>',
 			'',

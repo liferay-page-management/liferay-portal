@@ -51,17 +51,17 @@ public class MaximizePortletConfigurationIcon
 	extends BaseJSPPortletConfigurationIcon {
 
 	@Override
-	public String getCssClass() {
-		return "portlet-maximize portlet-maximize-icon";
-	}
-
-	@Override
-	public Map<String, Object> getData() {
+	public Map<String, Object> getContenxt(PortletRequest portletRequest) {
 		return HashMapBuilder.<String, Object>put(
-			"action", "maximize"
+			"action", getNamespace(portletRequest) + "maximize"
 		).put(
 			"globalAction", true
 		).build();
+	}
+
+	@Override
+	public String getCssClass() {
+		return "portlet-maximize portlet-maximize-icon";
 	}
 
 	@Override

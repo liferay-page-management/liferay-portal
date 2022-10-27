@@ -21,7 +21,9 @@
 		Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__ = {};
 	}
 
-	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__['minimize'] = function () {
+	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
+		'<portlet:namespace />minimize'
+	] = function () {
 		Liferay.Portlet.minimize('#p_p_id_<%= portletDisplay.getId() %>_', this);
 	};
 </aui:script>

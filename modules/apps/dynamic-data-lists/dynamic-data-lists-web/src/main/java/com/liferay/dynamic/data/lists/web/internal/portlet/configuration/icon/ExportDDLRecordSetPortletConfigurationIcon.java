@@ -52,9 +52,9 @@ public class ExportDDLRecordSetPortletConfigurationIcon
 	extends BaseJSPPortletConfigurationIcon {
 
 	@Override
-	public Map<String, Object> getData() {
+	public Map<String, Object> getContenxt(PortletRequest portletRequest) {
 		return HashMapBuilder.<String, Object>put(
-			"action", "exportRecordSet"
+			"action", getNamespace(portletRequest) + "exportRecordSet"
 		).put(
 			"globalAction", true
 		).build();

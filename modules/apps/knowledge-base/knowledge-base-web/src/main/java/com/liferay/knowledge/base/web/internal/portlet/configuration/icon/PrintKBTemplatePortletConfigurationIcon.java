@@ -44,9 +44,9 @@ public class PrintKBTemplatePortletConfigurationIcon
 	extends BaseJSPPortletConfigurationIcon {
 
 	@Override
-	public Map<String, Object> getData() {
+	public Map<String, Object> getContenxt(PortletRequest portletRequest) {
 		return HashMapBuilder.<String, Object>put(
-			"action", "printKBTemplate"
+			"action", getNamespace(portletRequest) + "printKBTemplate"
 		).put(
 			"globalAction", true
 		).build();

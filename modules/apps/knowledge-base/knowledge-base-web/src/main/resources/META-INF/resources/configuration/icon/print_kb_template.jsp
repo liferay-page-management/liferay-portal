@@ -32,7 +32,7 @@ KBTemplate kbTemplate = (KBTemplate)liferayPortletRequest.getAttribute(KBWebKeys
 	}
 
 	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
-		'printKBTemplate'
+		'<portlet:namespace />printKBTemplate'
 	] = function () {
 		window.open(
 			'<%= printURL %>',

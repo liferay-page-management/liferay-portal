@@ -33,7 +33,9 @@ TrashHandler trashHandler = trashDisplayContext.getTrashHandler();
 		Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__ = {};
 	}
 
-	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__['restoreDialog'] = function () {
+	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
+		'<portlet:namespace />restoreDialog'
+	] = function () {
 		<portlet:namespace />restoreDialog('<%= restoreTrashURL %>');
 	};
 </aui:script>

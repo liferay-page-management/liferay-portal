@@ -21,7 +21,9 @@
 		Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__ = {};
 	}
 
-	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__['close'] = function () {
+	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
+		'<portlet:namespace />close'
+	] = function () {
 		Liferay.Portlet.close('#p_p_id_<%= portletDisplay.getId() %>_');
 	};
 </aui:script>

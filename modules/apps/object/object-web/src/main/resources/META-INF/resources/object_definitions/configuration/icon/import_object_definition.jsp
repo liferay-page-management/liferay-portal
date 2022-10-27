@@ -38,15 +38,13 @@
 
 <aui:script>
 	function <portlet:namespace />openImportObjectDefinitionModal() {}
-</aui:script>
 
-<aui:script>
 	if (!Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__) {
 		Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__ = {};
 	}
 
 	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
-		'importObjectDefinition'
+		'<portlet:namespace />importObjectDefinition'
 	] = function () {
 		Liferay.componentReady(
 			'<portlet:namespace />importObjectDefinitionModal'

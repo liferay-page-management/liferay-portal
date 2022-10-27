@@ -21,7 +21,9 @@
 		Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__ = {};
 	}
 
-	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__['staging'] = function () {
+	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
+		'<portlet:namespace />staging'
+	] = function () {
 		Liferay.Portlet.openModal({
 			namespace: '<portlet:namespace />',
 			portletSelector: '#p_p_id_<%= portletDisplay.getId() %>_',

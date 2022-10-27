@@ -26,7 +26,9 @@
 		Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__ = {};
 	}
 
-	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__['maximize'] = function () {
+	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
+		'<portlet:namespace />maximize'
+	] = function () {
 		submitForm(
 			document.hrefFm,
 			'<%= HtmlUtil.escapeJS(portletDisplay.getURLMax()) %>'

@@ -43,9 +43,9 @@ public class PrintPagePortletConfigurationIcon
 	extends BaseJSPPortletConfigurationIcon {
 
 	@Override
-	public Map<String, Object> getData() {
+	public Map<String, Object> getContenxt(PortletRequest portletRequest) {
 		return HashMapBuilder.<String, Object>put(
-			"action", "print"
+			"action", getNamespace(portletRequest) + "print"
 		).put(
 			"globalAction", true
 		).build();

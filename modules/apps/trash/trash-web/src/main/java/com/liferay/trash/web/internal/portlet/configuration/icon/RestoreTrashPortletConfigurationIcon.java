@@ -49,9 +49,9 @@ public class RestoreTrashPortletConfigurationIcon
 	extends BaseJSPPortletConfigurationIcon {
 
 	@Override
-	public Map<String, Object> getData() {
+	public Map<String, Object> getContenxt(PortletRequest portletRequest) {
 		return HashMapBuilder.<String, Object>put(
-			"action", "restoreTrash"
+			"action", getNamespace(portletRequest) + "restoreTrash"
 		).put(
 			"globalAction", true
 		).build();

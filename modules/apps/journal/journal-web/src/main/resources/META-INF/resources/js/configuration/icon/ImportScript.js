@@ -22,7 +22,7 @@ export default function ({namespace}) {
 	}
 
 	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
-		'journalDDMTemplateImportScript'
+		`${namespace}journalDDMTemplateImportScript`
 	] = function () {
 		fileInput.click();
 	};

@@ -52,9 +52,9 @@ public class MinimizePortletConfigurationIcon
 	extends BaseJSPPortletConfigurationIcon {
 
 	@Override
-	public Map<String, Object> getData() {
+	public Map<String, Object> getContenxt(PortletRequest portletRequest) {
 		return HashMapBuilder.<String, Object>put(
-			"action", "minimize"
+			"action", getNamespace(portletRequest) + "minimize"
 		).put(
 			"globalAction", true
 		).build();

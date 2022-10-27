@@ -50,9 +50,9 @@ public class DeleteOrganizationPortletConfigurationIcon
 	extends BaseJSPPortletConfigurationIcon {
 
 	@Override
-	public Map<String, Object> getData() {
+	public Map<String, Object> getContenxt(PortletRequest portletRequest) {
 		return HashMapBuilder.<String, Object>put(
-			"action", "deleteOrganization"
+			"action", getNamespace(portletRequest) + "deleteOrganization"
 		).put(
 			"globalAction", true
 		).build();

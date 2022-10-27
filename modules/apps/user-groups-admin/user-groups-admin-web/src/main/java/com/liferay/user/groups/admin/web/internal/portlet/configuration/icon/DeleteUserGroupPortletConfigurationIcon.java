@@ -51,9 +51,9 @@ public class DeleteUserGroupPortletConfigurationIcon
 	extends BaseJSPPortletConfigurationIcon {
 
 	@Override
-	public Map<String, Object> getData() {
+	public Map<String, Object> getContenxt(PortletRequest portletRequest) {
 		return HashMapBuilder.<String, Object>put(
-			"action", "deleteUserGroup"
+			"action", getNamespace(portletRequest) + "deleteUserGroup"
 		).put(
 			"globalAction", true
 		).build();

@@ -44,17 +44,17 @@ public class ExportImportPortletConfigurationIcon
 	extends BaseJSPPortletConfigurationIcon {
 
 	@Override
-	public String getCssClass() {
-		return "portlet-export-import portlet-export-import-icon";
-	}
-
-	@Override
-	public Map<String, Object> getData() {
+	public Map<String, Object> getContenxt(PortletRequest portletRequest) {
 		return HashMapBuilder.<String, Object>put(
-			"action", "exportImport"
+			"action", getNamespace(portletRequest) + "exportImport"
 		).put(
 			"globalAction", true
 		).build();
+	}
+
+	@Override
+	public String getCssClass() {
+		return "portlet-export-import portlet-export-import-icon";
 	}
 
 	@Override

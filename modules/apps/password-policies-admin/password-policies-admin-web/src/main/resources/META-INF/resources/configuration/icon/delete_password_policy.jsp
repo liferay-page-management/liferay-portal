@@ -28,7 +28,7 @@
 	}
 
 	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
-		'deletePasswordPolicy'
+		'<portlet:namespace />deletePasswordPolicy'
 	] = function () {
 		<portlet:namespace />deletePasswordPolicy(
 			'<%= ParamUtil.getLong(request, "passwordPolicyId") %>'

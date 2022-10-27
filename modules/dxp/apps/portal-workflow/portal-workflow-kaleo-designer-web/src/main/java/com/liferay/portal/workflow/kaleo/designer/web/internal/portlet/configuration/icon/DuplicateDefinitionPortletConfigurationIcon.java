@@ -60,9 +60,9 @@ public class DuplicateDefinitionPortletConfigurationIcon
 	extends BaseJSPPortletConfigurationIcon {
 
 	@Override
-	public Map<String, Object> getData() {
+	public Map<String, Object> getContenxt(PortletRequest portletRequest) {
 		return HashMapBuilder.<String, Object>put(
-			"action", "duplicateDefinition"
+			"action", getNamespace(portletRequest) + "duplicateDefinition"
 		).put(
 			"globalAction", true
 		).build();

@@ -30,7 +30,7 @@ long kaleoProcessId = ParamUtil.getLong(request, liferayPortletResponse.getNames
 	}
 
 	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
-		'exportKaleoProcess'
+		'<portlet:namespace />exportKaleoProcess'
 	] = function () {
 		<portlet:namespace />exportKaleoProcess('<%= exportURL %>');
 	};

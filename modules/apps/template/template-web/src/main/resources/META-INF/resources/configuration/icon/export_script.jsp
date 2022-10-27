@@ -22,7 +22,7 @@
 	}
 
 	Liferay.__PORTLET_CONFIGURATION_ICON_ACTIONS__[
-		'templateExportScript'
+		'<portlet:namespace />templateExportScript'
 	] = function () {
 		Liferay.fire('<portlet:namespace />exportScript');
 	};

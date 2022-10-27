@@ -52,9 +52,9 @@ public class ExportKaleoProcessPortletConfigurationIcon
 	extends BaseJSPPortletConfigurationIcon {
 
 	@Override
-	public Map<String, Object> getData() {
+	public Map<String, Object> getContenxt(PortletRequest portletRequest) {
 		return HashMapBuilder.<String, Object>put(
-			"action", "exportKaleoProcess"
+			"action", getNamespace(portletRequest) + "exportKaleoProcess"
 		).put(
 			"globalAction", true
 		).build();
