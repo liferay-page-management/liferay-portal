@@ -165,7 +165,7 @@ public class DLReferencesExportImportContentProcessor
 		if (!legacyURL) {
 			String[] pathArray = dlReference.split(StringPool.SLASH);
 
-			if (pathArray.length < 3) {
+			if (pathArray.length < 5) {
 				return map;
 			}
 
