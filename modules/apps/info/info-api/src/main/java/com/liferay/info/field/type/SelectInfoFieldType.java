@@ -24,6 +24,9 @@ import java.util.Locale;
  */
 public class SelectInfoFieldType implements InfoFieldType {
 
+	public static final Attribute<SelectInfoFieldType, Option> DEFAULT_OPTION =
+		new Attribute<>();
+
 	public static final SelectInfoFieldType INSTANCE =
 		new SelectInfoFieldType();
 
