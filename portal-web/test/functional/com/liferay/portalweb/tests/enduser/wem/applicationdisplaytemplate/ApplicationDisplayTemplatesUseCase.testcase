@@ -541,13 +541,7 @@ definition {
 				item = "Edit",
 				widgetTemplateName = "Rich Summary");
 
-			var script = '''
-	<@liferay_portlet["runtime"]
-		defaultPreferences="${freeMarkerPortletPreferences}"
-		instanceId="whateverV1"
-		portletProviderAction=portletProviderAction.VIEW
-		portletProviderClassName="com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbEntry"/>
-					''';
+			var script = '''<@liferay_portlet["runtime"] defaultPreferences="${freeMarkerPortletPreferences}" instanceId="whateverV1" portletProviderAction=portletProviderAction.VIEW portletProviderClassName="com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbEntry"/>''';
 
 			ApplicationDisplayTemplates.editADTScript(adtScript = "${script}");
 		}
