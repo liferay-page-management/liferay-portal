@@ -134,7 +134,7 @@ const NORMALIZED_TABS = [
 				label: 'Collection 1',
 			},
 		],
-		id: 'fragments',
+		id: 0,
 		label: 'fragments',
 	},
 	{
@@ -161,7 +161,7 @@ const NORMALIZED_TABS = [
 				label: 'Widget Collection 1',
 			},
 		],
-		id: 'widgets',
+		id: 1,
 		label: 'widgets',
 	},
 ];

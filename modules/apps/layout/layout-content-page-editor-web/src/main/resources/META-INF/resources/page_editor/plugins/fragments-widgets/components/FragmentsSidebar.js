@@ -35,8 +35,8 @@ import SearchResultsPanel from './SearchResultsPanel';
 import TabsPanel from './TabsPanel';
 
 export const COLLECTION_IDS = {
-	fragments: 'fragments',
-	widgets: 'widgets',
+	fragments: 0,
+	widgets: 1,
 };
 
 const collectionFilter = (collections, searchValue) => {
@@ -147,7 +147,7 @@ export default function FragmentsSidebar() {
 
 	const [activeTabId, setActiveTabId] = useSessionState(
 		`${config.portletNamespace}_fragments-sidebar_active-tab-id`,
-		COLLECTION_IDS.fragments
+		0
 	);
 
 	const [displayStyle, setDisplayStyle] = useSessionState(
