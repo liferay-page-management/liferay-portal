@@ -56,9 +56,12 @@ definition {
 			locator1 = "IFrame#MODAL_ANY");
 
 		if (isSet(scopeSite)) {
-			Click(locator1 = "Dropdown#FILTER_AND_ORDER");
+			AssertClick(
+				key_breadcrumbName = "Sites and Libraries",
+				locator1 = "Breadcrumb#BREADCRUMB_ENTRY",
+				value1 = "Sites and Libraries");
 
-			MenuItem.click(menuItem = "${scopeSite}");
+			LexiconCard.clickCard(card = "${scopeSite}");
 		}
 
 		if (isSet(assetAll)) {
