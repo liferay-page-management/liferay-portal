@@ -166,7 +166,7 @@ function createOptionElement(option) {
 	return optionElement;
 }
 
-function setSelectedOption(option) {
+function setSelectedOption(optionElement) {
 	const selectedOption = document.getElementById(
 		`${fragmentEntryLinkNamespace}-option-${valueInputElement.value}`
 	);
@@ -175,12 +175,11 @@ function setSelectedOption(option) {
 		selectedOption.classList.remove('active');
 	}
 
-	option.classList.add('active');
+	optionElement.classList.add('active');
 
-	uiInputElement.value = option.textContent;
-
-	labelInputElement.value = option.textContent;
-	valueInputElement.value = option.id;
+	labelInputElement.value = optionElement.textContent;
+	uiInputElement.value = optionElement.textContent;
+	valueInputElement.value = optionElement.dataset.optionValue;
 
 	closeResultList();
 }
