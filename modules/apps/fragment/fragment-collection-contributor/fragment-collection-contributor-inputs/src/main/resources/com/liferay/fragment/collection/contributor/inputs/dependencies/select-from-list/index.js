@@ -167,7 +167,9 @@ function createOptionElement(option) {
 }
 
 function setSelectedOption(option) {
-	const selectedOption = document.getElementById(valueInputElement.id);
+	const selectedOption = document.getElementById(
+		`${fragmentEntryLinkNamespace}-option-${valueInputElement.value}`
+	);
 
 	if (selectedOption) {
 		selectedOption.classList.remove('active');
