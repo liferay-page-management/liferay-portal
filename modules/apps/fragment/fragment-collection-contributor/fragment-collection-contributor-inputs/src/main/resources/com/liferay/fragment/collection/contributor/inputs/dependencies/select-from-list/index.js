@@ -124,11 +124,11 @@ function handleInputKeyDown(event) {
 }
 
 function handleInputChange() {
-	openResultList();
-
 	const filterValue = uiInputElement.value.toLowerCase();
 
 	if (filterValue !== lastSearchQuery) {
+		openResultList();
+
 		lastSearchQuery = filterValue;
 
 		filterOptions(filterValue).then(() => {
@@ -334,7 +334,7 @@ function openResultList() {
 	buttonElement.setAttribute('aria-expanded', 'true');
 
 	requestAnimationFrame(() => {
-		filterOptions(uiInputElement.value);
+		handleInputChange();
 		repositionResultListElement();
 	});
 }
