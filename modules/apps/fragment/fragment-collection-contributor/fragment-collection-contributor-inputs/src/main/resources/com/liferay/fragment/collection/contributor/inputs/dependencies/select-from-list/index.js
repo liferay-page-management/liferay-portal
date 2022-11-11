@@ -39,14 +39,12 @@ const KEYS = {
 	Home: 'Home',
 };
 
-const optionList = (input.attributes.options || [])
-	.map((option) => ({
-		textContent: option.label,
-		textValue: option.label.toLowerCase(),
-		value: option.value,
-	}));
+const optionList = (input.attributes.options || []).map((option) => ({
+	textContent: option.label,
+	textValue: option.label.toLowerCase(),
+	value: option.value,
+}));
 
-function createLoadingResultsElement () {
 function createLoadingResultsElement() {
 	const animation = document.createElement('span');
 	const label = document.createElement('span');
@@ -184,49 +182,37 @@ function filterOptions(query) {
 			lastSearchAbortController.abort();
 			lastSearchAbortController = new AbortController();
 
-			filterRemoteOptions(query, lastSearchAbortController).then(
-				(options) => {
-					optionListElement.innerHTML = '';
-
-					optionListElement.appendChild(createLoadingResultsElement());
-
-					options.forEach((option) => {
-						optionListElement.appendChild(
-							createOptionElement(option)
-						);
-					});
-
+			filterRemoteOptions(query, lastSearchAbortController)
+				.then((options) => {
 					resolve();
-				}
-			).finally(() => {
-				optionListElement.removeChild(optionListElement.querySelector('.loading-results-animation'));
-			});
+
+					resetOptionListElement(options);
+				})
+				.finally(() => {
+					optionListElement.removeChild(
+						optionListElement.querySelector(
+							'.loading-results-animation'
+						)
+					);
+				});
 		}
 		else if (query) {
-			optionListElement.innerHTML = '';
-
-			optionListElement.appendChild(createLoadingResultsElement());
-
-			filterLocalOptions(query).forEach((option) => {
-				optionListElement.appendChild(createOptionElement(option));
-			});
+			resetOptionListElement(filterLocalOptions(query));
 
 			resolve();
 
-			optionListElement.removeChild(optionListElement.querySelector('.loading-results-animation'));
+			optionListElement.removeChild(
+				optionListElement.querySelector('.loading-results-animation')
+			);
 		}
 		else {
-			optionListElement.innerHTML = '';
-
-			optionListElement.appendChild(createLoadingResultsElement());
-
-			optionList.forEach((option) => {
-				optionListElement.appendChild(createOptionElement(option));
-			});
+			resetOptionListElement(optionList);
 
 			resolve();
 
-			optionListElement.removeChild(optionListElement.querySelector('.loading-results-animation'));
+			optionListElement.removeChild(
+				optionListElement.querySelector('.loading-results-animation')
+			);
 		}
 	});
 }
@@ -253,10 +239,6 @@ function filterLocalOptions(query) {
 			options.push(option);
 		}
 	});
-
-	if (!options.length) {
-		optionListElement.appendChild(createNoResultsFoundElement());
-	}
 
 	return options;
 }
@@ -430,4 +412,21 @@ function repositionResultListElement() {
 		translateX(${uiInputRect.left + window.scrollX}px)
 		translateY(${uiInputRect.bottom + window.scrollY}px)
 	`;
+}
+
+function resetOptionListElement(options) {
+	optionListElement.innerHTML = '';
+
+	optionListElement.appendChild(createLoadingResultsElement());
+
+	let i = 0;
+
+	while (i < MAX_ITEMS && i < options.length) {
+		optionListElement.appendChild(createOptionElement(options[i]));
+		i++;
+	}
+
+	if (!options.length) {
+		optionListElement.appendChild(createNoResultsFoundElement());
+	}
 }
