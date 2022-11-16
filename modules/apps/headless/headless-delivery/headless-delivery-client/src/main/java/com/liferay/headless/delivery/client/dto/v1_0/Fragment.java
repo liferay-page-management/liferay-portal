@@ -93,6 +93,27 @@ public class Fragment implements Cloneable, Serializable {
 
 	protected String name;
 
+	public Long getSiteId() {
+		return siteId;
+	}
+
+	public void setSiteId(Long siteId) {
+		this.siteId = siteId;
+	}
+
+	public void setSiteId(
+		UnsafeSupplier<Long, Exception> siteIdUnsafeSupplier) {
+
+		try {
+			siteId = siteIdUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Long siteId;
+
 	@Override
 	public Fragment clone() throws CloneNotSupportedException {
 		return (Fragment)super.clone();
