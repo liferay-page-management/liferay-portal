@@ -120,6 +120,15 @@ public class PageFragmentInstanceDefinitionMapper {
 				fragment = new Fragment() {
 					{
 						key = _getFragmentKey(fragmentEntry, rendererKey);
+
+						setSiteId(
+							() -> {
+								if (fragmentEntry.getGroupId() == 0) {
+									return null;
+								}
+
+								return fragmentEntry.getGroupId();
+							});
 					}
 				};
 				fragmentConfig = _getFragmentConfig(fragmentEntryLink);
