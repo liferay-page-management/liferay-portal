@@ -245,15 +245,17 @@ public class FragmentLayoutStructureItemImporter
 			return null;
 		}
 
+		long groupId = GetterUtil.getLong(
+			fragmentDefinitionMap.get("siteId"), layout.getGroupId());
+
 		FragmentEntry fragmentEntry = _getFragmentEntry(
-			layout.getCompanyId(), layout.getGroupId(), fragmentKey);
+			layout.getCompanyId(), groupId, fragmentKey);
 
 		FragmentRenderer fragmentRenderer =
 			_fragmentRendererRegistry.getFragmentRenderer(fragmentKey);
 
 		if ((fragmentEntry == null) && (fragmentRenderer == null)) {
-			warningMessages.add(
-				_getWarningMessage(layout.getGroupId(), fragmentKey));
+			warningMessages.add(_getWarningMessage(groupId, fragmentKey));
 
 			return null;
 		}
