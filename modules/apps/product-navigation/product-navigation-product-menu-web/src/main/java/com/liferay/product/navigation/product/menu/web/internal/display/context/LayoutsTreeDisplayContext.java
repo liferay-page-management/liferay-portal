@@ -824,6 +824,9 @@ public class LayoutsTreeDisplayContext {
 			siteNavigationMenuItemType.getTitle(
 				siteNavigationMenuItem, _themeDisplay.getSiteDefaultLocale())
 		).put(
+			"target",
+			siteNavigationMenuItemType.getTarget(siteNavigationMenuItem)
+		).put(
 			"url",
 			_getSiteNavigationMenuItemURL(
 				siteNavigationMenuItem, siteNavigationMenuItemType)
