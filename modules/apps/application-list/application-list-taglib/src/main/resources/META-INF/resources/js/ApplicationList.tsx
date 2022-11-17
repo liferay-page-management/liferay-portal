@@ -1,4 +1,3 @@
-<%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -12,10 +11,24 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
---%>
 
-<%@ include file="/init.jsp" %>
+import {ClayVerticalNav} from '@clayui/nav';
+import React from 'react';
 
-<%
-Map<String, Object> applicationListProps = (Map<String, Object>)request.getAttribute("liferay-application-list:panel-category-body:applicationListProps");
-%>
+import '../css/ApplicationList.scss';
+
+interface IProps {
+	category: {
+		items: Parameters<typeof ClayVerticalNav>[0]['items'];
+	};
+}
+
+export default function ApplicationList({category}: IProps) {
+	return (
+		<div className="application-list">
+			<ClayVerticalNav
+				items={category.items.filter((child) => child.items.length)}
+			/>
+		</div>
+	);
+}

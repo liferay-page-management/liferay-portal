@@ -16,24 +16,13 @@
 
 <%@ include file="/panel_category_body/init.jsp" %>
 
-<c:if test="<%= !panelApps.isEmpty() %>">
-	<ul aria-labelledby="<%= id %>" class="nav nav-equal-height nav-stacked" role="menu">
+<div>
+	<div class="loading-animation-container">
+		<span aria-hidden="true" class="loading-animation"></span>
+	</div>
 
-		<%
-		for (PanelApp panelApp : panelApps) {
-		%>
-
-			<liferay-application-list:panel-app
-				panelApp="<%= panelApp %>"
-			/>
-
-		<%
-		}
-		%>
-
-	</ul>
-</c:if>
-
-<liferay-application-list:panel
-	panelCategory="<%= panelCategory %>"
-/>
+	<react:component
+		module="js/ApplicationList"
+		props="<%= applicationListProps %>"
+	/>
+</div>

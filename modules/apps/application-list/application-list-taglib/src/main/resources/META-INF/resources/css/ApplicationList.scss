@@ -1,0 +1,53 @@
+@import 'atlas-variables';
+@import 'cadmin-variables';
+
+html#{$cadmin-selector} .cadmin .application-list {
+	background-color: $gray-900;
+
+	.menubar {
+		max-width: initial;
+
+		.nav-link {
+			border-radius: 0;
+			color: $light-d2;
+			padding: 12px 24px;
+
+			&.active {
+				border-left: solid 4px $white;
+				padding-left: 20px;
+			}
+
+			&.active,
+			&:hover,
+			&:focus {
+				background-color: transparent;
+			}
+
+			&:focus:before {
+				box-shadow: none;
+			}
+
+			&.active,
+			&:hover,
+			&:focus,
+			&[aria-expanded='true'],
+			&[aria-expanded='true']:hover {
+				color: $white;
+			}
+
+			&[aria-expanded='true'],
+			&[aria-expanded='true']:hover,
+			&[aria-expanded='true'] + div {
+				background-color: $dark-l1;
+			}
+		}
+
+		.nav-stacked .nav-link {
+			padding: 12px 48px;
+
+			&.active {
+				padding: 12px 44px;
+			}
+		}
+	}
+}

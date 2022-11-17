@@ -17,13 +17,21 @@ package com.liferay.application.list.taglib.servlet.taglib;
 import com.liferay.application.list.PanelApp;
 import com.liferay.application.list.PanelAppRegistry;
 import com.liferay.application.list.PanelCategory;
+import com.liferay.application.list.PanelCategoryRegistry;
 import com.liferay.application.list.constants.ApplicationListWebKeys;
-import com.liferay.petra.string.CharPool;
+import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -31,6 +39,10 @@ import javax.servlet.http.HttpServletRequest;
  * @author Julio Camarero
  */
 public class PanelCategoryBodyTag extends BasePanelTag {
+
+	public List<PanelApp> getPanelApps() {
+		return _panelApps;
+	}
 
 	public PanelCategory getPanelCategory() {
 		return _panelCategory;
@@ -48,8 +60,35 @@ public class PanelCategoryBodyTag extends BasePanelTag {
 	protected void cleanUp() {
 		super.cleanUp();
 
+		_applicationListProps = null;
 		_panelApps = null;
 		_panelCategory = null;
+	}
+
+	protected Map<String, Object> getApplicationListProps() {
+		HttpServletRequest httpServletRequest = getRequest();
+
+		PanelAppRegistry panelAppRegistry =
+			(PanelAppRegistry)httpServletRequest.getAttribute(
+				ApplicationListWebKeys.PANEL_APP_REGISTRY);
+
+		PanelCategoryRegistry panelCategoryRegistry =
+			(PanelCategoryRegistry)httpServletRequest.getAttribute(
+				ApplicationListWebKeys.PANEL_CATEGORY_REGISTRY);
+
+		PanelCategoryHelper panelCategoryHelper = new PanelCategoryHelper(
+			panelAppRegistry, panelCategoryRegistry);
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		return HashMapBuilder.<String, Object>put(
+			"category",
+			_getPanelCategoryObject(
+				httpServletRequest, panelAppRegistry, _panelCategory,
+				panelCategoryHelper, panelCategoryRegistry, themeDisplay)
+		).build();
 	}
 
 	@Override
@@ -57,45 +96,103 @@ public class PanelCategoryBodyTag extends BasePanelTag {
 		return "/panel_category_body/page.jsp";
 	}
 
-	protected List<PanelApp> getPanelApps() {
-		HttpServletRequest httpServletRequest = getRequest();
-
-		PanelAppRegistry panelAppRegistry =
-			(PanelAppRegistry)httpServletRequest.getAttribute(
-				ApplicationListWebKeys.PANEL_APP_REGISTRY);
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		return panelAppRegistry.getPanelApps(
-			_panelCategory, themeDisplay.getPermissionChecker(), getGroup());
-	}
-
 	@Override
 	protected void setAttributes(HttpServletRequest httpServletRequest) {
-		String id = StringUtil.replace(
-			_panelCategory.getKey(), CharPool.PERIOD, CharPool.UNDERLINE);
-
-		id = "panel-manage-" + id;
-
-		httpServletRequest.setAttribute(
-			"liferay-application-list:panel-category-body:id", id);
-
-		List<PanelApp> panelApps = _panelApps;
-
-		if (panelApps == null) {
-			panelApps = getPanelApps();
+		if (_applicationListProps == null) {
+			_applicationListProps = getApplicationListProps();
 		}
 
 		httpServletRequest.setAttribute(
-			"liferay-application-list:panel-category-body:panelApps",
-			panelApps);
-		httpServletRequest.setAttribute(
-			"liferay-application-list:panel-category-body:panelCategory",
-			_panelCategory);
+			"liferay-application-list:panel-category-body:applicationListProps",
+			_applicationListProps);
 	}
 
+	private Map<String, Object> _getPanelAppObject(
+			HttpServletRequest httpServletRequest, PanelApp panelApp,
+			ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		return HashMapBuilder.<String, Object>put(
+			"active",
+			() -> {
+				HttpServletRequest originalHttpServletRequest =
+					PortalUtil.getOriginalServletRequest(httpServletRequest);
+
+				String parameterName =
+					PortalUtil.getPortletNamespace(themeDisplay.getPpid()) +
+						"portletResource";
+
+				String portletResource = ParamUtil.getString(
+					originalHttpServletRequest, parameterName);
+
+				boolean active = Objects.equals(
+					portletResource, panelApp.getPortletId());
+
+				if (Validator.isNull(portletResource)) {
+					active = Objects.equals(
+						themeDisplay.getPpid(), panelApp.getPortletId());
+				}
+
+				return active;
+			}
+		).put(
+			"href", String.valueOf(panelApp.getPortletURL(httpServletRequest))
+		).put(
+			"id", panelApp.getKey()
+		).put(
+			"label", panelApp.getLabel(themeDisplay.getLocale())
+		).build();
+	}
+
+	private Map<String, Object> _getPanelCategoryObject(
+		HttpServletRequest httpServletRequest,
+		PanelAppRegistry panelAppRegistry, PanelCategory panelCategory,
+		PanelCategoryHelper panelCategoryHelper,
+		PanelCategoryRegistry panelCategoryRegistry,
+		ThemeDisplay themeDisplay) {
+
+		return HashMapBuilder.<String, Object>put(
+			"id", panelCategory.getKey()
+		).put(
+			"initialExpanded",
+			panelCategory.isActive(
+				httpServletRequest, panelCategoryHelper, getGroup())
+		).put(
+			"items",
+			() -> {
+				List<Map<String, Object>> items = new ArrayList<>();
+
+				List<PanelCategory> panelCategories =
+					panelCategoryRegistry.getChildPanelCategories(
+						panelCategory, themeDisplay.getPermissionChecker(),
+						getGroup());
+
+				for (PanelCategory childPanelCategory : panelCategories) {
+					items.add(
+						_getPanelCategoryObject(
+							httpServletRequest, panelAppRegistry,
+							childPanelCategory, panelCategoryHelper,
+							panelCategoryRegistry, themeDisplay));
+				}
+
+				List<PanelApp> panelApps = panelAppRegistry.getPanelApps(
+					panelCategory, themeDisplay.getPermissionChecker(),
+					getGroup());
+
+				for (PanelApp panelApp : panelApps) {
+					items.add(
+						_getPanelAppObject(
+							httpServletRequest, panelApp, themeDisplay));
+				}
+
+				return items;
+			}
+		).put(
+			"label", panelCategory.getLabel(themeDisplay.getLocale())
+		).build();
+	}
+
+	private Map<String, Object> _applicationListProps;
 	private List<PanelApp> _panelApps;
 	private PanelCategory _panelCategory;
 
