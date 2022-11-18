@@ -220,6 +220,10 @@
 				"name": {
 					"title": "The name Schema",
 					"type": "string"
+				},
+				"siteId": {
+					"title": "The siteId Schema",
+					"type": "integer"
 				}
 			},
 			"required": [
