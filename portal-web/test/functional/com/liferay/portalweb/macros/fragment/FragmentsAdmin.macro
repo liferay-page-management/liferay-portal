@@ -63,7 +63,7 @@ definition {
 
 		IFrame.selectConfigurationFrame();
 
-		AssertVisible(locator1 = "ItemSelector#SELECT_FILE_UPLOAD_IMAGE");
+		AssertVisible(locator1 = "ItemSelector#ITEM_SELECTOR_UPLOAD");
 
 		WaitForEditable(locator1 = "TextInput#FILE");
 

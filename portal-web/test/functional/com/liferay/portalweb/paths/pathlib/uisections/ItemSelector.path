@@ -85,6 +85,11 @@
 <!--SELECT_FILE-->
 
 <tr>
+	<td>ITEM_SELECTOR_UPLOAD</td>
+	<td>//div[@id='itemSelectorUploadContainer']//div[contains(@class,'dropzone-drag-file')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>SELECT_FILE_IMAGE_CARD</td>
 	<td>//div[contains(@class,'card')]//span[contains(@title,'${key_imageFileName}')]</td>
 	<td></td>
@@ -92,11 +97,6 @@
 <tr>
 	<td>SELECT_FILE_IMAGE_VIEW_BUTTON</td>
 	<td>//div[contains(@class,'card')]//span[contains(@title,'${key_imageFileName}')]/..//following-sibling::*//button[contains(@class,"icon-view")]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>SELECT_FILE_UPLOAD_IMAGE</td>
-	<td>//div[@id='itemSelectorUploadContainer']//label[contains(.,'Select File')] | //div[contains(@id,'ItemSelectorContainer')]//label[contains(.,'Select File')]</td>
 	<td></td>
 </tr>
 <tr>
