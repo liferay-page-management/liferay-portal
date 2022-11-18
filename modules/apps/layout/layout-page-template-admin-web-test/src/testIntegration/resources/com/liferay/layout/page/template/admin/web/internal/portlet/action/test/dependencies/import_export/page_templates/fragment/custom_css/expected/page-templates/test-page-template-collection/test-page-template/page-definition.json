@@ -19,7 +19,8 @@
 						}
 					],
 					"fragment": {
-						"key": "test-text-fragment"
+						"key": "test-text-fragment",
+						"siteId": "${SITE_ID}"
 					},
 					"fragmentConfig": {
 					},

@@ -19,7 +19,8 @@
 		{
 			"definition": {
 				"fragment": {
-					"key": "${FRAGMENT_ENTRY_KEY}"
+					"key": "${FRAGMENT_ENTRY_KEY}",
+					"siteId": "${SITE_ID}"
 				},
 				"fragmentConfig": {
 					"buttonAlign": "left",

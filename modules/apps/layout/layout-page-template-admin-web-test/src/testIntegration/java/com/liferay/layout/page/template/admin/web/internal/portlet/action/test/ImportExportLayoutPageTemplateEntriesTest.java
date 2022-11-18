@@ -539,7 +539,11 @@ public class ImportExportLayoutPageTemplateEntriesTest {
 		_addTextFragmentEntry();
 
 		File expectedFile = _generateZipFile(
-			"fragment/css_classes/expected", null, null);
+			"fragment/css_classes/expected",
+			HashMapBuilder.put(
+				"SITE_ID", String.valueOf(_group1.getGroupId())
+			).build(),
+			null);
 		File inputFile = _generateZipFile(
 			"fragment/css_classes/input", null, null);
 
@@ -553,7 +557,11 @@ public class ImportExportLayoutPageTemplateEntriesTest {
 		_addTextFragmentEntry();
 
 		File expectedFile = _generateZipFile(
-			"fragment/custom_css/expected", null, null);
+			"fragment/custom_css/expected",
+			HashMapBuilder.put(
+				"SITE_ID", String.valueOf(_group1.getGroupId())
+			).build(),
+			null);
 		File inputFile = _generateZipFile(
 			"fragment/custom_css/input", null, null);
 
@@ -567,7 +575,11 @@ public class ImportExportLayoutPageTemplateEntriesTest {
 		_addTextFragmentEntry();
 
 		File expectedFile = _generateZipFile(
-			"fragment/hidden/expected", null, null);
+			"fragment/hidden/expected",
+			HashMapBuilder.put(
+				"SITE_ID", String.valueOf(_group1.getGroupId())
+			).build(),
+			null);
 		File inputFile = _generateZipFile("fragment/hidden/input", null, null);
 
 		_validateImportExport(expectedFile, inputFile);
@@ -587,6 +599,8 @@ public class ImportExportLayoutPageTemplateEntriesTest {
 
 				return String.valueOf(journalArticle.getResourcePrimKey());
 			}
+		).put(
+			"SITE_ID", String.valueOf(_group1.getGroupId())
 		).build();
 
 		File expectedFile = _generateZipFile(
@@ -613,6 +627,8 @@ public class ImportExportLayoutPageTemplateEntriesTest {
 
 				return String.valueOf(journalArticle.getResourcePrimKey());
 			}
+		).put(
+			"SITE_ID", String.valueOf(_group1.getGroupId())
 		).build();
 		Map<String, String> stringValuesMap = HashMapBuilder.put(
 			"FRIENDLY_URL",
@@ -642,7 +658,12 @@ public class ImportExportLayoutPageTemplateEntriesTest {
 		_addImageFragmentEntry();
 
 		File expectedFile = _generateZipFile(
-			"fragment/image_field/image_url_and_link_url/expected", null, null);
+			"fragment/image_field/image_url_and_link_url/expected",
+			HashMapBuilder.put(
+				"SITE_ID", String.valueOf(_group1.getGroupId())
+			).build(),
+			null);
+
 		File inputFile = _generateZipFile(
 			"fragment/image_field/image_url_and_link_url/input", null, null);
 
@@ -656,7 +677,12 @@ public class ImportExportLayoutPageTemplateEntriesTest {
 		_addTextFragmentEntry();
 
 		File expectedFile = _generateZipFile(
-			"fragment/name/expected", null, null);
+			"fragment/name/expected",
+			HashMapBuilder.put(
+				"SITE_ID", String.valueOf(_group1.getGroupId())
+			).build(),
+			null);
+
 		File inputFile = _generateZipFile("fragment/name/input", null, null);
 
 		_validateImportExport(expectedFile, inputFile);
@@ -669,7 +695,12 @@ public class ImportExportLayoutPageTemplateEntriesTest {
 		_addTextFragmentEntry();
 
 		File expectedFile = _generateZipFile(
-			"fragment/responsive/expected", null, null);
+			"fragment/responsive/expected",
+			HashMapBuilder.put(
+				"SITE_ID", String.valueOf(_group1.getGroupId())
+			).build(),
+			null);
+
 		File inputFile = _generateZipFile(
 			"fragment/responsive/input", null, null);
 
@@ -690,6 +721,8 @@ public class ImportExportLayoutPageTemplateEntriesTest {
 
 				return String.valueOf(journalArticle.getResourcePrimKey());
 			}
+		).put(
+			"SITE_ID", String.valueOf(_group1.getGroupId())
 		).build();
 
 		File expectedFile = _generateZipFile(
@@ -717,6 +750,8 @@ public class ImportExportLayoutPageTemplateEntriesTest {
 
 				return String.valueOf(journalArticle.getResourcePrimKey());
 			}
+		).put(
+			"SITE_ID", String.valueOf(_group1.getGroupId())
 		).build();
 
 		File expectedFile = _generateZipFile(
@@ -744,6 +779,8 @@ public class ImportExportLayoutPageTemplateEntriesTest {
 
 				return String.valueOf(journalArticle.getResourcePrimKey());
 			}
+		).put(
+			"SITE_ID", String.valueOf(_group1.getGroupId())
 		).build();
 
 		File expectedFile = _generateZipFile(
@@ -770,6 +807,8 @@ public class ImportExportLayoutPageTemplateEntriesTest {
 
 					return String.valueOf(journalArticle.getResourcePrimKey());
 				}
+			).put(
+				"SITE_ID", String.valueOf(_group1.getGroupId())
 			).build(),
 			null);
 
@@ -794,6 +833,8 @@ public class ImportExportLayoutPageTemplateEntriesTest {
 
 				return String.valueOf(journalArticle.getResourcePrimKey());
 			}
+		).put(
+			"SITE_ID", String.valueOf(_group1.getGroupId())
 		).build();
 
 		File expectedFile = _generateZipFile(
@@ -843,6 +884,8 @@ public class ImportExportLayoutPageTemplateEntriesTest {
 
 				return String.valueOf(journalArticle.getResourcePrimKey());
 			}
+		).put(
+			"SITE_ID", String.valueOf(_group1.getGroupId())
 		).build();
 
 		File expectedFile = _generateZipFile(
@@ -869,6 +912,8 @@ public class ImportExportLayoutPageTemplateEntriesTest {
 
 		Map<String, String> numberValuesMap = HashMapBuilder.put(
 			"CLASS_PK", String.valueOf(RandomTestUtil.randomLong())
+		).put(
+			"SITE_ID", String.valueOf(_group1.getGroupId())
 		).build();
 
 		File expectedFile = _generateZipFile(
@@ -894,6 +939,8 @@ public class ImportExportLayoutPageTemplateEntriesTest {
 
 				return String.valueOf(journalArticle.getResourcePrimKey());
 			}
+		).put(
+			"SITE_ID", String.valueOf(_group1.getGroupId())
 		).build();
 
 		File expectedFile = _generateZipFile(
