@@ -22,16 +22,39 @@ PanelCategory panelCategory = (PanelCategory)request.getAttribute("liferay-appli
 %>
 
 <c:if test="<%= !childPanelCategories.isEmpty() %>">
-	<div class="list-group">
+	<div id="<portlet:namespace /><%= panelCategory.getKey() %>" tabindex="0">
+		<div class="list-group">
+
+			<%
+			for (PanelCategory childPanelCategory : childPanelCategories) {
+			%>
+
+				<liferay-application-list:panel-category-content
+					panelCategory="<%= childPanelCategory %>"
+					showOpen="<%= childPanelCategories.size() == 1 %>"
+				/>
+
+			<%
+			}
+			%>
+
+		</div>
 
 		<%
-		for (PanelCategory childPanelCategory : childPanelCategories) {
+		PanelAppRegistry panelAppRegistry = (PanelAppRegistry)request.getAttribute(ApplicationListWebKeys.PANEL_APP_REGISTRY);
+
+		for (PanelApp panelApp : panelAppRegistry.getPanelApps(panelCategory.getKey())) {
 		%>
 
-			<liferay-application-list:panel-category-content
-				panelCategory="<%= childPanelCategory %>"
-				showOpen="<%= childPanelCategories.size() == 1 %>"
-			/>
+			<c:if test="<%= panelApp.isShow(permissionChecker, themeDisplay.getScopeGroup()) %>">
+				<div class="list-group">
+					<div class="list-group-heading panel-app-root panel-header <%= Objects.equals(themeDisplay.getPpid(), panelApp.getPortletId()) ? "active" : StringPool.BLANK %>">
+						<liferay-application-list:panel-app
+							panelApp="<%= panelApp %>"
+						/>
+					</div>
+				</div>
+			</c:if>
 
 		<%
 		}
@@ -39,24 +62,8 @@ PanelCategory panelCategory = (PanelCategory)request.getAttribute("liferay-appli
 
 	</div>
 
-	<%
-	PanelAppRegistry panelAppRegistry = (PanelAppRegistry)request.getAttribute(ApplicationListWebKeys.PANEL_APP_REGISTRY);
-
-	for (PanelApp panelApp : panelAppRegistry.getPanelApps(panelCategory.getKey())) {
-	%>
-
-		<c:if test="<%= panelApp.isShow(permissionChecker, themeDisplay.getScopeGroup()) %>">
-			<div class="list-group">
-				<div class="list-group-heading panel-app-root panel-header <%= Objects.equals(themeDisplay.getPpid(), panelApp.getPortletId()) ? "active" : StringPool.BLANK %>">
-					<liferay-application-list:panel-app
-						panelApp="<%= panelApp %>"
-					/>
-				</div>
-			</div>
-		</c:if>
-
-	<%
-	}
-	%>
-
+	<liferay-frontend:component
+		context='<%= HashMapBuilder.<String, Object>put("categoryKey", panelCategory.getKey()).build() %>'
+		module="panel/PanelKeyboardHandler"
+	/>
 </c:if>
