@@ -107,11 +107,13 @@ else {
 <clay:container-fluid>
 	<c:choose>
 		<c:when test="<%= scopeGroup.equals(themeDisplay.getControlPanelGroup()) %>">
-			<aui:fieldset-group markupView="lexicon">
-				<aui:fieldset>
-					<%= assetContent %>
-				</aui:fieldset>
-			</aui:fieldset-group>
+			<div class="sheet">
+				<div class="panel-group panel-group-flush">
+					<aui:fieldset>
+						<%= assetContent %>
+					</aui:fieldset>
+				</div>
+			</div>
 		</c:when>
 		<c:otherwise>
 			<%= assetContent %>
