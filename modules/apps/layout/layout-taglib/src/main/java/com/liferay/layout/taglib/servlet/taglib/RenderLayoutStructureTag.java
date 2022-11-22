@@ -44,6 +44,7 @@ import com.liferay.layout.taglib.internal.display.context.RenderCollectionLayout
 import com.liferay.layout.taglib.internal.display.context.RenderLayoutStructureDisplayContext;
 import com.liferay.layout.taglib.internal.info.search.InfoSearchClassMapperRegistryUtil;
 import com.liferay.layout.taglib.internal.servlet.ServletContextUtil;
+import com.liferay.layout.taglib.internal.servlet.taglib.GuardedLayoutResetter;
 import com.liferay.layout.taglib.internal.util.SegmentsExperienceUtil;
 import com.liferay.layout.util.constants.LayoutStructureConstants;
 import com.liferay.layout.util.structure.CollectionStyledLayoutStructureItem;
@@ -61,12 +62,13 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.io.unsync.UnsyncStringWriter;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.layoutconfiguration.util.RuntimePageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutTemplate;
 import com.liferay.portal.kernel.model.LayoutTemplateConstants;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
-import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutTemplateLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.PipingServletResponse;
 import com.liferay.portal.kernel.servlet.SessionErrors;
@@ -91,6 +93,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 
 /**
  * @author Eudaldo Alonso
@@ -1248,14 +1255,39 @@ public class RenderLayoutStructureTag extends IncludeTag {
 			return layoutTypePortlet;
 		}
 
-		layoutTypePortlet.setLayoutTemplateId(
-			layout.getUserId(), PropsValues.DEFAULT_LAYOUT_TEMPLATE_ID);
+		Bundle bundle = FrameworkUtil.getBundle(RenderLayoutStructureTag.class);
 
-		layout = LayoutLocalServiceUtil.updateLayout(
-			layout.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
-			layout.getTypeSettings());
+		BundleContext bundleContext = bundle.getBundleContext();
 
-		return (LayoutTypePortlet)layout.getLayoutType();
+		ServiceReference<GuardedLayoutResetter>
+			guardedLayoutResetterServiceReference =
+				bundleContext.getServiceReference(GuardedLayoutResetter.class);
+
+		GuardedLayoutResetter guardedLayoutResetter = null;
+
+		if (guardedLayoutResetterServiceReference != null) {
+			guardedLayoutResetter = bundleContext.getService(
+				guardedLayoutResetterServiceReference);
+		}
+
+		try {
+			if (guardedLayoutResetter != null) {
+				guardedLayoutResetter.checkAndResetTemplatteId(
+					layout.getPlid());
+
+				return layoutTypePortlet;
+			}
+		}
+		finally {
+			if ((guardedLayoutResetterServiceReference != null) &&
+				(guardedLayoutResetter != null)) {
+
+				bundleContext.ungetService(
+					guardedLayoutResetterServiceReference);
+			}
+		}
+
+		return layoutTypePortlet;
 	}
 
 	private void _write(
