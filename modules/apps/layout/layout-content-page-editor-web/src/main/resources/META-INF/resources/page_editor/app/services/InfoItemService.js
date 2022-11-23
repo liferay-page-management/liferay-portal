@@ -101,6 +101,19 @@ export default {
 		);
 	},
 
+	getFormattedDate({date, dateFormat}) {
+		return serviceFetch(
+			config.getFormattedDate,
+			{
+				body: {
+					date,
+					dateFormat,
+				},
+			},
+			() => {}
+		);
+	},
+
 	/**
 	 * Get an item's value
 	 * @param {object} options

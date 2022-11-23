@@ -21,6 +21,7 @@ import {useId} from '../../../core/hooks/useId';
 import {TEXT_EDITABLE_TYPES} from '../../config/constants/textEditableTypes';
 import {
 	useGetContent,
+	useGetEditableFormatter,
 	useGetFieldValue,
 	useToControlsId,
 } from '../../contexts/CollectionItemContext';
@@ -113,6 +114,13 @@ const FragmentContent = ({
 		languageId,
 		segmentsExperienceId
 	);
+
+	const editableFormatter = useGetEditableFormatter(
+		fragmentEntryLink,
+		languageId,
+		segmentsExperienceId
+	);
+
 	const [content, setContent] = useState('');
 
 	/* eslint-disable-next-line react-hooks/exhaustive-deps */
@@ -182,7 +190,8 @@ const FragmentContent = ({
 							editable.element,
 							value,
 							editableConfig,
-							languageId
+							languageId,
+							editableFormatter
 						);
 
 						editable.element.classList.add('page-editor__editable');
@@ -208,6 +217,7 @@ const FragmentContent = ({
 	}, [
 		defaultContent,
 		dispatch,
+		editableFormatter,
 		editableValues,
 		fragmentEntryLink,
 		fragmentEntryLinkId,
