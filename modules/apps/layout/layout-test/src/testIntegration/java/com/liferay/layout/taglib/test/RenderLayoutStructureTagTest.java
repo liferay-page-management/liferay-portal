@@ -17,6 +17,8 @@ package com.liferay.layout.taglib.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.data.engine.rest.dto.v2_0.DataDefinition;
 import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
+import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.info.exception.InfoFormException;
 import com.liferay.info.exception.InfoFormValidationException;
 import com.liferay.info.field.InfoField;
@@ -39,12 +41,15 @@ import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
@@ -60,11 +65,13 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -398,12 +405,26 @@ public class RenderLayoutStructureTagTest {
 			dataDefinitionResource.postSiteDataDefinitionByContentType(
 				_group.getGroupId(), "journal", dataDefinition);
 
+		String xml = _readFileToString(
+			"dependencies/complex_journal_content.xml");
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			StringUtil.randomString(), ContentTypes.IMAGE_JPEG,
+			FileUtil.getBytes(getClass(), "dependencies/image.jpg"), null, null,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		JSONObject jsonObject = _jsonFactory.createJSONObject(
+			_jsonFactory.looseSerialize(fileEntry));
+
 		JournalArticle journalArticle =
 			JournalTestUtil.addArticleWithXMLContent(
 				_group.getGroupId(),
 				JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 				JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
-				_readFileToString("dependencies/complex_journal_content.xml"),
+				StringUtil.replace(
+					xml, "[$DOCUMENT_JSON$]", jsonObject.toString()),
 				dataDefinition.getDataDefinitionKey(), null, LocaleUtil.SPAIN);
 
 		LayoutTestUtil.addPortletToLayout(
@@ -645,10 +666,16 @@ public class RenderLayoutStructureTagTest {
 	private DataDefinitionResource.Factory _dataDefinitionResourceFactory;
 
 	@Inject
+	private DLAppLocalService _dlAppLocalService;
+
+	@Inject
 	private EditPageInfoItemCapability _editPageInfoItemCapability;
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@Inject
+	private JSONFactory _jsonFactory;
 
 	private Layout _layout;
 
