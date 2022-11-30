@@ -258,6 +258,14 @@ public class WikiPageWrapper
 
 	@Override
 	public java.util.List<com.liferay.portal.kernel.repository.model.FileEntry>
+			getApprovedAttachmentsFileEntries()
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return model.getApprovedAttachmentsFileEntries();
+	}
+
+	@Override
+	public java.util.List<com.liferay.portal.kernel.repository.model.FileEntry>
 			getAttachmentsFileEntries()
 		throws com.liferay.portal.kernel.exception.PortalException {
 

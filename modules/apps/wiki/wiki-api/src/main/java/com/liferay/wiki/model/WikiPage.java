@@ -65,6 +65,10 @@ public interface WikiPage extends PersistedModel, WikiPageModel {
 	public WikiPage fetchRedirectPage();
 
 	public java.util.List<com.liferay.portal.kernel.repository.model.FileEntry>
+			getApprovedAttachmentsFileEntries()
+		throws com.liferay.portal.kernel.exception.PortalException;
+
+	public java.util.List<com.liferay.portal.kernel.repository.model.FileEntry>
 			getAttachmentsFileEntries()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
