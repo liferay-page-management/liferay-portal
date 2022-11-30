@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -94,6 +95,27 @@ public class WikiPageImpl extends WikiPageBaseImpl {
 
 		return WikiPageLocalServiceUtil.fetchPage(
 			getNodeId(), getRedirectTitle());
+	}
+
+	@Override
+	public List<FileEntry> getApprovedAttachmentsFileEntries()
+		throws PortalException {
+
+		List<FileEntry> fileEntries = new ArrayList<>();
+
+		for (FileEntry fileEntry :
+				getAttachmentsFileEntries(
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
+
+			int value = DateUtil.compareTo(
+				fileEntry.getModifiedDate(), getStatusDate());
+
+			if (value <= 0) {
+				fileEntries.add(fileEntry);
+			}
+		}
+
+		return fileEntries;
 	}
 
 	@Override

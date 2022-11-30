@@ -18,16 +18,18 @@
 
 <%
 final WikiPage wikiPage = (WikiPage)request.getAttribute(WikiWebKeys.WIKI_PAGE);
+
+List<FileEntry> fileEntries = wikiPage.getApprovedAttachmentsFileEntries();
 %>
 
-<c:if test="<%= wikiPage.getAttachmentsFileEntriesCount() > 0 %>">
+<c:if test="<%= !fileEntries.isEmpty() %>">
 	<div class="page-attachments">
 		<h5><liferay-ui:message key="attachments" /></h5>
 
 		<clay:row>
 
 			<%
-			for (FileEntry fileEntry : wikiPage.getAttachmentsFileEntries()) {
+			for (FileEntry fileEntry : fileEntries) {
 			%>
 
 				<clay:col
