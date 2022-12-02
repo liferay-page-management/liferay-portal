@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.security.auth.AuthException;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.RemoteAuthException;
 import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.search.engine.SearchEngineInformation;
 import com.liferay.site.admin.web.internal.constants.SiteAdminPortletKeys;
 import com.liferay.site.constants.SiteWebKeys;
 import com.liferay.site.initializer.SiteInitializerRegistry;
@@ -103,6 +104,9 @@ public class SiteAdminPortlet extends MVCPortlet {
 			SiteWebKeys.GROUP_SEARCH_PROVIDER, groupSearchProvider);
 
 		renderRequest.setAttribute(
+			SiteWebKeys.SEARCH_ENGINE_INFORMATION, searchEngineInformation);
+
+		renderRequest.setAttribute(
 			SiteWebKeys.SITE_INITIALIZER_REGISTRY, siteInitializerRegistry);
 
 		if (SessionErrors.contains(
@@ -155,6 +159,9 @@ public class SiteAdminPortlet extends MVCPortlet {
 
 	@Reference
 	protected GroupSearchProvider groupSearchProvider;
+
+	@Reference
+	protected SearchEngineInformation searchEngineInformation;
 
 	@Reference
 	protected SiteInitializerRegistry siteInitializerRegistry;

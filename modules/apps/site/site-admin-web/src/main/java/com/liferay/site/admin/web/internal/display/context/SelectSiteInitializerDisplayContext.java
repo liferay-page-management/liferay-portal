@@ -20,9 +20,11 @@ import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.LayoutSetPrototypeServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.search.engine.SearchEngineInformation;
 import com.liferay.site.admin.web.internal.display.context.comparator.SiteInitializerNameComparator;
 import com.liferay.site.admin.web.internal.util.SiteInitializerItem;
 import com.liferay.site.constants.SiteWebKeys;
@@ -31,6 +33,7 @@ import com.liferay.site.initializer.SiteInitializerRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
@@ -50,6 +53,10 @@ public class SelectSiteInitializerDisplayContext {
 		_httpServletRequest = httpServletRequest;
 		_renderRequest = renderRequest;
 		_renderResponse = renderResponse;
+
+		_searchEngineInformation =
+			(SearchEngineInformation)httpServletRequest.getAttribute(
+				SiteWebKeys.SEARCH_ENGINE_INFORMATION);
 
 		_siteInitializerRegistry =
 			(SiteInitializerRegistry)httpServletRequest.getAttribute(
@@ -128,20 +135,47 @@ public class SelectSiteInitializerDisplayContext {
 				themeDisplay.getCompanyId(), true);
 
 		for (SiteInitializer siteInitializer : siteInitializers) {
-			siteInitializerItems.add(
-				new SiteInitializerItem(
-					siteInitializer, themeDisplay.getLocale()));
+			if (_isSiteInitializerEnabled(siteInitializer.getKey())) {
+				siteInitializerItems.add(
+					new SiteInitializerItem(
+						siteInitializer, themeDisplay.getLocale()));
+			}
 		}
 
 		return ListUtil.sort(
 			siteInitializerItems, new SiteInitializerNameComparator(true));
 	}
 
+	private boolean _isSearchEngineSolr() {
+		if (Objects.equals(
+				_searchEngineInformation.getVendorString(), "Solr")) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean _isSiteInitializerEnabled(String key) {
+		if (_isSearchEngineSolr() &&
+			ArrayUtil.contains(_COMMERCE_SITE_INITIALIZER_KEYS, key)) {
+
+			return false;
+		}
+
+		return true;
+	}
+
+	private static final String[] _COMMERCE_SITE_INITIALIZER_KEYS = {
+		"minium-full-initializer", "minium-initializer", "speedwell-initializer"
+	};
+
 	private String _backURL;
 	private final HttpServletRequest _httpServletRequest;
 	private Long _parentGroupId;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
+	private final SearchEngineInformation _searchEngineInformation;
 	private final SiteInitializerRegistry _siteInitializerRegistry;
 
 }
