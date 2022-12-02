@@ -100,14 +100,14 @@ function PageTypeSelector({
 					<ClayButton
 						className="form-control-select text-left"
 						displayType="secondary"
+						role="combobox"
 						small
-						type="button"
 					>
 						{pageTypeSelectedOptionLabel}
 					</ClayButton>
 				}
 			>
-				<ClayDropDown.ItemList>
+				<ClayDropDown.ItemList role="listbox">
 					{pageTypeOptions
 						.filter((option) => option.items.length)
 						.map((option, index) => (
@@ -121,6 +121,7 @@ function PageTypeSelector({
 										className="page-type-selector-option"
 										key={item.value}
 										onClick={() => handleSelect(item.value)}
+										roleItem="option"
 										symbolRight={
 											item.value ===
 											pageTypeSelectedOption
