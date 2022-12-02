@@ -27,6 +27,9 @@ public class SiteWebKeys {
 	public static final String GROUP_URL_PROVIDER_CONTROL_PANEL =
 		"GROUP_URL_PROVIDER_CONTROL_PANEL";
 
+	public static final String SEARCH_ENGINE_INFORMATION =
+		"SEARCH_ENGINE_INFORMATION";
+
 	public static final String SITE_INITIALIZER_REGISTRY =
 		"SITE_INITIALIZER_REGISTRY";
 
