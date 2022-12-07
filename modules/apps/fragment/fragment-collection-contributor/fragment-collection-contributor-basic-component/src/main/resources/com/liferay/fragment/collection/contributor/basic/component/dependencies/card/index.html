@@ -1,15 +1,15 @@
-<div class="component-card text-break">
-	<div class="card m-0 overflow-hidden">
-		<img alt="" class="${configuration.imageSize}" data-lfr-editable-id="01-img" data-lfr-editable-type="image" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAJCAYAAAA7KqwyAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAkSURBVHgB7cxBEQAACAIwtH8Pzw52kxD8OBZgNXsPQUOUwCIgAz0DHTyygaAAAAAASUVORK5CYII=" />
+<div class="component-card">
+	<div class="component-card__content">
+		<img alt="" class="component-card__img ${configuration.imageSize}" data-lfr-editable-id="01-img" data-lfr-editable-type="image" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAJCAYAAAA7KqwyAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAkSURBVHgB7cxBEQAACAIwtH8Pzw52kxD8OBZgNXsPQUOUwCIgAz0DHTyygaAAAAAASUVORK5CYII=" />
 
-		<div class="card-body py-4">
-			<h2>
+		<div class="component-card__body">
+			<h2 class="component-card__header">
 				<span class="clearfix" data-lfr-editable-id="02-title" data-lfr-editable-type="rich-text">
 					Card Title example
 				</span>
 			</h2>
 
-			<div class="clearfix mb-4" data-lfr-editable-id="03-content" data-lfr-editable-type="rich-text">
+			<div class="clearfix component-card__description" data-lfr-editable-id="03-content" data-lfr-editable-type="rich-text">
 				<p>
 					This is an example of quick text to fill the body of the
 					card with some content in order to present it properly in
@@ -17,7 +17,7 @@
 				</p>
 			</div>
 
-			<a class="link" data-lfr-editable-id="04-link" data-lfr-editable-type="link" href="" id="fragment-${fragmentEntryLinkNamespace}-04-link">
+			<a class="component-card__link" data-lfr-editable-id="04-link" data-lfr-editable-type="link" href="" id="fragment-${fragmentEntryLinkNamespace}-04-link">
 				Go Somewhere
 			</a>
 		</div>

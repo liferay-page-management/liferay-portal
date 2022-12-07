@@ -1,3 +1,87 @@
-.component-card img {
+.component-card {
+	overflow-wrap: break-word;
+	word-wrap: break-word;
+}
+
+.component-card__content {
+	background-color: #fff;
+	border-color: rgba(0, 0, 0, 0.125);
+	border-radius: 0.25rem;
+	border-style: solid;
+	border-width: 0;
+	box-shadow: 0 1px 3px -1px rgba(0, 0, 0, 0.6);
+	display: block;
+	margin-bottom: 0;
+	min-width: 0;
+	overflow: hidden;
+	overflow-wrap: break-word;
+	position: relative;
+	word-wrap: break-word;
+}
+
+.component-card__img {
 	max-width: 100%;
+}
+
+.component-card__header {
+	font-weight: 700;
+	line-height: 1.2;
+	margin-bottom: 0.5rem;
+	margin-top: 0;
+}
+
+.component-card__body {
+	flex: 1 1 auto;
+	min-height: 1px;
+	padding: 1.5rem 1rem;
+}
+
+.component-card__description p {
+	margin-bottom: 1rem;
+	margin-top: 0;
+}
+
+.component-card__link {
+	background-color: transparent;
+	border-color: transparent;
+	border-radius: 1px;
+	border-style: solid;
+	border-width: 0.0625rem;
+	box-shadow: none;
+	color: #0b5fff;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 0.875rem;
+	font-weight: 400;
+	line-height: 1.5;
+	text-align: center;
+	text-decoration: none;
+	text-transform: none;
+	transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+	user-select: none;
+	vertical-align: middle;
+}
+
+.component-card__link:hover {
+	color: #004ad7;
+	text-decoration: underline;
+}
+
+.component-card__link:focus {
+	box-shadow: 0 0 0 0.125rem #fff, 0 0 0 0.25rem #80acff;
+	text-decoration: none;
+}
+
+.component-card__link:active:focus {
+	box-shadow: 0 0 0 0.125rem #fff, 0 0 0 0.25rem #80acff;
+}
+
+.component-card .w-100 {
+	width: 100%;
+}
+
+.component-card .clearfix::after {
+	clear: both;
+	content: "";
+	display: block;
 }
