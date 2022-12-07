@@ -1,0 +1,179 @@
+.component-button a {
+	background-color: transparent;
+	border-color: transparent;
+	border-radius: 0.25rem;
+	border-style: solid;
+	border-width: 0.0625rem;
+	box-shadow: none;
+	color: #272833;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 1rem;
+	font-weight: 600;
+	line-height: 1.5;
+	padding-bottom: 0.4375rem;
+	padding-left: 0.9375rem;
+	padding-right: 0.9375rem;
+	padding-top: 0.4375rem;
+	text-align: center;
+	text-decoration: none;
+	text-transform: none;
+	transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+	user-select: none;
+	vertical-align: middle;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.component-button a {
+		transition: none;
+	}
+}
+
+.component-button a:hover {
+	color: #272833;
+	text-decoration: none;
+}
+
+.component-button a:focus {
+	box-shadow: 0 0 0 0.125rem #fff, 0 0 0 0.25rem #80acff;
+	outline: 0;
+}
+
+.component-button a:active:focus {
+	box-shadow: 0 0 0 0.125rem #fff, 0 0 0 0.25rem #80acff;
+}
+
+.component-button-sm a {
+	border-radius: 0.1875rem;
+	font-size: 0.875rem;
+	line-height: 1.15;
+	padding-bottom: 0.4375rem;
+	padding-left: 0.75rem;
+	padding-right: 0.75rem;
+	padding-top: 0.4375rem;
+}
+
+.component-button-lg a {
+	border-radius: 0.25rem;
+	font-size: 1.125rem;
+	line-height: 1.5;
+	padding-bottom: 0.59375rem;
+	padding-left: 1.5rem;
+	padding-right: 1.5rem;
+	padding-top: 0.59375rem;
+}
+
+.component-button-primary a {
+	background-color: #0b5fff;
+	border-color: #0b5fff;
+	color: #fff;
+}
+
+.component-button-primary a:hover {
+	background-color: #0053f0;
+	border-color: transparent;
+	color: #fff;
+}
+
+.component-button-primary:focus a {
+	background-color: #0053f0;
+	border-color: #004ad7;
+	color: #fff;
+}
+
+.component-button-primary a:active {
+	background-color: #004ad7;
+	border-color: transparent;
+	color: #fff;
+}
+
+.component-button-secondary a {
+	background-color: #fff;
+	border-color: #cdced9;
+	color: #6b6c7e;
+}
+
+.component-button-secondary a:hover {
+	background-color: #f7f8f9;
+	border-color: #cdced9;
+	color: #272833;
+}
+
+.component-button-secondary a:focus {
+	background-color: #f7f8f9;
+	border-color: #cdced9;
+	color: #272833;
+}
+
+.component-button-secondary a:active {
+	background-color: #f1f2f5;
+	border-color: #cdced9;
+	color: #272833;
+}
+
+.component-button-link a {
+	border-radius: 1px;
+	box-shadow: none;
+	color: #0b5fff;
+	font-weight: 400;
+	text-decoration: none;
+}
+
+.component-button-link a:hover {
+	color: #004ad7;
+	text-decoration: underline;
+}
+
+.component-button-link a:focus {
+	box-shadow: 0 0 0 0.125rem #fff, 0 0 0 0.25rem #80acff;
+	text-decoration: none;
+}
+
+.component-button-link a:active:focus {
+	box-shadow: 0 0 0 0.125rem #fff, 0 0 0 0.25rem #80acff;
+}
+
+.component-button-outline-primary a {
+	border-color: #0b5fff;
+	color: #0b5fff;
+}
+
+.component-button-outline-primary a:hover {
+	background-color: #f0f5ff;
+	border-color: #0b5fff;
+	color: #0b5fff;
+}
+
+.component-button-outline-primary a:focus {
+	background-color: #f0f5ff;
+	color: #0b5fff;
+}
+
+.component-button-outline-primary a:active {
+	background-color: #e6edf8;
+	border-color: #0b5fff;
+	color: #0b5fff;
+}
+
+.component-button-outline-secondary a {
+	border-color: #cdced9;
+	color: #6b6c7e;
+}
+
+.component-button-outline-secondary a:hover {
+	background-color: rgba(39, 40, 51, 0.03);
+	border-color: transparent;
+	color: #272833;
+}
+
+.component-button-outline-secondary a:focus {
+	background-color: rgba(39, 40, 51, 0.03);
+	border-color: transparent;
+	color: #272833;
+}
+
+.component-button-outline-secondary a:active {
+	background-color: rgba(39, 40, 51, 0.06);
+	border-color: transparent;
+	color: #272833;
+}
