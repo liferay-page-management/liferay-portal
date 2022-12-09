@@ -73,8 +73,8 @@ public class LayoutUtilityPageEntryLocalServiceImpl
 	@Override
 	public LayoutUtilityPageEntry addLayoutUtilityPageEntry(
 			String externalReferenceCode, long userId, long groupId, long plid,
-			long previewFileEntryId, String name, String type,
-			long masterLayoutPlid)
+			long previewFileEntryId, boolean defaultLayoutUtilityPageEntry,
+			String name, String type, long masterLayoutPlid)
 		throws PortalException {
 
 		_validateName(groupId, 0, name, type);
@@ -105,6 +105,8 @@ public class LayoutUtilityPageEntryLocalServiceImpl
 
 		layoutUtilityPageEntry.setPlid(plid);
 
+		layoutUtilityPageEntry.setDefaultLayoutUtilityPageEntry(
+			defaultLayoutUtilityPageEntry);
 		layoutUtilityPageEntry.setPreviewFileEntryId(previewFileEntryId);
 		layoutUtilityPageEntry.setName(name);
 		layoutUtilityPageEntry.setType(type);
@@ -143,8 +145,8 @@ public class LayoutUtilityPageEntryLocalServiceImpl
 
 		return addLayoutUtilityPageEntry(
 			null, userId, serviceContext.getScopeGroupId(), 0,
-			previewFileEntryId, name, sourceLayoutUtilityPageEntry.getType(),
-			0);
+			previewFileEntryId, false, name,
+			sourceLayoutUtilityPageEntry.getType(), 0);
 	}
 
 	@Override
