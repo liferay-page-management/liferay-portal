@@ -1204,7 +1204,7 @@ public class ServicePreAction extends Action {
 		else {
 			viewableLayoutComposite = _getViewableLayoutComposite(
 				httpServletRequest, user, permissionChecker, layout, layouts,
-				false);
+				viewableGroup);
 		}
 
 		String layoutSetLogo = null;
