@@ -45,7 +45,8 @@ public class LayoutUtilityPageEntryServiceImpl
 
 	@Override
 	public LayoutUtilityPageEntry addLayoutUtilityPageEntry(
-			String externalReferenceCode, long groupId, long previewFileEntryId,
+			String externalReferenceCode, long groupId, long plid,
+			long previewFileEntryId, boolean defaultLayoutUtilityPageEntry,
 			String name, String type, long masterLayoutPlid)
 		throws PortalException {
 
@@ -54,8 +55,9 @@ public class LayoutUtilityPageEntryServiceImpl
 			LayoutUtilityPageActionKeys.ADD_LAYOUT_UTILITY_PAGE_ENTRY);
 
 		return layoutUtilityPageEntryLocalService.addLayoutUtilityPageEntry(
-			externalReferenceCode, getUserId(), groupId, previewFileEntryId,
-			name, type, masterLayoutPlid);
+			externalReferenceCode, getUserId(), groupId, plid,
+			previewFileEntryId, defaultLayoutUtilityPageEntry, name, type,
+			masterLayoutPlid);
 	}
 
 	@Override
@@ -63,6 +65,10 @@ public class LayoutUtilityPageEntryServiceImpl
 			long groupId, long layoutUtilityPageEntryId,
 			ServiceContext serviceContext)
 		throws PortalException {
+
+		_groupPermission.check(
+			getPermissionChecker(), groupId,
+			LayoutUtilityPageActionKeys.ADD_LAYOUT_UTILITY_PAGE_ENTRY);
 
 		return layoutUtilityPageEntryLocalService.copyLayoutUtilityPageEntry(
 			getUserId(), groupId, layoutUtilityPageEntryId, serviceContext);
