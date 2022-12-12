@@ -33,16 +33,22 @@ function main() {
 		return;
 	}
 
-	content = fragmentElement.querySelector('.video');
+	content = fragmentElement.querySelector('.component-external-video');
 
 	if (!content) {
 		return requestAnimationFrame(main);
 	}
 
-	errorMessage = content.querySelector('.error-message');
-	loadingIndicator = content.querySelector('.loading-animation');
-	videoContainer = content.querySelector('.video-container');
-	videoMask = content.querySelector('.video-mask');
+	errorMessage = content.querySelector(
+		'.component-external-video__error-message'
+	);
+	loadingIndicator = content.querySelector(
+		'.component-external-video__loading-animation'
+	);
+	videoContainer = content.querySelector(
+		'.component-external-video__container'
+	);
+	videoMask = content.querySelector('.component-external-video__mask');
 
 	try {
 		if (configuration.video) {
@@ -104,7 +110,7 @@ const resize = debounce(function () {
 
 function showError() {
 	if (editMode) {
-		errorMessage.removeAttribute('hidden');
+		errorMessage.removeAttribute('aria-hidden');
 		loadingIndicator.parentElement.removeChild(loadingIndicator);
 		videoContainer.parentElement.removeChild(videoContainer);
 	}
