@@ -1,0 +1,24 @@
+.component-separator__line {
+	border-width: 1px 0 0 0;
+	margin: 0 auto;
+}
+
+.component-separator__line--padding-bottom-1 {
+	padding-bottom: 0.25rem;
+}
+
+.component-separator__line--padding-bottom-2 {
+	padding-bottom: 0.5rem;
+}
+
+.component-separator__line--padding-bottom-3 {
+	padding-bottom: 1rem;
+}
+
+.component-separator__line--padding-bottom-4 {
+	padding-bottom: 1.5rem;
+}
+
+.component-separator__line--padding-bottom-5 {
+	padding-bottom: 3rem;
+}
