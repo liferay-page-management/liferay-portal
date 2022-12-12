@@ -1,4 +1,12 @@
-.component-dropdown .dropdown-fragment-menu {
+.component-dropdown__icon {
+	display: inline-block;
+	fill: currentColor;
+	height: 1rem;
+	vertical-align: middle;
+	width: 1rem;
+}
+
+.component-dropdown_menu {
 	background-clip: padding-box;
 	background-color: #fff;
 	border-color: #e7e7ed;
@@ -9,6 +17,188 @@
 	display: none;
 	margin: 0.3125rem 0 0;
 	min-width: 240px;
+	padding: 8px;
 	position: fixed;
 	z-index: 976;
+}
+
+.component-dropdown__button {
+	background-color: transparent;
+	border-color: transparent;
+	border-radius: 0.25rem;
+	border-style: solid;
+	border-width: 0.0625rem;
+	box-shadow: none;
+	color: #272833;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 1rem;
+	font-weight: 600;
+	line-height: 1.5;
+	padding-bottom: 0.4375rem;
+	padding-left: 0.9375rem;
+	padding-right: 0.9375rem;
+	padding-top: 0.4375rem;
+	text-align: center;
+	text-decoration: none;
+	text-transform: none;
+	transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+		border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+	user-select: none;
+	vertical-align: middle;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.component-dropdown__button {
+		transition: none;
+	}
+}
+
+.component-dropdown__button:hover {
+	color: #272833;
+	text-decoration: none;
+}
+
+.component-dropdown__button:focus {
+	box-shadow: 0 0 0 0.125rem #fff, 0 0 0 0.25rem #80acff;
+	outline: 0;
+}
+
+.component-dropdown__button:active:focus {
+	box-shadow: 0 0 0 0.125rem #fff, 0 0 0 0.25rem #80acff;
+}
+
+.component-dropdown__button-sm {
+	border-radius: 0.1875rem;
+	font-size: 0.875rem;
+	line-height: 1.15;
+	padding-bottom: 0.4375rem;
+	padding-left: 0.75rem;
+	padding-right: 0.75rem;
+	padding-top: 0.4375rem;
+}
+
+.component-dropdown__button-lg {
+	border-radius: 0.25rem;
+	font-size: 1.125rem;
+	line-height: 1.5;
+	padding-bottom: 0.59375rem;
+	padding-left: 1.5rem;
+	padding-right: 1.5rem;
+	padding-top: 0.59375rem;
+}
+
+.component-dropdown__button-primary {
+	background-color: #0b5fff;
+	border-color: #0b5fff;
+	color: #fff;
+}
+
+.component-dropdown__button-primary:hover {
+	background-color: #0053f0;
+	border-color: transparent;
+	color: #fff;
+}
+
+.component-dropdown__button-primary:focus {
+	background-color: #0053f0;
+	border-color: #004ad7;
+	color: #fff;
+}
+
+.component-dropdown__button-primary:active {
+	background-color: #004ad7;
+	border-color: transparent;
+	color: #fff;
+}
+
+.component-dropdown__button-secondary {
+	background-color: #fff;
+	border-color: #cdced9;
+	color: #6b6c7e;
+}
+
+.component-dropdown__button-secondary:hover {
+	background-color: #f7f8f9;
+	border-color: #cdced9;
+	color: #272833;
+}
+
+.component-dropdown__button-secondary:focus {
+	background-color: #f7f8f9;
+	border-color: #cdced9;
+	color: #272833;
+}
+
+.component-dropdown__button-secondary:active {
+	background-color: #f1f2f5;
+	border-color: #cdced9;
+	color: #272833;
+}
+
+.component-dropdown__button-link {
+	border-radius: 1px;
+	box-shadow: none;
+	color: #0b5fff;
+	font-weight: 400;
+	text-decoration: none;
+}
+
+.component-dropdown__button-link:hover {
+	color: #004ad7;
+	text-decoration: underline;
+}
+
+.component-dropdown__button-link:focus {
+	box-shadow: 0 0 0 0.125rem #fff, 0 0 0 0.25rem #80acff;
+	text-decoration: none;
+}
+
+.component-dropdown__button-link:active:focus {
+	box-shadow: 0 0 0 0.125rem #fff, 0 0 0 0.25rem #80acff;
+}
+
+.component-dropdown__button-outline-primary {
+	border-color: #0b5fff;
+	color: #0b5fff;
+}
+
+.component-dropdown__button-outline-primary:hover {
+	background-color: #f0f5ff;
+	border-color: #0b5fff;
+	color: #0b5fff;
+}
+
+.component-dropdown__button-outline-primary:focus {
+	background-color: #f0f5ff;
+	color: #0b5fff;
+}
+
+.component-dropdown__button-outline-primary:active {
+	background-color: #e6edf8;
+	border-color: #0b5fff;
+	color: #0b5fff;
+}
+
+.component-dropdown__button-outline-secondary {
+	border-color: #cdced9;
+	color: #6b6c7e;
+}
+
+.component-dropdown__button-outline-secondary:hover {
+	background-color: rgba(39, 40, 51, 0.03);
+	border-color: transparent;
+	color: #272833;
+}
+
+.component-dropdown__button-outline-secondary:focus {
+	background-color: rgba(39, 40, 51, 0.03);
+	border-color: transparent;
+	color: #272833;
+}
+
+.component-dropdown__button-outline-secondary:active {
+	background-color: rgba(39, 40, 51, 0.06);
+	border-color: transparent;
+	color: #272833;
 }

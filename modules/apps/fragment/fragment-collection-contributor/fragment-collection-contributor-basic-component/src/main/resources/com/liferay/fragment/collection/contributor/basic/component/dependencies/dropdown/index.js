@@ -12,9 +12,9 @@
  * details.
  */
 
-const toggle = fragmentElement.querySelector('.dropdown-fragment-toggle');
+const toggle = fragmentElement.querySelector('.component-dropdown__button');
 const toggleEditable = toggle.querySelector('[data-lfr-editable-id]');
-const menu = fragmentElement.querySelector('.dropdown-fragment-menu');
+const menu = fragmentElement.querySelector('.component-dropdown__menu');
 const withinMasterLayout = fragmentElement.parentElement.classList.contains(
 	'page-editor__fragment-content--master'
 );

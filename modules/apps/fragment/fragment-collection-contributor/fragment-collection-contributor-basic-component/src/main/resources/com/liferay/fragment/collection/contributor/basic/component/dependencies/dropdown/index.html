@@ -1,15 +1,14 @@
 <div class="component-dropdown">
-	<div class="dropdown-fragment">
-		<button aria-expanded="false" aria-haspopup="true" class="btn btn-${configuration.buttonSize} btn-${configuration.buttonType} dropdown-fragment-toggle" id="dropdown-fragment-${fragmentEntryLinkNamespace}" type="button">
+	<div class="component-dropdown__content">
+		<button aria-expanded="false" aria-haspopup="true" class="component-dropdown__button component-dropdown__button-${configuration.buttonSize} component-dropdown__button-${configuration.buttonType}" id="component-dropdown-${fragmentEntryLinkNamespace}" type="button">
 			<span data-lfr-editable-id="dropdown-text" data-lfr-editable-type="text">Dropdown</span>
-				<span class="inline-item inline-item-after">
-				<svg class="lexicon-icon lexicon-icon-caret-bottom" focusable="false" role="presentation">
-					<use xlink:href="${siteSpritemap}#caret-bottom" />
-				</svg>
-			</span>
+
+			<svg class="component-dropdown__icon" focusable="false" role="presentation">
+				<use xlink:href="${siteSpritemap}#caret-bottom" />
+			</svg>
 		</button>
 
-		<div aria-labelledby="dropdown-fragment" class="dropdown-fragment-menu p-1">
+		<div aria-labelledby="component-dropdown-${fragmentEntryLinkNamespace}" class="component-dropdown__menu" style="display: none;">
 			<lfr-drop-zone data-lfr-drop-zone-id="1"></lfr-drop-zone>
 		</div>
 	</div>
