@@ -1,0 +1,11 @@
+.component-image {
+	overflow: hidden;
+}
+
+.component-image--w-0 {
+	width: auto;
+}
+
+.component-image--w-100 {
+	width: 100%;
+}
