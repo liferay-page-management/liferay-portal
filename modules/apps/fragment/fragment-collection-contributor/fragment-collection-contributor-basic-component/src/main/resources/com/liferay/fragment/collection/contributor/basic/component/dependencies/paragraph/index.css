@@ -1,3 +1,13 @@
+.component-paragraph {
+	word-wrap: break-word;
+}
+
 .component-paragraph img {
 	max-width: 100%;
+}
+
+.component-paragraph::after {
+	clear: both;
+	content: "";
+	display: block;
 }
