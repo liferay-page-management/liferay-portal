@@ -1,3 +1,28 @@
-.fragment-heading-text-colored a {
-	color: inherit;
+.component-heading {
+	margin: 0;
+	word-break: break-word;
+}
+
+h1.component-heading {
+	font-size: 1.625rem;
+}
+
+h2.component-heading {
+	font-size: 1.375rem;
+}
+
+h3.component-heading {
+	font-size: 1.1875rem;
+}
+
+h4.component-heading {
+	font-size: 1rem;
+}
+
+h5.component-heading {
+	font-size: 0.875rem;
+}
+
+h6.component-heading {
+	font-size: 0.8125rem;
 }
