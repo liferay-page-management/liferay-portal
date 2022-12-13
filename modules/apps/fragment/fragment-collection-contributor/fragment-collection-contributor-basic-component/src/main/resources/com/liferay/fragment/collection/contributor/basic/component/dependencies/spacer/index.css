@@ -1,0 +1,19 @@
+.component-spacer--py-1 {
+	padding: 0.25rem 0;
+}
+
+.component-spacer--py-2 {
+	padding: 0.5rem 0;
+}
+
+.component-spacer--py-3 {
+	padding: 1rem 0;
+}
+
+.component-spacer--py-4 {
+	padding: 1.5rem 0;
+}
+
+.component-spacer--py-5 {
+	padding: 3rem 0;
+}
