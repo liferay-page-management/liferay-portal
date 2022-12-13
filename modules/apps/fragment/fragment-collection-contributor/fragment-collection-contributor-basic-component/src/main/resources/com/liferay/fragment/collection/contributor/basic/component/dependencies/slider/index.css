@@ -1,4 +1,4 @@
-@keyframes moveLeftActive {
+@keyframes componentSliderMoveLeftActive {
 	from {
 		transform: translateX(0);
 	}
@@ -7,7 +7,7 @@
 	}
 }
 
-@keyframes moveLeft {
+@keyframes componentSliderMoveLeft {
 	from {
 		transform: translateX(-100%);
 	}
@@ -16,7 +16,7 @@
 	}
 }
 
-@keyframes moveRightActive {
+@keyframes componentSliderMoveRightActive {
 	from {
 		transform: translateX(0);
 	}
@@ -25,7 +25,7 @@
 	}
 }
 
-@keyframes moveRight {
+@keyframes componentSliderMoveRight {
 	from {
 		transform: translateX(100%);
 	}
@@ -34,59 +34,244 @@
 	}
 }
 
-.component-slider .carousel {
+.component-slider__carousel {
 	position: relative;
 }
 
-.component-slider .carousel-caption {
-	left: 25%;
-	right: 25%;
+.component-slider__carousel-inner {
+	overflow: hidden;
+	overflow-wrap: break-word;
+	position: relative;
+	width: 100%;
+	word-wrap: break-word;
 }
 
-.component-slider .carousel-item {
+.component-slider__carousel-inner::after {
+	clear: both;
+	content: "";
+	display: block;
+}
+
+.component-slider__carousel-item {
+	backface-visibility: hidden;
+	display: none;
+	float: left;
+	margin-right: -100%;
 	opacity: 0;
+	position: relative;
+	transform: none;
+	transition: transform 0.6s ease-in-out;
+	width: 100%;
 }
 
-.component-slider .carousel-item.move-right,
-.component-slider .carousel-item.move-left {
+.component-slider__carousel-item > img {
+	width: 100%;
+}
+
+.component-slider__carousel-item.active,
+.component-slider__carousel-item-next,
+.component-slider__carousel-item-prev {
+	display: block;
+}
+
+.component-slider__carousel-item-next:not(.component-slider__carousel-item-left),
+.active.component-slider__carousel-item-right {
+	transform: translateX(100%);
+}
+
+.component-slider__carousel-item-prev:not(.component-slider__carousel-item-right),
+.active.component-slider__carousel-item-left {
+	transform: translateX(-100%);
+}
+
+.component-slider__carousel-item.active,
+.component-slider__carousel-item-next.component-slider__carousel-item-left,
+.component-slider__carousel-item-prev.component-slider__carousel-item-right {
+	opacity: 1;
+	z-index: 1;
+}
+.active.component-slider__carousel-item-left,
+.active.component-slider__carousel-item-right {
+	opacity: 0;
+	transition: opacity 0s 0.6s;
+	z-index: 0;
+}
+
+.component-slider__control-text {
+	border: 0;
+	clip: rect(0, 0, 0, 0);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+.component-slider__carousel-control-prev,
+.component-slider__carousel-control-next {
+	align-items: center;
+	bottom: 0;
+	color: #fff;
+	display: flex;
+	justify-content: center;
+	opacity: 0.5;
+	position: absolute;
+	text-align: center;
+	top: 0;
+	transition: opacity 0.15s ease;
+	width: 15%;
+	z-index: 1;
+}
+
+.component-slider__carousel-control-prev:hover, .component-slider__carousel-control-prev:focus,
+.component-slider__carousel-control-next:hover,
+.component-slider__carousel-control-next:focus {
+	color: #fff;
+	opacity: 0.9;
+	outline: 0;
+	text-decoration: none;
+}
+
+.component-slider__carousel-control-prev {
+	left: 0;
+}
+
+.component-slider__carousel-control-next {
+	right: 0;
+}
+
+.component-slider__carousel-control-prev-icon,
+.component-slider__carousel-control-next-icon {
+	background: no-repeat 50%/100% 100%;
+	display: inline-block;
+	height: 20px;
+	width: 20px;
+}
+
+.component-slider__carousel-control-prev-icon {
+	background-image: url("data:image/svg+xml;charset=utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20fill='%23fff'%20width='8'%20height='8'%20viewBox='0%200%208%208'%3E%3Cpath%20d='M5.25%200l-4%204%204%204%201.5-1.5L4.25%204l2.5-2.5L5.25%200z'/%3E%3C/svg%3E");
+}
+
+.component-slider__carousel-control-next-icon {
+	background-image: url("data:image/svg+xml;charset=utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20fill='%23fff'%20width='8'%20height='8'%20viewBox='0%200%208%208'%3E%3Cpath%20d='M2.75%200l-1.5%201.5L3.75%204l-2.5%202.5L2.75%208l4-4-4-4z'/%3E%3C/svg%3E");
+}
+
+.component-slider__carousel-indicators {
+	bottom: 0;
+	display: flex;
+	justify-content: center;
+	left: 0;
+	list-style: none;
+	margin-left: 15%;
+	margin-right: 15%;
+	padding-left: 0;
+	position: absolute;
+	right: 0;
+	z-index: 15;
+}
+
+.component-slider__carousel-indicators li {
+	background-clip: padding-box;
+	background-color: #fff;
+	border-bottom: 10px solid transparent;
+	border-top: 10px solid transparent;
+	box-sizing: content-box;
+	cursor: pointer;
+	flex: 0 1 auto;
+	height: 3px;
+	margin-left: 3px;
+	margin-right: 3px;
+	opacity: 0.5;
+	text-indent: -999px;
+	transition: opacity 0.6s ease;
+	width: 30px;
+}
+
+.component-slider__carousel-indicators .active {
+	opacity: 1;
+}
+
+.component-slider__carousel-caption {
+	bottom: 20px;
+	color: #fff;
+	display: none;
+	left: 25%;
+	padding-bottom: 20px;
+	padding-top: 20px;
+	position: absolute;
+	right: 25%;
+	text-align: center;
+	z-index: 10;
+}
+
+@media (min-width: 768px) {
+	.component-slider__carousel-caption {
+		display: block;
+	}
+}
+
+.component-slider__carousel-caption h2 {
+	font-weight: 700;
+	line-height: 1.2;
+	margin-bottom: 0.5rem;
+}
+
+.component-slider__carousel-subtitle {
+	margin-bottom: 1.5rem;
+}
+
+.component-slider__carousel-subtitle p {
+	margin-top: 0;
+}
+
+.component-slider__carousel-subtitle::after {
+	clear: both;
+	content: "";
+	display: block;
+}
+
+.component-slider__carousel-item.component-slider__move-right,
+.component-slider__carousel-item.component-slider__move-left {
 	animation-duration: 0.6s;
 	animation-iteration-count: 1;
 	display: block;
 }
 
-.component-slider .carousel-item.active,
-.component-slider .carousel-item.move-left,
-.component-slider .carousel-item.move-right {
+.component-slider__carousel-item.active,
+.component-slider__carousel-item.component-slider__move-left,
+.component-slider__carousel-item.component-slider__move-right {
 	opacity: 1;
 }
 
-.component-slider .carousel-item.active {
+.component-slider__carousel-item.active {
 	transform: translateX(0);
 }
 
-.component-slider .carousel-item.active.move-left {
-	animation-name: moveLeftActive;
+.component-slider__carousel-item.active.component-slider__move-left {
+	animation-name: componentSliderMoveLeftActive;
 }
 
-.component-slider .carousel-item.move-left {
-	animation-name: moveLeft;
+.component-slider__carousel-item.component-slider__move-left {
+	animation-name: componentSliderMoveLeft;
 }
 
-.component-slider .carousel-item.active.move-right {
-	animation-name: moveRightActive;
+.component-slider__carousel-item.active.component-slider__move-right {
+	animation-name: componentSliderMoveRightActive;
 }
 
-.component-slider .carousel-item.move-right {
-	animation-name: moveRight;
+.component-slider__carousel-item.component-slider__move-right {
+	animation-name: componentSliderMoveRight;
 }
 
-.component-slider .carousel-control-next,
-.component-slider .carousel-control-prev {
+.component-slider__carousel-control-next,
+.component-slider__carousel-control-prev {
 	background-color: transparent;
 	border: 0;
 }
 
-.component-slider .carousel-navigation {
+.component-slider__carousel-navigation {
 	bottom: 10px;
 	display: flex;
 	justify-content: center;
@@ -98,7 +283,7 @@
 	z-index: 15;
 }
 
-.component-slider .carousel-navigation button {
+.component-slider__carousel-navigation button {
 	background-color: rgba(255, 255, 255, 0.5);
 	border: 0;
 	flex: 0 1 auto;
@@ -109,11 +294,32 @@
 	width: 30px;
 }
 
-.component-slider .carousel-navigation button:focus {
+.component-slider__carousel-navigation button:focus {
 	outline: 0;
 	text-decoration: none;
 }
 
-.component-slider .carousel-navigation button.active {
+.component-slider__carousel-navigation button.active {
 	background-color: rgba(255, 255, 255, 1);
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+	.component-slider__carousel-item {
+		transition: none;
+	}
+
+	.active.component-slider__carousel-item-left,
+	.active.component-slider__carousel-item-right {
+		transition: none;
+	}
+
+	.component-slider__carousel-control-prev,
+	.component-slider__carousel-control-next {
+		transition: none;
+	}
+
+	.component-slider__carousel-indicators li {
+		transition: none;
+	}
 }

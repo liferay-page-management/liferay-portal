@@ -1,20 +1,30 @@
-const MOVE_LEFT = 'move-left';
-const MOVE_RIGHT = 'move-right';
+const MOVE_LEFT = 'component-slider__move-left';
+const MOVE_RIGHT = 'component-slider__move-right';
 const INTERVAL = 5000;
 
 const editMode = layoutMode === 'edit';
 const indicators = [].slice.call(
-	fragmentElement.querySelectorAll('.carousel-navigation button')
+	fragmentElement.querySelectorAll(
+		'.component-slider__carousel-navigation button'
+	)
 );
-const items = [].slice.call(fragmentElement.querySelectorAll('.carousel-item'));
+const items = [].slice.call(
+	fragmentElement.querySelectorAll('.component-slider__carousel-item')
+);
 
-const next = fragmentElement.querySelector('.carousel-control-next');
-const prev = fragmentElement.querySelector('.carousel-control-prev');
+const next = fragmentElement.querySelector(
+	'.component-slider__carousel-control-next'
+);
+const prev = fragmentElement.querySelector(
+	'.component-slider__carousel-control-prev'
+);
 
 let moving = false;
 
 function getActiveIndicator() {
-	return fragmentElement.querySelector('.carousel-navigation .active');
+	return fragmentElement.querySelector(
+		'.component-slider__carousel-navigation .active'
+	);
 }
 
 function activateIndicator(activeItem, nextItem, movement) {
@@ -44,7 +54,9 @@ function move(movement, index = null) {
 
 	moving = true;
 
-	const activeItem = fragmentElement.querySelector('.carousel-item.active');
+	const activeItem = fragmentElement.querySelector(
+		'.component-slider__carousel-item.active'
+	);
 	const indexActiveItem = items.indexOf(activeItem);
 
 	this.nextItemIndex =
@@ -91,7 +103,7 @@ function createInterval() {
 
 	if (this.nextItemIndex && this.nextItemIndex < items.length) {
 		const activeItem = fragmentElement.querySelector(
-			'.carousel-item.active'
+			'.component-slider__carousel-item.active'
 		);
 		const nextItem = items[this.nextItemIndex];
 
