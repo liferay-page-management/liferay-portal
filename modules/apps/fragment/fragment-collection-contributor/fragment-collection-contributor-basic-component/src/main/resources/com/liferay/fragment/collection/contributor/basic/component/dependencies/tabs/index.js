@@ -1,17 +1,23 @@
-const dropdown = fragmentElement.querySelector('.navbar-collapse');
-const dropdownButton = fragmentElement.querySelector('.navbar-toggler-link');
+const dropdown = fragmentElement.querySelector('.component-tabs__collapse');
+const dropdownButton = fragmentElement.querySelector(
+	'.component-tabs__navbar-toggler'
+);
 const editMode = layoutMode === 'edit';
 const persistedTabKey = 'tabsFragment_' + fragmentNamespace + '_persistedTabId';
 
 const tabItems = [].slice.call(
 	fragmentElement.querySelectorAll(
-		'[data-fragment-namespace="' + fragmentNamespace + '"].nav-link'
+		'[data-fragment-namespace="' +
+			fragmentNamespace +
+			'"].component-tabs__nav-link'
 	)
 );
 
 const tabPanelItems = [].slice.call(
 	fragmentElement.querySelectorAll(
-		'[data-fragment-namespace="' + fragmentNamespace + '"].tab-panel-item'
+		'[data-fragment-namespace="' +
+			fragmentNamespace +
+			'"].component-tabs__tab-panel-item'
 	)
 );
 
@@ -53,12 +59,12 @@ function activeTab(item) {
 
 function activeTabPanel(item) {
 	tabPanelItems.forEach(function (tabPanelItem) {
-		if (!tabPanelItem.classList.contains('d-none')) {
-			tabPanelItem.classList.add('d-none');
+		if (tabPanelItem.style.display !== 'none') {
+			tabPanelItem.style.display = 'none';
 		}
 	});
 
-	item.classList.remove('d-none');
+	item.style.display = '';
 }
 
 function handleDropdown(event, item) {
@@ -80,10 +86,10 @@ function handleDropdown(event, item) {
 function handleDropdownButtonName(item) {
 	const tabText =
 		item.querySelector('lfr-editable') ||
-		item.querySelector('.navbar-text-truncate');
+		item.querySelector('.component-tabs__navbar-text');
 
 	if (tabText) {
-		dropdownButton.querySelector('.navbar-text-truncate').innerHTML =
+		dropdownButton.querySelector('.component-tabs__navbar-text').innerHTML =
 			tabText.textContent;
 	}
 }
