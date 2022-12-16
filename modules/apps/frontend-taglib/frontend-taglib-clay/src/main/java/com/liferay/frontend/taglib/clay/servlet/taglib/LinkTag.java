@@ -91,6 +91,10 @@ public class LinkTag extends BaseContainerTag {
 		return _label;
 	}
 
+	public boolean getLocalizeTitle() {
+		return _localizeTitle;
+	}
+
 	public boolean getMonospaced() {
 		return _monospaced;
 	}
@@ -135,6 +139,10 @@ public class LinkTag extends BaseContainerTag {
 		_label = label;
 	}
 
+	public void setLocalizeTitle(boolean localizeTitle) {
+		_localizeTitle = localizeTitle;
+	}
+
 	public void setMonospaced(boolean monospaced) {
 		_monospaced = monospaced;
 	}
@@ -162,6 +170,7 @@ public class LinkTag extends BaseContainerTag {
 		_href = null;
 		_icon = null;
 		_label = null;
+		_localizeTitle = false;
 		_monospaced = false;
 		_outline = false;
 		_small = false;
@@ -258,9 +267,13 @@ public class LinkTag extends BaseContainerTag {
 			}
 
 			if (Validator.isNotNull(_label)) {
-				String label = LanguageUtil.get(
-					TagResourceBundleUtil.getResourceBundle(pageContext),
-					_label);
+				String label = getLabel();
+
+				if (!_localizeTitle) {
+					label = LanguageUtil.get(
+						TagResourceBundleUtil.getResourceBundle(pageContext),
+						_label);
+				}
 
 				jspWriter.write(HtmlUtil.escape(label));
 			}
@@ -280,6 +293,7 @@ public class LinkTag extends BaseContainerTag {
 	private String _href;
 	private String _icon;
 	private String _label;
+	private boolean _localizeTitle;
 	private boolean _monospaced;
 	private boolean _outline;
 	private boolean _small;
