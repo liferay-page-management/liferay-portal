@@ -171,16 +171,17 @@ public class JournalArticleDDMFormFieldTemplateContextContributor
 	}
 
 	private long _getRefererClassPK(HttpServletRequest httpServletRequest) {
-		String articleId = ParamUtil.getString(httpServletRequest, "articleId");
+		long articleId = ParamUtil.getLong(httpServletRequest, "articleId");
 
-		if (Validator.isNotNull(articleId)) {
+		if (articleId <= 0) {
 			return 0;
 		}
 
 		long groupId = ParamUtil.getLong(httpServletRequest, "groupId");
 
 		JournalArticle journalArticle =
-			_journalArticleLocalService.fetchArticle(groupId, articleId);
+			_journalArticleLocalService.fetchArticle(
+				groupId, String.valueOf(articleId));
 
 		if (journalArticle == null) {
 			return 0;
