@@ -98,11 +98,18 @@ public class GetLayoutsMVCResourceCommand extends BaseMVCResourceCommand {
 				}
 			).put(
 				"items",
-				_jsonFactory.createJSONArray(
-					_layoutsTree.getLayoutsJSON(
-						httpServletRequest, themeDisplay.getScopeGroupId(),
-						true, privateLayout, parentLayoutId, null, incomplete,
-						"productMenuPagesTree", null))
+				() -> {
+					httpServletRequest.setAttribute(
+						ProductNavigationProductMenuWebKeys.
+							LOAD_MORE_PARENT_LAYOUT_ID,
+						parentLayoutId);
+
+					return _jsonFactory.createJSONArray(
+						_layoutsTree.getLayoutsJSON(
+							httpServletRequest, themeDisplay.getScopeGroupId(),
+							true, privateLayout, parentLayoutId, null,
+							incomplete, "productMenuPagesTree", null));
+				}
 			));
 	}
 
