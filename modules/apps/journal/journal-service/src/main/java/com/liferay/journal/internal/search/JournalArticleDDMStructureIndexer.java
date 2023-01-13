@@ -26,7 +26,6 @@ import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -39,6 +38,7 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.index.IndexStatusManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -68,6 +68,7 @@ public class JournalArticleDDMStructureIndexer implements DDMStructureIndexer {
 			}
 
 			String[] ddmStructureKeys = new String[ddmStructureIds.size()];
+			ArrayList<Long> groupIds = new ArrayList<>();
 
 			for (int i = 0; i < ddmStructureIds.size(); i++) {
 				long ddmStructureId = ddmStructureIds.get(i);
@@ -76,6 +77,7 @@ public class JournalArticleDDMStructureIndexer implements DDMStructureIndexer {
 					ddmStructureLocalService.getDDMStructure(ddmStructureId);
 
 				ddmStructureKeys[i] = ddmStructure.getStructureKey();
+				groupIds.add(ddmStructure.getGroupId());
 			}
 
 			ActionableDynamicQuery actionableDynamicQuery =
@@ -93,14 +95,9 @@ public class JournalArticleDDMStructureIndexer implements DDMStructureIndexer {
 					journalArticleDynamicQuery.setProjection(
 						ProjectionFactoryUtil.property("resourcePrimKey"));
 
-					journalArticleDynamicQuery.add(
-						RestrictionsFactoryUtil.eqProperty(
-							"journalArticle.resourcePrimKey",
-							"this.resourcePrimKey"));
+					Property groupId = PropertyFactoryUtil.forName("groupId");
 
-					journalArticleDynamicQuery.add(
-						RestrictionsFactoryUtil.eqProperty(
-							"journalArticle.groupId", "this.groupId"));
+					journalArticleDynamicQuery.add(groupId.in(groupIds));
 
 					Property ddmStructureKey = PropertyFactoryUtil.forName(
 						"DDMStructureKey");
