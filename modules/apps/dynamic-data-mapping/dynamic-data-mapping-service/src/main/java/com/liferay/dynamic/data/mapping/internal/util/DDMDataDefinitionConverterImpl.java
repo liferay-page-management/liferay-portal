@@ -590,15 +590,22 @@ public class DDMDataDefinitionConverterImpl
 		DDMFormField parentFieldSetDDMFormField) {
 
 		for (DDMFormField ddmFormField : ddmFormFields) {
-			if (ListUtil.isEmpty(ddmFormField.getNestedDDMFormFields())) {
-				parentFieldSetDDMFormField.addNestedDDMFormField(ddmFormField);
-
-				continue;
-			}
-
 			DDMFormField fieldSetDDMFormField = _createFieldSetDDMFormField(
 				defaultLocale, ddmFormField.getName() + "FieldSet",
 				ListUtil.fromArray(ddmFormField), ddmFormField.isRepeatable());
+
+			if (ListUtil.isEmpty(ddmFormField.getNestedDDMFormFields())) {
+				fieldSetDDMFormField.setProperty(
+					"rows", _getDDMFormFieldsRows(fieldSetDDMFormField));
+
+				ddmFormField.setNestedDDMFormFields(Collections.emptyList());
+				ddmFormField.setRepeatable(false);
+
+				parentFieldSetDDMFormField.addNestedDDMFormField(
+					fieldSetDDMFormField);
+
+				continue;
+			}
 
 			_upgradeNestedFields(
 				ddmFormField.getNestedDDMFormFields(), defaultLocale,
