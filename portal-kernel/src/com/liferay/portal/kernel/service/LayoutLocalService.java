@@ -732,6 +732,9 @@ public interface LayoutLocalService
 	public Map<Long, List<Layout>> getLayoutChildLayouts(
 		List<Layout> parentLayouts);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Long> getLayoutPlids(long groupId, boolean privateLayout);
+
 	/**
 	 * Returns a range of all the layouts.
 	 *

@@ -885,6 +885,13 @@ public class LayoutLocalServiceWrapper
 		return _layoutLocalService.getLayoutChildLayouts(parentLayouts);
 	}
 
+	@Override
+	public java.util.List<Long> getLayoutPlids(
+		long groupId, boolean privateLayout) {
+
+		return _layoutLocalService.getLayoutPlids(groupId, privateLayout);
+	}
+
 	/**
 	 * Returns a range of all the layouts.
 	 *

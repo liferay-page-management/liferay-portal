@@ -832,6 +832,12 @@ public class LayoutLocalServiceUtil {
 		return getService().getLayoutChildLayouts(parentLayouts);
 	}
 
+	public static List<Long> getLayoutPlids(
+		long groupId, boolean privateLayout) {
+
+		return getService().getLayoutPlids(groupId, privateLayout);
+	}
+
 	/**
 	 * Returns a range of all the layouts.
 	 *
