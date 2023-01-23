@@ -15,11 +15,13 @@
 package com.liferay.staging.taglib.internal.display.context;
 
 import com.liferay.layout.util.LayoutsTree;
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.model.LayoutTable;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -90,6 +92,21 @@ public class LayoutsTreeDisplayContext {
 		).build();
 	}
 
+	private List<Long> _getLayoutPlids(long groupId, boolean privateLayout) {
+		return LayoutLocalServiceUtil.dslQuery(
+			DSLQueryFactoryUtil.selectDistinct(
+				LayoutTable.INSTANCE.plid
+			).from(
+				LayoutTable.INSTANCE
+			).where(
+				LayoutTable.INSTANCE.groupId.eq(
+					groupId
+				).and(
+					LayoutTable.INSTANCE.privateLayout.eq(privateLayout)
+				)
+			));
+	}
+
 	private JSONArray _getLayoutsJSONArray() throws Exception {
 		LayoutsTree layoutsTree = ServletContextUtil.getLayoutsTree();
 
@@ -134,12 +151,7 @@ public class LayoutsTreeDisplayContext {
 
 			plids.add(LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
 
-			List<Layout> allLayouts = LayoutLocalServiceUtil.getLayouts(
-				_groupId, _privateLayout);
-
-			for (Layout layout : allLayouts) {
-				plids.add(layout.getPlid());
-			}
+			plids.addAll(_getLayoutPlids(_groupId, _privateLayout));
 
 			return plids;
 		}
