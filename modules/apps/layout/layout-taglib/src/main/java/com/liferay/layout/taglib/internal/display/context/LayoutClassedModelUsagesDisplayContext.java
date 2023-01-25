@@ -19,6 +19,7 @@ import com.liferay.fragment.helper.FragmentEntryLinkHelper;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalServiceUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
+import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.model.LayoutClassedModelUsage;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
@@ -35,6 +36,8 @@ import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.portlet.LiferayPortletURL;
+import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
@@ -43,6 +46,7 @@ import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -51,6 +55,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.portlet.PortletException;
@@ -58,6 +63,7 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+import javax.portlet.WindowStateException;
 
 /**
  * @author Pavel Savinov
@@ -404,6 +410,17 @@ public class LayoutClassedModelUsagesDisplayContext {
 		return _searchContainer;
 	}
 
+	public Map<String, Object> getUsagesData() throws WindowStateException {
+		return HashMapBuilder.<String, Object>put(
+			"getUsagesURL",
+			_getLayoutClassedModelUsagesURL(_className, _classPK)
+		).put(
+			"portletNamespace",
+			StringPool.UNDERLINE + LayoutAdminPortletKeys.GROUP_PAGES +
+				StringPool.UNDERLINE
+		).build();
+	}
+
 	public boolean isShowPreview(
 		LayoutClassedModelUsage layoutClassedModelUsage) {
 
@@ -441,6 +458,24 @@ public class LayoutClassedModelUsagesDisplayContext {
 		}
 
 		return true;
+	}
+
+	private String _getLayoutClassedModelUsagesURL(
+			String className, long classPK)
+		throws WindowStateException {
+
+		LiferayPortletURL liferayPortletURL = PortletURLFactoryUtil.create(
+			_renderRequest, LayoutAdminPortletKeys.GROUP_PAGES,
+			PortletRequest.RESOURCE_PHASE);
+
+		liferayPortletURL.setCopyCurrentRenderParameters(false);
+		liferayPortletURL.setParameter("className", className);
+		liferayPortletURL.setParameter("classPK", String.valueOf(classPK));
+		liferayPortletURL.setResourceID(
+			"/layout_admin/get_layout_classed_model_usages");
+		liferayPortletURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+		return liferayPortletURL.toString();
 	}
 
 	private String _getOrderByCol() {
