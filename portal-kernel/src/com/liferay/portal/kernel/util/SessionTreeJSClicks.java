@@ -48,6 +48,10 @@ public class SessionTreeJSClicks {
 					httpServletRequest, privateLayout, layoutId, layoutIds);
 			}
 
+			if (layoutId != 0) {
+				layoutIds.add(String.valueOf(0));
+			}
+
 			closeNodes(
 				httpServletRequest, treeId, layoutIds.toArray(new String[0]));
 		}
