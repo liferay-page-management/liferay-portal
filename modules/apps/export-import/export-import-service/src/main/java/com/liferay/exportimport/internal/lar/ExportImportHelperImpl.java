@@ -1405,8 +1405,13 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 			}
 		}
 
-		boolean checked = ArrayUtil.contains(
-			selectedLayoutIds, layout.getLayoutId());
+		boolean checked = false;
+
+		if (ArrayUtil.contains(selectedLayoutIds, 0) ||
+			ArrayUtil.contains(selectedLayoutIds, layout.getLayoutId())) {
+
+			checked = true;
+		}
 
 		if (checked) {
 			layoutsJSONArray.put(
