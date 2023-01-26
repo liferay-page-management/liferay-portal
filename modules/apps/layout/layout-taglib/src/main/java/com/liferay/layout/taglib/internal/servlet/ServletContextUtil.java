@@ -24,6 +24,7 @@ import com.liferay.info.list.renderer.InfoListRendererRegistry;
 import com.liferay.layout.adaptive.media.LayoutAdaptiveMediaProcessor;
 import com.liferay.layout.display.page.LayoutDisplayPageProviderRegistry;
 import com.liferay.layout.helper.CollectionPaginationHelper;
+import com.liferay.layout.helper.LayoutClassedModelUsagesHelper;
 import com.liferay.layout.list.permission.provider.LayoutListPermissionProviderRegistry;
 import com.liferay.layout.list.retriever.LayoutListRetrieverRegistry;
 import com.liferay.layout.list.retriever.ListObjectReferenceFactoryRegistry;
@@ -101,6 +102,12 @@ public class ServletContextUtil {
 		getLayoutClassedModelUsageRecorders() {
 
 		return _layoutClassedModelUsageRecorders;
+	}
+
+	public static LayoutClassedModelUsagesHelper
+		getLayoutClassedModelUsagesHelper() {
+
+		return _layoutClassedModelUsagesHelper;
 	}
 
 	public static LayoutDisplayPageProviderRegistry
@@ -249,6 +256,13 @@ public class ServletContextUtil {
 	}
 
 	@Reference(unbind = "-")
+	protected void setLayoutClassedModelUsagesHelper(
+		LayoutClassedModelUsagesHelper layoutClassedModelUsagesHelper) {
+
+		_layoutClassedModelUsagesHelper = layoutClassedModelUsagesHelper;
+	}
+
+	@Reference(unbind = "-")
 	protected void setLayoutDisplayPageProviderRegistry(
 		LayoutDisplayPageProviderRegistry layoutDisplayPageProviderRegistry) {
 
@@ -333,6 +347,8 @@ public class ServletContextUtil {
 	private static LayoutAdaptiveMediaProcessor _layoutAdaptiveMediaProcessor;
 	private static final Map<String, LayoutClassedModelUsageRecorder>
 		_layoutClassedModelUsageRecorders = new ConcurrentHashMap<>();
+	private static LayoutClassedModelUsagesHelper
+		_layoutClassedModelUsagesHelper;
 	private static LayoutDisplayPageProviderRegistry
 		_layoutDisplayPageProviderRegistry;
 	private static LayoutListPermissionProviderRegistry
