@@ -1392,6 +1392,8 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 					groupId
 				).and(
 					LayoutTable.INSTANCE.privateLayout.eq(privateLayout)
+				).and(
+					LayoutTable.INSTANCE.system.eq(false)
 				)
 			));
 	}
