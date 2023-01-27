@@ -81,6 +81,10 @@ public class AssetCategoriesSelectorTag extends IncludeTag {
 		return _classTypePK;
 	}
 
+	public String getGroupTitleTag() {
+		return _groupTitleTag;
+	}
+
 	public String getHiddenInput() {
 		return _hiddenInput;
 	}
@@ -133,6 +137,10 @@ public class AssetCategoriesSelectorTag extends IncludeTag {
 		_groupIds = groupIds;
 	}
 
+	public void setGroupTitleTag(String groupTitleTag) {
+		_groupTitleTag = groupTitleTag;
+	}
+
 	public void setHiddenInput(String hiddenInput) {
 		_hiddenInput = hiddenInput;
 	}
@@ -183,6 +191,7 @@ public class AssetCategoriesSelectorTag extends IncludeTag {
 		_classPK = 0;
 		_classTypePK = AssetCategoryConstants.ALL_CLASS_TYPE_PK;
 		_groupIds = null;
+		_groupTitleTag = "span";
 		_hiddenInput = "assetCategoryIds";
 		_id = null;
 		_ignoreRequestValue = false;
@@ -414,6 +423,8 @@ public class AssetCategoriesSelectorTag extends IncludeTag {
 				).put(
 					"groupIds", ListUtil.fromArray(getGroupIds())
 				).put(
+					"groupTitleTag", getGroupTitleTag()
+				).put(
 					"id", _getNamespace() + _getId() + "assetCategoriesSelector"
 				).put(
 					"inputName", _getInputName()
@@ -539,6 +550,7 @@ public class AssetCategoriesSelectorTag extends IncludeTag {
 	private long _classPK;
 	private long _classTypePK = AssetCategoryConstants.ALL_CLASS_TYPE_PK;
 	private long[] _groupIds;
+	private String _groupTitleTag = "span";
 	private String _hiddenInput = "assetCategoryIds";
 	private String _id;
 	private boolean _ignoreRequestValue;
