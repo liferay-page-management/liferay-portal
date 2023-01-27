@@ -41,6 +41,7 @@ Organization organization = OrganizationServiceUtil.fetchOrganization(organizati
 	<liferay-asset:asset-categories-selector
 		className="<%= Organization.class.getName() %>"
 		classPK="<%= (organization != null) ? organization.getPrimaryKey() : 0 %>"
+		groupTitleTag="h4"
 		visibilityTypes="<%= AssetVocabularyConstants.VISIBILITY_TYPES %>"
 	/>
 </div>
