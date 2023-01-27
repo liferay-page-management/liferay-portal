@@ -558,6 +558,7 @@ renderResponse.setTitle(headerTitle);
 								className="<%= DLFileEntry.class.getName() %>"
 								classPK="<%= assetClassPK %>"
 								classTypePK="<%= (fileEntryTypeId < 0) ? DLFileEntryTypeConstants.FILE_ENTRY_TYPE_ID_BASIC_DOCUMENT : fileEntryTypeId %>"
+								groupTitleTag="h2"
 								visibilityTypes="<%= AssetVocabularyConstants.VISIBILITY_TYPES %>"
 							/>
 
