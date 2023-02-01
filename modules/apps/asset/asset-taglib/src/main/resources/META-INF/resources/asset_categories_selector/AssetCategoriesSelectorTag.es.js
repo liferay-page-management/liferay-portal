@@ -67,6 +67,8 @@ export default function (props) {
 			ASSET_VOCABULARY_VISIBILITY_TYPES.internal
 	);
 
+	const TitleTag = props.groupTitleTag;
+
 	return (
 		<>
 			{props.showLabel && props.learnHowLink && (
@@ -79,9 +81,9 @@ export default function (props) {
 				<>
 					{props.showLabel && (
 						<>
-							<div className="border-0 mb-0 sheet-subtitle text-uppercase">
+							<TitleTag className="border-0 mb-0 sheet-subtitle text-uppercase">
 								{Liferay.Language.get('public-categories')}
-							</div>
+							</TitleTag>
 
 							<p className="small text-secondary">
 								{Liferay.Language.get(
@@ -103,11 +105,11 @@ export default function (props) {
 					<>
 						{props.showLabel && (
 							<>
-								<div className="border-0 mb-0 sheet-subtitle text-uppercase">
+								<TitleTag className="border-0 mb-0 sheet-subtitle text-uppercase">
 									{Liferay.Language.get(
 										'internal-categories'
 									)}
-								</div>
+								</TitleTag>
 								<p className="text-secondary">
 									{Liferay.Language.get(
 										'they-are-displayed-inside-the-administration-only'

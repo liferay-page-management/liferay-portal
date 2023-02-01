@@ -39,6 +39,7 @@ User selUser = (User)request.getAttribute(UsersAdminWebKeys.SELECTED_USER);
 	<liferay-asset:asset-categories-selector
 		className="<%= User.class.getName() %>"
 		classPK="<%= (selUser != null) ? selUser.getPrimaryKey() : 0 %>"
+		groupTitleTag="h4"
 		visibilityTypes="<%= AssetVocabularyConstants.VISIBILITY_TYPES %>"
 	/>
 </div>
