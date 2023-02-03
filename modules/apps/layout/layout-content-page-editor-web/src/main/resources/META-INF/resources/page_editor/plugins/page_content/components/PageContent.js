@@ -49,6 +49,7 @@ export default function PageContent({
 	classPK,
 	editableId,
 	icon,
+	isRestricted = false,
 	subtype,
 	title,
 }) {
@@ -210,80 +211,95 @@ export default function PageContent({
 			onMouseLeave={handleMouseLeave}
 			onMouseOver={handleMouseOver}
 		>
-			<div
-				className={classNames('d-flex', {
-					'align-items-center': !subtype,
-				})}
-			>
-				<ClayIcon
-					className={classNames('mr-3 flex-shrink-0', {
-						'mt-1': subtype,
-					})}
-					focusable="false"
-					monospaced="true"
-					role="presentation"
-					symbol={icon || 'document-text'}
-				/>
-
-				<ClayLayout.ContentCol expand>
-					<span className="font-weight-semi-bold text-truncate">
-						{title}
-					</span>
-
-					{subtype && (
-						<span className="text-secondary">{subtype}</span>
-					)}
-				</ClayLayout.ContentCol>
-
-				{dropdownItems?.length ? (
-					<ClayDropDownWithItems
-						active={activeActions}
-						className="align-self-center"
-						items={dropdownItems}
-						menuElementAttrs={{
-							containerProps: {
-								className: 'cadmin',
-							},
-						}}
-						onActiveChange={setActiveActions}
-						trigger={
-							<ClayButton
-								aria-label={sub(
-									Liferay.Language.get('actions-for-x'),
-									title
-								)}
-								className="btn-sm flex-shrink-0 mr-2 page-editor__page-contents__button"
-								displayType="unstyled"
-							>
-								<span className="sr-only">
-									{Liferay.Language.get('open-actions-menu')}
-								</span>
-
-								<ClayIcon symbol="ellipsis-v" />
-							</ClayButton>
-						}
+			{Liferay.FeatureFlags['LPS-169923'] && isRestricted ? (
+				<div className="align-items-center d-flex">
+					<ClayIcon
+						className="flex-shrink-0 mr-3"
+						symbol="password-policies"
 					/>
-				) : (
-					<ClayButton
-						aria-label={sub(
-							Liferay.Language.get('edit-inline-text-x'),
-							title
+
+					<span className="font-weight-semi-bold text-truncate">
+						{Liferay.Language.get('restricted-content')}
+					</span>
+				</div>
+			) : (
+				<div
+					className={classNames('d-flex', {
+						'align-items-center': !subtype,
+					})}
+				>
+					<ClayIcon
+						className={classNames('mr-3 flex-shrink-0', {
+							'mt-1': subtype,
+						})}
+						focusable="false"
+						monospaced="true"
+						role="presentation"
+						symbol={icon || 'document-text'}
+					/>
+
+					<ClayLayout.ContentCol expand>
+						<span className="font-weight-semi-bold text-truncate">
+							{title}
+						</span>
+
+						{subtype && (
+							<span className="text-secondary">{subtype}</span>
 						)}
-						className={classNames(
-							'flex-shrink-0 btn-sm mr-2 page-editor__page-contents__button',
-							{
-								'not-allowed':
-									isBeingEdited || !canUpdateEditables,
+					</ClayLayout.ContentCol>
+
+					{dropdownItems?.length ? (
+						<ClayDropDownWithItems
+							active={activeActions}
+							className="align-self-center"
+							items={dropdownItems}
+							menuElementAttrs={{
+								containerProps: {
+									className: 'cadmin',
+								},
+							}}
+							onActiveChange={setActiveActions}
+							trigger={
+								<ClayButton
+									aria-label={sub(
+										Liferay.Language.get('actions-for-x'),
+										title
+									)}
+									className="btn-sm flex-shrink-0 mr-2 page-editor__page-contents__button"
+									displayType="unstyled"
+								>
+									<span className="sr-only">
+										{Liferay.Language.get(
+											'open-actions-menu'
+										)}
+									</span>
+
+									<ClayIcon symbol="ellipsis-v" />
+								</ClayButton>
 							}
-						)}
-						disabled={isBeingEdited || !canUpdateEditables}
-						displayType="unstyled"
-						onClick={onClickEditInlineText}
-					>
-						<ClayIcon symbol="pencil" />
-					</ClayButton>
-				)}
-			</div>
+						/>
+					) : (
+						<ClayButton
+							aria-label={sub(
+								Liferay.Language.get('edit-inline-text-x'),
+								title
+							)}
+							className={classNames(
+								'flex-shrink-0 btn-sm mr-2 page-editor__page-contents__button',
+								{
+									'not-allowed':
+										isBeingEdited || !canUpdateEditables,
+								}
+							)}
+							disabled={isBeingEdited || !canUpdateEditables}
+							displayType="unstyled"
+							onClick={onClickEditInlineText}
+						>
+							<ClayIcon symbol="pencil" />
+						</ClayButton>
+					)}
+				</div>
+			)}
 
 			{imageEditorParams && (
 				<ImageEditorModal
