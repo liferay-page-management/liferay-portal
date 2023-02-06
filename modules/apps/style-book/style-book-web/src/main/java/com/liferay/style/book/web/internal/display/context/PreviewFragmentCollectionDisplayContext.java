@@ -25,15 +25,18 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.style.book.constants.StyleBookPortletKeys;
 import com.liferay.style.book.web.internal.constants.StyleBookWebKeys;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.portlet.PortletResponse;
 
@@ -90,6 +93,15 @@ public class PreviewFragmentCollectionDisplayContext {
 		}
 
 		for (FragmentEntry fragmentEntry : fragmentEntries) {
+			if (!GetterUtil.getBoolean(
+					PropsUtil.get("feature.flag.LPS-161631")) &&
+				Objects.equals(
+					fragmentEntry.getFragmentEntryKey(),
+					"INPUTS-rich-text-input")) {
+
+				continue;
+			}
+
 			jsonArray.put(
 				JSONUtil.put(
 					"configuration",
