@@ -24,6 +24,7 @@ import com.liferay.dynamic.data.mapping.storage.constants.FieldConstants;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.type.BooleanInfoFieldType;
 import com.liferay.info.field.type.DateInfoFieldType;
+import com.liferay.info.field.type.FileInfoFieldType;
 import com.liferay.info.field.type.GridInfoFieldType;
 import com.liferay.info.field.type.ImageInfoFieldType;
 import com.liferay.info.field.type.InfoFieldType;
@@ -194,6 +195,10 @@ public class DDMFormFieldInfoFieldConverterImpl
 					ddmFormFieldType, DDMFormFieldTypeConstants.GRID)) {
 
 			return GridInfoFieldType.INSTANCE;
+		} else if (Objects.equals(
+			ddmFormFieldType, DDMFormFieldTypeConstants.DOCUMENT_LIBRARY)) {
+
+			return FileInfoFieldType.INSTANCE;
 		}
 
 		return TextInfoFieldType.INSTANCE;
