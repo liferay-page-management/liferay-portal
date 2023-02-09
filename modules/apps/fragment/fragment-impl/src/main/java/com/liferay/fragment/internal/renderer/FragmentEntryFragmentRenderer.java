@@ -27,7 +27,6 @@ import com.liferay.fragment.processor.PortletRegistry;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.fragment.renderer.constants.FragmentRendererConstants;
-import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
 import com.liferay.info.form.InfoForm;
@@ -55,7 +54,6 @@ import com.liferay.portal.kernel.util.WebKeys;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -130,9 +128,7 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 	}
 
 	private FragmentEntryLink _getFragmentEntryLink(
-			FragmentRendererContext fragmentRendererContext,
-			PortalCache<String, String> portalCache)
-		throws PortalException {
+		FragmentRendererContext fragmentRendererContext) {
 
 		FragmentEntryLink fragmentEntryLink =
 			fragmentRendererContext.getFragmentEntryLink();
@@ -141,38 +137,6 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 			fragmentEntryLink);
 
 		if (fragmentEntry != null) {
-			if (fragmentEntryLink.getLastPropagationDate() == null) {
-				String processedEditableValues =
-					_fragmentEntryLinkLocalService.getProcessedEditableValues(
-						fragmentEntryLink);
-
-				if (!Objects.equals(
-						processedEditableValues,
-						fragmentEntryLink.getEditableValues())) {
-
-					fragmentEntryLink.setEditableValues(
-						processedEditableValues);
-				}
-
-				fragmentEntryLink.setLastPropagationDate(new Date());
-
-				fragmentEntryLink =
-					_fragmentEntryLinkLocalService.updateFragmentEntryLink(
-						fragmentEntryLink);
-
-				StringBundler portalCacheKeySB = new StringBundler(5);
-
-				portalCacheKeySB.append(
-					fragmentEntryLink.getFragmentEntryLinkId());
-				portalCacheKeySB.append(StringPool.DASH);
-				portalCacheKeySB.append(fragmentRendererContext.getLocale());
-				portalCacheKeySB.append(StringPool.DASH);
-				portalCacheKeySB.append(
-					fragmentEntryLink.getSegmentsExperienceId());
-
-				portalCache.remove(portalCacheKeySB.toString());
-			}
-
 			fragmentEntryLink.setCss(fragmentEntry.getCss());
 			fragmentEntryLink.setHtml(fragmentEntry.getHtml());
 			fragmentEntryLink.setJs(fragmentEntry.getJs());
@@ -388,7 +352,7 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 				FragmentEntryLink.class.getName());
 
 		FragmentEntryLink fragmentEntryLink = _getFragmentEntryLink(
-			fragmentRendererContext, portalCache);
+			fragmentRendererContext);
 
 		StringBundler portalCacheKeySB = new StringBundler(5);
 
@@ -504,9 +468,6 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 
 	@Reference
 	private FragmentEntryConfigurationParser _fragmentEntryConfigurationParser;
-
-	@Reference
-	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
 
 	@Reference
 	private FragmentEntryLocalService _fragmentEntryLocalService;
