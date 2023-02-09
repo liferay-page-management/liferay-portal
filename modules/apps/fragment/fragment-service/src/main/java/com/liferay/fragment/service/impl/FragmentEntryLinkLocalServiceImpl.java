@@ -588,7 +588,7 @@ public class FragmentEntryLinkLocalServiceImpl
 		String js, int type) {
 
 		if (Validator.isNull(rendererKey)) {
-			throw new IllegalArgumentException("Renderer key is null");
+			throw new IllegalArgumentException("Missing rendererKey");
 		}
 
 		Session session = fragmentEntryLinkPersistence.getCurrentSession();
@@ -597,11 +597,11 @@ public class FragmentEntryLinkLocalServiceImpl
 			connection -> {
 				StringBundler sb = new StringBundler(5);
 
-				sb.append("update FragmentEntryLink set configuration = ?, ");
+				sb.append("update FragmentEntryLink SET configuration = ?, ");
 				sb.append("css = ?, html = ?, js = ?, type_ = ?, ");
-				sb.append("lastPropagationDate = ? where rendererKey = ? and ");
-				sb.append("(configuration != ? or css != ? or html != ? or ");
-				sb.append("js != ? or type_ != ?)");
+				sb.append("lastPropagationDate = ? WHERE rendererKey = ? AND ");
+				sb.append("(configuration != ? OR css != ? OR html != ? OR ");
+				sb.append("js != ? OR type_ != ?)");
 
 				try (PreparedStatement preparedStatement =
 						connection.prepareStatement(sb.toString())) {

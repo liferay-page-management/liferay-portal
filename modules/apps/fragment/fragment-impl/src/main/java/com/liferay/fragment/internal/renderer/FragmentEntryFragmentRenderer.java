@@ -140,43 +140,44 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 		FragmentEntry fragmentEntry = _getContributedFragmentEntry(
 			fragmentEntryLink);
 
-		if (fragmentEntry == null) {
-			return fragmentEntryLink;
-		}
+		if (fragmentEntry != null) {
+			if (fragmentEntryLink.getLastPropagationDate() == null) {
+				String processedEditableValues =
+					_fragmentEntryLinkLocalService.getProcessedEditableValues(
+						fragmentEntryLink);
 
-		if (fragmentEntryLink.getLastPropagationDate() == null) {
-			String processedEditableValues =
-				_fragmentEntryLinkLocalService.getProcessedEditableValues(
-					fragmentEntryLink);
+				if (!Objects.equals(
+						processedEditableValues,
+						fragmentEntryLink.getEditableValues())) {
 
-			if (!Objects.equals(
-					processedEditableValues,
-					fragmentEntryLink.getEditableValues())) {
+					fragmentEntryLink.setEditableValues(
+						processedEditableValues);
+				}
 
-				fragmentEntryLink.setEditableValues(processedEditableValues);
+				fragmentEntryLink.setLastPropagationDate(new Date());
+
+				fragmentEntryLink =
+					_fragmentEntryLinkLocalService.updateFragmentEntryLink(
+						fragmentEntryLink);
+
+				StringBundler portalCacheKeySB = new StringBundler(5);
+
+				portalCacheKeySB.append(
+					fragmentEntryLink.getFragmentEntryLinkId());
+				portalCacheKeySB.append(StringPool.DASH);
+				portalCacheKeySB.append(fragmentRendererContext.getLocale());
+				portalCacheKeySB.append(StringPool.DASH);
+				portalCacheKeySB.append(
+					fragmentEntryLink.getSegmentsExperienceId());
+
+				portalCache.remove(portalCacheKeySB.toString());
 			}
 
-			fragmentEntryLink.setLastPropagationDate(new Date());
-
-			fragmentEntryLink =
-				_fragmentEntryLinkLocalService.updateFragmentEntryLink(
-					fragmentEntryLink);
-
-			StringBundler sb = new StringBundler(5);
-
-			sb.append(fragmentEntryLink.getFragmentEntryLinkId());
-			sb.append(StringPool.DASH);
-			sb.append(fragmentRendererContext.getLocale());
-			sb.append(StringPool.DASH);
-			sb.append(fragmentEntryLink.getSegmentsExperienceId());
-
-			portalCache.remove(sb.toString());
+			fragmentEntryLink.setCss(fragmentEntry.getCss());
+			fragmentEntryLink.setHtml(fragmentEntry.getHtml());
+			fragmentEntryLink.setJs(fragmentEntry.getJs());
+			fragmentEntryLink.setType(fragmentEntry.getType());
 		}
-
-		fragmentEntryLink.setCss(fragmentEntry.getCss());
-		fragmentEntryLink.setHtml(fragmentEntry.getHtml());
-		fragmentEntryLink.setJs(fragmentEntry.getJs());
-		fragmentEntryLink.setType(fragmentEntry.getType());
 
 		return fragmentEntryLink;
 	}
@@ -389,18 +390,18 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 		FragmentEntryLink fragmentEntryLink = _getFragmentEntryLink(
 			fragmentRendererContext, portalCache);
 
-		StringBundler sb = new StringBundler(5);
+		StringBundler portalCacheKeySB = new StringBundler(5);
 
-		sb.append(fragmentEntryLink.getFragmentEntryLinkId());
-		sb.append(StringPool.DASH);
-		sb.append(fragmentRendererContext.getLocale());
-		sb.append(StringPool.DASH);
-		sb.append(fragmentEntryLink.getSegmentsExperienceId());
+		portalCacheKeySB.append(fragmentEntryLink.getFragmentEntryLinkId());
+		portalCacheKeySB.append(StringPool.DASH);
+		portalCacheKeySB.append(fragmentRendererContext.getLocale());
+		portalCacheKeySB.append(StringPool.DASH);
+		portalCacheKeySB.append(fragmentEntryLink.getSegmentsExperienceId());
 
 		String content = StringPool.BLANK;
 
 		if (_isCacheable(fragmentEntryLink, fragmentRendererContext)) {
-			content = portalCache.get(sb.toString());
+			content = portalCache.get(portalCacheKeySB.toString());
 
 			if (Validator.isNotNull(content)) {
 				return content;
@@ -471,7 +472,7 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 			html, httpServletRequest);
 
 		if (_isCacheable(fragmentEntryLink, fragmentRendererContext)) {
-			portalCache.put(sb.toString(), content);
+			portalCache.put(portalCacheKeySB.toString(), content);
 		}
 
 		return content;

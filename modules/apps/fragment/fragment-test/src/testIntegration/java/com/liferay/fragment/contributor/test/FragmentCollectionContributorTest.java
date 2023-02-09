@@ -314,13 +314,12 @@ public class FragmentCollectionContributorTest {
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
-		themeDisplay.setLocale(LocaleUtil.US);
-
 		LayoutSet layoutSet = _group.getPublicLayoutSet();
 
 		themeDisplay.setLookAndFeel(
 			layoutSet.getTheme(), layoutSet.getColorScheme());
 
+		themeDisplay.setLocale(LocaleUtil.US);
 		themeDisplay.setPermissionChecker(
 			PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
 		themeDisplay.setRealUser(TestPropsValues.getUser());
