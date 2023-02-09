@@ -31,6 +31,7 @@ import com.liferay.fragment.service.persistence.FragmentEntryPersistence;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
@@ -623,7 +624,13 @@ public class FragmentEntryLinkLocalServiceImpl
 				}
 			});
 
+		session.flush();
+
+		session.clear();
+
 		fragmentEntryLinkPersistence.clearCache();
+
+		EntityCacheUtil.removeCache(FragmentEntryLink.class.getName());
 	}
 
 	@Override
