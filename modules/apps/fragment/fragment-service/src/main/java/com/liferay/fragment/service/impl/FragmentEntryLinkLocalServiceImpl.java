@@ -588,7 +588,7 @@ public class FragmentEntryLinkLocalServiceImpl
 		String js, int type) {
 
 		if (Validator.isNull(rendererKey)) {
-			throw new IllegalArgumentException("Missing rendererKey");
+			throw new UnsupportedOperationException();
 		}
 
 		Session session = fragmentEntryLinkPersistence.getCurrentSession();
