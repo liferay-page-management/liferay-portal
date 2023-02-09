@@ -71,13 +71,13 @@ const NetworkStatusBar = ({error, status}) => {
 	}, [error, status]);
 
 	useEffect(() => {
-		if (
-			status === SERVICE_NETWORK_STATUS_TYPES.draftSaved &&
-			!autoSaveMessageRef.current
-		) {
+		if (status === SERVICE_NETWORK_STATUS_TYPES.draftSaved) {
 			autoSaveMessageRef.current = Liferay.Language.get(
 				'page-editor-autosaves-your-work'
 			);
+		}
+		else {
+			autoSaveMessageRef.current = null;
 		}
 	}, [status]);
 
@@ -89,9 +89,11 @@ const NetworkStatusBar = ({error, status}) => {
 
 	return (
 		<div className="page-editor__status-bar">
-			<span aria-live="polite" className="sr-only">
-				{autoSaveMessageRef.current}
-			</span>
+			{autoSaveMessageRef.current && (
+				<span aria-live="polite" className="sr-only">
+					{autoSaveMessageRef.current}
+				</span>
+			)}
 
 			{content}
 		</div>
