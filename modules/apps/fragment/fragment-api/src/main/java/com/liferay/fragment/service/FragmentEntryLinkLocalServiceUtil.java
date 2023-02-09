@@ -569,13 +569,6 @@ public class FragmentEntryLinkLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
-	public static String getProcessedEditableValues(
-			FragmentEntryLink fragmentEntryLink)
-		throws PortalException {
-
-		return getService().getProcessedEditableValues(fragmentEntryLink);
-	}
-
 	public static void updateClassedModel(long plid) {
 		getService().updateClassedModel(plid);
 	}
