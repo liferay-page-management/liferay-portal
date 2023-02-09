@@ -19,6 +19,7 @@ import com.liferay.fragment.contributor.FragmentCollectionContributor;
 import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
 import com.liferay.fragment.model.FragmentComposition;
 import com.liferay.fragment.model.FragmentEntry;
+import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.fragment.validator.FragmentEntryValidator;
@@ -218,11 +219,19 @@ public class FragmentCollectionContributorRegistryImpl
 	protected FragmentEntryValidator fragmentEntryValidator;
 
 	private void _updateFragmentEntryLinks(FragmentEntry fragmentEntry) {
-		_fragmentEntryLinkLocalService.updateFragmentEntryLinksByRendererKey(
-			fragmentEntry.getFragmentEntryKey(),
-			fragmentEntry.getConfiguration(), fragmentEntry.getCss(),
-			fragmentEntry.getHtml(), fragmentEntry.getJs(),
-			fragmentEntry.getType());
+		List<FragmentEntryLink> fragmentEntryLinks =
+			_fragmentEntryLinkLocalService.getFragmentEntryLinks(
+				fragmentEntry.getFragmentEntryKey());
+
+		for (FragmentEntryLink fragmentEntryLink : fragmentEntryLinks) {
+			try {
+				_fragmentEntryLinkLocalService.updateLatestChanges(
+					fragmentEntry, fragmentEntryLink);
+			}
+			catch (PortalException portalException) {
+				_log.error(portalException);
+			}
+		}
 	}
 
 	private boolean _validateFragmentEntry(FragmentEntry fragmentEntry) {
