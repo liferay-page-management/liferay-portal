@@ -734,15 +734,6 @@ public class FragmentEntryLinkLocalServiceWrapper
 	}
 
 	@Override
-	public void updateFragmentEntryLinksByRendererKey(
-		String rendererKey, String configuration, String css, String html,
-		String js, int type) {
-
-		_fragmentEntryLinkLocalService.updateFragmentEntryLinksByRendererKey(
-			rendererKey, configuration, css, html, js, type);
-	}
-
-	@Override
 	public void updateLatestChanges(
 			com.liferay.fragment.model.FragmentEntry fragmentEntry,
 			FragmentEntryLink fragmentEntryLink)
