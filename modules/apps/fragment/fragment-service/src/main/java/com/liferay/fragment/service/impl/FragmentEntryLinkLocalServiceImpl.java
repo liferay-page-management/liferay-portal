@@ -619,11 +619,11 @@ public class FragmentEntryLinkLocalServiceImpl
 					preparedStatement.setString(11, js);
 					preparedStatement.setInt(12, type);
 
-					if (preparedStatement.executeUpdate() > 0) {
-						fragmentEntryLinkPersistence.clearCache();
-					}
+					preparedStatement.execute();
 				}
 			});
+
+		fragmentEntryLinkPersistence.clearCache();
 	}
 
 	@Override
