@@ -26,6 +26,8 @@ import com.liferay.frontend.js.loader.modules.extender.npm.NPMResolver;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -41,9 +43,53 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Iván Zaera Avellón
  */
-@Component(service = ModelListener.class)
+@Component(
+	service = {FragmentEntryLinkModelListener.class, ModelListener.class}
+)
 public class FragmentEntryLinkModelListener
 	extends BaseModelListener<FragmentEntryLink> {
+
+	public void ensureInitialized() {
+		if (_initialized) {
+			return;
+		}
+
+		synchronized (this) {
+			if (_initialized) {
+				return;
+			}
+
+			_jsPackage = _npmResolver.getJSPackage();
+
+			if (_jsPackage == null) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(
+						"Unable to initialize because JS package is null");
+				}
+
+				return;
+			}
+
+			List<FragmentEntryLink> fragmentEntryLinks =
+				_fragmentEntryLinkLocalService.getFragmentEntryLinks(
+					FragmentConstants.TYPE_REACT, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null);
+
+			NPMRegistryUpdate npmRegistryUpdate = _npmRegistry.update();
+
+			for (FragmentEntryLink fragmentEntryLink : fragmentEntryLinks) {
+				npmRegistryUpdate.registerJSModule(
+					_jsPackage,
+					FragmentEntryFragmentRendererReactUtil.getModuleName(
+						fragmentEntryLink),
+					_dependencies, _getJs(fragmentEntryLink), null);
+			}
+
+			npmRegistryUpdate.finish();
+
+			_initialized = true;
+		}
+	}
 
 	@Override
 	public void onAfterCreate(FragmentEntryLink fragmentEntryLink) {
@@ -105,24 +151,6 @@ public class FragmentEntryLinkModelListener
 
 	@Activate
 	protected void activate() {
-		_jsPackage = _npmResolver.getJSPackage();
-
-		List<FragmentEntryLink> fragmentEntryLinks =
-			_fragmentEntryLinkLocalService.getFragmentEntryLinks(
-				FragmentConstants.TYPE_REACT, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, null);
-
-		NPMRegistryUpdate npmRegistryUpdate = _npmRegistry.update();
-
-		for (FragmentEntryLink fragmentEntryLink : fragmentEntryLinks) {
-			npmRegistryUpdate.registerJSModule(
-				_jsPackage,
-				FragmentEntryFragmentRendererReactUtil.getModuleName(
-					fragmentEntryLink),
-				_dependencies, _getJs(fragmentEntryLink), null);
-		}
-
-		npmRegistryUpdate.finish();
 	}
 
 	@Deactivate
@@ -173,12 +201,16 @@ public class FragmentEntryLinkModelListener
 	private static final String _DEPENDENCY_PORTAL_REACT =
 		"liferay!frontend-js-react-web$react";
 
+	private static final Log _log = LogFactoryUtil.getLog(
+		FragmentEntryLinkModelListener.class);
+
 	private static final List<String> _dependencies = Collections.singletonList(
 		_DEPENDENCY_PORTAL_REACT);
 
 	@Reference
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
 
+	private volatile boolean _initialized;
 	private JSPackage _jsPackage;
 
 	@Reference
