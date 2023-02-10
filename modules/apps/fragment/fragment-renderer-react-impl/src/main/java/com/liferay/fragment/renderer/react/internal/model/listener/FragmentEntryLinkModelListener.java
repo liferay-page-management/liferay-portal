@@ -149,10 +149,6 @@ public class FragmentEntryLinkModelListener
 		npmRegistryUpdate.finish();
 	}
 
-	@Activate
-	protected void activate() {
-	}
-
 	@Deactivate
 	protected void deactivate() {
 		_jsPackage = _npmResolver.getJSPackage();
