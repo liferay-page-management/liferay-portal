@@ -291,7 +291,9 @@ public class EditFileEntryMVCActionCommand extends BaseMVCActionCommand {
 
 				actionResponse.setRenderParameter("mvcPath", "/null.jsp");
 			}
-			else if (cmd.equals(Constants.PREVIEW)) {
+			else if (cmd.equals(Constants.PREVIEW) ||
+					 cmd.equals(Constants.BLANK)) {
+
 				SessionMessages.add(
 					actionRequest,
 					_portal.getPortletId(actionRequest) +

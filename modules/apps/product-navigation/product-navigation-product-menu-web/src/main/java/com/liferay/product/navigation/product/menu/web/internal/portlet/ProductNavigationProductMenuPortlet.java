@@ -82,7 +82,9 @@ public class ProductNavigationProductMenuPortlet extends MVCPortlet {
 			_portal.getOriginalServletRequest(httpServletRequest), "p_l_mode",
 			Constants.VIEW);
 
-		if (layoutMode.equals(Constants.PREVIEW)) {
+		if (layoutMode.equals(Constants.PREVIEW) ||
+			layoutMode.equals(Constants.BLANK)) {
+
 			return;
 		}
 

@@ -68,7 +68,9 @@ public class ClientExtensionsServicePreAction extends Action {
 			String mode = ParamUtil.getString(
 				httpServletRequest, "p_l_mode", Constants.VIEW);
 
-			if (!Objects.equals(mode, Constants.PREVIEW)) {
+			if (!Objects.equals(mode, Constants.PREVIEW) &&
+				!Objects.equals(mode, Constants.BLANK)) {
+
 				return;
 			}
 

@@ -120,7 +120,9 @@ public class ProductNavigationControlMenuTag extends IncludeTag {
 		String layoutMode = ParamUtil.getString(
 			getOriginalServletRequest(), "p_l_mode", Constants.VIEW);
 
-		if (layoutMode.equals(Constants.PREVIEW)) {
+		if (layoutMode.equals(Constants.PREVIEW) ||
+			layoutMode.equals(Constants.BLANK)) {
+
 			return false;
 		}
 

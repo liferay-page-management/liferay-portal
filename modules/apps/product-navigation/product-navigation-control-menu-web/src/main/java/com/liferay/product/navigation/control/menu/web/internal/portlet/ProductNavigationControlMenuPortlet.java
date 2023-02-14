@@ -83,7 +83,9 @@ public class ProductNavigationControlMenuPortlet extends MVCPortlet {
 		String layoutMode = ParamUtil.getString(
 			originalHttpServletRequest, "p_l_mode", Constants.VIEW);
 
-		if (layoutMode.equals(Constants.PREVIEW)) {
+		if (layoutMode.equals(Constants.PREVIEW) ||
+			layoutMode.equals(Constants.BLANK)) {
+
 			return;
 		}
 

@@ -72,7 +72,9 @@ public class ProductNavigationControlMenuTemplateContextContributor
 		String layoutMode = ParamUtil.getString(
 			httpServletRequest, "p_l_mode", Constants.VIEW);
 
-		if (layoutMode.equals(Constants.PREVIEW)) {
+		if (layoutMode.equals(Constants.PREVIEW) ||
+			layoutMode.equals(Constants.BLANK)) {
+
 			return false;
 		}
 

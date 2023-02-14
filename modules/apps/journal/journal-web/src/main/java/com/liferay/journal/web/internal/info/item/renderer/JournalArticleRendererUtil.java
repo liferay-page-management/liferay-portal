@@ -39,7 +39,8 @@ public class JournalArticleRendererUtil {
 			"p_l_mode", Constants.VIEW);
 
 		if (Objects.equals(Constants.EDIT, mode) ||
-			Objects.equals(Constants.PREVIEW, mode)) {
+			Objects.equals(Constants.PREVIEW, mode) ||
+			Objects.equals(Constants.BLANK, mode)) {
 
 			return true;
 		}

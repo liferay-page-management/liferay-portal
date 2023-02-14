@@ -44,7 +44,8 @@ public class LayoutEditModeTemplateContextContributor
 			httpServletRequest, "p_l_mode", Constants.VIEW);
 
 		if (layoutMode.equals(Constants.EDIT) ||
-			layoutMode.equals(Constants.PREVIEW)) {
+			layoutMode.equals(Constants.PREVIEW) ||
+			layoutMode.equals(Constants.BLANK)) {
 
 			contextObjects.put(
 				"bodyCssClass",

@@ -2419,7 +2419,13 @@ public class JournalArticleLocalServiceImpl
 		JournalArticle article = journalArticlePersistence.findByG_A_V(
 			groupId, articleId, version);
 
-		boolean preview = Objects.equals(viewMode, Constants.PREVIEW);
+		boolean preview = false;
+
+		if (Objects.equals(viewMode, Constants.PREVIEW) ||
+			Objects.equals(viewMode, Constants.BLANK)) {
+
+			preview = true;
+		}
 
 		if (article.isExpired() && !preview) {
 			Date expirationDate = article.getExpirationDate();
