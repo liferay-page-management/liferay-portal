@@ -493,7 +493,7 @@ public class ContentPageEditorDisplayContext {
 						themeDisplay.getLayout(), themeDisplay);
 
 					layoutURL = HttpComponentsUtil.addParameter(
-						layoutURL, "p_l_mode", Constants.PREVIEW);
+						layoutURL, "p_l_mode", Constants.BLANK);
 
 					return HttpComponentsUtil.addParameter(
 						layoutURL, "disableCommonStyles", Boolean.TRUE);
