@@ -37,6 +37,8 @@ public interface Constants {
 
 	public static final String ASSIGN = "assign";
 
+	public static final String BLANK = "blank";
+
 	public static final String CANCEL = "cancel";
 
 	public static final String CANCEL_CHECKOUT = "cancel_checkout";
