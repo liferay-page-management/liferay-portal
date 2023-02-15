@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.fragment.renderer.react.internal.util;
+package com.liferay.fragment.renderer.react.internal.helper;
 
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.model.FragmentEntryLink;
@@ -40,8 +40,8 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Víctor Galán
  */
-@Component(service = FragmentEntryFragmentRendererReactHelper.class)
-public class FragmentEntryFragmentRendererReactHelper {
+@Component(service = FragmentEntryLinkJSModuleHelper.class)
+public class FragmentEntryLinkJSModuleHelper {
 
 	public void ensureInitialized() {
 		if (_initialized) {
@@ -189,7 +189,7 @@ public class FragmentEntryFragmentRendererReactHelper {
 		"liferay!frontend-js-react-web$react";
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		FragmentEntryFragmentRendererReactHelper.class);
+		FragmentEntryLinkJSModuleHelper.class);
 
 	private static final List<String> _dependencies = Collections.singletonList(
 		_DEPENDENCY_PORTAL_REACT);

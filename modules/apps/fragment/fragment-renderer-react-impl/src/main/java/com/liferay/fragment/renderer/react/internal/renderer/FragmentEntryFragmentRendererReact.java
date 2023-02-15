@@ -20,7 +20,7 @@ import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.fragment.renderer.constants.FragmentRendererConstants;
-import com.liferay.fragment.renderer.react.internal.util.FragmentEntryFragmentRendererReactHelper;
+import com.liferay.fragment.renderer.react.internal.helper.FragmentEntryLinkJSModuleHelper;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
 import com.liferay.frontend.js.loader.modules.extender.npm.ModuleNameUtil;
 import com.liferay.frontend.js.loader.modules.extender.npm.NPMResolver;
@@ -93,7 +93,7 @@ public class FragmentEntryFragmentRendererReact implements FragmentRenderer {
 			HttpServletResponse httpServletResponse)
 		throws IOException {
 
-		_fragmentEntryFragmentRendererReactHelper.ensureInitialized();
+		_fragmentEntryLinkJSModuleHelper.ensureInitialized();
 
 		try {
 			PrintWriter printWriter = httpServletResponse.getWriter();
@@ -176,7 +176,7 @@ public class FragmentEntryFragmentRendererReact implements FragmentRenderer {
 			new ComponentDescriptor(
 				ModuleNameUtil.getModuleResolvedId(
 					_npmResolver.getJSPackage(),
-					_fragmentEntryFragmentRendererReactHelper.getModuleName(
+					_fragmentEntryLinkJSModuleHelper.getModuleName(
 						fragmentEntryLink)),
 				"fragment" + fragmentEntryLink.getFragmentEntryLinkId(),
 				Collections.emptyList(), true),
@@ -249,8 +249,7 @@ public class FragmentEntryFragmentRendererReact implements FragmentRenderer {
 	private FragmentEntryConfigurationParser _fragmentEntryConfigurationParser;
 
 	@Reference
-	private FragmentEntryFragmentRendererReactHelper
-		_fragmentEntryFragmentRendererReactHelper;
+	private FragmentEntryLinkJSModuleHelper _fragmentEntryLinkJSModuleHelper;
 
 	@Reference
 	private JSONFactory _jsonFactory;
