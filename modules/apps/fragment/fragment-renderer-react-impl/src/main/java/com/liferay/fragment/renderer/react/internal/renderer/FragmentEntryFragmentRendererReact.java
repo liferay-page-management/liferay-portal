@@ -23,7 +23,6 @@ import com.liferay.fragment.renderer.constants.FragmentRendererConstants;
 import com.liferay.fragment.renderer.react.internal.model.listener.FragmentEntryLinkModelListener;
 import com.liferay.fragment.renderer.react.internal.util.FragmentEntryFragmentRendererReactUtil;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
-import com.liferay.frontend.js.loader.modules.extender.npm.JSPackage;
 import com.liferay.frontend.js.loader.modules.extender.npm.ModuleNameUtil;
 import com.liferay.frontend.js.loader.modules.extender.npm.NPMResolver;
 import com.liferay.petra.string.StringBundler;
@@ -52,7 +51,6 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -131,11 +129,6 @@ public class FragmentEntryFragmentRendererReact implements FragmentRenderer {
 		}
 	}
 
-	@Activate
-	protected void activate() {
-		_jsPackage = _npmResolver.getJSPackage();
-	}
-
 	private FragmentEntry _getContributedFragmentEntry(
 		FragmentEntryLink fragmentEntryLink) {
 
@@ -183,7 +176,7 @@ public class FragmentEntryFragmentRendererReact implements FragmentRenderer {
 		_reactRenderer.renderReact(
 			new ComponentDescriptor(
 				ModuleNameUtil.getModuleResolvedId(
-					_jsPackage,
+					_npmResolver.getJSPackage(),
 					FragmentEntryFragmentRendererReactUtil.getModuleName(
 						fragmentEntryLink)),
 				"fragment" + fragmentEntryLink.getFragmentEntryLinkId(),
@@ -261,8 +254,6 @@ public class FragmentEntryFragmentRendererReact implements FragmentRenderer {
 
 	@Reference
 	private JSONFactory _jsonFactory;
-
-	private JSPackage _jsPackage;
 
 	@Reference
 	private NPMResolver _npmResolver;

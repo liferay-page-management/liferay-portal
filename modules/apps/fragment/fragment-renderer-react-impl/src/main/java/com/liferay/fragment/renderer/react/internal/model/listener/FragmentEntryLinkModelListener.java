@@ -35,7 +35,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import java.util.Collections;
 import java.util.List;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
@@ -59,9 +58,9 @@ public class FragmentEntryLinkModelListener
 				return;
 			}
 
-			_jsPackage = _npmResolver.getJSPackage();
+			JSPackage jsPackage = _npmResolver.getJSPackage();
 
-			if (_jsPackage == null) {
+			if (jsPackage == null) {
 				if (_log.isDebugEnabled()) {
 					_log.debug(
 						"Unable to initialize because JS package is null");
@@ -79,10 +78,10 @@ public class FragmentEntryLinkModelListener
 
 			for (FragmentEntryLink fragmentEntryLink : fragmentEntryLinks) {
 				npmRegistryUpdate.registerJSModule(
-					_jsPackage,
+					jsPackage,
 					FragmentEntryFragmentRendererReactUtil.getModuleName(
 						fragmentEntryLink),
-					_dependencies, _getJs(fragmentEntryLink), null);
+					_dependencies, _getJs(fragmentEntryLink, jsPackage), null);
 			}
 
 			npmRegistryUpdate.finish();
@@ -99,11 +98,13 @@ public class FragmentEntryLinkModelListener
 
 		NPMRegistryUpdate npmRegistryUpdate = _npmRegistry.update();
 
+		JSPackage jsPackage = _npmResolver.getJSPackage();
+
 		npmRegistryUpdate.registerJSModule(
-			_jsPackage,
+			jsPackage,
 			FragmentEntryFragmentRendererReactUtil.getModuleName(
 				fragmentEntryLink),
-			_dependencies, _getJs(fragmentEntryLink), null);
+			_dependencies, _getJs(fragmentEntryLink, jsPackage), null);
 
 		npmRegistryUpdate.finish();
 	}
@@ -116,8 +117,10 @@ public class FragmentEntryLinkModelListener
 
 		NPMRegistryUpdate npmRegistryUpdate = _npmRegistry.update();
 
+		JSPackage jsPackage = _npmResolver.getJSPackage();
+
 		npmRegistryUpdate.unregisterJSModule(
-			_jsPackage.getJSModule(
+			jsPackage.getJSModule(
 				FragmentEntryFragmentRendererReactUtil.getModuleName(
 					fragmentEntryLink)));
 
@@ -135,24 +138,24 @@ public class FragmentEntryLinkModelListener
 
 		NPMRegistryUpdate npmRegistryUpdate = _npmRegistry.update();
 
+		JSPackage jsPackage = _npmResolver.getJSPackage();
+
 		npmRegistryUpdate.unregisterJSModule(
-			_jsPackage.getJSModule(
+			jsPackage.getJSModule(
 				FragmentEntryFragmentRendererReactUtil.getModuleName(
 					originalFragmentEntryLink)));
 
 		npmRegistryUpdate.registerJSModule(
-			_jsPackage,
+			jsPackage,
 			FragmentEntryFragmentRendererReactUtil.getModuleName(
 				fragmentEntryLink),
-			_dependencies, _getJs(fragmentEntryLink), null);
+			_dependencies, _getJs(fragmentEntryLink, jsPackage), null);
 
 		npmRegistryUpdate.finish();
 	}
 
 	@Deactivate
 	protected void deactivate() {
-		_jsPackage = _npmResolver.getJSPackage();
-
 		List<FragmentEntryLink> fragmentEntryLinks =
 			_fragmentEntryLinkLocalService.getFragmentEntryLinks(
 				FragmentConstants.TYPE_REACT, QueryUtil.ALL_POS,
@@ -160,9 +163,11 @@ public class FragmentEntryLinkModelListener
 
 		NPMRegistryUpdate npmRegistryUpdate = _npmRegistry.update();
 
+		JSPackage jsPackage = _npmResolver.getJSPackage();
+
 		for (FragmentEntryLink fragmentEntryLink : fragmentEntryLinks) {
 			npmRegistryUpdate.unregisterJSModule(
-				_jsPackage.getJSModule(
+				jsPackage.getJSModule(
 					FragmentEntryFragmentRendererReactUtil.getModuleName(
 						fragmentEntryLink)));
 		}
@@ -170,7 +175,9 @@ public class FragmentEntryLinkModelListener
 		npmRegistryUpdate.finish();
 	}
 
-	private String _getJs(FragmentEntryLink fragmentEntryLink) {
+	private String _getJs(
+		FragmentEntryLink fragmentEntryLink, JSPackage jsPackage) {
+
 		return StringUtil.replace(
 			fragmentEntryLink.getJs(),
 			new String[] {
@@ -181,7 +188,7 @@ public class FragmentEntryLinkModelListener
 				StringBundler.concat(
 					StringPool.APOSTROPHE,
 					ModuleNameUtil.getModuleResolvedId(
-						_jsPackage,
+						jsPackage,
 						FragmentEntryFragmentRendererReactUtil.getModuleName(
 							fragmentEntryLink)),
 					StringPool.APOSTROPHE),
@@ -207,7 +214,6 @@ public class FragmentEntryLinkModelListener
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
 
 	private volatile boolean _initialized;
-	private JSPackage _jsPackage;
 
 	@Reference
 	private NPMRegistry _npmRegistry;
