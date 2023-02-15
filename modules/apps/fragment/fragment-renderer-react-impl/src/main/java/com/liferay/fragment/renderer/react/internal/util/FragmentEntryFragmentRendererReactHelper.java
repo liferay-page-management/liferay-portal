@@ -74,7 +74,7 @@ public class FragmentEntryFragmentRendererReactHelper {
 			for (FragmentEntryLink fragmentEntryLink : fragmentEntryLinks) {
 				npmRegistryUpdate.registerJSModule(
 					jsPackage, getModuleName(fragmentEntryLink), _dependencies,
-					getJs(fragmentEntryLink, jsPackage), null);
+					_getJs(fragmentEntryLink, jsPackage), null);
 			}
 
 			npmRegistryUpdate.finish();
@@ -83,11 +83,64 @@ public class FragmentEntryFragmentRendererReactHelper {
 		}
 	}
 
-	public List<String> getDependencies() {
-		return _dependencies;
+	public String getModuleName(FragmentEntryLink fragmentEntryLink) {
+		Date modifiedDate = fragmentEntryLink.getModifiedDate();
+
+		return StringBundler.concat(
+			"fragmentEntryLink/",
+			String.valueOf(fragmentEntryLink.getFragmentEntryLinkId()),
+			StringPool.DASH, String.valueOf(modifiedDate.getTime()));
 	}
 
-	public String getJs(
+	public void registerJSModule(FragmentEntryLink fragmentEntryLink) {
+		NPMRegistryUpdate npmRegistryUpdate = _npmRegistry.update();
+
+		_registerJSModule(fragmentEntryLink, npmRegistryUpdate);
+
+		npmRegistryUpdate.finish();
+	}
+
+	public void unregisterJSModule(FragmentEntryLink fragmentEntryLink) {
+		NPMRegistryUpdate npmRegistryUpdate = _npmRegistry.update();
+
+		_unregisterJSModule(fragmentEntryLink, npmRegistryUpdate);
+
+		npmRegistryUpdate.finish();
+	}
+
+	public void updateJSModule(
+		FragmentEntryLink fragmentEntryLink,
+		FragmentEntryLink originalFragmentEntryLink) {
+
+		NPMRegistryUpdate npmRegistryUpdate = _npmRegistry.update();
+
+		_unregisterJSModule(originalFragmentEntryLink, npmRegistryUpdate);
+
+		_registerJSModule(fragmentEntryLink, npmRegistryUpdate);
+
+		npmRegistryUpdate.finish();
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		List<FragmentEntryLink> fragmentEntryLinks =
+			_fragmentEntryLinkLocalService.getFragmentEntryLinks(
+				FragmentConstants.TYPE_REACT, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null);
+
+		NPMRegistryUpdate npmRegistryUpdate = _npmRegistry.update();
+
+		JSPackage jsPackage = _npmResolver.getJSPackage();
+
+		for (FragmentEntryLink fragmentEntryLink : fragmentEntryLinks) {
+			npmRegistryUpdate.unregisterJSModule(
+				jsPackage.getJSModule(getModuleName(fragmentEntryLink)));
+		}
+
+		npmRegistryUpdate.finish();
+	}
+
+	private String _getJs(
 		FragmentEntryLink fragmentEntryLink, JSPackage jsPackage) {
 
 		return StringUtil.replace(
@@ -111,32 +164,25 @@ public class FragmentEntryFragmentRendererReactHelper {
 			});
 	}
 
-	public String getModuleName(FragmentEntryLink fragmentEntryLink) {
-		Date modifiedDate = fragmentEntryLink.getModifiedDate();
-
-		return StringBundler.concat(
-			"fragmentEntryLink/",
-			String.valueOf(fragmentEntryLink.getFragmentEntryLinkId()),
-			StringPool.DASH, String.valueOf(modifiedDate.getTime()));
-	}
-
-	@Deactivate
-	protected void deactivate() {
-		List<FragmentEntryLink> fragmentEntryLinks =
-			_fragmentEntryLinkLocalService.getFragmentEntryLinks(
-				FragmentConstants.TYPE_REACT, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, null);
-
-		NPMRegistryUpdate npmRegistryUpdate = _npmRegistry.update();
+	private void _registerJSModule(
+		FragmentEntryLink fragmentEntryLink,
+		NPMRegistryUpdate npmRegistryUpdate) {
 
 		JSPackage jsPackage = _npmResolver.getJSPackage();
 
-		for (FragmentEntryLink fragmentEntryLink : fragmentEntryLinks) {
-			npmRegistryUpdate.unregisterJSModule(
-				jsPackage.getJSModule(getModuleName(fragmentEntryLink)));
-		}
+		npmRegistryUpdate.registerJSModule(
+			jsPackage, getModuleName(fragmentEntryLink), _dependencies,
+			_getJs(fragmentEntryLink, jsPackage), null);
+	}
 
-		npmRegistryUpdate.finish();
+	private void _unregisterJSModule(
+		FragmentEntryLink fragmentEntryLink,
+		NPMRegistryUpdate npmRegistryUpdate) {
+
+		JSPackage jsPackage = _npmResolver.getJSPackage();
+
+		npmRegistryUpdate.unregisterJSModule(
+			jsPackage.getJSModule(getModuleName(fragmentEntryLink)));
 	}
 
 	private static final String _DEPENDENCY_PORTAL_REACT =

@@ -16,10 +16,6 @@ package com.liferay.fragment.renderer.react.internal.model.listener;
 
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.renderer.react.internal.util.FragmentEntryFragmentRendererReactHelper;
-import com.liferay.frontend.js.loader.modules.extender.npm.JSPackage;
-import com.liferay.frontend.js.loader.modules.extender.npm.NPMRegistry;
-import com.liferay.frontend.js.loader.modules.extender.npm.NPMRegistryUpdate;
-import com.liferay.frontend.js.loader.modules.extender.npm.NPMResolver;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 
@@ -41,20 +37,8 @@ public class FragmentEntryLinkModelListener
 			return;
 		}
 
-		NPMRegistryUpdate npmRegistryUpdate = _npmRegistry.update();
-
-		JSPackage jsPackage = _npmResolver.getJSPackage();
-
-		npmRegistryUpdate.registerJSModule(
-			jsPackage,
-			_fragmentEntryFragmentRendererReactHelper.getModuleName(
-				fragmentEntryLink),
-			_fragmentEntryFragmentRendererReactHelper.getDependencies(),
-			_fragmentEntryFragmentRendererReactHelper.getJs(
-				fragmentEntryLink, jsPackage),
-			null);
-
-		npmRegistryUpdate.finish();
+		_fragmentEntryFragmentRendererReactHelper.registerJSModule(
+			fragmentEntryLink);
 	}
 
 	@Override
@@ -65,16 +49,8 @@ public class FragmentEntryLinkModelListener
 
 		_fragmentEntryFragmentRendererReactHelper.ensureInitialized();
 
-		NPMRegistryUpdate npmRegistryUpdate = _npmRegistry.update();
-
-		JSPackage jsPackage = _npmResolver.getJSPackage();
-
-		npmRegistryUpdate.unregisterJSModule(
-			jsPackage.getJSModule(
-				_fragmentEntryFragmentRendererReactHelper.getModuleName(
-					fragmentEntryLink)));
-
-		npmRegistryUpdate.finish();
+		_fragmentEntryFragmentRendererReactHelper.unregisterJSModule(
+			fragmentEntryLink);
 	}
 
 	@Override
@@ -88,35 +64,12 @@ public class FragmentEntryLinkModelListener
 
 		_fragmentEntryFragmentRendererReactHelper.ensureInitialized();
 
-		NPMRegistryUpdate npmRegistryUpdate = _npmRegistry.update();
-
-		JSPackage jsPackage = _npmResolver.getJSPackage();
-
-		npmRegistryUpdate.unregisterJSModule(
-			jsPackage.getJSModule(
-				_fragmentEntryFragmentRendererReactHelper.getModuleName(
-					originalFragmentEntryLink)));
-
-		npmRegistryUpdate.registerJSModule(
-			jsPackage,
-			_fragmentEntryFragmentRendererReactHelper.getModuleName(
-				fragmentEntryLink),
-			_fragmentEntryFragmentRendererReactHelper.getDependencies(),
-			_fragmentEntryFragmentRendererReactHelper.getJs(
-				fragmentEntryLink, jsPackage),
-			null);
-
-		npmRegistryUpdate.finish();
+		_fragmentEntryFragmentRendererReactHelper.updateJSModule(
+			fragmentEntryLink, originalFragmentEntryLink);
 	}
 
 	@Reference
 	private FragmentEntryFragmentRendererReactHelper
 		_fragmentEntryFragmentRendererReactHelper;
-
-	@Reference
-	private NPMRegistry _npmRegistry;
-
-	@Reference
-	private NPMResolver _npmResolver;
 
 }
