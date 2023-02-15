@@ -25,9 +25,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Iván Zaera Avellón
  */
-@Component(
-	service = {FragmentEntryLinkModelListener.class, ModelListener.class}
-)
+@Component(service = ModelListener.class)
 public class FragmentEntryLinkModelListener
 	extends BaseModelListener<FragmentEntryLink> {
 
