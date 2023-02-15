@@ -17,6 +17,7 @@
 <%@ include file="/layout/view/init.jsp" %>
 
 <%
+String plmode = ParamUtil.getString(request, "p_l_mode");
 String ppid = ParamUtil.getString(request, "p_p_id");
 %>
 
@@ -24,30 +25,32 @@ String ppid = ParamUtil.getString(request, "p_p_id");
 
 <liferay-ui:success key="variantSaved" message="the-variant-was-saved-successfully" />
 
-<c:choose>
-	<c:when test="<%= (themeDisplay.isStatePopUp() || themeDisplay.isWidget()) && Validator.isNotNull(ppid) %>">
+<c:if test="<%= !Objects.equals(plmode, Constants.BLANK) %>">
+	<c:choose>
+		<c:when test="<%= (themeDisplay.isStatePopUp() || themeDisplay.isWidget()) && Validator.isNotNull(ppid) %>">
 
-		<%
-		String templateContent = LayoutTemplateLocalServiceUtil.getContent("pop_up", true, theme.getThemeId());
+			<%
+			String templateContent = LayoutTemplateLocalServiceUtil.getContent("pop_up", true, theme.getThemeId());
 
-		if (Validator.isNotNull(templateContent)) {
-			String templateId = theme.getThemeId() + LayoutTemplateConstants.STANDARD_SEPARATOR + "pop_up";
+			if (Validator.isNotNull(templateContent)) {
+				String templateId = theme.getThemeId() + LayoutTemplateConstants.STANDARD_SEPARATOR + "pop_up";
 
-			RuntimePageUtil.processTemplate(request, response, ppid, templateId, templateContent, LayoutTemplateLocalServiceUtil.getLangType("pop_up", true, theme.getThemeId()));
-		}
-		%>
+				RuntimePageUtil.processTemplate(request, response, ppid, templateId, templateContent, LayoutTemplateLocalServiceUtil.getLangType("pop_up", true, theme.getThemeId()));
+			}
+			%>
 
-	</c:when>
-	<c:when test="<%= layoutTypePortlet.hasStateMax() && Validator.isNotNull(ppid) %>">
-		<liferay-layout:render-state-max-layout-structure />
-	</c:when>
-	<c:otherwise>
-		<div class="layout-content portlet-layout" id="main-content" role="main">
-			<liferay-layout:render-fragment-layout
-				showPreview="<%= true %>"
-			/>
-		</div>
-	</c:otherwise>
-</c:choose>
+		</c:when>
+		<c:when test="<%= layoutTypePortlet.hasStateMax() && Validator.isNotNull(ppid) %>">
+			<liferay-layout:render-state-max-layout-structure />
+		</c:when>
+		<c:otherwise>
+			<div class="layout-content portlet-layout" id="main-content" role="main">
+				<liferay-layout:render-fragment-layout
+					showPreview="<%= true %>"
+				/>
+			</div>
+		</c:otherwise>
+	</c:choose>
 
-<liferay-layout:layout-common />
+	<liferay-layout:layout-common />
+</c:if>
