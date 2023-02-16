@@ -106,7 +106,7 @@ export function Editor({autocompleteData, initialScript, mode}) {
 				id={`${portletNamespace}scriptContent`}
 				name={`${portletNamespace}scriptContent`}
 				type="hidden"
-				value={btoa(script)}
+				value={formatInputScript(script)}
 			/>
 		</>
 	);
@@ -130,4 +130,10 @@ const exportScript = (script) => {
 	link.click();
 
 	URL.revokeObjectURL(fileURL);
+};
+
+const formatInputScript = (script) => {
+	const scriptEncoded = btoa(encodeURIComponent(script));
+
+	return decodeURIComponent(atob(scriptEncoded));
 };
