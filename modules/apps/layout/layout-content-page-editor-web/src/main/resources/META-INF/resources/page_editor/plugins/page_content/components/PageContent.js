@@ -211,9 +211,10 @@ export default function PageContent({
 			onMouseOver={handleMouseOver}
 		>
 			<div
-				className={classNames('d-flex', {
+				className={classNames('lfr-portal-tooltip', 'd-flex', {
 					'align-items-center': !subtype,
 				})}
+				title={title}
 			>
 				<ClayIcon
 					className={classNames('mr-3 flex-shrink-0', {
