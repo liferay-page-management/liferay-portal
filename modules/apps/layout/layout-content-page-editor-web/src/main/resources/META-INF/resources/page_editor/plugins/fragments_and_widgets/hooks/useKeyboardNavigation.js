@@ -56,6 +56,8 @@ export default function useKeyboardNavigation({handleOpen, type}) {
 				onHeaderKeyDown(element, event.keyCode, handleOpen);
 			}
 			else if (type === LIST_ITEM_TYPES.listItem) {
+				element.removeAttribute('tabindex');
+
 				onListItemKeyDown(element, event.keyCode);
 			}
 		},
@@ -92,6 +94,7 @@ function onHeaderKeyDown(element, keyCode, handleOpen) {
 		const firstItem = list?.querySelector('li');
 
 		if (firstItem) {
+			firstItem.setAttribute('tabindex', -1);
 			firstItem.focus();
 		}
 		else {
@@ -118,6 +121,7 @@ function onHeaderKeyDown(element, keyCode, handleOpen) {
 		if (previousList) {
 			const lastItem = previousList.lastChild;
 
+			lastItem.setAttribute('tabindex', -1);
 			lastItem.focus();
 		}
 		else {
@@ -146,6 +150,7 @@ function onListItemKeyDown(element, keyCode) {
 		// Target previous list item. If it's the first one, target header
 
 		if (element.previousSibling) {
+			element.previousSibling.setAttribute('tabindex', -1);
 			element.previousSibling.focus();
 		}
 		else {
@@ -160,6 +165,7 @@ function onListItemKeyDown(element, keyCode) {
 		// Target next list item. If it's the last one, target next header
 
 		if (element.nextSibling) {
+			element.nextSibling.setAttribute('tabindex', -1);
 			element.nextSibling.focus();
 		}
 		else {
@@ -197,6 +203,7 @@ function onListItemKeyDown(element, keyCode) {
 			previousSibling.focus();
 		}
 		else {
+			element.setAttribute('tabindex', -1);
 			element.focus();
 		}
 	}

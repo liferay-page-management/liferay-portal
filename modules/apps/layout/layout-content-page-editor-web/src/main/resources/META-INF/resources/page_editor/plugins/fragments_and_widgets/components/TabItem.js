@@ -143,7 +143,6 @@ const ListItem = ({disabled, handlerRef, item, onToggleHighlighted}) => {
 			)}
 			ref={setElement}
 			role="menuitem"
-			tabIndex={isActive ? 0 : -1}
 		>
 			<div
 				className="align-items-center d-flex h-100 justify-content-between w-100"
@@ -187,7 +186,6 @@ const CardItem = ({disabled, handlerRef, item, onToggleHighlighted}) => {
 			)}
 			ref={setElement}
 			role="menuitem"
-			tabIndex={isActive ? 0 : -1}
 		>
 			<div ref={handlerRef}>
 				<ClayCard
