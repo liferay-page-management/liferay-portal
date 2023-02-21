@@ -162,6 +162,10 @@ public interface Sites {
 
 	public Long[] filterGroups(List<Group> groups, String[] names);
 
+	public List<Layout> getLayoutSetPrototypeFriendlyURLConflictSitesLayouts(
+			Layout layout)
+		throws PortalException;
+
 	public Layout getLayoutSetPrototypeLayout(Layout layout);
 
 	public Map<String, String[]> getLayoutSetPrototypeParameters(
