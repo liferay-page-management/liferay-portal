@@ -49,6 +49,7 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Image;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.model.LayoutFriendlyURL;
 import com.liferay.portal.kernel.model.LayoutPrototype;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
@@ -73,6 +74,7 @@ import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupServiceUtil;
 import com.liferay.portal.kernel.service.ImageLocalServiceUtil;
+import com.liferay.portal.kernel.service.LayoutFriendlyURLLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutPrototypeLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutServiceUtil;
@@ -735,6 +737,35 @@ public class SitesImpl implements Sites {
 	}
 
 	@Override
+	public List<Layout> getLayoutSetPrototypeFriendlyURLConflictLayouts(
+			Layout layout)
+		throws PortalException {
+
+		Group group = layout.getGroup();
+
+		if (group.isLayoutSetPrototype()) {
+			return _getLayoutSetPrototypeFriendlyURLConflictSiteLayouts(layout);
+		}
+
+		LayoutSet layoutSet = layout.getLayoutSet();
+
+		List<Layout> layouts = new ArrayList<>();
+
+		if (!layoutSet.isLayoutSetPrototypeLinkActive()) {
+			return layouts;
+		}
+
+		Layout conflictLayout =
+			_getLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(layout);
+
+		if (conflictLayout != null) {
+			layouts.add(conflictLayout);
+		}
+
+		return layouts;
+	}
+
+	@Override
 	public Layout getLayoutSetPrototypeLayout(Layout layout) {
 		try {
 			LayoutSet layoutSet = layout.getLayoutSet();
@@ -933,6 +964,23 @@ public class SitesImpl implements Sites {
 				group.getGroupId(), user.getUserId());
 
 		return ListUtil.toList(userGroups, UserGroup.NAME_ACCESSOR);
+	}
+
+	@Override
+	public boolean hasLayoutSetPrototypeFriendlyURLConflicts(
+			long groupId, boolean privateLayout, String layoutUuid,
+			String friendlyURL)
+		throws PortalException {
+
+		Group group = GroupLocalServiceUtil.getGroup(groupId);
+
+		if (group.isLayoutSetPrototype()) {
+			return _hasLayoutSetPrototypeFriendlyURLConflictSiteLayouts(
+				groupId, layoutUuid, friendlyURL);
+		}
+
+		return _hasLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(
+			groupId, privateLayout, layoutUuid, friendlyURL);
 	}
 
 	@Override
@@ -2455,6 +2503,177 @@ public class SitesImpl implements Sites {
 		}
 
 		return owner;
+	}
+
+	private Layout _getLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(
+			Layout layout)
+		throws PortalException {
+
+		LayoutSet layoutSet = layout.getLayoutSet();
+
+		if (!layoutSet.isLayoutSetPrototypeLinkActive()) {
+			return null;
+		}
+
+		LayoutSetPrototype layoutSetPrototype =
+			LayoutSetPrototypeLocalServiceUtil.
+				getLayoutSetPrototypeByUuidAndCompanyId(
+					layoutSet.getLayoutSetPrototypeUuid(),
+					layoutSet.getCompanyId());
+
+		LayoutSet prototypeLayoutSet = layoutSetPrototype.getLayoutSet();
+
+		LayoutFriendlyURL layoutFriendlyURL =
+			LayoutFriendlyURLLocalServiceUtil.fetchFirstLayoutFriendlyURL(
+				prototypeLayoutSet.getGroupId(),
+				prototypeLayoutSet.isPrivateLayout(), layout.getFriendlyURL());
+
+		if (layoutFriendlyURL == null) {
+			return null;
+		}
+
+		Layout foundLayout = LayoutLocalServiceUtil.getLayout(
+			layoutFriendlyURL.getPlid());
+
+		String sourcePrototypeLayoutUuid =
+			layout.getSourcePrototypeLayoutUuid();
+
+		if (Validator.isNotNull(layout.getSourcePrototypeLayoutUuid()) &&
+			sourcePrototypeLayoutUuid.equals(foundLayout.getUuid())) {
+
+			return null;
+		}
+
+		return foundLayout;
+	}
+
+	private List<Layout> _getLayoutSetPrototypeFriendlyURLConflictSiteLayouts(
+			Layout layout)
+		throws PortalException {
+
+		Group group = layout.getGroup();
+
+		List<Layout> layouts = new ArrayList<>();
+
+		if (!group.isLayoutSetPrototype()) {
+			return layouts;
+		}
+
+		LayoutSetPrototype layoutSetPrototype =
+			LayoutSetPrototypeLocalServiceUtil.getLayoutSetPrototype(
+				group.getClassPK());
+
+		List<LayoutSet> layoutSets =
+			LayoutSetLocalServiceUtil.getLayoutSetsByLayoutSetPrototypeUuid(
+				layoutSetPrototype.getUuid());
+
+		for (LayoutSet layoutSet : layoutSets) {
+			LayoutFriendlyURL layoutFriendlyURL =
+				LayoutFriendlyURLLocalServiceUtil.fetchFirstLayoutFriendlyURL(
+					layoutSet.getGroupId(), layoutSet.isPrivateLayout(),
+					layout.getFriendlyURL());
+
+			if (layoutFriendlyURL != null) {
+				Layout foundLayout = LayoutLocalServiceUtil.getLayout(
+					layoutFriendlyURL.getPlid());
+
+				String foundLayoutPrototypeUuid =
+					foundLayout.getSourcePrototypeLayoutUuid();
+
+				if (Validator.isNull(layout.getUuid()) ||
+					!foundLayoutPrototypeUuid.equals(layout.getUuid())) {
+
+					layouts.add(foundLayout);
+				}
+			}
+		}
+
+		return layouts;
+	}
+
+	private boolean _hasLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(
+			long groupId, boolean privateLayout,
+			String sourcePrototypeLayoutUuid, String friendlyURL)
+		throws PortalException {
+
+		LayoutSet layoutSet = LayoutSetLocalServiceUtil.getLayoutSet(
+			groupId, privateLayout);
+
+		if (!layoutSet.isLayoutSetPrototypeLinkActive()) {
+			return false;
+		}
+
+		LayoutSetPrototype layoutSetPrototype =
+			LayoutSetPrototypeLocalServiceUtil.
+				getLayoutSetPrototypeByUuidAndCompanyId(
+					layoutSet.getLayoutSetPrototypeUuid(),
+					layoutSet.getCompanyId());
+
+		LayoutSet prototypeLayoutSet = layoutSetPrototype.getLayoutSet();
+
+		LayoutFriendlyURL layoutFriendlyURL =
+			LayoutFriendlyURLLocalServiceUtil.fetchFirstLayoutFriendlyURL(
+				prototypeLayoutSet.getGroupId(),
+				prototypeLayoutSet.isPrivateLayout(), friendlyURL);
+
+		if (layoutFriendlyURL == null) {
+			return false;
+		}
+
+		Layout foundLayout = LayoutLocalServiceUtil.getLayout(
+			layoutFriendlyURL.getPlid());
+
+		if (Validator.isNotNull(sourcePrototypeLayoutUuid) &&
+			sourcePrototypeLayoutUuid.equals(foundLayout.getUuid())) {
+
+			return false;
+		}
+
+		return true;
+	}
+
+	private boolean _hasLayoutSetPrototypeFriendlyURLConflictSiteLayouts(
+			long groupId, String layoutUuid, String friendlyURL)
+		throws PortalException {
+
+		Group group = GroupLocalServiceUtil.getGroup(groupId);
+
+		if (!group.isLayoutSetPrototype()) {
+			return false;
+		}
+
+		List<Layout> layouts = new ArrayList<>();
+
+		LayoutSetPrototype layoutSetPrototype =
+			LayoutSetPrototypeLocalServiceUtil.getLayoutSetPrototype(
+				group.getClassPK());
+
+		List<LayoutSet> layoutSets =
+			LayoutSetLocalServiceUtil.getLayoutSetsByLayoutSetPrototypeUuid(
+				layoutSetPrototype.getUuid());
+
+		for (LayoutSet layoutSet : layoutSets) {
+			LayoutFriendlyURL layoutFriendlyURL =
+				LayoutFriendlyURLLocalServiceUtil.fetchFirstLayoutFriendlyURL(
+					layoutSet.getGroupId(), layoutSet.isPrivateLayout(),
+					friendlyURL);
+
+			if (layoutFriendlyURL != null) {
+				Layout foundLayout = LayoutLocalServiceUtil.getLayout(
+					layoutFriendlyURL.getPlid());
+
+				String foundLayoutPrototypeUuid =
+					foundLayout.getSourcePrototypeLayoutUuid();
+
+				if (Validator.isNull(layoutUuid) ||
+					!foundLayoutPrototypeUuid.equals(layoutUuid)) {
+
+					layouts.add(foundLayout);
+				}
+			}
+		}
+
+		return !layouts.isEmpty();
 	}
 
 	private void _releaseLock(String className, long classPK, String owner) {
