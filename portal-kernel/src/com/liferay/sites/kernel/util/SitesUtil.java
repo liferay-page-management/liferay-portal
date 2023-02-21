@@ -158,6 +158,14 @@ public class SitesUtil {
 		return _sites.filterGroups(groups, names);
 	}
 
+	public static List<Layout>
+			getLayoutSetPrototypeFriendlyURLConflictSitesLayouts(Layout layout)
+		throws PortalException {
+
+		return _sites.getLayoutSetPrototypeFriendlyURLConflictSitesLayouts(
+			layout);
+	}
+
 	public static Layout getLayoutSetPrototypeLayout(Layout layout) {
 		return _sites.getLayoutSetPrototypeLayout(layout);
 	}
