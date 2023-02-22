@@ -40,6 +40,7 @@ import com.liferay.layout.admin.web.internal.util.FaviconUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
+import com.liferay.layout.set.prototype.helper.LayoutSetPrototypeHelper;
 import com.liferay.layout.theme.item.selector.criterion.LayoutThemeItemSelectorCriterion;
 import com.liferay.layout.util.LayoutCopyHelper;
 import com.liferay.layout.util.comparator.LayoutCreateDateComparator;
@@ -134,12 +135,14 @@ public class LayoutsAdminDisplayContext {
 	public LayoutsAdminDisplayContext(
 		ItemSelector itemSelector, LayoutActionsHelper layoutActionsHelper,
 		LayoutCopyHelper layoutCopyHelper,
+		LayoutSetPrototypeHelper layoutSetPrototypeHelper,
 		LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse) {
 
 		_itemSelector = itemSelector;
 		_layoutActionsHelper = layoutActionsHelper;
 		_layoutCopyHelper = layoutCopyHelper;
+		_layoutSetPrototypeHelper = layoutSetPrototypeHelper;
 		_liferayPortletRequest = liferayPortletRequest;
 		_liferayPortletResponse = liferayPortletResponse;
 
@@ -333,6 +336,29 @@ public class LayoutsAdminDisplayContext {
 		}
 
 		return layout.getName(locale);
+	}
+
+	public String getConfigureConflictLayoutURL(Layout layout) {
+		return PortletURLBuilder.create(
+			PortalUtil.getControlPanelPortletURL(
+				httpServletRequest, layout.getGroup(),
+				LayoutAdminPortletKeys.GROUP_PAGES, 0, 0,
+				PortletRequest.RENDER_PHASE)
+		).setMVCRenderCommandName(
+			"/layout_admin/edit_layout"
+		).setRedirect(
+			ParamUtil.getString(
+				PortalUtil.getOriginalServletRequest(httpServletRequest),
+				"p_l_back_url")
+		).setBackURL(
+			themeDisplay.getURLCurrent()
+		).setParameter(
+			"groupId", layout.getGroupId()
+		).setParameter(
+			"privateLayout", layout.isPrivateLayout()
+		).setParameter(
+			"selPlid", layout.getPlid()
+		).buildString();
 	}
 
 	public String getConfigureLayoutURL(Layout layout) {
@@ -712,6 +738,36 @@ public class LayoutsAdminDisplayContext {
 		).setParameter(
 			"selPlid", getSelPlid()
 		).buildPortletURL();
+	}
+
+	public Layout getLayoutSetPrototypeFriendlyURLConflictLayout()
+		throws PortalException {
+
+		if (_conflictLayouts == null) {
+			_conflictLayouts =
+				_layoutSetPrototypeHelper.getDuplicatedFriendlyURLLayouts(
+					getSelLayout());
+		}
+
+		if (_conflictLayouts.isEmpty()) {
+			return null;
+		}
+
+		return _conflictLayouts.get(0);
+	}
+
+	public List<Layout> getLayoutSetPrototypeFriendlyURLConflictSiteLayouts()
+		throws PortalException {
+
+		if (_conflictLayouts != null) {
+			return _conflictLayouts;
+		}
+
+		_conflictLayouts =
+			_layoutSetPrototypeHelper.getDuplicatedFriendlyURLLayouts(
+				getSelLayout());
+
+		return _conflictLayouts;
 	}
 
 	public PortletURL getLayoutSetScreenNavigationPortletURL() {
@@ -1838,6 +1894,28 @@ public class LayoutsAdminDisplayContext {
 		return true;
 	}
 
+	public boolean isShowLayoutSetPrototypeFriendlyURLConflictLayout()
+		throws PortalException {
+
+		Layout conflictLayout =
+			getLayoutSetPrototypeFriendlyURLConflictLayout();
+
+		if (conflictLayout != null) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public boolean isShowLayoutSetPrototypeFriendlyURLConflictSitesLayouts()
+		throws PortalException {
+
+		List<Layout> layouts =
+			getLayoutSetPrototypeFriendlyURLConflictSiteLayouts();
+
+		return !layouts.isEmpty();
+	}
+
 	public boolean isShowPublicLayouts() {
 		Group selGroup = getSelGroup();
 
@@ -2301,6 +2379,7 @@ public class LayoutsAdminDisplayContext {
 	private Long _activeLayoutSetBranchId;
 	private String _backURL;
 	private final CETManager _cetManager;
+	private List<Layout> _conflictLayouts;
 	private String _displayStyle;
 	private Boolean _firstColumn;
 	private final GroupDisplayContextHelper _groupDisplayContextHelper;
@@ -2311,6 +2390,7 @@ public class LayoutsAdminDisplayContext {
 	private final LayoutActionsHelper _layoutActionsHelper;
 	private final LayoutCopyHelper _layoutCopyHelper;
 	private Long _layoutId;
+	private final LayoutSetPrototypeHelper _layoutSetPrototypeHelper;
 	private SearchContainer<Layout> _layoutsSearchContainer;
 	private final LiferayPortletRequest _liferayPortletRequest;
 	private final LiferayPortletResponse _liferayPortletResponse;
