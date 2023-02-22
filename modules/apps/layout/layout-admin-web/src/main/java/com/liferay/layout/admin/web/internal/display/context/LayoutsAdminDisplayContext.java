@@ -109,6 +109,7 @@ import com.liferay.portal.util.RobotsUtil;
 import com.liferay.site.display.context.GroupDisplayContextHelper;
 import com.liferay.site.navigation.model.SiteNavigationMenu;
 import com.liferay.site.navigation.service.SiteNavigationMenuLocalServiceUtil;
+import com.liferay.sites.kernel.util.SitesUtil;
 import com.liferay.staging.StagingGroupHelper;
 import com.liferay.taglib.security.PermissionsURLTag;
 
@@ -342,6 +343,29 @@ public class LayoutsAdminDisplayContext {
 		}
 
 		return layout.getName(locale);
+	}
+
+	public String getConfigureConflictLayoutURL(Layout layout) {
+		return PortletURLBuilder.create(
+			PortalUtil.getControlPanelPortletURL(
+				httpServletRequest, layout.getGroup(),
+				LayoutAdminPortletKeys.GROUP_PAGES, 0, 0,
+				PortletRequest.RENDER_PHASE)
+		).setMVCRenderCommandName(
+			"/layout_admin/edit_layout"
+		).setRedirect(
+			ParamUtil.getString(
+				PortalUtil.getOriginalServletRequest(httpServletRequest),
+				"p_l_back_url")
+		).setBackURL(
+			themeDisplay.getURLCurrent()
+		).setParameter(
+			"groupId", layout.getGroupId()
+		).setParameter(
+			"privateLayout", layout.isPrivateLayout()
+		).setParameter(
+			"selPlid", layout.getPlid()
+		).buildString();
 	}
 
 	public String getConfigureLayoutURL(Layout layout) {
@@ -729,6 +753,36 @@ public class LayoutsAdminDisplayContext {
 		).setParameter(
 			"selPlid", getSelPlid()
 		).buildPortletURL();
+	}
+
+	public Layout getLayoutSetPrototypeFriendlyURLConflictLayout()
+		throws PortalException {
+
+		if (_showConflictLayout != null) {
+			return _conflictLayout;
+		}
+
+		_conflictLayout =
+			SitesUtil.getLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(
+				getSelLayout());
+
+		_showConflictLayout = _conflictLayout != null;
+
+		return _conflictLayout;
+	}
+
+	public List<Layout> getLayoutSetPrototypeFriendlyURLConflictSitesLayouts()
+		throws PortalException {
+
+		if (_conflictLayouts != null) {
+			return _conflictLayouts;
+		}
+
+		_conflictLayouts =
+			SitesUtil.getLayoutSetPrototypeFriendlyURLConflictSitesLayouts(
+				getSelLayout());
+
+		return _conflictLayouts;
 	}
 
 	public PortletURL getLayoutSetScreenNavigationPortletURL() {
@@ -1914,6 +1968,27 @@ public class LayoutsAdminDisplayContext {
 		return true;
 	}
 
+	public boolean isShowLayoutSetPrototypeFriendlyURLConflictLayout()
+		throws PortalException {
+
+		if (_showConflictLayout != null) {
+			return _showConflictLayout;
+		}
+
+		getLayoutSetPrototypeFriendlyURLConflictLayout();
+
+		return _showConflictLayout;
+	}
+
+	public boolean isShowLayoutSetPrototypeFriendlyURLConflictSitesLayouts()
+		throws PortalException {
+
+		List<Layout> layouts =
+			getLayoutSetPrototypeFriendlyURLConflictSitesLayouts();
+
+		return !layouts.isEmpty();
+	}
+
 	public boolean isShowOrphanPortletsAction(Layout layout)
 		throws PortalException {
 
@@ -2483,6 +2558,8 @@ public class LayoutsAdminDisplayContext {
 	private Long _activeLayoutSetBranchId;
 	private String _backURL;
 	private final CETManager _cetManager;
+	private Layout _conflictLayout;
+	private List<Layout> _conflictLayouts;
 	private String _displayStyle;
 	private Boolean _firstColumn;
 	private final GroupDisplayContextHelper _groupDisplayContextHelper;
@@ -2506,6 +2583,7 @@ public class LayoutsAdminDisplayContext {
 	private Layout _selLayout;
 	private LayoutSet _selLayoutSet;
 	private Long _selPlid;
+	private Boolean _showConflictLayout;
 	private final StagingGroupHelper _stagingGroupHelper;
 	private String _tabs1;
 	private String _themeId;
