@@ -104,6 +104,27 @@ String friendlyURLBase = StringPool.BLANK;
 		</c:choose>
 
 		<c:if test="<%= group.isLayoutSetPrototype() %>">
+			<c:if test="<%= layoutsAdminDisplayContext.isShowLayoutSetPrototypeFriendlyURLConflictSitesLayouts() %>">
+				<div class="alert alert-warning">
+					Site template page friendly URL is conflicting with the page friendly URL in some of the sites created from this template
+					<ul>
+
+						<%
+						for (Layout conflictLayout : layoutsAdminDisplayContext.getLayoutSetPrototypeFriendlyURLConflictSitesLayouts()) {
+							Group conflictGroup = conflictLayout.getGroup();
+						%>
+
+							<li>
+								Page "<%= conflictLayout.getNameCurrentValue() %>" in site "<%= conflictGroup.getNameCurrentValue() %>"
+							</li>
+
+						<%
+						}
+						%>
+
+					</ul>
+				</div>
+			</c:if>
 
 			<%
 			LayoutSetPrototype layoutSetPrototype = LayoutSetPrototypeLocalServiceUtil.getLayoutSetPrototype(group.getClassPK());
