@@ -21,7 +21,7 @@ import {AssetCategoryTree} from './AssetCategoryTree.es';
 
 function SelectAssetCategory({
 	itemSelectedEventName,
-	multiSelection,
+	multiSelect,
 	namespace,
 	nodes,
 }) {
@@ -94,7 +94,7 @@ function SelectAssetCategory({
 								filterQuery={filterQuery}
 								itemSelectedEventName={itemSelectedEventName}
 								items={items}
-								multiSelection={multiSelection}
+								multiSelect={multiSelect}
 								onItems={setItems}
 								onSelectedItemsCount={setSelectedItemsCount}
 							/>

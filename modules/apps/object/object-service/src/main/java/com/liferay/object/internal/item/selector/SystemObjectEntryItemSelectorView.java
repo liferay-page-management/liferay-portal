@@ -323,8 +323,8 @@ public class SystemObjectEntryItemSelectorView
 		}
 
 		@Override
-		public boolean isMultipleSelection() {
-			return _infoItemItemSelectorCriterion.isMultiSelection();
+		public boolean isMultiSelect() {
+			return _infoItemItemSelectorCriterion.isMultiSelect();
 		}
 
 		private final HttpServletRequest _httpServletRequest;

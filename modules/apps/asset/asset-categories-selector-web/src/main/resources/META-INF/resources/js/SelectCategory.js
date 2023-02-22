@@ -28,7 +28,7 @@ function SelectCategory({
 	inheritSelection,
 	itemSelectorSaveEvent,
 	moveCategory,
-	multiSelection,
+	multiSelect,
 	namespace,
 	nodes,
 	selectedCategoryIds,
@@ -136,7 +136,7 @@ function SelectCategory({
 								inheritSelection={inheritSelection}
 								itemSelectorSaveEvent={itemSelectorSaveEvent}
 								items={items}
-								multiSelection={multiSelection}
+								multiSelect={multiSelect}
 								onItems={setItems}
 								onSelectionChange={setSelectedItems}
 								selectedCategoryIds={selectedItems}

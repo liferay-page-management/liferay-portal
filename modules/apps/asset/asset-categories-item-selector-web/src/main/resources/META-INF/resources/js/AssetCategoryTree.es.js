@@ -46,7 +46,7 @@ export function AssetCategoryTree({
 	filterQuery,
 	itemSelectedEventName,
 	items,
-	multiSelection,
+	multiSelect,
 	onItems,
 	onSelectedItemsCount,
 }) {
@@ -94,7 +94,7 @@ export function AssetCategoryTree({
 
 		let data = selectedItems;
 
-		if (!multiSelection) {
+		if (!multiSelect) {
 			data = selectedItems[0];
 		}
 
@@ -109,7 +109,7 @@ export function AssetCategoryTree({
 		selectedKeys,
 		itemsById,
 		itemSelectedEventName,
-		multiSelection,
+		multiSelect,
 		onSelectedItemsCount,
 	]);
 
@@ -122,7 +122,7 @@ export function AssetCategoryTree({
 			return;
 		}
 
-		if (!multiSelection) {
+		if (!multiSelect) {
 			selection.toggle(item.id);
 
 			return;
@@ -142,7 +142,7 @@ export function AssetCategoryTree({
 				return;
 			}
 
-			if (!multiSelection) {
+			if (!multiSelect) {
 				selection.toggle(item.id);
 
 				return;
@@ -157,7 +157,7 @@ export function AssetCategoryTree({
 
 	return filteredItems.length ? (
 		<>
-			{multiSelection && (
+			{multiSelect && (
 				<p
 					className="mb-4"
 					dangerouslySetInnerHTML={{
@@ -176,7 +176,7 @@ export function AssetCategoryTree({
 				onItemsChange={(items) => onItems(items)}
 				onSelectionChange={(keys) => setSelectionChange(keys)}
 				selectedKeys={selectedKeys}
-				selectionMode={multiSelection ? 'multiple' : 'single'}
+				selectionMode={multiSelect ? 'multiple' : 'single'}
 				showExpanderOnHover={false}
 			>
 				{(item, selection, expand) => (
@@ -189,7 +189,7 @@ export function AssetCategoryTree({
 								onKeyDown(event, item, selection)
 							}
 						>
-							{multiSelection && !item.disabled && (
+							{multiSelect && !item.disabled && (
 								<Checkbox
 									checked={selection.has(item.id)}
 									onChange={(event) => {
@@ -221,7 +221,7 @@ export function AssetCategoryTree({
 										onKeyDown(event, item, selection)
 									}
 								>
-									{multiSelection && !item.disabled && (
+									{multiSelect && !item.disabled && (
 										<Checkbox
 											checked={selection.has(item.id)}
 											onChange={(event) => {

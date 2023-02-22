@@ -47,7 +47,7 @@ export function SelectTree({
 	inheritSelection,
 	itemSelectorSaveEvent,
 	items,
-	multiSelection,
+	multiSelect,
 	onItems,
 	onSelectionChange,
 	selectedCategoryIds,
@@ -141,7 +141,7 @@ export function SelectTree({
 			selectionMode={
 				inheritSelection
 					? 'multiple-recursive'
-					: multiSelection
+					: multiSelect
 					? 'multiple'
 					: 'single'
 			}
@@ -156,7 +156,7 @@ export function SelectTree({
 						onKeyDown={(event) => onKeyDown(event, item, selection)}
 					>
 						{(inheritSelection ||
-							(multiSelection && !item.disabled)) && (
+							(multiSelect && !item.disabled)) && (
 							<ClayCheckbox
 								onChange={() => selection.toggle(item.id)}
 								tabIndex="-1"
@@ -179,7 +179,7 @@ export function SelectTree({
 								}
 							>
 								{(inheritSelection ||
-									(multiSelection && !item.disabled)) && (
+									(multiSelect && !item.disabled)) && (
 									<ClayCheckbox
 										onChange={() =>
 											selection.toggle(item.id)
