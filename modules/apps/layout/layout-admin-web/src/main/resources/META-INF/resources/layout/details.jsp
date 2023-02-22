@@ -106,7 +106,8 @@ String friendlyURLBase = StringPool.BLANK;
 		<c:if test="<%= group.isLayoutSetPrototype() %>">
 			<c:if test="<%= layoutsAdminDisplayContext.isShowLayoutSetPrototypeFriendlyURLConflictSitesLayouts() %>">
 				<div class="alert alert-warning">
-					Site template page friendly URL is conflicting with the page friendly URL in some of the sites created from this template
+					<liferay-ui:message key="layout-config-layout-set-prototype-friendly-url-collision" />
+
 					<ul>
 
 						<%
@@ -115,7 +116,7 @@ String friendlyURLBase = StringPool.BLANK;
 						%>
 
 							<li>
-								Page "<%= conflictLayout.getNameCurrentValue() %>" in site "<%= conflictGroup.getNameCurrentValue() %>"
+								<liferay-ui:message arguments="<%= new Object[] {conflictLayout.getName(locale), conflictGroup.getName(locale)} %>" key="layout-config-layout-set-prototype-friendly-url-collision-with-page-x-site-x" translateArguments="<%= false %>" />
 							</li>
 
 						<%
