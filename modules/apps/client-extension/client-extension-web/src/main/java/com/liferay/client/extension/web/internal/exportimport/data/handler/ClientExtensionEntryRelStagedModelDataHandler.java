@@ -165,10 +165,14 @@ public class ClientExtensionEntryRelStagedModelDataHandler
 		else {
 			importedClientExtensionEntryRel.setMvccVersion(
 				existingClientExtensionEntryRel.getMvccVersion());
-			importedClientExtensionEntryRel.setExternalReferenceCode(
-				existingClientExtensionEntryRel.getExternalReferenceCode());
 			importedClientExtensionEntryRel.setClientExtensionEntryRelId(
 				existingClientExtensionEntryRel.getClientExtensionEntryRelId());
+			importedClientExtensionEntryRel.setCreateDate(
+				existingClientExtensionEntryRel.getCreateDate());
+			importedClientExtensionEntryRel.setExternalReferenceCode(
+				existingClientExtensionEntryRel.getExternalReferenceCode());
+			importedClientExtensionEntryRel.setModifiedDate(
+				existingClientExtensionEntryRel.getModifiedDate());
 
 			importedClientExtensionEntryRel =
 				_stagedModelRepository.updateStagedModel(
