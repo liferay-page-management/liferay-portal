@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.ResourcePrimKeyException;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Organization;
@@ -145,6 +146,24 @@ public class PortletConfigurationPermissionsDisplayContext {
 		}
 
 		return actionIdResourcePrimKeysMap;
+	}
+
+	public String getActionLabel(String resourceName, String actionId) {
+		String actionLabel = null;
+
+		if (actionId.equals("ADD_STRUCTURE") &&
+			resourceName.equals("com.liferay.document.library")) {
+
+			actionLabel = LanguageUtil.get(
+				_httpServletRequest, "add-metadata-set");
+		}
+
+		if (actionLabel == null) {
+			actionLabel = ResourceActionsUtil.getAction(
+				_httpServletRequest, actionId);
+		}
+
+		return actionLabel;
 	}
 
 	public List<String> getActions() throws PortalException {

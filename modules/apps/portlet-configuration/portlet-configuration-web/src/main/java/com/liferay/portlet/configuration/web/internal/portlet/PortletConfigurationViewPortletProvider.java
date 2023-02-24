@@ -17,8 +17,8 @@ package com.liferay.portlet.configuration.web.internal.portlet;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.BasePortletProvider;
-import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.ViewPortletProvider;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portlet.configuration.kernel.util.PortletConfigurationApplicationType;
 import com.liferay.portlet.configuration.web.internal.constants.PortletConfigurationPortletKeys;
 
@@ -28,6 +28,7 @@ import javax.portlet.PortletURL;
 import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Juergen Kappler
@@ -49,8 +50,11 @@ public class PortletConfigurationViewPortletProvider
 			HttpServletRequest httpServletRequest, Group group)
 		throws PortalException {
 
-		return PortletURLFactoryUtil.create(
+		return _portal.getControlPanelPortletURL(
 			httpServletRequest, getPortletName(), PortletRequest.RENDER_PHASE);
 	}
+
+	@Reference
+	private Portal _portal;
 
 }

@@ -142,7 +142,7 @@ if (Validator.isNotNull(portletConfigurationPermissionsDisplayContext.getModelRe
 								type = ResourceActionsUtil.getModelResource(locale, resourceName);
 							}
 
-							dataMessage = HtmlUtil.escapeAttribute(LanguageUtil.format(request, preselectedMsg, new Object[] {role.getTitle(locale), _getActionLabel(request, resourceName, action), type, HtmlUtil.escape(portletConfigurationPermissionsDisplayContext.getGroupDescriptiveName())}, false));
+							dataMessage = HtmlUtil.escapeAttribute(LanguageUtil.format(request, preselectedMsg, new Object[] {role.getTitle(locale), portletConfigurationPermissionsDisplayContext.getActionLabel(resourceName, action), type, HtmlUtil.escape(portletConfigurationPermissionsDisplayContext.getGroupDescriptiveName())}, false));
 
 							disabled = true;
 						}
@@ -155,7 +155,7 @@ if (Validator.isNotNull(portletConfigurationPermissionsDisplayContext.getModelRe
 
 						<liferay-ui:search-container-column-text
 							cssClass="table-column-text-center"
-							name="<%= _getActionLabel(request, resourceName, action) %>"
+							name="<%= portletConfigurationPermissionsDisplayContext.getActionLabel(resourceName, action) %>"
 						>
 							<c:if test="<%= disabled && checked %>">
 								<input name="<%= inputName %>" type="hidden" value="<%= true %>" />

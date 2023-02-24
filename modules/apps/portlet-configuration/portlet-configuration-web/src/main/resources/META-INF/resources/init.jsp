@@ -70,6 +70,7 @@ page import="com.liferay.portal.kernel.util.WebKeys" %><%@
 page import="com.liferay.portal.util.PropsValues" %><%@
 page import="com.liferay.portal.util.ResourcePermissionUtil" %><%@
 page import="com.liferay.portlet.configuration.kernel.util.PortletConfigurationUtil" %><%@
+page import="com.liferay.portlet.configuration.web.internal.display.context.PortletConfigurationDisplayContext" %><%@
 page import="com.liferay.portlet.configuration.web.internal.display.context.PortletConfigurationPermissionsDisplayContext" %><%@
 page import="com.liferay.portlet.configuration.web.internal.display.context.PortletConfigurationTemplatesDisplayContext" %><%@
 page import="com.liferay.portlet.configuration.web.internal.display.context.PortletConfigurationTemplatesManagementToolbarDisplayContext" %><%@
@@ -102,19 +103,3 @@ Portlet selPortlet = PortletLocalServiceUtil.getPortletById(company.getCompanyId
 %>
 
 <%@ include file="/init-ext.jsp" %>
-
-<%!
-private String _getActionLabel(HttpServletRequest request, String resourceName, String actionId) {
-	String actionLabel = null;
-
-	if (actionId.equals("ADD_STRUCTURE") && resourceName.equals("com.liferay.document.library")) {
-		actionLabel = LanguageUtil.get(request, "add-metadata-set");
-	}
-
-	if (actionLabel == null) {
-		actionLabel = ResourceActionsUtil.getAction(request, actionId);
-	}
-
-	return actionLabel;
-}
-%>

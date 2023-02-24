@@ -16,7 +16,11 @@
 
 <%@ include file="/init.jsp" %>
 
-<c:if test="<%= !layout.isTypeControlPanel() && !windowState.equals(LiferayWindowState.EXCLUSIVE) %>">
+<%
+PortletConfigurationDisplayContext portletConfigurationDisplayContext = new PortletConfigurationDisplayContext(request);
+%>
+
+<c:if test="<%= !portletConfigurationDisplayContext.isControlPanelPortlet() && !windowState.equals(LiferayWindowState.EXCLUSIVE) %>">
 	<liferay-util:include page="/tabs1.jsp" servletContext="<%= application %>">
 		<liferay-util:param name="tabs1" value="setup" />
 	</liferay-util:include>
