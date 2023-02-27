@@ -96,7 +96,10 @@ public class ExpandoDisplayContext {
 					liferayPortletResponse.createRenderURL(), "mvcPath",
 					"/edit/select_field_type.jsp", "redirect",
 					PortalUtil.getCurrentURL(_httpServletRequest),
-					"modelResource", modelResource);
+					"modelResource", modelResource, "backTitle",
+					LanguageUtil.format(
+						_httpServletRequest, "go-to-x",
+						LanguageUtil.get(_httpServletRequest, "user"), false));
 
 				dropdownItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "add-custom-field"));
