@@ -166,6 +166,15 @@ public class SitesUtil {
 			layout);
 	}
 
+	public static List<Layout>
+			getLayoutSetPrototypeFriendlyURLConflictSitesLayouts(
+				Layout layout, String friendlyUrl)
+		throws PortalException {
+
+		return _sites.getLayoutSetPrototypeFriendlyURLConflictSitesLayouts(
+			layout, friendlyUrl);
+	}
+
 	public static Layout getLayoutSetPrototypeLayout(Layout layout) {
 		return _sites.getLayoutSetPrototypeLayout(layout);
 	}

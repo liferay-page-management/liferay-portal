@@ -166,6 +166,10 @@ public interface Sites {
 			Layout layout)
 		throws PortalException;
 
+	public List<Layout> getLayoutSetPrototypeFriendlyURLConflictSitesLayouts(
+			Layout layout, String friendlyUrl)
+		throws PortalException;
+
 	public Layout getLayoutSetPrototypeLayout(Layout layout);
 
 	public Map<String, String[]> getLayoutSetPrototypeParameters(
