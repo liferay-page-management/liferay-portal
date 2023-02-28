@@ -97,6 +97,8 @@ String friendlyURLBase = StringPool.BLANK;
 					inputAddon="<%= friendlyURLBase %>"
 					name="friendlyURL"
 				/>
+
+				<aui:input name="originalFriendlyURL" type="hidden" value="<%= (selLayout != null) ? HttpComponentsUtil.decodeURL(selLayout.getFriendlyURL()) : StringPool.BLANK %>" />
 			</c:when>
 			<c:otherwise>
 				<aui:input name="friendlyURL" type="hidden" value="<%= (selLayout != null) ? HttpComponentsUtil.decodeURL(selLayout.getFriendlyURL()) : StringPool.BLANK %>" />

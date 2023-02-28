@@ -253,9 +253,11 @@ renderResponse.setTitle(layoutsAdminDisplayContext.getConfigurationTitle(selLayo
 </c:choose>
 
 <aui:script>
+	<liferay-portlet:resourceURL id="/layout_admin/get_layout_set_prototype_conflicts" portletName="<%= LayoutAdminPortletKeys.GROUP_PAGES %>" var="getConflictsResourceURL" />
+
 	var form = document.getElementById('<portlet:namespace />editLayoutFm');
 
-	form.addEventListener('submit', (event) => {
+	function <portlet:namespace />checkApplyLayoutPrototype() {
 		var applyLayoutPrototype = document.getElementById(
 			'<portlet:namespace />applyLayoutPrototype'
 		);
@@ -274,5 +276,66 @@ renderResponse.setTitle(layoutsAdminDisplayContext.getConfigurationTitle(selLayo
 				},
 			});
 		}
+	}
+
+	function <portlet:namespace />checkLayoutSetPrototypeConflicts() {
+		var selPlid = document.getElementById('<portlet:namespace />selPlid');
+
+		var friendlyURL = document.getElementById(
+			'<portlet:namespace />friendlyURL'
+		);
+
+		var originalFriendlyURL = document.getElementById(
+			'<portlet:namespace />originalFriendlyURL'
+		);
+
+		if (!selPlid || !friendlyURL || !originalFriendlyURL) {
+			submitForm(form);
+			return;
+		}
+
+		if (friendlyURL.value === originalFriendlyURL.value) {
+			submitForm(form);
+			return;
+		}
+
+		var url = new URL('<%= getConflictsResourceURL %>', window.location.origin);
+
+		url.searchParams.set('<portlet:namespace />plid', selPlid.value);
+		url.searchParams.set('<portlet:namespace />friendlyURL', friendlyURL.value);
+
+		Liferay.Util.fetch(url.toString())
+			.then((response) => {
+				return response.json();
+			})
+			.then((response) => {
+				var count = response.conflictsCount;
+
+				if (count == 0) {
+					submitForm(form);
+					return;
+				}
+
+				Liferay.Util.openConfirmModal({
+					message:
+						'<%= UnicodeLanguageUtil.get(request, "the-friendly-url-of-the-site-template-page-you-are-trying-to-save-conflicts") %>',
+					onConfirm: (isConfirm) => {
+						if (isConfirm) {
+							submitForm(form);
+						}
+					},
+				});
+			});
+	}
+
+	form.addEventListener('submit', (event) => {
+		<c:choose>
+			<c:when test="<%= group.isLayoutSetPrototype() %>">
+				<portlet:namespace />checkLayoutSetPrototypeConflicts();
+			</c:when>
+			<c:otherwise>
+				<portlet:namespace />checkApplyLayoutPrototype();
+			</c:otherwise>
+		</c:choose>
 	});
 </aui:script>
