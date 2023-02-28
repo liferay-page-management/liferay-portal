@@ -15,7 +15,6 @@
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import ClayCard from '@clayui/card';
 import {ClayDropDownWithItems} from '@clayui/drop-down';
-import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal, {useModal} from '@clayui/modal';
@@ -29,6 +28,10 @@ import {getEmptyImage} from 'react-dnd-html5-backend';
 
 import updateSetsOrder from '../../app/thunks/updateSetsOrder';
 import {useId} from '../../common/hooks/useId';
+import {
+	ARROW_DOWN_KEYCODE,
+	ARROW_UP_KEYCODE,
+} from '../config/constants/keycodes';
 import {useDispatch, useSelector} from '../contexts/StoreContext';
 import selectWidgetFragmentEntryLinks from '../selectors/selectWidgetFragmentEntryLinks';
 import loadWidgets from '../thunks/loadWidgets';
@@ -237,6 +240,7 @@ Tabs.propTypes = {
 
 function Items({items: initialItems, listId, updateLists}) {
 	const [items, setItems] = useState(initialItems);
+	const [movementText, setMovementText] = useState(null);
 
 	const onChangeItemPosition = (itemId, newPosition) => {
 		const itemIndex = items.findIndex(({id}) => id === itemId);
@@ -252,17 +256,24 @@ function Items({items: initialItems, listId, updateLists}) {
 	};
 
 	return (
-		<div className="p-4">
-			{items.map((item, index) => (
-				<CardItem
-					index={index}
-					item={item}
-					key={item.id}
-					numberOfItems={items.length}
-					onChangeItemPosition={onChangeItemPosition}
-				/>
-			))}
-		</div>
+		<>
+			<div className="p-4">
+				{items.map((item, index) => (
+					<CardItem
+						index={index}
+						item={item}
+						key={item.id}
+						numberOfItems={items.length}
+						onChangeItemPosition={onChangeItemPosition}
+						setMovementText={setMovementText}
+					/>
+				))}
+			</div>
+
+			<span aria-live="assertive" className="sr-only">
+				{movementText}
+			</span>
+		</>
 	);
 }
 
@@ -272,11 +283,35 @@ Items.propTypes = {
 	updateLists: PropTypes.func.isRequired,
 };
 
-function CardItem({index, item, numberOfItems, onChangeItemPosition}) {
+function CardItem({
+	index,
+	item,
+	numberOfItems,
+	onChangeItemPosition,
+	setMovementText,
+}) {
 	const {name} = item;
 
 	const {handlerRef, isDragging} = useDragItem(item);
 	const {targetRef} = useDropTarget(item.id, index, onChangeItemPosition);
+
+	const onKeyDown = (event) => {
+		const {keyCode} = event;
+
+		if (keyCode === ARROW_UP_KEYCODE && index > 0) {
+			onChangeItemPosition(item.id, index - 1);
+			setMovementText(sub(Liferay.Language.get('x-moved-up'), name));
+			setTimeout(() => setMovementText(null), 100);
+		}
+		else if (
+			keyCode === ARROW_DOWN_KEYCODE &&
+			index < numberOfItems - 1
+		) {
+			onChangeItemPosition(item.id, index + 1);
+			setMovementText(sub(Liferay.Language.get('x-moved-down'), name));
+			setTimeout(() => setMovementText(null), 100);
+		}
+	};
 
 	return (
 		<div ref={targetRef}>
@@ -287,8 +322,15 @@ function CardItem({index, item, numberOfItems, onChangeItemPosition}) {
 					<ClayCard.Body className="px-0">
 						<ClayCard.Row className="align-items-center">
 							<ClayLayout.ContentCol gutters>
-								<ClayIcon
+								<ClayButtonWithIcon
+									aria-label={sub(
+										Liferay.Language.get('drag-x'),
+										item.name
+									)}
 									className="text-secondary"
+									displayType="unstyled"
+									onKeyDown={onKeyDown}
+									size="sm"
 									symbol="drag"
 								/>
 							</ClayLayout.ContentCol>
@@ -324,6 +366,7 @@ CardItem.propTypes = {
 	item: PropTypes.object.isRequired,
 	numberOfItems: PropTypes.number.isRequired,
 	onChangeItemPosition: PropTypes.func.isRequired,
+	setMovementText: PropTypes.func.isRequired,
 };
 
 function ReorderDropdown({index, item, numberOfItems, onChangeItemPosition}) {
@@ -347,11 +390,18 @@ function ReorderDropdown({index, item, numberOfItems, onChangeItemPosition}) {
 			items={items}
 			trigger={
 				<ClayButtonWithIcon
-					aria-label={sub(Liferay.Language.get('move-x'), item.name)}
-					className="text-secondary"
+					aria-label={sub(
+						Liferay.Language.get('reorder-options-for-x'),
+						item.name
+					)}
+					className="lfr-portal-tooltip text-secondary"
 					displayType="unstyled"
 					size="sm"
 					symbol="ellipsis-v"
+					title={sub(
+						Liferay.Language.get('reorder-options-for-x'),
+						item.name
+					)}
 				/>
 			}
 		/>
