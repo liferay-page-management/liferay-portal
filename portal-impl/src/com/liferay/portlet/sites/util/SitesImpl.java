@@ -743,6 +743,15 @@ public class SitesImpl implements Sites {
 			Layout layout)
 		throws PortalException {
 
+		return getLayoutSetPrototypeFriendlyURLConflictSitesLayouts(
+			layout, layout.getFriendlyURL());
+	}
+
+	@Override
+	public List<Layout> getLayoutSetPrototypeFriendlyURLConflictSitesLayouts(
+			Layout layout, String friendlyUrl)
+		throws PortalException {
+
 		Group group = layout.getGroup();
 
 		List<Layout> layouts = new ArrayList<>();
@@ -763,7 +772,7 @@ public class SitesImpl implements Sites {
 			LayoutFriendlyURL layoutFriendlyURL =
 				LayoutFriendlyURLLocalServiceUtil.fetchFirstLayoutFriendlyURL(
 					layoutSet.getGroupId(), layoutSet.isPrivateLayout(),
-					layout.getFriendlyURL());
+					friendlyUrl);
 
 			if (layoutFriendlyURL != null) {
 				Layout foundLayout = LayoutLocalServiceUtil.getLayout(
