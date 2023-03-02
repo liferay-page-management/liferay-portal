@@ -607,6 +607,7 @@ definition {
 
 			Site.addCP(
 				siteName = "Site Name",
+				siteTemplateTab = "Custom Site Templates",
 				siteType = "Template");
 		}
 
@@ -716,7 +717,8 @@ definition {
 
 			Site.addCP(
 				siteName = "New Site",
-				siteTemplateName = "New Site Template");
+				siteTemplateName = "New Site Template",
+				siteTemplateTab = "Custom Site Templates");
 
 			LAR.importSiteCP(
 				larFileName = ${larFileName},
