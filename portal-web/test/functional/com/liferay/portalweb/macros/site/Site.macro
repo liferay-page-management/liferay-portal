@@ -54,6 +54,10 @@ definition {
 				var siteTemplateName = "${siteType} Site";
 			}
 
+			if (isSet(siteTemplateTab)) {
+				Site.selectCustomSiteTemplateTab(siteTemplateTab = "Custom Site Templates");
+			}
+
 			LexiconCard.clickCard(card = ${siteTemplateName});
 
 			SelectFrame(locator1 = "IFrame#MODAL_BODY");
