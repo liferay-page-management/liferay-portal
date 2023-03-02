@@ -1133,6 +1133,15 @@ definition {
 		}
 	}
 
+	macro selectCustomSiteTemplateTab {
+		if (${siteTemplateTab} == "Custom Site Templates") {
+			Navigator.gotoNavTab(navTab = "Custom Site Templates");
+		}
+		else {
+			Navigator.viewActivatedNavTab(navTab = "Provided by Liferay");
+		}
+	}
+
 	macro selectPageType {
 		Click(
 			key_itemName = "Pages",
