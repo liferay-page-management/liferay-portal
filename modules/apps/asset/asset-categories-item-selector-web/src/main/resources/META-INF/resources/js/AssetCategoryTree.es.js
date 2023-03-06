@@ -87,10 +87,14 @@ export function AssetCategoryTree({
 			}
 
 			selectedItems.push({
+				categoryId: item.vocabulary ? 0 : item.id,
 				className: item.className,
 				classNameId: item.classNameId,
 				classPK: item.id,
+				nodePath: item.nodePath,
 				title: item.name,
+				value: item.name,
+				vocabularyId: item.vocabulary ? item.id : 0,
 			});
 		});
 
