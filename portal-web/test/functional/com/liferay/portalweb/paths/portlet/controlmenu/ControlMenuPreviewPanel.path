@@ -12,7 +12,7 @@
 <tbody>
 <tr>
 	<td>PREVIEW_DATA_DEVICE_BUTTON</td>
-	<td>//div[contains(@class,'devices')]//button[normalize-space()='${key_deviceType}']</td>
+	<td>//div[contains(@class,'container')]//button[normalize-space()='${key_deviceType}']</td>
 	<td></td>
 </tr>
 <tr>
