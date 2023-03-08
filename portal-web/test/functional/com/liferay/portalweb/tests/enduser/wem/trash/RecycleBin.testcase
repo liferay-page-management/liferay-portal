@@ -103,7 +103,7 @@ definition {
 
 			WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name");
 
-			WebContentAdmin.viewEntryTitle(entry = "Web Content Title");
+			WebContent.viewTitle(webContentTitle = "Web Content Title");
 		}
 	}
 
