@@ -81,6 +81,7 @@ definition {
 	@priority = 5
 	@uitest
 	test CanDeleteSystemScopedReadOnlyDeployedFragmentInGlobalSiteOfDefaultInstance {
+		property database.partition.enabled = "false";
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "FragmentsDeploy#CanDeleteSystemScopedReadOnlyDeployedFragmentInGlobalSiteOfDefaultInstance";
 
