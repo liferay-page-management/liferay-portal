@@ -35,47 +35,63 @@ if (Validator.isNull(backURL)) {
 	<aui:input name="privateLayout" type="hidden" value="<%= layoutsSEODisplayContext.isPrivateLayout() %>" />
 	<aui:input name="layoutId" type="hidden" value="<%= layoutsSEODisplayContext.getLayoutId() %>" />
 
-	<clay:sheet>
-		<clay:sheet-header>
-			<h2 class="sheet-title"><liferay-ui:message key="custom-meta-tags" /></h2>
+	<div class="sheet-lg">
+		<h2><liferay-ui:message key="custom-meta-tags" /></h2>
 
-			<p class="text-secondary">
-				<liferay-ui:message key="custom-meta-tags-description" />
-			</p>
-		</clay:sheet-header>
+		<clay:sheet
+			cssClass="mt-4"
+		>
+			<clay:sheet-header>
+				<h3 class="sheet-title"><liferay-ui:message key="settings" /></h3>
 
-		<liferay-ui:error exception="<%= DDMFormValuesValidationException.class %>" message="field-validation-failed" />
+				<p class="text-secondary">
+					<liferay-ui:message key="custom-meta-tags-description" />
+				</p>
+			</clay:sheet-header>
 
-		<liferay-ui:error exception="<%= DDMFormValuesValidationException.RequiredValue.class %>">
+			<liferay-ui:error exception="<%= DDMFormValuesValidationException.class %>" message="field-validation-failed" />
 
-			<%
-			DDMFormValuesValidationException.RequiredValue rv = (DDMFormValuesValidationException.RequiredValue)errorException;
+			<liferay-ui:error exception="<%= DDMFormValuesValidationException.RequiredValue.class %>">
 
-			String fieldLabelValue = rv.getFieldLabelValue(themeDisplay.getLocale());
+				<%
+				DDMFormValuesValidationException.RequiredValue rv = (DDMFormValuesValidationException.RequiredValue)errorException;
 
-			if (Validator.isNull(fieldLabelValue)) {
-				fieldLabelValue = rv.getFieldName();
-			}
-			%>
+				String fieldLabelValue = rv.getFieldLabelValue(themeDisplay.getLocale());
 
-			<liferay-ui:message arguments="<%= HtmlUtil.escape(fieldLabelValue) %>" key="no-value-is-defined-for-field-x" translateArguments="<%= false %>" />
-		</liferay-ui:error>
+				if (Validator.isNull(fieldLabelValue)) {
+					fieldLabelValue = rv.getFieldName();
+				}
+				%>
 
-		<liferay-ddm:html
-			classNameId="<%= PortalUtil.getClassNameId(com.liferay.dynamic.data.mapping.model.DDMStructure.class) %>"
-			classPK="<%= layoutsSEODisplayContext.getDDMStructurePrimaryKey() %>"
-			ddmFormValues="<%= layoutsSEODisplayContext.getDDMFormValues() %>"
-			defaultEditLocale="<%= PortalUtil.getSiteDefaultLocale(layoutsSEODisplayContext.getGroupId()) %>"
-			defaultLocale="<%= PortalUtil.getSiteDefaultLocale(layoutsSEODisplayContext.getGroupId()) %>"
-			fieldsNamespace="<%= String.valueOf(layoutsSEODisplayContext.getDDMStructurePrimaryKey()) %>"
-			groupId="<%= layoutsSEODisplayContext.getGroupId() %>"
-			requestedLocale="<%= locale %>"
-		/>
+				<liferay-ui:message arguments="<%= HtmlUtil.escape(fieldLabelValue) %>" key="no-value-is-defined-for-field-x" translateArguments="<%= false %>" />
+			</liferay-ui:error>
 
-		<clay:sheet-footer>
-			<aui:button primary="<%= true %>" type="submit" />
+			<liferay-ddm:html
+				classNameId="<%= PortalUtil.getClassNameId(com.liferay.dynamic.data.mapping.model.DDMStructure.class) %>"
+				classPK="<%= layoutsSEODisplayContext.getDDMStructurePrimaryKey() %>"
+				ddmFormValues="<%= layoutsSEODisplayContext.getDDMFormValues() %>"
+				defaultEditLocale="<%= PortalUtil.getSiteDefaultLocale(layoutsSEODisplayContext.getGroupId()) %>"
+				defaultLocale="<%= PortalUtil.getSiteDefaultLocale(layoutsSEODisplayContext.getGroupId()) %>"
+				fieldsNamespace="<%= String.valueOf(layoutsSEODisplayContext.getDDMStructurePrimaryKey()) %>"
+				groupId="<%= layoutsSEODisplayContext.getGroupId() %>"
+				requestedLocale="<%= locale %>"
+			/>
+		</clay:sheet>
 
-			<aui:button href="<%= backURL %>" type="cancel" />
-		</clay:sheet-footer>
-	</clay:sheet>
+		<div class="mt-4">
+			<clay:button
+				cssClass="mr-3"
+				displayType="primary"
+				label='<%= LanguageUtil.get(request, "save") %>'
+				type="submit"
+			/>
+
+			<clay:link
+				displayType="secondary"
+				href="<%= HtmlUtil.escape(backURL) %>"
+				label='<%= LanguageUtil.get(request, "cancel") %>'
+				type="button"
+			/>
+		</div>
+	</div>
 </aui:form>
