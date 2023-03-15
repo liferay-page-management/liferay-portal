@@ -39,6 +39,10 @@ export default function ({namespace, uploadOpenGraphImageURL}) {
 		`[for="${namespace}openGraphImageAlt"`
 	);
 
+	const openGraphClearImageButton = document.getElementById(
+		`${namespace}openGraphClearImageButton`
+	);
+
 	openGraphImageButton.addEventListener('click', () => {
 		openSelectionModal({
 			onSelect: (selectedItem) => {
@@ -56,6 +60,7 @@ export default function ({namespace, uploadOpenGraphImageURL}) {
 					toggleDisabled(openGraphImageAltField, false);
 					toggleDisabled(openGraphImageAltFieldDefaultLocale, false);
 					toggleDisabled(openGraphImageAltLabel, false);
+					toggleDisabled(openGraphClearImageButton, false);
 				}
 			},
 			selectEventName: `${namespace}openGraphImageSelectedItem`,
@@ -64,10 +69,6 @@ export default function ({namespace, uploadOpenGraphImageURL}) {
 		});
 	});
 
-	const openGraphClearImageButton = document.getElementById(
-		`${namespace}openGraphClearImageButton`
-	);
-
 	openGraphClearImageButton.addEventListener('click', () => {
 		openGraphImageFileEntryId.value = '';
 		openGraphImageTitle.value = '';
@@ -75,6 +76,7 @@ export default function ({namespace, uploadOpenGraphImageURL}) {
 		toggleDisabled(openGraphImageAltField, true);
 		toggleDisabled(openGraphImageAltFieldDefaultLocale, true);
 		toggleDisabled(openGraphImageAltLabel, true);
+		toggleDisabled(openGraphClearImageButton, true);
 
 		previewSeoFireChange(namespace, {
 			type: 'imgUrl',
