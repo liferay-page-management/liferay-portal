@@ -178,14 +178,20 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 	public void testPostSiteSiteTemplate() throws Exception {
 		Site randomSite = randomSite();
 
-		LayoutSetPrototype layoutSetPrototype =
-			_layoutSetPrototypeLocalService.addLayoutSetPrototype(
-				TestPropsValues.getUserId(), TestPropsValues.getCompanyId(),
-				HashMapBuilder.put(
-					LocaleUtil.getDefault(),
-					StringUtil.toLowerCase(RandomTestUtil.randomString())
-				).build(),
-				null, true, true, new ServiceContext());
+		LayoutSetPrototype layoutSetPrototype = null;
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				_CLASS_NAME_DL_PROCESSOR_REGISTRY_IMPL, LoggerTestUtil.OFF)) {
+
+			layoutSetPrototype =
+				_layoutSetPrototypeLocalService.addLayoutSetPrototype(
+					TestPropsValues.getUserId(), TestPropsValues.getCompanyId(),
+					HashMapBuilder.put(
+						LocaleUtil.getDefault(),
+						StringUtil.toLowerCase(RandomTestUtil.randomString())
+					).build(),
+					null, true, true, new ServiceContext());
+		}
 
 		randomSite.setTemplateKey(
 			String.valueOf(layoutSetPrototype.getLayoutSetPrototypeId()));
@@ -253,6 +259,9 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 	protected Site testPostSite_addSite(Site site) throws Exception {
 		return siteResource.postSite(site);
 	}
+
+	private static final String _CLASS_NAME_DL_PROCESSOR_REGISTRY_IMPL =
+		"com.liferay.document.library.internal.util.DLProcessorRegistryImpl";
 
 	private static final String _CLASS_NAME_EXCEPTION_MAPPER =
 		"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
