@@ -37,19 +37,41 @@ for (FormNavigatorEntry<Object> curFormNavigatorEntry : formNavigatorEntries) {
 
 	<!-- Begin fragment <%= HtmlUtil.escape(sectionId) %> -->
 
-	<liferay-frontend:fieldset
-		collapsed="<%= i != 0 %>"
-		collapsible="<%= (i != 0) || (formNavigatorEntries.size() > 1) %>"
-		cssClass="<%= formNavigatorDisplayContext.getFieldSetCssClass() %>"
-		id="<%= formNavigatorDisplayContext.getSectionId(curFormNavigatorEntry.getKey()) %>"
-		label="<%= label %>"
-	>
+	<c:choose>
+		<c:when test="<%= Objects.equals(FormNavigatorDisplayStyleType.TYPE_SHEET, formNavigatorDisplayContext.getFormNavigatorDisplayStyleType()) %>">
+			<clay:sheet
+				cssClass="mt-4"
+			>
+				<c:if test="<%= Validator.isNotNull(label) %>">
+					<clay:sheet-header
+						cssClass="mb-0"
+					>
+						<h3 class="sheet-title"><liferay-ui:message key="<%= label %>" /></h3>
+					</clay:sheet-header>
+				</c:if>
 
-		<%
-		PortalIncludeUtil.include(pageContext, curFormNavigatorEntry::include);
-		%>
+				<%
+				PortalIncludeUtil.include(pageContext, curFormNavigatorEntry::include);
+				%>
 
-	</liferay-frontend:fieldset>
+			</clay:sheet>
+		</c:when>
+		<c:otherwise>
+			<liferay-frontend:fieldset
+				collapsed="<%= i != 0 %>"
+				collapsible="<%= (i != 0) || (formNavigatorEntries.size() > 1) %>"
+				cssClass="<%= formNavigatorDisplayContext.getFieldSetCssClass() %>"
+				id="<%= formNavigatorDisplayContext.getSectionId(curFormNavigatorEntry.getKey()) %>"
+				label="<%= label %>"
+			>
+
+				<%
+				PortalIncludeUtil.include(pageContext, curFormNavigatorEntry::include);
+				%>
+
+			</liferay-frontend:fieldset>
+		</c:otherwise>
+	</c:choose>
 
 	<!-- End fragment <%= HtmlUtil.escape(sectionId) %> -->
 

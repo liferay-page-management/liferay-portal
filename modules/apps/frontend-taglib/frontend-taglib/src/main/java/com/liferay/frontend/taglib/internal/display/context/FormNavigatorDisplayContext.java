@@ -16,10 +16,12 @@ package com.liferay.frontend.taglib.internal.display.context;
 
 import com.liferay.frontend.taglib.form.navigator.FormNavigatorEntry;
 import com.liferay.frontend.taglib.form.navigator.FormNavigatorEntryProvider;
+import com.liferay.frontend.taglib.internal.constants.FormNavigatorDisplayStyleType;
 import com.liferay.frontend.taglib.internal.servlet.ServletContextUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TextFormatter;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -54,6 +56,14 @@ public class FormNavigatorDisplayContext {
 	public Object getFormModelBean() {
 		return _httpServletRequest.getAttribute(
 			"liferay-frontend:form-navigator:formModelBean");
+	}
+
+	public FormNavigatorDisplayStyleType getFormNavigatorDisplayStyleType() {
+		String displayStyle = (String)_httpServletRequest.getAttribute(
+			"liferay-frontend:form-navigator:displayStyle");
+
+		return FormNavigatorDisplayStyleType.parse(
+			StringUtil.toLowerCase(displayStyle));
 	}
 
 	public List<FormNavigatorEntry<Object>> getFormNavigatorEntries() {
@@ -96,6 +106,11 @@ public class FormNavigatorDisplayContext {
 			_httpServletRequest, "taglib_ui_form_navigator_init");
 
 		return randomNamespace + "_tabs1";
+	}
+
+	public String getTitle() {
+		return (String)_httpServletRequest.getAttribute(
+			"liferay-frontend:form-navigator:title");
 	}
 
 	public boolean isShowButtons() {

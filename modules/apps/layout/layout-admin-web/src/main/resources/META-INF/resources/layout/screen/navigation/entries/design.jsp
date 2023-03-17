@@ -227,9 +227,9 @@ renderResponse.setTitle(layoutsAdminDisplayContext.getConfigurationTitle(selLayo
 			<liferay-frontend:form-navigator
 				displayStyle="sheet"
 				formModelBean="<%= selLayout %>"
-				id="<%= FormNavigatorConstants.FORM_NAVIGATOR_ID_LAYOUT %>"
+				id="<%= FormNavigatorConstants.FORM_NAVIGATOR_ID_LAYOUT_DESIGN %>"
 				showButtons="<%= false %>"
-				title="general"
+				title="design"
 			/>
 
 			<c:if test="<%= (selLayout.getGroupId() == layoutsAdminDisplayContext.getGroupId()) && SitesUtil.isLayoutUpdateable(selLayout) && LayoutPermissionUtil.contains(permissionChecker, selLayout, ActionKeys.UPDATE) %>">

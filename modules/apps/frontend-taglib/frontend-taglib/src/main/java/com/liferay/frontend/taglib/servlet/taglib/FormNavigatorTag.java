@@ -16,6 +16,7 @@ package com.liferay.frontend.taglib.servlet.taglib;
 
 import com.liferay.frontend.taglib.form.navigator.FormNavigatorCategoryProvider;
 import com.liferay.frontend.taglib.form.navigator.FormNavigatorEntryProvider;
+import com.liferay.frontend.taglib.internal.constants.FormNavigatorDisplayStyleType;
 import com.liferay.frontend.taglib.internal.servlet.ServletContextUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -50,6 +51,10 @@ public class FormNavigatorTag extends IncludeTag {
 		return _backURL;
 	}
 
+	public String getDisplayStyle() {
+		return _displayStyle;
+	}
+
 	public String getFieldSetCssClass() {
 		return _fieldSetCssClass;
 	}
@@ -62,12 +67,20 @@ public class FormNavigatorTag extends IncludeTag {
 		return _id;
 	}
 
+	public String getTitle() {
+		return _title;
+	}
+
 	public boolean isShowButtons() {
 		return _showButtons;
 	}
 
 	public void setBackURL(String backURL) {
 		_backURL = backURL;
+	}
+
+	public void setDisplayStyle(String displayStyle) {
+		_displayStyle = displayStyle;
 	}
 
 	public void setFieldSetCssClass(String fieldSetCssClass) {
@@ -93,15 +106,21 @@ public class FormNavigatorTag extends IncludeTag {
 		_showButtons = showButtons;
 	}
 
+	public void setTitle(String title) {
+		_title = title;
+	}
+
 	@Override
 	protected void cleanUp() {
 		super.cleanUp();
 
 		_backURL = null;
+		_displayStyle = FormNavigatorDisplayStyleType.TYPE_FIELDSET.getValue();
 		_fieldSetCssClass = null;
 		_formModelBean = null;
 		_id = null;
 		_showButtons = true;
+		_title = null;
 	}
 
 	@Override
@@ -116,6 +135,9 @@ public class FormNavigatorTag extends IncludeTag {
 		httpServletRequest.setAttribute(
 			"liferay-frontend:form-navigator:categoryKeys", _getCategoryKeys());
 		httpServletRequest.setAttribute(
+			"liferay-frontend:form-navigator:displayStyle",
+			String.valueOf(_displayStyle));
+		httpServletRequest.setAttribute(
 			"liferay-frontend:form-navigator:fieldSetCssClass",
 			_fieldSetCssClass);
 		httpServletRequest.setAttribute(
@@ -125,6 +147,8 @@ public class FormNavigatorTag extends IncludeTag {
 		httpServletRequest.setAttribute(
 			"liferay-frontend:form-navigator:showButtons",
 			String.valueOf(_showButtons));
+		httpServletRequest.setAttribute(
+			"liferay-frontend:form-navigator:title", _title);
 	}
 
 	private String _getBackURL() {
@@ -178,9 +202,12 @@ public class FormNavigatorTag extends IncludeTag {
 	}
 
 	private String _backURL;
+	private String _displayStyle =
+		FormNavigatorDisplayStyleType.TYPE_FIELDSET.getValue();
 	private String _fieldSetCssClass;
 	private Object _formModelBean;
 	private String _id;
 	private boolean _showButtons = true;
+	private String _title;
 
 }
