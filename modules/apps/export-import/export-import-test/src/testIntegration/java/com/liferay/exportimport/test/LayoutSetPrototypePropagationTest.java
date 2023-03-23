@@ -266,6 +266,52 @@ public class LayoutSetPrototypePropagationTest
 	}
 
 	@Test
+	public void testLayoutPropagationWithFriendlyURLConflictDetectBeforeChange()
+		throws Exception {
+
+		setLinkEnabled(true);
+
+		Layout siteLayout = LayoutTestUtil.addTypePortletLayout(
+			group.getGroupId(), "test", false);
+
+		Layout layoutSetPrototypeLayout = LayoutTestUtil.addTypePortletLayout(
+			_layoutSetPrototypeGroup.getGroupId(), "testNoConflict", true);
+
+		List<Layout> conflicts =
+			SitesUtil.getLayoutSetPrototypeFriendlyURLConflictSitesLayouts(
+				layoutSetPrototypeLayout, "/test");
+
+		Assert.assertEquals(conflicts.toString(), 1, conflicts.size());
+
+		Layout conflictLayout = conflicts.get(0);
+
+		Assert.assertEquals(conflictLayout.getPlid(), siteLayout.getPlid());
+	}
+
+	@Test
+	public void testLayoutPropagationWithFriendlyURLConflictDetectBeforePropagate()
+		throws Exception {
+
+		setLinkEnabled(true);
+
+		Layout siteLayout = LayoutTestUtil.addTypePortletLayout(
+			group.getGroupId(), "test", false);
+
+		Layout layoutSetPrototypeLayout = LayoutTestUtil.addTypePortletLayout(
+			_layoutSetPrototypeGroup.getGroupId(), "test", true);
+
+		List<Layout> conflicts =
+			SitesUtil.getLayoutSetPrototypeFriendlyURLConflictSitesLayouts(
+				layoutSetPrototypeLayout);
+
+		Assert.assertEquals(conflicts.toString(), 1, conflicts.size());
+
+		Layout conflictLayout = conflicts.get(0);
+
+		Assert.assertEquals(conflictLayout.getPlid(), siteLayout.getPlid());
+	}
+
+	@Test
 	public void testLayoutPropagationWithFriendlyURLConflictResolvedByDelete()
 		throws Exception {
 
