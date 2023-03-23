@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.MultiSessionMessages;
+import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.FileUtil;
@@ -55,6 +56,7 @@ import com.liferay.portal.util.PropsValues;
 import com.liferay.sites.kernel.util.Sites;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -289,6 +291,15 @@ public class EditLayoutMVCActionCommand extends BaseMVCActionCommand {
 				actionRequest, portletResource + "layoutUpdated", layout);
 
 			actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
+
+			List<Layout> conflicts =
+				_sites.getLayoutSetPrototypeFriendlyURLConflictSitesLayouts(
+					layout);
+
+			if (!conflicts.isEmpty()) {
+				SessionMessages.add(
+					actionRequest, "siteTemplateFriendlyURLConflict");
+			}
 		}
 		catch (ModelListenerException modelListenerException) {
 			if (modelListenerException.getCause() instanceof PortalException) {
@@ -429,5 +440,8 @@ public class EditLayoutMVCActionCommand extends BaseMVCActionCommand {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private Sites _sites;
 
 }
