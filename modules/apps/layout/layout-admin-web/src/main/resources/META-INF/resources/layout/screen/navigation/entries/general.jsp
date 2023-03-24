@@ -330,7 +330,7 @@ renderResponse.setTitle(layoutsAdminDisplayContext.getConfigurationTitle(selLayo
 
 	form.addEventListener('submit', (event) => {
 		<c:choose>
-			<c:when test="<%= group.isLayoutSetPrototype() %>">
+			<c:when test='<%= FeatureFlagManagerUtil.isEnabled("LPS-174431") && group.isLayoutSetPrototype() %>'>
 				<portlet:namespace />checkLayoutSetPrototypeConflicts();
 			</c:when>
 			<c:otherwise>

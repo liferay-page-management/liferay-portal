@@ -106,7 +106,7 @@ String friendlyURLBase = StringPool.BLANK;
 		</c:choose>
 
 		<c:if test="<%= group.isLayoutSetPrototype() %>">
-			<c:if test='<%= SessionMessages.contains(renderRequest, "siteTemplateFriendlyURLConflict") %>'>
+			<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPS-174431") && SessionMessages.contains(renderRequest, "siteTemplateFriendlyURLConflict") %>'>
 				<aui:script>
 					Liferay.Util.openToast({
 						autoClose: 10000,
@@ -117,7 +117,7 @@ String friendlyURLBase = StringPool.BLANK;
 				</aui:script>
 			</c:if>
 
-			<c:if test="<%= layoutsAdminDisplayContext.isShowLayoutSetPrototypeFriendlyURLConflictSitesLayouts() %>">
+			<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPS-174431") && layoutsAdminDisplayContext.isShowLayoutSetPrototypeFriendlyURLConflictSitesLayouts() %>'>
 				<div class="alert alert-warning">
 					<liferay-ui:message key="layout-config-layout-set-prototype-friendly-url-collision" />
 
