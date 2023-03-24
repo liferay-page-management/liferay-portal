@@ -735,6 +735,56 @@ public class SitesImpl implements Sites {
 	}
 
 	@Override
+	public Layout getLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(
+			Layout layout)
+		throws PortalException {
+
+		return getLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(
+			layout, layout.getFriendlyURL());
+	}
+
+	@Override
+	public Layout getLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(
+			Layout layout, String friendlyUrl)
+		throws PortalException {
+
+		LayoutSet layoutSet = layout.getLayoutSet();
+
+		if (!layoutSet.isLayoutSetPrototypeLinkActive()) {
+			return null;
+		}
+
+		LayoutSetPrototype layoutSetPrototype =
+			LayoutSetPrototypeLocalServiceUtil.
+				getLayoutSetPrototypeByUuidAndCompanyId(
+					layoutSet.getLayoutSetPrototypeUuid(),
+					layout.getCompanyId());
+
+		LayoutSet prototypeLayoutSet = layoutSetPrototype.getLayoutSet();
+
+		LayoutFriendlyURL layoutFriendlyURL =
+			LayoutFriendlyURLLocalServiceUtil.fetchFirstLayoutFriendlyURL(
+				prototypeLayoutSet.getGroupId(),
+				prototypeLayoutSet.isPrivateLayout(), friendlyUrl);
+
+		if (layoutFriendlyURL == null) {
+			return null;
+		}
+
+		Layout foundLayout = LayoutLocalServiceUtil.getLayout(
+			layoutFriendlyURL.getPlid());
+
+		String sourcePrototypeLayoutUuid =
+			layout.getSourcePrototypeLayoutUuid();
+
+		if (sourcePrototypeLayoutUuid.equals(foundLayout.getUuid())) {
+			return null;
+		}
+
+		return foundLayout;
+	}
+
+	@Override
 	public List<Layout> getLayoutSetPrototypeFriendlyURLConflictSitesLayouts(
 			Layout layout)
 		throws PortalException {
