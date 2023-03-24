@@ -96,15 +96,13 @@ public class SegmentsExperienceSelectorDisplayContext {
 					_httpServletRequest);
 		}
 
-		if (segmentsExperienceId > 0){
-
+		if (segmentsExperienceId > 0) {
 			long[] currentSegmentsExperienceIds = GetterUtil.getLongValues(
 				_httpServletRequest.getAttribute(
 					SegmentsWebKeys.SEGMENTS_EXPERIENCE_IDS));
 
 			if (ArrayUtil.contains(
-				currentSegmentsExperienceIds,
-				segmentsExperienceId)) {
+					currentSegmentsExperienceIds, segmentsExperienceId)) {
 
 				return _segmentsExperienceLocalService.fetchSegmentsExperience(
 					segmentsExperienceId);
@@ -273,18 +271,11 @@ public class SegmentsExperienceSelectorDisplayContext {
 		SegmentsExperience parentSegmentsExperience =
 			_getParentSegmentsExperience(segmentsExperience);
 
-		if ((segmentsExperience != null) &&
-			(parentSegmentsExperience != null)) {
-
-			segmentsExperience = parentSegmentsExperience;
+		if (parentSegmentsExperience != null) {
+			return parentSegmentsExperience.getName(_themeDisplay.getLocale());
 		}
 
-		if (segmentsExperience != null) {
-			return segmentsExperience.getName(_themeDisplay.getLocale());
-		}
-
-		return SegmentsEntryConstants.getDefaultSegmentsEntryName(
-			_themeDisplay.getLocale());
+		return segmentsExperience.getName(_themeDisplay.getLocale());
 	}
 
 	private boolean _isActive(
