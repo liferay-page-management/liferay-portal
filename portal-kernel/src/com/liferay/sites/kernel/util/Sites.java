@@ -162,6 +162,14 @@ public interface Sites {
 
 	public Long[] filterGroups(List<Group> groups, String[] names);
 
+	public Layout getLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(
+			Layout layout)
+		throws PortalException;
+
+	public Layout getLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(
+			Layout layout, String friendlyUrl)
+		throws PortalException;
+
 	public List<Layout> getLayoutSetPrototypeFriendlyURLConflictSitesLayouts(
 			Layout layout)
 		throws PortalException;
