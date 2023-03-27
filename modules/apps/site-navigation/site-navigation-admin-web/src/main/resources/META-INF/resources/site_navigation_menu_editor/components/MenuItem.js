@@ -27,6 +27,7 @@ import {NESTING_MARGIN} from '../constants/nestingMargin';
 import {SIDEBAR_PANEL_IDS} from '../constants/sidebarPanelIds';
 import {useConstants} from '../contexts/ConstantsContext';
 import {useItems, useSetItems} from '../contexts/ItemsContext';
+import {useDragLayer, useSetDragLayer} from '../contexts/KeyboardDndContext';
 import {
 	useSelectedMenuItemId,
 	useSetSelectedMenuItemId,
@@ -39,13 +40,7 @@ import {useDragItem, useDropTarget} from '../utils/useDragAndDrop';
 import useKeyboardNavigation from '../utils/useKeyboardNavigation';
 import DeletionModal from './DeletionModal';
 
-export function MenuItem({
-	isMovementEnabled,
-	item,
-	onMenuItemRemoved,
-	setIsMovementEnabled,
-	setMovementText,
-}) {
+export function MenuItem({item, onMenuItemRemoved}) {
 	const setItems = useSetItems();
 	const setSelectedMenuItemId = useSetSelectedMenuItemId();
 	const setSidebarPanelId = useSetSidebarPanelId();
@@ -145,8 +140,24 @@ export function MenuItem({
 			});
 	};
 
+	const keyboardDragLayer = useDragLayer();
+	const setKeyboardDragLayer = useSetDragLayer();
 	const {handlerRef, isDragging} = useDragItem(item, updateMenuItemParent);
 	const {targetRef} = useDropTarget(item);
+
+	const isKeyboardDragging = useMemo(
+		() =>
+			keyboardDragLayer?.siteNavigationMenuItemId
+				? getItemPath(siteNavigationMenuItemId, items).includes(
+						keyboardDragLayer.siteNavigationMenuItemId
+				  )
+				: false,
+		[
+			items,
+			keyboardDragLayer?.siteNavigationMenuItemId,
+			siteNavigationMenuItemId,
+		]
+	);
 
 	const rtl = Liferay.Language.direction[languageId] === 'rtl';
 	const itemStyle = rtl
@@ -173,16 +184,27 @@ export function MenuItem({
 			event.preventDefault();
 			event.stopPropagation();
 
-			setIsMovementEnabled(
-				(previousIsMovementEnabled) => !previousIsMovementEnabled
-			);
+			if (isKeyboardDragging) {
+				setKeyboardDragLayer(null);
+			}
+			else {
+				setKeyboardDragLayer({
+					eventKey: 'ArrowDown',
+					menuItemTitle: title,
+					menuItemType: type,
+					order,
+					parentSiteNavigationMenuItemId:
+						item.parentSiteNavigationMenuItemId,
+					siteNavigationMenuItemId,
+				});
+			}
 		}
 
 		if (event.key === 'Escape') {
-			setIsMovementEnabled(false);
+			setKeyboardDragLayer(null);
 		}
 
-		if (!isMovementEnabled) {
+		if (!isKeyboardDragging) {
 			return;
 		}
 
@@ -205,6 +227,16 @@ export function MenuItem({
 				return;
 			}
 
+			setKeyboardDragLayer({
+				eventKey,
+				menuItemTitle: title,
+				menuItemType: type,
+				order: result.order,
+				parentSiteNavigationMenuItemId:
+					result.parentSiteNavigationMenuItemId,
+				siteNavigationMenuItemId,
+			});
+
 			updateMenuItem({
 				editSiteNavigationMenuItemParentURL,
 				itemId: item.siteNavigationMenuItemId,
@@ -212,18 +244,7 @@ export function MenuItem({
 				parentId: result.parentSiteNavigationMenuItemId,
 				portletNamespace,
 			}).then(({siteNavigationMenuItems}) => {
-				const newItems = getFlatItems(siteNavigationMenuItems);
-
-				setItems(newItems);
-
-				setMovementText(
-					sub(
-						eventKey === 'ArrowDown'
-							? Liferay.Language.get('x-moved-down')
-							: Liferay.Language.get('x-moved-up'),
-						`${title} (${type})`
-					)
-				);
+				setItems(getFlatItems(siteNavigationMenuItems));
 			});
 		}
 	};
@@ -247,14 +268,14 @@ export function MenuItem({
 					'focusable-menu-item site_navigation_menu_editor_MenuItem',
 					{
 						active: selected,
-						dragging: isDragging,
+						dragging: isDragging || isKeyboardDragging,
 					}
 				)}
 				data-item-id={item.siteNavigationMenuItemId}
 				data-parent-item-id={parentItemId}
 				onBlur={onBlur}
 				onClick={() => {
-					if (!isMovementEnabled) {
+					if (!isKeyboardDragging) {
 						setSelectedMenuItemId(siteNavigationMenuItemId);
 						setSidebarPanelId(SIDEBAR_PANEL_IDS.menuItemSettings);
 					}
@@ -263,7 +284,7 @@ export function MenuItem({
 				onKeyDown={(event) => {
 					if (
 						(event.key === ' ' || event.key === 'Enter') &&
-						!isMovementEnabled
+						!isKeyboardDragging
 					) {
 						setSelectedMenuItemId(siteNavigationMenuItemId);
 						setSidebarPanelId(SIDEBAR_PANEL_IDS.menuItemSettings);
@@ -292,7 +313,7 @@ export function MenuItem({
 										displayType="unstyled"
 										monospaced={false}
 										onBlur={() =>
-											setIsMovementEnabled(false)
+											setKeyboardDragLayer(null)
 										}
 										onKeyDown={onDragHandlerKeyDown}
 										size="sm"
