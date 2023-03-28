@@ -21,6 +21,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Sort;
@@ -595,18 +597,28 @@ public class AssetCategoryServiceImpl extends AssetCategoryServiceBaseImpl {
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
 		for (AssetCategory category : categories) {
-			String categoryJSON = JSONFactoryUtil.looseSerialize(category);
+			try {
+				String categoryJSON = JSONFactoryUtil.looseSerialize(category);
 
-			JSONObject categoryJSONObject = JSONFactoryUtil.createJSONObject(
-				categoryJSON);
+				JSONObject categoryJSONObject =
+					JSONFactoryUtil.createJSONObject(categoryJSON);
 
-			categoryJSONObject.put(
-				"path", getCategoryPath(category.getCategoryId()));
+				categoryJSONObject.put(
+					"path", getCategoryPath(category.getCategoryId()));
 
-			jsonArray.put(categoryJSONObject);
+				jsonArray.put(categoryJSONObject);
+			}
+			catch (PortalException portalException) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(portalException);
+				}
+			}
 		}
 
 		return jsonArray;
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		AssetCategoryServiceImpl.class);
 
 }
