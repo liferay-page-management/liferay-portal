@@ -36,11 +36,9 @@ const getItemStyles = (currentOffset, ref, rtl) => {
 		: currentOffset.x - HANDLER_OFFSET;
 	const y = currentOffset.y - rect.height * 0.5;
 
-	const transform = `translate(${x}px, ${y}px)`;
-
 	return {
-		WebkitTransform: transform,
-		transform,
+		left: x,
+		top: y,
 	};
 };
 
@@ -89,6 +87,12 @@ export default function DragPreview() {
 			);
 		}
 	}, [itemId, items]);
+
+	useEffect(() => {
+		if (ref.current) {
+			ref.current.scrollIntoView();
+		}
+	}, [currentOffset]);
 
 	if (!isDragging || itemNamespace !== portletNamespace) {
 		return null;
