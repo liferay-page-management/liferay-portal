@@ -21,6 +21,8 @@ Group group = layoutsAdminDisplayContext.getGroup();
 
 Layout selLayout = layoutsAdminDisplayContext.getSelLayout();
 
+LayoutSet selLayoutSet = layoutsAdminDisplayContext.getSelLayoutSet();
+
 LayoutType selLayoutType = selLayout.getLayoutType();
 
 Locale defaultLocale = LocaleUtil.getDefault();
@@ -147,6 +149,29 @@ String friendlyURLBase = StringPool.BLANK;
 			<c:if test='<%= GetterUtil.getBoolean(layoutSetPrototype.getSettingsProperty("layoutsUpdateable"), true) %>'>
 				<aui:input helpMessage="allow-site-administrators-to-modify-this-page-for-their-site-help" label="allow-site-administrators-to-modify-this-page-for-their-site" name="TypeSettingsProperties--layoutUpdateable--" type="checkbox" value='<%= GetterUtil.getBoolean(selLayoutType.getTypeSettingsProperty("layoutUpdateable"), true) %>' />
 			</c:if>
+		</c:if>
+		
+		<c:if test="<%= !group.isLayoutSetPrototype() && selLayoutSet.isLayoutSetPrototypeLinkEnabled() %>">
+			<c:if test='<%= layoutsAdminDisplayContext.isShowLayoutSetPrototypeFriendlyURLConflictLayout() %>'>
+				<div class="alert alert-warning">
+					<liferay-ui:message key="the-friendly-url-of-this-page-is-conflicting-with-a-friendly-url-of-a-page-in-the-site-template-from-which-this-site-was-created" />
+
+					<ul>
+
+						<%
+						Layout conflictLayout = layoutsAdminDisplayContext.getLayoutSetPrototypeFriendlyURLConflictLayout();
+
+						Group conflictGroup = conflictLayout.getGroup();
+
+						LayoutSetPrototype layoutSetPrototype = LayoutSetPrototypeLocalServiceUtil.getLayoutSetPrototype(conflictGroup.getClassPK());
+						%>
+
+						<li>
+							<liferay-ui:message arguments="<%= new Object[] {conflictLayout.getName(locale), layoutSetPrototype.getName(locale)} %>" key="page-x-of-x" translateArguments="<%= false %>" />
+						</li>
+					</ul>
+				</div>
+			</c:if>		
 		</c:if>
 	</c:when>
 	<c:otherwise>

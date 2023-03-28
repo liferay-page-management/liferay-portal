@@ -719,6 +719,22 @@ public class LayoutsAdminDisplayContext {
 		).buildPortletURL();
 	}
 
+	public Layout getLayoutSetPrototypeFriendlyURLConflictLayout()
+		throws PortalException {
+
+		if (_showConflictLayout != null) {
+			return _conflictLayout;
+		}
+
+		_conflictLayout =
+			SitesUtil.getLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(
+				getSelLayout());
+
+		_showConflictLayout = _conflictLayout != null;
+
+		return _conflictLayout;
+	}
+
 	public List<Layout> getLayoutSetPrototypeFriendlyURLConflictSitesLayouts()
 		throws PortalException {
 
@@ -1905,6 +1921,18 @@ public class LayoutsAdminDisplayContext {
 		return true;
 	}
 
+	public boolean isShowLayoutSetPrototypeFriendlyURLConflictLayout()
+		throws PortalException {
+
+		if (_showConflictLayout != null) {
+			return _showConflictLayout;
+		}
+
+		getLayoutSetPrototypeFriendlyURLConflictLayout();
+
+		return _showConflictLayout;
+	}
+
 	public boolean isShowLayoutSetPrototypeFriendlyURLConflictSitesLayouts()
 		throws PortalException {
 
@@ -2483,6 +2511,7 @@ public class LayoutsAdminDisplayContext {
 	private Long _activeLayoutSetBranchId;
 	private String _backURL;
 	private final CETManager _cetManager;
+	private Layout _conflictLayout;
 	private List<Layout> _conflictLayouts;
 	private String _displayStyle;
 	private Boolean _firstColumn;
@@ -2508,6 +2537,7 @@ public class LayoutsAdminDisplayContext {
 	private Layout _selLayout;
 	private LayoutSet _selLayoutSet;
 	private Long _selPlid;
+	private Boolean _showConflictLayout;
 	private final StagingGroupHelper _stagingGroupHelper;
 	private String _tabs1;
 	private String _themeId;
