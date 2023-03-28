@@ -31,6 +31,8 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.sites.kernel.util.SitesUtil;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -64,6 +66,52 @@ public class LayoutSetPrototypeFriendlyURLConflictDetectionTest {
 		_layoutSetPrototypeGroup = _layoutSetPrototype.getGroup();
 
 		setLinkEnabled(true);
+	}
+
+	@Test
+	public void testLayoutSetPrototypeLayoutFriendlyURLConflictDetectionBeforeChange()
+		throws Exception {
+
+		setLinkEnabled(true);
+
+		Layout siteLayout = LayoutTestUtil.addTypePortletLayout(
+			_group.getGroupId(), "test", false);
+
+		Layout layoutSetPrototypeLayout = LayoutTestUtil.addTypePortletLayout(
+			_layoutSetPrototypeGroup.getGroupId(), "testNoConflict", true);
+
+		List<Layout> conflicts =
+			SitesUtil.getLayoutSetPrototypeFriendlyURLConflictSitesLayouts(
+				layoutSetPrototypeLayout, "/test");
+
+		Assert.assertEquals(conflicts.toString(), 1, conflicts.size());
+
+		Layout conflictLayout = conflicts.get(0);
+
+		Assert.assertEquals(conflictLayout.getPlid(), siteLayout.getPlid());
+	}
+
+	@Test
+	public void testLayoutSetPrototypeLayoutFriendlyURLConflictDetectionBeforePropagate()
+		throws Exception {
+
+		setLinkEnabled(true);
+
+		Layout siteLayout = LayoutTestUtil.addTypePortletLayout(
+			_group.getGroupId(), "test", false);
+
+		Layout layoutSetPrototypeLayout = LayoutTestUtil.addTypePortletLayout(
+			_layoutSetPrototypeGroup.getGroupId(), "test", true);
+
+		List<Layout> conflicts =
+			SitesUtil.getLayoutSetPrototypeFriendlyURLConflictSitesLayouts(
+				layoutSetPrototypeLayout);
+
+		Assert.assertEquals(conflicts.toString(), 1, conflicts.size());
+
+		Layout conflictLayout = conflicts.get(0);
+
+		Assert.assertEquals(conflictLayout.getPlid(), siteLayout.getPlid());
 	}
 
 	@Test
