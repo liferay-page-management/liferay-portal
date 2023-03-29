@@ -205,10 +205,6 @@ public class AssetCategoryPropertyLocalServiceImpl
 				"Maximum length of key exceeded");
 		}
 
-		if (!_assetHelper.isValidWord(value)) {
-			throw new CategoryPropertyValueException("Invalid value " + value);
-		}
-
 		int valueMaxLength = ModelHintsUtil.getMaxLength(
 			AssetCategoryProperty.class.getName(), "value");
 
