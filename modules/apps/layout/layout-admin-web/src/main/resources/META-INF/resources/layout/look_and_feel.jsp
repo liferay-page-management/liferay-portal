@@ -220,6 +220,8 @@ else {
 		themeOptions.classList.toggle('hide');
 
 		Liferay.Util.toggleDisabled([regularCss, regularCssLabel], true);
+
+		Liferay.fire('themeChange', {value: 'inherit'});
 	});
 
 	regularUniqueLookAndFeel.addEventListener('change', (event) => {
@@ -230,6 +232,8 @@ else {
 		themeOptions.classList.toggle('hide');
 
 		Liferay.Util.toggleDisabled([regularCss, regularCssLabel], false);
+
+		Liferay.fire('themeChange', {value: 'custom'});
 	});
 </aui:script>
 
