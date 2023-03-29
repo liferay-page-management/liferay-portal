@@ -56,7 +56,7 @@ const ACTIONS = {
 
 				if (
 					categoryId === parentCategoryId ||
-					item.ancestorIds.includes(categoryId)
+					item.ancestorIds?.includes(categoryId)
 				) {
 					openToast({
 						message: sub(
