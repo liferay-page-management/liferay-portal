@@ -25,6 +25,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.events.EventsProcessorUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
@@ -297,7 +298,9 @@ public class EditLayoutMVCActionCommand extends BaseMVCActionCommand {
 			Group group = layout.getGroup();
 			LayoutSet layoutSet = layout.getLayoutSet();
 
-			if (group.isLayoutSetPrototype()) {
+			if (FeatureFlagManagerUtil.isEnabled("LPS-174431") &&
+				group.isLayoutSetPrototype()) {
+
 				List<Layout> conflicts =
 					_sites.getLayoutSetPrototypeFriendlyURLConflictSitesLayouts(
 						layout);
@@ -307,7 +310,9 @@ public class EditLayoutMVCActionCommand extends BaseMVCActionCommand {
 						actionRequest, "friendlyURLConflictWithSiteLayouts");
 				}
 			}
-			else if (layoutSet.isLayoutSetPrototypeLinkActive()) {
+			else if (FeatureFlagManagerUtil.isEnabled("LPS-174434") &&
+					 layoutSet.isLayoutSetPrototypeLinkActive()) {
+
 				Layout conflictLayout =
 					_sites.
 						getLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(

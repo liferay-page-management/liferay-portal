@@ -55,7 +55,9 @@ public class GetLayoutSetPrototypeConflictsMVCResourceCommand
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPS-174431")) {
+		if (!FeatureFlagManagerUtil.isEnabled("LPS-174431") &&
+			!FeatureFlagManagerUtil.isEnabled("LPS-174434")) {
+
 			return;
 		}
 
