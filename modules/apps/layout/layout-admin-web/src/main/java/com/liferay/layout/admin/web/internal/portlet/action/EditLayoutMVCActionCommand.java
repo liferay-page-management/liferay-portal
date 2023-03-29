@@ -25,8 +25,10 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.events.EventsProcessorUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
@@ -292,13 +294,30 @@ public class EditLayoutMVCActionCommand extends BaseMVCActionCommand {
 
 			actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
 
-			List<Layout> conflicts =
-				_sites.getLayoutSetPrototypeFriendlyURLConflictSitesLayouts(
-					layout);
+			Group group = layout.getGroup();
+			LayoutSet layoutSet = layout.getLayoutSet();
 
-			if (!conflicts.isEmpty()) {
-				SessionMessages.add(
-					actionRequest, "siteTemplateFriendlyURLConflict");
+			if (group.isLayoutSetPrototype()) {
+				List<Layout> conflicts =
+					_sites.getLayoutSetPrototypeFriendlyURLConflictSitesLayouts(
+						layout);
+
+				if (!conflicts.isEmpty()) {
+					SessionMessages.add(
+						actionRequest, "friendlyURLConflictWithSiteLayouts");
+				}
+			}
+			else if (layoutSet.isLayoutSetPrototypeLinkActive()) {
+				Layout conflictLayout =
+					_sites.
+						getLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(
+							layout);
+
+				if (conflictLayout != null) {
+					SessionMessages.add(
+						actionRequest,
+						"friendlyURLConflictWithSiteLayoutSetPrototypeLayout");
+				}
 			}
 		}
 		catch (ModelListenerException modelListenerException) {

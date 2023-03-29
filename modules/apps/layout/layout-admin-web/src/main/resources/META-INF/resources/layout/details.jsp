@@ -108,7 +108,7 @@ String friendlyURLBase = StringPool.BLANK;
 		</c:choose>
 
 		<c:if test="<%= group.isLayoutSetPrototype() %>">
-			<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPS-174431") && SessionMessages.contains(renderRequest, "siteTemplateFriendlyURLConflict") %>'>
+			<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPS-174431") && SessionMessages.contains(renderRequest, "friendlyURLConflictWithSiteLayouts") %>'>
 				<aui:script>
 					Liferay.Util.openToast({
 						autoClose: 10000,
@@ -150,9 +150,20 @@ String friendlyURLBase = StringPool.BLANK;
 				<aui:input helpMessage="allow-site-administrators-to-modify-this-page-for-their-site-help" label="allow-site-administrators-to-modify-this-page-for-their-site" name="TypeSettingsProperties--layoutUpdateable--" type="checkbox" value='<%= GetterUtil.getBoolean(selLayoutType.getTypeSettingsProperty("layoutUpdateable"), true) %>' />
 			</c:if>
 		</c:if>
-		
+
 		<c:if test="<%= !group.isLayoutSetPrototype() && selLayoutSet.isLayoutSetPrototypeLinkEnabled() %>">
-			<c:if test='<%= layoutsAdminDisplayContext.isShowLayoutSetPrototypeFriendlyURLConflictLayout() %>'>
+			<c:if test='<%= SessionMessages.contains(renderRequest, "friendlyURLConflictWithSiteLayoutSetPrototypeLayout") %>'>
+				<aui:script>
+					Liferay.Util.openToast({
+						autoClose: 10000,
+						message:
+							'<liferay-ui:message key="the-page-was-saved-with-a-conflicting-friendly-url" />',
+						type: 'warning',
+					});
+				</aui:script>
+			</c:if>
+
+			<c:if test="<%= layoutsAdminDisplayContext.isShowLayoutSetPrototypeFriendlyURLConflictLayout() %>">
 				<div class="alert alert-warning">
 					<liferay-ui:message key="the-friendly-url-of-this-page-is-conflicting-with-a-friendly-url-of-a-page-in-the-site-template-from-which-this-site-was-created" />
 
@@ -171,7 +182,7 @@ String friendlyURLBase = StringPool.BLANK;
 						</li>
 					</ul>
 				</div>
-			</c:if>		
+			</c:if>
 		</c:if>
 	</c:when>
 	<c:otherwise>
