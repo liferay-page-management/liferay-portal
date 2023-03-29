@@ -40,6 +40,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import java.util.Locale;
 import java.util.Map;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -60,6 +61,37 @@ public class AssetCategoryPropertyLocalServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
+	}
+
+	@Test
+	public void testCanAddCategoryPropertyValueWithSpecialCharacters()
+		throws Exception {
+
+		Map<Locale, String> titleMap = HashMapBuilder.put(
+			LocaleUtil.US, RandomTestUtil.randomString()
+		).build();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		AssetVocabulary assetVocabulary =
+			_assetVocabularyLocalService.addVocabulary(
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				RandomTestUtil.randomString(), titleMap, null, null,
+				serviceContext);
+
+		AssetCategory assetCategory = _assetCategoryLocalService.addCategory(
+			TestPropsValues.getUserId(), _group.getGroupId(),
+			RandomTestUtil.randomString(), assetVocabulary.getVocabularyId(),
+			serviceContext);
+
+		AssetCategoryProperty result =
+			_assetCategoryPropertyLocalService.addCategoryProperty(
+				TestPropsValues.getUserId(), assetCategory.getCategoryId(),
+				RandomTestUtil.randomString(), "SpecialChatacters&'@<>{}=:;/");
+
+		Assert.assertEquals("SpecialChatacters&'@<>{}=:;/", result.getValue());
 	}
 
 	@Test(expected = CategoryPropertyKeyException.class)
