@@ -1325,6 +1325,15 @@ public class LayoutsAdminDisplayContext {
 					ClientExtensionEntryConstants.TYPE_THEME_CSS);
 
 		return HashMapBuilder.<String, Object>put(
+			"disabled",
+			() -> {
+				if (selLayout != null) {
+					return selLayout.isInheritLookAndFeel();
+				}
+
+				return false;
+			}
+		).put(
 			"placeholder", _getPlaceholder()
 		).put(
 			"selectThemeCSSClientExtensionEventName",
