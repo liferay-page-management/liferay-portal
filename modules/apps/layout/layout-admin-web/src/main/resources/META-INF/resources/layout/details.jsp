@@ -131,7 +131,7 @@ String friendlyURLBase = StringPool.BLANK;
 						%>
 
 							<li>
-								<liferay-ui:message arguments="<%= new Object[] {conflictLayout.getName(locale), conflictGroup.getName(locale)} %>" key="layout-config-layout-set-prototype-friendly-url-collision-with-page-x-site-x" translateArguments="<%= false %>" />
+								<liferay-ui:message arguments="<%= new Object[] {conflictLayout.getName(locale), conflictGroup.getName(locale)} %>" key="page-x-of-x" translateArguments="<%= false %>" />
 							</li>
 
 						<%
