@@ -17,6 +17,7 @@ package com.liferay.layout.admin.web.internal.portlet.action;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
@@ -86,8 +87,24 @@ public class GetLayoutSetPrototypeConflictsMVCResourceCommand
 			return new ArrayList<>();
 		}
 
-		return _sites.getLayoutSetPrototypeFriendlyURLConflictSitesLayouts(
-			layout, friendlyURL);
+		Group group = layout.getGroup();
+
+		if (group.isLayoutSetPrototype()) {
+			return _sites.getLayoutSetPrototypeFriendlyURLConflictSitesLayouts(
+				layout, friendlyURL);
+		}
+
+		List<Layout> conflictLayouts = new ArrayList<>();
+
+		Layout conflictLayout =
+			_sites.getLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(
+				layout, friendlyURL);
+
+		if (conflictLayout != null) {
+			conflictLayouts.add(conflictLayout);
+		}
+
+		return conflictLayouts;
 	}
 
 	@Reference

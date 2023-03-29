@@ -33,6 +33,8 @@ Group group = layoutsAdminDisplayContext.getGroup();
 
 Layout selLayout = layoutsAdminDisplayContext.getSelLayout();
 
+LayoutSet selLayoutSet = layoutsAdminDisplayContext.getSelLayoutSet();
+
 LayoutRevision layoutRevision = LayoutStagingUtil.getLayoutRevision(selLayout);
 
 String layoutSetBranchName = StringPool.BLANK;
@@ -316,21 +318,36 @@ renderResponse.setTitle(layoutsAdminDisplayContext.getConfigurationTitle(selLayo
 					return;
 				}
 
-				Liferay.Util.openConfirmModal({
-					message:
-						'<%= UnicodeLanguageUtil.get(request, "the-friendly-url-of-the-site-template-page-you-are-trying-to-save-conflicts") %>',
-					onConfirm: (isConfirm) => {
-						if (isConfirm) {
-							submitForm(form);
-						}
-					},
-				});
+				<c:choose>
+					<c:when test="<%= group.isLayoutSetPrototype() %>">
+						Liferay.Util.openConfirmModal({
+							message:
+								'<%= UnicodeLanguageUtil.get(request, "the-friendly-url-of-the-site-template-page-you-are-trying-to-save-conflicts") %>',
+							onConfirm: (isConfirm) => {
+								if (isConfirm) {
+									submitForm(form);
+								}
+							},
+						});
+					</c:when>
+					<c:otherwise>
+						Liferay.Util.openConfirmModal({
+							message:
+								'<%= UnicodeLanguageUtil.get(request, "the-friendly-url-of-the-page-you-are-trying-to-save-conflicts") %>',
+							onConfirm: (isConfirm) => {
+								if (isConfirm) {
+									submitForm(form);
+								}
+							},
+						});
+					</c:otherwise>
+				</c:choose>
 			});
 	}
 
 	form.addEventListener('submit', (event) => {
 		<c:choose>
-			<c:when test='<%= FeatureFlagManagerUtil.isEnabled("LPS-174431") && group.isLayoutSetPrototype() %>'>
+			<c:when test='<%= (FeatureFlagManagerUtil.isEnabled("LPS-174431") && group.isLayoutSetPrototype()) || selLayoutSet.isLayoutSetPrototypeLinkEnabled() %>'>
 				<portlet:namespace />checkLayoutSetPrototypeConflicts();
 			</c:when>
 			<c:otherwise>
