@@ -43,11 +43,7 @@ const HTMLEditorModal = ({
 
 	return (
 		visible && (
-			<ClayModal
-				containerProps={{className: 'cadmin'}}
-				observer={observer}
-				size="full-screen"
-			>
+			<ClayModal observer={observer} size="full-screen">
 				<ClayModal.Header>
 					{Liferay.Language.get('edit-content')}
 				</ClayModal.Header>
@@ -137,6 +133,7 @@ const HTMLEditorModal = ({
 				</ClayModal.Body>
 
 				<ClayModal.Footer
+					className="cadmin"
 					last={
 						<ClayButton.Group spaced>
 							<ClayButton
