@@ -109,6 +109,7 @@ import com.liferay.portal.util.RobotsUtil;
 import com.liferay.site.display.context.GroupDisplayContextHelper;
 import com.liferay.site.navigation.model.SiteNavigationMenu;
 import com.liferay.site.navigation.service.SiteNavigationMenuLocalServiceUtil;
+import com.liferay.sites.kernel.util.SitesUtil;
 import com.liferay.staging.StagingGroupHelper;
 import com.liferay.taglib.security.PermissionsURLTag;
 
@@ -117,6 +118,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -369,6 +371,26 @@ public class LayoutsAdminDisplayContext {
 		).buildString();
 	}
 
+	public Set<Long> getConflictPlids() {
+		if (_conflictPlids != null) {
+			return _conflictPlids;
+		}
+
+		LayoutSet layoutSet = getSelLayoutSet();
+
+		if (layoutSet.isLayoutSetPrototypeLinkEnabled()) {
+			Group group = getSelGroup();
+
+			_conflictPlids = SitesUtil.getConflictingPlidsOfLayoutSetGroup(
+				group.getGroupId());
+		}
+		else {
+			_conflictPlids = new HashSet<>();
+		}
+
+		return _conflictPlids;
+	}
+
 	public String getCopyLayoutActionURL(
 		boolean copyPermissions, long sourcePlid) {
 
@@ -404,6 +426,20 @@ public class LayoutsAdminDisplayContext {
 			"/layout_admin/add_layout"
 		).setParameter(
 			"copyPermissions", copyPermissions
+		).setParameter(
+			"privateLayout", isPrivateLayout()
+		).setParameter(
+			"sourcePlid", layout.getPlid()
+		).setWindowState(
+			LiferayWindowState.POP_UP
+		).buildString();
+	}
+
+	public String getCopyLayoutRenderURL(Layout layout) throws Exception {
+		return PortletURLBuilder.createRenderURL(
+			_liferayPortletResponse
+		).setMVCRenderCommandName(
+			"/layout_admin/add_layout"
 		).setParameter(
 			"privateLayout", isPrivateLayout()
 		).setParameter(
@@ -2483,6 +2519,7 @@ public class LayoutsAdminDisplayContext {
 	private Long _activeLayoutSetBranchId;
 	private String _backURL;
 	private final CETManager _cetManager;
+	private Set<Long> _conflictPlids;
 	private String _displayStyle;
 	private Boolean _firstColumn;
 	private final GroupDisplayContextHelper _groupDisplayContextHelper;
