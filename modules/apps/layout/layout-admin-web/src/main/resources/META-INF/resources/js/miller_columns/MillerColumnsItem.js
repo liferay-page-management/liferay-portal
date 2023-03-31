@@ -19,6 +19,7 @@ import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import ClayLayout from '@clayui/layout';
 import ClayLink from '@clayui/link';
+import {ClayTooltipProvider} from '@clayui/tooltip';
 import classNames from 'classnames';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {useDrag, useDrop} from 'react-dnd';
@@ -39,6 +40,7 @@ const ITEM_STATES_COLORS = {
 	'conversion-draft': 'info',
 	'draft': 'secondary',
 	'pending': 'info',
+	'url-conflict': 'info',
 };
 
 const isValidTarget = (sources, target, dropZone, isPrivateLayoutsEnabled) => {
@@ -406,13 +408,27 @@ const MillerColumnsItem = ({
 						<span className="text-truncate">{description}</span>
 
 						{states.map((state) => (
-							<ClayLabel
-								className="inline-item-after text-truncate"
-								displayType={ITEM_STATES_COLORS[state.id]}
-								key={state.id}
-							>
-								{state.label}
-							</ClayLabel>
+							 state.helptext ? (
+									<ClayTooltipProvider>
+										<ClayLabel
+											className="inline-item-after text-truncate"
+											data-tooltip-align="bottom"
+											displayType={ITEM_STATES_COLORS[state.id]}
+											key={state.id}
+											title={state.helptext}
+										>
+											{state.label}
+										</ClayLabel>
+									</ClayTooltipProvider>
+								) : (
+									<ClayLabel
+										className="inline-item-after text-truncate"
+										displayType={ITEM_STATES_COLORS[state.id]}
+										key={state.id}
+									>
+										{state.label}
+									</ClayLabel>
+							 )
 						))}
 					</h5>
 				)}
