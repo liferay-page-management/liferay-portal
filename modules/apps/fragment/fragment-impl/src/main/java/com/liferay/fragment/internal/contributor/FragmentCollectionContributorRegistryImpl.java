@@ -995,8 +995,13 @@ public class FragmentCollectionContributorRegistryImpl
 				PermissionThreadLocal.getPermissionChecker();
 			_originalName = PrincipalThreadLocal.getName();
 
-			_originalServiceContext =
-				ServiceContextThreadLocal.getServiceContext();
+			if (ServiceContextThreadLocal.getServiceContext() == null) {
+				_originalServiceContext = new ServiceContext();
+			}
+			else {
+				_originalServiceContext =
+					ServiceContextThreadLocal.getServiceContext();
+			}
 
 			ThemeDisplay themeDisplay =
 				_originalServiceContext.getThemeDisplay();
