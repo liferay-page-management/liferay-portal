@@ -3829,9 +3829,13 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 			user = _userLocalService.getDefaultUser(group.getCompanyId());
 		}
 
-		updateAsset(
-			user.getUserId(), group, serviceContext.getAssetCategoryIds(),
-			serviceContext.getAssetTagNames());
+		if (GetterUtil.getBoolean(
+				serviceContext.getAttribute("updateCategorization"))) {
+
+			updateAsset(
+				user.getUserId(), group, serviceContext.getAssetCategoryIds(),
+				serviceContext.getAssetTagNames());
+		}
 
 		return group;
 	}

@@ -54,6 +54,8 @@ public class EditCategorizationMVCActionCommand
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			Group.class.getName(), actionRequest);
 
+		serviceContext.setAttribute("updateCategorization", Boolean.TRUE);
+
 		ServiceContextThreadLocal.pushServiceContext(serviceContext);
 
 		Group liveGroup = _groupLocalService.getGroup(liveGroupId);
