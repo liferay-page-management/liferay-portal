@@ -40,7 +40,7 @@ const ITEM_STATES_COLORS = {
 	'conversion-draft': 'info',
 	'draft': 'secondary',
 	'pending': 'info',
-	'url-conflict': 'info',
+	'url-conflict': 'warning',
 };
 
 const isValidTarget = (sources, target, dropZone, isPrivateLayoutsEnabled) => {
@@ -407,29 +407,35 @@ const MillerColumnsItem = ({
 					<h5 className="d-flex list-group-subtitle small">
 						<span className="text-truncate">{description}</span>
 
-						{states.map((state) => (
-							 state.helptext ? (
-									<ClayTooltipProvider>
-										<ClayLabel
-											className="inline-item-after text-truncate"
-											data-tooltip-align="bottom"
-											displayType={ITEM_STATES_COLORS[state.id]}
-											key={state.id}
-											title={state.helptext}
-										>
-											{state.label}
-										</ClayLabel>
-									</ClayTooltipProvider>
-								) : (
-									<ClayLabel
-										className="inline-item-after text-truncate"
-										displayType={ITEM_STATES_COLORS[state.id]}
-										key={state.id}
+						{states.map((state) =>
+							state.type &&
+							state.type === 'warning' &&
+							state.helptext ? (
+								<ClayTooltipProvider>
+									<span
+										data-tooltip-align="bottom"
+										title={state.helptext}
 									>
-										{state.label}
-									</ClayLabel>
-							 )
-						))}
+										<ClayIcon
+											className="inline-item-after text-truncate"
+											displayType={
+												ITEM_STATES_COLORS[state.id]
+											}
+											key={state.id}
+											symbol="warning-full"
+										/>
+									</span>
+								</ClayTooltipProvider>
+							) : (
+								<ClayLabel
+									className="inline-item-after text-truncate"
+									displayType={ITEM_STATES_COLORS[state.id]}
+									key={state.id}
+								>
+									{state.label}
+								</ClayLabel>
+							)
+						)}
 					</h5>
 				)}
 			</ClayLayout.ContentCol>

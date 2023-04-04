@@ -16,7 +16,6 @@ package com.liferay.layout.admin.web.internal.display.context;
 
 import com.liferay.exportimport.kernel.staging.LayoutStagingUtil;
 import com.liferay.layout.admin.web.internal.servlet.taglib.util.LayoutActionDropdownItemsProvider;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -553,7 +552,7 @@ public class MillerColumnsDisplayContext {
 				).put(
 					"id", "url-conflict"
 				).put(
-					"label", StringPool.EXCLAMATION
+					"type", "warning"
 				));
 		}
 
