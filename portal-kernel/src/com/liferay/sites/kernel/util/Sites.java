@@ -165,6 +165,8 @@ public interface Sites {
 
 	public Set<Long> getConflictingPlidsOfLayoutSetGroup(long groupId);
 
+	public Set<Long> getConflictingPlidsOfLayoutSetPrototypeGroup(long groupId);
+
 	public Layout getLayoutSetPrototypeLayout(Layout layout);
 
 	public Map<String, String[]> getLayoutSetPrototypeParameters(

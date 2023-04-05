@@ -806,6 +806,72 @@ public class SitesImpl implements Sites {
 	}
 
 	@Override
+	public Set<Long> getConflictingPlidsOfLayoutSetPrototypeGroup(
+		long groupId) {
+
+		LayoutTable tempLayoutTable = LayoutTable.INSTANCE.as(
+			"tempLayoutTable");
+
+		Set<Long> plids = new HashSet<>();
+
+		plids.addAll(
+			LayoutLocalServiceUtil.dslQuery(
+				DSLQueryFactoryUtil.selectDistinct(
+					LayoutTable.INSTANCE.plid
+				).from(
+					LayoutTable.INSTANCE
+				).innerJoinON(
+					GroupTable.INSTANCE,
+					GroupTable.INSTANCE.companyId.eq(
+						LayoutTable.INSTANCE.companyId
+					).and(
+						GroupTable.INSTANCE.groupId.eq(
+							LayoutTable.INSTANCE.groupId)
+					)
+				).innerJoinON(
+					LayoutSetPrototypeTable.INSTANCE,
+					LayoutSetPrototypeTable.INSTANCE.companyId.eq(
+						GroupTable.INSTANCE.companyId
+					).and(
+						LayoutSetPrototypeTable.INSTANCE.layoutSetPrototypeId.
+							eq(GroupTable.INSTANCE.classPK)
+					)
+				).innerJoinON(
+					LayoutSetTable.INSTANCE,
+					LayoutSetTable.INSTANCE.companyId.eq(
+						LayoutSetPrototypeTable.INSTANCE.companyId
+					).and(
+						LayoutSetTable.INSTANCE.layoutSetPrototypeUuid.eq(
+							LayoutSetPrototypeTable.INSTANCE.uuid)
+					)
+				).innerJoinON(
+					tempLayoutTable,
+					tempLayoutTable.companyId.eq(
+						LayoutSetTable.INSTANCE.companyId
+					).and(
+						tempLayoutTable.groupId.eq(
+							LayoutSetTable.INSTANCE.groupId)
+					).and(
+						tempLayoutTable.privateLayout.eq(
+							LayoutSetTable.INSTANCE.privateLayout)
+					).and(
+						tempLayoutTable.friendlyURL.eq(
+							LayoutTable.INSTANCE.friendlyURL)
+					).and(
+						tempLayoutTable.sourcePrototypeLayoutUuid.isNull()
+					)
+				).where(
+					LayoutTable.INSTANCE.groupId.eq(
+						groupId
+					).and(
+						LayoutTable.INSTANCE.system.eq(false)
+					)
+				)));
+
+		return plids;
+	}
+
+	@Override
 	public Layout getLayoutSetPrototypeLayout(Layout layout) {
 		try {
 			LayoutSet layoutSet = layout.getLayoutSet();

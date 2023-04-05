@@ -163,6 +163,12 @@ public class SitesUtil {
 		return _sites.getConflictingPlidsOfLayoutSetGroup(groupId);
 	}
 
+	public static Set<Long> getConflictingPlidsOfLayoutSetPrototypeGroup(
+		long groupId) {
+
+		return _sites.getConflictingPlidsOfLayoutSetPrototypeGroup(groupId);
+	}
+
 	public static Layout getLayoutSetPrototypeLayout(Layout layout) {
 		return _sites.getLayoutSetPrototypeLayout(layout);
 	}
