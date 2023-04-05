@@ -224,7 +224,7 @@ export default function PageStructureSidebar() {
 
 		return (
 			<div
-				className={classNames('flex-shrink-0', {
+				className={classNames('autofit-row', {
 					'page-editor__page-structure__tree-node__buttons--hidden':
 						item.hidden || item.hiddenAncestor,
 				})}
@@ -233,6 +233,7 @@ export default function PageStructureSidebar() {
 			>
 				{(item.hidable || item.hidden) && (
 					<VisibilityButton
+						className="ml-0"
 						dispatch={dispatch}
 						node={item}
 						selectedViewportSize={selectedViewportSize}
@@ -291,6 +292,7 @@ export default function PageStructureSidebar() {
 									actions={<ItemActions item={item} />}
 								>
 									<ClayTreeView.ItemStack
+										className="page-editor__page-structure__structure-tree-node"
 										data-title={
 											item.isMasterItem || !item.activable
 												? ''
