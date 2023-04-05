@@ -61,12 +61,6 @@ export function useSetDragLayer() {
 					`[data-item-id="${siblingItem.siteNavigationMenuItemId}"]`
 				);
 
-				siblingElement.scrollIntoView({
-					behavior: 'auto',
-					block: 'nearest',
-					inline: 'nearest',
-				});
-
 				const siblingElementRect = siblingElement.getBoundingClientRect();
 
 				setDragLayer({
@@ -114,12 +108,6 @@ export function useSetDragLayer() {
 
 				nextChildNode = nextChildNode.nextElementSibling;
 			}
-
-			(nextChildNode || parentElement).scrollIntoView({
-				behavior: 'auto',
-				block: 'nearest',
-				inline: 'nearest',
-			});
 
 			const parentElementRect = parentElement.getBoundingClientRect();
 
