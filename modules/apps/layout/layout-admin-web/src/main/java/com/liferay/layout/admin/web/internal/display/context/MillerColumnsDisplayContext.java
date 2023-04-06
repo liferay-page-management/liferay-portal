@@ -549,11 +549,16 @@ public class MillerColumnsDisplayContext {
 			_layoutsAdminDisplayContext.getConflictPlids();
 
 		if (conflictPlids.contains(layout.getPlid())) {
+			Group group = layout.getGroup();
+
 			jsonArray.put(
 				JSONUtil.put(
 					"helptext",
 					LanguageUtil.get(
-						_httpServletRequest, "friendly-url-conflict-site-page")
+						_httpServletRequest,
+						group.isLayoutSetPrototype() ?
+							"friendly-url-conflict-site-template-page" :
+								"friendly-url-conflict-site-page")
 				).put(
 					"id", "url-conflict"
 				).put(

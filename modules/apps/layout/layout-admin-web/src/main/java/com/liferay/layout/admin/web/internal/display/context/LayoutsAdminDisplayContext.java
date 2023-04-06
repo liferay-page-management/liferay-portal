@@ -377,12 +377,16 @@ public class LayoutsAdminDisplayContext {
 		}
 
 		LayoutSet layoutSet = getSelLayoutSet();
+		Group group = getSelGroup();
 
 		if (layoutSet.isLayoutSetPrototypeLinkEnabled()) {
-			Group group = getSelGroup();
-
 			_conflictPlids = SitesUtil.getConflictingPlidsOfLayoutSetGroup(
 				group.getGroupId());
+		}
+		else if (group.isLayoutSetPrototype()) {
+			_conflictPlids =
+				SitesUtil.getConflictingPlidsOfLayoutSetPrototypeGroup(
+					group.getGroupId());
 		}
 		else {
 			_conflictPlids = new HashSet<>();
