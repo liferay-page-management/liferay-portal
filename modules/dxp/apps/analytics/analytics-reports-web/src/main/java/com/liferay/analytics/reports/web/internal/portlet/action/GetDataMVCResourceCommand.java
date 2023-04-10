@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -83,6 +84,7 @@ import javax.portlet.ResourceResponse;
 import javax.portlet.ResourceURL;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -92,20 +94,16 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + AnalyticsReportsPortletKeys.ANALYTICS_REPORTS,
-		"mvc.command.name=/analytics_reports/get_data"
+		"path=/analytics_reports/get_data"
 	},
-	service = MVCResourceCommand.class
+	service = StrutsAction.class
 )
-public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
+public class GetDataStrutsAction implements StrutsAction {
 
 	@Override
-	protected void doServeResource(
-			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+	public String execute(
+			HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
 		throws Exception {
-
-		HttpServletRequest httpServletRequest = _portal.getHttpServletRequest(
-			resourceRequest);
 
 		try {
 			InfoItemReference infoItemReference = _getInfoItemReference(
@@ -140,11 +138,11 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 							infoItemReference.getClassName());
 
 			ThemeDisplay themeDisplay =
-				(ThemeDisplay)resourceRequest.getAttribute(
+				(ThemeDisplay)httpServletRequest.getAttribute(
 					WebKeys.THEME_DISPLAY);
 
 			JSONPortletResponseUtil.writeJSON(
-				resourceRequest, resourceResponse,
+				httpServletRequest, httpServletResponse,
 				JSONUtil.put(
 					"context",
 					_getJSONObject(
@@ -155,14 +153,14 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 						themeDisplay.getLocale(),
 						_getLocale(
 							httpServletRequest, themeDisplay.getLanguageId()),
-						analyticsReportsInfoItemObject, resourceRequest,
-						resourceResponse, _getTimeRange(resourceRequest))));
+						analyticsReportsInfoItemObject, httpServletRequest,
+						httpServletResponse, _getTimeRange(httpServletRequest))));
 		}
 		catch (Exception exception) {
 			_log.error(exception);
 
 			JSONPortletResponseUtil.writeJSON(
-				resourceRequest, resourceResponse,
+				httpServletRequest, httpServletResponse,
 				JSONUtil.put(
 					"error",
 					_language.get(
