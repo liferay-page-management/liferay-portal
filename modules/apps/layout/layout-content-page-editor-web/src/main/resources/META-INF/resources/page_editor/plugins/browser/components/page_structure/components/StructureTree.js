@@ -144,6 +144,7 @@ export default function PageStructureSidebar() {
 				dragAndDropHoveredItemId,
 				editingNodeId,
 				fragmentEntryLinks,
+				hoveredItemId,
 				isMasterPage,
 				keyboardMovementTargetId,
 				layoutData,
@@ -163,6 +164,7 @@ export default function PageStructureSidebar() {
 			dragAndDropHoveredItemId,
 			editingNodeId,
 			fragmentEntryLinks,
+			hoveredItemId,
 			isMasterPage,
 			keyboardMovementTargetId,
 			layoutData,
@@ -292,7 +294,20 @@ export default function PageStructureSidebar() {
 									actions={<ItemActions item={item} />}
 								>
 									<ClayTreeView.ItemStack
-										className="page-editor__page-structure__structure-tree-node"
+										className={classNames(
+											'page-editor__page-structure__clay-tree-node',
+											{
+												'page-editor__page-structure__clay-tree-node--active':
+													item.active &&
+													item.activable,
+												'page-editor__page-structure__clay-tree-node--hovered':
+													item.hovered,
+												'page-editor__page-structure__clay-tree-node--mapped':
+													item.mapped,
+												'page-editor__page-structure__clay-tree-node--master-item':
+													item.isMasterItem,
+											}
+										)}
 										data-title={
 											item.isMasterItem || !item.activable
 												? ''
@@ -533,6 +548,7 @@ function visit(
 		editingNodeId,
 		fragmentEntryLinks,
 		hasHiddenAncestor,
+		hoveredItemId,
 		isMasterPage,
 		keyboardMovementTargetId,
 		layoutData,
@@ -641,6 +657,7 @@ function visit(
 						editingNodeId,
 						fragmentEntryLinks,
 						hasHiddenAncestor: hasHiddenAncestor || hidden,
+						hoveredItemId,
 						isMasterPage,
 						layoutData,
 						layoutDataRef,
@@ -689,6 +706,7 @@ function visit(
 						editingNodeId,
 						fragmentEntryLinks,
 						hasHiddenAncestor: hasHiddenAncestor || hidden,
+						hoveredItemId,
 						isMasterPage,
 						keyboardMovementTargetId,
 						layoutData,
@@ -712,6 +730,7 @@ function visit(
 					editingNodeId,
 					fragmentEntryLinks,
 					hasHiddenAncestor: hasHiddenAncestor || hidden,
+					hoveredItemId,
 					isMasterPage,
 					keyboardMovementTargetId,
 					layoutData,
@@ -734,6 +753,7 @@ function visit(
 			item.type !== LAYOUT_DATA_ITEM_TYPES.collectionItem &&
 			item.type !== LAYOUT_DATA_ITEM_TYPES.fragmentDropZone &&
 			canUpdateItemConfiguration,
+		active: item.itemId === activeItemId,
 		children,
 		config: layoutDataRef.current.items[item.itemId]?.config,
 		draggable: true,
@@ -747,6 +767,7 @@ function visit(
 			isHidable(item, fragmentEntryLinks, layoutData),
 		hidden,
 		hiddenAncestor: hasHiddenAncestor,
+		hovered: item.itemId === hoveredItemId,
 		icon,
 		id: item.itemId,
 		isMasterItem: !isMasterPage && itemInMasterLayout,
