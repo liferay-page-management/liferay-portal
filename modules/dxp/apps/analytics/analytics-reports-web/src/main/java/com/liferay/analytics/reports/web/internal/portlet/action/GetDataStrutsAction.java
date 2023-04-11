@@ -531,7 +531,7 @@ public class GetDataStrutsAction implements StrutsAction {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		GetDataMVCResourceCommand.class);
+		GetDataStrutsAction.class);
 
 	private static final Map
 		<AnalyticsReportsInfoItem.Action, ObjectValuePair<String, String>>
