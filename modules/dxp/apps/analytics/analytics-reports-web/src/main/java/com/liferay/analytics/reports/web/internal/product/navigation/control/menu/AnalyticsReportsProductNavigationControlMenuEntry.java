@@ -35,10 +35,10 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.PortletURLFactory;
-import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Html;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.SessionClicks;
@@ -61,8 +61,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
-
-import javax.portlet.PortletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -257,6 +255,14 @@ public class AnalyticsReportsProductNavigationControlMenuEntry
 		InfoItemReference infoItemReference = _getInfoItemReference(
 			httpServletRequest);
 
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		String getDataURL =
+			themeDisplay.getPortalURL() + themeDisplay.getPathMain() +
+				"/portal/get_data";
+
 		if (infoItemReference.getInfoItemIdentifier() instanceof
 				ClassNameClassPKInfoItemIdentifier) {
 
@@ -265,37 +271,25 @@ public class AnalyticsReportsProductNavigationControlMenuEntry
 					(ClassNameClassPKInfoItemIdentifier)
 						infoItemReference.getInfoItemIdentifier();
 
-			return PortletURLBuilder.create(
-				_portletURLFactory.create(
-					httpServletRequest,
-					AnalyticsReportsPortletKeys.ANALYTICS_REPORTS,
-					PortletRequest.RESOURCE_PHASE)
-			).setParameter(
-				"className", infoItemReference.getClassName()
-			).setParameter(
-				"classPK", classNameClassPKInfoItemIdentifier.getClassPK()
-			).setParameter(
-				"classTypeName",
-				classNameClassPKInfoItemIdentifier.getClassName()
-			).setParameter(
-				"p_p_resource_id", "/analytics_reports/get_data"
-			).buildString();
+			getDataURL = HttpComponentsUtil.addParameter(
+				getDataURL, "className", infoItemReference.getClassName());
+
+			getDataURL = HttpComponentsUtil.addParameter(
+				getDataURL, "classPK",
+				classNameClassPKInfoItemIdentifier.getClassPK());
+
+			return HttpComponentsUtil.addParameter(
+				getDataURL, "classTypeName",
+				classNameClassPKInfoItemIdentifier.getClassName());
 		}
 		else if (infoItemReference.getInfoItemIdentifier() instanceof
 					ClassPKInfoItemIdentifier) {
 
-			return PortletURLBuilder.create(
-				_portletURLFactory.create(
-					httpServletRequest,
-					AnalyticsReportsPortletKeys.ANALYTICS_REPORTS,
-					PortletRequest.RESOURCE_PHASE)
-			).setParameter(
-				"className", infoItemReference.getClassName()
-			).setParameter(
-				"classPK", infoItemReference.getClassPK()
-			).setParameter(
-				"p_p_resource_id", "/analytics_reports/get_data"
-			).buildString();
+			getDataURL = HttpComponentsUtil.addParameter(
+				getDataURL, "className", infoItemReference.getClassName());
+
+			return HttpComponentsUtil.addParameter(
+				getDataURL, "classPK", infoItemReference.getClassPK());
 		}
 
 		return StringPool.BLANK;

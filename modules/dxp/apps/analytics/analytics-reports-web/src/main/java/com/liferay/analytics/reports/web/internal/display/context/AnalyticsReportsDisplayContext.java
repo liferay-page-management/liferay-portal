@@ -18,19 +18,17 @@ import com.liferay.analytics.reports.info.item.ClassNameClassPKInfoItemIdentifie
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
-import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.Collections;
 import java.util.Map;
 
-import javax.portlet.MimeResponse;
-import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
-import javax.portlet.ResourceURL;
 
 /**
  * @author David Arques
@@ -46,6 +44,9 @@ public class AnalyticsReportsDisplayContext<T> {
 		_portal = portal;
 		_renderRequest = renderRequest;
 		_renderResponse = renderResponse;
+
+		_themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
 	}
 
 	public Map<String, Object> getData() throws PortalException {
@@ -63,23 +64,15 @@ public class AnalyticsReportsDisplayContext<T> {
 		return _data;
 	}
 
-	private ResourceURL _getResourceURL(String resourceID)
-		throws PortalException {
+	private String _getResourceURL(String resourceID) throws PortalException {
+		String getDataURL = _themeDisplay.getPathMain() + "/portal/get_data";
 
-		LiferayPortletRequest liferayPortletRequest =
-			_portal.getLiferayPortletRequest(_renderRequest);
+		getDataURL = HttpComponentsUtil.addParameter(
+			getDataURL, ParamUtil.getString(_renderRequest, "redirect"),
+			"redirect");
 
-		ResourceURL resourceURL =
-			(ResourceURL)PortletURLBuilder.createLiferayPortletURL(
-				_portal.getLiferayPortletResponse(_renderResponse),
-				liferayPortletRequest.getPlid(),
-				liferayPortletRequest.getPortletName(),
-				PortletRequest.RESOURCE_PHASE, MimeResponse.Copy.PUBLIC
-			).setRedirect(
-				ParamUtil.getString(_renderRequest, "redirect")
-			).setParameter(
-				"className", _infoItemReference.getClassName()
-			).buildPortletURL();
+		getDataURL = HttpComponentsUtil.addParameter(
+			getDataURL, "className", _infoItemReference.getClassName());
 
 		if (_infoItemReference.getInfoItemIdentifier() instanceof
 				ClassNameClassPKInfoItemIdentifier) {
@@ -89,12 +82,13 @@ public class AnalyticsReportsDisplayContext<T> {
 					(ClassNameClassPKInfoItemIdentifier)
 						_infoItemReference.getInfoItemIdentifier();
 
-			resourceURL.setParameter(
-				"classPK",
+			getDataURL = HttpComponentsUtil.addParameter(
+				getDataURL, "classPK",
 				String.valueOf(
 					classNameClassPKInfoItemIdentifier.getClassPK()));
-			resourceURL.setParameter(
-				"classTypeName",
+
+			getDataURL = HttpComponentsUtil.addParameter(
+				getDataURL, "classTypeName",
 				classNameClassPKInfoItemIdentifier.getClassName());
 		}
 		else if (_infoItemReference.getInfoItemIdentifier() instanceof
@@ -104,14 +98,12 @@ public class AnalyticsReportsDisplayContext<T> {
 				(ClassPKInfoItemIdentifier)
 					_infoItemReference.getInfoItemIdentifier();
 
-			resourceURL.setParameter(
-				"classPK",
+			getDataURL = HttpComponentsUtil.addParameter(
+				getDataURL, "classPK",
 				String.valueOf(classPKInfoItemIdentifier.getClassPK()));
 		}
 
-		resourceURL.setResourceID(resourceID);
-
-		return resourceURL;
+		return getDataURL;
 	}
 
 	private Map<String, Object> _data;
@@ -119,5 +111,6 @@ public class AnalyticsReportsDisplayContext<T> {
 	private final Portal _portal;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
+	private final ThemeDisplay _themeDisplay;
 
 }
