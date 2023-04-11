@@ -2729,9 +2729,8 @@ definition {
 	@description = "This test removes a blocked domain in Instance Settings."
 	@priority = 4
 	test CanRemoveDomainFromBlacklist {
-		property test.name.skip.portal.instance = "Account#CanRemoveDomainFromBlacklist";
-
 		AccountConfiguration.addBlockedEmailDomain(settingValues = "yahoo.com,blocked.com,google.com");
+		property test.name.skip.portal.instance = "Account#CanRemoveDomainFromBlacklist";
 
 		for (var settingValue : list "yahoo.com,blocked.com,google.com") {
 			SystemSettings.viewTextareaPartialText(
