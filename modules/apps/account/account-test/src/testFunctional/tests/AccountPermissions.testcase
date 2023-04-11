@@ -412,7 +412,6 @@ definition {
 	@refactorneeded
 	test AccountAdminCanDeleteAccount {
 		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "AccountPermissions#AccountAdminCanDeleteAccount";
 
 		task ("Given add an Account Administrator with delete permission assigned to a Business Account") {
 			JSONAccountEntry.addAccountEntry(
@@ -615,8 +614,6 @@ definition {
 	@description = "This test asserts that an Account Admin cannot add a user wtih an email domain that is blocked."
 	@priority = 4
 	test AccountAdminCannotAddUserWithBlockedDomain {
-		property test.name.skip.portal.instance = "AccountPermissions#AccountAdminCannotAddUserWithBlockedDomain";
-
 		task ("Given there is an Account Administrator assigned to a Business Account") {
 			JSONAccountEntry.addAccountEntry(
 				accountEntryName = "Account Name",
@@ -909,8 +906,6 @@ definition {
 	@priority = 5
 	@refactorneeded
 	test AccountAdminCanUnassignOrganizationToAccount {
-		property test.name.skip.portal.instance = "AccountPermissions#AccountAdminCanUnassignOrganizationToAccount";
-
 		task ("Given add an Account Administrator with manage org permission assigned to a Business Account") {
 			JSONAccountEntry.addAccountEntry(
 				accountEntryName = "Account Name",
@@ -1453,8 +1448,6 @@ definition {
 	@description = "This is a test for LRQA-73702 and asserts that a user can see all accounts that they belong to"
 	@priority = 5
 	test CanAccessAListOfAccountsTheUserBelongsTo {
-		property test.name.skip.portal.instance = "AccountPermissions#CanAccessAListOfAccountsTheUserBelongsTo";
-
 		task ("Given a user") {
 			JSONUser.addUser(
 				userEmailAddress = "userea@liferay.com",
@@ -1863,8 +1856,6 @@ definition {
 	@description = "This test asserts that a user with View permission for account entries can view, but not be able to perform any other actions"
 	@priority = 5
 	test CanViewAccountWithViewPermissions {
-		property test.name.skip.portal.instance = "AccountPermissions#CanViewAccountWithViewPermissions";
-
 		task ("Given a user with View permissions for AccountEntry and a business account") {
 			JSONRole.addRegularRole(
 				roleKey = "View Account Role",
