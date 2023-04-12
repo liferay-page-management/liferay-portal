@@ -458,7 +458,7 @@ definition {
 				key_url = "https://liferay.com",
 				locator1 = "Fragment#FRAGMENT_LINK");
 
-			AssertLocation.assertPartialLocation(value1 = "https://www.liferay.com");
+			AssertLocation.assertPartialLocation(value1 = "https://liferay.com");
 		}
 	}
 
@@ -516,7 +516,7 @@ definition {
 
 			SelectWindow.selectPopUp(locator1 = "null");
 
-			AssertLocation.assertPartialLocation(value1 = "https://www.liferay.com");
+			AssertLocation.assertPartialLocation(value1 = "https://liferay.com");
 
 			SelectWindow(locator1 = "title=Content Page Name - Test Site Name - ${siteName}");
 		}
@@ -567,7 +567,7 @@ definition {
 				key_url = "https://liferay.com",
 				locator1 = "Fragment#FRAGMENT_LINK");
 
-			AssertLocation.assertPartialLocation(value1 = "https://www.liferay.com");
+			AssertLocation.assertPartialLocation(value1 = "https://liferay.com");
 		}
 	}
 
