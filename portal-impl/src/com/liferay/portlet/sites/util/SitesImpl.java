@@ -749,10 +749,22 @@ public class SitesImpl implements Sites {
 
 	@Override
 	public Layout getLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(
-			Layout layout, String friendlyUrl)
+			Layout layout, String friendlyURL)
 		throws PortalException {
 
-		LayoutSet layoutSet = layout.getLayoutSet();
+		return getLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(
+			layout.getGroupId(), layout.isPrivateLayout(),
+			layout.getSourcePrototypeLayoutUuid(), friendlyURL);
+	}
+
+	@Override
+	public Layout getLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(
+			long groupId, boolean privateLayout,
+			String sourcePrototypeLayoutUuid, String friendlyURL)
+		throws PortalException {
+
+		LayoutSet layoutSet = LayoutSetLocalServiceUtil.getLayoutSet(
+			groupId, privateLayout);
 
 		if (!layoutSet.isLayoutSetPrototypeLinkActive()) {
 			return null;
@@ -762,14 +774,14 @@ public class SitesImpl implements Sites {
 			LayoutSetPrototypeLocalServiceUtil.
 				getLayoutSetPrototypeByUuidAndCompanyId(
 					layoutSet.getLayoutSetPrototypeUuid(),
-					layout.getCompanyId());
+					layoutSet.getCompanyId());
 
 		LayoutSet prototypeLayoutSet = layoutSetPrototype.getLayoutSet();
 
 		LayoutFriendlyURL layoutFriendlyURL =
 			LayoutFriendlyURLLocalServiceUtil.fetchFirstLayoutFriendlyURL(
 				prototypeLayoutSet.getGroupId(),
-				prototypeLayoutSet.isPrivateLayout(), friendlyUrl);
+				prototypeLayoutSet.isPrivateLayout(), friendlyURL);
 
 		if (layoutFriendlyURL == null) {
 			return null;
@@ -778,10 +790,9 @@ public class SitesImpl implements Sites {
 		Layout foundLayout = LayoutLocalServiceUtil.getLayout(
 			layoutFriendlyURL.getPlid());
 
-		String sourcePrototypeLayoutUuid =
-			layout.getSourcePrototypeLayoutUuid();
+		if (Validator.isNotNull(sourcePrototypeLayoutUuid) &&
+			sourcePrototypeLayoutUuid.equals(foundLayout.getUuid())) {
 
-		if (sourcePrototypeLayoutUuid.equals(foundLayout.getUuid())) {
 			return null;
 		}
 
@@ -799,10 +810,19 @@ public class SitesImpl implements Sites {
 
 	@Override
 	public List<Layout> getLayoutSetPrototypeFriendlyURLConflictSitesLayouts(
-			Layout layout, String friendlyUrl)
+			Layout layout, String friendlyURL)
 		throws PortalException {
 
-		Group group = layout.getGroup();
+		return getLayoutSetPrototypeFriendlyURLConflictSitesLayouts(
+			layout.getGroupId(), layout.getUuid(), friendlyURL);
+	}
+
+	@Override
+	public List<Layout> getLayoutSetPrototypeFriendlyURLConflictSitesLayouts(
+			long groupId, String layoutUuid, String friendlyURL)
+		throws PortalException {
+
+		Group group = GroupLocalServiceUtil.getGroup(groupId);
 
 		List<Layout> layouts = new ArrayList<>();
 
@@ -822,7 +842,7 @@ public class SitesImpl implements Sites {
 			LayoutFriendlyURL layoutFriendlyURL =
 				LayoutFriendlyURLLocalServiceUtil.fetchFirstLayoutFriendlyURL(
 					layoutSet.getGroupId(), layoutSet.isPrivateLayout(),
-					friendlyUrl);
+					friendlyURL);
 
 			if (layoutFriendlyURL != null) {
 				Layout foundLayout = LayoutLocalServiceUtil.getLayout(
@@ -831,7 +851,9 @@ public class SitesImpl implements Sites {
 				String foundLayoutPrototypeUuid =
 					foundLayout.getSourcePrototypeLayoutUuid();
 
-				if (!foundLayoutPrototypeUuid.equals(layout.getUuid())) {
+				if (Validator.isNull(layoutUuid) ||
+					!foundLayoutPrototypeUuid.equals(layoutUuid)) {
+
 					layouts.add(foundLayout);
 				}
 			}
