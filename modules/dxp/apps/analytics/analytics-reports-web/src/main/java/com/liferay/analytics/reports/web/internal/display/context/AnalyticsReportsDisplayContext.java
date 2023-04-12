@@ -37,13 +37,11 @@ import javax.portlet.RenderResponse;
 public class AnalyticsReportsDisplayContext<T> {
 
 	public AnalyticsReportsDisplayContext(
-		InfoItemReference infoItemReference, Portal portal,
-		RenderRequest renderRequest, RenderResponse renderResponse) {
+		InfoItemReference infoItemReference,
+		RenderRequest renderRequest) {
 
 		_infoItemReference = infoItemReference;
-		_portal = portal;
 		_renderRequest = renderRequest;
-		_renderResponse = renderResponse;
 
 		_themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
@@ -59,13 +57,13 @@ public class AnalyticsReportsDisplayContext<T> {
 			Collections.singletonMap(
 				"analyticsReportsDataURL",
 				String.valueOf(
-					_getResourceURL("/analytics_reports/get_data"))));
+					_getResourceURL("/portal/get_data"))));
 
 		return _data;
 	}
 
 	private String _getResourceURL(String resourceID) throws PortalException {
-		String getDataURL = _themeDisplay.getPathMain() + "/portal/get_data";
+		String getDataURL = _themeDisplay.getPathMain() + resourceID;
 
 		getDataURL = HttpComponentsUtil.addParameter(
 			getDataURL, ParamUtil.getString(_renderRequest, "redirect"),
@@ -108,9 +106,7 @@ public class AnalyticsReportsDisplayContext<T> {
 
 	private Map<String, Object> _data;
 	private final InfoItemReference _infoItemReference;
-	private final Portal _portal;
 	private final RenderRequest _renderRequest;
-	private final RenderResponse _renderResponse;
 	private final ThemeDisplay _themeDisplay;
 
 }
