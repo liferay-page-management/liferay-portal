@@ -7,6 +7,7 @@ Export-Package:\
 	com.liferay.site.display.context,\
 	com.liferay.site.exception,\
 	com.liferay.site.initializer,\
+	com.liferay.site.manager,\
 	com.liferay.site.model,\
 	com.liferay.site.model.adapter,\
 	com.liferay.site.search,\

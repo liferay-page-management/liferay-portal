@@ -16,21 +16,16 @@ package com.liferay.product.navigation.taglib.servlet.taglib;
 
 import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.product.navigation.taglib.internal.servlet.ServletContextUtil;
+import com.liferay.site.manager.MenuAccessManager;
 import com.liferay.taglib.util.IncludeTag;
 
 import java.io.IOException;
-
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -120,42 +115,15 @@ public class ProductNavigationControlMenuTag extends IncludeTag {
 		String layoutMode = ParamUtil.getString(
 			getOriginalServletRequest(), "p_l_mode", Constants.VIEW);
 
-		if (layoutMode.equals(Constants.PREVIEW)) {
+		if (layoutMode.equals(Constants.PREVIEW) ||
+			!MenuAccessManager.isShowControlMenu(getRequest())) {
+
 			return false;
 		}
 
-		// Temporary workaround for LPS-175648
-
-		if (_ROLE_NAMES.length == 0) {
-			return true;
-		}
-
-		HttpServletRequest httpServletRequest = getRequest();
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		if (!themeDisplay.isSignedIn()) {
-			return true;
-		}
-
-		User user = themeDisplay.getUser();
-
-		List<Role> roles = user.getRoles();
-
-		for (Role role : roles) {
-			if (ArrayUtil.contains(_ROLE_NAMES, role.getName())) {
-				return true;
-			}
-		}
-
-		return false;
+		return true;
 	}
 
 	private static final String _PAGE = "/control_menu/page.jsp";
-
-	private static final String[] _ROLE_NAMES = PropsUtil.getArray(
-		"control.menu.required.authenticated.user.role.names");
 
 }

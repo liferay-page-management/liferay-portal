@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.product.navigation.product.menu.constants.ProductNavigationProductMenuPortletKeys;
 import com.liferay.product.navigation.product.menu.web.internal.display.context.LayoutsTreeDisplayContext;
+import com.liferay.site.manager.MenuAccessManager;
 import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalService;
 import com.liferay.site.navigation.service.SiteNavigationMenuLocalService;
 import com.liferay.site.navigation.type.SiteNavigationMenuItemTypeRegistry;
@@ -82,7 +83,9 @@ public class ProductNavigationProductMenuPortlet extends MVCPortlet {
 			_portal.getOriginalServletRequest(httpServletRequest), "p_l_mode",
 			Constants.VIEW);
 
-		if (layoutMode.equals(Constants.PREVIEW)) {
+		if (layoutMode.equals(Constants.PREVIEW) ||
+			!MenuAccessManager.isShowControlMenu(httpServletRequest)) {
+
 			return;
 		}
 

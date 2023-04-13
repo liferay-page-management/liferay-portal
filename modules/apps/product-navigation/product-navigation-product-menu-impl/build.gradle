@@ -8,5 +8,6 @@ dependencies {
 	compileOnly project(":apps:product-navigation:product-navigation-applications-menu-api")
 	compileOnly project(":apps:product-navigation:product-navigation-personal-menu-api")
 	compileOnly project(":apps:product-navigation:product-navigation-product-menu-api")
+	compileOnly project(":apps:site:site-api")
 	compileOnly project(":core:osgi-service-tracker-collections")
 }
