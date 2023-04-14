@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -71,7 +72,10 @@ public class MenuAccessManager {
 
 				for (Role role : roles) {
 					if (ArrayUtil.contains(
-							rolesCanSeeControlMenu, role.getName())) {
+							rolesCanSeeControlMenu, role.getName()) ||
+						RoleConstants.SITE_ADMINISTRATOR.equals(
+							role.getName()) ||
+						RoleConstants.ADMINISTRATOR.equals(role.getName())) {
 
 						return true;
 					}
