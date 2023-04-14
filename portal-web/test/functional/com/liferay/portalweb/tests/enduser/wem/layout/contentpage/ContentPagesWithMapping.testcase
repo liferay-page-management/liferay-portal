@@ -2,7 +2,7 @@
 definition {
 
 	property portal.release = "true";
-	property portal.upstream = "true";
+	property portal.upstream = "experiment";
 	property testcase.url = "http://localhost:8080";
 	property testray.component.names = "Item Selector";
 	property testray.main.component.name = "Content Pages";
