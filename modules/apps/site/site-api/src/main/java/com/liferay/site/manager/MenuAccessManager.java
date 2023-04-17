@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
-import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -84,8 +83,8 @@ public class MenuAccessManager {
 				return false;
 			}
 		}
-		catch (ConfigurationException configurationException) {
-			_log.error(configurationException);
+		catch (Exception exception) {
+			_log.error(exception);
 		}
 
 		return true;
