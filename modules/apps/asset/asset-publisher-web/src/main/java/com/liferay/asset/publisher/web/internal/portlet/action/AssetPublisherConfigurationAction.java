@@ -17,7 +17,9 @@ package com.liferay.asset.publisher.web.internal.portlet.action;
 import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
 import com.liferay.asset.kernel.exception.AssetTagException;
 import com.liferay.asset.kernel.exception.DuplicateQueryRuleException;
+import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
+import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.asset.list.asset.entry.provider.AssetListAssetEntryProvider;
 import com.liferay.asset.list.service.AssetListEntrySegmentsEntryRelLocalService;
@@ -337,6 +339,9 @@ public class AssetPublisherConfigurationAction
 	protected AssetEntryActionRegistry assetEntryActionRegistry;
 
 	@Reference
+	protected AssetEntryLocalService assetEntryLocalService;
+
+	@Reference
 	protected AssetHelper assetHelper;
 
 	@Reference
@@ -430,6 +435,13 @@ public class AssetPublisherConfigurationAction
 			actionRequest, "assetEntryType");
 
 		for (long assetEntryId : assetEntryIds) {
+			if (assetEntryType.equals(StringPool.BLANK)) {
+				AssetEntry assetEntry = assetEntryLocalService.getAssetEntry(
+					assetEntryId);
+
+				assetEntryType = assetEntry.getClassName();
+			}
+
 			assetPublisherWebHelper.addSelection(
 				preferences, assetEntryId, assetEntryOrder, assetEntryType);
 		}
