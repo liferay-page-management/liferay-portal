@@ -164,7 +164,7 @@ public class KBArticleImpl extends KBArticleBaseImpl {
 		}
 
 		return KBArticleLocalServiceUtil.getLatestKBArticle(
-			parentResourcePrimKey, WorkflowConstants.STATUS_APPROVED);
+			parentResourcePrimKey, WorkflowConstants.STATUS_ANY);
 	}
 
 	@Override
