@@ -79,16 +79,49 @@ String friendlyURLBase = StringPool.BLANK;
 
 <liferay-ui:error key="resetMergeFailCountAndMerge" message="unable-to-reset-the-failure-counter-and-propagate-the-changes" />
 
+<clay:sheet-section
+	cssClass="mb-5"
+>
+	<h3 class="mb-4 text-uppercase"><liferay-ui:message key="basic-info" /></h3>
+
+	<c:choose>
+		<c:when test="<%= !group.isLayoutPrototype() %>">
+			<c:if test="<%= !layoutsAdminDisplayContext.isDraft() && !selLayout.isSystem() %>">
+				<aui:input ignoreRequestValue="<%= SessionErrors.isEmpty(liferayPortletRequest) %>" label="name" localized="<%= true %>" name="nameMapAsXML" required="<%= true %>" type="text" value="<%= layoutsAdminDisplayContext.getNameMapAsXML() %>" />
+
+				<div class="form-group mb-0">
+					<clay:checkbox
+						aria-describedby="<portlet:namespace />hiddenDescription"
+						checked="<%= !selLayout.isHidden() %>"
+						label='<%= LanguageUtil.get(request, "show-page-in-menu-display") %>'
+						name="<portlet:namespace />hidden"
+					/>
+
+					<p class="mb-0 text-secondary" id="<portlet:namespace />hiddenDescription"><liferay-ui:message key="hidden-from-navigation-menu-widget-help-message" /></p>
+				</div>
+			</c:if>
+
+			<c:if test="<%= group.isLayoutSetPrototype() %>">
+
+				<%
+				LayoutSetPrototype layoutSetPrototype = LayoutSetPrototypeLocalServiceUtil.getLayoutSetPrototype(group.getClassPK());
+				%>
+
+				<c:if test='<%= GetterUtil.getBoolean(layoutSetPrototype.getSettingsProperty("layoutsUpdateable"), true) %>'>
+					<aui:input helpMessage="allow-site-administrators-to-modify-this-page-for-their-site-help" label="allow-site-administrators-to-modify-this-page-for-their-site" name="TypeSettingsProperties--layoutUpdateable--" type="checkbox" value='<%= GetterUtil.getBoolean(selLayoutType.getTypeSettingsProperty("layoutUpdateable"), true) %>' />
+				</c:if>
+			</c:if>
+		</c:when>
+		<c:otherwise>
+			<aui:input name='<%= "nameMapAsXML_" + defaultLanguageId %>' type="hidden" value="<%= selLayout.getName(defaultLocale) %>" />
+		</c:otherwise>
+	</c:choose>
+</clay:sheet-section>
+
+<hr class="mb-5 separator" />
+
 <c:choose>
 	<c:when test="<%= !group.isLayoutPrototype() %>">
-		<c:if test="<%= !layoutsAdminDisplayContext.isDraft() && !selLayout.isSystem() %>">
-			<aui:input ignoreRequestValue="<%= SessionErrors.isEmpty(liferayPortletRequest) %>" label="name" localized="<%= true %>" name="nameMapAsXML" required="<%= true %>" type="text" value="<%= layoutsAdminDisplayContext.getNameMapAsXML() %>" />
-
-			<div class="form-group">
-				<aui:input helpMessage="hidden-from-navigation-menu-widget-help-message" inlineLabel="right" label="hidden-from-navigation-menu-widget" labelCssClass="simple-toggle-switch" name="hidden" type="toggle-switch" value="<%= selLayout.isHidden() %>" />
-			</div>
-		</c:if>
-
 		<c:choose>
 			<c:when test="<%= selLayoutType.isURLFriendliable() && !layoutsAdminDisplayContext.isDraft() && !selLayout.isSystem() %>">
 				<liferay-friendly-url:input
@@ -102,20 +135,8 @@ String friendlyURLBase = StringPool.BLANK;
 				<aui:input name="friendlyURL" type="hidden" value="<%= (selLayout != null) ? HttpComponentsUtil.decodeURL(selLayout.getFriendlyURL()) : StringPool.BLANK %>" />
 			</c:otherwise>
 		</c:choose>
-
-		<c:if test="<%= group.isLayoutSetPrototype() %>">
-
-			<%
-			LayoutSetPrototype layoutSetPrototype = LayoutSetPrototypeLocalServiceUtil.getLayoutSetPrototype(group.getClassPK());
-			%>
-
-			<c:if test='<%= GetterUtil.getBoolean(layoutSetPrototype.getSettingsProperty("layoutsUpdateable"), true) %>'>
-				<aui:input helpMessage="allow-site-administrators-to-modify-this-page-for-their-site-help" label="allow-site-administrators-to-modify-this-page-for-their-site" name="TypeSettingsProperties--layoutUpdateable--" type="checkbox" value='<%= GetterUtil.getBoolean(selLayoutType.getTypeSettingsProperty("layoutUpdateable"), true) %>' />
-			</c:if>
-		</c:if>
 	</c:when>
 	<c:otherwise>
-		<aui:input name='<%= "nameMapAsXML_" + defaultLanguageId %>' type="hidden" value="<%= selLayout.getName(defaultLocale) %>" />
 		<aui:input name="friendlyURL" type="hidden" value="<%= (selLayout != null) ? HttpComponentsUtil.decodeURL(selLayout.getFriendlyURL()) : StringPool.BLANK %>" />
 	</c:otherwise>
 </c:choose>
