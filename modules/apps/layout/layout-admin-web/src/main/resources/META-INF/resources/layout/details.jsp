@@ -120,35 +120,6 @@ String friendlyURLBase = StringPool.BLANK;
 
 <hr class="mb-5 separator" />
 
-<clay:sheet-section
-	cssClass="mb-5"
->
-	<h3 class="mb-4 text-uppercase"><liferay-ui:message key="url" /></h3>
-
-	<c:choose>
-		<c:when test="<%= !group.isLayoutPrototype() %>">
-			<c:choose>
-				<c:when test="<%= selLayoutType.isURLFriendliable() && !layoutsAdminDisplayContext.isDraft() && !selLayout.isSystem() %>">
-					<liferay-friendly-url:input
-						className="<%= Layout.class.getName() %>"
-						classPK="<%= selLayout.getPlid() %>"
-						inputAddon="<%= friendlyURLBase %>"
-						name="friendlyURL"
-					/>
-				</c:when>
-				<c:otherwise>
-					<aui:input name="friendlyURL" type="hidden" value="<%= (selLayout != null) ? HttpComponentsUtil.decodeURL(selLayout.getFriendlyURL()) : StringPool.BLANK %>" />
-				</c:otherwise>
-			</c:choose>
-		</c:when>
-		<c:otherwise>
-			<aui:input name="friendlyURL" type="hidden" value="<%= (selLayout != null) ? HttpComponentsUtil.decodeURL(selLayout.getFriendlyURL()) : StringPool.BLANK %>" />
-		</c:otherwise>
-	</c:choose>
-</clay:sheet-section>
-
-<hr class="mb-5 separator" />
-
 <c:if test="<%= !selLayout.isTypeContent() %>">
 	<clay:sheet-section
 		cssClass="mb-5"
@@ -193,7 +164,36 @@ String friendlyURLBase = StringPool.BLANK;
 	<hr class="mb-5 separator" />
 </c:if>
 
+<clay:sheet-section
+	cssClass="mb-5"
+>
+	<h3 class="mb-4 text-uppercase"><liferay-ui:message key="url" /></h3>
+
+	<c:choose>
+		<c:when test="<%= !group.isLayoutPrototype() %>">
+			<c:choose>
+				<c:when test="<%= selLayoutType.isURLFriendliable() && !layoutsAdminDisplayContext.isDraft() && !selLayout.isSystem() %>">
+					<liferay-friendly-url:input
+						className="<%= Layout.class.getName() %>"
+						classPK="<%= selLayout.getPlid() %>"
+						inputAddon="<%= friendlyURLBase %>"
+						name="friendlyURL"
+					/>
+				</c:when>
+				<c:otherwise>
+					<aui:input name="friendlyURL" type="hidden" value="<%= (selLayout != null) ? HttpComponentsUtil.decodeURL(selLayout.getFriendlyURL()) : StringPool.BLANK %>" />
+				</c:otherwise>
+			</c:choose>
+		</c:when>
+		<c:otherwise>
+			<aui:input name="friendlyURL" type="hidden" value="<%= (selLayout != null) ? HttpComponentsUtil.decodeURL(selLayout.getFriendlyURL()) : StringPool.BLANK %>" />
+		</c:otherwise>
+	</c:choose>
+</clay:sheet-section>
+
 <c:if test="<%= !selLayout.isTypeAssetDisplay() %>">
+	<hr class="mb-5 separator" />
+
 	<clay:sheet-section>
 		<h3 class="sheet-subtitle"><liferay-ui:message key="categorization" /></h3>
 
