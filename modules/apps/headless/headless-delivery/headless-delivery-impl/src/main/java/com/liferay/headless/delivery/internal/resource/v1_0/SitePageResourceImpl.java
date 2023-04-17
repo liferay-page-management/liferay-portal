@@ -311,7 +311,8 @@ public class SitePageResourceImpl extends BaseSitePageResourceImpl {
 
 		Layout layout = _layoutService.addLayout(
 			siteId, false, parentLayoutId, nameMap, titleMap, descriptionMap,
-			keywordsMap, robotsMap, LayoutConstants.TYPE_CONTENT, null, false,
+			keywordsMap, robotsMap, LayoutConstants.TYPE_CONTENT, null,
+			GetterUtil.getBoolean(pageSettings.getHiddenFromNavigation()),
 			friendlyUrlMap, 0, _createServiceContext(siteId, sitePage));
 
 		layout.setStatus(WorkflowConstants.STATUS_APPROVED);
