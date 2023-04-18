@@ -15,3 +15,40 @@
 --%>
 
 <%@ include file="/init.jsp" %>
+
+<%
+Layout selLayout = layoutsAdminDisplayContext.getSelLayout();
+%>
+
+<c:choose>
+	<c:when test="<%= layoutsAdminDisplayContext.isShowGeneralSettings(user, selLayout) %>">
+		<liferay-util:include page="/layout/details.jsp" servletContext="<%= application %>" />
+	</c:when>
+	<c:otherwise>
+		<c:if test="<%= layoutsAdminDisplayContext.isShowAdvancedSettings(user, selLayout) %>">
+			<clay:sheet-section
+				cssClass="mb-5"
+			>
+				<h3 class="mb-4 text-uppercase"><liferay-ui:message key="url" /></h3>
+
+				<liferay-util:include page="/layout/advanced.jsp" servletContext="<%= application %>" />
+			</clay:sheet-section>
+		</c:if>
+	</c:otherwise>
+</c:choose>
+
+<c:if test="<%= layoutsAdminDisplayContext.isShowCustomization(user, selLayout) || layoutsAdminDisplayContext.isShowCustomFields(user, selLayout) %>">
+	<clay:sheet-section
+		cssClass="mb-5"
+	>
+		<h3 class="mb-4 text-uppercase"><liferay-ui:message key="advanced" /></h3>
+
+		<c:if test="<%= layoutsAdminDisplayContext.isShowCustomization(user, selLayout) %>">
+			<liferay-util:include page="/layout/customization_settings.jsp" servletContext="<%= application %>" />
+		</c:if>
+
+		<c:if test="<%= layoutsAdminDisplayContext.isShowCustomFields(user, selLayout) %>">
+			<liferay-util:include page="/layout/custom_fields.jsp" servletContext="<%= application %>" />
+		</c:if>
+	</clay:sheet-section>
+</c:if>
