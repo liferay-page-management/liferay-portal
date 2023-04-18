@@ -189,6 +189,10 @@ String friendlyURLBase = StringPool.BLANK;
 			<aui:input name="friendlyURL" type="hidden" value="<%= (selLayout != null) ? HttpComponentsUtil.decodeURL(selLayout.getFriendlyURL()) : StringPool.BLANK %>" />
 		</c:otherwise>
 	</c:choose>
+
+	<c:if test="<%= layoutsAdminDisplayContext.isShowAdvancedSettings(user, selLayout) %>">
+		<liferay-util:include page="/layout/advanced.jsp" servletContext="<%= application %>" />
+	</c:if>
 </clay:sheet-section>
 
 <c:if test="<%= !selLayout.isTypeAssetDisplay() %>">
