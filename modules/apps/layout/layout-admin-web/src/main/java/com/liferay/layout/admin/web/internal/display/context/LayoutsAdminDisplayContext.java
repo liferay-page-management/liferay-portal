@@ -61,6 +61,7 @@ import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutSetBranch;
 import com.liferay.portal.kernel.model.LayoutType;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
@@ -80,6 +81,7 @@ import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbEntry;
@@ -111,6 +113,7 @@ import com.liferay.site.navigation.model.SiteNavigationMenu;
 import com.liferay.site.navigation.service.SiteNavigationMenuLocalServiceUtil;
 import com.liferay.staging.StagingGroupHelper;
 import com.liferay.taglib.security.PermissionsURLTag;
+import com.liferay.taglib.util.CustomAttributesUtil;
 
 import java.io.IOException;
 
@@ -1798,6 +1801,33 @@ public class LayoutsAdminDisplayContext {
 			ActionKeys.ADD_LAYOUT);
 	}
 
+	public boolean isShowAdvancedSettings(User user, Layout layout) {
+		if (layout.isTypeAssetDisplay()) {
+			return false;
+		}
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			LayoutPageTemplateEntryLocalServiceUtil.
+				fetchLayoutPageTemplateEntryByPlid(layout.getPlid());
+
+		if (layoutPageTemplateEntry == null) {
+			layoutPageTemplateEntry =
+				LayoutPageTemplateEntryLocalServiceUtil.
+					fetchLayoutPageTemplateEntryByPlid(layout.getClassPK());
+		}
+
+		if (((layoutPageTemplateEntry != null) &&
+			 Objects.equals(
+				 layoutPageTemplateEntry.getType(),
+				 LayoutPageTemplateEntryTypeConstants.TYPE_MASTER_LAYOUT)) ||
+			(layout.fetchDraftLayout() != null)) {
+
+			return false;
+		}
+
+		return true;
+	}
+
 	public boolean isShowCategorization() {
 		long classNameId = PortalUtil.getClassNameId(Layout.class);
 
@@ -1865,6 +1895,53 @@ public class LayoutsAdminDisplayContext {
 		return layout.isPublished();
 	}
 
+	public boolean isShowCustomFields(User user, Layout layout) {
+		boolean hasCustomAttributesAvailable = false;
+
+		try {
+			ServiceContext serviceContext =
+				ServiceContextThreadLocal.getServiceContext();
+
+			ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
+
+			long classPK = 0;
+
+			if (layout != null) {
+				classPK = layout.getPlid();
+			}
+
+			hasCustomAttributesAvailable =
+				CustomAttributesUtil.hasCustomAttributes(
+					themeDisplay.getCompanyId(), Layout.class.getName(),
+					classPK, null);
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+		}
+
+		return hasCustomAttributesAvailable;
+	}
+
+	public boolean isShowCustomization(User user, Layout layout) {
+		Group group = layout.getGroup();
+
+		if (group == null) {
+			_log.error("Unable to display form for customization settings");
+		}
+
+		if (layout.isTypeAssetDisplay() || layout.isTypeContent()) {
+			return false;
+		}
+
+		if (!group.isUser() && layout.isTypePortlet()) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public boolean isShowDeleteAction(Layout layout) throws PortalException {
 		if (StagingUtil.isIncomplete(layout) ||
 			!LayoutPermissionUtil.contains(
@@ -1924,6 +2001,16 @@ public class LayoutsAdminDisplayContext {
 		if (!GroupPermissionUtil.contains(
 				themeDisplay.getPermissionChecker(), getSelGroupId(),
 				ActionKeys.MANAGE_LAYOUTS)) {
+
+			return false;
+		}
+
+		return true;
+	}
+
+	public boolean isShowGeneralSettings(User user, Layout layout) {
+		if (layout.isTypeAssetDisplay() ||
+			(layout.isTypeContent() && (layout.fetchDraftLayout() == null))) {
 
 			return false;
 		}
