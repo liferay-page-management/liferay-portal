@@ -1802,7 +1802,9 @@ public class LayoutsAdminDisplayContext {
 	}
 
 	public boolean isShowAdvancedSettings(User user, Layout layout) {
-		if (layout.isTypeAssetDisplay()) {
+		if (layout.isTypeAssetDisplay() ||
+			(layout.isTypeContent() && (layout.fetchDraftLayout() == null))) {
+
 			return false;
 		}
 
@@ -1816,11 +1818,10 @@ public class LayoutsAdminDisplayContext {
 					fetchLayoutPageTemplateEntryByPlid(layout.getClassPK());
 		}
 
-		if (((layoutPageTemplateEntry != null) &&
-			 Objects.equals(
-				 layoutPageTemplateEntry.getType(),
-				 LayoutPageTemplateEntryTypeConstants.TYPE_MASTER_LAYOUT)) ||
-			(layout.fetchDraftLayout() != null)) {
+		if ((layoutPageTemplateEntry != null) &&
+			Objects.equals(
+				layoutPageTemplateEntry.getType(),
+				LayoutPageTemplateEntryTypeConstants.TYPE_MASTER_LAYOUT)) {
 
 			return false;
 		}
@@ -1896,6 +1897,10 @@ public class LayoutsAdminDisplayContext {
 	}
 
 	public boolean isShowCustomFields(User user, Layout layout) {
+		if (layout.isTypeContent() && (layout.fetchDraftLayout() == null)) {
+			return false;
+		}
+
 		boolean hasCustomAttributesAvailable = false;
 
 		try {
