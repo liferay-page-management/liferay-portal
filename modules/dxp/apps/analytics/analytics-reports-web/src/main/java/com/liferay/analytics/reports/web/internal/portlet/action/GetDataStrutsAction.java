@@ -547,7 +547,7 @@ public class GetDataStrutsAction implements StrutsAction {
 						AnalyticsReportsInfoItem.Action.HISTORICAL_VIEWS,
 						new ObjectValuePair<>(
 							"analyticsReportsHistoricalViewsURL",
-							"/analytics_reports/get_historical_views")
+							"/portal/get_historical_views")
 					).put(
 						AnalyticsReportsInfoItem.Action.TOTAL_READS,
 						new ObjectValuePair<>(

@@ -14,7 +14,6 @@
 
 package com.liferay.analytics.reports.web.internal.portlet.action;
 
-import com.liferay.analytics.reports.web.internal.constants.AnalyticsReportsPortletKeys;
 import com.liferay.analytics.reports.web.internal.data.provider.AnalyticsReportsDataProvider;
 import com.liferay.analytics.reports.web.internal.model.HistoricalMetric;
 import com.liferay.analytics.reports.web.internal.model.TimeSpan;
@@ -24,17 +23,16 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
-import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
-import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
+import com.liferay.portal.kernel.servlet.ServletResponseUtil;
+import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -44,17 +42,16 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + AnalyticsReportsPortletKeys.ANALYTICS_REPORTS,
-		"mvc.command.name=/analytics_reports/get_historical_views"
+		"path=/portal/get_historical_views"
 	},
-	service = MVCResourceCommand.class
+	service = StrutsAction.class
 )
-public class GetHistoricalViewsMVCResourceCommand
-	extends BaseMVCResourceCommand {
+public class GetHistoricalViewsStrutsAction
+	implements StrutsAction {
 
 	@Override
-	protected void doServeResource(
-			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+	public String execute(
+		HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
 		throws Exception {
 
 		JSONObject jsonObject = _jsonFactory.createJSONObject();
@@ -65,19 +62,19 @@ public class GetHistoricalViewsMVCResourceCommand
 					_analyticsSettingsManager, _http);
 
 			String timeSpanKey = ParamUtil.getString(
-				resourceRequest, "timeSpanKey", TimeSpan.defaultTimeSpanKey());
+				httpServletRequest, "timeSpanKey", TimeSpan.defaultTimeSpanKey());
 
 			TimeSpan timeSpan = TimeSpan.of(timeSpanKey);
 
 			int timeSpanOffset = ParamUtil.getInteger(
-				resourceRequest, "timeSpanOffset");
+				httpServletRequest, "timeSpanOffset");
 
 			String canonicalURL = ParamUtil.getString(
-				resourceRequest, "canonicalURL");
+				httpServletRequest, "canonicalURL");
 
 			HistoricalMetric historicalMetric =
 				analyticsReportsDataProvider.getHistoricalViewsHistoricalMetric(
-					_portal.getCompanyId(resourceRequest),
+					_portal.getCompanyId(httpServletRequest),
 					timeSpan.toTimeRange(timeSpanOffset), canonicalURL);
 
 			jsonObject.put(
@@ -88,7 +85,7 @@ public class GetHistoricalViewsMVCResourceCommand
 			_log.error(exception);
 
 			ThemeDisplay themeDisplay =
-				(ThemeDisplay)resourceRequest.getAttribute(
+				(ThemeDisplay)httpServletRequest.getAttribute(
 					WebKeys.THEME_DISPLAY);
 
 			jsonObject.put(
@@ -97,12 +94,14 @@ public class GetHistoricalViewsMVCResourceCommand
 					themeDisplay.getRequest(), "an-unexpected-error-occurred"));
 		}
 
-		JSONPortletResponseUtil.writeJSON(
-			resourceRequest, resourceResponse, jsonObject);
+		ServletResponseUtil.write(
+			httpServletResponse, jsonObject.toString());
+
+		return null;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		GetHistoricalViewsMVCResourceCommand.class);
+		GetHistoricalViewsStrutsAction.class);
 
 	@Reference
 	private AnalyticsSettingsManager _analyticsSettingsManager;
