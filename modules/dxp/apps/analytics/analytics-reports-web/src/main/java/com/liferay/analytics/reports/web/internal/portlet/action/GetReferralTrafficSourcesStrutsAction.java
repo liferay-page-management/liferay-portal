@@ -14,7 +14,6 @@
 
 package com.liferay.analytics.reports.web.internal.portlet.action;
 
-import com.liferay.analytics.reports.web.internal.constants.AnalyticsReportsPortletKeys;
 import com.liferay.analytics.reports.web.internal.data.provider.AnalyticsReportsDataProvider;
 import com.liferay.analytics.reports.web.internal.model.ReferringURL;
 import com.liferay.analytics.reports.web.internal.model.TimeRange;
@@ -26,9 +25,8 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
-import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
-import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
+import com.liferay.portal.kernel.servlet.ServletResponseUtil;
+import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -40,8 +38,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -51,20 +49,19 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + AnalyticsReportsPortletKeys.ANALYTICS_REPORTS,
-		"mvc.command.name=/analytics_reports/get_referral_traffic_sources"
+		"path=/portal/get_referral_traffic_sources"
 	},
-	service = MVCResourceCommand.class
+	service = StrutsAction.class
 )
-public class GetReferralTrafficSourcesMVCResourceCommand
-	extends BaseMVCResourceCommand {
+public class GetReferralTrafficSourcesStrutsAction
+	implements StrutsAction {
 
 	@Override
-	protected void doServeResource(
-			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+	public String execute(
+		HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
 		throws Exception {
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
+		ThemeDisplay themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
 		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
@@ -76,18 +73,18 @@ public class GetReferralTrafficSourcesMVCResourceCommand
 					_analyticsSettingsManager, _http);
 
 			String canonicalURL = ParamUtil.getString(
-				resourceRequest, "canonicalURL");
+				httpServletRequest, "canonicalURL");
 
 			String timeSpanKey = ParamUtil.getString(
-				resourceRequest, "timeSpanKey", TimeSpan.defaultTimeSpanKey());
+				httpServletRequest, "timeSpanKey", TimeSpan.defaultTimeSpanKey());
 
 			TimeSpan timeSpan = TimeSpan.of(timeSpanKey);
 
 			int timeSpanOffset = ParamUtil.getInteger(
-				resourceRequest, "timeSpanOffset");
+				httpServletRequest, "timeSpanOffset");
 
-			JSONPortletResponseUtil.writeJSON(
-				resourceRequest, resourceResponse,
+			ServletResponseUtil.write(
+				httpServletResponse,
 				JSONUtil.put(
 					"referringDomains",
 					_getReferringURLsJSONArray(
@@ -102,20 +99,21 @@ public class GetReferralTrafficSourcesMVCResourceCommand
 							analyticsReportsDataProvider, canonicalURL,
 							themeDisplay.getCompanyId(),
 							timeSpan.toTimeRange(timeSpanOffset)))
-				));
+				).toString());
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(exception);
 			}
 
-			JSONPortletResponseUtil.writeJSON(
-				resourceRequest, resourceResponse,
+			ServletResponseUtil.write(
+				httpServletResponse,
 				JSONUtil.put(
 					"error",
 					ResourceBundleUtil.getString(
-						resourceBundle, "an-unexpected-error-occurred")));
+						resourceBundle, "an-unexpected-error-occurred")).toString());
 		}
+		return null;
 	}
 
 	private List<ReferringURL> _getDomainReferringURLs(
@@ -170,7 +168,7 @@ public class GetReferralTrafficSourcesMVCResourceCommand
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		GetReferralTrafficSourcesMVCResourceCommand.class);
+		GetReferralTrafficSourcesStrutsAction.class);
 
 	@Reference
 	private AnalyticsSettingsManager _analyticsSettingsManager;

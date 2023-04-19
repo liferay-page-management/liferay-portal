@@ -295,12 +295,12 @@ public class TrafficChannel {
 		HashMapBuilder.<Type, Tuple>put(
 			Type.REFERRAL,
 			new Tuple(
-				"/analytics_reports/get_referral_traffic_sources",
+				"/portal/get_referral_traffic_sources",
 				Collections.emptyMap())
 		).put(
 			Type.SOCIAL,
 			new Tuple(
-				"/analytics_reports/get_social_traffic_sources",
+				"/portal/get_social_traffic_sources",
 				Collections.emptyMap())
 		).build();
 
