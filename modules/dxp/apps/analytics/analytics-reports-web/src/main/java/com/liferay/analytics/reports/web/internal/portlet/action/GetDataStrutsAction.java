@@ -552,7 +552,7 @@ public class GetDataStrutsAction implements StrutsAction {
 						AnalyticsReportsInfoItem.Action.TOTAL_READS,
 						new ObjectValuePair<>(
 							"analyticsReportsTotalReadsURL",
-							"/analytics_reports/get_total_reads")
+							"/portal/get_total_reads")
 					).put(
 						AnalyticsReportsInfoItem.Action.TOTAL_VIEWS,
 						new ObjectValuePair<>(
