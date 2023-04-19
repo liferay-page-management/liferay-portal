@@ -562,7 +562,7 @@ public class GetDataStrutsAction implements StrutsAction {
 						AnalyticsReportsInfoItem.Action.TRAFFIC_CHANNELS,
 						new ObjectValuePair<>(
 							"analyticsReportsTrafficSourcesURL",
-							"/analytics_reports/get_traffic_sources")
+							"/portal/get_traffic_sources")
 					).build();
 
 	@Reference

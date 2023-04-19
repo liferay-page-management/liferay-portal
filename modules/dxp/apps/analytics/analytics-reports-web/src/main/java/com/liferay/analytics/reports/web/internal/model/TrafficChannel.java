@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Tuple;
@@ -31,6 +32,7 @@ import java.util.ResourceBundle;
 import javax.portlet.ResourceURL;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author David Arques
@@ -125,9 +127,9 @@ public class TrafficChannel {
 	}
 
 	public JSONObject toJSONObject(
-		LiferayPortletRequest liferayPortletRequest,
-		LiferayPortletResponse liferayPortletResponse,
-		ResourceBundle resourceBundle) {
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse,
+		ResourceBundle resourceBundle, String trafficSourcesURL) {
 
 		return JSONUtil.put(
 			"endpointURL",
@@ -138,22 +140,12 @@ public class TrafficChannel {
 					return null;
 				}
 
-				ResourceURL resourceURL =
-					liferayPortletResponse.createResourceURL();
+				String url = trafficSourcesURL;
 
-				resourceURL.setResourceID(String.valueOf(tuple.getObject(0)));
+				url = HttpComponentsUtil.addParameters(url,
+					httpServletRequest.getParameterMap());
 
-				HttpServletRequest httpServletRequest =
-					liferayPortletRequest.getHttpServletRequest();
-
-				resourceURL.setParameters(
-					HashMapBuilder.putAll(
-						httpServletRequest.getParameterMap()
-					).putAll(
-						(Map<String, String[]>)tuple.getObject(1)
-					).build());
-
-				return String.valueOf(resourceURL);
+				return url;
 			}
 		).put(
 			"helpMessage",
