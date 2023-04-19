@@ -542,7 +542,7 @@ public class GetDataStrutsAction implements StrutsAction {
 						AnalyticsReportsInfoItem.Action.HISTORICAL_READS,
 						new ObjectValuePair<>(
 							"analyticsReportsHistoricalReadsURL",
-							"/analytics_reports/get_historical_reads")
+							"/portal/get_historical_reads")
 					).put(
 						AnalyticsReportsInfoItem.Action.HISTORICAL_VIEWS,
 						new ObjectValuePair<>(
