@@ -14,25 +14,13 @@
  */
 --%>
 
-<%@ include file="/init.jsp" %>
-
-<%
-TrashHandler trashHandler = trashDisplayContext.getTrashHandler();
-%>
-
-<portlet:renderURL var="restoreTrashURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-	<portlet:param name="mvcPath" value="/view_container_model.jsp" />
-	<portlet:param name="redirect" value="<%= trashDisplayContext.getViewContentRedirectURL() %>" />
-	<portlet:param name="classNameId" value="<%= String.valueOf(trashDisplayContext.getClassNameId()) %>" />
-	<portlet:param name="classPK" value="<%= String.valueOf(trashDisplayContext.getClassPK()) %>" />
-	<portlet:param name="containerModelClassNameId" value="<%= String.valueOf(PortalUtil.getClassNameId(trashHandler.getContainerModelClassName(trashDisplayContext.getClassPK()))) %>" />
-</portlet:renderURL>
+<%@ include file="/configuration/icon/init.jsp" %>
 
 <aui:script>
 	Liferay.Util.setPortletConfigurationIconAction(
 		'<portlet:namespace />restoreTrash',
-		() => {
-			<portlet:namespace />restoreDialog('<%= restoreTrashURL %>');
+		(event, data) => {
+			<portlet:namespace />restoreDialog(data.restoreTrashURL);
 		}
 	);
 </aui:script>

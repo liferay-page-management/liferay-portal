@@ -45,20 +45,8 @@ public class SettingsFactoryUtil {
 		return _settingsFactory.getSettings(settingsLocator);
 	}
 
-	public static SettingsDescriptor getSettingsDescriptor(String settingsId) {
-		return _settingsFactory.getSettingsDescriptor(settingsId);
-	}
-
 	public static SettingsFactory getSettingsFactory() {
 		return _settingsFactory;
-	}
-
-	public static void registerSettingsMetadata(
-		Class<?> settingsClass, Object configurationBean,
-		FallbackKeys fallbackKeys) {
-
-		_settingsFactory.registerSettingsMetadata(
-			settingsClass, configurationBean, fallbackKeys);
 	}
 
 	private static volatile SettingsFactory _settingsFactory =

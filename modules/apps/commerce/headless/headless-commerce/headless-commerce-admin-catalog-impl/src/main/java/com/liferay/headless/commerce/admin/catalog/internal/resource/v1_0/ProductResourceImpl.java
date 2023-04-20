@@ -24,6 +24,7 @@ import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
 import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
 import com.liferay.commerce.product.configuration.CProductVersionConfiguration;
 import com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants;
+import com.liferay.commerce.product.exception.CPDefinitionProductTypeNameException;
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
 import com.liferay.commerce.product.exception.NoSuchCatalogException;
 import com.liferay.commerce.product.model.CPAttachmentFileEntry;
@@ -48,6 +49,8 @@ import com.liferay.commerce.product.service.CommerceChannelRelService;
 import com.liferay.commerce.product.service.CommerceChannelService;
 import com.liferay.commerce.product.type.CPType;
 import com.liferay.commerce.product.type.CPTypeRegistry;
+import com.liferay.commerce.product.type.virtual.constants.VirtualCPTypeConstants;
+import com.liferay.commerce.product.type.virtual.service.CPDefinitionVirtualSettingService;
 import com.liferay.commerce.service.CPDefinitionInventoryService;
 import com.liferay.commerce.shop.by.diagram.constants.CSDiagramCPTypeConstants;
 import com.liferay.commerce.shop.by.diagram.service.CSDiagramEntryService;
@@ -70,6 +73,7 @@ import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductShippingConfi
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductSpecification;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductSubscriptionConfiguration;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductTaxConfiguration;
+import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductVirtualSettings;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.RelatedProduct;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Sku;
 import com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.util.CustomFieldsUtil;
@@ -87,6 +91,7 @@ import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.ProductSpe
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.ProductSubscriptionConfigurationUtil;
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.ProductTaxConfigurationUtil;
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.ProductUtil;
+import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.ProductVirtualSettingsUtil;
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.RelatedProductUtil;
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.SkuUtil;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductResource;
@@ -1061,57 +1066,79 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 			}
 		}
 
-		// Diagram
-
 		CPType cpType = _cpTypeRegistry.getCPType(
 			cpDefinition.getProductTypeName());
 
-		if ((cpType != null) &&
-			CSDiagramCPTypeConstants.NAME.equals(cpType.getName())) {
+		if (cpType == null) {
+			return cpDefinition;
+		}
 
-			Diagram diagram = product.getDiagram();
+		// Diagram
 
-			if (diagram != null) {
-				DiagramUtil.addOrUpdateCSDiagramSetting(
-					contextCompany.getCompanyId(),
-					_cpAttachmentFileEntryService,
-					cpDefinition.getCPDefinitionId(),
-					_cpDefinitionOptionRelService,
-					_cpDefinitionOptionValueRelService, _cpOptionService,
-					_csDiagramSettingService, diagram,
-					cpDefinition.getGroupId(),
-					contextAcceptLanguage.getPreferredLocale(),
-					_serviceContextHelper, _uniqueFileNameProvider);
-			}
+		Diagram diagram = product.getDiagram();
+		MappedProduct[] mappedProducts = product.getMappedProducts();
+		Pin[] pins = product.getPins();
 
-			MappedProduct[] mappedProducts = product.getMappedProducts();
-
-			if (mappedProducts != null) {
-				_csDiagramEntryService.deleteCSDiagramEntries(
-					cpDefinition.getCPDefinitionId());
-
-				for (MappedProduct mappedProduct : mappedProducts) {
-					MappedProductUtil.addOrUpdateCSDiagramEntry(
+		if ((diagram != null) || (mappedProducts != null) || (pins != null)) {
+			if (CSDiagramCPTypeConstants.NAME.equals(cpType.getName())) {
+				if (diagram != null) {
+					DiagramUtil.addOrUpdateCSDiagramSetting(
 						contextCompany.getCompanyId(),
-						cpDefinition.getCPDefinitionId(), _cpDefinitionService,
-						_cpInstanceService, _csDiagramEntryService,
+						_cpAttachmentFileEntryService,
+						cpDefinition.getCPDefinitionId(),
+						_cpDefinitionOptionRelService,
+						_cpDefinitionOptionValueRelService, _cpOptionService,
+						_csDiagramSettingService, diagram,
 						cpDefinition.getGroupId(),
 						contextAcceptLanguage.getPreferredLocale(),
-						mappedProduct, _serviceContextHelper);
+						_serviceContextHelper, _uniqueFileNameProvider);
+				}
+
+				if (mappedProducts != null) {
+					_csDiagramEntryService.deleteCSDiagramEntries(
+						cpDefinition.getCPDefinitionId());
+
+					for (MappedProduct mappedProduct : mappedProducts) {
+						MappedProductUtil.addOrUpdateCSDiagramEntry(
+							contextCompany.getCompanyId(),
+							cpDefinition.getCPDefinitionId(),
+							_cpDefinitionService, _cpInstanceService,
+							_csDiagramEntryService, cpDefinition.getGroupId(),
+							contextAcceptLanguage.getPreferredLocale(),
+							mappedProduct, _serviceContextHelper);
+					}
+				}
+
+				if (pins != null) {
+					_csDiagramPinService.deleteCSDiagramPins(
+						cpDefinition.getCPDefinitionId());
+
+					for (Pin pin : pins) {
+						PinUtil.addOrUpdateCSDiagramPin(
+							cpDefinition.getCPDefinitionId(),
+							_csDiagramPinService, pin);
+					}
 				}
 			}
+			else {
+				throw new CPDefinitionProductTypeNameException();
+			}
+		}
 
-			Pin[] pins = product.getPins();
+		// Virtual
 
-			if (pins != null) {
-				_csDiagramPinService.deleteCSDiagramPins(
-					cpDefinition.getCPDefinitionId());
+		ProductVirtualSettings productVirtualSettings =
+			product.getProductVirtualSettings();
 
-				for (Pin pin : pins) {
-					PinUtil.addOrUpdateCSDiagramPin(
-						cpDefinition.getCPDefinitionId(), _csDiagramPinService,
-						pin);
-				}
+		if (productVirtualSettings != null) {
+			if (VirtualCPTypeConstants.NAME.equals(cpType.getName())) {
+				ProductVirtualSettingsUtil.addOrUpdateProductVirtualSettings(
+					cpDefinition, productVirtualSettings,
+					_cpDefinitionVirtualSettingService, _uniqueFileNameProvider,
+					serviceContext);
+			}
+			else {
+				throw new CPDefinitionProductTypeNameException();
 			}
 		}
 
@@ -1326,6 +1353,10 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 	@Reference
 	private CPDefinitionSpecificationOptionValueService
 		_cpDefinitionSpecificationOptionValueService;
+
+	@Reference
+	private CPDefinitionVirtualSettingService
+		_cpDefinitionVirtualSettingService;
 
 	@Reference
 	private CPInstanceService _cpInstanceService;

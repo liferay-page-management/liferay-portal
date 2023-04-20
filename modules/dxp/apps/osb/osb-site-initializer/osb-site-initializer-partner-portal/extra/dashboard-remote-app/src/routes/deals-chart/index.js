@@ -96,7 +96,7 @@ export default function () {
 		);
 	}, [leadsChartValues?.rejected, opportunitiesChartValues?.rejected]);
 
-	const getChart = () => {
+	const Chart = () => {
 		const chart = {
 			bar: {
 				radius: {
@@ -109,18 +109,16 @@ export default function () {
 			data: {
 				colors: dealsChartColumnColors,
 				columns: [
-					['x', '1', '2', '3', '4'],
+					['x', 'Q1', 'Q2', 'Q3', 'Q4'],
 					['Submitted', ...leadsChartValues?.submitted],
 					['Approved', ...opportunitiesChartValues?.approved],
 					['Rejected', ...totalRejectedChartValues],
-					['Closed Won', ...opportunitiesChartValues?.closedWon],
 				],
-				groups: [['submitted', 'approved', 'closedwon']],
+				groups: [['submitted', 'approved']],
 				order: 'desc',
 				type: 'bar',
 				types: {
 					approved: 'bar',
-					closedwon: 'bar',
 					rejected: 'spline',
 					submitted: 'bar',
 				},
@@ -128,12 +126,7 @@ export default function () {
 			},
 			grid: {
 				y: {
-					lines: [
-						{value: 100},
-						{value: 200},
-						{value: 300},
-						{value: 400},
-					],
+					lines: [{value: 100}, {value: 200}, {value: 300}],
 				},
 			},
 		};
@@ -152,7 +145,17 @@ export default function () {
 		}
 
 		return (
-			<ClayChart bar={chart.bar} data={chart.data} grid={chart.grid} />
+			<ClayChart
+				axis={{
+					x: {
+						show: true,
+						type: 'category',
+					},
+				}}
+				bar={chart.bar}
+				data={chart.data}
+				grid={chart.grid}
+			/>
 		);
 	};
 
@@ -187,9 +190,9 @@ export default function () {
 					</ClayButton>
 				</>
 			}
-			title="Deals"
+			title="Deal Registrations"
 		>
-			{getChart()}
+			<Chart />
 		</Container>
 	);
 }

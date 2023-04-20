@@ -157,14 +157,24 @@ function TableCell({
 		if (!loading && view.contentRendererModuleURL && !dataRenderer) {
 			setLoading(true);
 
-			getDataRendererByURL(view.contentRendererModuleURL)
+			getDataRendererByURL(
+				view.contentRendererModuleURL,
+				view.contentRendererClientExtension
+					? 'clientExtension'
+					: 'internal'
+			)
 				.then((dataRenderer) => {
 					setDataRenderer(() => dataRenderer);
 
 					setLoading(false);
 				})
-				.catch(() => {
-					setDataRenderer(() => null);
+				.catch((error) => {
+					console.error(
+						`Unable to load FDS cell renderer at ${view.contentRendererModuleURL}:`,
+						error
+					);
+
+					setDataRenderer(() => getDataRendererById('default'));
 
 					setLoading(false);
 				});

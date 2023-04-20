@@ -354,6 +354,13 @@ public class ObjectDefinitionLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
+	public static List<ObjectDefinition> getModifiableObjectDefinitions(
+		long companyId, boolean active, int status) {
+
+		return getService().getModifiableObjectDefinitions(
+			companyId, active, status);
+	}
+
 	/**
 	 * Returns the object definition with the primary key.
 	 *

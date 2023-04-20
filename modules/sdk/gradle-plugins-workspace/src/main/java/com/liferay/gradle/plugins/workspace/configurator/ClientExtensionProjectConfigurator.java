@@ -22,6 +22,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import com.liferay.gradle.plugins.LiferayBasePlugin;
@@ -29,11 +30,10 @@ import com.liferay.gradle.plugins.extensions.LiferayExtension;
 import com.liferay.gradle.plugins.workspace.WorkspaceExtension;
 import com.liferay.gradle.plugins.workspace.WorkspacePlugin;
 import com.liferay.gradle.plugins.workspace.internal.client.extension.ClientExtension;
-import com.liferay.gradle.plugins.workspace.internal.client.extension.ClientExtensionConfigurer;
-import com.liferay.gradle.plugins.workspace.internal.client.extension.ConfigurationTypeConfigurer;
 import com.liferay.gradle.plugins.workspace.internal.client.extension.NodeBuildConfigurer;
 import com.liferay.gradle.plugins.workspace.internal.client.extension.ThemeCSSTypeConfigurer;
 import com.liferay.gradle.plugins.workspace.internal.util.GradleUtil;
+import com.liferay.gradle.plugins.workspace.internal.util.StringUtil;
 import com.liferay.gradle.plugins.workspace.task.CreateClientExtensionConfigTask;
 import com.liferay.gradle.util.Validator;
 import com.liferay.petra.string.StringBundler;
@@ -50,18 +50,16 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.gradle.api.Action;
 import org.gradle.api.GradleException;
@@ -108,31 +106,6 @@ public class ClientExtensionProjectConfigurator
 	public ClientExtensionProjectConfigurator(Settings settings) {
 		super(settings);
 
-		NodeBuildConfigurer nodeBuildConfigurer = new NodeBuildConfigurer();
-
-		_clientExtensionConfigurers.put(
-			"configuration",
-			Collections.singletonList(new ConfigurationTypeConfigurer()));
-		_clientExtensionConfigurers.put(
-			"customElement", Collections.singletonList(nodeBuildConfigurer));
-		_clientExtensionConfigurers.put(
-			"fdsCellRenderer", Collections.singletonList(nodeBuildConfigurer));
-		_clientExtensionConfigurers.put(
-			"globalCSS", Collections.singletonList(nodeBuildConfigurer));
-		_clientExtensionConfigurers.put(
-			"globalJS", Collections.singletonList(nodeBuildConfigurer));
-		_clientExtensionConfigurers.put(
-			"staticContent", Collections.singletonList(nodeBuildConfigurer));
-		_clientExtensionConfigurers.put(
-			"themeCSS",
-			Arrays.asList(nodeBuildConfigurer, new ThemeCSSTypeConfigurer()));
-		_clientExtensionConfigurers.put(
-			"themeFavicon", Collections.singletonList(nodeBuildConfigurer));
-		_clientExtensionConfigurers.put(
-			"themeJS", Collections.singletonList(nodeBuildConfigurer));
-		_clientExtensionConfigurers.put(
-			"themeSpritemap", Collections.singletonList(nodeBuildConfigurer));
-
 		_defaultRepositoryEnabled = GradleUtil.getProperty(
 			settings,
 			WorkspacePlugin.PROPERTY_PREFIX + NAME +
@@ -161,107 +134,83 @@ public class ClientExtensionProjectConfigurator
 			buildClientExtensionZipTaskProvider,
 			createClientExtensionConfigTaskProvider);
 
-		File clientExtensionFile = project.file(_CLIENT_EXTENSION_YAML);
+		Map<String, JsonNode> profileJsonNodes =
+			_configureClientExtensionJsonNodes(project);
 
-		try (FileReader fileReader = new FileReader(clientExtensionFile)) {
-			ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+		for (Map.Entry<String, JsonNode> profileJsonNodeEntry :
+				profileJsonNodes.entrySet()) {
 
-			JsonNode rootJsonNode = objectMapper.readTree(clientExtensionFile);
+			String profileName = profileJsonNodeEntry.getKey();
 
-			Iterator<Map.Entry<String, JsonNode>> iterator =
-				rootJsonNode.fields();
+			JsonNode jsonNode = profileJsonNodeEntry.getValue();
+
+			Iterator<Map.Entry<String, JsonNode>> iterator = jsonNode.fields();
 
 			iterator.forEachRemaining(
 				entry -> {
 					String id = entry.getKey();
+
+					if (Objects.equals(id, "runtime")) {
+						return;
+					}
 
 					if (Objects.equals(id, "assemble")) {
 						JsonNode assembleJsonNode = entry.getValue();
 
 						_configureAssembleClientExtensionTask(
 							project, assembleClientExtensionTaskProvider,
-							assembleJsonNode);
+							assembleJsonNode, profileName);
+
+						return;
 					}
-					else if (Objects.equals(id, "runtime")) {
-						JsonNode runtimeJsonNode = entry.getValue();
 
-						JsonNode runtimeTypeJsonNode = runtimeJsonNode.get(
-							"type");
+					JsonNode clientExtensionJsonNode = entry.getValue();
 
-						if (runtimeTypeJsonNode != null) {
-							createClientExtensionConfigTaskProvider.configure(
-								createClientExtensionConfigTask ->
-									createClientExtensionConfigTask.setType(
-										runtimeTypeJsonNode.asText()));
+					try {
+						ClientExtension clientExtension =
+							_yamlObjectMapper.treeToValue(
+								clientExtensionJsonNode, ClientExtension.class);
 
-							List<ClientExtensionConfigurer>
-								clientExtensionTypeConfigurers =
-									_clientExtensionConfigurers.getOrDefault(
-										runtimeTypeJsonNode.asText(),
-										Collections.emptyList());
+						clientExtension.id = id;
 
-							clientExtensionTypeConfigurers.forEach(
-								clientExtensionTypeConfigurer ->
-									clientExtensionTypeConfigurer.apply(
-										project, Optional.empty(),
-										assembleClientExtensionTaskProvider));
+						if (Validator.isNull(clientExtension.type)) {
+							clientExtension.type = id;
+						}
+
+						clientExtension.classification = _getClassification(
+							clientExtension.id, clientExtension.type);
+
+						clientExtension.projectName = project.getName();
+
+						_validateClientExtension(clientExtension);
+
+						createClientExtensionConfigTaskProvider.configure(
+							createClientExtensionConfigTask ->
+								createClientExtensionConfigTask.
+									addClientExtensionProfile(
+										profileName, clientExtension));
+
+						if (clientExtension.type.equals("configuration")) {
+							assembleClientExtensionTaskProvider.configure(
+								copy -> copy.from(
+									"src",
+									copySpec -> copySpec.include("**/*")));
+						}
+						else if (clientExtension.type.equals("themeCSS")) {
+							_themeCSSTypeConfigurer.apply(
+								project, assembleClientExtensionTaskProvider);
 						}
 					}
-					else {
-						JsonNode clientExtensionJsonNode = entry.getValue();
-
-						try {
-							ClientExtension clientExtension =
-								objectMapper.treeToValue(
-									clientExtensionJsonNode,
-									ClientExtension.class);
-
-							clientExtension.id = id;
-
-							if (Validator.isNull(clientExtension.type)) {
-								clientExtension.type = id;
-							}
-
-							clientExtension.classification = _getClassification(
-								clientExtension.id, clientExtension.type);
-
-							clientExtension.projectName = project.getName();
-
-							_validateClientExtension(clientExtension);
-
-							createClientExtensionConfigTaskProvider.configure(
-								createClientExtensionConfigTask ->
-									createClientExtensionConfigTask.
-										addClientExtension(clientExtension));
-
-							List<ClientExtensionConfigurer>
-								clientExtensionTypeConfigurers =
-									_clientExtensionConfigurers.getOrDefault(
-										clientExtension.type,
-										Collections.emptyList());
-
-							clientExtensionTypeConfigurers.forEach(
-								clientExtensionTypeConfigurer ->
-									clientExtensionTypeConfigurer.apply(
-										project, Optional.of(clientExtension),
-										assembleClientExtensionTaskProvider));
-						}
-						catch (JsonProcessingException
-									jsonProcessingException) {
-
-							throw new GradleException(
-								"Failed to parse client-extension " + id,
-								jsonProcessingException);
-						}
+					catch (JsonProcessingException jsonProcessingException) {
+						throw new GradleException(
+							"Unable to parse client extension " + id,
+							jsonProcessingException);
 					}
 				});
 		}
-		catch (IOException ioException) {
-			throw new GradleException(
-				StringBundler.concat(
-					"Failed parsing ", _CLIENT_EXTENSION_YAML, " file."),
-				ioException);
-		}
+
+		_nodeBuildConfigurer.apply(
+			project, assembleClientExtensionTaskProvider);
 
 		_addDockerTasks(project, assembleClientExtensionTaskProvider);
 	}
@@ -436,58 +385,110 @@ public class ClientExtensionProjectConfigurator
 
 	private void _configureAssembleClientExtensionTask(
 		Project project, TaskProvider<Copy> assembleClientExtensionTaskProvider,
-		JsonNode assembleJsonNode) {
+		JsonNode assembleJsonNode, String profileName) {
 
-		assembleClientExtensionTaskProvider.configure(
-			copy -> assembleJsonNode.forEach(
-				copyJsonNode -> {
-					JsonNode fromJsonNode = copyJsonNode.get("from");
-					JsonNode fromTaskJsonNode = copyJsonNode.get("fromTask");
-					JsonNode includeJsonNode = copyJsonNode.get("include");
-					JsonNode intoJsonNode = copyJsonNode.get("into");
+		if (assembleJsonNode.isEmpty()) {
+			return;
+		}
 
-					Object fromPath = null;
+		Copy copy = GradleUtil.addTask(
+			project,
+			"assembleClientExtension" + StringUtil.capitalize(profileName),
+			Copy.class);
 
-					if (fromTaskJsonNode != null) {
-						TaskContainer taskContainer = project.getTasks();
+		copy.into(new File(project.getBuildDir(), CLIENT_EXTENSION_BUILD_DIR));
+		copy.onlyIf(
+			task -> Objects.equals(
+				profileName,
+				GradleUtil.getProperty(project, "profileName", "default")));
 
-						fromPath = taskContainer.findByName(
-							fromTaskJsonNode.asText());
-					}
+		assembleJsonNode.forEach(
+			copyJsonNode -> {
+				JsonNode fromJsonNode = copyJsonNode.get("from");
+				JsonNode fromTaskJsonNode = copyJsonNode.get("fromTask");
+				JsonNode includeJsonNode = copyJsonNode.get("include");
+				JsonNode intoJsonNode = copyJsonNode.get("into");
 
-					if ((fromPath == null) && (fromJsonNode != null)) {
-						fromPath = fromJsonNode.asText();
-					}
+				Object fromPath = null;
 
-					copy.from(
-						(fromPath != null) ? fromPath : ".",
-						copySpec -> {
-							if (includeJsonNode instanceof ArrayNode) {
-								ArrayNode arrayNode =
-									(ArrayNode)includeJsonNode;
+				if (fromTaskJsonNode != null) {
+					TaskContainer taskContainer = project.getTasks();
 
-								arrayNode.forEach(
-									include -> copySpec.include(
-										include.asText()));
+					fromPath = taskContainer.findByName(
+						fromTaskJsonNode.asText());
+				}
+
+				if ((fromPath == null) && (fromJsonNode != null)) {
+					fromPath = fromJsonNode.asText();
+				}
+
+				copy.from(
+					(fromPath != null) ? fromPath : ".",
+					copySpec -> {
+						if (includeJsonNode instanceof ArrayNode) {
+							ArrayNode arrayNode = (ArrayNode)includeJsonNode;
+
+							arrayNode.forEach(
+								include -> copySpec.include(include.asText()));
+						}
+						else {
+							if (includeJsonNode != null) {
+								copySpec.include(includeJsonNode.asText());
 							}
 							else {
-								if (includeJsonNode != null) {
-									copySpec.include(includeJsonNode.asText());
-								}
-								else {
-									copySpec.include("**/*");
-								}
+								copySpec.include("**/*");
 							}
+						}
 
-							copySpec.exclude(CLIENT_EXTENSION_BUILD_DIR);
+						copySpec.exclude("**/" + CLIENT_EXTENSION_BUILD_DIR);
 
-							if (intoJsonNode != null) {
-								copySpec.into(intoJsonNode.asText());
-							}
+						if (intoJsonNode != null) {
+							copySpec.into(intoJsonNode.asText());
+						}
 
-							copySpec.setIncludeEmptyDirs(false);
-						});
-				}));
+						copySpec.setIncludeEmptyDirs(false);
+					});
+			});
+
+		assembleClientExtensionTaskProvider.configure(
+			assembleClientExtensionTask ->
+				assembleClientExtensionTask.finalizedBy(copy));
+	}
+
+	private Map<String, JsonNode> _configureClientExtensionJsonNodes(
+		Project project) {
+
+		Map<String, JsonNode> profileJsonNodes = new HashMap<>();
+
+		File clientExtensionYamlFile = project.file(_CLIENT_EXTENSION_YAML);
+
+		JsonNode rootJsonNode = _getJsonNode(clientExtensionYamlFile);
+
+		profileJsonNodes.put("default", rootJsonNode);
+
+		File parentFile = clientExtensionYamlFile.getParentFile();
+
+		for (File file : Objects.requireNonNull(parentFile.listFiles())) {
+			Matcher matcher = _overrideClientExtensionYamlPattern.matcher(
+				file.getName());
+
+			if (!matcher.find()) {
+				continue;
+			}
+
+			String profileName = matcher.group(1);
+
+			_configureDeployProfileTask(
+				project, clientExtensionYamlFile, file, profileName);
+
+			JsonNode jsonNode = rootJsonNode.deepCopy();
+
+			_overrideJsonNodeValues(jsonNode, _getJsonNode(file));
+
+			profileJsonNodes.put(profileName, jsonNode);
+		}
+
+		return profileJsonNodes;
 	}
 
 	private void _configureClientExtensionTasks(
@@ -498,6 +499,9 @@ public class ClientExtensionProjectConfigurator
 
 		createClientExtensionConfigTaskProvider.configure(
 			createClientExtensionConfigTask -> {
+				createClientExtensionConfigTask.dependsOn(
+					ASSEMBLE_CLIENT_EXTENSION_TASK_NAME);
+
 				TaskInputs taskInputs =
 					createClientExtensionConfigTask.getInputs();
 
@@ -507,16 +511,16 @@ public class ClientExtensionProjectConfigurator
 					_getClientExtensionProperties());
 			});
 
+		File clientExtensionBuildDir = new File(
+			project.getBuildDir(), CLIENT_EXTENSION_BUILD_DIR);
+
 		assembleClientExtensionTaskProvider.configure(
-			copy -> {
-				copy.dependsOn(CREATE_CLIENT_EXTENSION_CONFIG_TASK_NAME);
-				copy.into(
-					new File(
-						project.getBuildDir(), CLIENT_EXTENSION_BUILD_DIR));
-			});
+			copy -> copy.into(clientExtensionBuildDir));
 
 		buildClientExtensionZipTaskProvider.configure(
 			zip -> {
+				zip.dependsOn(CREATE_CLIENT_EXTENSION_CONFIG_TASK_NAME);
+
 				DirectoryProperty destinationDirectoryProperty =
 					zip.getDestinationDirectory();
 
@@ -537,7 +541,7 @@ public class ClientExtensionProjectConfigurator
 
 						}));
 
-				zip.from(assembleClientExtensionTaskProvider);
+				zip.from(clientExtensionBuildDir);
 				zip.include("**/*");
 			});
 	}
@@ -550,6 +554,30 @@ public class ClientExtensionProjectConfigurator
 			project, Dependency.ARCHIVES_CONFIGURATION);
 
 		defaultConfiguration.extendsFrom(archivesConfiguration);
+	}
+
+	private void _configureDeployProfileTask(
+		Project project, File clientExtensionYamlFile,
+		File overrideClientExtensionYamlFile, String profileName) {
+
+		String taskName = "deploy" + StringUtil.capitalize(profileName);
+
+		Task deployProfileTask = GradleUtil.addTask(
+			project, taskName, Task.class);
+
+		deployProfileTask.doFirst(
+			task -> GradleUtil.setProperty(
+				project, "profileName", profileName));
+		deployProfileTask.finalizedBy("deploy");
+		deployProfileTask.setDescription(
+			"Assembles the project and deploys it to Liferay with the \"" +
+				profileName + "\" client extension profile.");
+		deployProfileTask.setGroup(BasePlugin.BUILD_GROUP);
+
+		TaskInputs taskInputs = deployProfileTask.getInputs();
+
+		taskInputs.files(
+			clientExtensionYamlFile, overrideClientExtensionYamlFile);
 	}
 
 	private void _configureLiferayExtension(
@@ -669,9 +697,64 @@ public class ClientExtensionProjectConfigurator
 		return project.getName() + ":latest";
 	}
 
+	private JsonNode _getJsonNode(File file) {
+		if (!file.exists()) {
+			return _yamlObjectMapper.createObjectNode();
+		}
+
+		try (FileReader fileReader = new FileReader(file)) {
+			return _yamlObjectMapper.readTree(file);
+		}
+		catch (IOException ioException) {
+			throw new GradleException(
+				StringBundler.concat("Unable to parse ", file.getName(), "."),
+				ioException);
+		}
+	}
+
 	private File _getZipFile(Project project) {
 		return project.file(
 			"dist/" + GradleUtil.getArchivesBaseName(project) + ".zip");
+	}
+
+	private void _overrideJsonNodeValues(
+		JsonNode baseJsonNode, JsonNode overrideJsonNode) {
+
+		if (overrideJsonNode.isEmpty()) {
+			return;
+		}
+
+		Iterator<String> iterator = overrideJsonNode.fieldNames();
+
+		while (iterator.hasNext()) {
+			String fieldName = iterator.next();
+
+			JsonNode fieldNameBaseJsonNode = baseJsonNode.path(fieldName);
+
+			JsonNode fieldNameOverrideJsonNode = overrideJsonNode.path(
+				fieldName);
+
+			if (fieldNameOverrideJsonNode.isMissingNode()) {
+				continue;
+			}
+
+			if (fieldNameBaseJsonNode.isObject()) {
+				_overrideJsonNodeValues(
+					fieldNameBaseJsonNode, fieldNameOverrideJsonNode);
+
+				continue;
+			}
+
+			ObjectNode baseObjectNode = (ObjectNode)baseJsonNode;
+
+			if (fieldNameBaseJsonNode.isMissingNode()) {
+				baseObjectNode.set(fieldName, fieldNameOverrideJsonNode);
+
+				continue;
+			}
+
+			baseObjectNode.replace(fieldName, fieldNameOverrideJsonNode);
+		}
 	}
 
 	private void _validateClientExtension(ClientExtension clientExtension) {
@@ -686,9 +769,7 @@ public class ClientExtensionProjectConfigurator
 						"\"oAuthApplicationHeadlessServer\""));
 			}
 		}
-		else if (Objects.equals(
-					clientExtension.type, "instanceConfiguration")) {
-
+		else if (Objects.equals(clientExtension.type, "instanceSettings")) {
 			if (!clientExtension.typeSettings.containsKey("pid")) {
 				throw new GradleException(
 					StringBundler.concat(
@@ -704,9 +785,16 @@ public class ClientExtensionProjectConfigurator
 
 	private static final boolean _DEFAULT_REPOSITORY_ENABLED = true;
 
-	private final Map<String, List<ClientExtensionConfigurer>>
-		_clientExtensionConfigurers = new HashMap<>();
+	private static final Pattern _overrideClientExtensionYamlPattern =
+		Pattern.compile("client-extension\\.([a-z]+)\\.yaml");
+
 	private Properties _clientExtensionProperties;
 	private final boolean _defaultRepositoryEnabled;
+	private final NodeBuildConfigurer _nodeBuildConfigurer =
+		new NodeBuildConfigurer();
+	private final ThemeCSSTypeConfigurer _themeCSSTypeConfigurer =
+		new ThemeCSSTypeConfigurer();
+	private final ObjectMapper _yamlObjectMapper = new ObjectMapper(
+		new YAMLFactory());
 
 }

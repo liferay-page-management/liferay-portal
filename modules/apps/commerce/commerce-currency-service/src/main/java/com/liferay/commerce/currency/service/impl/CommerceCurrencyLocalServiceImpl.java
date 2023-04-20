@@ -213,7 +213,8 @@ public class CommerceCurrencyLocalServiceImpl
 	}
 
 	@Override
-	public void importDefaultValues(ServiceContext serviceContext)
+	public void importDefaultValues(
+			boolean updateExchangeRate, ServiceContext serviceContext)
 		throws Exception {
 
 		Class<?> clazz = getClass();
@@ -239,6 +240,7 @@ public class CommerceCurrencyLocalServiceImpl
 			if (commerceCurrency == null) {
 				boolean primary = jsonObject.getBoolean("primary");
 				double priority = jsonObject.getDouble("priority");
+				double rate = jsonObject.getDouble("rate");
 				String symbol = jsonObject.getString("symbol");
 
 				RoundingTypeConfiguration roundingTypeConfiguration =
@@ -263,20 +265,23 @@ public class CommerceCurrencyLocalServiceImpl
 
 				commerceCurrencyLocalService.addCommerceCurrency(
 					serviceContext.getUserId(), code, nameMap, symbol,
-					BigDecimal.ONE, formatPatternMap,
+					BigDecimal.valueOf(rate), formatPatternMap,
 					roundingTypeConfiguration.maximumFractionDigits(),
 					roundingTypeConfiguration.minimumFractionDigits(),
 					roundingMode.name(), primary, priority, true);
 			}
 		}
 
-		for (String exchangeRateProviderKey :
-				_exchangeRateProviderRegistry.getExchangeRateProviderKeys()) {
+		if (updateExchangeRate) {
+			for (String exchangeRateProviderKey :
+					_exchangeRateProviderRegistry.
+						getExchangeRateProviderKeys()) {
 
-			_updateExchangeRates(
-				serviceContext.getCompanyId(), exchangeRateProviderKey);
+				_updateExchangeRates(
+					serviceContext.getCompanyId(), exchangeRateProviderKey);
 
-			break;
+				break;
+			}
 		}
 	}
 

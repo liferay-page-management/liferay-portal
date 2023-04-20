@@ -14,6 +14,7 @@
 
 package com.liferay.user.associated.data.web.internal.util;
 
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.search.DisplayTerms;
@@ -29,6 +30,7 @@ import com.liferay.portal.kernel.portlet.SearchOrderByUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -52,8 +54,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.portlet.PortletException;
 import javax.portlet.PortletURL;
@@ -81,41 +81,27 @@ public class UADSearchContainerBuilder {
 				renderRequest, currentURL, "name",
 				new String[] {"name", "count"});
 
-		List<UADEntity<?>> uadEntities = new ArrayList<>();
-
-		for (UADApplicationSummaryDisplay uadApplicationSummaryDisplay :
-				uadApplicationSummaryDisplays) {
-
-			if (Objects.equals(
-					uadApplicationSummaryDisplay.getApplicationKey(),
-					UADConstants.ALL_APPLICATIONS) ||
-				(uadApplicationSummaryDisplay.getCount() == 0)) {
-
-				continue;
-			}
-
-			uadEntities.add(
-				_constructApplicationSummaryUADEntity(
-					liferayPortletResponse, renderRequest, currentURL,
-					uadApplicationSummaryDisplay));
-		}
-
-		Stream<UADEntity<?>> uadEntitiesStream = uadEntities.stream();
-
 		searchContainer.setResultsAndTotal(
-			() -> uadEntitiesStream.sorted(
+			ListUtil.sort(
+				TransformUtil.transform(
+					uadApplicationSummaryDisplays,
+					uadApplicationSummaryDisplay -> {
+						if (Objects.equals(
+								uadApplicationSummaryDisplay.
+									getApplicationKey(),
+								UADConstants.ALL_APPLICATIONS) ||
+							(uadApplicationSummaryDisplay.getCount() == 0)) {
+
+							return null;
+						}
+
+						return _constructApplicationSummaryUADEntity(
+							liferayPortletResponse, renderRequest, currentURL,
+							uadApplicationSummaryDisplay);
+					}),
 				_getComparator(
 					searchContainer.getOrderByCol(),
-					searchContainer.getOrderByType())
-			).skip(
-				searchContainer.getStart()
-			).limit(
-				searchContainer.getDelta()
-			).collect(
-				Collectors.toList()
-			),
-			uadEntities.size());
-
+					searchContainer.getOrderByType())));
 		searchContainer.setRowChecker(
 			new EmptyOnClickRowChecker(liferayPortletResponse));
 
@@ -157,31 +143,17 @@ public class UADSearchContainerBuilder {
 			LiferayPortletRequest liferayPortletRequest =
 				_portal.getLiferayPortletRequest(renderRequest);
 
-			List<UADEntity<?>> uadEntities = new ArrayList<>();
-
-			for (Object entity : entities) {
-				uadEntities.add(
-					_constructHierarchyUADEntity(
-						liferayPortletRequest, liferayPortletResponse,
-						applicationKey, entity, selectedUser.getUserId(),
-						uadHierarchyDisplay));
-			}
-
-			Stream<UADEntity<?>> uadEntitiesStream = uadEntities.stream();
-
 			searchContainer.setResultsAndTotal(
-				() -> uadEntitiesStream.sorted(
+				ListUtil.sort(
+					TransformUtil.transform(
+						entities,
+						entity -> _constructHierarchyUADEntity(
+							liferayPortletRequest, liferayPortletResponse,
+							applicationKey, entity, selectedUser.getUserId(),
+							uadHierarchyDisplay)),
 					_getComparator(
 						searchContainer.getOrderByCol(),
-						searchContainer.getOrderByType())
-				).skip(
-					searchContainer.getStart()
-				).limit(
-					searchContainer.getDelta()
-				).collect(
-					Collectors.toList()
-				),
-				entities.size());
+						searchContainer.getOrderByType())));
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {

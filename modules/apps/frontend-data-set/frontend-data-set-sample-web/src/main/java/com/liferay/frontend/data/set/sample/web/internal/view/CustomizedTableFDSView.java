@@ -23,9 +23,12 @@ import com.liferay.frontend.data.set.view.table.BaseTableFDSView;
 import com.liferay.frontend.data.set.view.table.FDSTableSchema;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilder;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilderFactory;
-import com.liferay.frontend.js.loader.modules.extender.npm.NPMResolver;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.url.builder.AbsolutePortalURLBuilder;
+import com.liferay.portal.url.builder.AbsolutePortalURLBuilderFactory;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.util.List;
@@ -74,6 +77,7 @@ public class CustomizedTableFDSView extends BaseTableFDSView {
 		).add(
 			"color", "color",
 			fdsTableSchemaField -> {
+				boolean clientExtension = false;
 				String moduleName = null;
 
 				List<FDSCellRendererCET> fdsCellRendererCETs =
@@ -89,6 +93,7 @@ public class CustomizedTableFDSView extends BaseTableFDSView {
 						fdsCellRendererCETs) {
 
 					if (!fdsCellRendererCET.isReadOnly()) {
+						clientExtension = true;
 						moduleName =
 							"default from " + fdsCellRendererCET.getURL();
 
@@ -106,6 +111,7 @@ public class CustomizedTableFDSView extends BaseTableFDSView {
 								fdsCellRendererCET.getExternalReferenceCode(),
 								"LXC:liferay-sample-fds-cell-renderer")) {
 
+							clientExtension = true;
 							moduleName =
 								"default from " + fdsCellRendererCET.getURL();
 						}
@@ -115,11 +121,23 @@ public class CustomizedTableFDSView extends BaseTableFDSView {
 				// Use the built-in AMD provided sample as a last resort
 
 				if (moduleName == null) {
-					moduleName = _npmResolver.resolveModuleName(
-						"@liferay/frontend-data-set-sample-web/js" +
-							"/GreenCheckDataRenderer");
+					ServiceContext serviceContext =
+						ServiceContextThreadLocal.getServiceContext();
+
+					AbsolutePortalURLBuilder absolutePortalURLBuilder =
+						_absolutePortalURLBuilderFactory.
+							getAbsolutePortalURLBuilder(
+								serviceContext.getRequest());
+
+					String moduleURL = absolutePortalURLBuilder.forESModule(
+						"frontend-data-set-sample-web", "index.js"
+					).build();
+
+					moduleName = "{GreenCheckDataRenderer} from " + moduleURL;
 				}
 
+				fdsTableSchemaField.setContentRendererClientExtension(
+					clientExtension);
 				fdsTableSchemaField.setContentRendererModuleURL(moduleName);
 			}
 		).add(
@@ -147,12 +165,12 @@ public class CustomizedTableFDSView extends BaseTableFDSView {
 	}
 
 	@Reference
+	private AbsolutePortalURLBuilderFactory _absolutePortalURLBuilderFactory;
+
+	@Reference
 	private CETManager _cetManager;
 
 	@Reference
 	private FDSTableSchemaBuilderFactory _fdsTableSchemaBuilderFactory;
-
-	@Reference
-	private NPMResolver _npmResolver;
 
 }

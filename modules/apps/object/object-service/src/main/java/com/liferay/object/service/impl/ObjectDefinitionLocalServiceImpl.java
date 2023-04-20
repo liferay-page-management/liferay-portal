@@ -360,7 +360,8 @@ public class ObjectDefinitionLocalServiceImpl
 		throws PortalException {
 
 		if (!PortalInstances.isCurrentCompanyInDeletionProcess() &&
-			!PortalRunMode.isTestMode() && objectDefinition.isSystem()) {
+			!PortalRunMode.isTestMode() &&
+			objectDefinition.isUnmodifiableSystemObject()) {
 
 			throw new RequiredObjectDefinitionException();
 		}
@@ -368,7 +369,7 @@ public class ObjectDefinitionLocalServiceImpl
 		_objectActionLocalService.deleteObjectActions(
 			objectDefinition.getObjectDefinitionId());
 
-		if (!objectDefinition.isSystem()) {
+		if (!objectDefinition.isUnmodifiableSystemObject()) {
 			List<ObjectEntry> objectEntries =
 				_objectEntryPersistence.findByObjectDefinitionId(
 					objectDefinition.getObjectDefinitionId());
@@ -413,7 +414,7 @@ public class ObjectDefinitionLocalServiceImpl
 			ResourceConstants.SCOPE_INDIVIDUAL,
 			objectDefinition.getObjectDefinitionId());
 
-		if (objectDefinition.isSystem()) {
+		if (objectDefinition.isUnmodifiableSystemObject()) {
 			_dropTable(objectDefinition.getExtensionDBTableName());
 		}
 		else if (objectDefinition.isApproved()) {
@@ -541,6 +542,14 @@ public class ObjectDefinitionLocalServiceImpl
 	@Override
 	public List<ObjectDefinition> getCustomObjectDefinitions(int status) {
 		return objectDefinitionPersistence.findByS_S(false, status);
+	}
+
+	@Override
+	public List<ObjectDefinition> getModifiableObjectDefinitions(
+		long companyId, boolean active, int status) {
+
+		return objectDefinitionPersistence.findByC_A_M_S(
+			companyId, active, true, status);
 	}
 
 	@Override
@@ -908,7 +917,7 @@ public class ObjectDefinitionLocalServiceImpl
 				objectDefinition.getObjectDefinitionId(), className, modifiable,
 				system));
 		objectDefinition.setEnableCategorization(
-			!system &&
+			!objectDefinition.isUnmodifiableSystemObject() &&
 			StringUtil.equals(
 				storageType, ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT));
 		objectDefinition.setEnableComments(enableComments);

@@ -598,6 +598,16 @@ public class ProductSerDes {
 			sb.append("\"");
 		}
 
+		if (product.getProductVirtualSettings() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"productVirtualSettings\": ");
+
+			sb.append(String.valueOf(product.getProductVirtualSettings()));
+		}
+
 		if (product.getRelatedProducts() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -1078,6 +1088,15 @@ public class ProductSerDes {
 				String.valueOf(product.getProductTypeI18n()));
 		}
 
+		if (product.getProductVirtualSettings() == null) {
+			map.put("productVirtualSettings", null);
+		}
+		else {
+			map.put(
+				"productVirtualSettings",
+				String.valueOf(product.getProductVirtualSettings()));
+		}
+
 		if (product.getRelatedProducts() == null) {
 			map.put("relatedProducts", null);
 		}
@@ -1541,6 +1560,15 @@ public class ProductSerDes {
 			else if (Objects.equals(jsonParserFieldName, "productTypeI18n")) {
 				if (jsonParserFieldValue != null) {
 					product.setProductTypeI18n((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "productVirtualSettings")) {
+
+				if (jsonParserFieldValue != null) {
+					product.setProductVirtualSettings(
+						ProductVirtualSettingsSerDes.toDTO(
+							(String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "relatedProducts")) {

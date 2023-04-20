@@ -214,6 +214,16 @@ public class SitePageSerDes {
 			sb.append(_toJSON(sitePage.getFriendlyUrlPath_i18n()));
 		}
 
+		if (sitePage.getId() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"id\": ");
+
+			sb.append(sitePage.getId());
+		}
+
 		if (sitePage.getKeywords() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -270,6 +280,16 @@ public class SitePageSerDes {
 			sb.append(_escape(sitePage.getPageType()));
 
 			sb.append("\"");
+		}
+
+		if (sitePage.getParentSitePage() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"parentSitePage\": ");
+
+			sb.append(String.valueOf(sitePage.getParentSitePage()));
 		}
 
 		if (sitePage.getRenderedPage() != null) {
@@ -499,6 +519,13 @@ public class SitePageSerDes {
 				String.valueOf(sitePage.getFriendlyUrlPath_i18n()));
 		}
 
+		if (sitePage.getId() == null) {
+			map.put("id", null);
+		}
+		else {
+			map.put("id", String.valueOf(sitePage.getId()));
+		}
+
 		if (sitePage.getKeywords() == null) {
 			map.put("keywords", null);
 		}
@@ -526,6 +553,14 @@ public class SitePageSerDes {
 		}
 		else {
 			map.put("pageType", String.valueOf(sitePage.getPageType()));
+		}
+
+		if (sitePage.getParentSitePage() == null) {
+			map.put("parentSitePage", null);
+		}
+		else {
+			map.put(
+				"parentSitePage", String.valueOf(sitePage.getParentSitePage()));
 		}
 
 		if (sitePage.getRenderedPage() == null) {
@@ -690,6 +725,11 @@ public class SitePageSerDes {
 							(String)jsonParserFieldValue));
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "id")) {
+				if (jsonParserFieldValue != null) {
+					sitePage.setId(Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
 			else if (Objects.equals(jsonParserFieldName, "keywords")) {
 				if (jsonParserFieldValue != null) {
 					sitePage.setKeywords(
@@ -712,6 +752,13 @@ public class SitePageSerDes {
 			else if (Objects.equals(jsonParserFieldName, "pageType")) {
 				if (jsonParserFieldValue != null) {
 					sitePage.setPageType((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "parentSitePage")) {
+				if (jsonParserFieldValue != null) {
+					sitePage.setParentSitePage(
+						ParentSitePageSerDes.toDTO(
+							(String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "renderedPage")) {

@@ -92,3 +92,8 @@ a22d0792a2681e47aeea6fbb98b81048d8b32cc2^..2c9f03aacc2b55baab3bfbf3b99d02e94c240
 # Bundle Version 4.0.21
 #
 e1f3fd00d8becda6ac62e1a08ea5959ea42ae70f^..a7fcb74b2c7faafa929bc71cd66ee7c31b8263d1=COMMERCE-10704 COMMERCE-10705
+
+#
+# Bundle Version 4.0.22
+#
+a7fcb74b2c7faafa929bc71cd66ee7c31b8263d1^..3f9ea0d63b09a779c54b2fcc21572eba2e44dda5=COMMERCE-11044 LPS-178826

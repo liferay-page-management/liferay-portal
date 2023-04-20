@@ -24,6 +24,19 @@ definition {
 
 		if (!(isSet(discontinued))) {
 			var discontinued = "false";
+			var endOfLife = "";
+		}
+		else {
+			if (${discontinued} == "true") {
+				if (!(isSet(endOfLife))) {
+					var endOfLife = DateUtil.getFormattedCurrentDate("yyyy-MM-dd", "UTC");
+
+					echo("Current Date is: ${endOfLife}");
+				}
+			}
+			else {
+				var endOfLife = "";
+			}
 		}
 
 		if (!(isSet(displayAvailability))) {
@@ -143,6 +156,10 @@ definition {
 			var sku = "${productName}_default";
 		}
 
+		if (!(isSet(externalReferenceCode))) {
+			var externalReferenceCode = "";
+		}
+
 		var productSpecifications = "";
 
 		if (isSet(specifications)) {
@@ -204,7 +221,7 @@ definition {
 					"displayDate": "${displayDate}",
 					"expando": {},
 					"expirationDate": "${expirationDate}",
-					"externalReferenceCode": "",
+					"externalReferenceCode": "${externalReferenceCode}",
 					"metaDescription": {
 						"en_US": "${metaDescription}"
 					},
@@ -246,6 +263,7 @@ definition {
 							"cost": "${cost}",
 							"depth": "${depth}",
 							"discontinued": "${discontinued}",
+							"discontinuedDate": "${endOfLife}",
 							"gtin": "${gtin}",
 							"height": "${height}",
 							"manufacturerPartNumber": "${manufacturerPartNumber}",

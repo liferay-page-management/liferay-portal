@@ -14,12 +14,12 @@
 
 import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
-import ClayForm, {ClayToggle} from '@clayui/form';
+import ClayForm from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayModal, {ClayModalProvider, useModal} from '@clayui/modal';
 import {Observer} from '@clayui/modal/lib/types';
 import {ClayTooltipProvider} from '@clayui/tooltip';
-import {API, Input} from '@liferay/object-js-components-web';
+import {API, Input, Toggle} from '@liferay/object-js-components-web';
 import React, {useEffect, useState} from 'react';
 
 import {defaultLanguageId} from '../../utils/constants';
@@ -53,6 +53,9 @@ function ModalAddObjectField({
 	onClose,
 }: IModal) {
 	const [error, setError] = useState<string>('');
+	const [objectDefinition, setObjectDefinition] = useState<
+		ObjectDefinition
+	>();
 
 	const initialValues: Partial<ObjectField> = {
 		indexed: true,
@@ -102,6 +105,40 @@ function ModalAddObjectField({
 		values.businessType === 'RichText' ||
 		values.businessType === 'Text';
 
+	useEffect(() => {
+		if (!objectDefinition) {
+			const makeFetch = async () => {
+				const objectDefinitionResponse = await API.getObjectDefinitionByExternalReferenceCode(
+					objectDefinitionExternalReferenceCode
+				);
+
+				setObjectDefinition(objectDefinitionResponse);
+			};
+
+			makeFetch();
+		}
+
+		if (Liferay.FeatureFlags['LPS-146755']) {
+			if (
+				objectDefinition?.enableLocalization &&
+				showEnableTranslationToggle
+			) {
+				setValues({
+					localized: true,
+				});
+
+				return;
+			}
+
+			setValues({
+				localized: false,
+			});
+
+			return;
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [values.businessType]);
+
 	return (
 		<ClayModal observer={observer}>
 			<ClayForm onSubmit={handleSubmit}>
@@ -128,6 +165,7 @@ function ModalAddObjectField({
 					<ObjectFieldFormBase
 						errors={errors}
 						handleChange={handleChange}
+						objectDefinition={objectDefinition}
 						objectDefinitionExternalReferenceCode={
 							objectDefinitionExternalReferenceCode
 						}
@@ -139,7 +177,10 @@ function ModalAddObjectField({
 						{Liferay.FeatureFlags['LPS-146755'] &&
 							showEnableTranslationToggle && (
 								<div className="lfr-objects-add-object-field-enable-translations-toggle">
-									<ClayToggle
+									<Toggle
+										disabled={
+											!objectDefinition?.enableLocalization
+										}
 										label={Liferay.Language.get(
 											'enable-entry-translations'
 										)}

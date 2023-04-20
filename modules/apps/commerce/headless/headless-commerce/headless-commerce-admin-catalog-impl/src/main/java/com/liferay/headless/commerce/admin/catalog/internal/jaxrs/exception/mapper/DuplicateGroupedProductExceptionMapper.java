@@ -15,7 +15,8 @@
 package com.liferay.headless.commerce.admin.catalog.internal.jaxrs.exception.mapper;
 
 import com.liferay.commerce.product.type.grouped.exception.DuplicateCPDefinitionGroupedEntryException;
-import com.liferay.headless.commerce.core.exception.mapper.BaseExceptionMapper;
+import com.liferay.portal.vulcan.jaxrs.exception.mapper.BaseExceptionMapper;
+import com.liferay.portal.vulcan.jaxrs.exception.mapper.Problem;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -39,13 +40,13 @@ public class DuplicateGroupedProductExceptionMapper
 	extends BaseExceptionMapper<DuplicateCPDefinitionGroupedEntryException> {
 
 	@Override
-	public String getErrorDescription() {
-		return "A product can occur only one time in a grouped product";
-	}
+	protected Problem getProblem(
+		DuplicateCPDefinitionGroupedEntryException
+			duplicateCPDefinitionGroupedEntryException) {
 
-	@Override
-	public Response.Status getStatus() {
-		return Response.Status.CONFLICT;
+		return new Problem(
+			Response.Status.CONFLICT,
+			duplicateCPDefinitionGroupedEntryException.getMessage());
 	}
 
 }

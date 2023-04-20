@@ -117,6 +117,10 @@ public class UpgradeReport {
 		PersistenceManager persistenceManager,
 		ReleaseManagerOSGiCommands releaseManagerOSGiCommands) {
 
+		if (_log.isInfoEnabled()) {
+			_log.info("Starting upgrade report generation");
+		}
+
 		filterMessages();
 
 		Map<String, Object> reportData = _getReportData(
@@ -317,16 +321,33 @@ public class UpgradeReport {
 						"\"rootDir\" was not set";
 				}
 
-				double size = 0;
+				_dlSize = 0;
 
 				try {
-					size = FileUtils.sizeOfDirectory(new File(_rootDir));
+					_dlSizeThread.start();
+					_dlSizeThread.join(
+						PropsValues.UPGRADE_REPORT_DL_STORAGE_SIZE_TIMEOUT *
+							Time.SECOND);
 				}
 				catch (Exception exception) {
-					return exception.getMessage();
+					_log.error(
+						"Unable to determine the document library size",
+						exception);
+
+					return "Unable to determine";
 				}
 
-				return LanguageUtil.formatStorageSize(size, LocaleUtil.US);
+				if (_dlSizeThread.isAlive()) {
+					if (_log.isInfoEnabled()) {
+						_log.info(
+							"Unable to determine the document library size. " +
+								"Increase the timeout or check it manually.");
+					}
+
+					return "Unable to determine";
+				}
+
+				return LanguageUtil.formatStorageSize(_dlSize, LocaleUtil.US);
 			}
 		).put(
 			"tables.initial.final.rows",
@@ -741,6 +762,8 @@ public class UpgradeReport {
 
 	private static final Log _log = LogFactoryUtil.getLog(UpgradeReport.class);
 
+	private double _dlSize;
+	private final Thread _dlSizeThread = new DLSizeThread();
 	private final Map<String, Map<String, Integer>> _errorMessages =
 		new ConcurrentHashMap<>();
 	private final Map<String, ArrayList<String>> _eventMessages =
@@ -752,6 +775,15 @@ public class UpgradeReport {
 	private String _rootDir;
 	private final Map<String, Map<String, Integer>> _warningMessages =
 		new ConcurrentHashMap<>();
+
+	private class DLSizeThread extends Thread {
+
+		@Override
+		public void run() {
+			_dlSize = FileUtils.sizeOfDirectory(new File(_rootDir));
+		}
+
+	}
 
 	private class MessagesPrinter {
 

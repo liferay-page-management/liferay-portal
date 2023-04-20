@@ -485,7 +485,8 @@ public class ObjectDefinitionResourceImpl
 
 		List<com.liferay.object.model.ObjectField> serviceBuilderObjectFields =
 			new ArrayList<>(
-				_objectFieldLocalService.getObjectFields(objectDefinitionId));
+				_objectFieldLocalService.getObjectFields(
+					objectDefinitionId, false));
 
 		if (objectDefinition.getObjectFields() != null) {
 			for (ObjectField objectField : objectDefinition.getObjectFields()) {
@@ -550,7 +551,7 @@ public class ObjectDefinitionResourceImpl
 
 		if (objectRelationships != null) {
 			_objectRelationshipLocalService.deleteObjectRelationships(
-				objectDefinitionId);
+				objectDefinitionId, false);
 		}
 
 		ObjectValidationRule[] objectValidationRules =
@@ -709,7 +710,7 @@ public class ObjectDefinitionResourceImpl
 
 		String restContextPath = StringPool.BLANK;
 
-		if (objectDefinition.isSystem()) {
+		if (objectDefinition.isUnmodifiableSystemObject()) {
 			SystemObjectDefinitionManager systemObjectDefinitionManager =
 				_systemObjectDefinitionManagerRegistry.
 					getSystemObjectDefinitionManager(
@@ -737,7 +738,7 @@ public class ObjectDefinitionResourceImpl
 				actions = HashMapBuilder.put(
 					"delete",
 					() -> {
-						if (objectDefinition.isSystem()) {
+						if (objectDefinition.isUnmodifiableSystemObject()) {
 							return null;
 						}
 
@@ -772,7 +773,7 @@ public class ObjectDefinitionResourceImpl
 				).put(
 					"update",
 					() -> {
-						if (objectDefinition.isSystem()) {
+						if (objectDefinition.isUnmodifiableSystemObject()) {
 							return null;
 						}
 

@@ -14,31 +14,23 @@
 
 package com.liferay.document.library.web.internal.settings;
 
-import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.settings.FallbackKeys;
 import com.liferay.portal.kernel.settings.ParameterMapSettings;
 import com.liferay.portal.kernel.settings.PortletInstanceSettingsLocator;
 import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.settings.SettingsFactoryUtil;
 import com.liferay.portal.kernel.settings.TypedSettings;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.PropsKeys;
 
 import java.util.Map;
 
 /**
  * @author Sergio González
  */
-@Settings.Config(
-	settingsIds = {
-		DLPortletKeys.DOCUMENT_LIBRARY, DLPortletKeys.DOCUMENT_LIBRARY_ADMIN,
-		DLPortletKeys.MEDIA_GALLERY_DISPLAY
-	}
-)
+@Settings.Config
 public class DLPortletInstanceSettings {
 
 	public static DLPortletInstanceSettings getInstance(
@@ -62,11 +54,6 @@ public class DLPortletInstanceSettings {
 			parameterMap, settings);
 
 		return new DLPortletInstanceSettings(parameterMapSettings);
-	}
-
-	public static void registerSettingsMetadata() {
-		SettingsFactoryUtil.registerSettingsMetadata(
-			DLPortletInstanceSettings.class, null, _getFallbackKeys());
 	}
 
 	public DLPortletInstanceSettings(Settings settings) {
@@ -142,42 +129,8 @@ public class DLPortletInstanceSettings {
 		return _typedSettings.getBooleanValue("showSubfolders");
 	}
 
-	private static FallbackKeys _getFallbackKeys() {
-		FallbackKeys fallbackKeys = new FallbackKeys();
-
-		fallbackKeys.add("displayViews", PropsKeys.DL_DISPLAY_VIEWS);
-		fallbackKeys.add(
-			"enableCommentRatings", PropsKeys.DL_COMMENT_RATINGS_ENABLED);
-		fallbackKeys.add(
-			"enableFileEntryDrafts", PropsKeys.DL_FILE_ENTRY_DRAFTS_ENABLED);
-		fallbackKeys.add("enableRatings", PropsKeys.DL_RATINGS_ENABLED);
-		fallbackKeys.add(
-			"enableRelatedAssets", PropsKeys.DL_RELATED_ASSETS_ENABLED);
-		fallbackKeys.add(
-			"entriesPerPage", PropsKeys.SEARCH_CONTAINER_PAGE_DEFAULT_DELTA);
-		fallbackKeys.add("entryColumns", PropsKeys.DL_ENTRY_COLUMNS);
-		fallbackKeys.add("fileEntryColumns", PropsKeys.DL_FILE_ENTRY_COLUMNS);
-		fallbackKeys.add("folderColumns", PropsKeys.DL_FOLDER_COLUMNS);
-		fallbackKeys.add(
-			"foldersPerPage", PropsKeys.SEARCH_CONTAINER_PAGE_DEFAULT_DELTA);
-		fallbackKeys.add(
-			"fileEntriesPerPage",
-			PropsKeys.SEARCH_CONTAINER_PAGE_DEFAULT_DELTA);
-		fallbackKeys.add("showActions", PropsKeys.DL_ACTIONS_VISIBLE);
-		fallbackKeys.add(
-			"showFoldersSearch", PropsKeys.DL_FOLDERS_SEARCH_VISIBLE);
-		fallbackKeys.add("showSubfolders", PropsKeys.DL_SUBFOLDERS_VISIBLE);
-
-		return fallbackKeys;
-	}
-
 	private static final String[] _MIME_TYPES_DEFAULT = ArrayUtil.toStringArray(
 		DLUtil.getAllMediaGalleryMimeTypes());
-
-	static {
-		SettingsFactoryUtil.registerSettingsMetadata(
-			DLPortletInstanceSettings.class, null, _getFallbackKeys());
-	}
 
 	private final TypedSettings _typedSettings;
 

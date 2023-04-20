@@ -55,15 +55,12 @@ import com.liferay.object.service.ObjectStateTransitionLocalService;
 import com.liferay.object.service.ObjectValidationRuleLocalService;
 import com.liferay.object.service.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.function.UnsafeSupplier;
-import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
-import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
-import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -98,16 +95,15 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
-import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowTask;
 import com.liferay.portal.kernel.workflow.WorkflowTaskManager;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.io.Serializable;
@@ -128,10 +124,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Queue;
-
-import org.hamcrest.CoreMatchers;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -149,6 +142,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
  * @author Marco Leo
  * @author Brian Wing Shun Chan
  */
+@FeatureFlags("LPS-163716")
 @RunWith(Arquillian.class)
 public class ObjectEntryLocalServiceTest {
 
@@ -161,11 +155,6 @@ public class ObjectEntryLocalServiceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		PropsUtil.addProperties(
-			UnicodePropertiesBuilder.setProperty(
-				"feature.flag.LPS-163716", "true"
-			).build());
-
 		_irrelevantObjectDefinition =
 			ObjectDefinitionTestUtil.addObjectDefinition(
 				_objectDefinitionLocalService,
@@ -347,11 +336,6 @@ public class ObjectEntryLocalServiceTest {
 		// unreferenced
 
 		_objectDefinitionLocalService.deleteObjectDefinition(_objectDefinition);
-
-		PropsUtil.addProperties(
-			UnicodePropertiesBuilder.setProperty(
-				"feature.flag.LPS-163716", "false"
-			).build());
 	}
 
 	@Test
@@ -1149,25 +1133,6 @@ public class ObjectEntryLocalServiceTest {
 	public void testGetExtensionDynamicObjectDefinitionTableValues()
 		throws Exception {
 
-		Queue<String> cacheKeyPrefixes = new LinkedList<>();
-
-		FinderCache finderCache = FinderCacheUtil.getFinderCache();
-
-		ReflectionTestUtil.setFieldValue(
-			FinderCacheUtil.class, "_finderCache",
-			ProxyUtil.newProxyInstance(
-				FinderCache.class.getClassLoader(),
-				new Class<?>[] {FinderCache.class},
-				(proxy, method, arguments) -> {
-					if (Objects.equals(method.getName(), "removeResult")) {
-						FinderPath finderPath = (FinderPath)arguments[0];
-
-						cacheKeyPrefixes.add(finderPath.getCacheKeyPrefix());
-					}
-
-					return method.invoke(finderCache, arguments);
-				}));
-
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.fetchObjectDefinitionByClassName(
 				TestPropsValues.getCompanyId(), User.class.getName());
@@ -1212,8 +1177,6 @@ public class ObjectEntryLocalServiceTest {
 				objectEntryValuesException.getMessage());
 		}
 
-		Assert.assertEquals(0, cacheKeyPrefixes.size());
-
 		Map<String, Serializable> values =
 			HashMapBuilder.<String, Serializable>put(
 				"longField", 10L
@@ -1225,9 +1188,6 @@ public class ObjectEntryLocalServiceTest {
 			addOrUpdateExtensionDynamicObjectDefinitionTableValues(
 				TestPropsValues.getUserId(), objectDefinition, user.getUserId(),
 				values, ServiceContextTestUtil.getServiceContext());
-
-		_assertCacheKeyPrefixes(
-			cacheKeyPrefixes, objectDefinition.getExtensionDBTableName());
 
 		Assert.assertEquals(
 			values,
@@ -1246,9 +1206,6 @@ public class ObjectEntryLocalServiceTest {
 				TestPropsValues.getUserId(), objectDefinition, user.getUserId(),
 				values, ServiceContextTestUtil.getServiceContext());
 
-		_assertCacheKeyPrefixes(
-			cacheKeyPrefixes, objectDefinition.getExtensionDBTableName());
-
 		Assert.assertEquals(
 			values,
 			_objectEntryLocalService.
@@ -1259,17 +1216,11 @@ public class ObjectEntryLocalServiceTest {
 			deleteExtensionDynamicObjectDefinitionTableValues(
 				objectDefinition, user.getUserId());
 
-		_assertCacheKeyPrefixes(
-			cacheKeyPrefixes, objectDefinition.getExtensionDBTableName());
-
 		Assert.assertTrue(
 			MapUtil.isEmpty(
 				_objectEntryLocalService.
 					getExtensionDynamicObjectDefinitionTableValues(
 						objectDefinition, user.getUserId())));
-
-		ReflectionTestUtil.setFieldValue(
-			FinderCacheUtil.class, "_finderCache", finderCache);
 	}
 
 	@Test
@@ -2267,22 +2218,6 @@ public class ObjectEntryLocalServiceTest {
 			TempFileEntryUtil.getTempFileName(title + ".txt"),
 			FileUtil.createTempFile(RandomTestUtil.randomBytes()),
 			ContentTypes.TEXT_PLAIN);
-	}
-
-	private void _assertCacheKeyPrefixes(
-		Queue<String> cacheKeyPrefixes, String extensionDBTableName) {
-
-		Assert.assertThat(
-			StringUtil.removeChar(cacheKeyPrefixes.poll(), CharPool.PERIOD),
-			CoreMatchers.containsString(
-				"select count(*) COUNT_VALUE from " + extensionDBTableName));
-		Assert.assertThat(
-			StringUtil.removeChar(cacheKeyPrefixes.poll(), CharPool.PERIOD),
-			CoreMatchers.containsString(
-				StringBundler.concat(
-					"select ", extensionDBTableName, "userId, ",
-					extensionDBTableName, "longField_, ", extensionDBTableName,
-					"textField_ from ", extensionDBTableName)));
 	}
 
 	private void _assertCount(int count) throws Exception {

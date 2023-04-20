@@ -12,25 +12,87 @@
  * details.
  */
 
-import React, {useEffect} from 'react';
+import {sub} from 'frontend-js-web';
+import React, {useEffect, useState} from 'react';
 
-export default function KeyboardMovementText({setText, text}) {
+import {useItems} from '../contexts/ItemsContext';
+import {useDragLayer} from '../contexts/KeyboardDndContext';
+import getFlatItems from '../utils/getFlatItems';
+
+function getMovementText(dragLayer, items) {
+	if (!dragLayer) {
+		return '';
+	}
+
+	if (dragLayer.eventKey === 'Enter') {
+		return sub(
+			Liferay.Language.get(
+				'use-up-and-down-arrows-to-move-x-and-press-enter-to-place-it-in-desired-position'
+			),
+			`${dragLayer.menuItemTitle} (${dragLayer.menuItemType})`
+		);
+	}
+
+	const siblingsItems = items.filter(
+		(item) =>
+			item.parentSiteNavigationMenuItemId ===
+			dragLayer.parentSiteNavigationMenuItemId
+	);
+
+	if (!siblingsItems.length) {
+		const parent = items.find(
+			(item) =>
+				item.siteNavigationMenuItemId ===
+				dragLayer.parentSiteNavigationMenuItemId
+		);
+
+		return sub(Liferay.Language.get('targeting-inside-of-x'), parent.title);
+	}
+
+	const sibling = siblingsItems[dragLayer.order - 1];
+
+	if (sibling) {
+		return sub(Liferay.Language.get('targeting-x-of-x'), [
+			Liferay.Language.get('bottom'),
+			sibling.title,
+		]);
+	}
+
+	return sub(Liferay.Language.get('targeting-x-of-x'), [
+		Liferay.Language.get('top'),
+		siblingsItems[dragLayer.order]?.title,
+	]);
+}
+
+export default function KeyboardMovementText() {
+	const dragLayer = useDragLayer();
+
+	const items = getFlatItems(useItems());
+
+	const [internalText, setInternalText] = useState(() =>
+		getMovementText(dragLayer, items)
+	);
+
 	useEffect(() => {
+		setInternalText(getMovementText(dragLayer, items));
+
 		const handler = setTimeout(() => {
-			setText(null);
+			setInternalText(null);
 		}, 500);
 
-		return () => clearTimeout(handler);
-	}, [text, setText]);
+		return () => {
+			clearTimeout(handler);
+		};
+	}, [dragLayer]); //eslint-disable-line
 
-	return text ? (
+	return internalText ? (
 		<span
 			aria-live="assertive"
 			aria-relevant="additions"
 			className="sr-only"
 			role="log"
 		>
-			{text}
+			{internalText}
 		</span>
 	) : null;
 }

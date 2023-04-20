@@ -32,7 +32,6 @@ import {
 } from '../../../../../app/config/constants/keyboardCodes';
 import {LAYOUT_DATA_ITEM_TYPES} from '../../../../../app/config/constants/layoutDataItemTypes';
 import {VIEWPORT_SIZES} from '../../../../../app/config/constants/viewportSizes';
-import {config} from '../../../../../app/config/index';
 import {
 	useActivationOrigin,
 	useActiveItemId,
@@ -194,6 +193,7 @@ function StructureTreeNodeContent({
 	const canUpdatePageStructure = useSelector(selectCanUpdatePageStructure);
 	const dispatch = useDispatch();
 	const nodeRef = useRef();
+	const restrictedItemIds = useSelector((state) => state.restrictedItemIds);
 	const selectedViewportSize = useSelector(
 		(state) => state.selectedViewportSize
 	);
@@ -347,9 +347,6 @@ function StructureTreeNodeContent({
 				'dragged': isDraggingSource,
 				'font-weight-semi-bold':
 					node.activable && node.itemType !== ITEM_TYPES.editable,
-				'page-editor__page-structure__tree-node--mapped': isMapped,
-				'page-editor__page-structure__tree-node--master-item':
-					node.isMasterItem,
 			})}
 			ref={targetRef}
 		>
@@ -408,7 +405,7 @@ function StructureTreeNodeContent({
 				showPermissionRestriction={isRestricted(
 					item,
 					node,
-					config.restrictedItemIds
+					restrictedItemIds
 				)}
 				showUnavailableWarning={
 					Liferay.FeatureFlags['LPS-169923'] &&
@@ -454,7 +451,6 @@ const NameLabel = React.forwardRef(
 						'page-editor__page-structure__tree-node__name--hidden': hidden,
 						'page-editor__page-structure__tree-node__name--mapped': isMapped,
 						'page-editor__page-structure__tree-node__name--master-item': isMasterItem,
-						'w-100': editingName,
 					}
 				)}
 				ref={ref}

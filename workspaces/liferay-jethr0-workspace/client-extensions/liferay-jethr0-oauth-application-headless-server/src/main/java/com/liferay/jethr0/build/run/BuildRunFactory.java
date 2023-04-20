@@ -14,48 +14,25 @@
 
 package com.liferay.jethr0.build.run;
 
-import com.liferay.jethr0.build.Build;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import com.liferay.jethr0.entity.factory.BaseEntityFactory;
 
 import org.json.JSONObject;
+
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Michael Hashimoto
  */
-public class BuildRunFactory {
+@Configuration
+public class BuildRunFactory extends BaseEntityFactory<BuildRun> {
 
-	public static BuildRun newBuildRun(Build build, JSONObject jsonObject) {
-		long id = jsonObject.getLong("id");
-
-		BuildRun buildRun = null;
-
-		synchronized (_buildRuns) {
-			if (_buildRuns.containsKey(id)) {
-				return _buildRuns.get(id);
-			}
-
-			buildRun = new DefaultBuildRun(build, jsonObject);
-
-			_buildRuns.put(buildRun.getId(), buildRun);
-		}
-
-		return buildRun;
+	@Override
+	public BuildRun newEntity(JSONObject jsonObject) {
+		return new DefaultBuildRun(jsonObject);
 	}
 
-	public static void removeBuildRun(BuildRun buildRun) {
-		if (buildRun == null) {
-			return;
-		}
-
-		synchronized (_buildRuns) {
-			_buildRuns.remove(buildRun.getId());
-		}
+	protected BuildRunFactory() {
+		super(BuildRun.class);
 	}
-
-	private static final Map<Long, BuildRun> _buildRuns =
-		Collections.synchronizedMap(new HashMap<>());
 
 }

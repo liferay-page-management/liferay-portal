@@ -1,0 +1,444 @@
+@component-name = "OSB Site Initializer Partner Portal"
+definition {
+
+	property custom.properties = "feature.flag.LPS-135430=true";
+	property osgi.modules.includes = "osb-site-initializer-partner-portal";
+	property portal.release = "false";
+	property portal.upstream = "true";
+	property release.feature.flags.disable.DISABLE_PRIVATE_LAYOUTS = "true";
+	property testray.main.component.name = "OSB Site Initializer Partner Portal";
+
+	setUp {
+		task ("Set up instance and sign in") {
+			TestCase.setUpPortalInstance();
+
+			User.firstLoginPG();
+		}
+
+		task ("Create a new Partner Portal Site and connect with Salesforce") {
+			PRMUtils.addSite();
+
+			PRMUtils.connectWithSalesforce();
+		}
+
+		task ("Add a Partner user") {
+			JSONUser.addUser(
+				userEmailAddress = "partner@liferay.com",
+				userFirstName = "partner",
+				userLastName = "partner",
+				userScreenName = "partner");
+
+			JSONUser.setFirstPassword(
+				agreeToTermsAndAnswerReminderQuery = "true",
+				requireReset = "false",
+				userEmailAddress = "partner@liferay.com");
+		}
+
+		task ("Add a Manager user") {
+			JSONUser.addUserWithRole(
+				roleTitle = "Channel General Manager",
+				userEmailAddress = "manager@liferay.com",
+				userFirstName = "manager",
+				userLastName = "manager",
+				userScreenName = "manager");
+
+			JSONUser.setFirstPassword(
+				agreeToTermsAndAnswerReminderQuery = "true",
+				requireReset = "false",
+				userEmailAddress = "manager@liferay.com");
+		}
+
+		task ("Add a new account and assign the created users to the account") {
+			JSONPRM.addAccount();
+
+			JSONAccountEntryUser.addExistUsertoAccount(
+				accountEntryName = "Company Name 1",
+				userEmailAddress = "partner@liferay.com");
+
+			JSONAccountEntryUser.addExistUsertoAccount(
+				accountEntryName = "Company Name 1",
+				userEmailAddress = "manager@liferay.com");
+		}
+
+		task ("Login with the Partner user and create an MDF Request") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "partner@liferay.com",
+				userLoginFullName = "partner");
+
+			var requestId = JSONPRM.createMDFRequest(
+				accountEntryName = "Company Name 1",
+				secondActivityName = "Activity Name 2",
+				secondBudgetValueList = 1000,
+				userEmailAddress = "partner@liferay.com");
+		}
+
+		task ("Login with the Manager user and approves the created MDF") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "manager@liferay.com",
+				userLoginFullName = "manager");
+
+			JSONPRM.changeMDFStatus(
+				mdfStatus = "Approved",
+				requestId = ${requestId});
+		}
+
+		task ("Login with the Partner user and create an MDF Claim") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "partner@liferay.com",
+				userLoginFullName = "partner");
+
+			PRMNavigator.openSitePage(pageName = "MDF Requests");
+
+			PRMMDFRequest.goToMDF(campaignName = "Campaign Name");
+		}
+	}
+
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		if (${testPortalInstance} == "true") {
+			PortalInstances.tearDownCP();
+		}
+		else {
+			PRMUtils.tearDown();
+		}
+	}
+
+	@description = "This is a test for LPS-181363. Verify that its possible to unselect an activity when editing"
+	@ignore = "true"
+	@priority = 5
+	test CanUnselectClaimedActivity {
+
+		// This is a test for LPS-181363. Verify that its possible to unselect an activity when editing
+
+	}
+
+	@description = "This is a test for LPS-181360. Verify that the Edit button is not displayed to partner in status different from 'Draft' and 'Request More Info'"
+	@priority = 5
+	test EditButtonIsDisplayedInSpecificStatusToPartner {
+		property test.name.skip.portal.instance = "PRMMDFClaimEdit#EditButtonIsDisplayedInSpecificStatus";
+
+		// Temporarily skip portal instances to get tests running for pending release. LRQA-80052
+
+		task ("Given that a new claim is created") {
+			PRMMDFClaim.createNewClaim(
+				listLeads = "Document_1.xlsx",
+				reimbursementInvoice = "Document_1.png",
+				thirdInvoice = "Document_1.png");
+
+			task ("The Claim ID is saved in a variable") {
+				PRMMDFClaim.getClaimIdOnDetailPage(index = 1);
+			}
+		}
+
+		task ("When the manager approves the created Claim") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "manager@liferay.com",
+				userLoginFullName = "manager");
+
+			JSONPRM.changeClaimStatus(
+				claimId = ${staticClaimId1},
+				claimStatus = "Approved");
+		}
+
+		task ("And the partner goes to the approved claim") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "partner@liferay.com",
+				userLoginFullName = "partner");
+
+			PRMNavigator.gotoClaim(claimId = ${staticClaimId1});
+		}
+
+		task ("Then the 'Edit' button is not visible") {
+			PRMMDFClaimEdit.buttonIsNotVisible();
+		}
+
+		task ("And when the manager moves the claim to Finance Review") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "manager@liferay.com",
+				userLoginFullName = "manager");
+
+			JSONPRM.changeClaimStatus(
+				claimId = ${staticClaimId1},
+				claimStatus = "In Finance Review");
+		}
+
+		task ("And the partner goes to the claim") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "partner@liferay.com",
+				userLoginFullName = "partner");
+
+			PRMNavigator.gotoClaim(claimId = ${staticClaimId1});
+		}
+
+		task ("Then the 'Edit' button is not visible") {
+			PRMMDFClaimEdit.buttonIsNotVisible();
+		}
+
+		task ("And when the manager moves the claim to Claim Paid") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "manager@liferay.com",
+				userLoginFullName = "manager");
+
+			JSONPRM.changeClaimStatus(
+				claimId = ${staticClaimId1},
+				claimStatus = "Claim Paid");
+		}
+
+		task ("And the partner goes to the claim") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "partner@liferay.com",
+				userLoginFullName = "partner");
+
+			PRMNavigator.gotoClaim(claimId = ${staticClaimId1});
+		}
+
+		task ("Then the 'Edit' button is not visible") {
+			PRMMDFClaimEdit.buttonIsNotVisible();
+		}
+	}
+
+	@description = "This is a test for LPS-181362. Verify that is not possible to edit the MDF Claim when all required fields are not filled"
+	@priority = 5
+	test IsNotPossibleToEditClaimWithoutFillAllRequiredFields {
+		property test.name.skip.portal.instance = "PRMMDFClaimEdit#IsNotPossibleToEditClaimWithoutFillAllRequiredFields";
+
+		// Temporarily skip portal instances to get tests running for pending release. LRQA-80052
+
+		task ("Given that the partner creates a new claim") {
+			PRMMDFClaim.createNewClaim(
+				listLeads = "Document_1.xlsx",
+				reimbursementInvoice = "Document_1.png",
+				thirdInvoice = "Document_1.jpg");
+
+			task ("The Claim ID is saved in a variable") {
+				PRMMDFClaim.getClaimIdOnDetailPage(index = 1);
+			}
+		}
+
+		task ("And the Manager approves the created Claim") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "manager@liferay.com",
+				userLoginFullName = "manager");
+
+			JSONPRM.changeClaimStatus(
+				claimId = ${staticClaimId1},
+				claimStatus = "More Info Requested");
+		}
+
+		task ("And the partner goes to edit the approved claim") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "partner@liferay.com",
+				userLoginFullName = "partner");
+
+			PRMNavigator.gotoClaim(claimId = ${staticClaimId1});
+
+			PRMMDFClaimEdit.editButton();
+		}
+
+		task ("When the partner don't fill all mandatory fields of a new activity") {
+			PRMMDFClaim.fillActivityFields(
+				activityIndex = 1,
+				thirdInvoice = "Document_1.jpg");
+		}
+
+		task ("Then the 'Submit' button remains disabled") {
+			PRMMDFRequest.viewDisabledButton(buttonName = "Submit");
+		}
+	}
+
+	@description = "This is a test for LPS-181361. Verify that Managers can edit Claim in any status"
+	@priority = 5
+	test ManagerCanEditClaimInAnyStatus {
+		property test.name.skip.portal.instance = "PRMMDFClaimEdit#ManagerCanEditClaimInAnyStatus";
+
+		// Temporarily skip portal instances to get tests running for pending release. LRQA-80052
+
+		task ("Given that the manager creates a new claim") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "manager@liferay.com",
+				userLoginFullName = "manager");
+
+			PRMNavigator.openSitePage(pageName = "MDF Requests");
+
+			PRMMDFRequest.goToMDF(campaignName = "Campaign Name");
+
+			PRMMDFClaim.createNewClaim(
+				listLeads = "Document_1.xlsx",
+				reimbursementInvoice = "Document_1.png",
+				thirdInvoice = "Document_1.jpg");
+
+			task ("The Claim ID is saved in a variable") {
+				PRMMDFClaim.getClaimIdOnDetailPage(index = 1);
+			}
+		}
+
+		task ("When the manager goes to the created claim in 'Pending Marketing Review' status") {
+			PRMNavigator.gotoClaim(claimId = ${staticClaimId1});
+		}
+
+		task ("Then he is able to edit the claim") {
+			PRMMDFClaimEdit.editButton();
+
+			PRMMDFClaimEdit.editClaim(
+				activityName = "Activity Name",
+				newAttachment = "Document_2.jpg");
+		}
+
+		task ("When the manager changes the claim status to 'Approved' and navigate to it") {
+			JSONPRM.changeClaimStatus(
+				claimId = ${staticClaimId1},
+				claimStatus = "Approved");
+
+			PRMNavigator.gotoClaim(claimId = ${staticClaimId1});
+		}
+
+		task ("Then he is able to edit the claim") {
+			PRMMDFClaimEdit.editButton();
+
+			PRMMDFClaimEdit.editClaim(
+				activityName = "Activity Name",
+				newAttachment = "Document_2.jpg");
+		}
+
+		task ("When the manager changes the claim status to 'In Finance Review' and navigate to it") {
+			JSONPRM.changeClaimStatus(
+				claimId = ${staticClaimId1},
+				claimStatus = "In Finance Review");
+
+			PRMNavigator.gotoClaim(claimId = ${staticClaimId1});
+		}
+
+		task ("Then he is able to edit the claim") {
+			PRMMDFClaimEdit.editButton();
+
+			PRMMDFClaimEdit.editClaim(
+				activityName = "Activity Name",
+				newAttachment = "Document_2.jpg");
+		}
+
+		task ("When the manager changes the claim status to 'Claim Paid' and navigate to it") {
+			JSONPRM.changeClaimStatus(
+				claimId = ${staticClaimId1},
+				claimStatus = "Claim Paid");
+
+			PRMNavigator.gotoClaim(claimId = ${staticClaimId1});
+		}
+
+		task ("Then he is able to edit the claim") {
+			PRMMDFClaimEdit.editButton();
+
+			PRMMDFClaimEdit.editClaim(
+				activityName = "Activity Name",
+				newAttachment = "Document_2.jpg");
+		}
+	}
+
+	@description = "This is a test for LPS-181359. Verify that the Partner can Edit a Claim in 'Draft' Status"
+	@priority = 5
+	test PartnerCanEditClaimInDraftStatus {
+		property test.name.skip.portal.instance = "PRMMDFClaimEdit#PartnerCanEditClaimInDraftStatus";
+
+		task ("Given that a new claim is saved as draft") {
+			PRMMDFClaim.createNewClaim(
+				listLeads = "Document_1.xlsx",
+				reimbursementInvoice = "Document_1.png",
+				saveAsDraft = "true",
+				thirdInvoice = "Document_1.png");
+
+			task ("The Claim ID is saved in a variable") {
+				PRMMDFClaim.getClaimIdOnDetailPage(index = 1);
+			}
+		}
+
+		task ("And the partner goes to edit the claim") {
+			PRMNavigator.gotoClaim(claimId = ${staticClaimId1});
+
+			PRMMDFClaimEdit.editButton();
+		}
+
+		task ("When the partner change one attachment of the budget") {
+			PRMMDFClaimEdit.editClaim(
+				activityName = "Activity Name",
+				newAttachment = "Document_3.png");
+		}
+
+		task ("And go to the claim detail page") {
+			PRMMDFClaimEdit.gotoClaimViaUI(claimId = ${staticClaimId1});
+		}
+
+		task ("And open the activity details") {
+			PRMMDFClaim.activityCollapse(activityName = "Activity Name");
+		}
+
+		task ("Then the new attachment is displayed") {
+			PRMMDFClaim.viewAttachmentPresent(attachmentName = "Document_3.png");
+		}
+
+		task ("And the old attachment isn't displayed") {
+			PRMMDFClaim.viewAttachmentNotPresent(attachmentName = "Document_1.png");
+		}
+	}
+
+	@description = "This is a test for LPS-181358. Verify that the Partner can Edit a Claim in 'Request More Info' Status"
+	@priority = 5
+	test PartnerCanEditClaimInRequestMoreInfoStatus {
+		property test.name.skip.portal.instance = "PRMMDFClaimEdit#PartnerCanEditClaimInRequestMoreInfoStatus";
+
+		// Temporarily skip portal instances to get tests running for pending release. LRQA-80052
+
+		task ("Given that a new claim is created") {
+			PRMMDFClaim.createNewClaim(
+				listLeads = "Document_1.xlsx",
+				reimbursementInvoice = "Document_1.png",
+				thirdInvoice = "Document_1.png");
+
+			task ("The Claim ID is saved in a variable") {
+				PRMMDFClaim.getClaimIdOnDetailPage(index = 1);
+			}
+		}
+
+		task ("And the Manager approves the created Claim") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "manager@liferay.com",
+				userLoginFullName = "manager");
+
+			JSONPRM.changeClaimStatus(
+				claimId = ${staticClaimId1},
+				claimStatus = "More Info Requested");
+		}
+
+		task ("And the partner goes to edit the approved claim") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "partner@liferay.com",
+				userLoginFullName = "partner");
+
+			PRMNavigator.gotoClaim(claimId = ${staticClaimId1});
+
+			PRMMDFClaimEdit.editButton();
+		}
+
+		task ("When the partner change one attachment of the budget") {
+			PRMMDFClaimEdit.editClaim(
+				activityName = "Activity Name",
+				newAttachment = "Document_2.png");
+		}
+
+		task ("And go to the claim detail page") {
+			PRMMDFClaimEdit.gotoClaimViaUI(claimId = ${staticClaimId1});
+		}
+
+		task ("And open the activity details") {
+			PRMMDFClaim.activityCollapse(activityName = "Activity Name");
+		}
+
+		task ("Then the new attachment is displayed") {
+			PRMMDFClaim.viewAttachmentPresent(attachmentName = "Document_2.png");
+		}
+
+		task ("And the old attachment isn't displayed") {
+			PRMMDFClaim.viewAttachmentNotPresent(attachmentName = "Document_1.png");
+		}
+	}
+
+}

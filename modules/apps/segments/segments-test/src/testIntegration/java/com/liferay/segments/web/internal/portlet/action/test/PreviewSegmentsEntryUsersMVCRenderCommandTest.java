@@ -104,16 +104,14 @@ public class PreviewSegmentsEntryUsersMVCRenderCommandTest {
 			mockLiferayPortletRenderRequest, mockLiferayPortletRenderResponse);
 
 		ReflectionTestUtil.invoke(
-			mockLiferayPortletRenderRequest.getAttribute(
-				"PREVIEW_SEGMENTS_ENTRY_USERS_DISPLAY_CONTEXT"),
+			mockLiferayPortletRenderRequest.getAttribute(_CLASS_NAME),
 			"getSearchContainer", new Class<?>[0]);
 
 		_mvcRenderCommand.render(
 			mockLiferayPortletRenderRequest, mockLiferayPortletRenderResponse);
 
 		SearchContainer<User> searchContainer = ReflectionTestUtil.invoke(
-			mockLiferayPortletRenderRequest.getAttribute(
-				"PREVIEW_SEGMENTS_ENTRY_USERS_DISPLAY_CONTEXT"),
+			mockLiferayPortletRenderRequest.getAttribute(_CLASS_NAME),
 			"getSearchContainer", new Class<?>[0]);
 
 		Assert.assertEquals(1, searchContainer.getTotal());
@@ -148,8 +146,7 @@ public class PreviewSegmentsEntryUsersMVCRenderCommandTest {
 			new MockLiferayPortletRenderResponse());
 
 		SearchContainer<User> searchContainer = ReflectionTestUtil.invoke(
-			mockLiferayPortletRenderRequest.getAttribute(
-				"PREVIEW_SEGMENTS_ENTRY_USERS_DISPLAY_CONTEXT"),
+			mockLiferayPortletRenderRequest.getAttribute(_CLASS_NAME),
 			"getSearchContainer", new Class<?>[0]);
 
 		Assert.assertEquals(1, searchContainer.getTotal());
@@ -182,8 +179,7 @@ public class PreviewSegmentsEntryUsersMVCRenderCommandTest {
 			new MockLiferayPortletRenderResponse());
 
 		SearchContainer<User> searchContainer = ReflectionTestUtil.invoke(
-			mockLiferayPortletRenderRequest.getAttribute(
-				"PREVIEW_SEGMENTS_ENTRY_USERS_DISPLAY_CONTEXT"),
+			mockLiferayPortletRenderRequest.getAttribute(_CLASS_NAME),
 			"getSearchContainer", new Class<?>[0]);
 
 		Assert.assertEquals(1, searchContainer.getTotal());
@@ -233,8 +229,7 @@ public class PreviewSegmentsEntryUsersMVCRenderCommandTest {
 			new MockLiferayPortletRenderResponse());
 
 		SearchContainer<User> searchContainer = ReflectionTestUtil.invoke(
-			mockLiferayPortletRenderRequest.getAttribute(
-				"PREVIEW_SEGMENTS_ENTRY_USERS_DISPLAY_CONTEXT"),
+			mockLiferayPortletRenderRequest.getAttribute(_CLASS_NAME),
 			"getSearchContainer", new Class<?>[0]);
 
 		Assert.assertEquals(1, searchContainer.getTotal());
@@ -286,8 +281,7 @@ public class PreviewSegmentsEntryUsersMVCRenderCommandTest {
 			new MockLiferayPortletRenderResponse());
 
 		SearchContainer<User> searchContainer = ReflectionTestUtil.invoke(
-			mockLiferayPortletRenderRequest.getAttribute(
-				"PREVIEW_SEGMENTS_ENTRY_USERS_DISPLAY_CONTEXT"),
+			mockLiferayPortletRenderRequest.getAttribute(_CLASS_NAME),
 			"getSearchContainer", new Class<?>[0]);
 
 		Assert.assertEquals(1, searchContainer.getTotal());
@@ -326,6 +320,10 @@ public class PreviewSegmentsEntryUsersMVCRenderCommandTest {
 
 		return themeDisplay;
 	}
+
+	private static final String _CLASS_NAME =
+		"com.liferay.segments.web.internal.display.context." +
+			"PreviewSegmentsEntryUsersDisplayContext";
 
 	@Inject
 	private CompanyLocalService _companyLocalService;

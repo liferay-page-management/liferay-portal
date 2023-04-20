@@ -28,6 +28,7 @@ import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -40,7 +41,9 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.InputStream;
+import java.io.Serializable;
 
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -116,6 +119,17 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 					" ", batchEngineUnit.getDataFileName()));
 		}
 
+		Map<String, Serializable> parameters =
+			batchEngineUnitConfiguration.getParameters();
+
+		String featureFlag = (String)parameters.get("featureFlag");
+
+		if (Validator.isNotNull(featureFlag) &&
+			!FeatureFlagManagerUtil.isEnabled(featureFlag)) {
+
+			return;
+		}
+
 		ExecutorService executorService =
 			_portalExecutorManager.getPortalExecutor(
 				BatchEngineUnitProcessorImpl.class.getName());
@@ -152,8 +166,8 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 		BatchEngineUnitConfiguration batchEngineUnitConfiguration) {
 
 		if (batchEngineUnitConfiguration.getCompanyId() == 0) {
-			if (_log.isWarnEnabled()) {
-				_log.warn("Using default company ID for this batch process");
+			if (_log.isInfoEnabled()) {
+				_log.info("Using default company ID for this batch process");
 			}
 
 			try {
@@ -169,8 +183,8 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 		}
 
 		if (batchEngineUnitConfiguration.getUserId() == 0) {
-			if (_log.isWarnEnabled()) {
-				_log.warn("Using default user ID for this batch process");
+			if (_log.isInfoEnabled()) {
+				_log.info("Using default user ID for this batch process");
 			}
 
 			try {

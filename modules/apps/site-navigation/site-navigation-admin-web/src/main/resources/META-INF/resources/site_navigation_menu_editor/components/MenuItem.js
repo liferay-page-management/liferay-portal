@@ -26,6 +26,7 @@ import {NESTING_MARGIN} from '../constants/nestingMargin';
 import {SIDEBAR_PANEL_IDS} from '../constants/sidebarPanelIds';
 import {useConstants} from '../contexts/ConstantsContext';
 import {useItems, useSetItems} from '../contexts/ItemsContext';
+import {useDragLayer, useSetDragLayer} from '../contexts/KeyboardDndContext';
 import {
 	useSelectedMenuItemId,
 	useSetSelectedMenuItemId,
@@ -39,13 +40,7 @@ import useKeyboardNavigation from '../utils/useKeyboardNavigation';
 import {AddItemDropDown} from './AddItemDropdown';
 import MenuItemOptions from './MenuItemOptions';
 
-export function MenuItem({
-	isMovementEnabled,
-	item,
-	onMenuItemRemoved,
-	setIsMovementEnabled,
-	setMovementText,
-}) {
+export function MenuItem({item, onMenuItemRemoved}) {
 	const setItems = useSetItems();
 	const setSelectedMenuItemId = useSetSelectedMenuItemId();
 	const setSidebarPanelId = useSetSidebarPanelId();
@@ -56,7 +51,12 @@ export function MenuItem({
 	} = useConstants();
 
 	const items = useItems();
-	const {siteNavigationMenuItemId, title, type} = item;
+	const {
+		parentSiteNavigationMenuItemId,
+		siteNavigationMenuItemId,
+		title,
+		type,
+	} = item;
 	const itemPath = getItemPath(siteNavigationMenuItemId, items);
 	const selected = useSelectedMenuItemId() === siteNavigationMenuItemId;
 
@@ -109,8 +109,24 @@ export function MenuItem({
 			});
 	};
 
+	const keyboardDragLayer = useDragLayer();
+	const setKeyboardDragLayer = useSetDragLayer();
 	const {handlerRef, isDragging} = useDragItem(item, updateMenuItemParent);
 	const {targetRef} = useDropTarget(item);
+
+	const isKeyboardDragging = useMemo(
+		() =>
+			keyboardDragLayer?.siteNavigationMenuItemId
+				? getItemPath(siteNavigationMenuItemId, items).includes(
+						keyboardDragLayer.siteNavigationMenuItemId
+				  )
+				: false,
+		[
+			items,
+			keyboardDragLayer?.siteNavigationMenuItemId,
+			siteNavigationMenuItemId,
+		]
+	);
 
 	const rtl = Liferay.Language.direction[languageId] === 'rtl';
 	const itemStyle = rtl
@@ -128,6 +144,115 @@ export function MenuItem({
 		onKeyDown,
 		setElement,
 	} = useKeyboardNavigation();
+
+	const onDragHandlerKeyDown = (event) => {
+		if (!Liferay.FeatureFlags['LPS-134527']) {
+			return;
+		}
+
+		if (event.key === 'Enter') {
+			event.preventDefault();
+			event.stopPropagation();
+
+			if (isKeyboardDragging) {
+				let nextOrder = keyboardDragLayer.order;
+
+				if (
+					parentSiteNavigationMenuItemId ===
+						keyboardDragLayer.parentSiteNavigationMenuItemId &&
+					keyboardDragLayer.order > order
+				) {
+					nextOrder -= 1;
+				}
+
+				updateMenuItem({
+					editSiteNavigationMenuItemParentURL,
+					itemId: keyboardDragLayer.siteNavigationMenuItemId,
+					order: nextOrder,
+					parentId: keyboardDragLayer.parentSiteNavigationMenuItemId,
+					portletNamespace,
+				}).then(({siteNavigationMenuItems}) => {
+					setKeyboardDragLayer(items, null);
+					setItems(getFlatItems(siteNavigationMenuItems));
+				});
+			}
+			else {
+				setKeyboardDragLayer(items, {
+					eventKey: event.key,
+					menuItemTitle: title,
+					menuItemType: type,
+					order,
+					parentSiteNavigationMenuItemId:
+						item.parentSiteNavigationMenuItemId,
+					siteNavigationMenuItemId,
+				});
+			}
+		}
+
+		if (event.key === 'Escape') {
+			setKeyboardDragLayer(items, null);
+		}
+
+		if (!isKeyboardDragging) {
+			return;
+		}
+
+		event.stopPropagation();
+
+		const eventKey = event.key;
+
+		if (eventKey === 'ArrowDown' || eventKey === 'ArrowUp') {
+			const getNextPosition =
+				eventKey === 'ArrowDown' ? getDownPosition : getUpPosition;
+
+			const findNextPosition = (previousResult) => {
+				const nextResult = getNextPosition({
+					items,
+					order: previousResult.order,
+					parentSiteNavigationMenuItemId:
+						previousResult.parentSiteNavigationMenuItemId,
+				});
+
+				if (!nextResult) {
+					return nextResult;
+				}
+
+				const resultPath = getItemPath(
+					nextResult.parentSiteNavigationMenuItemId,
+					items
+				);
+
+				if (resultPath.includes(siteNavigationMenuItemId)) {
+					return findNextPosition(nextResult);
+				}
+
+				return nextResult;
+			};
+
+			const result = findNextPosition({
+				order: keyboardDragLayer ? keyboardDragLayer.order : order,
+				parentSiteNavigationMenuItemId: keyboardDragLayer
+					? keyboardDragLayer.parentSiteNavigationMenuItemId
+					: item.parentSiteNavigationMenuItemId,
+			});
+
+			if (!result) {
+				return;
+			}
+
+			event.preventDefault();
+
+			setKeyboardDragLayer(items, {
+				eventKey,
+				menuItemTitle: title,
+				menuItemType: type,
+				order: result.order,
+				parentSiteNavigationMenuItemId:
+					result.parentSiteNavigationMenuItemId,
+				siteNavigationMenuItemId,
+			});
+		}
+	};
 
 	return (
 		<>
@@ -148,14 +273,14 @@ export function MenuItem({
 					'focusable-menu-item site_navigation_menu_editor_MenuItem',
 					{
 						active: selected,
-						dragging: isDragging,
+						dragging: isDragging || isKeyboardDragging,
 					}
 				)}
 				data-item-id={item.siteNavigationMenuItemId}
 				data-parent-item-id={parentItemId}
 				onBlur={onBlur}
 				onClick={(event) => {
-					if (!isMovementEnabled && event.nativeEvent.pointerType) {
+					if (!isKeyboardDragging && event.nativeEvent.pointerType) {
 						setSelectedMenuItemId(siteNavigationMenuItemId);
 						setSidebarPanelId(SIDEBAR_PANEL_IDS.menuItemSettings);
 					}
@@ -164,7 +289,7 @@ export function MenuItem({
 				onKeyDown={(event) => {
 					if (
 						(event.key === ' ' || event.key === 'Enter') &&
-						!isMovementEnabled &&
+						!isKeyboardDragging &&
 						event.target === element
 					) {
 						setSelectedMenuItemId(siteNavigationMenuItemId);
@@ -194,96 +319,9 @@ export function MenuItem({
 										displayType="unstyled"
 										monospaced={false}
 										onBlur={() =>
-											setIsMovementEnabled(false)
+											setKeyboardDragLayer(null)
 										}
-										onKeyDown={(event) => {
-											if (
-												!Liferay.FeatureFlags[
-													'LPS-134527'
-												]
-											) {
-												return;
-											}
-
-											if (event.key === 'Enter') {
-												event.preventDefault();
-												event.stopPropagation();
-
-												setIsMovementEnabled(
-													(
-														previousIsMovementEnabled
-													) =>
-														!previousIsMovementEnabled
-												);
-											}
-
-											if (event.key === 'Escape') {
-												setIsMovementEnabled(false);
-											}
-
-											if (!isMovementEnabled) {
-												return;
-											}
-
-											event.stopPropagation();
-
-											const eventKey = event.key;
-
-											if (
-												eventKey === 'ArrowDown' ||
-												eventKey === 'ArrowUp'
-											) {
-												const computeFunction =
-													eventKey === 'ArrowDown'
-														? getDownPosition
-														: getUpPosition;
-
-												const result = computeFunction({
-													items,
-													order,
-													parentSiteNavigationMenuItemId:
-														item.parentSiteNavigationMenuItemId,
-												});
-
-												if (!result) {
-													return;
-												}
-
-												updateMenuItem({
-													editSiteNavigationMenuItemParentURL,
-													itemId:
-														item.siteNavigationMenuItemId,
-													order: result.order,
-													parentId:
-														result.parentSiteNavigationMenuItemId,
-													portletNamespace,
-												}).then(
-													({
-														siteNavigationMenuItems,
-													}) => {
-														const newItems = getFlatItems(
-															siteNavigationMenuItems
-														);
-
-														setItems(newItems);
-
-														setMovementText(
-															sub(
-																eventKey ===
-																	'ArrowDown'
-																	? Liferay.Language.get(
-																			'x-moved-down'
-																	  )
-																	: Liferay.Language.get(
-																			'x-moved-up'
-																	  ),
-																`${title} (${type})`
-															)
-														);
-													}
-												);
-											}
-										}}
+										onKeyDown={onDragHandlerKeyDown}
 										size="sm"
 										symbol="drag"
 										tabIndex={
@@ -368,7 +406,7 @@ export function MenuItem({
 															: '-1'
 													}
 													title={Liferay.Language.get(
-														'add-item'
+														'add-item-at-the-same-level'
 													)}
 												/>
 											}
@@ -405,7 +443,7 @@ export function MenuItem({
 															: '-1'
 													}
 													title={Liferay.Language.get(
-														'add-item'
+														'add-item-at-the-same-level'
 													)}
 												/>
 											}
@@ -473,44 +511,53 @@ function updateMenuItem({
 		});
 }
 
-function getDownPosition({items, order, parentSiteNavigationMenuItemId}) {
-	const parent = items.find(
+export function getDownPosition({
+	items,
+	order,
+	parentSiteNavigationMenuItemId,
+}) {
+	const flatItems = getFlatItems(items);
+
+	const parentItem = flatItems.find(
 		(item) =>
 			item.siteNavigationMenuItemId === parentSiteNavigationMenuItemId
 	);
 
-	const siblings = parent
-		? parent.children
-		: items.filter(
-				(item) =>
-					item.parentSiteNavigationMenuItemId ===
-					parentSiteNavigationMenuItemId
-		  );
+	const siblingsItems = flatItems.filter(
+		(item) =>
+			item.parentSiteNavigationMenuItemId ===
+			parentSiteNavigationMenuItemId
+	);
 
-	const sibling = siblings[order + 1];
+	const siblingItem = siblingsItems[order];
 
 	// If there aren't any sibling, the menu is placed as the sibling of the parent.
 
-	if (!sibling) {
+	if (!siblingItem) {
 
 		// If there aren't any sibling and the parentSiteNavigationMenuItemId is 0,
 		// there is no movement possible.
 
-		if (parentSiteNavigationMenuItemId === '0') {
-			return;
+		if (!parentItem) {
+			return null;
 		}
 
-		const parentOrder = getOrder({
-			items,
-			parentSiteNavigationMenuItemId:
-				parent.parentSiteNavigationMenuItemId,
-			siteNavigationMenuItemId: parent.siteNavigationMenuItemId,
-		});
+		const parentSiblings = flatItems.filter(
+			(item) =>
+				item.parentSiteNavigationMenuItemId ===
+				parentItem.parentSiteNavigationMenuItemId
+		);
+
+		const parentOrder = parentSiblings.findIndex(
+			(item) =>
+				item.siteNavigationMenuItemId ===
+				parentItem.siteNavigationMenuItemId
+		);
 
 		return {
 			order: parentOrder + 1,
 			parentSiteNavigationMenuItemId:
-				parent.parentSiteNavigationMenuItemId,
+				parentItem.parentSiteNavigationMenuItemId,
 		};
 	}
 
@@ -518,11 +565,11 @@ function getDownPosition({items, order, parentSiteNavigationMenuItemId}) {
 
 	return {
 		order: 0,
-		parentSiteNavigationMenuItemId: sibling.siteNavigationMenuItemId,
+		parentSiteNavigationMenuItemId: siblingItem.siteNavigationMenuItemId,
 	};
 }
 
-function getUpPosition({items, order, parentSiteNavigationMenuItemId}) {
+export function getUpPosition({items, order, parentSiteNavigationMenuItemId}) {
 
 	// The first menu cannot be moved upwards
 
@@ -530,65 +577,51 @@ function getUpPosition({items, order, parentSiteNavigationMenuItemId}) {
 		return null;
 	}
 
-	const parent = items.find(
+	const flatItems = getFlatItems(items);
+
+	const parentItem = flatItems.find(
 		(item) =>
 			item.siteNavigationMenuItemId === parentSiteNavigationMenuItemId
 	);
 
-	const siblings = parent
-		? parent.children
-		: items.filter(
-				(item) =>
-					item.parentSiteNavigationMenuItemId ===
-					parentSiteNavigationMenuItemId
-		  );
+	const siblingsItems = flatItems.filter(
+		(item) =>
+			item.parentSiteNavigationMenuItemId ===
+			parentSiteNavigationMenuItemId
+	);
 
 	// When the menu is the first child, the menu is placed as the sibling of the parent.
 
 	if (order === 0) {
-		const nextOrder = getOrder({
-			items,
-			parentSiteNavigationMenuItemId:
-				parent.parentSiteNavigationMenuItemId,
-			siteNavigationMenuItemId: parent.siteNavigationMenuItemId,
-		});
+		const parentSiblings = flatItems.filter(
+			(item) =>
+				item.parentSiteNavigationMenuItemId ===
+				parentItem.parentSiteNavigationMenuItemId
+		);
+
+		const parentOrder = parentSiblings.findIndex(
+			(item) =>
+				item.siteNavigationMenuItemId ===
+				parentItem.siteNavigationMenuItemId
+		);
 
 		return {
-			order: nextOrder,
+			order: parentOrder,
 			parentSiteNavigationMenuItemId:
-				parent.parentSiteNavigationMenuItemId,
+				parentItem.parentSiteNavigationMenuItemId,
 		};
 	}
 
-	// If the previous sibling doesn't have children, place it inside.
+	const siblingItem = siblingsItems[order - 1];
 
-	const sibling = siblings[order - 1];
+	const siblingItemChildren = flatItems.filter(
+		(item) =>
+			item.parentSiteNavigationMenuItemId ===
+			siblingItem.siteNavigationMenuItemId
+	);
 
-	// If the previous sibling has children,
-	// get the deeper child and place the menu as a child of it.
-
-	const getDeeperChild = (item) => {
-		if (!item.children.length) {
-			return item;
-		}
-
-		return getDeeperChild(item.children.at(-1));
+	return {
+		order: siblingItemChildren.length,
+		parentSiteNavigationMenuItemId: siblingItem.siteNavigationMenuItemId,
 	};
-
-	const deeperChild = getDeeperChild(sibling);
-
-	if (deeperChild.children.length) {
-		return {
-			order: deeperChild.children.length,
-			parentSiteNavigationMenuItemId:
-				deeperChild.siteNavigationMenuItemId,
-		};
-	}
-	else {
-		return {
-			order: 0,
-			parentSiteNavigationMenuItemId:
-				deeperChild.siteNavigationMenuItemId,
-		};
-	}
 }

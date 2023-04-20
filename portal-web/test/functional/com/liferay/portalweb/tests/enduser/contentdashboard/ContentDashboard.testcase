@@ -1760,8 +1760,6 @@ definition {
 	@description = "LPS-155288 Given categories filter using treeview component And there is any category's checkbox selected When user clicks 'Clear All' button Then the results bar disappears "
 	@priority = 3
 	test ClearButtonCategoryAtTreeviewComponent {
-		property portal.acceptance = "false";
-
 		task ("Adding vocabulary and category") {
 			JSONCategory.addVocabulary(
 				groupName = "Test Site Name",
@@ -1804,13 +1802,7 @@ definition {
 		}
 
 		task ("Checking if the results bar not appears") {
-			AssertTextNotPresent(
-				locator1 = "Treeview#FILTER_BY_RESULTS_BAR_MESSAGE",
-				value1 = "1 ");
-
-			AssertTextNotPresent(
-				locator1 = "Treeview#FILTER_BY_RESULTS_BAR_MESSAGE",
-				value1 = "Item Selected");
+			AssertElementNotPresent(locator1 = "Treeview#FILTER_BY_RESULTS_BAR_MESSAGE");
 		}
 	}
 

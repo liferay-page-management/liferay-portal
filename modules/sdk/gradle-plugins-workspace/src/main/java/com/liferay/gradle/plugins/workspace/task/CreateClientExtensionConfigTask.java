@@ -25,6 +25,7 @@ import com.liferay.gradle.plugins.workspace.internal.client.extension.ClientExte
 import com.liferay.gradle.plugins.workspace.internal.util.GradleUtil;
 import com.liferay.gradle.plugins.workspace.internal.util.StringUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -32,12 +33,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 
+import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -56,6 +61,7 @@ import org.gradle.api.Project;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.file.RegularFile;
+import org.gradle.api.logging.Logger;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
@@ -78,8 +84,20 @@ public class CreateClientExtensionConfigTask extends DefaultTask {
 			_PLUGIN_PACKAGE_PROPERTIES_PATH);
 	}
 
-	public void addClientExtension(ClientExtension clientExtension) {
-		_clientExtensions.add(clientExtension);
+	public void addClientExtensionProfile(
+		String profileName, ClientExtension clientExtension) {
+
+		_clientExtensionsMap.compute(
+			profileName,
+			(key, value) -> {
+				if (value == null) {
+					value = new LinkedHashSet<>();
+				}
+
+				value.add(clientExtension);
+
+				return value;
+			});
 	}
 
 	public void addClientExtensionProperties(
@@ -92,46 +110,50 @@ public class CreateClientExtensionConfigTask extends DefaultTask {
 	public void createClientExtensionConfig() {
 		Properties pluginPackageProperties = _getPluginPackageProperties();
 
+		Set<ClientExtension> clientExtensions = _clientExtensionsMap.get(
+			GradleUtil.getProperty(getProject(), "profileName", "default"));
+
+		if (clientExtensions == null) {
+			clientExtensions = _clientExtensionsMap.get("default");
+		}
+
 		String classificationGrouping = _validateAndGetClassificationGrouping(
-			_clientExtensions);
+			clientExtensions);
 
 		Map<String, Object> jsonMap = new HashMap<>();
 
 		jsonMap.put(":configurator:policy", "force");
 
-		_clientExtensions.forEach(
-			clientExtension -> {
-				String pid = _clientExtensionProperties.getProperty(
-					clientExtension.type + ".pid");
+		for (ClientExtension clientExtension : clientExtensions) {
+			String pid = _clientExtensionProperties.getProperty(
+				clientExtension.type + ".pid");
 
-				if (Objects.equals(
-						clientExtension.type, "instanceConfiguration")) {
+			if (Objects.equals(clientExtension.type, "instanceSettings")) {
+				pid = clientExtension.typeSettings.remove("pid") + ".scoped";
+			}
 
-					pid = (String)clientExtension.typeSettings.remove("pid");
-				}
+			_expandWildcards(clientExtension.typeSettings);
 
-				if (pid != null) {
-					jsonMap.putAll(clientExtension.toJSONMap(pid));
-				}
+			if (pid != null) {
+				jsonMap.putAll(clientExtension.toJSONMap(pid));
+			}
 
-				if (Objects.equals(clientExtension.classification, "batch")) {
-					pluginPackageProperties.put(
-						"Liferay-Client-Extension-Batch", "batch/");
-				}
+			if (Objects.equals(clientExtension.classification, "batch")) {
+				pluginPackageProperties.put(
+					"Liferay-Client-Extension-Batch", "batch/");
+			}
 
-				if (Objects.equals(
-						clientExtension.classification, "frontend")) {
-
-					pluginPackageProperties.put(
-						"Liferay-Client-Extension-Frontend", "static/");
-				}
-			});
+			if (Objects.equals(clientExtension.classification, "frontend")) {
+				pluginPackageProperties.put(
+					"Liferay-Client-Extension-Frontend", "static/");
+			}
+		}
 
 		_storePluginPackageProperties(pluginPackageProperties);
 
 		Project project = getProject();
 
-		Stream<ClientExtension> stream = _clientExtensions.stream();
+		Stream<ClientExtension> stream = clientExtensions.stream();
 
 		Map<String, String> substitutionMap = stream.flatMap(
 			clientExtension -> {
@@ -165,10 +187,6 @@ public class CreateClientExtensionConfigTask extends DefaultTask {
 
 	public File getClientExtensionConfigFile() {
 		return GradleUtil.toFile(getProject(), _clientExtensionConfigFile);
-	}
-
-	public Set<ClientExtension> getClientExtensions() {
-		return _clientExtensions;
 	}
 
 	public File getDockerFile() {
@@ -298,6 +316,48 @@ public class CreateClientExtensionConfigTask extends DefaultTask {
 		}
 	}
 
+	private void _expandWildcards(Map<String, Object> typeSettings) {
+		Project project = getProject();
+
+		File clientExtensionBuildDir = new File(
+			project.getBuildDir(),
+			ClientExtensionProjectConfigurator.CLIENT_EXTENSION_BUILD_DIR);
+
+		File staticDir = new File(clientExtensionBuildDir, "static");
+
+		if (!staticDir.exists()) {
+			return;
+		}
+
+		Path staticDirPath = staticDir.toPath();
+
+		for (Map.Entry<String, Object> entry : typeSettings.entrySet()) {
+			Object currentValue = entry.getValue();
+
+			if ((currentValue instanceof String) &&
+				_isWildcardValue((String)currentValue)) {
+
+				entry.setValue(
+					_getMatchingPaths(staticDirPath, (String)currentValue));
+			}
+
+			if (currentValue instanceof List) {
+				List<String> values = new ArrayList<>();
+
+				for (String value : (List<String>)currentValue) {
+					if (_isWildcardValue(value)) {
+						values.addAll(_getMatchingPaths(staticDirPath, value));
+					}
+					else {
+						values.add(value);
+					}
+				}
+
+				entry.setValue(values);
+			}
+		}
+	}
+
 	private String _getFileContentFromProject(Project project, String path) {
 		File file = project.file(path);
 
@@ -324,6 +384,38 @@ public class CreateClientExtensionConfigTask extends DefaultTask {
 		return id;
 	}
 
+	private List<String> _getMatchingPaths(Path basePath, String glob) {
+		FileSystem fileSystem = basePath.getFileSystem();
+
+		PathMatcher pathMatcher = fileSystem.getPathMatcher("glob:" + glob);
+
+		try (Stream<Path> files = Files.walk(basePath)) {
+			List<String> matchingPaths = files.map(
+				basePath::relativize
+			).filter(
+				pathMatcher::matches
+			).map(
+				String::valueOf
+			).collect(
+				Collectors.toList()
+			);
+
+			Logger logger = getLogger();
+
+			if (matchingPaths.isEmpty() && logger.isWarnEnabled()) {
+				logger.warn("No paths matched the glob pattern {}", glob);
+			}
+
+			Collections.sort(matchingPaths);
+
+			return matchingPaths;
+		}
+		catch (IOException ioException) {
+			throw new GradleException(
+				"Unable to expand wildcard paths", ioException);
+		}
+	}
+
 	private Properties _getPluginPackageProperties() {
 		Properties pluginPackageProperties = new Properties();
 
@@ -342,6 +434,14 @@ public class CreateClientExtensionConfigTask extends DefaultTask {
 		}
 
 		return pluginPackageProperties;
+	}
+
+	private boolean _isWildcardValue(String value) {
+		if (value.contains(StringPool.STAR)) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private String _loadTemplate(
@@ -461,8 +561,8 @@ public class CreateClientExtensionConfigTask extends DefaultTask {
 
 	private final Object _clientExtensionConfigFile;
 	private Properties _clientExtensionProperties;
-	private final Set<ClientExtension> _clientExtensions =
-		new LinkedHashSet<>();
+	private final Map<String, Set<ClientExtension>> _clientExtensionsMap =
+		new HashMap<>();
 	private Object _dockerFile;
 	private Object _lcpJsonFile;
 	private final Object _pluginPackagePropertiesFile;

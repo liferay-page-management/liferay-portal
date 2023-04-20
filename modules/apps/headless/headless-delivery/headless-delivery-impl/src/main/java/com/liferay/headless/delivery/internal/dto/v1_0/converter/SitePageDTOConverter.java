@@ -20,6 +20,9 @@ import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.dynamic.data.mapping.kernel.StorageEngineManager;
+import com.liferay.headless.delivery.dto.v1_0.Experience;
+import com.liferay.headless.delivery.dto.v1_0.PageDefinition;
+import com.liferay.headless.delivery.dto.v1_0.ParentSitePage;
 import com.liferay.headless.delivery.dto.v1_0.SitePage;
 import com.liferay.headless.delivery.dto.v1_0.TaxonomyCategoryBrief;
 import com.liferay.headless.delivery.dto.v1_0.util.CreatorUtil;
@@ -36,7 +39,9 @@ import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutTypeController;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -60,7 +65,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = "dto.class.name=com.liferay.portal.kernel.model.Layout",
-	service = {DTOConverter.class, SitePageDTOConverter.class}
+	service = DTOConverter.class
 )
 public class SitePageDTOConverter implements DTOConverter<Layout, SitePage> {
 
@@ -97,6 +102,7 @@ public class SitePageDTOConverter implements DTOConverter<Layout, SitePage> {
 				friendlyUrlPath_i18n = LocalizedMapUtil.getI18nMap(
 					dtoConverterContext.isAcceptAllLanguages(),
 					layout.getFriendlyURLMap());
+				id = layout.getPlid();
 				keywords = ListUtil.toArray(
 					_assetTagLocalService.getTags(
 						Layout.class.getName(), layout.getPlid()),
@@ -196,6 +202,23 @@ public class SitePageDTOConverter implements DTOConverter<Layout, SitePage> {
 								layoutTypeController.getClass()),
 							"layout.types." + layout.getType());
 					});
+				setParentSitePage(
+					() -> {
+						if (layout.getParentLayoutId() ==
+								LayoutConstants.DEFAULT_PARENT_LAYOUT_ID) {
+
+							return null;
+						}
+
+						Layout parentLayout = _layoutLocalService.fetchLayout(
+							layout.getParentPlid());
+
+						return new ParentSitePage() {
+							{
+								friendlyUrlPath = parentLayout.getFriendlyURL();
+							}
+						};
+					});
 			}
 		};
 	}
@@ -212,11 +235,17 @@ public class SitePageDTOConverter implements DTOConverter<Layout, SitePage> {
 	@Reference
 	private DLURLHelper _dlURLHelper;
 
-	@Reference
-	private ExperienceDTOConverter _experienceDTOConverter;
+	@Reference(
+		target = "(component.name=com.liferay.headless.delivery.internal.dto.v1_0.converter.ExperienceDTOConverter)"
+	)
+	private DTOConverter<SegmentsExperience, Experience>
+		_experienceDTOConverter;
 
 	@Reference
 	private Language _language;
+
+	@Reference
+	private LayoutLocalService _layoutLocalService;
 
 	@Reference
 	private LayoutPageTemplateEntryLocalService
@@ -229,8 +258,11 @@ public class SitePageDTOConverter implements DTOConverter<Layout, SitePage> {
 	@Reference
 	private LayoutSEOEntryLocalService _layoutSEOEntryLocalService;
 
-	@Reference
-	private PageDefinitionDTOConverter _pageDefinitionDTOConverter;
+	@Reference(
+		target = "(component.name=com.liferay.headless.delivery.internal.dto.v1_0.converter.PageDefinitionDTOConverter)"
+	)
+	private DTOConverter<LayoutStructure, PageDefinition>
+		_pageDefinitionDTOConverter;
 
 	@Reference
 	private Portal _portal;

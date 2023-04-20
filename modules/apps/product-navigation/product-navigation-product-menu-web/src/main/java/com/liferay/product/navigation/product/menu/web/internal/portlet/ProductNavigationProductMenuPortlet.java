@@ -88,41 +88,24 @@ public class ProductNavigationProductMenuPortlet extends MVCPortlet {
 
 		renderRequest.setAttribute(
 			ApplicationListWebKeys.GROUP_PROVIDER, _groupProvider);
-
 		renderRequest.setAttribute(
 			ApplicationListWebKeys.PANEL_APP_REGISTRY, _panelAppRegistry);
-
-		PanelCategoryHelper panelCategoryHelper = new PanelCategoryHelper(
-			_panelAppRegistry, _panelCategoryRegistry);
-
 		renderRequest.setAttribute(
-			ApplicationListWebKeys.PANEL_CATEGORY_HELPER, panelCategoryHelper);
-
+			ApplicationListWebKeys.PANEL_CATEGORY_HELPER,
+			new PanelCategoryHelper(_panelAppRegistry, _panelCategoryRegistry));
 		renderRequest.setAttribute(
 			ApplicationListWebKeys.PANEL_CATEGORY_REGISTRY,
 			_panelCategoryRegistry);
-
-		_setLayoutsTreeDisplayContextRequestAttribute(
-			httpServletRequest, renderRequest, renderResponse);
-
-		super.doDispatch(renderRequest, renderResponse);
-	}
-
-	private void _setLayoutsTreeDisplayContextRequestAttribute(
-		HttpServletRequest httpServletRequest, RenderRequest renderRequest,
-		RenderResponse renderResponse) {
-
-		LayoutsTreeDisplayContext layoutsTreeDisplayContext =
+		renderRequest.setAttribute(
+			LayoutsTreeDisplayContext.class.getName(),
 			new LayoutsTreeDisplayContext(
 				httpServletRequest, _language, _layoutLocalService,
 				_layoutService, _layoutsTree, renderRequest, renderResponse,
 				_siteNavigationMenuItemLocalService,
 				_siteNavigationMenuItemTypeRegistry,
-				_siteNavigationMenuLocalService);
+				_siteNavigationMenuLocalService));
 
-		renderRequest.setAttribute(
-			LayoutsTreeDisplayContext.class.getName(),
-			layoutsTreeDisplayContext);
+		super.doDispatch(renderRequest, renderResponse);
 	}
 
 	@Reference

@@ -51,6 +51,7 @@ const useTestflowActions = () => {
 			hidden: ({dueStatus}) => dueStatus.key === TaskStatuses.IN_ANALYSIS,
 			icon: 'polls',
 			name: i18n.translate('reanalyze'),
+			permission: 'UPDATE',
 		},
 		{
 			action: (subtask, mutate) =>

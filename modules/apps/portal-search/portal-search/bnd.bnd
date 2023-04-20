@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Search
 Bundle-SymbolicName: com.liferay.portal.search
-Bundle-Version: 8.0.66
+Bundle-Version: 8.0.67
 -dsannotations-options: inherit

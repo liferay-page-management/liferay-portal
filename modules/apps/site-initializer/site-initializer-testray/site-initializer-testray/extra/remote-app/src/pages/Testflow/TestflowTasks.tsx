@@ -54,7 +54,11 @@ import TaskHeaderActions from './TaskHeaderActions';
 
 type OutletContext = {
 	data: {
-		testrayTask: TestrayTask;
+		testrayTask: TestrayTask & {
+			actions: {
+				[key: string]: string;
+			};
+		};
 		testrayTaskUser: TestrayTaskUser[];
 	};
 	revalidate: {revalidateSubtask: () => void};
@@ -156,7 +160,7 @@ const TestFlowTasks = () => {
 
 	return (
 		<>
-			<TaskHeaderActions />
+			{testrayTask.actions?.update && <TaskHeaderActions />}
 
 			<Container collapsable title={i18n.sub('task-x', 'details')}>
 				<div className="d-flex flex-wrap">
@@ -342,7 +346,11 @@ const TestFlowTasks = () => {
 								key: 'user',
 								render: (
 									_: any,
-									subtask: TestraySubTask,
+									subtask: TestraySubTask & {
+										actions: {
+											[key: string]: string;
+										};
+									},
 									mutate
 								) => {
 									if (subtask.user) {
@@ -359,6 +367,7 @@ const TestFlowTasks = () => {
 
 									return (
 										<AssignToMe
+											hidden={!subtask.actions.update}
 											onClick={() =>
 												testraySubTaskImpl
 													.assignToMe(subtask)

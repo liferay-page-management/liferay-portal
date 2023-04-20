@@ -46,7 +46,7 @@ type Policy = {
 	termPremium: number;
 };
 
-type TableContent = {[keys: string]: string};
+type TableContent = {[keys: string]: string | boolean};
 
 type TableItemType = {
 	centered?: boolean;
@@ -568,7 +568,7 @@ const PoliciesTable = () => {
 					policiesList.push({
 						commission: `$${commissionValue.toFixed(2)}`,
 						externalReferenceCode,
-						isClickable: 'true',
+						isClickable: productName === 'Auto' ? true : false,
 						isExpiring: (renewalDue < 0).toString(),
 						isRedLine: (
 							renewalDue >= 0 &&

@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Product Navigation Simulation Device
 Bundle-SymbolicName: com.liferay.product.navigation.simulation.device
-Bundle-Version: 6.0.35
+Bundle-Version: 6.0.36
 Liferay-JS-Config: /META-INF/resources/js/config.js
 Web-ContextPath: /product-navigation-simulation-device

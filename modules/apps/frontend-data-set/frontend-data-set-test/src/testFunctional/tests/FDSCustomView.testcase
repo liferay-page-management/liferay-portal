@@ -146,7 +146,9 @@ definition {
 
 			FDSCustomView.selectView(key_itemName = "TEST");
 
-			ObjectCustomViews.assertColumnNotPresent(columnName = "Description");
+			AssertElementNotPresent(
+				key_columnName = "Description",
+				locator1 = "ObjectCustomViews#VIEW_BUILDER_SEARCH_RESULT");
 		}
 	}
 
@@ -186,7 +188,6 @@ definition {
 	}
 
 	@description = "LPS-164618. Assert that it's possible can edit a new instance was previously created"
-	@ignore = "Test fix"
 	@priority = 4
 	test CanCreateMultiple {
 		task ("And Given A custom view is created and selected") {
@@ -209,7 +210,7 @@ definition {
 
 			FDSCustomView.selectColumn(key_itemName = "Description");
 
-			Pagination.changePagination(itemsPerPage = "4 items");
+			Pagination.changePagination(itemsPerPage = "4 Items");
 		}
 
 		task ("And Click Save as button, provide a name") {

@@ -11,7 +11,7 @@ definition {
 
 		User.firstLoginPG();
 
-		JSONGroup.addGroup(groupName = "Test Site Name");
+		HeadlessSite.addSite(siteName = "Test Site Name");
 
 		JSONLayout.addPublicLayout(
 			groupName = "Test Site Name",
@@ -1019,9 +1019,7 @@ definition {
 			key_pageName = "Test Source Page",
 			locator1 = "Home#PAGE_ACTIVE");
 
-		AssertTextEquals(
-			locator1 = "Home#ERROR_MESSAGE_ALERT_ERROR",
-			value1 = "Not Found");
+		AssertTextPresent(value1 = "The requested address was not found on the system.");
 	}
 
 	@description = "This ensures that an expired permanent redirect can be reset."

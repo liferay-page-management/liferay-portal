@@ -112,8 +112,7 @@ public class EditSegmentsEntryMVCRenderCommandTest {
 				new MockLiferayPortletRenderResponse());
 
 			Map<String, Object> data = ReflectionTestUtil.invoke(
-				mockLiferayPortletRenderRequest.getAttribute(
-					"EDIT_SEGMENTS_ENTRY_DISPLAY_CONTEXT"),
+				mockLiferayPortletRenderRequest.getAttribute(_CLASS_NAME),
 				"getData", new Class<?>[0]);
 
 			Map<String, Object> props = (Map<String, Object>)data.get("props");
@@ -176,8 +175,7 @@ public class EditSegmentsEntryMVCRenderCommandTest {
 			new MockLiferayPortletRenderResponse());
 
 		Map<String, Object> data = ReflectionTestUtil.invoke(
-			mockLiferayPortletRenderRequest.getAttribute(
-				"EDIT_SEGMENTS_ENTRY_DISPLAY_CONTEXT"),
+			mockLiferayPortletRenderRequest.getAttribute(_CLASS_NAME),
 			"getData", new Class<?>[0]);
 
 		Map<String, Object> props = (Map<String, Object>)data.get("props");
@@ -273,6 +271,10 @@ public class EditSegmentsEntryMVCRenderCommandTest {
 
 		return themeDisplay;
 	}
+
+	private static final String _CLASS_NAME =
+		"com.liferay.segments.web.internal.display.context." +
+			"EditSegmentsEntryDisplayContext";
 
 	private static Company _company;
 

@@ -516,16 +516,6 @@ public class VarPoshiElement extends PoshiElement {
 				methodParameterValue = StringUtil.replace(
 					methodParameterValue, "&quot;", "\"");
 
-				Matcher matcher = _varMacroMethodPattern.matcher(
-					methodParameterValue);
-
-				if (matcher.find()) {
-					sb.append(methodParameterValue);
-					sb.append(", ");
-
-					continue;
-				}
-
 				methodParameterValue = StringUtil.replace(
 					methodParameterValue, "\"", "\\\"");
 
@@ -569,14 +559,12 @@ public class VarPoshiElement extends PoshiElement {
 	protected String valueAttributeName;
 
 	private boolean _isElementType(String poshiScript) {
-		if (isValidPoshiScriptStatement(
-				_partialStatementPattern, poshiScript) ||
-			isVarAssignedToMacroInvocation(poshiScript)) {
-
-			return true;
+		if (isVarAssignedToMacroInvocation(poshiScript)) {
+			return false;
 		}
 
-		return false;
+		return isValidPoshiScriptStatement(
+			_partialStatementPattern, poshiScript);
 	}
 
 	private static final String _ELEMENT_NAME = "var";
@@ -615,8 +603,6 @@ public class VarPoshiElement extends PoshiElement {
 		"(?<cdata1><.+]])(?<cdata2>>.*>?)");
 	private static final Pattern _partialStatementPattern;
 	private static final Pattern _statementPattern;
-	private static final Pattern _varMacroMethodPattern = Pattern.compile(
-		"^.*\\s=\\s(\\$\\{.*\\}|\\\".*\")$");
 	private static final Pattern _varValueMathExpressionPattern;
 
 	static {

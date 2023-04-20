@@ -938,6 +938,38 @@ public class ContentManager {
 			HttpServletRequest httpServletRequest, boolean restricted)
 		throws Exception {
 
+		if (restricted) {
+			return JSONUtil.put(
+				"actions", _jsonFactory.createJSONObject()
+			).put(
+				"className", layoutClassedModelUsage.getClassName()
+			).put(
+				"classNameId", layoutClassedModelUsage.getClassNameId()
+			).put(
+				"classPK", layoutClassedModelUsage.getClassPK()
+			).put(
+				"classTypeId", layoutDisplayPageObjectProvider.getClassTypeId()
+			).put(
+				"icon", StringPool.BLANK
+			).put(
+				"isRestricted", true
+			).put(
+				"status", _jsonFactory.createJSONObject()
+			).put(
+				"subtype", StringPool.BLANK
+			).put(
+				"title", StringPool.BLANK
+			).put(
+				"type", StringPool.BLANK
+			).put(
+				"usagesCount",
+				_layoutClassedModelUsageLocalService.
+					getUniqueLayoutClassedModelUsagesCount(
+						layoutClassedModelUsage.getClassNameId(),
+						layoutClassedModelUsage.getClassPK())
+			);
+		}
+
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
@@ -960,7 +992,7 @@ public class ContentManager {
 				layoutClassedModelUsage.getClassName(),
 				layoutClassedModelUsage.getClassPK())
 		).put(
-			"isRestricted", restricted
+			"isRestricted", false
 		).put(
 			"status", _getStatusJSONObject(layoutClassedModelUsage)
 		).put(

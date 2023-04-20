@@ -21,7 +21,7 @@
 </c:if>
 
 <c:choose>
-	<c:when test="<%= Validator.isNotNull(escapedHREF) %>">
+	<c:when test='<%= Validator.isNotNull(escapedHREF) && !type.equals("cancel") %>'>
 		<a
 			class="<%= AUIUtil.buildCss(AUIUtil.BUTTON_PREFIX, disabled, false, false, cssClass) %>"
 			href="<%= escapedHREF %>"
@@ -51,9 +51,14 @@
 				name="<%= namespace %><%= name %>"
 			</c:if>
 
-			<c:if test="<%= Validator.isNotNull(onClick) %>">
-				onClick="<%= onClick %>"
-			</c:if>
+			<c:choose>
+				<c:when test="<%= Validator.isNotNull(onClick) %>">
+					onClick="<%= onClick %>"
+				</c:when>
+				<c:when test="<%= Validator.isNotNull(escapedHREF) %>">
+					onClick="Liferay.Util.navigate('<%= escapedHREF %>')"
+				</c:when>
+			</c:choose>
 
 			type="<%= type.equals("cancel") ? "button" : type %>"
 

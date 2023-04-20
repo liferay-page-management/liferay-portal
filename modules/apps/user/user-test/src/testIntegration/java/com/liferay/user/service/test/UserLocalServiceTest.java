@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.model.PasswordPolicy;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.Ticket;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.auth.AuthException;
@@ -82,7 +83,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.LongStream;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -500,15 +500,78 @@ public class UserLocalServiceTest {
 	}
 
 	@Test
+	public void testSearch() throws Exception {
+		List<User> users = _userLocalService.search(
+			TestPropsValues.getCompanyId(), null,
+			WorkflowConstants.STATUS_APPROVED, null, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, (OrderByComparator<User>)null);
+
+		users = ListUtil.filter(
+			users, user -> user.getType() != UserConstants.TYPE_REGULAR);
+
+		Assert.assertTrue(users.isEmpty());
+
+		PermissionChecker oldPermissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		try {
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
+
+			users = _userLocalService.search(
+				TestPropsValues.getCompanyId(), null,
+				WorkflowConstants.STATUS_APPROVED,
+				LinkedHashMapBuilder.<String, Object>put(
+					"types",
+					new long[] {UserConstants.TYPE_DEFAULT_SERVICE_ACCOUNT}
+				).build(),
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				(OrderByComparator<User>)null);
+
+			Assert.assertEquals(users.toString(), 1, users.size());
+
+			User user = users.get(0);
+
+			Assert.assertEquals(
+				UserConstants.TYPE_DEFAULT_SERVICE_ACCOUNT, user.getType());
+			Assert.assertTrue(user.isServiceAccountUser());
+
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(UserTestUtil.addUser()));
+
+			users = _userLocalService.search(
+				TestPropsValues.getCompanyId(), null,
+				WorkflowConstants.STATUS_APPROVED,
+				LinkedHashMapBuilder.<String, Object>put(
+					"types",
+					new long[] {UserConstants.TYPE_DEFAULT_SERVICE_ACCOUNT}
+				).build(),
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				(OrderByComparator<User>)null);
+
+			Assert.assertTrue(users.isEmpty());
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(oldPermissionChecker);
+		}
+	}
+
+	@Test
 	public void testSearchCounts() throws Exception {
 
 		// LPS-119805
 
+		long[] values = new long[2001];
+
+		int index = 0;
+
+		for (long i = 1000; i <= 3000; i++) {
+			values[index++] = i;
+		}
+
 		_userLocalService.searchCounts(
 			TestPropsValues.getCompanyId(), WorkflowConstants.STATUS_APPROVED,
-			LongStream.rangeClosed(
-				1000, 3000
-			).toArray());
+			values);
 	}
 
 	@Test

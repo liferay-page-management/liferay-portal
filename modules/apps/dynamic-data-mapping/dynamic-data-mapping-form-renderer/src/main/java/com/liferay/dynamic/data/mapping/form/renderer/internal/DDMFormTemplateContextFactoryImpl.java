@@ -33,6 +33,7 @@ import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReference
 import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceMapper;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.language.Language;
@@ -59,8 +60,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
@@ -104,15 +103,14 @@ public class DDMFormTemplateContextFactoryImpl
 					_ddmFormFieldTypeServicesRegistry,
 					ddmFormLayoutDDMFormField.getType());
 
-			List<DDMFormField> visualPropertiesDDMFormFields = ListUtil.filter(
-				new ArrayList<>(settingsDDMFormFieldsMap.values()),
-				visualPropertyDDMFormField ->
-					visualPropertyDDMFormField.isVisualProperty() &&
-					!StringUtil.equals(
-						visualPropertyDDMFormField.getName(), "required"));
-
 			for (DDMFormField visualPropertyDDMFormField :
-					visualPropertiesDDMFormFields) {
+					ListUtil.filter(
+						new ArrayList<>(settingsDDMFormFieldsMap.values()),
+						visualPropertyDDMFormField1 ->
+							visualPropertyDDMFormField1.isVisualProperty() &&
+							!StringUtil.equals(
+								visualPropertyDDMFormField1.getName(),
+								"required"))) {
 
 				Object value = ddmFormLayoutDDMFormField.getProperty(
 					visualPropertyDDMFormField.getName());
@@ -170,16 +168,12 @@ public class DDMFormTemplateContextFactoryImpl
 	protected ResourceBundle getResourceBundle(Locale locale) {
 		List<ResourceBundle> resourceBundles = new ArrayList<>();
 
-		ResourceBundle portalResourceBundle = _portal.getResourceBundle(locale);
-
-		resourceBundles.add(portalResourceBundle);
+		resourceBundles.add(_portal.getResourceBundle(locale));
 
 		_collectResourceBundles(getClass(), resourceBundles, locale);
 
-		ResourceBundle[] resourceBundlesArray = resourceBundles.toArray(
-			new ResourceBundle[0]);
-
-		return new AggregateResourceBundle(resourceBundlesArray);
+		return new AggregateResourceBundle(
+			resourceBundles.<ResourceBundle>toArray(new ResourceBundle[0]));
 	}
 
 	protected String getTemplateNamespace(DDMFormLayout ddmFormLayout) {
@@ -222,6 +216,8 @@ public class DDMFormTemplateContextFactoryImpl
 			DDMFormRenderingContext ddmFormRenderingContext)
 		throws PortalException {
 
+		Map<String, Object> templateContext = new HashMap<>();
+
 		String containerId = ddmFormRenderingContext.getContainerId();
 
 		if (Validator.isNull(containerId)) {
@@ -235,8 +231,6 @@ public class DDMFormTemplateContextFactoryImpl
 		if (locale == null) {
 			locale = LocaleThreadLocal.getSiteDefaultLocale();
 		}
-
-		Map<String, Object> templateContext = new HashMap<>();
 
 		ResourceBundle resourceBundle = getResourceBundle(locale);
 
@@ -406,14 +400,10 @@ public class DDMFormTemplateContextFactoryImpl
 		HashMap<String, Object> map = new HashMap<>();
 
 		for (String key : _serviceTrackerMap.keySet()) {
-			List<DDMValidation> ddmValidations = _serviceTrackerMap.getService(
-				key);
-
-			Stream<DDMValidation> stream = ddmValidations.stream();
-
 			map.put(
 				key,
-				stream.map(
+				TransformUtil.transformToArray(
+					_serviceTrackerMap.getService(key),
 					ddmValidation -> HashMapBuilder.put(
 						"label", ddmValidation.getLabel(locale)
 					).put(
@@ -423,8 +413,8 @@ public class DDMFormTemplateContextFactoryImpl
 						ddmValidation.getParameterMessage(locale)
 					).put(
 						"template", ddmValidation.getTemplate()
-					).build()
-				).toArray());
+					).build(),
+					Object.class));
 		}
 
 		return map;
@@ -462,13 +452,7 @@ public class DDMFormTemplateContextFactoryImpl
 			return Collections.emptyList();
 		}
 
-		Stream<DDMFormRule> stream = ddmFormRules.stream();
-
-		return stream.map(
-			this::_toMap
-		).collect(
-			Collectors.toList()
-		);
+		return TransformUtil.transform(ddmFormRules, this::_toMap);
 	}
 
 	@Reference

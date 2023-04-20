@@ -1,0 +1,104 @@
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
+
+package com.liferay.jethr0.project.repository;
+
+import com.liferay.jethr0.entity.factory.EntityFactory;
+import com.liferay.jethr0.entity.repository.BaseEntityRepository;
+import com.liferay.jethr0.project.comparator.ProjectComparator;
+import com.liferay.jethr0.project.dalo.ProjectComparatorDALO;
+import com.liferay.jethr0.project.dalo.ProjectPrioritizerToProjectComparatorsDALO;
+import com.liferay.jethr0.project.prioritizer.ProjectPrioritizer;
+
+import org.json.JSONObject;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * @author Michael Hashimoto
+ */
+@Configuration
+public class ProjectComparatorRepository
+	extends BaseEntityRepository<ProjectComparator> {
+
+	public ProjectComparator add(
+		ProjectPrioritizer projectPrioritizer, long position,
+		ProjectComparator.Type type, String value) {
+
+		JSONObject jsonObject = new JSONObject();
+
+		jsonObject.put(
+			"position", position
+		).put(
+			"type", type.getJSONObject()
+		).put(
+			"value", value
+		);
+
+		EntityFactory<ProjectComparator> entityFactory =
+			_projectComparatorDALO.getEntityFactory();
+
+		ProjectComparator projectComparator = entityFactory.newEntity(
+			jsonObject);
+
+		projectComparator.setProjectPrioritizer(projectPrioritizer);
+
+		projectPrioritizer.addProjectComparator(projectComparator);
+
+		return add(projectComparator);
+	}
+
+	@Override
+	public ProjectComparatorDALO getEntityDALO() {
+		return _projectComparatorDALO;
+	}
+
+	@Override
+	public ProjectComparator updateEntityRelationshipsInDatabase(
+		ProjectComparator projectComparator) {
+
+		_projectPrioritizerToProjectComparatorsDALO.updateParentEntities(
+			projectComparator);
+
+		return projectComparator;
+	}
+
+	@Override
+	protected ProjectComparator updateEntityRelationshipsFromDatabase(
+		ProjectComparator projectComparator) {
+
+		for (ProjectPrioritizer projectPrioritizer :
+				_projectPrioritizerToProjectComparatorsDALO.getParentEntities(
+					projectComparator)) {
+
+			projectComparator.setProjectPrioritizer(projectPrioritizer);
+
+			projectPrioritizer.addProjectComparator(projectComparator);
+		}
+
+		return projectComparator;
+	}
+
+	@Autowired
+	private ProjectComparatorDALO _projectComparatorDALO;
+
+	@Autowired
+	private ProjectPrioritizerRepository _projectPrioritizerRepository;
+
+	@Autowired
+	private ProjectPrioritizerToProjectComparatorsDALO
+		_projectPrioritizerToProjectComparatorsDALO;
+
+}

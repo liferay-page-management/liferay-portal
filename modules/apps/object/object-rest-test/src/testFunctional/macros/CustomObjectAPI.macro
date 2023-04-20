@@ -1,14 +1,69 @@
 definition {
 
+	var headers = '''
+			-u test@liferay.com:test \
+			-H Content-Type: application/json \
+		''';
+
+	macro _curlObjectEntries {
+		Variables.assertDefined(parameterList = "${en_US_plural_label},${fieldName},${fieldValue}");
+
+		var en_US_plural_label_lowercase = StringUtil.lowerCase(${en_US_plural_label});
+
+		if (isSet(virtualHost)) {
+			if (!(isSet(port))) {
+				var port = 8080;
+			}
+
+			var portalURL = "http://${virtualHost}:${port}";
+		}
+		else {
+			var portalURL = JSONCompany.getPortalURL();
+		}
+
+		var api = "${portalURL}/o/c/${en_US_plural_label_lowercase}";
+
+		if (isSet(objectEntryId)) {
+			var api = "${api}/${objectEntryId}";
+		}
+
+		if (isSet(scopeKey)) {
+			var scopeKey = JSONGroupAPI._getGroupIdByNameNoSelenium(
+				groupName = "Guest",
+				site = "true");
+
+			var api = StringUtil.add(${api}, "/scopes/${scopeKey}", "");
+		}
+
+		var curlWithoutBody = StringUtil.add(${api}, " \ ${headers}", "");
+		var body = CustomObjectAPI._setNObjectEntriesBody(
+			externalReferenceCode = ${externalReferenceCode},
+			fieldName = ${fieldName},
+			fieldValue = ${fieldValue},
+			keywords = ${keywords},
+			nestedField = ${nestedField},
+			numberOfRelatedObjectEntries = ${numberOfRelatedObjectEntries},
+			objectEntryId = ${objectEntryId},
+			relatedEntryExternalReferenceCode = ${relatedEntryExternalReferenceCode},
+			relatedEntryFieldName = ${relatedEntryFieldName},
+			secondFieldValue = ${secondFieldValue},
+			taxonomyCategoryIds = ${taxonomyCategoryIds});
+
+		var curl = StringUtil.add(${curlWithoutBody}, "-d {${body}}", " ");
+
+		if (isSet(token)) {
+			var curl = StringUtil.add(${curl}, " -H 'Authorization: Bearer ${token}'", "");
+		}
+
+		return ${curl};
+	}
+
 	macro _curlObjectPermissions {
 		Variables.assertDefined(parameterList = "${en_US_plural_label},${objectEntryId}");
 
 		var en_US_plural_label_lowercase = StringUtil.lowerCase(${en_US_plural_label});
 		var portalURL = JSONCompany.getPortalURL();
-		var headers = '''
- 			-u test@liferay.com:test \
-			-H Content-Type: application/json \
-		''';
+
 		var api = "${portalURL}/o/c/${en_US_plural_label_lowercase}/${objectEntryId}/permissions";
 
 		if (isSet(roleNames)) {
@@ -18,6 +73,122 @@ definition {
 		var curl = StringUtil.add(${api}, " \ ${headers}", "");
 
 		return ${curl};
+	}
+
+	macro _setNObjectEntriesBody {
+		Variables.assertDefined(parameterList = "${fieldName},${fieldValue}");
+
+		var body = '''"${fieldName}": "${fieldValue}"''';
+
+		if (isSet(secondFieldValue)) {
+			var body = StringUtil.add("${body},", "\"secondField\":\"${secondFieldValue}\"", "");
+		}
+
+		if (isSet(externalReferenceCode)) {
+			var body = StringUtil.add("${body},", "\"externalReferenceCode\": \"${externalReferenceCode}\"", "");
+		}
+
+		if (isSet(keywords)) {
+			var body = StringUtil.add("${body},", "\"keywords\": [\"${keywords}\"]", "");
+		}
+
+		if (isSet(taxonomyCategoryIds)) {
+			var body = StringUtil.add("${body},", "\"taxonomyCategoryIds\": [${taxonomyCategoryIds}]", "");
+		}
+
+		if (isSet(nestedField)) {
+			var size = ${numberOfRelatedObjectEntries};
+
+			if (!(isSet(externalReferenceCode))) {
+				var externalReferenceCode = "";
+			}
+
+			var entryBody = '''
+				"${nestedField}": [
+			''';
+			var i = 0;
+
+			while ((${i} != ${size}) && (maxIterations = "10")) {
+				var relatedEntryFieldValue = "${relatedEntryFieldName}${i}";
+
+				if (isSet(objectEntryId)) {
+					var relatedEntryFieldValue = "${relatedEntryFieldName}${i}-update";
+				}
+
+				var relatedObjectEntry = '''
+					"${relatedEntryFieldName}": "${relatedEntryFieldValue}"
+				''';
+
+				if (isSet(relatedEntryExternalReferenceCode)) {
+					var relatedObjectEntry = StringUtil.add("${relatedObjectEntry},", "\"externalReferenceCode\": \"${relatedEntryExternalReferenceCode}${i}\"", "");
+				}
+
+				var j = ${i} + 1;
+
+				if (${j} == ${size}) {
+					var entryBody = StringUtil.add(${entryBody}, "{${relatedObjectEntry}}]", "");
+				}
+				else {
+					var entryBody = StringUtil.add(${entryBody}, "{${relatedObjectEntry}},", "");
+				}
+
+				var i = ${i} + 1;
+			}
+
+			var body = StringUtil.add("${body},", ${entryBody}, "");
+		}
+
+		return ${body};
+	}
+
+	macro assertCorrectObjectEntryValuesInResponse {
+		Variables.assertDefined(parameterList = "${en_US_plural_label},${objectJsonPath},${expectedValues}");
+
+		var response = ObjectDefinitionAPI.getObjectEntries(en_US_plural_label = ${en_US_plural_label});
+
+		var actualValues = JSONUtil.getWithJSONPath(${response}, ${objectJsonPath});
+
+		TestUtils.assertEquals(
+			actual = ${actualValues},
+			expected = ${expectedValues});
+	}
+
+	macro createObjectEntryAndRelatedObjects {
+		Variables.assertDefined(parameterList = "${en_US_plural_label},${fieldName},${fieldValue},${nestedField},${numberOfRelatedObjectEntries},${relatedEntryFieldName}");
+
+		var curl = CustomObjectAPI._curlObjectEntries(
+			en_US_plural_label = ${en_US_plural_label},
+			externalReferenceCode = ${externalReferenceCode},
+			fieldName = ${fieldName},
+			fieldValue = ${fieldValue},
+			nestedField = ${nestedField},
+			numberOfRelatedObjectEntries = ${numberOfRelatedObjectEntries},
+			relatedEntryExternalReferenceCode = ${relatedEntryExternalReferenceCode},
+			relatedEntryFieldName = ${relatedEntryFieldName});
+
+		var response = JSONCurlUtil.post(${curl});
+
+		return ${response};
+	}
+
+	macro createObjectEntryWithFields {
+		Variables.assertDefined(parameterList = "${en_US_plural_label},${fieldName},${fieldValue}");
+
+		var curl = CustomObjectAPI._curlObjectEntries(
+			en_US_plural_label = ${en_US_plural_label},
+			externalReferenceCode = ${externalReferenceCode},
+			fieldName = ${fieldName},
+			fieldValue = ${fieldValue},
+			keywords = ${keywords},
+			scopeKey = ${scopeKey},
+			secondFieldValue = ${secondFieldValue},
+			taxonomyCategoryIds = ${taxonomyCategoryIds},
+			token = ${token},
+			virtualHost = ${virtualHost});
+
+		var response = JSONCurlUtil.post(${curl});
+
+		return ${response};
 	}
 
 	macro getObjectPermissions {
@@ -46,6 +217,43 @@ definition {
 		static var staticObjectId = ${objectEntryId};
 
 		return ${staticObjectId};
+	}
+
+	macro updateObjectEntryAndRelatedObjectsByPatch {
+		Variables.assertDefined(parameterList = "${en_US_plural_label},${objectEntryId},${fieldName},${fieldValue},${nestedField},${numberOfRelatedObjectEntries},${objectEntryId},${relatedEntryFieldName}");
+
+		var curl = CustomObjectAPI._curlObjectEntries(
+			en_US_plural_label = ${en_US_plural_label},
+			fieldName = ${fieldName},
+			fieldValue = ${fieldValue},
+			nestedField = ${nestedField},
+			numberOfRelatedObjectEntries = ${numberOfRelatedObjectEntries},
+			objectEntryId = ${objectEntryId},
+			relatedEntryExternalReferenceCode = ${relatedEntryExternalReferenceCode},
+			relatedEntryFieldName = ${relatedEntryFieldName});
+
+		var response = JSONCurlUtil.patch(${curl});
+
+		return ${response};
+	}
+
+	macro updateObjectEntryAndRelatedObjectsByPut {
+		Variables.assertDefined(parameterList = "${en_US_plural_label},${objectEntryId},${fieldName},${fieldValue},${nestedField},${numberOfRelatedObjectEntries},${objectEntryId},${relatedEntryFieldName}");
+
+		var curl = CustomObjectAPI._curlObjectEntries(
+			en_US_plural_label = ${en_US_plural_label},
+			externalReferenceCode = ${externalReferenceCode},
+			fieldName = ${fieldName},
+			fieldValue = ${fieldValue},
+			nestedField = ${nestedField},
+			numberOfRelatedObjectEntries = ${numberOfRelatedObjectEntries},
+			objectEntryId = ${objectEntryId},
+			relatedEntryExternalReferenceCode = ${relatedEntryExternalReferenceCode},
+			relatedEntryFieldName = ${relatedEntryFieldName});
+
+		var response = JSONCurlUtil.put(${curl});
+
+		return ${response};
 	}
 
 	macro updateObjectPermissions {

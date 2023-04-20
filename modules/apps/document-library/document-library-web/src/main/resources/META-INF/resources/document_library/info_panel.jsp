@@ -95,6 +95,32 @@ List<Folder> folders = dlInfoPanelDisplayContext.getFolders();
 							%>
 
 							<liferay-util:include page="/document_library/info_panel_location.jsp" servletContext="<%= application %>" />
+
+							<%
+							DLPortletInstanceSettings dlPortletInstanceSettings = dlRequestHelper.getDLPortletInstanceSettings();
+							%>
+
+							<c:if test="<%= dlPortletInstanceSettings.isEnableRatings() && folder.isSupportsSocial() %>">
+
+								<%
+								RatingsType ratingsType = PortletRatingsDefinitionUtil.getRatingsType(themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(), DLFileEntry.class.getName());
+
+								if (ratingsType == null) {
+									ratingsType = RatingsType.STARS;
+								}
+								%>
+
+								<dt class="sidebar-dt">
+									<liferay-ui:message key="ratings" />
+								</dt>
+								<dd class="sidebar-dd">
+									<liferay-ratings:ratings
+										className="<%= DLFolderConstants.getClassName() %>"
+										classPK="<%= folder.getFolderId() %>"
+										type="<%= ratingsType.toString() %>"
+									/>
+								</dd>
+							</c:if>
 						</c:if>
 					</dl>
 				</liferay-ui:section>

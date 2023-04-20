@@ -27,7 +27,6 @@ import com.liferay.object.deployer.ObjectDefinitionDeployer;
 import com.liferay.object.internal.info.collection.provider.ObjectEntrySingleFormVariationInfoCollectionProvider;
 import com.liferay.object.internal.notification.handler.ObjectDefinitionNotificationHandler;
 import com.liferay.object.internal.notification.term.contributor.ObjectDefinitionNotificationTermEvaluator;
-import com.liferay.object.internal.persistence.ObjectDefinitionTableArgumentsResolver;
 import com.liferay.object.internal.related.models.ObjectEntry1to1ObjectRelatedModelsProviderImpl;
 import com.liferay.object.internal.related.models.ObjectEntry1toMObjectRelatedModelsPredicateProviderImpl;
 import com.liferay.object.internal.related.models.ObjectEntry1toMObjectRelatedModelsProviderImpl;
@@ -60,7 +59,6 @@ import com.liferay.object.service.ObjectLayoutTabLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.service.ObjectViewLocalService;
 import com.liferay.petra.reflect.ReflectionUtil;
-import com.liferay.portal.kernel.dao.orm.ArgumentsResolver;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.security.permission.ResourceActions;
@@ -208,24 +206,6 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 
 		List<ServiceRegistration<?>> serviceRegistrations = ListUtil.fromArray(
 			_bundleContext.registerService(
-				ArgumentsResolver.class,
-				new ObjectDefinitionTableArgumentsResolver(
-					objectDefinition.getDBTableName()),
-				HashMapDictionaryBuilder.put(
-					"class.name", objectDefinition.getDBTableName()
-				).put(
-					"table.name", objectDefinition.getDBTableName()
-				).build()),
-			_bundleContext.registerService(
-				ArgumentsResolver.class,
-				new ObjectDefinitionTableArgumentsResolver(
-					objectDefinition.getExtensionDBTableName()),
-				HashMapDictionaryBuilder.put(
-					"class.name", objectDefinition.getExtensionDBTableName()
-				).put(
-					"table.name", objectDefinition.getExtensionDBTableName()
-				).build()),
-			_bundleContext.registerService(
 				KeywordQueryContributor.class,
 				new ObjectEntryKeywordQueryContributor(
 					_objectFieldLocalService, _objectViewLocalService),
@@ -282,7 +262,9 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 				NotificationTermEvaluator.class,
 				new ObjectDefinitionNotificationTermEvaluator(
 					_listTypeLocalService, objectDefinition,
-					_objectFieldLocalService, _userLocalService),
+					_objectDefinitionLocalService, _objectEntryLocalService,
+					_objectFieldLocalService, _objectRelationshipLocalService,
+					_userLocalService),
 				HashMapDictionaryBuilder.<String, Object>put(
 					"class.name", objectDefinition.getClassName()
 				).build()),

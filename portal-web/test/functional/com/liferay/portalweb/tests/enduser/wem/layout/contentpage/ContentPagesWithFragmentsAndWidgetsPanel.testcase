@@ -3,37 +3,27 @@ definition {
 
 	property portal.release = "true";
 	property portal.upstream = "true";
+	property testcase.url = "http://localhost:8080";
 	property testray.main.component.name = "Content Pages";
 
-	setUp {
-		task ("Set up instance and sign in") {
-			TestCase.setUpPortalInstance();
+	static var randomSiteName = StringUtil.randomString(8);
 
+	var siteURLKey = StringUtil.toLowerCase(${randomSiteName});
+
+	setUp {
+		task ("Sign in") {
 			User.firstLoginPG();
 		}
 
-		task ("Add a site via JSON") {
-			HeadlessSite.addSite(siteName = "Test Site Name");
+		task ("Add a site") {
+			HeadlessSite.addSite(siteName = ${randomSiteName});
 		}
 
 		task ("Add a content page") {
 			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
+				groupName = ${randomSiteName},
 				layoutName = "Test Content Page Name",
 				type = "content");
-		}
-	}
-
-	tearDown {
-		var testPortalInstance = PropsUtil.get("test.portal.instance");
-
-		if (${testPortalInstance} == "true") {
-			PortalInstances.tearDownCP();
-		}
-		else {
-			JSONGroup.deleteGroupByName(groupName = "Test Site Name");
-
-			JSONUser.tearDownNonAdminUsers();
 		}
 	}
 
@@ -43,7 +33,7 @@ definition {
 		task ("Given a page creator customized the order of fragment sets") {
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Content Page Name",
-				siteName = "Test Site Name");
+				siteName = ${randomSiteName});
 
 			PageEditor.reorderSets(
 				action = "Move Down",
@@ -53,20 +43,20 @@ definition {
 
 		task ("When the page creator adds a new fragment set with a fragment") {
 			JSONFragment.addFragmentCollection(
-				groupName = "Test Site Name",
+				groupName = ${randomSiteName},
 				name = "Fragment Set Name");
 
 			JSONFragment.addSection(
 				collectionName = "Fragment Set Name",
 				fragmentStatus = "Approved",
-				groupName = "Test Site Name",
+				groupName = ${randomSiteName},
 				name = "Fragment Name");
 		}
 
 		task ("Then the page creator sees the new fragment set appended to the bottom of the customized order") {
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Content Page Name",
-				siteName = "Test Site Name");
+				siteName = ${randomSiteName});
 
 			AssertVisible(
 				index = 3,
@@ -84,7 +74,7 @@ definition {
 	@priority = 4
 	test ChangeDisplayStyle {
 		task ("Navigate to the Pages admin in new site") {
-			PagesAdmin.openPagesAdmin(siteURLKey = "test-site-name");
+			PagesAdmin.openPagesAdmin(siteURLKey = ${siteURLKey});
 		}
 
 		task ("Access to content page at edit mode") {
@@ -174,7 +164,7 @@ definition {
 		task ("Given a page creator navigates to the Fragments and Widgets panel in page editor") {
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Content Page Name",
-				siteName = "Test Site Name");
+				siteName = ${randomSiteName});
 		}
 
 		task ("When the page creator customizes the order of fragment sets and widget categories") {
@@ -213,7 +203,7 @@ definition {
 		task ("Given a page creator customizes the order of fragment sets and widget categories in the Fragments and Widgets panel") {
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Content Page Name",
-				siteName = "Test Site Name");
+				siteName = ${randomSiteName});
 
 			PageEditor.reorderSets(
 				action = "Move Down",
@@ -227,33 +217,36 @@ definition {
 		}
 
 		task ("When a site administrator navigates to the Fragments and Widgets panel") {
+			var userEmailAddress = StringUtil.randomString(8);
+			var userFirstName = StringUtil.randomString(8);
+			var userLastName = StringUtil.randomString(8);
+			var userScreenName = StringUtil.randomString(8);
+
 			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "Userfn",
-				userLastName = "Userln",
-				userScreenName = "usersn");
+				userEmailAddress = StringUtil.toLowerCase("${userEmailAddress}@liferay.com"),
+				userFirstName = ${userFirstName},
+				userLastName = ${userLastName},
+				userScreenName = StringUtil.toLowerCase(${userScreenName}));
 
 			JSONUser.setFirstPassword(
 				agreeToTermsAndAnswerReminderQuery = "true",
 				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
+				userEmailAddress = StringUtil.toLowerCase("${userEmailAddress}@liferay.com"));
 
 			JSONUser.addUserToSite(
-				groupName = "Test Site Name",
-				userEmailAddress = "userea@liferay.com");
+				groupName = ${randomSiteName},
+				userEmailAddress = StringUtil.toLowerCase("${userEmailAddress}@liferay.com"));
 
 			JSONRole.assignSiteRoleToUser(
-				groupName = "Test Site Name",
+				groupName = ${randomSiteName},
 				roleTitle = "Site Administrator",
-				userEmailAddress = "userea@liferay.com");
+				userEmailAddress = StringUtil.toLowerCase("${userEmailAddress}@liferay.com"));
 
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
+			User.logoutAndLoginPG(userLoginEmailAddress = StringUtil.toLowerCase("${userEmailAddress}@liferay.com"));
 
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Content Page Name",
-				siteName = "Test Site Name");
+				siteName = ${randomSiteName});
 		}
 
 		task ("Then the site administrator sees the default order of fragment sets and widget categories on Fragments and Widgets panel") {
@@ -306,7 +299,7 @@ definition {
 		task ("Given a page creator customizes the order of fragment sets and widget categories in the Fragments and Widgets panel") {
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Content Page Name",
-				siteName = "Test Site Name");
+				siteName = ${randomSiteName});
 
 			PageEditor.reorderSets(
 				action = "Move Down",
@@ -320,33 +313,36 @@ definition {
 		}
 
 		task ("When a site administrator navigates to the Fragments and Widgets panel") {
+			var userEmailAddress = StringUtil.randomString(8);
+			var userFirstName = StringUtil.randomString(8);
+			var userLastName = StringUtil.randomString(8);
+			var userScreenName = StringUtil.randomString(8);
+
 			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "Userfn",
-				userLastName = "Userln",
-				userScreenName = "usersn");
+				userEmailAddress = StringUtil.toLowerCase("${userEmailAddress}@liferay.com"),
+				userFirstName = ${userFirstName},
+				userLastName = ${userLastName},
+				userScreenName = StringUtil.toLowerCase(${userScreenName}));
 
 			JSONUser.setFirstPassword(
 				agreeToTermsAndAnswerReminderQuery = "true",
 				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
+				userEmailAddress = StringUtil.toLowerCase("${userEmailAddress}@liferay.com"));
 
 			JSONUser.addUserToSite(
-				groupName = "Test Site Name",
-				userEmailAddress = "userea@liferay.com");
+				groupName = ${randomSiteName},
+				userEmailAddress = StringUtil.toLowerCase("${userEmailAddress}@liferay.com"));
 
 			JSONRole.assignSiteRoleToUser(
-				groupName = "Test Site Name",
+				groupName = ${randomSiteName},
 				roleTitle = "Site Administrator",
-				userEmailAddress = "userea@liferay.com");
+				userEmailAddress = "${userEmailAddress}@liferay.com");
 
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
+			User.logoutAndLoginPG(userLoginEmailAddress = StringUtil.toLowerCase("${userEmailAddress}@liferay.com"));
 
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Content Page Name",
-				siteName = "Test Site Name");
+				siteName = ${randomSiteName});
 		}
 
 		task ("Then the site administrator sees the default order of fragment sets and widget categories on Fragments and Widgets panel") {
@@ -398,7 +394,7 @@ definition {
 		task ("Given a page creator navigates to the Fragments and Widgets panel in page editor") {
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Content Page Name",
-				siteName = "Test Site Name");
+				siteName = ${randomSiteName});
 		}
 
 		task ("When the page creator customizes the order of fragment sets and widget categories") {
@@ -433,10 +429,10 @@ definition {
 	test MoveFragmentSetToThePlaceOfHiddenOne {
 		task ("Given a page creator has a content page based on a custom master with disallowed fragment set") {
 			JSONLayoutpagetemplate.addMasterPageTemplateEntry(
-				groupName = "Test Site Name",
+				groupName = ${randomSiteName},
 				masterPageTemplateEntryName = "Custom Masters Page Template");
 
-			MastersPageTemplatesAdmin.openMastersAdmin(siteURLKey = "test-site-name");
+			MastersPageTemplatesAdmin.openMastersAdmin(siteURLKey = ${siteURLKey});
 
 			MastersPageTemplatesAdmin.gotoMasters(masterLayoutName = "Custom Masters Page Template");
 
@@ -451,7 +447,7 @@ definition {
 
 			MastersPageTemplates.publishMaster();
 
-			PagesAdmin.openPagesAdmin(siteURLKey = "test-site-name");
+			PagesAdmin.openPagesAdmin(siteURLKey = ${siteURLKey});
 
 			ContentPages.addPage(
 				masterLayoutName = "Custom Masters Page Template",
@@ -476,7 +472,7 @@ definition {
 		}
 
 		task ("Then the page creator sees the fragment set is placed bottom of the hidden fragment set in master page") {
-			MastersPageTemplatesAdmin.openMastersAdmin(siteURLKey = "test-site-name");
+			MastersPageTemplatesAdmin.openMastersAdmin(siteURLKey = ${siteURLKey});
 
 			MastersPageTemplatesAdmin.gotoMasters(masterLayoutName = "Custom Masters Page Template");
 
@@ -499,7 +495,7 @@ definition {
 
 		task ("Given a page creator accesses to the Fragments and Widgets panel") {
 			JSONFragment.addFragmentCollection(
-				groupName = "Test Site Name",
+				groupName = ${randomSiteName},
 				name = "Fragment Set Name");
 
 			var htmlSnippet = '''
@@ -510,13 +506,13 @@ definition {
 			JSONFragment.addSection(
 				collectionName = "Fragment Set Name",
 				fragmentStatus = "Approved",
-				groupName = "Test Site Name",
+				groupName = ${randomSiteName},
 				html = ${htmlSnippet},
 				name = "Fragment Name");
 
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Content Page Name",
-				siteName = "Test Site Name");
+				siteName = ${randomSiteName});
 		}
 
 		task ("When the page creator makes interactions with the Fragments and Widgets panel") {
@@ -544,7 +540,7 @@ definition {
 		task ("Then the Fragments and Widgets panel persists the interaction states") {
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Content Page Name",
-				siteName = "Test Site Name");
+				siteName = ${randomSiteName});
 
 			AssertElementPresent(
 				key_tab = "Widgets",
@@ -583,7 +579,7 @@ definition {
 
 		task ("Given a page creator accesses to the Fragments and Widgets panel") {
 			JSONFragment.addFragmentCollection(
-				groupName = "Test Site Name",
+				groupName = ${randomSiteName},
 				name = "Fragment Set Name");
 
 			var htmlSnippet = '''
@@ -594,13 +590,13 @@ definition {
 			JSONFragment.addSection(
 				collectionName = "Fragment Set Name",
 				fragmentStatus = "Approved",
-				groupName = "Test Site Name",
+				groupName = ${randomSiteName},
 				html = ${htmlSnippet},
 				name = "Fragment Name");
 
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Content Page Name",
-				siteName = "Test Site Name");
+				siteName = ${randomSiteName});
 		}
 
 		task ("When the page creator makes interactions with the Fragments and Widgets panel") {
@@ -628,7 +624,7 @@ definition {
 		task ("Then the Fragments and Widgets panel persists the interaction states") {
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Content Page Name",
-				siteName = "Test Site Name");
+				siteName = ${randomSiteName});
 
 			AssertElementPresent(
 				key_tab = "Widgets",
@@ -669,7 +665,7 @@ definition {
 		task ("Given a page creator customizes the order of widget categories and mark the Blogs as favorite in the Fragments and Widgets panel") {
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Content Page Name",
-				siteName = "Test Site Name");
+				siteName = ${randomSiteName});
 
 			PageEditor.reorderSets(
 				action = "Move Up",
@@ -681,38 +677,41 @@ definition {
 				fragmentName = "Blogs");
 
 			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
+				groupName = ${randomSiteName},
 				layoutName = "Test Page Name");
 		}
 
 		task ("When a site administrator navigates to the Add panel") {
+			var userEmailAddress = StringUtil.randomString(8);
+			var userFirstName = StringUtil.randomString(8);
+			var userLastName = StringUtil.randomString(8);
+			var userScreenName = StringUtil.randomString(8);
+
 			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "Userfn",
-				userLastName = "Userln",
-				userScreenName = "usersn");
+				userEmailAddress = StringUtil.toLowerCase("${userEmailAddress}@liferay.com"),
+				userFirstName = ${userFirstName},
+				userLastName = ${userLastName},
+				userScreenName = StringUtil.toLowerCase(${userScreenName}));
 
 			JSONUser.setFirstPassword(
 				agreeToTermsAndAnswerReminderQuery = "true",
 				requireReset = "false",
-				userEmailAddress = "userea@liferay.com");
+				userEmailAddress = StringUtil.toLowerCase("${userEmailAddress}@liferay.com"));
 
 			JSONUser.addUserToSite(
-				groupName = "Test Site Name",
-				userEmailAddress = "userea@liferay.com");
+				groupName = ${randomSiteName},
+				userEmailAddress = StringUtil.toLowerCase("${userEmailAddress}@liferay.com"));
 
 			JSONRole.assignSiteRoleToUser(
-				groupName = "Test Site Name",
+				groupName = ${randomSiteName},
 				roleTitle = "Site Administrator",
-				userEmailAddress = "userea@liferay.com");
+				userEmailAddress = StringUtil.toLowerCase("${userEmailAddress}@liferay.com"));
 
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
+			User.logoutAndLoginPG(userLoginEmailAddress = StringUtil.toLowerCase("${userEmailAddress}@liferay.com"));
 
 			Navigator.gotoSitePage(
 				pageName = "Test Page Name",
-				siteName = "Test Site Name");
+				siteName = ${randomSiteName});
 
 			Click(locator1 = "ControlMenu#ADD");
 		}
@@ -738,7 +737,7 @@ definition {
 		task ("Given a page creator navigates to the Fragments and Widgets panel in page editor") {
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Content Page Name",
-				siteName = "Test Site Name");
+				siteName = ${randomSiteName});
 		}
 
 		task ("When the page creator customizes the order of widget categories") {
@@ -757,12 +756,12 @@ definition {
 
 		task ("Then the page creator sees the customized order of widget categories on Add panel") {
 			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
+				groupName = ${randomSiteName},
 				layoutName = "Test Page Name");
 
 			Navigator.gotoSitePage(
 				pageName = "Test Page Name",
-				siteName = "Test Site Name");
+				siteName = ${randomSiteName});
 
 			Click(locator1 = "ControlMenu#ADD");
 
@@ -779,7 +778,7 @@ definition {
 		task ("Given a page creator navigates to the Fragments and Widgets panel in page editor") {
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Content Page Name",
-				siteName = "Test Site Name");
+				siteName = ${randomSiteName});
 		}
 
 		task ("When the page creator removes all favorite widgets") {
@@ -798,12 +797,12 @@ definition {
 
 		task ("Then the page creator cannot see the favorite widget category on Add panel") {
 			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
+				groupName = ${randomSiteName},
 				layoutName = "Test Page Name");
 
 			Navigator.gotoSitePage(
 				pageName = "Test Page Name",
-				siteName = "Test Site Name");
+				siteName = ${randomSiteName});
 
 			Click(locator1 = "ControlMenu#ADD");
 
@@ -815,7 +814,7 @@ definition {
 		task ("When the page creator add favorite widgets via Fragments and Widgets panel") {
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Content Page Name",
-				siteName = "Test Site Name");
+				siteName = ${randomSiteName});
 
 			for (var widgetName : list "Asset Publisher,Documents and Media,Menu Display,Web Content Display") {
 				PageEditor.markFavorite(
@@ -835,7 +834,7 @@ definition {
 		task ("Then the page creator sees the favorite widget category on Add panel") {
 			Navigator.gotoSitePage(
 				pageName = "Test Page Name",
-				siteName = "Test Site Name");
+				siteName = ${randomSiteName});
 
 			Click(locator1 = "ControlMenu#ADD");
 
@@ -851,7 +850,7 @@ definition {
 		task ("Navigate to content page at edit mode") {
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Content Page Name",
-				siteName = "Test Site Name");
+				siteName = ${randomSiteName});
 		}
 
 		task ("Open the Fragments and Widgets panel") {
@@ -923,7 +922,7 @@ definition {
 		task ("Navigate to content page at edit mode") {
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Content Page Name",
-				siteName = "Test Site Name");
+				siteName = ${randomSiteName});
 		}
 
 		task ("Open the Fragments and Widgets panel") {

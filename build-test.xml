@@ -12666,6 +12666,17 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 				</echo>
 			</then>
 			<elseif>
+				<and>
+					<equals arg1="${test.liferay.virtual.instance}" arg2="true" />
+					<isset property="env.JENKINS_HOME" />
+				</and>
+				<then>
+					<echo append="true" file="${test.ext.properties.file}">
+						test.skip.tear.down=false
+					</echo>
+				</then>
+			</elseif>
+			<elseif>
 				<isset property="test.skip.tear.down" />
 				<then>
 					<echo append="true" file="${test.ext.properties.file}">
@@ -12702,6 +12713,17 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 					</echo>
 				</then>
 			</elseif>
+		</if>
+
+		<get-testcase-property property.name="test.liferay.virtual.instance" />
+
+		<if>
+			<isset property="${test.liferay.virtual.instance}" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					test.liferay.virtual.instance=${test.liferay.virtual.instance}
+				</echo>
+			</then>
 		</if>
 
 		<if>
@@ -15542,6 +15564,15 @@ mail.send.blacklist=</echo>
 			</then>
 		</if>
 
+		<get-testcase-property property.name="oauth2.application.enabled" />
+
+		<if>
+			<equals arg1="${oauth2.application.enabled}" arg2="true" />
+			<then>
+				<ant antfile="build-test-oauth2.xml" target="start-oauth2-application" />
+			</then>
+		</if>
+
 		<if>
 			<isset property="workspace.name" />
 			<then>
@@ -15557,6 +15588,15 @@ mail.send.blacklist=</echo>
 			<equals arg1="${analytics.cloud.enabled}" arg2="true" />
 			<then>
 				<ant antfile="build-test-analytics-cloud.xml" target="stop-analytics-cloud" />
+			</then>
+		</if>
+
+		<get-testcase-property property.name="oauth2.application.enabled" />
+
+		<if>
+			<equals arg1="${oauth2.application.enabled}" arg2="true" />
+			<then>
+				<ant antfile="build-test-oauth2.xml" target="stop-oauth2-application" />
 			</then>
 		</if>
 

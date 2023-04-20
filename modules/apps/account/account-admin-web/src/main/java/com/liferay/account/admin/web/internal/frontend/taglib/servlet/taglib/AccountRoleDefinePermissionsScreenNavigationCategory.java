@@ -16,7 +16,6 @@ package com.liferay.account.admin.web.internal.frontend.taglib.servlet.taglib;
 
 import com.liferay.account.admin.web.internal.constants.AccountScreenNavigationEntryConstants;
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationCategory;
-import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationEntry;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -24,11 +23,8 @@ import org.osgi.service.component.annotations.Component;
  * @author Pei-Jung Lan
  */
 @Component(
-	property = {
-		"screen.navigation.category.order:Integer=20",
-		"screen.navigation.entry.order:Integer=10"
-	},
-	service = {ScreenNavigationCategory.class, ScreenNavigationEntry.class}
+	property = "screen.navigation.category.order:Integer=20",
+	service = ScreenNavigationCategory.class
 )
 public class AccountRoleDefinePermissionsScreenNavigationCategory
 	extends BaseAccountRoleDefinePermissionsScreenNavigationCategory {
@@ -37,22 +33,6 @@ public class AccountRoleDefinePermissionsScreenNavigationCategory
 	public String getCategoryKey() {
 		return AccountScreenNavigationEntryConstants.
 			CATEGORY_KEY_DEFINE_PERMISSIONS;
-	}
-
-	@Override
-	public String getEntryKey() {
-		return AccountScreenNavigationEntryConstants.
-			ENTRY_KEY_DEFINE_PERMISSIONS;
-	}
-
-	@Override
-	protected String doGetTabs1() {
-		return "define-permissions";
-	}
-
-	@Override
-	protected boolean doIsAccountRoleGroupScope() {
-		return false;
 	}
 
 }

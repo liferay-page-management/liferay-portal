@@ -19,7 +19,9 @@ import {fetch, navigate, objectToFormData, openToast} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useMemo, useState} from 'react';
 
-import normalizeDropdownItems from '../utils/normalizeDropdownItems';
+import getSearchItems from '../utils/getSearchItems';
+import normalizeItems from '../utils/normalizeItems';
+import showSuccessMessage from '../utils/showSuccessMessage';
 import ActionsDropdown from './ActionsDropdown';
 import SearchField from './SearchField';
 
@@ -33,61 +35,6 @@ const ITEM_TYPES = {
 	folder: 'folder',
 };
 
-const showSuccessMessage = (portletNamespace) => {
-	const openToastSuccessProps = {
-		message: Liferay.Language.get('your-request-completed-successfully'),
-		type: 'success',
-	};
-
-	const reloadButtonLabel = Liferay.Language.get('reload');
-	const reloadButtonClassName = 'knowledge-base-reload-button';
-
-	openToastSuccessProps.message =
-		openToastSuccessProps.message +
-		`<div class="alert-footer">
-				<div class="btn-group" role="group">
-					<button class="btn btn-sm btn-primary alert-btn ${reloadButtonClassName}">${reloadButtonLabel}</button>
-				</div>
-		</div>`;
-
-	openToastSuccessProps.onClick = ({event, onClose: closeToast}) => {
-		if (event.target.classList.contains(reloadButtonClassName)) {
-			Liferay.Portlet.refresh(`#p_p_id${portletNamespace}`);
-			closeToast();
-		}
-	};
-
-	openToast(openToastSuccessProps);
-};
-
-const normalizeItems = (items) => {
-	if (items) {
-		return items.map((item) => {
-			return {
-				...item,
-				actions: normalizeDropdownItems(item.actions),
-				children: normalizeItems(item.children),
-			};
-		});
-	}
-};
-
-const getSearchItems = (items) => {
-	return items.reduce(function reducer(acc, item) {
-		acc.push({
-			href: item.href,
-			id: item.id,
-			name: item.name,
-			type: item.type,
-		});
-
-		if (item.children) {
-			item.children.reduce(reducer, acc);
-		}
-
-		return acc;
-	}, []);
-};
 export default function NavigationPanel({
 	items: initialItems,
 	moveKBObjectURL,

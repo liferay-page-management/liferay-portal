@@ -15,16 +15,21 @@
 package com.liferay.portal.configuration.plugin.internal;
 
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.util.PropsValues;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 import java.util.Dictionary;
 import java.util.Objects;
+
+import javax.sql.DataSource;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -56,39 +61,52 @@ public class WebIdToCompanyConfigurationPluginImpl
 			webId = PropsValues.COMPANY_DEFAULT_WEB_ID;
 		}
 
-		Company company = null;
-
 		try {
-			ServiceReference<CompanyLocalService> companyLocalServiceReference =
-				_bundleContext.getServiceReference(CompanyLocalService.class);
+			ServiceReference<DataSource> dataSourceServiceReference =
+				_bundleContext.getServiceReference(DataSource.class);
 
-			if (companyLocalServiceReference != null) {
-				CompanyLocalService companyLocalService =
-					_bundleContext.getService(companyLocalServiceReference);
+			if (dataSourceServiceReference == null) {
+				if (_log.isWarnEnabled()) {
+					_log.warn("Data source service is null");
+				}
 
-				company = companyLocalService.getCompanyByWebId(webId);
+				return;
+			}
+
+			DataSource dataSource = _bundleContext.getService(
+				dataSourceServiceReference);
+
+			try (Connection connection = dataSource.getConnection();
+				PreparedStatement preparedStatement =
+					connection.prepareStatement(
+						_db.buildSQL(
+							"select companyId from Company where webId = ?"))) {
+
+				preparedStatement.setString(1, webId);
+
+				try (ResultSet resultSet = preparedStatement.executeQuery()) {
+					if (resultSet.next()) {
+						long companyId = resultSet.getLong(1);
+
+						properties.put("companyId", companyId);
+
+						if (_log.isInfoEnabled()) {
+							_log.info(
+								StringBundler.concat(
+									"Injected company ID ", companyId,
+									" for web ID ", webId));
+						}
+					}
+				}
 			}
 		}
-		catch (PortalException portalException) {
+		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
-				_log.debug(portalException);
+				_log.debug(exception);
 			}
 
 			if (_log.isWarnEnabled()) {
 				_log.warn("Skip web ID " + webId);
-			}
-
-			return;
-		}
-
-		if (company != null) {
-			properties.put("companyId", company.getCompanyId());
-
-			if (_log.isInfoEnabled()) {
-				_log.info(
-					StringBundler.concat(
-						"Injected company ID ", company.getCompanyId(),
-						" for web ID ", webId));
 			}
 		}
 	}
@@ -97,5 +115,6 @@ public class WebIdToCompanyConfigurationPluginImpl
 		WebIdToCompanyConfigurationPluginImpl.class);
 
 	private final BundleContext _bundleContext;
+	private final DB _db = DBManagerUtil.getDB();
 
 }

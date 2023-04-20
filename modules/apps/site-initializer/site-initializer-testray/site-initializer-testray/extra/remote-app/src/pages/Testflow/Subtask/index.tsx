@@ -43,7 +43,11 @@ type OutletContext = {
 		mergedSubtaskNames: string;
 		splitSubtaskNames: string;
 		subtaskIssues: TestraySubTaskIssue[];
-		testraySubtask: TestraySubTask;
+		testraySubtask: TestraySubTask & {
+			actions: {
+				[key: string]: string;
+			};
+		};
 		testrayTask: TestrayTask;
 	};
 	mutate: {
@@ -69,9 +73,11 @@ const Subtasks = () => {
 		return <Loading />;
 	}
 
+	const hasSubtaskEditPermission = !!testraySubtask.actions?.update;
+
 	return (
 		<>
-			<SubtaskHeaderActions />
+			{hasSubtaskEditPermission && <SubtaskHeaderActions />}
 
 			<Container
 				className="pb-6"
@@ -110,6 +116,9 @@ const Subtasks = () => {
 											}
 										/>
 									),
+									visible:
+										!!testraySubtask.user ||
+										hasSubtaskEditPermission,
 								},
 								{
 									title: i18n.translate('updated'),

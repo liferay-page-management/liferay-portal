@@ -211,7 +211,9 @@ public class SiteActionDropdownItemsProvider {
 							PortletURL redirectURL =
 								PortalUtil.getControlPanelPortletURL(
 									_httpServletRequest,
-									SiteAdminPortletKeys.SITE_ADMIN,
+									GroupLocalServiceUtil.fetchCompanyGroup(
+										_themeDisplay.getCompanyId()),
+									SiteAdminPortletKeys.SITE_ADMIN, 0, 0,
 									PortletRequest.RENDER_PHASE);
 
 							return redirectURL.toString();

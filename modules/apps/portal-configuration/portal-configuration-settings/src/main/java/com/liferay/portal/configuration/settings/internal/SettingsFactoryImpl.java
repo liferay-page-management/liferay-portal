@@ -14,51 +14,41 @@
 
 package com.liferay.portal.configuration.settings.internal;
 
-import com.liferay.portal.configuration.settings.internal.util.ConfigurationPidUtil;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.kernel.exception.NoSuchPortletItemException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.PortletItem;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.PortletItemLocalService;
 import com.liferay.portal.kernel.settings.ArchivedSettings;
 import com.liferay.portal.kernel.settings.FallbackKeys;
 import com.liferay.portal.kernel.settings.FallbackSettings;
-import com.liferay.portal.kernel.settings.PortalSettings;
 import com.liferay.portal.kernel.settings.Settings;
-import com.liferay.portal.kernel.settings.SettingsDescriptor;
 import com.liferay.portal.kernel.settings.SettingsException;
 import com.liferay.portal.kernel.settings.SettingsFactory;
 import com.liferay.portal.kernel.settings.SettingsLocator;
-import com.liferay.portal.kernel.settings.definition.ConfigurationPidMapping;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.portlet.PortletPreferences;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
 
 /**
  * @author Raymond Augé
  * @author Jorge Ferrer
  */
-@Component(service = {SettingsFactory.class, SettingsFactoryImpl.class})
+@Component(service = SettingsFactory.class)
 public class SettingsFactoryImpl implements SettingsFactory {
-
-	public SettingsFactoryImpl() {
-		registerSettingsMetadata(PortalSettings.class, null, null);
-	}
 
 	@Override
 	public ArchivedSettings getPortletInstanceArchivedSettings(
@@ -101,113 +91,16 @@ public class SettingsFactoryImpl implements SettingsFactory {
 			settingsLocator.getSettingsId(), settingsLocator.getSettings());
 	}
 
-	@Override
-	public SettingsDescriptor getSettingsDescriptor(String settingsId) {
-		settingsId = PortletIdCodec.decodePortletName(settingsId);
-
-		return _settingsDescriptors.get(settingsId);
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		_fallbackKeysServiceTrackerMap =
+			ServiceTrackerMapFactory.openSingleValueMap(
+				bundleContext, FallbackKeys.class, "settingsId");
 	}
 
-	@Override
-	public void registerSettingsMetadata(
-		Class<?> settingsClass, Object configurationBean,
-		FallbackKeys fallbackKeys) {
-
-		SettingsDescriptor settingsDescriptor = new AnnotatedSettingsDescriptor(
-			settingsClass);
-
-		Settings.Config settingsConfig = settingsClass.getAnnotation(
-			Settings.Config.class);
-
-		for (String settingsId : settingsConfig.settingsIds()) {
-			register(settingsId, settingsDescriptor, fallbackKeys);
-		}
-	}
-
-	protected long getCompanyId(long groupId) throws SettingsException {
-		try {
-			Group group = _groupLocalService.getGroup(groupId);
-
-			return group.getCompanyId();
-		}
-		catch (PortalException portalException) {
-			throw new SettingsException(portalException);
-		}
-	}
-
-	protected void register(
-		String settingsId, SettingsDescriptor settingsDescriptor,
-		FallbackKeys fallbackKeys) {
-
-		_settingsDescriptors.put(settingsId, settingsDescriptor);
-
-		if (fallbackKeys != null) {
-			_fallbackKeysMap.put(settingsId, fallbackKeys);
-		}
-	}
-
-	protected void registerConfigurationBeanClass(
-		Class<?> configurationBeanClass) {
-
-		String settingsId = ConfigurationPidUtil.getConfigurationPid(
-			configurationBeanClass);
-
-		ConfigurationBeanClassSettingsDescriptor
-			configurationBeanClassSettingsDescriptor =
-				new ConfigurationBeanClassSettingsDescriptor(
-					configurationBeanClass);
-
-		register(settingsId, configurationBeanClassSettingsDescriptor, null);
-	}
-
-	@Reference(
-		cardinality = ReferenceCardinality.MULTIPLE,
-		policy = ReferencePolicy.DYNAMIC
-	)
-	protected void setConfigurationPidMapping(
-		ConfigurationPidMapping configurationPidMapping) {
-
-		String settingsId = configurationPidMapping.getConfigurationPid();
-
-		ConfigurationBeanClassSettingsDescriptor
-			configurationBeanClassSettingsDescriptor =
-				new ConfigurationBeanClassSettingsDescriptor(
-					configurationPidMapping.getConfigurationBeanClass());
-
-		register(settingsId, configurationBeanClassSettingsDescriptor, null);
-	}
-
-	@Reference(unbind = "-")
-	protected void setGroupLocalService(GroupLocalService groupLocalService) {
-		_groupLocalService = groupLocalService;
-	}
-
-	@Reference(unbind = "-")
-	protected void setPortletItemLocalService(
-		PortletItemLocalService portletItemLocalService) {
-
-		_portletItemLocalService = portletItemLocalService;
-	}
-
-	protected void unregister(String settingsId) {
-		_fallbackKeysMap.remove(settingsId);
-
-		_settingsDescriptors.remove(settingsId);
-	}
-
-	protected void unregisterConfigurationBeanClass(
-		Class<?> configurationBeanClass) {
-
-		String settingsId = ConfigurationPidUtil.getConfigurationPid(
-			configurationBeanClass);
-
-		unregister(settingsId);
-	}
-
-	protected void unsetConfigurationPidMapping(
-		ConfigurationPidMapping configurationPidMapping) {
-
-		unregister(configurationPidMapping.getConfigurationPid());
+	@Deactivate
+	protected void deactivate() {
+		_fallbackKeysServiceTrackerMap.close();
 	}
 
 	private Settings _applyFallbackKeys(String settingsId, Settings settings) {
@@ -217,7 +110,8 @@ public class SettingsFactoryImpl implements SettingsFactory {
 
 		settingsId = PortletIdCodec.decodePortletName(settingsId);
 
-		FallbackKeys fallbackKeys = _fallbackKeysMap.get(settingsId);
+		FallbackKeys fallbackKeys = _fallbackKeysServiceTrackerMap.getService(
+			settingsId);
 
 		if (fallbackKeys != null) {
 			settings = new FallbackSettings(settings, fallbackKeys);
@@ -255,11 +149,10 @@ public class SettingsFactoryImpl implements SettingsFactory {
 	private static final Log _log = LogFactoryUtil.getLog(
 		SettingsFactoryImpl.class);
 
-	private final ConcurrentMap<String, FallbackKeys> _fallbackKeysMap =
-		new ConcurrentHashMap<>();
-	private GroupLocalService _groupLocalService;
+	private ServiceTrackerMap<String, FallbackKeys>
+		_fallbackKeysServiceTrackerMap;
+
+	@Reference
 	private PortletItemLocalService _portletItemLocalService;
-	private final Map<String, SettingsDescriptor> _settingsDescriptors =
-		new ConcurrentHashMap<>();
 
 }

@@ -21,7 +21,10 @@ import SearchContext from '../../shared/SearchContext';
 import InputSets, {useInputSets} from '../../shared/input_sets/index';
 import {ITEM_ID_PROPERTY} from '../../shared/input_sets/useInputSets';
 import cleanSuggestionsContributorConfiguration from '../../utils/clean_suggestions_contributor_configuration';
-import {CONTRIBUTOR_TYPES} from '../../utils/types/contributorTypes';
+import {
+	CONTRIBUTOR_TYPES,
+	CONTRIBUTOR_TYPES_ASAH_DEFAULT_DISPLAY_GROUP_NAMES,
+} from '../../utils/types/contributorTypes';
 import SuggestionContributorAddButton from './SuggestionContributorAddButton';
 import ContributorInputSetItem from './contributor_input_set_item/index';
 
@@ -93,7 +96,7 @@ function SearchBarConfigurationSuggestions({
 					)}
 
 					<LearnMessage
-						className="ml-1"
+						className="c-ml-1"
 						learnMessages={learnMessages}
 						resourceKey="search-bar-suggestions-blueprints"
 					/>
@@ -111,7 +114,7 @@ function SearchBarConfigurationSuggestions({
 					)}
 
 					<LearnMessage
-						className="ml-1"
+						className="c-ml-1"
 						learnMessages={learnMessages}
 						resourceKey="search-bar-suggestions-site-activities"
 					/>
@@ -165,13 +168,10 @@ function SearchBarConfigurationSuggestions({
 				},
 				contributorName,
 				displayGroupName:
-					contributorName ===
-					CONTRIBUTOR_TYPES.ASAH_RECENT_SEARCH_KEYWORDS
-						? 'trending-searches'
-						: contributorName ===
-						  CONTRIBUTOR_TYPES.ASAH_TOP_SEARCH_KEYWORDS
-						? 'top-searches'
-						: '',
+					CONTRIBUTOR_TYPES_ASAH_DEFAULT_DISPLAY_GROUP_NAMES[
+						contributorName
+					] || '',
+
 				size: '3',
 			});
 		}
@@ -235,7 +235,7 @@ function SearchBarConfigurationSuggestions({
 					{!!contributorOptions.length && (
 						<div
 							className={getCN({
-								'mt-4': !suggestionsContributorConfiguration.length,
+								'c-mt-4': !suggestionsContributorConfiguration.length,
 							})}
 						>
 							<SuggestionContributorAddButton>

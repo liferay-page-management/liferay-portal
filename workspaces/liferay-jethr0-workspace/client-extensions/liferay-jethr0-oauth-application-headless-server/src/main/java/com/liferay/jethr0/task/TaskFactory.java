@@ -14,65 +14,25 @@
 
 package com.liferay.jethr0.task;
 
-import com.liferay.jethr0.build.Build;
-import com.liferay.jethr0.project.Project;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.liferay.jethr0.entity.factory.BaseEntityFactory;
 
 import org.json.JSONObject;
+
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Michael Hashimoto
  */
-public class TaskFactory {
+@Configuration
+public class TaskFactory extends BaseEntityFactory<Task> {
 
-	public static Task newTask(Build build, JSONObject jsonObject) {
-		long id = jsonObject.getLong("id");
-
-		Task task = null;
-
-		synchronized (_tasks) {
-			if (_tasks.containsKey(id)) {
-				return _tasks.get(id);
-			}
-
-			task = new DefaultTask(build, jsonObject);
-
-			_tasks.put(task.getId(), task);
-		}
-
-		return task;
+	@Override
+	public Task newEntity(JSONObject jsonObject) {
+		return new DefaultTask(jsonObject);
 	}
 
-	public static Task newTask(Project project, JSONObject jsonObject) {
-		long id = jsonObject.getLong("id");
-
-		Task task = null;
-
-		synchronized (_tasks) {
-			if (_tasks.containsKey(id)) {
-				return _tasks.get(id);
-			}
-
-			task = new DefaultTask(project, jsonObject);
-
-			_tasks.put(task.getId(), task);
-		}
-
-		return task;
+	protected TaskFactory() {
+		super(Task.class);
 	}
-
-	public static void removeTask(Task task) {
-		if (task == null) {
-			return;
-		}
-
-		synchronized (_tasks) {
-			_tasks.remove(task.getId());
-		}
-	}
-
-	private static final Map<Long, Task> _tasks = new HashMap<>();
 
 }

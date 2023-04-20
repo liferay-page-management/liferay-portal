@@ -58,10 +58,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -270,17 +267,17 @@ public class NavigationMenuResourceImpl extends BaseNavigationMenuResourceImpl {
 			return new HashMap<>();
 		}
 
-		Set<Map.Entry<String, String>> properties =
-			unicodeProperties.entrySet();
+		Map<Locale, String> properties = new HashMap<>();
 
-		Stream<Map.Entry<String, String>> propertiesStream =
-			properties.stream();
+		for (Map.Entry<String, String> entry : unicodeProperties.entrySet()) {
+			if (!_isNameProperty(entry)) {
+				continue;
+			}
 
-		return propertiesStream.filter(
-			this::_isNameProperty
-		).collect(
-			Collectors.toMap(this::_getLocaleFromProperty, Map.Entry::getValue)
-		);
+			properties.put(_getLocaleFromProperty(entry), entry.getValue());
+		}
+
+		return properties;
 	}
 
 	private String _getName(
@@ -682,40 +679,42 @@ public class NavigationMenuResourceImpl extends BaseNavigationMenuResourceImpl {
 
 		if (navigationMenuItems != null) {
 			for (NavigationMenuItem navigationMenuItem : navigationMenuItems) {
-				Stream<SiteNavigationMenuItem> stream =
-					siteNavigationMenuItems.stream();
-
 				Long navigationMenuItemId = navigationMenuItem.getId();
 
-				Optional<SiteNavigationMenuItem>
-					siteNavigationMenuItemOptional = stream.filter(
-						siteNavigationMenuItem -> Objects.equals(
-							siteNavigationMenuItem.
-								getSiteNavigationMenuItemId(),
-							navigationMenuItemId)
-					).findFirst();
+				SiteNavigationMenuItem siteNavigationMenuItem = null;
 
-				if (siteNavigationMenuItemOptional.isPresent()) {
-					SiteNavigationMenuItem existingSiteNavigationMenuItem =
-						siteNavigationMenuItemOptional.get();
+				for (SiteNavigationMenuItem curSiteNavigationMenuItem :
+						siteNavigationMenuItems) {
 
-					SiteNavigationMenuItem siteNavigationMenuItem =
+					if (Objects.equals(
+							navigationMenuItemId,
+							curSiteNavigationMenuItem.
+								getSiteNavigationMenuItemId())) {
+
+						siteNavigationMenuItem = curSiteNavigationMenuItem;
+
+						break;
+					}
+				}
+
+				if (siteNavigationMenuItem != null) {
+					SiteNavigationMenuItem updatedSiteNavigationMenuItem =
 						_siteNavigationMenuItemService.
 							updateSiteNavigationMenuItem(
 								navigationMenuItemId,
 								_getUnicodeProperties(
 									false, navigationMenuItem, siteId,
-									existingSiteNavigationMenuItem),
+									siteNavigationMenuItem),
 								ServiceContextRequestUtil.createServiceContext(
 									siteId, contextHttpServletRequest, null));
 
 					_updateNavigationMenuItems(
 						navigationMenuItem.getNavigationMenuItems(),
-						siteNavigationMenuItem.getSiteNavigationMenuItemId(),
+						updatedSiteNavigationMenuItem.
+							getSiteNavigationMenuItemId(),
 						siteId, siteNavigationMenuId);
 
-					siteNavigationMenuItems.remove(
-						existingSiteNavigationMenuItem);
+					siteNavigationMenuItems.remove(siteNavigationMenuItem);
 				}
 				else {
 					_createNavigationMenuItem(

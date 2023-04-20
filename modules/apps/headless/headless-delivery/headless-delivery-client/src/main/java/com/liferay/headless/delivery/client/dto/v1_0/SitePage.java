@@ -272,6 +272,25 @@ public class SitePage implements Cloneable, Serializable {
 
 	protected Map<String, String> friendlyUrlPath_i18n;
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setId(UnsafeSupplier<Long, Exception> idUnsafeSupplier) {
+		try {
+			id = idUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Long id;
+
 	public String[] getKeywords() {
 		return keywords;
 	}
@@ -356,6 +375,28 @@ public class SitePage implements Cloneable, Serializable {
 	}
 
 	protected String pageType;
+
+	public ParentSitePage getParentSitePage() {
+		return parentSitePage;
+	}
+
+	public void setParentSitePage(ParentSitePage parentSitePage) {
+		this.parentSitePage = parentSitePage;
+	}
+
+	public void setParentSitePage(
+		UnsafeSupplier<ParentSitePage, Exception>
+			parentSitePageUnsafeSupplier) {
+
+		try {
+			parentSitePage = parentSitePageUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected ParentSitePage parentSitePage;
 
 	public RenderedPage getRenderedPage() {
 		return renderedPage;

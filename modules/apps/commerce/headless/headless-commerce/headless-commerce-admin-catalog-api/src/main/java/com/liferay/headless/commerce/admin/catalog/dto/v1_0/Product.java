@@ -1189,6 +1189,38 @@ public class Product implements Serializable {
 
 	@Schema
 	@Valid
+	public ProductVirtualSettings getProductVirtualSettings() {
+		return productVirtualSettings;
+	}
+
+	public void setProductVirtualSettings(
+		ProductVirtualSettings productVirtualSettings) {
+
+		this.productVirtualSettings = productVirtualSettings;
+	}
+
+	@JsonIgnore
+	public void setProductVirtualSettings(
+		UnsafeSupplier<ProductVirtualSettings, Exception>
+			productVirtualSettingsUnsafeSupplier) {
+
+		try {
+			productVirtualSettings = productVirtualSettingsUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected ProductVirtualSettings productVirtualSettings;
+
+	@Schema
+	@Valid
 	public RelatedProduct[] getRelatedProducts() {
 		return relatedProducts;
 	}
@@ -2093,6 +2125,16 @@ public class Product implements Serializable {
 			sb.append(_escape(productTypeI18n));
 
 			sb.append("\"");
+		}
+
+		if (productVirtualSettings != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"productVirtualSettings\": ");
+
+			sb.append(String.valueOf(productVirtualSettings));
 		}
 
 		if (relatedProducts != null) {

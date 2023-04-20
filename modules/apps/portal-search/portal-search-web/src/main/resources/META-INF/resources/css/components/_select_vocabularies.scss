@@ -4,26 +4,20 @@
 			opacity: 0.5;
 		}
 
-		.select-vocabularies-helptext {
-			color: #a7a9bc;
+		.sheet-text {
+			color: var(--gray-500, $secondary-l1);
 		}
 
 		.treeview {
 			.autofit-col,
 			.custom-control-label-text {
-				color: #a7a9bc;
+				color: var(--gray-500, $secondary-l1);
 			}
 		}
 	}
 
 	.btn-group-item:first-of-type {
 		margin-right: 6px;
-	}
-
-	.select-vocabularies-helptext {
-		color: #6b6c7e;
-		margin-bottom: 16px;
-		margin-top: 8px;
 	}
 
 	.treeview-group {

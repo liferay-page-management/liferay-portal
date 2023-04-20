@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.portlet.SearchOrderByUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.util.JavaConstants;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -38,9 +39,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.portlet.PortletException;
 import javax.portlet.PortletRequest;
@@ -130,37 +128,14 @@ public class AnonymizeNonreviewableUADDataMVCRenderCommand
 				portletRequest,
 				UserAssociatedDataPortletKeys.USER_ASSOCIATED_DATA,
 				"anonymize-order-by-type", "asc"));
-
-		List<UADApplicationSummaryDisplay> uadApplicationSummaryDisplays =
-			_getUADApplicationSummaryDisplays(userId);
-
-		Supplier<Stream<UADApplicationSummaryDisplay>> streamSupplier = () -> {
-			Stream<UADApplicationSummaryDisplay> stream =
-				uadApplicationSummaryDisplays.stream();
-
-			return stream.filter(display -> display.getCount() > 0);
-		};
-
-		Stream<UADApplicationSummaryDisplay> summaryDisplayStream =
-			streamSupplier.get();
-
-		List<UADApplicationSummaryDisplay> results =
-			summaryDisplayStream.sorted(
+		searchContainer.setResultsAndTotal(
+			ListUtil.sort(
+				ListUtil.filter(
+					_getUADApplicationSummaryDisplays(userId),
+					display -> display.getCount() > 0),
 				_getComparator(
 					locale, searchContainer.getOrderByCol(),
-					searchContainer.getOrderByType())
-			).skip(
-				searchContainer.getStart()
-			).limit(
-				searchContainer.getDelta()
-			).collect(
-				Collectors.toList()
-			);
-
-		summaryDisplayStream = streamSupplier.get();
-
-		searchContainer.setResultsAndTotal(
-			() -> results, (int)summaryDisplayStream.count());
+					searchContainer.getOrderByType())));
 
 		return searchContainer;
 	}

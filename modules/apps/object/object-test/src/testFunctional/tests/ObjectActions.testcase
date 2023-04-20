@@ -126,7 +126,9 @@ definition {
 
 		Refresh();
 
-		ObjectAdmin.assertNoResultsWereFound();
+		AssertTextEquals(
+			locator1 = "Message#EMPTY_STATE_INFO",
+			value1 = "No Results Found");
 	}
 
 	@description = "LPS-139008 - Verify it is possible to cancel the update of an Action"
@@ -190,6 +192,81 @@ definition {
 		ObjectAdmin.assertObjectActions(
 			actionActive = "Yes",
 			actionLabel = "Action Label");
+	}
+
+	@description = "LPS-178405 - Verify if actions works with oldValue function when trigger is On After Delete (Add an Object Entry)"
+	@priority = 4
+	test CanCreateActionAddAnObjectEntryUsingOldValueWithOnAfterDeleteTrigger {
+		task ("Given: Two custom objects with a text field") {
+			for (var objectNum : list "1,2") {
+				ObjectAdmin.addObjectViaAPI(
+					labelName = "Custom Object 178405${objectNum}",
+					objectName = "CustomObject170405${objectNum}",
+					pluralLabelName = "Custom Objects 178405${objectNum}");
+
+				ObjectAdmin.addObjectFieldViaAPI(
+					fieldBusinessType = "Text",
+					fieldLabelName = "Custom Text Field",
+					fieldName = "customObjectField",
+					fieldType = "String",
+					isRequired = "false",
+					objectName = "CustomObject178405${objectNum}");
+
+				ObjectAdmin.publishObjectViaAPI(objectName = "CustomObject178405${objectNum}");
+			}
+		}
+
+		task ("And Given: The custom objects has a On Afer Delete Trigger action") {
+			ObjectAdmin.openObjectAdmin();
+
+			ObjectPortlet.selectCustomObject(label = "Custom Object 1784051");
+
+			ObjectAdmin.goToActionsTab();
+
+			ObjectAdmin.addObjectActionViaUI(
+				actionLabel = "Custom Action",
+				active = "true",
+				fieldName = "Custom Text Field",
+				inputExpression = "oldValue('customObjectField') == 'Entry Test'",
+				inputMethod = "true",
+				inputValue = "Works!",
+				objectLabel = "Custom Object 1784052",
+				thenAction = "Add an Object Entry",
+				whenAction = "On After Delete");
+
+			ObjectAdmin.assertObjectActions(
+				actionActive = "Yes",
+				actionLabel = "Custom Action");
+		}
+
+		task ("When an entry is created and then deleted") {
+			ObjectAdmin.addObjectSingleFieldEntryViaAPI(
+				fieldName = "customObjectField",
+				objectName = "CustomObject1784051",
+				value = "Entry Test");
+
+			ObjectAdmin.deleteObjectEntryViaAPI(
+				fieldName = "customObjectField",
+				objectName = "CustomObject1784051",
+				value = "Entry Test");
+		}
+
+		task ("Then the action will be triggered after deleting an entry.") {
+			ObjectAdmin.goToCustomObject(objectName = "CustomObject178405-2");
+
+			ObjectPortlet.viewEntry(entry = "Works!");
+
+			ObjectAdmin.openObjectAdmin();
+
+			ObjectPortlet.selectCustomObject(label = "Custom Object 178405-1");
+
+			ObjectAdmin.goToActionsTab();
+
+			ObjectAdmin.assertObjectActions(
+				actionActive = "Yes",
+				actionLabel = "Custom Action",
+				status = "Success");
+		}
 	}
 
 	@description = "LPS-175200 - Verify if actions works with oldValue function when trigger is On After Update (Add an Object Entry) using Picklist field."
@@ -388,7 +465,7 @@ definition {
 	@description = "LPS-171913 - Verify it's possible to add an object entry with the trigger On Payment Status Update"
 	@priority = 4
 	test CanCreateActionAddObjectEntryWithOnPaymentStatusUpdate {
-		task ("Given: An object with a field is created") {
+		task ("Given an object with a field is created") {
 			ObjectAdmin.addObjectViaAPI(
 				labelName = "Custom Object 171913",
 				objectName = "CustomObject171913",
@@ -405,7 +482,7 @@ definition {
 			ObjectAdmin.publishObjectViaAPI(objectName = "CustomObject171913");
 		}
 
-		task ("And given: An Action is created") {
+		task ("And given an Action is created") {
 			ObjectAdmin.openObjectAdmin();
 
 			ObjectPortlet.selectCustomObject(label = "Commerce Order");
@@ -422,7 +499,7 @@ definition {
 				whenAction = "On Payment Status Update");
 		}
 
-		task ("And given: An account, minium site and an order is created") {
+		task ("And given an account, minium site and an order is created") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
 			ApplicationsMenu.gotoSite(site = "Minium");
@@ -434,8 +511,6 @@ definition {
 			FrontStore.addInitializerProductToCart(
 				productName = "U-Joint",
 				productQuantity = 1);
-
-			Refresh();
 
 			CommerceCheckout.gotoCheckout();
 
@@ -451,30 +526,17 @@ definition {
 				shippingMethod = "Standard");
 		}
 
-		task ("When: The user changes the payment status") {
+		task ("When the user changes the payment status") {
 			CommerceOrders.openOrdersAdmin();
 
 			CommerceNavigator.gotoOrderEntryViaAdmin(status = "Pending");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Payments");
 
-			Click(
-				key_index = "Edit",
-				locator1 = "WorkflowMetrics#SEARCH_FIELD_MAPPINGS_METRICS_INDEXES");
-
-			SelectFrameTop();
-
-			SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
-
-			Select(
-				key_fieldLabel = "Payment Status",
-				locator1 = "Select#GENERIC_SELECT_FIELD",
-				value1 = "Pending");
-
-			Button.click(button = "Submit");
+			CommercePaymentStatus.editPaymentStatus(statusValue = "Authorized");
 		}
 
-		task ("Then: The action is triggered") {
+		task ("Then the action is triggered and an object entry is added") {
 			ObjectAdmin.goToCustomObject(objectName = "CustomObject171913");
 
 			ObjectPortlet.viewEntry(entry = "Action shot on add");
@@ -1112,7 +1174,8 @@ definition {
 				fromAddress = "test@liferay.com",
 				fromName = "Test Test",
 				name = "Notification Template",
-				notificationType = "Email");
+				notificationType = "Email",
+				subject = "Subject Test");
 
 			PortletEntry.save();
 		}
@@ -1147,8 +1210,6 @@ definition {
 				productName = "U-Joint",
 				productQuantity = 1);
 
-			Refresh();
-
 			CommerceCheckout.gotoCheckout();
 
 			CommerceCheckout.initializersCheckout(
@@ -1164,43 +1225,18 @@ definition {
 		}
 
 		task ("When the payment status is updated") {
-			CommerceNavigator.gotoPortlet(
-				category = "Order Management",
-				portlet = "Orders");
+			CommerceOrders.openOrdersAdmin();
 
-			WaitForElementPresent(
-				key_orderStatus = "Pending",
-				locator1 = "CommerceOrders#ORDER_ELLIPSIS_BY_STATUS");
-
-			ClickNoError(
-				key_orderStatus = "Pending",
-				locator1 = "CommerceOrders#ORDER_ELLIPSIS_BY_STATUS");
-
-			CommerceEntry.clickNoError(menuItem = "View");
+			CommerceNavigator.gotoOrderEntryViaAdmin(status = "Pending");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Payments");
 
-			Click(
-				key_index = "Edit",
-				locator1 = "WorkflowMetrics#SEARCH_FIELD_MAPPINGS_METRICS_INDEXES");
+			CommercePaymentStatus.editPaymentStatus(statusValue = "Canceled");
 
-			SelectFrameTop();
-
-			SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
-
-			Select(
-				key_fieldLabel = "Payment Status",
-				locator1 = "Select#GENERIC_SELECT_FIELD",
-				value1 = "Canceled");
-
-			Button.click(button = "Submit");
-
-			Alert.viewSuccessMessage();
+			CommercePaymentStatus.assertPaymentStatus(statusValue = "Canceled");
 		}
 
 		task ("Then assert the action run and the notification is in the queue") {
-			Navigator.openURL();
-
 			ObjectAdmin.openObjectAdmin();
 
 			ObjectPortlet.selectCustomObject(label = "Commerce Order");
@@ -1382,7 +1418,7 @@ definition {
 	test CanCreateActionUpdateAnObjectEntryWithOnPaymentStatusUpdate {
 		property custom.properties = "feature.flag.LPS-173537=true";
 
-		task ("Given: An action in the Commerce Order object") {
+		task ("Given an action in the Commerce Order object") {
 			ObjectAdmin.openObjectAdmin();
 
 			ObjectPortlet.selectCustomObject(label = "Commerce Order");
@@ -1390,7 +1426,7 @@ definition {
 			ObjectAdmin.goToActionsTab();
 		}
 
-		task ("And given: The user selects the trigger OnPaymentStatusUpdate using the action Update an Object Entry") {
+		task ("And given the user selects the trigger OnPaymentStatusUpdate using the action Update an Object Entry") {
 			ObjectAdmin.addObjectActionViaUI(
 				actionLabel = "Custom Action",
 				active = "true",
@@ -1401,7 +1437,7 @@ definition {
 				whenAction = "On Payment Status Update");
 		}
 
-		task ("And given: An account, minium site and an order is created") {
+		task ("And given an account, minium site and an order is created") {
 			JSONAccountEntry.addAccountEntry(
 				accountEntryName = "Accounts Name Test",
 				accountEntryType = "Business");
@@ -1428,42 +1464,19 @@ definition {
 				shippingMethod = "Standard");
 		}
 
-		task ("When: The user changes payment status and the action changes order status to processing") {
-			CommerceNavigator.gotoPortlet(
-				category = "Order Management",
-				portlet = "Orders");
+		task ("When the user changes payment status and the action changes order status to processing") {
+			CommerceOrders.openOrdersAdmin();
 
-			ClickNoError(
-				key_orderStatus = "Pending",
-				locator1 = "CommerceOrders#ORDER_ELLIPSIS_BY_STATUS");
-
-			CommerceEntry.clickNoError(menuItem = "View");
+			CommerceNavigator.gotoOrderEntryViaAdmin(status = "Pending");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Payments");
 
-			Click(
-				key_index = "Edit",
-				locator1 = "WorkflowMetrics#SEARCH_FIELD_MAPPINGS_METRICS_INDEXES");
+			CommercePaymentStatus.editPaymentStatus(statusValue = "Authorized");
 
-			SelectFrameTop();
-
-			SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
-
-			Select(
-				key_fieldLabel = "Payment Status",
-				locator1 = "Select#GENERIC_SELECT_FIELD",
-				value1 = "Authorized");
-
-			Button.click(button = "Submit");
-
-			Navigator.gotoBack();
-
-			AssertElementPresent(
-				key_value = "Processing",
-				locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
+			CommercePaymentStatus.assertPaymentStatus(statusValue = "Authorized");
 		}
 
-		task ("Then: The action is triggered") {
+		task ("Then the action is triggered") {
 			ObjectAdmin.openObjectAdmin();
 
 			ObjectPortlet.selectCustomObject(label = "Commerce Order");
@@ -2466,7 +2479,9 @@ definition {
 
 		Button.clickSave();
 
-		ObjectAdmin.assertRequiredErrorPresent();
+		AssertTextEquals.assertPartialText(
+			locator1 = "TextInput#REQUIRED_ALERT",
+			value1 = "Required");
 	}
 
 	@description = "LPS-139008 - Verify it is not possible to leave the Action Then field blank"
@@ -2494,7 +2509,9 @@ definition {
 
 		Button.clickSave();
 
-		ObjectAdmin.assertRequiredErrorPresent();
+		AssertTextEquals.assertPartialText(
+			locator1 = "TextInput#REQUIRED_ALERT",
+			value1 = "Required");
 	}
 
 	@description = "LPS-139008 - Verify it is not possible to leave the Action When field blank"
@@ -2523,7 +2540,9 @@ definition {
 
 		Button.clickSave();
 
-		ObjectAdmin.assertRequiredErrorPresent();
+		AssertTextEquals.assertPartialText(
+			locator1 = "TextInput#REQUIRED_ALERT",
+			value1 = "Required");
 	}
 
 	@description = "LPS-139008 - Verify it is not possible to leave the URL field blank when Webhook is selected"
@@ -2552,7 +2571,9 @@ definition {
 
 		Button.clickSave();
 
-		ObjectAdmin.assertRequiredErrorPresent();
+		AssertTextEquals.assertPartialText(
+			locator1 = "TextInput#REQUIRED_ALERT",
+			value1 = "Required");
 	}
 
 	@description = "Verify if an error message appears when trying to save an Update an object Entry action with a Standalone trigger when using the invalid expression"
@@ -2656,7 +2677,9 @@ definition {
 
 		Refresh();
 
-		ObjectAdmin.assertNoResultsWereFound();
+		AssertTextEquals(
+			locator1 = "Message#EMPTY_STATE_INFO",
+			value1 = "No Results Found");
 	}
 
 	@description = "LPS-139008 - Verify that it is possible to reactivate an Action"
@@ -3416,7 +3439,9 @@ definition {
 
 		Button.clickSave();
 
-		ObjectAdmin.assertRequiredErrorPresent();
+		AssertTextEquals.assertPartialText(
+			locator1 = "TextInput#REQUIRED_ALERT",
+			value1 = "Required");
 	}
 
 	@description = "LPS-171802- Verify if the Condition card is hidden when using the trigger On Subscription Status Update"

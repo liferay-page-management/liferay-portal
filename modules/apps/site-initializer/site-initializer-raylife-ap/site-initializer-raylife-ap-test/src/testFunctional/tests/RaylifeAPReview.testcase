@@ -1,0 +1,179 @@
+@component-name = "portal-solutions"
+definition {
+
+	property custom.properties = "feature.flag.LPS-165493=true";
+	property osgi.modules.includes = "site-initializer-raylife-ap";
+	property portal.release = "false";
+	property portal.upstream = "true";
+	property release.feature.flags.disable.DISABLE_PRIVATE_LAYOUTS = "true";
+	property testray.main.component.name = "Site Initializer Raylife AP";
+
+	var testSiteName = "Raylife AP";
+	var testSiteURL = "raylife-ap";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginPG();
+
+		Raylife.createRaylifeSite(siteName = "Raylife D2C");
+
+		Raylife.createRaylifeSite(siteName = "Raylife AP");
+	}
+
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		Raylife.tearDownCP();
+
+		if (${testPortalInstance} == "true") {
+			PortalInstances.tearDownCP();
+		}
+		else {
+			User.logoutPG();
+		}
+	}
+
+	@description = "LPS-146337 - Verify if user can see the application listed in the Applications section after a complete flow in new applications."
+	@priority = 5
+	test CanCreateNewApplication {
+		property test.name.skip.portal.instance = "RaylifeAPReview#CanCreateNewApplication";
+
+		// Skip portal instance due to LRQA-79129. Unskip after it is resolved
+
+		task ("Given that Raylife AP site is open and the user select the application button") {
+			RaylifeAP.goToRaylifeAPSiteWithRefresh();
+
+			RaylifeApplicationModal.openNewApplicationFlow(
+				insurance = "Personal",
+				product = "Auto");
+		}
+
+		task ("When the user fulfill all the creation forms") {
+			RaylifeApplicationModal.typeAllNewApplicationContactInfoFields(
+				apt = 0000,
+				city = "New York",
+				emailAddress = "test@liferay.com",
+				firstName = "Testing",
+				lastName = "Model",
+				phoneNumber = 0123456789,
+				state = "NY",
+				streetAddress = "Address",
+				zipCode = 12345);
+
+			RaylifeApplicationModal.typeAllNewApplicationVehicleInfoFields(
+				annualMileage = 50000,
+				make = "Volvo",
+				model = "v90 cross country",
+				ownership = "Own",
+				primaryUse = "Business",
+				year = 2019);
+
+			RaylifeApplicationModal.typeAllNewApplicationDriverInfoFields(
+				ageFirstLicenced = 18,
+				firstName = "Testing",
+				gender = "Female",
+				highestEducation = "Masters",
+				lastName = "Model",
+				maritalStatus = "Single",
+				militaryAffiliation = "None",
+				occupation = "Engineer",
+				relationToContact = "Spouse");
+
+			RaylifeApplicationModal.typeAllNewApplicationCoverageInfoFields(
+				bodilyInjury = "$30,000 / $60,000",
+				collisionAmount = "$2,000",
+				comprehensiveAmount = "$750",
+				medicalAmount = "$1,000",
+				propertyDamage = "$25,000",
+				uninsuredOrUnderinsuredMBI = "$30,000 / $60,000",
+				uninsuredOrUnderinsuredMPD = "$150,000");
+
+			Button.click(button = "Generate Quote");
+		}
+
+		task ("Then the user assert if the application created is listed in the Application List") {
+			RaylifeAP.search(searchTerm = "Testing Model");
+
+			RaylifeAP.assertTableElement(
+				column = 4,
+				line = 1,
+				text = "Testing Model");
+		}
+	}
+
+	@description = "LPS-161329 - Verify if user can delete a application made in New Applications."
+	@priority = 3
+	test CanDeleteIncompleteApplication {
+		property test.name.skip.portal.instance = "RaylifeAPReview#CanDeleteNewApplication";
+
+		// Skip portal instance due to LRQA-79129. Unskip after it is resolved
+
+		task ("Given that an user created an uncompleted new application") {
+			RaylifeAP.goToRaylifeAPSiteWithRefresh();
+
+			RaylifeApplicationModal.openNewApplicationFlow(
+				insurance = "Personal",
+				product = "Auto");
+
+			RaylifeApplicationModal.typeAllNewApplicationContactInfoFields(
+				apt = 0000,
+				city = "New York",
+				emailAddress = "test@liferay.com",
+				firstName = "Testing",
+				lastName = "Model",
+				phoneNumber = 0123456789,
+				state = "NY",
+				streetAddress = "Address",
+				zipCode = 12345);
+
+			RaylifeApplicationModal.typeAllNewApplicationVehicleInfoFields(
+				annualMileage = 50000,
+				make = "Volvo",
+				model = "v90 cross country",
+				ownership = "Own",
+				primaryUse = "Business",
+				year = 2019);
+
+			RaylifeApplicationModal.typeAllNewApplicationDriverInfoFields(
+				ageFirstLicenced = 18,
+				firstName = "Testing",
+				gender = "Female",
+				highestEducation = "Masters",
+				lastName = "Model",
+				maritalStatus = "Single",
+				militaryAffiliation = "None",
+				occupation = "Engineer",
+				relationToContact = "Spouse");
+
+			RaylifeApplicationModal.typeAllNewApplicationCoverageInfoFields(
+				bodilyInjury = "$30,000 / $60,000",
+				collisionAmount = "$2,000",
+				comprehensiveAmount = "$750",
+				medicalAmount = "$1,000",
+				propertyDamage = "$25,000",
+				uninsuredOrUnderinsuredMBI = "$30,000 / $60,000",
+				uninsuredOrUnderinsuredMPD = "$150,000");
+
+			Button.click(button = "Exit");
+		}
+
+		task ("When the user delete the new incompleted application") {
+			RaylifeAP.clickInApplicationKebabOption(
+				option = "Delete",
+				product = "Auto",
+				status = "Incomplete");
+		}
+
+		task ("Then assert if the application was deleted") {
+			RaylifeAPNavigator.gotoSidebarItem(itemName = "Applications");
+
+			RaylifeAP.search(searchTerm = "Testing Model");
+
+			AssertElementNotPresent(
+				key_quantity = "Applications (1)",
+				locator1 = "RaylifeAP#ASSERT_QUANTITY");
+		}
+	}
+
+}

@@ -54,15 +54,12 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.net.URL;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -413,45 +410,34 @@ public class DDMDataProviderInstanceLocalServiceImpl
 			return;
 		}
 
-		List<DDMFormFieldValue> inputParameters = ddmFormFieldValuesMap.get(
-			"inputParameters");
+		Set<String> inputParameterNames = new HashSet<>();
 
-		Stream<DDMFormFieldValue> inputParametersStream =
-			inputParameters.stream();
+		for (DDMFormFieldValue inputParametersDDMFormFieldValue :
+				ddmFormFieldValuesMap.get("inputParameters")) {
 
-		List<DDMFormFieldValue> inputParameterNamesList =
-			inputParametersStream.flatMap(
-				inputParameter -> inputParameter.getNestedDDMFormFieldValuesMap(
-				).get(
-					"inputParameterName"
-				).stream()
-			).collect(
-				Collectors.toList()
-			);
+			Map<String, List<DDMFormFieldValue>> nestedDDMFormFieldValuesMap =
+				inputParametersDDMFormFieldValue.
+					getNestedDDMFormFieldValuesMap();
 
-		Stream<DDMFormFieldValue> inputParameterNamesStream =
-			inputParameterNamesList.stream();
+			for (DDMFormFieldValue inputParameterNameDDMFormFieldValue :
+					nestedDDMFormFieldValuesMap.get("inputParameterName")) {
 
-		Collection<String> inputParameterNames =
-			inputParameterNamesStream.flatMap(
-				inputParameterName -> inputParameterName.getValue(
-				).getValues(
-				).values(
-				).stream()
-			).collect(
-				Collectors.toList()
-			);
+				Value inputParameterNameValue =
+					inputParameterNameDDMFormFieldValue.getValue();
 
-		Set<String> inputParameterNamesSet = new HashSet<>();
+				Map<Locale, String> inputParameterNameValuesMap =
+					inputParameterNameValue.getValues();
 
-		for (String inputParameterName : inputParameterNames) {
-			if (inputParameterNamesSet.contains(inputParameterName)) {
-				throw new DuplicateDataProviderInstanceInputParameterNameException(
-					"Duplicate data provider input parameter name: " +
-						inputParameterName);
+				for (String inputParameterName :
+						inputParameterNameValuesMap.values()) {
+
+					if (!inputParameterNames.add(inputParameterName)) {
+						throw new DuplicateDataProviderInstanceInputParameterNameException(
+							"Duplicate data provider input parameter name: " +
+								inputParameterName);
+					}
+				}
 			}
-
-			inputParameterNamesSet.add(inputParameterName);
 		}
 	}
 
@@ -465,10 +451,9 @@ public class DDMDataProviderInstanceLocalServiceImpl
 			return;
 		}
 
-		List<DDMFormFieldValue> ddmFormFieldValues = ddmFormFieldValuesMap.get(
-			"url");
+		for (DDMFormFieldValue ddmFormFieldValue :
+				ddmFormFieldValuesMap.get("url")) {
 
-		for (DDMFormFieldValue ddmFormFieldValue : ddmFormFieldValues) {
 			Value value = ddmFormFieldValue.getValue();
 
 			for (Locale locale : value.getAvailableLocales()) {

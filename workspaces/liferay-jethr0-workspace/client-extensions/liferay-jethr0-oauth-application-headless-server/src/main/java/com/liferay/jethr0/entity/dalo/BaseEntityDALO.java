@@ -14,7 +14,6 @@
 
 package com.liferay.jethr0.entity.dalo;
 
-import com.liferay.jethr0.dalo.BaseDALO;
 import com.liferay.jethr0.entity.Entity;
 import com.liferay.jethr0.entity.factory.EntityFactory;
 import com.liferay.jethr0.util.StringUtil;
@@ -44,6 +43,23 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public abstract class BaseEntityDALO<T extends Entity>
 	implements EntityDALO<T> {
+
+	@Override
+	public T create(JSONObject jsonObject) {
+		JSONObject responseJSONObject = _create(jsonObject);
+
+		if (responseJSONObject == null) {
+			throw new RuntimeException("No response");
+		}
+
+		T entity = newEntity(responseJSONObject);
+
+		entity.setCreatedDate(
+			StringUtil.toDate(responseJSONObject.getString("dateCreated")));
+		entity.setId(responseJSONObject.getLong("id"));
+
+		return entity;
+	}
 
 	@Override
 	public T create(T entity) {
@@ -384,7 +400,7 @@ public abstract class BaseEntityDALO<T extends Entity>
 
 	private static final long _RETRY_DELAY_DURATION = 1000;
 
-	private static final Log _log = LogFactory.getLog(BaseDALO.class);
+	private static final Log _log = LogFactory.getLog(BaseEntityDALO.class);
 
 	@Value("${liferay.portal.url}")
 	private String _liferayPortalURL;

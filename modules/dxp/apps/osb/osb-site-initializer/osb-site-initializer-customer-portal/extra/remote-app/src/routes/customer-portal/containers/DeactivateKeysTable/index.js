@@ -32,7 +32,7 @@ import DeactivationKeysTableHeader from './components/Header';
 import useFilters from './components/Header/hooks/useFilters';
 import {DEACTIVATE_COLUMNS} from './utils/constants';
 
-const DeactivateKeysTable = ({productName}) => {
+const DeactivateKeysTable = ({initialFilter, productName}) => {
 	const [{project, sessionId, userAccount}] = useCustomerPortal();
 	const {setHasQuickLinksPanel, setHasSideMenu} = useOutletContext();
 
@@ -45,7 +45,7 @@ const DeactivateKeysTable = ({productName}) => {
 		activationKeysState: [activationKeys, setActivationKeys],
 		loading,
 		setFilterTerm,
-	} = useGetActivationKeysData(project, sessionId, productName);
+	} = useGetActivationKeysData(project, initialFilter);
 
 	const {
 		statusfilterByTitle: [statusFilter],
@@ -56,7 +56,11 @@ const DeactivateKeysTable = ({productName}) => {
 		statusFilter
 	);
 
-	const [filters, setFilters] = useFilters(setFilterTerm, productName);
+	const [filters, setFilters] = useFilters(
+		setFilterTerm,
+		productName,
+		initialFilter
+	);
 
 	const [activationKeysIdChecked, setActivationKeysIdChecked] = useState([]);
 

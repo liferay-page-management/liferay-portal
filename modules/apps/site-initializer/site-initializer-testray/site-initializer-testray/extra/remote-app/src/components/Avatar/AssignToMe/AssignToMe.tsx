@@ -17,12 +17,14 @@ import ClayIcon from '@clayui/icon';
 import i18n from '../../../i18n';
 
 type AssignToMeProps = {
+	hidden?: boolean;
 	onClick?: () => void;
 };
 
-const AssignToMe: React.FC<AssignToMeProps> = ({onClick}) => (
+const AssignToMe: React.FC<AssignToMeProps> = ({hidden, onClick}) => (
 	<div
 		className="tr-assign-to-me"
+		hidden={hidden}
 		onClick={onClick}
 		title={i18n.translate('assign-to-me')}
 	>

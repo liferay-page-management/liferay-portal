@@ -32,10 +32,4 @@ public interface SettingsFactory {
 	public Settings getSettings(SettingsLocator settingsLocator)
 		throws SettingsException;
 
-	public SettingsDescriptor getSettingsDescriptor(String settingsId);
-
-	public void registerSettingsMetadata(
-		Class<?> settingsClass, Object configurationBean,
-		FallbackKeys fallbackKeys);
-
 }

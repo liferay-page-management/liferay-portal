@@ -409,6 +409,32 @@ public class SitePage implements Serializable {
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Map<String, String> friendlyUrlPath_i18n;
 
+	@Schema(description = "The page ID.")
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@JsonIgnore
+	public void setId(UnsafeSupplier<Long, Exception> idUnsafeSupplier) {
+		try {
+			id = idUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField(description = "The page ID.")
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Long id;
+
 	@Schema(description = "A list of keywords describing the page.")
 	public String[] getKeywords() {
 		return keywords;
@@ -529,6 +555,38 @@ public class SitePage implements Serializable {
 	@GraphQLField(description = "The type of the page.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String pageType;
+
+	@Schema(description = "The parent page or null if it is a top level page.")
+	@Valid
+	public ParentSitePage getParentSitePage() {
+		return parentSitePage;
+	}
+
+	public void setParentSitePage(ParentSitePage parentSitePage) {
+		this.parentSitePage = parentSitePage;
+	}
+
+	@JsonIgnore
+	public void setParentSitePage(
+		UnsafeSupplier<ParentSitePage, Exception>
+			parentSitePageUnsafeSupplier) {
+
+		try {
+			parentSitePage = parentSitePageUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField(
+		description = "The parent page or null if it is a top level page."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected ParentSitePage parentSitePage;
 
 	@Schema(
 		description = "Metadata of the page such as it's master page and template."
@@ -962,6 +1020,16 @@ public class SitePage implements Serializable {
 			sb.append(_toJSON(friendlyUrlPath_i18n));
 		}
 
+		if (id != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"id\": ");
+
+			sb.append(id);
+		}
+
 		if (keywords != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -1018,6 +1086,16 @@ public class SitePage implements Serializable {
 			sb.append(_escape(pageType));
 
 			sb.append("\"");
+		}
+
+		if (parentSitePage != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"parentSitePage\": ");
+
+			sb.append(String.valueOf(parentSitePage));
 		}
 
 		if (renderedPage != null) {

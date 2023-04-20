@@ -80,7 +80,8 @@ public class HttpInvoker {
 
 		httpResponse.setBinaryContent(binaryContent);
 		httpResponse.setContent(new String(binaryContent));
-
+		httpResponse.setContentType(
+			httpURLConnection.getHeaderField("Content-Type"));
 		httpResponse.setMessage(httpURLConnection.getResponseMessage());
 		httpResponse.setStatusCode(httpURLConnection.getResponseCode());
 
@@ -180,12 +181,20 @@ public class HttpInvoker {
 			return _statusCode;
 		}
 
+		public String getContentType() {
+			return _contentType;
+		}
+
 		public void setBinaryContent(byte[] binaryContent) {
 			_binaryContent = binaryContent;
 		}
 
 		public void setContent(String content) {
 			_content = content;
+		}
+
+		public void setContentType(String contentType) {
+			_contentType = contentType;
 		}
 
 		public void setMessage(String message) {
@@ -198,6 +207,7 @@ public class HttpInvoker {
 
 		private byte[] _binaryContent;
 		private String _content;
+		private String _contentType;
 		private String _message;
 		private int _statusCode;
 

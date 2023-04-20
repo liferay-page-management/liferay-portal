@@ -28,16 +28,14 @@ import java.net.URL;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
+import org.osgi.framework.BundleListener;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.util.tracker.BundleTracker;
-import org.osgi.util.tracker.BundleTrackerCustomizer;
 
 /**
  * @author Iván Zaera Avellón
@@ -85,33 +83,37 @@ public class CacheHelper {
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
-		_bundleTracker = new BundleTracker<>(
-			bundleContext, Bundle.ACTIVE | Bundle.STOPPING,
-			_bundleBundleTrackerCustomizer);
+		_bundleContext = bundleContext;
 
-		_bundleTracker.open();
+		_bundleListener = bundleEvent -> {
+			if (bundleEvent.getType() == BundleEvent.STOPPED) {
+				Bundle bundle = bundleEvent.getBundle();
 
-		if (_lastRestartTime == -1) {
-			_lastRestartTime = System.currentTimeMillis();
-		}
+				_digests.remove(bundle.getBundleId());
+			}
+		};
+
+		bundleContext.addBundleListener(_bundleListener);
+
+		_lastRestartTime = System.currentTimeMillis();
 	}
 
 	@Deactivate
 	protected void deactivate() {
-		_bundleTracker.close();
-
-		_bundleTracker = null;
+		_bundleContext.removeBundleListener(_bundleListener);
 	}
 
 	private String _digest(Bundle bundle, String path) {
-		ConcurrentMap<String, String> digests = _digests.get(
-			bundle.getBundleId());
+		Map<String, String> digests = _digests.computeIfAbsent(
+			bundle.getBundleId(), key -> new ConcurrentHashMap<>());
 
 		String cacheKey = StringBundler.concat(
 			bundle.getBundleId(), StringPool.COLON, path);
 
-		if (digests.containsKey(cacheKey)) {
-			return digests.get(cacheKey);
+		String digest = digests.get(cacheKey);
+
+		if (digest == _NULL_HOLDER) {
+			return null;
 		}
 
 		URL url = bundle.getResource(path);
@@ -124,13 +126,13 @@ public class CacheHelper {
 						bundle.getSymbolicName()));
 			}
 
-			digests.put(cacheKey, null);
+			digests.put(cacheKey, _NULL_HOLDER);
 
 			return null;
 		}
 
 		try (InputStream inputStream = url.openStream()) {
-			String digest = DigesterUtil.digestBase64("SHA-1", inputStream);
+			digest = DigesterUtil.digestBase64("SHA-1", inputStream);
 
 			digests.put(cacheKey, digest);
 
@@ -145,41 +147,20 @@ public class CacheHelper {
 					ioException);
 			}
 
-			digests.put(cacheKey, null);
+			digests.put(cacheKey, _NULL_HOLDER);
 
 			return null;
 		}
 	}
 
+	private static final String _NULL_HOLDER = "NULL_HOLDER";
+
 	private static final Log _log = LogFactoryUtil.getLog(CacheHelper.class);
 
-	private final BundleTrackerCustomizer<Bundle>
-		_bundleBundleTrackerCustomizer = new BundleTrackerCustomizer<Bundle>() {
-
-			@Override
-			public Bundle addingBundle(Bundle bundle, BundleEvent bundleEvent) {
-				_digests.put(bundle.getBundleId(), new ConcurrentHashMap<>());
-
-				return bundle;
-			}
-
-			@Override
-			public void modifiedBundle(
-				Bundle bundle, BundleEvent bundleEvent, Bundle bundle2) {
-			}
-
-			@Override
-			public void removedBundle(
-				Bundle bundle, BundleEvent bundleEvent, Bundle bundle2) {
-
-				_digests.remove(bundle.getBundleId());
-			}
-
-		};
-
-	private BundleTracker<Bundle> _bundleTracker;
-	private final Map<Long, ConcurrentMap<String, String>> _digests =
+	private BundleContext _bundleContext;
+	private BundleListener _bundleListener;
+	private final Map<Long, Map<String, String>> _digests =
 		new ConcurrentHashMap<>();
-	private long _lastRestartTime = -1;
+	private long _lastRestartTime;
 
 }

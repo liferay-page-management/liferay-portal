@@ -53,7 +53,6 @@ const CaseResultHeaderActions: React.FC<{
 	].includes(caseResult.dueStatus.key as CaseResultStatuses);
 
 	const workflowDisabled = assignedUserId <= 0 || assignedUserId !== userId;
-
 	const buttonValidations = {
 		completeTest:
 			workflowDisabled ||
@@ -62,11 +61,17 @@ const CaseResultHeaderActions: React.FC<{
 		reopenTest: workflowDisabled || isReopened,
 	};
 
+	const hasCaseResultEditPermission = !!caseResult.actions?.update;
+
 	return (
 		<>
 			<AssignModal modal={modal} />
 
-			<ClayButton.Group className="mb-3 ml-3" spaced>
+			<ClayButton.Group
+				className="mb-3 ml-3"
+				hidden={!hasCaseResultEditPermission}
+				spaced
+			>
 				<ClayButton
 					disabled={isCaseResultAssignedToMe}
 					displayType={

@@ -22,6 +22,8 @@ import {
 	useSetSidebarPanelId,
 	useSidebarPanelId,
 } from '../contexts/SidebarPanelIdContext';
+import DragPreview from './DragPreview';
+import KeyboardMovementText from './KeyboardMovementText';
 
 const DEFAULT_SIDEBAR_PANELS = [];
 
@@ -90,6 +92,8 @@ export function AppLayout({
 				})}
 				ref={appLayoutContentRef}
 			>
+				<DragPreview wrapperRef={appLayoutContentRef} />
+
 				{contentChildren}
 
 				<div
@@ -102,6 +106,8 @@ export function AppLayout({
 				>
 					{SidebarPanel && <SidebarPanel />}
 				</div>
+
+				<KeyboardMovementText />
 			</div>
 		</>
 	);

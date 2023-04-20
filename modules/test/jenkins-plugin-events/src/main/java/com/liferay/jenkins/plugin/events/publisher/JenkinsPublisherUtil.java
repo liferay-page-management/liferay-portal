@@ -16,19 +16,23 @@ package com.liferay.jenkins.plugin.events.publisher;
 
 import com.liferay.jenkins.plugin.events.JenkinsEventsDescriptor;
 
+import hudson.model.Action;
 import hudson.model.Build;
 import hudson.model.Computer;
 import hudson.model.Executor;
 import hudson.model.Job;
+import hudson.model.Node;
 import hudson.model.ParameterValue;
 import hudson.model.ParametersAction;
 import hudson.model.Queue;
+import hudson.model.labels.LabelAtom;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import jenkins.model.Jenkins;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -108,6 +112,25 @@ public class JenkinsPublisherUtil {
 			"result", build.getResult()
 		);
 
+		JSONObject parametersJSONObject = new JSONObject();
+
+		for (Action action : build.getAllActions()) {
+			if (!(action instanceof ParametersAction)) {
+				continue;
+			}
+
+			ParametersAction parametersAction = (ParametersAction)action;
+
+			for (ParameterValue parameterValue :
+					parametersAction.getAllParameters()) {
+
+				parametersJSONObject.put(
+					parameterValue.getName(), parameterValue.getValue());
+			}
+		}
+
+		jsonObject.put("parameters", parametersJSONObject);
+
 		return jsonObject;
 	}
 
@@ -148,7 +171,17 @@ public class JenkinsPublisherUtil {
 			jsonObject.put("busy", !computer.isIdle());
 		}
 
+		Node node = computer.getNode();
+
+		JSONArray labelsJSONArray = new JSONArray();
+
+		for (LabelAtom labelAtom : node.getAssignedLabels()) {
+			labelsJSONArray.put(labelAtom.getName());
+		}
+
 		jsonObject.put(
+			"labels", labelsJSONArray
+		).put(
 			"name", computer.getDisplayName()
 		).put(
 			"online", computer.isOnline()

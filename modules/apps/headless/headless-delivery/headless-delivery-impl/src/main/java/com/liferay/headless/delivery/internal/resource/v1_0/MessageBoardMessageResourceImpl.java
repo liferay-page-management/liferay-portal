@@ -23,7 +23,6 @@ import com.liferay.headless.common.spi.service.context.ServiceContextRequestUtil
 import com.liferay.headless.delivery.dto.v1_0.MessageBoardMessage;
 import com.liferay.headless.delivery.dto.v1_0.Rating;
 import com.liferay.headless.delivery.dto.v1_0.util.CustomFieldsUtil;
-import com.liferay.headless.delivery.internal.dto.v1_0.converter.MessageBoardMessageDTOConverter;
 import com.liferay.headless.delivery.internal.dto.v1_0.util.RatingUtil;
 import com.liferay.headless.delivery.internal.odata.entity.v1_0.MessageBoardMessageEntityModel;
 import com.liferay.headless.delivery.resource.v1_0.MessageBoardMessageResource;
@@ -68,6 +67,7 @@ import com.liferay.portal.search.query.Queries;
 import com.liferay.portal.search.searcher.SearchRequestBuilder;
 import com.liferay.portal.search.sort.Sorts;
 import com.liferay.portal.vulcan.aggregation.Aggregation;
+import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -81,7 +81,6 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.core.MultivaluedMap;
@@ -177,8 +176,7 @@ public class MessageBoardMessageResourceImpl
 			).build();
 
 		if ((search == null) && (filter == null)) {
-			OrderByComparator<MBMessage> orderByComparator =
-				_getMBMessageOrderByComparator(sorts);
+			flatten = GetterUtil.getBoolean(flatten);
 
 			int status = WorkflowConstants.STATUS_APPROVED;
 
@@ -191,16 +189,14 @@ public class MessageBoardMessageResourceImpl
 				status = WorkflowConstants.STATUS_ANY;
 			}
 
+			OrderByComparator<MBMessage> orderByComparator =
+				_getMBMessageOrderByComparator(sorts);
+
 			return Page.of(
 				actions,
 				transform(
 					_mbMessageService.getChildMessages(
-						mbMessage.getMessageId(),
-						Optional.ofNullable(
-							flatten
-						).orElse(
-							false
-						),
+						mbMessage.getMessageId(), flatten,
 						new QueryDefinition<>(
 							status, contextUser.getUserId(), true,
 							pagination.getStartPosition(),
@@ -208,12 +204,7 @@ public class MessageBoardMessageResourceImpl
 					this::_toMessageBoardMessage),
 				pagination,
 				_mbMessageService.getChildMessagesCount(
-					mbMessage.getMessageId(),
-					Optional.ofNullable(
-						flatten
-					).orElse(
-						false
-					),
+					mbMessage.getMessageId(), flatten,
 					new QueryDefinition<>(
 						status, contextUser.getUserId(), true,
 						pagination.getStartPosition(),
@@ -820,8 +811,11 @@ public class MessageBoardMessageResourceImpl
 	@Reference
 	private MBThreadLocalService _mbThreadLocalService;
 
-	@Reference
-	private MessageBoardMessageDTOConverter _messageBoardMessageDTOConverter;
+	@Reference(
+		target = "(component.name=com.liferay.headless.delivery.internal.dto.v1_0.converter.MessageBoardMessageDTOConverter)"
+	)
+	private DTOConverter<MBMessage, MessageBoardMessage>
+		_messageBoardMessageDTOConverter;
 
 	@Reference
 	private Portal _portal;

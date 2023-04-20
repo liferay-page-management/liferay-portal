@@ -2,6 +2,7 @@ import {useEffect, useState} from 'react';
 
 import {AppCreationFlow} from './pages/AppCreationFlow/AppCreationFlow';
 import GetAppPage from './pages/GetAppPage/GetAppPage';
+import {NextStepPage} from './pages/NextStepPage/NextStepPage';
 import {PublishedAppsDashboardPage} from './pages/PublishedAppsDashboardPage/PublishedAppsDashboardPage';
 import {PublisherGatePage} from './pages/PublisherGatePage/PublisherGatePage';
 import {PurchasedAppsDashboardPage} from './pages/PurchasedAppsDashboardPage/PurchasedAppsDashboardPage';
@@ -13,6 +14,7 @@ import {Liferay} from './liferay/liferay';
 interface AppRoutesProps {
 	route: string;
 }
+
 export default function AppRoutes({route}: AppRoutesProps) {
 	const [userPublisherChecker, setUserPublisherChecker] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
@@ -32,6 +34,9 @@ export default function AppRoutes({route}: AppRoutesProps) {
 	else if (route === 'get-app') {
 		return <GetAppPage />;
 	}
+	else if (route === 'next-steps') {
+		return <NextStepPage />;
+	}
 	else if (route === 'purchased-apps') {
 		return <PurchasedAppsDashboardPage />;
 	}
@@ -50,4 +55,6 @@ export default function AppRoutes({route}: AppRoutesProps) {
 			return <PublisherGatePage />;
 		}
 	}
+
+	return <></>;
 }

@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.portlet.SearchOrderByUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.JavaConstants;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -35,11 +36,8 @@ import com.liferay.user.associated.data.web.internal.util.UADLanguageUtil;
 import java.io.Serializable;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
@@ -210,58 +208,25 @@ public class UADExportProcessDisplayContext {
 			int status = getBackgroundTaskStatus(navigation);
 
 			searchContainer.setResultsAndTotal(
-				() -> {
-					List<BackgroundTask> results =
-						UADExportBackgroundTaskManagerUtil.getBackgroundTasks(
-							themeDisplay.getScopeGroupId(),
-							selectedUser.getUserId(), status);
-
-					Stream<BackgroundTask> backgroundTaskStream =
-						results.stream();
-
-					return backgroundTaskStream.sorted(
-						getComparator(
-							themeDisplay.getLocale(),
-							searchContainer.getOrderByCol(),
-							searchContainer.getOrderByType())
-					).skip(
-						searchContainer.getStart()
-					).limit(
-						searchContainer.getDelta()
-					).collect(
-						Collectors.toList()
-					);
-				},
-				UADExportBackgroundTaskManagerUtil.getBackgroundTasksCount(
-					themeDisplay.getScopeGroupId(), selectedUser.getUserId(),
-					status));
+				ListUtil.sort(
+					UADExportBackgroundTaskManagerUtil.getBackgroundTasks(
+						themeDisplay.getScopeGroupId(),
+						selectedUser.getUserId(), status),
+					getComparator(
+						themeDisplay.getLocale(),
+						searchContainer.getOrderByCol(),
+						searchContainer.getOrderByType())));
 		}
 		else {
 			searchContainer.setResultsAndTotal(
-				() -> {
-					List<BackgroundTask> results =
-						UADExportBackgroundTaskManagerUtil.getBackgroundTasks(
-							themeDisplay.getScopeGroupId(),
-							selectedUser.getUserId());
-
-					Stream<BackgroundTask> backgroundTaskStream =
-						results.stream();
-
-					return backgroundTaskStream.sorted(
-						getComparator(
-							themeDisplay.getLocale(),
-							searchContainer.getOrderByCol(),
-							searchContainer.getOrderByType())
-					).skip(
-						searchContainer.getStart()
-					).limit(
-						searchContainer.getDelta()
-					).collect(
-						Collectors.toList()
-					);
-				},
-				UADExportBackgroundTaskManagerUtil.getBackgroundTasksCount(
-					themeDisplay.getScopeGroupId(), selectedUser.getUserId()));
+				ListUtil.sort(
+					UADExportBackgroundTaskManagerUtil.getBackgroundTasks(
+						themeDisplay.getScopeGroupId(),
+						selectedUser.getUserId()),
+					getComparator(
+						themeDisplay.getLocale(),
+						searchContainer.getOrderByCol(),
+						searchContainer.getOrderByType())));
 		}
 
 		_searchContainer = searchContainer;

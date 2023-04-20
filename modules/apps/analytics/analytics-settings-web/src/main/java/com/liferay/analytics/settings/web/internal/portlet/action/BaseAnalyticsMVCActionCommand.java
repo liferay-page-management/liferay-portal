@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
 import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.settings.SettingsDescriptor;
 import com.liferay.portal.kernel.settings.SettingsFactory;
+import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -200,6 +201,9 @@ public abstract class BaseAnalyticsMVCActionCommand
 	@Reference
 	protected SettingsFactory settingsFactory;
 
+	@Reference
+	protected SettingsLocatorHelper settingsLocatorHelper;
+
 	private void _checkPermissions(ThemeDisplay themeDisplay)
 		throws PrincipalException {
 
@@ -229,7 +233,7 @@ public abstract class BaseAnalyticsMVCActionCommand
 			new CompanyServiceSettingsLocator(scopePK, pid));
 
 		SettingsDescriptor settingsDescriptor =
-			settingsFactory.getSettingsDescriptor(pid);
+			settingsLocatorHelper.getSettingsDescriptor(pid);
 
 		if (settingsDescriptor == null) {
 			return configurationProperties;

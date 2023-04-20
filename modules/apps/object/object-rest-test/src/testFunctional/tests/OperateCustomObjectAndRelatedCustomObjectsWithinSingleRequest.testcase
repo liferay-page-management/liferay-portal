@@ -1,0 +1,607 @@
+@component-name = "portal-headless"
+definition {
+
+	property custom.properties = "feature.flag.LPS-153117=true";
+	property portal.release = "true";
+	property portal.upstream = "true";
+	property testray.component.names = "Object";
+	property testray.main.component.name = "Headless";
+
+	setUp {
+		TestCase.setUpPortalInstanceNoSelenium();
+
+		task ("Given Student object with name field created and published") {
+			var studentObjectDefinitionId = ObjectDefinitionAPI.createAndPublishObjectDefinition(
+				en_US_label = "student",
+				en_US_plural_label = "students",
+				name = "Student",
+				requiredStringFieldName = "name");
+		}
+
+		task ("And Given Subject object with name field created and published") {
+			var subjectObjectDefinitionId = ObjectDefinitionAPI.createAndPublishObjectDefinition(
+				en_US_label = "subject",
+				en_US_plural_label = "subjects",
+				name = "Subject",
+				requiredStringFieldName = "name");
+		}
+
+		task ("And Given a many-to-many studentsSubjects relationship created between Student and Subject") {
+			ObjectDefinitionAPI.createRelationship(
+				deletionType = "cascade",
+				en_US_label = "studentsSubjects",
+				name = "studentsSubjects",
+				objectDefinitionId1 = ${studentObjectDefinitionId},
+				objectDefinitionId2 = ${subjectObjectDefinitionId},
+				type = "manyToMany");
+		}
+
+		task ("And Given a many-to-many studentsStudents relationship created between Student and itself") {
+			ObjectDefinitionAPI.createRelationship(
+				deletionType = "cascade",
+				en_US_label = "studentsStudents",
+				name = "studentsStudents",
+				objectDefinitionId1 = ${studentObjectDefinitionId},
+				objectDefinitionId2 = ${studentObjectDefinitionId},
+				type = "manyToMany");
+		}
+	}
+
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		ObjectAdmin.deleteAllCustomObjectsViaAPI();
+
+		if (${testPortalInstance} == "true") {
+			PortalInstances.tearDownCPNoSelenium();
+		}
+	}
+
+	@disable-webdriver = "true"
+	@priority = 3
+	test CanCreateCustomObjectEntriesWithPatchObjectInManyToManyRelationship {
+		property portal.acceptance = "true";
+
+		task ("And Given Student and Subject entries are created with postStudent including studentsSubjects with Subject entries information") {
+			var response = CustomObjectAPI.createObjectEntryAndRelatedObjects(
+				en_US_plural_label = "students",
+				fieldName = "name",
+				fieldValue = "Able",
+				nestedField = "studentsSubjects",
+				numberOfRelatedObjectEntries = 2,
+				relatedEntryFieldName = "name");
+		}
+
+		task ("When with patchStudent and studentId including studentsSubjects with new Subject entries information to update Student entry") {
+			var studentId = JSONPathUtil.getIdValue(response = ${response});
+
+			CustomObjectAPI.updateObjectEntryAndRelatedObjectsByPatch(
+				en_US_plural_label = "students",
+				fieldName = "name",
+				fieldValue = "Bob",
+				nestedField = "studentsSubjects",
+				numberOfRelatedObjectEntries = 2,
+				objectEntryId = ${studentId},
+				relatedEntryFieldName = "name");
+		}
+
+		task ("Then Student entry is updated") {
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "students",
+				expectedValues = "Bob",
+				objectJsonPath = "$.items[*].name");
+		}
+
+		task ("And Then new Subject entries are created") {
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "students",
+				expectedValues = 1,
+				objectJsonPath = "$.totalCount");
+
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "subjects",
+				expectedValues = 4,
+				objectJsonPath = "$.totalCount");
+		}
+	}
+
+	@disable-webdriver = "true"
+	@priority = 4
+	test CanCreateCustomObjectEntriesWithPutChildObjectInManyToManyRelationship {
+		property portal.acceptance = "true";
+
+		task ("And Given Subject and Student entries are created with postSubject including studentsSubjects with Student entries information") {
+			var response = CustomObjectAPI.createObjectEntryAndRelatedObjects(
+				en_US_plural_label = "subjects",
+				externalReferenceCode = "subjectErc",
+				fieldName = "name",
+				fieldValue = "Math",
+				nestedField = "studentsSubjects",
+				numberOfRelatedObjectEntries = 2,
+				relatedEntryExternalReferenceCode = "studentErc",
+				relatedEntryFieldName = "name");
+		}
+
+		task ("When with putSubject and subjectId including studentsSubjects with new Student entries information to update Subject entry") {
+			var subjectId = JSONPathUtil.getIdValue(response = ${response});
+
+			CustomObjectAPI.updateObjectEntryAndRelatedObjectsByPut(
+				en_US_plural_label = "subjects",
+				externalReferenceCode = "subjectErc",
+				fieldName = "name",
+				fieldValue = "English",
+				nestedField = "studentsSubjects",
+				numberOfRelatedObjectEntries = 2,
+				objectEntryId = ${subjectId},
+				relatedEntryExternalReferenceCode = "newStudentErc",
+				relatedEntryFieldName = "name");
+		}
+
+		task ("Then Subject entry is updated") {
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "subjects",
+				expectedValues = "English",
+				objectJsonPath = "$.items[*].name");
+		}
+
+		task ("And Then new Student entries are created") {
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "subjects",
+				expectedValues = 1,
+				objectJsonPath = "$.totalCount");
+
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "students",
+				expectedValues = 4,
+				objectJsonPath = "$.totalCount");
+		}
+	}
+
+	@disable-webdriver = "true"
+	@priority = 4
+	test CanCreateCustomObjectEntriesWithPutChildObjectInManyToManyRelationshipWithItself {
+		property portal.acceptance = "true";
+
+		task ("And Given two Student entries are created with postStudent including studentsStudents with another Student entry information") {
+			var response = CustomObjectAPI.createObjectEntryAndRelatedObjects(
+				en_US_plural_label = "students",
+				externalReferenceCode = "ableErc",
+				fieldName = "name",
+				fieldValue = "Able",
+				nestedField = "studentsStudents",
+				numberOfRelatedObjectEntries = 1,
+				relatedEntryFieldName = "name");
+		}
+
+		task ("When with putStudent and studentId including studentsStudents with new Student entry information to update Student entry") {
+			var studentId = JSONPathUtil.getIdValue(response = ${response});
+
+			CustomObjectAPI.updateObjectEntryAndRelatedObjectsByPut(
+				en_US_plural_label = "students",
+				externalReferenceCode = "ableErc",
+				fieldName = "name",
+				fieldValue = "Able-update",
+				nestedField = "studentsStudents",
+				numberOfRelatedObjectEntries = 1,
+				objectEntryId = ${studentId},
+				relatedEntryFieldName = "name");
+		}
+
+		task ("Then the original Student entry is updated") {
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "students",
+				expectedValues = "Able-update,name0,name0-update",
+				objectJsonPath = "$.items[*].name");
+		}
+
+		task ("And Then one more Student entry is created") {
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "students",
+				expectedValues = 3,
+				objectJsonPath = "$.totalCount");
+		}
+	}
+
+	@disable-webdriver = "true"
+	@priority = 3
+	test CanCreateCustomObjectEntriesWithPutParentObjectInManyToManyRelationship {
+		property portal.acceptance = "true";
+
+		task ("And Given Student and Subject entries are created with postStudent including studentsSubjects with Subject entries information") {
+			var response = CustomObjectAPI.createObjectEntryAndRelatedObjects(
+				en_US_plural_label = "students",
+				externalReferenceCode = "studentErc",
+				fieldName = "name",
+				fieldValue = "Able",
+				nestedField = "studentsSubjects",
+				numberOfRelatedObjectEntries = 2,
+				relatedEntryFieldName = "name");
+		}
+
+		task ("When with putStudent and studentId including studentsSubjects with new Subject entries information to update Student entry") {
+			var studentId = JSONPathUtil.getIdValue(response = ${response});
+
+			CustomObjectAPI.updateObjectEntryAndRelatedObjectsByPut(
+				en_US_plural_label = "students",
+				externalReferenceCode = "studentErc",
+				fieldName = "name",
+				fieldValue = "Bob",
+				nestedField = "studentsSubjects",
+				numberOfRelatedObjectEntries = 2,
+				objectEntryId = ${studentId},
+				relatedEntryFieldName = "name");
+		}
+
+		task ("Then Student entry is updated") {
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "students",
+				expectedValues = "Bob",
+				objectJsonPath = "$.items[*].name");
+		}
+
+		task ("And Then new Subject entries are created") {
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "students",
+				expectedValues = 1,
+				objectJsonPath = "$.totalCount");
+
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "subjects",
+				expectedValues = 4,
+				objectJsonPath = "$.totalCount");
+		}
+	}
+
+	@disable-webdriver = "true"
+	@priority = 4
+	test CanCreateCustomObjectsEntriesWithPostChildObjectInManyToManyRelationship {
+		property portal.acceptance = "true";
+
+		task ("When creating a Subject entry with postSubject including studentsSubjects with Student entries information") {
+			CustomObjectAPI.createObjectEntryAndRelatedObjects(
+				en_US_plural_label = "subjects",
+				fieldName = "name",
+				fieldValue = "Math",
+				nestedField = "studentsSubjects",
+				numberOfRelatedObjectEntries = 2,
+				relatedEntryFieldName = "name");
+		}
+
+		task ("Then both Subject and Student entries are created") {
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "students",
+				expectedValues = 2,
+				objectJsonPath = "$.totalCount");
+
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "subjects",
+				expectedValues = 1,
+				objectJsonPath = "$.totalCount");
+		}
+	}
+
+	@disable-webdriver = "true"
+	@priority = 4
+	test CanCreateCustomObjectsEntriesWithPostParentObjectInManyToManyRelationship {
+		property portal.acceptance = "true";
+
+		task ("When creating a Student entry with postStudent including studentsSubjects with Subject entries information") {
+			CustomObjectAPI.createObjectEntryAndRelatedObjects(
+				en_US_plural_label = "students",
+				fieldName = "name",
+				fieldValue = "Able",
+				nestedField = "studentsSubjects",
+				numberOfRelatedObjectEntries = 2,
+				relatedEntryFieldName = "name");
+		}
+
+		task ("Then both Student and Subject entries are created") {
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "students",
+				expectedValues = 1,
+				objectJsonPath = "$.totalCount");
+
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "subjects",
+				expectedValues = 2,
+				objectJsonPath = "$.totalCount");
+		}
+	}
+
+	@disable-webdriver = "true"
+	@priority = 4
+	test CanCreateTwoCustomObjectEntriesWithPostObjectInManyToManyRelationshipWithItself {
+		property portal.acceptance = "true";
+
+		task ("When creating a Student entry with postStudent including studentsStudents with another two Student entries information") {
+			var response = CustomObjectAPI.createObjectEntryAndRelatedObjects(
+				en_US_plural_label = "students",
+				externalReferenceCode = "studentErc",
+				fieldName = "name",
+				fieldValue = "Able",
+				nestedField = "studentsStudents",
+				numberOfRelatedObjectEntries = 2,
+				relatedEntryFieldName = "name");
+		}
+
+		task ("Then three Student entries are created") {
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "students",
+				expectedValues = 3,
+				objectJsonPath = "$.totalCount");
+		}
+	}
+
+	@description = "Ignore tests unitl LPS-169348 fixed"
+	@disable-webdriver = "true"
+	@ignore = "true"
+	@priority = 4
+	test CannotCreateCustomObjectsEntriesWithInvalidObjectFieldInNestedFieldInManyToManyRelationship {
+		property portal.acceptance = "true";
+
+		task ("When creating a Student entry with postStudent including studentsSubjects with nonexistent field in Subject entries") {
+			CustomObjectAPI.createObjectEntryAndRelatedObjects(
+				en_US_plural_label = "students",
+				fieldName = "name",
+				fieldValue = "Able",
+				nestedField = "studentsSubjects",
+				numberOfRelatedObjectEntries = 1,
+				relatedEntryFieldName = "nonexistentField");
+		}
+
+		task ("Then no Student and Subject entries are created") {
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "students",
+				expectedValues = 0,
+				objectJsonPath = "$.totalCount");
+
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "subjects",
+				expectedValues = 0,
+				objectJsonPath = "$.totalCount");
+		}
+	}
+
+	@description = "Ignore tests unitl LPS-169348 fixed"
+	@disable-webdriver = "true"
+	@ignore = "true"
+	@priority = 3
+	test CannotCreateCustomObjectsEntriesWithNonexistentNestedFieldInManyToManyRelationships {
+		property portal.acceptance = "true";
+
+		task ("When creating a Student entry with postStudent including nonexistent nestedField with Subject entries information") {
+			CustomObjectAPI.createObjectEntryAndRelatedObjects(
+				en_US_plural_label = "subjects",
+				fieldName = "name",
+				fieldValue = "Math",
+				nestedField = "nonexistentNestedField",
+				numberOfRelatedObjectEntries = 1,
+				relatedEntryFieldName = "name");
+		}
+
+		task ("Then no Student and Subject entries are created") {
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "students",
+				expectedValues = 0,
+				objectJsonPath = "$.totalCount");
+
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "subjects",
+				expectedValues = 0,
+				objectJsonPath = "$.totalCount");
+		}
+	}
+
+	@disable-webdriver = "true"
+	@priority = 4
+	test CanUpdateAndCreateCustomObjectEntriesWithPatchObjectInManyToManyRelationshipWithItself {
+		property portal.acceptance = "true";
+
+		task ("And Given two Student entries with custom ERCs are created with postStudent including studentsStudents with another Student entry information") {
+			var response = CustomObjectAPI.createObjectEntryAndRelatedObjects(
+				en_US_plural_label = "students",
+				fieldName = "name",
+				fieldValue = "Able",
+				nestedField = "studentsStudents",
+				numberOfRelatedObjectEntries = 2,
+				relatedEntryExternalReferenceCode = "studentErc",
+				relatedEntryFieldName = "name");
+		}
+
+		task ("When with patchStudent and studentId including studentsStudents with modified Student name and its erc to update Student entry") {
+			var studentId = JSONPathUtil.getIdValue(response = ${response});
+
+			CustomObjectAPI.updateObjectEntryAndRelatedObjectsByPatch(
+				en_US_plural_label = "students",
+				fieldName = "name",
+				fieldValue = "Able-update",
+				nestedField = "studentsStudents",
+				numberOfRelatedObjectEntries = 2,
+				objectEntryId = ${studentId},
+				relatedEntryExternalReferenceCode = "studentErc",
+				relatedEntryFieldName = "name");
+		}
+
+		task ("Then both Students entries are updated") {
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "students",
+				expectedValues = "Able-update,name0-update,name1-update",
+				objectJsonPath = "$.items[*].name");
+		}
+	}
+
+	@disable-webdriver = "true"
+	@priority = 4
+	test CanUpdateCustomObjectEntriesWithPatchParentObjectInManyToManyRelationship {
+		property portal.acceptance = "true";
+
+		task ("And Given Student and Subject entries with custom ERCs are created with postStudent including studentsSubjects with Subject entries information") {
+			var response = CustomObjectAPI.createObjectEntryAndRelatedObjects(
+				en_US_plural_label = "students",
+				fieldName = "name",
+				fieldValue = "Able",
+				nestedField = "studentsSubjects",
+				numberOfRelatedObjectEntries = 2,
+				relatedEntryExternalReferenceCode = "subjectErc",
+				relatedEntryFieldName = "name");
+		}
+
+		task ("When with patchStudent and studentId including studentsSubjects with modified names of Subject entries and their ERCs to update Student entry") {
+			var studentId = JSONPathUtil.getIdValue(response = ${response});
+
+			CustomObjectAPI.updateObjectEntryAndRelatedObjectsByPatch(
+				en_US_plural_label = "students",
+				externalReferenceCode = "studentErc",
+				fieldName = "name",
+				fieldValue = "Able-update",
+				nestedField = "studentsSubjects",
+				numberOfRelatedObjectEntries = 2,
+				objectEntryId = ${studentId},
+				relatedEntryExternalReferenceCode = "subjectErc",
+				relatedEntryFieldName = "name");
+		}
+
+		task ("Then both Student and Subject entries are updated") {
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "students",
+				expectedValues = "Able-update",
+				objectJsonPath = "$.items[*].name");
+
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "subjects",
+				expectedValues = "name0-update,name1-update",
+				objectJsonPath = "$.items[*].name");
+		}
+	}
+
+	@disable-webdriver = "true"
+	@priority = 3
+	test CanUpdateCustomObjectEntriesWithPutChildObjectInManyToManyRelationship {
+		property portal.acceptance = "true";
+
+		task ("And Given Subject and Student entries with custom ERCs are created with postSubject including studentsSubjects with Student entries information") {
+			var response = CustomObjectAPI.createObjectEntryAndRelatedObjects(
+				en_US_plural_label = "subjects",
+				externalReferenceCode = "subjectErc",
+				fieldName = "name",
+				fieldValue = "Math",
+				nestedField = "studentsSubjects",
+				numberOfRelatedObjectEntries = 2,
+				relatedEntryExternalReferenceCode = "studentErc",
+				relatedEntryFieldName = "name");
+		}
+
+		task ("When with putSubject and subjectId including studentsSubjects with modified names of Student entries and their ERCs to update Subject entry") {
+			var subjectId = JSONPathUtil.getIdValue(response = ${response});
+
+			CustomObjectAPI.updateObjectEntryAndRelatedObjectsByPut(
+				en_US_plural_label = "subjects",
+				externalReferenceCode = "subjectErc",
+				fieldName = "name",
+				fieldValue = "English",
+				nestedField = "studentsSubjects",
+				numberOfRelatedObjectEntries = 2,
+				objectEntryId = ${subjectId},
+				relatedEntryExternalReferenceCode = "studentErc",
+				relatedEntryFieldName = "name");
+		}
+
+		task ("Then both Student and Subject entries are updated") {
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "subjects",
+				expectedValues = "English",
+				objectJsonPath = "$.items[*].name");
+
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "students",
+				expectedValues = "name0-update,name1-update",
+				objectJsonPath = "$.items[*].name");
+		}
+	}
+
+	@disable-webdriver = "true"
+	@priority = 4
+	test CanUpdateCustomObjectEntriesWithPutChildObjectInManyToManyRelationshipWithItself {
+		property portal.acceptance = "true";
+
+		task ("And Given two Student entries with custom ERCs are created with postStudent including studentsStudents with another Student entry information") {
+			var response = CustomObjectAPI.createObjectEntryAndRelatedObjects(
+				en_US_plural_label = "students",
+				externalReferenceCode = "ableErc",
+				fieldName = "name",
+				fieldValue = "Able",
+				nestedField = "studentsStudents",
+				numberOfRelatedObjectEntries = 2,
+				relatedEntryExternalReferenceCode = "studentErc",
+				relatedEntryFieldName = "name");
+		}
+
+		task ("When with putStudent and studentId including studentsStudents with modified Student name and its erc to update Student entry") {
+			var studentId = JSONPathUtil.getIdValue(response = ${response});
+
+			CustomObjectAPI.updateObjectEntryAndRelatedObjectsByPut(
+				en_US_plural_label = "students",
+				externalReferenceCode = "ableErc",
+				fieldName = "name",
+				fieldValue = "Able-update",
+				nestedField = "studentsStudents",
+				numberOfRelatedObjectEntries = 2,
+				objectEntryId = ${studentId},
+				relatedEntryExternalReferenceCode = "studentErc",
+				relatedEntryFieldName = "name");
+		}
+
+		task ("Then both Students entries are updated") {
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "students",
+				expectedValues = "Able-update,name0-update,name1-update",
+				objectJsonPath = "$.items[*].name");
+		}
+	}
+
+	@disable-webdriver = "true"
+	@priority = 4
+	test CanUpdateCustomObjectEntriesWithPutParentObjectInManyToManyRelationship {
+		property portal.acceptance = "true";
+
+		task ("And Given Student and Subject entries with custom ERCs are created with postStudent including studentsSubjects with Subject entries information") {
+			var response = CustomObjectAPI.createObjectEntryAndRelatedObjects(
+				en_US_plural_label = "students",
+				externalReferenceCode = "studentErc",
+				fieldName = "name",
+				fieldValue = "Able",
+				nestedField = "studentsSubjects",
+				numberOfRelatedObjectEntries = 2,
+				relatedEntryExternalReferenceCode = "subjectErc",
+				relatedEntryFieldName = "name");
+		}
+
+		task ("When with putStudent and studentId including studentsSubjects with modified names of Subject entries and their ERCs to update Student entry") {
+			var studentId = JSONPathUtil.getIdValue(response = ${response});
+
+			CustomObjectAPI.updateObjectEntryAndRelatedObjectsByPut(
+				en_US_plural_label = "students",
+				externalReferenceCode = "studentErc",
+				fieldName = "name",
+				fieldValue = "Bob",
+				nestedField = "studentsSubjects",
+				numberOfRelatedObjectEntries = 2,
+				objectEntryId = ${studentId},
+				relatedEntryExternalReferenceCode = "subjectErc",
+				relatedEntryFieldName = "name");
+		}
+
+		task ("Then both Student and Subject entries are updated") {
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "students",
+				expectedValues = "Bob",
+				objectJsonPath = "$.items[*].name");
+
+			CustomObjectAPI.assertCorrectObjectEntryValuesInResponse(
+				en_US_plural_label = "subjects",
+				expectedValues = "name0-update,name1-update",
+				objectJsonPath = "$.items[*].name");
+		}
+	}
+
+}

@@ -46,18 +46,21 @@ public class UpgradeSourceProcessorTest extends BaseSourceProcessorTestCase {
 	@Test
 	public void testUpgradeGradleIncludeResourceCheck() throws Exception {
 		test(
-			"upgrade/upgrade-include-resource-check/build.testgradle",
-			new String[0],
-			new String[] {
+			SourceProcessorTestParameters.create(
+				"upgrade/upgrade-include-resource-check/build.testgradle"
+			).addDependentFileName(
 				"upgrade/upgrade-include-resource-check/bnd.testbnd"
-			});
+			));
 	}
 
 	@Test
-	public void testUpgradeVelocityCommentMigrationCheck() throws Exception {
-		testMigration(
-			"upgrade/UpgradeVelocityCommentMigrationCheck.testvm",
-			"upgrade/migrated/UpgradeVelocityCommentMigrationCheck.testftl");
+	public void testUpgradeVelocityMigrationCheck() throws Exception {
+		test(
+			SourceProcessorTestParameters.create(
+				"upgrade/UpgradeVelocityMigrationCheck.testvm"
+			).setExpectedFileName(
+				"upgrade/migrated/UpgradeVelocityMigrationCheck.testftl"
+			));
 	}
 
 	@Test

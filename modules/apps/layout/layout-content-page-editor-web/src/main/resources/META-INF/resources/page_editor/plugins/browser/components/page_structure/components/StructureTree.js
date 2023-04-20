@@ -17,7 +17,7 @@ import {TreeView as ClayTreeView} from '@clayui/core';
 import ClayIcon from '@clayui/icon';
 import classNames from 'classnames';
 import {Treeview} from 'frontend-js-components-web';
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 
 import getAllEditables from '../../../../../app/components/fragment_content/getAllEditables';
 import {fromControlsId} from '../../../../../app/components/layout_data_items/Collection';
@@ -114,6 +114,8 @@ export default function PageStructureSidebar() {
 		(state) => state.masterLayout?.masterLayoutData
 	);
 
+	const restrictedItemIds = useSelector((state) => state.restrictedItemIds);
+
 	const selectedViewportSize = useSelector(
 		(state) => state.selectedViewportSize
 	);
@@ -124,6 +126,7 @@ export default function PageStructureSidebar() {
 	);
 
 	const [editingNodeId, setEditingNodeId] = useState(null);
+	const [expandedKeys, setExpandedKeys] = useState([]);
 
 	const isMasterPage = config.layoutType === LAYOUT_TYPES.master;
 
@@ -152,8 +155,10 @@ export default function PageStructureSidebar() {
 				masterLayoutData,
 				onHoverNode,
 				pageContents,
+				restrictedItemIds,
 				selectedViewportSize,
 			}).children,
+
 		[
 			activeItemId,
 			canUpdateEditables,
@@ -170,10 +175,15 @@ export default function PageStructureSidebar() {
 			mappingFields,
 			masterLayoutData,
 			pageContents,
+			restrictedItemIds,
 			onHoverNode,
 			selectedViewportSize,
 		]
 	);
+
+	const setExpandedNodes = (expandedNodes) => {
+		setExpandedKeys(Array.from(expandedNodes));
+	};
 
 	const handleNodeFocus = () => {
 		const focusedItem = document.activeElement?.querySelector(
@@ -224,7 +234,7 @@ export default function PageStructureSidebar() {
 
 		return (
 			<div
-				className={classNames('flex-shrink-0', {
+				className={classNames('autofit-row w-auto', {
 					'page-editor__page-structure__tree-node__buttons--hidden':
 						item.hidden || item.hiddenAncestor,
 				})}
@@ -233,6 +243,7 @@ export default function PageStructureSidebar() {
 			>
 				{(item.hidable || item.hidden) && (
 					<VisibilityButton
+						className="ml-0"
 						dispatch={dispatch}
 						node={item}
 						selectedViewportSize={selectedViewportSize}
@@ -250,6 +261,34 @@ export default function PageStructureSidebar() {
 			</div>
 		);
 	};
+
+	useEffect(() => {
+		const getAncestorsIds = (layoutDataItem) => {
+			if (!layoutDataItem.parentId) {
+				return [layoutDataItem.itemId];
+			}
+
+			return [
+				...[layoutDataItem.itemId],
+				...getAncestorsIds(layoutData.items[layoutDataItem.parentId]),
+			];
+		};
+
+		if (Liferay.FeatureFlags['LPS-151678'] && activeItemId) {
+			const layoutDataActiveItem = layoutData.items[activeItemId];
+
+			if (!layoutDataActiveItem) {
+				return;
+			}
+
+			setExpandedKeys((previousExpanedKeys) => [
+				...new Set([
+					...previousExpanedKeys,
+					...getAncestorsIds(layoutDataActiveItem),
+				]),
+			]);
+		}
+	}, [activeItemId, layoutData.items]);
 
 	return (
 		<div
@@ -278,19 +317,37 @@ export default function PageStructureSidebar() {
 						<ClayTreeView
 							displayType="light"
 							expandDoubleClick={false}
+							expandedKeys={new Set(expandedKeys)}
 							expanderIcons={{
 								close: <ClayIcon symbol="hr" />,
 								open: <ClayIcon symbol="plus" />,
 							}}
 							items={nodes}
+							onExpandedChange={setExpandedNodes}
 							onItemsChange={() => {}}
 							showExpanderOnHover={false}
 						>
 							{(item) => (
 								<ClayTreeView.Item
 									actions={<ItemActions item={item} />}
+									active={item.active && item.activable}
 								>
 									<ClayTreeView.ItemStack
+										className={classNames(
+											'page-editor__page-structure__clay-tree-node',
+											{
+												'page-editor__page-structure__clay-tree-node--active':
+													item.active &&
+													item.activable,
+												'page-editor__page-structure__clay-tree-node--hovered':
+													item.itemId ===
+													hoveredItemId,
+												'page-editor__page-structure__clay-tree-node--mapped':
+													item.mapped,
+												'page-editor__page-structure__clay-tree-node--master-item':
+													item.isMasterItem,
+											}
+										)}
 										data-title={
 											item.isMasterItem || !item.activable
 												? ''
@@ -539,6 +596,7 @@ function visit(
 		masterLayoutData,
 		onHoverNode,
 		pageContents,
+		restrictedItemIds,
 		selectedViewportSize,
 	}
 ) {
@@ -608,6 +666,7 @@ function visit(
 					activable:
 						canUpdateEditables &&
 						canActivateEditable(selectedViewportSize, type),
+					active: childId === activeItemId,
 					children: [],
 					dragAndDropHoveredItemId,
 					draggable: false,
@@ -646,6 +705,7 @@ function visit(
 						masterLayoutData,
 						onHoverNode,
 						pageContents,
+						restrictedItemIds,
 						selectedViewportSize,
 					}),
 
@@ -661,7 +721,7 @@ function visit(
 				(item.type === LAYOUT_DATA_ITEM_TYPES.collection &&
 					(!item.config.collection ||
 						(Liferay.FeatureFlags['LPS-169923'] &&
-							config.restrictedItemIds.has(item.itemId)))) ||
+							restrictedItemIds.has(item.itemId)))) ||
 				(item.type === LAYOUT_DATA_ITEM_TYPES.form &&
 					(!formIsMapped(item) ||
 						(Liferay.FeatureFlags['LPS-169923'] &&
@@ -695,6 +755,7 @@ function visit(
 						masterLayoutData,
 						onHoverNode,
 						pageContents,
+						restrictedItemIds,
 						selectedViewportSize,
 					}
 				).children;
@@ -718,6 +779,7 @@ function visit(
 					masterLayoutData,
 					onHoverNode,
 					pageContents,
+					restrictedItemIds,
 					selectedViewportSize,
 				});
 
@@ -732,6 +794,7 @@ function visit(
 			item.type !== LAYOUT_DATA_ITEM_TYPES.collectionItem &&
 			item.type !== LAYOUT_DATA_ITEM_TYPES.fragmentDropZone &&
 			canUpdateItemConfiguration,
+		active: item.itemId === activeItemId,
 		children,
 		config: layoutDataRef.current.items[item.itemId]?.config,
 		draggable: true,

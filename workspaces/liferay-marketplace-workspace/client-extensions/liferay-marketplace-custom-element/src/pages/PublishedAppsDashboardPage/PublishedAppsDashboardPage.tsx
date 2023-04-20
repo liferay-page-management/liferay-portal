@@ -11,8 +11,9 @@ import {
 import {PublishedAppsDashboardTableRow} from '../../components/DashboardTable/PublishedAppsDashboardTableRow';
 import {MemberProfile} from '../../components/MemberProfile/MemberProfile';
 import {
+	getAccountInfoFromCommerce,
 	getAccounts,
-	getCatalog,
+	getMyUserAccount,
 	getProductSpecifications,
 	getProducts,
 	getUserAccounts,
@@ -22,15 +23,15 @@ import {
 	DashboardListItems,
 	DashboardPage,
 } from '../DashBoardPage/DashboardPage';
-
 import {
 	AccountBriefProps,
 	MemberProps,
 	ProductResponseProps,
 	ProductSpecificationProps,
-	RoleBriefProps,
 	UserAccountProps,
+	customerRoles,
 	initialDashboardNavigationItems,
+	publisherRoles,
 } from './PublishedDashboardPageUtil';
 
 import './PublishedAppsDashboardPage.scss';
@@ -44,6 +45,7 @@ const appTableHeaders = [
 	{
 		iconSymbol: 'order-arrow',
 		title: 'Name',
+		style: {width: '2%'},
 	},
 	{
 		title: 'Version',
@@ -74,10 +76,11 @@ const memberTableHeaders = [
 
 const initialAccountsState: Account[] = [
 	{
-		customFields: {CatalogId: 0},
 		externalReferenceCode: '',
 		id: 0,
 		name: '',
+		description: '',
+		type: '',
 	},
 ];
 
@@ -89,6 +92,7 @@ interface PublishedAppTable {
 
 export function PublishedAppsDashboardPage() {
 	const [accounts, setAccounts] = useState<Account[]>(initialAccountsState);
+	const [commerceAccount, setCommerceAccount] = useState<CommerceAccount>();
 	const [apps, setApps] = useState<AppProps[]>(Array<AppProps>());
 	const [selectedApp, setSelectedApp] = useState<AppProps>();
 	const [dashboardNavigationItems, setDashboardNavigationItems] = useState(
@@ -101,12 +105,9 @@ export function PublishedAppsDashboardPage() {
 		useState('Apps');
 	const [members, setMembers] = useState<MemberProps[]>(Array<MemberProps>());
 	const [selectedMember, setSelectedMember] = useState<MemberProps>();
-	const [selectedAccount, setSelectedAccount] = useState<Account>({
-		customFields: {CatalogId: 0},
-		externalReferenceCode: '',
-		id: 0,
-		name: '',
-	});
+	const [selectedAccount, setSelectedAccount] = useState<Account>(
+		initialAccountsState[0]
+	);
 
 	const appMessages = {
 		description: 'Manage and publish apps on the Marketplace',
@@ -204,10 +205,14 @@ export function PublishedAppsDashboardPage() {
 		return productVersion;
 	}
 
-	function getRolesList(roles: RoleBriefProps[]) {
+	function getRolesList(accountBriefs: AccountBrief[]) {
 		const rolesList: string[] = [];
 
-		roles.forEach((role) => {
+		const accountBrief = accountBriefs.find(
+			(accountBrief) => accountBrief.name === selectedAccount.name
+		);
+
+		accountBrief?.roleBriefs.forEach((role) => {
 			rolesList.push(role.name);
 		});
 
@@ -215,31 +220,28 @@ export function PublishedAppsDashboardPage() {
 	}
 
 	useEffect(() => {
-		(async () => {
+		const makeFetch = async () => {
 			const accountsResponse = await getAccounts();
 
-			const accountsList = accountsResponse.items.map(
-				(account: Account) => {
-					return {
-						customFields: account.customFields,
-						externalReferenceCode: account.externalReferenceCode,
-						id: account.id,
-						name: account.name,
-					} as Account;
-				}
-			);
+			setAccounts(accountsResponse.items);
+			setSelectedAccount(accountsResponse.items[0]);
+		};
 
-			setAccounts(accountsList);
-			setSelectedAccount(accountsList[0]);
-		})();
+		makeFetch();
 	}, []);
 
 	useEffect(() => {
 		(async () => {
-			const accountCatalogId = selectedAccount.customFields.CatalogId;
+			const accountCustomField = selectedAccount.customFields?.find(
+				(customField) => customField.name === 'CatalogId'
+			);
 
-			if (accountCatalogId) {
-				if (accountCatalogId !== 0) {
+			if (accountCustomField) {
+				const accountCatalogId = Number(
+					accountCustomField.customValue.data
+				);
+
+				if (accountCatalogId && accountCatalogId !== 0) {
 					const appList = await getProducts();
 
 					const appListProductIds: number[] =
@@ -281,6 +283,11 @@ export function PublishedAppsDashboardPage() {
 							}
 						}
 					);
+
+					const commerceAccountResponse =
+						await getAccountInfoFromCommerce(selectedAccount.id);
+
+					setCommerceAccount(commerceAccountResponse);
 
 					setApps(newAppList);
 
@@ -332,6 +339,41 @@ export function PublishedAppsDashboardPage() {
 	useEffect(() => {
 		(async () => {
 			if (selectedNavigationItem === 'Members') {
+				const currentUserAccountResponse = await getMyUserAccount();
+
+				const currentUserAccount = {
+					accountBriefs: currentUserAccountResponse.accountBriefs,
+					isCustomerAccount: false,
+					isPublisherAccount: false,
+				};
+
+				const currentUserAccountRoleBriefs =
+					currentUserAccount.accountBriefs.find(
+						(accountBrief: {name: string}) =>
+							accountBrief.name === selectedAccount.name
+					).roleBriefs;
+
+				customerRoles.forEach((customerRole) => {
+					if (
+						currentUserAccountRoleBriefs.find(
+							(role: {name: string}) => role.name === customerRole
+						)
+					) {
+						currentUserAccount.isCustomerAccount = true;
+					}
+				});
+
+				publisherRoles.forEach((publisherRole) => {
+					if (
+						currentUserAccountRoleBriefs.find(
+							(role: {name: string}) =>
+								role.name === publisherRole
+						)
+					) {
+						currentUserAccount.isPublisherAccount = true;
+					}
+				});
+
 				const accountsListResponse = await getUserAccounts();
 
 				const membersList = accountsListResponse.items.map(
@@ -341,13 +383,31 @@ export function PublishedAppsDashboardPage() {
 							dateCreated: member.dateCreated,
 							email: member.emailAddress,
 							image: member.image,
+							isCustomerAccount: false,
+							isPublisherAccount: false,
 							lastLoginDate: member.lastLoginDate,
 							name: member.name,
-							role: getRolesList(member.roleBriefs),
+							role: getRolesList(member.accountBriefs),
 							userId: member.id,
 						} as MemberProps;
 					}
 				);
+
+				membersList.forEach((member: MemberProps) => {
+					const rolesList = member.role.split(', ');
+
+					customerRoles.forEach((customerRole) => {
+						if (rolesList.find((role) => role === customerRole)) {
+							member.isCustomerAccount = true;
+						}
+					});
+
+					publisherRoles.forEach((publisherRole) => {
+						if (rolesList.find((role) => role === publisherRole)) {
+							member.isPublisherAccount = true;
+						}
+					});
+				});
 
 				let filteredMembersList: MemberProps[] = [];
 
@@ -358,7 +418,8 @@ export function PublishedAppsDashboardPage() {
 								(accountBrief: AccountBriefProps) =>
 									accountBrief.externalReferenceCode ===
 									selectedAccount.externalReferenceCode
-							)
+							) &&
+							member.isPublisherAccount
 						) {
 							return true;
 						}
@@ -370,13 +431,13 @@ export function PublishedAppsDashboardPage() {
 				setMembers(filteredMembersList);
 			}
 		})();
-	}, [selectedNavigationItem, selectedAccount]);
+	}, [selectedAccount]);
 
 	return (
 		<div className="published-apps-dashboard-page-container">
 			<DashboardNavigation
 				accountAppsNumber={apps.length.toString()}
-				accountIcon={accountLogo}
+				accountIcon={commerceAccount?.logoURL ?? accountLogo}
 				accounts={accounts}
 				currentAccount={selectedAccount}
 				dashboardNavigationItems={dashboardNavigationItems}
@@ -453,7 +514,16 @@ export function PublishedAppsDashboardPage() {
 				</DashboardPage>
 			)}
 
-			{selectedNavigationItem === 'Account' && <AccountDetailsPage />}
+			{selectedNavigationItem === 'Account' && (
+				<AccountDetailsPage
+					commerceAccount={commerceAccount}
+					dashboardNavigationItems={dashboardNavigationItems}
+					selectedAccount={selectedAccount}
+					setDashboardNavigationItems={setDashboardNavigationItems}
+					totalApps={apps.length}
+					totalMembers={members.length}
+				/>
+			)}
 		</div>
 	);
 }

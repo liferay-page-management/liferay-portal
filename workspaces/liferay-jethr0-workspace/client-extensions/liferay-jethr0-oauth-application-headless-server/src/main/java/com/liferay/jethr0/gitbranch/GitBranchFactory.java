@@ -14,46 +14,30 @@
 
 package com.liferay.jethr0.gitbranch;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import com.liferay.jethr0.entity.factory.BaseEntityFactory;
 
 import org.json.JSONObject;
+
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Michael Hashimoto
  */
-public class GitBranchFactory {
+@Configuration
+public class GitBranchFactory extends BaseEntityFactory<GitBranch> {
 
-	public static GitBranch newGitBranch(JSONObject jsonObject) {
-		long id = jsonObject.getLong("id");
-
-		GitBranch gitBranch;
-
-		synchronized (_gitBranches) {
-			if (_gitBranches.containsKey(id)) {
-				return _gitBranches.get(id);
-			}
-
-			gitBranch = new DefaultGitBranch(jsonObject);
-
-			_gitBranches.put(gitBranch.getId(), gitBranch);
-		}
-
-		return gitBranch;
+	@Override
+	public String getEntityPluralLabel() {
+		return "Git Branches";
 	}
 
-	public static void removeGitBranch(GitBranch gitBranch) {
-		if (gitBranch == null) {
-			return;
-		}
-
-		synchronized (_gitBranches) {
-			_gitBranches.remove(gitBranch.getId());
-		}
+	@Override
+	public GitBranch newEntity(JSONObject jsonObject) {
+		return new DefaultGitBranch(jsonObject);
 	}
 
-	private static final Map<Long, GitBranch> _gitBranches =
-		Collections.synchronizedMap(new HashMap<>());
+	protected GitBranchFactory() {
+		super(GitBranch.class);
+	}
 
 }

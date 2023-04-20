@@ -162,3 +162,8 @@ ca18b1f487a1798d056d4dfd79d26d53eb9296dd^..1d5d1cbb850ff0f4c3a6cc09d4917805281fc
 # Bundle Version 4.0.36
 #
 1d5d1cbb850ff0f4c3a6cc09d4917805281fc333^..9ed79c4c32cab93b1e5d9afeae247ae8def82c86=COMMERCE-5582
+
+#
+# Bundle Version 4.0.37
+#
+9ed79c4c32cab93b1e5d9afeae247ae8def82c86^..a17731731057a83da27c83d8a0b0fcdd7510f7ee=LPS-178826

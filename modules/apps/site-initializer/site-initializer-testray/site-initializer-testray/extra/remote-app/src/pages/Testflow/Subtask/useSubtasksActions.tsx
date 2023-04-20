@@ -67,6 +67,7 @@ const useSubtasksActions = () => {
 						? 'begin-analysis'
 						: 'reanalyze'
 				),
+			permission: 'UPDATE',
 		},
 		{
 			action: (subtask, mutate) =>
@@ -117,6 +118,7 @@ const useSubtasksActions = () => {
 					return i18n.translate('assign-and-reanalyze');
 				}
 			},
+			permission: 'UPDATE',
 		},
 		{
 			action: (subtask) => completeModal.open(subtask),
@@ -125,6 +127,7 @@ const useSubtasksActions = () => {
 				dueStatus.key !== SubTaskStatuses.IN_ANALYSIS,
 			icon: 'polls',
 			name: i18n.sub('complete-x', ''),
+			permission: 'UPDATE',
 		},
 		{
 			action: (subtask, mutate) =>
@@ -143,6 +146,7 @@ const useSubtasksActions = () => {
 			hidden: ({dueStatus}) => dueStatus.key !== SubTaskStatuses.COMPLETE,
 			icon: 'polls',
 			name: i18n.translate('return-to-open'),
+			permission: 'UPDATE',
 		},
 	] as Action<TestraySubTask>[]);
 

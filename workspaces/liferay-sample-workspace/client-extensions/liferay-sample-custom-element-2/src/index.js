@@ -36,9 +36,14 @@ class WebComponent extends HTMLElement {
 	constructor() {
 		super();
 
-		this.oAuth2Client = Liferay.OAuth2Client.FromUserAgentApplication(
-			'liferay-sample-oauth-application-user-agent'
-		);
+		try {
+			this.oAuth2Client = Liferay.OAuth2Client.FromUserAgentApplication(
+				'liferay-sample-oauth-application-user-agent'
+			);
+		}
+		catch (error) {
+			console.log('Unable to get user agent application');
+		}
 	}
 
 	connectedCallback() {
@@ -55,9 +60,8 @@ class WebComponent extends HTMLElement {
 				.then((response) => response.json())
 				.then((response) => {
 					if (response.givenName) {
-						const nameElements = document.getElementsByClassName(
-							'hello-world-name'
-						);
+						const nameElements =
+							document.getElementsByClassName('hello-world-name');
 
 						if (nameElements.length) {
 							nameElements[0].innerHTML = response.givenName;

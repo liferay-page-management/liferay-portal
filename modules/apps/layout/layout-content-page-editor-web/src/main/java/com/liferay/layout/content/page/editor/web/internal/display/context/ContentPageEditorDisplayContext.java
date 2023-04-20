@@ -141,6 +141,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -623,8 +624,6 @@ public class ContentPageEditorDisplayContext {
 					"/layout_content_page_editor" +
 						"/restore_collection_display_config")
 			).put(
-				"restrictedItemIds", _getRestrictedItemIds()
-			).put(
 				"saveVariantSegmentsExperienceURL",
 				getSaveVariantSegmentsExperienceURL()
 			).put(
@@ -808,6 +807,8 @@ public class ContentPageEditorDisplayContext {
 						}
 					).build();
 				}
+			).put(
+				"restrictedItemIds", _getRestrictedItemIds()
 			).put(
 				"segmentsExperienceId", getSegmentsExperienceId()
 			).build()
@@ -1039,20 +1040,18 @@ public class ContentPageEditorDisplayContext {
 	}
 
 	private Map<String, Object> _getAvailableLanguages() {
-		Map<String, Object> availableLanguages = new HashMap<>();
+		Map<String, Object> availableLanguages = new LinkedHashMap<>();
 
-		String[] languageIds = LocaleUtil.toLanguageIds(
-			language.getAvailableLocales(themeDisplay.getSiteGroupId()));
+		for (Locale locale :
+				language.getAvailableLocales(themeDisplay.getSiteGroupId())) {
 
-		for (String languageId : languageIds) {
 			availableLanguages.put(
-				languageId,
+				LocaleUtil.toLanguageId(locale),
 				HashMapBuilder.<String, Object>put(
 					"languageIcon",
-					StringUtil.toLowerCase(
-						LocaleUtil.toW3cLanguageId(languageId))
+					StringUtil.toLowerCase(LocaleUtil.toW3cLanguageId(locale))
 				).put(
-					"w3cLanguageId", LocaleUtil.toW3cLanguageId(languageId)
+					"w3cLanguageId", LocaleUtil.toW3cLanguageId(locale)
 				).build());
 		}
 

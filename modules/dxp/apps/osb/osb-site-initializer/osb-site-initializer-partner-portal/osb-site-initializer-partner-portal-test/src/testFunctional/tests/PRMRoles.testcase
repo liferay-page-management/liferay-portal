@@ -29,10 +29,6 @@ definition {
 			PortalInstances.tearDownCP();
 		}
 		else {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "test@liferay.com",
-				userLoginFullName = "Test Test");
-
 			PRMUtils.tearDown();
 		}
 	}
@@ -40,6 +36,7 @@ definition {
 	@description = "Verify that new roles appear after create PRM site"
 	@priority = 5
 	test CheckCreatedRoles {
+		property solutions.acceptance = "true";
 		property test.name.skip.portal.instance = "PRMRoles#CheckCreatedRoles";
 
 		// Temporarily skip portal instances to get tests running for pending release. LRQA-80052

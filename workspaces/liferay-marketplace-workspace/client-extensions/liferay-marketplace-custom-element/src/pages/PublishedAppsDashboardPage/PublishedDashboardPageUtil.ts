@@ -19,6 +19,12 @@ export type CatalogProps = {
 	name: string;
 };
 
+export const customerRoles = [
+	'Account Administrator',
+	'Account Buyer',
+	'Account Member',
+];
+
 export const initialDashboardNavigationItems: DashboardListItems[] = [
 	{
 		itemIcon: appsIcon,
@@ -46,6 +52,8 @@ export type MemberProps = {
 	dateCreated: string;
 	email: string;
 	image: string;
+	isCustomerAccount: boolean;
+	isPublisherAccount: boolean;
 	lastLoginDate: string;
 	name: string;
 	role: string;
@@ -71,13 +79,15 @@ export type ProductSpecificationProps = {
 	value: {};
 };
 
+export const publisherRoles = ['Account Administrator', 'App Editor'];
+
 export type RoleBriefProps = {
 	id: number;
 	name: string;
 };
 
 export type UserAccountProps = {
-	accountBriefs: AccountBriefProps[];
+	accountBriefs: AccountBrief[];
 	dateCreated: string;
 	emailAddress: string;
 	id: number;

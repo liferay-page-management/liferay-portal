@@ -132,6 +132,8 @@ public class ElasticsearchSearchEngineAdapterSearchRequestTest {
 		_deleteIndex();
 
 		_documentFixture.tearDown();
+
+		_searchRequestExecutorFixture.tearDown();
 	}
 
 	@Test
@@ -407,16 +409,15 @@ public class ElasticsearchSearchEngineAdapterSearchRequestTest {
 	private SearchRequestExecutor _createSearchRequestExecutor(
 		ElasticsearchClientResolver elasticsearchClientResolver) {
 
-		SearchRequestExecutorFixture searchRequestExecutorFixture =
-			new SearchRequestExecutorFixture() {
-				{
-					setElasticsearchClientResolver(elasticsearchClientResolver);
-				}
-			};
+		_searchRequestExecutorFixture = new SearchRequestExecutorFixture() {
+			{
+				setElasticsearchClientResolver(elasticsearchClientResolver);
+			}
+		};
 
-		searchRequestExecutorFixture.setUp();
+		_searchRequestExecutorFixture.setUp();
 
-		return searchRequestExecutorFixture.getSearchRequestExecutor();
+		return _searchRequestExecutorFixture.getSearchRequestExecutor();
 	}
 
 	private void _deleteIndex() {
@@ -547,5 +548,6 @@ public class ElasticsearchSearchEngineAdapterSearchRequestTest {
 	private IndicesClient _indicesClient;
 	private RestHighLevelClient _restHighLevelClient;
 	private SearchEngineAdapter _searchEngineAdapter;
+	private SearchRequestExecutorFixture _searchRequestExecutorFixture;
 
 }

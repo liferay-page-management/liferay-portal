@@ -63,6 +63,7 @@ const TaskHeaderActions = () => {
 	const [modalType, setModalType] = useState<TestflowAssigUserType>(
 		'select-users'
 	);
+
 	const [userIds, setUsersId] = useState<number[]>([]);
 	const {modal} = useFormModal<number[]>({
 		onBeforeSave: (newUserIds, act) => {

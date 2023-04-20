@@ -21,7 +21,7 @@ ControlledFDSDisplayContext controlledFDSDisplayContext = new ControlledFDSDispl
 %>
 
 <react:component
-	module="js/ControlledFrontendDataSet"
+	module="{ControlledFrontendDataSet} from frontend-data-set-sample-web"
 	props='<%=
 		HashMapBuilder.<String, Object>put(
 			"id", FDSSampleFDSNames.CONTROLLED

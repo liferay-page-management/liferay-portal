@@ -14,46 +14,25 @@
 
 package com.liferay.jethr0.environment;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import com.liferay.jethr0.entity.factory.BaseEntityFactory;
 
 import org.json.JSONObject;
+
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Michael Hashimoto
  */
-public class EnvironmentFactory {
+@Configuration
+public class EnvironmentFactory extends BaseEntityFactory<Environment> {
 
-	public static Environment newEnvironment(JSONObject jsonObject) {
-		long id = jsonObject.getLong("id");
-
-		Environment environment = null;
-
-		synchronized (_environments) {
-			if (_environments.containsKey(id)) {
-				return _environments.get(id);
-			}
-
-			environment = new DefaultEnvironment(jsonObject);
-
-			_environments.put(environment.getId(), environment);
-		}
-
-		return environment;
+	@Override
+	public Environment newEntity(JSONObject jsonObject) {
+		return new DefaultEnvironment(jsonObject);
 	}
 
-	public static void removeEnvironment(Environment environment) {
-		if (environment == null) {
-			return;
-		}
-
-		synchronized (_environments) {
-			_environments.remove(environment.getId());
-		}
+	protected EnvironmentFactory() {
+		super(Environment.class);
 	}
-
-	private static final Map<Long, Environment> _environments =
-		Collections.synchronizedMap(new HashMap<>());
 
 }

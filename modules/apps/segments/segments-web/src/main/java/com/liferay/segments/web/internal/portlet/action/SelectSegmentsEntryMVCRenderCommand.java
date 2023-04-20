@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.segments.constants.SegmentsPortletKeys;
 import com.liferay.segments.service.SegmentsEntryLocalService;
-import com.liferay.segments.web.internal.constants.SegmentsWebKeys;
 import com.liferay.segments.web.internal.display.context.SelectSegmentsEntryDisplayContext;
 
 import javax.portlet.PortletException;
@@ -45,14 +44,11 @@ public class SelectSegmentsEntryMVCRenderCommand implements MVCRenderCommand {
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws PortletException {
 
-		SelectSegmentsEntryDisplayContext selectSegmentsEntryDisplayContext =
+		renderRequest.setAttribute(
+			SelectSegmentsEntryDisplayContext.class.getName(),
 			new SelectSegmentsEntryDisplayContext(
 				_portal.getHttpServletRequest(renderRequest), renderRequest,
-				renderResponse, _segmentsEntryLocalService);
-
-		renderRequest.setAttribute(
-			SegmentsWebKeys.SELECT_SEGMENTS_ENTRY_DISPLAY_CONTEXT,
-			selectSegmentsEntryDisplayContext);
+				renderResponse, _segmentsEntryLocalService));
 
 		return "/select_segments_entry.jsp";
 	}

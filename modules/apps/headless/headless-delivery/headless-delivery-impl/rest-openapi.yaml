@@ -3258,6 +3258,18 @@ components:
                     # @review
                     description:
                         The Open Graph's image.
+                imageAlt:
+                    # @review
+                    description:
+                        The Open Graph's image alt.
+                    type: string
+                imageAlt_i18n:
+                    additionalProperties:
+                        type: string
+                    # @review
+                    description:
+                        The localized Open Graph's image alts.
+                    type: object
                 title:
                     # @review
                     description:
@@ -4612,6 +4624,12 @@ components:
                     description:
                         The localized relative URLs to the page's rendered content.
                     type: object
+                id:
+                    description:
+                        The page ID.
+                    format: int64
+                    readOnly: true
+                    type: integer
                 keywords:
                     # @review
                     description:
@@ -4638,6 +4656,17 @@ components:
                     description:
                         The type of the page.
                     type: string
+                parentSitePage:
+                    # @review
+                    description:
+                        The parent page or null if it is a top level page.
+                    properties:
+                        friendlyUrlPath:
+                            # @review
+                            description:
+                                The relative URL of the parent page.
+                            type: string
+                    type: object
                 renderedPage:
                     allOf:
                         - $ref: "#/components/schemas/RenderedPage"
@@ -5403,7 +5432,7 @@ components:
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
-        'com.liferay.headless.delivery.client', and version '4.0.53'."
+        'com.liferay.headless.delivery.client', and version '4.0.54'."
     license:
         name: "Apache 2.0"
         url: "http://www.apache.org/licenses/LICENSE-2.0.html"
@@ -13936,6 +13965,38 @@ paths:
                                 items:
                                     $ref: "#/components/schemas/SitePage"
                                 type: array
+            tags: ["SitePage"]
+        post:
+            description:
+                Adds a new site page
+            operationId: postSiteSitePage
+            parameters:
+                - in: path
+                  name: siteId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/SitePage"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/SitePage"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SitePage"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SitePage"
+                    description:
+                        default response
+            # @review
             tags: ["SitePage"]
     "/sites/{siteId}/site-pages/{friendlyUrlPath}":
         get:

@@ -178,7 +178,7 @@ definition {
 
 		Workflow.unpublishWorkflowDefinition(workflowDefinitionTitle = "Single Approver");
 
-		Alert.viewErrorMessage(errorMessage = "Workflow is in use. Remove its assignment to these Assets: Blogs Entry, Calendar Event and 1 More.");
+		Alert.viewErrorMessage(errorMessage = "Workflow is in use. Remove its assignment to these Assets:");
 
 		Workflow.viewDefinitionPublished(workflowDefinitionTitle = "Single Approver");
 	}
@@ -417,15 +417,11 @@ definition {
 	}
 
 	@description = "Verify that the user can select View option in the kebab menu for a particular row"
-	@ignore = "true"
 	@priority = 4
 	test CanSelectViewOption {
 		property test.run.environment = "EE";
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Workflow",
-			panel = "Applications",
-			portlet = "Process Builder");
+		Workflow.openWorkflowListView();
 
 		Workflow.viewWorkflowDefinition(workflowDefinitionTitle = "Single Approver");
 

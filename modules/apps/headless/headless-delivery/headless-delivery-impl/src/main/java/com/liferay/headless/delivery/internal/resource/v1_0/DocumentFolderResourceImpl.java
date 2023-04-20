@@ -28,7 +28,6 @@ import com.liferay.headless.common.spi.service.context.ServiceContextRequestUtil
 import com.liferay.headless.delivery.dto.v1_0.DocumentFolder;
 import com.liferay.headless.delivery.dto.v1_0.Rating;
 import com.liferay.headless.delivery.dto.v1_0.util.CustomFieldsUtil;
-import com.liferay.headless.delivery.internal.dto.v1_0.converter.DocumentFolderDTOConverter;
 import com.liferay.headless.delivery.internal.dto.v1_0.util.RatingUtil;
 import com.liferay.headless.delivery.internal.odata.entity.v1_0.DocumentFolderEntityModel;
 import com.liferay.headless.delivery.resource.v1_0.DocumentFolderResource;
@@ -39,6 +38,7 @@ import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.filter.Filter;
@@ -57,6 +57,7 @@ import com.liferay.portal.search.query.Queries;
 import com.liferay.portal.search.searcher.SearchRequestBuilder;
 import com.liferay.portal.search.sort.Sorts;
 import com.liferay.portal.vulcan.aggregation.Aggregation;
+import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -442,8 +443,8 @@ public class DocumentFolderResourceImpl extends BaseDocumentFolderResourceImpl {
 						BooleanClauseOccur.MUST);
 				}
 			},
-			FilterUtil.processFilter(_ddmIndexer, filter),
-			DLFolder.class.getName(), keywords, pagination,
+			FilterUtil.processFilter(_ddmIndexer, filter), _dlFolderIndexer,
+			keywords, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),
 			searchContext -> {
@@ -604,11 +605,18 @@ public class DocumentFolderResourceImpl extends BaseDocumentFolderResourceImpl {
 	@Reference
 	private DLAppService _dlAppService;
 
+	@Reference(
+		target = "(indexer.class.name=com.liferay.document.library.kernel.model.DLFolder)"
+	)
+	private Indexer<?> _dlFolderIndexer;
+
 	@Reference
 	private DLFolderService _dlFolderService;
 
-	@Reference
-	private DocumentFolderDTOConverter _documentFolderDTOConverter;
+	@Reference(
+		target = "(component.name=com.liferay.headless.delivery.internal.dto.v1_0.converter.DocumentFolderDTOConverter)"
+	)
+	private DTOConverter<DLFolder, DocumentFolder> _documentFolderDTOConverter;
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;

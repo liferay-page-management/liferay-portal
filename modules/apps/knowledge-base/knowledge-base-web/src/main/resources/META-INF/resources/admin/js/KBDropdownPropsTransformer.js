@@ -28,6 +28,15 @@ const ACTIONS = {
 		});
 	},
 
+	move({moveItemUrl}) {
+		openModal({
+			height: '50vh',
+			size: 'md',
+			title: Liferay.Language.get('move'),
+			url: moveItemUrl,
+		});
+	},
+
 	permissions({permissionsURL}) {
 		openModal({
 			title: Liferay.Language.get('permissions'),

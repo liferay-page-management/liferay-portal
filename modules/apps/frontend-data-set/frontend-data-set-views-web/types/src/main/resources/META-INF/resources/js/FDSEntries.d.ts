@@ -15,22 +15,16 @@
 /// <reference types="react" />
 
 import '../css/FDSEntries.scss';
-declare type THeadlessResource = {
-	bundleLabel: string;
-	entityClassName: string;
-	name: string;
-	version: string;
-};
-interface IFDSEntriesProps {
+interface FDSEntriesInterface {
 	fdsEntriesAPIURL: string;
 	fdsViewsURL: string;
-	headlessResources: Array<THeadlessResource>;
 	namespace: string;
+	restApplications: Array<string>;
 }
 declare const FDSEntries: ({
 	fdsEntriesAPIURL,
 	fdsViewsURL,
-	headlessResources,
 	namespace,
-}: IFDSEntriesProps) => JSX.Element;
+	restApplications,
+}: FDSEntriesInterface) => JSX.Element;
 export default FDSEntries;

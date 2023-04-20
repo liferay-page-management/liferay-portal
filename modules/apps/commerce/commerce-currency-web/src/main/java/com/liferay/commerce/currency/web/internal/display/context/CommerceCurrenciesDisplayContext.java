@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.RowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.portlet.SearchOrderByUtil;
@@ -195,8 +196,11 @@ public class CommerceCurrenciesDisplayContext {
 	}
 
 	public String getRoundingModeLabel(String roundingModeName) {
-		return StringUtil.replace(
-			roundingModeName, CharPool.UNDERLINE, CharPool.SPACE);
+		return LanguageUtil.get(
+			PortalUtil.getLocale(_renderRequest),
+			StringUtil.replace(
+				StringUtil.toLowerCase(roundingModeName), CharPool.UNDERLINE,
+				CharPool.DASH));
 	}
 
 	public SearchContainer<CommerceCurrency> getSearchContainer()

@@ -27,9 +27,6 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -124,23 +121,21 @@ public class FormNavigatorOSGiCommands {
 			return StringPool.BLANK;
 		}
 
-		Stream<FormNavigatorEntry<?>> formNavigatorEntriesStream =
-			formNavigatorEntries.stream();
-
-		Stream<String> formNavigatorKeysStream = formNavigatorEntriesStream.map(
-			FormNavigatorEntry::getKey);
-
-		String formNavigatorEntryKeysCSV = formNavigatorKeysStream.collect(
-			_collectorCSV);
-
-		StringBundler sb = new StringBundler(4);
+		StringBundler sb = new StringBundler(
+			(formNavigatorEntries.size() * 2) + 2);
 
 		if (Validator.isNotNull(formNavigatorCategoryKey)) {
 			sb.append(formNavigatorCategoryKey);
 			sb.append(StringPool.EQUAL);
 		}
 
-		sb.append(formNavigatorEntryKeysCSV);
+		for (FormNavigatorEntry<?> formNavigatorEntry : formNavigatorEntries) {
+			sb.append(formNavigatorEntry.getKey());
+			sb.append(StringPool.COMMA);
+		}
+
+		sb.setIndex(sb.index() - 1);
+
 		sb.append(StringPool.NEW_LINE);
 
 		return sb.toString();
@@ -152,8 +147,6 @@ public class FormNavigatorOSGiCommands {
 		return formNavigatorId + formNavigatorCategoryId;
 	}
 
-	private final Collector<CharSequence, ?, String> _collectorCSV =
-		Collectors.joining(StringPool.COMMA);
 	private ServiceTrackerList<FormNavigatorEntry<?>> _formNavigatorEntries;
 	private ServiceTrackerMap<String, List<FormNavigatorEntry<?>>>
 		_serviceTrackerMap;

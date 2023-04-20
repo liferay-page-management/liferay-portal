@@ -1,0 +1,90 @@
+definition {
+
+	@summary = "Verify that the 'Edit' button is not visible"
+	macro buttonIsNotVisible {
+		AssertNotVisible(
+			key_text = "Edit",
+			locator1 = "Button#ANY");
+	}
+
+	@summary = "Verify that the 'Edit' button is visible"
+	macro buttonIsVisible {
+		AssertVisible(
+			key_text = "Edit",
+			locator1 = "Button#ANY");
+	}
+
+	@summary = "Change informations about claimed activities"
+	macro editActivity {
+		if (!(isSet(activityIndex))) {
+			var activityIndex = 0;
+		}
+
+		if (!(isSet(budgetIndex))) {
+			var budgetIndex = 0;
+		}
+
+		Click(
+			key_activityName = ${activityName},
+			locator1 = "PRMMDFClaimEdit#ACTIVITY_NAME");
+
+		Click(
+			key_fieldName = "activities[${activityIndex}].budgets[${budgetIndex}].selected",
+			locator1 = "PRMMDFClaimEdit#BUDGET_COLLAPSE");
+
+		UploadCommonFile.uploadCommonFileHiddenNoMouseOver(
+			key_fieldName = "activities[${activityIndex}].budgets[${budgetIndex}].invoice",
+			locator1 = "PRMMDFClaimEdit#UPLOAD_FIELD",
+			value1 = ${newAttachment});
+
+		if (isSet(newInvoiceAmount)) {
+			Type(
+				key_fieldName = "activities[${activityIndex}].budgets[${budgetIndex}].invoiceAmount",
+				locator1 = "PRMMDFRequest#TEXT_FIELD",
+				value1 = ${newInvoiceAmount});
+		}
+	}
+
+	@summary = "Click on 'Edit' button inside claim detail page"
+	macro editButton {
+		Click(locator1 = "PRMMDFClaim#EDIT_BUTTON");
+	}
+
+	@summary = "Edit the claim, changing some informations or adding new"
+	macro editClaim {
+		if (!(isSet(activityIndex))) {
+			var activityIndex = 0;
+		}
+
+		if (!(isSet(budgetIndex))) {
+			var budgetIndex = 0;
+		}
+
+		if (isSet(newAttachment) || isSet(newInvoiceAmount)) {
+			PRMMDFClaimEdit.editActivity(
+				activityIndex = ${activityIndex},
+				activityName = ${activityName},
+				budgetIndex = ${budgetIndex},
+				newAttachment = ${newAttachment},
+				newInvoiceAmount = ${newInvoiceAmount});
+		}
+
+		if (isSet(newActivityIndex)) {
+			PRMMDFClaim.fillActivityFields(
+				activityIndex = ${newActivityIndex},
+				budgetIndex = ${newBudgetIndex},
+				listLeads = ${newListLeads},
+				thirdInvoice = ${newThirdInvoice});
+		}
+
+		Button.clickSubmitButton();
+	}
+
+	@summary = "Go to the claim via UI, clicking on 'View' button"
+	macro gotoClaimViaUI {
+		Click(
+			key_claimId = ${claimId},
+			locator1 = "PRMMDFClaim#VIEW_CLAIM_BUTTON");
+	}
+
+}

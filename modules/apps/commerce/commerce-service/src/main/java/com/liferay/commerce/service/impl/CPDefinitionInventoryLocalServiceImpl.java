@@ -14,6 +14,9 @@
 
 package com.liferay.commerce.service.impl;
 
+import com.liferay.commerce.exception.CPDefinitionInventoryMaxOrderQuantityException;
+import com.liferay.commerce.exception.CPDefinitionInventoryMinOrderQuantityException;
+import com.liferay.commerce.exception.CPDefinitionInventoryMultipleOrderQuantityException;
 import com.liferay.commerce.model.CPDefinitionInventory;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
@@ -50,6 +53,9 @@ public class CPDefinitionInventoryLocalServiceImpl
 			int maxOrderQuantity, String allowedOrderQuantities,
 			int multipleOrderQuantity)
 		throws PortalException {
+
+		_validateOrderQuantity(
+			minOrderQuantity, maxOrderQuantity, multipleOrderQuantity);
 
 		User user = _userLocalService.getUser(userId);
 
@@ -178,6 +184,9 @@ public class CPDefinitionInventoryLocalServiceImpl
 			String allowedOrderQuantities, int multipleOrderQuantity)
 		throws PortalException {
 
+		_validateOrderQuantity(
+			minOrderQuantity, maxOrderQuantity, multipleOrderQuantity);
+
 		CPDefinitionInventory cpDefinitionInventory =
 			cpDefinitionInventoryPersistence.findByPrimaryKey(
 				cpDefinitionInventoryId);
@@ -207,6 +216,29 @@ public class CPDefinitionInventoryLocalServiceImpl
 		cpDefinitionInventory.setMultipleOrderQuantity(multipleOrderQuantity);
 
 		return cpDefinitionInventoryPersistence.update(cpDefinitionInventory);
+	}
+
+	private void _validateOrderQuantity(
+			int minOrderQuantity, int maxOrderQuantity,
+			int multipleOrderQuantity)
+		throws CPDefinitionInventoryMaxOrderQuantityException,
+			   CPDefinitionInventoryMinOrderQuantityException,
+			   CPDefinitionInventoryMultipleOrderQuantityException {
+
+		if (minOrderQuantity < 1) {
+			throw new CPDefinitionInventoryMinOrderQuantityException(
+				"Minimum order quantity must be greater than or equal to 1");
+		}
+
+		if (maxOrderQuantity < 1) {
+			throw new CPDefinitionInventoryMaxOrderQuantityException(
+				"Maximum order quantity must be greater than or equal to 1");
+		}
+
+		if (multipleOrderQuantity < 1) {
+			throw new CPDefinitionInventoryMultipleOrderQuantityException(
+				"Multiple order quantity must be greater than or equal to 1");
+		}
 	}
 
 	@Reference

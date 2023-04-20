@@ -25,6 +25,14 @@ definition {
 		SelectFrameTop();
 
 		Alert.viewSuccessMessage();
+
+		WaitForElementPresent(
+			key_itemName = "Site Configuration",
+			locator1 = "ListGroupItem#ITEM_TEXT");
+
+		Click(
+			key_itemName = "Site Configuration",
+			locator1 = "ListGroupItem#ITEM_TEXT");
 	}
 
 	macro assertPageTitle {
@@ -164,6 +172,12 @@ definition {
 	}
 
 	macro tearDown {
+		Navigator.openURL();
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "test@liferay.com",
+			userLoginFullName = "Test Test");
+
 		Site.openSitesAdmin();
 
 		if (IsElementPresent(key_tableEntry = "Partner Portal", locator1 = "LexiconTable#TABLE_ENTRY")) {

@@ -186,16 +186,16 @@ public class SuggestionsPortletDisplayContextBuilder {
 
 		sb.append("<span class=\"");
 
-		String keywordCssClass = "unchanged-keyword";
-
 		if (changed) {
-			keywordCssClass = "changed-keyword";
+			sb.append("changed-keyword\"><strong>");
+			sb.append(_html.escape(keyword));
+			sb.append("</strong>");
+		}
+		else {
+			sb.append("unchanged-keyword\">");
+			sb.append(_html.escape(keyword));
 		}
 
-		sb.append(keywordCssClass);
-
-		sb.append("\">");
-		sb.append(_html.escape(keyword));
 		sb.append("</span>");
 
 		return sb.toString();

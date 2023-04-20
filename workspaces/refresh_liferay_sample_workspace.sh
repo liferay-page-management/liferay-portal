@@ -46,11 +46,11 @@ function refresh_liferay_sample_workspace {
 
 	pushd ${temp_dir}
 
-	${BLADE_PATH} init --liferay-version dxp-7.4-u65
+	${BLADE_PATH} init --liferay-version dxp-7.4-u72
 
 	echo -en "\n**/dist\n**/node_modules_cache\n.DS_Store" >> .gitignore
 
-	echo -en "\n\nfeature.flag.LPS-166479=true" >> configs/local/portal-ext.properties
+	echo -en "\n\nfeature.flag.LPS-166479=true\n\nfeature.flag.LPS-177027=true" >> configs/local/portal-ext.properties
 
 	#echo -en "\nliferay.workspace.docker.image.liferay=liferay/dxp:7.4.13-u54-d5.0.5-20221208173455" >> gradle.properties
 	echo -en "\nliferay.workspace.node.package.manager=yarn" >> gradle.properties
@@ -64,7 +64,7 @@ function refresh_liferay_sample_workspace {
 
 	mv gradle.properties.tmp gradle.properties
 
-	sed -i 's/name: "com.liferay.gradle.plugins.workspace", version: ".*"/name: "com.liferay.gradle.plugins.workspace", version: "4.3.6"/' settings.gradle
+	sed -i 's/name: "com.liferay.gradle.plugins.workspace", version: ".*"/name: "com.liferay.gradle.plugins.workspace", version: "5.0.1"/' settings.gradle
 
 	popd
 
@@ -81,12 +81,12 @@ function refresh_liferay_sample_workspace {
 
 	mkdir -p liferay-sample-workspace/modules
 
-	echo "Client extensions are the recommended way of customizing Liferay. Modules and" > liferay-sample-workspace/modules/README.txt
-	echo "themes are supported for backwards compatibility." >> liferay-sample-workspace/modules/README.txt
+	echo "Client extensions are the recommended way of customizing Liferay. Modules and" > liferay-sample-workspace/modules/README.markdown
+	echo "themes are supported for backwards compatibility." >> liferay-sample-workspace/modules/README.markdown
 
 	mkdir -p liferay-sample-workspace/themes
 
-	cp liferay-sample-workspace/modules/README.txt liferay-sample-workspace/themes
+	cp liferay-sample-workspace/modules/README.markdown liferay-sample-workspace/themes
 
 	#
 	# Client Extension: Sample Custom Element 2
@@ -110,13 +110,15 @@ class DadJoke extends React.Component {
 	}
 
 	componentDidMount() {
-		this._request = this.oAuth2Client.fetch(
-			'/dad/joke'
-		).then(response => response.text()
-		).then(text => {
-			this._request = null;
-			this.setState({"joke": text});
-		});
+		if (this.oAuth2Client) {
+			this._request = this.oAuth2Client.fetch(
+				'/dad/joke'
+			).then(response => response.text()
+			).then(text => {
+				this._request = null;
+				this.setState({"joke": text});
+			});
+		}
 	}
 
 	componentWillUnmount() {
@@ -177,9 +179,14 @@ class WebComponent extends HTMLElement {
 	constructor() {
 		super();
 
-		this.oAuth2Client = Liferay.OAuth2Client.FromUserAgentApplication(
-			'liferay-sample-oauth-application-user-agent'
-		);
+		try {
+			this.oAuth2Client = Liferay.OAuth2Client.FromUserAgentApplication(
+				'liferay-sample-oauth-application-user-agent'
+			);
+		}
+		catch (error) {
+			console.log("Unable to get user agent application");
+		}
 	}
 
 	connectedCallback() {

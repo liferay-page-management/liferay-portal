@@ -25,21 +25,23 @@ definition {
 
 		WaitForVisible(locator1 = "Sidebar#BACK");
 
-		Navigator.gotoNavTab(navTab = "Basic");
+		if (isSet(fieldFieldLabel)) {
+			Navigator.gotoNavTab(navTab = "Basic");
 
-		Type(
-			key_fieldLabel = "Label",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = ${fieldFieldLabel});
+			Type(
+				key_fieldLabel = "Label",
+				locator1 = "TextInput#GENERIC_TEXT_INPUT",
+				value1 = ${fieldFieldLabel});
 
-		AssertTextEquals(
-			key_fieldLabel = "Label",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = ${fieldFieldLabel});
+			AssertTextEquals(
+				key_fieldLabel = "Label",
+				locator1 = "TextInput#GENERIC_TEXT_INPUT",
+				value1 = ${fieldFieldLabel});
 
-		AssertElementPresent(
-			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL",
-			value1 = ${fieldFieldLabel});
+			AssertElementPresent(
+				locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL",
+				value1 = ${fieldFieldLabel});
+		}
 
 		if (${fieldName} == "Text") {
 			if (isSet(fieldType)) {
@@ -56,29 +58,31 @@ definition {
 			}
 		}
 
-		Navigator.gotoNavTab(navTab = "Advanced");
+		if (isSet(fieldFieldLabel)) {
+			Navigator.gotoNavTab(navTab = "Advanced");
 
-		if (isSet(textNumber)) {
-			var textNumber = selenium.getAttribute("//div[contains(@data-field-name,'fieldReference')]//label[normalize-space(text())='Field Reference']//..//input@value");
+			if (isSet(textNumber)) {
+				var textNumber = selenium.getAttribute("//div[contains(@data-field-name,'fieldReference')]//label[normalize-space(text())='Field Reference']//..//input@value");
 
-			return ${textNumber};
+				return ${textNumber};
 
-			echo("## * textNumber: ${textNumber}");
+				echo("## * textNumber: ${textNumber}");
+			}
+
+			Type(
+				key_fieldLabel = "Field Reference",
+				key_fieldName = "fieldReference",
+				locator1 = "Sidebar#TEXT_INPUT",
+				value1 = ${fieldReference});
+
+			AssertTextEquals.assertValue(
+				key_fieldLabel = "Field Reference",
+				key_fieldName = "fieldReference",
+				locator1 = "Sidebar#TEXT_INPUT",
+				value1 = ${fieldReference});
+
+			Click(locator1 = "Sidebar#BACK");
 		}
-
-		Type(
-			key_fieldLabel = "Field Reference",
-			key_fieldName = "fieldReference",
-			locator1 = "Sidebar#TEXT_INPUT",
-			value1 = ${fieldReference});
-
-		AssertTextEquals.assertValue(
-			key_fieldLabel = "Field Reference",
-			key_fieldName = "fieldReference",
-			locator1 = "Sidebar#TEXT_INPUT",
-			value1 = ${fieldReference});
-
-		Click(locator1 = "Sidebar#BACK");
 	}
 
 	macro addFieldGroupWithFields {
@@ -428,6 +432,116 @@ definition {
 			locator1 = "DDMEditStructure#FORM_FIELD_SETS_CONTAINER_LABEL");
 
 		Click(locator1 = "Sidebar#BACK");
+	}
+
+	macro addFieldsWithDefaultReference {
+		Navigator.gotoSidebarTab(tabName = "Builder");
+
+		Navigator.gotoNavTab(navTab = "Fields");
+
+		for (var fieldName : list ${fieldNameList}) {
+			var key_fieldName = ${fieldName};
+
+			DoubleClick(locator1 = "Sidebar#ADD_FIELD_NAME");
+
+			WaitForVisible(locator1 = "Sidebar#BACK");
+
+			AssertElementPresent(
+				key_fieldFieldLabel = ${fieldName},
+				locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL",
+				value1 = ${fieldName});
+
+			if (${fieldName} == "Grid") {
+				var index = 1;
+
+				for (var optionValue : list "R1,R2") {
+					DataEngine.addFieldOption(
+						index = ${index},
+						optionFieldLabel = "Rows",
+						optionValue = "Row ${index}");
+
+					DataEngine.editFieldReferenceOfFieldOption(
+						fieldReferenceOfFieldOption = ${optionValue},
+						index = ${index},
+						optionFieldLabel = "Rows");
+
+					var index = ${index} + 1;
+				}
+
+				var index = 1;
+
+				for (var optionValue : list "C1,C2") {
+					DataEngine.addFieldOption(
+						index = ${index},
+						optionFieldLabel = "Columns",
+						optionValue = "Column ${index}");
+
+					DataEngine.editFieldReferenceOfFieldOption(
+						fieldReferenceOfFieldOption = ${optionValue},
+						index = ${index},
+						optionFieldLabel = "Columns");
+
+					var index = ${index} + 1;
+				}
+			}
+			else if (${fieldName} == "Multiple Selection") {
+				DataEngine.addFieldOption(
+					index = 1,
+					optionFieldLabel = "Options",
+					optionValue = "Option 1");
+
+				DataEngine.editFieldReferenceOfFieldOption(
+					fieldReferenceOfFieldOption = "First",
+					index = 1,
+					optionFieldLabel = "Options");
+
+				DataEngine.addFieldOption(
+					index = 2,
+					optionFieldLabel = "Options",
+					optionValue = "Option 2");
+
+				DataEngine.editFieldReferenceOfFieldOption(
+					fieldReferenceOfFieldOption = "Second",
+					index = 2,
+					optionFieldLabel = "Options");
+			}
+			else if (${fieldName} == "Select from List") {
+				DataEngine.addFieldOption(
+					index = 1,
+					optionValue = "Option 2");
+
+				DataEngine.editFieldReferenceOfFieldOption(
+					fieldReferenceOfFieldOption = "Value2",
+					index = 1);
+
+				DataEngine.addFieldOption(
+					index = 2,
+					optionValue = "Option 1");
+
+				DataEngine.editFieldReferenceOfFieldOption(
+					fieldReferenceOfFieldOption = "Value1",
+					index = 2);
+			}
+			else if (${fieldName} == "Single Selection") {
+				DataEngine.addFieldOption(
+					index = 1,
+					optionValue = "Option 3");
+
+				DataEngine.editFieldReferenceOfFieldOption(
+					fieldReferenceOfFieldOption = "Value3",
+					index = 1);
+
+				DataEngine.addFieldOption(
+					index = 2,
+					optionValue = "Option 4");
+
+				DataEngine.editFieldReferenceOfFieldOption(
+					fieldReferenceOfFieldOption = "Value4",
+					index = 2);
+			}
+
+			Click(locator1 = "Sidebar#BACK");
+		}
 	}
 
 	macro addFieldToFieldsGroup {
@@ -1705,6 +1819,24 @@ definition {
 				key_fieldLabel = "Placeholder Text",
 				locator1 = "TextInput#GENERIC_TEXT_INPUT",
 				value1 = ${fieldPlaceholder});
+		}
+	}
+
+	macro viewFieldLabel {
+		if (${fieldName} == "Boolean") {
+			AssertElementPresent(
+				key_fieldLabel = ${fieldFieldLabel},
+				locator1 = "Checkbox#CHECKBOX_LABEL");
+		}
+		else {
+			if (!(isSet(index))) {
+				var index = 1;
+			}
+
+			AssertElementPresent(
+				key_fieldFieldLabel = ${fieldFieldLabel},
+				key_index = ${index},
+				locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL_ANY");
 		}
 	}
 
