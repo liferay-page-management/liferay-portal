@@ -21,14 +21,12 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.Collections;
 import java.util.Map;
 
 import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
 
 /**
  * @author David Arques
@@ -37,8 +35,7 @@ import javax.portlet.RenderResponse;
 public class AnalyticsReportsDisplayContext<T> {
 
 	public AnalyticsReportsDisplayContext(
-		InfoItemReference infoItemReference,
-		RenderRequest renderRequest) {
+		InfoItemReference infoItemReference, RenderRequest renderRequest) {
 
 		_infoItemReference = infoItemReference;
 		_renderRequest = renderRequest;
@@ -56,8 +53,7 @@ public class AnalyticsReportsDisplayContext<T> {
 			"context",
 			Collections.singletonMap(
 				"analyticsReportsDataURL",
-				String.valueOf(
-					_getResourceURL("/portal/get_data"))));
+				String.valueOf(_getResourceURL("/portal/get_data"))));
 
 		return _data;
 	}

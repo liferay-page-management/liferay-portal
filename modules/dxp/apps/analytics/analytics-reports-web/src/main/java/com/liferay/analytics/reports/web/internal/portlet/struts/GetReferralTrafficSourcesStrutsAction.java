@@ -12,17 +12,16 @@
  *
  */
 
-package com.liferay.analytics.reports.web.internal.portlet.action;
+package com.liferay.analytics.reports.web.internal.portlet.struts;
 
 import com.liferay.analytics.reports.web.internal.data.provider.AnalyticsReportsDataProvider;
-import com.liferay.analytics.reports.web.internal.model.ReferringSocialMedia;
+import com.liferay.analytics.reports.web.internal.model.ReferringURL;
 import com.liferay.analytics.reports.web.internal.model.TimeRange;
 import com.liferay.analytics.reports.web.internal.model.TimeSpan;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -49,21 +48,20 @@ import org.osgi.service.component.annotations.Reference;
  * @author Cristina González
  */
 @Component(
-	property = {
-		"path=/portal/get_social_traffic_sources"
-	},
+	property = "path=/portal/get_referral_traffic_sources",
 	service = StrutsAction.class
 )
-public class GetSocialTrafficSourcesStrutsAction
-	implements StrutsAction {
+public class GetReferralTrafficSourcesStrutsAction implements StrutsAction {
 
 	@Override
 	public String execute(
-		HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse)
 		throws Exception {
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
 		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
 			themeDisplay.getLocale(), getClass());
@@ -77,24 +75,31 @@ public class GetSocialTrafficSourcesStrutsAction
 				httpServletRequest, "canonicalURL");
 
 			String timeSpanKey = ParamUtil.getString(
-				httpServletRequest, "timeSpanKey", TimeSpan.defaultTimeSpanKey());
+				httpServletRequest, "timeSpanKey",
+				TimeSpan.defaultTimeSpanKey());
 
 			TimeSpan timeSpan = TimeSpan.of(timeSpanKey);
 
 			int timeSpanOffset = ParamUtil.getInteger(
 				httpServletRequest, "timeSpanOffset");
 
-			JSONObject jsonObject = JSONUtil.put(
-				"referringSocialMedia",
-				_getReferringSocialMediaJSONArray(
-					_getReferringSocialMediaList(
-						analyticsReportsDataProvider, canonicalURL,
-						themeDisplay.getCompanyId(),
-						timeSpan.toTimeRange(timeSpanOffset)),
-					resourceBundle));
-
 			ServletResponseUtil.write(
-				httpServletResponse, jsonObject.toString());
+				httpServletResponse,
+				JSONUtil.put(
+					"referringDomains",
+					_getReferringURLsJSONArray(
+						_getDomainReferringURLs(
+							analyticsReportsDataProvider, canonicalURL,
+							themeDisplay.getCompanyId(),
+							timeSpan.toTimeRange(timeSpanOffset)))
+				).put(
+					"referringPages",
+					_getReferringURLsJSONArray(
+						_getPageReferringURLs(
+							analyticsReportsDataProvider, canonicalURL,
+							themeDisplay.getCompanyId(),
+							timeSpan.toTimeRange(timeSpanOffset)))
+				).toString());
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
@@ -106,37 +111,14 @@ public class GetSocialTrafficSourcesStrutsAction
 				JSONUtil.put(
 					"error",
 					ResourceBundleUtil.getString(
-						resourceBundle, "an-unexpected-error-occurred")).toString());
+						resourceBundle, "an-unexpected-error-occurred")
+				).toString());
 		}
+
 		return null;
 	}
 
-	private JSONArray _getReferringSocialMediaJSONArray(
-		List<ReferringSocialMedia> referringSocialMediaList,
-		ResourceBundle resourceBundle) {
-
-		if (ListUtil.isEmpty(referringSocialMediaList)) {
-			return _jsonFactory.createJSONArray();
-		}
-
-		Comparator<ReferringSocialMedia> comparator = Comparator.comparingInt(
-			ReferringSocialMedia::getTrafficAmount);
-
-		referringSocialMediaList = ListUtil.filter(
-			referringSocialMediaList,
-			referringSocialMedia ->
-				referringSocialMedia.getTrafficAmount() > 0);
-
-		referringSocialMediaList.sort(comparator.reversed());
-
-		return JSONUtil.toJSONArray(
-			referringSocialMediaList,
-			referringSocialMedia -> referringSocialMedia.toJSONObject(
-				resourceBundle),
-			_log);
-	}
-
-	private List<ReferringSocialMedia> _getReferringSocialMediaList(
+	private List<ReferringURL> _getDomainReferringURLs(
 			AnalyticsReportsDataProvider analyticsReportsDataProvider,
 			String canonicalURL, long companyId, TimeRange timeRange)
 		throws Exception {
@@ -144,15 +126,51 @@ public class GetSocialTrafficSourcesStrutsAction
 		if (!analyticsReportsDataProvider.isValidAnalyticsConnection(
 				companyId)) {
 
-			throw new PortalException("Unable to get social media ");
+			throw new PortalException("Unable to get referring domains");
 		}
 
-		return analyticsReportsDataProvider.getReferringSocialMediaList(
+		return analyticsReportsDataProvider.getDomainReferringURLs(
 			companyId, timeRange, canonicalURL);
 	}
 
+	private List<ReferringURL> _getPageReferringURLs(
+			AnalyticsReportsDataProvider analyticsReportsDataProvider,
+			String canonicalURL, long companyId, TimeRange timeRange)
+		throws Exception {
+
+		if (!analyticsReportsDataProvider.isValidAnalyticsConnection(
+				companyId)) {
+
+			throw new PortalException("Unable to get referring pages");
+		}
+
+		return analyticsReportsDataProvider.getPageReferringURLs(
+			companyId, timeRange, canonicalURL);
+	}
+
+	private Comparator<ReferringURL> _getReferringURLComparator() {
+		Comparator<ReferringURL> comparator = Comparator.comparingInt(
+			ReferringURL::getTrafficAmount);
+
+		return comparator.reversed();
+	}
+
+	private JSONArray _getReferringURLsJSONArray(
+		List<ReferringURL> referringURLS) {
+
+		if (ListUtil.isEmpty(referringURLS)) {
+			return _jsonFactory.createJSONArray();
+		}
+
+		return JSONUtil.toJSONArray(
+			ListUtil.sort(
+				ListUtil.subList(referringURLS, 0, 10),
+				_getReferringURLComparator()),
+			ReferringURL::toJSONObject, _log);
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
-		GetSocialTrafficSourcesStrutsAction.class);
+		GetReferralTrafficSourcesStrutsAction.class);
 
 	@Reference
 	private AnalyticsSettingsManager _analyticsSettingsManager;

@@ -12,7 +12,7 @@
  *
  */
 
-package com.liferay.analytics.reports.web.internal.portlet.action;
+package com.liferay.analytics.reports.web.internal.portlet.struts;
 
 import com.liferay.analytics.reports.web.internal.data.provider.AnalyticsReportsDataProvider;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
@@ -20,7 +20,6 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -40,16 +39,15 @@ import org.osgi.service.component.annotations.Reference;
  * @author Sarai Díaz
  */
 @Component(
-	property = {
-		"path=/portal/get_total_views"
-	},
-	service = StrutsAction.class
+	property = "path=/portal/get_total_views", service = StrutsAction.class
 )
 public class GetTotalViewsStrutsAction implements StrutsAction {
+
 	@Override
 	public String execute(
-		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse) throws Exception {
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse)
+		throws Exception {
 
 		AnalyticsReportsDataProvider analyticsReportsDataProvider =
 			new AnalyticsReportsDataProvider(_analyticsSettingsManager, _http);
@@ -84,8 +82,10 @@ public class GetTotalViewsStrutsAction implements StrutsAction {
 							ResourceBundleUtil.getBundle(
 								themeDisplay.getLocale(), getClass()),
 							"an-unexpected-error-occurred");
-					}).toString());
+					}
+				).toString());
 		}
+
 		return null;
 	}
 

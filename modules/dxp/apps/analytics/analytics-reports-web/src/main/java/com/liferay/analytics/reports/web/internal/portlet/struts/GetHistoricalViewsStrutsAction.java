@@ -12,7 +12,7 @@
  *
  */
 
-package com.liferay.analytics.reports.web.internal.portlet.action;
+package com.liferay.analytics.reports.web.internal.portlet.struts;
 
 import com.liferay.analytics.reports.web.internal.data.provider.AnalyticsReportsDataProvider;
 import com.liferay.analytics.reports.web.internal.model.HistoricalMetric;
@@ -41,17 +41,14 @@ import org.osgi.service.component.annotations.Reference;
  * @author David Arques
  */
 @Component(
-	property = {
-		"path=/portal/get_historical_views"
-	},
-	service = StrutsAction.class
+	property = "path=/portal/get_historical_views", service = StrutsAction.class
 )
-public class GetHistoricalViewsStrutsAction
-	implements StrutsAction {
+public class GetHistoricalViewsStrutsAction implements StrutsAction {
 
 	@Override
 	public String execute(
-		HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse)
 		throws Exception {
 
 		JSONObject jsonObject = _jsonFactory.createJSONObject();
@@ -62,7 +59,8 @@ public class GetHistoricalViewsStrutsAction
 					_analyticsSettingsManager, _http);
 
 			String timeSpanKey = ParamUtil.getString(
-				httpServletRequest, "timeSpanKey", TimeSpan.defaultTimeSpanKey());
+				httpServletRequest, "timeSpanKey",
+				TimeSpan.defaultTimeSpanKey());
 
 			TimeSpan timeSpan = TimeSpan.of(timeSpanKey);
 
@@ -94,8 +92,7 @@ public class GetHistoricalViewsStrutsAction
 					themeDisplay.getRequest(), "an-unexpected-error-occurred"));
 		}
 
-		ServletResponseUtil.write(
-			httpServletResponse, jsonObject.toString());
+		ServletResponseUtil.write(httpServletResponse, jsonObject.toString());
 
 		return null;
 	}

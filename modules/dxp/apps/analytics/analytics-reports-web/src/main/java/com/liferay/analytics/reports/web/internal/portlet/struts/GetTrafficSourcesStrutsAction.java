@@ -12,7 +12,7 @@
  *
  */
 
-package com.liferay.analytics.reports.web.internal.portlet.action;
+package com.liferay.analytics.reports.web.internal.portlet.struts;
 
 import com.liferay.analytics.reports.web.internal.data.provider.AnalyticsReportsDataProvider;
 import com.liferay.analytics.reports.web.internal.model.TimeRange;
@@ -53,24 +53,23 @@ import org.osgi.service.component.annotations.Reference;
  * @author Cristina González
  */
 @Component(
-	property = {
-		"path=/portal/get_traffic_sources"
-	},
-	service = StrutsAction.class
+	property = "path=/portal/get_traffic_sources", service = StrutsAction.class
 )
-public class GetTrafficSourcesStrutsAction
-	implements StrutsAction {
+public class GetTrafficSourcesStrutsAction implements StrutsAction {
 
 	@Override
 	public String execute(
-		HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse)
 		throws Exception {
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
-		String trafficSourcesURL = themeDisplay.getPortalURL() + themeDisplay.getPathMain() +
-					 "/portal/get_traffic_sources";
+		String trafficSourcesURL =
+			themeDisplay.getPortalURL() + themeDisplay.getPathMain() +
+				"/portal/get_traffic_sources";
 
 		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
 			themeDisplay.getLocale(), getClass());
@@ -84,7 +83,8 @@ public class GetTrafficSourcesStrutsAction
 				httpServletRequest, "canonicalURL");
 
 			String timeSpanKey = ParamUtil.getString(
-				httpServletRequest, "timeSpanKey", TimeSpan.defaultTimeSpanKey());
+				httpServletRequest, "timeSpanKey",
+				TimeSpan.defaultTimeSpanKey());
 
 			TimeSpan timeSpan = TimeSpan.of(timeSpanKey);
 
@@ -95,11 +95,9 @@ public class GetTrafficSourcesStrutsAction
 				"trafficSources",
 				_getTrafficSourcesJSONArray(
 					analyticsReportsDataProvider, canonicalURL,
-					themeDisplay.getCompanyId(),
-					httpServletRequest,
-					httpServletResponse,
-					timeSpan.toTimeRange(timeSpanOffset), resourceBundle,
-					trafficSourcesURL));
+					themeDisplay.getCompanyId(), httpServletRequest,
+					httpServletResponse, timeSpan.toTimeRange(timeSpanOffset),
+					resourceBundle, trafficSourcesURL));
 
 			ServletResponseUtil.write(
 				httpServletResponse, jsonObject.toString());
@@ -112,7 +110,8 @@ public class GetTrafficSourcesStrutsAction
 				JSONUtil.put(
 					"error",
 					ResourceBundleUtil.getString(
-						resourceBundle, "an-unexpected-error-occurred")).toString());
+						resourceBundle, "an-unexpected-error-occurred")
+				).toString());
 		}
 
 		return null;

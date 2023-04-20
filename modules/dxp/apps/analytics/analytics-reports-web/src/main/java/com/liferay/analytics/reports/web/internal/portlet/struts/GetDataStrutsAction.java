@@ -12,7 +12,7 @@
  *
  */
 
-package com.liferay.analytics.reports.web.internal.portlet.action;
+package com.liferay.analytics.reports.web.internal.portlet.struts;
 
 import com.liferay.analytics.reports.info.item.AnalyticsReportsInfoItem;
 import com.liferay.analytics.reports.info.item.AnalyticsReportsInfoItemRegistry;
@@ -133,9 +133,7 @@ public class GetDataStrutsAction implements StrutsAction {
 				"context",
 				_getJSONObject(
 					analyticsReportsInfoItem, infoItemReference,
-					themeDisplay.getLayout(),
-					themeDisplay.getLayoutFriendlyURL(themeDisplay.getLayout()),
-					themeDisplay.getLocale(),
+					themeDisplay.getLayout(), themeDisplay.getLocale(),
 					_getLocale(
 						httpServletRequest, themeDisplay.getLanguageId()),
 					analyticsReportsInfoItemObject, httpServletRequest,
@@ -303,9 +301,8 @@ public class GetDataStrutsAction implements StrutsAction {
 
 	private JSONObject _getJSONObject(
 		AnalyticsReportsInfoItem<Object> analyticsReportsInfoItem,
-		InfoItemReference infoItemReference, Layout layout,
-		String layoutFriendlyURL, Locale locale, Locale urlLocale,
-		Object object, HttpServletRequest httpServletRequest,
+		InfoItemReference infoItemReference, Layout layout, Locale locale,
+		Locale urlLocale, Object object, HttpServletRequest httpServletRequest,
 		TimeRange timeRange, ThemeDisplay themeDisplay) {
 
 		String canonicalURL = analyticsReportsInfoItem.getCanonicalURL(

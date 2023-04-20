@@ -16,8 +16,6 @@ package com.liferay.analytics.reports.web.internal.model;
 
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
-import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
@@ -28,8 +26,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
-
-import javax.portlet.ResourceURL;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -128,8 +124,8 @@ public class TrafficChannel {
 
 	public JSONObject toJSONObject(
 		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse,
-		ResourceBundle resourceBundle, String trafficSourcesURL) {
+		HttpServletResponse httpServletResponse, ResourceBundle resourceBundle,
+		String trafficSourcesURL) {
 
 		return JSONUtil.put(
 			"endpointURL",
@@ -142,8 +138,15 @@ public class TrafficChannel {
 
 				String url = trafficSourcesURL;
 
-				url = HttpComponentsUtil.addParameters(url,
-					httpServletRequest.getParameterMap());
+				Map<String, String[]> parameters =
+					httpServletRequest.getParameterMap();
+
+				for (Map.Entry<String, String[]> entry :
+						parameters.entrySet()) {
+
+					url = HttpComponentsUtil.addParameter(
+						url, entry.getKey(), String.valueOf(entry.getValue()));
+				}
 
 				return url;
 			}
@@ -287,13 +290,11 @@ public class TrafficChannel {
 		HashMapBuilder.<Type, Tuple>put(
 			Type.REFERRAL,
 			new Tuple(
-				"/portal/get_referral_traffic_sources",
-				Collections.emptyMap())
+				"/portal/get_referral_traffic_sources", Collections.emptyMap())
 		).put(
 			Type.SOCIAL,
 			new Tuple(
-				"/portal/get_social_traffic_sources",
-				Collections.emptyMap())
+				"/portal/get_social_traffic_sources", Collections.emptyMap())
 		).build();
 
 	private final boolean _error;

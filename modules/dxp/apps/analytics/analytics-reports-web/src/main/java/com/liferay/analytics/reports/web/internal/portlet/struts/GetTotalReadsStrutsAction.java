@@ -12,7 +12,7 @@
  *
  */
 
-package com.liferay.analytics.reports.web.internal.portlet.action;
+package com.liferay.analytics.reports.web.internal.portlet.struts;
 
 import com.liferay.analytics.reports.web.internal.data.provider.AnalyticsReportsDataProvider;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
@@ -85,6 +85,7 @@ public class GetTotalReadsStrutsAction implements StrutsAction {
 					}
 				).toString());
 		}
+
 		return null;
 	}
 
