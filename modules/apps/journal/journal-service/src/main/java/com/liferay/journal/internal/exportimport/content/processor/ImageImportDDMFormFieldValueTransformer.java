@@ -32,7 +32,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.DocumentException;
@@ -111,8 +110,8 @@ public class ImageImportDDMFormFieldValueTransformer
 			XPath xPath = SAXReaderUtil.createXPath(
 				StringBundler.concat(
 					"//dynamic-element[@type='image']",
-					"/dynamic-content[contains(text(),",
-					HtmlUtil.escapeXPathAttribute(valueString), ")]"));
+					"/dynamic-content[contains(text(),'",
+					jsonObject.getString("uuid"), "')]"));
 
 			List<Node> imageNodes = xPath.selectNodes(_document);
 
