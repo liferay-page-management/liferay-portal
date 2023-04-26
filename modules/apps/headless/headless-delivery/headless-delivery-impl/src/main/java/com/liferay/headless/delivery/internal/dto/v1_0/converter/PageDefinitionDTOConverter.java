@@ -39,9 +39,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ColorScheme;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.Theme;
-import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -144,53 +142,16 @@ public class PageDefinitionDTOConverter
 				continue;
 			}
 
-			CET finalCET = cet;
-
 			clientExtensions.add(
 				new ClientExtension() {
 					{
-						externalReferenceCode =
-							finalCET.getExternalReferenceCode();
-						name = finalCET.getName(
-							dtoConverterContext.getLocale());
+						externalReferenceCode = cet.getExternalReferenceCode();
+						name = cet.getName(dtoConverterContext.getLocale());
 					}
 				});
 		}
 
 		return clientExtensions.toArray(new ClientExtension[0]);
-	}
-
-	private long _getFaviconFileEntryId(Layout layout) {
-		long faviconFileEntryId = layout.getFaviconFileEntryId();
-
-		if (faviconFileEntryId != 0) {
-			return faviconFileEntryId;
-		}
-
-		Layout masterLayout = _layoutLocalService.fetchLayout(
-			layout.getMasterLayoutPlid());
-
-		if (masterLayout != null) {
-			long masterLayoutFaviconFileEntryId =
-				masterLayout.getFaviconFileEntryId();
-
-			if (masterLayoutFaviconFileEntryId != 0) {
-				return masterLayoutFaviconFileEntryId;
-			}
-		}
-
-		LayoutSet layoutSet = layout.getLayoutSet();
-
-		if (layoutSet != null) {
-			long layoutSetFaviconFileEntryId =
-				layoutSet.getFaviconFileEntryId();
-
-			if (layoutSetFaviconFileEntryId != 0) {
-				return layoutSetFaviconFileEntryId;
-			}
-		}
-
-		return 0;
 	}
 
 	private ClientExtension _getThemeCSSClientExtension(
@@ -202,30 +163,13 @@ public class PageDefinitionDTOConverter
 			ClientExtensionEntryConstants.TYPE_THEME_CSS);
 
 		if (cet == null) {
-			cet = _getCET(
-				classNameId, layout.getMasterLayoutPlid(),
-				layout.getCompanyId(),
-				ClientExtensionEntryConstants.TYPE_THEME_CSS);
-		}
-
-		if (cet == null) {
-			LayoutSet layoutSet = layout.getLayoutSet();
-
-			cet = _getCET(
-				classNameId, layoutSet.getLayoutSetId(), layout.getCompanyId(),
-				ClientExtensionEntryConstants.TYPE_THEME_CSS);
-		}
-
-		if (cet == null) {
 			return null;
 		}
 
-		CET finalCET = cet;
-
 		return new ClientExtension() {
 			{
-				externalReferenceCode = finalCET.getExternalReferenceCode();
-				name = finalCET.getName(dtoConverterContext.getLocale());
+				externalReferenceCode = cet.getExternalReferenceCode();
+				name = cet.getName(dtoConverterContext.getLocale());
 			}
 		};
 	}
@@ -284,20 +228,18 @@ public class PageDefinitionDTOConverter
 							ClientExtensionEntryConstants.TYPE_THEME_FAVICON);
 
 						if (cet != null) {
-							CET finalCET = cet;
-
 							return new ClientExtension() {
 								{
 									externalReferenceCode =
-										finalCET.getExternalReferenceCode();
-									name = finalCET.getName(
+										cet.getExternalReferenceCode();
+									name = cet.getName(
 										dtoConverterContext.getLocale());
 								}
 							};
 						}
 
-						long faviconFileEntryId = _getFaviconFileEntryId(
-							layout);
+						long faviconFileEntryId =
+							layout.getFaviconFileEntryId();
 
 						if (faviconFileEntryId != 0) {
 							return ContentDocumentUtil.toContentDocument(
@@ -409,9 +351,6 @@ public class PageDefinitionDTOConverter
 
 	@Reference
 	private DLURLHelper _dlURLHelper;
-
-	@Reference
-	private LayoutLocalService _layoutLocalService;
 
 	@Reference
 	private LayoutPageTemplateEntryLocalService
