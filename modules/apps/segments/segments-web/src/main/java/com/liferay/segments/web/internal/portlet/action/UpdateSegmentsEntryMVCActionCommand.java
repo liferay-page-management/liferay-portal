@@ -16,6 +16,8 @@ package com.liferay.segments.web.internal.portlet.action;
 
 import com.liferay.portal.kernel.exception.NestableRuntimeException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
@@ -137,6 +139,10 @@ public class UpdateSegmentsEntryMVCActionCommand extends BaseMVCActionCommand {
 			sendRedirect(actionRequest, actionResponse, redirect);
 		}
 		catch (Exception exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(exception);
+			}
+
 			if (exception instanceof NoSuchEntryException ||
 				exception instanceof PrincipalException) {
 
@@ -215,6 +221,9 @@ public class UpdateSegmentsEntryMVCActionCommand extends BaseMVCActionCommand {
 			throw new SegmentsEntryCriteriaException();
 		}
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		UpdateSegmentsEntryMVCActionCommand.class);
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
