@@ -1003,7 +1003,7 @@ public class SitePageResourceImpl extends BaseSitePageResourceImpl {
 
 		boolean openGraphDescriptionEnabled = false;
 		Map<Locale, String> openGraphDescriptionMap = new HashMap<>();
-		Map<Locale, String> openImageAltMap = new HashMap<>();
+		Map<Locale, String> openGraphImageAltMap = new HashMap<>();
 		long openGraphImageFileEntryId = 0;
 		boolean openGraphTitleEnabled = false;
 		Map<Locale, String> openGraphTitleMap = new HashMap<>();
@@ -1021,7 +1021,7 @@ public class SitePageResourceImpl extends BaseSitePageResourceImpl {
 				openGraphDescriptionEnabled = true;
 			}
 
-			openImageAltMap = LocalizedMapUtil.getLocalizedMap(
+			openGraphImageAltMap = LocalizedMapUtil.getLocalizedMap(
 				contextAcceptLanguage.getPreferredLocale(),
 				openGraphSettings.getImageAlt(),
 				openGraphSettings.getImageAlt_i18n());
@@ -1059,8 +1059,8 @@ public class SitePageResourceImpl extends BaseSitePageResourceImpl {
 		_layoutSEOEntryService.updateLayoutSEOEntry(
 			groupId, false, layoutId, canonicalURLEnabled, canonicalURLMap,
 			openGraphDescriptionEnabled, openGraphDescriptionMap,
-			openImageAltMap, openGraphImageFileEntryId, openGraphTitleEnabled,
-			openGraphTitleMap, serviceContext);
+			openGraphImageAltMap, openGraphImageFileEntryId,
+			openGraphTitleEnabled, openGraphTitleMap, serviceContext);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
