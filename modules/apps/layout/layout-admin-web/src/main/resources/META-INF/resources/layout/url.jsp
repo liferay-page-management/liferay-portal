@@ -21,6 +21,8 @@ Group group = layoutsAdminDisplayContext.getGroup();
 
 Layout selLayout = layoutsAdminDisplayContext.getSelLayout();
 
+LayoutSet selLayoutSet = layoutsAdminDisplayContext.getSelLayoutSet();
+
 LayoutType selLayoutType = selLayout.getLayoutType();
 
 String friendlyURLBase = StringPool.BLANK;
@@ -47,6 +49,110 @@ if (!group.isLayoutPrototype() && selLayoutType.isURLFriendliable() && !layoutsA
 					inputAddon="<%= friendlyURLBase %>"
 					name="friendlyURL"
 				/>
+
+				<aui:input name="originalFriendlyURL" type="hidden" value="<%= (selLayout != null) ? HttpComponentsUtil.decodeURL(selLayout.getFriendlyURL()) : StringPool.BLANK %>" />
+
+				<c:if test="<%= group.isLayoutSetPrototype() %>">
+					<c:if test='<%= SessionMessages.contains(renderRequest, "friendlyURLConflictWithSiteLayouts") %>'>
+						<aui:script>
+							Liferay.Util.openToast({
+								autoClose: 10000,
+								message:
+									'<liferay-ui:message key="the-site-template-page-was-saved-with-a-conflicting-friendly-url" />',
+								type: 'warning',
+							});
+						</aui:script>
+					</c:if>
+
+					<c:if test="<%= layoutsAdminDisplayContext.isShowLayoutSetPrototypeFriendlyURLConflictSitesLayouts() %>">
+						<div class="alert alert-warning">
+							<liferay-ui:message key="layout-config-layout-set-prototype-friendly-url-collision" />
+
+							<ul>
+
+								<%
+								for (Layout conflictLayout : layoutsAdminDisplayContext.getLayoutSetPrototypeFriendlyURLConflictSitesLayouts()) {
+									Group conflictGroup = conflictLayout.getGroup();
+								%>
+
+									<c:choose>
+										<c:when test="<%= layoutsAdminDisplayContext.isShowConfigureAction(conflictLayout) %>">
+											<liferay-util:buffer
+												var="layoutLink"
+											>
+												<em><clay:link cssClass="alert-link" href="<%= layoutsAdminDisplayContext.getConfigureConflictLayoutURL(conflictLayout) %>" label="<%= HtmlUtil.escape(conflictLayout.getName(locale)) %>" /></em>
+											</liferay-util:buffer>
+
+											<li>
+												<liferay-ui:message arguments="<%= new Object[] {layoutLink.trim(), conflictGroup.getName(locale)} %>" key="page-x-of-x" translateArguments="<%= false %>" />
+											</li>
+										</c:when>
+										<c:otherwise>
+											<li>
+												<liferay-ui:message arguments="<%= new Object[] {conflictLayout.getName(locale), conflictGroup.getName(locale)} %>" key="page-x-of-x" translateArguments="<%= false %>" />
+												(<liferay-ui:message key="please-contact-the-administrator-to-resolve-this-friendly-url-conflict" />)
+											</li>
+										</c:otherwise>
+									</c:choose>
+
+								<%
+								}
+								%>
+
+							</ul>
+						</div>
+					</c:if>
+				</c:if>
+
+				<c:if test="<%= !group.isLayoutSetPrototype() && selLayoutSet.isLayoutSetPrototypeLinkEnabled() %>">
+					<c:if test='<%= SessionMessages.contains(renderRequest, "friendlyURLConflictWithSiteLayoutSetPrototypeLayout") %>'>
+						<aui:script>
+							Liferay.Util.openToast({
+								autoClose: 10000,
+								message:
+									'<liferay-ui:message key="the-page-was-saved-with-a-conflicting-friendly-url" />',
+								type: 'warning',
+							});
+						</aui:script>
+					</c:if>
+
+					<c:if test="<%= layoutsAdminDisplayContext.isShowLayoutSetPrototypeFriendlyURLConflictLayout() %>">
+						<div class="alert alert-warning">
+							<liferay-ui:message key="the-friendly-url-of-this-page-is-conflicting-with-a-friendly-url-of-a-page-in-the-site-template-from-which-this-site-was-created" />
+
+							<ul>
+
+								<%
+								Layout conflictLayout = layoutsAdminDisplayContext.getLayoutSetPrototypeFriendlyURLConflictLayout();
+
+								Group conflictGroup = conflictLayout.getGroup();
+
+								LayoutSetPrototype layoutSetPrototype = LayoutSetPrototypeLocalServiceUtil.getLayoutSetPrototype(conflictGroup.getClassPK());
+								%>
+
+								<c:choose>
+									<c:when test="<%= layoutsAdminDisplayContext.isShowConfigureAction(conflictLayout) %>">
+										<liferay-util:buffer
+											var="layoutLink"
+										>
+											<em><clay:link cssClass="alert-link" href="<%= layoutsAdminDisplayContext.getConfigureConflictLayoutURL(conflictLayout) %>" label="<%= HtmlUtil.escape(conflictLayout.getName(locale)) %>" /></em>
+										</liferay-util:buffer>
+
+										<li>
+											<liferay-ui:message arguments="<%= new Object[] {layoutLink.trim(), layoutSetPrototype.getName(locale)} %>" key="page-x-of-x" translateArguments="<%= false %>" />
+										</li>
+									</c:when>
+									<c:otherwise>
+										<li>
+											<liferay-ui:message arguments="<%= new Object[] {conflictLayout.getName(locale), layoutSetPrototype.getName(locale)} %>" key="page-x-of-x" translateArguments="<%= false %>" />
+											(<liferay-ui:message key="please-contact-the-administrator-to-resolve-this-friendly-url-conflict" />)
+										</li>
+									</c:otherwise>
+								</c:choose>
+							</ul>
+						</div>
+					</c:if>
+				</c:if>
 			</c:when>
 			<c:otherwise>
 				<aui:input name="friendlyURL" type="hidden" value="<%= (selLayout != null) ? HttpComponentsUtil.decodeURL(selLayout.getFriendlyURL()) : StringPool.BLANK %>" />
