@@ -127,7 +127,7 @@ Group group = layoutsAdminDisplayContext.getGroup();
 		).put(
 			"isLayoutSetPrototype", group.isLayoutSetPrototype()
 		).put(
-			"layoutSetPrototypeCheck", group.isLayoutSetPrototype() || selLayoutSet.isLayoutSetPrototypeLinkEnabled()
+			"layoutSetPrototypeCheck", (FeatureFlagManagerUtil.isEnabled("LPS-174431") && group.isLayoutSetPrototype()) || (FeatureFlagManagerUtil.isEnabled("LPS-174434") && selLayoutSet.isLayoutSetPrototypeLinkEnabled())
 		).put(
 			"privateLayout", selLayoutSet.getPrivateLayout()
 		).build()
