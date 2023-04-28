@@ -14,15 +14,20 @@
 
 package com.liferay.layout.admin.web.internal.portlet.action;
 
+import com.liferay.layout.set.prototype.helper.LayoutSetPrototypeHelper;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.ColorScheme;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.model.ThemeSetting;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutServiceUtil;
 import com.liferay.portal.kernel.service.ThemeLocalServiceUtil;
+import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.ThemeFactoryUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -34,11 +39,41 @@ import java.util.Objects;
 import java.util.Set;
 
 import javax.portlet.ActionRequest;
+import javax.portlet.PortletRequest;
 
 /**
  * @author Eudaldo Alonso
  */
 public class ActionUtil {
+
+	public static void checkLayoutSetPrototypeFriendlyURLConflicts(
+			PortletRequest portletRequest, Layout layout,
+			LayoutSetPrototypeHelper layoutSetPrototypeHelper)
+		throws PortalException {
+
+		Group group = layout.getGroup();
+		LayoutSet layoutSet = layout.getLayoutSet();
+
+		if (group.isLayoutSetPrototype()) {
+			if (layoutSetPrototypeHelper.hasDuplicatedFriendlyURLs(
+					layout.getUuid(), layout.getGroupId(),
+					layout.isPrivateLayout(), layout.getFriendlyURL())) {
+
+				SessionMessages.add(
+					portletRequest, "friendlyURLConflictWithSiteLayouts");
+			}
+		}
+		else if (layoutSet.isLayoutSetPrototypeLinkActive()) {
+			if (layoutSetPrototypeHelper.hasDuplicatedFriendlyURLs(
+					layout.getUuid(), layout.getGroupId(),
+					layout.isPrivateLayout(), layout.getFriendlyURL())) {
+
+				SessionMessages.add(
+					portletRequest,
+					"friendlyURLConflictWithSiteLayoutSetPrototypeLayout");
+			}
+		}
+	}
 
 	public static void deleteThemeSettingsProperties(
 		UnicodeProperties typeSettingsUnicodeProperties) {

@@ -21,6 +21,7 @@ import com.liferay.client.extension.model.ClientExtensionEntryRel;
 import com.liferay.client.extension.service.ClientExtensionEntryRelLocalService;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
+import com.liferay.layout.set.prototype.helper.LayoutSetPrototypeHelper;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.events.EventsProcessorUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
@@ -290,6 +291,9 @@ public class EditLayoutMVCActionCommand extends BaseMVCActionCommand {
 				actionRequest, portletResource + "layoutUpdated", layout);
 
 			actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
+
+			ActionUtil.checkLayoutSetPrototypeFriendlyURLConflicts(
+				actionRequest, layout, _layoutSetPrototypeHelper);
 		}
 		catch (ModelListenerException modelListenerException) {
 			if (modelListenerException.getCause() instanceof PortalException) {
@@ -424,6 +428,9 @@ public class EditLayoutMVCActionCommand extends BaseMVCActionCommand {
 
 	@Reference
 	private LayoutService _layoutService;
+
+	@Reference
+	private LayoutSetPrototypeHelper _layoutSetPrototypeHelper;
 
 	@Reference
 	private Localization _localization;
