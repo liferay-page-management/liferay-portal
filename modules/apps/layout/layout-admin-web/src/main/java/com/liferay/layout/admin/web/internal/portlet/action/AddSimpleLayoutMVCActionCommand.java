@@ -152,6 +152,9 @@ public class AddSimpleLayoutMVCActionCommand
 				redirectURL = getContentRedirectURL(actionRequest, layout);
 			}
 
+			ActionUtil.checkLayoutSetPrototypeFriendlyURLConflicts(
+				actionRequest, layout);
+
 			JSONPortletResponseUtil.writeJSON(
 				actionRequest, actionResponse,
 				JSONUtil.put("redirectURL", redirectURL));

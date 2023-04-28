@@ -290,6 +290,9 @@ public class EditLayoutMVCActionCommand extends BaseMVCActionCommand {
 				actionRequest, portletResource + "layoutUpdated", layout);
 
 			actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
+
+			ActionUtil.checkLayoutSetPrototypeFriendlyURLConflicts(
+				actionRequest, layout);
 		}
 		catch (ModelListenerException modelListenerException) {
 			if (modelListenerException.getCause() instanceof PortalException) {
