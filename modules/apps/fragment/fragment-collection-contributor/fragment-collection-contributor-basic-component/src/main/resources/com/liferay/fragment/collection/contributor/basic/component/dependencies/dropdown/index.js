@@ -55,6 +55,10 @@ function alignMenu() {
 	else if (configuration.panelType === 'full-width') {
 		menu.style.width = `${fragmentElement.getBoundingClientRect().width}px`;
 	}
+
+	if (toggleRect.right === window.innerWidth) {
+		menu.style.right = '0px';
+	}
 }
 
 function toggleMenu() {
