@@ -116,16 +116,18 @@ public class BasicFragmentEntryActionDropdownItemsProvider {
 					).add(
 						() ->
 							hasManageFragmentEntriesPermission &&
+							!_fragmentEntry.isCacheable() &&
 							!_fragmentEntry.isReadOnly() &&
-							!_fragmentEntry.isTypeReact() &&
-							!_fragmentEntry.isCacheable(),
+							!_fragmentEntry.isTypeInput() &&
+							!_fragmentEntry.isTypeReact(),
 						_getMarkAsCacheableActionUnsafeConsumer()
 					).add(
 						() ->
 							hasManageFragmentEntriesPermission &&
+							_fragmentEntry.isCacheable() &&
 							!_fragmentEntry.isReadOnly() &&
-							!_fragmentEntry.isTypeReact() &&
-							_fragmentEntry.isCacheable(),
+							!_fragmentEntry.isTypeInput() &&
+							!_fragmentEntry.isTypeReact(),
 						_getUnmarkAsCacheableActionUnsafeConsumer()
 					).add(
 						() ->
@@ -362,7 +364,7 @@ public class BasicFragmentEntryActionDropdownItemsProvider {
 		_getMarkAsCacheableActionUnsafeConsumer() {
 
 		return dropdownItem -> {
-			dropdownItem.putData("action", "markAsCacheable");
+			dropdownItem.putData("action", "markAsCacheableFragmentEntry");
 			dropdownItem.putData(
 				"markAsCacheableFragmentEntryURL",
 				PortletURLBuilder.createActionURL(
@@ -442,7 +444,7 @@ public class BasicFragmentEntryActionDropdownItemsProvider {
 		_getUnmarkAsCacheableActionUnsafeConsumer() {
 
 		return dropdownItem -> {
-			dropdownItem.putData("action", "unmarkAsCacheable");
+			dropdownItem.putData("action", "unmarkAsCacheableFragmentEntry");
 			dropdownItem.putData(
 				"unmarkAsCacheableFragmentEntryURL",
 				PortletURLBuilder.createActionURL(
