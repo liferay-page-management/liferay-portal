@@ -184,7 +184,7 @@ function TreeItem({config, expand, item, load, namespace, selectedLayoutId}) {
 							ref={stackAnchorRef}
 							tabIndex="-1"
 							target={item.target}
-							title={item.name}
+							title={item.title ? item.title : item.name}
 						>
 							{item.name}
 						</a>
@@ -238,7 +238,7 @@ function TreeItem({config, expand, item, load, namespace, selectedLayoutId}) {
 									ref={itemAnchorRef}
 									tabIndex="-1"
 									target={item.target}
-									title={item.name}
+									title={item.title ? item.title : item.name}
 								>
 									{item.name}
 								</a>
