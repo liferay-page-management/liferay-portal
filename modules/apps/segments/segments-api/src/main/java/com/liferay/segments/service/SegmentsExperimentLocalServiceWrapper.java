@@ -42,14 +42,14 @@ public class SegmentsExperimentLocalServiceWrapper
 
 	@Override
 	public SegmentsExperiment addSegmentsExperiment(
-			long segmentsExperienceId, long classNameId, long classPK,
-			String name, String description, String goal, String goalTarget,
+			long segmentsExperienceId, long plid, String name,
+			String description, String goal, String goalTarget,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _segmentsExperimentLocalService.addSegmentsExperiment(
-			segmentsExperienceId, classNameId, classPK, name, description, goal,
-			goalTarget, serviceContext);
+			segmentsExperienceId, plid, name, description, goal, goalTarget,
+			serviceContext);
 	}
 
 	/**
@@ -158,12 +158,11 @@ public class SegmentsExperimentLocalServiceWrapper
 	}
 
 	@Override
-	public void deleteSegmentsExperiments(
-			long segmentsExperienceId, long classNameId, long classPK)
+	public void deleteSegmentsExperiments(long segmentsExperienceId, long plid)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		_segmentsExperimentLocalService.deleteSegmentsExperiments(
-			segmentsExperienceId, classNameId, classPK);
+			segmentsExperienceId, plid);
 	}
 
 	@Override
@@ -365,23 +364,22 @@ public class SegmentsExperimentLocalServiceWrapper
 	@Override
 	public java.util.List<SegmentsExperiment>
 		getSegmentsExperienceSegmentsExperiments(
-			long segmentsExperienceId, long classNameId, long classPK) {
+			long segmentsExperienceId, long plid) {
 
 		return _segmentsExperimentLocalService.
 			getSegmentsExperienceSegmentsExperiments(
-				segmentsExperienceId, classNameId, classPK);
+				segmentsExperienceId, plid);
 	}
 
 	@Override
 	public java.util.List<SegmentsExperiment>
 		getSegmentsExperienceSegmentsExperiments(
-			long[] segmentsExperienceIds, long classNameId, long classPK,
-			int[] statuses, int start, int end) {
+			long[] segmentsExperienceIds, long plid, int[] statuses, int start,
+			int end) {
 
 		return _segmentsExperimentLocalService.
 			getSegmentsExperienceSegmentsExperiments(
-				segmentsExperienceIds, classNameId, classPK, statuses, start,
-				end);
+				segmentsExperienceIds, plid, statuses, start, end);
 	}
 
 	/**
@@ -446,10 +444,10 @@ public class SegmentsExperimentLocalServiceWrapper
 
 	@Override
 	public java.util.List<SegmentsExperiment> getSegmentsExperiments(
-		long groupId, long classNameId, long classPK) {
+		long groupId, long plid) {
 
 		return _segmentsExperimentLocalService.getSegmentsExperiments(
-			groupId, classNameId, classPK);
+			groupId, plid);
 	}
 
 	@Override
