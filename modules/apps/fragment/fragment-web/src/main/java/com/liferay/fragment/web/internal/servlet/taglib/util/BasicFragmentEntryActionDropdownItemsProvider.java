@@ -117,6 +117,20 @@ public class BasicFragmentEntryActionDropdownItemsProvider {
 						() ->
 							hasManageFragmentEntriesPermission &&
 							!_fragmentEntry.isReadOnly() &&
+							!_fragmentEntry.isTypeReact() &&
+							!_fragmentEntry.isCacheable(),
+						_getMarkAsCacheableActionUnsafeConsumer()
+					).add(
+						() ->
+							hasManageFragmentEntriesPermission &&
+							!_fragmentEntry.isReadOnly() &&
+							!_fragmentEntry.isTypeReact() &&
+							_fragmentEntry.isCacheable(),
+						_getUnmarkAsCacheableActionUnsafeConsumer()
+					).add(
+						() ->
+							hasManageFragmentEntriesPermission &&
+							!_fragmentEntry.isReadOnly() &&
 							(_fragmentEntry.getGroupId() ==
 								_themeDisplay.getCompanyGroupId()),
 						_getViewGroupFragmentEntryUsagesActionUnsafeConsumer()
@@ -345,6 +359,27 @@ public class BasicFragmentEntryActionDropdownItemsProvider {
 	}
 
 	private UnsafeConsumer<DropdownItem, Exception>
+		_getMarkAsCacheableActionUnsafeConsumer() {
+
+		return dropdownItem -> {
+			dropdownItem.putData("action", "markAsCacheable");
+			dropdownItem.putData(
+				"markAsCacheableFragmentEntryURL",
+				PortletURLBuilder.createActionURL(
+					_renderResponse
+				).setActionName(
+					"/fragment/mark_as_cacheable_fragment_entry"
+				).setRedirect(
+					_themeDisplay.getURLCurrent()
+				).setParameter(
+					"fragmentEntryId", _fragmentEntry.getFragmentEntryId()
+				).buildString());
+			dropdownItem.setLabel(
+				LanguageUtil.get(_httpServletRequest, "mark-as-cacheable"));
+		};
+	}
+
+	private UnsafeConsumer<DropdownItem, Exception>
 			_getMoveFragmentEntryActionUnsafeConsumer()
 		throws Exception {
 
@@ -400,6 +435,27 @@ public class BasicFragmentEntryActionDropdownItemsProvider {
 				).buildString());
 			dropdownItem.setLabel(
 				LanguageUtil.get(_httpServletRequest, "rename"));
+		};
+	}
+
+	private UnsafeConsumer<DropdownItem, Exception>
+		_getUnmarkAsCacheableActionUnsafeConsumer() {
+
+		return dropdownItem -> {
+			dropdownItem.putData("action", "unmarkAsCacheable");
+			dropdownItem.putData(
+				"unmarkAsCacheableFragmentEntryURL",
+				PortletURLBuilder.createActionURL(
+					_renderResponse
+				).setActionName(
+					"/fragment/unmark_as_cacheable_fragment_entry"
+				).setRedirect(
+					_themeDisplay.getURLCurrent()
+				).setParameter(
+					"fragmentEntryId", _fragmentEntry.getFragmentEntryId()
+				).buildString());
+			dropdownItem.setLabel(
+				LanguageUtil.get(_httpServletRequest, "unmark-as-cacheable"));
 		};
 	}
 
