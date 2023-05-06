@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.upgrade.BasePortletPreferencesUpgradeProcess;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.util.PropsUtil;
+import com.liferay.portlet.display.template.constants.PortletDisplayTemplateConstants;
 import com.liferay.site.navigation.menu.web.internal.constants.SiteNavigationMenuPortletKeys;
 
 import java.util.Arrays;
@@ -127,7 +128,7 @@ public class UpgradePortletPreferences
 
 		if (Validator.isNull(displayStyle) ||
 			displayStyle.startsWith(
-				PortletDisplayTemplateManager.DISPLAY_STYLE_PREFIX) ||
+				PortletDisplayTemplateConstants.DISPLAY_STYLE_PREFIX) ||
 			!displayStyleOutOfTheBox.contains(displayStyle)) {
 
 			return;
@@ -135,8 +136,8 @@ public class UpgradePortletPreferences
 
 		portletPreferences.setValue(
 			"displayStyle",
-			PortletDisplayTemplateManager.DISPLAY_STYLE_PREFIX +
-				"list-menu-ftl");
+			PortletDisplayTemplateConstants.DISPLAY_STYLE_PREFIX +
+			"list-menu-ftl");
 
 		_persistSupportedProperties(portletPreferences, displayStyle);
 

@@ -16,6 +16,7 @@ package com.liferay.site.navigation.taglib.internal.servlet;
 
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.osgi.util.service.Snapshot;
+import com.liferay.portlet.display.template.PortletDisplayTemplate;
 import com.liferay.site.navigation.type.SiteNavigationMenuItemType;
 import com.liferay.site.navigation.type.SiteNavigationMenuItemTypeRegistry;
 
@@ -28,6 +29,10 @@ public class ServletContextUtil {
 
 	public static InfoItemServiceRegistry getInfoItemServiceRegistry() {
 		return _infoItemServiceRegistrySnapshot.get();
+	}
+
+	public static PortletDisplayTemplate getPortletDisplayTemplate() {
+		return _portletDisplayTemplateSnapshot.get();
 	}
 
 	public static ServletContext getServletContext() {
@@ -54,5 +59,8 @@ public class ServletContextUtil {
 	private static final Snapshot<SiteNavigationMenuItemTypeRegistry>
 		_siteNavigationMenuItemTypeRegistrySnapshot = new Snapshot<>(
 			ServletContextUtil.class, SiteNavigationMenuItemTypeRegistry.class);
+	private static final Snapshot<PortletDisplayTemplate>
+		_portletDisplayTemplateSnapshot = new Snapshot<>(
+			ServletContextUtil.class, PortletDisplayTemplate.class);
 
 }

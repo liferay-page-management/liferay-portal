@@ -74,6 +74,7 @@ import java.util.Objects;
 
 import javax.portlet.PortletPreferences;
 
+import com.liferay.portlet.display.template.constants.PortletDisplayTemplateConstants;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -608,8 +609,8 @@ public abstract class BasePortletExportImportTestCase
 			resourceClassNameId);
 
 		String displayStyle =
-			PortletDisplayTemplateManager.DISPLAY_STYLE_PREFIX +
-				ddmTemplate.getTemplateKey();
+			PortletDisplayTemplateConstants.DISPLAY_STYLE_PREFIX +
+			ddmTemplate.getTemplateKey();
 
 		PortletPreferences portletPreferences = getImportedPortletPreferences(
 			HashMapBuilder.put(

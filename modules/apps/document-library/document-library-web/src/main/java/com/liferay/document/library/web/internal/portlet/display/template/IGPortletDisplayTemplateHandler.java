@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.liferay.portlet.display.template.constants.PortletDisplayTemplateConstants;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
@@ -126,7 +127,7 @@ public class IGPortletDisplayTemplateHandler
 		fieldsTemplateVariableGroup.empty();
 
 		fieldsTemplateVariableGroup.addCollectionVariable(
-			"documents", List.class, PortletDisplayTemplateManager.ENTRIES,
+			"documents", List.class, PortletDisplayTemplateConstants.ENTRIES,
 			"document", FileEntry.class, "curFileEntry", "title");
 
 		return templateVariableGroups;
