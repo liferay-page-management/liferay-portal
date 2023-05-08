@@ -48,8 +48,7 @@ public class SegmentsExperienceImpl extends SegmentsExperienceBaseImpl {
 	@Override
 	public boolean hasSegmentsExperiment() {
 		return SegmentsExperimentLocalServiceUtil.hasSegmentsExperiment(
-			getSegmentsExperienceId(), PortalUtil.getClassNameId(Layout.class),
-			getPlid(),
+			getSegmentsExperienceId(), getPlid(),
 			SegmentsExperimentConstants.Status.getLockedStatusValues());
 	}
 

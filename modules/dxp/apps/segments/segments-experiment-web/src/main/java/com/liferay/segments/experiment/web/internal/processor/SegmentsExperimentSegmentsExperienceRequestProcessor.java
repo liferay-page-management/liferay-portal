@@ -123,7 +123,7 @@ public class SegmentsExperimentSegmentsExperienceRequestProcessor
 		if (segmentsExperienceId != -1) {
 			SegmentsExperiment segmentsExperiment =
 				_segmentsExperimentLocalService.fetchSegmentsExperiment(
-					segmentsExperienceId, _portal.getClassNameId(Layout.class),
+					segmentsExperienceId,
 					plid,
 					SegmentsExperimentConstants.Status.getSplitStatusValues());
 
@@ -160,7 +160,7 @@ public class SegmentsExperimentSegmentsExperienceRequestProcessor
 			_segmentsExperimentLocalService.
 				getSegmentsExperienceSegmentsExperiments(
 					new long[] {segmentsExperienceId},
-					_portal.getClassNameId(Layout.class), plid,
+					plid,
 					SegmentsExperimentConstants.Status.getSplitStatusValues(),
 					0, 1);
 

@@ -279,11 +279,10 @@ public class SegmentsExperimentLocalServiceWrapper
 
 	@Override
 	public SegmentsExperiment fetchSegmentsExperiment(
-		long segmentsExperienceId, long classNameId, long classPK,
-		int[] statuses) {
+		long segmentsExperienceId, long plid, int[] statuses) {
 
 		return _segmentsExperimentLocalService.fetchSegmentsExperiment(
-			segmentsExperienceId, classNameId, classPK, statuses);
+			segmentsExperienceId, plid, statuses);
 	}
 
 	@Override
@@ -455,14 +454,12 @@ public class SegmentsExperimentLocalServiceWrapper
 
 	@Override
 	public java.util.List<SegmentsExperiment> getSegmentsExperiments(
-		long segmentsExperienceId, long classNameId, long classPK,
-		int[] statuses,
+		long segmentsExperienceId, long plid, int[] statuses,
 		com.liferay.portal.kernel.util.OrderByComparator<SegmentsExperiment>
 			orderByComparator) {
 
 		return _segmentsExperimentLocalService.getSegmentsExperiments(
-			segmentsExperienceId, classNameId, classPK, statuses,
-			orderByComparator);
+			segmentsExperienceId, plid, statuses, orderByComparator);
 	}
 
 	/**
@@ -514,11 +511,10 @@ public class SegmentsExperimentLocalServiceWrapper
 
 	@Override
 	public boolean hasSegmentsExperiment(
-		long segmentsExperienceId, long classNameId, long classPK,
-		int[] statuses) {
+		long segmentsExperienceId, long plid, int[] statuses) {
 
 		return _segmentsExperimentLocalService.hasSegmentsExperiment(
-			segmentsExperienceId, classNameId, classPK, statuses);
+			segmentsExperienceId, plid, statuses);
 	}
 
 	@Override

@@ -320,8 +320,7 @@ public class SegmentsExperienceUtil {
 			draftLayout.getClassPK());
 
 		return SegmentsExperimentLocalServiceUtil.fetchSegmentsExperiment(
-			segmentsExperienceId, PortalUtil.getClassNameId(Layout.class),
-			layout.getPlid(),
+			segmentsExperienceId, layout.getPlid(),
 			SegmentsExperimentConstants.Status.getExclusiveStatusValues());
 	}
 
@@ -379,6 +378,12 @@ public class SegmentsExperienceUtil {
 				targetSegmentsExperienceId);
 
 			String newNamespace = StringUtil.randomId();
+
+			if (SegmentsExperimentLocalServiceUtil.hasSegmentsExperiment(
+					sourceSegmentsExperienceId, plid,null)) {
+
+				newNamespace = fragmentEntryLink.getNamespace();
+			}
 
 			newFragmentEntryLink.setEditableValues(
 				_getNewEditableValues(

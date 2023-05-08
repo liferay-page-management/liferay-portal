@@ -180,7 +180,7 @@ public class SegmentsExperimentServiceHttp {
 	public static com.liferay.segments.model.SegmentsExperiment
 			fetchSegmentsExperiment(
 				HttpPrincipal httpPrincipal, long segmentsExperienceId,
-				long classNameId, long classPK, int[] statuses)
+				long plid, int[] statuses)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -189,8 +189,7 @@ public class SegmentsExperimentServiceHttp {
 				_fetchSegmentsExperimentParameterTypes3);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, segmentsExperienceId, classNameId, classPK,
-				statuses);
+				methodKey, segmentsExperienceId, plid, statuses);
 
 			Object returnObj = null;
 
@@ -427,8 +426,8 @@ public class SegmentsExperimentServiceHttp {
 
 	public static java.util.List<com.liferay.segments.model.SegmentsExperiment>
 		getSegmentsExperiments(
-			HttpPrincipal httpPrincipal, long segmentsExperienceId,
-			long classNameId, long classPK, int[] statuses,
+			HttpPrincipal httpPrincipal, long segmentsExperienceId, long plid,
+			int[] statuses,
 			com.liferay.portal.kernel.util.OrderByComparator
 				<com.liferay.segments.model.SegmentsExperiment>
 					orderByComparator) {
@@ -439,7 +438,7 @@ public class SegmentsExperimentServiceHttp {
 				_getSegmentsExperimentsParameterTypes9);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, segmentsExperienceId, classNameId, classPK, statuses,
+				methodKey, segmentsExperienceId, plid, statuses,
 				orderByComparator);
 
 			Object returnObj = null;
@@ -783,7 +782,7 @@ public class SegmentsExperimentServiceHttp {
 	private static final Class<?>[] _deleteSegmentsExperimentParameterTypes2 =
 		new Class[] {String.class};
 	private static final Class<?>[] _fetchSegmentsExperimentParameterTypes3 =
-		new Class[] {long.class, long.class, long.class, int[].class};
+		new Class[] {long.class, long.class, int[].class};
 	private static final Class<?>[] _fetchSegmentsExperimentParameterTypes4 =
 		new Class[] {long.class, String.class};
 	private static final Class<?>[]
@@ -799,7 +798,7 @@ public class SegmentsExperimentServiceHttp {
 		new Class[] {long.class, long.class, long.class};
 	private static final Class<?>[] _getSegmentsExperimentsParameterTypes9 =
 		new Class[] {
-			long.class, long.class, long.class, int[].class,
+			long.class, long.class, int[].class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
 	private static final Class<?>[] _runSegmentsExperimentParameterTypes10 =

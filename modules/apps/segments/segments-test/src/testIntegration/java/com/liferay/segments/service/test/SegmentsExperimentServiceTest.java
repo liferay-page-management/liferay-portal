@@ -199,7 +199,7 @@ public class SegmentsExperimentServiceTest {
 
 			List<SegmentsExperiment> segmentsExperiments =
 				_segmentsExperimentService.getSegmentsExperiments(
-					layout.getGroupId(), classNameId, layout.getPlid());
+					layout.getGroupId(), layout.getPlid());
 
 			Assert.assertEquals(
 				segmentsExperiments.toString(), 2, segmentsExperiments.size());
@@ -230,7 +230,7 @@ public class SegmentsExperimentServiceTest {
 
 			List<SegmentsExperiment> segmentsExperiments =
 				_segmentsExperimentService.getSegmentsExperiments(
-					layout.getGroupId(), classNameId, layout.getPlid());
+					layout.getGroupId(), layout.getPlid());
 
 			Assert.assertEquals(
 				segmentsExperiments.toString(), 3, segmentsExperiments.size());
@@ -304,7 +304,6 @@ public class SegmentsExperimentServiceTest {
 
 		return _segmentsExperimentService.addSegmentsExperiment(
 			segmentsExperience.getSegmentsExperienceId(),
-			_classNameLocalService.getClassNameId(Layout.class.getName()),
 			segmentsExperience.getPlid(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			SegmentsExperimentConstants.Goal.BOUNCE_RATE.getLabel(),

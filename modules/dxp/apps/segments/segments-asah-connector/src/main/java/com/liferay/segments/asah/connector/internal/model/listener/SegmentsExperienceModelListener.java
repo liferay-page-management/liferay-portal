@@ -69,7 +69,6 @@ public class SegmentsExperienceModelListener
 			List<SegmentsExperiment> segmentsExperiments =
 				_segmentsExperimentLocalService.getSegmentsExperiments(
 					segmentsExperience.getSegmentsExperienceId(),
-					_portal.getClassNameId(Layout.class),
 					segmentsExperience.getPlid(), new int[0], null);
 
 			for (SegmentsExperiment segmentsExperiment : segmentsExperiments) {

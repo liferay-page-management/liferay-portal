@@ -125,8 +125,6 @@ public class AddSegmentsExperimentMVCActionCommandTest {
 			SegmentsExperiment segmentsExperiment =
 				_segmentsExperimentLocalService.fetchSegmentsExperiment(
 					segmentsExperience.getSegmentsExperienceId(),
-					_classNameLocalService.getClassNameId(
-						Layout.class.getName()),
 					segmentsExperience.getPlid(),
 					new int[] {
 						SegmentsExperimentConstants.Status.DRAFT.getValue()

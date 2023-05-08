@@ -247,11 +247,10 @@ public class SegmentsExperimentLocalServiceUtil {
 	}
 
 	public static SegmentsExperiment fetchSegmentsExperiment(
-		long segmentsExperienceId, long classNameId, long classPK,
-		int[] statuses) {
+		long segmentsExperienceId, long plid, int[] statuses) {
 
 		return getService().fetchSegmentsExperiment(
-			segmentsExperienceId, classNameId, classPK, statuses);
+			segmentsExperienceId, plid, statuses);
 	}
 
 	public static SegmentsExperiment fetchSegmentsExperiment(
@@ -400,13 +399,11 @@ public class SegmentsExperimentLocalServiceUtil {
 	}
 
 	public static List<SegmentsExperiment> getSegmentsExperiments(
-		long segmentsExperienceId, long classNameId, long classPK,
-		int[] statuses,
+		long segmentsExperienceId, long plid, int[] statuses,
 		OrderByComparator<SegmentsExperiment> orderByComparator) {
 
 		return getService().getSegmentsExperiments(
-			segmentsExperienceId, classNameId, classPK, statuses,
-			orderByComparator);
+			segmentsExperienceId, plid, statuses, orderByComparator);
 	}
 
 	/**
@@ -452,11 +449,10 @@ public class SegmentsExperimentLocalServiceUtil {
 	}
 
 	public static boolean hasSegmentsExperiment(
-		long segmentsExperienceId, long classNameId, long classPK,
-		int[] statuses) {
+		long segmentsExperienceId, long plid, int[] statuses) {
 
 		return getService().hasSegmentsExperiment(
-			segmentsExperienceId, classNameId, classPK, statuses);
+			segmentsExperienceId, plid, statuses);
 	}
 
 	public static SegmentsExperiment runSegmentsExperiment(

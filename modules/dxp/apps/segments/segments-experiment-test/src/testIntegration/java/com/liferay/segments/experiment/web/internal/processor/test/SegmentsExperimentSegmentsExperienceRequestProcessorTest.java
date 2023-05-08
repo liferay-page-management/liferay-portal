@@ -95,7 +95,6 @@ public class SegmentsExperimentSegmentsExperienceRequestProcessorTest {
 		SegmentsExperiment segmentsExperiment =
 			_segmentsExperimentLocalService.addSegmentsExperiment(
 				segmentsExperience.getSegmentsExperienceId(),
-				_classNameLocalService.getClassNameId(Layout.class.getName()),
 				segmentsExperience.getPlid(), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString(),
 				SegmentsExperimentConstants.Goal.BOUNCE_RATE.getLabel(),
@@ -157,7 +156,6 @@ public class SegmentsExperimentSegmentsExperienceRequestProcessorTest {
 		SegmentsExperiment segmentsExperiment =
 			_segmentsExperimentLocalService.addSegmentsExperiment(
 				segmentsExperience.getSegmentsExperienceId(),
-				_classNameLocalService.getClassNameId(Layout.class.getName()),
 				segmentsExperience.getPlid(), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString(),
 				SegmentsExperimentConstants.Goal.BOUNCE_RATE.getLabel(),
@@ -299,7 +297,6 @@ public class SegmentsExperimentSegmentsExperienceRequestProcessorTest {
 		SegmentsExperiment segmentsExperiment =
 			_segmentsExperimentLocalService.addSegmentsExperiment(
 				segmentsExperience.getSegmentsExperienceId(),
-				_classNameLocalService.getClassNameId(Layout.class.getName()),
 				segmentsExperience.getPlid(), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString(),
 				SegmentsExperimentConstants.Goal.BOUNCE_RATE.getLabel(),
@@ -480,7 +477,6 @@ public class SegmentsExperimentSegmentsExperienceRequestProcessorTest {
 		SegmentsExperiment segmentsExperiment =
 			_segmentsExperimentLocalService.addSegmentsExperiment(
 				segmentsExperience.getSegmentsExperienceId(),
-				_classNameLocalService.getClassNameId(Layout.class.getName()),
 				segmentsExperience.getPlid(), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString(),
 				SegmentsExperimentConstants.Goal.BOUNCE_RATE.getLabel(),
