@@ -1142,10 +1142,19 @@ public class DDMStructureLocalServiceImpl
 
 	@Override
 	public List<DDMStructure> getStructures(
-		long[] groupIds, long classNameId,
+		long[] groupIds, long classNameId, int start, int end,
 		OrderByComparator<DDMStructure> orderByComparator) {
 
 		return ddmStructurePersistence.findByG_C(
+			groupIds, classNameId, start, end, orderByComparator);
+	}
+
+	@Override
+	public List<DDMStructure> getStructures(
+		long[] groupIds, long classNameId,
+		OrderByComparator<DDMStructure> orderByComparator) {
+
+		return getStructures(
 			groupIds, classNameId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 			orderByComparator);
 	}
