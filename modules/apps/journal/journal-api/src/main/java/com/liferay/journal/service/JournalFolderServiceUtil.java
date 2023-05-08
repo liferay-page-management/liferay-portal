@@ -78,6 +78,19 @@ public class JournalFolderServiceUtil {
 
 	public static List<com.liferay.dynamic.data.mapping.model.DDMStructure>
 			getDDMStructures(
+				long[] groupIds, long folderId, int restrictionType, int start,
+				int end,
+				OrderByComparator
+					<com.liferay.dynamic.data.mapping.model.DDMStructure>
+						orderByComparator)
+		throws PortalException {
+
+		return getService().getDDMStructures(
+			groupIds, folderId, restrictionType, start, end, orderByComparator);
+	}
+
+	public static List<com.liferay.dynamic.data.mapping.model.DDMStructure>
+			getDDMStructures(
 				long[] groupIds, long folderId, int restrictionType,
 				OrderByComparator
 					<com.liferay.dynamic.data.mapping.model.DDMStructure>
@@ -86,6 +99,14 @@ public class JournalFolderServiceUtil {
 
 		return getService().getDDMStructures(
 			groupIds, folderId, restrictionType, orderByComparator);
+	}
+
+	public static int getDDMStructuresCount(
+			long[] groupIds, long folderId, int restrictionType)
+		throws PortalException {
+
+		return getService().getDDMStructuresCount(
+			groupIds, folderId, restrictionType);
 	}
 
 	public static JournalFolder getFolder(long folderId)

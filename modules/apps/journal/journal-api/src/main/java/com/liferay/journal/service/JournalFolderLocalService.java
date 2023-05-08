@@ -287,8 +287,19 @@ public interface JournalFolderLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DDMStructure> getDDMStructures(
+			long[] groupIds, long folderId, int restrictionType, int start,
+			int end, OrderByComparator<DDMStructure> orderByComparator)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DDMStructure> getDDMStructures(
 			long[] groupIds, long folderId, int restrictionType,
 			OrderByComparator<DDMStructure> orderByComparator)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getDDMStructuresCount(
+			long[] groupIds, long folderId, int restrictionType)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
