@@ -21,6 +21,7 @@ import com.liferay.journal.service.base.JournalFolderServiceBaseImpl;
 import com.liferay.journal.service.persistence.JournalArticleFinder;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -104,9 +105,19 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 			long[] groupIds, long folderId, int restrictionType)
 		throws PortalException {
 
+		return getDDMStructures(groupIds, folderId, restrictionType, null);
+	}
+
+	@Override
+	public List<DDMStructure> getDDMStructures(
+			long[] groupIds, long folderId, int restrictionType, int start,
+			int end, OrderByComparator<DDMStructure> orderByComparator)
+		throws PortalException {
+
 		return _filterStructures(
 			journalFolderLocalService.getDDMStructures(
-				groupIds, folderId, restrictionType));
+				groupIds, folderId, restrictionType, start, end,
+				orderByComparator));
 	}
 
 	@Override
@@ -115,9 +126,18 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 			OrderByComparator<DDMStructure> orderByComparator)
 		throws PortalException {
 
-		return _filterStructures(
-			journalFolderLocalService.getDDMStructures(
-				groupIds, folderId, restrictionType, orderByComparator));
+		return getDDMStructures(
+			groupIds, folderId, restrictionType, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, orderByComparator);
+	}
+
+	@Override
+	public int getDDMStructuresCount(
+			long[] groupIds, long folderId, int restrictionType)
+		throws PortalException {
+
+		return journalFolderLocalService.getDDMStructuresCount(
+			groupIds, folderId, restrictionType);
 	}
 
 	@Override

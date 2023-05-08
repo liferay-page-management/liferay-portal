@@ -41,6 +41,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -339,8 +340,8 @@ public class JournalFolderLocalServiceImpl
 
 	@Override
 	public List<DDMStructure> getDDMStructures(
-			long[] groupIds, long folderId, int restrictionType,
-			OrderByComparator<DDMStructure> orderByComparator)
+			long[] groupIds, long folderId, int restrictionType, int start,
+			int end, OrderByComparator<DDMStructure> orderByComparator)
 		throws PortalException {
 
 		if (restrictionType ==
@@ -349,7 +350,7 @@ public class JournalFolderLocalServiceImpl
 
 			return _ddmStructureLinkLocalService.getStructureLinkStructures(
 				_classNameLocalService.getClassNameId(JournalFolder.class),
-				folderId);
+				folderId, start, end);
 		}
 
 		folderId = getOverridedDDMStructuresFolderId(folderId);
@@ -357,13 +358,51 @@ public class JournalFolderLocalServiceImpl
 		if (folderId != JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID) {
 			return _ddmStructureLinkLocalService.getStructureLinkStructures(
 				_classNameLocalService.getClassNameId(JournalFolder.class),
-				folderId);
+				folderId, start, end);
 		}
 
 		return _ddmStructureLocalService.getStructures(
 			groupIds,
-			_classNameLocalService.getClassNameId(JournalArticle.class),
-			orderByComparator);
+			_classNameLocalService.getClassNameId(JournalArticle.class), start,
+			end, orderByComparator);
+	}
+
+	@Override
+	public List<DDMStructure> getDDMStructures(
+			long[] groupIds, long folderId, int restrictionType,
+			OrderByComparator<DDMStructure> orderByComparator)
+		throws PortalException {
+
+		return getDDMStructures(
+			groupIds, folderId, restrictionType, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, orderByComparator);
+	}
+
+	@Override
+	public int getDDMStructuresCount(
+			long[] groupIds, long folderId, int restrictionType)
+		throws PortalException {
+
+		if (restrictionType ==
+				JournalFolderConstants.
+					RESTRICTION_TYPE_DDM_STRUCTURES_AND_WORKFLOW) {
+
+			return _ddmStructureLinkLocalService.getStructureLinksCount(
+				_classNameLocalService.getClassNameId(JournalFolder.class),
+				folderId);
+		}
+
+		folderId = getOverridedDDMStructuresFolderId(folderId);
+
+		if (folderId != JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID) {
+			return _ddmStructureLinkLocalService.getStructureLinksCount(
+				_classNameLocalService.getClassNameId(JournalFolder.class),
+				folderId);
+		}
+
+		return _ddmStructureLocalService.getStructuresCount(
+			groupIds,
+			_classNameLocalService.getClassNameId(JournalArticle.class));
 	}
 
 	@Override
