@@ -948,6 +948,14 @@ public class DDMStructureLocalServiceUtil {
 	}
 
 	public static List<DDMStructure> getStructures(
+		long[] groupIds, long classNameId, int start, int end,
+		OrderByComparator<DDMStructure> orderByComparator) {
+
+		return getService().getStructures(
+			groupIds, classNameId, start, end, orderByComparator);
+	}
+
+	public static List<DDMStructure> getStructures(
 		long[] groupIds, long classNameId,
 		OrderByComparator<DDMStructure> orderByComparator) {
 

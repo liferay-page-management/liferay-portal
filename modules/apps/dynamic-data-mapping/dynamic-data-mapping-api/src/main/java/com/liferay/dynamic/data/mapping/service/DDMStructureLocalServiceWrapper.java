@@ -1040,6 +1040,16 @@ public class DDMStructureLocalServiceWrapper
 
 	@Override
 	public java.util.List<DDMStructure> getStructures(
+		long[] groupIds, long classNameId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DDMStructure>
+			orderByComparator) {
+
+		return _ddmStructureLocalService.getStructures(
+			groupIds, classNameId, start, end, orderByComparator);
+	}
+
+	@Override
+	public java.util.List<DDMStructure> getStructures(
 		long[] groupIds, long classNameId,
 		com.liferay.portal.kernel.util.OrderByComparator<DDMStructure>
 			orderByComparator) {

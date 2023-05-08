@@ -807,6 +807,11 @@ public interface DDMStructureLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DDMStructure> getStructures(
+		long[] groupIds, long classNameId, int start, int end,
+		OrderByComparator<DDMStructure> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DDMStructure> getStructures(
 		long[] groupIds, long classNameId,
 		OrderByComparator<DDMStructure> orderByComparator);
 
