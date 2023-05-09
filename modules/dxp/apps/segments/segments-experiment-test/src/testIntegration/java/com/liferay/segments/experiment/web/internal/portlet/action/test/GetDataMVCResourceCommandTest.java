@@ -155,7 +155,7 @@ public class GetDataMVCResourceCommandTest {
 				mockLiferayResourceResponse.getPortletOutputStream();
 
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
-			new String(byteArrayOutputStream.toByteArray()));
+			byteArrayOutputStream.toString());
 
 		JSONObject propsJSONObject = jsonObject.getJSONObject("props");
 
