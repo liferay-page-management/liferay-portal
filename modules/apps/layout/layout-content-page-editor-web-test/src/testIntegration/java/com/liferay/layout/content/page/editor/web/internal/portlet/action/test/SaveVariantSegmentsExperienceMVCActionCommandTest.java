@@ -116,9 +116,8 @@ public class SaveVariantSegmentsExperienceMVCActionCommandTest {
 
 		SegmentsExperiment segmentsExperiment =
 			_segmentsExperimentLocalService.addSegmentsExperiment(
-				defaultSegmentsExperienceId,
-				_layout.getPlid(),
-				"AB test", "A/B test description",
+				defaultSegmentsExperienceId, _layout.getPlid(), "AB test",
+				"A/B test description",
 				SegmentsExperimentConstants.Goal.BOUNCE_RATE.getLabel(),
 				StringPool.BLANK, _serviceContext);
 

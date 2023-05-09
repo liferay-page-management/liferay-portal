@@ -528,8 +528,7 @@ public class SegmentsExperimentLocalServiceTest {
 
 		SegmentsExperience variantSegmentsExperience =
 			SegmentsTestUtil.addSegmentsExperience(
-				segmentsExperiment.getGroupId(),
-				segmentsExperiment.getPlid());
+				segmentsExperiment.getGroupId(), segmentsExperiment.getPlid());
 
 		_segmentsExperimentRelLocalService.addSegmentsExperimentRel(
 			segmentsExperiment.getSegmentsExperimentId(),
@@ -646,8 +645,7 @@ public class SegmentsExperimentLocalServiceTest {
 
 		SegmentsExperience variantSegmentsExperience =
 			SegmentsTestUtil.addSegmentsExperience(
-				segmentsExperiment.getGroupId(),
-				segmentsExperiment.getPlid());
+				segmentsExperiment.getGroupId(), segmentsExperiment.getPlid());
 
 		_segmentsExperimentRelLocalService.addSegmentsExperimentRel(
 			segmentsExperiment.getSegmentsExperimentId(),
@@ -671,8 +669,7 @@ public class SegmentsExperimentLocalServiceTest {
 
 		SegmentsExperience variantSegmentsExperience =
 			SegmentsTestUtil.addSegmentsExperience(
-				segmentsExperiment.getGroupId(),
-				segmentsExperiment.getPlid());
+				segmentsExperiment.getGroupId(), segmentsExperiment.getPlid());
 
 		_segmentsExperimentRelLocalService.addSegmentsExperimentRel(
 			segmentsExperiment.getSegmentsExperimentId(),
@@ -981,8 +978,7 @@ public class SegmentsExperimentLocalServiceTest {
 
 		SegmentsExperience variantSegmentsExperience =
 			SegmentsTestUtil.addSegmentsExperience(
-				segmentsExperiment.getGroupId(),
-				segmentsExperiment.getPlid());
+				segmentsExperiment.getGroupId(), segmentsExperiment.getPlid());
 
 		variantSegmentsExperience.setActive(false);
 
@@ -1011,8 +1007,7 @@ public class SegmentsExperimentLocalServiceTest {
 
 		SegmentsExperience variantSegmentsExperience =
 			SegmentsTestUtil.addSegmentsExperience(
-				segmentsExperiment.getGroupId(),
-				segmentsExperiment.getPlid());
+				segmentsExperiment.getGroupId(), segmentsExperiment.getPlid());
 
 		variantSegmentsExperience.setActive(false);
 

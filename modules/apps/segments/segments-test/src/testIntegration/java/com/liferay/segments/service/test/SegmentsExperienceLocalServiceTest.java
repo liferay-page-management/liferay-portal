@@ -586,8 +586,7 @@ public class SegmentsExperienceLocalServiceTest {
 		SegmentsExperiment segmentsExperiment =
 			SegmentsTestUtil.addSegmentsExperiment(
 				_group.getGroupId(),
-				segmentsExperience.getSegmentsExperienceId(),
-				_classPK);
+				segmentsExperience.getSegmentsExperienceId(), _classPK);
 
 		_segmentsExperimentLocalService.updateSegmentsExperimentStatus(
 			segmentsExperiment.getSegmentsExperimentId(),
@@ -894,8 +893,7 @@ public class SegmentsExperienceLocalServiceTest {
 		SegmentsExperiment segmentsExperiment =
 			SegmentsTestUtil.addSegmentsExperiment(
 				_group.getGroupId(),
-				segmentsExperience.getSegmentsExperienceId(),
-				_classPK);
+				segmentsExperience.getSegmentsExperienceId(), _classPK);
 
 		_segmentsExperimentLocalService.updateSegmentsExperimentStatus(
 			segmentsExperiment.getSegmentsExperimentId(),

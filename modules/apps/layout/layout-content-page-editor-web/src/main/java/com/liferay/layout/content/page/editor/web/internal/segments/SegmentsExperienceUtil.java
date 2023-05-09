@@ -380,7 +380,7 @@ public class SegmentsExperienceUtil {
 			String newNamespace = StringUtil.randomId();
 
 			if (SegmentsExperimentLocalServiceUtil.hasSegmentsExperiment(
-					sourceSegmentsExperienceId, plid,null)) {
+					sourceSegmentsExperienceId, plid, null)) {
 
 				newNamespace = fragmentEntryLink.getNamespace();
 			}

@@ -191,9 +191,6 @@ public class SegmentsExperimentServiceTest {
 				role.getRoleId(), ActionKeys.VIEW);
 		}
 
-		long classNameId = _classNameLocalService.getClassNameId(
-			Layout.class.getName());
-
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user, PermissionCheckerFactoryUtil.create(_user))) {
 
@@ -221,9 +218,6 @@ public class SegmentsExperimentServiceTest {
 		SegmentsExperiment segmentsExperiment1 = _addSegmentsExperiment(layout);
 		SegmentsExperiment segmentsExperiment2 = _addSegmentsExperiment(layout);
 		SegmentsExperiment segmentsExperiment3 = _addSegmentsExperiment(layout);
-
-		long classNameId = _classNameLocalService.getClassNameId(
-			Layout.class.getName());
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user, PermissionCheckerFactoryUtil.create(_user))) {
