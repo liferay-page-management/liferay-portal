@@ -16,13 +16,8 @@ package com.liferay.segments.web.internal.display.context;
 
 import com.liferay.analytics.settings.configuration.AnalyticsConfiguration;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -30,7 +25,6 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
@@ -54,17 +48,13 @@ import com.liferay.roles.admin.role.type.contributor.RoleTypeContributor;
 import com.liferay.roles.admin.role.type.contributor.provider.RoleTypeContributorProvider;
 import com.liferay.roles.item.selector.RoleItemSelectorCriterion;
 import com.liferay.segments.configuration.provider.SegmentsConfigurationProvider;
-import com.liferay.segments.constants.SegmentsActionKeys;
-import com.liferay.segments.constants.SegmentsEntryConstants;
 import com.liferay.segments.constants.SegmentsPortletKeys;
 import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.segments.service.SegmentsEntryService;
 import com.liferay.segments.web.internal.security.permission.resource.SegmentsEntryPermission;
-import com.liferay.segments.web.internal.security.permission.resource.SegmentsResourcePermission;
 import com.liferay.segments.web.internal.util.comparator.SegmentsEntryModifiedDateComparator;
 import com.liferay.segments.web.internal.util.comparator.SegmentsEntryNameComparator;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -108,16 +98,8 @@ public class SegmentsDisplayContext {
 		_permissionChecker = _themeDisplay.getPermissionChecker();
 	}
 
-	public List<DropdownItem> getActionDropdownItems() {
-		return DropdownItemListBuilder.add(
-			dropdownItem -> {
-				dropdownItem.putData("action", "deleteSegmentsEntries");
-				dropdownItem.setIcon("times-circle");
-				dropdownItem.setLabel(
-					_language.get(_httpServletRequest, "delete"));
-				dropdownItem.setQuickAction(true);
-			}
-		).build();
+	public AnalyticsSettingsManager getAnalyticsSettingsManager() {
+		return _analyticsSettingsManager;
 	}
 
 	public Map<String, Object> getAssignUserRolesDataMap(
@@ -146,40 +128,6 @@ public class SegmentsDisplayContext {
 			}
 		).put(
 			"segmentsEntryId", segmentsEntry.getSegmentsEntryId()
-		).build();
-	}
-
-	public String getAvailableActions(SegmentsEntry segmentsEntry)
-		throws PortalException {
-
-		if (SegmentsEntryPermission.contains(
-				_themeDisplay.getPermissionChecker(), segmentsEntry,
-				ActionKeys.DELETE)) {
-
-			return "deleteSegmentsEntries";
-		}
-
-		return StringPool.BLANK;
-	}
-
-	public String getClearResultsURL() {
-		return PortletURLBuilder.create(
-			_getPortletURL()
-		).setKeywords(
-			StringPool.BLANK
-		).buildString();
-	}
-
-	public CreationMenu getCreationMenu() {
-		return CreationMenuBuilder.addPrimaryDropdownItem(
-			dropdownItem -> {
-				dropdownItem.setHref(
-					_renderResponse.createRenderURL(), "mvcRenderCommandName",
-					"/segments/edit_segments_entry", "type",
-					User.class.getName());
-				dropdownItem.setLabel(
-					_language.get(_httpServletRequest, "add-new-user-segment"));
-			}
 		).build();
 	}
 
@@ -218,21 +166,29 @@ public class SegmentsDisplayContext {
 		).buildString();
 	}
 
-	public List<DropdownItem> getFilterItemsDropdownItems() {
-		return DropdownItemListBuilder.addGroup(
-			dropdownGroupItem -> {
-				dropdownGroupItem.setDropdownItems(
-					_getFilterNavigationDropdownItems());
-				dropdownGroupItem.setLabel(
-					_language.get(_httpServletRequest, "filter-by-navigation"));
-			}
-		).addGroup(
-			dropdownGroupItem -> {
-				dropdownGroupItem.setDropdownItems(_getOrderByDropdownItems());
-				dropdownGroupItem.setLabel(
-					_language.get(_httpServletRequest, "order-by"));
-			}
-		).build();
+	public String getKeywords() {
+		return _keywords;
+	}
+
+	public String getLiferayAnalyticsURL(SegmentsEntry segmentsEntry)
+		throws ConfigurationException {
+
+		AnalyticsConfiguration analyticsConfiguration =
+			_analyticsSettingsManager.getAnalyticsConfiguration(
+				segmentsEntry.getCompanyId());
+
+		return analyticsConfiguration.liferayAnalyticsURL();
+	}
+
+	public String getOrderByCol() {
+		if (_orderByCol != null) {
+			return _orderByCol;
+		}
+
+		_orderByCol = SearchOrderByUtil.getOrderByCol(
+			_renderRequest, SegmentsPortletKeys.SEGMENTS, "modified-date");
+
+		return _orderByCol;
 	}
 
 	public String getOrderByType() {
@@ -285,22 +241,6 @@ public class SegmentsDisplayContext {
 		).buildString();
 	}
 
-	public String getScopeName(SegmentsEntry segmentsEntry) {
-		if (_themeDisplay.getCompanyGroupId() == segmentsEntry.getGroupId()) {
-			return _language.get(_themeDisplay.getLocale(), "global");
-		}
-
-		if (segmentsEntry.getGroupId() == _themeDisplay.getScopeGroupId()) {
-			return _language.get(_themeDisplay.getLocale(), "current-site");
-		}
-
-		return _language.get(_themeDisplay.getLocale(), "parent-site");
-	}
-
-	public String getSearchActionURL() {
-		return String.valueOf(_getPortletURL());
-	}
-
 	public SearchContainer<SegmentsEntry> getSearchContainer()
 		throws PortalException {
 
@@ -312,7 +252,7 @@ public class SegmentsDisplayContext {
 			_renderRequest, _getPortletURL(), null, "there-are-no-segments");
 
 		searchContainer.setId("segmentsEntries");
-		searchContainer.setOrderByCol(_getOrderByCol());
+		searchContainer.setOrderByCol(getOrderByCol());
 		searchContainer.setOrderByComparator(_getOrderByComparator());
 		searchContainer.setOrderByType(getOrderByType());
 
@@ -342,79 +282,8 @@ public class SegmentsDisplayContext {
 		return _searchContainer;
 	}
 
-	public String getSegmentsCompanyConfigurationURL(
-		HttpServletRequest httpServletRequest) {
-
-		try {
-			return _segmentsConfigurationProvider.getCompanyConfigurationURL(
-				httpServletRequest);
-		}
-		catch (PortalException portalException) {
-			_log.error(portalException);
-		}
-
-		return StringPool.BLANK;
-	}
-
-	public String getSegmentsEntryURL(SegmentsEntry segmentsEntry)
-		throws ConfigurationException {
-
-		if (segmentsEntry == null) {
-			return StringPool.BLANK;
-		}
-
-		if (Objects.equals(
-				segmentsEntry.getSource(),
-				SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND) &&
-			Validator.isNull(segmentsEntry.getCriteria())) {
-
-			AnalyticsConfiguration analyticsConfiguration =
-				_analyticsSettingsManager.getAnalyticsConfiguration(
-					segmentsEntry.getCompanyId());
-
-			String liferayAnalyticsURL =
-				analyticsConfiguration.liferayAnalyticsURL();
-
-			if (Validator.isNull(liferayAnalyticsURL)) {
-				return StringPool.BLANK;
-			}
-
-			return liferayAnalyticsURL + "/contacts/segments/" +
-				segmentsEntry.getSegmentsEntryKey();
-		}
-
-		return PortletURLBuilder.createRenderURL(
-			_renderResponse
-		).setMVCRenderCommandName(
-			"/segments/edit_segments_entry"
-		).setRedirect(
-			_portal.getCurrentURL(_renderRequest)
-		).setParameter(
-			"segmentsEntryId", segmentsEntry.getSegmentsEntryId()
-		).setParameter(
-			"showInEditMode", false
-		).buildString();
-	}
-
-	public String getSegmentsEntryURLTarget(SegmentsEntry segmentsEntry) {
-		if (Objects.equals(
-				segmentsEntry.getSource(),
-				SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND) &&
-			Validator.isNull(segmentsEntry.getCriteria())) {
-
-			return "_blank";
-		}
-
-		return "_self";
-	}
-
-	public String getSortingURL() {
-		return PortletURLBuilder.create(
-			_getPortletURL()
-		).setParameter(
-			"orderByType",
-			Objects.equals(getOrderByType(), "asc") ? "desc" : "asc"
-		).buildString();
+	public SegmentsConfigurationProvider getSegmentsConfigurationProvider() {
+		return _segmentsConfigurationProvider;
 	}
 
 	public int getTotalItems() throws PortalException {
@@ -424,7 +293,10 @@ public class SegmentsDisplayContext {
 	}
 
 	public boolean isAsahEnabled(long companyId) throws Exception {
-		return _analyticsSettingsManager.isAnalyticsEnabled(companyId);
+		AnalyticsSettingsManager analyticsSettingsManager =
+			getAnalyticsSettingsManager();
+
+		return analyticsSettingsManager.isAnalyticsEnabled(companyId);
 	}
 
 	public boolean isDisabledManagementBar() throws PortalException {
@@ -476,18 +348,6 @@ public class SegmentsDisplayContext {
 		}
 		catch (PortalException portalException) {
 			_log.error(portalException);
-		}
-
-		return false;
-	}
-
-	public boolean isShowCreationMenu() {
-		if (SegmentsResourcePermission.contains(
-				_themeDisplay.getPermissionChecker(),
-				_themeDisplay.getScopeGroupId(),
-				SegmentsActionKeys.MANAGE_SEGMENTS_ENTRIES)) {
-
-			return true;
 		}
 
 		return false;
@@ -560,17 +420,6 @@ public class SegmentsDisplayContext {
 		return new String[0];
 	}
 
-	private List<DropdownItem> _getFilterNavigationDropdownItems() {
-		return DropdownItemListBuilder.add(
-			dropdownItem -> {
-				dropdownItem.setActive(true);
-				dropdownItem.setHref(_renderResponse.createRenderURL());
-				dropdownItem.setLabel(
-					_language.get(_httpServletRequest, "all"));
-			}
-		).build();
-	}
-
 	private String _getKeywords() {
 		if (_keywords != null) {
 			return _keywords;
@@ -581,17 +430,6 @@ public class SegmentsDisplayContext {
 		return _keywords;
 	}
 
-	private String _getOrderByCol() {
-		if (_orderByCol != null) {
-			return _orderByCol;
-		}
-
-		_orderByCol = SearchOrderByUtil.getOrderByCol(
-			_renderRequest, SegmentsPortletKeys.SEGMENTS, "modified-date");
-
-		return _orderByCol;
-	}
-
 	private OrderByComparator<SegmentsEntry> _getOrderByComparator() {
 		boolean orderByAsc = false;
 
@@ -599,7 +437,7 @@ public class SegmentsDisplayContext {
 			orderByAsc = true;
 		}
 
-		String orderByCol = _getOrderByCol();
+		String orderByCol = getOrderByCol();
 
 		OrderByComparator<SegmentsEntry> orderByComparator = null;
 
@@ -612,27 +450,6 @@ public class SegmentsDisplayContext {
 		}
 
 		return orderByComparator;
-	}
-
-	private List<DropdownItem> _getOrderByDropdownItems() {
-		return DropdownItemListBuilder.add(
-			dropdownItem -> {
-				dropdownItem.setActive(
-					Objects.equals(_getOrderByCol(), "modified-date"));
-				dropdownItem.setHref(
-					_getPortletURL(), "orderByCol", "modified-date");
-				dropdownItem.setLabel(
-					_language.get(_httpServletRequest, "modified-date"));
-			}
-		).add(
-			dropdownItem -> {
-				dropdownItem.setActive(
-					Objects.equals(_getOrderByCol(), "name"));
-				dropdownItem.setHref(_getPortletURL(), "orderByCol", "name");
-				dropdownItem.setLabel(
-					_language.get(_httpServletRequest, "name"));
-			}
-		).build();
 	}
 
 	private PortletURL _getPortletURL() {
@@ -653,7 +470,7 @@ public class SegmentsDisplayContext {
 		).setParameter(
 			"displayStyle", getDisplayStyle()
 		).setParameter(
-			"orderByCol", _getOrderByCol()
+			"orderByCol", getOrderByCol()
 		).setParameter(
 			"orderByType", getOrderByType()
 		).buildPortletURL();
@@ -668,7 +485,7 @@ public class SegmentsDisplayContext {
 
 		Sort sort = null;
 
-		if (Objects.equals(_getOrderByCol(), "name")) {
+		if (Objects.equals(getOrderByCol(), "name")) {
 			sort = new Sort(
 				Field.getSortableFieldName(
 					"localized_name_".concat(_themeDisplay.getLanguageId())),
