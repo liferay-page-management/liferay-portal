@@ -710,7 +710,7 @@ public class SitePage implements Serializable {
 	}
 
 	@GraphQLField(description = "The categories associated with this page.")
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected TaxonomyCategoryBrief[] taxonomyCategoryBriefs;
 
 	@Schema(
