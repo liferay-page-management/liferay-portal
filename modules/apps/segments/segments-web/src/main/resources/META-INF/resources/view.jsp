@@ -17,31 +17,21 @@
 <%@ include file="/init.jsp" %>
 
 <%
-SegmentsDisplayContext segmentsDisplayContext = (SegmentsDisplayContext)request.getAttribute(SegmentsDisplayContext.class.getName());
-
 String eventName = liferayPortletResponse.getNamespace() + "assignSiteRoles";
 
 request.setAttribute("view.jsp-eventName", eventName);
+
+SegmentsDisplayContext segmentsDisplayContext = (SegmentsDisplayContext)request.getAttribute(SegmentsDisplayContext.class.getName());
+
+SegmentsManagementToolbarDisplayContext segmentsManagementToolbarDisplayContext = new SegmentsManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, renderResponse, segmentsDisplayContext);
 %>
 
 <clay:management-toolbar
-	actionDropdownItems="<%= segmentsDisplayContext.getActionDropdownItems() %>"
-	clearResultsURL="<%= segmentsDisplayContext.getClearResultsURL() %>"
-	creationMenu="<%= segmentsDisplayContext.getCreationMenu() %>"
-	disabled="<%= segmentsDisplayContext.isDisabledManagementBar() %>"
-	filterDropdownItems="<%= segmentsDisplayContext.getFilterItemsDropdownItems() %>"
-	itemsTotal="<%= segmentsDisplayContext.getTotalItems() %>"
+	managementToolbarDisplayContext="<%= segmentsManagementToolbarDisplayContext %>"
 	propsTransformer="js/SegmentsManagementToolbarPropsTransformer"
-	searchActionURL="<%= segmentsDisplayContext.getSearchActionURL() %>"
-	searchContainerId="segmentsEntries"
-	searchFormName="searchFm"
-	selectable="<%= true %>"
-	showCreationMenu="<%= segmentsDisplayContext.isShowCreationMenu() %>"
-	sortingOrder="<%= segmentsDisplayContext.getOrderByType() %>"
-	sortingURL="<%= segmentsDisplayContext.getSortingURL() %>"
 />
 
-<c:if test="<%= !segmentsDisplayContext.isSegmentationEnabled(themeDisplay.getCompanyId()) %>">
+<c:if test="<%= !segmentsManagementToolbarDisplayContext.isSegmentationEnabled(themeDisplay.getCompanyId()) %>">
 	<clay:stripe
 		defaultTitleDisabled="<%= true %>"
 		dismissible="<%= true %>"
@@ -50,7 +40,7 @@ request.setAttribute("view.jsp-eventName", eventName);
 		<strong><liferay-ui:message key="segmentation-is-disabled" /></strong>
 
 		<%
-		String segmentsConfigurationURL = segmentsDisplayContext.getSegmentsCompanyConfigurationURL(request);
+		String segmentsConfigurationURL = segmentsManagementToolbarDisplayContext.getSegmentsCompanyConfigurationURL(request);
 		%>
 
 		<c:choose>
@@ -80,7 +70,7 @@ request.setAttribute("view.jsp-eventName", eventName);
 
 	<liferay-ui:search-container
 		id="segmentsEntries"
-		searchContainer="<%= segmentsDisplayContext.getSearchContainer() %>"
+		searchContainer="<%= segmentsManagementToolbarDisplayContext.getSearchContainer() %>"
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.segments.model.SegmentsEntry"
@@ -91,19 +81,19 @@ request.setAttribute("view.jsp-eventName", eventName);
 			<%
 			row.setData(
 				HashMapBuilder.<String, Object>put(
-					"actions", segmentsDisplayContext.getAvailableActions(segmentsEntry)
+					"actions", segmentsManagementToolbarDisplayContext.getAvailableActions(segmentsEntry)
 				).build());
 			%>
 
 			<liferay-ui:search-container-column-text
 				cssClass="table-cell-expand table-title"
-				href="<%= segmentsDisplayContext.getSegmentsEntryURL(segmentsEntry) %>"
+				href="<%= segmentsManagementToolbarDisplayContext.getSegmentsEntryURL(segmentsEntry) %>"
 				name="name"
-				target="<%= segmentsDisplayContext.getSegmentsEntryURLTarget(segmentsEntry) %>"
+				target="<%= segmentsManagementToolbarDisplayContext.getSegmentsEntryURLTarget(segmentsEntry) %>"
 				value="<%= HtmlUtil.escape(segmentsEntry.getName(locale)) %>"
 			/>
 
-			<c:if test="<%= segmentsDisplayContext.isAsahEnabled(themeDisplay.getCompanyId()) %>">
+			<c:if test="<%= segmentsManagementToolbarDisplayContext.isAsahEnabled(themeDisplay.getCompanyId()) %>">
 				<liferay-ui:search-container-column-text
 					cssClass="table-cell-expand-smallest table-cell-minw-150"
 					name="source"
@@ -126,7 +116,7 @@ request.setAttribute("view.jsp-eventName", eventName);
 			<liferay-ui:search-container-column-text
 				cssClass="table-cell-expand-smallest table-cell-minw-150"
 				name="scope"
-				value="<%= segmentsDisplayContext.getScopeName(segmentsEntry) %>"
+				value="<%= segmentsManagementToolbarDisplayContext.getScopeName(segmentsEntry) %>"
 			>
 
 			</liferay-ui:search-container-column-text>
@@ -140,7 +130,7 @@ request.setAttribute("view.jsp-eventName", eventName);
 			<liferay-ui:search-container-column-text>
 
 				<%
-				SegmentsEntryActionDropdownItemsProvider segmentsEntryActionDropdownItemsProvider = new SegmentsEntryActionDropdownItemsProvider(request, segmentsDisplayContext, segmentsEntry);
+				SegmentsEntryActionDropdownItemsProvider segmentsEntryActionDropdownItemsProvider = new SegmentsEntryActionDropdownItemsProvider(request, segmentsManagementToolbarDisplayContext, segmentsEntry);
 				%>
 
 				<clay:dropdown-actions
