@@ -1,4 +1,3 @@
-<%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -12,23 +11,15 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
---%>
 
-<%@ include file="/init.jsp" %>
+/// <reference types="react" />
 
-<liferay-frontend:component
-	componentId='<%= liferayPortletResponse.getNamespace() + "addIconAction" %>'
-	context='<%=
-		HashMapBuilder.<String, Object>put(
-			"url",
-			PortletURLBuilder.create(
-				PortalUtil.getControlPanelPortletURL(liferayPortletRequest, LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES, PortletRequest.RENDER_PHASE)
-			).setMVCPath(
-				"/view_import.jsp"
-			).setWindowState(
-				LiferayWindowState.POP_UP
-			).buildString()
-		).build()
-	%>'
-	module="js/addIconAction"
-/>
+interface Props {
+	disposeModal: () => void;
+	portletNamespace: string;
+}
+declare function ImportModal({
+	disposeModal,
+	portletNamespace,
+}: Props): JSX.Element;
+export default ImportModal;
