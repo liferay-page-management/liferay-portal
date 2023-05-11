@@ -130,7 +130,7 @@ SegmentsManagementToolbarDisplayContext segmentsManagementToolbarDisplayContext 
 			<liferay-ui:search-container-column-text>
 
 				<%
-				SegmentsEntryActionDropdownItemsProvider segmentsEntryActionDropdownItemsProvider = new SegmentsEntryActionDropdownItemsProvider(request, segmentsManagementToolbarDisplayContext, segmentsEntry);
+				SegmentsEntryActionDropdownItemsProvider segmentsEntryActionDropdownItemsProvider = new SegmentsEntryActionDropdownItemsProvider(request, segmentsManagementToolbarDisplayContext.getSegmentsDisplayContext(), segmentsEntry);
 				%>
 
 				<clay:dropdown-actions
