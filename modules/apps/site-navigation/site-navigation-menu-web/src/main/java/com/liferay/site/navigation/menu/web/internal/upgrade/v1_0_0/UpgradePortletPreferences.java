@@ -16,7 +16,6 @@ package com.liferay.site.navigation.menu.web.internal.upgrade.v1_0_0;
 
 import com.liferay.portal.kernel.configuration.Filter;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
-import com.liferay.portal.kernel.portletdisplaytemplate.PortletDisplayTemplateManager;
 import com.liferay.portal.kernel.upgrade.BasePortletPreferencesUpgradeProcess;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -137,7 +136,7 @@ public class UpgradePortletPreferences
 		portletPreferences.setValue(
 			"displayStyle",
 			PortletDisplayTemplateConstants.DISPLAY_STYLE_PREFIX +
-			"list-menu-ftl");
+				"list-menu-ftl");
 
 		_persistSupportedProperties(portletPreferences, displayStyle);
 

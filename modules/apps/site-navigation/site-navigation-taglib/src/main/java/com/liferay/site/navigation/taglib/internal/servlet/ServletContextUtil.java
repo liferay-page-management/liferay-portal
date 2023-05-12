@@ -52,6 +52,9 @@ public class ServletContextUtil {
 	private static final Snapshot<InfoItemServiceRegistry>
 		_infoItemServiceRegistrySnapshot = new Snapshot<>(
 			ServletContextUtil.class, InfoItemServiceRegistry.class);
+	private static final Snapshot<PortletDisplayTemplate>
+		_portletDisplayTemplateSnapshot = new Snapshot<>(
+			ServletContextUtil.class, PortletDisplayTemplate.class);
 	private static final Snapshot<ServletContext> _servletContextSnapshot =
 		new Snapshot<>(
 			ServletContextUtil.class, ServletContext.class,
@@ -59,8 +62,5 @@ public class ServletContextUtil {
 	private static final Snapshot<SiteNavigationMenuItemTypeRegistry>
 		_siteNavigationMenuItemTypeRegistrySnapshot = new Snapshot<>(
 			ServletContextUtil.class, SiteNavigationMenuItemTypeRegistry.class);
-	private static final Snapshot<PortletDisplayTemplate>
-		_portletDisplayTemplateSnapshot = new Snapshot<>(
-			ServletContextUtil.class, PortletDisplayTemplate.class);
 
 }
