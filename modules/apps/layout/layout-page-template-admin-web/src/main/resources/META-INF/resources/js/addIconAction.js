@@ -36,7 +36,7 @@ export default function ({importURL, namespace, url}) {
 				{
 					disposeModal,
 					importURL,
-					namespace,
+					portletNamespace: namespace,
 				},
 				modalContainer
 			);

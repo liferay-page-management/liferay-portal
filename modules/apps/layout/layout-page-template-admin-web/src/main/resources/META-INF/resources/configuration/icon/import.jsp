@@ -31,6 +31,8 @@
 				portletDisplay.getId()
 			).buildString()
 		).put(
+			"namespace", PortalUtil.getPortletNamespace(LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES)
+		).put(
 			"url",
 			PortletURLBuilder.create(
 				PortalUtil.getControlPanelPortletURL(liferayPortletRequest, LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES, PortletRequest.RENDER_PHASE)
