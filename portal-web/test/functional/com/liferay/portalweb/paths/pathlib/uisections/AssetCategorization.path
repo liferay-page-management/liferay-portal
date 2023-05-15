@@ -46,6 +46,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>VOCABULARY_SELECT_OPTION</td>
+	<td>//div[contains(@id,'formInputGeneral')]//select</td>
+	<td></td>
+</tr>
+<tr>
 	<td>TAG</td>
 	<td>//div[contains(@id,'assetTagsSelector')]//span[(contains(@class,'label-item'))][contains(.,'${key_tagName}')] | //label[normalize-space(text())='Tags']//following-sibling::div[contains(@class,'input-group')]//span[(contains(@class,'label-item'))][contains(.,'${key_tagName}')]</td>
 	<td></td>
