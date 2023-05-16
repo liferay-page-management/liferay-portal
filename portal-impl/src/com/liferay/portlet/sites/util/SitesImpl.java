@@ -27,6 +27,8 @@ import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalSer
 import com.liferay.exportimport.kernel.service.ExportImportLocalServiceUtil;
 import com.liferay.exportimport.kernel.service.ExportImportServiceUtil;
 import com.liferay.exportimport.kernel.staging.MergeLayoutPrototypesThreadLocal;
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
+import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.events.EventsProcessorUtil;
@@ -46,6 +48,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.GroupTable;
 import com.liferay.portal.kernel.model.Image;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
@@ -53,6 +56,9 @@ import com.liferay.portal.kernel.model.LayoutFriendlyURL;
 import com.liferay.portal.kernel.model.LayoutPrototype;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
+import com.liferay.portal.kernel.model.LayoutSetPrototypeTable;
+import com.liferay.portal.kernel.model.LayoutSetTable;
+import com.liferay.portal.kernel.model.LayoutTable;
 import com.liferay.portal.kernel.model.LayoutType;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
 import com.liferay.portal.kernel.model.Organization;
@@ -975,8 +981,15 @@ public class SitesImpl implements Sites {
 		Group group = GroupLocalServiceUtil.getGroup(groupId);
 
 		if (group.isLayoutSetPrototype()) {
-			return _hasLayoutSetPrototypeFriendlyURLConflictSiteLayouts(
-				groupId, layoutUuid, friendlyURL);
+			long count = _countLayoutSetPrototypeFriendlyURLConflictSiteLayouts(
+				group.getCompanyId(), group.getGroupId(), layoutUuid,
+				friendlyURL);
+
+			if (count > 0) {
+				return true;
+			}
+
+			return false;
 		}
 
 		return _hasLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(
@@ -2505,6 +2518,64 @@ public class SitesImpl implements Sites {
 		return owner;
 	}
 
+	private long _countLayoutSetPrototypeFriendlyURLConflictSiteLayouts(
+			long companyId, long groupId, String layoutUuid, String friendlyURL)
+		throws PortalException {
+
+		Predicate sourcePrototypeLayoutUuidPredicate =
+			LayoutTable.INSTANCE.sourcePrototypeLayoutUuid.isNull();
+
+		if (Validator.isNotNull(layoutUuid)) {
+			sourcePrototypeLayoutUuidPredicate = Predicate.withParentheses(
+				sourcePrototypeLayoutUuidPredicate.or(
+					LayoutTable.INSTANCE.sourcePrototypeLayoutUuid.neq(
+						layoutUuid)));
+		}
+
+		return LayoutLocalServiceUtil.dslQuery(
+			DSLQueryFactoryUtil.count(
+			).from(
+				LayoutTable.INSTANCE
+			).innerJoinON(
+				LayoutSetTable.INSTANCE,
+				LayoutSetTable.INSTANCE.companyId.eq(
+					LayoutTable.INSTANCE.companyId
+				).and(
+					LayoutSetTable.INSTANCE.groupId.eq(
+						LayoutTable.INSTANCE.groupId)
+				).and(
+					LayoutSetTable.INSTANCE.privateLayout.eq(
+						LayoutTable.INSTANCE.privateLayout)
+				)
+			).innerJoinON(
+				LayoutSetPrototypeTable.INSTANCE,
+				LayoutSetPrototypeTable.INSTANCE.companyId.eq(
+					LayoutSetTable.INSTANCE.companyId
+				).and(
+					LayoutSetPrototypeTable.INSTANCE.uuid.eq(
+						LayoutSetTable.INSTANCE.layoutSetPrototypeUuid)
+				)
+			).innerJoinON(
+				GroupTable.INSTANCE,
+				GroupTable.INSTANCE.companyId.eq(
+					LayoutSetPrototypeTable.INSTANCE.companyId
+				).and(
+					GroupTable.INSTANCE.classPK.eq(
+						LayoutSetPrototypeTable.INSTANCE.layoutSetPrototypeId)
+				)
+			).where(
+				LayoutTable.INSTANCE.companyId.eq(
+					companyId
+				).and(
+					GroupTable.INSTANCE.groupId.eq(groupId)
+				).and(
+					LayoutTable.INSTANCE.friendlyURL.eq(friendlyURL)
+				).and(
+					sourcePrototypeLayoutUuidPredicate
+				)
+			));
+	}
+
 	private Layout _getLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(
 			Layout layout)
 		throws PortalException {
@@ -2551,44 +2622,49 @@ public class SitesImpl implements Sites {
 			Layout layout)
 		throws PortalException {
 
-		Group group = layout.getGroup();
-
-		List<Layout> layouts = new ArrayList<>();
-
-		if (!group.isLayoutSetPrototype()) {
-			return layouts;
-		}
-
-		LayoutSetPrototype layoutSetPrototype =
-			LayoutSetPrototypeLocalServiceUtil.getLayoutSetPrototype(
-				group.getClassPK());
-
-		List<LayoutSet> layoutSets =
-			LayoutSetLocalServiceUtil.getLayoutSetsByLayoutSetPrototypeUuid(
-				layoutSetPrototype.getUuid());
-
-		for (LayoutSet layoutSet : layoutSets) {
-			LayoutFriendlyURL layoutFriendlyURL =
-				LayoutFriendlyURLLocalServiceUtil.fetchFirstLayoutFriendlyURL(
-					layoutSet.getGroupId(), layoutSet.isPrivateLayout(),
-					layout.getFriendlyURL());
-
-			if (layoutFriendlyURL != null) {
-				Layout foundLayout = LayoutLocalServiceUtil.getLayout(
-					layoutFriendlyURL.getPlid());
-
-				String foundLayoutPrototypeUuid =
-					foundLayout.getSourcePrototypeLayoutUuid();
-
-				if (Validator.isNull(layout.getUuid()) ||
-					!foundLayoutPrototypeUuid.equals(layout.getUuid())) {
-
-					layouts.add(foundLayout);
-				}
-			}
-		}
-
-		return layouts;
+		return LayoutLocalServiceUtil.dslQuery(
+			DSLQueryFactoryUtil.selectDistinct(
+				LayoutTable.INSTANCE
+			).from(
+				LayoutTable.INSTANCE
+			).innerJoinON(
+				LayoutSetTable.INSTANCE,
+				LayoutSetTable.INSTANCE.companyId.eq(
+					LayoutTable.INSTANCE.companyId
+				).and(
+					LayoutSetTable.INSTANCE.groupId.eq(
+						LayoutTable.INSTANCE.groupId)
+				).and(
+					LayoutSetTable.INSTANCE.privateLayout.eq(
+						LayoutTable.INSTANCE.privateLayout)
+				)
+			).innerJoinON(
+				LayoutSetPrototypeTable.INSTANCE,
+				LayoutSetPrototypeTable.INSTANCE.companyId.eq(
+					LayoutSetTable.INSTANCE.companyId
+				).and(
+					LayoutSetPrototypeTable.INSTANCE.uuid.eq(
+						LayoutSetTable.INSTANCE.layoutSetPrototypeUuid)
+				)
+			).innerJoinON(
+				GroupTable.INSTANCE,
+				GroupTable.INSTANCE.companyId.eq(
+					LayoutSetPrototypeTable.INSTANCE.companyId
+				).and(
+					GroupTable.INSTANCE.classPK.eq(
+						LayoutSetPrototypeTable.INSTANCE.layoutSetPrototypeId)
+				)
+			).where(
+				LayoutSetTable.INSTANCE.companyId.eq(
+					layout.getCompanyId()
+				).and(
+					LayoutTable.INSTANCE.friendlyURL.eq(layout.getFriendlyURL())
+				).and(
+					LayoutTable.INSTANCE.sourcePrototypeLayoutUuid.isNull()
+				).and(
+					GroupTable.INSTANCE.groupId.eq(layout.getGroupId())
+				)
+			));
 	}
 
 	private boolean _hasLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(
@@ -2630,50 +2706,6 @@ public class SitesImpl implements Sites {
 		}
 
 		return true;
-	}
-
-	private boolean _hasLayoutSetPrototypeFriendlyURLConflictSiteLayouts(
-			long groupId, String layoutUuid, String friendlyURL)
-		throws PortalException {
-
-		Group group = GroupLocalServiceUtil.getGroup(groupId);
-
-		if (!group.isLayoutSetPrototype()) {
-			return false;
-		}
-
-		List<Layout> layouts = new ArrayList<>();
-
-		LayoutSetPrototype layoutSetPrototype =
-			LayoutSetPrototypeLocalServiceUtil.getLayoutSetPrototype(
-				group.getClassPK());
-
-		List<LayoutSet> layoutSets =
-			LayoutSetLocalServiceUtil.getLayoutSetsByLayoutSetPrototypeUuid(
-				layoutSetPrototype.getUuid());
-
-		for (LayoutSet layoutSet : layoutSets) {
-			LayoutFriendlyURL layoutFriendlyURL =
-				LayoutFriendlyURLLocalServiceUtil.fetchFirstLayoutFriendlyURL(
-					layoutSet.getGroupId(), layoutSet.isPrivateLayout(),
-					friendlyURL);
-
-			if (layoutFriendlyURL != null) {
-				Layout foundLayout = LayoutLocalServiceUtil.getLayout(
-					layoutFriendlyURL.getPlid());
-
-				String foundLayoutPrototypeUuid =
-					foundLayout.getSourcePrototypeLayoutUuid();
-
-				if (Validator.isNull(layoutUuid) ||
-					!foundLayoutPrototypeUuid.equals(layoutUuid)) {
-
-					layouts.add(foundLayout);
-				}
-			}
-		}
-
-		return !layouts.isEmpty();
 	}
 
 	private void _releaseLock(String className, long classPK, String owner) {
