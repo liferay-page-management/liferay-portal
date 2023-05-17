@@ -352,7 +352,10 @@ export function MenuItem({item, onMenuItemRemoved}) {
 
 										{item.icon && (
 											<ClayIcon
-												className="ml-2 text-warning"
+												className="lfr-portal-tooltip ml-2 text-warning"
+												data-title={Liferay.Language.get(
+													'this-item-does-not-have-a-display-page'
+												)}
 												symbol={item.icon}
 											/>
 										)}
