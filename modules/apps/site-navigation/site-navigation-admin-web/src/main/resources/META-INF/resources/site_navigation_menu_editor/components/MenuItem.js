@@ -267,17 +267,13 @@ export function MenuItem({item, onMenuItemRemoved}) {
 	return (
 		<>
 			<div
-				aria-description={
+				aria-label={
 					item.icon
-						? sub(
-								Liferay.Language.get(
-									'x-does-not-have-a-display-page-available'
-								),
-								`${title} (${type})`
-						  )
-						: null
+						? `${title} (${type}). ${Liferay.Language.get(
+								'this-item-does-not-have-a-display-page'
+						  )}`
+						: `${title} (${type})`
 				}
-				aria-label={`${title} (${type})`}
 				aria-level={itemPath.length}
 				className={classNames(
 					'focusable-menu-item site_navigation_menu_editor_MenuItem',
