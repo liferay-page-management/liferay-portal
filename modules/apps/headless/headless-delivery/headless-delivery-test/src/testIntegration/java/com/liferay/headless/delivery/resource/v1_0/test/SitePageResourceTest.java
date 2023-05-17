@@ -15,6 +15,9 @@
 package com.liferay.headless.delivery.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.model.AssetTag;
+import com.liferay.asset.kernel.service.AssetTagLocalService;
+import com.liferay.headless.delivery.client.dto.v1_0.ParentSitePage;
 import com.liferay.headless.delivery.client.dto.v1_0.SitePage;
 import com.liferay.headless.delivery.client.pagination.Page;
 import com.liferay.headless.delivery.client.problem.Problem;
@@ -41,12 +44,17 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.odata.entity.EntityField;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.segments.constants.SegmentsEntryConstants;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
@@ -60,6 +68,7 @@ import java.io.InputStream;
 import java.net.URLEncoder;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -218,6 +227,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testPostSiteSitePageFailureFriendlyURLEndsWithSlash();
 		_testPostSiteSitePageFailureFriendlyURLTooLong();
 		_testPostSiteSitePageFailureFriendlyURLTooShort();
+		_testPostSiteSitePageSuccessInvalidParentSitePage();
+		_testPostSiteSitePageSuccessKeywords();
 	}
 
 	@Override
@@ -508,6 +519,78 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			Assert.assertEquals("LayoutNameException", problem.getType());
 		}
 	}
+
+	private void _testPostSiteSitePageSuccessInvalidParentSitePage()
+		throws Exception {
+
+		SitePage randomSitePage = randomSitePage();
+
+		randomSitePage.setParentSitePage(
+			new ParentSitePage() {
+				{
+					friendlyUrlPath = RandomTestUtil.randomString();
+				}
+			});
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				_CLASS_NAME_EXCEPTION_MAPPER, LoggerTestUtil.WARN)) {
+
+			SitePage postSitePage = testPostSiteSitePage_addSitePage(
+				randomSitePage);
+
+			Layout layout = _layoutLocalService.fetchLayout(
+				postSitePage.getId());
+
+			Assert.assertNotNull(layout);
+
+			Assert.assertEquals(0, layout.getParentPlid());
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				"Could not find parent site page", logEntry.getMessage());
+		}
+	}
+
+	private void _testPostSiteSitePageSuccessKeywords() throws Exception {
+		SitePage randomSitePage = randomSitePage();
+
+		String[] keywords = {
+			RandomTestUtil.randomString(), RandomTestUtil.randomString()
+		};
+
+		randomSitePage.setKeywords(keywords);
+
+		SitePage postSitePage = testPostSiteSitePage_addSitePage(
+			randomSitePage);
+
+		Layout layout = _layoutLocalService.fetchLayout(postSitePage.getId());
+
+		Assert.assertNotNull(layout);
+
+		String[] tags = ListUtil.toArray(
+			_assetTagLocalService.getTags(
+				Layout.class.getName(), layout.getPlid()),
+			AssetTag.NAME_ACCESSOR);
+
+		Assert.assertEquals(tags.toString(), 2, tags.length);
+
+		for (String keyword : keywords) {
+			Assert.assertTrue(
+				ArrayUtil.contains(tags, StringUtil.toLowerCase(keyword)));
+		}
+	}
+
+	private static final String _CLASS_NAME_EXCEPTION_MAPPER =
+		"com.liferay.headless.delivery.internal.resource.v1_0." +
+			"SitePageResourceImpl";
+
+	@Inject
+	private AssetTagLocalService _assetTagLocalService;
 
 	@Inject
 	private GroupLocalService _groupLocalService;
