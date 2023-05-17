@@ -30,6 +30,8 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -205,6 +207,20 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	}
 
 	@Override
+	@Test
+	public void testPostSiteSitePage() throws Exception {
+		super.testPostSiteSitePage();
+
+		_testPostSiteSitePageFailureDuplicateFriendlyURL();
+		_testPostSiteSitePageFailureInvalidTitle();
+		_testPostSiteSitePageFailureFriendlyURLContainsDoubleSlash();
+		_testPostSiteSitePageFailureFriendlyURLContainsInvalidCharacters();
+		_testPostSiteSitePageFailureFriendlyURLEndsWithSlash();
+		_testPostSiteSitePageFailureFriendlyURLTooLong();
+		_testPostSiteSitePageFailureFriendlyURLTooShort();
+	}
+
+	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {"friendlyUrlPath", "title"};
 	}
@@ -339,6 +355,158 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			"dependencies/" + fileName);
 
 		return StringUtil.read(inputStream);
+	}
+
+	private void _testPostSiteSitePageFailureDuplicateFriendlyURL()
+		throws Exception {
+
+		SitePage randomSitePage = randomSitePage();
+
+		testPostSiteSitePage_addSitePage(randomSitePage);
+
+		try {
+			testPostSiteSitePage_addSitePage(randomSitePage);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+			Assert.assertEquals(
+				"LayoutFriendlyURLsException", problem.getType());
+		}
+	}
+
+	private void _testPostSiteSitePageFailureFriendlyURLContainsDoubleSlash()
+		throws Exception {
+
+		SitePage randomSitePage = randomSitePage();
+
+		randomSitePage.setFriendlyUrlPath(
+			RandomTestUtil.randomString() + StringPool.DOUBLE_SLASH +
+				RandomTestUtil.randomString());
+
+		try {
+			testPostSiteSitePage_addSitePage(randomSitePage);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+			Assert.assertEquals(
+				"LayoutFriendlyURLsException", problem.getType());
+		}
+	}
+
+	private void _testPostSiteSitePageFailureFriendlyURLContainsInvalidCharacters()
+		throws Exception {
+
+		SitePage randomSitePage = randomSitePage();
+
+		randomSitePage.setFriendlyUrlPath("-%.+\\*_");
+
+		try {
+			testPostSiteSitePage_addSitePage(randomSitePage);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+			Assert.assertEquals(
+				"LayoutFriendlyURLsException", problem.getType());
+		}
+	}
+
+	private void _testPostSiteSitePageFailureFriendlyURLEndsWithSlash()
+		throws Exception {
+
+		SitePage randomSitePage = randomSitePage();
+
+		randomSitePage.setFriendlyUrlPath(
+			RandomTestUtil.randomString() + StringPool.FORWARD_SLASH);
+
+		try {
+			testPostSiteSitePage_addSitePage(randomSitePage);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+			Assert.assertEquals(
+				"LayoutFriendlyURLsException", problem.getType());
+		}
+	}
+
+	private void _testPostSiteSitePageFailureFriendlyURLTooLong()
+		throws Exception {
+
+		SitePage randomSitePage = randomSitePage();
+
+		randomSitePage.setFriendlyUrlPath(
+			RandomTestUtil.randomString(
+				LayoutConstants.FRIENDLY_URL_MAX_LENGTH + 1));
+
+		try {
+			testPostSiteSitePage_addSitePage(randomSitePage);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+			Assert.assertEquals(
+				"LayoutFriendlyURLsException", problem.getType());
+		}
+	}
+
+	private void _testPostSiteSitePageFailureFriendlyURLTooShort()
+		throws Exception {
+
+		SitePage randomSitePage = randomSitePage();
+
+		randomSitePage.setFriendlyUrlPath("a");
+
+		try {
+			testPostSiteSitePage_addSitePage(randomSitePage);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+			Assert.assertEquals(
+				"LayoutFriendlyURLsException", problem.getType());
+		}
+	}
+
+	private void _testPostSiteSitePageFailureInvalidTitle() throws Exception {
+		SitePage randomSitePage = randomSitePage();
+
+		int maxLength = ModelHintsUtil.getMaxLength(
+			Layout.class.getName(), "friendlyURL");
+
+		randomSitePage.setTitle(RandomTestUtil.randomString(maxLength + 1));
+
+		try {
+			testPostSiteSitePage_addSitePage(randomSitePage);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+			Assert.assertEquals("LayoutNameException", problem.getType());
+		}
 	}
 
 	@Inject
