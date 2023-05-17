@@ -356,7 +356,7 @@
 
 <tr>
 	<td>CONTRIBUTED_FRAGMENT_TEXT</td>
-	<td>xpath=(//div[contains(@id,'fragment-')][.//*[contains(@class,'${fragmentName}')]])[${index}]//*[contains(@data-lfr-editable-id,'${id}')]</td>
+	<td>xpath=(//div[contains(@id,'fragment-')][.//*[contains(@class,'${fragmentName}')]])[${index}]//*[contains(@data-lfr-editable-id,'${id}')] | //*[contains(@class,'${fragmentName}')][${index}]//*[contains(@data-lfr-editable-id,'${id}')]</td>
 	<td></td>
 </tr>
 <tr>
