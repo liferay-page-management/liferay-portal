@@ -241,6 +241,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testPostSiteSitePageFailureFriendlyURLTooShort();
 		_testPostSiteSitePageSuccessInvalidParentSitePage();
 		_testPostSiteSitePageSuccessKeywords();
+		_testPostSiteSitePageFailurePagePermissionsActionKeyNonexisting();
 		_testPostSiteSitePageSuccessPagePermissions();
 		_testPostSiteSitePageSuccessPagePermissionsActionKeysEmpty();
 		_testPostSiteSitePageSuccessPagePermissionsEmpty();
@@ -535,6 +536,34 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
 			Assert.assertEquals("LayoutNameException", problem.getType());
+		}
+	}
+
+	private void _testPostSiteSitePageFailurePagePermissionsActionKeyNonexisting()
+		throws Exception {
+
+		SitePage randomSitePage = randomSitePage();
+
+		PagePermission[] inputPagePermissions = {
+			new PagePermission() {
+				{
+					actionKeys = new String[] {RandomTestUtil.randomString()};
+					roleKey = RoleConstants.OWNER;
+				}
+			}
+		};
+
+		randomSitePage.setPagePermissions(inputPagePermissions);
+
+		try {
+			testPostSiteSitePage_addSitePage(randomSitePage);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
 		}
 	}
 
