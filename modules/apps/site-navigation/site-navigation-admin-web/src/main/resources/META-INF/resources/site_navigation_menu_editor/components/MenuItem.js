@@ -349,7 +349,8 @@ export function MenuItem({item, onMenuItemRemoved}) {
 								<ClayLayout.ContentCol expand>
 									<ClayCard.Description
 										displayType="title"
-										title={title}
+										title={null}
+										truncate={false}
 									>
 										{title}
 
