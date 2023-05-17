@@ -43,6 +43,7 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -240,6 +241,12 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testPostSiteSitePageFailureFriendlyURLTooShort();
 		_testPostSiteSitePageSuccessInvalidParentSitePage();
 		_testPostSiteSitePageSuccessKeywords();
+		_testPostSiteSitePageSuccessPagePermissions();
+		_testPostSiteSitePageSuccessPagePermissionsActionKeysEmpty();
+		_testPostSiteSitePageSuccessPagePermissionsEmpty();
+		_testPostSiteSitePageSuccessPagePermissionsNull();
+		_testPostSiteSitePageSuccessPagePermissionsRoleNonexisting();
+		_testPostSiteSitePageSuccessPagePermissionsRoleOwnerMissing();
 	}
 
 	@Override
@@ -596,6 +603,31 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		}
 	}
 
+	private void _testPostSiteSitePageSuccessPagePermissions()
+		throws Exception {
+
+		PagePermission[] expectedPagePermissions = {
+			new PagePermission() {
+				{
+					actionKeys = new String[] {
+						ActionKeys.DELETE_DISCUSSION,
+						ActionKeys.UPDATE_LAYOUT_LIMITED
+					};
+					roleKey = RoleConstants.OWNER;
+				}
+			},
+			new PagePermission() {
+				{
+					actionKeys = new String[] {ActionKeys.VIEW};
+					roleKey = RoleConstants.SITE_MEMBER;
+				}
+			}
+		};
+
+		_testPostSiteSitePageSuccessPagePermissions(
+			expectedPagePermissions, expectedPagePermissions);
+	}
+
 	private void _testPostSiteSitePageSuccessPagePermissions(
 			PagePermission[] expectedPagePermissions,
 			PagePermission[] inputPagePermissions)
@@ -658,6 +690,184 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				Assert.assertTrue(actionIdsSet.contains(actionKey));
 			}
 		}
+	}
+
+	private void _testPostSiteSitePageSuccessPagePermissionsActionKeysEmpty()
+		throws Exception {
+
+		PagePermission[] expectedPagePermissions = {
+			new PagePermission() {
+				{
+					actionKeys = new String[] {
+						ActionKeys.DELETE_DISCUSSION,
+						ActionKeys.UPDATE_LAYOUT_LIMITED
+					};
+					roleKey = RoleConstants.OWNER;
+				}
+			}
+		};
+
+		PagePermission[] inputPagePermissions = {
+			new PagePermission() {
+				{
+					actionKeys = new String[] {
+						ActionKeys.DELETE_DISCUSSION,
+						ActionKeys.UPDATE_LAYOUT_LIMITED
+					};
+					roleKey = RoleConstants.OWNER;
+				}
+			},
+			new PagePermission() {
+				{
+					actionKeys = new String[0];
+					roleKey = RoleConstants.SITE_MEMBER;
+				}
+			}
+		};
+
+		_testPostSiteSitePageSuccessPagePermissions(
+			expectedPagePermissions, inputPagePermissions);
+	}
+
+	private void _testPostSiteSitePageSuccessPagePermissionsEmpty()
+		throws Exception {
+
+		PagePermission[] expectedPagePermissions = {
+			new PagePermission() {
+				{
+					actionKeys = new String[] {
+						ActionKeys.UPDATE_DISCUSSION, ActionKeys.PERMISSIONS,
+						ActionKeys.UPDATE_LAYOUT_ADVANCED_OPTIONS,
+						ActionKeys.UPDATE_LAYOUT_CONTENT, ActionKeys.CUSTOMIZE,
+						ActionKeys.ADD_LAYOUT, ActionKeys.VIEW,
+						ActionKeys.DELETE, ActionKeys.UPDATE_LAYOUT_BASIC,
+						ActionKeys.DELETE_DISCUSSION,
+						ActionKeys.CONFIGURE_PORTLETS, ActionKeys.UPDATE,
+						ActionKeys.UPDATE_LAYOUT_LIMITED,
+						ActionKeys.ADD_DISCUSSION
+					};
+					roleKey = RoleConstants.OWNER;
+				}
+			}
+		};
+
+		PagePermission[] inputPagePermissions = {};
+
+		_testPostSiteSitePageSuccessPagePermissions(
+			expectedPagePermissions, inputPagePermissions);
+	}
+
+	private void _testPostSiteSitePageSuccessPagePermissionsNull()
+		throws Exception {
+
+		PagePermission[] expectedPagePermissions = {
+			new PagePermission() {
+				{
+					actionKeys = new String[] {
+						ActionKeys.UPDATE_DISCUSSION, ActionKeys.PERMISSIONS,
+						ActionKeys.UPDATE_LAYOUT_ADVANCED_OPTIONS,
+						ActionKeys.UPDATE_LAYOUT_CONTENT, ActionKeys.CUSTOMIZE,
+						ActionKeys.ADD_LAYOUT, ActionKeys.VIEW,
+						ActionKeys.DELETE, ActionKeys.UPDATE_LAYOUT_BASIC,
+						ActionKeys.DELETE_DISCUSSION,
+						ActionKeys.CONFIGURE_PORTLETS, ActionKeys.UPDATE,
+						ActionKeys.UPDATE_LAYOUT_LIMITED,
+						ActionKeys.ADD_DISCUSSION
+					};
+					roleKey = RoleConstants.OWNER;
+				}
+			},
+			new PagePermission() {
+				{
+					actionKeys = new String[] {
+						ActionKeys.CUSTOMIZE, ActionKeys.VIEW,
+						ActionKeys.ADD_DISCUSSION
+					};
+					roleKey = RoleConstants.SITE_MEMBER;
+				}
+			},
+			new PagePermission() {
+				{
+					actionKeys = new String[] {ActionKeys.VIEW};
+					roleKey = RoleConstants.GUEST;
+				}
+			}
+		};
+
+		_testPostSiteSitePageSuccessPagePermissions(
+			expectedPagePermissions, null);
+	}
+
+	private void _testPostSiteSitePageSuccessPagePermissionsRoleNonexisting()
+		throws Exception {
+
+		PagePermission[] expectedPagePermissions = {
+			new PagePermission() {
+				{
+					actionKeys = new String[] {ActionKeys.UPDATE};
+					roleKey = RoleConstants.OWNER;
+				}
+			}
+		};
+
+		PagePermission[] inputPagePermissions = {
+			new PagePermission() {
+				{
+					actionKeys = new String[] {ActionKeys.UPDATE};
+					roleKey = RoleConstants.OWNER;
+				}
+			},
+			new PagePermission() {
+				{
+					actionKeys = new String[] {ActionKeys.VIEW};
+					roleKey = RandomTestUtil.randomString();
+				}
+			}
+		};
+
+		_testPostSiteSitePageSuccessPagePermissions(
+			expectedPagePermissions, inputPagePermissions);
+	}
+
+	private void _testPostSiteSitePageSuccessPagePermissionsRoleOwnerMissing()
+		throws Exception {
+
+		PagePermission[] expectedPagePermissions = {
+			new PagePermission() {
+				{
+					actionKeys = new String[] {
+						ActionKeys.UPDATE_DISCUSSION, ActionKeys.PERMISSIONS,
+						ActionKeys.UPDATE_LAYOUT_ADVANCED_OPTIONS,
+						ActionKeys.UPDATE_LAYOUT_CONTENT, ActionKeys.CUSTOMIZE,
+						ActionKeys.ADD_LAYOUT, ActionKeys.VIEW,
+						ActionKeys.DELETE, ActionKeys.UPDATE_LAYOUT_BASIC,
+						ActionKeys.DELETE_DISCUSSION,
+						ActionKeys.CONFIGURE_PORTLETS, ActionKeys.UPDATE,
+						ActionKeys.UPDATE_LAYOUT_LIMITED,
+						ActionKeys.ADD_DISCUSSION
+					};
+					roleKey = RoleConstants.OWNER;
+				}
+			},
+			new PagePermission() {
+				{
+					actionKeys = new String[] {ActionKeys.VIEW};
+					roleKey = RoleConstants.GUEST;
+				}
+			}
+		};
+
+		PagePermission[] inputPagePermissions = {
+			new PagePermission() {
+				{
+					actionKeys = new String[] {ActionKeys.VIEW};
+					roleKey = RoleConstants.GUEST;
+				}
+			}
+		};
+
+		_testPostSiteSitePageSuccessPagePermissions(
+			expectedPagePermissions, inputPagePermissions);
 	}
 
 	private static final String _CLASS_NAME_EXCEPTION_MAPPER =
