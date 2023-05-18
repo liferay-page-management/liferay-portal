@@ -36,6 +36,8 @@ import com.liferay.info.type.Labeled;
 import com.liferay.info.type.WebImage;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
 import com.liferay.layout.display.page.constants.LayoutDisplayPageWebKeys;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -43,14 +45,17 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.trash.TrashHandler;
 import com.liferay.portal.kernel.trash.TrashHandlerRegistryUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Html;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -183,6 +188,15 @@ public class FragmentEntryProcessorHelperImpl
 
 		if ((trashHandler != null) && trashHandler.isInTrash(classPK)) {
 			return null;
+		}
+
+		if (Validator.isNotNull(
+				editableValueJSONObject.getString("displayPageKey"))) {
+
+			return _getDisplayPageURL(
+				className, classPK,
+				editableValueJSONObject.getString("displayPageKey"),
+				fragmentEntryProcessorContext);
 		}
 
 		InfoItemFieldValuesProvider infoItemFieldValuesProvider =
@@ -391,6 +405,37 @@ public class FragmentEntryProcessorHelperImpl
 		_defaultPatterns.put(locale, defaultPattern);
 
 		return defaultPattern;
+	}
+
+	private String _getDisplayPageURL(
+			String className, long classPK, String displayPageKey,
+			FragmentEntryProcessorContext fragmentEntryProcessorContext)
+		throws PortalException {
+
+		HttpServletRequest httpServletRequest =
+			fragmentEntryProcessorContext.getHttpServletRequest();
+
+		if (httpServletRequest == null) {
+			return StringPool.BLANK;
+		}
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntry(
+				themeDisplay.getScopeGroupId(), displayPageKey);
+
+		if (layoutPageTemplateEntry == null) {
+			return StringPool.BLANK;
+		}
+
+		return HttpComponentsUtil.addParameters(
+			themeDisplay.getPortalURL() + "/display-page/custom/", "className",
+			className, "classPK", classPK, "selPlid",
+			layoutPageTemplateEntry.getPlid(), "p_l_back_url",
+			themeDisplay.getURLCurrent());
 	}
 
 	private long _getFileEntryId(
@@ -679,6 +724,9 @@ public class FragmentEntryProcessorHelperImpl
 
 	@Reference
 	private Language _language;
+
+	@Reference
+	private LayoutPageTemplateEntryService _layoutPageTemplateEntryService;
 
 	@Reference
 	private Portal _portal;
