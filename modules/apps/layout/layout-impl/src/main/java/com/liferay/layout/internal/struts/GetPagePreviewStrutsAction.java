@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.theme.ThemeUtil;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -49,6 +50,8 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.segments.constants.SegmentsWebKeys;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
+
+import java.util.Objects;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -134,12 +137,18 @@ public class GetPagePreviewStrutsAction implements StrutsAction {
 
 			themeDisplay.setLocale(LocaleUtil.fromLanguageId(languageId));
 
-			themeDisplay.setSignedIn(false);
+			if (Objects.equals(
+					ParamUtil.getString(
+						httpServletRequest, "p_l_mode", Constants.VIEW),
+					Constants.PREVIEW)) {
 
-			User guestUser = _userLocalService.getGuestUser(
-				themeDisplay.getCompanyId());
+				themeDisplay.setSignedIn(false);
 
-			themeDisplay.setUser(guestUser);
+				User guestUser = _userLocalService.getGuestUser(
+					themeDisplay.getCompanyId());
+
+				themeDisplay.setUser(guestUser);
+			}
 
 			Layout layout = themeDisplay.getLayout();
 
