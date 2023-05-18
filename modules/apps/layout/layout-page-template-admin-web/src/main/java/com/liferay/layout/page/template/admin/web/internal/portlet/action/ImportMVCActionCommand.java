@@ -80,8 +80,7 @@ public class ImportMVCActionCommand extends BaseMVCActionCommand {
 
 		File file = uploadPortletRequest.getFile("file");
 
-		boolean overwrite = ParamUtil.getBoolean(
-			actionRequest, "overwrite", true);
+		boolean overwrite = ParamUtil.getBoolean(actionRequest, "overwrite");
 
 		try {
 			List<LayoutsImporterResultEntry> layoutsImporterResultEntries =
