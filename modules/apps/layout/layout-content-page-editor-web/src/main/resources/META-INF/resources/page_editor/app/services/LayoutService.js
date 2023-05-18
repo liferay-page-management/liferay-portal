@@ -112,6 +112,19 @@ export default {
 		);
 	},
 
+	getAssetDisplayPages({classNameId, classTypeId}) {
+		return serviceFetch(
+			config.getAssetDisplayPagesURL,
+			{
+				body: {
+					classNameId,
+					classTypeId,
+				},
+			},
+			() => {}
+		);
+	},
+
 	/**
 	 * @param {object} layout
 	 * @returns {Promise<{error: Error, friendlyURL: string}>}

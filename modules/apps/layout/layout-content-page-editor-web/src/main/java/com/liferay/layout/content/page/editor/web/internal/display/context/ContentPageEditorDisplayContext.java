@@ -410,6 +410,10 @@ public class ContentPageEditorDisplayContext {
 						_getDefaultStyleBookEntry());
 				}
 			).put(
+				"getAssetDisplayPagesURL",
+				_getResourceURL(
+					"/layout_content_page_editor/get_asset_display_pages")
+			).put(
 				"getAvailableImageConfigurationsURL",
 				_getResourceURL(
 					"/layout_content_page_editor" +

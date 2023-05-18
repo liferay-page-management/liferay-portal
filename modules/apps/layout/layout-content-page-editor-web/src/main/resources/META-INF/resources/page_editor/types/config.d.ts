@@ -119,6 +119,7 @@ export interface Config {
 			value: string;
 		} | string;
 	};
+	getAssetDisplayPagesURL: string;
 	getAvailableTemplatesURL: string;
 	getCollectionConfigurationURL: string;
 	getCollectionFieldURL: string;
