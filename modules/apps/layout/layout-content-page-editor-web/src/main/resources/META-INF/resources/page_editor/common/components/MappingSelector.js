@@ -26,11 +26,14 @@ import {useCollectionConfig} from '../../app/contexts/CollectionItemContext';
 import {useDispatch, useSelector} from '../../app/contexts/StoreContext';
 import {selectPageContents} from '../../app/selectors/selectPageContents';
 import InfoItemService from '../../app/services/InfoItemService';
+import LayoutService from '../../app/services/LayoutService';
+import {CACHE_KEYS} from '../../app/utils/cache';
 import isMapped from '../../app/utils/editable_value/isMapped';
 import isMappedToInfoItem from '../../app/utils/editable_value/isMappedToInfoItem';
 import isMappedToStructure from '../../app/utils/editable_value/isMappedToStructure';
 import getMappingFieldsKey from '../../app/utils/getMappingFieldsKey';
 import itemSelectorValueToInfoItem from '../../app/utils/item_selector_value/itemSelectorValueToInfoItem';
+import useCache from '../../app/utils/useCache';
 import {useId} from '../hooks/useId';
 import ItemSelector from './ItemSelector';
 import MappingFieldSelector from './MappingFieldSelector';
@@ -468,7 +471,91 @@ function MappingSelector({
 					value={selectedItem.mappedField || selectedItem.fieldId}
 				/>
 			</ClayForm.Group>
+
+			{Liferay.FeatureFlags['LPS-183727'] &&
+				(selectedItem.mappedField?.endsWith('displayPageURL') ||
+					selectedItem.fieldId?.endsWith('displayPageURL')) && (
+					<DisplayPageSelector
+						onMappingSelect={onMappingSelect}
+						selectedItem={selectedItem}
+						selectedSourceType={selectedSourceType}
+						setSelectedItem={setSelectedItem}
+					/>
+				)}
 		</>
+	);
+}
+
+function DisplayPageSelector({
+	onMappingSelect,
+	selectedItem,
+	selectedSourceType,
+	setSelectedItem,
+}) {
+	let {classNameId, classTypeId} = selectedItem;
+
+	if (selectedSourceType === MAPPING_SOURCE_TYPES.structure) {
+		classNameId = config.selectedMappingTypes.type.id;
+		classTypeId = config.selectedMappingTypes.subtype.id;
+	}
+
+	const mappingSelectorSourceSelectId = useId();
+
+	const displayPages = useCache({
+		fetcher: () =>
+			LayoutService.getAssetDisplayPages({
+				classNameId,
+				classTypeId,
+			}),
+		key: [CACHE_KEYS.assetDisplayPages, classNameId, classTypeId],
+	});
+
+	if (!displayPages?.length) {
+		return null;
+	}
+
+	const defaultDisplayPage = displayPages.find(
+		(displayPage) => displayPage.default
+	);
+
+	const options = [
+		{
+			label: sub(
+				Liferay.Language.get('x-default'),
+				defaultDisplayPage?.name ?? Liferay.Language.get('none')
+			),
+			value: '',
+		},
+		...displayPages
+			.filter((displayPages) => !displayPages.default)
+			.map((displayPage) => ({
+				label: displayPage.name,
+				value: displayPage.key,
+			})),
+	];
+
+	return (
+		<ClayForm.Group small>
+			<label htmlFor={mappingSelectorSourceSelectId}>
+				{Liferay.Language.get('display-page')}
+			</label>
+
+			<ClaySelectWithOption
+				className="pr-4 text-truncate"
+				id={mappingSelectorSourceSelectId}
+				onChange={(event) => {
+					const nextItem = {
+						...selectedItem,
+						displayPageKey: event.target.value,
+					};
+
+					setSelectedItem(nextItem);
+					onMappingSelect(nextItem);
+				}}
+				options={options}
+				value={selectedItem.displayPageKey || ''}
+			/>
+		</ClayForm.Group>
 	);
 }
 
