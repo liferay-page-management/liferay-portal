@@ -20,6 +20,17 @@
 	componentId='<%= liferayPortletResponse.getNamespace() + "addIconAction" %>'
 	context='<%=
 		HashMapBuilder.<String, Object>put(
+			"importURL",
+			PortletURLBuilder.create(
+				PortalUtil.getControlPanelPortletURL(liferayPortletRequest, LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES, PortletRequest.ACTION_PHASE)
+			).setActionName(
+				"/layout_page_template_admin/import"
+			).setRedirect(
+				currentURL
+			).setPortletResource(
+				portletDisplay.getId()
+			).buildString()
+		).put(
 			"url",
 			PortletURLBuilder.create(
 				PortalUtil.getControlPanelPortletURL(liferayPortletRequest, LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES, PortletRequest.RENDER_PHASE)

@@ -17,7 +17,7 @@ import {unmountComponentAtNode} from 'react-dom';
 
 import ImportModal from './modal/ImportModal';
 
-export default function ({namespace, url}) {
+export default function ({importURL, namespace, url}) {
 	Liferay.Util.setPortletConfigurationIconAction(`${namespace}import`, () => {
 		if (Liferay.FeatureFlags['LPS-174939']) {
 			const modalContainer = document.createElement('div');
@@ -35,6 +35,7 @@ export default function ({namespace, url}) {
 				ImportModal,
 				{
 					disposeModal,
+					importURL,
 					namespace,
 				},
 				modalContainer
