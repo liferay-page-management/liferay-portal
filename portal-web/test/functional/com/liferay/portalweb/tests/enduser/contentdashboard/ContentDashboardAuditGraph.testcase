@@ -441,14 +441,11 @@ definition {
 		task ("Prioritize stage vocabulary") {
 			ContentDashboard.setVocabularyInUseTopPosition(key_vocabularyName = "Stage");
 
-			AssertElementPresent(
-				locator1 = "ContentDashboard#X_AXIS_VOCABULARY_NAME",
-				xAxisCategoryName = "Stage 1");
+			ContentDashboard.moveVocabularyDisplayConfiguration(vocabularyName = "Audience");
 
 			AssertTextEquals(
-				auditGraphTitle = "Content per Stage",
-				locator1 = "ContentDashboard#AUDIT_GRAPH_TITLE",
-				value1 = "Content per Stage");
+				locator1 = "ContentDashboard#EMPTY_AUDIT_GRAPH_TEXT",
+				value1 = "There is no data.");
 		}
 	}
 
