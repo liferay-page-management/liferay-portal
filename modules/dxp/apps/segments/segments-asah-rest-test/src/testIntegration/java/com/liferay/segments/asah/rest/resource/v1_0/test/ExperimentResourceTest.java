@@ -48,8 +48,6 @@ public class ExperimentResourceTest extends BaseExperimentResourceTestCase {
 			SegmentsTestUtil.addSegmentsExperiment(
 				testGroup.getGroupId(),
 				segmentsExperience.getSegmentsExperienceId(),
-				ClassNameLocalServiceUtil.getClassNameId(
-					Layout.class.getName()),
 				segmentsExperience.getPlid()));
 	}
 
