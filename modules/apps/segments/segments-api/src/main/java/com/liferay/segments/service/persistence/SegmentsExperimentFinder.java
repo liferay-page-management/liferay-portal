@@ -24,13 +24,12 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface SegmentsExperimentFinder {
 
 	public int countByS_P_S(
-		long segmentsExperienceId, long plid,
-		int[] statuses);
+		long segmentsExperienceId, long plid, int[] statuses);
 
 	public java.util.List<com.liferay.segments.model.SegmentsExperiment>
 		findByS_P_S(
-			long segmentsExperienceId, long plid,
-			int[] statuses, int start, int end,
+			long segmentsExperienceId, long plid, int[] statuses, int start,
+			int end,
 			com.liferay.portal.kernel.util.OrderByComparator
 				<com.liferay.segments.model.SegmentsExperiment>
 					orderByComparator);
