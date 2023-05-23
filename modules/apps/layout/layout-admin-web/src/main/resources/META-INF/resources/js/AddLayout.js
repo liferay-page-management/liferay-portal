@@ -14,7 +14,14 @@
 
 import {fetch, getOpener, openToast} from 'frontend-js-web';
 
-export default function ({namespace}) {
+export default function ({
+	getConflictsResourceURL,
+	groupId,
+	isLayoutSetPrototype,
+	layoutSetPrototypeCheck,
+	namespace,
+	privateLayout,
+}) {
 	const addButton = document.getElementById(`${namespace}addButton`);
 
 	const form = document.getElementById(`${namespace}fm`);
@@ -29,49 +36,114 @@ export default function ({namespace}) {
 
 		addButton.disabled = true;
 
-		const formData = new FormData(form);
-
-		fetch(form.action, {
-			body: formData,
-			method: 'POST',
-		})
-			.then((response) => {
-				return response.json();
-			})
-			.then((response) => {
-				if (response.redirectURL) {
-					const redirectURL = new URL(
-						response.redirectURL,
-						window.location.origin
-					);
-
-					redirectURL.searchParams.set('p_p_state', 'normal');
-
-					const opener = getOpener();
-
-					opener.Liferay.fire('closeModal', {
-						id: 'addLayoutDialog',
-						redirect: redirectURL.toString(),
-					});
-				}
-				else {
-					addButton.disabled = false;
-
-					if (form.querySelector('.alert')) {
-						return;
-					}
-
-					const alertWrapper = document.createElement('div');
-
-					form.prepend(alertWrapper);
-
-					openToast({
-						autoClose: false,
-						container: alertWrapper,
-						message: response.errorMessage,
-						type: 'danger',
-					});
-				}
-			});
+		if (layoutSetPrototypeCheck) {
+			checkLayoutSetPrototypeConflicts(
+				addButton,
+				form,
+				getConflictsResourceURL,
+				groupId,
+				isLayoutSetPrototype,
+				namespace,
+				privateLayout
+			);
+		}
+		else {
+			submitForm(addButton, form);
+		}
 	});
+}
+
+function checkLayoutSetPrototypeConflicts(
+	addButton,
+	form,
+	getConflictsResourceURL,
+	groupId,
+	isLayoutSetPrototype,
+	namespace,
+	privateLayout
+) {
+	const name = document.getElementById(`${namespace}name`);
+
+	const url = new URL(getConflictsResourceURL, window.location.origin);
+
+	url.searchParams.set(`${namespace}groupId`, groupId);
+	url.searchParams.set(`${namespace}name`, name.value);
+	url.searchParams.set(`${namespace}privateLayout`, privateLayout);
+
+	Liferay.Util.fetch(url.toString())
+		.then((response) => {
+			return response.json();
+		})
+		.then((response) => {
+			if (!response.hasConflict) {
+				submitForm(addButton, form);
+
+				return;
+			}
+
+			Liferay.Util.openConfirmModal({
+				message: isLayoutSetPrototype
+					? Liferay.Language.get(
+							'the-friendly-url-of-the-site-template-page-you-are-trying-to-save-conflicts'
+					  )
+					: Liferay.Language.get(
+							'the-friendly-url-of-the-page-you-are-trying-to-save-conflicts'
+					  ),
+				onConfirm: (isConfirm) => {
+					if (isConfirm) {
+						submitForm(addButton, form);
+					}
+					else {
+						addButton.disabled = false;
+					}
+				},
+			});
+		});
+}
+
+function submitForm(addButton, form) {
+	const formData = new FormData(form);
+
+	fetch(form.action, {
+		body: formData,
+		method: 'POST',
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.then((response) => {
+			if (response.redirectURL) {
+				const redirectURL = new URL(
+					response.redirectURL,
+					window.location.origin
+				);
+
+				redirectURL.searchParams.set('p_p_state', 'normal');
+
+				const opener = getOpener();
+
+				opener.Liferay.fire('closeModal', {
+					id: 'addLayoutDialog',
+					redirect: redirectURL.toString(),
+				});
+			}
+			else {
+				addButton.disabled = false;
+
+				if (form.querySelector('.alert')) {
+					return;
+				}
+
+				const alertWrapper = document.createElement('div');
+
+				form.prepend(alertWrapper);
+
+				openToast({
+					autoClose: false,
+					container: alertWrapper,
+					message: response.errorMessage,
+					type: 'danger',
+				});
+			}
+		});
 }

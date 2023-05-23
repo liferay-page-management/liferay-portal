@@ -21,6 +21,10 @@ boolean copyPermissions = ParamUtil.getBoolean(request, "copyPermissions");
 long sourcePlid = ParamUtil.getLong(request, "sourcePlid");
 
 List<SiteNavigationMenu> autoSiteNavigationMenus = layoutsAdminDisplayContext.getAutoSiteNavigationMenus();
+
+LayoutSet selLayoutSet = layoutsAdminDisplayContext.getSelLayoutSet();
+
+Group group = layoutsAdminDisplayContext.getGroup();
 %>
 
 <clay:container-fluid>
@@ -111,7 +115,22 @@ List<SiteNavigationMenu> autoSiteNavigationMenus = layoutsAdminDisplayContext.ge
 	</liferay-frontend:edit-form>
 </clay:container-fluid>
 
+<liferay-portlet:resourceURL id="/layout_admin/get_layout_set_prototype_conflicts" portletName="<%= LayoutAdminPortletKeys.GROUP_PAGES %>" var="getConflictsResourceURL" />
+
 <liferay-frontend:component
 	componentId='<%= liferayPortletResponse.getNamespace() + "addLayout" %>'
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"getConflictsResourceURL", getConflictsResourceURL
+		).put(
+			"groupId", layoutsAdminDisplayContext.getGroupId()
+		).put(
+			"isLayoutSetPrototype", group.isLayoutSetPrototype()
+		).put(
+			"layoutSetPrototypeCheck", group.isLayoutSetPrototype() || selLayoutSet.isLayoutSetPrototypeLinkEnabled()
+		).put(
+			"privateLayout", selLayoutSet.getPrivateLayout()
+		).build()
+	%>'
 	module="js/AddLayout"
 />
