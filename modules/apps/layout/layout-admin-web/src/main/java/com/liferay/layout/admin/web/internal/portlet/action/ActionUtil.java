@@ -68,7 +68,8 @@ public class ActionUtil {
 					layout.getUuid(), layout.getFriendlyURL())) {
 
 				SessionMessages.add(
-					portletRequest, "friendlyURLConflictWithSiteLayouts");
+					portletRequest,
+					"friendlyURLConflictWithSiteLayoutSetPrototypeLayout");
 			}
 		}
 	}
