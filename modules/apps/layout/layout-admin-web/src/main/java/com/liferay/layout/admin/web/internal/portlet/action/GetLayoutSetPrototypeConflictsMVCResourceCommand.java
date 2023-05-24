@@ -17,6 +17,7 @@ package com.liferay.layout.admin.web.internal.portlet.action;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.set.prototype.helper.LayoutSetPrototypeHelper;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
@@ -51,6 +52,10 @@ public class GetLayoutSetPrototypeConflictsMVCResourceCommand
 	protected void doServeResource(
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPS-174417")) {
+			return;
+		}
 
 		long plid = ParamUtil.getLong(
 			resourceRequest, "plid", LayoutConstants.DEFAULT_PLID);

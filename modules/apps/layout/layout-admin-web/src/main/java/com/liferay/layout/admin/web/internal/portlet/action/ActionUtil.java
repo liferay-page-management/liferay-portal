@@ -18,6 +18,7 @@ import com.liferay.layout.set.prototype.helper.LayoutSetPrototypeHelper;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.ColorScheme;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -50,6 +51,10 @@ public class ActionUtil {
 			PortletRequest portletRequest, Layout layout,
 			LayoutSetPrototypeHelper layoutSetPrototypeHelper)
 		throws PortalException {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPS-174417")) {
+			return;
+		}
 
 		Group group = layout.getGroup();
 		LayoutSet layoutSet = layout.getLayoutSet();
