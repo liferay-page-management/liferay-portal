@@ -17,6 +17,7 @@ package com.liferay.layout.admin.web.internal.portlet.action;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.ColorScheme;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -53,7 +54,9 @@ public class ActionUtil {
 		Group group = layout.getGroup();
 		LayoutSet layoutSet = layout.getLayoutSet();
 
-		if (group.isLayoutSetPrototype()) {
+		if (FeatureFlagManagerUtil.isEnabled("LPS-174431") &&
+			group.isLayoutSetPrototype()) {
+
 			if (SitesUtil.hasLayoutSetPrototypeFriendlyURLConflicts(
 					layout.getGroupId(), layout.isPrivateLayout(),
 					layout.getUuid(), layout.getFriendlyURL())) {
@@ -62,7 +65,9 @@ public class ActionUtil {
 					portletRequest, "friendlyURLConflictWithSiteLayouts");
 			}
 		}
-		else if (layoutSet.isLayoutSetPrototypeLinkActive()) {
+		else if (FeatureFlagManagerUtil.isEnabled("LPS-174434") &&
+				 layoutSet.isLayoutSetPrototypeLinkActive()) {
+
 			if (SitesUtil.hasLayoutSetPrototypeFriendlyURLConflicts(
 					layout.getGroupId(), layout.isPrivateLayout(),
 					layout.getUuid(), layout.getFriendlyURL())) {
