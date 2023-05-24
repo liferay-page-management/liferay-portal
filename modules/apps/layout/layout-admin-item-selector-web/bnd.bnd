@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Layout Admin Item Selector Web
+Bundle-SymbolicName: com.liferay.layout.admin.item.selector.web
+Bundle-Version: 1.0.0
+Web-ContextPath: /layout-admin-item-selector-web
