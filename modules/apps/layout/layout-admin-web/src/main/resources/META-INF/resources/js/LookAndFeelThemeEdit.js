@@ -35,7 +35,7 @@ export default function ({
 
 		openSelectionModal({
 			onSelect: (selectedItem) => {
-				const themeId = selectedItem.themeid;
+				const themeId = JSON.parse(selectedItem.value).themeid;
 
 				if (themeId && selectedThemeId !== themeId) {
 					themeContainer.innerHTML = '';
