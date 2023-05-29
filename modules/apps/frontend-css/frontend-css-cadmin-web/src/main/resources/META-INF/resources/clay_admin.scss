@@ -253,6 +253,82 @@ html#{$cadmin-selector} {
 			display: none;
 		}
 
+		// CKEditor
+
+		.cke_chrome {
+			border: 1px solid $cadmin-gray-300;
+
+			.cke_bottom {
+				padding: 6px 8px 2px;
+			}
+
+			span.cke_top {
+				padding: 6px 7px;
+			}
+
+			.cke_reset_all,
+			.cke_reset_all a,
+			.cke_reset_all textarea {
+				font: 12px sans-serif;
+				text-decoration: none;
+			}
+
+			a.cke_button {
+				border: 2px solid transparent;
+				margin: 0 1px;
+				padding: 6px;
+
+				.cke_button_icon {
+					height: 16px;
+					width: 16px;
+				}
+
+				.cke_button_label {
+					color: $cadmin-gray-600;
+					font-weight: 600;
+					margin-top: 1px;
+					padding-left: 3px;
+				}
+			}
+
+			a.cke_button__source.cke_button_off
+				+ a.cke_button__expand.cke_button_disabled {
+				display: none;
+			}
+
+			a.cke_combo_button {
+				border: 2px solid transparent;
+				margin: 0 4px;
+				padding: 6px 18px;
+
+				.cke_combo_arrow {
+					border-left: 4px solid transparent;
+					border-right: 4px solid transparent;
+					border-top: 4px solid $cadmin-gray-600;
+				}
+
+				.cke_combo_open {
+					margin: 1px 1px 1px 10px;
+				}
+
+				.cke_combo_text {
+					color: $cadmin-gray-600;
+					font-weight: 600;
+				}
+			}
+
+			.cke_resizer {
+				border-width: 8px 8px 0 0;
+				height: 0;
+				margin: 6px -4px 2px;
+			}
+
+			.cke_toolgroup {
+				margin: 1px 4px 6px 0;
+				padding-right: 3px;
+			}
+		}
+
 		// Taglib Portlet Preview
 
 		.taglib-portlet-preview {
