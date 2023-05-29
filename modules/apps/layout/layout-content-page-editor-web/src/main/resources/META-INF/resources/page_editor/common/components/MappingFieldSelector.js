@@ -96,16 +96,26 @@ export default function MappingFieldSelector({
 							Liferay.Language.get(
 								'no-fields-are-available-for-x-editable'
 							),
-							[
-								EDITABLE_TYPES.backgroundImage,
-								EDITABLE_TYPES.image,
-							].includes(fieldType)
-								? Liferay.Language.get('image')
-								: Liferay.Language.get('text')
+							getWarningFieldLabel(fieldType)
 						)}
 					</ClayForm.FeedbackItem>
 				</ClayForm.FeedbackGroup>
 			)}
 		</ClayForm.Group>
 	);
+}
+
+function getWarningFieldLabel(fieldType) {
+	if (
+		[EDITABLE_TYPES.backgroundImage, EDITABLE_TYPES.image].includes(
+			fieldType
+		)
+	) {
+		return Liferay.Language.get('image');
+	}
+	else if (fieldType === EDITABLE_TYPES.action) {
+		return Liferay.Language.get('action');
+	}
+
+	return Liferay.Language.get('text');
 }
