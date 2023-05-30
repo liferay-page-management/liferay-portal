@@ -57,6 +57,7 @@ LayoutRevision layoutRevision = LayoutStagingUtil.getLayoutRevision(selLayout);
 	<aui:input name="selPlid" type="hidden" value="<%= layoutsAdminDisplayContext.getSelPlid() %>" />
 	<aui:input name="type" type="hidden" value="<%= selLayout.getType() %>" />
 	<aui:input name="<%= PortletDataHandlerKeys.SELECTED_LAYOUTS %>" type="hidden" />
+	<aui:input name="screenNavigationEntryKey" type="hidden" value='<%= ParamUtil.getString(request, "screenNavigationEntryKey") %>' />
 
 	<c:if test="<%= layoutsAdminDisplayContext.isLayoutPageTemplateEntry() || ((selLayout.isTypeAssetDisplay() || selLayout.isTypeContent()) && layoutsAdminDisplayContext.isDraft()) || !(selLayout.isTypeAssetDisplay() && selLayout.isTypeContent()) %>">
 

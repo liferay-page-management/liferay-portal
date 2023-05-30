@@ -25,6 +25,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.events.EventsProcessorUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
@@ -128,6 +129,9 @@ public class EditLayoutMVCActionCommand extends BaseMVCActionCommand {
 				uploadPortletRequest, "masterLayoutPlid",
 				layout.getMasterLayoutPlid());
 
+			String screenNavigationEntryKey = ParamUtil.getString(
+				actionRequest, "screenNavigationEntryKey");
+
 			ServiceContext serviceContext = ServiceContextFactory.getInstance(
 				Layout.class.getName(), actionRequest);
 
@@ -218,6 +222,19 @@ public class EditLayoutMVCActionCommand extends BaseMVCActionCommand {
 				formTypeSettingsUnicodeProperties.put(
 					"linkToLayoutId",
 					String.valueOf(linkToLayout.getLayoutId()));
+			}
+
+			if (FeatureFlagManagerUtil.isEnabled("LPS-153951") &&
+				layout.isDraftLayout() &&
+				StringUtil.equals("design", screenNavigationEntryKey)) {
+
+				layoutTypeSettingsUnicodeProperties =
+					layout.getTypeSettingsProperties();
+
+				layoutTypeSettingsUnicodeProperties.put(
+					"designConfigurationModified", StringPool.TRUE);
+
+				layout = _layoutLocalService.updateLayout(layout);
 			}
 
 			LayoutTypePortlet layoutTypePortlet =
