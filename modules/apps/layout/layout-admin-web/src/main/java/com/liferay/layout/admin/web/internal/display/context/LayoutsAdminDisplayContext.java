@@ -36,7 +36,7 @@ import com.liferay.item.selector.criteria.FileEntryItemSelectorReturnType;
 import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
 import com.liferay.item.selector.criteria.file.criterion.FileItemSelectorCriterion;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
-import com.liferay.layout.admin.item.selector.criterion.LayoutAdminItemSelectorCriterion;
+import com.liferay.layout.theme.item.selector.criterion.LayoutThemeItemSelectorCriterion;
 import com.liferay.layout.admin.web.internal.util.FaviconUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
@@ -1197,10 +1197,10 @@ public class LayoutsAdminDisplayContext {
 	}
 
 	public String getSelectThemeURL() {
-		LayoutAdminItemSelectorCriterion layoutAdminItemSelectorCriterion =
-			new LayoutAdminItemSelectorCriterion();
+		LayoutThemeItemSelectorCriterion layoutThemeItemSelectorCriterion =
+			new LayoutThemeItemSelectorCriterion();
 
-		layoutAdminItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
+		layoutThemeItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
 			Collections.singletonList(new UUIDItemSelectorReturnType()));
 
 		return String.valueOf(
@@ -1208,7 +1208,7 @@ public class LayoutsAdminDisplayContext {
 				RequestBackedPortletURLFactoryUtil.create(
 					_liferayPortletRequest),
 				_liferayPortletResponse.getNamespace() + "selectTheme",
-				layoutAdminItemSelectorCriterion));
+				layoutThemeItemSelectorCriterion));
 	}
 
 	public Group getSelGroup() {
@@ -1433,16 +1433,6 @@ public class LayoutsAdminDisplayContext {
 		}
 
 		return StringPool.BLANK;
-	}
-
-	public String getThemeId() {
-		if (_themeId != null) {
-			return _themeId;
-		}
-
-		_themeId = ParamUtil.getString(_liferayPortletRequest, "themeId");
-
-		return _themeId;
 	}
 
 	public String getTitle(boolean privatePages) {
