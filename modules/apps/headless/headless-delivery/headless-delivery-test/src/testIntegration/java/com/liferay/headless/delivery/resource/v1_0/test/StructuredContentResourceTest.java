@@ -546,6 +546,8 @@ public class StructuredContentResourceTest
 		_useDepotDDMStructureStructureId = true;
 
 		super.testPutAssetLibraryStructuredContentByExternalReferenceCode();
+
+		_testPutAssetLibraryStructuredContentByExternalReferenceCodeWithDifferentERCInPayload();
 	}
 
 	@Override
@@ -1189,6 +1191,40 @@ public class StructuredContentResourceTest
 			externalReferenceCode,
 			postStructuredContent.getExternalReferenceCode());
 		assertValid(postStructuredContent);
+	}
+
+	private void _testPutAssetLibraryStructuredContentByExternalReferenceCodeWithDifferentERCInPayload()
+		throws Exception {
+
+		StructuredContent randomStructuredContent1 = randomStructuredContent();
+
+		StructuredContent putStructuredContent1 =
+			structuredContentResource.
+				putAssetLibraryStructuredContentByExternalReferenceCode(
+					testPutAssetLibraryStructuredContentByExternalReferenceCode_getAssetLibraryId(),
+					randomStructuredContent1.getExternalReferenceCode(),
+					randomStructuredContent1);
+
+		StructuredContent randomStructuredContent2 =
+			testPutAssetLibraryStructuredContentByExternalReferenceCode_createStructuredContent();
+
+		String externalReferenceCode = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
+
+		randomStructuredContent2.setTitle(putStructuredContent1.getTitle());
+
+		StructuredContent putStructuredContent2 =
+			structuredContentResource.
+				putAssetLibraryStructuredContentByExternalReferenceCode(
+					testPutAssetLibraryStructuredContentByExternalReferenceCode_getAssetLibraryId(),
+					externalReferenceCode, randomStructuredContent2);
+
+		Assert.assertNotEquals(putStructuredContent1, putStructuredContent2);
+		Assert.assertEquals(
+			putStructuredContent1.getTitle(), putStructuredContent2.getTitle());
+		Assert.assertEquals(
+			externalReferenceCode,
+			putStructuredContent2.getExternalReferenceCode());
 	}
 
 	private static final String[] _COMPLETE_STRUCTURED_CONTENT_OPTIONS = {
