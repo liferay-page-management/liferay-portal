@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
@@ -89,6 +90,8 @@ public class ChangeMasterLayoutMVCActionCommand
 			layoutTypeSettingsUnicodeProperties.put(
 				"designConfigurationModified", StringPool.TRUE);
 		}
+
+		layout.setStatus(WorkflowConstants.STATUS_DRAFT);
 
 		Layout updatedLayout = _layoutLocalService.updateLayout(layout);
 

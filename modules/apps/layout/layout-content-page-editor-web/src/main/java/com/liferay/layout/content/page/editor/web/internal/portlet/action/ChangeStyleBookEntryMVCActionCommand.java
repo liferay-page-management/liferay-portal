@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
 import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
@@ -83,6 +84,8 @@ public class ChangeStyleBookEntryMVCActionCommand
 			layoutTypeSettingsUnicodeProperties.put(
 				"designConfigurationModified", StringPool.TRUE);
 		}
+
+		layout.setStatus(WorkflowConstants.STATUS_DRAFT);
 
 		Layout updatedLayout = _layoutLocalService.updateLayout(layout);
 
