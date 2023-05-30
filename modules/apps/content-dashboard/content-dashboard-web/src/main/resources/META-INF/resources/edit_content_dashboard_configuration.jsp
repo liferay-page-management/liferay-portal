@@ -24,7 +24,7 @@ ContentDashboardAdminConfigurationDisplayContext contentDashboardAdminConfigurat
 	action="<%= contentDashboardAdminConfigurationDisplayContext.getActionURL() %>"
 	method="post"
 	name="fm"
-	onSubmit='<%= "event.preventDefault(); " + liferayPortletResponse.getNamespace() + "saveConfiguration();" %>'
+	onSubmit="event.preventDefault();"
 >
 	<aui:input name="redirect" type="hidden" value="<%= contentDashboardAdminConfigurationDisplayContext.getRedirect() %>" />
 
@@ -77,15 +77,6 @@ ContentDashboardAdminConfigurationDisplayContext contentDashboardAdminConfigurat
 	</liferay-frontend:edit-form-footer>
 </liferay-frontend:edit-form>
 
-<aui:script>
-	function <portlet:namespace />saveConfiguration() {
-		var form = document.<portlet:namespace />fm;
-		Liferay.Util.postForm(form, {
-			data: {
-				assetVocabularyIds: Liferay.Util.getSelectedOptionValues(
-					Liferay.Util.getFormElement(form, 'currentAssetVocabularyIds')
-				),
-			},
-		});
-	}
-</aui:script>
+<liferay-frontend:component
+	module="js/EditContentDashboardConfiguration"
+/>
