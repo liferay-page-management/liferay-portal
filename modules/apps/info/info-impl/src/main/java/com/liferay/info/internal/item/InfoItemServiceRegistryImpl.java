@@ -24,6 +24,7 @@ import com.liferay.info.filter.InfoRequestItemProvider;
 import com.liferay.info.formatter.InfoCollectionTextFormatter;
 import com.liferay.info.formatter.InfoTextFormatter;
 import com.liferay.info.internal.util.ItemClassNameServiceReferenceMapper;
+import com.liferay.info.item.InfoItemActionExecutor;
 import com.liferay.info.item.InfoItemClassDetails;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.capability.InfoItemCapability;
@@ -402,10 +403,11 @@ public class InfoItemServiceRegistryImpl implements InfoItemServiceRegistry {
 	private static final Set<Class<?>> _validInfoClasses = new HashSet<>(
 		Arrays.asList(
 			InfoCollectionProvider.class, InfoCollectionTextFormatter.class,
-			InfoFilterProvider.class, InfoItemCapabilitiesProvider.class,
-			InfoItemCreator.class, InfoItemDetailsProvider.class,
-			InfoItemFieldValuesProvider.class, InfoItemFieldValuesUpdater.class,
-			InfoItemFormProvider.class, InfoItemFormVariationsProvider.class,
+			InfoFilterProvider.class, InfoItemActionExecutor.class,
+			InfoItemCapabilitiesProvider.class, InfoItemCreator.class,
+			InfoItemDetailsProvider.class, InfoItemFieldValuesProvider.class,
+			InfoItemFieldValuesUpdater.class, InfoItemFormProvider.class,
+			InfoItemFormVariationsProvider.class,
 			InfoItemFriendlyURLProvider.class, InfoItemFriendlyURLUpdater.class,
 			InfoItemIdentifierTranslator.class, InfoItemLanguagesProvider.class,
 			InfoItemObjectProvider.class, InfoItemObjectVariationProvider.class,
