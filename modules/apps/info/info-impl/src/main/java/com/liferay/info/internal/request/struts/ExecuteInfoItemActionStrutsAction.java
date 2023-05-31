@@ -20,6 +20,7 @@ import com.liferay.info.exception.InfoItemActionExecutionPrincipalException;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.InfoItemActionExecutor;
 import com.liferay.info.item.InfoItemServiceRegistry;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
@@ -53,6 +54,10 @@ public class ExecuteInfoItemActionStrutsAction implements StrutsAction {
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
 		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPS-169992")) {
+			return null;
+		}
 
 		try {
 			if (!Objects.equals(
