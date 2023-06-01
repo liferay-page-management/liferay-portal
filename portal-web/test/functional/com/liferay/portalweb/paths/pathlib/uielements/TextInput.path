@@ -692,7 +692,7 @@
 </tr>
 <tr>
 	<td>SEO_MAPPED_FIELD</td>
-	<td>//div[contains(@class,'form-group')]//*[contains(@id,'${key_mappedField}')]</td>
+	<td>//div[contains(@class,'form-group')]//*[contains(*,'${key_mappedField}')]</td>
 	<td></td>
 </tr>
 <tr>
