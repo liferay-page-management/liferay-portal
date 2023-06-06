@@ -639,9 +639,11 @@ definition {
 					panel = "Control Panel",
 					portlet = "Sites");
 
-				LexiconTable.clickEllipsisItem(
-					item = "Go to Pages",
-					tableEntry = ${siteName});
+				var key_siteName = ${siteName};
+
+				Click.waitForMenuToggleJSClick(locator1 = "Sites#SITE_TABLE_ACTIONS");
+
+				MenuItem.click(menuItem = "Go to Pages");
 
 				SelectWindow.selectPopUp(locator1 = "null");
 
