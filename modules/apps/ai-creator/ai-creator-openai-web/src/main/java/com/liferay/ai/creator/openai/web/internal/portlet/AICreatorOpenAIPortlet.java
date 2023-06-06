@@ -15,6 +15,7 @@
 package com.liferay.ai.creator.openai.web.internal.portlet;
 
 import com.liferay.ai.creator.openai.web.internal.constants.AICreatorOpenAIPortletKeys;
+import com.liferay.ai.creator.openai.web.internal.display.context.AICreatorOpenAIDisplayContext;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.util.Portal;
 
@@ -54,6 +55,11 @@ public class AICreatorOpenAIPortlet extends MVCPortlet {
 	public void render(
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
+
+		renderRequest.setAttribute(
+			AICreatorOpenAIDisplayContext.class.getName(),
+			new AICreatorOpenAIDisplayContext(
+				_portal.getHttpServletRequest(renderRequest)));
 
 		super.render(renderRequest, renderResponse);
 	}
