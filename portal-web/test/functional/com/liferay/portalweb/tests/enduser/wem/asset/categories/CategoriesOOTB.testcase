@@ -64,14 +64,16 @@ definition {
 			Panel.expandPanel(panel = "Categorization");
 
 			Click(
-				key_fieldName = "Audience",
-				locator1 = "Button#SELECT_BUTTON");
+				key_fieldLabel = "Audience",
+				key_text = "Select",
+				locator1 = "Button#ANY_WITH_LABEL");
 
 			AssetCategorization.selectCategories(categoryNameList = "Audience 1");
 
 			Click(
-				key_fieldName = "Stage",
-				locator1 = "Button#SELECT_BUTTON");
+				key_fieldLabel = "Stage",
+				key_text = "Select",
+				locator1 = "Button#ANY_WITH_LABEL");
 
 			AssetCategorization.selectCategories(categoryNameList = "Stage 1");
 
@@ -664,14 +666,16 @@ definition {
 			Panel.expandPanel(panel = "Categorization");
 
 			Click(
-				key_fieldName = "Audience",
-				locator1 = "Button#SELECT_BUTTON");
+				key_fieldLabel = "Audience",
+				key_text = "Select",
+				locator1 = "Button#ANY_WITH_LABEL");
 
 			AssetCategorization.selectCategories(categoryNameList = "Audience 1");
 
 			Click(
-				key_fieldName = "Stage",
-				locator1 = "Button#SELECT_BUTTON");
+				key_fieldLabel = "Stage",
+				key_text = "Select",
+				locator1 = "Button#ANY_WITH_LABEL");
 
 			AssetCategorization.selectCategories(categoryNameList = "Stage 1");
 
@@ -696,14 +700,16 @@ definition {
 			Panel.expandPanel(panel = "Categorization");
 
 			Click(
-				key_fieldName = "Audience",
-				locator1 = "Button#SELECT_BUTTON");
+				key_fieldLabel = "Audience",
+				key_text = "Select",
+				locator1 = "Button#ANY_WITH_LABEL");
 
 			AssetCategorization.selectCategories(categoryNameList = "Audience 1");
 
 			Click(
-				key_fieldName = "Stage",
-				locator1 = "Button#SELECT_BUTTON");
+				key_fieldLabel = "Stage",
+				key_text = "Select",
+				locator1 = "Button#ANY_WITH_LABEL");
 
 			AssetCategorization.selectCategories(categoryNameList = "Stage 1");
 
