@@ -1883,6 +1883,10 @@ public class LayoutsAdminDisplayContext {
 		return false;
 	}
 
+	public boolean isShowConfigureAction(Layout layout) throws Exception {
+		return _layoutActionsHelper.isShowConfigureAction(layout);
+	}
+
 	public boolean isShowFirstColumnConfigureAction() throws PortalException {
 		if (!GroupPermissionUtil.contains(
 				themeDisplay.getPermissionChecker(), getSelGroupId(),
