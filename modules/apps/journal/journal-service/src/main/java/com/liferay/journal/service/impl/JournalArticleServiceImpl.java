@@ -1022,17 +1022,24 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 
 	@Override
 	public List<JournalArticle> getArticlesByStructureId(
-		long groupId, long folderId, long classNameId, long ddmStructureId,
-		int status, int start, int end,
-		OrderByComparator<JournalArticle> orderByComparator) {
+			long groupId, long folderId, long classNameId, long ddmStructureId,
+			int status, int start, int end,
+			OrderByComparator<JournalArticle> orderByComparator)
+		throws PortalException {
+
+		List<Long> folderIds = new ArrayList<>();
+
+		if (folderId != JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID) {
+			folderIds = _journalFolderService.getFolderIds(groupId, folderId);
+		}
 
 		QueryDefinition<JournalArticle> queryDefinition = new QueryDefinition<>(
 			status, start, end, orderByComparator);
 
 		return journalArticleFinder.filterFindByG_F_C_S_L(
-			groupId, ListUtil.fromArray(folderId),
-			JournalArticleConstants.CLASS_NAME_ID_DEFAULT, ddmStructureId,
-			LocaleUtil.getMostRelevantLocale(), queryDefinition);
+			groupId, folderIds, JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
+			ddmStructureId, LocaleUtil.getMostRelevantLocale(),
+			queryDefinition);
 	}
 
 	/**
