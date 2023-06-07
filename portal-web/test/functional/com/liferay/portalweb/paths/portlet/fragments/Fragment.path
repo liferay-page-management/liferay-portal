@@ -284,7 +284,7 @@
 </tr>
 <tr>
 	<td>FRAGMENT_CONFIGURATION_TYPE</td>
-	<td>//div[contains(@class,'component-${key_fragmentName}')]//*[self::a or self::button][contains(@class,'-${key_type}')]</td>
+	<td>//div[contains(@class,'component-${key_fragmentName}')]//*[self::a or self::button][contains(@class,'-${key_type}')] | //div[contains(@class,'component-${key_fragmentName}')]//*[self::a or self::button][contains(@data-lfr-editable-type,'${key_type}')]</td>
 	<td></td>
 </tr>
 
