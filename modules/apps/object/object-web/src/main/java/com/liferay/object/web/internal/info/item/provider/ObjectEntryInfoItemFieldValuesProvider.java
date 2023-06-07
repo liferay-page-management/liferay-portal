@@ -401,21 +401,19 @@ public class ObjectEntryInfoItemFieldValuesProvider
 	private List<InfoFieldValue<Object>> _getObjectActionsInfoFieldValues(
 		List<ObjectAction> objectActions) {
 
-		List<InfoFieldValue<Object>> objectActionsInfoFieldValues =
-			new ArrayList<>();
+		return TransformUtil.transform(
+			objectActions,
+			objectAction -> {
+				InfoLocalizedValue<String> actionLabelLocalizedValue =
+					InfoLocalizedValue.<String>builder(
+					).defaultLocale(
+						LocaleUtil.fromLanguageId(
+							objectAction.getDefaultLanguageId())
+					).values(
+						objectAction.getLabelMap()
+					).build();
 
-		for (ObjectAction objectAction : objectActions) {
-			InfoLocalizedValue<String> actionLabelInfoLocalizedValue =
-				InfoLocalizedValue.<String>builder(
-				).defaultLocale(
-					LocaleUtil.fromLanguageId(
-						objectAction.getDefaultLanguageId())
-				).values(
-					objectAction.getLabelMap()
-				).build();
-
-			objectActionsInfoFieldValues.add(
-				new InfoFieldValue<>(
+				return new InfoFieldValue<>(
 					InfoField.builder(
 					).infoFieldType(
 						ActionInfoFieldType.INSTANCE
@@ -424,12 +422,10 @@ public class ObjectEntryInfoItemFieldValuesProvider
 					).name(
 						objectAction.getName()
 					).labelInfoLocalizedValue(
-						actionLabelInfoLocalizedValue
+						actionLabelLocalizedValue
 					).build(),
-					actionLabelInfoLocalizedValue));
-		}
-
-		return objectActionsInfoFieldValues;
+					actionLabelLocalizedValue);
+			});
 	}
 
 	private List<InfoFieldValue<Object>> _getObjectFieldsInfoFieldValues(
