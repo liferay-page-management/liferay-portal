@@ -824,9 +824,10 @@ public class JournalArticleServiceUtil {
 	}
 
 	public static List<JournalArticle> getArticlesByStructureId(
-		long groupId, long folderId, long classNameId, long ddmStructureId,
-		int status, int start, int end,
-		OrderByComparator<JournalArticle> orderByComparator) {
+			long groupId, long folderId, long classNameId, long ddmStructureId,
+			int status, int start, int end,
+			OrderByComparator<JournalArticle> orderByComparator)
+		throws PortalException {
 
 		return getService().getArticlesByStructureId(
 			groupId, folderId, classNameId, ddmStructureId, status, start, end,

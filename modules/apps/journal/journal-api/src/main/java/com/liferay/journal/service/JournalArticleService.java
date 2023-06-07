@@ -726,9 +726,10 @@ public interface JournalArticleService extends BaseService {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<JournalArticle> getArticlesByStructureId(
-		long groupId, long folderId, long classNameId, long ddmStructureId,
-		int status, int start, int end,
-		OrderByComparator<JournalArticle> orderByComparator);
+			long groupId, long folderId, long classNameId, long ddmStructureId,
+			int status, int start, int end,
+			OrderByComparator<JournalArticle> orderByComparator)
+		throws PortalException;
 
 	/**
 	 * Returns the number of web content articles matching the group and folder.

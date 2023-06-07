@@ -863,10 +863,11 @@ public class JournalArticleServiceWrapper
 
 	@Override
 	public java.util.List<JournalArticle> getArticlesByStructureId(
-		long groupId, long folderId, long classNameId, long ddmStructureId,
-		int status, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<JournalArticle>
-			orderByComparator) {
+			long groupId, long folderId, long classNameId, long ddmStructureId,
+			int status, int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator<JournalArticle>
+				orderByComparator)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _journalArticleService.getArticlesByStructureId(
 			groupId, folderId, classNameId, ddmStructureId, status, start, end,
