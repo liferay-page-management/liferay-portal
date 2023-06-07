@@ -347,9 +347,26 @@ public class DLReferencesExportImportContentProcessor
 		Matcher matcher = _uuidPattern.matcher(s);
 
 		String uuid = StringPool.BLANK;
+		String separator = StringPool.BLANK;
 
 		while (matcher.find()) {
-			uuid = matcher.group(0);
+			Integer lastMatchIndex =
+				s.indexOf(matcher.group(0)) +
+					matcher.group(
+						0
+					).length();
+
+			if (lastMatchIndex < s.length()) {
+				separator = s.substring(lastMatchIndex, lastMatchIndex + 1);
+			}
+
+			if (Validator.isNull(separator) ||
+				(Validator.isNotNull(separator) &&
+				 (separator.equals(StringPool.QUESTION) ||
+				  separator.equals(StringPool.AMPERSAND)))) {
+
+				uuid = matcher.group(0);
+			}
 		}
 
 		return uuid;
