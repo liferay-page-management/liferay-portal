@@ -14,6 +14,7 @@
 
 package com.liferay.segments.service.impl;
 
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
@@ -36,6 +37,7 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
@@ -56,6 +58,8 @@ import com.liferay.segments.exception.WinnerSegmentsExperienceException;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.model.SegmentsExperiment;
 import com.liferay.segments.model.SegmentsExperimentRel;
+import com.liferay.segments.model.SegmentsExperimentRelTable;
+import com.liferay.segments.model.SegmentsExperimentTable;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.segments.service.SegmentsExperimentRelLocalService;
 import com.liferay.segments.service.base.SegmentsExperimentLocalServiceBaseImpl;
@@ -214,8 +218,26 @@ public class SegmentsExperimentLocalServiceImpl
 		long segmentsExperienceId, long plid, int[] statuses) {
 
 		List<SegmentsExperiment> segmentsExperiments =
-			segmentsExperimentFinder.findByS_P_S(
-				segmentsExperienceId, plid, statuses, 0, 1, null);
+			segmentsExperimentPersistence.dslQuery(
+				DSLQueryFactoryUtil.select(
+					SegmentsExperimentTable.INSTANCE
+				).from(
+					SegmentsExperimentTable.INSTANCE
+				).innerJoinON(
+					SegmentsExperimentRelTable.INSTANCE,
+					SegmentsExperimentRelTable.INSTANCE.segmentsExperimentId.eq(
+						SegmentsExperimentTable.INSTANCE.segmentsExperimentId)
+				).where(
+					SegmentsExperimentRelTable.INSTANCE.segmentsExperienceId.eq(
+						segmentsExperienceId
+					).and(
+						SegmentsExperimentTable.INSTANCE.plid.eq(plid)
+					).and(
+						SegmentsExperimentTable.INSTANCE.status.in(
+							ArrayUtil.toArray(statuses)
+						)
+					)
+				));
 
 		if (segmentsExperiments.isEmpty()) {
 			return null;
@@ -289,17 +311,44 @@ public class SegmentsExperimentLocalServiceImpl
 		long segmentsExperienceId, long plid, int[] statuses,
 		OrderByComparator<SegmentsExperiment> orderByComparator) {
 
-		return segmentsExperimentFinder.findByS_P_S(
-			segmentsExperienceId, plid, statuses, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS, orderByComparator);
+		return segmentsExperimentPersistence.dslQuery(
+			DSLQueryFactoryUtil.select(
+				SegmentsExperimentTable.INSTANCE
+			).from(
+				SegmentsExperimentTable.INSTANCE
+			).innerJoinON(
+				SegmentsExperimentRelTable.INSTANCE,
+				SegmentsExperimentRelTable.INSTANCE.segmentsExperimentId.eq(
+					SegmentsExperimentTable.INSTANCE.segmentsExperimentId)
+			).where(
+				SegmentsExperimentRelTable.INSTANCE.segmentsExperienceId.eq(
+					segmentsExperienceId
+				).and(
+					SegmentsExperimentTable.INSTANCE.plid.eq(plid)
+				)
+			));
 	}
 
 	@Override
 	public boolean hasSegmentsExperiment(
 		long segmentsExperienceId, long plid, int[] statuses) {
 
-		int count = segmentsExperimentFinder.countByS_P_S(
-			segmentsExperienceId, plid, statuses);
+		int count = segmentsExperimentPersistence.dslQueryCount(
+			DSLQueryFactoryUtil.countDistinct(
+				SegmentsExperimentTable.INSTANCE.segmentsExperimentId
+			).from(
+				SegmentsExperimentTable.INSTANCE
+			).innerJoinON(
+				SegmentsExperimentRelTable.INSTANCE,
+				SegmentsExperimentRelTable.INSTANCE.segmentsExperimentId.eq(
+					SegmentsExperimentTable.INSTANCE.segmentsExperimentId)
+			).where(
+				SegmentsExperimentRelTable.INSTANCE.segmentsExperimentId.eq(
+					segmentsExperienceId
+				).and(
+					SegmentsExperimentTable.INSTANCE.plid.eq(plid)
+				)
+			));
 
 		if (count > 0) {
 			return true;
