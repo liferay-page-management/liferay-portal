@@ -15,6 +15,7 @@
 import {LayoutTypes} from './LayoutTypes';
 
 export interface Config {
+	actionedInfoItemSelectorURL: string;
 	addFragmentCompositionURL: string;
 	addFragmentEntryLinkCommentURL: string;
 	addFragmentEntryLinkURL: string;
@@ -110,13 +111,15 @@ export interface Config {
 		getAvailableImageConfigurationsURL: string;
 		getAvailableListItemRenderersURL: string;
 		getAvailableListRenderersURL: string;
-		[key: string]: {
-			cssVariable: string;
-			editorType: string;
-			label: string;
-			name: string;
-			value: string;
-		} | string;
+		[key: string]:
+			| {
+					cssVariable: string;
+					editorType: string;
+					label: string;
+					name: string;
+					value: string;
+			  }
+			| string;
 	};
 	getAvailableTemplatesURL: string;
 	getCollectionConfigurationURL: string;
