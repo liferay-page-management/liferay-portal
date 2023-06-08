@@ -126,6 +126,7 @@ function loadMappingFields({dispatch, item, sourceType}) {
 export default function MappingSelectorWrapper({
 	fieldType,
 	filterLinkTypes = false,
+	itemSelectorURL,
 	mappedItem,
 	onMappingSelect,
 }) {
@@ -239,6 +240,7 @@ export default function MappingSelectorWrapper({
 		<MappingSelector
 			fieldType={fieldType}
 			filterLinkTypes={filterLinkTypes}
+			itemSelectorURL={itemSelectorURL}
 			mappedItem={mappedItem}
 			onMappingSelect={onMappingSelect}
 		/>
@@ -248,6 +250,7 @@ export default function MappingSelectorWrapper({
 function MappingSelector({
 	fieldType,
 	filterLinkTypes,
+	itemSelectorURL,
 	mappedItem,
 	onMappingSelect,
 }) {
@@ -431,6 +434,7 @@ function MappingSelector({
 			{selectedSourceType === MAPPING_SOURCE_TYPES.content && (
 				<ItemSelector
 					className="mb-2"
+					itemSelectorURL={itemSelectorURL}
 					label={Liferay.Language.get('item')}
 					onItemSelect={onInfoItemSelect}
 					selectedItem={selectedItem}
