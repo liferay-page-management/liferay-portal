@@ -15,6 +15,7 @@
 package com.liferay.layout.set.prototype.helper;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
 
@@ -31,4 +32,10 @@ public interface LayoutSetPrototypeHelper {
 			LayoutSetPrototype layoutSetPrototype)
 		throws PortalException;
 
+	public List<Layout> getLayoutSetPrototypeFriendlyURLConflictLayouts(
+		Layout layout) throws PortalException;
+	
+	public boolean hasLayoutSetPrototypeFriendlyURLConflicts(
+		long groupId, boolean privateLayout, String layoutUuid,
+		String friendlyURL) throws PortalException;
 }
