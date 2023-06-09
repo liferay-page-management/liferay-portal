@@ -742,9 +742,8 @@ public class LayoutsAdminDisplayContext {
 
 		if (_conflictLayouts == null) {
 			_conflictLayouts =
-				_layoutSetPrototypeHelper.
-					getLayoutSetPrototypeFriendlyURLConflictLayouts(
-						getSelLayout());
+				_layoutSetPrototypeHelper.getDuplicatedFriendlyURLLayouts(
+					getSelLayout());
 		}
 
 		if (_conflictLayouts.isEmpty()) {
@@ -762,8 +761,8 @@ public class LayoutsAdminDisplayContext {
 		}
 
 		_conflictLayouts =
-			_layoutSetPrototypeHelper.
-				getLayoutSetPrototypeFriendlyURLConflictLayouts(getSelLayout());
+			_layoutSetPrototypeHelper.getDuplicatedFriendlyURLLayouts(
+				getSelLayout());
 
 		return _conflictLayouts;
 	}

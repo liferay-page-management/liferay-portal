@@ -47,6 +47,34 @@ import org.osgi.service.component.annotations.Reference;
 public class LayoutSetPrototypeHelperImpl implements LayoutSetPrototypeHelper {
 
 	@Override
+	public List<Layout> getDuplicatedFriendlyURLLayouts(Layout layout)
+		throws PortalException {
+
+		Group group = layout.getGroup();
+
+		if (group.isLayoutSetPrototype()) {
+			return _getDuplicatedFriendlyURLSiteLayouts(layout);
+		}
+
+		LayoutSet layoutSet = layout.getLayoutSet();
+
+		List<Layout> layouts = new ArrayList<>();
+
+		if (!layoutSet.isLayoutSetPrototypeLinkActive()) {
+			return layouts;
+		}
+
+		Layout conflictLayout = _getDuplicatedFriendlyURLPrototypeLayout(
+			layout);
+
+		if (conflictLayout != null) {
+			layouts.add(conflictLayout);
+		}
+
+		return layouts;
+	}
+
+	@Override
 	public List<Long> getDuplicatedFriendlyURLPlids(LayoutSet layoutSet) {
 		LayoutTable tempLayoutTable = LayoutTable.INSTANCE.as(
 			"tempLayoutTable");
@@ -165,36 +193,7 @@ public class LayoutSetPrototypeHelperImpl implements LayoutSetPrototypeHelper {
 	}
 
 	@Override
-	public List<Layout> getLayoutSetPrototypeFriendlyURLConflictLayouts(
-			Layout layout)
-		throws PortalException {
-
-		Group group = layout.getGroup();
-
-		if (group.isLayoutSetPrototype()) {
-			return _getLayoutSetPrototypeFriendlyURLConflictSiteLayouts(layout);
-		}
-
-		LayoutSet layoutSet = layout.getLayoutSet();
-
-		List<Layout> layouts = new ArrayList<>();
-
-		if (!layoutSet.isLayoutSetPrototypeLinkActive()) {
-			return layouts;
-		}
-
-		Layout conflictLayout =
-			_getLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(layout);
-
-		if (conflictLayout != null) {
-			layouts.add(conflictLayout);
-		}
-
-		return layouts;
-	}
-
-	@Override
-	public boolean hasLayoutSetPrototypeFriendlyURLConflicts(
+	public boolean hasDuplicatedFriendlyURLs(
 			long groupId, boolean privateLayout, String layoutUuid,
 			String friendlyURL)
 		throws PortalException {
@@ -202,7 +201,7 @@ public class LayoutSetPrototypeHelperImpl implements LayoutSetPrototypeHelper {
 		Group group = _groupLocalService.getGroup(groupId);
 
 		if (group.isLayoutSetPrototype()) {
-			long count = _countLayoutSetPrototypeFriendlyURLConflictSiteLayouts(
+			long count = _countDuplicatedFriendlyURLSiteLayouts(
 				group.getCompanyId(), group.getGroupId(), layoutUuid,
 				friendlyURL);
 
@@ -213,11 +212,11 @@ public class LayoutSetPrototypeHelperImpl implements LayoutSetPrototypeHelper {
 			return false;
 		}
 
-		return _hasLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(
+		return _hasDuplicatedFriendlyURLPrototypeLayout(
 			groupId, privateLayout, layoutUuid, friendlyURL);
 	}
 
-	private long _countLayoutSetPrototypeFriendlyURLConflictSiteLayouts(
+	private long _countDuplicatedFriendlyURLSiteLayouts(
 			long companyId, long groupId, String layoutUuid, String friendlyURL)
 		throws PortalException {
 
@@ -275,8 +274,7 @@ public class LayoutSetPrototypeHelperImpl implements LayoutSetPrototypeHelper {
 			));
 	}
 
-	private Layout _getLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(
-			Layout layout)
+	private Layout _getDuplicatedFriendlyURLPrototypeLayout(Layout layout)
 		throws PortalException {
 
 		LayoutSet layoutSet = layout.getLayoutSet();
@@ -317,8 +315,7 @@ public class LayoutSetPrototypeHelperImpl implements LayoutSetPrototypeHelper {
 		return foundLayout;
 	}
 
-	private List<Layout> _getLayoutSetPrototypeFriendlyURLConflictSiteLayouts(
-			Layout layout)
+	private List<Layout> _getDuplicatedFriendlyURLSiteLayouts(Layout layout)
 		throws PortalException {
 
 		return _layoutLocalService.dslQuery(
@@ -366,7 +363,7 @@ public class LayoutSetPrototypeHelperImpl implements LayoutSetPrototypeHelper {
 			));
 	}
 
-	private boolean _hasLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(
+	private boolean _hasDuplicatedFriendlyURLPrototypeLayout(
 			long groupId, boolean privateLayout,
 			String sourcePrototypeLayoutUuid, String friendlyURL)
 		throws PortalException {

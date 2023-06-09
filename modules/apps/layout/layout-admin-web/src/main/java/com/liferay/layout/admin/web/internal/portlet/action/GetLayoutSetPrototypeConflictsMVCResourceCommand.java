@@ -104,10 +104,9 @@ public class GetLayoutSetPrototypeConflictsMVCResourceCommand
 			return false;
 		}
 
-		return _layoutSetPrototypeHelper.
-			hasLayoutSetPrototypeFriendlyURLConflicts(
-				layout.getGroupId(), layout.isPrivateLayout(), layout.getUuid(),
-				friendlyURL);
+		return _layoutSetPrototypeHelper.hasDuplicatedFriendlyURLs(
+			layout.getGroupId(), layout.isPrivateLayout(), layout.getUuid(),
+			friendlyURL);
 	}
 
 	private boolean _hasNewLayoutConflicts(
@@ -118,9 +117,8 @@ public class GetLayoutSetPrototypeConflictsMVCResourceCommand
 			return false;
 		}
 
-		return _layoutSetPrototypeHelper.
-			hasLayoutSetPrototypeFriendlyURLConflicts(
-				groupId, privateLayout, null, friendlyURL);
+		return _layoutSetPrototypeHelper.hasDuplicatedFriendlyURLs(
+			groupId, privateLayout, null, friendlyURL);
 	}
 
 	@Reference

@@ -26,17 +26,16 @@ import java.util.List;
  */
 public interface LayoutSetPrototypeHelper {
 
+	public List<Layout> getDuplicatedFriendlyURLLayouts(Layout layout)
+		throws PortalException;
+
 	public List<Long> getDuplicatedFriendlyURLPlids(LayoutSet layoutSet);
 
 	public List<Long> getDuplicatedFriendlyURLPlids(
 			LayoutSetPrototype layoutSetPrototype)
 		throws PortalException;
 
-	public List<Layout> getLayoutSetPrototypeFriendlyURLConflictLayouts(
-			Layout layout)
-		throws PortalException;
-
-	public boolean hasLayoutSetPrototypeFriendlyURLConflicts(
+	public boolean hasDuplicatedFriendlyURLs(
 			long groupId, boolean privateLayout, String layoutUuid,
 			String friendlyURL)
 		throws PortalException;

@@ -60,20 +60,18 @@ public class ActionUtil {
 		LayoutSet layoutSet = layout.getLayoutSet();
 
 		if (group.isLayoutSetPrototype()) {
-			if (layoutSetPrototypeHelper.
-					hasLayoutSetPrototypeFriendlyURLConflicts(
-						layout.getGroupId(), layout.isPrivateLayout(),
-						layout.getUuid(), layout.getFriendlyURL())) {
+			if (layoutSetPrototypeHelper.hasDuplicatedFriendlyURLs(
+					layout.getGroupId(), layout.isPrivateLayout(),
+					layout.getUuid(), layout.getFriendlyURL())) {
 
 				SessionMessages.add(
 					portletRequest, "friendlyURLConflictWithSiteLayouts");
 			}
 		}
 		else if (layoutSet.isLayoutSetPrototypeLinkActive()) {
-			if (layoutSetPrototypeHelper.
-					hasLayoutSetPrototypeFriendlyURLConflicts(
-						layout.getGroupId(), layout.isPrivateLayout(),
-						layout.getUuid(), layout.getFriendlyURL())) {
+			if (layoutSetPrototypeHelper.hasDuplicatedFriendlyURLs(
+					layout.getGroupId(), layout.isPrivateLayout(),
+					layout.getUuid(), layout.getFriendlyURL())) {
 
 				SessionMessages.add(
 					portletRequest,
