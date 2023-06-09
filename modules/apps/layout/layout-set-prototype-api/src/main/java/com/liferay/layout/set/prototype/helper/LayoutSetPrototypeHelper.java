@@ -33,9 +33,12 @@ public interface LayoutSetPrototypeHelper {
 		throws PortalException;
 
 	public List<Layout> getLayoutSetPrototypeFriendlyURLConflictLayouts(
-		Layout layout) throws PortalException;
-	
+			Layout layout)
+		throws PortalException;
+
 	public boolean hasLayoutSetPrototypeFriendlyURLConflicts(
-		long groupId, boolean privateLayout, String layoutUuid,
-		String friendlyURL) throws PortalException;
+			long groupId, boolean privateLayout, String layoutUuid,
+			String friendlyURL)
+		throws PortalException;
+
 }

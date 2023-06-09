@@ -27,12 +27,11 @@ import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.LayoutSetPrototypeTable;
 import com.liferay.portal.kernel.model.LayoutSetTable;
 import com.liferay.portal.kernel.model.LayoutTable;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
-import com.liferay.portal.kernel.service.LayoutFriendlyURLLocalServiceUtil;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.LayoutFriendlyURLLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
-import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
-import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
-import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalServiceUtil;
+import com.liferay.portal.kernel.service.LayoutSetLocalService;
+import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalService;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
@@ -200,7 +199,7 @@ public class LayoutSetPrototypeHelperImpl implements LayoutSetPrototypeHelper {
 			String friendlyURL)
 		throws PortalException {
 
-		Group group = GroupLocalServiceUtil.getGroup(groupId);
+		Group group = _groupLocalService.getGroup(groupId);
 
 		if (group.isLayoutSetPrototype()) {
 			long count = _countLayoutSetPrototypeFriendlyURLConflictSiteLayouts(
@@ -216,23 +215,23 @@ public class LayoutSetPrototypeHelperImpl implements LayoutSetPrototypeHelper {
 
 		return _hasLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(
 			groupId, privateLayout, layoutUuid, friendlyURL);
-	}	
-	
+	}
+
 	private long _countLayoutSetPrototypeFriendlyURLConflictSiteLayouts(
-		long companyId, long groupId, String layoutUuid, String friendlyURL)
+			long companyId, long groupId, String layoutUuid, String friendlyURL)
 		throws PortalException {
-	
+
 		Predicate sourcePrototypeLayoutUuidPredicate =
 			LayoutTable.INSTANCE.sourcePrototypeLayoutUuid.isNull();
-	
+
 		if (Validator.isNotNull(layoutUuid)) {
 			sourcePrototypeLayoutUuidPredicate = Predicate.withParentheses(
 				sourcePrototypeLayoutUuidPredicate.or(
 					LayoutTable.INSTANCE.sourcePrototypeLayoutUuid.neq(
 						layoutUuid)));
 		}
-	
-		return LayoutLocalServiceUtil.dslQuery(
+
+		return _layoutLocalService.dslQuery(
 			DSLQueryFactoryUtil.count(
 			).from(
 				LayoutTable.INSTANCE
@@ -279,50 +278,50 @@ public class LayoutSetPrototypeHelperImpl implements LayoutSetPrototypeHelper {
 	private Layout _getLayoutSetPrototypeFriendlyURLConflictPrototypeLayout(
 			Layout layout)
 		throws PortalException {
-	
+
 		LayoutSet layoutSet = layout.getLayoutSet();
-	
+
 		if (!layoutSet.isLayoutSetPrototypeLinkActive()) {
 			return null;
 		}
-	
+
 		LayoutSetPrototype layoutSetPrototype =
-			LayoutSetPrototypeLocalServiceUtil.
+			_layoutSetPrototypeLocalService.
 				getLayoutSetPrototypeByUuidAndCompanyId(
 					layoutSet.getLayoutSetPrototypeUuid(),
 					layoutSet.getCompanyId());
-	
+
 		LayoutSet prototypeLayoutSet = layoutSetPrototype.getLayoutSet();
-	
+
 		LayoutFriendlyURL layoutFriendlyURL =
-			LayoutFriendlyURLLocalServiceUtil.fetchFirstLayoutFriendlyURL(
+			_layoutFriendlyURLLocalService.fetchFirstLayoutFriendlyURL(
 				prototypeLayoutSet.getGroupId(),
 				prototypeLayoutSet.isPrivateLayout(), layout.getFriendlyURL());
-	
+
 		if (layoutFriendlyURL == null) {
 			return null;
 		}
-	
-		Layout foundLayout = LayoutLocalServiceUtil.getLayout(
+
+		Layout foundLayout = _layoutLocalService.getLayout(
 			layoutFriendlyURL.getPlid());
-	
+
 		String sourcePrototypeLayoutUuid =
 			layout.getSourcePrototypeLayoutUuid();
-	
+
 		if (Validator.isNotNull(layout.getSourcePrototypeLayoutUuid()) &&
 			sourcePrototypeLayoutUuid.equals(foundLayout.getUuid())) {
-	
+
 			return null;
 		}
-	
+
 		return foundLayout;
 	}
-	
+
 	private List<Layout> _getLayoutSetPrototypeFriendlyURLConflictSiteLayouts(
 			Layout layout)
 		throws PortalException {
-	
-		return LayoutLocalServiceUtil.dslQuery(
+
+		return _layoutLocalService.dslQuery(
 			DSLQueryFactoryUtil.selectDistinct(
 				LayoutTable.INSTANCE
 			).from(
@@ -371,44 +370,56 @@ public class LayoutSetPrototypeHelperImpl implements LayoutSetPrototypeHelper {
 			long groupId, boolean privateLayout,
 			String sourcePrototypeLayoutUuid, String friendlyURL)
 		throws PortalException {
-	
-		LayoutSet layoutSet = LayoutSetLocalServiceUtil.getLayoutSet(
+
+		LayoutSet layoutSet = _layoutSetLocalService.getLayoutSet(
 			groupId, privateLayout);
-	
+
 		if (!layoutSet.isLayoutSetPrototypeLinkActive()) {
 			return false;
 		}
-	
+
 		LayoutSetPrototype layoutSetPrototype =
-			LayoutSetPrototypeLocalServiceUtil.
+			_layoutSetPrototypeLocalService.
 				getLayoutSetPrototypeByUuidAndCompanyId(
 					layoutSet.getLayoutSetPrototypeUuid(),
 					layoutSet.getCompanyId());
-	
+
 		LayoutSet prototypeLayoutSet = layoutSetPrototype.getLayoutSet();
-	
+
 		LayoutFriendlyURL layoutFriendlyURL =
-			LayoutFriendlyURLLocalServiceUtil.fetchFirstLayoutFriendlyURL(
+			_layoutFriendlyURLLocalService.fetchFirstLayoutFriendlyURL(
 				prototypeLayoutSet.getGroupId(),
 				prototypeLayoutSet.isPrivateLayout(), friendlyURL);
-	
+
 		if (layoutFriendlyURL == null) {
 			return false;
 		}
-	
-		Layout foundLayout = LayoutLocalServiceUtil.getLayout(
+
+		Layout foundLayout = _layoutLocalService.getLayout(
 			layoutFriendlyURL.getPlid());
-	
+
 		if (Validator.isNotNull(sourcePrototypeLayoutUuid) &&
 			sourcePrototypeLayoutUuid.equals(foundLayout.getUuid())) {
-	
+
 			return false;
 		}
-	
+
 		return true;
 	}
-	
+
+	@Reference
+	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private LayoutFriendlyURLLocalService _layoutFriendlyURLLocalService;
+
 	@Reference
 	private LayoutLocalService _layoutLocalService;
+
+	@Reference
+	private LayoutSetLocalService _layoutSetLocalService;
+
+	@Reference
+	private LayoutSetPrototypeLocalService _layoutSetPrototypeLocalService;
 
 }
