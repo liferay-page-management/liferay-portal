@@ -34,6 +34,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.sites.kernel.util.SitesUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
@@ -141,6 +142,113 @@ public class LayoutSetPrototypeHelperTest {
 				_prototypeLayout.getFriendlyURL());
 
 		Assert.assertFalse(hasConflicts);
+	}
+
+	@Test
+	public void testLayoutSetPrototypeLayoutMultipleFriendlyURLConflictDetectionFromPrototype()
+		throws Exception {
+
+		setLinkEnabled(true);
+
+		String[] names = RandomTestUtil.randomStrings(3);
+
+		// Add conflicting Layouts to site
+
+		for (String name : names) {
+			LayoutTestUtil.addTypePortletLayout(
+				_group.getGroupId(), name, false);
+		}
+
+		// Add non-conflicting Layouts to site
+
+		for (int i = 0; i < names.length; ++i) {
+			LayoutTestUtil.addTypePortletLayout(
+				_group.getGroupId(), RandomTestUtil.randomString(5), false);
+		}
+
+		// Add conflicting Layouts to LayoutSetPrototype
+
+		List<Layout> prototypeLayouts = new ArrayList<>(names.length);
+
+		for (String name : names) {
+			Layout prototypeLayout = LayoutTestUtil.addTypePortletLayout(
+				_layoutSetPrototypeGroup.getGroupId(), name, true);
+
+			prototypeLayouts.add(prototypeLayout);
+		}
+
+		// Add non-conflicting Layouts to LayoutSetPrototype
+
+		for (int i = 0; i < names.length; ++i) {
+			LayoutTestUtil.addTypePortletLayout(
+				_layoutSetPrototypeGroup.getGroupId(),
+				RandomTestUtil.randomString(5), true);
+		}
+
+		List<Long> conflictPlids =
+			_layoutSetPrototypeHelper.getDuplicatedFriendlyURLPlids(
+				_layoutSetPrototype);
+
+		Assert.assertEquals(
+			conflictPlids.toString(), names.length, conflictPlids.size());
+
+		for (Layout prototypeLayout : prototypeLayouts) {
+			Assert.assertTrue(
+				conflictPlids.contains(prototypeLayout.getPlid()));
+		}
+	}
+
+	@Test
+	public void testLayoutSetPrototypeLayoutMultipleFriendlyURLConflictDetectionFromSite()
+		throws Exception {
+
+		setLinkEnabled(true);
+
+		String[] names = RandomTestUtil.randomStrings(3);
+
+		List<Layout> siteLayouts = new ArrayList<>(names.length);
+
+		// Add conflicting Layouts to site
+
+		for (String name : names) {
+			Layout siteLayout = LayoutTestUtil.addTypePortletLayout(
+				_group.getGroupId(), name, false);
+
+			siteLayouts.add(siteLayout);
+		}
+
+		// Add non-conflicting Layouts to site
+
+		for (int i = 0; i < names.length; ++i) {
+			LayoutTestUtil.addTypePortletLayout(
+				_group.getGroupId(), RandomTestUtil.randomString(5), false);
+		}
+
+		// Add conflicting Layouts to LayoutSetPrototype
+
+		for (String name : names) {
+			LayoutTestUtil.addTypePortletLayout(
+				_layoutSetPrototypeGroup.getGroupId(), name, true);
+		}
+
+		// Add non-conflicting Layouts to LayoutSetPrototype
+
+		for (int i = 0; i < names.length; ++i) {
+			LayoutTestUtil.addTypePortletLayout(
+				_layoutSetPrototypeGroup.getGroupId(),
+				RandomTestUtil.randomString(5), true);
+		}
+
+		List<Long> conflictPlids =
+			_layoutSetPrototypeHelper.getDuplicatedFriendlyURLPlids(
+				_group.getPublicLayoutSet());
+
+		Assert.assertEquals(
+			conflictPlids.toString(), names.length, conflictPlids.size());
+
+		for (Layout siteLayout : siteLayouts) {
+			Assert.assertTrue(conflictPlids.contains(siteLayout.getPlid()));
+		}
 	}
 
 	@Test
