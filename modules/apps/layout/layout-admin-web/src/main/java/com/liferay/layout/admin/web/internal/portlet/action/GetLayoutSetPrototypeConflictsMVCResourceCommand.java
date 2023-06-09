@@ -15,6 +15,7 @@
 package com.liferay.layout.admin.web.internal.portlet.action;
 
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
+import com.liferay.layout.set.prototype.helper.LayoutSetPrototypeHelper;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -27,7 +28,6 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.service.impl.LayoutLocalServiceHelper;
-import com.liferay.sites.kernel.util.Sites;
 
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
@@ -53,9 +53,7 @@ public class GetLayoutSetPrototypeConflictsMVCResourceCommand
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPS-174431") &&
-			!FeatureFlagManagerUtil.isEnabled("LPS-174434")) {
-
+		if (!FeatureFlagManagerUtil.isEnabled("LPS-174417")) {
 			return;
 		}
 
@@ -106,9 +104,10 @@ public class GetLayoutSetPrototypeConflictsMVCResourceCommand
 			return false;
 		}
 
-		return _sites.hasLayoutSetPrototypeFriendlyURLConflicts(
-			layout.getGroupId(), layout.isPrivateLayout(), layout.getUuid(),
-			friendlyURL);
+		return _layoutSetPrototypeHelper.
+			hasLayoutSetPrototypeFriendlyURLConflicts(
+				layout.getGroupId(), layout.isPrivateLayout(), layout.getUuid(),
+				friendlyURL);
 	}
 
 	private boolean _hasNewLayoutConflicts(
@@ -119,8 +118,9 @@ public class GetLayoutSetPrototypeConflictsMVCResourceCommand
 			return false;
 		}
 
-		return _sites.hasLayoutSetPrototypeFriendlyURLConflicts(
-			groupId, privateLayout, null, friendlyURL);
+		return _layoutSetPrototypeHelper.
+			hasLayoutSetPrototypeFriendlyURLConflicts(
+				groupId, privateLayout, null, friendlyURL);
 	}
 
 	@Reference
@@ -130,6 +130,6 @@ public class GetLayoutSetPrototypeConflictsMVCResourceCommand
 	private LayoutLocalServiceHelper _layoutLocalServiceHelper;
 
 	@Reference
-	private Sites _sites;
+	private LayoutSetPrototypeHelper _layoutSetPrototypeHelper;
 
 }

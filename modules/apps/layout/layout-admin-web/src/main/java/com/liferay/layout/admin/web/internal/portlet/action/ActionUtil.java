@@ -14,6 +14,7 @@
 
 package com.liferay.layout.admin.web.internal.portlet.action;
 
+import com.liferay.layout.set.prototype.helper.LayoutSetPrototypeHelper;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -33,7 +34,6 @@ import com.liferay.portal.kernel.util.ThemeFactoryUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.impl.ThemeSettingImpl;
-import com.liferay.sites.kernel.util.SitesUtil;
 
 import java.util.Map;
 import java.util.Objects;
@@ -48,29 +48,32 @@ import javax.portlet.PortletRequest;
 public class ActionUtil {
 
 	public static void checkLayoutSetPrototypeFriendlyURLConflicts(
-			PortletRequest portletRequest, Layout layout)
+			PortletRequest portletRequest, Layout layout,
+			LayoutSetPrototypeHelper layoutSetPrototypeHelper)
 		throws PortalException {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPS-174417")) {
+			return;
+		}
 
 		Group group = layout.getGroup();
 		LayoutSet layoutSet = layout.getLayoutSet();
 
-		if (FeatureFlagManagerUtil.isEnabled("LPS-174431") &&
-			group.isLayoutSetPrototype()) {
-
-			if (SitesUtil.hasLayoutSetPrototypeFriendlyURLConflicts(
-					layout.getGroupId(), layout.isPrivateLayout(),
-					layout.getUuid(), layout.getFriendlyURL())) {
+		if (group.isLayoutSetPrototype()) {
+			if (layoutSetPrototypeHelper.
+					hasLayoutSetPrototypeFriendlyURLConflicts(
+						layout.getGroupId(), layout.isPrivateLayout(),
+						layout.getUuid(), layout.getFriendlyURL())) {
 
 				SessionMessages.add(
 					portletRequest, "friendlyURLConflictWithSiteLayouts");
 			}
 		}
-		else if (FeatureFlagManagerUtil.isEnabled("LPS-174434") &&
-				 layoutSet.isLayoutSetPrototypeLinkActive()) {
-
-			if (SitesUtil.hasLayoutSetPrototypeFriendlyURLConflicts(
-					layout.getGroupId(), layout.isPrivateLayout(),
-					layout.getUuid(), layout.getFriendlyURL())) {
+		else if (layoutSet.isLayoutSetPrototypeLinkActive()) {
+			if (layoutSetPrototypeHelper.
+					hasLayoutSetPrototypeFriendlyURLConflicts(
+						layout.getGroupId(), layout.isPrivateLayout(),
+						layout.getUuid(), layout.getFriendlyURL())) {
 
 				SessionMessages.add(
 					portletRequest,
