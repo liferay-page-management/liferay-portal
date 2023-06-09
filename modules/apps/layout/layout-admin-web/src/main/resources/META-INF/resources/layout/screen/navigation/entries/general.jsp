@@ -322,7 +322,7 @@ LayoutType selLayoutType = selLayout.getLayoutType();
 
 	form.addEventListener('submit', (event) => {
 		<c:choose>
-			<c:when test='<%= (FeatureFlagManagerUtil.isEnabled("LPS-174431") && group.isLayoutSetPrototype()) || (FeatureFlagManagerUtil.isEnabled("LPS-174434") && selLayoutSet.isLayoutSetPrototypeLinkEnabled()) %>'>
+			<c:when test='<%= FeatureFlagManagerUtil.isEnabled("LPS-174417") && (group.isLayoutSetPrototype() || selLayoutSet.isLayoutSetPrototypeLinkEnabled()) %>'>
 				<portlet:namespace />checkLayoutSetPrototypeConflicts();
 			</c:when>
 			<c:otherwise>
