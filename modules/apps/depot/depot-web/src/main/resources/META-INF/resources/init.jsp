@@ -79,7 +79,6 @@ page import="com.liferay.portal.kernel.util.UnicodeProperties" %><%@
 page import="com.liferay.portal.kernel.util.Validator" %><%@
 page import="com.liferay.portal.kernel.util.WebKeys" %><%@
 page import="com.liferay.portal.util.PropsValues" %><%@
-page import="com.liferay.roles.admin.kernel.util.RolesAdminUtil" %><%@
 page import="com.liferay.sharing.configuration.SharingConfiguration" %><%@
 page import="com.liferay.site.navigation.taglib.servlet.taglib.util.BreadcrumbEntriesUtil" %>
 
