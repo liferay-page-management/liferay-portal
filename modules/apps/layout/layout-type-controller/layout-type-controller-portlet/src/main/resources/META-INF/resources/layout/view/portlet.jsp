@@ -52,6 +52,7 @@ String ppid = ParamUtil.getString(request, "p_p_id");
 
 		<liferay-layout:render-layout-structure
 			layoutStructure="<%= portletLayoutDisplayContext.getLayoutStructure(themeDisplay.getLayout()) %>"
+			renderActionHandler="false"
 		/>
 	</c:otherwise>
 </c:choose>
