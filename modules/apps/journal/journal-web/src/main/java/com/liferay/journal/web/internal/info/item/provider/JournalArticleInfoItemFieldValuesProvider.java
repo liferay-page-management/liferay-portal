@@ -104,6 +104,8 @@ public class JournalArticleInfoItemFieldValuesProvider
 			).infoFieldValues(
 				_getDDMStructureInfoFieldValues(journalArticle)
 			).infoFieldValues(
+				_getDefaultDDMStructureInfoFieldValues(journalArticle)
+			).infoFieldValues(
 				_getDDMTemplateInfoFieldValues(journalArticle)
 			).infoFieldValues(
 				_templateInfoItemFieldSetProvider.getInfoFieldValues(
@@ -128,8 +130,58 @@ public class JournalArticleInfoItemFieldValuesProvider
 	private List<InfoFieldValue<Object>> _getDDMStructureInfoFieldValues(
 		JournalArticle article) {
 
-		return _ddmFormValuesInfoFieldValuesProvider.getInfoFieldValues(
-			article, article.getDDMFormValues());
+		DDMStructure ddmStructure = article.getDDMStructure();
+
+		JournalArticle ddmStructureArticle = null;
+
+		try {
+			ddmStructureArticle = _journalArticleLocalService.getArticle(
+				ddmStructure.getGroupId(), DDMStructure.class.getName(),
+				ddmStructure.getStructureId());
+		} catch (PortalException e) {
+			
+		}
+
+		if (ddmStructureArticle == null) {
+			return _ddmFormValuesInfoFieldValuesProvider.getInfoFieldValues(
+					article, article.getDDMFormValues());
+		}
+
+		List<InfoFieldValue<Object>> journalArticleFieldValues =
+			new ArrayList<>();
+
+		journalArticleFieldValues.addAll(
+			_ddmFormValuesInfoFieldValuesProvider.getInfoFieldValues(
+				article, article.getDDMFormValues(false)));
+
+		journalArticleFieldValues.addAll(
+			_ddmFormValuesInfoFieldValuesProvider.getInfoFieldValues(
+				ddmStructureArticle, ddmStructureArticle.getDDMFormValues()));
+
+		return journalArticleFieldValues;
+	}
+
+	private List<InfoFieldValue<Object>> _getDefaultDDMStructureInfoFieldValues(
+		JournalArticle article) {
+
+		DDMStructure ddmStructure = article.getDDMStructure();
+
+		JournalArticle ddmStructureArticle = null;
+
+		try {
+			ddmStructureArticle = _journalArticleLocalService.getArticle(
+				ddmStructure.getGroupId(), DDMStructure.class.getName(),
+				ddmStructure.getStructureId());
+		} catch (PortalException e) {
+			
+		}
+
+		if (ddmStructureArticle != null) {
+			return _ddmFormValuesInfoFieldValuesProvider.getInfoFieldValues(
+				ddmStructureArticle, ddmStructureArticle.getDDMFormValues());
+		}
+
+		return new ArrayList<>();
 	}
 
 	private List<InfoFieldValue<Object>> _getDDMTemplateInfoFieldValues(
