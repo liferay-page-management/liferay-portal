@@ -19,10 +19,20 @@ import com.liferay.fragment.processor.FragmentEntryProcessorContext;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Locale;
 
 import org.jsoup.nodes.Element;
 
@@ -95,7 +105,96 @@ public class ActionEditableElementMapper implements EditableElementMapper {
 		element.attr("data-lfr-class-name-id", classNameId);
 		element.attr("data-lfr-class-pk", classPK);
 		element.attr("data-lfr-field-id", fieldId);
+
+		_mapOnError(element, configJSONObject);
 	}
+
+	private void _mapOnError(Element element, JSONObject jsonObject)
+		throws PortalException {
+
+		String onError = jsonObject.getString("onError");
+
+		if (Validator.isNull(onError)) {
+			onError = _ON_RESULT_ACTION_NONE;
+		}
+
+		element.attr("data-lfr-on-error", onError);
+
+		ThemeDisplay themeDisplay = null;
+
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		if (serviceContext != null) {
+			themeDisplay = serviceContext.getThemeDisplay();
+		}
+
+		if (onError.equals(_ON_RESULT_ACTION_NOTIFICATION)) {
+			JSONObject textJSONObject = jsonObject.getJSONObject("errorText");
+
+			if ((textJSONObject != null) && (themeDisplay != null)) {
+				String text = textJSONObject.getString(
+					themeDisplay.getLanguageId());
+
+				if (Validator.isNotNull(text)) {
+					element.attr("data-lfr-error-text", text);
+				}
+			}
+		}
+		else if (onError.equals(_ON_RESULT_ACTION_PAGE)) {
+			JSONObject pageJSONObject = jsonObject.getJSONObject("errorPage");
+
+			if (pageJSONObject != null) {
+				Layout layout = _layoutLocalService.fetchLayout(
+					GetterUtil.getLong(pageJSONObject.getString("groupId")),
+					GetterUtil.getBoolean(
+						pageJSONObject.getString("privateLayout")),
+					GetterUtil.getLong(pageJSONObject.getString("layoutId")));
+
+				if ((layout != null) && (themeDisplay != null)) {
+					element.attr(
+						"data-lfr-error-page-url",
+						_portal.getLayoutURL(layout, themeDisplay));
+				}
+			}
+		}
+		else if (onError.equals(_ON_RESULT_ACTION_URL)) {
+			JSONObject urlJSONObject = jsonObject.getJSONObject("errorURL");
+
+			if ((urlJSONObject != null) && (themeDisplay != null)) {
+				String url = urlJSONObject.getString(
+					themeDisplay.getLanguageId());
+
+				if (Validator.isNull(url)) {
+					Locale locale = LocaleUtil.getSiteDefault();
+
+					url = urlJSONObject.getString(locale.getLanguage());
+				}
+
+				if (Validator.isNotNull(url)) {
+					element.attr("data-lfr-error-page-url", url);
+				}
+			}
+		}
+
+		if ((onError.equals(_ON_RESULT_ACTION_NONE) ||
+			 onError.equals(_ON_RESULT_ACTION_NOTIFICATION)) &&
+			jsonObject.getBoolean("errorReload")) {
+
+			element.attr("data-lfr-error-reload", StringPool.TRUE);
+		}
+	}
+
+	private static final String _ON_RESULT_ACTION_NONE = "none";
+
+	private static final String _ON_RESULT_ACTION_NOTIFICATION = "notification";
+
+	private static final String _ON_RESULT_ACTION_PAGE = "page";
+
+	private static final String _ON_RESULT_ACTION_URL = "url";
+
+	@Reference
+	private LayoutLocalService _layoutLocalService;
 
 	@Reference
 	private Portal _portal;
