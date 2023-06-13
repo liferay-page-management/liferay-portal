@@ -6646,6 +6646,44 @@ definition {
 		}
 	}
 
+	@description = "This is a test for LPS-127451. Expired web content work in Content Dashboard"
+	@priority = 4
+	test ViewExpiredWebcontentInContentDashboard {
+		task ("Given an expired web content") {
+			JSONWebcontent.addWebContent(
+				content = "Web Content Content",
+				groupName = "Test Site Name",
+				title = "Web Content Title");
+
+			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
+
+			LexiconEntry.gotoEntryMenuItem(
+				menuItem = "Expire",
+				rowEntry = "Web Content Title");
+
+			Alert.viewSuccessMessage();
+
+			AssertTextEquals(
+				key_webContentTitle = "Web Content Title",
+				locator1 = "WC#ENTRY_TABLE_WORKFLOW_STATUS",
+				value1 = "EXPIRED");
+		}
+
+		task ("When access the content dashboard") {
+			ContentDashboard.goToContentDashboard();
+		}
+
+		task ("Then the Content Dashboard renders normally") {
+			LexiconTable.clickEllipsisItem(
+				item = "Info",
+				tableEntry = "Web Content Title");
+
+			AssertVisible(
+				assetStatus = "Expired",
+				locator1 = "ContentDashboard#INFO_PANEL_STATUS");
+		}
+	}
+
 	@description = "This is a test for LPS-182032. The .xls file is exported with the review date column."
 	@priority = 3
 	test ViewExportXLSButtonWithReviewDate {
