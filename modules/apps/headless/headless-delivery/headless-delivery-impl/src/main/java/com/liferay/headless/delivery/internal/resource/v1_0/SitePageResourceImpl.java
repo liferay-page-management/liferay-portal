@@ -83,6 +83,7 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.TeamLocalService;
 import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.service.permission.ModelPermissionsFactory;
@@ -426,13 +427,16 @@ public class SitePageResourceImpl extends BaseSitePageResourceImpl {
 				pageSettings.getHiddenFromNavigation());
 		}
 
+		ServiceContext serviceContext = _createServiceContext(siteId, sitePage);
+
 		Layout layout = _layoutService.addLayout(
 			siteId, false, parentLayoutId, nameMap, titleMap, descriptionMap,
 			keywordsMap, robotsMap, LayoutConstants.TYPE_CONTENT,
 			typeSettingsUnicodeProperties.toString(), hidden, friendlyUrlMap, 0,
-			_createServiceContext(siteId, sitePage));
+			serviceContext);
 
-		_importPageDefinition(layout, sitePage.getPageDefinition());
+		_importPageDefinition(
+			layout, sitePage.getPageDefinition(), serviceContext);
 
 		Layout draftLayout = _updateDraftLayout(layout);
 
@@ -685,6 +689,7 @@ public class SitePageResourceImpl extends BaseSitePageResourceImpl {
 				WebKeys.THEME_DISPLAY);
 
 		themeDisplay.setLayout(layout);
+		themeDisplay.setResponse(httpServletResponse);
 		themeDisplay.setScopeGroupId(layout.getGroupId());
 		themeDisplay.setSiteGroupId(layout.getGroupId());
 
@@ -718,7 +723,8 @@ public class SitePageResourceImpl extends BaseSitePageResourceImpl {
 	}
 
 	private void _importPageDefinition(
-			Layout layout, PageDefinition pageDefinition)
+			Layout layout, PageDefinition pageDefinition,
+			ServiceContext serviceContext)
 		throws Exception {
 
 		if (pageDefinition == null) {
@@ -735,10 +741,24 @@ public class SitePageResourceImpl extends BaseSitePageResourceImpl {
 
 		PageElement pageElement = pageDefinition.getPageElement();
 
-		if ((layoutStructure != null) && (pageElement != null)) {
+		if ((layoutStructure == null) || (pageElement == null)) {
+			return;
+		}
+
+		contextHttpServletRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, _getThemeDisplay(layout));
+
+		serviceContext.setRequest(contextHttpServletRequest);
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		try {
 			_layoutsImporter.importPageElement(
 				layout, layoutStructure, layoutStructure.getMainItemId(),
 				pageElement.toString(), 0);
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
 		}
 	}
 
