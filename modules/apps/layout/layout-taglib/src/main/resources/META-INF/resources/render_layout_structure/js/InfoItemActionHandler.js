@@ -69,12 +69,12 @@ function triggerAction(trigger, executeInfoItemActionURL) {
 	const {
 		lfrClassNameId: classNameId,
 		lfrClassPk: classPK,
-		lfrErrorInteraction: errorInteraction,
 		lfrErrorPageUrl: errorPageURL,
 		lfrErrorReload: errorReload,
 		lfrErrorText: errorText,
 		lfrFieldId: fieldId,
-		lfrSuccessInteraction: successInteraction,
+		lfrOnError: onError,
+		lfrOnSuccess: onSuccess,
 		lfrSuccessPageUrl: successPageURL,
 		lfrSuccessReload: successReload,
 		lfrSuccessText: successText,
@@ -106,7 +106,7 @@ function triggerAction(trigger, executeInfoItemActionURL) {
 
 			if (error) {
 				handleResult(
-					errorInteraction,
+					onError,
 					errorReload,
 					errorText || error,
 					TOAST_DATA.error,
@@ -115,7 +115,7 @@ function triggerAction(trigger, executeInfoItemActionURL) {
 			}
 			else {
 				handleResult(
-					successInteraction,
+					onSuccess,
 					successReload,
 					successText,
 					TOAST_DATA.success,

@@ -66,7 +66,7 @@ const INTERACTION_OPTIONS = [
 const INTERACTION_DATA = {
 	error: {
 		fields: {
-			interaction: 'errorInteraction',
+			interaction: 'onError',
 			page: 'errorPage',
 			reload: 'errorReload',
 			showPreview: 'errorShowPreview',
@@ -78,7 +78,7 @@ const INTERACTION_DATA = {
 	},
 	success: {
 		fields: {
-			interaction: 'successInteraction',
+			interaction: 'onSuccess',
 			page: 'successPage',
 			reload: 'successReload',
 			showPreview: 'successShowPreview',
