@@ -107,6 +107,7 @@ public class ActionEditableElementMapper implements EditableElementMapper {
 		element.attr("data-lfr-field-id", fieldId);
 
 		_mapOnError(element, configJSONObject);
+		_mapOnSuccess(element, configJSONObject);
 	}
 
 	private void _mapOnError(Element element, JSONObject jsonObject)
@@ -182,6 +183,82 @@ public class ActionEditableElementMapper implements EditableElementMapper {
 			jsonObject.getBoolean("errorReload")) {
 
 			element.attr("data-lfr-error-reload", StringPool.TRUE);
+		}
+	}
+
+	private void _mapOnSuccess(Element element, JSONObject jsonObject)
+		throws PortalException {
+
+		String onSuccess = jsonObject.getString("onSuccess");
+
+		if (Validator.isNull(onSuccess)) {
+			onSuccess = _ON_RESULT_ACTION_NONE;
+		}
+
+		element.attr("data-lfr-on-success", onSuccess);
+
+		ThemeDisplay themeDisplay = null;
+
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		if (serviceContext != null) {
+			themeDisplay = serviceContext.getThemeDisplay();
+		}
+
+		if (onSuccess.equals(_ON_RESULT_ACTION_NOTIFICATION)) {
+			JSONObject textJSONObject = jsonObject.getJSONObject("successText");
+
+			if ((textJSONObject != null) && (themeDisplay != null)) {
+				String text = textJSONObject.getString(
+					themeDisplay.getLanguageId());
+
+				if (Validator.isNotNull(text)) {
+					element.attr("data-lfr-success-text", text);
+				}
+			}
+		}
+		else if (onSuccess.equals(_ON_RESULT_ACTION_PAGE)) {
+			JSONObject pageJSONObject = jsonObject.getJSONObject("successPage");
+
+			if (pageJSONObject != null) {
+				Layout layout = _layoutLocalService.fetchLayout(
+					GetterUtil.getLong(pageJSONObject.getString("groupId")),
+					GetterUtil.getBoolean(
+						pageJSONObject.getString("privateLayout")),
+					GetterUtil.getLong(pageJSONObject.getString("layoutId")));
+
+				if ((layout != null) && (themeDisplay != null)) {
+					element.attr(
+						"data-lfr-success-page-url",
+						_portal.getLayoutURL(layout, themeDisplay));
+				}
+			}
+		}
+		else if (onSuccess.equals(_ON_RESULT_ACTION_URL)) {
+			JSONObject urlJSONObject = jsonObject.getJSONObject("successURL");
+
+			if ((urlJSONObject != null) && (themeDisplay != null)) {
+				String url = urlJSONObject.getString(
+					themeDisplay.getLanguageId());
+
+				if (Validator.isNull(url)) {
+					Locale locale = LocaleUtil.getSiteDefault();
+
+					url = urlJSONObject.getString(locale.getLanguage());
+				}
+
+				if (Validator.isNotNull(url)) {
+					element.attr("data-lfr-success-page-url", url);
+				}
+			}
+		}
+
+		if ((onSuccess.equals(_ON_RESULT_ACTION_NONE) ||
+			 onSuccess.equals(_ON_RESULT_ACTION_NOTIFICATION)) &&
+			jsonObject.getBoolean("successReload")) {
+
+			element.attr("data-lfr-success-reload", StringPool.TRUE);
 		}
 	}
 
