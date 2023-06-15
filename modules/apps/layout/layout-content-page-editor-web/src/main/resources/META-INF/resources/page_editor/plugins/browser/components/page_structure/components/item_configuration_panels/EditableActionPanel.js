@@ -223,9 +223,10 @@ function InteractionSelector({config, data, fragmentId, onValueSelect}) {
 				value={config[fields.interaction]}
 			/>
 
-			{[INTERACTION_NONE, INTERACTION_NOTIFICATION].includes(
-				config[fields.interaction]
-			) && (
+			{(!config[fields.interaction] ||
+				[INTERACTION_NONE, INTERACTION_NOTIFICATION].includes(
+					config[fields.interaction]
+				)) && (
 				<CheckboxField
 					field={{
 						label: sub(
