@@ -177,9 +177,8 @@ export function DropdownColorPicker({
 				className="clay-color-dropdown-menu px-0"
 				containerProps={{
 					className: 'cadmin',
-					containerRef,
 				}}
-				onSetActive={onSetActive}
+				onActiveChange={onSetActive}
 				ref={dropdownContainerRef}
 			>
 				{active ? (
