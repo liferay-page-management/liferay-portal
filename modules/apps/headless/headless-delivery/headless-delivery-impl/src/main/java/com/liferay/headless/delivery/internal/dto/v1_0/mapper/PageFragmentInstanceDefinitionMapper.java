@@ -711,8 +711,7 @@ public class PageFragmentInstanceDefinitionMapper {
 						}
 
 						return _toFragmentMappedValue(
-							_toDefaultMappingValue(jsonObject, null),
-							mappedActionJSONObject);
+							null, mappedActionJSONObject);
 					});
 
 				setText(
