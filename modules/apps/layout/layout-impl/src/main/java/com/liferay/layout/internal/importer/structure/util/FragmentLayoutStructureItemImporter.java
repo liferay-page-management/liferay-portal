@@ -889,6 +889,10 @@ public class FragmentLayoutStructureItemImporter
 		LayoutStructureItemImporterContext layoutStructureItemImporterContext,
 		Map<String, Object> onResultMap, String resultType) {
 
+		if (onResultMap == null) {
+			return;
+		}
+
 		JSONObject resultJSONObject = _jsonFactory.createJSONObject();
 
 		configJSONObject.put(resultType, resultJSONObject);
