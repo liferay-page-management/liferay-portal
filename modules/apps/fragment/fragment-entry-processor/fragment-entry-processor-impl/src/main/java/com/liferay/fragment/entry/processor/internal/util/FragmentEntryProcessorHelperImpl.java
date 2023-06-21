@@ -90,7 +90,7 @@ public class FragmentEntryProcessorHelperImpl
 
 		return jsonObject.getString(
 			_language.getLanguageId(LocaleUtil.getSiteDefault()),
-			jsonObject.getString("defaultValue"));
+			jsonObject.getString("defaultValue", null));
 	}
 
 	@Override
