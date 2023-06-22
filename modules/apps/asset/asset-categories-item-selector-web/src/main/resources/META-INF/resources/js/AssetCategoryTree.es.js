@@ -158,6 +158,14 @@ export function AssetCategoryTree({
 		}
 	};
 
+	useEffect(() => {
+		const firstElement = document.querySelector(
+			`[data-id*="${filteredItems[0]?.id}"]`
+		);
+
+		firstElement.tabIndex = 0;
+	}, [filteredItems]);
+
 	return (
 		<>
 			<SearchResultsMessage
