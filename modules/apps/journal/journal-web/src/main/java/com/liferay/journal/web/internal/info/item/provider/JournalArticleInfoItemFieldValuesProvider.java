@@ -38,6 +38,8 @@ import com.liferay.layout.page.template.info.item.provider.DisplayPageInfoItemFi
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.PortletRequestModel;
@@ -138,13 +140,16 @@ public class JournalArticleInfoItemFieldValuesProvider
 			ddmStructureArticle = _journalArticleLocalService.getArticle(
 				ddmStructure.getGroupId(), DDMStructure.class.getName(),
 				ddmStructure.getStructureId());
-		} catch (PortalException e) {
-			
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
 		}
 
 		if (ddmStructureArticle == null) {
 			return _ddmFormValuesInfoFieldValuesProvider.getInfoFieldValues(
-					article, article.getDDMFormValues());
+				article, article.getDDMFormValues());
 		}
 
 		List<InfoFieldValue<Object>> journalArticleFieldValues =
@@ -159,29 +164,6 @@ public class JournalArticleInfoItemFieldValuesProvider
 				ddmStructureArticle, ddmStructureArticle.getDDMFormValues()));
 
 		return journalArticleFieldValues;
-	}
-
-	private List<InfoFieldValue<Object>> _getDefaultDDMStructureInfoFieldValues(
-		JournalArticle article) {
-
-		DDMStructure ddmStructure = article.getDDMStructure();
-
-		JournalArticle ddmStructureArticle = null;
-
-		try {
-			ddmStructureArticle = _journalArticleLocalService.getArticle(
-				ddmStructure.getGroupId(), DDMStructure.class.getName(),
-				ddmStructure.getStructureId());
-		} catch (PortalException e) {
-			
-		}
-
-		if (ddmStructureArticle != null) {
-			return _ddmFormValuesInfoFieldValuesProvider.getInfoFieldValues(
-				ddmStructureArticle, ddmStructureArticle.getDDMFormValues());
-		}
-
-		return new ArrayList<>();
 	}
 
 	private List<InfoFieldValue<Object>> _getDDMTemplateInfoFieldValues(
@@ -203,6 +185,32 @@ public class JournalArticleInfoItemFieldValuesProvider
 			});
 
 		return infoFieldValues;
+	}
+
+	private List<InfoFieldValue<Object>> _getDefaultDDMStructureInfoFieldValues(
+		JournalArticle article) {
+
+		DDMStructure ddmStructure = article.getDDMStructure();
+
+		JournalArticle ddmStructureArticle = null;
+
+		try {
+			ddmStructureArticle = _journalArticleLocalService.getArticle(
+				ddmStructure.getGroupId(), DDMStructure.class.getName(),
+				ddmStructure.getStructureId());
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+		}
+
+		if (ddmStructureArticle != null) {
+			return _ddmFormValuesInfoFieldValuesProvider.getInfoFieldValues(
+				ddmStructureArticle, ddmStructureArticle.getDDMFormValues());
+		}
+
+		return new ArrayList<>();
 	}
 
 	private String _getDisplayPageURL(
@@ -468,6 +476,9 @@ public class JournalArticleInfoItemFieldValuesProvider
 
 		return null;
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		JournalArticleInfoItemFieldValuesProvider.class);
 
 	@Reference
 	private AssetDisplayPageFriendlyURLProvider
