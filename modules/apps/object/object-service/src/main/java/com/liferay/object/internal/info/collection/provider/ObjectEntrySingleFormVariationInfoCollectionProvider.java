@@ -578,9 +578,9 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 		}
 
 		List<AssetTag> assetTags = new ArrayList<>(
-			_assetTagLocalService.getGroupTags(groupId));
-
-		assetTags.sort(new AssetTagNameComparator(true));
+			_assetTagLocalService.getGroupTags(
+				groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				new AssetTagNameComparator(true)));
 
 		List<SelectOptionInfoFieldType> selectOptionInfoFieldTypes =
 			new ArrayList<>();
