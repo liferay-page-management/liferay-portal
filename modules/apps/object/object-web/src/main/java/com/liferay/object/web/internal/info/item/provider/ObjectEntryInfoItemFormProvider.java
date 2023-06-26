@@ -35,7 +35,6 @@ import com.liferay.info.item.provider.InfoItemFormProvider;
 import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.info.localized.bundle.FunctionInfoLocalizedValue;
 import com.liferay.layout.page.template.info.item.provider.DisplayPageInfoItemFieldSetProvider;
-import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
@@ -619,31 +618,6 @@ public class ObjectEntryInfoItemFormProvider
 		return ObjectDefinition.class.getName() + "#" + objectDefinitionId;
 	}
 
-	private List<SelectOptionInfoFieldType> _getSelectOptionInfoFieldTypes(
-		ObjectField objectField) {
-
-		List<SelectOptionInfoFieldType> selectOptionInfoFieldTypes =
-			new ArrayList<>();
-
-		List<ListTypeEntry> listTypeEntries =
-			_listTypeEntryLocalService.getListTypeEntries(
-				objectField.getListTypeDefinitionId());
-
-		for (ListTypeEntry listTypeEntry : listTypeEntries) {
-			selectOptionInfoFieldTypes.add(
-				new SelectOptionInfoFieldType(
-					Objects.equals(
-						ObjectFieldSettingUtil.getDefaultValueAsString(
-							null, objectField.getObjectFieldId(),
-							_objectFieldSettingLocalService, null),
-						listTypeEntry.getKey()),
-					new FunctionInfoLocalizedValue<>(listTypeEntry::getName),
-					listTypeEntry.getKey()));
-		}
-
-		return selectOptionInfoFieldTypes;
-	}
-
 	private List<InfoFieldSetEntry> _getObjectActionInfoFieldSetEntries() {
 		if (!FeatureFlagManagerUtil.isEnabled("LPS-169992")) {
 			return Collections.emptyList();
@@ -877,6 +851,22 @@ public class ObjectEntryInfoItemFormProvider
 
 		return PortalUtil.getPortalURL(serviceContext.getRequest()) +
 			PortalUtil.getPathContext() + restContextPath;
+	}
+
+	private List<SelectOptionInfoFieldType> _getSelectOptionInfoFieldTypes(
+		ObjectField objectField) {
+
+		return TransformUtil.transform(
+			_listTypeEntryLocalService.getListTypeEntries(
+				objectField.getListTypeDefinitionId()),
+			listTypeEntry -> new SelectOptionInfoFieldType(
+				Objects.equals(
+					ObjectFieldSettingUtil.getDefaultValueAsString(
+						null, objectField.getObjectFieldId(),
+						_objectFieldSettingLocalService, null),
+					listTypeEntry.getKey()),
+				new FunctionInfoLocalizedValue<>(listTypeEntry::getName),
+				listTypeEntry.getKey()));
 	}
 
 	private boolean _isGuestUser() {

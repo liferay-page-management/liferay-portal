@@ -35,6 +35,7 @@ import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.FileEntryItemSelectorReturnType;
 import com.liferay.item.selector.criteria.file.criterion.FileItemSelectorCriterion;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -338,25 +339,13 @@ public class FragmentEntryInputTemplateNodeContextHelper {
 		else if (infoField.getInfoFieldType() instanceof
 					MultiselectInfoFieldType) {
 
-			List<InputTemplateNode.Option> options = new ArrayList<>();
-
-			List<SelectOptionInfoFieldType> multiselectInfoFieldTypeOptions =
-				(List<SelectOptionInfoFieldType>)infoField.getAttribute(
-					MultiselectInfoFieldType.OPTIONS);
-
-			if (multiselectInfoFieldTypeOptions == null) {
-				multiselectInfoFieldTypeOptions = Collections.emptyList();
-			}
-
-			for (SelectOptionInfoFieldType option :
-					multiselectInfoFieldTypeOptions) {
-
-				options.add(
-					new InputTemplateNode.Option(
-						option.getLabel(locale), option.getValue()));
-			}
-
-			inputTemplateNode.addAttribute("options", options);
+			inputTemplateNode.addAttribute(
+				"options",
+				TransformUtil.transform(
+					(List<SelectOptionInfoFieldType>)infoField.getAttribute(
+						MultiselectInfoFieldType.OPTIONS),
+					option -> new InputTemplateNode.Option(
+						option.getLabel(locale), option.getValue())));
 		}
 		else if (infoField.getInfoFieldType() instanceof NumberInfoFieldType) {
 			String dataType = "integer";

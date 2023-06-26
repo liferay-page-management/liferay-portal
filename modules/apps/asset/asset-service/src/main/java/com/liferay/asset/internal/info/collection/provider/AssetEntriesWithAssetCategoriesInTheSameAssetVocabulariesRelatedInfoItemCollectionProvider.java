@@ -34,6 +34,7 @@ import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.info.localized.bundle.ModelResourceLocalizedValue;
 import com.liferay.info.pagination.InfoPage;
 import com.liferay.info.pagination.Pagination;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.language.Language;
@@ -264,9 +265,6 @@ public class
 	}
 
 	private InfoField _getItemTypesInfoField() {
-		List<SelectOptionInfoFieldType> selectOptionInfoFieldTypes =
-			new ArrayList<>();
-
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
@@ -294,16 +292,6 @@ public class
 		assetRendererFactories.sort(
 			new AssetRendererFactoryTypeNameComparator(locale));
 
-		for (AssetRendererFactory<?> assetRendererFactory :
-				assetRendererFactories) {
-
-			selectOptionInfoFieldTypes.add(
-				new SelectOptionInfoFieldType(
-					new ModelResourceLocalizedValue(
-						assetRendererFactory.getClassName()),
-					assetRendererFactory.getClassName()));
-		}
-
 		InfoField.FinalStep finalStep = InfoField.builder(
 		).infoFieldType(
 			MultiselectInfoFieldType.INSTANCE
@@ -312,7 +300,13 @@ public class
 		).name(
 			"item_types"
 		).attribute(
-			MultiselectInfoFieldType.OPTIONS, selectOptionInfoFieldTypes
+			MultiselectInfoFieldType.OPTIONS,
+			TransformUtil.transform(
+				assetRendererFactories,
+				assetRendererFactory -> new SelectOptionInfoFieldType(
+					new ModelResourceLocalizedValue(
+						assetRendererFactory.getClassName()),
+					assetRendererFactory.getClassName()))
 		).labelInfoLocalizedValue(
 			InfoLocalizedValue.localize(getClass(), "item-type")
 		).localizable(
