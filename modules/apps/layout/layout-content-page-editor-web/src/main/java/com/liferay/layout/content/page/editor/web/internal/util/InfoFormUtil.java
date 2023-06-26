@@ -23,6 +23,7 @@ import com.liferay.info.field.type.InfoFieldType;
 import com.liferay.info.field.type.MultiselectInfoFieldType;
 import com.liferay.info.field.type.NumberInfoFieldType;
 import com.liferay.info.field.type.SelectInfoFieldType;
+import com.liferay.info.field.type.SelectOptionInfoFieldType;
 import com.liferay.info.field.type.TextInfoFieldType;
 import com.liferay.info.form.InfoForm;
 import com.liferay.info.localized.InfoLocalizedValue;
@@ -192,11 +193,12 @@ public class InfoFormUtil {
 				));
 		}
 		else if (infoFieldType instanceof SelectInfoFieldType) {
-			List<SelectInfoFieldType.Option> options = new ArrayList<>();
+			List<SelectOptionInfoFieldType> selectOptionInfoFieldTypes =
+				new ArrayList<>();
 
 			if (infoField.getAttribute(SelectInfoFieldType.OPTIONS) != null) {
-				options.addAll(
-					(List<SelectInfoFieldType.Option>)infoField.getAttribute(
+				selectOptionInfoFieldTypes.addAll(
+					(List<SelectOptionInfoFieldType>)infoField.getAttribute(
 						SelectInfoFieldType.OPTIONS));
 			}
 
@@ -204,9 +206,13 @@ public class InfoFormUtil {
 				jsonObject.put(
 					"defaultValue",
 					() -> {
-						for (SelectInfoFieldType.Option option : options) {
-							if (option.isActive()) {
-								return String.valueOf(option.getValue());
+						for (SelectOptionInfoFieldType
+								selectOptionInfoFieldType :
+									selectOptionInfoFieldTypes) {
+
+							if (selectOptionInfoFieldType.isActive()) {
+								return String.valueOf(
+									selectOptionInfoFieldType.getValue());
 							}
 						}
 
@@ -223,11 +229,15 @@ public class InfoFormUtil {
 					).put(
 						"validValues",
 						JSONUtil.toJSONArray(
-							options,
-							option -> JSONUtil.put(
-								"label", String.valueOf(option.getLabel(locale))
+							selectOptionInfoFieldTypes,
+							selectOptionInfoFieldType -> JSONUtil.put(
+								"label",
+								String.valueOf(
+									selectOptionInfoFieldType.getLabel(locale))
 							).put(
-								"value", String.valueOf(option.getValue())
+								"value",
+								String.valueOf(
+									selectOptionInfoFieldType.getValue())
 							))
 					)
 				);
@@ -239,15 +249,15 @@ public class InfoFormUtil {
 			}
 		}
 		else if (infoFieldType instanceof MultiselectInfoFieldType) {
-			List<MultiselectInfoFieldType.Option> options = new ArrayList<>();
+			List<SelectOptionInfoFieldType> selectOptionInfoFieldTypes =
+				new ArrayList<>();
 
 			if (infoField.getAttribute(MultiselectInfoFieldType.OPTIONS) !=
 					null) {
 
-				options.addAll(
-					(List<MultiselectInfoFieldType.Option>)
-						infoField.getAttribute(
-							MultiselectInfoFieldType.OPTIONS));
+				selectOptionInfoFieldTypes.addAll(
+					(List<SelectOptionInfoFieldType>)infoField.getAttribute(
+						MultiselectInfoFieldType.OPTIONS));
 			}
 
 			try {
@@ -256,10 +266,14 @@ public class InfoFormUtil {
 					() -> {
 						JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
-						for (MultiselectInfoFieldType.Option option : options) {
-							if (option.isActive()) {
+						for (SelectOptionInfoFieldType
+								selectOptionInfoFieldType :
+									selectOptionInfoFieldTypes) {
+
+							if (selectOptionInfoFieldType.isActive()) {
 								jsonArray.put(
-									String.valueOf(option.getValue()));
+									String.valueOf(
+										selectOptionInfoFieldType.getValue()));
 							}
 						}
 
@@ -276,11 +290,15 @@ public class InfoFormUtil {
 					).put(
 						"validValues",
 						JSONUtil.toJSONArray(
-							options,
-							option -> JSONUtil.put(
-								"label", String.valueOf(option.getLabel(locale))
+							selectOptionInfoFieldTypes,
+							selectOptionInfoFieldType -> JSONUtil.put(
+								"label",
+								String.valueOf(
+									selectOptionInfoFieldType.getLabel(locale))
 							).put(
-								"value", String.valueOf(option.getValue())
+								"value",
+								String.valueOf(
+									selectOptionInfoFieldType.getValue())
 							))
 					)
 				);

@@ -26,6 +26,7 @@ import com.liferay.info.field.type.MultiselectInfoFieldType;
 import com.liferay.info.field.type.NumberInfoFieldType;
 import com.liferay.info.field.type.RelationshipInfoFieldType;
 import com.liferay.info.field.type.SelectInfoFieldType;
+import com.liferay.info.field.type.SelectOptionInfoFieldType;
 import com.liferay.info.field.type.TextInfoFieldType;
 import com.liferay.info.field.type.URLInfoFieldType;
 import com.liferay.info.form.InfoForm;
@@ -248,7 +249,7 @@ public class ObjectEntryInfoItemFormProvider
 				TransformUtil.transform(
 					_listTypeEntryLocalService.getListTypeEntries(
 						objectField.getListTypeDefinitionId()),
-					listTypeEntry -> new MultiselectInfoFieldType.Option(
+					listTypeEntry -> new SelectOptionInfoFieldType(
 						Objects.equals(
 							ObjectFieldSettingUtil.getDefaultValueAsString(
 								null, objectField.getObjectFieldId(),
@@ -618,18 +619,19 @@ public class ObjectEntryInfoItemFormProvider
 		return ObjectDefinition.class.getName() + "#" + objectDefinitionId;
 	}
 
-	private List<MultiselectInfoFieldType.Option>
-		_getMultiselectInfoFieldTypeOptions(ObjectField objectField) {
+	private List<SelectOptionInfoFieldType> _getMultiselectInfoFieldTypeOptions(
+		ObjectField objectField) {
 
-		List<MultiselectInfoFieldType.Option> options = new ArrayList<>();
+		List<SelectOptionInfoFieldType> selectOptionInfoFieldTypes =
+			new ArrayList<>();
 
 		List<ListTypeEntry> listTypeEntries =
 			_listTypeEntryLocalService.getListTypeEntries(
 				objectField.getListTypeDefinitionId());
 
 		for (ListTypeEntry listTypeEntry : listTypeEntries) {
-			options.add(
-				new MultiselectInfoFieldType.Option(
+			selectOptionInfoFieldTypes.add(
+				new SelectOptionInfoFieldType(
 					Objects.equals(
 						ObjectFieldSettingUtil.getDefaultValueAsString(
 							null, objectField.getObjectFieldId(),
@@ -639,7 +641,7 @@ public class ObjectEntryInfoItemFormProvider
 					listTypeEntry.getKey()));
 		}
 
-		return options;
+		return selectOptionInfoFieldTypes;
 	}
 
 	private List<InfoFieldSetEntry> _getObjectActionInfoFieldSetEntries() {
@@ -877,18 +879,19 @@ public class ObjectEntryInfoItemFormProvider
 			PortalUtil.getPathContext() + restContextPath;
 	}
 
-	private List<SelectInfoFieldType.Option> _getSelectInfoFieldTypeOptions(
+	private List<SelectOptionInfoFieldType> _getSelectInfoFieldTypeOptions(
 		ObjectField objectField) {
 
-		List<SelectInfoFieldType.Option> options = new ArrayList<>();
+		List<SelectOptionInfoFieldType> selectOptionInfoFieldTypes =
+			new ArrayList<>();
 
 		List<ListTypeEntry> listTypeEntries =
 			_listTypeEntryLocalService.getListTypeEntries(
 				objectField.getListTypeDefinitionId());
 
 		for (ListTypeEntry listTypeEntry : listTypeEntries) {
-			options.add(
-				new SelectInfoFieldType.Option(
+			selectOptionInfoFieldTypes.add(
+				new SelectOptionInfoFieldType(
 					Objects.equals(
 						ObjectFieldSettingUtil.getDefaultValueAsString(
 							null, objectField.getObjectFieldId(),
@@ -898,7 +901,7 @@ public class ObjectEntryInfoItemFormProvider
 					listTypeEntry.getKey()));
 		}
 
-		return options;
+		return selectOptionInfoFieldTypes;
 	}
 
 	private boolean _isGuestUser() {

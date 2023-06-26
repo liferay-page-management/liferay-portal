@@ -31,6 +31,7 @@ import com.liferay.info.field.InfoFieldSet;
 import com.liferay.info.field.InfoFieldSetEntry;
 import com.liferay.info.field.type.MultiselectInfoFieldType;
 import com.liferay.info.field.type.SelectInfoFieldType;
+import com.liferay.info.field.type.SelectOptionInfoFieldType;
 import com.liferay.info.filter.InfoFilter;
 import com.liferay.info.filter.KeywordsInfoFilter;
 import com.liferay.info.form.InfoForm;
@@ -582,11 +583,12 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 
 		assetTags.sort(new AssetTagNameComparator(true));
 
-		List<MultiselectInfoFieldType.Option> options = new ArrayList<>();
+		List<SelectOptionInfoFieldType> selectOptionInfoFieldTypes =
+			new ArrayList<>();
 
 		for (AssetTag assetTag : assetTags) {
-			options.add(
-				new MultiselectInfoFieldType.Option(
+			selectOptionInfoFieldTypes.add(
+				new SelectOptionInfoFieldType(
 					new SingleValueInfoLocalizedValue<>(assetTag.getName()),
 					assetTag.getName()));
 		}
@@ -599,7 +601,7 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 		).name(
 			Field.ASSET_TAG_NAMES
 		).attribute(
-			MultiselectInfoFieldType.OPTIONS, options
+			MultiselectInfoFieldType.OPTIONS, selectOptionInfoFieldTypes
 		).labelInfoLocalizedValue(
 			InfoLocalizedValue.localize(getClass(), "tag")
 		).localizable(
@@ -626,21 +628,22 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 		for (AssetVocabulary assetVocabulary :
 				_getAssetVocabularies(serviceContext)) {
 
-			List<MultiselectInfoFieldType.Option> options = new ArrayList<>();
+			List<SelectOptionInfoFieldType> selectOptionInfoFieldTypes =
+				new ArrayList<>();
 
 			for (AssetCategory assetCategory :
 					_assetCategoryLocalService.getVocabularyCategories(
 						assetVocabulary.getVocabularyId(), QueryUtil.ALL_POS,
 						QueryUtil.ALL_POS, null)) {
 
-				options.add(
-					new MultiselectInfoFieldType.Option(
+				selectOptionInfoFieldTypes.add(
+					new SelectOptionInfoFieldType(
 						new SingleValueInfoLocalizedValue<>(
 							assetCategory.getName()),
 						String.valueOf(assetCategory.getCategoryId())));
 			}
 
-			if (!options.isEmpty()) {
+			if (!selectOptionInfoFieldTypes.isEmpty()) {
 				fieldSetEntries.add(
 					InfoField.builder(
 					).infoFieldType(
@@ -650,7 +653,8 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 					).name(
 						String.valueOf(assetVocabulary.getVocabularyId())
 					).attribute(
-						MultiselectInfoFieldType.OPTIONS, options
+						MultiselectInfoFieldType.OPTIONS,
+						selectOptionInfoFieldTypes
 					).labelInfoLocalizedValue(
 						InfoLocalizedValue.singleValue(
 							assetVocabulary.getTitle(
@@ -676,13 +680,14 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 		return null;
 	}
 
-	private List<SelectInfoFieldType.Option> _getOptions(
+	private List<SelectOptionInfoFieldType> _getOptions(
 		ObjectField objectField) {
 
-		List<SelectInfoFieldType.Option> options = new ArrayList<>();
+		List<SelectOptionInfoFieldType> selectOptionInfoFieldTypes =
+			new ArrayList<>();
 
-		options.add(
-			new SelectInfoFieldType.Option(
+		selectOptionInfoFieldTypes.add(
+			new SelectOptionInfoFieldType(
 				new ResourceBundleInfoLocalizedValue(
 					getClass(), "choose-an-option"),
 				""));
@@ -691,28 +696,28 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 				objectField.getDBType(),
 				ObjectFieldConstants.DB_TYPE_BOOLEAN)) {
 
-			options.add(
-				new SelectInfoFieldType.Option(
+			selectOptionInfoFieldTypes.add(
+				new SelectOptionInfoFieldType(
 					new ResourceBundleInfoLocalizedValue(getClass(), "true"),
 					"true"));
-			options.add(
-				new SelectInfoFieldType.Option(
+			selectOptionInfoFieldTypes.add(
+				new SelectOptionInfoFieldType(
 					new ResourceBundleInfoLocalizedValue(getClass(), "false"),
 					"false"));
 		}
 		else if (objectField.getListTypeDefinitionId() != 0) {
-			options.addAll(
+			selectOptionInfoFieldTypes.addAll(
 				TransformUtil.transform(
 					_listTypeEntryLocalService.getListTypeEntries(
 						objectField.getListTypeDefinitionId(),
 						QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-					listTypeEntry -> new SelectInfoFieldType.Option(
+					listTypeEntry -> new SelectOptionInfoFieldType(
 						new FunctionInfoLocalizedValue<>(
 							listTypeEntry::getName),
 						listTypeEntry.getKey())));
 		}
 
-		return options;
+		return selectOptionInfoFieldTypes;
 	}
 
 	private com.liferay.portal.vulcan.pagination.Pagination _getPagination(

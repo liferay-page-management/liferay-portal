@@ -18,6 +18,7 @@ import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.field.type.InfoFieldType;
 import com.liferay.info.field.type.SelectInfoFieldType;
+import com.liferay.info.field.type.SelectOptionInfoFieldType;
 import com.liferay.info.type.KeyLocalizedLabelPair;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -71,17 +72,20 @@ public class SelectInfoFieldTypeTemplateNodeTransformer
 				"multiple", Boolean.FALSE.toString()
 			).build());
 
-		List<SelectInfoFieldType.Option> options =
-			(List<SelectInfoFieldType.Option>)infoField.getAttribute(
+		List<SelectOptionInfoFieldType> selectOptionInfoFieldTypes =
+			(List<SelectOptionInfoFieldType>)infoField.getAttribute(
 				SelectInfoFieldType.OPTIONS);
 
-		if (options == null) {
-			options = Collections.emptyList();
+		if (selectOptionInfoFieldTypes == null) {
+			selectOptionInfoFieldTypes = Collections.emptyList();
 		}
 
-		for (SelectInfoFieldType.Option option : options) {
+		for (SelectOptionInfoFieldType selectOptionInfoFieldType :
+				selectOptionInfoFieldTypes) {
+
 			templateNode.appendOptionMap(
-				option.getValue(), option.getLabel(themeDisplay.getLocale()));
+				selectOptionInfoFieldType.getValue(),
+				selectOptionInfoFieldType.getLabel(themeDisplay.getLocale()));
 		}
 
 		return templateNode;

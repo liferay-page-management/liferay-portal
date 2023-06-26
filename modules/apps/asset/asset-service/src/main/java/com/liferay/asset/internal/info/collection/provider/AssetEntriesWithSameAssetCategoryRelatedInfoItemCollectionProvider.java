@@ -31,6 +31,7 @@ import com.liferay.info.field.InfoFieldSet;
 import com.liferay.info.field.type.CategoriesInfoFieldType;
 import com.liferay.info.field.type.MultiselectInfoFieldType;
 import com.liferay.info.field.type.SelectInfoFieldType;
+import com.liferay.info.field.type.SelectOptionInfoFieldType;
 import com.liferay.info.form.InfoForm;
 import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.info.localized.bundle.ModelResourceLocalizedValue;
@@ -207,17 +208,17 @@ public class AssetEntriesWithSameAssetCategoryRelatedInfoItemCollectionProvider
 				).attribute(
 					SelectInfoFieldType.OPTIONS,
 					ListUtil.fromArray(
-						new SelectInfoFieldType.Option(
+						new SelectOptionInfoFieldType(
 							true,
 							new ResourceBundleInfoLocalizedValue(
 								getClass(), "not-selected"),
 							StringPool.BLANK),
-						new SelectInfoFieldType.Option(
+						new SelectOptionInfoFieldType(
 							new ResourceBundleInfoLocalizedValue(
 								getClass(),
 								"any-category-of-the-same-vocabulary"),
 							"anyAssetCategoryOfTheSameAssetVocabulary"),
-						new SelectInfoFieldType.Option(
+						new SelectOptionInfoFieldType(
 							new ResourceBundleInfoLocalizedValue(
 								getClass(), "a-specific-category"),
 							"specificAssetCategory"))
@@ -573,7 +574,8 @@ public class AssetEntriesWithSameAssetCategoryRelatedInfoItemCollectionProvider
 	}
 
 	private InfoField _getItemTypesInfoField() {
-		List<MultiselectInfoFieldType.Option> options = new ArrayList<>();
+		List<SelectOptionInfoFieldType> selectOptionInfoFieldTypes =
+			new ArrayList<>();
 
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
@@ -605,8 +607,8 @@ public class AssetEntriesWithSameAssetCategoryRelatedInfoItemCollectionProvider
 		for (AssetRendererFactory<?> assetRendererFactory :
 				assetRendererFactories) {
 
-			options.add(
-				new MultiselectInfoFieldType.Option(
+			selectOptionInfoFieldTypes.add(
+				new SelectOptionInfoFieldType(
 					new ModelResourceLocalizedValue(
 						assetRendererFactory.getClassName()),
 					assetRendererFactory.getClassName()));
@@ -620,7 +622,7 @@ public class AssetEntriesWithSameAssetCategoryRelatedInfoItemCollectionProvider
 		).name(
 			"item_types"
 		).attribute(
-			MultiselectInfoFieldType.OPTIONS, options
+			MultiselectInfoFieldType.OPTIONS, selectOptionInfoFieldTypes
 		).labelInfoLocalizedValue(
 			InfoLocalizedValue.localize(getClass(), "item-type")
 		).localizable(
