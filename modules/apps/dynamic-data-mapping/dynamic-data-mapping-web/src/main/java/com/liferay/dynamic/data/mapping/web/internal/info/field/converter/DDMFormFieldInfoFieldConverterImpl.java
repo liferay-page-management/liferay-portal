@@ -91,7 +91,7 @@ public class DDMFormFieldInfoFieldConverterImpl
 
 			finalStep.attribute(
 				MultiselectInfoFieldType.OPTIONS,
-				_getMultiselectInfoFieldTypeOptions(ddmFormField));
+				_getSelectOptionInfoFieldTypes(ddmFormField));
 		}
 
 		if (Objects.equals(
@@ -106,7 +106,7 @@ public class DDMFormFieldInfoFieldConverterImpl
 
 			finalStep.attribute(
 				SelectInfoFieldType.OPTIONS,
-				_getSelectInfoFieldTypeOptions(ddmFormField));
+				_getSelectOptionInfoFieldTypes(ddmFormField));
 		}
 
 		if (Objects.equals(
@@ -115,12 +115,12 @@ public class DDMFormFieldInfoFieldConverterImpl
 			if (GetterUtil.getBoolean(ddmFormField.getProperty("multiple"))) {
 				finalStep.attribute(
 					MultiselectInfoFieldType.OPTIONS,
-					_getMultiselectInfoFieldTypeOptions(ddmFormField));
+					_getSelectOptionInfoFieldTypes(ddmFormField));
 			}
 			else {
 				finalStep.attribute(
 					SelectInfoFieldType.OPTIONS,
-					_getSelectInfoFieldTypeOptions(ddmFormField));
+					_getSelectOptionInfoFieldTypes(ddmFormField));
 			}
 		}
 
@@ -197,29 +197,7 @@ public class DDMFormFieldInfoFieldConverterImpl
 		return TextInfoFieldType.INSTANCE;
 	}
 
-	private List<SelectOptionInfoFieldType> _getMultiselectInfoFieldTypeOptions(
-		DDMFormField ddmFormField) {
-
-		List<SelectOptionInfoFieldType> selectOptionInfoFieldTypes =
-			new ArrayList<>();
-
-		DDMFormFieldOptions ddmFormFieldOptions =
-			ddmFormField.getDDMFormFieldOptions();
-
-		for (String value : ddmFormFieldOptions.getOptionsValues()) {
-			LocalizedValue localizedValue = ddmFormFieldOptions.getOptionLabels(
-				value);
-
-			selectOptionInfoFieldTypes.add(
-				new SelectOptionInfoFieldType(
-					new FunctionInfoLocalizedValue<>(localizedValue::getString),
-					value));
-		}
-
-		return selectOptionInfoFieldTypes;
-	}
-
-	private List<SelectOptionInfoFieldType> _getSelectInfoFieldTypeOptions(
+	private List<SelectOptionInfoFieldType> _getSelectOptionInfoFieldTypes(
 		DDMFormField ddmFormField) {
 
 		List<SelectOptionInfoFieldType> selectOptionInfoFieldTypes =

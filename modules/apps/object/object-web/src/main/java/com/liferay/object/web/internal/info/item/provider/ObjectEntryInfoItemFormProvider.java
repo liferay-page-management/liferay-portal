@@ -268,12 +268,12 @@ public class ObjectEntryInfoItemFormProvider
 
 				finalStep.attribute(
 					MultiselectInfoFieldType.OPTIONS,
-					_getMultiselectInfoFieldTypeOptions(objectField));
+					_getSelectOptionInfoFieldTypes(objectField));
 			}
 			else {
 				finalStep.attribute(
 					SelectInfoFieldType.OPTIONS,
-					_getSelectInfoFieldTypeOptions(objectField));
+					_getSelectOptionInfoFieldTypes(objectField));
 			}
 		}
 		else if (Objects.equals(
@@ -619,7 +619,7 @@ public class ObjectEntryInfoItemFormProvider
 		return ObjectDefinition.class.getName() + "#" + objectDefinitionId;
 	}
 
-	private List<SelectOptionInfoFieldType> _getMultiselectInfoFieldTypeOptions(
+	private List<SelectOptionInfoFieldType> _getSelectOptionInfoFieldTypes(
 		ObjectField objectField) {
 
 		List<SelectOptionInfoFieldType> selectOptionInfoFieldTypes =
@@ -877,31 +877,6 @@ public class ObjectEntryInfoItemFormProvider
 
 		return PortalUtil.getPortalURL(serviceContext.getRequest()) +
 			PortalUtil.getPathContext() + restContextPath;
-	}
-
-	private List<SelectOptionInfoFieldType> _getSelectInfoFieldTypeOptions(
-		ObjectField objectField) {
-
-		List<SelectOptionInfoFieldType> selectOptionInfoFieldTypes =
-			new ArrayList<>();
-
-		List<ListTypeEntry> listTypeEntries =
-			_listTypeEntryLocalService.getListTypeEntries(
-				objectField.getListTypeDefinitionId());
-
-		for (ListTypeEntry listTypeEntry : listTypeEntries) {
-			selectOptionInfoFieldTypes.add(
-				new SelectOptionInfoFieldType(
-					Objects.equals(
-						ObjectFieldSettingUtil.getDefaultValueAsString(
-							null, objectField.getObjectFieldId(),
-							_objectFieldSettingLocalService, null),
-						listTypeEntry.getKey()),
-					new FunctionInfoLocalizedValue<>(listTypeEntry::getName),
-					listTypeEntry.getKey()));
-		}
-
-		return selectOptionInfoFieldTypes;
 	}
 
 	private boolean _isGuestUser() {
