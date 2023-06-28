@@ -614,10 +614,6 @@ public class ObjectEntryInfoItemFormProvider
 	}
 
 	private List<InfoFieldSetEntry> _getObjectActionInfoFieldSetEntries() {
-		if (!FeatureFlagManagerUtil.isEnabled("LPS-169992")) {
-			return Collections.emptyList();
-		}
-
 		InfoFieldSet.Builder infoFieldSetBuilder = InfoFieldSet.builder(
 		).labelInfoLocalizedValue(
 			InfoLocalizedValue.localize(
