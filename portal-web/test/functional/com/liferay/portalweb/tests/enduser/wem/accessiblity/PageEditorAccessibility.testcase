@@ -722,9 +722,7 @@ definition {
 	@priority = 3
 	test ViewPageTitleOfViewModeAndEditMode {
 		task ("Given a page creator has a published content page") {
-			Navigator.openURL();
-
-			var defaultSiteName = selenium.getText("Home#SITE_NAME");
+			var defaultSiteName = TestCase.getSiteName();
 
 			JSONLayout.addPublicLayout(
 				groupName = ${randomSiteName},

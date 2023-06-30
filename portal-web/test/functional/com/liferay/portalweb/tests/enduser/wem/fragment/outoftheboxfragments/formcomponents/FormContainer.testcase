@@ -777,9 +777,7 @@ definition {
 		}
 
 		task ("When the page designer selects a page from another site as success message on page editor") {
-			Navigator.openURL();
-
-			var siteName = selenium.getText("Home#SITE_NAME");
+			var siteName = TestCase.getSiteName();
 
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Page Name",

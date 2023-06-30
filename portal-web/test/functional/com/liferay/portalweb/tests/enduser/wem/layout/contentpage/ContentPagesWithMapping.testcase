@@ -2084,9 +2084,7 @@ definition {
 	test ViewPageURLOnTooltipWhenSelectPageItem {
 		task ("Given a page creator opens the link to page modal") {
 			task ("Get the guest site name") {
-				Navigator.openURL();
-
-				var defaultSiteName = selenium.getText("Home#SITE_NAME");
+				var defaultSiteName = TestCase.getSiteName();
 			}
 
 			task ("Publish content page") {
