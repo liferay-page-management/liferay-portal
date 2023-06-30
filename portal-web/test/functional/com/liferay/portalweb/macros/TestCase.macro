@@ -105,32 +105,11 @@ definition {
 	}
 
 	macro getSiteName {
-		var testLiferayVirtualInstance = PropsUtil.get("test.liferay.virtual.instance");
+		Navigator.openURL();
 
-		if ((${siteName} == "Liferay") || !(isSet(siteName))) {
-			if (${testLiferayVirtualInstance} == "true") {
-				var portalURL = PropsUtil.get("portal.url");
+		var siteName = selenium.getText("Home#SITE_NAME");
 
-				var portalURL = Regex.removeHTTP(url = ${portalURL});
-
-				var portalURL = Regex.removePortNumber(url = ${portalURL});
-
-				return ${portalURL};
-			}
-			else {
-				var testRunEnvironment = PropsUtil.get("test.run.environment");
-
-				if (${testRunEnvironment} == "EE") {
-					return "Liferay DXP";
-				}
-				else {
-					return "Liferay";
-				}
-			}
-		}
-		else {
-			return ${siteName};
-		}
+		return ${siteName};
 	}
 
 	macro getTempFileContent {
