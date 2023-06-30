@@ -171,7 +171,8 @@ public class LayoutClassedModelUsageLocalServiceImpl
 
 	@Override
 	public int getUniqueLayoutClassedModelUsagesCount(
-		long classNameId, long classPK) {
+		long classNameId, long classPK,
+		String classedModelExternalReferenceCode) {
 
 		return layoutClassedModelUsagePersistence.dslQueryCount(
 			DSLQueryFactoryUtil.countDistinct(
@@ -183,6 +184,14 @@ public class LayoutClassedModelUsageLocalServiceImpl
 					classNameId
 				).and(
 					LayoutClassedModelUsageTable.INSTANCE.classPK.eq(classPK)
+				).and(
+					LayoutClassedModelUsageTable.INSTANCE.
+						classedModelExternalReferenceCode.eq(
+							classedModelExternalReferenceCode
+						).or(
+							LayoutClassedModelUsageTable.INSTANCE.
+								classedModelExternalReferenceCode.isNull()
+						)
 				)
 			));
 	}
