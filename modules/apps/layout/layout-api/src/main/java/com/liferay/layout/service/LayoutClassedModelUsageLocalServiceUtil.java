@@ -456,10 +456,11 @@ public class LayoutClassedModelUsageLocalServiceUtil {
 	}
 
 	public static int getUniqueLayoutClassedModelUsagesCount(
-		long classNameId, long classPK) {
+		long classNameId, long classPK,
+		String classedModelExternalReferenceCode) {
 
 		return getService().getUniqueLayoutClassedModelUsagesCount(
-			classNameId, classPK);
+			classNameId, classPK, classedModelExternalReferenceCode);
 	}
 
 	/**

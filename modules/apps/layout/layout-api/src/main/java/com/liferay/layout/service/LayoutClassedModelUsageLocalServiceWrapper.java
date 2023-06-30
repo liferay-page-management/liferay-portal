@@ -518,10 +518,12 @@ public class LayoutClassedModelUsageLocalServiceWrapper
 
 	@Override
 	public int getUniqueLayoutClassedModelUsagesCount(
-		long classNameId, long classPK) {
+		long classNameId, long classPK,
+		String classedModelExternalReferenceCode) {
 
 		return _layoutClassedModelUsageLocalService.
-			getUniqueLayoutClassedModelUsagesCount(classNameId, classPK);
+			getUniqueLayoutClassedModelUsagesCount(
+				classNameId, classPK, classedModelExternalReferenceCode);
 	}
 
 	/**
