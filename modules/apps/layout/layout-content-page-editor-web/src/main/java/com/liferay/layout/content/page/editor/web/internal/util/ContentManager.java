@@ -17,8 +17,6 @@ package com.liferay.layout.content.page.editor.web.internal.util;
 import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
 import com.liferay.asset.kernel.model.AssetRenderer;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
-import com.liferay.asset.kernel.model.ClassType;
-import com.liferay.asset.kernel.model.ClassTypeReader;
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.fragment.model.FragmentEntryLink;
@@ -34,6 +32,7 @@ import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.InfoItemServiceRegistry;
+import com.liferay.info.item.provider.InfoItemObjectVariationProvider;
 import com.liferay.info.item.provider.InfoItemPermissionProvider;
 import com.liferay.info.permission.provider.InfoPermissionProvider;
 import com.liferay.info.search.InfoSearchClassMapperRegistry;
@@ -641,6 +640,23 @@ public class ContentManager {
 		return "web-content";
 	}
 
+	private <T> String _getInfoItemFormVariationLabel(
+		LayoutDisplayPageObjectProvider<T> layoutDisplayPageObjectProvider,
+		Locale locale) {
+
+		InfoItemObjectVariationProvider<T> infoItemObjectVariationProvider =
+			_infoItemServiceRegistry.getFirstInfoItemService(
+				InfoItemObjectVariationProvider.class,
+				layoutDisplayPageObjectProvider.getClassName());
+
+		if (infoItemObjectVariationProvider == null) {
+			return StringPool.BLANK;
+		}
+
+		return infoItemObjectVariationProvider.getInfoItemFormVariationLabel(
+			layoutDisplayPageObjectProvider.getDisplayObject(), locale);
+	}
+
 	private InfoItemReference _getInfoItemIdentifier(
 		String className, long classPK, String externalReferenceCode) {
 
@@ -965,10 +981,8 @@ public class ContentManager {
 			"status", _getStatusJSONObject(layoutClassedModelUsage)
 		).put(
 			"subtype",
-			_getSubtype(
-				layoutClassedModelUsage.getClassName(),
-				layoutDisplayPageObjectProvider.getClassTypeId(),
-				themeDisplay.getLocale())
+			_getInfoItemFormVariationLabel(
+				layoutDisplayPageObjectProvider, themeDisplay.getLocale())
 		).put(
 			"title",
 			layoutDisplayPageObjectProvider.getTitle(themeDisplay.getLocale())
@@ -1153,35 +1167,6 @@ public class ContentManager {
 			"style",
 			WorkflowConstants.getStatusStyle(WorkflowConstants.STATUS_APPROVED)
 		);
-	}
-
-	private String _getSubtype(
-		String className, long classTypeId, Locale locale) {
-
-		AssetRendererFactory<?> assetRendererFactory =
-			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
-				_infoSearchClassMapperRegistry.getSearchClassName(className));
-
-		if (assetRendererFactory == null) {
-			return StringPool.BLANK;
-		}
-
-		ClassTypeReader classTypeReader =
-			assetRendererFactory.getClassTypeReader();
-
-		try {
-			ClassType classType = classTypeReader.getClassType(
-				classTypeId, locale);
-
-			return classType.getName();
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception);
-			}
-
-			return StringPool.BLANK;
-		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(ContentManager.class);
