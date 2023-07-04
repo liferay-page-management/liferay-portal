@@ -64,7 +64,7 @@ public class LayoutClassedModelUsageLocalServiceUtilTest {
 			3,
 			LayoutClassedModelUsageLocalServiceUtil.
 				getUniqueLayoutClassedModelUsagesCount(
-					_layout.getClassNameId(), _layout.getClassPK(),
+					_layout.getClassNameId(), _layout.getPlid(),
 					StringPool.BLANK));
 	}
 
