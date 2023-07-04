@@ -14,6 +14,7 @@
 
 package com.liferay.info.item.action.executor;
 
+import com.liferay.info.exception.InfoItemActionErrorMessageException;
 import com.liferay.info.exception.InfoItemActionExecutionException;
 import com.liferay.info.item.InfoItemIdentifier;
 
@@ -25,5 +26,8 @@ public interface InfoItemActionExecutor<T> {
 	public void executeInfoItemAction(
 			InfoItemIdentifier infoItemIdentifier, String fieldId)
 		throws InfoItemActionExecutionException;
+
+	public String getInfoItemActionErrorMessage(String fieldId)
+		throws InfoItemActionErrorMessageException;
 
 }
