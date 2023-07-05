@@ -140,9 +140,10 @@ public class ContentManager {
 			getMappedLayoutDisplayPageObjectProviders(long groupId, long plid)
 		throws PortalException {
 
-		Set<String> uniqueLayoutClassedModelUsageKeys = new HashSet<>();
 		Set<LayoutDisplayPageObjectProvider<?>>
 			layoutDisplayPageObjectProviders = new HashSet<>();
+
+		Set<String> uniqueLayoutClassedModelUsageKeys = new HashSet<>();
 
 		_getFragmentEntryLinksMappedLayoutDisplayPageObjectProviders(
 			groupId, plid, layoutDisplayPageObjectProviders,
