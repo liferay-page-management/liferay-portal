@@ -11,6 +11,10 @@ definition {
 	var siteURLKey = StringUtil.toLowerCase(${randomSiteName});
 
 	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginPG();
+
 		task ("Sign in") {
 			User.firstLoginPG();
 		}
@@ -2568,6 +2572,28 @@ definition {
 			AssertNotChecked.assertNotCheckedNotVisible(
 				key_roleTitle = "Guest",
 				locator1 = "Permissions#CONTENT_PERMISSIONS_VIEW_CHECKBOX");
+		}
+	}
+
+	@description = "This is a test for LPS-187442. Permissions are copied when a Page is created as a copy of another Page."
+	@priority = 4
+	test ViewTheThemeBeingDesign {
+		task ("Given the user is on a page") {
+			ContentPages.addPage(pageName = "Example Page");
+		}
+
+		task ("When the user goes to page design options") {
+			PageEditor.gotoTab(tabName = "Page Design Options");
+		}
+
+		task ("When user clicks more page design options") {
+			Click(locator1 = "PageEditor#MORE_LINK");
+		}
+
+		task ("Then it verifies that the theme is present") {
+			AssertElementPresent(
+				key_title = "Design",
+				locator1 = "Header#H2_TITLE");
 		}
 	}
 
