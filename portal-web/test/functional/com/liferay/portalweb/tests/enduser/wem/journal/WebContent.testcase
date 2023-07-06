@@ -1059,8 +1059,6 @@ definition {
 	@description = "This is a test for LPS-90066 and LPS-127728. A user can preview a scheduled web content via View Usage. The warning message should have link in Web Content Display."
 	@priority = 5
 	test PreviewScheduledWebContentInWCD {
-		property portal.acceptance = "true";
-
 		task ("Add a web content article with a future display date") {
 			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 
