@@ -182,6 +182,10 @@ export default function ItemSelector({
 				return '';
 			}
 
+			if (selectedItem.title) {
+				return selectedItem.title;
+			}
+
 			const content = findPageContent(
 				[
 					...(quickMappedInfoItems || []),
@@ -190,7 +194,7 @@ export default function ItemSelector({
 				selectedItem
 			);
 
-			return content?.title || selectedItem.title || '';
+			return content?.title || '';
 		},
 		[quickMappedInfoItems, selectedItem]
 	);
