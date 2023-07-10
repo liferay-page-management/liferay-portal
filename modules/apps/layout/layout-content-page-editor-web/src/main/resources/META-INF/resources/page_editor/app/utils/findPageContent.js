@@ -20,7 +20,7 @@ export default function findPageContent(pageContents, item) {
 			}
 
 			return (
-				(classPK && classPK === item.classPK) ||
+				(classPK && classPK === String(item.classPK)) ||
 				(externalReferenceCode &&
 					externalReferenceCode === item.externalReferenceCode)
 			);
