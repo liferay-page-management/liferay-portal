@@ -1044,6 +1044,12 @@ public class RenderLayoutStructureTag extends IncludeTag {
 		jspWriter.write(formStyledLayoutStructureItem.getItemId());
 		jspWriter.write("\"><input name=\"groupId\" type=\"hidden\" value=\"");
 		jspWriter.write(String.valueOf(themeDisplay.getScopeGroupId()));
+		jspWriter.write(
+			"\"><input name=\"notificationMessage\" type=\"hidden\" value=\"");
+		jspWriter.write(
+			HtmlUtil.escape(
+				renderLayoutStructureDisplayContext.getNotificationMessage(
+					formStyledLayoutStructureItem)));
 		jspWriter.write("\"><input name=\"p_l_id\" type=\"hidden\" value=\"");
 		jspWriter.write(String.valueOf(themeDisplay.getPlid()));
 		jspWriter.write("\"><input name=\"p_l_mode\" type=\"hidden\" value=\"");

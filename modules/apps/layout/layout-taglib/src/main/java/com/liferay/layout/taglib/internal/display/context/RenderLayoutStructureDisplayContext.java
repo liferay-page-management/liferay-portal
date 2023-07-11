@@ -455,6 +455,50 @@ public class RenderLayoutStructureDisplayContext {
 		return layoutStructureItem.getChildrenItemIds();
 	}
 
+	public String getNotificationMessage(
+			FormStyledLayoutStructureItem formStyledLayoutStructureItem)
+		throws Exception {
+
+		JSONObject successMessageJSONObject =
+			formStyledLayoutStructureItem.getSuccessMessageJSONObject();
+
+		if ((successMessageJSONObject == null) ||
+			!GetterUtil.getBoolean(
+				successMessageJSONObject.getBoolean("showNotification"))) {
+
+			return StringPool.BLANK;
+		}
+
+		JSONObject messageJSONObject = successMessageJSONObject.getJSONObject(
+			"notificationMessage");
+
+		if (messageJSONObject == null) {
+			return LanguageUtil.get(
+				_themeDisplay.getLocale(),
+				"your-information-was-successfully-received");
+		}
+
+		String notificationMessage = messageJSONObject.getString(
+			_themeDisplay.getLanguageId());
+
+		if (Validator.isNull(notificationMessage)) {
+			String siteDefaultLanguageId = LanguageUtil.getLanguageId(
+				PortalUtil.getSiteDefaultLocale(
+					_themeDisplay.getScopeGroupId()));
+
+			notificationMessage = messageJSONObject.getString(
+				siteDefaultLanguageId);
+		}
+
+		if (Validator.isNotNull(notificationMessage)) {
+			return notificationMessage;
+		}
+
+		return LanguageUtil.get(
+			_themeDisplay.getLocale(),
+			"your-information-was-successfully-received");
+	}
+
 	public String getStyle(StyledLayoutStructureItem styledLayoutStructureItem)
 		throws Exception {
 
