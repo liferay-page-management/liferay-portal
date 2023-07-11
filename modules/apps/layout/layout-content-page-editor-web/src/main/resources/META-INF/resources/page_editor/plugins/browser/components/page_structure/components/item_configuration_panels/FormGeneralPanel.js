@@ -18,6 +18,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 
 import {addMappingFields} from '../../../../../../app/actions/index';
 import updateItemLocalConfig from '../../../../../../app/actions/updateItemLocalConfig';
+import {CheckboxField} from '../../../../../../app/components/fragment_configuration_fields/CheckboxField';
 import {SelectField} from '../../../../../../app/components/fragment_configuration_fields/SelectField';
 import {COMMON_STYLES_ROLES} from '../../../../../../app/config/constants/commonStylesRoles';
 import {
@@ -174,6 +175,12 @@ function SuccessInteractionOptions({item, onValueSelect}) {
 			)
 		)
 	);
+	const [notificationMessage, setNotificationMessage] = useState(
+		interactionConfig.notificationMessage || {}
+	);
+	const [showNotification, setShowNotification] = useState(
+		interactionConfig.showNotification
+	);
 
 	useEffect(() => {
 		if (Object.keys(interactionConfig).length) {
@@ -192,6 +199,7 @@ function SuccessInteractionOptions({item, onValueSelect}) {
 
 	const urlId = useId();
 	const successTextId = useId();
+	const notificationMessageId = useId();
 
 	useEffect(() => {
 		return () => {
@@ -214,10 +222,30 @@ function SuccessInteractionOptions({item, onValueSelect}) {
 				...config,
 			};
 
+			if (Object.keys(notificationMessage).length) {
+				nextConfig.notificationMessage = notificationMessage;
+			}
+
+			if (config.showNotification !== undefined) {
+				nextConfig.showNotification = config.showNotification;
+			}
+			else if (showNotification) {
+				nextConfig.showNotification = true;
+			}
+
 			onValueSelect({successMessage: nextConfig});
 		},
-		[interactionConfig, onValueSelect]
+		[
+			interactionConfig,
+			notificationMessage,
+			onValueSelect,
+			showNotification,
+		]
 	);
+
+	const shouldSendNotificationConfig =
+		selectedSource === EMBEDDED_OPTION ||
+		!!Object.keys(interactionConfig).length;
 
 	return (
 		<>
@@ -231,6 +259,8 @@ function SuccessInteractionOptions({item, onValueSelect}) {
 				}}
 				onValueSelect={(_name, type) => {
 					setSelectedSource(type);
+					setNotificationMessage({});
+					setShowNotification(false);
 
 					const value = type === STAY_OPTION ? {stay: true} : {};
 
@@ -362,6 +392,92 @@ function SuccessInteractionOptions({item, onValueSelect}) {
 					selectedValue={interactionConfig?.displayPage}
 				/>
 			)}
+
+			{selectedSource !== URL_OPTION &&
+				Liferay.FeatureFlags['LPS-183498'] && (
+					<>
+						<CheckboxField
+							className="mt-3"
+							field={{
+								label: Liferay.Language.get(
+									'show-notification-when-form-is-submitted'
+								),
+								name: 'showNotification',
+							}}
+							onValueSelect={(name, value) => {
+								setShowNotification(value);
+
+								if (shouldSendNotificationConfig) {
+									onConfigChange({[name]: value});
+								}
+							}}
+							value={showNotification}
+						/>
+
+						{showNotification && (
+							<ClayForm.Group small>
+								<label htmlFor={notificationMessageId}>
+									{Liferay.Language.get(
+										'success-notification-text'
+									)}
+								</label>
+
+								<ClayInput.Group small>
+									<ClayInput.GroupItem>
+										<ClayInput
+											id={notificationMessageId}
+											onBlur={() => {
+												if (
+													shouldSendNotificationConfig
+												) {
+													onConfigChange({
+														notificationMessage,
+														showNotification,
+													});
+												}
+											}}
+											onChange={(event) => {
+												const nextMessage = {
+													...notificationMessage,
+													[languageId]:
+														event.target.value,
+												};
+
+												setNotificationMessage(
+													nextMessage
+												);
+											}}
+											onKeyDown={(event) => {
+												if (
+													event.key === 'Enter' &&
+													shouldSendNotificationConfig
+												) {
+													onConfigChange({
+														notificationMessage,
+														showNotification,
+													});
+												}
+											}}
+											type="text"
+											value={
+												notificationMessage[
+													languageId
+												] ||
+												Liferay.Language.get(
+													'your-information-was-successfully-received'
+												)
+											}
+										/>
+									</ClayInput.GroupItem>
+
+									<ClayInput.GroupItem shrink>
+										<CurrentLanguageFlag />
+									</ClayInput.GroupItem>
+								</ClayInput.Group>
+							</ClayForm.Group>
+						)}
+					</>
+				)}
 		</>
 	);
 }
