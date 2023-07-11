@@ -340,6 +340,14 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 			redirect = httpServletRequest.getHeader(HttpHeaders.REFERER);
 		}
 
+		String notificationMessage = ParamUtil.getString(
+			httpServletRequest, "notificationMessage");
+
+		if (Validator.isNotNull(notificationMessage)) {
+			SessionMessages.add(
+				httpServletRequest, "requestProcessed", notificationMessage);
+		}
+
 		httpServletResponse.sendRedirect(redirect);
 
 		return null;
