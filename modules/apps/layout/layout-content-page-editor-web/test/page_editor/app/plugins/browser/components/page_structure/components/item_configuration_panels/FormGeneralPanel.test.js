@@ -125,30 +125,32 @@ describe('FormGeneralPanel', () => {
 		updateFormItemConfig.mockClear();
 	});
 
-	it('renders success message options if the form is mapped', async () => {
+	it('renders success interaction options if the form is mapped', async () => {
 		await act(async () => {
 			renderComponent();
 		});
 
-		expect(screen.getByLabelText('success-message')).toBeInTheDocument();
+		expect(
+			screen.getByLabelText('success-interaction')
+		).toBeInTheDocument();
 	});
 
-	it('does not renders success message options if the form is not mapped', async () => {
+	it('does not renders success interaction options if the form is not mapped', async () => {
 		await act(async () => {
 			renderComponent({item: UNMAPPED_FORM_ITEM});
 		});
 
 		expect(
-			screen.queryByLabelText('success-message')
+			screen.queryByLabelText('success-interaction')
 		).not.toBeInTheDocument();
 	});
 
-	it('success text is the default option selected', async () => {
+	it('embedded message is the default option selected', async () => {
 		await act(async () => {
 			renderComponent();
 		});
 
-		expect(screen.getByLabelText('success-text')).toBeInTheDocument();
+		expect(screen.getByLabelText('embedded-message')).toBeInTheDocument();
 
 		expect(
 			screen.getByDisplayValue(
@@ -157,12 +159,12 @@ describe('FormGeneralPanel', () => {
 		).toBeInTheDocument();
 	});
 
-	it('save text as success text when user type it', async () => {
+	it('save text as embedded message when user type it', async () => {
 		await act(async () => {
 			renderComponent();
 		});
 
-		const input = screen.queryByLabelText('success-text');
+		const input = screen.queryByLabelText('embedded-message');
 
 		userEvent.type(input, 'New message', {
 			initialSelectionEnd: 100,
@@ -185,7 +187,7 @@ describe('FormGeneralPanel', () => {
 			renderComponent();
 		});
 
-		const selector = screen.queryByLabelText('success-message');
+		const selector = screen.queryByLabelText('success-interaction');
 
 		fireEvent.change(selector, {
 			target: {value: 'url'},
@@ -223,7 +225,7 @@ describe('FormGeneralPanel', () => {
 			renderComponent({item});
 		});
 
-		const input = screen.getByLabelText('success-text');
+		const input = screen.getByLabelText('embedded-message');
 
 		expect(input).toBeInTheDocument();
 		expect(input.value).toBe('Message');
