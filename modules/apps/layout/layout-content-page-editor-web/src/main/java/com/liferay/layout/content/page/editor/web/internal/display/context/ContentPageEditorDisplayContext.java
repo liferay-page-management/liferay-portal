@@ -138,6 +138,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -1264,15 +1265,29 @@ public class ContentPageEditorDisplayContext {
 		Map<Long, LayoutStructureItem> fragmentLayoutStructureItems =
 			layoutStructure.getFragmentLayoutStructureItems();
 
-		for (long fragmentEntryLinkId : fragmentLayoutStructureItems.keySet()) {
+		Set<Map.Entry<Long, LayoutStructureItem>> entries =
+			fragmentLayoutStructureItems.entrySet();
+
+		Iterator<Map.Entry<Long, LayoutStructureItem>> iterator =
+			entries.iterator();
+
+		while (iterator.hasNext()) {
+			Map.Entry<Long, LayoutStructureItem> fragmentEntryLink =
+				iterator.next();
+
+			LayoutStructureItem layoutStructureItem =
+				fragmentLayoutStructureItems.get(fragmentEntryLink.getKey());
+
 			if (fragmentEntryLinksMap.containsKey(
-					String.valueOf(fragmentEntryLinkId))) {
+					String.valueOf(fragmentEntryLink.getKey())) ||
+				layoutStructure.isItemMarkedForDeletion(
+					String.valueOf(layoutStructureItem.getItemId()))) {
 
 				continue;
 			}
 
 			fragmentEntryLinksMap.put(
-				String.valueOf(fragmentEntryLinkId),
+				String.valueOf(fragmentEntryLink.getKey()),
 				JSONUtil.put(
 					"configuration", _jsonFactory.createJSONObject()
 				).put(
@@ -1285,7 +1300,8 @@ public class ContentPageEditorDisplayContext {
 				).put(
 					"error", Boolean.TRUE
 				).put(
-					"fragmentEntryLinkId", String.valueOf(fragmentEntryLinkId)
+					"fragmentEntryLinkId",
+					String.valueOf(fragmentEntryLink.getKey())
 				));
 		}
 
@@ -1354,9 +1370,11 @@ public class ContentPageEditorDisplayContext {
 				}
 			}
 
-			fragmentEntryLinksMap.put(
-				String.valueOf(fragmentEntryLink.getFragmentEntryLinkId()),
-				jsonObject);
+			if (!fragmentEntryLink.isDeleted()) {
+				fragmentEntryLinksMap.put(
+					String.valueOf(fragmentEntryLink.getFragmentEntryLinkId()),
+					jsonObject);
+			}
 		}
 
 		return fragmentEntryLinksMap;
