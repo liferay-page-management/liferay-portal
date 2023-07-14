@@ -207,6 +207,18 @@ function SuccessInteractionOptions({item, onValueSelect}) {
 		};
 	}, [item.itemId, dispatch]);
 
+	const onConfigChange = useCallback(
+		(config) => {
+			const nextConfig = {
+				...interactionConfig,
+				...config,
+			};
+
+			onValueSelect({successMessage: nextConfig});
+		},
+		[interactionConfig, onValueSelect]
+	);
+
 	return (
 		<>
 			<SelectField
@@ -232,11 +244,7 @@ function SuccessInteractionOptions({item, onValueSelect}) {
 			{selectedSource === LAYOUT_OPTION && (
 				<LayoutSelector
 					mappedLayout={interactionConfig?.layout}
-					onLayoutSelect={(layout) =>
-						onValueSelect({
-							successMessage: {layout},
-						})
-					}
+					onLayoutSelect={(layout) => onConfigChange({layout})}
 				/>
 			)}
 
@@ -252,13 +260,11 @@ function SuccessInteractionOptions({item, onValueSelect}) {
 								<ClayInput
 									id={successTextId}
 									onBlur={() =>
-										onValueSelect({
-											successMessage: {
-												message: {
-													...(interactionConfig?.message ||
-														{}),
-													[languageId]: successMessage,
-												},
+										onConfigChange({
+											message: {
+												...(interactionConfig?.message ||
+													{}),
+												[languageId]: successMessage,
 											},
 										})
 									}
@@ -267,13 +273,11 @@ function SuccessInteractionOptions({item, onValueSelect}) {
 									}
 									onKeyDown={(event) => {
 										if (event.key === 'Enter') {
-											onValueSelect({
-												successMessage: {
-													message: {
-														...(interactionConfig?.message ||
-															{}),
-														[languageId]: successMessage,
-													},
+											onConfigChange({
+												message: {
+													...(interactionConfig?.message ||
+														{}),
+													[languageId]: successMessage,
 												},
 											});
 										}
@@ -320,13 +324,10 @@ function SuccessInteractionOptions({item, onValueSelect}) {
 							<ClayInput
 								id={urlId}
 								onBlur={() =>
-									onValueSelect({
-										successMessage: {
-											url: {
-												...(interactionConfig?.url ||
-													{}),
-												[languageId]: url,
-											},
+									onConfigChange({
+										url: {
+											...(interactionConfig?.url || {}),
+											[languageId]: url,
 										},
 									})
 								}
@@ -356,7 +357,7 @@ function SuccessInteractionOptions({item, onValueSelect}) {
 			{selectedSource === DISPLAY_PAGE_OPTION && (
 				<DisplayPageSelector
 					item={item}
-					onValueSelect={onValueSelect}
+					onConfigChange={onConfigChange}
 					selectedSource={selectedSource}
 					selectedValue={interactionConfig?.displayPage}
 				/>
@@ -367,7 +368,7 @@ function SuccessInteractionOptions({item, onValueSelect}) {
 
 function DisplayPageSelector({
 	item,
-	onValueSelect,
+	onConfigChange,
 	selectedSource,
 	selectedValue,
 }) {
@@ -409,13 +410,11 @@ function DisplayPageSelector({
 			fields={displayPageFields}
 			label={Liferay.Language.get('display-page')}
 			onValueSelect={(event) =>
-				onValueSelect({
-					successMessage: {
-						displayPage:
-							event.target.value === 'unmapped'
-								? null
-								: event.target.value,
-					},
+				onConfigChange({
+					displayPage:
+						event.target.value === 'unmapped'
+							? null
+							: event.target.value,
 				})
 			}
 			value={selectedValue}
