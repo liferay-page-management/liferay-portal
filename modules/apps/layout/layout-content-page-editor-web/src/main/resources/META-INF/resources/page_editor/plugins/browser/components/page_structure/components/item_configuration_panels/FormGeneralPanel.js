@@ -162,10 +162,26 @@ function SuccessInteractionOptions({item, onValueSelect}) {
 	const dispatch = useDispatch();
 
 	const helpTextId = useId();
+	const notificationMessageId = useId();
+	const successTextId = useId();
+	const urlId = useId();
+
+	const [notificationMessage, setNotificationMessage] = useState(
+		interactionConfig.notificationMessage || {}
+	);
 
 	const [selectedSource, setSelectedSource] = useState(
 		getSelectedOption(interactionConfig)
 	);
+
+	const [showMessagePreview, setShowMessagePreview] = useControlledState(
+		Boolean(item.config.showMessagePreview)
+	);
+
+	const [showNotification, setShowNotification] = useState(
+		interactionConfig.showNotification
+	);
+
 	const [successMessage, setSuccessMessage] = useControlledState(
 		getEditableLocalizedValue(
 			interactionConfig.message,
@@ -175,45 +191,10 @@ function SuccessInteractionOptions({item, onValueSelect}) {
 			)
 		)
 	);
-	const [notificationMessage, setNotificationMessage] = useState(
-		interactionConfig.notificationMessage || {}
-	);
-	const [showNotification, setShowNotification] = useState(
-		interactionConfig.showNotification
-	);
-
-	useEffect(() => {
-		if (Object.keys(interactionConfig).length) {
-			const nextSelectedSource = getSelectedOption(interactionConfig);
-
-			setSelectedSource(nextSelectedSource);
-		}
-	}, [interactionConfig]);
 
 	const [url, setUrl] = useControlledState(
 		getEditableLocalizedValue(interactionConfig.url, languageId)
 	);
-	const [showMessagePreview, setShowMessagePreview] = useControlledState(
-		Boolean(item.config.showMessagePreview)
-	);
-
-	const urlId = useId();
-	const successTextId = useId();
-	const notificationMessageId = useId();
-
-	useEffect(() => {
-		return () => {
-			dispatch(
-				updateItemLocalConfig({
-					disableUndo: true,
-					itemConfig: {
-						showMessagePreview: false,
-					},
-					itemId: item.itemId,
-				})
-			);
-		};
-	}, [item.itemId, dispatch]);
 
 	const onConfigChange = useCallback(
 		(config) => {
@@ -246,6 +227,28 @@ function SuccessInteractionOptions({item, onValueSelect}) {
 	const shouldSendNotificationConfig =
 		selectedSource === EMBEDDED_OPTION ||
 		!!Object.keys(interactionConfig).length;
+
+	useEffect(() => {
+		if (Object.keys(interactionConfig).length) {
+			const nextSelectedSource = getSelectedOption(interactionConfig);
+
+			setSelectedSource(nextSelectedSource);
+		}
+	}, [interactionConfig]);
+
+	useEffect(() => {
+		return () => {
+			dispatch(
+				updateItemLocalConfig({
+					disableUndo: true,
+					itemConfig: {
+						showMessagePreview: false,
+					},
+					itemId: item.itemId,
+				})
+			);
+		};
+	}, [item.itemId, dispatch]);
 
 	return (
 		<>
