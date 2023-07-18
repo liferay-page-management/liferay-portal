@@ -154,8 +154,12 @@ function Rule({
 	return (
 		<>
 			<div className="panel panel-default">
-				<div className="panel-body">
-					<ClayForm.Group>
+				<div className="c-mt-2 timeline-increment">
+					<span className="timeline-icon"></span>
+				</div>
+
+				<div className="mb-0 panel-body">
+					<ClayForm.Group className="c-mr-3">
 						<ClaySelectWithOption
 							aria-label={Liferay.Language.get('query-contains')}
 							data-index={index}
@@ -169,7 +173,7 @@ function Rule({
 						/>
 					</ClayForm.Group>
 
-					<ClayForm.Group>
+					<ClayForm.Group className="c-mr-3">
 						<ClaySelectWithOption
 							aria-label={Liferay.Language.get('and-operator')}
 							data-index={index}
@@ -183,7 +187,7 @@ function Rule({
 						/>
 					</ClayForm.Group>
 
-					<ClayForm.Group>
+					<ClayForm.Group className="c-mr-3">
 						<label
 							className="control-label"
 							htmlFor={`${namespace}queryName${index}`}
@@ -192,7 +196,7 @@ function Rule({
 						</label>
 					</ClayForm.Group>
 
-					<ClayForm.Group>
+					<ClayForm.Group className="c-mr-3">
 						<ClaySelectWithOption
 							data-index={index}
 							data-property="type"
@@ -233,10 +237,6 @@ function Rule({
 							rule={rule}
 						/>
 					)}
-
-					<div className="timeline-increment">
-						<span className="timeline-icon"></span>
-					</div>
 				</div>
 			</div>
 
@@ -317,13 +317,13 @@ function AssetFilterBuilder({
 			<ul className="timeline">
 				<li className="timeline-item">
 					<div className="panel panel-default">
-						<div className="d-flex flex-wrap mb-0 panel-body py-2">
-							<div className="h4 panel-title">
-								{Liferay.Language.get('rules')}
-							</div>
+						<div className="timeline-increment">
+							<span className="timeline-icon"></span>
+						</div>
 
-							<div className="timeline-increment">
-								<span className="timeline-icon"></span>
+						<div className="my-1 panel-body">
+							<div className="c-mb-0 h4 panel-title">
+								{Liferay.Language.get('rules')}
 							</div>
 						</div>
 					</div>
