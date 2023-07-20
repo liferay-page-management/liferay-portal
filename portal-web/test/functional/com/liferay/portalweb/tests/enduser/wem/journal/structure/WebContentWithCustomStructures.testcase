@@ -2022,8 +2022,8 @@ definition {
 			IFrame.closeFrame();
 
 			WebContent.viewWithStructureCP(
-				webContentText = "Web Content Text",
-				webContentTitle = "English (United States) Title");
+				predefinedValue = "true",
+				webContentText = "Web Content Text");
 		}
 	}
 
