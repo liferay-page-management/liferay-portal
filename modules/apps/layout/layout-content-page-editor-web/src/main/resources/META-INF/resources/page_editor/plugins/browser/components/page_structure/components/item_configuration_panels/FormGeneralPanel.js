@@ -47,11 +47,12 @@ export function FormGeneralPanel({item}) {
 	const dispatch = useDispatch();
 
 	const onValueSelect = useCallback(
-		(nextConfig) =>
+		(nextConfig, {overridePreviousConfig = true} = {}) =>
 			dispatch(
 				updateFormItemConfig({
 					itemConfig: nextConfig,
 					itemId: item.itemId,
+					overridePreviousConfig,
 				})
 			),
 		[dispatch, item.itemId]
@@ -186,15 +187,18 @@ function SuccessInteractionOptions({item, onValueSelect}) {
 	}, [item.itemId, dispatch]);
 
 	const onConfigChange = useCallback(
-		(config, override = false) => {
-			const nextConfig = override
+		(config, {overridePreviousConfig = false} = {}) => {
+			const nextConfig = overridePreviousConfig
 				? config
 				: {
 						...interactionConfig,
 						...config,
 				  };
 
-			onValueSelect({successMessage: nextConfig});
+			onValueSelect(
+				{successMessage: nextConfig},
+				{overridePreviousConfig}
+			);
 		},
 		[interactionConfig, onValueSelect]
 	);
@@ -209,7 +213,9 @@ function SuccessInteractionOptions({item, onValueSelect}) {
 						validValues: SUCCESS_MESSAGE_OPTIONS,
 					},
 				}}
-				onValueSelect={(_name, type) => onConfigChange({type}, true)}
+				onValueSelect={(_name, type) =>
+					onConfigChange({type}, {overridePreviousConfig: true})
+				}
 				value={type || EMBEDDED_OPTION}
 			/>
 
@@ -262,8 +268,6 @@ function SuccessInteractionOptions({item, onValueSelect}) {
 					<ClayToggle
 						label={Liferay.Language.get('preview-embedded-message')}
 						onToggle={(checked) => {
-							setShowMessagePreview(checked);
-
 							dispatch(
 								updateItemLocalConfig({
 									disableUndo: true,
@@ -274,7 +278,7 @@ function SuccessInteractionOptions({item, onValueSelect}) {
 								})
 							);
 						}}
-						toggled={showMessagePreview}
+						toggled={Boolean(item.config.showMessagePreview)}
 					/>
 				</>
 			)}
