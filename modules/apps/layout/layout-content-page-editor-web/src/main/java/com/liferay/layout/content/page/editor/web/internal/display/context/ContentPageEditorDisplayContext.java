@@ -1234,7 +1234,7 @@ public class ContentPageEditorDisplayContext {
 			_fragmentEntryLinkLocalService.
 				getFragmentEntryLinksBySegmentsExperienceId(
 					getGroupId(), getSegmentsExperienceId(),
-					themeDisplay.getPlid());
+					themeDisplay.getPlid(), false);
 
 		LayoutStructure layoutStructure = _getLayoutStructure();
 
