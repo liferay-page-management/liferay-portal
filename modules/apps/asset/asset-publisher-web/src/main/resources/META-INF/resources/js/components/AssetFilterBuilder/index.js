@@ -155,7 +155,7 @@ function Rule({
 	return (
 		<div className="align-items-baseline d-flex justify-content-between">
 			<div className="panel panel-default">
-				<div className="align-items-baseline c-gap-3 d-flex mb-0 panel-body">
+				<div className="align-items-baseline c-gap-3 d-flex panel-body">
 					<ClayForm.Group>
 						<ClaySelectWithOption
 							aria-label={Liferay.Language.get('query-contains')}
@@ -335,7 +335,7 @@ function AssetFilterBuilder({
 				</li>
 
 				{currentRules.map((rule, index) => (
-					<li className="pt-3 timeline-item" key={index}>
+					<li className="timeline-item" key={index}>
 						<Rule
 							categorySelectorURL={categorySelectorURL}
 							groupIds={groupIds}
@@ -349,20 +349,17 @@ function AssetFilterBuilder({
 						/>
 					</li>
 				))}
-
-				<li className="timeline-item">
-					<div className="position-relative timeline-increment">
-						<ClayButton
-							aria-label={Liferay.Language.get('add-condition')}
-							monospaced
-							onClick={handleAddRule}
-							size="sm"
-						>
-							<ClayIcon symbol="plus" />
-						</ClayButton>
-					</div>
-				</li>
 			</ul>
+
+			<ClayButton
+				aria-label={Liferay.Language.get('add-condition')}
+				className="rounded-circle timeline-increment-icon"
+				monospaced
+				onClick={handleAddRule}
+				size="sm"
+			>
+				<ClayIcon symbol="plus" />
+			</ClayButton>
 		</>
 	);
 }
