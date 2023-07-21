@@ -432,6 +432,14 @@ public class FragmentEntryLinkLocalServiceImpl
 
 	@Override
 	public List<FragmentEntryLink> getFragmentEntryLinksBySegmentsExperienceId(
+		long groupId, long segmentsExperienceId, long plid, boolean deleted) {
+
+		return fragmentEntryLinkPersistence.findByG_S_P_D(
+			groupId, segmentsExperienceId, plid, deleted);
+	}
+
+	@Override
+	public List<FragmentEntryLink> getFragmentEntryLinksBySegmentsExperienceId(
 		long groupId, long segmentsExperienceId, long plid,
 		String rendererKey) {
 
