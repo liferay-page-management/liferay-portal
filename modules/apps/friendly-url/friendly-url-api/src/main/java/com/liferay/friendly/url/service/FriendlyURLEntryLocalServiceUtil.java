@@ -291,10 +291,26 @@ public class FriendlyURLEntryLocalServiceUtil {
 	}
 
 	public static FriendlyURLEntry fetchFriendlyURLEntry(
+		long groupId, Class<?> clazz, String urlTitl,
+		boolean normalizeWithAccent) {
+
+		return getService().fetchFriendlyURLEntry(
+			groupId, clazz, urlTitl, normalizeWithAccent);
+	}
+
+	public static FriendlyURLEntry fetchFriendlyURLEntry(
 		long groupId, long classNameId, String urlTitle) {
 
 		return getService().fetchFriendlyURLEntry(
 			groupId, classNameId, urlTitle);
+	}
+
+	public static FriendlyURLEntry fetchFriendlyURLEntry(
+		long groupId, long classNameId, String urlTitle,
+		boolean normalizeWithAccent) {
+
+		return getService().fetchFriendlyURLEntry(
+			groupId, classNameId, urlTitle, normalizeWithAccent);
 	}
 
 	/**

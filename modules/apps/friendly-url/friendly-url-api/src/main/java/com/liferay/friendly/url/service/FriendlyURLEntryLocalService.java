@@ -40,13 +40,11 @@ import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import org.osgi.annotation.versioning.ProviderType;
 
 import java.io.Serializable;
-
 import java.util.List;
 import java.util.Map;
-
-import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * Provides the local service interface for FriendlyURLEntry. Methods of this
@@ -253,7 +251,16 @@ public interface FriendlyURLEntryLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public FriendlyURLEntry fetchFriendlyURLEntry(
+		long groupId, Class<?> clazz, String urlTitl, boolean normalizeWithAccent);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public FriendlyURLEntry fetchFriendlyURLEntry(
 		long groupId, long classNameId, String urlTitle);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public FriendlyURLEntry fetchFriendlyURLEntry(
+		long groupId, long classNameId, String urlTitle,
+		boolean normalizeWithAccent);
 
 	/**
 	 * Returns the friendly url entry matching the UUID and group.

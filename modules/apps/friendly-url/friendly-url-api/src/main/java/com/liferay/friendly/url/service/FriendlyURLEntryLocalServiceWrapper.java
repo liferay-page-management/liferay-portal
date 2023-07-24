@@ -325,10 +325,28 @@ public class FriendlyURLEntryLocalServiceWrapper
 
 	@Override
 	public FriendlyURLEntry fetchFriendlyURLEntry(
+		long groupId, Class<?> clazz, String urlTitl,
+		boolean normalizeWithAccent) {
+
+		return _friendlyURLEntryLocalService.fetchFriendlyURLEntry(
+			groupId, clazz, urlTitl, normalizeWithAccent);
+	}
+
+	@Override
+	public FriendlyURLEntry fetchFriendlyURLEntry(
 		long groupId, long classNameId, String urlTitle) {
 
 		return _friendlyURLEntryLocalService.fetchFriendlyURLEntry(
 			groupId, classNameId, urlTitle);
+	}
+
+	@Override
+	public FriendlyURLEntry fetchFriendlyURLEntry(
+		long groupId, long classNameId, String urlTitle,
+		boolean normalizeWithAccent) {
+
+		return _friendlyURLEntryLocalService.fetchFriendlyURLEntry(
+			groupId, classNameId, urlTitle, normalizeWithAccent);
 	}
 
 	/**
