@@ -43,8 +43,6 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,6 +50,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Adolfo Pérez
@@ -309,10 +310,12 @@ public class FriendlyURLEntryLocalServiceImpl
 
 	@Override
 	public FriendlyURLEntry fetchFriendlyURLEntry(
-		long groupId, Class<?> clazz, String urlTitle, boolean normalizeWithAccent) {
+		long groupId, Class<?> clazz, String urlTitle,
+		boolean normalizeWithAccent) {
 
 		return fetchFriendlyURLEntry(
-			groupId, _classNameLocalService.getClassNameId(clazz), urlTitle, normalizeWithAccent);
+			groupId, _classNameLocalService.getClassNameId(clazz), urlTitle,
+			normalizeWithAccent);
 	}
 
 	@Override
@@ -324,14 +327,15 @@ public class FriendlyURLEntryLocalServiceImpl
 
 	@Override
 	public FriendlyURLEntry fetchFriendlyURLEntry(
-		long groupId, long classNameId, String urlTitle, boolean normalizeWithAccent) {
+		long groupId, long classNameId, String urlTitle,
+		boolean normalizeWithAccent) {
 
 		FriendlyURLEntryLocalization friendlyURLEntryLocalization =
 			friendlyURLEntryLocalizationPersistence.fetchByG_C_U_First(
 				groupId, classNameId,
 				_friendlyURLNormalizer.normalizeWithEncoding(urlTitle), null);
 
-		if (normalizeWithAccent && friendlyURLEntryLocalization == null) {
+		if (normalizeWithAccent && (friendlyURLEntryLocalization == null)) {
 			friendlyURLEntryLocalization =
 				friendlyURLEntryLocalizationPersistence.fetchByG_C_U_First(
 					groupId, classNameId,
