@@ -210,11 +210,15 @@ import com.liferay.trash.model.TrashVersion;
 import com.liferay.trash.service.TrashEntryLocalService;
 import com.liferay.trash.service.TrashVersionLocalService;
 import com.liferay.upload.AttachmentContentUpdater;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -227,12 +231,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * Provides the local service for accessing, adding, deleting, and updating web
@@ -1941,7 +1939,7 @@ public class JournalArticleLocalServiceImpl
 
 		FriendlyURLEntry friendlyURLEntry =
 			friendlyURLEntryLocalService.fetchFriendlyURLEntry(
-				groupId, JournalArticle.class, urlTitle);
+				groupId, JournalArticle.class, urlTitle, true);
 
 		if (friendlyURLEntry != null) {
 			JournalArticle article = fetchLatestArticle(
