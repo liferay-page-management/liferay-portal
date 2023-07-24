@@ -29,6 +29,8 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Objects;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -236,7 +238,9 @@ public class FormLayoutStructureItemMapper
 						String widthType =
 							formStyledLayoutStructureItem.getWidthType();
 
-						if (Validator.isNotNull(widthType)) {
+						if (Validator.isNotNull(widthType) &&
+							!Objects.equals(widthType, "fluid")) {
+
 							return WidthType.create(
 								StringUtil.upperCaseFirstLetter(widthType));
 						}
