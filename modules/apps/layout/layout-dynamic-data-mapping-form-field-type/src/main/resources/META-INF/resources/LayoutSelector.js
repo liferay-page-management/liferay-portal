@@ -42,14 +42,18 @@ const LayoutSelector = ({
 	onChange,
 	portletNamespace,
 }) => {
-	const [layout, setLayout] = useState(() => JSON.parse(inputValue || '{}'));
+	const [layout, setLayout] = useState(() =>
+		inputValue ? JSON.parse(inputValue) : null
+	);
 
 	useEffect(() => {
-		setLayout(JSON.parse(getInputValue(inputValue, '{}')));
+		setLayout(
+			inputValue ? JSON.parse(getInputValue(inputValue, '{}')) : null
+		);
 	}, [inputValue]);
 
 	const handleClearClick = () => {
-		setLayout({});
+		setLayout(null);
 		onChange('');
 	};
 
@@ -78,7 +82,7 @@ const LayoutSelector = ({
 					<input
 						name={name}
 						type="hidden"
-						value={JSON.stringify(layout)}
+						value={layout ? JSON.stringify(layout) : null}
 					/>
 
 					<ClayInput
@@ -89,7 +93,7 @@ const LayoutSelector = ({
 						onClick={handleItemSelectorTriggerClick}
 						readOnly
 						type="text"
-						value={layout.name || ''}
+						value={layout?.name || ''}
 					/>
 				</ClayInput.GroupItem>
 
@@ -104,7 +108,7 @@ const LayoutSelector = ({
 					</ClayButton>
 				</ClayInput.GroupItem>
 
-				{layout.layoutId && (
+				{layout?.layoutId && (
 					<ClayInput.GroupItem shrink>
 						<ClayButton
 							disabled={disabled}
