@@ -18,7 +18,7 @@ const Page404 = () => {
 	});
 
 	return (
-		<div className="align-items-center d-flex flex-column">
+		<div className="d-flex flex-column">
 			<img draggable={false} src={States.NOT_FOUND} width="50%" />
 
 			<div className="align-items-center d-flex flex-column">
