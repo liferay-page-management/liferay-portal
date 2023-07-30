@@ -16,8 +16,10 @@ import org.osgi.annotation.versioning.ProviderType;
  *
  * @author Brian Wing Shun Chan
  * @see AssetLinkModel
+ * @deprecated
  * @generated
  */
+@Deprecated
 @ImplementationClassName("com.liferay.portlet.asset.model.impl.AssetLinkImpl")
 @ProviderType
 public interface AssetLink extends AssetLinkModel, PersistedModel {

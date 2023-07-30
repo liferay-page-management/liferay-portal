@@ -47,8 +47,10 @@ import java.util.function.Function;
  *
  * @author Brian Wing Shun Chan
  * @see AssetLinkImpl
+ * @deprecated
  * @generated
  */
+@Deprecated
 public class AssetLinkModelImpl
 	extends BaseModelImpl<AssetLink> implements AssetLinkModel {
 

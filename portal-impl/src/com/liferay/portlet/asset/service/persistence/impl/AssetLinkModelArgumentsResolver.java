@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * The arguments resolver class for retrieving value from AssetLink.
  *
  * @author Brian Wing Shun Chan
+ * @deprecated
  * @generated
  */
 @OSGiBeanProperties(

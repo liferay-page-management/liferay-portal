@@ -26,8 +26,11 @@ import java.util.List;
  *
  * @author Brian Wing Shun Chan
  * @see AssetLinkLocalService
+ * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+ com.liferay.asset.link.service.impl.AssetLinkLocalServiceImpl}
  * @generated
  */
+@Deprecated
 public class AssetLinkLocalServiceUtil {
 
 	/*

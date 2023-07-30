@@ -25,8 +25,10 @@ import java.util.Set;
  *
  * @author Brian Wing Shun Chan
  * @see AssetLinkPersistence
+ * @deprecated
  * @generated
  */
+@Deprecated
 public class AssetLinkUtil {
 
 	/*

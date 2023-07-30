@@ -24,8 +24,10 @@ import org.osgi.annotation.versioning.ProviderType;
  *
  * @author Brian Wing Shun Chan
  * @see AssetLink
+ * @deprecated
  * @generated
  */
+@Deprecated
 @ProviderType
 public interface AssetLinkModel
 	extends BaseModel<AssetLink>, CTModel<AssetLink>, MVCCModel, ShardedModel {
