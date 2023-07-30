@@ -9,7 +9,10 @@ import com.liferay.portal.kernel.exception.NoSuchModelException;
 
 /**
  * @author Brian Wing Shun Chan
+ * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+ *             com.liferay.asset.link.exception.NoSuchLinkException}
  */
+@Deprecated
 public class NoSuchLinkException extends NoSuchModelException {
 
 	public NoSuchLinkException() {

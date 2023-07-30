@@ -8,7 +8,10 @@ package com.liferay.asset.kernel.model;
 /**
  * @author Jorge Ferrer
  * @author Juan Fernández
+ * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+ *             com.liferay.asset.link.constants.AssetLinkConstants}
  */
+@Deprecated
 public class AssetLinkConstants {
 
 	public static final int TYPE_CHILD = 1;

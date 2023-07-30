@@ -9,7 +9,10 @@ import com.liferay.portal.kernel.exception.PortalException;
 
 /**
  * @author Brian Wing Shun Chan
+ * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+ *             com.liferay.asset.link.exception.AssetLinkException}
  */
+@Deprecated
 public class AssetLinkException extends PortalException {
 
 	public AssetLinkException() {
