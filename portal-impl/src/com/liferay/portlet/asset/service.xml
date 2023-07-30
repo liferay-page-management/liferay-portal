@@ -173,7 +173,7 @@
 			<finder-column name="expirationDate" />
 		</finder>
 	</entity>
-	<entity local-service="true" name="AssetLink" remote-service="false">
+	<entity deprecated="true" local-service="true" name="AssetLink" remote-service="false">
 
 		<!-- PK fields -->
 
