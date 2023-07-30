@@ -1,4 +1,5 @@
 dependencies {
+	testIntegrationCompile project(":apps:asset:asset-link-api")
 	testIntegrationCompile project(":apps:document-library:document-library-api")
 	testIntegrationCompile project(":apps:document-library:document-library-uad")
 	testIntegrationCompile project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
