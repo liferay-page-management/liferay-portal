@@ -21,8 +21,10 @@ import org.osgi.annotation.versioning.ProviderType;
  *
  * @author Brian Wing Shun Chan
  * @see AssetLinkUtil
+ * @deprecated
  * @generated
  */
+@Deprecated
 @ProviderType
 public interface AssetLinkPersistence
 	extends BasePersistence<AssetLink>, CTPersistence<AssetLink> {

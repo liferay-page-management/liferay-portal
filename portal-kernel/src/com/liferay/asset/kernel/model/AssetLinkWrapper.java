@@ -21,8 +21,10 @@ import java.util.function.Function;
  *
  * @author Brian Wing Shun Chan
  * @see AssetLink
+ * @deprecated
  * @generated
  */
+@Deprecated
 public class AssetLinkWrapper
 	extends BaseModelWrapper<AssetLink>
 	implements AssetLink, ModelWrapper<AssetLink> {

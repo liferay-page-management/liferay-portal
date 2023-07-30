@@ -42,9 +42,12 @@ import org.osgi.annotation.versioning.ProviderType;
  *
  * @author Brian Wing Shun Chan
  * @see AssetLinkLocalServiceUtil
+ * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+ com.liferay.asset.link.service.impl.AssetLinkLocalServiceImpl}
  * @generated
  */
 @CTAware
+@Deprecated
 @ProviderType
 @Transactional(
 	isolation = Isolation.PORTAL,

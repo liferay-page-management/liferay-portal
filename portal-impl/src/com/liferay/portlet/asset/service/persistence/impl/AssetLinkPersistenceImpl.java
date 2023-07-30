@@ -60,8 +60,10 @@ import java.util.Set;
  * </p>
  *
  * @author Brian Wing Shun Chan
+ * @deprecated
  * @generated
  */
+@Deprecated
 public class AssetLinkPersistenceImpl
 	extends BasePersistenceImpl<AssetLink> implements AssetLinkPersistence {
 

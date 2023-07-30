@@ -22,8 +22,10 @@ import java.util.Date;
  * The cache model class for representing AssetLink in entity cache.
  *
  * @author Brian Wing Shun Chan
+ * @deprecated
  * @generated
  */
+@Deprecated
 public class AssetLinkCacheModel
 	implements CacheModel<AssetLink>, Externalizable, MVCCModel {
 

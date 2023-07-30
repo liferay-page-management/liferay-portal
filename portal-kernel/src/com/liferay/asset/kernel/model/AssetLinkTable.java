@@ -17,8 +17,10 @@ import java.util.Date;
  *
  * @author Brian Wing Shun Chan
  * @see AssetLink
+ * @deprecated
  * @generated
  */
+@Deprecated
 public class AssetLinkTable extends BaseTable<AssetLinkTable> {
 
 	public static final AssetLinkTable INSTANCE = new AssetLinkTable();
