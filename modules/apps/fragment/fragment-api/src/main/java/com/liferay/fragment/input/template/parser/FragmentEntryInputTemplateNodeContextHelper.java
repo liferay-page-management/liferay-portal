@@ -62,6 +62,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -234,7 +235,10 @@ public class FragmentEntryInputTemplateNodeContextHelper {
 		}
 		else {
 			value = GetterUtil.getString(
-				_getValue(httpServletRequest, infoField.getName()), value);
+				_getValue(
+					httpServletRequest, infoField.getName(),
+					infoForm.getName()),
+				value);
 		}
 
 		InputTemplateNode inputTemplateNode = new InputTemplateNode(
@@ -526,7 +530,8 @@ public class FragmentEntryInputTemplateNodeContextHelper {
 	}
 
 	private String _getValue(
-		HttpServletRequest httpServletRequest, String infoFieldName) {
+		HttpServletRequest httpServletRequest, String infoFieldName,
+		String infoFormName) {
 
 		if (httpServletRequest == null) {
 			return StringPool.BLANK;
@@ -540,11 +545,16 @@ public class FragmentEntryInputTemplateNodeContextHelper {
 			return StringPool.BLANK;
 		}
 
+		String className = _infoSearchClassMapperRegistry.getClassName(
+			layoutDisplayPageObjectProvider.getClassName());
+
+		if (!Objects.equals(className, infoFormName)) {
+			return StringPool.BLANK;
+		}
+
 		InfoItemFieldValuesProvider<Object> infoItemFieldValuesProvider =
 			_infoItemServiceRegistry.getFirstInfoItemService(
-				InfoItemFieldValuesProvider.class,
-				_infoSearchClassMapperRegistry.getClassName(
-					layoutDisplayPageObjectProvider.getClassName()));
+				InfoItemFieldValuesProvider.class, className);
 
 		if (infoItemFieldValuesProvider == null) {
 			if (_log.isWarnEnabled()) {
