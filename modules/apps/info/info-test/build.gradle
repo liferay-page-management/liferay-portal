@@ -1,4 +1,6 @@
 dependencies {
+	compileOnly project(":apps:list-type:list-type-api")
+
 	testIntegrationCompile group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testIntegrationCompile group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	testIntegrationCompile project(":apps:expando:expando-api")
