@@ -3,7 +3,7 @@
 exports[`EmptyDropZone renders 1`] = `
 <DocumentFragment>
   <div
-    class="empty-drop-zone-root empty-drop-zone-dashed border-primary rounded"
+    class="empty-drop-zone-root border-secondary empty-drop-zone-dashed rounded"
   >
     <div
       class="drop-zone-target p-5"
@@ -19,7 +19,7 @@ exports[`EmptyDropZone renders 1`] = `
 exports[`EmptyDropZone renders illustration when empty contributors 1`] = `
 <DocumentFragment>
   <div
-    class="empty-drop-zone-root"
+    class="empty-drop-zone-root border-secondary empty-drop-zone-dashed rounded"
   >
     <div>
       <div
