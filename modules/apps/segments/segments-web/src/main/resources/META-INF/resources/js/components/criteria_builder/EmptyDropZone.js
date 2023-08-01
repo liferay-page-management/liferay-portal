@@ -44,8 +44,9 @@ function EmptyDropZone({canDrop, connectDropTarget, emptyContributors, hover}) {
 	return (
 		<div
 			className={classNames('empty-drop-zone-root', {
-				'empty-drop-zone-dashed border-primary rounded':
-					displayEmptyDropZone && (!canDrop || !hover),
+				'border-primary': !hover && canDrop,
+				'border-secondary': !hover && !canDrop,
+				'empty-drop-zone-dashed rounded': !hover,
 			})}
 		>
 			{connectDropTarget(
