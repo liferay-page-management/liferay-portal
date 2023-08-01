@@ -573,6 +573,10 @@ public class FragmentEntryInputTemplateNodeContextHelper {
 		InfoFieldValue<?> infoFieldValue =
 			infoItemFieldValues.getInfoFieldValue(infoFieldName);
 
+		if (infoFieldValue == null) {
+			return StringPool.BLANK;
+		}
+
 		InfoField<?> infoField = infoFieldValue.getInfoField();
 
 		if (infoField.getInfoFieldType() == DateInfoFieldType.INSTANCE) {
