@@ -47,7 +47,7 @@
 </tr>
 <tr>
 	<td>DOT_GRAPH_TODAY_ZERO</td>
-	<td>//*[local-name()='circle' and contains(@cx,'275') and contains(@cy,'185')]</td>
+	<td>//*[local-name()='circle' and contains(@cx,'45') and contains(@cy,'185')]</td>
 	<td></td>
 </tr>
 <tr>
