@@ -6,8 +6,10 @@
 package com.liferay.content.dashboard.web.internal.display.context;
 
 import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetTagLocalServiceUtil;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.asset.tags.item.selector.AssetTagsItemSelectorReturnType;
 import com.liferay.asset.tags.item.selector.criterion.AssetTagsItemSelectorCriterion;
@@ -46,7 +48,6 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -54,6 +55,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -554,19 +556,12 @@ public class ContentDashboardAdminManagementToolbarDisplayContext
 	}
 
 	private PortletURL _getAssetTagSelectorURL() {
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)_liferayPortletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
 		AssetTagsItemSelectorCriterion assetTagsItemSelectorCriterion =
 			new AssetTagsItemSelectorCriterion();
 
 		assetTagsItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
 			new AssetTagsItemSelectorReturnType());
-		assetTagsItemSelectorCriterion.setGroupIds(
-			ArrayUtil.toLongArray(
-				_groupLocalService.getGroupIds(
-					themeDisplay.getCompanyId(), true)));
+		assetTagsItemSelectorCriterion.setGroupIds(_getGroupIds());
 		assetTagsItemSelectorCriterion.setMultiSelection(true);
 
 		return _itemSelector.getItemSelectorURL(
@@ -813,6 +808,16 @@ public class ContentDashboardAdminManagementToolbarDisplayContext
 				}
 			}
 		};
+	}
+
+	private long[] _getGroupIds() {
+		Set<Long> groupIdsSet = new HashSet<>();
+
+		for (AssetTag assetTag : AssetTagLocalServiceUtil.getTags()) {
+			groupIdsSet.add(assetTag.getGroupId());
+		}
+
+		return new long[groupIdsSet.size()];
 	}
 
 	private String _getLabel(String key, String value) {
