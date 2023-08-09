@@ -52,7 +52,19 @@ if (layoutMode === 'edit') {
 else {
 	fileInput.addEventListener('change', onInputChange);
 
+	selectButton.addEventListener('keydown', (event) => {
+		if (event.key === 'Enter') {
+			fileInput.click();
+		}
+	});
+
 	if (input.attributes.selectFromDocumentLibrary) {
 		selectButton.addEventListener('click', onSelectFile);
+
+		selectButton.addEventListener('keydown', (event) => {
+			if (event.key === 'Enter') {
+				onSelectFile(event);
+			}
+		});
 	}
 }
