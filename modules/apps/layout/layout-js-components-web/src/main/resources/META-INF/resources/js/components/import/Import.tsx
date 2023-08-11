@@ -26,9 +26,6 @@ interface Props {
 }
 
 const FILE_TEXTS = {
-	imported: Liferay.Language.get(
-		'the-file-was-successfully-imported.-please-see-the-import-results'
-	),
 	initial: Liferay.Language.get('no-file-selected'),
 	loaded: Liferay.Language.get(
 		'the-file-was-loaded.-click-the-import-button-to-import-it'
@@ -127,8 +124,6 @@ function Import({backURL, helpLink, importURL, portletNamespace}: Props) {
 				}
 
 				setImportResults(importResults);
-				setFileText(FILE_TEXTS.imported);
-
 				setFile(null);
 			})
 			.catch(() => {
@@ -197,102 +192,106 @@ function Import({backURL, helpLink, importURL, portletNamespace}: Props) {
 			</ClayToolbar>
 
 			<ClayLayout.ContainerFluid view>
-				<span aria-live="assertive" className="sr-only">
-					{fileText}
-				</span>
-
 				{importResults ? (
 					<ImportResults
 						fileName={fileName}
 						importResults={importResults}
 					/>
 				) : (
-					<ClayLayout.Sheet
-						className="c-gap-4 d-flex flex-column"
-						size="lg"
-					>
-						<h2 className="c-mb-0 text-6">
-							{Liferay.Language.get('import-file')}
-						</h2>
+					<>
+						<span aria-live="assertive" className="sr-only">
+							{fileText}
+						</span>
 
-						<p
-							className="c-mb-0 text-secondary"
-							id={fileButtonDescriptionId}
+						<ClayLayout.Sheet
+							className="c-gap-4 d-flex flex-column"
+							size="lg"
 						>
-							{Liferay.Language.get(
-								'select-a-zip-file-containing-one-or-multiple-entries'
-							)}
+							<h2 className="c-mb-0 text-6">
+								{Liferay.Language.get('import-file')}
+							</h2>
 
-							{helpLink && (
-								<span className="ml-1">
-									<ClayLink
-										href={helpLink.href}
-										target="_blank"
-									>
-										{helpLink.message}
-									</ClayLink>
-								</span>
-							)}
-						</p>
+							<p
+								className="c-mb-0 text-secondary"
+								id={fileButtonDescriptionId}
+							>
+								{Liferay.Language.get(
+									'select-a-zip-file-containing-one-or-multiple-entries'
+								)}
 
-						<ClayForm.Group
-							className={classNames('c-mb-0', {
-								'has-error': error,
-							})}
-						>
-							<label htmlFor={fileInputId}>
-								{Liferay.Language.get('file-upload')}
-							</label>
+								{helpLink && (
+									<span className="ml-1">
+										<ClayLink
+											href={helpLink.href}
+											target="_blank"
+										>
+											{helpLink.message}
+										</ClayLink>
+									</span>
+								)}
+							</p>
 
-							<input
-								accept={ZIP_EXTENSION}
-								hidden
-								id={fileInputId}
-								onChange={validateFile}
-								ref={fileInputRef}
-								type="file"
+							<ClayForm.Group
+								className={classNames('c-mb-0', {
+									'has-error': error,
+								})}
+							>
+								<label htmlFor={fileInputId}>
+									{Liferay.Language.get('file-upload')}
+								</label>
+
+								<input
+									accept={ZIP_EXTENSION}
+									hidden
+									id={fileInputId}
+									onChange={validateFile}
+									ref={fileInputRef}
+									type="file"
+								/>
+
+								<ClayButton
+									aria-describedby={fileButtonDescriptionId}
+									className="d-block"
+									displayType="secondary"
+									onClick={() =>
+										fileInputRef.current?.click()
+									}
+									size="sm"
+								>
+									{file
+										? Liferay.Language.get('replace-file')
+										: Liferay.Language.get('select-file')}
+								</ClayButton>
+
+								{error && (
+									<ClayForm.FeedbackGroup>
+										<ClayForm.FeedbackItem>
+											<ClayForm.FeedbackIndicator symbol="exclamation-full" />
+
+											{error}
+										</ClayForm.FeedbackItem>
+									</ClayForm.FeedbackGroup>
+								)}
+							</ClayForm.Group>
+
+							<ClayCheckbox
+								checked={overwrite}
+								containerProps={{
+									className: 'c-mb-0',
+								}}
+								label={Liferay.Language.get(
+									'overwrite-existing-entries'
+								)}
+								onChange={() => setOverwrite((val) => !val)}
 							/>
 
-							<ClayButton
-								aria-describedby={fileButtonDescriptionId}
-								className="d-block"
-								displayType="secondary"
-								onClick={() => fileInputRef.current?.click()}
-								size="sm"
-							>
-								{file
-									? Liferay.Language.get('replace-file')
-									: Liferay.Language.get('select-file')}
-							</ClayButton>
-
-							{error && (
-								<ClayForm.FeedbackGroup>
-									<ClayForm.FeedbackItem>
-										<ClayForm.FeedbackIndicator symbol="exclamation-full" />
-
-										{error}
-									</ClayForm.FeedbackItem>
-								</ClayForm.FeedbackGroup>
+							{fileName && (
+								<p className="c-mb-0 font-weight-semi-bold small">
+									{fileName}
+								</p>
 							)}
-						</ClayForm.Group>
-
-						<ClayCheckbox
-							checked={overwrite}
-							containerProps={{
-								className: 'c-mb-0',
-							}}
-							label={Liferay.Language.get(
-								'overwrite-existing-entries'
-							)}
-							onChange={() => setOverwrite((val) => !val)}
-						/>
-
-						{fileName && (
-							<p className="c-mb-0 font-weight-semi-bold small">
-								{fileName}
-							</p>
-						)}
-					</ClayLayout.Sheet>
+						</ClayLayout.Sheet>
+					</>
 				)}
 			</ClayLayout.ContainerFluid>
 		</>
