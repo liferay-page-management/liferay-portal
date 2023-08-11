@@ -26,13 +26,57 @@ interface Props {
 	importResults: ImportResultsData;
 }
 
+const INITIAL_TEXT = Liferay.Language.get(
+	'the-file-was-successfully-imported.-please-see-the-import-results'
+);
+
 function ImportResults({fileName, importResults}: Props) {
 	const [expanded, setExpanded] = useState(
 		!importResults['imported-draft'] && !importResults.invalid
 	);
 
+	let resultsText = INITIAL_TEXT;
+
+	let importedSuccessTitle = '';
+	let importedWarningTitle = '';
+	let importedErrorTitle = '';
+
+	if (importResults.imported) {
+		importedSuccessTitle = sub(
+			importResults.imported.length === 1
+				? Liferay.Language.get('x-item-was-imported')
+				: Liferay.Language.get('x-items-were-imported'),
+			importResults.imported.length
+		);
+	}
+
+	if (importResults['imported-draft']) {
+		importedWarningTitle = sub(
+			importResults['imported-draft'].length === 1
+				? Liferay.Language.get('x-item-was-imported-with-warnings')
+				: Liferay.Language.get('x-items-were-imported-with-warnings'),
+			importResults['imported-draft'].length
+		);
+
+		resultsText = `${INITIAL_TEXT} ${importedWarningTitle}`;
+	}
+
+	if (importResults.invalid) {
+		importedErrorTitle = sub(
+			importResults.invalid.length === 1
+				? Liferay.Language.get('x-item-could-not-be-imported')
+				: Liferay.Language.get('x-items-could-not-be-imported'),
+			importResults.invalid.length
+		);
+
+		resultsText = `${resultsText} ${importedErrorTitle}`;
+	}
+
 	return (
 		<>
+			<span aria-live="assertive" className="sr-only">
+				{resultsText}
+			</span>
 			{importResults.imported && (
 				<ClayLayout.Sheet className="c-pb-1 c-pt-2" size="lg">
 					<ClayPanel
@@ -46,16 +90,7 @@ function ImportResults({fileName, importResults}: Props) {
 								/>
 
 								<span className="c-ml-3 font-weight-semi-bold text-4 text-success">
-									{sub(
-										importResults.imported.length === 1
-											? Liferay.Language.get(
-													'x-item-was-imported'
-											  )
-											: Liferay.Language.get(
-													'x-items-were-imported'
-											  ),
-										importResults.imported.length
-									)}
+									{importedSuccessTitle}
 								</span>
 							</ClayPanel.Title>
 						}
@@ -96,17 +131,7 @@ function ImportResults({fileName, importResults}: Props) {
 								/>
 
 								<span className="c-ml-3 font-weight-semi-bold text-4 text-warning">
-									{sub(
-										importResults['imported-draft']
-											.length === 1
-											? Liferay.Language.get(
-													'x-item-was-imported-with-warnings'
-											  )
-											: Liferay.Language.get(
-													'x-items-were-imported-with-warnings'
-											  ),
-										importResults['imported-draft'].length
-									)}
+									{importedWarningTitle}
 								</span>
 							</ClayPanel.Title>
 						}
@@ -154,16 +179,7 @@ function ImportResults({fileName, importResults}: Props) {
 								/>
 
 								<span className="c-ml-3 font-weight-semi-bold text-4 text-danger">
-									{sub(
-										importResults.invalid.length === 1
-											? Liferay.Language.get(
-													'x-item-could-not-be-imported'
-											  )
-											: Liferay.Language.get(
-													'x-items-could-not-be-imported'
-											  ),
-										importResults.invalid.length
-									)}
+									{importedErrorTitle}
 								</span>
 							</ClayPanel.Title>
 						}
