@@ -122,99 +122,87 @@ function ImportResults({fileName, importResults}: Props) {
 
 			{importResults['imported-draft'] && (
 				<ClayLayout.Sheet size="lg">
-					<ClayPanel
-						displayTitle={
-							<ClayPanel.Title>
-								<ClayIcon
-									className="text-4 text-warning"
-									symbol="warning-full"
-								/>
+					<div>
+						<ClayIcon
+							className="text-4 text-warning"
+							symbol="warning-full"
+						/>
 
-								<span className="c-ml-3 font-weight-semi-bold text-4 text-warning">
-									{importedWarningTitle}
-								</span>
-							</ClayPanel.Title>
-						}
-					>
-						<ClayPanel.Body className="c-px-0">
-							<ul className="list-group sidebar-list-group">
-								{importResults['imported-draft'].map(
-									(result, index) => (
-										<li
-											className="list-group-item list-group-item-flex p-0"
-											key={index}
-										>
-											<ClayLayout.ContentCol expand>
-												<div className="list-group-title">
-													{result.name}
-												</div>
+						<span className="c-ml-3 font-weight-semi-bold text-4 text-warning">
+							{importedWarningTitle}
+						</span>
+					</div>
 
-												<div className="list-group-subtext text-warning">
-													{result.message}
-												</div>
-											</ClayLayout.ContentCol>
+					<ul className="c-pt-3 c-px-0 list-group sidebar-list-group">
+						{importResults['imported-draft'].map(
+							(result, index) => (
+								<li
+									className="list-group-item list-group-item-flex p-0"
+									key={index}
+								>
+									<ClayLayout.ContentCol expand>
+										<div className="list-group-title">
+											{result.name}
+										</div>
 
-											<ClayLayout.ContentCol>
-												<div className="list-group-subtitle">
-													{fileName}
-												</div>
-											</ClayLayout.ContentCol>
-										</li>
-									)
-								)}
-							</ul>
-						</ClayPanel.Body>
-					</ClayPanel>
+										<div className="list-group-subtext text-warning">
+											{result.message}
+										</div>
+									</ClayLayout.ContentCol>
+
+									<ClayLayout.ContentCol>
+										<div className="list-group-subtitle">
+											{fileName}
+										</div>
+									</ClayLayout.ContentCol>
+								</li>
+							)
+						)}
+					</ul>
 				</ClayLayout.Sheet>
 			)}
 
 			{importResults.invalid && (
 				<ClayLayout.Sheet size="lg">
-					<ClayPanel
-						displayTitle={
-							<ClayPanel.Title>
-								<ClayIcon
-									className="text-4 text-danger"
-									symbol="exclamation-full"
-								/>
+					<div>
+						<ClayIcon
+							className="text-4 text-danger"
+							symbol="exclamation-full"
+						/>
 
-								<span className="c-ml-3 font-weight-semi-bold text-4 text-danger">
-									{importedErrorTitle}
-								</span>
-							</ClayPanel.Title>
-						}
-					>
-						<ClayPanel.Body className="c-px-0">
-							<ul className="list-group sidebar-list-group">
-								{importResults.invalid.map((result, index) => (
-									<li
-										className="list-group-item list-group-item-flex p-0"
-										key={index}
-									>
-										<ClayLayout.ContentCol expand>
-											<div className="list-group-title">
-												{result.name}
-											</div>
+						<span className="c-ml-3 font-weight-semi-bold text-4 text-danger">
+							{importedErrorTitle}
+						</span>
+					</div>
 
-											<div className="list-group-subtext text-danger">
-												{result.message
-													? result.message
-													: Liferay.Language.get(
-															'the-definition-of-the-item-is-invalid'
-													  )}
-											</div>
-										</ClayLayout.ContentCol>
+					<ul className="c-pt-3 c-px-0 list-group sidebar-list-group">
+						{importResults.invalid.map((result, index) => (
+							<li
+								className="list-group-item list-group-item-flex p-0"
+								key={index}
+							>
+								<ClayLayout.ContentCol expand>
+									<div className="list-group-title">
+										{result.name}
+									</div>
 
-										<ClayLayout.ContentCol>
-											<div className="list-group-subtitle">
-												{fileName}
-											</div>
-										</ClayLayout.ContentCol>
-									</li>
-								))}
-							</ul>
-						</ClayPanel.Body>
-					</ClayPanel>
+									<div className="list-group-subtext text-danger">
+										{result.message
+											? result.message
+											: Liferay.Language.get(
+													'the-definition-of-the-item-is-invalid'
+											  )}
+									</div>
+								</ClayLayout.ContentCol>
+
+								<ClayLayout.ContentCol>
+									<div className="list-group-subtitle">
+										{fileName}
+									</div>
+								</ClayLayout.ContentCol>
+							</li>
+						))}
+					</ul>
 				</ClayLayout.Sheet>
 			)}
 		</>
