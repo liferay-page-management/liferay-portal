@@ -13,6 +13,8 @@ import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.segments.internal.upgrade.v2_0_0.SchemaUpgradeProcess;
 import com.liferay.segments.internal.upgrade.v2_0_0.SegmentsExperienceUpgradeProcess;
+import com.liferay.segments.internal.upgrade.v2_8_1.SegmentsExperimentUpgradeProcess;
+import com.liferay.segments.service.SegmentsExperimentLocalService;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -86,9 +88,17 @@ public class SegmentsServiceUpgradeStepRegistrator
 				"SegmentsExperiment", "classPK", "plid LONG"),
 			UpgradeProcessFactory.dropColumns(
 				"SegmentsExperiment", "classNameId"));
+
+		registry.register(
+			"2.8.0", "2.8.1",
+			new SegmentsExperimentUpgradeProcess(
+				_segmentsExperimentLocalService));
 	}
 
 	@Reference
 	private CounterLocalService _counterLocalService;
+
+	@Reference
+	private SegmentsExperimentLocalService _segmentsExperimentLocalService;
 
 }
