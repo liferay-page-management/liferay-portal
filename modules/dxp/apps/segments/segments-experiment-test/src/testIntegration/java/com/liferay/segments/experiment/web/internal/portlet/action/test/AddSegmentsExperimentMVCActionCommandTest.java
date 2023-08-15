@@ -40,6 +40,8 @@ import com.liferay.segments.model.SegmentsExperiment;
 import com.liferay.segments.service.SegmentsExperimentLocalService;
 import com.liferay.segments.test.util.SegmentsTestUtil;
 
+import java.util.List;
+
 import javax.portlet.ActionRequest;
 
 import org.junit.Assert;
@@ -65,10 +67,12 @@ public class AddSegmentsExperimentMVCActionCommandTest {
 	@Before
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
+
+		_layout = LayoutTestUtil.addTypeContentLayout(_group);
 	}
 
 	@Test
-	public void testAddSegmentsExperiment() throws Exception {
+	public void testAddSegmentsExperiment1() throws Exception {
 		String liferayAnalyticsURL = "http://localhost:8080/";
 
 		String description = RandomTestUtil.randomString();
@@ -160,6 +164,83 @@ public class AddSegmentsExperimentMVCActionCommandTest {
 		}
 	}
 
+	@Test
+	public void testAddSegmentsExperiment2() throws Exception {
+		String segmentsEntryName = RandomTestUtil.randomString();
+
+		SegmentsExperience segmentsExperience = _addSegmentsExperience(
+			segmentsEntryName);
+
+		SegmentsExperiment segmentsExperiment =
+			SegmentsTestUtil.addSegmentsExperiment(
+				_group.getGroupId(),
+				segmentsExperience.getSegmentsExperienceId(),
+				_layout.getPlid());
+
+		segmentsExperiment.setStatus(
+			SegmentsExperimentConstants.STATUS_TERMINATED);
+
+		_segmentsExperimentLocalService.updateSegmentsExperiment(
+			segmentsExperiment);
+
+		List<SegmentsExperiment> segmentsExperiments =
+			_segmentsExperimentLocalService.getSegmentsExperiments(
+				_group.getGroupId(), _layout.getPlid());
+
+		Assert.assertEquals(
+			segmentsExperiments.toString(), 1, segmentsExperiments.size());
+
+		segmentsExperiment = segmentsExperiments.get(0);
+
+		Assert.assertEquals(
+			SegmentsExperimentConstants.STATUS_TERMINATED,
+			segmentsExperiment.getStatus());
+
+		String description = RandomTestUtil.randomString();
+
+		SegmentsExperimentConstants.Goal goal =
+			SegmentsExperimentConstants.Goal.BOUNCE_RATE;
+
+		String name = RandomTestUtil.randomString();
+
+		segmentsEntryName = RandomTestUtil.randomString();
+
+		segmentsExperience = _addSegmentsExperience(segmentsEntryName);
+
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			_getMockLiferayPortletActionRequest(
+				description, goal.getLabel(), name, segmentsExperience);
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						AnalyticsConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"liferayAnalyticsURL", "http://localhost:8080/"
+						).build(),
+						SettingsFactoryUtil.getSettingsFactory())) {
+
+			ReflectionTestUtil.invoke(
+				_mvcActionCommand, "_addSegmentsExperiment",
+				new Class<?>[] {ActionRequest.class},
+				mockLiferayPortletActionRequest);
+
+			segmentsExperiments =
+				_segmentsExperimentLocalService.getSegmentsExperiments(
+					_group.getGroupId(), _layout.getPlid());
+
+			Assert.assertEquals(
+				segmentsExperiments.toString(), 1, segmentsExperiments.size());
+
+			segmentsExperiment = segmentsExperiments.get(0);
+
+			Assert.assertEquals(
+				SegmentsExperimentConstants.STATUS_DRAFT,
+				segmentsExperiment.getStatus());
+		}
+	}
+
 	private SegmentsExperience _addSegmentsExperience(String segmentsEntryName)
 		throws Exception {
 
@@ -168,10 +249,8 @@ public class AddSegmentsExperimentMVCActionCommandTest {
 			segmentsEntryName, RandomTestUtil.randomString(), StringPool.BLANK,
 			SegmentsEntryConstants.SOURCE_DEFAULT);
 
-		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
-
 		return SegmentsTestUtil.addSegmentsExperience(
-			segmentsEntry.getSegmentsEntryId(), layout.getPlid(),
+			segmentsEntry.getSegmentsEntryId(), _layout.getPlid(),
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 	}
 
@@ -216,6 +295,9 @@ public class AddSegmentsExperimentMVCActionCommandTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@DeleteAfterTestRun
+	private Layout _layout;
 
 	@Inject(
 		filter = "mvc.command.name=/segments_experiment/add_segments_experiment"
