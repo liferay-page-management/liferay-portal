@@ -60,20 +60,6 @@ DisplayPageManagementToolbarDisplayContext displayPageManagementToolbarDisplayCo
 			%>
 
 			<c:choose>
-				<c:when test="<%= curLayoutPageTemplateCollection != null %>">
-
-					<%
-					row.setCssClass("card-page-item card-page-item-directory " + row.getCssClass());
-					%>
-
-					<liferay-ui:search-container-column-text
-						colspan="<%= 2 %>"
-					>
-						<clay:horizontal-card
-							horizontalCard="<%= new DisplayPageTemplateCollectionHorizontalCard(curLayoutPageTemplateCollection, renderRequest, searchContainer.getRowChecker()) %>"
-						/>
-					</liferay-ui:search-container-column-text>
-				</c:when>
 				<c:when test="<%= curLayoutPageTemplateEntry != null %>">
 
 					<%
@@ -87,6 +73,20 @@ DisplayPageManagementToolbarDisplayContext displayPageManagementToolbarDisplayCo
 						<clay:vertical-card
 							propsTransformer="js/propsTransformers/DisplayPageDropdownPropsTransformer"
 							verticalCard="<%= new DisplayPageVerticalCard(curLayoutPageTemplateEntry, renderRequest, renderResponse, searchContainer.getRowChecker()) %>"
+						/>
+					</liferay-ui:search-container-column-text>
+				</c:when>
+				<c:when test="<%= curLayoutPageTemplateCollection != null %>">
+
+					<%
+					row.setCssClass("card-page-item card-page-item-directory " + row.getCssClass());
+					%>
+
+					<liferay-ui:search-container-column-text
+						colspan="<%= 2 %>"
+					>
+						<clay:horizontal-card
+							horizontalCard="<%= new DisplayPageTemplateCollectionHorizontalCard (curLayoutPageTemplateCollection, renderRequest, renderResponse, searchContainer.getRowChecker()) %>"
 						/>
 					</liferay-ui:search-container-column-text>
 				</c:when>
