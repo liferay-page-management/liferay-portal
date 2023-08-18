@@ -496,6 +496,9 @@ public class SegmentsExperimentLocalServiceImpl
 			(segmentsExperiment.getStatus() ==
 				SegmentsExperimentConstants.STATUS_TERMINATED)) {
 
+			segmentsExperiment.setStatus(
+				SegmentsExperimentConstants.STATUS_DELETING_ON_DXP_ONLY);
+
 			segmentsExperimentLocalService.deleteSegmentsExperiment(
 				segmentsExperiment);
 		}
