@@ -26,6 +26,8 @@ public class SegmentsExperimentConstants {
 
 	public static final int STATUS_COMPLETED = 2;
 
+	public static final int STATUS_DELETING_ON_DXP_ONLY = 8;
+
 	public static final int STATUS_DRAFT = 0;
 
 	public static final int STATUS_FINISHED_NO_WINNER = 4;
@@ -76,6 +78,9 @@ public class SegmentsExperimentConstants {
 		COMPLETED(
 			STATUS_COMPLETED, "COMPLETED", "completed", true, false, true,
 			false),
+		DELETING_ON_DXP_ONLY(
+			STATUS_DELETING_ON_DXP_ONLY, "DELETING_ON_DXP_ONLY",
+			"deleting-on-dxp-only", true),
 		DRAFT(STATUS_DRAFT, "DRAFT", "draft", true) {
 
 			@Override
