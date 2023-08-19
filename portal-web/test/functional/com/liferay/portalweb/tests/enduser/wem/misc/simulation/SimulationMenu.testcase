@@ -286,6 +286,8 @@ definition {
 				pageName = "Test Page Name",
 				siteName = ${randomSiteName});
 
+			SetWindowSize.maximizeWindow();
+
 			Click.waitForMenuToggleJSClick(locator1 = "ControlMenu#SIMULATION");
 		}
 
