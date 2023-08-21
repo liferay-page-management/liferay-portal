@@ -45,9 +45,9 @@ JournalFileUploadsConfiguration journalFileUploadsConfiguration = (JournalFileUp
 	</c:when>
 	<c:otherwise>
 		<aui:select ignoreRequestValue="<%= journalEditArticleDisplayContext.isChangeStructure() %>" label="" name="smallImageSource" value="<%= smallImageSource %>" wrapperCssClass="mb-3">
-			<aui:option label="no-image" value="<%= JournalArticleConstants.SMALL_IMAGE_SOURCE_NONE %>" />
-			<aui:option label="from-url" value="<%= JournalArticleConstants.SMALL_IMAGE_SOURCE_URL %>" />
-			<aui:option label="from-your-computer" value="<%= JournalArticleConstants.SMALL_IMAGE_SOURCE_USER_COMPUTER %>" />
+			<aui:option label="no-image" selected="<%= smallImageSource == JournalArticleConstants.SMALL_IMAGE_SOURCE_NONE %>" value="<%= JournalArticleConstants.SMALL_IMAGE_SOURCE_NONE %>" />
+			<aui:option label="from-url" selected="<%= smallImageSource == JournalArticleConstants.SMALL_IMAGE_SOURCE_URL %>" value="<%= JournalArticleConstants.SMALL_IMAGE_SOURCE_URL %>" />
+			<aui:option label="from-your-computer" selected="<%= smallImageSource == JournalArticleConstants.SMALL_IMAGE_SOURCE_USER_COMPUTER %>" value="<%= JournalArticleConstants.SMALL_IMAGE_SOURCE_USER_COMPUTER %>" />
 		</aui:select>
 
 		<div class="<%= (smallImageSource == JournalArticleConstants.SMALL_IMAGE_SOURCE_URL) ? "" : "hide" %>" id="<portlet:namespace />smallImageURLContainer">
