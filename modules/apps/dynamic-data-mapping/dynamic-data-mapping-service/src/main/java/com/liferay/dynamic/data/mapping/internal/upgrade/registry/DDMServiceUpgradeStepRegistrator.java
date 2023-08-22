@@ -73,6 +73,7 @@ import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.upgrade.BaseSQLServerDatetimeUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.CTModelUpgradeProcess;
+import com.liferay.portal.kernel.upgrade.DummyUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
 import com.liferay.portal.kernel.upgrade.MVCCVersionUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
@@ -528,6 +529,8 @@ public class DDMServiceUpgradeStepRegistrator
 
 		registry.register(
 			"5.3.2", "5.3.3", new BrowserSnifferTemplateUpgradeProcess());
+
+		registry.register("5.3.3", "5.3.4", new DummyUpgradeProcess());
 	}
 
 	@Activate
