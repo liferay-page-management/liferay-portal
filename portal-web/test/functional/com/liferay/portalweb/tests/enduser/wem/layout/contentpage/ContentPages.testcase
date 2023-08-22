@@ -2158,6 +2158,35 @@ definition {
 		}
 	}
 
+	@description = "This is a test for LPS-110227 Categories Navigation portlet can be seen within the Section where it was placed and can be opened/configured."
+	@priority = 5
+	test ViewTheNavigationPortletintheContentPaneloftheCurrentExperiencePage {
+		property portal.acceptance = "true";
+
+		task ("Given that the user has created a content page") {
+			JSONWebcontent.addWebContent(
+				content = "Web Content Content",
+				groupName = ${randomSiteName},
+				title = "Web Content Title 1");
+
+			ContentPagesNavigator.openEditContentPage(
+				pageName = "Test Page Name",
+				siteName = ${randomSiteName});
+		}
+
+		task ("Given that the user has created a Publisher portlet") {
+			PageEditor.addWidget(portletName = "Asset Publisher");
+
+			Button.clickPublish();
+		}
+
+		task ("Then it creates new experience for this page") {
+			PageEditor.addExperience(
+				experienceName = "New Experience",
+				segmentName = "Anyone");
+		}
+	}
+
 	@description = "This is a test for LPS-154530. View custom values matches in spacing on page editor."
 	@priority = 4
 	test ViewValuesMatchesInSpacingOnPageEditor {
