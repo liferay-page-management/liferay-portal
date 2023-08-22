@@ -120,6 +120,7 @@ export interface Config {
 	getCollectionMappingFieldsURL: string;
 	getCollectionSupportedFiltersURL: string;
 	getExperienceDataURL: string;
+	getMappedFieldWarningMessageURL: string;
 	getIframeContentCssURL: string;
 	getIframeContentURL: string;
 	getInfoItemActionErrorMessageURL: string;

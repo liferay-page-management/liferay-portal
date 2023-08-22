@@ -492,6 +492,11 @@ public class ContentPageEditorDisplayContext {
 					"/layout_content_page_editor" +
 						"/get_layout_page_template_collections")
 			).put(
+				"getMappedFieldWarningMessageURL",
+				_getResourceURL(
+					"/layout_content_page_editor" +
+						"/get_mapped_field_warning_message")
+			).put(
 				"getPageContentsURL",
 				_getResourceURL("/layout_content_page_editor/get_page_content")
 			).put(
