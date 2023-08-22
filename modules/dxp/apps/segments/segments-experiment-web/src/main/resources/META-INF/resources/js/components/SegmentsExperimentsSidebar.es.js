@@ -124,9 +124,6 @@ function SegmentsExperimentsSidebar({
 						onCreateSegmentsExperiment={
 							_handleCreateSegmentsExperiment
 						}
-						onDeleteSegmentsExperiment={
-							_handleDeleteSegmentsExperiment
-						}
 						onEditSegmentsExperiment={_handleEditSegmentsExperiment}
 						onEditSegmentsExperimentStatus={
 							_handleEditSegmentExperimentStatus
