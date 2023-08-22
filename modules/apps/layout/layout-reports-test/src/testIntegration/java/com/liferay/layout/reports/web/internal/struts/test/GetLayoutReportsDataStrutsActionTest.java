@@ -443,7 +443,7 @@ public class GetLayoutReportsDataStrutsActionTest {
 	private CompanyLocalService _companyLocalService;
 
 	@Inject(
-		filter = "component.name=com.liferay.layout.reports.web.internal.struts.GetLayoutReportsDataStrutsAction"
+		filter = "component.name=com.liferay.layout.reports.web.internal.struts.GetLayoutReportsGooglePageSpeedDataStrutsAction"
 	)
 	private StrutsAction _getLayoutReportsDataStrutsAction;
 
