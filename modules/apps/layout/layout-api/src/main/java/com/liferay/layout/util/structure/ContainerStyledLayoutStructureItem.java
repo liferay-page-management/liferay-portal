@@ -232,6 +232,10 @@ public class ContainerStyledLayoutStructureItem
 
 	@Override
 	public void updateItemConfig(JSONObject itemConfigJSONObject) {
+		if (itemConfigJSONObject == null) {
+			itemConfigJSONObject = JSONFactoryUtil.createJSONObject();
+		}
+
 		_convertStyleProperties(itemConfigJSONObject);
 
 		super.updateItemConfig(itemConfigJSONObject);
@@ -286,6 +290,10 @@ public class ContainerStyledLayoutStructureItem
 	}
 
 	private void _convertStyleProperties(JSONObject itemConfigJSONObject) {
+		if (itemConfigJSONObject == null) {
+			itemConfigJSONObject = JSONFactoryUtil.createJSONObject();
+		}
+
 		String backgroundColorCssClass = itemConfigJSONObject.getString(
 			"backgroundColorCssClass");
 
