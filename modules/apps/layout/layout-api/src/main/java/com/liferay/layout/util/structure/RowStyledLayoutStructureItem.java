@@ -117,9 +117,20 @@ public class RowStyledLayoutStructureItem extends StyledLayoutStructureItem {
 				viewportConfigurationJSONObject.get("verticalAlignment")
 			);
 
+			JSONObject finalCurrentViewportConfigurationJSONObject =
+				currentViewportConfigurationJSONObject;
+
 			jsonObject.put(
 				viewportSize.getViewportSizeId(),
-				currentViewportConfigurationJSONObject);
+				() -> {
+					if (finalCurrentViewportConfigurationJSONObject.length() ==
+							0) {
+
+						return null;
+					}
+
+					return finalCurrentViewportConfigurationJSONObject;
+				});
 		}
 
 		return jsonObject;

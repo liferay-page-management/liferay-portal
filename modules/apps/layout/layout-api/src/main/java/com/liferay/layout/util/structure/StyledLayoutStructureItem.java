@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -91,13 +92,34 @@ public abstract class StyledLayoutStructureItem extends LayoutStructureItem {
 	@Override
 	public JSONObject getItemConfigJSONObject() {
 		JSONObject jsonObject = JSONUtil.put(
-			"cssClasses", JSONFactoryUtil.createJSONArray(_cssClasses)
+			"cssClasses",
+			() -> {
+				if ((_cssClasses == null) || _cssClasses.isEmpty()) {
+					return null;
+				}
+
+				return JSONFactoryUtil.createJSONArray(_cssClasses);
+			}
 		).put(
-			"customCSS", _customCSS
+			"customCSS",
+			() -> {
+				if (Validator.isNull(_customCSS)) {
+					return null;
+				}
+
+				return JSONFactoryUtil.createJSONArray(_customCSS);
+			}
 		).put(
 			"name", _name
 		).put(
-			"styles", stylesJSONObject
+			"styles",
+			() -> {
+				if (stylesJSONObject.length() == 0) {
+					return null;
+				}
+
+				return stylesJSONObject;
+			}
 		);
 
 		for (ViewportSize viewportSize : _viewportSizes) {
@@ -107,15 +129,30 @@ public abstract class StyledLayoutStructureItem extends LayoutStructureItem {
 
 			jsonObject.put(
 				viewportSize.getViewportSizeId(),
-				JSONUtil.put(
-					"customCSS",
-					_customCSSViewports.get(viewportSize.getViewportSizeId())
-				).put(
-					"styles",
-					viewportStyleJSONObjects.getOrDefault(
-						viewportSize.getViewportSizeId(),
-						JSONFactoryUtil.createJSONObject())
-				));
+				() -> {
+					JSONObject viewportStylesJSONObject = JSONUtil.put(
+						"customCSS",
+						_customCSSViewports.get(
+							viewportSize.getViewportSizeId())
+					).put(
+						"styles",
+						() -> {
+							if (viewportStyleJSONObjects.isEmpty()) {
+								return null;
+							}
+
+							return viewportStyleJSONObjects.getOrDefault(
+								viewportSize.getViewportSizeId(),
+								JSONFactoryUtil.createJSONObject());
+						}
+					);
+
+					if (viewportStylesJSONObject.length() == 0) {
+						return null;
+					}
+
+					return viewportStylesJSONObject;
+				});
 		}
 
 		return jsonObject;

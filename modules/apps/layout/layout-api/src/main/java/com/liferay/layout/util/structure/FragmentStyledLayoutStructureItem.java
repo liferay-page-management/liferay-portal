@@ -76,6 +76,8 @@ public class FragmentStyledLayoutStructureItem
 			stylesJSONObject = JSONFactoryUtil.createJSONObject();
 		}
 
+		JSONObject finalStylesJSONObject = stylesJSONObject;
+
 		return jsonObject.put(
 			"fragmentEntryLinkId", String.valueOf(_fragmentEntryLinkId)
 		).put(
@@ -88,7 +90,14 @@ public class FragmentStyledLayoutStructureItem
 				return false;
 			}
 		).put(
-			"styles", stylesJSONObject
+			"styles",
+			() -> {
+				if (finalStylesJSONObject.length() == 0) {
+					return null;
+				}
+
+				return finalStylesJSONObject;
+			}
 		);
 	}
 

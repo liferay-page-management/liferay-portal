@@ -56,16 +56,24 @@ public class ColumnLayoutStructureItem extends LayoutStructureItem {
 
 			jsonObject.put(
 				viewportSize.getViewportSizeId(),
-				JSONUtil.put(
-					"size",
-					() -> {
-						JSONObject viewportConfigurationJSONObject =
-							_viewportConfigurationJSONObjects.getOrDefault(
-								viewportSize.getViewportSizeId(),
-								JSONFactoryUtil.createJSONObject());
+				() -> {
+					JSONObject viewportSizeJSONObject = JSONUtil.put(
+						"size",
+						() -> {
+							JSONObject viewportConfigurationJSONObject =
+								_viewportConfigurationJSONObjects.getOrDefault(
+									viewportSize.getViewportSizeId(),
+									JSONFactoryUtil.createJSONObject());
 
-						return viewportConfigurationJSONObject.get("size");
-					}));
+							return viewportConfigurationJSONObject.get("size");
+						});
+
+					if (viewportSizeJSONObject.length() == 0) {
+						return null;
+					}
+
+					return viewportSizeJSONObject;
+				});
 		}
 
 		return jsonObject;

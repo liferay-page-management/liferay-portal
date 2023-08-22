@@ -202,9 +202,20 @@ public class CollectionStyledLayoutStructureItem
 				"numberOfColumns",
 				viewportConfigurationJSONObject.get("numberOfColumns"));
 
+			JSONObject finalCurrentViewportConfigurationJSONObject =
+				currentViewportConfigurationJSONObject;
+
 			jsonObject.put(
 				viewportSize.getViewportSizeId(),
-				currentViewportConfigurationJSONObject);
+				() -> {
+					if (finalCurrentViewportConfigurationJSONObject.length() ==
+							0) {
+
+						return null;
+					}
+
+					return finalCurrentViewportConfigurationJSONObject;
+				});
 		}
 
 		return jsonObject;

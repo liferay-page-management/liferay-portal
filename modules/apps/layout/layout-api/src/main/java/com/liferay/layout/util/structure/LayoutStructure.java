@@ -525,14 +525,37 @@ public class LayoutStructure {
 				deletedLayoutStructureItem.toJSONObject());
 		}
 
+		String finalDropZoneItemId = dropZoneItemId;
+
 		return JSONUtil.put(
-			"deletedItems", deletedLayoutStructureItemsJSONArray
+			"deletedItems",
+			() -> {
+				if (deletedLayoutStructureItemsJSONArray.length() == 0) {
+					return null;
+				}
+
+				return deletedLayoutStructureItemsJSONArray;
+			}
 		).put(
-			"items", layoutStructureItemsJSONObject
+			"items",
+			() -> {
+				if (layoutStructureItemsJSONObject.length() == 0) {
+					return null;
+				}
+
+				return layoutStructureItemsJSONObject;
+			}
 		).put(
 			"rootItems",
 			JSONUtil.put(
-				"dropZone", dropZoneItemId
+				"dropZone",
+				() -> {
+					if (Validator.isBlank(finalDropZoneItemId)) {
+						return null;
+					}
+
+					return finalDropZoneItemId;
+				}
 			).put(
 				"main", _mainItemId
 			)
