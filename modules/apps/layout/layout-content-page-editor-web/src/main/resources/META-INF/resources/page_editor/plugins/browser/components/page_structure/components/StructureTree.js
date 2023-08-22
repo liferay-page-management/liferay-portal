@@ -561,7 +561,7 @@ function isItemHidden(item, selectedViewportSize) {
 		selectedViewportSize
 	);
 
-	return responsiveConfig.styles.display === 'none';
+	return responsiveConfig.styles?.display === 'none';
 }
 
 function isHidable(item, fragmentEntryLinks, layoutData) {

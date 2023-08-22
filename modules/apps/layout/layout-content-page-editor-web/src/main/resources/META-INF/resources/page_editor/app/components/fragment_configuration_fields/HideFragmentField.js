@@ -34,7 +34,7 @@ function getHiddenAncestorId(layoutData, item, selectedViewportSize) {
 		selectedViewportSize
 	);
 
-	return responsiveConfig.styles.display === 'none'
+	return responsiveConfig.styles?.display === 'none'
 		? parent.itemId
 		: getHiddenAncestorId(layoutData, parent);
 }

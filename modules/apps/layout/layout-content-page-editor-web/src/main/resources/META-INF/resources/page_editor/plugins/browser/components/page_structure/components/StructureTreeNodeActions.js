@@ -135,7 +135,7 @@ const ActionList = ({item, setActive, setEditingNodeId, setOpenSaveModal}) => {
 		fragmentEntryLinks[item.config.fragmentEntryLinkId]
 			.fragmentEntryType === FRAGMENT_ENTRY_TYPES.input;
 
-	const isHidden = item.config.styles.display === 'none';
+	const isHidden = item.config.styles?.display === 'none';
 
 	const dropdownItems = useMemo(() => {
 		const items = [];

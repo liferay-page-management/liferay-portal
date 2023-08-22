@@ -21,7 +21,7 @@ function isItemHidden(layoutData, itemId, selectedViewportSize) {
 	);
 
 	return (
-		responsiveConfig.styles.display === 'none' ||
+		responsiveConfig.styles?.display === 'none' ||
 		isItemHidden(layoutData, item.parentId, selectedViewportSize)
 	);
 }
