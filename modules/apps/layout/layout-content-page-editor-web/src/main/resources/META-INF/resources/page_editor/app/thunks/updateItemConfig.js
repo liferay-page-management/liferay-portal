@@ -9,7 +9,7 @@ import LayoutService from '../services/LayoutService';
 export default function updateItemConfig({
 	itemConfig,
 	itemId,
-	overridePreviousConfig = false,
+	overridePreviousConfig = true,
 }) {
 	return (dispatch, getState) => {
 		const {segmentsExperienceId} = getState();
