@@ -1499,4 +1499,48 @@ definition {
 		}
 	}
 
+	@description = "LPS-129621'Wrong Canonical URL for Content Pages' since it was a release blocker."
+	@priority = 4
+	test CanonicalURLforContentPages {
+		property test.liferay.virtual.instance = "false";
+
+		task ("Given that the user creates a Virtual Instance") {
+			User.firstLoginUI();
+
+            SAML.addVirtualInstances(
+                mailDomain = "www.able.com",
+                virtualHost = "www.able.com",
+                webId = "www.able.com");
+		}
+
+		task ("Given that the user accesses the created virtual instance") {
+			User.logoutPG();
+
+			User.firstLoginPG(
+				password = "test",
+				userEmailAddress = "test@www.able.com",
+				virtualHostsURL = "http://www.able.com:8080");
+		}
+
+		task ("When the user creates a content page in the virtual instance") {
+			ProductMenu.gotoPortlet(
+				category = "Site Builder",
+				portlet = "Pages");
+
+			PagesAdmin.addPage(pageName = "Web Content Page");
+
+			PageEditor.publish();
+
+			Navigator.gotoSpecificURLPage(
+				pageName = "Web Content Page",
+				url = "http://www.able.com:8080");
+		}
+
+		task ("Then he can see how the content is performing on the page") {
+			ContentPerformance.openContentPerformance();    
+
+			AssertElementNotPresent(locator1 = "TextInput#VIRTUAL_INSTANCE_SCREEN_NAME");
+		}
+	}
+
 }
