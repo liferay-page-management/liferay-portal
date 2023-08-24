@@ -231,6 +231,25 @@ export default {
 	},
 
 	/**
+	 * @param {object} options
+	 * @param {string} options.fieldId
+	 * @param {string} options.fragmentEntryLinkId
+	 * @return {Promise<{warningMessage: string}>}
+	 */
+	getMappedFieldWarningMessage({fieldId, fragmentEntryLinkId}) {
+		return serviceFetch(
+			config.getMappedFieldWarningMessageURL,
+			{
+				body: {
+					fieldId,
+					fragmentEntryLinkId,
+				},
+			},
+			() => {}
+		);
+	},
+
+	/**
 	 * Render the content of a fragmentEntryLink
 	 * @param {object} options
 	 * @param {string} options.collectionItemIndex Index of the collection item
