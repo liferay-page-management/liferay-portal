@@ -170,8 +170,10 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 				}
 			}
 
-			_validateRequiredFields(
-				httpServletRequest, infoFieldValues, layoutStructure);
+			if (!FeatureFlagManagerUtil.isEnabled("LPS-183727")) {
+				_validateRequiredFields(
+					httpServletRequest, infoFieldValues, layoutStructure);
+			}
 
 			Object infoItem = null;
 
