@@ -13,6 +13,7 @@ export const CACHE_KEYS = {
 	collectionConfigurationUrl: 'collectionConfigurationUrl',
 	collectionVariations: 'collectionVariations',
 	formFields: 'formFields',
+	mappedFieldWarningMessage: 'mappedFieldWarningMessage',
 };
 
 export const CACHE_STATUS = {

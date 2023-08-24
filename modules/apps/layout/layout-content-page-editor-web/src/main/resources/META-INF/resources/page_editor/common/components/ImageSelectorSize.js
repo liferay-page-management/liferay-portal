@@ -5,19 +5,21 @@
 
 import ClayForm, {ClaySelectWithOption} from '@clayui/form';
 import {useIsMounted} from '@liferay/frontend-js-react-web';
-import {isNullOrUndefined} from '@liferay/layout-js-components-web';
 import classNames from 'classnames';
 import {useId} from 'frontend-js-components-web';
 import PropTypes from 'prop-types';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {useGetFieldValue} from '../../app/contexts/CollectionItemContext';
 import {useGlobalContext} from '../../app/contexts/GlobalContext';
 import {useSelector} from '../../app/contexts/StoreContext';
 import selectLanguageId from '../../app/selectors/selectLanguageId';
+import FragmentService from '../../app/services/FragmentService';
 import ImageService from '../../app/services/ImageService';
+import {CACHE_KEYS} from '../../app/utils/cache';
 import isMapped from '../../app/utils/editable_value/isMapped';
 import resolveEditableValue from '../../app/utils/editable_value/resolveEditableValue';
+import useCache from '../../app/utils/useCache';
 
 export const DEFAULT_IMAGE_SIZE_ID = 'auto';
 
@@ -31,13 +33,12 @@ const DEFAULT_IMAGE_SIZE = {
 
 /**
  * @param {object} props
- * @param {number} [props.imageSizeLimit] Image size limit to show warnings, expressed in KB.
  */
 export function ImageSelectorSize({
+	fieldReference,
 	fieldValue,
 	getEditableElement = DEFAULT_GET_EDITABLE_ELEMENT,
 	imageSizeId,
-	imageSizeLimit,
 	onImageSizeIdChanged = null,
 }) {
 	const [fileEntryId, setFileEntryId] = useState(
@@ -54,23 +55,28 @@ export function ImageSelectorSize({
 		(state) => state.selectedViewportSize
 	);
 
-	const showImageSizeWarning = useMemo(() => {
-		if (!Liferay.FeatureFlags['LPS-187285']) {
-			return false;
-		}
+	const imageSizeWarning = useCache({
+		fetcher: async () => {
+			if (!fieldReference || !Liferay.FeatureFlags['LPS-187285']) {
+				return '';
+			}
 
-		if (isNullOrUndefined(imageSizeLimit)) {
-			return false;
-		}
+			const {
+				warningMessage,
+			} = await FragmentService.getMappedFieldWarningMessage(
+				fieldReference
+			);
 
-		const imageSizeValue = Number(imageSize.size);
-
-		if (isNaN(imageSizeValue)) {
-			return false;
-		}
-
-		return imageSizeValue >= imageSizeLimit;
-	}, [imageSize.size, imageSizeLimit]);
+			return warningMessage;
+		},
+		key: [
+			CACHE_KEYS.mappedFieldWarningMessage,
+			fieldReference?.fieldId,
+			fieldReference?.fragmentEntryLinkId,
+			JSON.stringify(fieldValue),
+			imageSizeId,
+		],
+	});
 
 	useEffect(() => {
 		if (fieldValue.fileEntryId) {
@@ -177,7 +183,7 @@ export function ImageSelectorSize({
 	return (
 		<ClayForm.Group
 			className={classNames('mb-3', {
-				'has-warning': showImageSizeWarning,
+				'has-warning': imageSizeWarning,
 			})}
 		>
 			{onImageSizeIdChanged && (
@@ -220,14 +226,12 @@ export function ImageSelectorSize({
 				</p>
 			) : null}
 
-			{showImageSizeWarning ? (
+			{imageSizeWarning ? (
 				<ClayForm.FeedbackGroup>
 					<ClayForm.FeedbackItem className="font-weight-normal text-2">
 						<ClayForm.FeedbackIndicator symbol="warning-full" />
 
-						{Liferay.Language.get(
-							'big-image-file-size-used-please-consider-configuring-adaptive-media-lazy-loading-or-reducing-the-image-size'
-						)}
+						{imageSizeWarning}
 					</ClayForm.FeedbackItem>
 				</ClayForm.FeedbackGroup>
 			) : null}
@@ -236,6 +240,10 @@ export function ImageSelectorSize({
 }
 
 ImageSelectorSize.propTypes = {
+	fieldReference: PropTypes.shape({
+		fieldId: PropTypes.string.isRequired,
+		fragmentEntryLinkId: PropTypes.string.isRequired,
+	}),
 	fieldValue: PropTypes.oneOfType([
 		PropTypes.shape({
 			fileEntryId: PropTypes.string.isRequired,
@@ -251,6 +259,5 @@ ImageSelectorSize.propTypes = {
 	]).isRequired,
 	getEditableElement: PropTypes.func,
 	imageSizeId: PropTypes.string,
-	imageSizeLimit: PropTypes.number,
 	onImageSizeIdChanged: PropTypes.func,
 };
