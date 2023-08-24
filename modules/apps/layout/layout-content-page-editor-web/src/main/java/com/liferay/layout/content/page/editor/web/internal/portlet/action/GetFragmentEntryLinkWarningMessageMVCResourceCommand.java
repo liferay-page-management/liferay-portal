@@ -14,6 +14,7 @@ import com.liferay.fragment.processor.DefaultFragmentEntryProcessorContext;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.info.type.WebImage;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -43,11 +44,11 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"javax.portlet.name=" + ContentPageEditorPortletKeys.CONTENT_PAGE_EDITOR_PORTLET,
-		"mvc.command.name=/layout_content_page_editor/get_fragment_entry_link_warning_message_check"
+		"mvc.command.name=/layout_content_page_editor/get_fragment_entry_link_warning_message"
 	},
 	service = MVCResourceCommand.class
 )
-public class GetFragmentEntryLinkWarningMessageCheckMVCResourceCommand
+public class GetFragmentEntryLinkWarningMessageMVCResourceCommand
 	extends BaseMVCResourceCommand {
 
 	@Override
@@ -77,8 +78,8 @@ public class GetFragmentEntryLinkWarningMessageCheckMVCResourceCommand
 
 		try {
 			jsonObject = JSONUtil.put(
-				"showWarningMessage",
-				_showWarningMessage(
+				"warningMessage",
+				_getWarningMessage(
 					fragmentEntryLink, resourceRequest, resourceResponse,
 					themeDisplay));
 		}
@@ -97,7 +98,7 @@ public class GetFragmentEntryLinkWarningMessageCheckMVCResourceCommand
 			resourceRequest, resourceResponse, jsonObject);
 	}
 
-	private boolean _showWarningMessage(
+	private String _getWarningMessage(
 			FragmentEntryLink fragmentEntryLink,
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse,
 			ThemeDisplay themeDisplay)
@@ -115,7 +116,7 @@ public class GetFragmentEntryLinkWarningMessageCheckMVCResourceCommand
 		if ((editableValuesJSONObject == null) ||
 			!editableValuesJSONObject.has(fieldId)) {
 
-			return false;
+			return StringPool.BLANK;
 		}
 
 		JSONObject editableValueJSONObject =
@@ -127,14 +128,14 @@ public class GetFragmentEntryLinkWarningMessageCheckMVCResourceCommand
 			!_fragmentEntryProcessorHelper.isMappedDisplayPage(
 				editableValueJSONObject)) {
 
-			return false;
+			return StringPool.BLANK;
 		}
 
 		JSONObject configJSONObject = editableValueJSONObject.getJSONObject(
 			"config");
 
 		if (configJSONObject.getBoolean("lazyLoading")) {
-			return false;
+			return StringPool.BLANK;
 		}
 
 		Object fieldValue = _fragmentEntryProcessorHelper.getFieldValue(
@@ -145,7 +146,7 @@ public class GetFragmentEntryLinkWarningMessageCheckMVCResourceCommand
 				FragmentEntryLinkConstants.EDIT, themeDisplay.getLocale()));
 
 		if (fieldValue == null) {
-			return false;
+			return StringPool.BLANK;
 		}
 
 		long fileEntryId = 0;
@@ -176,16 +177,20 @@ public class GetFragmentEntryLinkWarningMessageCheckMVCResourceCommand
 		long size = fileEntry.getSize();
 
 		if (size < _MAX_SIZE) {
-			return false;
+			return StringPool.BLANK;
 		}
 
-		return true;
+		return _language.get(
+			themeDisplay.getLocale(),
+			"big-image-file-size-used-please-consider-configuring-adaptive-" +
+			"media-lazy-loading-or-reducing-the-image-size"
+		);
 	}
 
 	private static final int _MAX_SIZE = 500 * 1024;
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		GetFragmentEntryLinkWarningMessageCheckMVCResourceCommand.class);
+		GetFragmentEntryLinkWarningMessageMVCResourceCommand.class);
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
