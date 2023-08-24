@@ -44,11 +44,11 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"javax.portlet.name=" + ContentPageEditorPortletKeys.CONTENT_PAGE_EDITOR_PORTLET,
-		"mvc.command.name=/layout_content_page_editor/get_fragment_entry_link_warning_message"
+		"mvc.command.name=/layout_content_page_editor/get_mapped_field_warning_message"
 	},
 	service = MVCResourceCommand.class
 )
-public class GetFragmentEntryLinkWarningMessageMVCResourceCommand
+public class GetMappedFieldWarningMessageMVCResourceCommand
 	extends BaseMVCResourceCommand {
 
 	@Override
@@ -183,14 +183,13 @@ public class GetFragmentEntryLinkWarningMessageMVCResourceCommand
 		return _language.get(
 			themeDisplay.getLocale(),
 			"big-image-file-size-used-please-consider-configuring-adaptive-" +
-			"media-lazy-loading-or-reducing-the-image-size"
-		);
+				"media-lazy-loading-or-reducing-the-image-size");
 	}
 
 	private static final int _MAX_SIZE = 500 * 1024;
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		GetFragmentEntryLinkWarningMessageMVCResourceCommand.class);
+		GetMappedFieldWarningMessageMVCResourceCommand.class);
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
