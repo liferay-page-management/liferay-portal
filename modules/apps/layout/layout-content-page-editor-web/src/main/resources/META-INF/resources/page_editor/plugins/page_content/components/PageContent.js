@@ -235,13 +235,12 @@ export default function PageContent({
 	return (
 		<li
 			className={classNames(
-				'page-editor__page-contents__page-content mb-1 p-1',
+				'page-editor__page-contents__page-content mb-1 p-1 d-inline-flex autofit-row',
 				{
 					'page-editor__page-contents__page-content--mapped-item-hovered':
 						isHovered || activeActions || isBeingEdited,
 				}
 			)}
-			onClick={handleOnClick}
 			onMouseLeave={handleMouseLeave}
 			onMouseOver={handleMouseOver}
 		>
@@ -257,92 +256,101 @@ export default function PageContent({
 					</span>
 				</div>
 			) : (
-				<ClayLayout.ContentRow
-					className={classNames({'align-items-center': !subtype})}
-					padded
-				>
-					<ClayLayout.ContentCol>
-						<ClayIcon
-							className={subtype ? 'mt-1' : 'm-0'}
-							focusable="false"
-							monospaced="true"
-							role="presentation"
-							symbol={icon || 'document-text'}
-						/>
-					</ClayLayout.ContentCol>
 
-					<ClayLayout.ContentCol expand title={title}>
+				<>
+					<ClayLayout.ContentRow
+						aria-label={`${Liferay.Language.get("select")} ${title}`}
+						className={classNames('position-relative', {
+							'align-items-center': !subtype,
+						})}
+						onClick={handleOnClick}
+						onKeyDown={(event) => {
+							if (event.key === 'Enter') {
+								handleOnClick();
+							}
+						}}
+						padded
+						role="button"
+						tabIndex="0"
+					>
+						<ClayLayout.ContentCol>
+							<ClayIcon
+								className={subtype ? 'mt-1' : 'm-0'}
+								focusable="false"
+								monospaced="true"
+								role="presentation"
+								symbol={icon || 'document-text'}
+							/>
+						</ClayLayout.ContentCol>
+
+						<ClayLayout.ContentCol expand title={title}>
 						<span className="font-weight-semi-bold text-truncate">
 							{title}
 						</span>
 
-						{subtype && (
-							<span className="text-break text-secondary">
-								{subtype}
-							</span>
-						)}
-					</ClayLayout.ContentCol>
+							{subtype && (
+								<span className="text-break text-secondary">
+										{subtype}
+									</span>
+							)}
+						</ClayLayout.ContentCol>
+					</ClayLayout.ContentRow>
 
-					<ClayLayout.ContentCol>
-						{dropdownItems?.length ? (
-							<ClayDropDownWithItems
-								active={activeActions}
-								className="align-self-center"
-								items={dropdownItems}
-								menuElementAttrs={{
-									containerProps: {
-										className: 'cadmin',
-									},
-								}}
-								onActiveChange={setActiveActions}
-								trigger={
-									<ClayButton
-										aria-label={sub(
-											Liferay.Language.get(
-												'actions-for-x'
-											),
-											title
-										)}
-										className={classNames(
-											'page-editor__page-contents__button',
-											{'mt-1': subtype}
-										)}
-										displayType="unstyled"
-										size="sm"
-										title={sub(
-											Liferay.Language.get(
-												'open-actions-menu'
-											),
-											title
-										)}
-									>
-										<ClayIcon symbol="ellipsis-v" />
-									</ClayButton>
+					{dropdownItems?.length ? (
+						<ClayDropDownWithItems
+							active={activeActions}
+							className="align-self-center"
+							items={dropdownItems}
+							menuElementAttrs={{
+								containerProps: {
+									className: 'cadmin',
+								},
+							}}
+							onActiveChange={setActiveActions}
+							trigger={
+								<ClayButton
+									aria-label={sub(
+										Liferay.Language.get('actions-for-x'),
+										title
+									)}
+									className={classNames(
+										'page-editor__page-contents__button',
+										{'mt-1': subtype}
+									)}
+									displayType="unstyled"
+									size="sm"
+									title={sub(
+										Liferay.Language.get(
+											'open-actions-menu'
+										),
+										title
+									)}
+								>
+									<ClayIcon symbol="ellipsis-v" />
+								</ClayButton>
+							}
+						/>
+					) : (
+						<ClayButton
+							aria-label={sub(
+								Liferay.Language.get('edit-inline-text-x'),
+								title
+							)}
+							className={classNames(
+								'page-editor__page-contents__button',
+								{
+									'not-allowed':
+										isBeingEdited || !canUpdateEditables,
 								}
-							/>
-						) : (
-							<ClayButton
-								aria-label={sub(
-									Liferay.Language.get('edit-inline-text-x'),
-									title
-								)}
-								className={classNames(
-									'page-editor__page-contents__button',
-									{
-										'not-allowed':
-											isBeingEdited ||
-											!canUpdateEditables,
-									}
-								)}
-								disabled={isBeingEdited || !canUpdateEditables}
-								displayType="unstyled"
-								size="sm"
-							>
-								{!isHovered && <ClayIcon symbol="pencil" />}
-							</ClayButton>
-						)}
-					</ClayLayout.ContentCol>
-				</ClayLayout.ContentRow>
+							)}
+							disabled={isBeingEdited || !canUpdateEditables}
+							displayType="unstyled"
+							size="sm"
+						>
+							{!isHovered && <ClayIcon symbol="pencil" />}
+						</ClayButton>
+					)}
+				</>
 			)}
 
 			{imageEditorParams && (
