@@ -263,45 +263,78 @@ export default function PageContent({
 					</span>
 				</div>
 			) : (
-
 				<>
-					<ClayLayout.ContentRow
-						aria-label={`${Liferay.Language.get("select")} ${title}`}
-						className={classNames('position-relative', {
-							'align-items-center': !subtype,
-						})}
-						onClick={handleOnClick}
-						onKeyDown={(event) => {
-							if (event.key === 'Enter') {
-								handleOnClick();
-							}
-						}}
-						padded
-						role="button"
-						tabIndex="0"
-					>
-						<ClayLayout.ContentCol>
-							<ClayIcon
-								className={subtype ? 'mt-1' : 'm-0'}
-								focusable="false"
-								monospaced="true"
-								role="presentation"
-								symbol={icon || 'document-text'}
-							/>
-						</ClayLayout.ContentCol>
+					{type === Liferay.Language.get('document') ? (
+						<ClayLayout.ContentRow
+							className={classNames('position-relative', {
+								'align-items-center': !subtype,
+							})}
+							padded
+						>
+							<ClayLayout.ContentCol>
+								<ClayIcon
+									className={subtype ? 'mt-1' : 'm-0'}
+									focusable="false"
+									monospaced="true"
+									role="presentation"
+									symbol={icon || 'document-text'}
+								/>
+							</ClayLayout.ContentCol>
 
-						<ClayLayout.ContentCol expand title={title}>
-						<span className="font-weight-semi-bold text-truncate">
-							{title}
-						</span>
+							<ClayLayout.ContentCol expand title={title}>
+								<span className="font-weight-semi-bold text-truncate">
+									{title}
+								</span>
 
-							{subtype && (
-								<span className="text-break text-secondary">
+								{subtype && (
+									<span className="text-break text-secondary">
 										{subtype}
 									</span>
-							)}
-						</ClayLayout.ContentCol>
-					</ClayLayout.ContentRow>
+								)}
+							</ClayLayout.ContentCol>
+						</ClayLayout.ContentRow>
+					) : (
+						<ClayLayout.ContentRow
+							aria-label={`${Liferay.Language.get(
+								'select'
+							)} ${title}`}
+							className={classNames('position-relative', {
+								'align-items-center': !subtype,
+							})}
+							onClick={handleOnClick}
+							onKeyDown={(event) => {
+								if (event.key === 'Enter') {
+									handleOnClick();
+								}
+							}}
+							padded
+							role="button"
+							style={{cursor: 'pointer'}}
+							tabIndex="0"
+						>
+							<ClayLayout.ContentCol>
+								<ClayIcon
+									className={subtype ? 'mt-1' : 'm-0'}
+									focusable="false"
+									monospaced="true"
+									role="presentation"
+									symbol={icon || 'document-text'}
+								/>
+							</ClayLayout.ContentCol>
+
+							<ClayLayout.ContentCol expand title={title}>
+								<span className="font-weight-semi-bold text-truncate">
+									{title}
+								</span>
+
+								{subtype && (
+									<span className="text-break text-secondary">
+										{subtype}
+									</span>
+								)}
+							</ClayLayout.ContentCol>
+						</ClayLayout.ContentRow>
+					)}
 
 					{dropdownItems?.length ? (
 						<ClayDropDownWithItems
