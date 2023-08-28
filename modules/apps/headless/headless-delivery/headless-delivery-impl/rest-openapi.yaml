@@ -15625,6 +15625,28 @@ paths:
                         application/json: {}
                         application/xml: {}
             tags: ["StructuredContentFolder"]
+    "/structured-content-folder/{targetStructuredContentFolderId}/structure-contents/{structuredContentId}":
+        put:
+            operationId: putStructuredContentFolderTargetStructuredContentFolderStructureContentStructuredContent
+            parameters:
+                - in: path
+                  name: targetStructuredContentFolderId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: path
+                  name: structuredContentId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["StructuredContent"]
     "/structured-content-folders/{parentStructuredContentFolderId}/structured-content-folders":
         get:
             description:
