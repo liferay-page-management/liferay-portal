@@ -72,6 +72,7 @@ const PageContentList = ({pageContents, type}) => (
 					key={`${
 						pageContent.classPK || pageContent.externalReferenceCode
 					}${index}`}
+					type={type}
 					{...pageContent}
 				/>
 			)

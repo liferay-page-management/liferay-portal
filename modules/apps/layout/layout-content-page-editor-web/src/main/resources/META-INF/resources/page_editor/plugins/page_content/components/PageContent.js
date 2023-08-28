@@ -46,6 +46,7 @@ export default function PageContent({
 	isRestricted = false,
 	subtype,
 	title,
+	type,
 }) {
 	const [activeActions, setActiveActions] = useState(false);
 	const editableProcessorUniqueId = useEditableProcessorUniqueId();
@@ -67,6 +68,8 @@ export default function PageContent({
 		() => editableId === fromControlsId(editableProcessorUniqueId),
 		[editableId, editableProcessorUniqueId]
 	);
+
+	const isDocument = type === Liferay.Language.get('document');
 
 	const dropdownItems = useSelectorCallback(
 		(state) => {
@@ -184,6 +187,10 @@ export default function PageContent({
 	};
 
 	const handleMouseOver = () => {
+		if (isDocument) {
+			return;
+		}
+
 		setIsHovered(true);
 
 		if (editableId) {
