@@ -6,10 +6,13 @@
 package com.liferay.headless.site.internal.resource.v1_0;
 
 import com.liferay.headless.site.dto.v1_0.Site;
+import com.liferay.headless.site.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.headless.site.resource.v1_0.SiteResource;
 import com.liferay.portal.events.ServicePreAction;
 import com.liferay.portal.events.ThemeServicePreAction;
 import com.liferay.portal.kernel.change.tracking.CTAware;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
@@ -21,16 +24,21 @@ import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.permission.GroupPermission;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.liveusers.LiveUsers;
 import com.liferay.portal.security.permission.PermissionCacheUtil;
 import com.liferay.portal.vulcan.multipart.MultipartBody;
+import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.site.initializer.SiteInitializer;
 import com.liferay.site.initializer.SiteInitializerFactory;
 import com.liferay.site.initializer.SiteInitializerRegistry;
@@ -39,9 +47,13 @@ import com.liferay.sites.kernel.util.Sites;
 import java.io.File;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+
+import javax.validation.ValidationException;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -49,6 +61,7 @@ import org.osgi.service.component.annotations.ServiceScope;
 
 /**
  * @author Rubén Pulido
+ * @author Petteri Karttunen
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/site.properties",
@@ -56,6 +69,63 @@ import org.osgi.service.component.annotations.ServiceScope;
 )
 @CTAware
 public class SiteResourceImpl extends BaseSiteResourceImpl {
+
+	@Override
+	public Site getSite(Long siteId) throws Exception {
+		return _toSite(_groupService.getGroup(siteId));
+	}
+
+	@Override
+	public Site getSiteByExternalReferenceCode(String externalReferenceCode)
+		throws Exception {
+
+		Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
+			externalReferenceCode, contextCompany.getCompanyId());
+
+		if (group == null) {
+			throw new ValidationException(
+				"No site exists with externalReferenceCode " +
+					externalReferenceCode);
+		}
+
+		return _toSiteWithPermissionCheck(group);
+	}
+
+	@Override
+	public Site getSiteByFriendlyUrlPath(String url) throws Exception {
+		Group group = _groupLocalService.fetchFriendlyURLGroup(
+			contextCompany.getCompanyId(), "/" + url);
+
+		if (group == null) {
+			throw new ValidationException(
+				"No site exists with friendly URL " + url);
+		}
+
+		return _toSiteWithPermissionCheck(group);
+	}
+
+	@Override
+	public Page<Site> getSitesPage(Pagination pagination) throws Exception {
+		List<Group> groups = _groupService.getUserSitesGroups(
+			contextUser.getUserId(), new String[] {Group.class.getName()},
+			QueryUtil.ALL_POS);
+
+		int start = pagination.getStartPosition();
+
+		if (start >= groups.size()) {
+			start = groups.size() - 1;
+		}
+
+		int end = pagination.getEndPosition();
+
+		if (end > groups.size()) {
+			end = groups.size();
+		}
+
+		return Page.of(
+			transform(groups.subList(start, end), this::_toSite), pagination,
+			groups.size());
+	}
 
 	@Override
 	public Site postSite(Site site) throws Exception {
@@ -300,6 +370,54 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 			contextHttpServletRequest, contextHttpServletResponse);
 	}
 
+	private Site _toSite(Group group) throws Exception {
+		return new Site() {
+			{
+				Set<Locale> availableLocales = _language.getAvailableLocales(
+					group.getGroupId());
+
+				availableLanguages = LocaleUtil.toW3cLanguageIds(
+					availableLocales.toArray(new Locale[0]));
+
+				creator = CreatorUtil.toCreator(
+					_portal,
+					_userLocalService.fetchUser(group.getCreatorUserId()));
+				description = group.getDescription(
+					contextAcceptLanguage.getPreferredLocale());
+				description_i18n = LocalizedMapUtil.getI18nMap(
+					contextAcceptLanguage.isAcceptAllLanguages(),
+					group.getDescriptionMap());
+				descriptiveName = group.getDescriptiveName(
+					contextAcceptLanguage.getPreferredLocale());
+				descriptiveName_i18n = LocalizedMapUtil.getI18nMap(
+					contextAcceptLanguage.isAcceptAllLanguages(),
+					group.getDescriptiveNameMap());
+				externalReferenceCode = group.getExternalReferenceCode();
+				friendlyUrlPath = group.getFriendlyURL();
+				id = group.getGroupId();
+				key = group.getGroupKey();
+				name = group.getName(
+					contextAcceptLanguage.getPreferredLocale());
+				name_i18n = LocalizedMapUtil.getI18nMap(
+					contextAcceptLanguage.isAcceptAllLanguages(),
+					group.getNameMap());
+				parentSiteId = group.getParentGroupId();
+				sites = transformToArray(
+					_groupService.getGroups(
+						group.getCompanyId(), group.getGroupId(), true),
+					SiteResourceImpl.this::_toSite, Site.class);
+			}
+		};
+	}
+
+	private Site _toSiteWithPermissionCheck(Group group) throws Exception {
+		_groupPermission.check(
+			PermissionThreadLocal.getPermissionChecker(), group,
+			ActionKeys.VIEW);
+
+		return _toSite(group);
+	}
+
 	@Reference
 	private GroupLocalService _groupLocalService;
 
@@ -310,7 +428,13 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 	private GroupService _groupService;
 
 	@Reference
+	private Language _language;
+
+	@Reference
 	private LayoutSetPrototypeLocalService _layoutSetPrototypeLocalService;
+
+	@Reference
+	private Portal _portal;
 
 	@Reference
 	private SiteInitializerFactory _siteInitializerFactory;
@@ -320,5 +444,8 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 
 	@Reference
 	private Sites _sites;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }
