@@ -10,6 +10,7 @@ import com.liferay.headless.site.client.serdes.v1_0.SiteSerDes;
 
 import java.io.Serializable;
 
+import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Generated;
@@ -24,6 +25,136 @@ public class Site implements Cloneable, Serializable {
 	public static Site toDTO(String json) {
 		return SiteSerDes.toDTO(json);
 	}
+
+	public String[] getAvailableLanguages() {
+		return availableLanguages;
+	}
+
+	public void setAvailableLanguages(String[] availableLanguages) {
+		this.availableLanguages = availableLanguages;
+	}
+
+	public void setAvailableLanguages(
+		UnsafeSupplier<String[], Exception> availableLanguagesUnsafeSupplier) {
+
+		try {
+			availableLanguages = availableLanguagesUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String[] availableLanguages;
+
+	public Creator getCreator() {
+		return creator;
+	}
+
+	public void setCreator(Creator creator) {
+		this.creator = creator;
+	}
+
+	public void setCreator(
+		UnsafeSupplier<Creator, Exception> creatorUnsafeSupplier) {
+
+		try {
+			creator = creatorUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Creator creator;
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setDescription(
+		UnsafeSupplier<String, Exception> descriptionUnsafeSupplier) {
+
+		try {
+			description = descriptionUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String description;
+
+	public Map<String, String> getDescription_i18n() {
+		return description_i18n;
+	}
+
+	public void setDescription_i18n(Map<String, String> description_i18n) {
+		this.description_i18n = description_i18n;
+	}
+
+	public void setDescription_i18n(
+		UnsafeSupplier<Map<String, String>, Exception>
+			description_i18nUnsafeSupplier) {
+
+		try {
+			description_i18n = description_i18nUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Map<String, String> description_i18n;
+
+	public String getDescriptiveName() {
+		return descriptiveName;
+	}
+
+	public void setDescriptiveName(String descriptiveName) {
+		this.descriptiveName = descriptiveName;
+	}
+
+	public void setDescriptiveName(
+		UnsafeSupplier<String, Exception> descriptiveNameUnsafeSupplier) {
+
+		try {
+			descriptiveName = descriptiveNameUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String descriptiveName;
+
+	public Map<String, String> getDescriptiveName_i18n() {
+		return descriptiveName_i18n;
+	}
+
+	public void setDescriptiveName_i18n(
+		Map<String, String> descriptiveName_i18n) {
+
+		this.descriptiveName_i18n = descriptiveName_i18n;
+	}
+
+	public void setDescriptiveName_i18n(
+		UnsafeSupplier<Map<String, String>, Exception>
+			descriptiveName_i18nUnsafeSupplier) {
+
+		try {
+			descriptiveName_i18n = descriptiveName_i18nUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Map<String, String> descriptiveName_i18n;
 
 	public String getExternalReferenceCode() {
 		return externalReferenceCode;
@@ -154,6 +285,49 @@ public class Site implements Cloneable, Serializable {
 
 	protected String name;
 
+	public Map<String, String> getName_i18n() {
+		return name_i18n;
+	}
+
+	public void setName_i18n(Map<String, String> name_i18n) {
+		this.name_i18n = name_i18n;
+	}
+
+	public void setName_i18n(
+		UnsafeSupplier<Map<String, String>, Exception>
+			name_i18nUnsafeSupplier) {
+
+		try {
+			name_i18n = name_i18nUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Map<String, String> name_i18n;
+
+	public Long getParentSiteId() {
+		return parentSiteId;
+	}
+
+	public void setParentSiteId(Long parentSiteId) {
+		this.parentSiteId = parentSiteId;
+	}
+
+	public void setParentSiteId(
+		UnsafeSupplier<Long, Exception> parentSiteIdUnsafeSupplier) {
+
+		try {
+			parentSiteId = parentSiteIdUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Long parentSiteId;
+
 	public String getParentSiteKey() {
 		return parentSiteKey;
 	}
@@ -174,6 +348,27 @@ public class Site implements Cloneable, Serializable {
 	}
 
 	protected String parentSiteKey;
+
+	public Site[] getSites() {
+		return sites;
+	}
+
+	public void setSites(Site[] sites) {
+		this.sites = sites;
+	}
+
+	public void setSites(
+		UnsafeSupplier<Site[], Exception> sitesUnsafeSupplier) {
+
+		try {
+			sites = sitesUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Site[] sites;
 
 	public String getTemplateKey() {
 		return templateKey;

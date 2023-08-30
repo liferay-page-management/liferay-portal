@@ -44,6 +44,88 @@ public class SiteSerDes {
 
 		sb.append("{");
 
+		if (site.getAvailableLanguages() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"availableLanguages\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < site.getAvailableLanguages().length; i++) {
+				sb.append("\"");
+
+				sb.append(_escape(site.getAvailableLanguages()[i]));
+
+				sb.append("\"");
+
+				if ((i + 1) < site.getAvailableLanguages().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
+		if (site.getCreator() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"creator\": ");
+
+			sb.append(String.valueOf(site.getCreator()));
+		}
+
+		if (site.getDescription() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"description\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(site.getDescription()));
+
+			sb.append("\"");
+		}
+
+		if (site.getDescription_i18n() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"description_i18n\": ");
+
+			sb.append(_toJSON(site.getDescription_i18n()));
+		}
+
+		if (site.getDescriptiveName() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"descriptiveName\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(site.getDescriptiveName()));
+
+			sb.append("\"");
+		}
+
+		if (site.getDescriptiveName_i18n() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"descriptiveName_i18n\": ");
+
+			sb.append(_toJSON(site.getDescriptiveName_i18n()));
+		}
+
 		if (site.getExternalReferenceCode() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -124,6 +206,26 @@ public class SiteSerDes {
 			sb.append("\"");
 		}
 
+		if (site.getName_i18n() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"name_i18n\": ");
+
+			sb.append(_toJSON(site.getName_i18n()));
+		}
+
+		if (site.getParentSiteId() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"parentSiteId\": ");
+
+			sb.append(site.getParentSiteId());
+		}
+
 		if (site.getParentSiteKey() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -136,6 +238,26 @@ public class SiteSerDes {
 			sb.append(_escape(site.getParentSiteKey()));
 
 			sb.append("\"");
+		}
+
+		if (site.getSites() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"sites\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < site.getSites().length; i++) {
+				sb.append(String.valueOf(site.getSites()[i]));
+
+				if ((i + 1) < site.getSites().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
 		}
 
 		if (site.getTemplateKey() != null) {
@@ -184,6 +306,54 @@ public class SiteSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
+		if (site.getAvailableLanguages() == null) {
+			map.put("availableLanguages", null);
+		}
+		else {
+			map.put(
+				"availableLanguages",
+				String.valueOf(site.getAvailableLanguages()));
+		}
+
+		if (site.getCreator() == null) {
+			map.put("creator", null);
+		}
+		else {
+			map.put("creator", String.valueOf(site.getCreator()));
+		}
+
+		if (site.getDescription() == null) {
+			map.put("description", null);
+		}
+		else {
+			map.put("description", String.valueOf(site.getDescription()));
+		}
+
+		if (site.getDescription_i18n() == null) {
+			map.put("description_i18n", null);
+		}
+		else {
+			map.put(
+				"description_i18n", String.valueOf(site.getDescription_i18n()));
+		}
+
+		if (site.getDescriptiveName() == null) {
+			map.put("descriptiveName", null);
+		}
+		else {
+			map.put(
+				"descriptiveName", String.valueOf(site.getDescriptiveName()));
+		}
+
+		if (site.getDescriptiveName_i18n() == null) {
+			map.put("descriptiveName_i18n", null);
+		}
+		else {
+			map.put(
+				"descriptiveName_i18n",
+				String.valueOf(site.getDescriptiveName_i18n()));
+		}
+
 		if (site.getExternalReferenceCode() == null) {
 			map.put("externalReferenceCode", null);
 		}
@@ -229,11 +399,32 @@ public class SiteSerDes {
 			map.put("name", String.valueOf(site.getName()));
 		}
 
+		if (site.getName_i18n() == null) {
+			map.put("name_i18n", null);
+		}
+		else {
+			map.put("name_i18n", String.valueOf(site.getName_i18n()));
+		}
+
+		if (site.getParentSiteId() == null) {
+			map.put("parentSiteId", null);
+		}
+		else {
+			map.put("parentSiteId", String.valueOf(site.getParentSiteId()));
+		}
+
 		if (site.getParentSiteKey() == null) {
 			map.put("parentSiteKey", null);
 		}
 		else {
 			map.put("parentSiteKey", String.valueOf(site.getParentSiteKey()));
+		}
+
+		if (site.getSites() == null) {
+			map.put("sites", null);
+		}
+		else {
+			map.put("sites", String.valueOf(site.getSites()));
 		}
 
 		if (site.getTemplateKey() == null) {
@@ -270,7 +461,45 @@ public class SiteSerDes {
 			Site site, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "externalReferenceCode")) {
+			if (Objects.equals(jsonParserFieldName, "availableLanguages")) {
+				if (jsonParserFieldValue != null) {
+					site.setAvailableLanguages(
+						toStrings((Object[])jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "creator")) {
+				if (jsonParserFieldValue != null) {
+					site.setCreator(
+						CreatorSerDes.toDTO((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "description")) {
+				if (jsonParserFieldValue != null) {
+					site.setDescription((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "description_i18n")) {
+				if (jsonParserFieldValue != null) {
+					site.setDescription_i18n(
+						(Map)SiteSerDes.toMap((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "descriptiveName")) {
+				if (jsonParserFieldValue != null) {
+					site.setDescriptiveName((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "descriptiveName_i18n")) {
+
+				if (jsonParserFieldValue != null) {
+					site.setDescriptiveName_i18n(
+						(Map)SiteSerDes.toMap((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "externalReferenceCode")) {
+
 				if (jsonParserFieldValue != null) {
 					site.setExternalReferenceCode((String)jsonParserFieldValue);
 				}
@@ -302,9 +531,36 @@ public class SiteSerDes {
 					site.setName((String)jsonParserFieldValue);
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "name_i18n")) {
+				if (jsonParserFieldValue != null) {
+					site.setName_i18n(
+						(Map)SiteSerDes.toMap((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "parentSiteId")) {
+				if (jsonParserFieldValue != null) {
+					site.setParentSiteId(
+						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
 			else if (Objects.equals(jsonParserFieldName, "parentSiteKey")) {
 				if (jsonParserFieldValue != null) {
 					site.setParentSiteKey((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "sites")) {
+				if (jsonParserFieldValue != null) {
+					Object[] jsonParserFieldValues =
+						(Object[])jsonParserFieldValue;
+
+					Site[] sitesArray = new Site[jsonParserFieldValues.length];
+
+					for (int i = 0; i < sitesArray.length; i++) {
+						sitesArray[i] = SiteSerDes.toDTO(
+							(String)jsonParserFieldValues[i]);
+					}
+
+					site.setSites(sitesArray);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "templateKey")) {

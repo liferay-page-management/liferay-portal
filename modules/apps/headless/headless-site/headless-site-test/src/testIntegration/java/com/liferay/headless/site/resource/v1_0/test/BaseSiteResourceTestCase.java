@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.liferay.headless.site.client.dto.v1_0.Site;
 import com.liferay.headless.site.client.http.HttpInvoker;
 import com.liferay.headless.site.client.pagination.Page;
+import com.liferay.headless.site.client.pagination.Pagination;
 import com.liferay.headless.site.client.resource.v1_0.SiteResource;
 import com.liferay.headless.site.client.serdes.v1_0.SiteSerDes;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -32,6 +33,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.odata.entity.EntityField;
@@ -171,6 +173,8 @@ public abstract class BaseSiteResourceTestCase {
 
 		Site site = randomSite();
 
+		site.setDescription(regex);
+		site.setDescriptiveName(regex);
 		site.setExternalReferenceCode(regex);
 		site.setFriendlyUrlPath(regex);
 		site.setKey(regex);
@@ -184,12 +188,83 @@ public abstract class BaseSiteResourceTestCase {
 
 		site = SiteSerDes.toDTO(json);
 
+		Assert.assertEquals(regex, site.getDescription());
+		Assert.assertEquals(regex, site.getDescriptiveName());
 		Assert.assertEquals(regex, site.getExternalReferenceCode());
 		Assert.assertEquals(regex, site.getFriendlyUrlPath());
 		Assert.assertEquals(regex, site.getKey());
 		Assert.assertEquals(regex, site.getName());
 		Assert.assertEquals(regex, site.getParentSiteKey());
 		Assert.assertEquals(regex, site.getTemplateKey());
+	}
+
+	@Test
+	public void testGetSitesPage() throws Exception {
+		Page<Site> page = siteResource.getSitesPage(Pagination.of(1, 10));
+
+		long totalCount = page.getTotalCount();
+
+		Site site1 = testGetSitesPage_addSite(randomSite());
+
+		Site site2 = testGetSitesPage_addSite(randomSite());
+
+		page = siteResource.getSitesPage(Pagination.of(1, 10));
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(site1, (List<Site>)page.getItems());
+		assertContains(site2, (List<Site>)page.getItems());
+		assertValid(page, testGetSitesPage_getExpectedActions());
+	}
+
+	protected Map<String, Map<String, String>>
+			testGetSitesPage_getExpectedActions()
+		throws Exception {
+
+		Map<String, Map<String, String>> expectedActions = new HashMap<>();
+
+		return expectedActions;
+	}
+
+	@Test
+	public void testGetSitesPageWithPagination() throws Exception {
+		Page<Site> totalPage = siteResource.getSitesPage(null);
+
+		int totalCount = GetterUtil.getInteger(totalPage.getTotalCount());
+
+		Site site1 = testGetSitesPage_addSite(randomSite());
+
+		Site site2 = testGetSitesPage_addSite(randomSite());
+
+		Site site3 = testGetSitesPage_addSite(randomSite());
+
+		Page<Site> page1 = siteResource.getSitesPage(
+			Pagination.of(1, totalCount + 2));
+
+		List<Site> sites1 = (List<Site>)page1.getItems();
+
+		Assert.assertEquals(sites1.toString(), totalCount + 2, sites1.size());
+
+		Page<Site> page2 = siteResource.getSitesPage(
+			Pagination.of(2, totalCount + 2));
+
+		Assert.assertEquals(totalCount + 3, page2.getTotalCount());
+
+		List<Site> sites2 = (List<Site>)page2.getItems();
+
+		Assert.assertEquals(sites2.toString(), 1, sites2.size());
+
+		Page<Site> page3 = siteResource.getSitesPage(
+			Pagination.of(1, totalCount + 3));
+
+		assertContains(site1, (List<Site>)page3.getItems());
+		assertContains(site2, (List<Site>)page3.getItems());
+		assertContains(site3, (List<Site>)page3.getItems());
+	}
+
+	protected Site testGetSitesPage_addSite(Site site) throws Exception {
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -208,6 +283,24 @@ public abstract class BaseSiteResourceTestCase {
 	}
 
 	@Test
+	public void testGetSiteByExternalReferenceCode() throws Exception {
+		Site postSite = testGetSiteByExternalReferenceCode_addSite();
+
+		Site getSite = siteResource.getSiteByExternalReferenceCode(
+			postSite.getExternalReferenceCode());
+
+		assertEquals(postSite, getSite);
+		assertValid(getSite);
+	}
+
+	protected Site testGetSiteByExternalReferenceCode_addSite()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testPutSiteByExternalReferenceCode() throws Exception {
 		Site postSite = testPutSiteByExternalReferenceCode_addSite();
 
@@ -221,7 +314,7 @@ public abstract class BaseSiteResourceTestCase {
 		assertEquals(randomSite, putSite);
 		assertValid(putSite);
 
-		Site getSite = testPutSiteByExternalReferenceCode_getSite(
+		Site getSite = siteResource.getSiteByExternalReferenceCode(
 			putSite.getExternalReferenceCode());
 
 		assertEquals(randomSite, getSite);
@@ -237,7 +330,7 @@ public abstract class BaseSiteResourceTestCase {
 		assertEquals(newSite, putSite);
 		assertValid(putSite);
 
-		getSite = testPutSiteByExternalReferenceCode_getSite(
+		getSite = siteResource.getSiteByExternalReferenceCode(
 			putSite.getExternalReferenceCode());
 
 		assertEquals(newSite, getSite);
@@ -245,13 +338,6 @@ public abstract class BaseSiteResourceTestCase {
 		Assert.assertEquals(
 			newSite.getExternalReferenceCode(),
 			putSite.getExternalReferenceCode());
-	}
-
-	protected Site testPutSiteByExternalReferenceCode_getSite(
-		String externalReferenceCode) {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
 	}
 
 	protected Site testPutSiteByExternalReferenceCode_createSite()
@@ -263,6 +349,37 @@ public abstract class BaseSiteResourceTestCase {
 	protected Site testPutSiteByExternalReferenceCode_addSite()
 		throws Exception {
 
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGetSiteByFriendlyUrlPath() throws Exception {
+		Site postSite = testGetSiteByFriendlyUrlPath_addSite();
+
+		Site getSite = siteResource.getSiteByFriendlyUrlPath(
+			postSite.getFriendlyUrlPath());
+
+		assertEquals(postSite, getSite);
+		assertValid(getSite);
+	}
+
+	protected Site testGetSiteByFriendlyUrlPath_addSite() throws Exception {
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGetSite() throws Exception {
+		Site postSite = testGetSite_addSite();
+
+		Site getSite = siteResource.getSite(postSite.getId());
+
+		assertEquals(postSite, getSite);
+		assertValid(getSite);
+	}
+
+	protected Site testGetSite_addSite() throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
@@ -341,6 +458,58 @@ public abstract class BaseSiteResourceTestCase {
 				getAdditionalAssertFieldNames()) {
 
 			if (Objects.equals(
+					"availableLanguages", additionalAssertFieldName)) {
+
+				if (site.getAvailableLanguages() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("creator", additionalAssertFieldName)) {
+				if (site.getCreator() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("description", additionalAssertFieldName)) {
+				if (site.getDescription() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("description_i18n", additionalAssertFieldName)) {
+				if (site.getDescription_i18n() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("descriptiveName", additionalAssertFieldName)) {
+				if (site.getDescriptiveName() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"descriptiveName_i18n", additionalAssertFieldName)) {
+
+				if (site.getDescriptiveName_i18n() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"externalReferenceCode", additionalAssertFieldName)) {
 
 				if (site.getExternalReferenceCode() == null) {
@@ -382,8 +551,32 @@ public abstract class BaseSiteResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("name_i18n", additionalAssertFieldName)) {
+				if (site.getName_i18n() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("parentSiteId", additionalAssertFieldName)) {
+				if (site.getParentSiteId() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("parentSiteKey", additionalAssertFieldName)) {
 				if (site.getParentSiteKey() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("sites", additionalAssertFieldName)) {
+				if (site.getSites() == null) {
 					valid = false;
 				}
 
@@ -529,6 +722,74 @@ public abstract class BaseSiteResourceTestCase {
 				getAdditionalAssertFieldNames()) {
 
 			if (Objects.equals(
+					"availableLanguages", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						site1.getAvailableLanguages(),
+						site2.getAvailableLanguages())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("creator", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						site1.getCreator(), site2.getCreator())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("description", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						site1.getDescription(), site2.getDescription())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("description_i18n", additionalAssertFieldName)) {
+				if (!equals(
+						(Map)site1.getDescription_i18n(),
+						(Map)site2.getDescription_i18n())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("descriptiveName", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						site1.getDescriptiveName(),
+						site2.getDescriptiveName())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"descriptiveName_i18n", additionalAssertFieldName)) {
+
+				if (!equals(
+						(Map)site1.getDescriptiveName_i18n(),
+						(Map)site2.getDescriptiveName_i18n())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"externalReferenceCode", additionalAssertFieldName)) {
 
 				if (!Objects.deepEquals(
@@ -586,10 +847,38 @@ public abstract class BaseSiteResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("name_i18n", additionalAssertFieldName)) {
+				if (!equals(
+						(Map)site1.getName_i18n(), (Map)site2.getName_i18n())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("parentSiteId", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						site1.getParentSiteId(), site2.getParentSiteId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("parentSiteKey", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						site1.getParentSiteKey(), site2.getParentSiteKey())) {
 
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("sites", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(site1.getSites(), site2.getSites())) {
 					return false;
 				}
 
@@ -718,6 +1007,118 @@ public abstract class BaseSiteResourceTestCase {
 		sb.append(" ");
 		sb.append(operator);
 		sb.append(" ");
+
+		if (entityFieldName.equals("availableLanguages")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("creator")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("description")) {
+			Object object = site.getDescription();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("description_i18n")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("descriptiveName")) {
+			Object object = site.getDescriptiveName();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("descriptiveName_i18n")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
 
 		if (entityFieldName.equals("externalReferenceCode")) {
 			Object object = site.getExternalReferenceCode();
@@ -913,6 +1314,16 @@ public abstract class BaseSiteResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("name_i18n")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("parentSiteId")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("parentSiteKey")) {
 			Object object = site.getParentSiteKey();
 
@@ -957,6 +1368,11 @@ public abstract class BaseSiteResourceTestCase {
 			}
 
 			return sb.toString();
+		}
+
+		if (entityFieldName.equals("sites")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
 		}
 
 		if (entityFieldName.equals("templateKey")) {
@@ -1059,6 +1475,10 @@ public abstract class BaseSiteResourceTestCase {
 	protected Site randomSite() throws Exception {
 		return new Site() {
 			{
+				description = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				descriptiveName = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				externalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				friendlyUrlPath = StringUtil.toLowerCase(
@@ -1066,6 +1486,7 @@ public abstract class BaseSiteResourceTestCase {
 				id = RandomTestUtil.randomLong();
 				key = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				parentSiteId = RandomTestUtil.randomLong();
 				parentSiteKey = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				templateKey = StringUtil.toLowerCase(

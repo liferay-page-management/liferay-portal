@@ -39,12 +39,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @generated
  */
 @Generated("")
-@GraphQLName(description = "Represents the site being created.", value = "Site")
+@GraphQLName(description = "Represents the site.", value = "Site")
 @JsonFilter("Liferay.Vulcan")
-@Schema(
-	description = "Represents the site being created.",
-	requiredProperties = {"name"}
-)
+@Schema(description = "Represents the site.", requiredProperties = {"name"})
 @XmlRootElement(name = "Site")
 public class Site implements Serializable {
 
@@ -55,6 +52,181 @@ public class Site implements Serializable {
 	public static Site unsafeToDTO(String json) {
 		return ObjectMapperUtil.unsafeReadValue(Site.class, json);
 	}
+
+	@Schema
+	public String[] getAvailableLanguages() {
+		return availableLanguages;
+	}
+
+	public void setAvailableLanguages(String[] availableLanguages) {
+		this.availableLanguages = availableLanguages;
+	}
+
+	@JsonIgnore
+	public void setAvailableLanguages(
+		UnsafeSupplier<String[], Exception> availableLanguagesUnsafeSupplier) {
+
+		try {
+			availableLanguages = availableLanguagesUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String[] availableLanguages;
+
+	@Schema
+	@Valid
+	public Creator getCreator() {
+		return creator;
+	}
+
+	public void setCreator(Creator creator) {
+		this.creator = creator;
+	}
+
+	@JsonIgnore
+	public void setCreator(
+		UnsafeSupplier<Creator, Exception> creatorUnsafeSupplier) {
+
+		try {
+			creator = creatorUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Creator creator;
+
+	@Schema
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	@JsonIgnore
+	public void setDescription(
+		UnsafeSupplier<String, Exception> descriptionUnsafeSupplier) {
+
+		try {
+			description = descriptionUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String description;
+
+	@Schema
+	@Valid
+	public Map<String, String> getDescription_i18n() {
+		return description_i18n;
+	}
+
+	public void setDescription_i18n(Map<String, String> description_i18n) {
+		this.description_i18n = description_i18n;
+	}
+
+	@JsonIgnore
+	public void setDescription_i18n(
+		UnsafeSupplier<Map<String, String>, Exception>
+			description_i18nUnsafeSupplier) {
+
+		try {
+			description_i18n = description_i18nUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Map<String, String> description_i18n;
+
+	@Schema
+	public String getDescriptiveName() {
+		return descriptiveName;
+	}
+
+	public void setDescriptiveName(String descriptiveName) {
+		this.descriptiveName = descriptiveName;
+	}
+
+	@JsonIgnore
+	public void setDescriptiveName(
+		UnsafeSupplier<String, Exception> descriptiveNameUnsafeSupplier) {
+
+		try {
+			descriptiveName = descriptiveNameUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String descriptiveName;
+
+	@Schema
+	@Valid
+	public Map<String, String> getDescriptiveName_i18n() {
+		return descriptiveName_i18n;
+	}
+
+	public void setDescriptiveName_i18n(
+		Map<String, String> descriptiveName_i18n) {
+
+		this.descriptiveName_i18n = descriptiveName_i18n;
+	}
+
+	@JsonIgnore
+	public void setDescriptiveName_i18n(
+		UnsafeSupplier<Map<String, String>, Exception>
+			descriptiveName_i18nUnsafeSupplier) {
+
+		try {
+			descriptiveName_i18n = descriptiveName_i18nUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Map<String, String> descriptiveName_i18n;
 
 	@Schema(description = "The site's external reference code.")
 	public String getExternalReferenceCode() {
@@ -231,6 +403,64 @@ public class Site implements Serializable {
 	protected String name;
 
 	@Schema
+	@Valid
+	public Map<String, String> getName_i18n() {
+		return name_i18n;
+	}
+
+	public void setName_i18n(Map<String, String> name_i18n) {
+		this.name_i18n = name_i18n;
+	}
+
+	@JsonIgnore
+	public void setName_i18n(
+		UnsafeSupplier<Map<String, String>, Exception>
+			name_i18nUnsafeSupplier) {
+
+		try {
+			name_i18n = name_i18nUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Map<String, String> name_i18n;
+
+	@Schema
+	public Long getParentSiteId() {
+		return parentSiteId;
+	}
+
+	public void setParentSiteId(Long parentSiteId) {
+		this.parentSiteId = parentSiteId;
+	}
+
+	@JsonIgnore
+	public void setParentSiteId(
+		UnsafeSupplier<Long, Exception> parentSiteIdUnsafeSupplier) {
+
+		try {
+			parentSiteId = parentSiteIdUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Long parentSiteId;
+
+	@Schema
 	public String getParentSiteKey() {
 		return parentSiteKey;
 	}
@@ -257,6 +487,35 @@ public class Site implements Serializable {
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	protected String parentSiteKey;
+
+	@Schema
+	@Valid
+	public Site[] getSites() {
+		return sites;
+	}
+
+	public void setSites(Site[] sites) {
+		this.sites = sites;
+	}
+
+	@JsonIgnore
+	public void setSites(
+		UnsafeSupplier<Site[], Exception> sitesUnsafeSupplier) {
+
+		try {
+			sites = sitesUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Site[] sites;
 
 	@Schema
 	public String getTemplateKey() {
@@ -351,6 +610,88 @@ public class Site implements Serializable {
 
 		sb.append("{");
 
+		if (availableLanguages != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"availableLanguages\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < availableLanguages.length; i++) {
+				sb.append("\"");
+
+				sb.append(_escape(availableLanguages[i]));
+
+				sb.append("\"");
+
+				if ((i + 1) < availableLanguages.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
+		if (creator != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"creator\": ");
+
+			sb.append(String.valueOf(creator));
+		}
+
+		if (description != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"description\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(description));
+
+			sb.append("\"");
+		}
+
+		if (description_i18n != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"description_i18n\": ");
+
+			sb.append(_toJSON(description_i18n));
+		}
+
+		if (descriptiveName != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"descriptiveName\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(descriptiveName));
+
+			sb.append("\"");
+		}
+
+		if (descriptiveName_i18n != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"descriptiveName_i18n\": ");
+
+			sb.append(_toJSON(descriptiveName_i18n));
+		}
+
 		if (externalReferenceCode != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -431,6 +772,26 @@ public class Site implements Serializable {
 			sb.append("\"");
 		}
 
+		if (name_i18n != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"name_i18n\": ");
+
+			sb.append(_toJSON(name_i18n));
+		}
+
+		if (parentSiteId != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"parentSiteId\": ");
+
+			sb.append(parentSiteId);
+		}
+
 		if (parentSiteKey != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -443,6 +804,26 @@ public class Site implements Serializable {
 			sb.append(_escape(parentSiteKey));
 
 			sb.append("\"");
+		}
+
+		if (sites != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"sites\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < sites.length; i++) {
+				sb.append(String.valueOf(sites[i]));
+
+				if ((i + 1) < sites.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
 		}
 
 		if (templateKey != null) {

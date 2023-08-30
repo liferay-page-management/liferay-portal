@@ -22,9 +22,12 @@ import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.multipart.MultipartBody;
+import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.ActionUtil;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +49,38 @@ public abstract class BaseSiteResourceImpl implements SiteResource {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-site/v1.0/sites' -d $'{"externalReferenceCode": ___, "membershipType": ___, "name": ___, "parentSiteKey": ___, "templateKey": ___, "templateType": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'GET' 'http://localhost:8080/o/headless-site/v1.0/sites'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "page"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "pageSize"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Site")}
+	)
+	@javax.ws.rs.GET
+	@javax.ws.rs.Path("/sites")
+	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public Page<Site> getSitesPage(
+			@javax.ws.rs.core.Context Pagination pagination)
+		throws Exception {
+
+		return Page.of(Collections.emptyList());
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-site/v1.0/sites' -d $'{"availableLanguages": ___, "creator": ___, "description": ___, "description_i18n": ___, "descriptiveName": ___, "descriptiveName_i18n": ___, "externalReferenceCode": ___, "membershipType": ___, "name": ___, "name_i18n": ___, "parentSiteId": ___, "parentSiteKey": ___, "sites": ___, "templateKey": ___, "templateType": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(description = "Adds a new site")
 	@io.swagger.v3.oas.annotations.tags.Tags(
@@ -58,6 +92,38 @@ public abstract class BaseSiteResourceImpl implements SiteResource {
 	@javax.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Site postSite(Site site) throws Exception {
+		return new Site();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'GET' 'http://localhost:8080/o/headless-site/v1.0/sites/by-external-reference-code/{externalReferenceCode}'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "externalReferenceCode"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Site")}
+	)
+	@javax.ws.rs.GET
+	@javax.ws.rs.Path(
+		"/sites/by-external-reference-code/{externalReferenceCode}"
+	)
+	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public Site getSiteByExternalReferenceCode(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@javax.validation.constraints.NotNull
+			@javax.ws.rs.PathParam("externalReferenceCode")
+			String externalReferenceCode)
+		throws Exception {
+
 		return new Site();
 	}
 
@@ -93,6 +159,66 @@ public abstract class BaseSiteResourceImpl implements SiteResource {
 			@javax.ws.rs.PathParam("externalReferenceCode")
 			String externalReferenceCode,
 			MultipartBody multipartBody)
+		throws Exception {
+
+		return new Site();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'GET' 'http://localhost:8080/o/headless-site/v1.0/sites/by-friendly-url-path/{friendlyUrlPath}'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "friendlyUrlPath"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Site")}
+	)
+	@javax.ws.rs.GET
+	@javax.ws.rs.Path("/sites/by-friendly-url-path/{friendlyUrlPath: .+}")
+	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public Site getSiteByFriendlyUrlPath(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@javax.validation.constraints.NotNull
+			@javax.ws.rs.PathParam("friendlyUrlPath")
+			String friendlyUrlPath)
+		throws Exception {
+
+		return new Site();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'GET' 'http://localhost:8080/o/headless-site/v1.0/sites/{siteId}'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "siteId"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Site")}
+	)
+	@javax.ws.rs.GET
+	@javax.ws.rs.Path("/sites/{siteId}")
+	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public Site getSite(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@javax.validation.constraints.NotNull
+			@javax.ws.rs.PathParam("siteId")
+			Long siteId)
 		throws Exception {
 
 		return new Site();

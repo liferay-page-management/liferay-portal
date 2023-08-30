@@ -17,6 +17,8 @@ import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.multipart.MultipartBody;
+import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.util.Collections;
 import java.util.List;
@@ -44,11 +46,21 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface SiteResource {
 
+	public Page<Site> getSitesPage(Pagination pagination) throws Exception;
+
 	public Site postSite(Site site) throws Exception;
+
+	public Site getSiteByExternalReferenceCode(String externalReferenceCode)
+		throws Exception;
 
 	public Site putSiteByExternalReferenceCode(
 			String externalReferenceCode, MultipartBody multipartBody)
 		throws Exception;
+
+	public Site getSiteByFriendlyUrlPath(String friendlyUrlPath)
+		throws Exception;
+
+	public Site getSite(Long siteId) throws Exception;
 
 	public default void setContextAcceptLanguage(
 		AcceptLanguage contextAcceptLanguage) {
