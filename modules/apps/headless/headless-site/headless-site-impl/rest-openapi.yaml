@@ -1,10 +1,78 @@
 components:
     schemas:
+        Creator:
+            description:
+                Represents the user who created/authored the content. Properties follow the
+                [creator](https://schema.org/creator) specification.
+            properties:
+                additionalName:
+                    description:
+                        The user's additional name, which can be used as a middle name.
+                    readOnly: true
+                    type: string
+                contentType:
+                    # @review
+                    description:
+                        The type of the content.
+                    readOnly: true
+                    type: string
+                familyName:
+                    description:
+                        The user's surname (last name).
+                    readOnly: true
+                    type: string
+                givenName:
+                    description:
+                        The user's first name.
+                    readOnly: true
+                    type: string
+                id:
+                    description:
+                        The user's ID.
+                    format: int64
+                    readOnly: true
+                    type: integer
+                image:
+                    description:
+                        A relative URL to the user's profile image.
+                    format: uri
+                    readOnly: true
+                    type: string
+                name:
+                    description:
+                        The user's full name.
+                    readOnly: true
+                    type: string
+                profileURL:
+                    description:
+                        A relative URL to the user's profile.
+                    format: uri
+                    readOnly: true
+                    type: string
+            type: object
         Site:
             # @review
             description:
-                Represents the site being created.
+                Represents the site.
             properties:
+                availableLanguages:
+                    items:
+                        type: string
+                    type: array
+                creator:
+                    $ref: "#/components/schemas/Creator"
+                description:
+                    type: string
+                description_i18n:
+                    additionalProperties:
+                        type: string
+                    type: object
+                descriptiveName:
+                    type: string
+                descriptiveName_i18n:
+                    additionalProperties:
+                        type: string
+                    type: object
                 externalReferenceCode:
                     description:
                         The site's external reference code.
@@ -30,9 +98,20 @@ components:
                     writeOnly: true
                 name:
                     type: string
+                name_i18n:
+                    additionalProperties:
+                        type: string
+                    type: object
+                parentSiteId:
+                    format: int64
+                    type: integer
                 parentSiteKey:
                     type: string
                     writeOnly: true
+                sites:
+                    items:
+                        $ref: "#/components/schemas/Site"
+                    type: array
                 templateKey:
                     type: string
                     writeOnly: true
@@ -57,6 +136,31 @@ info:
 openapi: 3.0.1
 paths:
     /sites:
+        get:
+            operationId: getSitesPage
+            parameters:
+                - in: query
+                  name: page
+                  schema:
+                      type: integer
+                - in: query
+                  name: pageSize
+                  schema:
+                      type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/Site"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/Site"
+                                type: array
+            tags: ["Site"]
         post:
             description:
                 Adds a new site
@@ -83,6 +187,24 @@ paths:
             # @review
             tags: ["Site"]
     /sites/by-external-reference-code/{externalReferenceCode}:
+        get:
+            operationId: getSiteByExternalReferenceCode
+            parameters:
+                - in: path
+                  name: externalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+            tags: ["Site"]
         put:
             description:
                 Adds or update a new site
@@ -113,4 +235,43 @@ paths:
                                 $ref: "#/components/schemas/Site"
                     description:
                         default response
+            tags: ["Site"]
+    /sites/by-friendly-url-path/{friendlyUrlPath}:
+        get:
+            operationId: getSiteByFriendlyUrlPath
+            parameters:
+                - in: path
+                  name: friendlyUrlPath
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+            tags: ["Site"]
+    /sites/{siteId}:
+        get:
+            operationId: getSite
+            parameters:
+                - in: path
+                  name: siteId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Site"
             tags: ["Site"]
