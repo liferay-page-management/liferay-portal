@@ -205,13 +205,8 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 		return new LayoutFriendlyURLComposite(layout, friendlyURL, false);
 	}
 
-	protected boolean useOriginalFriendlyURL() {
-		return true;
-	}
-
 	protected AssetDisplayPageEntry getAssetDisplayPageEntry(
-		long groupId,
-		String friendlyURL,
+		long groupId, String friendlyURL,
 		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider) {
 
 		return assetDisplayPageEntryLocalService.fetchAssetDisplayPageEntry(
@@ -230,8 +225,7 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 	}
 
 	protected Layout getLayoutDisplayPageObjectProviderLayout(
-		long groupId,
-		String friendlyURL,
+		long groupId, String friendlyURL,
 		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider,
 		LayoutDisplayPageProvider<?> layoutDisplayPageProvider) {
 
@@ -264,6 +258,10 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 		}
 
 		return locale;
+	}
+
+	protected boolean useOriginalFriendlyURL() {
+		return true;
 	}
 
 	@Reference
@@ -372,13 +370,12 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 	}
 
 	private Layout _getLayoutDisplayPageObjectProviderLayout(
-		long groupId,
-		String friendlyURL,
+		long groupId, String friendlyURL,
 		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider,
 		LayoutDisplayPageProvider<?> layoutDisplayPageProvider) {
 
 		AssetDisplayPageEntry assetDisplayPageEntry = getAssetDisplayPageEntry(
-			groupId,  friendlyURL, layoutDisplayPageObjectProvider);
+			groupId, friendlyURL, layoutDisplayPageObjectProvider);
 
 		if (assetDisplayPageEntry != null) {
 			if (assetDisplayPageEntry.getType() ==
