@@ -29,7 +29,7 @@ public class KBArticleAssetDisplayPageFriendlyURLResolver
 
 	@Override
 	protected AssetDisplayPageEntry getAssetDisplayPageEntry(
-		long groupId,
+		long groupId, String friendlyURL,
 		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider) {
 
 		KBArticle kbArticle =
