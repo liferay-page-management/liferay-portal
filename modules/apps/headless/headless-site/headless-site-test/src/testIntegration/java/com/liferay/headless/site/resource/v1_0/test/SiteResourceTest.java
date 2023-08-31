@@ -124,6 +124,28 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 	}
 
 	@Override
+	protected Site testGetSite_addSite() throws Exception {
+		return _addRandomTestSite();
+	}
+
+	@Override
+	protected Site testGetSiteByExternalReferenceCode_addSite()
+		throws Exception {
+
+		return _addRandomTestSite();
+	}
+
+	@Override
+	protected Site testGetSiteByFriendlyUrlPath_addSite() throws Exception {
+		return _addRandomTestSite();
+	}
+
+	@Override
+	protected Site testGetSitesPage_addSite(Site site) throws Exception {
+		return _addTestSite(site);
+	}
+
+	@Override
 	protected Site testPostSite_addSite(Site site) throws Exception {
 		Site postSite = siteResource.postSite(site);
 
@@ -140,22 +162,16 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 			RandomTestUtil.randomString(), randomSite(), getMultipartFiles());
 	}
 
-	@Override
-	protected Site testPutSiteByExternalReferenceCode_getSite(
-		String externalReferenceCode) {
+	private Site _addRandomTestSite() throws Exception {
+		return _addTestSite(randomSite());
+	}
 
-		Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
-			externalReferenceCode, testCompany.getCompanyId());
+	private Site _addTestSite(Site site) throws Exception {
+		Site postSite = siteResource.postSite(site);
 
-		return new Site() {
-			{
-				externalReferenceCode = group.getExternalReferenceCode();
-				friendlyUrlPath = group.getFriendlyURL();
-				id = group.getGroupId();
-				key = group.getGroupKey();
-				name = group.getName(LocaleUtil.getDefault());
-			}
-		};
+		_sites.add(postSite);
+
+		return postSite;
 	}
 
 	private void _testPostSiteFailureDuplicateName() throws Exception {
