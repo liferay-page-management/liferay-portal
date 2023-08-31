@@ -193,7 +193,7 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 		String urlTitle = layoutDisplayPageObjectProvider.getURLTitle(
 			getLocale(requestContext));
 
-		if (Validator.isNotNull(urlTitle)) {
+		if (useOriginalFriendlyURL() && Validator.isNotNull(urlTitle)) {
 			localizedFriendlyURL = getURLSeparator() + urlTitle;
 		}
 
@@ -203,6 +203,10 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 		}
 
 		return new LayoutFriendlyURLComposite(layout, friendlyURL, false);
+	}
+
+	protected boolean useOriginalFriendlyURL() {
+		return true;
 	}
 
 	protected AssetDisplayPageEntry getAssetDisplayPageEntry(
