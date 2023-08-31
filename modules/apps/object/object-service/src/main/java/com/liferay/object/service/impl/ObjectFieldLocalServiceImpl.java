@@ -1083,10 +1083,7 @@ public class ObjectFieldLocalServiceImpl
 				objectField.getObjectFieldId());
 		}
 
-		if (FeatureFlagManagerUtil.isEnabled("LPS-187846")) {
-			_objectValidationRuleLocalService.unassociateObjectField(
-				objectField);
-		}
+		_objectValidationRuleLocalService.unassociateObjectField(objectField);
 
 		_objectViewLocalService.unassociateObjectField(objectField);
 
