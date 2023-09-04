@@ -5,10 +5,16 @@
 
 package com.liferay.search.experiences.service.impl;
 
+import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.util.AssetHelper;
 import com.liferay.info.collection.provider.InfoCollectionProvider;
+import com.liferay.journal.model.JournalArticle;
+import com.liferay.journal.service.JournalArticleService;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
@@ -20,14 +26,20 @@ import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.Searcher;
 import com.liferay.search.experiences.exception.SXPBlueprintTitleException;
-import com.liferay.search.experiences.internal.info.collection.provider.SXPBlueprintInfoCollectionProvider;
+import com.liferay.search.experiences.internal.info.collection.provider.SXPBlueprintAssetEntryInfoCollectionProvider;
+import com.liferay.search.experiences.internal.info.collection.provider.SXPBlueprintJournalArticleInfoCollectionProvider;
 import com.liferay.search.experiences.model.SXPBlueprint;
+import com.liferay.search.experiences.rest.dto.v1_0.Configuration;
+import com.liferay.search.experiences.rest.dto.v1_0.GeneralConfiguration;
 import com.liferay.search.experiences.service.base.SXPBlueprintLocalServiceBaseImpl;
 import com.liferay.search.experiences.validator.SXPBlueprintValidator;
 
@@ -94,7 +106,7 @@ public class SXPBlueprintLocalServiceImpl
 
 		_resourceLocalService.addModelResources(sxpBlueprint, serviceContext);
 
-		_registerCollectionProvider(sxpBlueprint);
+		_registerCollectionProviders(sxpBlueprint);
 
 		return sxpBlueprint;
 	}
@@ -134,7 +146,7 @@ public class SXPBlueprintLocalServiceImpl
 		_resourceLocalService.deleteResource(
 			sxpBlueprint, ResourceConstants.SCOPE_INDIVIDUAL);
 
-		_unregisterCollectionProvider(sxpBlueprint);
+		_unregisterCollectionProviders(sxpBlueprint);
 
 		return sxpBlueprint;
 	}
@@ -159,7 +171,7 @@ public class SXPBlueprintLocalServiceImpl
 					sxpBlueprintLocalService.getSXPBlueprints(companyId);
 
 				for (SXPBlueprint sxpBlueprint : sxpBlueprints) {
-					_registerCollectionProvider(sxpBlueprint);
+					_registerCollectionProviders(sxpBlueprint);
 				}
 			});
 	}
@@ -187,7 +199,7 @@ public class SXPBlueprintLocalServiceImpl
 
 		sxpBlueprint.setStatusDate(serviceContext.getModifiedDate(null));
 
-		_registerCollectionProvider(sxpBlueprint);
+		_registerCollectionProviders(sxpBlueprint);
 
 		return sxpBlueprintPersistence.update(sxpBlueprint);
 	}
@@ -215,7 +227,7 @@ public class SXPBlueprintLocalServiceImpl
 				"%.1f",
 				GetterUtil.getFloat(sxpBlueprint.getVersion(), 0.9F) + 0.1));
 
-		_registerCollectionProvider(sxpBlueprint);
+		_registerCollectionProviders(sxpBlueprint);
 
 		return updateSXPBlueprint(sxpBlueprint);
 	}
@@ -225,36 +237,108 @@ public class SXPBlueprintLocalServiceImpl
 		_bundleContext = bundleContext;
 	}
 
-	private void _registerCollectionProvider(SXPBlueprint sxpBlueprint) {
-		_unregisterCollectionProvider(sxpBlueprint);
+	private String _getSingleSearchableAssetType(SXPBlueprint sxpBlueprint) {
+		Configuration configuration = Configuration.unsafeToDTO(
+			sxpBlueprint.getConfigurationJSON());
+
+		GeneralConfiguration generalConfiguration =
+			configuration.getGeneralConfiguration();
+
+		if (generalConfiguration == null) {
+			return null;
+		}
+
+		String[] searchableAssetTypes =
+			generalConfiguration.getSearchableAssetTypes();
+
+		if (ArrayUtil.isEmpty(searchableAssetTypes) ||
+			(searchableAssetTypes.length > 1)) {
+
+			return null;
+		}
+
+		return searchableAssetTypes[0];
+	}
+
+	private void _registerCollectionProvider(
+		long companyId, String infoCollectionProviderServiceRegistrationKey,
+		String itemClassName,
+		InfoCollectionProvider<?> infoCollectionProvider) {
+
+		_unregisterCollectionProvider(
+			infoCollectionProviderServiceRegistrationKey);
 
 		ServiceRegistration<InfoCollectionProvider>
 			infoCollectionProviderServiceRegistration =
 				_bundleContext.registerService(
-					InfoCollectionProvider.class,
-					new SXPBlueprintInfoCollectionProvider(
-						_assetHelper, _searcher, _searchRequestBuilderFactory,
-						sxpBlueprint),
+					InfoCollectionProvider.class, infoCollectionProvider,
 					HashMapDictionaryBuilder.<String, Object>put(
-						"company.id", sxpBlueprint.getCompanyId()
+						"company.id", companyId
 					).put(
-						"item.class.name",
-						"com.liferay.asset.kernel.model.AssetEntry"
+						"item.class.name", itemClassName
 					).build());
 
 		_serviceRegistrations.put(
-			sxpBlueprint.getExternalReferenceCode(),
+			infoCollectionProviderServiceRegistrationKey,
 			infoCollectionProviderServiceRegistration);
 	}
 
-	private void _unregisterCollectionProvider(SXPBlueprint sxpBlueprint) {
+	private void _registerCollectionProviders(SXPBlueprint sxpBlueprint) {
+		_registerCollectionProvider(
+			sxpBlueprint.getCompanyId(),
+			sxpBlueprint.getExternalReferenceCode(), AssetEntry.class.getName(),
+			new SXPBlueprintAssetEntryInfoCollectionProvider(
+				_assetHelper, _searcher, _searchRequestBuilderFactory,
+				sxpBlueprint));
+
+		String singleSearchableAssetType = _getSingleSearchableAssetType(
+			sxpBlueprint);
+
+		if (Validator.isBlank(singleSearchableAssetType)) {
+			return;
+		}
+
+		if (StringUtil.equals(
+				singleSearchableAssetType, JournalArticle.class.getName())) {
+
+			_registerCollectionProvider(
+				sxpBlueprint.getCompanyId(),
+				StringBundler.concat(
+					sxpBlueprint.getExternalReferenceCode(),
+					StringPool.UNDERLINE, JournalArticle.class.getName()),
+				JournalArticle.class.getName(),
+				new SXPBlueprintJournalArticleInfoCollectionProvider(
+					_assetHelper, _journalArticleService, _searcher,
+					_searchRequestBuilderFactory, sxpBlueprint));
+		}
+	}
+
+	private void _unregisterCollectionProvider(
+		String infoCollectionProviderServiceRegistrationKey) {
+
 		_serviceRegistrations.computeIfPresent(
-			sxpBlueprint.getExternalReferenceCode(),
+			infoCollectionProviderServiceRegistrationKey,
 			(key, serviceRegistration) -> {
 				serviceRegistration.unregister();
 
 				return null;
 			});
+	}
+
+	private void _unregisterCollectionProviders(SXPBlueprint sxpBlueprint) {
+		String externalReferenceCode = sxpBlueprint.getExternalReferenceCode();
+
+		_unregisterCollectionProvider(externalReferenceCode);
+
+		String searchableAssetType = _getSingleSearchableAssetType(
+			sxpBlueprint);
+
+		if (!Validator.isBlank(searchableAssetType)) {
+			_unregisterCollectionProvider(
+				StringBundler.concat(
+					externalReferenceCode, StringPool.UNDERLINE,
+					searchableAssetType));
+		}
 	}
 
 	private void _validate(
@@ -280,6 +364,12 @@ public class SXPBlueprintLocalServiceImpl
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
+
+	@Reference
+	private JournalArticleService _journalArticleService;
+
+	@Reference
+	private JSONFactory _jsonFactory;
 
 	@Reference
 	private Language _language;
