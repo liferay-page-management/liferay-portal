@@ -42,6 +42,8 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portlet.asset.util.comparator.AssetVocabularyGroupLocalizedTitleComparator;
+import com.liferay.portlet.asset.util.comparator.AssetCategoryParentIdComparator;
+
 import com.liferay.taglib.aui.AUIUtil;
 import com.liferay.taglib.util.IncludeTag;
 
@@ -214,7 +216,8 @@ public class AssetCategoriesSelectorTag extends IncludeTag {
 					List<AssetCategory> categories =
 						AssetCategoryServiceUtil.getCategories(
 							_className, _classPK);
-
+					categories.sort(
+						new AssetCategoryParentIdComparator());
 					categoryIds = ListUtil.toString(
 						categories, AssetCategory.CATEGORY_ID_ACCESSOR);
 					categoryNames = ListUtil.toString(
