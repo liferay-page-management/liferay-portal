@@ -36,7 +36,15 @@ String ppid = ParamUtil.getString(request, "p_p_id");
 		DisplayPageLayoutTypeControllerDisplayContext displayPageLayoutTypeControllerDisplayContext = (DisplayPageLayoutTypeControllerDisplayContext)request.getAttribute(DisplayPageLayoutTypeControllerWebKeys.DISPLAY_PAGE_LAYOUT_TYPE_CONTROLLER_DISPLAY_CONTEXT);
 
 		AssetRendererFactory<?> assetRendererFactory = displayPageLayoutTypeControllerDisplayContext.getAssetRendererFactory();
+
+		String canonicalURL = displayPageLayoutTypeControllerDisplayContext.getCanonicalURL();
 		%>
+
+		<c:if test="<%= Validator.isNotNull(canonicalURL) %>">
+			<liferay-util:html-top>
+				<link href="<%= canonicalURL %>>" rel="canonical" />
+			</liferay-util:html-top>
+		</c:if>
 
 		<c:if test="<%= assetRendererFactory != null %>">
 			<liferay-ui:success key='<%= assetRendererFactory.getPortletId() + "requestProcessed" %>' message="your-request-processed-successfully" />
