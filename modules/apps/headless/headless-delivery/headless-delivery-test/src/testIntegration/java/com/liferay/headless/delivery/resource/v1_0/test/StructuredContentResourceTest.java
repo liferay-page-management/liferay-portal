@@ -69,6 +69,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.SynchronousMailTestRule;
 
@@ -815,6 +816,16 @@ public class StructuredContentResourceTest
 					testPutAssetLibraryStructuredContentByExternalReferenceCode_getAssetLibraryId(),
 					putStructuredContent3.getExternalReferenceCode(),
 					randomStructuredContent3));
+	}
+
+	@FeatureFlags("LPS-180180")
+	@Override
+	@Test
+	public void testPutStructuredContentFolderTargetStructuredContentFolderStructureContentStructuredContent()
+		throws Exception {
+
+		_testPutStructuredContentFolderTargetStructuredContentFolderStructureContentStructuredContentWithInvalidStructuredContentFolder();
+		_testPutStructuredContentFolderTargetStructuredContentFolderStructureContentStructuredContentWithValidStructuredContentFolder();
 	}
 
 	@Override
@@ -1686,6 +1697,53 @@ public class StructuredContentResourceTest
 			externalReferenceCode,
 			postStructuredContent.getExternalReferenceCode());
 		assertValid(postStructuredContent);
+	}
+
+	private void _testPutStructuredContentFolderTargetStructuredContentFolderStructureContentStructuredContentWithInvalidStructuredContentFolder()
+		throws Exception {
+
+		long journalFolderId = RandomTestUtil.randomLong();
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			testGroup.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		try {
+			structuredContentResource.
+				putStructuredContentFolderTargetStructuredContentFolderStructureContentStructuredContent(
+					journalFolderId, journalArticle.getResourcePrimKey());
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+			Assert.assertEquals(
+				"No JournalFolder exists with the primary key " +
+					journalFolderId,
+				problem.getTitle());
+		}
+	}
+
+	private void _testPutStructuredContentFolderTargetStructuredContentFolderStructureContentStructuredContentWithValidStructuredContentFolder()
+		throws Exception {
+
+		JournalFolder journalFolder = JournalTestUtil.addFolder(
+			testGroup.getGroupId(), RandomTestUtil.randomString());
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			testGroup.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		structuredContentResource.
+			putStructuredContentFolderTargetStructuredContentFolderStructureContentStructuredContent(
+				journalFolder.getFolderId(),
+				journalArticle.getResourcePrimKey());
+
+		journalArticle = _journalArticleLocalService.getLatestArticle(
+			journalArticle.getResourcePrimKey());
+
+		Assert.assertNotNull(journalArticle);
+		Assert.assertEquals(
+			journalFolder.getFolderId(), journalArticle.getFolderId());
 	}
 
 	private static final String[] _COMPLETE_STRUCTURED_CONTENT_OPTIONS = {
