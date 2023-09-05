@@ -68,6 +68,7 @@ import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.change.tracking.CTAware;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -660,6 +661,10 @@ public class StructuredContentResourceImpl
 			putStructuredContentFolderTargetStructuredContentFolderStructureContentStructuredContent(
 				Long targetStructuredContentFolderId, Long structuredContentId)
 		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPS-180180")) {
+			throw new UnsupportedOperationException();
+		}
 
 		JournalArticle journalArticle = _journalArticleService.getLatestArticle(
 			structuredContentId);
