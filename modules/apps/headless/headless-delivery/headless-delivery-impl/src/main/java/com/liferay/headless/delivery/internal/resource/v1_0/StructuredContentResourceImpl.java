@@ -656,6 +656,20 @@ public class StructuredContentResourceImpl
 	}
 
 	@Override
+	public void
+			putStructuredContentFolderTargetStructuredContentFolderStructureContentStructuredContent(
+				Long targetStructuredContentFolderId, Long structuredContentId)
+		throws Exception {
+
+		JournalArticle journalArticle = _journalArticleService.getLatestArticle(
+			structuredContentId);
+
+		_journalArticleService.moveArticle(
+			journalArticle.getGroupId(), journalArticle.getArticleId(),
+			targetStructuredContentFolderId, new ServiceContext());
+	}
+
+	@Override
 	public Rating putStructuredContentMyRating(
 			Long structuredContentId, Rating rating)
 		throws Exception {
