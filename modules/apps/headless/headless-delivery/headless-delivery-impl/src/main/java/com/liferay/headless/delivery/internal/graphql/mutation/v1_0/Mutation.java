@@ -4390,6 +4390,25 @@ public class Mutation {
 	}
 
 	@GraphQLField
+	public boolean
+			updateStructuredContentFolderTargetStructuredContentFolderStructureContentStructuredContent(
+				@GraphQLName("targetStructuredContentFolderId") Long
+					targetStructuredContentFolderId,
+				@GraphQLName("structuredContentId") Long structuredContentId)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_structuredContentResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			structuredContentResource ->
+				structuredContentResource.
+					putStructuredContentFolderTargetStructuredContentFolderStructureContentStructuredContent(
+						targetStructuredContentFolderId, structuredContentId));
+
+		return true;
+	}
+
+	@GraphQLField
 	public Response
 			createStructuredContentFolderStructuredContentsPageExportBatch(
 				@GraphQLName("structuredContentFolderId") Long

@@ -1331,6 +1331,11 @@ public class ServletDataImpl implements ServletData {
 							StructuredContentResourceImpl.class,
 							"putSiteStructuredContentPermissionsPage"));
 					put(
+						"mutation#updateStructuredContentFolderTargetStructuredContentFolderStructureContentStructuredContent",
+						new ObjectValuePair<>(
+							StructuredContentResourceImpl.class,
+							"putStructuredContentFolderTargetStructuredContentFolderStructureContentStructuredContent"));
+					put(
 						"mutation#createStructuredContentFolderStructuredContentsPageExportBatch",
 						new ObjectValuePair<>(
 							StructuredContentResourceImpl.class,

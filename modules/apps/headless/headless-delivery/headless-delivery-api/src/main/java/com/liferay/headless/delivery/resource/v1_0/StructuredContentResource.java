@@ -156,6 +156,11 @@ public interface StructuredContentResource {
 				com.liferay.portal.vulcan.permission.Permission[] permissions)
 		throws Exception;
 
+	public void
+			putStructuredContentFolderTargetStructuredContentFolderStructureContentStructuredContent(
+				Long targetStructuredContentFolderId, Long structuredContentId)
+		throws Exception;
+
 	public Page<StructuredContent>
 			getStructuredContentFolderStructuredContentsPage(
 				Long structuredContentFolderId, Boolean flatten, String search,
