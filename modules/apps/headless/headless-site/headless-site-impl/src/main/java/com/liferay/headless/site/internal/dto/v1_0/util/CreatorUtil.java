@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2023 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
+
 /**
  * @author Javier Gamarra
  */
@@ -20,7 +21,7 @@ public class CreatorUtil {
 		if ((user == null) || user.isGuestUser()) {
 			return null;
 		}
-		
+
 		return new Creator() {
 			{
 				additionalName = user.getMiddleName();
