@@ -119,7 +119,7 @@ definition {
 
 	@priority = 5
 	test CanLoadAPIExplorerFromCustomContext {
-		property portal.acceptance = "true";
+		property portal.acceptance = "tim";
 		property portal.context = "world";
 		property skip.clean-app-server-deploy-dir = "true";
 		property test.liferay.virtual.instance = "false";
