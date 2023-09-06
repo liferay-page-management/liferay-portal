@@ -80,7 +80,13 @@ public interface LayoutPageTemplateCollectionLocalService
 
 	public LayoutPageTemplateCollection addLayoutPageTemplateCollection(
 			long userId, long groupId, long parentLayoutPageTemplateCollection,
-			String name, String description, ServiceContext serviceContext)
+			String name, String description, int type,
+			ServiceContext serviceContext)
+		throws PortalException;
+
+	public LayoutPageTemplateCollection addLayoutPageTemplateCollection(
+			long userId, long groupId, String name, String description,
+			int type, ServiceContext serviceContext)
 		throws PortalException;
 
 	public LayoutPageTemplateCollection addLayoutPageTemplateCollection(

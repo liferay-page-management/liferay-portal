@@ -32,6 +32,17 @@ public class LayoutPageTemplateCollectionServiceUtil {
 	 */
 	public static LayoutPageTemplateCollection addLayoutPageTemplateCollection(
 			long groupId, long parentLayoutPageTemplateCollection, String name,
+			String description, int type,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws PortalException {
+
+		return getService().addLayoutPageTemplateCollection(
+			groupId, parentLayoutPageTemplateCollection, name, description,
+			type, serviceContext);
+	}
+
+	public static LayoutPageTemplateCollection addLayoutPageTemplateCollection(
+			long groupId, long parentLayoutPageTemplateCollection, String name,
 			String description,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
@@ -80,6 +91,12 @@ public class LayoutPageTemplateCollectionServiceUtil {
 		getLayoutPageTemplateCollections(long groupId) {
 
 		return getService().getLayoutPageTemplateCollections(groupId);
+	}
+
+	public static List<LayoutPageTemplateCollection>
+		getLayoutPageTemplateCollections(long groupId, int type) {
+
+		return getService().getLayoutPageTemplateCollections(groupId, type);
 	}
 
 	public static List<LayoutPageTemplateCollection>

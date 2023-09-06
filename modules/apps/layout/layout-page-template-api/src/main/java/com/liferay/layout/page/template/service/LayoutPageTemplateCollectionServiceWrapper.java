@@ -34,6 +34,19 @@ public class LayoutPageTemplateCollectionServiceWrapper
 	@Override
 	public LayoutPageTemplateCollection addLayoutPageTemplateCollection(
 			long groupId, long parentLayoutPageTemplateCollection, String name,
+			String description, int type,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _layoutPageTemplateCollectionService.
+			addLayoutPageTemplateCollection(
+				groupId, parentLayoutPageTemplateCollection, name, description,
+				type, serviceContext);
+	}
+
+	@Override
+	public LayoutPageTemplateCollection addLayoutPageTemplateCollection(
+			long groupId, long parentLayoutPageTemplateCollection, String name,
 			String description,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -89,6 +102,14 @@ public class LayoutPageTemplateCollectionServiceWrapper
 
 		return _layoutPageTemplateCollectionService.
 			getLayoutPageTemplateCollections(groupId);
+	}
+
+	@Override
+	public java.util.List<LayoutPageTemplateCollection>
+		getLayoutPageTemplateCollections(long groupId, int type) {
+
+		return _layoutPageTemplateCollectionService.
+			getLayoutPageTemplateCollections(groupId, type);
 	}
 
 	@Override
