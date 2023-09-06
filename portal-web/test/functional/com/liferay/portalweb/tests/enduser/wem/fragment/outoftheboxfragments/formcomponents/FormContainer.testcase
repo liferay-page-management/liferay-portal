@@ -1111,7 +1111,7 @@ definition {
 		}
 
 		task ("When the page creator opens the dropdown menu of Form Container topper") {
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_fragmentName = "Form Container",
 				locator1 = "Fragment#FRAGMENT_HEADER_ELLIPSIS");
 		}

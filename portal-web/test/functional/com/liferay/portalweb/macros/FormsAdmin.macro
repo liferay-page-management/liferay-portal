@@ -231,7 +231,7 @@ definition {
 
 	macro teardownElementSets {
 		while (IsElementPresent(locator1 = "Icon#BODY_VERTICAL_ELLIPSIS")) {
-			Click.waitForMenuToggleJSClick(locator1 = "LexiconList#LIST_ENTRY_ELLIPSIS_GENERIC");
+			Click(locator1 = "LexiconList#LIST_ENTRY_ELLIPSIS_GENERIC");
 
 			WaitForLiferayEvent.initializeLiferayEventLog();
 

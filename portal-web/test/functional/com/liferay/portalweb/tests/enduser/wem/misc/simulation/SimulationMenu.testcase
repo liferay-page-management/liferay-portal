@@ -288,7 +288,7 @@ definition {
 				pageName = "Test Page Name",
 				siteName = ${randomSiteName});
 
-			Click.waitForMenuToggleJSClick(locator1 = "ControlMenu#SIMULATION");
+			Click(locator1 = "ControlMenu#SIMULATION");
 		}
 
 		task ("Then the site administrator sees the info message shown on preview window") {
@@ -343,7 +343,7 @@ definition {
 				pageName = "Test Page Name",
 				siteName = ${randomSiteName});
 
-			Click.waitForMenuToggleJSClick(locator1 = "ControlMenu#SIMULATION");
+			Click(locator1 = "ControlMenu#SIMULATION");
 		}
 
 		task ("Then the site administrator sees the info message shown on preview window") {

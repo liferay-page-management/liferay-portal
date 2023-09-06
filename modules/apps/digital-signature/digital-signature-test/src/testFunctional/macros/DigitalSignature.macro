@@ -210,7 +210,7 @@ definition {
 	}
 
 	macro goToDigitalSignatureEllipsis {
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_rowEntry = ${dmDocumentTitle},
 			locator1 = "Icon#ROW_VERTICAL_ELLIPSIS");
 

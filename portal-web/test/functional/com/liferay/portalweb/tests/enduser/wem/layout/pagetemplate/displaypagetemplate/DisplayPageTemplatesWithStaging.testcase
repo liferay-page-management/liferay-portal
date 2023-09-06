@@ -375,7 +375,7 @@ definition {
 				key_card = "Display Page Name",
 				locator1 = "Card#CARD_TITLE_LINK");
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_card = "Display Page Name",
 				locator1 = "Card#CARD_ELLIPSIS");
 

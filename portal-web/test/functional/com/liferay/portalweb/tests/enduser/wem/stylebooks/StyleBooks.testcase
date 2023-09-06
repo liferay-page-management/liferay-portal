@@ -701,7 +701,7 @@ definition {
 		task ("When the Style books designer opens the dropdown menu of style book") {
 			StyleBooksAdmin.openStyleBooksAdmin(siteURLKey = "test-site-name");
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_card = "Test Style Book Name",
 				locator1 = "Card#CARD_ELLIPSIS");
 		}

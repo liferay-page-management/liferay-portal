@@ -396,7 +396,7 @@ definition {
 	}
 
 	macro banUser {
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_threadReplyBody = ${threadReplyBody},
 			locator1 = "MessageBoards#THREAD_REPLY_ACTIONS");
 
@@ -818,7 +818,7 @@ definition {
 	}
 
 	macro markAsAnswerPG {
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_threadReplyBody = ${threadReplyBody},
 			locator1 = "MessageBoards#THREAD_REPLY_ACTIONS");
 

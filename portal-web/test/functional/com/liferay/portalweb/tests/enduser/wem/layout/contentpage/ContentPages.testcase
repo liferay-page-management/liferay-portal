@@ -261,7 +261,7 @@ definition {
 				key_portletName = "Asset Publisher",
 				locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_portletName = "Asset Publisher",
 				locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
 
@@ -1592,7 +1592,7 @@ definition {
 		task ("When the Page designer opens the dropdown menu of Collection Display topper") {
 			PageEditor.clickConfigurableField(fragmentName = "Collection Display");
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_fragmentName = "Collection Display",
 				locator1 = "Fragment#FRAGMENT_HEADER_ELLIPSIS");
 		}
@@ -1917,7 +1917,7 @@ definition {
 				key_portletName = "Asset Publisher",
 				locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_portletName = "Asset Publisher",
 				locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
 
@@ -1958,7 +1958,7 @@ definition {
 				key_portletName = "Asset Publisher",
 				locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_portletName = "Asset Publisher",
 				locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
 
@@ -2004,7 +2004,7 @@ definition {
 				key_portletName = "Asset Publisher",
 				locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_portletName = "Asset Publisher",
 				locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
 

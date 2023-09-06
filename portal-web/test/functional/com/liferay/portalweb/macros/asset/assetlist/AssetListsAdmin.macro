@@ -41,7 +41,7 @@ definition {
 			LexiconEntry.gotoAddMenuItem(menuItem = "Dynamic Collection");
 		}
 		else if (IsVisible(locator1 = "Message#EMPTY_INFO_TAGLIB")) {
-			Click.waitForMenuToggleJSClick(locator1 = "Dropdown#EMPTY_MESSAGE_DROPDOWN");
+			Click(locator1 = "Dropdown#EMPTY_MESSAGE_DROPDOWN");
 
 			Click(
 				key_menuItem = "Dynamic Collection",
@@ -99,7 +99,7 @@ definition {
 			LexiconEntry.gotoAddMenuItem(menuItem = "Manual Collection");
 		}
 		else if (IsVisible(locator1 = "Message#EMPTY_INFO_TAGLIB")) {
-			Click.waitForMenuToggleJSClick(locator1 = "Dropdown#EMPTY_MESSAGE_DROPDOWN");
+			Click(locator1 = "Dropdown#EMPTY_MESSAGE_DROPDOWN");
 
 			Click(
 				key_menuItem = "Manual Collection",

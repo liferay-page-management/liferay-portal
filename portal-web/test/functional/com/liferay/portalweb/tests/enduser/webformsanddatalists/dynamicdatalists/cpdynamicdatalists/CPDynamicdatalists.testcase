@@ -119,7 +119,7 @@ definition {
 
 			var key_ddlDataDefinitionName = "Data Definition";
 
-			Click.waitForMenuToggleJSClick(locator1 = "DDMSelectStructure#DDM_STRUCTURE_ELLIPSIS");
+			Click(locator1 = "DDMSelectStructure#DDM_STRUCTURE_ELLIPSIS");
 
 			MenuItem.clickNoError(menuItem = "Manage Templates");
 

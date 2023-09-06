@@ -1347,7 +1347,7 @@ definition {
 		}
 
 		task ("View menu action is shown") {
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_pageName = "Test Page Name",
 				locator1 = "PagesAdmin#LIST_GROUP_ITEM_ELLIPSIS_ICON");
 

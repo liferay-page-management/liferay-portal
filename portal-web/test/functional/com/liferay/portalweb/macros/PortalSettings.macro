@@ -819,7 +819,7 @@ definition {
 	}
 
 	macro testOpenSSOConnection {
-		Click.waitForMenuToggleJSClick(locator1 = "PortalSettingsAuthentication#VERTICAL_ELLIPSIS");
+		Click(locator1 = "PortalSettingsAuthentication#VERTICAL_ELLIPSIS");
 
 		AssertClick(
 			locator1 = "PortalSettingsAuthentication#AUTHENTICATION_OPEN_SSO_TEST_OPEN_SSO_CONFIGURATION_BUTTON",

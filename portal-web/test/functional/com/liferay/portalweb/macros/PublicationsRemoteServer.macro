@@ -71,7 +71,7 @@ definition {
 	macro gotoRemoteServers {
 		PublicationsNavigator.openPublicationsAdmin();
 
-		Click.waitForMenuToggleJSClick(locator1 = "Publications#PUBLICATIONS_ELLIPSIS");
+		Click(locator1 = "Publications#PUBLICATIONS_ELLIPSIS");
 
 		MenuItem.click(menuItem = "Remote Servers");
 	}

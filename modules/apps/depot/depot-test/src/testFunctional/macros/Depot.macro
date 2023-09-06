@@ -290,7 +290,7 @@ definition {
 				value1 = ${tableEntryText});
 
 			if (isSet(disconnectDisabled)) {
-				Click.waitForMenuToggleJSClick(
+				Click(
 					key_tableEntry = ${siteName},
 					locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
 
@@ -773,7 +773,7 @@ definition {
 		else {
 			Search.searchCP(searchTerm = ${userGroupName});
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_rowEntry = ${userGroupName},
 				locator1 = "Icon#TABLE_VERTICAL_ELLIPSIS");
 

@@ -200,7 +200,7 @@ definition {
 	}
 
 	macro openEntryMenu {
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_entryTitle = ${title},
 			locator1 = "Blueprints#BLUEPRINTS_ADMIN_ENTRY_VERTICAL_ELLIPSIS");
 	}

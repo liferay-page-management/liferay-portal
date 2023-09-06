@@ -84,7 +84,7 @@ definition {
 		task ("When the user goes to the Import/Export Center and clicks on the ellipses for the import execution") {
 			ImportExport.openImportExportAdmin();
 
-			Click.waitForMenuToggleJSClick(locator1 = "Icon#BODY_VERTICAL_ELLIPSIS");
+			Click(locator1 = "Icon#BODY_VERTICAL_ELLIPSIS");
 		}
 
 		task ("And the user clicks on the Download Original File menu item") {
@@ -1690,7 +1690,7 @@ definition {
 		task ("When the user goes to the Import/Export Center and clicks on the ellipses for the import execution") {
 			ImportExport.openImportExportAdmin();
 
-			Click.waitForMenuToggleJSClick(locator1 = "Icon#BODY_VERTICAL_ELLIPSIS");
+			Click(locator1 = "Icon#BODY_VERTICAL_ELLIPSIS");
 		}
 
 		task ("And the user clicks on the Download Error Report menu item") {

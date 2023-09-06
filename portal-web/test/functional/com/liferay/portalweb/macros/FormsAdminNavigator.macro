@@ -200,7 +200,7 @@ definition {
 
 		AssertElementPresent(locator1 = "Icon#ROW_VERTICAL_ELLIPSIS_N");
 
-		Click.waitForMenuToggleJSClick(locator1 = "LexiconList#LIST_ENTRY_ELLIPSIS_GENERIC");
+		Click(locator1 = "LexiconList#LIST_ENTRY_ELLIPSIS_GENERIC");
 
 		WaitForLiferayEvent.initializeLiferayEventLog();
 

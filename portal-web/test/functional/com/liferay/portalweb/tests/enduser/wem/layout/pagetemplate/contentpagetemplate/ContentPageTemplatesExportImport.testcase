@@ -550,7 +550,7 @@ definition {
 				key_portletName = "Sites Directory",
 				locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_portletName = "Sites Directory",
 				locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
 
@@ -618,7 +618,7 @@ definition {
 				key_portletName = "Sites Directory",
 				locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_portletName = "Sites Directory",
 				locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
 
@@ -689,7 +689,7 @@ definition {
 		task ("Import the previously exported page template") {
 			PageTemplatesAdmin.openPageTemplatesAdmin(siteURLKey = "test-site-name");
 
-			Click.waitForMenuToggleJSClick(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
+			Click(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
 
 			MenuItem.click(menuItem = "Import");
 
@@ -816,7 +816,7 @@ definition {
 
 			PageTemplatesAdmin.openPageTemplatesAdmin(siteURLKey = "site-name");
 
-			Click.waitForMenuToggleJSClick(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
+			Click(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
 
 			MenuItem.click(menuItem = "Import");
 
@@ -952,7 +952,7 @@ definition {
 		task ("Import the exported page template.") {
 			PageTemplatesAdmin.openPageTemplatesAdmin(siteURLKey = "test-site-name");
 
-			Click.waitForMenuToggleJSClick(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
+			Click(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
 
 			MenuItem.click(menuItem = "Import");
 
@@ -1117,7 +1117,7 @@ definition {
 				key_portletName = "RSS Publisher",
 				locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_portletName = "RSS Publisher",
 				locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
 
@@ -1155,7 +1155,7 @@ definition {
 		task ("Import content page template in a normal site") {
 			PageTemplatesAdmin.openPageTemplatesAdmin(siteURLKey = "test-site-name");
 
-			Click.waitForMenuToggleJSClick(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
+			Click(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
 
 			MenuItem.click(menuItem = "Import");
 
@@ -1193,7 +1193,7 @@ definition {
 				key_portletName = "RSS Publisher",
 				locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_portletName = "RSS Publisher",
 				locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
 

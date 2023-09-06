@@ -23,13 +23,13 @@ definition {
 	}
 
 	macro clickCardTitle {
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_card = ${card},
 			locator1 = "Card#CARD_TITLE");
 	}
 
 	macro clickCardTitleLink {
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_card = ${card},
 			locator1 = "Card#CARD_TITLE_LINK");
 	}
@@ -44,12 +44,12 @@ definition {
 
 	macro clickEllipsisItem {
 		if (!(isSet(specificFormFragment))) {
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_card = ${card},
 				locator1 = "Card#CARD_ELLIPSIS");
 		}
 		else {
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_card = ${card},
 				locator1 = "Card#SPECIFIC_CARD_ELLIPSIS");
 		}

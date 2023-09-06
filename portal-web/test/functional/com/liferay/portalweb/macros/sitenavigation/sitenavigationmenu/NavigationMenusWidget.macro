@@ -33,7 +33,7 @@ definition {
 	macro gotoEditNavigationMenuEntry {
 		MouseOver.mouseOverNotVisible(locator1 = "Icon#EDIT_PENCIL");
 
-		Click.waitForMenuToggleJSClick(locator1 = "Icon#EDIT_PENCIL");
+		Click(locator1 = "Icon#EDIT_PENCIL");
 
 		MenuItem.click(menuItem = "Edit");
 	}
