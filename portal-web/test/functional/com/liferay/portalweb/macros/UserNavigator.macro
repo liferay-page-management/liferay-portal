@@ -17,7 +17,7 @@ definition {
 	}
 
 	macro gotoEdit {
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_rowEntry = ${rowEntry},
 			locator1 = "Icon#TABLE_VERTICAL_ELLIPSIS");
 

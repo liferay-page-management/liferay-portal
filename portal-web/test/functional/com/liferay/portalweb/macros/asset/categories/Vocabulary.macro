@@ -147,7 +147,7 @@ definition {
 	macro deleteAssociatedAssetTypeViaVocabularyCP {
 		Navigator.gotoNavNested(navNested = ${vocabularyName});
 
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_headerName = ${vocabularyName},
 			locator1 = "Portlet#H2_HEADER_VERTICAL_ELLIPSIS");
 
@@ -165,7 +165,7 @@ definition {
 	macro deleteByIconCP {
 		WaitForLiferayEvent.initializeLiferayEventLog();
 
-		Click.waitForMenuToggleJSClick(locator1 = "NavNested#NAV_NESTED_ELLIPSIS");
+		Click(locator1 = "NavNested#NAV_NESTED_ELLIPSIS");
 
 		MenuItem.click(menuItem = "Delete");
 
@@ -203,7 +203,7 @@ definition {
 	macro deleteByMenuCP {
 		WaitForLiferayEvent.initializeLiferayEventLog();
 
-		Click.waitForMenuToggleJSClick(locator1 = "NavNested#NAV_NESTED_ELLIPSIS");
+		Click(locator1 = "NavNested#NAV_NESTED_ELLIPSIS");
 
 		MenuItem.click(menuItem = "Delete");
 
@@ -238,7 +238,7 @@ definition {
 	macro editCP {
 		Navigator.gotoNavNested(navNested = ${vocabularyName});
 
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_headerName = ${vocabularyName},
 			locator1 = "Portlet#H2_HEADER_VERTICAL_ELLIPSIS");
 
@@ -292,7 +292,7 @@ definition {
 
 		WaitForLiferayEvent.initializeLiferayEventLog();
 
-		Click.waitForMenuToggleJSClick(locator1 = "NavNested#NAV_NESTED_ELLIPSIS");
+		Click(locator1 = "NavNested#NAV_NESTED_ELLIPSIS");
 
 		MenuItem.click(menuItem = "Delete");
 
@@ -324,7 +324,7 @@ definition {
 		if (${allowMultipleCategories} == "false") {
 			Navigator.gotoNavNested(navNested = ${vocabularyName});
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_headerName = ${vocabularyName},
 				locator1 = "Portlet#H2_HEADER_VERTICAL_ELLIPSIS");
 
@@ -363,7 +363,7 @@ definition {
 
 		WaitForLiferayEvent.initializeLiferayEventLog();
 
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_headerName = ${vocabularyName},
 			locator1 = "Portlet#H2_HEADER_VERTICAL_ELLIPSIS");
 
@@ -397,7 +397,7 @@ definition {
 	macro viewWithAssociatedAssetTypeCP {
 		Navigator.gotoNavNested(navNested = ${vocabularyName});
 
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_headerName = ${vocabularyName},
 			locator1 = "Portlet#H2_HEADER_VERTICAL_ELLIPSIS");
 

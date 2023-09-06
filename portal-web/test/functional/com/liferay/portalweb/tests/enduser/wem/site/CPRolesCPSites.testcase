@@ -278,7 +278,7 @@ definition {
 
 			WaitForPageLoad();
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_siteName = "${siteName}1",
 				locator1 = "Sites#SITE_TABLE_ACTIONS");
 		}
@@ -342,7 +342,7 @@ definition {
 
 			WaitForPageLoad();
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_siteName = "${siteName}1",
 				locator1 = "Sites#SITE_TABLE_ACTIONS");
 

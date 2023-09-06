@@ -88,7 +88,7 @@ definition {
 	}
 
 	macro selectForm {
-		Click.waitForMenuToggleJSClick(locator1 = "StyleBookEditor#FORM_CONTROL_SELECT_BUTTON");
+		Click(locator1 = "StyleBookEditor#FORM_CONTROL_SELECT_BUTTON");
 
 		MenuItem.click(menuItem = ${formName});
 	}
@@ -152,7 +152,7 @@ definition {
 	macro selectStyleBookViaPageDesignOptions {
 		Navigator.gotoNavTab(navTab = "Style Book");
 
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_card = ${styleBookName},
 			locator1 = "Card#CARD_TYPE_ASSET");
 

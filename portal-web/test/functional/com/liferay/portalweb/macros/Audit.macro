@@ -3,7 +3,7 @@ definition {
 	macro exportAuditEvents {
 		MouseOver.mouseOverNotVisible(locator1 = "Portlet#OPTIONS_ICON");
 
-		Click.waitForMenuToggleJSClick(locator1 = "Portlet#OPTIONS_ICON");
+		Click(locator1 = "Portlet#OPTIONS_ICON");
 
 		ClickNoError(
 			key_menuItem = "Export Audit Events",

@@ -63,7 +63,7 @@ definition {
 	macro selectMasterViaPageDesignOptions {
 		Navigator.gotoNavTab(navTab = "Master");
 
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_card = ${masterLayoutName},
 			locator1 = "Card#CARD_TYPE_ASSET");
 

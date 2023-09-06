@@ -1145,7 +1145,7 @@ definition {
 				panel = "Applications",
 				portlet = "Content Dashboard");
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_rowEntry = "Web Content Title",
 				locator1 = "Icon#ROW_VERTICAL_ELLIPSIS");
 

@@ -7,7 +7,7 @@ definition {
 	}
 
 	macro clickEllipsisItem {
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_tableEntry = ${tableEntry},
 			locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
 

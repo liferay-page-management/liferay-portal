@@ -105,7 +105,7 @@ definition {
 			var position = 1;
 		}
 
-		Click.waitForMenuToggleJSClick(
+		Click(
 			index = ${position},
 			locator1 = "Fragment#CONTENT_RATINGS_YOUR_RATING_STAR");
 

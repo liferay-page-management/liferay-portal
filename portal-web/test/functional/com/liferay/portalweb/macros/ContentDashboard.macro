@@ -76,7 +76,7 @@ definition {
 	}
 
 	macro clickMenuOfVersion {
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_version = ${versionName},
 			locator1 = "ContentDashboard#VERSION_ELLIPSIS");
 
@@ -140,7 +140,7 @@ definition {
 	}
 
 	macro downloadVersion {
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_tableEntry = ${version},
 			locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
 

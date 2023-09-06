@@ -109,7 +109,7 @@ definition {
 			locator1 = "Announcements#CARD_VIEW_ENTRY_TITLE",
 			value1 = ${entryTitle});
 
-		Click.waitForMenuToggleJSClick(locator1 = "Announcements#CARD_VIEW_ENTRY_VERTICAL_ELLIPSIS");
+		Click(locator1 = "Announcements#CARD_VIEW_ENTRY_VERTICAL_ELLIPSIS");
 
 		MenuItem.clickNoError(menuItem = "Delete");
 
@@ -133,7 +133,7 @@ definition {
 			locator1 = "Announcements#CARD_VIEW_ENTRY_CONTENT",
 			value1 = ${entryContent});
 
-		Click.waitForMenuToggleJSClick(locator1 = "Announcements#CARD_VIEW_ENTRY_VERTICAL_ELLIPSIS");
+		Click(locator1 = "Announcements#CARD_VIEW_ENTRY_VERTICAL_ELLIPSIS");
 
 		WaitForLiferayEvent.initializeLiferayEventLog();
 
@@ -174,7 +174,7 @@ definition {
 
 		AssertVisible(locator1 = "Announcements#CARD_VIEW_ENTRY_VERTICAL_ELLIPSIS");
 
-		Click.waitForMenuToggleJSClick(locator1 = "Announcements#CARD_VIEW_ENTRY_VERTICAL_ELLIPSIS");
+		Click(locator1 = "Announcements#CARD_VIEW_ENTRY_VERTICAL_ELLIPSIS");
 
 		MenuItem.clickNoError(menuItem = "Mark as Read");
 

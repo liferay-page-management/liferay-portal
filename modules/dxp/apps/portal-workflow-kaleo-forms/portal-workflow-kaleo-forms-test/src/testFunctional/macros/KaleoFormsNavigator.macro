@@ -17,7 +17,7 @@ definition {
 
 		Search.searchCP(searchTerm = ${kfFieldSetName});
 
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_kfFieldSetName = ${kfFieldSetName},
 			locator1 = "KaleoFormsAdminSelectStructure#KALEO_FORMS_STRUCTURE_ELLIPSIS");
 

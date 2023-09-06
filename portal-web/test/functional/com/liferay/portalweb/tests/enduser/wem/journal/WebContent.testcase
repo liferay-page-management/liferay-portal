@@ -1647,7 +1647,7 @@ definition {
 		}
 
 		task ("When the Web Content creator opens the dropdown menu of new template") {
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_card = "WC Template Name",
 				locator1 = "Card#CARD_ELLIPSIS");
 		}

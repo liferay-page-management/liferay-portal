@@ -21,7 +21,7 @@ definition {
 				value1 = ${webContentTitle});
 		}
 
-		Click.waitForMenuToggleJSClick(locator1 = "WC#ENTRY_LIST_MENULIST_ICON");
+		Click(locator1 = "WC#ENTRY_LIST_MENULIST_ICON");
 	}
 
 	macro gotoAddCP {
@@ -84,7 +84,7 @@ definition {
 	}
 
 	macro gotoEntryMenuItem {
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_webContentTitle = ${entry},
 			locator1 = "WC#ENTRY_LIST_MENULIST_ICON");
 

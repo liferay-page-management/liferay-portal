@@ -942,7 +942,7 @@ definition {
 		task ("When the Categories creator opens the dropdown menu of Vocabularies") {
 			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
 
-			Click.waitForMenuToggleJSClick(locator1 = "NavNested#NAV_NESTED_ELLIPSIS");
+			Click(locator1 = "NavNested#NAV_NESTED_ELLIPSIS");
 		}
 
 		task ("Then the Categories creator can see the new icon on the dropdown menu") {
@@ -950,7 +950,7 @@ definition {
 		}
 
 		task ("When the Categories creator opens the dropdown menu of new vocabulary") {
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_headerName = "Vocabulary Name",
 				locator1 = "Portlet#H2_HEADER_VERTICAL_ELLIPSIS");
 		}

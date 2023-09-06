@@ -31,7 +31,7 @@ definition {
 		task ("Given the default theme is set to Classic") {
 			PagesAdmin.openPagesAdmin(siteURLKey = "guest");
 
-			Click.waitForMenuToggleJSClick(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
+			Click(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
 
 			DropdownMenuItem.click(menuItem = "Configuration");
 
@@ -55,7 +55,7 @@ definition {
 
 			PagesAdmin.openPagesAdmin(siteURLKey = "test-site");
 
-			Click.waitForMenuToggleJSClick(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
+			Click(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
 
 			DropdownMenuItem.click(menuItem = "Configuration");
 

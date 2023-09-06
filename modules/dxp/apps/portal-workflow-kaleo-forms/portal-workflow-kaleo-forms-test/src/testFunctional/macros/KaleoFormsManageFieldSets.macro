@@ -28,7 +28,7 @@ definition {
 	macro deleteOneFieldSet {
 		Search.searchCP(searchTerm = ${fieldSetName});
 
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_kfFieldSetName = ${fieldSetName},
 			locator1 = "KaleoFormsAdminSelectStructure#KALEO_FORMS_STRUCTURE_ELLIPSIS");
 
@@ -75,7 +75,7 @@ definition {
 	macro viewFieldSetCannotBeDeleted {
 		Search.searchCP(searchTerm = ${fieldSetName});
 
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_kfFieldSetName = ${fieldSetName},
 			locator1 = "KaleoFormsAdminSelectStructure#KALEO_FORMS_STRUCTURE_ELLIPSIS");
 

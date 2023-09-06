@@ -188,19 +188,19 @@ definition {
 		}
 
 		task ("Assert the actions order of collections menu") {
-			Click.waitForMenuToggleJSClick(locator1 = "NavNested#NAV_NESTED_ELLIPSIS");
+			Click(locator1 = "NavNested#NAV_NESTED_ELLIPSIS");
 
 			MenuItem.viewOrder(menuItemList = "Export,Import,Delete");
 
-			Click.waitForMenuToggleJSClick(locator1 = "NavNested#NAV_NESTED_ELLIPSIS");
+			Click(locator1 = "NavNested#NAV_NESTED_ELLIPSIS");
 		}
 
 		task ("Assert the actions order of a collection") {
-			Click.waitForMenuToggleJSClick(locator1 = "Icon#BODY_VERTICAL_ELLIPSIS");
+			Click(locator1 = "Icon#BODY_VERTICAL_ELLIPSIS");
 
 			MenuItem.viewOrder(menuItemList = "Edit,Export,Import,Delete");
 
-			Click.waitForMenuToggleJSClick(locator1 = "Icon#BODY_VERTICAL_ELLIPSIS");
+			Click(locator1 = "Icon#BODY_VERTICAL_ELLIPSIS");
 		}
 
 		task ("Assert the actions order of a draft fragment") {

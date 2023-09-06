@@ -33,7 +33,7 @@ definition {
 	}
 
 	macro importStyleBookFromTempFolder {
-		Click.waitForMenuToggleJSClick(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
+		Click(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
 
 		MenuItem.click(menuItem = "Import");
 

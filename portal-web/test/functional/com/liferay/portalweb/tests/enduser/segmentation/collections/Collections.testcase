@@ -4495,7 +4495,7 @@ definition {
 
 			AssetListsAdmin.editAssetList(assetListTitle = "Dynamic Collection");
 
-			Click.waitForMenuToggleJSClick(locator1 = "Icon#BODY_VERTICAL_ELLIPSIS");
+			Click(locator1 = "Icon#BODY_VERTICAL_ELLIPSIS");
 		}
 
 		task ("Then the Collection creator can see the new icon on the dropdown menu") {

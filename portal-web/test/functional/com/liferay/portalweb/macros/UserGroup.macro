@@ -160,7 +160,7 @@ definition {
 	macro gotoAddPageCP {
 		Search.searchCP(searchTerm = ${userGroupName});
 
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_tableEntry = ${userGroupName},
 			locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
 
@@ -172,7 +172,7 @@ definition {
 	macro gotoProfilePages {
 		Search.searchCP(searchTerm = ${userGroupName});
 
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_tableEntry = ${userGroupName},
 			locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
 

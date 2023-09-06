@@ -175,7 +175,7 @@ definition {
 	}
 
 	macro gotoEllipsisMenuItem {
-		Click.waitForMenuToggleJSClick(locator1 = "RaylifeAP#ANY_VERTICAL_ELLIPSIS");
+		Click(locator1 = "RaylifeAP#ANY_VERTICAL_ELLIPSIS");
 
 		MenuItem.clickNoError(menuItem = ${menuItem});
 	}

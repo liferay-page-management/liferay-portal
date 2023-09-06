@@ -23,7 +23,7 @@ definition {
 
 		Search.searchCP(searchTerm = ${ddlDataDefinitionName});
 
-		Click.waitForMenuToggleJSClick(locator1 = "DDMSelectStructure#DDM_STRUCTURE_ELLIPSIS_1");
+		Click(locator1 = "DDMSelectStructure#DDM_STRUCTURE_ELLIPSIS_1");
 
 		MenuItem.click(menuItem = "Manage Templates");
 
@@ -101,7 +101,7 @@ definition {
 
 		Search.searchCP(searchTerm = ${ddlDataDefinitionName});
 
-		Click.waitForMenuToggleJSClick(locator1 = "DDMSelectStructure#DDM_STRUCTURE_ELLIPSIS_1");
+		Click(locator1 = "DDMSelectStructure#DDM_STRUCTURE_ELLIPSIS_1");
 
 		MenuItem.click(menuItem = "Manage Templates");
 
@@ -147,7 +147,7 @@ definition {
 
 		Search.searchCP(searchTerm = ${ddlDataDefinitionName});
 
-		Click.waitForMenuToggleJSClick(locator1 = "DDMSelectStructure#DDM_STRUCTURE_ELLIPSIS_1");
+		Click(locator1 = "DDMSelectStructure#DDM_STRUCTURE_ELLIPSIS_1");
 
 		MenuItem.click(menuItem = "Manage Templates");
 
@@ -171,7 +171,7 @@ definition {
 
 		Search.searchCP(searchTerm = ${ddlDataDefinitionName});
 
-		Click.waitForMenuToggleJSClick(locator1 = "DDMSelectStructure#DDM_STRUCTURE_ELLIPSIS_1");
+		Click(locator1 = "DDMSelectStructure#DDM_STRUCTURE_ELLIPSIS_1");
 
 		MenuItem.click(menuItem = "Manage Templates");
 
@@ -183,7 +183,7 @@ definition {
 
 		Search.searchCP(searchTerm = ${ddlDataDefinitionName});
 
-		Click.waitForMenuToggleJSClick(locator1 = "DDMSelectStructure#DDM_STRUCTURE_ELLIPSIS_1");
+		Click(locator1 = "DDMSelectStructure#DDM_STRUCTURE_ELLIPSIS_1");
 
 		MenuItem.click(menuItem = "Manage Templates");
 
@@ -215,7 +215,7 @@ definition {
 
 		Search.searchCP(searchTerm = ${ddlDataDefinitionName});
 
-		Click.waitForMenuToggleJSClick(locator1 = "DDMSelectStructure#DDM_STRUCTURE_ELLIPSIS_1");
+		Click(locator1 = "DDMSelectStructure#DDM_STRUCTURE_ELLIPSIS_1");
 
 		MenuItem.click(menuItem = "Manage Templates");
 
@@ -310,7 +310,7 @@ definition {
 		var key_ddlDataDefinitionName = ${ddlDataDefinitionName};
 
 		if (IsElementPresent(locator1 = "DDMSelectStructure#DDM_STRUCTURE_ELLIPSIS")) {
-			Click.waitForMenuToggleJSClick(locator1 = "DDMSelectStructure#DDM_STRUCTURE_ELLIPSIS");
+			Click(locator1 = "DDMSelectStructure#DDM_STRUCTURE_ELLIPSIS");
 
 			MenuItem.click(menuItem = "Manage Templates");
 

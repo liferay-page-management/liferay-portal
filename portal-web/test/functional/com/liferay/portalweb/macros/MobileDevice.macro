@@ -88,7 +88,7 @@ definition {
 	}
 
 	macro previewPG {
-		Click.waitForMenuToggleJSClick(locator1 = "ControlMenu#SIMULATION");
+		Click(locator1 = "ControlMenu#SIMULATION");
 
 		AssertElementNotPresent(locator1 = "IFrame#LOADING_MESSAGE");
 

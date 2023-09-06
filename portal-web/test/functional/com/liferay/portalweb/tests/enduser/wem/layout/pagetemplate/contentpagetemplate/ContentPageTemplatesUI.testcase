@@ -121,13 +121,13 @@ definition {
 		}
 
 		task ("Assert the actions order of a collection") {
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_headerName = "Page Template Collection",
 				locator1 = "Portlet#H2_HEADER_VERTICAL_ELLIPSIS");
 
 			MenuItem.viewOrder(menuItemList = "Edit,Permissions,Delete");
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_headerName = "Page Template Collection",
 				locator1 = "Portlet#H2_HEADER_VERTICAL_ELLIPSIS");
 		}

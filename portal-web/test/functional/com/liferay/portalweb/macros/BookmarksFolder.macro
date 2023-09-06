@@ -123,7 +123,7 @@ definition {
 			locator1 = "Bookmarks#DESCRIPTIVE_ENTRY_TITLE",
 			value1 = ${folderName});
 
-		Click.waitForMenuToggleJSClick(locator1 = "Icon#VERTICAL_ELLIPSIS");
+		Click(locator1 = "Icon#VERTICAL_ELLIPSIS");
 
 		MenuItem.click(menuItem = "Delete");
 

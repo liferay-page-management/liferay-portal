@@ -728,7 +728,7 @@ definition {
 			key_itemName = ${kbArticleTitle},
 			locator1 = "KnowledgeBase#PAGE_TREE_ITEM_NAME");
 
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_itemName = ${kbArticleTitle},
 			locator1 = "KnowledgeBase#PAGE_TREE_ITEM_ELLIPSIS");
 

@@ -122,7 +122,7 @@ definition {
 		task ("Then the page designer cannot add a new 404 error utility page or edit the existing 404 error utility page") {
 			AssertElementNotPresent(locator1 = "Button#PLUS");
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_card = "404 Error Utility Page",
 				locator1 = "Card#CARD_ELLIPSIS");
 
@@ -191,7 +191,7 @@ definition {
 				card = "500 Error Utility Page",
 				icon = "check-circle");
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_card = "500 Error Utility Page",
 				locator1 = "Card#CARD_ELLIPSIS");
 

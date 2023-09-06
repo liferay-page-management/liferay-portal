@@ -1549,7 +1549,7 @@ definition {
 				category = "Content & Data",
 				portlet = "Web Content");
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_webContentTitle = "WC Folder Name",
 				locator1 = "WC#ENTRY_LIST_MENULIST_ICON");
 

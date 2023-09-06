@@ -43,7 +43,7 @@ definition {
 		task ("When the Template creator opens the dropdown menu of information template") {
 			InformationTemplates.openInformationTemplatesAdmin(siteURLKey = "test-site-name");
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_tableEntry = "Test Information Template",
 				locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
 		}
@@ -71,7 +71,7 @@ definition {
 		}
 
 		task ("When the Template creator opens the dropdown menu of widget template") {
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_tableEntry = "Breadcrumb Test ADT",
 				locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
 		}

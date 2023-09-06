@@ -309,7 +309,7 @@ definition {
 		}
 
 		task ("When go to asset publisher ADT dropdown menu") {
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_tableEntry = "Asset Publisher Test ADT",
 				locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
 		}
