@@ -1120,7 +1120,7 @@ definition {
 		task ("When the Fragments creator opens the dropdown menu of custom fragment") {
 			FragmentsAdminNavigator.openFragmentsAdmin(siteURLKey = ${siteURLKey});
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_card = "Fragment Name",
 				locator1 = "Card#CARD_ELLIPSIS");
 		}
@@ -1130,7 +1130,7 @@ definition {
 		}
 
 		task ("When the Fragments creator opens the dropdown menu of custom fragment set") {
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_headerName = "New Fragment Set Name",
 				locator1 = "Portlet#H2_HEADER_VERTICAL_ELLIPSIS");
 		}
@@ -1140,7 +1140,7 @@ definition {
 		}
 
 		task ("When the Fragments creator opens the dropdown menu on the Fragment Sets") {
-			Click.waitForMenuToggleJSClick(locator1 = "NavNested#NAV_NESTED_ELLIPSIS");
+			Click(locator1 = "NavNested#NAV_NESTED_ELLIPSIS");
 		}
 
 		task ("Then the Fragments creator can see the new icons on the dropdown menu of Framents Sets") {
@@ -1468,7 +1468,7 @@ definition {
 				card = "Fragment Name",
 				cardSubtitle = "0 Usages");
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_card = "Fragment Name",
 				locator1 = "Card#CARD_ELLIPSIS");
 
@@ -1624,7 +1624,7 @@ if (layoutMode === 'edit') {
 				card = "Fragment Name",
 				cardSubtitle = "0 Usages");
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_card = "Fragment Name",
 				locator1 = "Card#CARD_ELLIPSIS");
 

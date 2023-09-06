@@ -28,7 +28,7 @@ definition {
 
 		WaitForPageLoad();
 
-		Click.waitForMenuToggleJSClick(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
+		Click(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
 
 		if (IsElementPresent(key_menuItem = "Configuration", locator1 = "MenuItem#DROPDOWN_MENU_ITEM")) {
 			PagesAdmin.addPage(pageName = "Test Page1");
@@ -91,7 +91,7 @@ definition {
 
 				WaitForPageLoad();
 
-				Click.waitForMenuToggleJSClick(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
+				Click(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
 
 				if (IsElementPresent(key_menuItem = "Configuration", locator1 = "MenuItem#DROPDOWN_MENU_ITEM")) {
 					ContentPages.addPage(pageName = ${contentPageName});

@@ -7,7 +7,7 @@ definition {
 				locator1 = "LexiconList#LIST_ENTRY_ELLIPSIS");
 		}
 		else {
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_listEntry = ${listEntry},
 				locator1 = "LexiconList#LIST_ENTRY_ELLIPSIS");
 		}

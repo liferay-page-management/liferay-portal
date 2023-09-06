@@ -523,7 +523,7 @@ definition {
 					locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON_INDEX",
 					portletIndex = ${portletIndex});
 
-				Click.waitForMenuToggleJSClick(
+				Click(
 					locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON_INDEX",
 					portletIndex = ${portletIndex});
 			}

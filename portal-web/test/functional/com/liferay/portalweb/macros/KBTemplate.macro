@@ -121,7 +121,7 @@ definition {
 			key_itemLinkName = ${kbTemplateTitle},
 			locator1 = "KnowledgeBase#PAGE_TREE_ITEM_LINK");
 
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_itemName = ${kbTemplateTitle},
 			locator1 = "KnowledgeBase#PAGE_TREE_ITEM_ELLIPSIS");
 

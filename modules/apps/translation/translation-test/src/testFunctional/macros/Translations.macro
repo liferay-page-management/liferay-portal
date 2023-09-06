@@ -277,7 +277,7 @@ definition {
 		else {
 			LexiconEntry.changeDisplayStyle(displayStyle = "list");
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_webContentTitle = ${webContentTitle},
 				locator1 = "WC#ENTRY_LIST_MENULIST_ICON");
 		}
@@ -294,7 +294,7 @@ definition {
 				locator1 = "PagesAdmin#LIST_GROUP_ITEM_ELLIPSIS_ICON");
 		}
 		else {
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_webContentTitle = ${webContentTitle},
 				locator1 = "WC#ENTRY_LIST_MENULIST_ICON");
 		}
@@ -303,7 +303,7 @@ definition {
 	}
 
 	macro gotoTranslate {
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_webContentTitle = ${webContentTitle},
 			locator1 = "WC#ENTRY_LIST_MENULIST_ICON");
 
@@ -1043,7 +1043,7 @@ definition {
 	macro viewTranslationOptions {
 		LexiconEntry.changeDisplayStyle(displayStyle = "list");
 
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_webContentTitle = ${webContentTitle},
 			locator1 = "WC#ENTRY_LIST_MENULIST_ICON");
 

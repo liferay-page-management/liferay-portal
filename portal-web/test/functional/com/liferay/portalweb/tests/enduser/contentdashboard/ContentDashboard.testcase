@@ -1603,7 +1603,7 @@ definition {
 		task ("Check in Content Dashboard if view option is NOT avalible for this WC") {
 			ContentDashboard.goToContentDashboard();
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_tableEntry = "Web Content Title",
 				locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
 
@@ -1650,7 +1650,7 @@ definition {
 		task ("Check in Content Dashboard if view option is NOT avalible for this WC") {
 			ContentDashboard.goToContentDashboard();
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_tableEntry = "Web Content Title",
 				locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
 
@@ -2152,7 +2152,7 @@ definition {
 		}
 
 		task ("Assert the view and edit options are not available") {
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_tableEntry = "Blogs Entry Title",
 				locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
 
@@ -2911,7 +2911,7 @@ definition {
 		}
 
 		task ("When there are more than one version entry And the user clicks on the kebab menu of the first entry") {
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_tableEntry = "1.1",
 				locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
 		}
@@ -3020,7 +3020,7 @@ definition {
 		}
 
 		task ("When there's only one version entry And the user clicks on the kebab menu of the unique entry") {
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_tableEntry = "DM Document Title",
 				locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
 		}
@@ -3113,7 +3113,7 @@ definition {
 		}
 
 		task ("When there are more than one version entry And the user clicks on the kebab menu of any entry different than the first one") {
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_tableEntry = "1.0",
 				locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
 		}

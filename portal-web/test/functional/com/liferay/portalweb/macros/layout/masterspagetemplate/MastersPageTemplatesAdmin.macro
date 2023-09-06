@@ -33,7 +33,7 @@ definition {
 	}
 
 	macro gotoMastersEllipsisItem {
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_card = ${masterLayoutName},
 			locator1 = "Card#CARD_ELLIPSIS");
 
@@ -41,7 +41,7 @@ definition {
 	}
 
 	macro importMastersFromTempFolder {
-		Click.waitForMenuToggleJSClick(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
+		Click(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
 
 		MenuItem.click(menuItem = "Import");
 

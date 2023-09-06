@@ -41,7 +41,7 @@ definition {
 	macro subscribeToNodeCP {
 		var key_wikiNodeName = ${wikiNodeName};
 
-		Click.waitForMenuToggleJSClick(locator1 = "Wiki#NODE_TABLE_ACTIONS_DROPDOWN");
+		Click(locator1 = "Wiki#NODE_TABLE_ACTIONS_DROPDOWN");
 
 		WaitForLiferayEvent.initializeLiferayEventLog();
 
@@ -49,7 +49,7 @@ definition {
 
 		Alert.viewSuccessMessage();
 
-		Click.waitForMenuToggleJSClick(locator1 = "Wiki#NODE_TABLE_ACTIONS_DROPDOWN");
+		Click(locator1 = "Wiki#NODE_TABLE_ACTIONS_DROPDOWN");
 
 		MenuItem.viewPresent(menuItem = "Unsubscribe");
 	}

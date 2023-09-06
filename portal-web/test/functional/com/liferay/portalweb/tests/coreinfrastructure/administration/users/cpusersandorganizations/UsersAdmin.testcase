@@ -1386,7 +1386,7 @@ definition {
 
 		User.viewNotPrimary(primaryValue = "4000 Westchase Blvd");
 
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_listEntry = "205 West Wacker Dr",
 			locator1 = "LexiconList#LIST_ENTRY_ELLIPSIS");
 

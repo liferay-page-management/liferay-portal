@@ -4241,7 +4241,7 @@ return	Array.from(getWebElement("(//div[@aria-label='${fragmentName}'])[${index}
 
 		PageEditor.clickConfigurableField(fragmentName = ${fragmentName});
 
-		Click.waitForMenuToggleJSClick(locator1 = "Fragment#FRAGMENT_HEADER_ELLIPSIS");
+		Click(locator1 = "Fragment#FRAGMENT_HEADER_ELLIPSIS");
 
 		MenuItem.click(menuItem = "Duplicate");
 	}
@@ -4331,7 +4331,7 @@ return	Array.from(getWebElement("(//div[@aria-label='${fragmentName}'])[${index}
 
 		PageEditor.clickConfigurableField(fragmentName = ${fragmentName});
 
-		Click.waitForMenuToggleJSClick(locator1 = "Fragment#FRAGMENT_HEADER_ELLIPSIS");
+		Click(locator1 = "Fragment#FRAGMENT_HEADER_ELLIPSIS");
 
 		MenuItem.click(menuItem = "Save Composition");
 	}
@@ -4413,7 +4413,7 @@ return	Array.from(getWebElement("(//div[@aria-label='${fragmentName}'])[${index}
 
 		PageEditor.clickConfigurableField(fragmentName = ${fragmentName});
 
-		Click.waitForMenuToggleJSClick(locator1 = "Fragment#FRAGMENT_HEADER_ELLIPSIS");
+		Click(locator1 = "Fragment#FRAGMENT_HEADER_ELLIPSIS");
 
 		MenuItem.click(menuItem = "Hide Fragment");
 
@@ -4570,7 +4570,7 @@ return	Array.from(getWebElement("(//div[@aria-label='${fragmentName}'])[${index}
 			fragmentName = ${fragmentName},
 			index = ${index});
 
-		Click.waitForMenuToggleJSClick(locator1 = "Fragment#FRAGMENT_HEADER_ELLIPSIS");
+		Click(locator1 = "Fragment#FRAGMENT_HEADER_ELLIPSIS");
 
 		MenuItem.click(menuItem = "Delete");
 
@@ -4658,7 +4658,7 @@ return	Array.from(getWebElement("(//div[@aria-label='${fragmentName}'])[${index}
 
 		Modal.gotoNavTab(navTab = ${navTab});
 
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_card = ${setName},
 			locator1 = "Card#CARD_ELLIPSIS");
 

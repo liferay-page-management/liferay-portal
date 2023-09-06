@@ -352,7 +352,7 @@ definition {
 	}
 
 	macro configureIdentityProviderConnection {
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_samlEntityId = ${samlEntityId},
 			locator1 = "CPSAMLAdmin#SAML_CONNECTION_ACTION_BUTTON");
 
@@ -382,7 +382,7 @@ definition {
 	}
 
 	macro configureServiceProviderConnection {
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_samlEntityId = ${samlEntityId},
 			locator1 = "CPSAMLAdmin#SAML_CONNECTION_ACTION_BUTTON");
 
@@ -396,7 +396,7 @@ definition {
 	}
 
 	macro deleteSAMLConnection {
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_samlEntityId = ${samlEntityId},
 			locator1 = "CPSAMLAdmin#SAML_CONNECTION_ACTION_BUTTON");
 

@@ -45,7 +45,7 @@ definition {
 		}
 
 		task ("Assert Export action is disabled") {
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_card = "Custom Masters Page Template",
 				locator1 = "Card#CARD_ELLIPSIS");
 
@@ -488,7 +488,7 @@ definition {
 				key_portletName = "Category Filter",
 				locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_portletName = "Category Filter",
 				locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
 
@@ -544,7 +544,7 @@ definition {
 				key_portletName = "Category Filter",
 				locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
 
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_portletName = "Category Filter",
 				locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
 
@@ -656,7 +656,7 @@ definition {
 		task ("Import masters page template in the current site") {
 			MastersPageTemplatesAdmin.openMastersAdmin(siteURLKey = "test-site-name");
 
-			Click.waitForMenuToggleJSClick(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
+			Click(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
 
 			MenuItem.click(menuItem = "Import");
 
@@ -692,7 +692,7 @@ definition {
 		task ("Import masters page template with invalid value") {
 			MastersPageTemplatesAdmin.openMastersAdmin(siteURLKey = "test-site-name");
 
-			Click.waitForMenuToggleJSClick(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
+			Click(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
 
 			MenuItem.click(menuItem = "Import");
 

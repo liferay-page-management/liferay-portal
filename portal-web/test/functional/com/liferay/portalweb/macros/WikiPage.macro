@@ -616,7 +616,7 @@ definition {
 
 		var key_wikiPageVersion = ${wikiPageVersionNew};
 
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_wikiPageVersion = ${wikiPageVersionNew},
 			locator1 = "Wiki#COMPARE_VERSIONS_VERSION_ACTIONS");
 
@@ -1088,7 +1088,7 @@ definition {
 
 		var key_wikiPageRevision = "1.0";
 
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_wikiPageRevision = ${wikiPageRevision},
 			locator1 = "Wiki#HISTORY_VERSIONS_ACTIONS");
 
@@ -1125,7 +1125,7 @@ definition {
 
 		var key_wikiPageRevision = ${wikiPageRevisionOld};
 
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_wikiPageRevision = ${wikiPageRevision},
 			locator1 = "Wiki#HISTORY_VERSIONS_ACTIONS");
 

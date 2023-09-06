@@ -296,7 +296,7 @@ definition {
 		}
 
 		task ("When the page designer opens the dropdown menu of Text Input fragment's topper bar") {
-			Click.waitForMenuToggleJSClick(
+			Click(
 				key_fragmentName = "Text Input",
 				locator1 = "Fragment#FRAGMENT_HEADER_ELLIPSIS");
 		}

@@ -143,7 +143,7 @@ definition {
 	macro exportCollection {
 		Navigator.gotoNavNested(navNested = ${collectionName});
 
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_headerName = ${collectionName},
 			locator1 = "Portlet#H2_HEADER_VERTICAL_ELLIPSIS");
 
@@ -215,7 +215,7 @@ definition {
 	macro importFragmentFromTempFolder {
 		WaitForLiferayEvent.initializeLiferayEventLog();
 
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_headerName = ${collectionName},
 			locator1 = "Portlet#H2_HEADER_VERTICAL_ELLIPSIS");
 

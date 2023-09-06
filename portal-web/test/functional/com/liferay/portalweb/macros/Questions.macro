@@ -744,7 +744,7 @@ definition {
 	}
 
 	macro unsubscribeFromQuestion {
-		Click.waitForMenuToggleJSClick(
+		Click(
 			key_questionTitle = ${questionTitle},
 			locator1 = "Questions#QUESTIONS_ELLIPSIS_ICON");
 
