@@ -514,12 +514,12 @@ definition {
 				AssertVisible(locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
 			}
 			else if (${siteTemplate} == "true") {
-				MouseOver.waitForMenuToggleJSMouseOver(locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
+				MouseOver(locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
 
 				Click(locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
 			}
 			else if (isSet(portletIndex)) {
-				MouseOver.waitForMenuToggleJSMouseOver(
+				MouseOver(
 					locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON_INDEX",
 					portletIndex = ${portletIndex});
 
@@ -528,13 +528,13 @@ definition {
 					portletIndex = ${portletIndex});
 			}
 			else {
-				MouseOver.waitForMenuToggleJSMouseOver(locator1 = "Portlet#SPECIFIC_PORTLET_SECTION");
+				MouseOver(locator1 = "Portlet#SPECIFIC_PORTLET_SECTION");
 
 				Click.javaScriptClick(locator1 = "Portlet#SPECIFIC_BORDERLESS_ELLIPSIS_ICON");
 			}
 		}
 		else {
-			MouseOver.waitForMenuToggleJSMouseOver(locator1 = "Portlet#PORTLET_SECTION");
+			MouseOver(locator1 = "Portlet#PORTLET_SECTION");
 
 			Click(locator1 = "Portlet#OPTIONS_ICON");
 		}
