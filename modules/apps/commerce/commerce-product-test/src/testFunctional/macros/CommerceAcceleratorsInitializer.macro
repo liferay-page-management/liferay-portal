@@ -281,7 +281,7 @@ definition {
 	macro removePortlet {
 		var key_portletName = ${portletName};
 
-		MouseOver.waitForMenuToggleJSMouseOver(locator1 = "Portlet#SPECIFIC_PORTLET_SECTION");
+		MouseOver(locator1 = "Portlet#SPECIFIC_PORTLET_SECTION");
 
 		Click(locator1 = "Portlet#SPECIFIC_ELLIPSIS_ICON");
 
