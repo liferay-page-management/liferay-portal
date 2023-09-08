@@ -76,31 +76,30 @@ public interface LayoutPageTemplateCollectionService extends BaseService {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<LayoutPageTemplateCollection> getLayoutPageTemplateCollections(
-		long groupId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<LayoutPageTemplateCollection> getLayoutPageTemplateCollections(
 		long groupId, int type);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<LayoutPageTemplateCollection> getLayoutPageTemplateCollections(
-		long groupId, int start, int end);
+		long groupId, int start, int end, int type);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<LayoutPageTemplateCollection> getLayoutPageTemplateCollections(
 		long groupId, int start, int end,
-		OrderByComparator<LayoutPageTemplateCollection> orderByComparator);
+		OrderByComparator<LayoutPageTemplateCollection> orderByComparator,
+		int type);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<LayoutPageTemplateCollection> getLayoutPageTemplateCollections(
 		long groupId, String name, int start, int end,
-		OrderByComparator<LayoutPageTemplateCollection> orderByComparator);
+		OrderByComparator<LayoutPageTemplateCollection> orderByComparator,
+		int type);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getLayoutPageTemplateCollectionsCount(long groupId);
+	public int getLayoutPageTemplateCollectionsCount(long groupId, int type);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getLayoutPageTemplateCollectionsCount(long groupId, String name);
+	public int getLayoutPageTemplateCollectionsCount(
+		long groupId, String name, int type);
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -111,7 +110,7 @@ public interface LayoutPageTemplateCollectionService extends BaseService {
 
 	public LayoutPageTemplateCollection updateLayoutPageTemplateCollection(
 			long layoutPageTemplateCollectionId, String name,
-			String description)
+			String description, int type)
 		throws PortalException;
 
 }
