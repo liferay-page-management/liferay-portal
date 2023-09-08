@@ -74,6 +74,8 @@ public class WorkflowConstants {
 
 	public static final String LABEL_SCHEDULED = "scheduled";
 
+	public static final String LABEL_WARNING = "warnings";
+
 	public static final String RESOURCE_NAME = "com.liferay.portal.workflow";
 
 	public static final String SERVICE_NAME = "com.liferay.portal.workflow";
@@ -97,6 +99,8 @@ public class WorkflowConstants {
 	public static final int STATUS_PENDING = 1;
 
 	public static final int STATUS_SCHEDULED = 7;
+
+	public static final int STATUS_WARNING = 9;
 
 	public static final int TYPE_ASSIGN = 10000;
 
@@ -168,6 +172,9 @@ public class WorkflowConstants {
 		else if (status == STATUS_SCHEDULED) {
 			return LABEL_SCHEDULED;
 		}
+		else if (status == STATUS_WARNING) {
+			return LABEL_WARNING;
+		}
 
 		return LABEL_ANY;
 	}
@@ -203,6 +210,9 @@ public class WorkflowConstants {
 		else if (status == STATUS_SCHEDULED) {
 			return LABEL_SCHEDULED;
 		}
+		else if (status == STATUS_WARNING) {
+			return LABEL_WARNING;
+		}
 
 		return LABEL_ANY;
 	}
@@ -234,6 +244,9 @@ public class WorkflowConstants {
 		}
 		else if (status == WorkflowConstants.STATUS_SCHEDULED) {
 			return "info";
+		}
+		else if (status == WorkflowConstants.STATUS_WARNING) {
+			return "warning";
 		}
 
 		return "secondary";
