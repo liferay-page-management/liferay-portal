@@ -29,22 +29,17 @@ if (assetVocabulary != null) {
 	displayStyleGroupId="<%= cpAssetCategoriesNavigationDisplayContext.getDisplayStyleGroupId() %>"
 	entries="<%= assetCategories %>"
 >
-	<liferay-ui:panel-container
+	<clay:sheet-section
 		cssClass="taglib-asset-categories-navigation"
-		extended="<%= true %>"
-		id='<%= liferayPortletResponse.getNamespace() + "taglibAssetCategoriesNavigationPanel" %>'
-		persistState="<%= true %>"
 	>
-		<liferay-ui:panel
-			collapsible="<%= false %>"
-			extended="<%= true %>"
-			markupView="lexicon"
-			persistState="<%= true %>"
-			title="<%= HtmlUtil.escape(vocabularyTitle) %>"
-		>
+		<h2 class="sheet-title">
+			<%= HtmlUtil.escape(vocabularyTitle) %>
+		</h2>
+
+		<div id="<portlet:namespace />taglibAssetCategoriesNavigationPanel">
 			<%= vocabularyNavigation %>
-		</liferay-ui:panel>
-	</liferay-ui:panel-container>
+		</div>
+	</clay:sheet-section>
 
 	<aui:script use="aui-tree-view">
 		var treeViews = A.all(
