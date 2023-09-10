@@ -63,68 +63,59 @@ CPOptionsSearchFacetDisplayContext cpOptionsSearchFacetDisplayContext = (CPOptio
 								displayStyleGroupId="<%= cpOptionsSearchFacetDisplayContext.getDisplayStyleGroupId() %>"
 								entries="<%= cpOptionsSearchFacetDisplayContext.getTermDisplayContexts() %>"
 							>
+								<clay:panel-group>
+									<clay:panel
+										collapseClassNames="search-facet"
+										displayTitle="<%= HtmlUtil.escape(cpOptionsSearchFacetDisplayContext.getCPOptionName(companyId, facet.getFieldId())) %>"
+										expanded="<%= true %>"
+									>
+										<c:if test="<%= cpOptionsSearchFacetDisplayContext.isShowClear(companyId, facet.getFieldName()) %>">
+											<aui:button cssClass="btn-link btn-unstyled facet-clear-btn" onClick="Liferay.Search.FacetUtil.clearSelections(event);" value="clear" />
+										</c:if>
 
-							<liferay-ui:panel-container
-								extended="<%= true %>"
-								id='<%= liferayPortletResponse.getNamespace() + "facetCPOptionsPanelContainer" %>'
-								markupView="lexicon"
-								persistState="<%= true %>"
-							>
-							<liferay-ui:panel
-								collapsible="<%= true %>"
-								cssClass="search-facet"
-								id='<%= liferayPortletResponse.getNamespace() + "facetCPOptionsPanel" %>'
-								markupView="lexicon"
-								persistState="<%= true %>"
-								title="<%= HtmlUtil.escape(cpOptionsSearchFacetDisplayContext.getCPOptionName(companyId, facet.getFieldId())) %>"
-							>
-								<c:if test="<%= cpOptionsSearchFacetDisplayContext.isShowClear(companyId, facet.getFieldName()) %>">
-									<aui:button cssClass="btn-link btn-unstyled facet-clear-btn" onClick="Liferay.Search.FacetUtil.clearSelections(event);" value="clear" />
-								</c:if>
+										<aui:fieldset>
+											<ul class="list-unstyled" data-qa-id="<%= HtmlUtil.escape(cpOptionsSearchFacetDisplayContext.getCPOptionName(companyId, facet.getFieldId())) %>">
 
-							<aui:fieldset>
-								<ul class="list-unstyled" data-qa-id="<%= HtmlUtil.escape(cpOptionsSearchFacetDisplayContext.getCPOptionName(companyId, facet.getFieldId())) %>">
+											<%
+											int i = 0;
 
-								<%
-								int i = 0;
+											for (TermCollector termCollector : termCollectors) {
+												i++;
+											%>
 
-								for (TermCollector termCollector : termCollectors) {
-									i++;
-								%>
+											<li class="facet-value">
+												<div class="custom-checkbox custom-control">
+													<label for="<portlet:namespace />term_<%= facet.getFieldName() + i %>">
+														<input
+															class="custom-control-input facet-term"
+															data-term-id="<%= HtmlUtil.escapeAttribute(termCollector.getTerm()) %>"
+															id="<portlet:namespace />term_<%= facet.getFieldName() + i %>"
+															name="<portlet:namespace />term_<%= facet.getFieldName() + i %>"
+															onChange="Liferay.Search.FacetUtil.changeSelection(event);"
+															type="checkbox"
+															<%= cpOptionsSearchFacetDisplayContext.isCPOptionValueSelected(companyId, facet.getFieldName(), termCollector.getTerm()) ? "checked" : "" %>
+														/>
 
-								<li class="facet-value">
-									<div class="custom-checkbox custom-control">
-										<label for="<portlet:namespace />term_<%= facet.getFieldName() + i %>">
-											<input
-												class="custom-control-input facet-term"
-												data-term-id="<%= HtmlUtil.escapeAttribute(termCollector.getTerm()) %>"
-												id="<portlet:namespace />term_<%= facet.getFieldName() + i %>"
-												name="<portlet:namespace />term_<%= facet.getFieldName() + i %>"
-												onChange="Liferay.Search.FacetUtil.changeSelection(event);"
-												type="checkbox"
-												<%= cpOptionsSearchFacetDisplayContext.isCPOptionValueSelected(companyId, facet.getFieldName(), termCollector.getTerm()) ? "checked" : "" %>
-											/>
+														<span class="custom-control-label term-name <%= cpOptionsSearchFacetDisplayContext.isCPOptionValueSelected(companyId, facet.getFieldName(), termCollector.getTerm()) ? "facet-term-selected" : "facet-term-unselected" %>">
+															<span class="custom-control-label-text"><%= HtmlUtil.escape(termCollector.getTerm()) %></span>
+														</span>
 
-											<span class="custom-control-label term-name <%= cpOptionsSearchFacetDisplayContext.isCPOptionValueSelected(companyId, facet.getFieldName(), termCollector.getTerm()) ? "facet-term-selected" : "facet-term-unselected" %>">
-												<span class="custom-control-label-text"><%= HtmlUtil.escape(termCollector.getTerm()) %></span>
-											</span>
+														<c:if test='<%= GetterUtil.getBoolean(portletPreferences.getValue("frequenciesVisible", null), true) %>'>
+															<small class="term-count">
+																(<%= termCollector.getFrequency() %>)
+															</small>
+														</c:if>
+													</label>
+												</div>
+											</li>
 
-											<c:if test='<%= GetterUtil.getBoolean(portletPreferences.getValue("frequenciesVisible", null), true) %>'>
-												<small class="term-count">
-													(<%= termCollector.getFrequency() %>)
-												</small>
-											</c:if>
-										</label>
-									</div>
-								</li>
+											<%
+											}
+											%>
 
-								<%
-								}
-								%>
-
-							</aui:fieldset>
-							</liferay-ui:panel>
-							</liferay-ui:panel-container>
+										</aui:fieldset>
+									</clay:panel>
+								</clay:panel-group>
 							</liferay-ddm:template-renderer>
 						</aui:form>
 					</c:if>

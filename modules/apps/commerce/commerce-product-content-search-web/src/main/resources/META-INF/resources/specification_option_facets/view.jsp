@@ -60,19 +60,11 @@ CPSpecificationOptionFacetsDisplayContext cpSpecificationOptionFacetsDisplayCont
 					displayStyleGroupId="<%= cpSpecificationOptionFacetsDisplayContext.getDisplayStyleGroupId() %>"
 					entries="<%= cpSpecificationOptionsSearchFacetDisplayContext.getTermDisplayContexts() %>"
 				>
-					<liferay-ui:panel-container
-						extended="<%= true %>"
-						id="<%= panelContainerId %>"
-						markupView="lexicon"
-						persistState="<%= true %>"
-					>
-						<liferay-ui:panel
-							collapsible="<%= true %>"
-							cssClass="search-facet"
-							id="<%= panelId %>"
-							markupView="lexicon"
-							persistState="<%= true %>"
-							title="<%= panelTitle %>"
+					<clay:panel-group>
+						<clay:panel
+							collapseClassNames="search-facet"
+							displayTitle="<%= panelTitle %>"
+							expanded="<%= true %>"
 						>
 							<c:if test="<%= cpSpecificationOptionsSearchFacetDisplayContext.isShowClear() %>">
 								<aui:button cssClass="btn-link btn-unstyled facet-clear-btn" onClick="Liferay.Search.FacetUtil.clearSelections(event);" value="clear" />
@@ -120,8 +112,8 @@ CPSpecificationOptionFacetsDisplayContext cpSpecificationOptionFacetsDisplayCont
 
 								</ul>
 							</aui:fieldset>
-						</liferay-ui:panel>
-					</liferay-ui:panel-container>
+						</clay:panel>
+					</clay:panel-group>
 				</liferay-ddm:template-renderer>
 			</aui:form>
 
