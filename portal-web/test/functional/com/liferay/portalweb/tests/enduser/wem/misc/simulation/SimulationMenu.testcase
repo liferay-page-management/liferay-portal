@@ -117,7 +117,7 @@ definition {
 				pageName = "Test Page Name",
 				siteName = ${randomSiteName});
 
-			Click(locator1 = "ControlMenu#SIMULATION");
+			Click.waitForMenuToggleJSClick(locator1 = "ControlMenu#SIMULATION");
 		}
 
 		task ("Then the site administrator could preview content by experience") {
@@ -356,7 +356,7 @@ definition {
 		}
 
 		task ("When the site administrator accesses to the simulation menu") {
-			Click(locator1 = "ControlMenu#SIMULATION");
+			Click.waitForMenuToggleJSClick(locator1 = "ControlMenu#SIMULATION");
 		}
 
 		task ("Then the site administrator could preview content by segment") {
@@ -455,7 +455,7 @@ definition {
 				pageName = "Test Page Name",
 				siteName = ${randomSiteName});
 
-			Click(locator1 = "ControlMenu#SIMULATION");
+			Click.waitForMenuToggleJSClick(locator1 = "ControlMenu#SIMULATION");
 		}
 
 		task ("Then the site administrator sees empty message on page content section") {
@@ -473,7 +473,7 @@ definition {
 		}
 
 		task ("When the site administrator adds an experience on content page") {
-			Click(locator1 = "ControlMenu#SIMULATION");
+			Click.waitForMenuToggleJSClick(locator1 = "ControlMenu#SIMULATION");
 
 			ContentPages.gotoPageEditor();
 
@@ -490,7 +490,7 @@ definition {
 		}
 
 		task ("Then the site administrator cannot see the experience selector on control menu after opening the simulation menu") {
-			Click(locator1 = "ControlMenu#SIMULATION");
+			Click.waitForMenuToggleJSClick(locator1 = "ControlMenu#SIMULATION");
 
 			AssertElementNotPresent(
 				ariaLabel = "Experience Selector",
