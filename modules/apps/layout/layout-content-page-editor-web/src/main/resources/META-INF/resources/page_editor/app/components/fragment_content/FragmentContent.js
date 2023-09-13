@@ -26,6 +26,7 @@ import {
 import selectCanConfigureWidgets from '../../selectors/selectCanConfigureWidgets';
 import selectLanguageId from '../../selectors/selectLanguageId';
 import selectSegmentsExperienceId from '../../selectors/selectSegmentsExperienceId';
+import updateEditableValues from '../../thunks/updateEditableValues';
 import resolveEditableConfig from '../../utils/editable_value/resolveEditableConfig';
 import resolveEditableValue from '../../utils/editable_value/resolveEditableValue';
 import getLayoutDataItemCssClasses from '../../utils/getLayoutDataItemCssClasses';
@@ -156,6 +157,37 @@ const FragmentContent = ({
 
 			Promise.all(
 				getAllEditables(fragmentElement).map((editable) => {
+					if (!editableValues[editable.editableValueNamespace]) {
+						dispatch(
+							updateEditableValues({
+								editableValues: {
+									...editableValues,
+									[editable.editableValueNamespace]: {
+										...editableValues[
+											editable.editableValueNamespace
+										],
+										[editable.editableId]: {
+											config: {},
+											defaultValue:
+												fragmentElement.innerText,
+										},
+									},
+								},
+								fragmentEntryLinkId,
+							})
+						);
+						const newEditables = getAllEditables(
+							fragmentElement
+						).map((editable) => ({
+							...editable,
+							fragmentEntryLinkId,
+							itemId: `${fragmentEntryLinkId}-${editable.editableId}`,
+							parentId: item.itemId,
+						}));
+
+						setEditables(newEditables);
+					}
+
 					const editableValue =
 						editableValues[editable.editableValueNamespace][
 							editable.editableId
@@ -212,6 +244,7 @@ const FragmentContent = ({
 		isBeingEdited,
 		isMounted,
 		isProcessorEnabled,
+		item.itemId,
 		languageId,
 		segmentsExperienceId,
 		toControlsId,
