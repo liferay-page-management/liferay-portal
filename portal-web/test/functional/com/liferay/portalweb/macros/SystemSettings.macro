@@ -97,7 +97,7 @@ definition {
 	}
 
 	macro deleteConfiguration {
-		Click(locator1 = "Icon#BODY_VERTICAL_ELLIPSIS");
+		Click.waitForMenuToggleJSClick(locator1 = "Icon#BODY_VERTICAL_ELLIPSIS");
 
 		MenuItem.click(menuItem = "Delete");
 
@@ -170,7 +170,7 @@ definition {
 	}
 
 	macro exportConfiguration {
-		Click(locator1 = "Icon#BODY_VERTICAL_ELLIPSIS");
+		Click.waitForMenuToggleJSClick(locator1 = "Icon#BODY_VERTICAL_ELLIPSIS");
 
 		MenuItem.click(menuItem = "Export");
 
@@ -275,7 +275,7 @@ definition {
 	}
 
 	macro resetConfiguration {
-		Click(locator1 = "Icon#BODY_VERTICAL_ELLIPSIS");
+		Click.waitForMenuToggleJSClick(locator1 = "Icon#BODY_VERTICAL_ELLIPSIS");
 
 		MenuItem.click(menuItem = "Reset Default Values");
 

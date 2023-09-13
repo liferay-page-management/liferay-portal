@@ -96,7 +96,7 @@ definition {
 	}
 
 	macro gotoEllipsisMenuItem {
-		Click(locator1 = "Icon#BODY_VERTICAL_ELLIPSIS");
+		Click.waitForMenuToggleJSClick(locator1 = "Icon#BODY_VERTICAL_ELLIPSIS");
 
 		WaitForLiferayEvent.initializeLiferayEventLog();
 
@@ -104,7 +104,7 @@ definition {
 	}
 
 	macro gotoEllipsisMenuItemNoError {
-		Click(locator1 = "Icon#BODY_VERTICAL_ELLIPSIS");
+		Click.waitForMenuToggleJSClick(locator1 = "Icon#BODY_VERTICAL_ELLIPSIS");
 
 		MenuItem.clickNoError(menuItem = ${menuItem});
 	}
@@ -165,7 +165,7 @@ definition {
 	}
 
 	macro gotoVerticalEllipsisMenuItemNoError {
-		Click(locator1 = "Icon#VERTICAL_ELLIPSIS_BUTTON");
+		Click.waitForMenuToggleJSClick(locator1 = "Icon#VERTICAL_ELLIPSIS_BUTTON");
 
 		MenuItem.clickNoError(menuItem = ${menuItem});
 	}
@@ -174,12 +174,12 @@ definition {
 		var browserType = PropsUtil.get("browser.type");
 
 		if (${browserType} == "safari") {
-			Click(
+			Click.waitForMenuToggleJSClick(
 				key_rowEntry = ${rowEntry},
 				locator1 = "Icon#ROW_VERTICAL_ELLIPSIS_SAFARI");
 		}
 		else {
-			Click(
+			Click.waitForMenuToggleJSClick(
 				key_rowEntry = ${rowEntry},
 				locator1 = "Icon#ROW_VERTICAL_ELLIPSIS");
 		}

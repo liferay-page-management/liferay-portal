@@ -1468,7 +1468,7 @@ definition {
 	}
 
 	macro downloadCP {
-		Click(
+		Click.waitForMenuToggleJSClick(
 			key_rowEntry = ${dmDocumentTitle},
 			locator1 = "Icon#ROW_VERTICAL_ELLIPSIS");
 
@@ -1971,7 +1971,7 @@ definition {
 	}
 
 	macro editPGViaMG {
-		Click(
+		Click.waitForMenuToggleJSClick(
 			key_card = ${mgDocumentTitle},
 			locator1 = "Card#CARD_ELLIPSIS");
 

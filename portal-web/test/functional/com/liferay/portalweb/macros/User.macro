@@ -2305,7 +2305,7 @@ definition {
 	// This new macro is created after LPS-168612. Once Contact Information are fixed the same way as LPS-168612, then we can consolidate this macro and User.makePrimary
 
 	macro makeAddressPrimary {
-		Click(
+		Click.waitForMenuToggleJSClick(
 			key_listEntry = ${listEntry},
 			locator1 = "LexiconList#LIST_ENTRY_ELLIPSIS");
 
@@ -2313,7 +2313,7 @@ definition {
 	}
 
 	macro makePrimary {
-		Click(
+		Click.waitForMenuToggleJSClick(
 			key_rowEntry = ${rowEntry},
 			locator1 = "Icon#TABLE_VERTICAL_ELLIPSIS");
 
@@ -2329,7 +2329,7 @@ definition {
 	// This new macro is created after LPS-168612. Once Contact Information are fixed the same way as LPS-168612, then we can consolidate this macro and User.removeContactInformation
 
 	macro removeAddress {
-		Click(
+		Click.waitForMenuToggleJSClick(
 			key_listEntry = ${listEntry},
 			locator1 = "LexiconList#LIST_ENTRY_ELLIPSIS");
 
@@ -2337,7 +2337,7 @@ definition {
 	}
 
 	macro removeContactInformation {
-		Click(
+		Click.waitForMenuToggleJSClick(
 			key_rowEntry = ${rowEntry},
 			locator1 = "Icon#TABLE_VERTICAL_ELLIPSIS");
 
@@ -2552,7 +2552,7 @@ definition {
 		MenuItem.click(menuItem = "Active");
 
 		while (IsElementPresent(key_rowNumber = 2, locator1 = "ContentRow#ENTRY_CONTENT_ROW_NUMBER")) {
-			Click(
+			Click.waitForMenuToggleJSClick(
 				key_rowNumber = 2,
 				locator1 = "ContentRow#ENTRY_CONTENT_ROW_NUMBER_ELLIPSIS");
 

@@ -107,7 +107,7 @@ definition {
 			key_itemName = ${kbFolderName},
 			locator1 = "KnowledgeBase#PAGE_TREE_ITEM_NAME");
 
-		Click(
+		Click.waitForMenuToggleJSClick(
 			key_itemName = ${kbFolderName},
 			locator1 = "KnowledgeBase#PAGE_TREE_ITEM_ELLIPSIS");
 

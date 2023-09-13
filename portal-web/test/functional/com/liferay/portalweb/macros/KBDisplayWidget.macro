@@ -318,7 +318,7 @@ definition {
 	}
 
 	macro viewDefaultKBDisplaySettingsPG {
-		Click(locator1 = "Icon#VERTICAL_ELLIPSIS_BUTTON");
+		Click.waitForMenuToggleJSClick(locator1 = "Icon#VERTICAL_ELLIPSIS_BUTTON");
 
 		MenuItem.viewVisible(menuItem = "Subscribe");
 
@@ -359,7 +359,7 @@ definition {
 				locator1 = "Google#PAGE_TITLE");
 		}
 
-		Click(locator1 = "Icon#VERTICAL_ELLIPSIS_BUTTON");
+		Click.waitForMenuToggleJSClick(locator1 = "Icon#VERTICAL_ELLIPSIS_BUTTON");
 
 		if (${subscribe} == "true") {
 			MenuItem.viewVisible(menuItem = "Subscribe");

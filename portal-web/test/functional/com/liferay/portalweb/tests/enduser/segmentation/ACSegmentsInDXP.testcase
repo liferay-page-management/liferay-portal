@@ -102,7 +102,7 @@ definition {
 				Refresh();
 			}
 
-			Click(
+			Click.waitForMenuToggleJSClick(
 				key_tableEntry = "Dynamic Segment Test",
 				locator1 = "LexiconTable#TABLE_ENTRY_ELLIPSIS");
 

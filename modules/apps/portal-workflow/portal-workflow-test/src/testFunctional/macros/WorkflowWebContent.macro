@@ -3,7 +3,7 @@ definition {
 	macro selectSingleApprover {
 		Click.clickAt(locator1 = "Icon#INFO");
 
-		Click(
+		Click.waitForMenuToggleJSClick(
 			ariaLabel = "Show Actions",
 			locator1 = "Button#ANY_WITH_ARIA_LABEL");
 
