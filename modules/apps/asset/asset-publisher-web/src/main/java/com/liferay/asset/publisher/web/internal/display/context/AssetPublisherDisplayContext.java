@@ -35,6 +35,7 @@ import com.liferay.asset.publisher.web.internal.configuration.AssetPublisherSele
 import com.liferay.asset.publisher.web.internal.configuration.AssetPublisherWebConfiguration;
 import com.liferay.asset.publisher.web.internal.constants.AssetPublisherSelectionStyleConstants;
 import com.liferay.asset.publisher.web.internal.helper.AssetPublisherWebHelper;
+import com.liferay.asset.publisher.web.internal.resource.DDMTemplatePermission;
 import com.liferay.asset.publisher.web.internal.util.AssetPublisherCustomizer;
 import com.liferay.asset.tags.item.selector.AssetTagsItemSelectorReturnType;
 import com.liferay.asset.tags.item.selector.criterion.AssetTagsItemSelectorCriterion;
@@ -44,6 +45,9 @@ import com.liferay.asset.util.LinkedAssetEntryIdsUtil;
 import com.liferay.asset.util.comparator.AssetRendererFactoryTypeNameComparator;
 import com.liferay.document.library.kernel.document.conversion.DocumentConversionUtil;
 import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.dynamic.data.mapping.constants.DDMTemplateConstants;
+import com.liferay.dynamic.data.mapping.model.DDMTemplate;
+import com.liferay.dynamic.data.mapping.service.DDMTemplateLocalServiceUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
 import com.liferay.info.collection.provider.CollectionQuery;
@@ -103,15 +107,18 @@ import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PrefsParamUtil;
 import com.liferay.portal.kernel.util.StringComparator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portlet.display.template.PortletDisplayTemplate;
 import com.liferay.rss.util.RSSUtil;
 import com.liferay.segments.SegmentsEntryRetriever;
 import com.liferay.segments.constants.SegmentsWebKeys;
 import com.liferay.segments.context.RequestContextMapper;
+import com.liferay.template.constants.TemplatePortletKeys;
 
 import java.io.Serializable;
 
@@ -820,9 +827,66 @@ public class AssetPublisherDisplayContext {
 		return _ddmStructureFieldValue;
 	}
 
-	public String getDefaultDisplayStyle() {
-		return _assetPublisherPortletInstanceConfiguration.
-			defaultDisplayStyle();
+	public List<HashMap<String, Object>> getDDMTemplates() {
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)_httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		try {
+			List<DDMTemplate> ddmTemplates =
+				DDMTemplateLocalServiceUtil.getTemplates(
+					_getGroupIds(_themeDisplay.getScopeGroup()),
+					PortalUtil.getClassNameId(AssetEntry.class.getName()), 0L);
+
+			List<DDMTemplate> ddmTemplatesFiltered = ListUtil.filter(
+				ddmTemplates,
+				ddmTemplate -> {
+					try {
+						if (!DDMTemplatePermission.contains(
+								themeDisplay.getPermissionChecker(),
+								ddmTemplate.getTemplateId(), ActionKeys.VIEW) ||
+							!DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY.equals(
+								ddmTemplate.getType())) {
+
+							return false;
+						}
+					}
+					catch (Exception exception) {
+						if (_log.isDebugEnabled()) {
+							_log.debug(exception);
+						}
+
+						return false;
+					}
+
+					return true;
+				});
+
+			List<HashMap<String, Object>> ddmTemplatesDataMap =
+				new ArrayList<>();
+
+			for (DDMTemplate ddmTemplate : ddmTemplatesFiltered) {
+				ddmTemplatesDataMap.add(
+					HashMapBuilder.<String, Object>put(
+						"groupId", ddmTemplate.getGroupId()
+					).put(
+						"label", ddmTemplate.getName(_themeDisplay.getLocale())
+					).put(
+						"value",
+						PortletDisplayTemplate.DISPLAY_STYLE_PREFIX +
+							ddmTemplate.getTemplateKey()
+					).build());
+			}
+
+			return ddmTemplatesDataMap;
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
+			return Collections.emptyList();
+		}
 	}
 
 	public Integer getDelta() {
@@ -857,6 +921,24 @@ public class AssetPublisherDisplayContext {
 
 	public String[] getDisplayStyles() {
 		return _assetPublisherPortletInstanceConfiguration.displayStyles();
+	}
+
+	public List<HashMap<String, Object>> getDisplayStylesDataMap() {
+		String[] displayStyles =
+			_assetPublisherPortletInstanceConfiguration.displayStyles();
+
+		List<HashMap<String, Object>> displayStylesDataMap = new ArrayList<>();
+
+		for (String style : displayStyles) {
+			displayStylesDataMap.add(
+				HashMapBuilder.<String, Object>put(
+					"label", LanguageUtil.get(_httpServletRequest, style)
+				).put(
+					"value", style
+				).build());
+		}
+
+		return displayStylesDataMap;
 	}
 
 	public List<DropdownItem> getDropdownItems(Group group) throws Exception {
@@ -2260,6 +2342,33 @@ public class AssetPublisherDisplayContext {
 				scopeGroup, _themeDisplay.getScopeGroupId(),
 				_portletResponse.getNamespace() + "selectAsset",
 				assetEntryItemSelectorCriterion));
+	}
+
+	private long[] _getGroupIds(Group group) {
+		if (group.isLayout()) {
+			group = group.getParentGroup();
+		}
+
+		long groupId = group.getGroupId();
+
+		if (group.isStagingGroup()) {
+			Group liveGroup = group.getLiveGroup();
+
+			if (!liveGroup.isStagedPortlet(TemplatePortletKeys.TEMPLATE)) {
+				groupId = liveGroup.getGroupId();
+			}
+		}
+
+		try {
+			return PortalUtil.getCurrentAndAncestorSiteGroupIds(groupId);
+		}
+		catch (PortalException portalException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(portalException);
+			}
+		}
+
+		return new long[] {groupId};
 	}
 
 	private String _getSegmentsAnonymousUserId() {

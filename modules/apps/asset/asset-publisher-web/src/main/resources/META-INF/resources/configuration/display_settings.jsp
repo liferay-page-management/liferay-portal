@@ -7,19 +7,22 @@
 
 <%@ include file="/init.jsp" %>
 
-<%
-PortletURL configurationRenderURL = (PortletURL)request.getAttribute("configuration.jsp-configurationRenderURL");
-%>
-
 <div class="display-template">
-	<liferay-template:template-selector
-		className="<%= AssetEntry.class.getName() %>"
-		defaultDisplayStyle="<%= assetPublisherDisplayContext.getDefaultDisplayStyle() %>"
-		displayStyle="<%= assetPublisherDisplayContext.getDisplayStyle() %>"
-		displayStyleGroupId="<%= assetPublisherDisplayContext.getDisplayStyleGroupId() %>"
-		displayStyles="<%= Arrays.asList(assetPublisherDisplayContext.getDisplayStyles()) %>"
-		label="display-template"
-		refreshURL="<%= configurationRenderURL.toString() %>"
+	<react:component
+		module="js/DisplayTemplateSelector"
+		props='<%=
+			HashMapBuilder.<String, Object>put(
+				"ddmTemplates", assetPublisherDisplayContext.getDDMTemplates()
+			).put(
+				"displayStyleGroupId", assetPublisherDisplayContext.getDisplayStyleGroupId()
+			).put(
+				"displayStyles", assetPublisherDisplayContext.getDisplayStylesDataMap()
+			).put(
+				"namespace", liferayPortletResponse.getNamespace()
+			).put(
+				"selectedDisplayStyle", assetPublisherDisplayContext.getDisplayStyle()
+			).build()
+		%>'
 	/>
 </div>
 
@@ -63,7 +66,3 @@ PortletURL configurationRenderURL = (PortletURL)request.getAttribute("configurat
 <c:if test="<%= !assetPublisherDisplayContext.isSearchWithIndex() && assetPublisherDisplayContext.isSelectionStyleDynamic() %>">
 	<aui:input inlineLabel="right" label="exclude-assets-with-0-views" labelCssClass="simple-toggle-switch" name="preferences--excludeZeroViewCount--" type="toggle-switch" value="<%= assetPublisherDisplayContext.isExcludeZeroViewCount() %>" />
 </c:if>
-
-<liferay-frontend:component
-	module="js/DisplaySettings"
-/>
