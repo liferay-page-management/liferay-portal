@@ -1,5 +1,9 @@
 @import 'atlas-variables';
 
+html:not(#__):not(#___) .cadmin .display-template {
+	width: 155px;
+}
+
 .portlet-asset-publisher {
 	.asset-content,
 	.asset-full-content {
