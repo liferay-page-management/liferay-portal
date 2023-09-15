@@ -3754,6 +3754,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 			}
 
 			nameMap.put(LocaleUtil.getDefault(), groupDefaultName);
+			names.add(groupDefaultName);
 		}
 
 		String className = group.getClassName();
