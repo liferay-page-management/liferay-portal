@@ -3743,11 +3743,18 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 
 		List<String> names = new ArrayList<>(nameMap.values());
 
-		if (ListUtil.isNull(names)) {
-			throw new GroupKeyException();
-		}
-
 		Group group = groupPersistence.findByPrimaryKey(groupId);
+
+		if (ListUtil.isNull(names)) {
+			String groupDefaultName = group.getName(
+				group.getDefaultLanguageId(), true);
+
+			if (!group.isGuest() || Validator.isNull(groupDefaultName)) {
+				throw new GroupKeyException();
+			}
+
+			nameMap.put(LocaleUtil.getDefault(), groupDefaultName);
+		}
 
 		String className = group.getClassName();
 		long classNameId = group.getClassNameId();
