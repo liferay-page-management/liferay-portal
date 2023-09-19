@@ -99,6 +99,16 @@ public class EditSegmentsEntryDisplayContext {
 		return _backURL;
 	}
 
+	public String getBackURLTitle() {
+		Map<String, String> backUrl = _getQueryMap(_backURL);
+
+		if (backUrl.containsKey("p_l_back_url_title")) {
+			return backUrl.get("p_l_back_url_title");
+		}
+
+		return LanguageUtil.get(_httpServletRequest, "segments");
+	}
+
 	public Map<String, Object> getData() throws Exception {
 		if (_data != null) {
 			return _data;
@@ -399,6 +409,21 @@ public class EditSegmentsEntryDisplayContext {
 		).put(
 			"showInEditMode", _isShowInEditMode()
 		).build();
+	}
+
+	private Map<String, String> _getQueryMap(String query) {
+		String[] params = query.split(StringPool.AMPERSAND);
+
+		Map<String, String> map = new HashMap<>();
+
+		for (String param : params) {
+			String name = param.split(StringPool.EQUAL)[0];
+			String value = param.split(StringPool.EQUAL)[1];
+
+			map.put(name, value);
+		}
+
+		return map;
 	}
 
 	private String _getSegmentsCompanyConfigurationURL() {
