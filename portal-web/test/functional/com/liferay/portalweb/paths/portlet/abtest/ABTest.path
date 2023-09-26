@@ -142,7 +142,7 @@
 </tr>
 <tr>
 	<td>VARIANT_DROPDOWN</td>
-	<td>xpath=(//div[@class='autofit-col']//*[contains(@class, 'dropdown-toggle btn-monospaced btn btn-outline-borderless btn-outline-secondary')])[${key_index}]</td>
+	<td>//tbody//*[contains(@aria-label,"Show Actions")][${key_index}]</td>
 	<td></td>
 </tr>
 <tr>
