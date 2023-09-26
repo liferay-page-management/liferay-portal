@@ -4,6 +4,10 @@
 	top: 0;
 }
 
+.select-from-list__dropdown-menu-button {
+	height: 50px;
+}
+
 .select-from-list__dropdown-menu .dropdown-item.active {
 	background-color: transparent;
 }
