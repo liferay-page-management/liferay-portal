@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.maven.archetype.ArchetypeGenerationRequest;
 import org.apache.maven.archetype.ArchetypeGenerationResult;
 
 /**
@@ -149,20 +148,6 @@ public class FormFieldProjectTemplateCustomizer
 			ProjectTemplateCustomizer.deleteFileInPath(
 				fileName, projectDirPath);
 		}
-	}
-
-	@Override
-	public void onBeforeGenerateProject(
-			ProjectTemplatesArgs projectTemplatesArgs,
-			ArchetypeGenerationRequest archetypeGenerationRequest)
-		throws Exception {
-
-		setProperty(
-			archetypeGenerationRequest.getProperties(), "reactTemplate",
-			String.valueOf(
-				_isReactFramework(
-					(FormFieldProjectTemplatesArgs)
-						projectTemplatesArgs.getProjectTemplatesArgsExt())));
 	}
 
 	private boolean _isReactFramework(
