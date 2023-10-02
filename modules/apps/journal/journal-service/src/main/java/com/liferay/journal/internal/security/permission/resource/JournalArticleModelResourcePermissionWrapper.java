@@ -15,6 +15,7 @@ import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.BaseModelResourcePermissionWrapper;
@@ -25,7 +26,16 @@ import com.liferay.portal.kernel.security.permission.resource.PortletResourcePer
 import com.liferay.portal.kernel.security.permission.resource.StagedModelPermissionLogic;
 import com.liferay.portal.kernel.security.permission.resource.WorkflowedModelPermissionLogic;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.kernel.workflow.WorkflowException;
+import com.liferay.portal.kernel.workflow.WorkflowInstance;
+import com.liferay.portal.kernel.workflow.WorkflowInstanceManagerUtil;
+import com.liferay.portal.kernel.workflow.WorkflowTask;
+import com.liferay.portal.kernel.workflow.WorkflowTaskManagerUtil;
 import com.liferay.portal.util.PropsValues;
+
+import java.util.List;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -72,9 +82,63 @@ public class JournalArticleModelResourcePermissionWrapper
 								return null;
 							}
 
-							return super.contains(
+							Boolean contains = super.contains(
 								permissionChecker, name, journalArticle,
 								actionId);
+
+							if (!Objects.equals(
+									WorkflowConstants.STATUS_PENDING,
+									journalArticle.getStatus())) {
+
+								return contains;
+							}
+
+							if ((contains == null) &&
+								Objects.equals(ActionKeys.VIEW, actionId)) {
+
+								try {
+									List<WorkflowInstance> workflowInstances =
+										WorkflowInstanceManagerUtil.
+											getWorkflowInstances(
+												journalArticle.getCompanyId(),
+												journalArticle.getUserId(),
+												name, journalArticle.getId(),
+												false, -1, -1, null);
+
+									for (WorkflowInstance workflowInstance :
+											workflowInstances) {
+
+										List<WorkflowTask> workflowTasks =
+											WorkflowTaskManagerUtil.
+												getWorkflowTasksByWorkflowInstance(
+													journalArticle.
+														getCompanyId(),
+													null,
+													workflowInstance.
+														getWorkflowInstanceId(),
+													false, 0, -1, null);
+
+										for (WorkflowTask workflowTask :
+												workflowTasks) {
+
+											List<User> users =
+												WorkflowTaskManagerUtil.
+													getAssignableUsers(
+														workflowTask.
+															getWorkflowTaskId());
+
+											return users.contains(
+												permissionChecker.getUser());
+										}
+									}
+								}
+								catch (WorkflowException workflowException) {
+									throw new UnsupportedOperationException(
+										workflowException);
+								}
+							}
+
+							return contains;
 						}
 
 					});
