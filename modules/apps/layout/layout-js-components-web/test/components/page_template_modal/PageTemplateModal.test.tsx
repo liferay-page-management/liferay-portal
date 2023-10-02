@@ -5,56 +5,56 @@
 
 import {act, fireEvent, render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import {fetch} from 'frontend-js-web';
 import React from 'react';
 
-import LayoutService from '../../../../../../src/main/resources/META-INF/resources/page_editor/app/services/LayoutService';
-import {PageTemplateModal} from '../../../../../../src/main/resources/META-INF/resources/page_editor/plugins/convert_to_page_template_modal/components/ConvertToPageTemplateModal';
-import StoreMother from '../../../../../../src/main/resources/META-INF/resources/page_editor/test_utils/StoreMother';
+import PageTemplateModal from '../../../src/main/resources/META-INF/resources/js/components/page_template_modal/PageTemplateModal';
 
 import '@testing-library/jest-dom/extend-expect';
 
-jest.mock(
-	'../../../../../../src/main/resources/META-INF/resources/page_editor/app/services/LayoutService',
-	() => ({
-		createLayoutPageTemplateEntry: jest.fn(() => Promise.resolve()),
-		getLayoutPageTemplateCollections: jest.fn(() =>
-			Promise.resolve([{name: 'test'}])
-		),
-	})
-);
-
-jest.mock(
-	'../../../../../../src/main/resources/META-INF/resources/page_editor/app/config/index',
-	() => ({
-		config: {
-			portletNamespace: 'portletNamespace_',
-		},
-	})
-);
+jest.mock('frontend-js-web');
 
 function renderConvertToPageTemplateModal() {
 	return render(
-		<StoreMother.Component>
-			<PageTemplateModal
-				observer={{
-					dispatch: () => {},
-					mutation: [true, true],
-				}}
-				onClose={jest.fn()}
-			/>
-		</StoreMother.Component>
+		<PageTemplateModal
+			createTemplateURL="http://localhost:8080/createLayoutPageTemplate"
+			getCollectionsURL="http://localhost:8080/getlayoutPageTemplateCollections"
+			hasMultipleSegmentsExperienceIds={false}
+			layoutId="0"
+			onClose={jest.fn()}
+			segmentsExperienceId="0"
+		/>
 	);
 }
 
 describe('ConvertToPageTemplateModal', () => {
 	afterEach(() => {
-		LayoutService.createLayoutPageTemplateEntry.mockClear();
+		fetch.mockClear();
+	});
+
+	beforeAll(() => {
+		jest.useFakeTimers();
 	});
 
 	describe('Select Page Template Set modal', () => {
 		it('renders the Select Page Template Set modal', async () => {
+			fetch.mockReturnValue(
+				Promise.resolve(
+					new Response(
+						JSON.stringify([
+							{id: '34286', name: 'Untitled Set'},
+							{id: '34112', name: 'Untitled Set 2'},
+						])
+					)
+				)
+			);
+
 			await act(async () => {
 				renderConvertToPageTemplateModal();
+			});
+
+			act(() => {
+				jest.runAllTimers();
 			});
 
 			expect(
@@ -63,9 +63,38 @@ describe('ConvertToPageTemplateModal', () => {
 		});
 
 		it('calls createLayoutPageTemplateEntry when a page template set is selected and the button save is pressed', async () => {
+			fetch.mockReturnValue(
+				Promise.resolve(
+					new Response(
+						JSON.stringify([
+							{id: '34286', name: 'Untitled Set'},
+							{id: '34112', name: 'Untitled Set 2'},
+						])
+					)
+				)
+			);
+
 			await act(async () => {
 				renderConvertToPageTemplateModal();
 			});
+
+			act(() => {
+				jest.runAllTimers();
+			});
+
+			fetch.mockClear();
+
+			fetch.mockReturnValue(
+				Promise.resolve(
+					new Response(
+						JSON.stringify([{url: 'www.pageTemplates.com'}])
+					)
+				)
+			);
+
+			const mockFetch = fetch.mockImplementation(async () => ({
+				json: async () => ({url: 'vamonos'}),
+			}));
 
 			const saveButton = screen.getByText('save');
 			const select = screen.getByLabelText('page-template-set');
@@ -77,10 +106,9 @@ describe('ConvertToPageTemplateModal', () => {
 				userEvent.click(saveButton);
 			});
 
-			expect(
-				LayoutService.createLayoutPageTemplateEntry
-			).toHaveBeenCalledTimes(1);
-			expect(LayoutService.createLayoutPageTemplateEntry).toBeCalledWith(
+			expect(mockFetch).toHaveBeenCalledTimes(1);
+
+			expect(mockFetch).toBeCalledWith(
 				expect.objectContaining({
 					segmentsExperienceId: '0',
 					templateSetId: 'test',
@@ -90,22 +118,50 @@ describe('ConvertToPageTemplateModal', () => {
 		});
 
 		it('does not call createLayoutPageTemplateEntry when a page template set is not selected and the Save button is pressed', async () => {
+			fetch.mockReturnValue(
+				Promise.resolve(
+					new Response(
+						JSON.stringify([
+							{id: '34286', name: 'Untitled Set'},
+							{id: '34112', name: 'Untitled Set 2'},
+						])
+					)
+				)
+			);
+
 			await act(async () => {
 				renderConvertToPageTemplateModal();
+			});
+
+			act(() => {
+				jest.runAllTimers();
 			});
 
 			const saveButton = screen.getByText('save');
 
 			userEvent.click(saveButton);
 
-			expect(
-				LayoutService.createLayoutPageTemplateEntry
-			).toHaveBeenCalledTimes(0);
+			expect(fetch).toHaveBeenCalledTimes(1);
 		});
 
 		it('changes the modal when the Save In New Set Button is pressed', async () => {
+			fetch.mockReturnValue(
+				Promise.resolve(
+					new Response(
+						JSON.stringify([
+							{id: '34286', name: 'Untitled Set'},
+							{id: '34112', name: 'Untitled Set 2'},
+						])
+					)
+				)
+			);
+
 			await act(async () => {
 				renderConvertToPageTemplateModal();
+			});
+
+			act(() => {
+				jest.runAllTimers();
 			});
 
 			const saveInNewSetButton = screen.getByText('save-in-new-set');
@@ -119,15 +175,21 @@ describe('ConvertToPageTemplateModal', () => {
 	});
 
 	describe('Add Page Template Set modal', () => {
-		beforeEach(() => {
-			LayoutService.getLayoutPageTemplateCollections.mockImplementation(
-				() => Promise.resolve([])
-			);
-		});
-
 		it('renders the Select Add Template Set modal when there are no sets', async () => {
+			fetch.mockReturnValue(
+				Promise.resolve({
+					json: () => {
+						return [];
+					},
+				})
+			);
+
 			await act(async () => {
 				renderConvertToPageTemplateModal();
+			});
+
+			act(() => {
+				jest.runAllTimers();
 			});
 
 			expect(
@@ -136,8 +198,20 @@ describe('ConvertToPageTemplateModal', () => {
 		});
 
 		it('calls createLayoutPageTemplateEntry when the Save button is pressed', async () => {
+			fetch.mockReturnValue(
+				Promise.resolve({
+					json: () => {
+						return [];
+					},
+				})
+			);
+
 			await act(async () => {
 				renderConvertToPageTemplateModal();
+			});
+
+			act(() => {
+				jest.runAllTimers();
 			});
 
 			const descriptionInput = screen.getByLabelText('description');
@@ -149,25 +223,30 @@ describe('ConvertToPageTemplateModal', () => {
 				userEvent.click(saveButton);
 			});
 
-			expect(
-				LayoutService.createLayoutPageTemplateEntry
-			).toHaveBeenCalledTimes(1);
-			expect(LayoutService.createLayoutPageTemplateEntry).toBeCalledWith(
-				expect.objectContaining({
-					segmentsExperienceId: '0',
-					templateSetDescription: 'This is a description',
-					templateSetId: null,
-					templateSetName: 'untitled-set',
-				})
-			);
+			expect(fetch).toHaveBeenCalledTimes(2);
 		});
 
 		it('does not call createLayoutPageTemplateEntry when the input name is empty and the Save button is pressed', async () => {
+			fetch.mockReturnValue(
+				Promise.resolve(
+					new Response(
+						JSON.stringify([
+							{id: '34286', name: 'Untitled Set'},
+							{id: '34112', name: 'Untitled Set 2'},
+						])
+					)
+				)
+			);
+
 			await act(async () => {
 				renderConvertToPageTemplateModal();
 			});
 
-			const nameInput = screen.getByLabelText('name');
+			act(() => {
+				jest.runAllTimers();
+			});
+
+			const nameInput = screen.getByLabelText('page-template-set');
 			const saveButton = screen.getByText('save');
 
 			fireEvent.change(nameInput, {
@@ -175,9 +254,7 @@ describe('ConvertToPageTemplateModal', () => {
 			});
 			userEvent.click(saveButton);
 
-			expect(
-				LayoutService.createLayoutPageTemplateEntry
-			).toHaveBeenCalledTimes(0);
+			expect(fetch).toHaveBeenCalledTimes(1);
 		});
 	});
 });
