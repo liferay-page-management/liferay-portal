@@ -298,35 +298,13 @@ public class JournalArticleLocalServiceImpl
 	 *                              template
 	 * @param layoutUuid            the unique string identifying the web content
 	 *                              article's display page
-	 * @param displayDateMonth      the month the web content article is set to
+	 * @param displayDate			the date the web content article is set to
 	 *                              display
-	 * @param displayDateDay        the calendar day the web content article is set to
-	 *                              display
-	 * @param displayDateYear       the year the web content article is set to
-	 *                              display
-	 * @param displayDateHour       the hour the web content article is set to
-	 *                              display
-	 * @param displayDateMinute     the minute the web content article is set to
-	 *                              display
-	 * @param expirationDateMonth   the month the web content article is set to
-	 *                              expire
-	 * @param expirationDateDay     the calendar day the web content article is set
-	 *                              to expire
-	 * @param expirationDateYear    the year the web content article is set to
-	 *                              expire
-	 * @param expirationDateHour    the hour the web content article is set to
-	 *                              expire
-	 * @param expirationDateMinute  the minute the web content article is set to
+	 * @param expirationDate		the date the web content article is set to
 	 *                              expire
 	 * @param neverExpire           whether the web content article is not set to auto
 	 *                              expire
-	 * @param reviewDateMonth       the month the web content article is set for
-	 *                              review
-	 * @param reviewDateDay         the calendar day the web content article is set for
-	 *                              review
-	 * @param reviewDateYear        the year the web content article is set for review
-	 * @param reviewDateHour        the hour the web content article is set for review
-	 * @param reviewDateMinute      the minute the web content article is set for
+	 * @param reviewDate       		the date the web content article is set for
 	 *                              review
 	 * @param neverReview           whether the web content article is not set for review
 	 * @param indexable             whether the web content article is searchable
@@ -354,15 +332,11 @@ public class JournalArticleLocalServiceImpl
 			Map<Locale, String> descriptionMap,
 			Map<Locale, String> friendlyURLMap, String content,
 			long ddmStructureId, String ddmTemplateKey, String layoutUuid,
-			int displayDateMonth, int displayDateDay, int displayDateYear,
-			int displayDateHour, int displayDateMinute, int expirationDateMonth,
-			int expirationDateDay, int expirationDateYear,
-			int expirationDateHour, int expirationDateMinute,
-			boolean neverExpire, int reviewDateMonth, int reviewDateDay,
-			int reviewDateYear, int reviewDateHour, int reviewDateMinute,
-			boolean neverReview, boolean indexable, boolean smallImage,
-			long smallImageId, int smallImageSource, String smallImageURL,
-			File smallImageFile, Map<String, byte[]> images, String articleURL,
+			Date displayDate, Date expirationDate, boolean neverExpire,
+			Date reviewDate, boolean neverReview, boolean indexable,
+			boolean smallImage, long smallImageId, int smallImageSource,
+			String smallImageURL, File smallImageFile,
+			Map<String, byte[]> images, String articleURL,
 			ServiceContext serviceContext)
 		throws PortalException {
 
@@ -372,25 +346,12 @@ public class JournalArticleLocalServiceImpl
 
 		articleId = StringUtil.toUpperCase(StringUtil.trim(articleId));
 
-		Date displayDate = _portal.getDate(
-			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
-			displayDateMinute, user.getTimeZone(), null);
-
-		Date expirationDate = null;
-		Date reviewDate = null;
-
-		if (!neverExpire) {
-			expirationDate = _portal.getDate(
-				expirationDateMonth, expirationDateDay, expirationDateYear,
-				expirationDateHour, expirationDateMinute, user.getTimeZone(),
-				ArticleExpirationDateException.class);
+		if (neverExpire) {
+			expirationDate = null;
 		}
 
-		if (!neverReview) {
-			reviewDate = _portal.getDate(
-				reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour,
-				reviewDateMinute, user.getTimeZone(),
-				ArticleReviewDateException.class);
+		if (neverReview) {
+			reviewDate = null;
 		}
 
 		byte[] smallImageBytes = null;
@@ -590,6 +551,59 @@ public class JournalArticleLocalServiceImpl
 		startWorkflowInstance(userId, article, serviceContext);
 
 		return article;
+	}
+
+	@Override
+	public JournalArticle addArticle(
+			String externalReferenceCode, long userId, long groupId,
+			long folderId, long classNameId, long classPK, String articleId,
+			boolean autoArticleId, double version, Map<Locale, String> titleMap,
+			Map<Locale, String> descriptionMap,
+			Map<Locale, String> friendlyURLMap, String content,
+			long ddmStructureId, String ddmTemplateKey, String layoutUuid,
+			int displayDateMonth, int displayDateDay, int displayDateYear,
+			int displayDateHour, int displayDateMinute, int expirationDateMonth,
+			int expirationDateDay, int expirationDateYear,
+			int expirationDateHour, int expirationDateMinute,
+			boolean neverExpire, int reviewDateMonth, int reviewDateDay,
+			int reviewDateYear, int reviewDateHour, int reviewDateMinute,
+			boolean neverReview, boolean indexable, boolean smallImage,
+			long smallImageId, int smallImageSource, String smallImageURL,
+			File smallImageFile, Map<String, byte[]> images, String articleURL,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		User user = _userLocalService.getUser(userId);
+
+		Date displayDate = _portal.getDate(
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, user.getTimeZone(), null);
+
+		Date expirationDate = null;
+		Date reviewDate = null;
+
+		if (!neverExpire) {
+			expirationDate = _portal.getDate(
+				expirationDateMonth, expirationDateDay, expirationDateYear,
+				expirationDateHour, expirationDateMinute, user.getTimeZone(),
+				ArticleExpirationDateException.class);
+		}
+
+		if (!neverReview) {
+			reviewDate = _portal.getDate(
+				reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour,
+				reviewDateMinute, user.getTimeZone(),
+				ArticleReviewDateException.class);
+		}
+
+		return journalArticleLocalService.addArticle(
+			externalReferenceCode, userId, groupId, folderId, classNameId,
+			classPK, articleId, autoArticleId, version, titleMap,
+			descriptionMap, friendlyURLMap, content, ddmStructureId,
+			ddmTemplateKey, layoutUuid, displayDate, expirationDate,
+			neverExpire, reviewDate, neverReview, indexable, smallImage,
+			smallImageId, smallImageSource, smallImageURL, smallImageFile,
+			images, articleURL, serviceContext);
 	}
 
 	/**
