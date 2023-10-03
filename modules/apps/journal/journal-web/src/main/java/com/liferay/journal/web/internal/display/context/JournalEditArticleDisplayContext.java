@@ -302,6 +302,17 @@ public class JournalEditArticleDisplayContext {
 		return _availableLocales;
 	}
 
+	public String getBackURLTitle(PortletDisplay portletDisplay) {
+		String backURLTitle = ParamUtil.getString(
+			_httpServletRequest, "backURLTitle");
+
+		if (Validator.isNotNull(backURLTitle)) {
+			return backURLTitle;
+		}
+
+		return portletDisplay.getPortletDisplayName();
+	}
+
 	public Map<String, Object> getChangeDefaultLanguageData() {
 		return HashMapBuilder.<String, Object>put(
 			"defaultLanguage", getDefaultArticleLanguageId()
@@ -1566,7 +1577,7 @@ public class JournalEditArticleDisplayContext {
 		PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();
 
 		portletDisplay.setShowBackIcon(true);
-		portletDisplay.setURLBackTitle(portletDisplay.getPortletDisplayName());
+		portletDisplay.setURLBackTitle(getBackURLTitle(portletDisplay));
 
 		if (Validator.isNotNull(getRedirect())) {
 			portletDisplay.setURLBack(getRedirect());
