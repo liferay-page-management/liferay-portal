@@ -92,6 +92,13 @@ public class AssetInfoEditURLProviderImpl implements AssetInfoEditURLProvider {
 				return StringPool.BLANK;
 			}
 
+			String backURLTitle = ParamUtil.getString(
+				httpServletRequest, "backURLTitle");
+
+			if (Validator.isNotNull(backURLTitle)) {
+				editAssetEntryURL.setParameter("backURLTitle", backURLTitle);
+			}
+
 			editAssetEntryURL.setParameter(
 				"portletResource", assetRendererFactory.getPortletId());
 

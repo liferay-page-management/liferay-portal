@@ -14,10 +14,13 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.service.PortletLocalService;
+import com.liferay.portal.kernel.theme.PortletDisplay;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.servlet.DynamicServletRequestUtil;
 
-import java.util.Collections;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -70,9 +73,24 @@ public class EditJournalArticleContentDashboardItemAction
 		HttpServletRequest httpServletRequest =
 			DynamicServletRequestUtil.createDynamicServletRequest(
 				_httpServletRequest, portlet,
-				Collections.singletonMap(
+				HashMapBuilder.put(
+					"backURLTitle",
+					() -> {
+						ThemeDisplay themeDisplay =
+							(ThemeDisplay)_httpServletRequest.getAttribute(
+								WebKeys.THEME_DISPLAY);
+
+						PortletDisplay portletDisplay =
+							themeDisplay.getPortletDisplay();
+
+						return new String[] {
+							portletDisplay.getPortletDisplayName()
+						};
+					}
+				).put(
 					"redirect",
-					new String[] {_portal.getCurrentURL(_httpServletRequest)}),
+					new String[] {_portal.getCurrentURL(_httpServletRequest)}
+				).build(),
 				true);
 
 		try {
