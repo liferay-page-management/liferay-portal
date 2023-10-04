@@ -1,9 +1,17 @@
-if (layoutMode === 'edit') {
-	const input = document.getElementById(
-		`${fragmentNamespace}-rich-text-input`
-	);
+const inputElement = document.getElementById(
+	`${fragmentNamespace}-rich-text-input`
+);
 
-	if (input) {
-		input.setAttribute('disabled', true);
+if (input.attributes?.readOnly) {
+	if (inputElement) {
+		const parser = new DOMParser();
+		const html = parser.parseFromString(input.value, 'text/html');
+
+		inputElement.appendChild(html.documentElement);
+	}
+}
+else if (layoutMode === 'edit') {
+	if (inputElement) {
+		inputElement.setAttribute('disabled', true);
 	}
 }
