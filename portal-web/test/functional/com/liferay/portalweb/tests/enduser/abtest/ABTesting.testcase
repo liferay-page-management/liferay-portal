@@ -20,24 +20,26 @@ definition {
 		task ("Go to DXP portal, login and create site") {
 			TestCase.setUpPortalInstance();
 
-			User.firstLoginPG();
+			User.firstLoginUI();
 
 			Navigator.openURL();
 
-			HeadlessSite.addSite(siteName = "Test Site Name");
+			// HeadlessSite.addSite(siteName = "Test Site Name");
 		}
 
-		task ("Connect and synchronyze with Analytics Cloud") {
-			ACDXPSettings.connectDXPtoAnalyticsCloudWithTryAgain(siteName = "Test Site Name");
-		}
+		// task ("Connect and synchronyze with Analytics Cloud") {
+		// 	ACDXPSettings.connectDXPtoAnalyticsCloudWithTryAgain(siteName = "Test Site Name");
+		// }
 
 		task ("Create content page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Content Page",
-				type = "content");
+			// JSONLayout.addPublicLayout(
+			// 	groupName = "Test Site Name",
+			// 	layoutName = "Content Page",
+			// 	type = "content");
 
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+			// Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+			ApplicationsMenu.gotoSite(site = "Test Site Name");
 		}
 	}
 
@@ -776,9 +778,13 @@ definition {
 		task ("Check the info is correct in Analytics Cloud") {
 			ABTest.openABTestInAC();
 
-			AssertTextEquals(
-				locator1 = "ACTests#SUMMARY_CARD_TEXT",
-				value1 = "Test Is Running");
+			ACProperties.switchProperty(propertyName = "Liferay DXP");
+
+			ACNavigation.goToTests();
+
+			ACUtils.viewGenericText(textValueList = "AB test title");
+
+			ACTests.statusABTest(status = "RUNNING");
 		}
 	}
 
@@ -1128,13 +1134,21 @@ definition {
 		task ("Check the info is correct in Analytics Cloud") {
 			ABTest.openABTestInAC();
 
-			AssertTextEquals(
-				locator1 = "ACTests#SUMMARY_CARD_TEXT",
-				value1 = "Test Is in Draft Mode");
+			ACProperties.switchProperty(propertyName = "Liferay DXP");
+
+			ACNavigation.goToTests();
+
+			ACUtils.viewGenericText(textValueList = "AB test title");
+
+			ACTests.statusABTest(status = "DRAFT");
 		}
 
 		task ("Delete AB Test at AC") {
-			ABTest.deleteABTestInAC();
+			ACTests.deleteABTest(
+				testName = "AB test title",
+				siteName = "Test Site Name");
+
+			User.firstLoginUI();
 		}
 
 		task ("Go back to DXP") {

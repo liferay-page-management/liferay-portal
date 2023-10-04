@@ -3,11 +3,11 @@ definition {
 	macro deleteABTest {
 		ACNavigation.openItem(itemName = ${testName});
 
-		Click(locator1 = "ACTests#AB_ELLIPSIS");
+		Click(
+			key_text = "Delete",
+			locator1 = "Button#ANY_SECONDARY");
 
-		Click(locator1 = "ACTests#DELETE_TEST");
-
-		Button.clickDelete();
+		SelectWindow(locator1 = "name=undefined");
 	}
 
 	macro statusABTest {

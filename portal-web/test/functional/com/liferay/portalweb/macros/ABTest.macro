@@ -158,11 +158,17 @@ definition {
 
 		SelectWindow(locator1 = "name=undefined");
 
-		if (IsElementPresent(locator1 = "AnalyticsCloudConnection#ANALYTICS_CLOUD_USER_LOGIN_FIELD")) {
-			AnalyticsCloud.loginAnalyticsCloud(
-				emailAddress = "test@liferay.com",
-				password = "test");
+		if (!(isSet(emailAddress))) {
+			var emailAddress = "test@liferay.com";
 		}
+
+		if (IsElementPresent(locator1 = "AnalyticsCloudConnection#ANALYTICS_CLOUD_USER_LOGIN_FIELD")) {
+			ACLogin.loginAs(
+					emailAddress = ${emailAddress},
+					password = ${password});
+		}
+
+		ACWorkspace.openWorkspace();
 	}
 
 	macro openABTestPanel {
