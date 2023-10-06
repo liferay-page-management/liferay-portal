@@ -7,9 +7,11 @@
 
 import {ALIGN_POSITIONS} from '@clayui/popover';
 export default function BetaButton({
+	className,
 	learnResourceContext,
 	tooltipAlign,
 }: {
+	className?: string;
 	learnResourceContext: object;
 	tooltipAlign: typeof ALIGN_POSITIONS[number];
 }): JSX.Element;
