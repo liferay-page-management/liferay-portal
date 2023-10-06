@@ -76,6 +76,8 @@ import java.io.InputStream;
 
 import java.text.SimpleDateFormat;
 
+import java.time.Duration;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -721,6 +723,35 @@ public class StructuredContentResourceTest
 		Assert.assertEquals(
 			Double.valueOf(0.0), postStructuredContent3.getPriority());
 		assertValid(postStructuredContent3);
+
+		// Structured content created by user with non default user timezone
+
+		User user = _userLocalService.fetchUserByEmailAddress(
+			testCompany.getCompanyId(), "test@liferay.com");
+
+		String timeZoneId = user.getTimeZoneId();
+
+		user.setTimeZoneId("Europe/Madrid");
+
+		user = _userLocalService.updateUser(user);
+
+		try {
+			StructuredContent structuredContent3 =
+				_testPostSiteStructuredContent(user);
+
+			Date dateCreated = structuredContent3.getDateCreated();
+			Date datePublished = structuredContent3.getDatePublished();
+
+			Duration duration = Duration.between(
+				datePublished.toInstant(), dateCreated.toInstant());
+
+			Assert.assertTrue(duration.getSeconds() < 60);
+		}
+		finally {
+			user.setTimeZoneId(timeZoneId);
+
+			_userLocalService.updateUser(user);
+		}
 	}
 
 	@Override
@@ -1115,11 +1146,17 @@ public class StructuredContentResourceTest
 	private StructuredContentResource _buildStructureContentResource(
 		Locale locale) {
 
+		return _buildStructureContentResource("test@liferay.com", locale);
+	}
+
+	private StructuredContentResource _buildStructureContentResource(
+		String login, Locale locale) {
+
 		StructuredContentResource.Builder builder =
 			StructuredContentResource.builder();
 
 		return builder.authentication(
-			"test@liferay.com", "test"
+			login, "test"
 		).locale(
 			locale
 		).header(
@@ -1686,6 +1723,21 @@ public class StructuredContentResourceTest
 			externalReferenceCode,
 			postStructuredContent.getExternalReferenceCode());
 		assertValid(postStructuredContent);
+	}
+
+	private StructuredContent _testPostSiteStructuredContent(User user)
+		throws Exception {
+
+		StructuredContent randomStructuredContent = _randomStructuredContent(
+			LocaleUtil.getDefault());
+
+		StructuredContentResource structuredContentResource =
+			_buildStructureContentResource(
+				user.getLogin(), LocaleUtil.getDefault());
+
+		return structuredContentResource.postSiteStructuredContent(
+			testGetSiteStructuredContentsPage_getSiteId(),
+			randomStructuredContent);
 	}
 
 	private static final String[] _COMPLETE_STRUCTURED_CONTENT_OPTIONS = {

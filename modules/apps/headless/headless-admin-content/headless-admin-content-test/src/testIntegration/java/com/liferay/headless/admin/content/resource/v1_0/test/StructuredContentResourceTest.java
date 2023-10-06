@@ -34,7 +34,9 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.template.TemplateConstants;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -49,8 +51,11 @@ import com.liferay.portal.test.rule.Inject;
 
 import java.io.InputStream;
 
+import java.time.Duration;
+
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -682,6 +687,35 @@ public class StructuredContentResourceTest
 
 		Assert.assertEquals(
 			Double.valueOf(0.0), structuredContent2.getPriority());
+
+		// Structured content created by user with non default user timezone
+
+		User user = _userLocalService.fetchUserByEmailAddress(
+			testCompany.getCompanyId(), "test@liferay.com");
+
+		String timeZoneId = user.getTimeZoneId();
+
+		user.setTimeZoneId("Europe/Madrid");
+
+		user = _userLocalService.updateUser(user);
+
+		try {
+			StructuredContent structuredContent3 =
+				_testPostSiteStructuredContentDraft(user);
+
+			Date dateCreated = structuredContent3.getDateCreated();
+			Date datePublished = structuredContent3.getDatePublished();
+
+			Duration duration = Duration.between(
+				datePublished.toInstant(), dateCreated.toInstant());
+
+			Assert.assertTrue(duration.getSeconds() < 60);
+		}
+		finally {
+			user.setTimeZoneId(timeZoneId);
+
+			_userLocalService.updateUser(user);
+		}
 	}
 
 	@Override
@@ -865,13 +899,20 @@ public class StructuredContentResourceTest
 		StructuredContentResource _buildStructureContentResource(
 			Locale locale) {
 
+		return _buildStructureContentResource("test@liferay.com", locale);
+	}
+
+	private com.liferay.headless.admin.content.client.resource.v1_0.
+		StructuredContentResource _buildStructureContentResource(
+			String login, Locale locale) {
+
 		com.liferay.headless.admin.content.client.resource.v1_0.
 			StructuredContentResource.Builder builder =
 				com.liferay.headless.admin.content.client.resource.v1_0.
 					StructuredContentResource.builder();
 
 		return builder.authentication(
-			"test@liferay.com", "test"
+			login, "test"
 		).locale(
 			locale
 		).header(
@@ -1020,6 +1061,22 @@ public class StructuredContentResourceTest
 		return postStructuredContent;
 	}
 
+	private StructuredContent _testPostSiteStructuredContentDraft(User user)
+		throws Exception {
+
+		StructuredContent randomStructuredContent = _randomStructuredContent(
+			LocaleUtil.getDefault());
+
+		com.liferay.headless.admin.content.client.resource.v1_0.
+			StructuredContentResource structuredContentResource =
+				_buildStructureContentResource(
+					user.getLogin(), LocaleUtil.getDefault());
+
+		return structuredContentResource.postSiteStructuredContentDraft(
+			testGetSiteStructuredContentsPage_getSiteId(),
+			randomStructuredContent);
+	}
+
 	private com.liferay.headless.delivery.client.dto.v1_0.StructuredContent
 		_toStructuredContent(StructuredContent structuredContent) {
 
@@ -1068,5 +1125,8 @@ public class StructuredContentResourceTest
 
 	private DDMStructure _localizedDDMStructure;
 	private StructuredContentResource _structuredContentResource;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
