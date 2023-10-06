@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2023 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -148,6 +148,77 @@ public class JournalArticleAssetEntryReindexTest {
 	}
 
 	@Test
+	public void testUpdateCategorizationInDraft() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		AssetVocabulary assetVocabulary =
+			_assetVocabularyLocalService.addVocabulary(
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				RandomTestUtil.randomString(), serviceContext);
+
+		AssetCategory assetCategory1 = _assetCategoryLocalService.addCategory(
+			TestPropsValues.getUserId(), _group.getGroupId(),
+			RandomTestUtil.randomString(), assetVocabulary.getVocabularyId(),
+			serviceContext);
+
+		serviceContext.setAssetCategoryIds(
+			new long[] {assetCategory1.getCategoryId()});
+
+		Locale locale = _portal.getSiteDefaultLocale(_group);
+
+		JournalArticle approvedJournalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			JournalArticleConstants.CLASS_NAME_ID_DEFAULT, StringPool.BLANK,
+			true, RandomTestUtil.randomLocaleStringMap(locale),
+			RandomTestUtil.randomLocaleStringMap(locale),
+			RandomTestUtil.randomLocaleStringMap(locale), null, locale, null,
+			false, true, serviceContext);
+
+		AssetCategory assetCategory2 = _assetCategoryLocalService.addCategory(
+			TestPropsValues.getUserId(), _group.getGroupId(),
+			RandomTestUtil.randomString(), assetVocabulary.getVocabularyId(),
+			serviceContext);
+
+		serviceContext.setAssetCategoryIds(
+			new long[] {assetCategory2.getCategoryId()});
+
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		JournalArticle draftJournalArticle = JournalTestUtil.updateArticle(
+			approvedJournalArticle, approvedJournalArticle.getTitle(locale),
+			approvedJournalArticle.getContent(), false, false, serviceContext);
+
+		Document[] documents = _searchJournalArticleVersions(
+			draftJournalArticle.getArticleId());
+
+		Assert.assertEquals(documents.toString(), 2, documents.length);
+
+		String fieldName = _localization.getLocalizedName(
+			Field.ASSET_CATEGORY_TITLES, LocaleUtil.toLanguageId(locale));
+
+		for (Document document : documents) {
+			_assertArticleId(document, approvedJournalArticle);
+
+			double version = GetterUtil.getDouble(document.get("versionCount"));
+
+			if (_equals(version, approvedJournalArticle.getVersion())) {
+				_assertFieldValue(
+					document, fieldName, assetCategory1.getTitle(locale));
+			}
+			else if (_equals(version, draftJournalArticle.getVersion())) {
+				_assertFieldValue(
+					document, fieldName, assetCategory2.getTitle(locale));
+			}
+			else {
+				Assert.fail("Unexpected journal article version: " + version);
+			}
+		}
+	}
+
+	@Test
 	public void testUpdateJournalArticleTitleWithMultipleVersions()
 		throws Exception {
 
@@ -205,6 +276,18 @@ public class JournalArticleAssetEntryReindexTest {
 		Assert.assertEquals(journalArticle.getArticleId(), values[0]);
 	}
 
+	private void _assertFieldValue(
+		Document document, String fieldName, String fieldValue) {
+
+		Assert.assertTrue(document.hasField(fieldName));
+
+		String currentFieldValue = document.get(fieldName);
+
+		Assert.assertTrue(
+			currentFieldValue,
+			StringUtil.equalsIgnoreCase(fieldValue, currentFieldValue));
+	}
+
 	private void _assertSearch(String keyword, JournalArticle journalArticle) {
 		Document document = _indexerFixture.searchOnlyOne(keyword);
 
@@ -227,15 +310,17 @@ public class JournalArticleAssetEntryReindexTest {
 
 			Assert.assertTrue(versionTitleMap.containsKey(version));
 
-			Assert.assertTrue(document.hasField("localized_title"));
-
-			String localizedTitle = document.get("localized_title");
-
-			Assert.assertTrue(
-				localizedTitle,
-				StringUtil.equalsIgnoreCase(
-					versionTitleMap.get(version), localizedTitle));
+			_assertFieldValue(
+				document, "localized_title", versionTitleMap.get(version));
 		}
+	}
+
+	private boolean _equals(double double1, double double2) {
+		if (Double.compare(double1, double2) == 0) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private JournalArticle _getUpdatedJournalArticle(
