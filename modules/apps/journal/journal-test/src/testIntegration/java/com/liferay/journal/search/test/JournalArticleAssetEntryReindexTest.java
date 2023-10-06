@@ -121,6 +121,66 @@ public class JournalArticleAssetEntryReindexTest {
 	}
 
 	@Test
+	public void testUpdateAssetTagClassificationInDraft() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		AssetTag assetTag1 = _assetTagLocalService.addTag(
+			TestPropsValues.getUserId(), _group.getGroupId(),
+			RandomTestUtil.randomString(), serviceContext);
+
+		serviceContext.setAssetTagNames(new String[] {assetTag1.getName()});
+
+		Locale locale = _portal.getSiteDefaultLocale(_group);
+
+		JournalArticle approvedJournalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			JournalArticleConstants.CLASS_NAME_ID_DEFAULT, StringPool.BLANK,
+			true, RandomTestUtil.randomLocaleStringMap(locale),
+			RandomTestUtil.randomLocaleStringMap(locale),
+			RandomTestUtil.randomLocaleStringMap(locale), null, locale, null,
+			false, true, serviceContext);
+
+		AssetTag assetTag2 = _assetTagLocalService.addTag(
+			TestPropsValues.getUserId(), _group.getGroupId(),
+			RandomTestUtil.randomString(), serviceContext);
+
+		serviceContext.setAssetTagNames(new String[] {assetTag2.getName()});
+
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		JournalArticle draftJournalArticle = JournalTestUtil.updateArticle(
+			approvedJournalArticle, approvedJournalArticle.getTitle(locale),
+			approvedJournalArticle.getContent(), false, false, serviceContext);
+
+		Document[] documents = _searchJournalArticleVersions(
+			draftJournalArticle.getArticleId());
+
+		Assert.assertEquals(documents.toString(), 2, documents.length);
+
+		String fieldName = _localization.getLocalizedName(
+			Field.ASSET_TAG_NAMES, LocaleUtil.toLanguageId(locale));
+
+		for (Document document : documents) {
+			_assertArticleId(document, approvedJournalArticle);
+
+			double version = GetterUtil.getDouble(document.get("versionCount"));
+
+			if (_equals(version, approvedJournalArticle.getVersion())) {
+				_assertFieldValue(document, fieldName, assetTag1.getName());
+			}
+			else if (_equals(version, draftJournalArticle.getVersion())) {
+				_assertFieldValue(document, fieldName, assetTag2.getName());
+			}
+			else {
+				Assert.fail("Unexpected journal article version: " + version);
+			}
+		}
+	}
+
+	@Test
 	public void testUpdateAssetTagName() throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
