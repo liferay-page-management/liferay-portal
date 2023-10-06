@@ -139,10 +139,10 @@ public abstract class BaseWikiAttachmentImageEditorConfigContributor
 		long wikiPageResourcePrimKey, ThemeDisplay themeDisplay,
 		RequestBackedPortletURLFactory requestBackedPortletURLFactory) {
 
+		List<String> extensions = new ArrayList<>();
+
 		String[] attachmentMimeTypes =
 			wikiFileUploadConfiguration.attachmentMimeTypes();
-
-		List<String> extensions = new ArrayList<>();
 
 		for (String attachmentMimeType : attachmentMimeTypes) {
 			extensions.addAll(MimeTypesUtil.getExtensions(attachmentMimeType));
