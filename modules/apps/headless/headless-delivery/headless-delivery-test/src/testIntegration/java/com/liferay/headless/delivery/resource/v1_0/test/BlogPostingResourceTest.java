@@ -7,17 +7,25 @@ package com.liferay.headless.delivery.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.delivery.client.dto.v1_0.BlogPosting;
+import com.liferay.headless.delivery.client.resource.v1_0.BlogPostingResource;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
+
+import java.time.Duration;
+
+import java.util.Date;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -101,6 +109,41 @@ public class BlogPostingResourceTest extends BaseBlogPostingResourceTestCase {
 
 	@Override
 	@Test
+	public void testPostSiteBlogPosting() throws Exception {
+		super.testPostSiteBlogPosting();
+
+		// Blog posting created by user with non default user timezone
+
+		User user = _userLocalService.fetchUserByEmailAddress(
+			testCompany.getCompanyId(), "test@liferay.com");
+
+		String timeZoneId = user.getTimeZoneId();
+
+		user.setTimeZoneId("Europe/Madrid");
+
+		user = _userLocalService.updateUser(user);
+
+		try {
+			BlogPosting blogPosting = _testPostSiteBlogPosting_addBlogPosting(
+				user);
+
+			Date dateCreated = blogPosting.getDateCreated();
+			Date datePublished = blogPosting.getDatePublished();
+
+			Duration duration = Duration.between(
+				datePublished.toInstant(), dateCreated.toInstant());
+
+			Assert.assertTrue(duration.getSeconds() < 60);
+		}
+		finally {
+			user.setTimeZoneId(timeZoneId);
+
+			_userLocalService.updateUser(user);
+		}
+	}
+
+	@Override
+	@Test
 	public void testPutSiteBlogPostingSubscribe() throws Exception {
 		BlogPosting blogPosting =
 			testPutSiteBlogPostingSubscribe_addBlogPosting();
@@ -146,6 +189,28 @@ public class BlogPostingResourceTest extends BaseBlogPostingResourceTestCase {
 		return blogPosting;
 	}
 
+	private BlogPostingResource _buildBlogPostingResource(String login) {
+		BlogPostingResource.Builder builder = BlogPostingResource.builder();
+
+		return builder.authentication(
+			login, "test"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
+	private BlogPosting _testPostSiteBlogPosting_addBlogPosting(User user)
+		throws Exception {
+
+		BlogPosting randomBlogPosting = randomBlogPosting();
+
+		BlogPostingResource blogPostingResource = _buildBlogPostingResource(
+			user.getLogin());
+
+		return blogPostingResource.postSiteBlogPosting(
+			testGetSiteBlogPostingsPage_getSiteId(), randomBlogPosting);
+	}
+
 	@Inject
 	private LayoutPageTemplateEntryLocalService
 		_layoutPageTemplateEntryLocalService;
@@ -154,5 +219,8 @@ public class BlogPostingResourceTest extends BaseBlogPostingResourceTestCase {
 
 	@Inject
 	private Portal _portal;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
