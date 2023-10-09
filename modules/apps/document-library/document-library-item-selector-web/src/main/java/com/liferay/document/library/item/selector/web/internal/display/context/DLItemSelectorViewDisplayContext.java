@@ -12,7 +12,6 @@ import com.liferay.depot.service.DepotEntryServiceUtil;
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.item.selector.web.internal.DLItemSelectorView;
 import com.liferay.document.library.item.selector.web.internal.criterion.DLItemSelectorCriterionCreationMenuRestrictionUtil;
-import com.liferay.document.library.item.selector.web.internal.file.DLCustomExtensionFileItemSelectorView;
 import com.liferay.document.library.kernel.model.DLFileEntryConstants;
 import com.liferay.document.library.kernel.model.DLFileEntryType;
 import com.liferay.document.library.kernel.model.DLFileEntryTypeConstants;
@@ -167,20 +166,6 @@ public class DLItemSelectorViewDisplayContext<T extends ItemSelectorCriterion> {
 	}
 
 	public long getMaxFileSize() {
-		if (_itemSelectorCriterion instanceof
-				DLCustomExtensionFileItemSelectorView) {
-
-			/*TODO this return has to be changed to
-
-			return DLValidatorUtil.getMaxAllowableSize(
-				_themeDisplay.getScopeGroupId(), null,
-				((FileCustomExtensionItemSelectorCriterion)
-					_itemSelectorCriterion).getMaxFileSize())
-
-			once the method is merged
-			*/
-		}
-
 		return DLValidatorUtil.getMaxAllowableSize(
 			_themeDisplay.getScopeGroupId(), null);
 	}
