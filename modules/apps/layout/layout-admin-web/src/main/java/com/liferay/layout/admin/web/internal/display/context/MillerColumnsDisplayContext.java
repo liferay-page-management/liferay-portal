@@ -562,7 +562,9 @@ public class MillerColumnsDisplayContext {
 		Layout draftLayout = layout.fetchDraftLayout();
 
 		if (layout.isTypeContent()) {
-			if (draftLayout.isDraft() || !layout.isPublished()) {
+			if (((draftLayout != null) && draftLayout.isDraft()) ||
+				!layout.isPublished()) {
+
 				jsonArray.put(
 					JSONUtil.put(
 						"id", "draft"
