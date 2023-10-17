@@ -397,6 +397,8 @@ public class LayoutsAdminDisplayContext {
 				return portletDisplay.getId();
 			}
 		).setParameter(
+			"backURLTitle", LanguageUtil.get(httpServletRequest, "pages")
+		).setParameter(
 			"groupId", layout.getGroupId()
 		).setParameter(
 			"privateLayout", layout.isPrivateLayout()
@@ -736,6 +738,14 @@ public class LayoutsAdminDisplayContext {
 			getBackURL()
 		).setPortletResource(
 			ParamUtil.getString(httpServletRequest, "portletResource")
+		).setParameter(
+			"backURLTitle",
+			() -> {
+				PortletDisplay portletDisplay =
+					themeDisplay.getPortletDisplay();
+
+				return portletDisplay.getURLBackTitle();
+			}
 		).setParameter(
 			"selPlid", plid
 		).buildPortletURL();
