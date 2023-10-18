@@ -4,6 +4,10 @@
  */
 
 import {
+	openCategorySelectionModal,
+	openTagSelectionModal,
+} from 'frontend-js-components-web';
+import {
 	addParams,
 	navigate,
 	openConfirmModal,
@@ -183,33 +187,10 @@ export default function propsTransformer({
 	};
 
 	const filterByCategory = (categoriesFilterURL) => {
-		openSelectionModal({
-			buttonAddLabel: Liferay.Language.get('apply'),
-			height: '70vh',
-			iframeBodyCssClass: '',
-			multiple: true,
-			onSelect: (selectedItems) => {
-				if (selectedItems) {
-					const assetCategories = Object.keys(selectedItems).filter(
-						(key) => !selectedItems[key].unchecked
-					);
-
-					let url = selectAssetCategoriesURL;
-
-					assetCategories.forEach((assetCategory) => {
-						url = addParams(
-							`${portletNamespace}assetCategoryId=${assetCategory}`,
-							url
-						);
-					});
-
-					navigate(url);
-				}
-			},
-			selectEventName: `${portletNamespace}selectedAssetCategory`,
-			size: 'md',
-			title: Liferay.Language.get('filter-by-categories'),
-			url: categoriesFilterURL,
+		openCategorySelectionModal({
+			portletNamespace,
+			redirectURL: selectAssetCategoriesURL,
+			selectCategoryURL: categoriesFilterURL,
 		});
 	};
 
@@ -257,30 +238,10 @@ export default function propsTransformer({
 	};
 
 	const filterByTag = (tagsFilterURL) => {
-		openSelectionModal({
-			buttonAddLabel: Liferay.Language.get('select'),
-			height: '70vh',
-			multiple: true,
-			onSelect: (selectedItem) => {
-				if (selectedItem) {
-					const url = selectedItem.reduce(
-						(acc, item) =>
-							addParams(
-								`${portletNamespace}assetTagId=${
-									JSON.parse(item.value)?.tagName
-								}`,
-								acc
-							),
-						selectAssetTagsURL
-					);
-
-					navigate(url);
-				}
-			},
-			selectEventName: `${portletNamespace}selectedAssetTag`,
-			size: 'lg',
-			title: Liferay.Language.get('filter-by-tags'),
-			url: tagsFilterURL,
+		openTagSelectionModal({
+			portletNamespace,
+			redirectURL: selectAssetTagsURL,
+			selectTagURL: tagsFilterURL,
 		});
 	};
 
