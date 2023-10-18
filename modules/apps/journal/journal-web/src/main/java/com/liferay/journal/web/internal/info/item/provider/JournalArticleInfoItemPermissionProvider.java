@@ -15,12 +15,19 @@ import com.liferay.journal.model.JournalArticleResource;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.service.JournalArticleResourceLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.kernel.workflow.WorkflowInstance;
+import com.liferay.portal.kernel.workflow.WorkflowInstanceManagerUtil;
+import com.liferay.portal.kernel.workflow.WorkflowTask;
+import com.liferay.portal.kernel.workflow.WorkflowTaskManagerUtil;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
@@ -108,6 +115,35 @@ public class JournalArticleInfoItemPermissionProvider
 		throws InfoItemPermissionException {
 
 		try {
+			if (Objects.equals(ActionKeys.VIEW, actionId)) {
+				JournalArticle journalArticle =
+					_journalArticleLocalService.getJournalArticle(id);
+
+				List<WorkflowInstance> workflowInstances =
+					WorkflowInstanceManagerUtil.getWorkflowInstances(
+						journalArticle.getCompanyId(),
+						journalArticle.getUserId(),
+						journalArticle.getClassName(), journalArticle.getId(),
+						false, -1, -1, null);
+
+				for (WorkflowInstance workflowInstance : workflowInstances) {
+					List<WorkflowTask> workflowTasks =
+						WorkflowTaskManagerUtil.
+							getWorkflowTasksByWorkflowInstance(
+								permissionChecker.getCompanyId(), null,
+								workflowInstance.getWorkflowInstanceId(), false,
+								0, -1, null);
+
+					for (WorkflowTask workflowTask : workflowTasks) {
+						List<User> users =
+							WorkflowTaskManagerUtil.getAssignableUsers(
+								workflowTask.getWorkflowTaskId());
+
+						return users.contains(permissionChecker.getUser());
+					}
+				}
+			}
+
 			return _journalArticleModelResourcePermission.contains(
 				permissionChecker, id, actionId);
 		}
