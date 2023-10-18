@@ -773,10 +773,10 @@ definition {
 
 	macro gotoHistory {
 		while (IsElementNotPresent(locator1 = "Staging#HISTORY_BUTTON")) {
-			Click(locator1 = "Icon#STAGING_BAR_VERTICAL_ELLIPSIS");
+			Click.waitForMenuToggleJSClick(locator1 = "Icon#STAGING_BAR_VERTICAL_ELLIPSIS");
 		}
 
-		Click(locator1 = "Staging#HISTORY_BUTTON");
+		Click.javaScriptClick(locator1 = "Staging#HISTORY_BUTTON");
 
 		SelectFrame(locator1 = "IFrame#CONFIGURATION");
 	}
