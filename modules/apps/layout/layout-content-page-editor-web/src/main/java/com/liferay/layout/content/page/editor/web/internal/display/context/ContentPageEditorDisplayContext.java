@@ -1530,6 +1530,8 @@ public class ContentPageEditorDisplayContext {
 				).setBackURL(
 					themeDisplay.getURLCurrent()
 				).setParameter(
+					"backURLTitle", layout.getName()
+				).setParameter(
 					"groupId", layout.getGroupId()
 				).setParameter(
 					"privateLayout", layout.isPrivateLayout()
