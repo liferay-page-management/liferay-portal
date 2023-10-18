@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {
+	openCategorySelectionModal,
+	openTagSelectionModal,
+} from 'frontend-js-components-web';
 import {addParams, navigate, openSelectionModal} from 'frontend-js-web';
 
 import openDeleteArticleModal from './modals/openDeleteArticleModal';
@@ -14,7 +18,9 @@ export default function propsTransformer({
 		exportTranslationURL,
 		moveArticlesAndFoldersURL,
 		openViewMoreStructuresURL,
+		selectCategoryURL,
 		selectEntityURL,
+		selectTagURL,
 		trashEnabled,
 		viewDDMStructureArticlesURL,
 	},
@@ -145,6 +151,20 @@ export default function propsTransformer({
 					selectEventName: `${portletNamespace}selectDDMStructure`,
 					title: Liferay.Language.get('structures'),
 					url: selectEntityURL,
+				});
+			}
+			else if (item?.data?.action === 'openTagsSelector') {
+				openTagSelectionModal({
+					portletNamespace,
+					redirectURL: item?.data?.redirectURL,
+					selectTagURL,
+				});
+			}
+			else if (item?.data?.action === 'openCategoriesSelector') {
+				openCategorySelectionModal({
+					portletNamespace,
+					redirectURL: item?.data?.redirectURL,
+					selectCategoryURL,
 				});
 			}
 		},
