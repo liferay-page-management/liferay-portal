@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {
+	openCategorySelectionModal,
+	openTagSelectionModal,
+} from 'frontend-js-components-web';
 import {addParams, navigate, openSelectionModal} from 'frontend-js-web';
 
 const DEFAULT_VALUES = {
@@ -95,63 +99,20 @@ export default function propsTransformer({portletNamespace, ...otherProps}) {
 	};
 
 	const selectAssetCategory = (itemData) => {
-		openSelectionModal({
-			buttonAddLabel: Liferay.Language.get('select'),
-			height: '70vh',
-			iframeBodyCssClass: '',
-			multiple: true,
-			onSelect: (selectedItem) => {
-				if (selectedItem) {
-					const assetCategories = Object.keys(selectedItem).filter(
-						(key) => !selectedItem[key].unchecked
-					);
-
-					let redirectURL = itemData?.redirectURL;
-
-					assetCategories.forEach((assetCategory) => {
-						redirectURL = addParams(
-							`${portletNamespace}assetCategoryId=${selectedItem[assetCategory].categoryId}`,
-							redirectURL
-						);
-					});
-
-					navigate(redirectURL);
-				}
-			},
-			selectEventName: `${portletNamespace}selectedAssetCategory`,
-			size: 'md',
+		openCategorySelectionModal({
+			portletNamespace,
+			redirectURL: itemData?.redirectURL,
+			selectCategoryURL: itemData?.selectAssetCategoryURL,
 			title: itemData?.dialogTitle,
-			url: itemData?.selectAssetCategoryURL,
 		});
 	};
 
 	const selectAssetTag = (itemData) => {
-		openSelectionModal({
-			buttonAddLabel: Liferay.Language.get('select'),
-			height: '70vh',
-			multiple: true,
-			onSelect: (selectedItem) => {
-				if (selectedItem) {
-					const assetTags = selectedItem.map((tag) => tag.value);
-
-					let redirectURL = itemData?.redirectURL;
-
-					assetTags.forEach((assetTag) => {
-						const selectedValue = JSON.parse(assetTag);
-
-						redirectURL = addParams(
-							`${portletNamespace}assetTagId=${selectedValue.tagName}`,
-							redirectURL
-						);
-					});
-
-					navigate(redirectURL);
-				}
-			},
-			selectEventName: `${portletNamespace}selectedAssetTag`,
-			size: 'lg',
+		openTagSelectionModal({
+			portletNamespace,
+			redirectURL: itemData?.redirectURL,
+			selectTagURL: itemData?.selectTagURL,
 			title: itemData?.dialogTitle,
-			url: itemData?.selectTagURL,
 		});
 	};
 
