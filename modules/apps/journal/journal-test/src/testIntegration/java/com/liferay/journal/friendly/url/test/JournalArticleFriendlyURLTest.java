@@ -256,6 +256,30 @@ public class JournalArticleFriendlyURLTest {
 		return valuesMap;
 	}
 
+	private JournalArticle _updateJournalArticle(JournalArticle article)
+		throws Exception {
+
+		return _journalArticleLocalService.updateArticle(
+			article.getUserId(), article.getGroupId(), article.getFolderId(),
+			article.getArticleId(), article.getVersion(), article.getContent(),
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+	}
+
+	private JournalArticle _updateJournalArticleWithFriendlyURLMap(
+			JournalArticle article, Map<Locale, String> friendlyURLMap)
+		throws Exception {
+
+		return _journalArticleLocalService.updateArticle(
+			article.getUserId(), _group.getGroupId(), article.getFolderId(),
+			article.getArticleId(), article.getVersion(), article.getTitleMap(),
+			article.getDescriptionMap(), friendlyURLMap, article.getContent(),
+			article.getDDMTemplateKey(), article.getLayoutUuid(), 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, true, 0, 0, 0, 0, 0, true, article.isIndexable(),
+			article.isSmallImage(), 0, article.getSmallImageSource(),
+			article.getSmallImageURL(), null, null, null,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+	}
+
 	private JournalArticle _updateJournalArticleWithTitleMap(
 			JournalArticle article, Map<Locale, String> titleMap)
 		throws Exception {
