@@ -97,6 +97,28 @@ public class JournalArticleFriendlyURLTest {
 	}
 
 	@Test
+	public void testFriendlyURLAfterUpdate() throws Exception {
+		JournalArticle article = _addJournalArticleWithTitleMap(
+			_getLocalizedMap(
+				RandomTestUtil.randomString(),
+				new Locale[] {LocaleUtil.FRANCE, LocaleUtil.US}));
+
+		Map<Locale, String> friendlyURLMap = article.getFriendlyURLMap();
+
+		friendlyURLMap.put(
+			LocaleUtil.US, friendlyURLMap.get(LocaleUtil.US) + "-edited");
+
+		JournalArticle updatedArticle = _updateJournalArticleWithFriendlyURLMap(
+			article, friendlyURLMap);
+
+		Assert.assertEquals(friendlyURLMap, updatedArticle.getFriendlyURLMap());
+
+		updatedArticle = _updateJournalArticle(updatedArticle);
+
+		Assert.assertEquals(friendlyURLMap, updatedArticle.getFriendlyURLMap());
+	}
+
+	@Test
 	public void testUniqueFriendlyURLAfterUpdate() throws Exception {
 		String title1 = RandomTestUtil.randomString();
 		Locale[] locales = {LocaleUtil.FRANCE, LocaleUtil.US};
