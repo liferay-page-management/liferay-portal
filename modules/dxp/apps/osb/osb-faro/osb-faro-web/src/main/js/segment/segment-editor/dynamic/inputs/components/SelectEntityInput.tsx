@@ -1,6 +1,6 @@
 import Form from 'shared/components/form';
 import getCN from 'classnames';
-import Promise from 'metal-promise';
+
 import React, {useContext, useEffect} from 'react';
 import SelectEntityFromModal from '../components/SelectEntityFromModal';
 import {Columns} from 'shared/types';

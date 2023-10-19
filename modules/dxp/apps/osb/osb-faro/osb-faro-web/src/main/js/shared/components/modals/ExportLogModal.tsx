@@ -3,7 +3,7 @@ import DateRangeInput, {DateRange} from 'shared/components/DateRangeInput';
 import Loading, {Align} from 'shared/components/Loading';
 import Modal from 'shared/components/modal';
 import moment from 'moment';
-import Promise from 'metal-promise';
+
 import React, {useState} from 'react';
 import {downloadDataAsFile} from 'shared/util/util';
 

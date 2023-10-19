@@ -1,5 +1,5 @@
 import * as data from 'test/data';
-import Promise from 'metal-promise';
+
 import {range} from 'lodash';
 import {TimeZone} from 'shared/util/records';
 

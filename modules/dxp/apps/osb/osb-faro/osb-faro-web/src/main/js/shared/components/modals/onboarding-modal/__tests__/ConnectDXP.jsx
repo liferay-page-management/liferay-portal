@@ -1,7 +1,7 @@
 import * as API from 'shared/api';
 import ConnectDXP from '../ConnectDXP';
 import mockStore from 'test/mock-store';
-import Promise from 'metal-promise';
+
 import React from 'react';
 import {fireEvent, render} from '@testing-library/react';
 import {noop} from 'lodash';

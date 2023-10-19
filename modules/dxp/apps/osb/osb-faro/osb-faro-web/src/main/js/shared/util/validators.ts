@@ -1,4 +1,3 @@
-import Promise from 'metal-promise';
 import {formatStringToLowercase} from 'shared/util/util';
 import {formatTime, getMillisecondsFromTime} from 'shared/util/time';
 import {isArray, isNil, isObject, isString} from 'lodash';

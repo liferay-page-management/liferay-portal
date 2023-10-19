@@ -1,7 +1,7 @@
 import * as API from 'shared/api';
 import BaseListPage from 'contacts/components/BaseListPage';
 import ClayButton from '@clayui/button';
-import Promise from 'metal-promise';
+
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import RowActions from 'shared/components/RowActions';
 import SearchableEntityTable from 'shared/components/SearchableEntityTable';

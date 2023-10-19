@@ -1,6 +1,6 @@
 import * as API from 'shared/api';
 import * as data from 'test/data';
-import Promise from 'metal-promise';
+
 import {
 	CredentialTypes,
 	DataSourceStates,

@@ -1,4 +1,3 @@
-import Promise from 'metal-promise';
 import useDeepEqualEffect from './useDeepEqualEffect';
 import {debounce} from 'lodash/fp';
 import {useCallback, useRef, useState} from 'react';

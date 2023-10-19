@@ -5,7 +5,6 @@ import CriteriaSidebar from './criteria-sidebar';
 import EmbeddedAlertList from 'shared/components/EmbeddedAlertList';
 import Form, {withField} from 'shared/components/form';
 import NavigationWarning from 'shared/components/NavigationWarning';
-import Promise from 'metal-promise';
 import React from 'react';
 import Toolbar from './Toolbar';
 import {AlertTypes} from 'shared/components/Alert';

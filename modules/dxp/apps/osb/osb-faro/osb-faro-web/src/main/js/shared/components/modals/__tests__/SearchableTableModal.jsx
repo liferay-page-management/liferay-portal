@@ -1,5 +1,5 @@
 import * as data from 'test/data';
-import Promise from 'metal-promise';
+
 import React from 'react';
 import SearchableTableModal from '../SearchableTableModal';
 import {cleanup, render} from '@testing-library/react';

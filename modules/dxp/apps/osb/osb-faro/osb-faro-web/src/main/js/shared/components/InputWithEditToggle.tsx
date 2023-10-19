@@ -5,7 +5,7 @@ import Form from 'shared/components/form';
 import getCN from 'classnames';
 import Label from 'shared/components/form/Label';
 import Loading, {Align} from 'shared/components/Loading';
-import Promise from 'metal-promise';
+
 import React from 'react';
 import {Formik} from 'formik';
 interface IInputWithEditToggleProps {

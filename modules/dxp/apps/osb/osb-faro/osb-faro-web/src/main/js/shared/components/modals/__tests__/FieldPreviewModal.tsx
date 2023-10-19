@@ -1,5 +1,5 @@
 import FieldPreviewModal from '../FieldPreviewModal';
-import Promise from 'metal-promise';
+
 import React from 'react';
 import {noop} from 'lodash';
 import {render} from '@testing-library/react';

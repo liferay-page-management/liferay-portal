@@ -1,7 +1,7 @@
 import Form from 'shared/components/form';
 import getCN from 'classnames';
 import Input from 'shared/components/Input';
-import Promise from 'metal-promise';
+
 import React from 'react';
 import {close, modalTypes, open} from 'shared/actions/modals';
 import {Columns} from 'shared/types';

@@ -1,5 +1,5 @@
 import * as API from 'shared/api';
-import Promise from 'metal-promise';
+
 import {
 	emitAuthCode,
 	emitError,

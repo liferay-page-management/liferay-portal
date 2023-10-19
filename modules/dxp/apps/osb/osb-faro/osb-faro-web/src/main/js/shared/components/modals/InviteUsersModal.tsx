@@ -3,7 +3,7 @@ import getCN from 'classnames';
 import Input from 'shared/components/Input';
 import InputList from 'shared/components/InputList';
 import Modal from 'shared/components/modal';
-import Promise from 'metal-promise';
+
 import React, {useState} from 'react';
 import {validateEmail} from 'shared/util/email-validators';
 

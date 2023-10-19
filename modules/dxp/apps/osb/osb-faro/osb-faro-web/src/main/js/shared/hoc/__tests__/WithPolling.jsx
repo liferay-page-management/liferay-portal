@@ -1,5 +1,5 @@
 import * as Redux from 'react-redux';
-import Promise from 'metal-promise';
+
 import React from 'react';
 import withPolling from '../WithPolling';
 import {renderWithStore} from 'test/mock-store';

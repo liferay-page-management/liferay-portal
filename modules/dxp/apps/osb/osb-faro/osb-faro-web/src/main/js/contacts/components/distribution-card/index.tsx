@@ -5,7 +5,7 @@ import Card from 'shared/components/Card';
 import DistributionChart from './DistributionChart';
 import ErrorDisplay from 'shared/components/ErrorDisplay';
 import Loading from 'shared/components/Loading';
-import Promise from 'metal-promise';
+
 import React from 'react';
 import Tabs from './Tabs';
 import {addAlert} from 'shared/actions/alerts';
