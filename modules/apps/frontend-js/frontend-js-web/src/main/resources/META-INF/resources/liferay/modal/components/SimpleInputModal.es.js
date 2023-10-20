@@ -5,7 +5,7 @@
 
 import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
-import {ClayCheckbox} from '@clayui/form';
+import {ClayCheckbox, ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayModal, {useModal} from '@clayui/modal';
 import {useIsMounted} from '@liferay/frontend-js-react-web';
@@ -28,6 +28,7 @@ const SimpleInputModal = ({
 	idFieldName,
 	idFieldValue,
 	initialVisible,
+	isTextArea,
 	mainFieldLabel,
 	mainFieldName,
 	mainFieldValue = '',
@@ -147,9 +148,10 @@ const SimpleInputModal = ({
 								</span>
 							</label>
 
-							<input
+							<ClayInput
 								autoFocus
 								className="form-control"
+								component={isTextArea ? 'textarea' : 'input'}
 								disabled={loadingResponse}
 								id={`${namespace}${mainFieldName}`}
 								name={`${namespace}${mainFieldName}`}

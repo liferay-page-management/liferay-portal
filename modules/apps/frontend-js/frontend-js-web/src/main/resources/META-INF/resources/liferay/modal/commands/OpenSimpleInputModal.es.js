@@ -40,6 +40,7 @@ function openSimpleInputModalImplementation({
 	formSubmitURL,
 	idFieldName,
 	idFieldValue,
+	isTextArea,
 	mainFieldLabel,
 	mainFieldName,
 	mainFieldValue,
@@ -62,6 +63,7 @@ function openSimpleInputModalImplementation({
 			idFieldName={idFieldName}
 			idFieldValue={idFieldValue}
 			initialVisible="true"
+			isTextArea={isTextArea}
 			mainFieldLabel={mainFieldLabel}
 			mainFieldName={mainFieldName}
 			mainFieldValue={mainFieldValue}
