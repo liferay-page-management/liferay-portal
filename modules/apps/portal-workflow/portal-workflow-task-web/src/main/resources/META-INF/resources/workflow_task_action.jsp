@@ -24,7 +24,7 @@ PortletURL redirectURL = PortletURLBuilder.createRenderURL(
 %>
 
 <liferay-ui:icon-menu
-	cssClass="lfr-asset-actions"
+	cssClass="c-mr-4 lfr-asset-actions"
 	direction="left-side"
 	icon="<%= StringPool.BLANK %>"
 	markupView="lexicon"
@@ -109,36 +109,18 @@ PortletURL redirectURL = PortletURLBuilder.createRenderURL(
 	</c:if>
 </liferay-ui:icon-menu>
 
-<aui:form name='<%= randomId + "form" %>'>
-	<div class="hide" id="<%= randomId %>updateComments">
-		<aui:input cols="55" cssClass="task-content-comment" name="comment" placeholder="comment" rows="1" type="textarea" />
-	</div>
-</aui:form>
-
-<aui:script use="liferay-workflow-tasks">
-	var onTaskClickFn = A.rbind(
-		'onTaskClick',
-		Liferay.WorkflowTasks,
-		'<%= randomId %>'
-	);
-
-	<c:if test="<%= !workflowTask.isCompleted() && workflowTaskDisplayContext.isAssignedToUser(workflowTask) %>">
-
-		<%
-		for (String transitionName : workflowTaskDisplayContext.getTransitionNames(workflowTask)) {
-		%>
-
-			Liferay.delegateClick(
-				'<portlet:namespace /><%= randomId + HtmlUtil.escapeJS(transitionName) %>taskChangeStatusLink',
-				onTaskClickFn
-			);
-
-		<%
-		}
-		%>
-
-	</c:if>
-</aui:script>
+<c:if test="<%= !workflowTask.isCompleted() && workflowTaskDisplayContext.isAssignedToUser(workflowTask) %>">
+	<liferay-frontend:component
+		context='<%=
+			HashMapBuilder.<String, Object>put(
+				"randomId", randomId
+			).put(
+				"workflowTasks", workflowTaskDisplayContext.getTransitionNames(workflowTask)
+			).build()
+		%>'
+		module="js/WorkflowTaskAction"
+	/>
+</c:if>
 
 <aui:script>
 	function <portlet:namespace />taskAssign(uri) {
