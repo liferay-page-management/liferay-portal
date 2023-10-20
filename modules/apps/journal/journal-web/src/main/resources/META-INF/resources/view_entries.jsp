@@ -357,9 +357,16 @@ Map<String, Object> componentContext = journalDisplayContext.getComponentContext
 							</span>
 
 							<c:if test="<%= journalDisplayContext.isSearch() && ((curFolder.getParentFolderId() <= 0) || JournalFolderPermission.contains(permissionChecker, curFolder.getParentFolder(), ActionKeys.VIEW)) %>">
-								<h5>
-									<%= journalDisplayContext.getAbsolutePath(curFolder.getParentFolderId()) %>
-								</h5>
+								<clay:link
+									href='<%=
+										PortletURLBuilder.createRenderURL(
+											liferayPortletResponse
+										).setParameter(
+											"folderId", curFolder.getFolderId()
+										).buildString()
+									%>'
+									label="<%= journalDisplayContext.getAbsolutePath(curFolder.getFolderId()) %>"
+								/>
 							</c:if>
 						</liferay-ui:search-container-column-text>
 
