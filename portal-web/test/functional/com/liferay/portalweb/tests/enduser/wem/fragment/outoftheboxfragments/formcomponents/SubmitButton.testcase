@@ -508,7 +508,7 @@ definition {
 			task ("Assert there's a Submit Button Missing warning message shown") {
 				AssertTextEquals(
 					index = 1,
-					locator1 = "Modal#BODY_MESSAGE",
+					locator1 = "Modal#BODY_MESSAGE_WARNING",
 					value1 = "Purchase Order form has a hidden or missing submit button. If you continue, your users may not be able to submit the form. Are you sure you want to publish it?");
 			}
 		}

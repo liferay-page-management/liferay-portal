@@ -323,17 +323,17 @@ definition {
 
 			AssertTextEquals(
 				index = 1,
-				locator1 = "Modal#BODY_MESSAGE",
+				locator1 = "Modal#BODY_MESSAGE_WARNING",
 				value1 = "Changing the structure key will reindex all the web content articles with this structure. This action may take some time, and the affected items may not be available during this process.");
 
 			AssertTextEquals(
 				index = 2,
-				locator1 = "Modal#BODY_MESSAGE",
+				locator1 = "Modal#BODY_MESSAGE_WARNING",
 				value1 = "Remember that all places where the structure key was changed manually must be reviewed to be consistent with the new key. Otherwise, the relationship will be lost.");
 
 			AssertTextEquals(
 				index = 3,
-				locator1 = "Modal#BODY_MESSAGE",
+				locator1 = "Modal#BODY_MESSAGE_WARNING",
 				value1 = "Are you sure you want to continue and save the key?");
 		}
 

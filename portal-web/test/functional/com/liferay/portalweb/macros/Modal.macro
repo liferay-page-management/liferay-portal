@@ -17,7 +17,7 @@ definition {
 
 		AssertTextEquals(
 			index = ${index},
-			locator1 = "Modal#BODY_MESSAGE",
+			locator1 = "Modal#BODY_MESSAGE_WARNING",
 			value1 = ${warningMessage});
 
 		if (${action} == "Cancel") {
