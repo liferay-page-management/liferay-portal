@@ -122,9 +122,16 @@ Map<String, Object> componentContext = journalDisplayContext.getComponentContext
 							</span>
 
 							<c:if test="<%= journalDisplayContext.isSearch() && ((curArticle.getFolderId() <= 0) || JournalFolderPermission.contains(permissionChecker, curArticle.getFolder(), ActionKeys.VIEW)) %>">
-								<h5>
-									<%= journalDisplayContext.getAbsolutePath(curArticle.getFolderId()) %>
-								</h5>
+								<clay:link
+									href='<%=
+										PortletURLBuilder.createRenderURL(
+											liferayPortletResponse
+										).setParameter(
+											"folderId", curArticle.getFolderId()
+										).buildString()
+									%>'
+									label="<%= journalDisplayContext.getAbsolutePath(curArticle.getFolderId()) %>"
+								/>
 							</c:if>
 
 							<span class="text-default">
