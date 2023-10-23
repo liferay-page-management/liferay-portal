@@ -128,14 +128,24 @@ export const List: React.FC<IListProps> = ({
 	} = useContext(UnassignedSegmentsContext);
 
 	useEffect(() => {
-		_disableSegmentsRequestRef.current = getDisabledSegmentsAlert();
+		const abortController = new AbortController();
 
-		return () => _disableSegmentsRequestRef.current.cancel();
+		_disableSegmentsRequestRef.current = getDisabledSegmentsAlert(
+			abortController.signal
+		);
+
+		return () => {
+			abortController.abort();
+		};
 	}, []);
 
-	const getDisabledSegmentsAlert = () =>
+	const getDisabledSegmentsAlert = (abortSignal: AbortSignal) =>
 		fetchDisabledSegments(channelId, groupId, orderIOMap).then(
 			({total}) => {
+				if (abortSignal.aborted) {
+					return;
+				}
+
 				if (total) {
 					setAlerts(() => handleDisabledSegmentsAlert());
 				}

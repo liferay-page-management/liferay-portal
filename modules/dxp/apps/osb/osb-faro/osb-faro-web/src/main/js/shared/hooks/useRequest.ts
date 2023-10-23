@@ -27,13 +27,19 @@ const useRequest = ({
 	skipRequest?: boolean;
 	variables: {[key: string]: any};
 }) => {
-	const requestRef = useRef<Promise<any>>();
+	const requestAbortControllerRef = useRef<AbortController>();
 	const debounceRef = useRef<ReturnType<typeof debounce>>();
 
 	const debouncedDataSourceFn = useCallback<any>(
 		debounce(debounceDelay)(vars => {
-			requestRef.current = dataSourceFn(vars)
+			requestAbortControllerRef.current = new AbortController();
+
+			dataSourceFn(vars)
 				.then(result => {
+					if (requestAbortControllerRef.current?.signal.aborted) {
+						return;
+					}
+
 					setState({
 						...state,
 						data: normalize(result),
@@ -69,7 +75,7 @@ const useRequest = ({
 
 		return () => {
 			debounceRef.current?.cancel?.();
-			requestRef.current?.cancel?.();
+			requestAbortControllerRef.current?.abort();
 		};
 	}, [skipRequest, variables]);
 
