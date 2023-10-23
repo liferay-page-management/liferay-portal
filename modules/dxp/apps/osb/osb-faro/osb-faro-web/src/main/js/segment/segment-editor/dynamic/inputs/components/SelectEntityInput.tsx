@@ -14,7 +14,7 @@ import {OrderParams} from 'shared/util/records';
 
 interface ISelectEntityInputProps {
 	columns: Columns;
-	dataSourceFn?: () => typeof Promise;
+	dataSourceFn?: () => Promise<any>;
 	delta?: number;
 	entityLabel: string;
 	entityType: EntityType;

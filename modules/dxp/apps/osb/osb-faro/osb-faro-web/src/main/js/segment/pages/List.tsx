@@ -120,7 +120,7 @@ export const List: React.FC<IListProps> = ({
 
 	const [alerts, setAlerts] = useState([]);
 
-	const _disableSegmentsRequestRef = useRef<typeof Promise>();
+	const _disableSegmentsRequestRef = useRef<Promise<any>>();
 	const {
 		showUnassignedAlert,
 		unassignedSegments,

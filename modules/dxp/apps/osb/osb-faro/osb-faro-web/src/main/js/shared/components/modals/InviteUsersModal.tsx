@@ -10,7 +10,7 @@ import {validateEmail} from 'shared/util/email-validators';
 interface IInviteUsersModalProps {
 	className: string;
 	onClose: () => void;
-	onSubmit: (emails: string[]) => typeof Promise;
+	onSubmit: (emails: string[]) => Promise<any>;
 }
 
 const InviteUsersModal: React.FC<IInviteUsersModalProps> = ({

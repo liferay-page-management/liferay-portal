@@ -27,7 +27,7 @@ const useRequest = ({
 	skipRequest?: boolean;
 	variables: {[key: string]: any};
 }) => {
-	const requestRef = useRef<typeof Promise>();
+	const requestRef = useRef<Promise<any>>();
 	const debounceRef = useRef<ReturnType<typeof debounce>>();
 
 	const debouncedDataSourceFn = useCallback<any>(

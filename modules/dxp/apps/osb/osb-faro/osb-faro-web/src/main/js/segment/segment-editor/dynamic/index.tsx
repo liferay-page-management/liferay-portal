@@ -82,7 +82,7 @@ interface ISegmentEditorProps {
 	onSubmit: (
 		form: FormValues,
 		ref: React.Ref<Formik>,
-		requestFn: (params: FormValues) => typeof Promise
+		requestFn: (params: FormValues) => Promise<any>
 	) => void;
 	propertyGroupsIList: List<PropertyGroup>;
 	segment: Segment;

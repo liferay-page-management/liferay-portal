@@ -49,7 +49,7 @@ interface IDistributionCardProps
 		PropsFromRedux {
 	channelId: string;
 	distributionKey: string;
-	fetchDistribution: (params: object) => typeof Promise;
+	fetchDistribution: (params: object) => Promise<any>;
 	groupId: string;
 	id: string;
 	noResultsRenderer?: () => React.ReactElement;

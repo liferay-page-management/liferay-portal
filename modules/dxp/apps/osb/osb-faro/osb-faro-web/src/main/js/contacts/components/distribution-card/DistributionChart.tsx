@@ -53,7 +53,7 @@ interface IDistributionChartProps extends PropsFromRedux {
 	channelId: string;
 	distributionKey: string;
 	error: boolean;
-	fetchDistribution: (params: object) => typeof Promise;
+	fetchDistribution: (params: object) => Promise<any>;
 	groupId: string;
 	id: string;
 	individualFieldDistributionIList: List<Map<string, any>>;

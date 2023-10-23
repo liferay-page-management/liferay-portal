@@ -17,7 +17,7 @@ interface IExportLogModalProps {
 	}: {
 		fromDate: string;
 		toDate: string;
-	}) => typeof Promise;
+	}) => Promise<any>;
 	title: string;
 }
 
