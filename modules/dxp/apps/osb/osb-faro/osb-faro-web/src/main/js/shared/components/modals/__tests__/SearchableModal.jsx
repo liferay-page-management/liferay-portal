@@ -4,9 +4,8 @@ import {cleanup, render} from '@testing-library/react';
 import {createOrderIOMap} from 'shared/util/pagination';
 import {MemoryRouter, Route} from 'react-router-dom';
 import {mockSegment} from 'test/data';
-import {noop} from 'lodash';
+import {noop, times} from 'lodash';
 import {Routes} from 'shared/util/router';
-import {times} from 'lodash';
 
 jest.unmock('react-dom');
 

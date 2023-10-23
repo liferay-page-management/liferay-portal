@@ -6,14 +6,13 @@ import ModalRenderer from 'shared/components/ModalRenderer';
 import React from 'react';
 import useModalNotifications from '../useModalNotifications';
 import {close, open} from 'shared/actions/modals';
-import {connect} from 'react-redux';
+import {connect, Provider} from 'react-redux';
 import {fireEvent, render} from '@testing-library/react';
 import {mockGetDateNow} from 'test/mock-date';
 import {
 	NotificationSubtypes,
 	NotificationTypes
 } from 'shared/util/records/Notification';
-import {Provider} from 'react-redux';
 import {range} from 'lodash';
 
 jest.unmock('react-dom');

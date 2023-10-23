@@ -195,6 +195,7 @@ export function emitError({message}) {
 		);
 	}
 }
+
 /**
  * OAuth 1 Flow
  * Emits the token as an event on the window. Should be

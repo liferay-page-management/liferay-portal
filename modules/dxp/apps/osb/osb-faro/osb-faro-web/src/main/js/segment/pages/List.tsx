@@ -16,8 +16,8 @@ import {ALERT_CONFIG_MAP, AlertTypes} from 'shared/components/Alert';
 import {close, modalTypes, open} from 'shared/actions/modals';
 import {compose, withCurrentUser} from 'shared/hoc';
 import {connect, ConnectedProps} from 'react-redux';
-import {createOrderIOMap} from 'shared/util/pagination';
 import {
+	createOrderIOMap,
 	getDefaultSortOrder,
 	NAME,
 	paginationDefaults
@@ -31,11 +31,11 @@ import {
 	SEGMENT_STATE,
 	SEGMENTS,
 	setUriQueryValue,
+	setUriQueryValues,
 	toRoute
 } from 'shared/util/router';
 import {segmentsListColumns} from 'shared/util/table-columns';
 import {SegmentStates, SegmentTypes, Sizes} from 'shared/util/constants';
-import {setUriQueryValues} from 'shared/util/router';
 import {sub} from 'shared/util/lang';
 import {useQueryPagination} from 'shared/hooks';
 

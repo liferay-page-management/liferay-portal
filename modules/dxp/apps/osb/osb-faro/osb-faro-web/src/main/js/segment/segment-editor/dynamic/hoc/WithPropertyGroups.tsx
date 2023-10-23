@@ -7,14 +7,15 @@ import {
 	convertEventToProperty,
 	convertFieldMappingToAccountProperty,
 	convertFieldMappingToIndividualProperty,
-	convertFieldMappingToOrganizationProperty
+	convertFieldMappingToOrganizationProperty,
+	createInterestProperty
 } from '../utils/utils';
-import {createInterestProperty} from '../utils/utils';
 import {
 	DEVELOPER_MODE,
 	ENABLE_ACCOUNTS,
 	FieldContexts,
-	FieldOwnerTypes
+	FieldOwnerTypes,
+	OrderByDirections
 } from 'shared/util/constants';
 import {EventTypes} from 'event-analysis/utils/types';
 import {
@@ -25,7 +26,6 @@ import {
 } from '../utils/properties';
 import {List} from 'immutable';
 import {NAME} from 'shared/util/pagination';
-import {OrderByDirections} from 'shared/util/constants';
 import {PropertyGroup, PropertySubgroup} from 'shared/util/records';
 import {sub} from 'shared/util/lang';
 import {withRequest} from 'shared/hoc';
@@ -61,7 +61,9 @@ const fetchPropertyGroups = ({groupId}: {groupId: string}): Promise<any> =>
 		}),
 		API.interests.searchKeywords({delta: MAX_DELTA, groupId}),
 		Promise.resolve(SESSION_PROPERTIES),
+
 		// TODO: LRAC-8210 Remove for release 3.1
+
 		DEVELOPER_MODE
 			? client.query({
 					fetchPolicy: 'network-only',
@@ -142,12 +144,15 @@ const mapResultToProps = ([
 					[
 						new PropertySubgroup({
 							// TODO: LRAC-8210 Remove for release 3.1
+
 							label: DEVELOPER_MODE
 								? Liferay.Language.get('default-events')
 								: null,
 							properties: webBehaviors
 						}),
+
 						// TODO: LRAC-8210 Remove for release 3.1
+
 						DEVELOPER_MODE &&
 							new PropertySubgroup({
 								label: Liferay.Language.get('custom-events'),

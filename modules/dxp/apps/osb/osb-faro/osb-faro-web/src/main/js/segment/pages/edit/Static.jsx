@@ -9,11 +9,10 @@ import React from 'react';
 import SegmentEditStatic from 'segment/segment-editor/static/SegmentEditStatic';
 import Sheet from 'shared/components/Sheet';
 import withBaseEdit from 'contacts/hoc/segment/WithBaseEdit';
-import {Changeset} from 'shared/util/records';
+import {Changeset, Segment} from 'shared/util/records';
 import {get} from 'lodash';
 import {PropTypes} from 'prop-types';
 import {Routes, SEGMENTS, toRoute} from 'shared/util/router';
-import {Segment} from 'shared/util/records';
 import {SegmentTypes} from 'shared/util/constants';
 import {sub} from 'shared/util/lang';
 
