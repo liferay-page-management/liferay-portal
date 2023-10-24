@@ -208,6 +208,8 @@ public class DDMStructureActionDropdownItemsProvider {
 					"ddmStructureId", _ddmStructure.getStructureId()
 				).setParameter(
 					"groupId", _ddmStructure.getGroupId()
+				).setParameter(
+					"showSelectFolder", false
 				).buildString());
 			dropdownItem.setLabel(
 				LanguageUtil.get(_httpServletRequest, "edit-default-values"));
