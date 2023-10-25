@@ -1,0 +1,9 @@
+@import 'cadmin-variables';
+
+html#{$cadmin-selector} {
+	.cadmin {
+		.display-template-selector {
+			width: 192px;
+		}
+	}
+}
