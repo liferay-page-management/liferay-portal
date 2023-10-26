@@ -5,20 +5,31 @@
 
 package com.liferay.fragment.entry.processor.editable.internal.mapper;
 
+import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
+import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
+import com.liferay.asset.kernel.model.AssetRenderer;
+import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.fragment.entry.processor.editable.element.constants.ActionEditableElementConstants;
 import com.liferay.fragment.entry.processor.editable.mapper.EditableElementMapper;
 import com.liferay.fragment.processor.FragmentEntryProcessorContext;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
@@ -98,13 +109,16 @@ public class ActionEditableElementMapper implements EditableElementMapper {
 		element.attr("data-lfr-field-id", fieldId);
 
 		_addDataAtributes(
-			element, configJSONObject.getJSONObject("onError"), "error");
+			classNameId, classPK, element,
+			configJSONObject.getJSONObject("onError"), "error");
 		_addDataAtributes(
-			element, configJSONObject.getJSONObject("onSuccess"), "success");
+			classNameId, classPK, element,
+			configJSONObject.getJSONObject("onSuccess"), "success");
 	}
 
 	private void _addDataAtributes(
-			Element element, JSONObject jsonObject, String resultType)
+			String classNameId, String classPK, Element element,
+			JSONObject jsonObject, String resultType)
 		throws PortalException {
 
 		if (jsonObject == null) {
@@ -140,6 +154,67 @@ public class ActionEditableElementMapper implements EditableElementMapper {
 
 		if (themeDisplay == null) {
 			return;
+		}
+
+		if (interaction.equals(
+				ActionEditableElementConstants.INTERACTION_DISPLAY_PAGE)) {
+
+			if (!resultType.equals("success")) {
+				return;
+			}
+
+			String layoutPageTemplateEntryKey = jsonObject.getString(
+				"displayPage");
+
+			if (Validator.isNull(layoutPageTemplateEntryKey)) {
+				return;
+			}
+
+			String url = null;
+
+			if (layoutPageTemplateEntryKey.equals(
+					"ObjectEntry_displayPageURL")) {
+
+				url = _getDefaultDisplayPageURL(
+					new InfoItemReference(
+						_portal.getClassName(GetterUtil.getLong(classNameId)),
+						GetterUtil.getLong(classPK)),
+					themeDisplay);
+			}
+			else if (layoutPageTemplateEntryKey.startsWith(
+						"LayoutPageTemplateEntry_")) {
+
+				layoutPageTemplateEntryKey =
+					layoutPageTemplateEntryKey.substring(
+						"LayoutPageTemplateEntry_".length());
+
+				LayoutPageTemplateEntry layoutPageTemplateEntry =
+					_layoutPageTemplateEntryLocalService.
+						fetchLayoutPageTemplateEntry(
+							themeDisplay.getScopeGroupId(),
+							layoutPageTemplateEntryKey);
+
+				Layout layout = _layoutLocalService.fetchLayout(
+					layoutPageTemplateEntry.getPlid());
+
+				if (layout == null) {
+					return;
+				}
+
+				Group group = themeDisplay.getScopeGroup();
+
+				url = StringBundler.concat(
+					_portal.getGroupFriendlyURL(
+						group.getPublicLayoutSet(), themeDisplay, false, false),
+					"/e", layout.getFriendlyURL(themeDisplay.getLocale()),
+					StringPool.SLASH, classNameId, StringPool.SLASH, classPK);
+			}
+
+			if (Validator.isNull(url)) {
+				return;
+			}
+
+			element.attr("data-lfr-on-" + resultType + "-page-url", url);
 		}
 
 		if (interaction.equals(
@@ -207,8 +282,76 @@ public class ActionEditableElementMapper implements EditableElementMapper {
 		}
 	}
 
+	private String _getDefaultDisplayPageURL(
+		InfoItemReference infoItemReference, ThemeDisplay themeDisplay) {
+
+		AssetRendererFactory<?> assetRendererFactory =
+			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
+				infoItemReference.getClassName());
+
+		try {
+			if (assetRendererFactory == null) {
+				return _assetDisplayPageFriendlyURLProvider.getFriendlyURL(
+					infoItemReference, themeDisplay);
+			}
+
+			AssetRenderer<?> assetRenderer = null;
+
+			if (infoItemReference.getInfoItemIdentifier() instanceof
+					ClassPKInfoItemIdentifier) {
+
+				ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
+					(ClassPKInfoItemIdentifier)
+						infoItemReference.getInfoItemIdentifier();
+
+				assetRenderer = assetRendererFactory.getAssetRenderer(
+					classPKInfoItemIdentifier.getClassPK());
+			}
+
+			if (assetRenderer == null) {
+				return _assetDisplayPageFriendlyURLProvider.getFriendlyURL(
+					infoItemReference, themeDisplay);
+			}
+
+			String viewInContextURL = assetRenderer.getURLViewInContext(
+				themeDisplay, StringPool.BLANK);
+
+			if (Validator.isNotNull(viewInContextURL)) {
+				return viewInContextURL;
+			}
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+		}
+
+		try {
+			return _assetDisplayPageFriendlyURLProvider.getFriendlyURL(
+				infoItemReference, themeDisplay);
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+		}
+
+		return null;
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		ActionEditableElementMapper.class);
+
+	@Reference
+	private AssetDisplayPageFriendlyURLProvider
+		_assetDisplayPageFriendlyURLProvider;
+
 	@Reference
 	private LayoutLocalService _layoutLocalService;
+
+	@Reference
+	private LayoutPageTemplateEntryLocalService
+		_layoutPageTemplateEntryLocalService;
 
 	@Reference
 	private Portal _portal;
