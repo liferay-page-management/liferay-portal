@@ -5,26 +5,18 @@
 
 package com.liferay.fragment.entry.processor.editable.internal.mapper;
 
-import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
-import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
-import com.liferay.asset.kernel.model.AssetRenderer;
-import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.fragment.entry.processor.editable.element.constants.ActionEditableElementConstants;
 import com.liferay.fragment.entry.processor.editable.mapper.EditableElementMapper;
 import com.liferay.fragment.processor.FragmentEntryProcessorContext;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
-import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
+import com.liferay.layout.page.template.info.item.provider.DisplayPageURLProvider;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -180,7 +172,7 @@ public class ActionEditableElementMapper implements EditableElementMapper {
 			if (layoutPageTemplateEntryKey.equals(
 					"ObjectEntry_displayPageURL")) {
 
-				url = _getDefaultDisplayPageURL(
+				url = _displayPageURLProvider.getDefaultURL(
 					infoItemReference, themeDisplay);
 			}
 			else if (layoutPageTemplateEntryKey.startsWith(
@@ -203,7 +195,7 @@ public class ActionEditableElementMapper implements EditableElementMapper {
 					return;
 				}
 
-				url = _getDisplayPageTemplateURL(
+				url = _displayPageURLProvider.getURL(
 					infoItemReference, layoutPageTemplateEntry,
 					themeDisplay.getLocale(), themeDisplay);
 			}
@@ -280,109 +272,8 @@ public class ActionEditableElementMapper implements EditableElementMapper {
 		}
 	}
 
-	private String _getDefaultDisplayPageURL(
-		InfoItemReference infoItemReference, ThemeDisplay themeDisplay) {
-
-		AssetRendererFactory<?> assetRendererFactory =
-			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
-				infoItemReference.getClassName());
-
-		try {
-			if (assetRendererFactory == null) {
-				return _assetDisplayPageFriendlyURLProvider.getFriendlyURL(
-					infoItemReference, themeDisplay);
-			}
-
-			AssetRenderer<?> assetRenderer = null;
-
-			if (infoItemReference.getInfoItemIdentifier() instanceof
-					ClassPKInfoItemIdentifier) {
-
-				ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
-					(ClassPKInfoItemIdentifier)
-						infoItemReference.getInfoItemIdentifier();
-
-				assetRenderer = assetRendererFactory.getAssetRenderer(
-					classPKInfoItemIdentifier.getClassPK());
-			}
-
-			if (assetRenderer == null) {
-				return _assetDisplayPageFriendlyURLProvider.getFriendlyURL(
-					infoItemReference, themeDisplay);
-			}
-
-			String viewInContextURL = assetRenderer.getURLViewInContext(
-				themeDisplay, StringPool.BLANK);
-
-			if (Validator.isNotNull(viewInContextURL)) {
-				return viewInContextURL;
-			}
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception);
-			}
-		}
-
-		try {
-			return _assetDisplayPageFriendlyURLProvider.getFriendlyURL(
-				infoItemReference, themeDisplay);
-		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(portalException);
-			}
-		}
-
-		return null;
-	}
-
-	private String _getDisplayPageTemplateURL(
-			InfoItemReference infoItemReference,
-			LayoutPageTemplateEntry layoutPageTemplateEntry, Locale locale,
-			ThemeDisplay themeDisplay)
-		throws PortalException {
-
-		Layout layout = _layoutLocalService.fetchLayout(
-			layoutPageTemplateEntry.getPlid());
-
-		Group group = themeDisplay.getScopeGroup();
-
-		return StringBundler.concat(
-			_portal.getGroupFriendlyURL(
-				group.getPublicLayoutSet(), themeDisplay, false, false),
-			"/e", layout.getFriendlyURL(locale), StringPool.SLASH,
-			_portal.getClassNameId(infoItemReference.getClassName()),
-			StringPool.SLASH, _getInfoItemIdentifier(infoItemReference));
-	}
-
-	private String _getInfoItemIdentifier(InfoItemReference infoItemReference) {
-		InfoItemIdentifier infoItemIdentifier =
-			infoItemReference.getInfoItemIdentifier();
-
-		if (infoItemIdentifier instanceof ClassPKInfoItemIdentifier) {
-			ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
-				(ClassPKInfoItemIdentifier)infoItemIdentifier;
-
-			return String.valueOf(classPKInfoItemIdentifier.getClassPK());
-		}
-
-		if (infoItemIdentifier instanceof ERCInfoItemIdentifier) {
-			ERCInfoItemIdentifier ercInfoItemIdentifier =
-				(ERCInfoItemIdentifier)infoItemIdentifier;
-
-			return ercInfoItemIdentifier.getExternalReferenceCode();
-		}
-
-		return StringPool.BLANK;
-	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		ActionEditableElementMapper.class);
-
 	@Reference
-	private AssetDisplayPageFriendlyURLProvider
-		_assetDisplayPageFriendlyURLProvider;
+	private DisplayPageURLProvider _displayPageURLProvider;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
