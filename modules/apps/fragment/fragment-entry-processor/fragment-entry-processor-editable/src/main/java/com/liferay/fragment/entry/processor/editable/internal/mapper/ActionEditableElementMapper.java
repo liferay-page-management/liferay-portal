@@ -13,6 +13,7 @@ import com.liferay.fragment.entry.processor.editable.element.constants.ActionEdi
 import com.liferay.fragment.entry.processor.editable.mapper.EditableElementMapper;
 import com.liferay.fragment.processor.FragmentEntryProcessorContext;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
@@ -109,15 +110,15 @@ public class ActionEditableElementMapper implements EditableElementMapper {
 		element.attr("data-lfr-field-id", fieldId);
 
 		_addDataAtributes(
-			classNameId, classPK, element,
-			configJSONObject.getJSONObject("onError"), "error");
+			GetterUtil.getLong(classNameId), GetterUtil.getLong(classPK),
+			element, configJSONObject.getJSONObject("onError"), "error");
 		_addDataAtributes(
-			classNameId, classPK, element,
-			configJSONObject.getJSONObject("onSuccess"), "success");
+			GetterUtil.getLong(classNameId), GetterUtil.getLong(classPK),
+			element, configJSONObject.getJSONObject("onSuccess"), "success");
 	}
 
 	private void _addDataAtributes(
-			String classNameId, String classPK, Element element,
+			long classNameId, long classPK, Element element,
 			JSONObject jsonObject, String resultType)
 		throws PortalException {
 
@@ -172,14 +173,15 @@ public class ActionEditableElementMapper implements EditableElementMapper {
 
 			String url = null;
 
+			InfoItemReference infoItemReference = new InfoItemReference(
+				_portal.getClassName(GetterUtil.getLong(classNameId)),
+				GetterUtil.getLong(classPK));
+
 			if (layoutPageTemplateEntryKey.equals(
 					"ObjectEntry_displayPageURL")) {
 
 				url = _getDefaultDisplayPageURL(
-					new InfoItemReference(
-						_portal.getClassName(GetterUtil.getLong(classNameId)),
-						GetterUtil.getLong(classPK)),
-					themeDisplay);
+					infoItemReference, themeDisplay);
 			}
 			else if (layoutPageTemplateEntryKey.startsWith(
 						"LayoutPageTemplateEntry_")) {
@@ -201,13 +203,9 @@ public class ActionEditableElementMapper implements EditableElementMapper {
 					return;
 				}
 
-				Group group = themeDisplay.getScopeGroup();
-
-				url = StringBundler.concat(
-					_portal.getGroupFriendlyURL(
-						group.getPublicLayoutSet(), themeDisplay, false, false),
-					"/e", layout.getFriendlyURL(themeDisplay.getLocale()),
-					StringPool.SLASH, classNameId, StringPool.SLASH, classPK);
+				url = _getDisplayPageTemplateURL(
+					infoItemReference, layoutPageTemplateEntry,
+					themeDisplay.getLocale(), themeDisplay);
 			}
 
 			if (Validator.isNull(url)) {
@@ -337,6 +335,46 @@ public class ActionEditableElementMapper implements EditableElementMapper {
 		}
 
 		return null;
+	}
+
+	private String _getDisplayPageTemplateURL(
+			InfoItemReference infoItemReference,
+			LayoutPageTemplateEntry layoutPageTemplateEntry, Locale locale,
+			ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		Layout layout = _layoutLocalService.fetchLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		Group group = themeDisplay.getScopeGroup();
+
+		return StringBundler.concat(
+			_portal.getGroupFriendlyURL(
+				group.getPublicLayoutSet(), themeDisplay, false, false),
+			"/e", layout.getFriendlyURL(locale), StringPool.SLASH,
+			_portal.getClassNameId(infoItemReference.getClassName()),
+			StringPool.SLASH, _getInfoItemIdentifier(infoItemReference));
+	}
+
+	private String _getInfoItemIdentifier(InfoItemReference infoItemReference) {
+		InfoItemIdentifier infoItemIdentifier =
+			infoItemReference.getInfoItemIdentifier();
+
+		if (infoItemIdentifier instanceof ClassPKInfoItemIdentifier) {
+			ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
+				(ClassPKInfoItemIdentifier)infoItemIdentifier;
+
+			return String.valueOf(classPKInfoItemIdentifier.getClassPK());
+		}
+
+		if (infoItemIdentifier instanceof ERCInfoItemIdentifier) {
+			ERCInfoItemIdentifier ercInfoItemIdentifier =
+				(ERCInfoItemIdentifier)infoItemIdentifier;
+
+			return ercInfoItemIdentifier.getExternalReferenceCode();
+		}
+
+		return StringPool.BLANK;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

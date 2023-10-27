@@ -29,6 +29,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -44,6 +45,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -100,13 +102,6 @@ public class DisplayPageInfoItemFieldSetProviderImpl
 				).build(),
 				_getDefaultDisplayPageURL(infoItemReference, themeDisplay)));
 
-		Group group = themeDisplay.getScopeGroup();
-
-		String groupFriendlyURL = _portal.getGroupFriendlyURL(
-			group.getPublicLayoutSet(), themeDisplay, false, false);
-
-		String url = groupFriendlyURL + "/e";
-
 		List<LayoutPageTemplateEntry> layoutPageTemplateEntries =
 			_layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
 				themeDisplay.getScopeGroupId(),
@@ -116,9 +111,6 @@ public class DisplayPageInfoItemFieldSetProviderImpl
 
 		for (LayoutPageTemplateEntry layoutPageTemplateEntry :
 				layoutPageTemplateEntries) {
-
-			Layout layout = _layoutLocalService.fetchLayout(
-				layoutPageTemplateEntry.getPlid());
 
 			infoFieldValues.add(
 				new InfoFieldValue<>(
@@ -139,14 +131,22 @@ public class DisplayPageInfoItemFieldSetProviderImpl
 					).build(),
 					new FunctionInfoLocalizedValue<>(
 						locale -> {
-							WebURL webURL = new WebURL(
-								StringBundler.concat(
-									url, layout.getFriendlyURL(locale),
-									StringPool.SLASH,
-									_portal.getClassNameId(
-										infoItemReference.getClassName()),
-									StringPool.SLASH,
-									_getInfoItemIdentifier(infoItemReference)));
+							WebURL webURL = null;
+
+							try {
+								webURL = new WebURL(
+									_getDisplayPageTemplateURL(
+										infoItemReference,
+										layoutPageTemplateEntry, locale,
+										themeDisplay));
+							}
+							catch (PortalException portalException) {
+								if (_log.isDebugEnabled()) {
+									_log.debug(portalException);
+								}
+
+								return null;
+							}
 
 							webURL.setNofollow(true);
 
@@ -222,6 +222,25 @@ public class DisplayPageInfoItemFieldSetProviderImpl
 
 	private InfoFieldType _getDisplayPageInfoFieldType() {
 		return DisplayPageInfoFieldType.INSTANCE;
+	}
+
+	private String _getDisplayPageTemplateURL(
+			InfoItemReference infoItemReference,
+			LayoutPageTemplateEntry layoutPageTemplateEntry, Locale locale,
+			ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		Layout layout = _layoutLocalService.fetchLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		Group group = themeDisplay.getScopeGroup();
+
+		return StringBundler.concat(
+			_portal.getGroupFriendlyURL(
+				group.getPublicLayoutSet(), themeDisplay, false, false),
+			"/e", layout.getFriendlyURL(locale), StringPool.SLASH,
+			_portal.getClassNameId(infoItemReference.getClassName()),
+			StringPool.SLASH, _getInfoItemIdentifier(infoItemReference));
 	}
 
 	private List<InfoFieldSetEntry> _getInfoFieldSetEntries(
