@@ -69,6 +69,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -436,7 +437,7 @@ public class RenderLayoutStructureTagTest {
 
 	@Test
 	public void testRenderFormWithInfoFormException() throws Exception {
-		InfoField<TextInfoFieldType> infoField = _getInfoField();
+		InfoField<TextInfoFieldType> infoField = _getInfoField(false);
 
 		try (MockInfoServiceRegistrationHolder
 				mockInfoServiceRegistrationHolder =
@@ -491,7 +492,7 @@ public class RenderLayoutStructureTagTest {
 	public void testRenderFormWithInfoFormValidationException()
 		throws Exception {
 
-		InfoField<TextInfoFieldType> infoField = _getInfoField();
+		InfoField<TextInfoFieldType> infoField = _getInfoField(false);
 
 		try (MockInfoServiceRegistrationHolder
 				mockInfoServiceRegistrationHolder =
@@ -552,16 +553,18 @@ public class RenderLayoutStructureTagTest {
 		}
 	}
 
+	@FeatureFlags("LPS-183727")
 	@Test
 	public void testRenderFormWithoutErrors() throws Exception {
-		InfoField<TextInfoFieldType> infoField = _getInfoField();
+		InfoField<TextInfoFieldType> infoField = _getInfoField(false);
+		InfoField<TextInfoFieldType> readOnlyInfoField = _getInfoField(true);
 
 		try (MockInfoServiceRegistrationHolder
 				mockInfoServiceRegistrationHolder =
 					new MockInfoServiceRegistrationHolder(
 						InfoFieldSet.builder(
 						).infoFieldSetEntries(
-							ListUtil.fromArray(infoField)
+							ListUtil.fromArray(infoField, readOnlyInfoField)
 						).build(),
 						_editPageInfoItemCapability)) {
 
@@ -571,7 +574,8 @@ public class RenderLayoutStructureTagTest {
 				false,
 				String.valueOf(
 					_portal.getClassNameId(MockObject.class.getName())),
-				"0", layout, _layoutStructureProvider, infoField);
+				"0", layout, _layoutStructureProvider, infoField,
+				readOnlyInfoField);
 
 			MockHttpServletRequest mockHttpServletRequest =
 				_getMockHttpServletRequest(layout);
@@ -593,12 +597,18 @@ public class RenderLayoutStructureTagTest {
 			Assert.assertFalse(content.contains(errorHTML));
 
 			_assertInfoFieldInput(infoField, content);
+			_assertInfoFieldInput(readOnlyInfoField, content);
+
+			Locale locale = _portal.getSiteDefaultLocale(_group);
+
+			_assertInfoFieldInputJSONObject(infoField, content, locale);
+			_assertInfoFieldInputJSONObject(readOnlyInfoField, content, locale);
 		}
 	}
 
 	@Test
 	public void testRenderFormWithSuccessMessage() throws Exception {
-		InfoField<TextInfoFieldType> infoField = _getInfoField();
+		InfoField<TextInfoFieldType> infoField = _getInfoField(false);
 
 		try (MockInfoServiceRegistrationHolder
 				mockInfoServiceRegistrationHolder =
@@ -709,6 +719,18 @@ public class RenderLayoutStructureTagTest {
 		Assert.assertTrue(content.contains(expectedInfoFieldInput));
 	}
 
+	private void _assertInfoFieldInputJSONObject(
+		InfoField<TextInfoFieldType> infoField, String content, Locale locale) {
+
+		String expectedInfoFieldInputJSONObjectString = StringBundler.concat(
+			"\"readOnly\":", infoField.isReadOnly(), ",\"label\":\"",
+			infoField.getLabel(locale), "\",\"type\":\"text\""
+		).toString();
+
+		Assert.assertTrue(
+			content.contains(expectedInfoFieldInputJSONObjectString));
+	}
+
 	private void _createLayoutStructure(
 			long assetListEntryId, Layout layout, long segmentsExperienceId)
 		throws Exception {
@@ -759,7 +781,7 @@ public class RenderLayoutStructureTagTest {
 		return layoutStructure;
 	}
 
-	private InfoField<TextInfoFieldType> _getInfoField() {
+	private InfoField<TextInfoFieldType> _getInfoField(boolean readOnly) {
 		return InfoField.builder(
 		).infoFieldType(
 			TextInfoFieldType.INSTANCE
@@ -771,6 +793,8 @@ public class RenderLayoutStructureTagTest {
 			InfoLocalizedValue.singleValue(RandomTestUtil.randomString())
 		).localizable(
 			true
+		).readOnly(
+			readOnly
 		).build();
 	}
 
