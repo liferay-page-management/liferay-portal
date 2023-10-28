@@ -88,7 +88,7 @@ public class LayoutLockManagerImpl implements LayoutLockManager {
 	@Override
 	public void getLock(Layout layout, long userId) throws PortalException {
 		if (!FeatureFlagManagerUtil.isEnabled("LPS-180328") ||
-			!layout.isDraftLayout()) {
+			(layout == null) || !layout.isDraftLayout()) {
 
 			return;
 		}
@@ -264,7 +264,7 @@ public class LayoutLockManagerImpl implements LayoutLockManager {
 	@Override
 	public void unlock(Layout layout, long userId) {
 		if (!FeatureFlagManagerUtil.isEnabled("LPS-180328") ||
-			!layout.isDraftLayout()) {
+			(layout == null) || !layout.isDraftLayout()) {
 
 			return;
 		}
