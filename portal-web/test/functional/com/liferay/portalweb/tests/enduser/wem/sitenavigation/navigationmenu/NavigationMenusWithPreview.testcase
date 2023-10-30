@@ -140,7 +140,9 @@ definition {
 		}
 
 		task ("Then the default display template is Bar minimally styled") {
-			NavigationMenusAdmin.viewDisplayTemplate(displayTemplate = "Bar minimally styled");
+			NavigationMenusAdmin.viewDisplayTemplate(
+				displayTemplate = "Bar minimally styled",
+				src = "NAVBAR-BLANK-FTL");
 
 			SelectFrame(locator1 = "IFrame#MODAL_BODY");
 
