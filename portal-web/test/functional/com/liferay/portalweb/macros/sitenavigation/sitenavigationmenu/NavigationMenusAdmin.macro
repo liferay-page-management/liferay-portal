@@ -685,11 +685,23 @@ definition {
 
 	@summary = "Default summary"
 	macro viewDisplayTemplate(displayTemplate = null,) {
-		AssertElementPresent(
-			key_class = "display-template-selector",
-			key_index = 1,
-			locator1 = "Button#ANY_WITH_CLASS_AND_INDEX",
-			value1 = ${displayTemplate});
+		if (isSet(src)) {
+			AssertElementPresent(
+				key_src = ${src},
+				locator1 = "IFrame#IFRAME_SRC");
+
+			AssertElementPresent(
+				key_fieldLabel = "Display Template",
+				key_value = ${displayTemplate},
+				locator1 = "Select#GENERIC_SELECT_VALUE");
+		}
+		else {
+			AssertElementPresent(
+				key_class = "display-template-selector",
+				key_index = 1,
+				locator1 = "Button#ANY_WITH_CLASS_AND_INDEX",
+				value1 = ${displayTemplate});
+		}
 	}
 
 	@summary = "Default summary"
