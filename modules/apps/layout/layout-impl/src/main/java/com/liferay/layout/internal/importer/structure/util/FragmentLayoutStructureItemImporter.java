@@ -905,7 +905,41 @@ public class FragmentLayoutStructureItemImporter
 
 		if (Objects.equals(
 				onResultMap.get("type"),
-				ActionExecutionResult.Type.NONE.getValue())) {
+				ActionExecutionResult.Type.DISPLAY_PAGE.getValue())) {
+
+			resultJSONObject.put(
+				"interaction",
+				ActionEditableElementConstants.INTERACTION_DISPLAY_PAGE);
+
+			if ((valueMap == null) || !valueMap.containsKey("itemReference")) {
+				return;
+			}
+
+			Map<String, Object> itemReference =
+				(Map<String, Object>)valueMap.get("itemReference");
+
+			if (itemReference == null) {
+				return;
+			}
+
+			String uniqueFieldId = null;
+
+			List<Map<String, String>> fields =
+				(List<Map<String, String>>)itemReference.get("fields");
+
+			for (Map<String, String> field : fields) {
+				String key = field.get("fieldName");
+
+				if (Objects.equals(key, "uniqueFieldId")) {
+					uniqueFieldId = field.get("fieldValue");
+				}
+			}
+
+			resultJSONObject.put("displayPage", uniqueFieldId);
+		}
+		else if (Objects.equals(
+					onResultMap.get("type"),
+					ActionExecutionResult.Type.NONE.getValue())) {
 
 			resultJSONObject.put(
 				"interaction", ActionEditableElementConstants.INTERACTION_NONE);
