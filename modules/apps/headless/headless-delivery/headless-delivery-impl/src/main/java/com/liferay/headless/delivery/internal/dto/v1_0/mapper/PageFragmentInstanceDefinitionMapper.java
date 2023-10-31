@@ -16,7 +16,11 @@ import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
 import com.liferay.headless.delivery.dto.v1_0.ActionExecutionResult;
+import com.liferay.headless.delivery.dto.v1_0.ClassFieldsReference;
 import com.liferay.headless.delivery.dto.v1_0.ClassPKReference;
+import com.liferay.headless.delivery.dto.v1_0.DisplayPageActionExecutionResult;
+import com.liferay.headless.delivery.dto.v1_0.DisplayPageTemplate;
+import com.liferay.headless.delivery.dto.v1_0.Field;
 import com.liferay.headless.delivery.dto.v1_0.Fragment;
 import com.liferay.headless.delivery.dto.v1_0.FragmentField;
 import com.liferay.headless.delivery.dto.v1_0.FragmentFieldAction;
@@ -402,6 +406,34 @@ public class PageFragmentInstanceDefinitionMapper {
 			};
 		}
 		else if (interaction.equals(
+					ActionEditableElementConstants.INTERACTION_DISPLAY_PAGE)) {
+
+			return new ActionExecutionResult() {
+				{
+					type = ActionExecutionResult.Type.DISPLAY_PAGE;
+
+					setValue(
+						() -> {
+							if (!saveMapping ||
+								!jsonObject.has("displayPage")) {
+
+								return null;
+							}
+
+							String uniqueFieldFieldId = jsonObject.getString(
+								"displayPage", null);
+
+							if (uniqueFieldFieldId == null) {
+								return null;
+							}
+
+							return _toDisplayPageActionExecutionResult(
+								uniqueFieldFieldId);
+						});
+				}
+			};
+		}
+		else if (interaction.equals(
 					ActionEditableElementConstants.INTERACTION_NOTIFICATION)) {
 
 			return new ActionExecutionResult() {
@@ -626,6 +658,30 @@ public class PageFragmentInstanceDefinitionMapper {
 		return new FragmentInlineValue() {
 			{
 				value = alt;
+			}
+		};
+	}
+
+	private DisplayPageActionExecutionResult
+		_toDisplayPageActionExecutionResult(String uniqueFieldFieldId) {
+
+		return new DisplayPageActionExecutionResult() {
+			{
+				itemReference = new ClassFieldsReference() {
+					{
+						className = DisplayPageTemplate.class.getName();
+
+						setFields(
+							() -> {
+								Field uniqueFieldId = new Field();
+
+								uniqueFieldId.setFieldName("uniqueFieldId");
+								uniqueFieldId.setFieldValue(uniqueFieldFieldId);
+
+								return new Field[] {uniqueFieldId};
+							});
+					}
+				};
 			}
 		};
 	}
