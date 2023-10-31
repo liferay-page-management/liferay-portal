@@ -101,7 +101,7 @@ public class JournalConfigurationDisplayContext {
 		}
 
 		_navigation = ParamUtil.getString(
-			_renderRequest, "navigation", "email-from");
+			_renderRequest, "navigation", "structures");
 
 		return _navigation;
 	}
@@ -135,6 +135,12 @@ public class JournalConfigurationDisplayContext {
 		).setNavigation(
 			getNavigation()
 		).buildPortletURL();
+	}
+
+	public VerticalNavItemList getSettingVerticalNavItemList() {
+		return VerticalNavItemListBuilder.add(
+			_getVerticalNavItemUnsafeConsumer("structures")
+		).build();
 	}
 
 	public String getTitle() {
