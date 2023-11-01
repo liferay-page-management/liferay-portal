@@ -5,15 +5,22 @@
 
 package com.liferay.layout.page.template.admin.web.internal.portlet.action;
 
+import com.liferay.layout.manager.LayoutLockManager;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
 import com.liferay.layout.page.template.admin.web.internal.handler.LayoutPageTemplateEntryExceptionRequestHandlerUtil;
+import com.liferay.layout.page.template.exception.NoSuchPageTemplateEntryException;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -39,15 +46,29 @@ public class UpdateDisplayPageEntryContentTypeMVCActionCommand
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		long layoutPageTemplateEntryId = ParamUtil.getLong(
-			actionRequest, "layoutPageTemplateEntryId");
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryService.fetchLayoutPageTemplateEntry(
+				ParamUtil.getLong(actionRequest, "layoutPageTemplateEntryId"));
 
-		long classNameId = ParamUtil.getLong(actionRequest, "classNameId");
-		long classTypeId = ParamUtil.getLong(actionRequest, "classTypeId");
+		Layout draftLayout = null;
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
 
 		try {
+			if (layoutPageTemplateEntry == null) {
+				throw new NoSuchPageTemplateEntryException();
+			}
+
+			draftLayout = _layoutLocalService.fetchDraftLayout(
+				layoutPageTemplateEntry.getPlid());
+
+			_layoutLockManager.getLock(draftLayout, themeDisplay.getUserId());
+
 			_layoutPageTemplateEntryService.updateLayoutPageTemplateEntry(
-				layoutPageTemplateEntryId, classNameId, classTypeId);
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
+				ParamUtil.getLong(actionRequest, "classNameId"),
+				ParamUtil.getLong(actionRequest, "classTypeId"));
 
 			JSONPortletResponseUtil.writeJSON(
 				actionRequest, actionResponse,
@@ -60,7 +81,16 @@ public class UpdateDisplayPageEntryContentTypeMVCActionCommand
 				handlePortalException(
 					actionRequest, actionResponse, portalException);
 		}
+		finally {
+			_layoutLockManager.unlock(draftLayout, themeDisplay.getUserId());
+		}
 	}
+
+	@Reference
+	private LayoutLocalService _layoutLocalService;
+
+	@Reference
+	private LayoutLockManager _layoutLockManager;
 
 	@Reference
 	private LayoutPageTemplateEntryService _layoutPageTemplateEntryService;
