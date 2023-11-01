@@ -7,6 +7,7 @@ package com.liferay.layout.page.template.admin.web.internal.handler;
 
 import com.liferay.layout.page.template.exception.LayoutPageTemplateEntryNameException;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.portal.kernel.exception.LockedLayoutException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -37,19 +38,19 @@ public class LayoutPageTemplateEntryExceptionRequestHandlerUtil {
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		String errorMessage = null;
+		Object error = null;
 
 		if (portalException instanceof
 				LayoutPageTemplateEntryNameException.MustNotBeDuplicate) {
 
-			errorMessage = LanguageUtil.get(
+			error = LanguageUtil.get(
 				themeDisplay.getLocale(),
 				"a-page-template-entry-with-that-name-already-exists");
 		}
 		else if (portalException instanceof
 					LayoutPageTemplateEntryNameException.MustNotBeNull) {
 
-			errorMessage = LanguageUtil.get(
+			error = LanguageUtil.get(
 				themeDisplay.getLocale(), "name-must-not-be-empty");
 		}
 		else if (portalException instanceof
@@ -61,7 +62,7 @@ public class LayoutPageTemplateEntryExceptionRequestHandlerUtil {
 					(LayoutPageTemplateEntryNameException.
 						MustNotContainInvalidCharacters)portalException;
 
-			errorMessage = LanguageUtil.format(
+			error = LanguageUtil.format(
 				themeDisplay.getLocale(),
 				"name-cannot-contain-the-following-invalid-character-x",
 				lptene.character);
@@ -73,20 +74,23 @@ public class LayoutPageTemplateEntryExceptionRequestHandlerUtil {
 			int nameMaxLength = ModelHintsUtil.getMaxLength(
 				LayoutPageTemplateEntry.class.getName(), "name");
 
-			errorMessage = LanguageUtil.format(
+			error = LanguageUtil.format(
 				themeDisplay.getLocale(),
 				"please-enter-a-name-with-fewer-than-x-characters",
 				nameMaxLength);
 		}
+		else if (portalException instanceof LockedLayoutException) {
+			error = JSONUtil.put("isLocked", true);
+		}
 
-		if (Validator.isNull(errorMessage)) {
-			errorMessage = LanguageUtil.get(
+		if (Validator.isNull(error)) {
+			error = LanguageUtil.get(
 				themeDisplay.getLocale(), "an-unexpected-error-occurred");
 
 			_log.error(portalException);
 		}
 
-		return JSONUtil.put("error", errorMessage);
+		return JSONUtil.put("error", error);
 	}
 
 	public static void handlePortalException(
