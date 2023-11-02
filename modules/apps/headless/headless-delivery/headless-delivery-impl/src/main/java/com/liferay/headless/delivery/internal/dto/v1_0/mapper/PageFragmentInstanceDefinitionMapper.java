@@ -415,20 +415,21 @@ public class PageFragmentInstanceDefinitionMapper {
 					setValue(
 						() -> {
 							if (!saveMapping ||
-								!jsonObject.has("displayPage")) {
+								!jsonObject.has("displayPageUniqueFieldId")) {
 
 								return null;
 							}
 
-							String uniqueFieldFieldId = jsonObject.getString(
-								"displayPage", null);
+							String displayPageUniqueFieldId =
+								jsonObject.getString(
+									"displayPageUniqueFieldId", null);
 
-							if (uniqueFieldFieldId == null) {
+							if (displayPageUniqueFieldId == null) {
 								return null;
 							}
 
 							return _toDisplayPageActionExecutionResult(
-								uniqueFieldFieldId);
+								displayPageUniqueFieldId);
 						});
 				}
 			};

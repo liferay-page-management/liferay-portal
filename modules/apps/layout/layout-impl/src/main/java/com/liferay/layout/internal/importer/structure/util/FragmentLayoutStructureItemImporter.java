@@ -935,7 +935,7 @@ public class FragmentLayoutStructureItemImporter
 				}
 			}
 
-			resultJSONObject.put("displayPage", uniqueFieldId);
+			resultJSONObject.put("displayPageUniqueFieldId", uniqueFieldId);
 		}
 		else if (Objects.equals(
 					onResultMap.get("type"),
