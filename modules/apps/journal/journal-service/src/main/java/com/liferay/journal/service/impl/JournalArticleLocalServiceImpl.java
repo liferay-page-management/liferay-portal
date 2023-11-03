@@ -6163,6 +6163,23 @@ public class JournalArticleLocalServiceImpl
 				journalArticleLocalService.updateStatus(
 					userId, article.getId(), WorkflowConstants.STATUS_APPROVED,
 					new HashMap<>(), serviceContext);
+
+				AssetDisplayPageEntry assetDisplayPageEntry =
+					_assetDisplayPageEntryLocalService.
+						fetchAssetDisplayPageEntry(
+							article.getGroupId(),
+							_classNameLocalService.getClassNameId(
+								JournalArticle.class),
+							article.getResourcePrimKey());
+
+				if (assetDisplayPageEntry != null) {
+					_assetDisplayPageEntryLocalService.
+						updateAssetDisplayPageEntry(
+							assetDisplayPageEntry.getAssetDisplayPageEntryId(),
+							assetDisplayPageEntry.
+								getLayoutPageTemplateEntryId(),
+							assetDisplayPageEntry.getType());
+				}
 			});
 		actionableDynamicQuery.setTransactionConfig(
 			DefaultActionableDynamicQuery.REQUIRES_NEW_TRANSACTION_CONFIG);
