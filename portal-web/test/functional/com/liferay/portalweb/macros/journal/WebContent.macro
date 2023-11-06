@@ -1933,6 +1933,13 @@ definition {
 	}
 
 	@summary = "Default summary"
+	macro selectResultsOption(webContentTitle = null, webContentContent = null) {
+		Click(locator1 = "WC#RESULTS_BUTTON");
+
+		MenuItem.click(menuItem = ${option});
+	}
+
+	@summary = "Default summary"
 	macro selectTemplateCP(templateName = null, structureName = null) {
 		ScrollBy(value1 = "0, 50");
 

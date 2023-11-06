@@ -177,7 +177,9 @@
 	<td>//span//span[contains(.,'${key_tagName}')]</td>
 	<td></td>
 </tr>
+
 <!--SEARCH FILTER -->
+
 <tr>
 	<td>RESULTS_BUTTON</td>
 	<td>//button[contains(@id,'searchResults')]</td>
