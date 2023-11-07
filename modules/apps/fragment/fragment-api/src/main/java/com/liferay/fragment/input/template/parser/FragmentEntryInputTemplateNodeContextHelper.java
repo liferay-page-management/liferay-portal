@@ -436,7 +436,7 @@ public class FragmentEntryInputTemplateNodeContextHelper {
 				infoField, inputTemplateNode);
 		}
 
-		if (FeatureFlagManagerUtil.isEnabled("LPS-183727")) {
+		if (FeatureFlagManagerUtil.isEnabled("LPS-192053")) {
 			inputTemplateNode.addAttribute("readOnly", infoField.isReadOnly());
 		}
 	}
