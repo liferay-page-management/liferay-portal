@@ -117,7 +117,7 @@ DDMStructure ddmStructure = journalEditDDMTemplateDisplayContext.getDDMStructure
 					'<%= UnicodeLanguageUtil.get(request, "select-x") %>',
 					'<%= UnicodeLanguageUtil.get(request, "structure") %>'
 				),
-				url: '<%= journalDisplayContext.getSelectDDMStructureURL() %>>',
+				url: '<%= journalDisplayContext.getSelectDDMStructureURL(false) %>>',
 			});
 		};
 

@@ -115,7 +115,7 @@ renderResponse.setTitle(editJournalFeedDisplayContext.getTitle());
 							HashMapBuilder.<String, Object>put(
 								"description", JournalFeedConstants.WEB_CONTENT_DESCRIPTION
 							).put(
-								"selectDDMStructurePropsTransformerURL", journalDisplayContext.getSelectDDMStructureURL()
+								"selectDDMStructurePropsTransformerURL", journalDisplayContext.getSelectDDMStructureURL(false)
 							).build()
 						%>'
 						displayType="secondary"

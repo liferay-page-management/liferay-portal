@@ -326,7 +326,7 @@ renderResponse.setTitle(title);
 								HashMapBuilder.<String, Object>put(
 									"removeButton", removeButton
 								).put(
-									"selectDDMStructureURL", journalDisplayContext.getSelectDDMStructureURL()
+									"selectDDMStructureURL", journalDisplayContext.getSelectDDMStructureURL(false)
 								).put(
 									"workflowDefinitions", workflowDefinitionsBuffer
 								).put(
