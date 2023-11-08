@@ -17,10 +17,19 @@ public class DDMStructureItemSelectorCriterion
 		return _classNameId;
 	}
 
+	public boolean isMultiSelection() {
+		return _multiSelection;
+	}
+
 	public void setClassNameId(long classNameId) {
 		_classNameId = classNameId;
 	}
 
+	public void setMultiSelection(boolean multiSelection) {
+		_multiSelection = multiSelection;
+	}
+
 	private long _classNameId;
+	private boolean _multiSelection;
 
 }
