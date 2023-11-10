@@ -60,8 +60,11 @@ AUI().use('escape', 'event', 'aui-lang', (A) => {
 			}
 
 			if (
+				parameterKey === ',' > 0 ||
 				parameterKey.indexOf(',') > 0 ||
+				parameterKey === '=' ||
 				parameterKey.indexOf('=') > 0 ||
+				parameterValue === '=' ||
 				parameterValue.indexOf('=') > 0
 			) {
 				message = Liferay.Language.get(
