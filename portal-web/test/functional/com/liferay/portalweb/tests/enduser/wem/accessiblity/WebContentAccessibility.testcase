@@ -186,6 +186,77 @@ definition {
 		}
 	}
 
+	@description = "This is a test for LPS-196842. The user can select the Reverse Sort Direction button via the keyboard."
+	@priority = 4
+	test ViewAccessibilityInOrderButtonOfWebContentSearch {
+		task ("Given two web contents with different names") {
+			for (var i : list "A,B") {
+				JSONWebcontent.addWebContent(
+					content = "Web Content",
+					groupName = ${randomSiteName},
+					title = "${i} Web Content Title");
+			}
+		}
+
+		task ("When searching for a term on the web content admin page") {
+			WebContentNavigator.openWebContentAdmin(siteURLKey = ${randomSiteName});
+
+			Search.searchCP(searchTerm = "Web");
+
+			ManagementBar.setFilterAndOrder(orderBy = "Title");
+
+			AssertTextEquals.assertPartialText(
+				key_position = 1,
+				locator1 = "LexiconList#LIST_ENTRY_X",
+				value1 = "B Web Content Title");
+
+			AssertTextEquals.assertPartialText(
+				key_position = 2,
+				locator1 = "LexiconList#LIST_ENTRY_X",
+				value1 = "A Web Content Title");
+		}
+
+		task ("The user can select the Reverse Sort Direction button via the keyboard") {
+			AssertElementAccessible(locator1 = "ManagementBar#ORDER_ICON_GENERIC");
+
+			KeyPress(
+				locator1 = "ManagementBar#ORDER_ICON_GENERIC",
+				value1 = "\TAB");
+
+			KeyPress(
+				locator1 = "ManagementBar#ORDER_ICON_GENERIC",
+				value1 = "\ENTER");
+
+			AssertTextEquals.assertPartialText(
+				key_position = 1,
+				locator1 = "LexiconList#LIST_ENTRY_X",
+				value1 = "A Web Content Title");
+
+			AssertTextEquals.assertPartialText(
+				key_position = 2,
+				locator1 = "LexiconList#LIST_ENTRY_X",
+				value1 = "B Web Content Title");
+
+			KeyPress(
+				locator1 = "ManagementBar#ORDER_ICON_GENERIC",
+				value1 = "\TAB");
+
+			KeyPress(
+				locator1 = "ManagementBar#ORDER_ICON_GENERIC",
+				value1 = "\ENTER");
+
+			AssertTextEquals.assertPartialText(
+				key_position = 1,
+				locator1 = "LexiconList#LIST_ENTRY_X",
+				value1 = "B Web Content Title");
+
+			AssertTextEquals.assertPartialText(
+				key_position = 2,
+				locator1 = "LexiconList#LIST_ENTRY_X",
+				value1 = "A Web Content Title");
+		}
+	}
+
 	@description = "This is a test for LPS-192836. Check the accessibility when selecting feature image from Document and Media in web content creation."
 	@priority = 3
 	test ViewAccessibilityOfFeaturedImageSection {
