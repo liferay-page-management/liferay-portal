@@ -1543,7 +1543,7 @@ public class ContentPageEditorDisplayContext {
 				).setBackURL(
 					themeDisplay.getURLCurrent()
 				).setParameter(
-					"backURLTitle", layout.getName()
+					"backURLTitle", layout.getName(themeDisplay.getLocale())
 				).setParameter(
 					"groupId", layout.getGroupId()
 				).setParameter(
