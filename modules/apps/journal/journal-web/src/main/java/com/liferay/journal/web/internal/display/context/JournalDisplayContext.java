@@ -1420,28 +1420,6 @@ public class JournalDisplayContext {
 			return _articleSearchContainer;
 		}
 
-		if (!isSearch() && !isNavigationMine() && !isNavigationRecent() &&
-			(getDDMStructureId() <= 0)) {
-
-			SearchContainer<Object> articleAndFolderSearchContainer =
-				_getArticleAndFolderSearchContainer();
-
-			articleAndFolderSearchContainer.setResultsAndTotal(
-				() -> JournalFolderServiceUtil.getFoldersAndArticles(
-					_themeDisplay.getScopeGroupId(), 0, getFolderId(),
-					getStatus(), _themeDisplay.getLocale(),
-					articleAndFolderSearchContainer.getStart(),
-					articleAndFolderSearchContainer.getEnd(),
-					articleAndFolderSearchContainer.getOrderByComparator()),
-				JournalFolderServiceUtil.getFoldersAndArticlesCount(
-					_themeDisplay.getScopeGroupId(), 0, getFolderId(),
-					getStatus()));
-
-			_articleSearchContainer = articleAndFolderSearchContainer;
-
-			return _articleSearchContainer;
-		}
-
 		SearchContainer<Object> articleAndFolderSearchContainer =
 			_getArticleAndFolderSearchContainer();
 
