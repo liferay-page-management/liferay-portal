@@ -59,6 +59,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.portlet.PortletRequest;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -103,6 +105,12 @@ public class FragmentEntryLinkManager {
 		boolean isolated = themeDisplay.isIsolated();
 
 		themeDisplay.setIsolated(true);
+
+		String lifecycle = (String)httpServletRequest.getAttribute(
+			PortletRequest.RENDER_PHASE);
+
+		httpServletRequest.setAttribute(
+			PortletRequest.LIFECYCLE_PHASE, PortletRequest.RENDER_PHASE);
 
 		try {
 			JSONObject editableValuesJSONObject = _jsonFactory.createJSONObject(
@@ -310,6 +318,8 @@ public class FragmentEntryLinkManager {
 		}
 		finally {
 			themeDisplay.setIsolated(isolated);
+			httpServletRequest.setAttribute(
+				PortletRequest.LIFECYCLE_PHASE, lifecycle);
 		}
 	}
 
