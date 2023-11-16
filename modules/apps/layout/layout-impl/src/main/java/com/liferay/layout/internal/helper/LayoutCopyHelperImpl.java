@@ -27,6 +27,8 @@ import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.comment.CommentManager;
+import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Image;
@@ -267,14 +269,13 @@ public class LayoutCopyHelperImpl implements LayoutCopyHelper {
 					targetLayout.getGroupId(), targetLayout.getPlid());
 
 		if (targetLayoutPageTemplateStructure == null) {
-			_layoutPageTemplateStructureLocalService.
-				addLayoutPageTemplateStructure(
-					targetLayout.getUserId(), targetLayout.getGroupId(),
-					targetLayout.getPlid(),
-					_segmentsExperienceLocalService.
-						fetchDefaultSegmentsExperienceId(
-							targetLayout.getPlid()),
-					null, ServiceContextThreadLocal.getServiceContext());
+			try {
+				_addLayoutPageTemplateStructure(targetLayout.getUserId(),
+					targetLayout.getGroupId(), targetLayout.getPlid());
+			} catch (NoSuchUserException noSuchUserException) {
+				_addLayoutPageTemplateStructure(sourceLayout.getUserId(),
+					targetLayout.getGroupId(), targetLayout.getPlid());
+			}
 		}
 
 		Map<Long, Long> segmentsExperienceIdsMap = _getSegmentsExperienceIds(
@@ -301,6 +302,16 @@ public class LayoutCopyHelperImpl implements LayoutCopyHelper {
 					targetLayout.getGroupId(), targetLayout.getPlid(),
 					entry.getValue(), dataJSONObject.toString());
 		}
+	}
+
+	private void _addLayoutPageTemplateStructure(long userId, long groupId,
+												 long plid)
+		throws PortalException {
+		_layoutPageTemplateStructureLocalService.addLayoutPageTemplateStructure(
+			userId, groupId, plid,
+			_segmentsExperienceLocalService.
+				fetchDefaultSegmentsExperienceId(plid),
+			null, ServiceContextThreadLocal.getServiceContext());
 	}
 
 	private void _copyLayoutPageTemplateStructureFromSegmentsExperience(
