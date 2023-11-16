@@ -124,6 +124,17 @@ public class LayoutCopyHelperImpl implements LayoutCopyHelper {
 			segmentsExperiencesIds);
 	}
 
+	private void _addLayoutPageTemplateStructure(
+			long userId, long groupId, long plid)
+		throws PortalException {
+
+		_layoutPageTemplateStructureLocalService.addLayoutPageTemplateStructure(
+			userId, groupId, plid,
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				plid),
+			null, ServiceContextThreadLocal.getServiceContext());
+	}
+
 	private void _copyAssetCategoryIdsAndAssetTagNames(
 			Layout sourceLayout, Layout targetLayout)
 		throws Exception {
@@ -270,11 +281,19 @@ public class LayoutCopyHelperImpl implements LayoutCopyHelper {
 
 		if (targetLayoutPageTemplateStructure == null) {
 			try {
-				_addLayoutPageTemplateStructure(targetLayout.getUserId(),
-					targetLayout.getGroupId(), targetLayout.getPlid());
-			} catch (NoSuchUserException noSuchUserException) {
-				_addLayoutPageTemplateStructure(sourceLayout.getUserId(),
-					targetLayout.getGroupId(), targetLayout.getPlid());
+				_addLayoutPageTemplateStructure(
+					targetLayout.getUserId(), targetLayout.getGroupId(),
+					targetLayout.getPlid());
+			}
+			catch (PortalException portalException) {
+				if (portalException instanceof NoSuchUserException) {
+					_addLayoutPageTemplateStructure(
+						sourceLayout.getUserId(), targetLayout.getGroupId(),
+						targetLayout.getPlid());
+				}
+				else {
+					throw portalException;
+				}
 			}
 		}
 
@@ -302,16 +321,6 @@ public class LayoutCopyHelperImpl implements LayoutCopyHelper {
 					targetLayout.getGroupId(), targetLayout.getPlid(),
 					entry.getValue(), dataJSONObject.toString());
 		}
-	}
-
-	private void _addLayoutPageTemplateStructure(long userId, long groupId,
-												 long plid)
-		throws PortalException {
-		_layoutPageTemplateStructureLocalService.addLayoutPageTemplateStructure(
-			userId, groupId, plid,
-			_segmentsExperienceLocalService.
-				fetchDefaultSegmentsExperienceId(plid),
-			null, ServiceContextThreadLocal.getServiceContext());
 	}
 
 	private void _copyLayoutPageTemplateStructureFromSegmentsExperience(
