@@ -515,7 +515,7 @@ public class JournalDisplayContext {
 	public VerticalNavItemList getDDMStructureVerticalNavItemList() {
 		VerticalNavItemList verticalNavItemList = new VerticalNavItemList();
 
-		for (DDMStructure ddmStructure : getHighlightedDDMStructures()) {
+		for (DDMStructure ddmStructure : _getHighlightedDDMStructuresList()) {
 			verticalNavItemList.add(
 				verticalNavItem -> {
 					verticalNavItem.setActive(
@@ -654,41 +654,9 @@ public class JournalDisplayContext {
 			));
 	}
 
-	public List<DDMStructure> getHighlightedDDMStructures() {
-		List<DDMStructure> highlightedDDMStructuresList = new ArrayList<>();
-
-		PortletPreferences portletPreferences =
-			PortletPreferencesLocalServiceUtil.getPreferences(
-				_themeDisplay.getCompanyId(), _themeDisplay.getScopeGroupId(),
-				PortletKeys.PREFS_OWNER_TYPE_GROUP, 0,
-				JournalConstants.SERVICE_NAME, null);
-
-		String highlightedDDMStructures = portletPreferences.getValue(
-			"highlightedDDMStructures", null);
-
-		if (Validator.isNull(highlightedDDMStructures)) {
-			return highlightedDDMStructuresList;
-		}
-
-		List<String> highlightedDDMStructureIds = StringUtil.split(
-			highlightedDDMStructures, CharPool.COMMA);
-
-		for (String highlightedDDMStructureId : highlightedDDMStructureIds) {
-			DDMStructure ddmStructure =
-				DDMStructureLocalServiceUtil.fetchDDMStructure(
-					GetterUtil.getLong(highlightedDDMStructureId));
-
-			if (ddmStructure != null) {
-				highlightedDDMStructuresList.add(ddmStructure);
-			}
-		}
-
-		return highlightedDDMStructuresList;
-	}
-
 	public JSONArray getHighlightedDDMStructuresJSONArray() throws Exception {
 		return JSONUtil.toJSONArray(
-			getHighlightedDDMStructures(),
+			_getHighlightedDDMStructuresList(),
 			ddmStructure -> JSONUtil.put(
 				"ddmStructureId", ddmStructure.getStructureId()
 			).put(
@@ -1721,6 +1689,46 @@ public class JournalDisplayContext {
 		return jsonArray;
 	}
 
+	private List<DDMStructure> _getHighlightedDDMStructuresList() {
+		if (_highlightedDDMStructuresList != null) {
+			return _highlightedDDMStructuresList;
+		}
+
+		List<DDMStructure> highlightedDDMStructuresList = new ArrayList<>();
+
+		PortletPreferences portletPreferences =
+			PortletPreferencesLocalServiceUtil.getPreferences(
+				_themeDisplay.getCompanyId(), _themeDisplay.getScopeGroupId(),
+				PortletKeys.PREFS_OWNER_TYPE_GROUP, 0,
+				JournalConstants.SERVICE_NAME, null);
+
+		String highlightedDDMStructures = portletPreferences.getValue(
+			"highlightedDDMStructures", null);
+
+		if (Validator.isNull(highlightedDDMStructures)) {
+			_highlightedDDMStructuresList = highlightedDDMStructuresList;
+
+			return _highlightedDDMStructuresList;
+		}
+
+		List<String> highlightedDDMStructureIds = StringUtil.split(
+			highlightedDDMStructures, CharPool.COMMA);
+
+		for (String highlightedDDMStructureId : highlightedDDMStructureIds) {
+			DDMStructure ddmStructure =
+				DDMStructureLocalServiceUtil.fetchDDMStructure(
+					GetterUtil.getLong(highlightedDDMStructureId));
+
+			if (ddmStructure != null) {
+				highlightedDDMStructuresList.add(ddmStructure);
+			}
+		}
+
+		_highlightedDDMStructuresList = highlightedDDMStructuresList;
+
+		return _highlightedDDMStructuresList;
+	}
+
 	private String _getSearchIn() {
 		if (_searchIn != null) {
 			return _searchIn;
@@ -1914,6 +1922,7 @@ public class JournalDisplayContext {
 	private String _displayStyle;
 	private JournalFolder _folder;
 	private Long _folderId;
+	private List<DDMStructure> _highlightedDDMStructuresList;
 	private final HttpServletRequest _httpServletRequest;
 	private final ItemSelector _itemSelector;
 	private JournalGroupServiceConfiguration _journalGroupServiceConfiguration;
