@@ -9,9 +9,4 @@ export interface Item {
 	label: string;
 	value: string;
 }
-interface Props {
-	items: Item[];
-	onItemsChange: (nextItems: Item[]) => void;
-}
-export declare function LabelList({items, onItemsChange}: Props): JSX.Element;
-export {};
+export declare function LabelList({items}: {items: Item[]}): JSX.Element;

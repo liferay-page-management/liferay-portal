@@ -77,11 +77,6 @@ export default function HighlightedDDMStructuresConfiguration({
 					<ClayInput.GroupItem>
 						<LabelList
 							items={ddmStructures.map(ddmStructureToItem)}
-							onItemsChange={(nextItems) =>
-								setDDMStructures(
-									nextItems.map(itemToDDMStructure)
-								)
-							}
 						/>
 					</ClayInput.GroupItem>
 

@@ -5,7 +5,6 @@
 
 import ClayLabel from '@clayui/label';
 import classNames from 'classnames';
-import {sub} from 'frontend-js-web';
 import React from 'react';
 
 export interface Item {
@@ -13,16 +12,7 @@ export interface Item {
 	value: string;
 }
 
-interface Props {
-	items: Item[];
-	onItemsChange: (nextItems: Item[]) => void;
-}
-
-export function LabelList({items, onItemsChange}: Props) {
-	const onRemoveButtonClick = (item: Item) => {
-		onItemsChange(items.filter(({value}) => value !== item.value));
-	};
-
+export function LabelList({items}: {items: Item[]}) {
 	return (
 		<ul
 			className={classNames('bg-white form-control list-unstyled', {
@@ -31,17 +21,7 @@ export function LabelList({items, onItemsChange}: Props) {
 		>
 			{items.map((item) => (
 				<li key={item.value}>
-					<ClayLabel
-						closeButtonProps={{
-							'aria-label': sub(
-								Liferay.Language.get('remove-x'),
-								item.label
-							),
-							'onClick': () => onRemoveButtonClick(item),
-						}}
-					>
-						{item.label}
-					</ClayLabel>
+					<ClayLabel>{item.label}</ClayLabel>
 				</li>
 			))}
 		</ul>
