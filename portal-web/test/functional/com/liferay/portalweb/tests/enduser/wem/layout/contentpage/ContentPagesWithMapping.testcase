@@ -2736,6 +2736,8 @@ definition {
 	@description = "This is a test for LPS-164269. The page creator could view a tooltip with the page URL when mapping a fragment on sites and libraries."
 	@priority = 4
 	test ViewPageURLOnTooltipWhenSelectPageItem {
+		property portal.acceptance = "Tim";
+
 		task ("Given a page creator opens the link to page modal") {
 			task ("Get the guest site name") {
 				Navigator.openURL();

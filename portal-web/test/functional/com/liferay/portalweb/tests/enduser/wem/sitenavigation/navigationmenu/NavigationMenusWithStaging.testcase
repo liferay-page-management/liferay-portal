@@ -1425,6 +1425,8 @@ definition {
 	@description = "This is a test for LPS-164269. The navigation menu creator could view a tooltip with the page URL on selection modal on staging site."
 	@priority = 4
 	test ViewPageURLOnTooltipWhenSelectPageItem {
+		property portal.acceptance = "Tim";
+
 		task ("Given a navigation menu opens the select pages modal in staging site") {
 			task ("Add a Navigation menu") {
 				JSONSitenavigation.addSiteNavigationMenu(
