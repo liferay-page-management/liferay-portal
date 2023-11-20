@@ -182,7 +182,7 @@ public class JournalConfigurationDisplayContext {
 		).buildPortletURL();
 	}
 
-	public String getSelectDDMStructureURL() {
+	public String getSelectDDMStructureURL(String highlightedDDMStructures) {
 		RequestBackedPortletURLFactory requestBackedPortletURLFactory =
 			RequestBackedPortletURLFactoryUtil.create(_renderRequest);
 
@@ -197,11 +197,14 @@ public class JournalConfigurationDisplayContext {
 		ddmStructureItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
 			new DDMStructureItemSelectorReturnType());
 
-		return String.valueOf(
+		return PortletURLBuilder.create(
 			_itemSelector.getItemSelectorURL(
 				requestBackedPortletURLFactory,
 				_renderResponse.getNamespace() + "selectDDMStructure",
-				ddmStructureItemSelectorCriterion));
+				ddmStructureItemSelectorCriterion)
+		).setParameter(
+			"checkedDDMStructureIds", highlightedDDMStructures
+		).buildString();
 	}
 
 	public VerticalNavItemList getSettingsVerticalNavItemList() {

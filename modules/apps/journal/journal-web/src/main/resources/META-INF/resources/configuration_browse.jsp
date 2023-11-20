@@ -103,7 +103,7 @@ portletDisplay.setURLBack(journalConfigurationDisplayContext.getBackURL());
 										HashMapBuilder.<String, Object>put(
 											"ddmStructures", journalDisplayContext.getHighlightedDDMStructuresJSONArray()
 										).put(
-											"selectDDMStructureURL", journalConfigurationDisplayContext.getSelectDDMStructureURL()
+											"selectDDMStructureURL", journalConfigurationDisplayContext.getSelectDDMStructureURL(journalDisplayContext.getHighlightedDDMStructures())
 										).build()
 									%>'
 								/>
