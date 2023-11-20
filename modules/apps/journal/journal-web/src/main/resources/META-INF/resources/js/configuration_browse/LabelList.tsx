@@ -4,6 +4,7 @@
  */
 
 import ClayLabel from '@clayui/label';
+import classNames from 'classnames';
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
@@ -23,7 +24,11 @@ export function LabelList({items, onItemsChange}: Props) {
 	};
 
 	return (
-		<ul className="form-control form-control-tag-group list-unstyled">
+		<ul
+			className={classNames('bg-white form-control list-unstyled', {
+				'form-control-tag-group': items.length,
+			})}
+		>
 			{items.map((item) => (
 				<li key={item.value}>
 					<ClayLabel
