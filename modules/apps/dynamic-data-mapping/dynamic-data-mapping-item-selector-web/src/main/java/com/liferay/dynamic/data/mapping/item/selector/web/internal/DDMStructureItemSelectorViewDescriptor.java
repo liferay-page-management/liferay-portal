@@ -8,6 +8,7 @@ package com.liferay.dynamic.data.mapping.item.selector.web.internal;
 import com.liferay.depot.util.SiteConnectedGroupGroupProviderUtil;
 import com.liferay.dynamic.data.mapping.item.selector.DDMStructureItemSelectorReturnType;
 import com.liferay.dynamic.data.mapping.item.selector.criterion.DDMStructureItemSelectorCriterion;
+import com.liferay.dynamic.data.mapping.item.selector.web.internal.search.DDMStructureRowChecker;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureServiceUtil;
 import com.liferay.dynamic.data.mapping.util.DDMUtil;
@@ -26,6 +27,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
+import javax.portlet.RenderResponse;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -43,6 +45,8 @@ public class DDMStructureItemSelectorViewDescriptor
 		_httpServletRequest = httpServletRequest;
 		_portletURL = portletURL;
 
+		_renderResponse = (RenderResponse)httpServletRequest.getAttribute(
+			JavaConstants.JAVAX_PORTLET_RESPONSE);
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 	}
@@ -158,6 +162,12 @@ public class DDMStructureItemSelectorViewDescriptor
 					_ddmStructureItemSelectorCriterion.getClassNameId()));
 		}
 
+		if (isMultipleSelection()) {
+			ddmStructureSearchContainer.setRowChecker(
+				new DDMStructureRowChecker(
+					_renderResponse, _getCheckedDDMStructureIds()));
+		}
+
 		return ddmStructureSearchContainer;
 	}
 
@@ -181,6 +191,11 @@ public class DDMStructureItemSelectorViewDescriptor
 		return true;
 	}
 
+	private long[] _getCheckedDDMStructureIds() {
+		return ParamUtil.getLongValues(
+			_httpServletRequest, "checkedDDMStructureIds");
+	}
+
 	private String _getKeywords() {
 		if (_keywords != null) {
 			return _keywords;
@@ -198,6 +213,7 @@ public class DDMStructureItemSelectorViewDescriptor
 	private String _orderByCol;
 	private String _orderByType;
 	private final PortletURL _portletURL;
+	private final RenderResponse _renderResponse;
 	private final ThemeDisplay _themeDisplay;
 
 }
