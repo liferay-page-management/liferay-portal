@@ -34,16 +34,8 @@ export default function HighlightedDDMStructuresConfiguration({
 		openSelectionModal({
 			multiple: true,
 			onSelect: (selectedItems: Array<{value: string}>) =>
-				setDDMStructures((previousDDMStructures) =>
-					removeDuplicates<DDMStructure>(
-						[
-							...previousDDMStructures,
-							...selectedItems.map(
-								itemSelectorValueToDDMStructure
-							),
-						],
-						(ddmStructure) => ddmStructure.ddmStructureId
-					)
+				setDDMStructures(
+					selectedItems.map(itemSelectorValueToDDMStructure)
 				),
 			title: sub(
 				Liferay.Language.get('select-x'),
@@ -115,27 +107,4 @@ function itemSelectorValueToDDMStructure(item: {value: string}): DDMStructure {
 		ddmStructureId: parsedValue.ddmstructureid,
 		name: parsedValue.name,
 	};
-}
-
-function itemToDDMStructure(item: Item): DDMStructure {
-	return {
-		ddmStructureId: item.value,
-		name: item.label,
-	};
-}
-
-function removeDuplicates<T>(
-	list: T[],
-	getElementId: (element: T) => string
-): T[] {
-	return list.filter((element, index, array) => {
-		const elementId = getElementId(element);
-
-		return (
-			index ===
-			array.findIndex(
-				(otherElement) => elementId === getElementId(otherElement)
-			)
-		);
-	});
 }
