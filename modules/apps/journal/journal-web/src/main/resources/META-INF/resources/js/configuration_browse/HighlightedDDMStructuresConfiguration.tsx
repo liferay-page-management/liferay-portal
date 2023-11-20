@@ -72,9 +72,9 @@ export default function HighlightedDDMStructuresConfiguration({
 			/>
 
 			<ClayForm.Group>
-				<h4 className="h5 text-weight-semi-bold">
+				<p className="h5 text-weight-semi-bold">
 					{Liferay.Language.get('highlighted-structures')}
-				</h4>
+				</p>
 
 				<ClayInput.Group>
 					<ClayInput.GroupItem>
