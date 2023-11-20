@@ -17,18 +17,31 @@ interface DDMStructure {
 
 interface Props {
 	ddmStructures?: DDMStructure[];
+	itemSelectorNamespace: string;
 	portletNamespace: string;
 	selectDDMStructureURL: string;
 }
 
 export default function HighlightedDDMStructuresConfiguration({
 	ddmStructures: initialDDMStructures,
+	itemSelectorNamespace,
 	portletNamespace,
 	selectDDMStructureURL,
 }: Props) {
 	const [ddmStructures, setDDMStructures] = useState<DDMStructure[]>(
 		initialDDMStructures || []
 	);
+
+	const addCheckedDDMStructureIdsToURL = () => {
+		const url = new URL(selectDDMStructureURL);
+
+		url.searchParams.set(
+			`${itemSelectorNamespace}checkedDDMStructureIds`,
+			ddmStructureIdsToString(ddmStructures)
+		);
+
+		return url.href;
+	};
 
 	const onSelectButtonClick = () =>
 		openSelectionModal({
@@ -41,7 +54,7 @@ export default function HighlightedDDMStructuresConfiguration({
 				Liferay.Language.get('select-x'),
 				Liferay.Language.get('structures')
 			),
-			url: selectDDMStructureURL,
+			url: addCheckedDDMStructureIdsToURL(),
 		});
 
 	return (
@@ -55,9 +68,7 @@ export default function HighlightedDDMStructuresConfiguration({
 			<input
 				name={`${portletNamespace}preferences--highlightedDDMStructures--`}
 				type="hidden"
-				value={ddmStructures
-					.map((ddmStructure) => ddmStructure.ddmStructureId)
-					.join(',')}
+				value={ddmStructureIdsToString(ddmStructures)}
 			/>
 
 			<ClayForm.Group>
@@ -88,6 +99,12 @@ export default function HighlightedDDMStructuresConfiguration({
 			</ClayForm.Group>
 		</div>
 	);
+}
+
+function ddmStructureIdsToString(ddmStructures: DDMStructure[]): string {
+	return ddmStructures
+		.map((ddmStructure) => ddmStructure.ddmStructureId)
+		.join(',');
 }
 
 function ddmStructureToItem(ddmStructure: DDMStructure): Item {

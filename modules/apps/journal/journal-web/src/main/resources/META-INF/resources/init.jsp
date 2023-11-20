@@ -61,6 +61,7 @@ page import="com.liferay.dynamic.data.mapping.service.DDMTemplateLocalServiceUti
 page import="com.liferay.exportimport.kernel.exception.ExportImportContentValidationException" %><%@
 page import="com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItemList" %><%@
 page import="com.liferay.frontend.taglib.form.navigator.constants.FormNavigatorConstants" %><%@
+page import="com.liferay.item.selector.constants.ItemSelectorPortletKeys" %><%@
 page import="com.liferay.journal.configuration.JournalFileUploadsConfiguration" %><%@
 page import="com.liferay.journal.configuration.JournalGroupServiceConfiguration" %><%@
 page import="com.liferay.journal.constants.JournalArticleConstants" %><%@

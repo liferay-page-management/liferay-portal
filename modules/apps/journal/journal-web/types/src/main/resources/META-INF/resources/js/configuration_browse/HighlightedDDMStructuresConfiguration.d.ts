@@ -11,11 +11,13 @@ interface DDMStructure {
 }
 interface Props {
 	ddmStructures?: DDMStructure[];
+	itemSelectorNamespace: string;
 	portletNamespace: string;
 	selectDDMStructureURL: string;
 }
 export default function HighlightedDDMStructuresConfiguration({
 	ddmStructures: initialDDMStructures,
+	itemSelectorNamespace,
 	portletNamespace,
 	selectDDMStructureURL,
 }: Props): JSX.Element;
