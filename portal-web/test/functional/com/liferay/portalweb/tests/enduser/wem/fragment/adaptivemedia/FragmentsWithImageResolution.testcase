@@ -183,7 +183,7 @@ definition {
 	@priority = 5
 	@uitest
 	test ViewAutoImageResolutionForBackgroundImageDirectlySelected {
-		property portal.acceptance = "true";
+		property portal.acceptance = "Tim";
 
 		task ("Add a Container element to page") {
 			ContentPagesNavigator.openEditContentPage(
@@ -426,7 +426,7 @@ definition {
 	@priority = 5
 	@uitest
 	test ViewAutoImageResolutionForMappingBackgroundImageInBannerCenter {
-		property portal.acceptance = "true";
+		property portal.acceptance = "Tim";
 
 		task ("Add a Banner Center fragment to page") {
 			ContentPagesNavigator.openEditContentPage(
@@ -592,7 +592,7 @@ definition {
 	@priority = 5
 	@uitest
 	test ViewAutoImageResolutionForMappingBackgroundImageInContainer {
-		property portal.acceptance = "true";
+		property portal.acceptance = "Tim";
 
 		task ("Add a Container fragment to page") {
 			ContentPagesNavigator.openEditContentPage(
@@ -964,6 +964,8 @@ definition {
 	@description = "This is a test for LPS-113806. View auto image resolution when orignal image is greater than viewport and viewport is greater than image resolution."
 	@priority = 4
 	test ViewAutoImageResolutionWhenOriginalImageIsGreaterThanViewportAndViewportIsGreaterThanImageResolution {
+		property portal.acceptance = "Tim";
+
 		task ("Add an Image fragment to page") {
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Page Name",

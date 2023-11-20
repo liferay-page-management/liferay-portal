@@ -22,7 +22,7 @@ definition {
 	@priority = 5
 	@uitest
 	test ViewAutoImageResolutionForBackgroundImageDirectlySelectedInBannerCenter {
-		property portal.acceptance = "true";
+		property portal.acceptance = "Tim";
 
 		task ("Add a display page template with Web Content Article and Basic Web Content") {
 			JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
@@ -193,7 +193,7 @@ definition {
 	@priority = 5
 	@uitest
 	test ViewAutoImageResolutionForBackgroundImageDirectlySelectedInContainer {
-		property portal.acceptance = "true";
+		property portal.acceptance = "Tim";
 
 		task ("Add a display page template with Web Content Article and Basic Web Content") {
 			JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
@@ -376,7 +376,7 @@ definition {
 	@priority = 5
 	@uitest
 	test ViewAutoImageResolutionForImageDirectlySelectedInCard {
-		property portal.acceptance = "true";
+		property portal.acceptance = "Tim";
 
 		task ("Add a display page template with Web Content Article and Basic Web Content") {
 			JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
