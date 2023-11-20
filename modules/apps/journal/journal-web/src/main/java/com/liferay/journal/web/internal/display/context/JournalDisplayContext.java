@@ -654,6 +654,16 @@ public class JournalDisplayContext {
 			));
 	}
 
+	public String getHighlightedDDMStructures() {
+		PortletPreferences portletPreferences =
+			PortletPreferencesLocalServiceUtil.getPreferences(
+				_themeDisplay.getCompanyId(), _themeDisplay.getScopeGroupId(),
+				PortletKeys.PREFS_OWNER_TYPE_GROUP, 0,
+				JournalConstants.SERVICE_NAME, null);
+
+		return portletPreferences.getValue("highlightedDDMStructures", null);
+	}
+
 	public JSONArray getHighlightedDDMStructuresJSONArray() throws Exception {
 		return JSONUtil.toJSONArray(
 			_getHighlightedDDMStructuresList(),
@@ -1696,14 +1706,7 @@ public class JournalDisplayContext {
 
 		List<DDMStructure> highlightedDDMStructuresList = new ArrayList<>();
 
-		PortletPreferences portletPreferences =
-			PortletPreferencesLocalServiceUtil.getPreferences(
-				_themeDisplay.getCompanyId(), _themeDisplay.getScopeGroupId(),
-				PortletKeys.PREFS_OWNER_TYPE_GROUP, 0,
-				JournalConstants.SERVICE_NAME, null);
-
-		String highlightedDDMStructures = portletPreferences.getValue(
-			"highlightedDDMStructures", null);
+		String highlightedDDMStructures = getHighlightedDDMStructures();
 
 		if (Validator.isNull(highlightedDDMStructures)) {
 			_highlightedDDMStructuresList = highlightedDDMStructuresList;
