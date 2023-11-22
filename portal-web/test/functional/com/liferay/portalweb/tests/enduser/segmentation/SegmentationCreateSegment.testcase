@@ -25,6 +25,86 @@ definition {
 		}
 	}
 
+	@description = "LPS-127109 - Segments with both context and model criteria are correctly evaluated with guest users"
+	@priority = 4
+	test AddSegmentAndUseInExperience {
+		var portalURL = PropsUtil.get("portal.url");
+
+		task ("Given create Segments with two properties") {
+			Segmentation.openSegmentsAdmin(siteURLKey = "Guest");
+
+			LexiconEntry.gotoAdd();
+
+			Segmentation.fillTitle(titleField = "liferay.com with English language");
+
+			Segmentation.gotoSidebar(fieldType = "Session");
+
+			Segmentation.addProperties(propertyOption = "Language");
+
+			Select(
+				locator1 = "Segmentation#CRITERION_INPUT_ANY",
+				value1 = "English (United States)");
+
+			Segmentation.gotoSidebar(fieldType = "User");
+
+			Segmentation.addProperties(propertyOption = "Email Address");
+
+			Segmentation.changeCriterionInput(criterionInputOption = "Contains");
+
+			Segmentation.fillProperty(criterionValue = "liferay.com");
+
+			Button.clickSave();
+		}
+
+		task ("When Create new page") {
+			JSONLayout.addPublicLayout(
+				groupName = "Guest",
+				layoutName = "Test Page",
+				type = "content");
+		}
+
+		task ("And go to edit and add heading fragment") {
+			ContentPagesNavigator.openEditContentPage(
+				pageName = "Test Page",
+				siteName = "Guest");
+
+			PageEditor.addFragment(
+				collectionName = "Basic Components",
+				fragmentName = "Heading");
+		}
+
+		task ("And edit the heading fragment") {
+			PageEditor.editFragmentText(
+				fragmentName = "Heading",
+				id = "element-text",
+				text = "Default");
+		}
+
+		task ("And add new Exprience") {
+			PageEditor.addExperience(
+				experienceName = "test Experience",
+				segmentName = "liferay.com with English language");
+		}
+
+		task ("And activate the Experience And publish the page") {
+			PageEditor.prioritizeExperience(experienceName = "test Experience");
+
+			PageEditor.publish();
+		}
+
+		task ("And logout from the page and navigate to the page url to check the Experience") {
+			User.logoutPG();
+
+			Navigator.openSpecificURL(url = "${portalURL}/web/guest/test-page");
+		}
+
+		task ("Then Confirm the heading content") {
+			AssertTextEquals(
+				locator1 = "Experience#FRAGMENT_HEADING",
+				value1 = "Default");
+		}
+	}
+
 	@description = "This is a test for LPS-187282. The segment designer could add a segment based on organization category criteria."
 	@priority = 5
 	test AddSegmentByOrganizationCategory {
