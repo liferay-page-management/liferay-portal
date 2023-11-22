@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<FragmentPortletDataHandler self-path="/group/20117/portlet/com_liferay_fragment_web_portlet_FragmentPortlet/20117/portlet-data.xml" group-id="20117">
+	<FragmentCollection>
+		<staged-model group-id="20117" uuid="e26bc4f2-bf40-9fb6-4883-46b10da4e52b" path="/group/20117/com.liferay.fragment.model.FragmentCollection/39077.xml" user-uuid="7765fb32-e91a-9d57-df09-4366d123283e" asset-entry-priority="0.0"/>
+	</FragmentCollection>
+	<FragmentEntry>
+		<staged-model group-id="20117" uuid="9c708f47-6394-ab1e-c7f0-15ca1135bdfb" path="/group/20117/com.liferay.fragment.model.FragmentEntry/104.xml" user-uuid="7765fb32-e91a-9d57-df09-4366d123283e" asset-entry-priority="0.0">
+			<references>
+				<reference class-name="com.liferay.fragment.model.FragmentCollection" class-pk="39077" group-id="20117" group-key="Guest" live-group-id="20117" type="parent" uuid="e26bc4f2-bf40-9fb6-4883-46b10da4e52b" company-id="8538261443925152583" missing="false"/>
+			</references>
+		</staged-model>
+	</FragmentEntry>
+</FragmentPortletDataHandler>

@@ -1,0 +1,42 @@
+<FragmentEntryLink>
+  <__cachedModel>false</__cachedModel>
+  <__new>false</__new>
+  <__mvccVersion>1</__mvccVersion>
+  <__ctCollectionId>0</__ctCollectionId>
+  <__uuid>a4003272-8a0e-be38-075e-352fd1ee0e22</__uuid>
+  <__fragmentEntryLinkId>39117</__fragmentEntryLinkId>
+  <__groupId>20117</__groupId>
+  <__companyId>8538261443925152583</__companyId>
+  <__userId>20122</__userId>
+  <__userName>Test Test</__userName>
+  <__createDate class="sql-timestamp">2023-11-22 09:28:50.508</__createDate>
+  <__modifiedDate class="sql-timestamp">2023-11-22 09:28:50.508</__modifiedDate>
+  <__setModifiedDate>false</__setModifiedDate>
+  <__originalFragmentEntryLinkId>39103</__originalFragmentEntryLinkId>
+  <__fragmentEntryId>104</__fragmentEntryId>
+  <__segmentsExperienceId>39081</__segmentsExperienceId>
+  <__classNameId>20031</__classNameId>
+  <__classPK>66</__classPK>
+  <__plid>66</__plid>
+  <__css>.fragment_103 {
+}</__css>
+  <__html>&lt;div class=&quot;fragment_103&quot;&gt;
+&lt;img
+    data-lfr-editable-id=&quot;testId&quot;
+    data-lfr-editable-type=&quot;image&quot; 
+  /&gt;
+&lt;/div&gt;</__html>
+  <__js></__js>
+  <__configuration>{
+	&quot;fieldSets&quot;: [
+	]
+}</__configuration>
+  <__deleted>false</__deleted>
+  <__editableValues>{&quot;com.liferay.fragment.entry.processor.editable.EditableFragmentEntryProcessor&quot;:{&quot;testId&quot;:{&quot;defaultValue&quot;:&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAJCAYAAAA7KqwyAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAkSURBVHgB7cxBEQAACAIwtH8Pzw52kxD8OBZgNXsPQUOUwCIgAz0DHTyygaAAAAAASUVORK5CYII=&quot;,&quot;en_US&quot;:{&quot;classPK&quot;:&quot;39104&quot;,&quot;className&quot;:&quot;com.liferay.portal.kernel.repository.model.FileEntry&quot;,&quot;classNameId&quot;:32366,&quot;title&quot;:&quot;layering-osgi.png&quot;,&quot;fileEntryId&quot;:&quot;39104&quot;,&quot;url&quot;:&quot;[$dl-reference=/group/20117/com.liferay.document.library.kernel.model.DLFileEntry/39104.xml$,$include-friendly-url=true$][#dl-reference=/documents/d/guest/layering-osgi-png#,#include-friendly-url=true#]?imagePreview=1&quot;},&quot;config&quot;:{&quot;alt&quot;:&quot;&quot;}}}}</__editableValues>
+  <__namespace>dywe</__namespace>
+  <__position>0</__position>
+  <__rendererKey></__rendererKey>
+  <__type>1</__type>
+  <__lastPropagationDate class="sql-timestamp">2023-11-22 09:28:50.508</__lastPropagationDate>
+  <__columnBitmask>0</__columnBitmask>
+</FragmentEntryLink>

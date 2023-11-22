@@ -1,0 +1,33 @@
+<com.liferay.portal.repository.liferayrepository.model.LiferayFolder>
+  <__dlFolder class="DLFolder">
+    <__cachedModel>true</__cachedModel>
+    <__new>false</__new>
+    <__mvccVersion>7</__mvccVersion>
+    <__ctCollectionId>0</__ctCollectionId>
+    <__uuid>96c6ee69-310c-3c2e-ebf3-eca80b449491</__uuid>
+    <__externalReferenceCode>96c6ee69-310c-3c2e-ebf3-eca80b449491</__externalReferenceCode>
+    <__folderId>32694</__folderId>
+    <__groupId>20117</__groupId>
+    <__companyId>8538261443925152583</__companyId>
+    <__userId>20122</__userId>
+    <__userName>Test Test</__userName>
+    <__createDate>2023-11-21 17:06:57.976 UTC</__createDate>
+    <__modifiedDate>2023-11-21 17:06:57.976 UTC</__modifiedDate>
+    <__setModifiedDate>false</__setModifiedDate>
+    <__repositoryId>20117</__repositoryId>
+    <__mountPoint>false</__mountPoint>
+    <__parentFolderId>0</__parentFolderId>
+    <__treePath>/32694/</__treePath>
+    <__name>Provided by Liferay</__name>
+    <__description></__description>
+    <__lastPostDate>2023-11-21 17:06:58.828 UTC</__lastPostDate>
+    <__defaultFileEntryTypeId>0</__defaultFileEntryTypeId>
+    <__hidden>false</__hidden>
+    <__restrictionType>0</__restrictionType>
+    <__status>0</__status>
+    <__statusByUserId>0</__statusByUserId>
+    <__statusByUserName></__statusByUserName>
+    <__columnBitmask>0</__columnBitmask>
+  </__dlFolder>
+  <__escapedModel>false</__escapedModel>
+</com.liferay.portal.repository.liferayrepository.model.LiferayFolder>

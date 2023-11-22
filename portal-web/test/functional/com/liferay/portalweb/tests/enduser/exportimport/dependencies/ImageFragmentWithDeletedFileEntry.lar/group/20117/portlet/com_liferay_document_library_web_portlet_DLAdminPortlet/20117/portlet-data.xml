@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+
+<DLAdminPortletDataHandler self-path="/group/20117/portlet/com_liferay_document_library_web_portlet_DLAdminPortlet/20117/portlet-data.xml" group-id="20117">
+	<DLFolder>
+		<staged-model group-id="20117" uuid="96c6ee69-310c-3c2e-ebf3-eca80b449491" defaultFileEntryTypeUuid="" path="/group/20117/com.liferay.document.library.kernel.model.DLFolder/32694.xml" user-uuid="7765fb32-e91a-9d57-df09-4366d123283e" asset-entry-priority="0.0"/>
+	</DLFolder>
+	<DLFileEntry>
+		<staged-model group-id="20117" uuid="2f1eb155-25dd-930c-b124-388e3c6d86bc" fileVersionUuid="dae6f331-d3db-4a13-db20-dacb0a153519" version="1.0" bin-path="/group/20117/com.liferay.document.library.kernel.model.DLFileEntry/32696/1.0" path="/group/20117/com.liferay.document.library.kernel.model.DLFileEntry/32696.xml" user-uuid="7765fb32-e91a-9d57-df09-4366d123283e" asset-entry-priority="0.0">
+			<references>
+				<reference class-name="com.liferay.document.library.kernel.model.DLFolder" class-pk="32694" group-id="20117" group-key="Guest" live-group-id="20117" type="parent" uuid="96c6ee69-310c-3c2e-ebf3-eca80b449491" company-id="8538261443925152583" missing="false"/>
+				<reference class-name="com.liferay.friendly.url.model.FriendlyURLEntry" class-pk="32699" attached-class-name="com.liferay.portal.kernel.repository.model.FileEntry" type="dependency" uuid="d3a27778-5f4f-4758-1281-3e1720b02f45" company-id="8538261443925152583" missing="false"/>
+			</references>
+		</staged-model>
+		<staged-model group-id="20117" uuid="4a212f3b-1f58-0dea-0a30-43fd2f6ca486" fileVersionUuid="cf1993a0-7530-9ed0-7f4e-25c57cffcad0" version="1.0" bin-path="/group/20117/com.liferay.document.library.kernel.model.DLFileEntry/32702/1.0" path="/group/20117/com.liferay.document.library.kernel.model.DLFileEntry/32702.xml" user-uuid="7765fb32-e91a-9d57-df09-4366d123283e" asset-entry-priority="0.0">
+			<references>
+				<reference class-name="com.liferay.document.library.kernel.model.DLFolder" class-pk="32694" group-id="20117" group-key="Guest" live-group-id="20117" type="parent" uuid="96c6ee69-310c-3c2e-ebf3-eca80b449491" company-id="8538261443925152583" missing="false"/>
+				<reference class-name="com.liferay.friendly.url.model.FriendlyURLEntry" class-pk="32705" attached-class-name="com.liferay.portal.kernel.repository.model.FileEntry" type="dependency" uuid="0345de18-c0a4-e1d9-67f0-f53ed54bd7e7" company-id="8538261443925152583" missing="false"/>
+			</references>
+		</staged-model>
+		<staged-model group-id="20117" uuid="a1522fec-a638-07c2-0cba-1f14f2a5f2f0" fileVersionUuid="1ac3670d-6382-d465-87ca-b3583472747c" version="1.0" bin-path="/group/20117/com.liferay.document.library.kernel.model.DLFileEntry/32709/1.0" path="/group/20117/com.liferay.document.library.kernel.model.DLFileEntry/32709.xml" user-uuid="7765fb32-e91a-9d57-df09-4366d123283e" asset-entry-priority="0.0">
+			<references>
+				<reference class-name="com.liferay.document.library.kernel.model.DLFolder" class-pk="32694" group-id="20117" group-key="Guest" live-group-id="20117" type="parent" uuid="96c6ee69-310c-3c2e-ebf3-eca80b449491" company-id="8538261443925152583" missing="false"/>
+				<reference class-name="com.liferay.friendly.url.model.FriendlyURLEntry" class-pk="32713" attached-class-name="com.liferay.portal.kernel.repository.model.FileEntry" type="dependency" uuid="a2cfff17-2f80-7f83-1598-3e100c540dfd" company-id="8538261443925152583" missing="false"/>
+			</references>
+		</staged-model>
+		<staged-model group-id="20117" uuid="34d0d1fc-3768-74af-16eb-7a592d46ac00" fileVersionUuid="1ec9d596-d022-866e-0ca3-79813659ea8a" version="1.0" bin-path="/group/20117/com.liferay.document.library.kernel.model.DLFileEntry/32720/1.0" path="/group/20117/com.liferay.document.library.kernel.model.DLFileEntry/32720.xml" user-uuid="7765fb32-e91a-9d57-df09-4366d123283e" asset-entry-priority="0.0">
+			<references>
+				<reference class-name="com.liferay.document.library.kernel.model.DLFolder" class-pk="32694" group-id="20117" group-key="Guest" live-group-id="20117" type="parent" uuid="96c6ee69-310c-3c2e-ebf3-eca80b449491" company-id="8538261443925152583" missing="false"/>
+				<reference class-name="com.liferay.friendly.url.model.FriendlyURLEntry" class-pk="32723" attached-class-name="com.liferay.portal.kernel.repository.model.FileEntry" type="dependency" uuid="66b76c32-c318-aa47-c963-7e981a5431fb" company-id="8538261443925152583" missing="false"/>
+			</references>
+		</staged-model>
+		<staged-model group-id="20117" uuid="55cce9ac-6e58-8d64-6237-53066b3e8940" fileVersionUuid="14ef376c-4427-cf8b-a144-7c0006caa65d" version="1.0" bin-path="/group/20117/com.liferay.document.library.kernel.model.DLFileEntry/32729/1.0" path="/group/20117/com.liferay.document.library.kernel.model.DLFileEntry/32729.xml" user-uuid="7765fb32-e91a-9d57-df09-4366d123283e" asset-entry-priority="0.0">
+			<references>
+				<reference class-name="com.liferay.document.library.kernel.model.DLFolder" class-pk="32694" group-id="20117" group-key="Guest" live-group-id="20117" type="parent" uuid="96c6ee69-310c-3c2e-ebf3-eca80b449491" company-id="8538261443925152583" missing="false"/>
+				<reference class-name="com.liferay.friendly.url.model.FriendlyURLEntry" class-pk="32733" attached-class-name="com.liferay.portal.kernel.repository.model.FileEntry" type="dependency" uuid="823f2c4a-1e9f-b76e-df80-9285acc673d3" company-id="8538261443925152583" missing="false"/>
+			</references>
+		</staged-model>
+		<staged-model group-id="20117" uuid="43d1259c-1a6a-c122-a335-1845153fb14b" fileVersionUuid="3908c596-fb12-fe94-38f3-028a029169cf" version="1.0" bin-path="/group/20117/com.liferay.document.library.kernel.model.DLFileEntry/32737/1.0" path="/group/20117/com.liferay.document.library.kernel.model.DLFileEntry/32737.xml" user-uuid="7765fb32-e91a-9d57-df09-4366d123283e" asset-entry-priority="0.0">
+			<references>
+				<reference class-name="com.liferay.document.library.kernel.model.DLFolder" class-pk="32694" group-id="20117" group-key="Guest" live-group-id="20117" type="parent" uuid="96c6ee69-310c-3c2e-ebf3-eca80b449491" company-id="8538261443925152583" missing="false"/>
+				<reference class-name="com.liferay.friendly.url.model.FriendlyURLEntry" class-pk="32740" attached-class-name="com.liferay.portal.kernel.repository.model.FileEntry" type="dependency" uuid="d40a6620-0b12-06bb-40b4-27e47d21fe6a" company-id="8538261443925152583" missing="false"/>
+			</references>
+		</staged-model>
+		<staged-model group-id="20117" uuid="21a811ea-80bb-faf2-b58d-25b72e69c1f3" fileVersionUuid="eb1ad295-5538-6992-4529-365f06529e3e" version="1.0" bin-path="/group/20117/com.liferay.document.library.kernel.model.DLFileEntry/32746/1.0" path="/group/20117/com.liferay.document.library.kernel.model.DLFileEntry/32746.xml" user-uuid="7765fb32-e91a-9d57-df09-4366d123283e" asset-entry-priority="0.0">
+			<references>
+				<reference class-name="com.liferay.document.library.kernel.model.DLFolder" class-pk="32694" group-id="20117" group-key="Guest" live-group-id="20117" type="parent" uuid="96c6ee69-310c-3c2e-ebf3-eca80b449491" company-id="8538261443925152583" missing="false"/>
+				<reference class-name="com.liferay.friendly.url.model.FriendlyURLEntry" class-pk="32749" attached-class-name="com.liferay.portal.kernel.repository.model.FileEntry" type="dependency" uuid="5c24ccd7-ede7-9f9c-6ed6-4d172a1c53bb" company-id="8538261443925152583" missing="false"/>
+			</references>
+		</staged-model>
+	</DLFileEntry>
+	<FriendlyURLEntry>
+		<staged-model uuid="d3a27778-5f4f-4758-1281-3e1720b02f45" resource-class-name="com.liferay.portal.kernel.repository.model.FileEntry" mainEntry="true" path="/company/8538261443925152583/com.liferay.friendly.url.model.FriendlyURLEntry/32699.xml" attached-class-name="com.liferay.portal.kernel.repository.model.FileEntry" asset-entry-priority="0.0"/>
+		<staged-model uuid="0345de18-c0a4-e1d9-67f0-f53ed54bd7e7" resource-class-name="com.liferay.portal.kernel.repository.model.FileEntry" mainEntry="true" path="/company/8538261443925152583/com.liferay.friendly.url.model.FriendlyURLEntry/32705.xml" attached-class-name="com.liferay.portal.kernel.repository.model.FileEntry" asset-entry-priority="0.0"/>
+		<staged-model uuid="a2cfff17-2f80-7f83-1598-3e100c540dfd" resource-class-name="com.liferay.portal.kernel.repository.model.FileEntry" mainEntry="true" path="/company/8538261443925152583/com.liferay.friendly.url.model.FriendlyURLEntry/32713.xml" attached-class-name="com.liferay.portal.kernel.repository.model.FileEntry" asset-entry-priority="0.0"/>
+		<staged-model uuid="66b76c32-c318-aa47-c963-7e981a5431fb" resource-class-name="com.liferay.portal.kernel.repository.model.FileEntry" mainEntry="true" path="/company/8538261443925152583/com.liferay.friendly.url.model.FriendlyURLEntry/32723.xml" attached-class-name="com.liferay.portal.kernel.repository.model.FileEntry" asset-entry-priority="0.0"/>
+		<staged-model uuid="823f2c4a-1e9f-b76e-df80-9285acc673d3" resource-class-name="com.liferay.portal.kernel.repository.model.FileEntry" mainEntry="true" path="/company/8538261443925152583/com.liferay.friendly.url.model.FriendlyURLEntry/32733.xml" attached-class-name="com.liferay.portal.kernel.repository.model.FileEntry" asset-entry-priority="0.0"/>
+		<staged-model uuid="d40a6620-0b12-06bb-40b4-27e47d21fe6a" resource-class-name="com.liferay.portal.kernel.repository.model.FileEntry" mainEntry="true" path="/company/8538261443925152583/com.liferay.friendly.url.model.FriendlyURLEntry/32740.xml" attached-class-name="com.liferay.portal.kernel.repository.model.FileEntry" asset-entry-priority="0.0"/>
+		<staged-model uuid="5c24ccd7-ede7-9f9c-6ed6-4d172a1c53bb" resource-class-name="com.liferay.portal.kernel.repository.model.FileEntry" mainEntry="true" path="/company/8538261443925152583/com.liferay.friendly.url.model.FriendlyURLEntry/32749.xml" attached-class-name="com.liferay.portal.kernel.repository.model.FileEntry" asset-entry-priority="0.0"/>
+	</FriendlyURLEntry>
+</DLAdminPortletDataHandler>
