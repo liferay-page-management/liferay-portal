@@ -63,12 +63,8 @@ public class BlogsConfigurationDisplayContext {
 		}
 
 		_navigation = ParamUtil.getString(
-			_renderRequest, "navigation", "email-from");
-
-		if (PortalUtil.isRSSFeedsEnabled()) {
-			_navigation = ParamUtil.getString(
-				_renderRequest, "navigation", "rss");
-		}
+			_renderRequest, "navigation",
+			PortalUtil.isRSSFeedsEnabled() ? "rss" : "email-from");
 
 		return _navigation;
 	}
