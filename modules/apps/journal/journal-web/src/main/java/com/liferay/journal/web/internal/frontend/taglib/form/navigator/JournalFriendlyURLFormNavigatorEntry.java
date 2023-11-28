@@ -6,7 +6,9 @@
 package com.liferay.journal.web.internal.frontend.taglib.form.navigator;
 
 import com.liferay.frontend.taglib.form.navigator.FormNavigatorEntry;
+import com.liferay.frontend.taglib.form.navigator.constants.FormNavigatorConstants;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.User;
 
 import javax.servlet.ServletContext;
@@ -23,6 +25,15 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class JournalFriendlyURLFormNavigatorEntry
 	extends BaseJournalFormNavigatorEntry {
+
+	@Override
+	public String getFormNavigatorId() {
+		if (FeatureFlagManagerUtil.isEnabled("LPS-114700")) {
+			return FormNavigatorConstants.FORM_NAVIGATOR_ID_JOURNAL_METADATA;
+		}
+
+		return super.getFormNavigatorId();
+	}
 
 	@Override
 	public String getKey() {
