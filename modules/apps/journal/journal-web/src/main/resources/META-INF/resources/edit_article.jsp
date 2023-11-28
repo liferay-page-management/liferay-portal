@@ -310,6 +310,20 @@ JournalEditArticleDisplayContext journalEditArticleDisplayContext = new JournalE
 				<c:choose>
 					<c:when test='<%= FeatureFlagManagerUtil.isEnabled("LPS-114700") %>'>
 						<clay:panel
+							displayTitle='<%= LanguageUtil.get(request, "metadata") %>'
+							displayType="secondary"
+							expanded="<%= true %>"
+						>
+							<liferay-frontend:form-navigator
+								fieldSetCssClass="panel-group-flush"
+								formModelBean="<%= article %>"
+								id="<%= FormNavigatorConstants.FORM_NAVIGATOR_ID_JOURNAL_METADATA %>"
+								showButtons="<%= false %>"
+								type="<%= FormNavigatorConstants.FormNavigatorType.SHEET_SECTIONS %>"
+							/>
+						</clay:panel>
+
+						<clay:panel
 							displayTitle='<%= LanguageUtil.get(request, "fields") %>'
 							displayType="secondary"
 							expanded="<%= true %>"
