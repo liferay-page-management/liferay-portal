@@ -1,0 +1,85 @@
+@component-name = "portal-wcm"
+definition {
+
+	property ci.retries.disabled = "true";
+	property portal.release = "true";
+	property portal.upstream = "true";
+	property testray.main.component.name = "Content Pages";
+
+	static var randomSiteName = StringUtil.randomString(8);
+
+	static var randomSiteURLKey = StringUtil.toLowerCase(${randomSiteName});
+	var siteId = 20117;
+	var remotePort = 9080;
+
+	setUp {
+		task ("Set up virtual instance") {
+			TestCase.setUpPortalInstance();
+		}
+
+		task ("Sign in") {
+			User.firstLoginPG();
+		}
+
+		task ("Add a site") {
+			HeadlessSite.addSite(siteName = ${randomSiteName});
+		}
+
+		task ("Activate remote staging") {
+			Staging.openStagingAdmin(siteURLKey = ${randomSiteURLKey});
+
+			Staging.activateStagingCP(
+				remotePort = ${remotePort},
+				remoteStaging = "true",
+				siteId = ${siteId},
+				siteName = ${randomSiteName});
+		}
+	}
+
+	@description = "Check if Layout related to content page templates are published as private layout in live and staging"
+	@priority = 4
+	test LayoutRelatedToCPTArePublishedAsPrivateLayoutInLiveAndStaging {
+		task ("Given content page template is created") {
+			PageTemplatesAdmin.openPageTemplatesAdmin(siteURLKey = ${randomSiteURLKey});
+
+			PageTemplatesAdmin.addCollection(collectionName = "Page Template Collection");
+
+			PageTemplatesAdmin.addPageTemplate(
+				pageTemplateName = "Content Page Template Name",
+				pageTemplateType = "Content Page Template");
+		}
+
+		task ("And fragment is added to content page template") {
+			PageTemplatesAdmin.openPageTemplatesAdmin(siteURLKey = ${randomSiteURLKey});
+
+			Navigator.gotoNavNested(navNested = "Page Template Collection");
+
+			PageTemplatesAdmin.gotoPageTemplate(pageTemplateName = "Content Page Template Name");
+
+			PageEditor.addFragment(
+				collectionName = "Basic Components",
+				fragmentName = "Button");
+
+			PageEditor.publish();
+		}
+
+		task ("When content page template is published to live") {
+			Staging.openStagingAdmin(siteURLKey = ${randomSiteURLKey});
+
+			Staging.publishCustomPublication(
+				publicationTitle = "My Publish Title",
+				remoteStaging = "true");
+		}
+
+		task ("Then assert if privateLayout column is set to true in staging and live databases") {
+			SQL.assertTextInMySQLStatementResult(
+				mysqlStatement = "SELECT privateLayout FROM lportal.Layout WHERE name LIKE '%Content Page Template Name%' LIMIT 1",
+				text = 1);
+
+			SQL.assertTextInMySQLStatementResult(
+				mysqlStatement = "SELECT privateLayout FROM lportal_remote.Layout WHERE name LIKE '%Content Page Template Name%' LIMIT 1",
+				text = 1);
+		}
+	}
+
+}
