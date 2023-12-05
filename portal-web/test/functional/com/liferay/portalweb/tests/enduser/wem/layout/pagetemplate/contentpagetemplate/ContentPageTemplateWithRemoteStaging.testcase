@@ -36,6 +36,7 @@ definition {
 		property database.types = "mysql";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
+		property portal.acceptance = "tim";
 
 		task ("Given a content page template with fragment") {
 			PageTemplatesAdmin.openPageTemplatesAdmin(siteURLKey = "test-site-name");
