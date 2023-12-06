@@ -135,6 +135,8 @@ definition {
 	@description = "This is a use case for LRQA-61632. Can Add Default Value To Web Content Structure With With Second Complex Structure"
 	@priority = 3
 	test CanAddDefaultValueToWebContentStructure {
+		property portal.acceptance = "tim";
+
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 
 		NavItem.gotoStructures();
