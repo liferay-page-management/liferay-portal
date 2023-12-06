@@ -253,7 +253,11 @@ definition {
 			}
 		}
 
-		task ("Duplicate fields and then remove duplicates") {
+		task ("Remove duplicates") {
+			WaitForVisible(
+				key_fieldFieldLabel = "PaginaOrigem",
+				locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
+
 			for (var fieldName : list "Logo,Beneficio,Companhia,JeitoIdentificar") {
 				Click(
 					key_fieldName = ${fieldName},

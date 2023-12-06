@@ -324,20 +324,27 @@ definition {
 			WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Complex Title 1");
 
 			WaitForVisible(
-				key_fieldFieldLabel = "Estado",
+				key_fieldFieldLabel = "ItemUFComunicado",
 				locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
+
+			for (var fieldName : list "ItemUFComunicado,ItemDoParagrafoBanner,ListaDDI,ItensDeGenero") {
+				takeScreenshot();
+
+				Click(
+					key_fieldName = ${fieldName},
+					key_index = 2,
+					locator1 = "DDMField#REMOVE_REPEATED_FIELD_N");
+			}
 
 			Click(
 				key_fieldName = "ItemPais",
 				key_index = 4,
 				locator1 = "DDMField#REMOVE_REPEATED_FIELD_N");
 
-			for (var fieldName : list "ItemUFComunicado,ItemDoParagrafoBanner,ListaDDI,ItensDeGenero,Estado") {
-				Click(
-					key_fieldName = ${fieldName},
-					key_index = 2,
-					locator1 = "DDMField#REMOVE_REPEATED_FIELD_N");
-			}
+			Click(
+				key_fieldName = "Estado",
+				key_index = 2,
+				locator1 = "DDMField#REMOVE_REPEATED_FIELD_N");
 
 			for (var fieldName : list "ItemUFComunicado,ItemDoParagrafoBanner,ListaDDI,ItensDeGenero,Estado,ItemPais") {
 				AssertElementNotPresent(
