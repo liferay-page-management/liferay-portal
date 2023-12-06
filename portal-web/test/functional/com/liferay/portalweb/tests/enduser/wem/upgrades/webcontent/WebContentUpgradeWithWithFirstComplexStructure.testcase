@@ -224,6 +224,8 @@ definition {
 	@priority = 3
 	test CanDuplicateRepeatableFieldsAndRemoveThem {
 		task ("Duplicate all fields that can be duplicated, 1-4 times") {
+			SetWindowSize.maximizeWindow();
+
 			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 
 			WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Complex Title 1");
