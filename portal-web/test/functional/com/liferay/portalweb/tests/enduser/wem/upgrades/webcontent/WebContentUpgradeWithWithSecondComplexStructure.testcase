@@ -139,9 +139,7 @@ definition {
 
 		NavItem.gotoStructures();
 
-		LexiconEntry.gotoEntryMenuItem(
-			menuItem = "Edit Default Values",
-			rowEntry = "WC Structure Name");
+		WebContentStructures.editStructureDefaultValuesCP(structureName = "WC Structure Name");
 
 		Type(
 			key_fieldFieldLabel = "Label UF Comunicado",
@@ -155,13 +153,7 @@ definition {
 
 		WebContentStructures.saveCP();
 
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-		NavItem.gotoStructures();
-
-		LexiconEntry.gotoEntryMenuItem(
-			menuItem = "Edit Default Values",
-			rowEntry = "WC Structure Name");
+		WebContentStructures.editStructureDefaultValuesCP(structureName = "WC Structure Name");
 
 		AssertTextEquals.assertValue(
 			key_fieldFieldLabel = "Label UF Comunicado",
