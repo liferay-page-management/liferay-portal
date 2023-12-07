@@ -582,16 +582,14 @@ public class JournalEditArticleDisplayContext {
 	}
 
 	public Map<String, Object> getFieldMap() throws PortalException {
-		if (_article == null) {
-			return null;
-		}
-
 		return HashMapBuilder.<String, Object>put(
-			"description", _article.getDescriptionMap()
+			"descriptionMapAsXML",
+			(_article != null) ? _article.getDescriptionMap() : null
 		).put(
-			"friendlyURL", _article.getFriendlyURLMap()
+			"friendlyURL",
+			(_article != null) ? _article.getFriendlyURLMap() : null
 		).put(
-			"title", _article.getTitleMap()
+			"titleMapAsXML", (_article != null) ? _article.getTitleMap() : null
 		).build();
 	}
 
