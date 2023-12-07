@@ -254,9 +254,11 @@ definition {
 		}
 
 		task ("Remove duplicates") {
-			WaitForVisible(
-				key_fieldFieldLabel = "PaginaOrigem",
+			ScrollWebElementIntoView(
+				key_fieldFieldLabel = "Logo",
 				locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
+
+			takeScreenshot();
 
 			for (var fieldName : list "Logo,Beneficio,Companhia,JeitoIdentificar") {
 				Click(
