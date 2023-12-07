@@ -167,6 +167,8 @@ definition {
 
 		WebContentStructures.saveCP();
 
+		Pause(value1 = "10000");
+
 		WebContentStructures.editStructureDefaultValuesCP(structureName = "WC Structure Name");
 
 		AssertTextEquals.assertValue(
