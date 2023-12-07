@@ -316,11 +316,11 @@ definition {
 			}
 
 			PortletEntry.publish();
+
+			Pause(value1 = "10000");
 		}
 
 		task ("Remove duplicates") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
 			WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Complex Title 1");
 
 			WaitForVisible(
