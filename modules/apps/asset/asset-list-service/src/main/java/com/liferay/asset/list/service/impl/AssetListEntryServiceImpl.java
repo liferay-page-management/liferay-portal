@@ -5,6 +5,8 @@
 
 package com.liferay.asset.list.service.impl;
 
+import static com.liferay.asset.list.service.AssetListEntryUsageLocalServiceUtil.getCompanyAssetListEntryUsagesCount;
+
 import com.liferay.asset.list.constants.AssetListActionKeys;
 import com.liferay.asset.list.exception.RequiredAssetListEntryException;
 import com.liferay.asset.list.model.AssetListEntry;
@@ -18,14 +20,12 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 import java.util.List;
 
-import com.liferay.portal.kernel.util.PortalUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-
-import static com.liferay.asset.list.service.AssetListEntryUsageLocalServiceUtil.getCompanyAssetListEntryUsagesCount;
 
 /**
  * @author Jürgen Kappler
@@ -135,7 +135,8 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 			_assetListEntryModelResourcePermission.check(
 				getPermissionChecker(), assetListEntry, ActionKeys.DELETE);
 
-			_checkCompanyAssetListEntryUsages(assetListEntry.getCompanyId(),
+			_checkCompanyAssetListEntryUsages(
+				assetListEntry.getCompanyId(),
 				String.valueOf(assetListEntry.getAssetListEntryId()));
 
 			assetListEntryLocalService.deleteAssetListEntry(assetListEntry);
@@ -152,7 +153,8 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 		_assetListEntryModelResourcePermission.check(
 			getPermissionChecker(), assetListEntry, ActionKeys.DELETE);
 
-		_checkCompanyAssetListEntryUsages(assetListEntry.getCompanyId(),
+		_checkCompanyAssetListEntryUsages(
+			assetListEntry.getCompanyId(),
 			String.valueOf(assetListEntry.getAssetListEntryId()));
 
 		return assetListEntryLocalService.deleteAssetListEntry(assetListEntry);
@@ -432,13 +434,14 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 			assetListEntryId, segmentsEntryId, typeSettings);
 	}
 
-	private void _checkCompanyAssetListEntryUsages(long companyId, String assetListEntryId)
+	private void _checkCompanyAssetListEntryUsages(
+			long companyId, String assetListEntryId)
 		throws PortalException {
+
 		if (getCompanyAssetListEntryUsagesCount(
-			companyId,
-			PortalUtil.getClassNameId(AssetListEntry.class),
-			String.valueOf(assetListEntryId)
-		) > 0) {
+				companyId, PortalUtil.getClassNameId(AssetListEntry.class),
+				String.valueOf(assetListEntryId)) > 0) {
+
 			throw new RequiredAssetListEntryException();
 		}
 	}
