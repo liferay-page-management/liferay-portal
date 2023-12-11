@@ -5,11 +5,10 @@
 
 package com.liferay.asset.list.service.impl;
 
-import static com.liferay.asset.list.service.AssetListEntryUsageLocalServiceUtil.getCompanyAssetListEntryUsagesCount;
-
 import com.liferay.asset.list.constants.AssetListActionKeys;
 import com.liferay.asset.list.exception.RequiredAssetListEntryException;
 import com.liferay.asset.list.model.AssetListEntry;
+import com.liferay.asset.list.service.AssetListEntryUsageLocalService;
 import com.liferay.asset.list.service.base.AssetListEntryServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
@@ -20,7 +19,7 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Portal;
 
 import java.util.List;
 
@@ -443,10 +442,13 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 			long companyId, String assetListEntryId)
 		throws PortalException {
 
-		if (getCompanyAssetListEntryUsagesCount(
-				companyId, PortalUtil.getClassNameId(AssetListEntry.class),
-				String.valueOf(assetListEntryId)) > 0) {
+		int companyAssetListEntryUsagesCount =
+			_assetListEntryUsageLocalService.
+				getCompanyAssetListEntryUsagesCount(
+					companyId, _portal.getClassNameId(AssetListEntry.class),
+					String.valueOf(assetListEntryId));
 
+		if (companyAssetListEntryUsagesCount > 0) {
 			throw new RequiredAssetListEntryException();
 		}
 	}
@@ -458,7 +460,13 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 		_assetListEntryModelResourcePermission;
 
 	@Reference
+	private AssetListEntryUsageLocalService _assetListEntryUsageLocalService;
+
+	@Reference
 	private CustomSQL _customSQL;
+
+	@Reference
+	private Portal _portal;
 
 	@Reference(target = "(resource.name=com.liferay.asset.list)")
 	private PortletResourcePermission _portletResourcePermission;
