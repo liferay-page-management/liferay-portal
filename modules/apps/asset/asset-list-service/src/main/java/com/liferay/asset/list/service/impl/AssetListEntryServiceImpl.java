@@ -6,6 +6,7 @@
 package com.liferay.asset.list.service.impl;
 
 import com.liferay.asset.list.constants.AssetListActionKeys;
+import com.liferay.asset.list.exception.RequiredAssetListEntryException;
 import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.service.base.AssetListEntryServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
@@ -20,8 +21,11 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.util.List;
 
+import com.liferay.portal.kernel.util.PortalUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+
+import static com.liferay.asset.list.service.AssetListEntryUsageLocalServiceUtil.getCompanyAssetListEntryUsagesCount;
 
 /**
  * @author Jürgen Kappler
@@ -131,6 +135,9 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 			_assetListEntryModelResourcePermission.check(
 				getPermissionChecker(), assetListEntry, ActionKeys.DELETE);
 
+			_checkCompanyAssetListEntryUsages(assetListEntry.getCompanyId(),
+				String.valueOf(assetListEntry.getAssetListEntryId()));
+
 			assetListEntryLocalService.deleteAssetListEntry(assetListEntry);
 		}
 	}
@@ -144,6 +151,9 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 
 		_assetListEntryModelResourcePermission.check(
 			getPermissionChecker(), assetListEntry, ActionKeys.DELETE);
+
+		_checkCompanyAssetListEntryUsages(assetListEntry.getCompanyId(),
+			String.valueOf(assetListEntry.getAssetListEntryId()));
 
 		return assetListEntryLocalService.deleteAssetListEntry(assetListEntry);
 	}
@@ -420,6 +430,17 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 
 		assetListEntryLocalService.updateAssetListEntryTypeSettings(
 			assetListEntryId, segmentsEntryId, typeSettings);
+	}
+
+	private void _checkCompanyAssetListEntryUsages(long companyId, String assetListEntryId)
+		throws PortalException {
+		if (getCompanyAssetListEntryUsagesCount(
+			companyId,
+			PortalUtil.getClassNameId(AssetListEntry.class),
+			String.valueOf(assetListEntryId)
+		) > 0) {
+			throw new RequiredAssetListEntryException();
+		}
 	}
 
 	@Reference(
