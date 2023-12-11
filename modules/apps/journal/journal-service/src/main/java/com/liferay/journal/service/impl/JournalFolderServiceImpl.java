@@ -6,6 +6,7 @@
 package com.liferay.journal.service.impl;
 
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLinkLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureService;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
@@ -48,8 +49,8 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 
 	@Override
 	public JournalFolder addFolder(
-			String externalReferenceCode, long groupId, long parentFolderId,
-			String name, String description, ServiceContext serviceContext)
+		String externalReferenceCode, long groupId, long parentFolderId,
+		String name, String description, ServiceContext serviceContext)
 		throws PortalException {
 
 		ModelResourcePermissionUtil.check(
@@ -95,7 +96,7 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 
 	@Override
 	public List<DDMStructure> getDDMStructures(
-			long[] groupIds, long folderId, int restrictionType)
+		long[] groupIds, long folderId, int restrictionType)
 		throws PortalException {
 
 		return _filterStructures(
@@ -105,8 +106,8 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 
 	@Override
 	public List<DDMStructure> getDDMStructures(
-			long[] groupIds, long folderId, int restrictionType,
-			OrderByComparator<DDMStructure> orderByComparator)
+		long[] groupIds, long folderId, int restrictionType,
+		OrderByComparator<DDMStructure> orderByComparator)
 		throws PortalException {
 
 		return _filterStructures(
@@ -126,7 +127,7 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 
 	@Override
 	public JournalFolder getFolderByExternalReferenceCode(
-			long groupId, String externalReferenceCode)
+		long groupId, String externalReferenceCode)
 		throws PortalException {
 
 		JournalFolder folder =
@@ -361,7 +362,7 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 
 	@Override
 	public JournalFolder moveFolder(
-			long folderId, long parentFolderId, ServiceContext serviceContext)
+		long folderId, long parentFolderId, ServiceContext serviceContext)
 		throws PortalException {
 
 		_journalFolderModelResourcePermission.check(
@@ -374,7 +375,7 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 
 	@Override
 	public JournalFolder moveFolderFromTrash(
-			long folderId, long parentFolderId, ServiceContext serviceContext)
+		long folderId, long parentFolderId, ServiceContext serviceContext)
 		throws PortalException {
 
 		_journalFolderModelResourcePermission.check(
@@ -408,31 +409,27 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 
 	@Override
 	public List<DDMStructure> searchDDMStructures(
-			long companyId, long[] groupIds, long folderId, int restrictionType,
-			String keywords, int start, int end,
-			OrderByComparator<DDMStructure> orderByComparator)
+		long companyId, long[] groupIds, long folderId, int restrictionType,
+		String keywords, int start, int end,
+		OrderByComparator<DDMStructure> orderByComparator)
 		throws PortalException {
 
 		if (restrictionType ==
-				JournalFolderConstants.
-					RESTRICTION_TYPE_DDM_STRUCTURES_AND_WORKFLOW) {
+			JournalFolderConstants.
+				RESTRICTION_TYPE_DDM_STRUCTURES_AND_WORKFLOW) {
 
-			return _ddmStructureService.search(
-				companyId, groupIds,
+			return _ddmStructureLinkLocalService.getStructureLinkStructures(
 				_classNameLocalService.getClassNameId(JournalFolder.class),
-				folderId, keywords, WorkflowConstants.STATUS_ANY, start, end,
-				orderByComparator);
+				folderId, keywords, start, end);
 		}
 
 		folderId = journalFolderLocalService.getOverridedDDMStructuresFolderId(
 			folderId);
 
 		if (folderId != JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID) {
-			return _ddmStructureService.search(
-				companyId, groupIds,
+			return _ddmStructureLinkLocalService.getStructureLinkStructures(
 				_classNameLocalService.getClassNameId(JournalFolder.class),
-				folderId, keywords, WorkflowConstants.STATUS_ANY, start, end,
-				orderByComparator);
+				folderId, keywords, start, end);
 		}
 
 		return _ddmStructureService.search(
@@ -444,13 +441,13 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 
 	@Override
 	public int searchDDMStructuresCount(
-			long companyId, long[] groupIds, long folderId, int restrictionType,
-			String keywords)
+		long companyId, long[] groupIds, long folderId, int restrictionType,
+		String keywords)
 		throws PortalException {
 
 		if (restrictionType ==
-				JournalFolderConstants.
-					RESTRICTION_TYPE_DDM_STRUCTURES_AND_WORKFLOW) {
+			JournalFolderConstants.
+				RESTRICTION_TYPE_DDM_STRUCTURES_AND_WORKFLOW) {
 
 			return _ddmStructureService.searchCount(
 				companyId, groupIds,
@@ -496,9 +493,9 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 
 	@Override
 	public JournalFolder updateFolder(
-			long groupId, long folderId, long parentFolderId, String name,
-			String description, boolean mergeWithParentFolder,
-			ServiceContext serviceContext)
+		long groupId, long folderId, long parentFolderId, String name,
+		String description, boolean mergeWithParentFolder,
+		ServiceContext serviceContext)
 		throws PortalException {
 
 		_journalFolderModelResourcePermission.check(
@@ -512,9 +509,9 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 
 	@Override
 	public JournalFolder updateFolder(
-			long groupId, long folderId, long parentFolderId, String name,
-			String description, long[] ddmStructureIds, int restrictionType,
-			boolean mergeWithParentFolder, ServiceContext serviceContext)
+		long groupId, long folderId, long parentFolderId, String name,
+		String description, long[] ddmStructureIds, int restrictionType,
+		boolean mergeWithParentFolder, ServiceContext serviceContext)
 		throws PortalException {
 
 		ModelResourcePermissionUtil.check(
@@ -528,7 +525,7 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 	}
 
 	private List<DDMStructure> _filterStructures(
-			List<DDMStructure> ddmStructures)
+		List<DDMStructure> ddmStructures)
 		throws PortalException {
 
 		PermissionChecker permissionChecker = getPermissionChecker();
@@ -541,7 +538,7 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 			DDMStructure ddmStructure = iterator.next();
 
 			if (!_ddmStructureModelResourcePermission.contains(
-					permissionChecker, ddmStructure, ActionKeys.VIEW)) {
+				permissionChecker, ddmStructure, ActionKeys.VIEW)) {
 
 				iterator.remove();
 			}
@@ -552,6 +549,9 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
+
+	@Reference
+	private DDMStructureLinkLocalService _ddmStructureLinkLocalService;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.dynamic.data.mapping.model.DDMStructure)"
