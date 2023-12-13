@@ -794,7 +794,7 @@ public class JournalEditArticleDisplayContext {
 			getAvailableLocales(),
 			locale -> {
 				String languageId = LanguageUtil.getLanguageId(locale);
-				
+
 				String label = StringUtil.replace(languageId, '_', '-');
 
 				String name = LanguageUtil.get(
