@@ -1004,7 +1004,7 @@ public class JournalManagementToolbarDisplayContext
 							).setMVCPath(
 								"/edit_article.jsp"
 							).setRedirect(
-								PortalUtil.getCurrentURL(httpServletRequest)
+								_journalDisplayContext.getRedirect()
 							).setParameter(
 								"backURLTitle",
 								() -> {
