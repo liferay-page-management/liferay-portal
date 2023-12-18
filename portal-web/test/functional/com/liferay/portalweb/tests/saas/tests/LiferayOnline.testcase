@@ -14,23 +14,6 @@ definition {
 		User.firstLoginPG();
 	}
 
-	tearDown {
-		var testLiferayVirtualInstance = PropsUtil.get("test.liferay.virtual.instance");
-
-		if (${testLiferayVirtualInstance} == "true") {
-			PortalInstances.tearDownCP();
-		}
-		else {
-			PortalInstances.tearDownCP();
-
-			PagesAdmin.tearDownCP();
-
-			WebContent.tearDownCP();
-
-			ClientExtensionGeneral.tearDown();
-		}
-	}
-
 	@description = "This is a test for LPS-154668. I can create a New Virtual Instance of Liferay Site with the initializer"
 	@priority = 4
 	test AddLiferayWelcomeSiteVirtualInstanceWithInitializer {
