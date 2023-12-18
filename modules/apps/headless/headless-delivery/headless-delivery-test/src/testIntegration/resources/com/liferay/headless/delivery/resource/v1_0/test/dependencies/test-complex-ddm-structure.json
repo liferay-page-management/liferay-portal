@@ -284,6 +284,143 @@
 			"visibilityExpression": ""
 		},
 		{
+			"labelAtStructureLevel": true,
+			"ddmStructureLayoutId": "",
+			"ddmStructureId": "",
+			"upgradedStructure": false,
+			"readOnly": false,
+			"label": {
+				"en_US": "Fields Group"
+			},
+			"type": "fieldset",
+			"rows": [
+				{
+					"columns": [
+						{
+							"fields": [
+								"Text97681688"
+							],
+							"size": 12
+						}
+					]
+				},
+				{
+					"columns": [
+						{
+							"fields": [
+								"Text60420360"
+							],
+							"size": 12
+						}
+					]
+				}
+			],
+			"collapsible": false,
+			"showLabel": true,
+			"required": false,
+			"nestedFields": [
+				{
+					"labelAtStructureLevel": true,
+					"predefinedValue": {
+						"en_US": ""
+					},
+					"tooltip": {
+						"en_US": ""
+					},
+					"requireConfirmation": false,
+					"type": "text",
+					"showLabel": true,
+					"required": false,
+					"displayStyle": "singleline",
+					"requiredErrorMessage": {
+						"en_US": ""
+					},
+					"objectFieldName": "",
+					"repeatable": false,
+					"nativeField": false,
+					"confirmationLabel": {
+						"en_US": ""
+					},
+					"fieldReference": "Text97681688",
+					"tip": {
+						"en_US": ""
+					},
+					"placeholder": {
+						"en_US": ""
+					},
+					"direction": [
+						"vertical"
+					],
+					"hideField": false,
+					"confirmationErrorMessage": {
+						"en_US": ""
+					},
+					"dataType": "string",
+					"readOnly": false,
+					"label": {
+						"en_US": "Text"
+					},
+					"fieldNamespace": "",
+					"visibilityExpression": "",
+					"indexType": "keyword",
+					"name": "Text97681688",
+					"localizable": true
+				},
+				{
+					"labelAtStructureLevel": true,
+					"predefinedValue": {
+						"en_US": ""
+					},
+					"tooltip": {
+						"en_US": ""
+					},
+					"requireConfirmation": false,
+					"type": "text",
+					"showLabel": true,
+					"required": false,
+					"displayStyle": "singleline",
+					"requiredErrorMessage": {
+						"en_US": ""
+					},
+					"objectFieldName": "",
+					"repeatable": false,
+					"nativeField": false,
+					"confirmationLabel": {
+						"en_US": ""
+					},
+					"fieldReference": "Text60420360",
+					"tip": {
+						"en_US": ""
+					},
+					"placeholder": {
+						"en_US": ""
+					},
+					"direction": [
+						"vertical"
+					],
+					"hideField": false,
+					"confirmationErrorMessage": {
+						"en_US": ""
+					},
+					"dataType": "string",
+					"readOnly": false,
+					"label": {
+						"en_US": "Text"
+					},
+					"fieldNamespace": "",
+					"visibilityExpression": "",
+					"indexType": "keyword",
+					"name": "Text60420360",
+					"localizable": true
+				}
+			],
+			"normalizedStructure": false,
+			"repeatable": false,
+			"name": "Fieldset39810423",
+			"localizable": false,
+			"fieldReference": "Fieldset39810423"
+		},
+		{
 			"dataType": "integer",
 			"fieldNamespace": "",
 			"fieldReference": "Numeric",
