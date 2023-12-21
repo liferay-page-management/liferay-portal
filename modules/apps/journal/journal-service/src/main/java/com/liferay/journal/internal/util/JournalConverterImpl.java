@@ -621,7 +621,17 @@ public class JournalConverterImpl implements JournalConverter {
 				}
 			}
 			else {
-				dynamicContentElement.addCDATA(jsonArray.getString(0));
+				String concatenatedValuesString = jsonArray.getString(0);
+
+				if (jsonArray.length() > 1) {
+					for (int i = 1; i < jsonArray.length(); i++) {
+						concatenatedValuesString = StringBundler.concat(
+							concatenatedValuesString, StringPool.COMMA,
+							jsonArray.getString(i));
+					}
+
+					dynamicContentElement.addCDATA(concatenatedValuesString);
+				}
 			}
 		}
 		else {
