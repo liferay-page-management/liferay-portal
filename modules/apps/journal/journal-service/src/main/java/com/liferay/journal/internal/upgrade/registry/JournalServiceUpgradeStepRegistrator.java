@@ -13,7 +13,6 @@ import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.comment.upgrade.DiscussionSubscriptionClassNameUpgradeProcess;
 import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.depot.group.provider.SiteConnectedGroupGroupProvider;
-import com.liferay.document.library.kernel.store.Store;
 import com.liferay.dynamic.data.mapping.service.DDMFieldLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStorageLinkLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
@@ -64,7 +63,6 @@ import com.liferay.journal.internal.upgrade.v5_2_0.JournalFeedDDMStructureIdUpgr
 import com.liferay.journal.internal.upgrade.v6_1_0.JournalArticleSmallImageSourceUpgradeProcess;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.util.JournalConverter;
-import com.liferay.portal.change.tracking.store.CTStoreFactory;
 import com.liferay.portal.configuration.upgrade.PrefsPropsToConfigurationUpgradeHelper;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
@@ -441,9 +439,6 @@ public class JournalServiceUpgradeStepRegistrator
 	private CounterLocalService _counterLocalService;
 
 	@Reference
-	private CTStoreFactory _ctStoreFactory;
-
-	@Reference
 	private DDMFieldLocalService _ddmFieldLocalService;
 
 	@Reference
@@ -525,9 +520,6 @@ public class JournalServiceUpgradeStepRegistrator
 
 	@Reference
 	private SiteConnectedGroupGroupProvider _siteConnectedGroupGroupProvider;
-
-	@Reference(target = "(default=true)")
-	private Store _store;
 
 	@Reference
 	private SubscriptionLocalService _subscriptionLocalService;

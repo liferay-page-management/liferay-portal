@@ -14,15 +14,12 @@ import com.liferay.portal.kernel.model.Portlet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.servlet.ServletContext;
-
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -63,10 +60,5 @@ public class PortletPanelAppAdapterRegistry {
 	private final Map<ServiceReference<Portlet>, ServiceRegistration<PanelApp>>
 		_serviceRegistrations = new ConcurrentHashMap<>();
 	private ServiceTracker<Portlet, PanelApp> _serviceTracker;
-
-	@Reference(
-		target = "(&(original.bean=true)(bean.id=javax.servlet.ServletContext))"
-	)
-	private ServletContext _servletContext;
 
 }
