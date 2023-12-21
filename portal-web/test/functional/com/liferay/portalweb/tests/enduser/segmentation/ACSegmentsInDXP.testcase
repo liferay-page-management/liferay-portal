@@ -55,6 +55,20 @@ definition {
 			ACProperties.switchProperty(propertyName = ${assignedPropertyName});
 		}
 
+		task ("Check the known individuals") {
+			ACNavigation.goToIndividuals();
+
+			WaitForElementPresent(
+				key_cardTitle = "Total Individuals",
+				locator1 = "ACCards#TOTAL_COUNT");
+
+			takeScreenshot();
+
+			ACNavigation.switchTab(tabName = "Known Individuals");
+
+			takeScreenshot();
+		}
+
 		task ("Go to Segments and add a new segment") {
 			ACNavigation.goToSegments();
 
@@ -67,6 +81,8 @@ definition {
 			ACSegments.addSegmentField(segmentField = "email");
 
 			ACSegments.editTextCriterion(textInput = "test@liferay.com");
+
+			takeScreenshot();
 
 			ACSegments.saveSegment();
 		}
