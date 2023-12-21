@@ -59,10 +59,6 @@ definition {
 			ACNavigation.goToIndividuals();
 
 			takeScreenshot();
-
-			ACNavigation.switchTab(tabName = "Known Individuals");
-
-			ACIndividualsDashboard.assertIndividualAttribute(key_individualAttribute = "Test Test");
 		}
 
 		task ("Go to Segments and add a new segment") {
@@ -77,6 +73,10 @@ definition {
 			ACSegments.addSegmentField(segmentField = "email");
 
 			ACSegments.editTextCriterion(textInput = "test@liferay.com");
+
+			AssertTextEquals(
+				locator1 = "//div[contains(@class,'total-members-count')]",
+				value1 = 1);
 
 			ACSegments.saveSegment();
 		}
