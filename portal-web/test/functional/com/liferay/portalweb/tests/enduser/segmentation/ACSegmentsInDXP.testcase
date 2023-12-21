@@ -55,6 +55,16 @@ definition {
 			ACProperties.switchProperty(propertyName = ${assignedPropertyName});
 		}
 
+		task ("Check the known individuals") {
+			ACNavigation.goToIndividuals();
+
+			takeScreenshot();
+
+			ACNavigation.switchTab(tabName = "Known Individuals");
+
+			ACIndividualsDashboard.assertIndividualAttribute(key_individualAttribute = "Test Test");
+		}
+
 		task ("Go to Segments and add a new segment") {
 			ACNavigation.goToSegments();
 
