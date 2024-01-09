@@ -18,12 +18,14 @@ import com.liferay.portal.kernel.portlet.FriendlyURLResolver;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolverRegistryUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -111,6 +113,14 @@ public class FriendlyURLSeparatorCompanyConfigurationDisplayContext {
 		}
 
 		return jsonArray;
+	}
+
+	public Map<String, Object> getSeparatorFieldsProps() {
+		return HashMapBuilder.<String, Object>put(
+			"fields", getConfigurableFriendlyURLSeparatorsJSONArray()
+		).put(
+			"url", _themeDisplay.getPortalURL()
+		).build();
 	}
 
 	private JSONArray _getConfiguredURLSeparatorsJSONArray(long companyId) {
