@@ -126,6 +126,7 @@ import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -442,6 +443,44 @@ public class JournalDisplayContext {
 		}
 
 		return tabsItemList;
+	}
+
+	public String getDateMessageDescription(JournalArticle journalArticle) {
+		Date date = journalArticle.getModifiedDate();
+
+		if (FeatureFlagManagerUtil.isEnabled("LPS-202534") &&
+			isNavigationMine()) {
+
+			date = journalArticle.getCreateDate();
+		}
+
+		return LanguageUtil.getTimeDescription(
+			_httpServletRequest, System.currentTimeMillis() - date.getTime(),
+			true);
+	}
+
+	public String getDateMessageKey() {
+		String key = "modified-x-ago-by-x";
+
+		if (FeatureFlagManagerUtil.isEnabled("LPS-202534") &&
+			isNavigationMine()) {
+
+			key = "created-x-ago-by-x";
+		}
+
+		return key;
+	}
+
+	public String getDateMessageUserName(JournalArticle journalArticle) {
+		String userName = journalArticle.getStatusByUserName();
+
+		if (FeatureFlagManagerUtil.isEnabled("LPS-202534") &&
+			isNavigationMine()) {
+
+			userName = journalArticle.getUserName();
+		}
+
+		return userName;
 	}
 
 	public long getDDMStructureId() {
