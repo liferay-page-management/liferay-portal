@@ -445,42 +445,27 @@ public class JournalDisplayContext {
 		return tabsItemList;
 	}
 
-	public String getDateMessageDescription(JournalArticle journalArticle) {
-		Date date = journalArticle.getModifiedDate();
-
-		if (FeatureFlagManagerUtil.isEnabled("LPS-202534") &&
-			isNavigationMine()) {
-
-			date = journalArticle.getCreateDate();
-		}
-
-		return LanguageUtil.getTimeDescription(
-			_httpServletRequest, System.currentTimeMillis() - date.getTime(),
-			true);
-	}
-
-	public String getDateMessageKey() {
+	public String getDateMessage(JournalArticle journalArticle) {
 		String key = "modified-x-ago-by-x";
-
-		if (FeatureFlagManagerUtil.isEnabled("LPS-202534") &&
-			isNavigationMine()) {
-
-			key = "created-x-ago-by-x";
-		}
-
-		return key;
-	}
-
-	public String getDateMessageUserName(JournalArticle journalArticle) {
+		Date date = journalArticle.getModifiedDate();
 		String userName = journalArticle.getStatusByUserName();
 
 		if (FeatureFlagManagerUtil.isEnabled("LPS-202534") &&
 			isNavigationMine()) {
 
+			key = "created-x-ago-by-x";
+			date = journalArticle.getCreateDate();
 			userName = journalArticle.getUserName();
 		}
 
-		return userName;
+		return LanguageUtil.format(
+			_httpServletRequest, key,
+			new Object[]{
+				LanguageUtil.getTimeDescription(
+					_httpServletRequest,
+					System.currentTimeMillis() - date.getTime(), true),
+				HtmlUtil.escape(userName)},
+			false);
 	}
 
 	public long getDDMStructureId() {
