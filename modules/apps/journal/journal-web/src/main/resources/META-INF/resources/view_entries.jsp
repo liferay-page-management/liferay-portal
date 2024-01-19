@@ -113,7 +113,7 @@ Map<String, Object> componentContext = journalDisplayContext.getComponentContext
 							</div>
 
 							<span class="c-pt-1 text-secondary">
-								<liferay-ui:message arguments="<%= new String[] {journalDisplayContext.getDateMessageDescription(curArticle), HtmlUtil.escape(journalDisplayContext.getDateMessageUserName(curArticle))} %>" key="<%= journalDisplayContext.getDateMessageKey() %>" />
+								<liferay-ui:message key="<%= journalDisplayContext.getDateMessage(curArticle) %>" />
 							</span>
 
 							<c:if test="<%= journalDisplayContext.isSearch() && ((curArticle.getFolderId() <= 0) || JournalFolderPermission.contains(permissionChecker, curArticle.getFolder(), ActionKeys.VIEW)) %>">
