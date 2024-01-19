@@ -58,6 +58,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -104,6 +105,79 @@ public class FragmentsImporterTest {
 	@Test
 	public void testImportComponents() throws Exception {
 		_importFragmentsByType(FragmentConstants.TYPE_COMPONENT);
+	}
+
+	@Test
+	public void testImportFragmentOverwriteWithChangedName() throws Exception {
+		List<FragmentCollection> fragmentCollections =
+			_fragmentCollectionLocalService.getFragmentCollections(
+				_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		Assert.assertEquals(
+			fragmentCollections.toString(), 0, fragmentCollections.size());
+
+		ServiceContextThreadLocal.pushServiceContext(
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		try {
+			_fragmentsImporter.importFragmentEntries(
+				_user.getUserId(), _group.getGroupId(), 0, _file,
+				FragmentsImportStrategy.DO_NOT_OVERWRITE);
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
+
+		fragmentCollections =
+			_fragmentCollectionLocalService.getFragmentCollections(
+				_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		Assert.assertEquals(
+			fragmentCollections.toString(), 1, fragmentCollections.size());
+
+		FragmentCollection fragmentCollection = fragmentCollections.get(0);
+
+		List<FragmentEntry> filteredFragmentEntries = ListUtil.filter(
+			_fragmentEntryLocalService.getFragmentEntries(
+				fragmentCollection.getFragmentCollectionId()),
+			fragmentEntry -> Objects.equals(
+				fragmentEntry.getName(), "Fragment"));
+
+		Assert.assertEquals(
+			filteredFragmentEntries.toString(), 1,
+			filteredFragmentEntries.size());
+
+		String fragmentNameSuffix = "Updated";
+
+		_file = _generateZipFile(fragmentNameSuffix);
+
+		try {
+			_fragmentsImporter.importFragmentEntries(
+				_user.getUserId(), _group.getGroupId(), 0, _file,
+				FragmentsImportStrategy.OVERWRITE);
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
+
+		fragmentCollections =
+			_fragmentCollectionLocalService.getFragmentCollections(
+				_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		Assert.assertEquals(
+			fragmentCollections.toString(), 1, fragmentCollections.size());
+
+		fragmentCollection = fragmentCollections.get(0);
+
+		filteredFragmentEntries = ListUtil.filter(
+			_fragmentEntryLocalService.getFragmentEntries(
+				fragmentCollection.getFragmentCollectionId()),
+			fragmentEntry -> Objects.equals(
+				fragmentEntry.getName(), "Fragment" + fragmentNameSuffix));
+
+		Assert.assertEquals(
+			filteredFragmentEntries.toString(), 1,
+			filteredFragmentEntries.size());
 	}
 
 	@Test
@@ -543,7 +617,8 @@ public class FragmentsImporterTest {
 	}
 
 	private void _addZipWriterEntry(
-			ZipWriter zipWriter, String path, String key)
+			ZipWriter zipWriter, String path, String key,
+			String fragmentNameSuffix)
 		throws Exception {
 
 		if (Validator.isNull(key)) {
@@ -558,25 +633,48 @@ public class FragmentsImporterTest {
 
 		URL url = _bundle.getEntry(entryPath);
 
-		try (InputStream inputStream = url.openStream()) {
-			zipWriter.addEntry(zipPath, inputStream);
+		String content = URLUtil.toString(url);
+
+		if (Validator.isNotNull(fragmentNameSuffix) &&
+			Objects.equals(
+				key, FragmentExportImportConstants.FILE_NAME_FRAGMENT)) {
+
+			content = _replaceFragmentNamePattern.matcher(
+				content
+			).replaceAll(
+				"$1$2" + fragmentNameSuffix + "\""
+			);
 		}
+
+		zipWriter.addEntry(_PATH_COLLECTION + zipPath, content);
 	}
 
 	private File _generateResourcesZipFile() throws Exception {
+		return _generateResourcesZipFile(StringPool.BLANK);
+	}
+
+	private File _generateResourcesZipFile(String fragmentNameSuffix)
+		throws Exception {
+
 		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
 
 		_addZipWriterEntry(
 			zipWriter, _PATH_DEPENDENCIES + "resources-collection",
-			"collection.json");
+			"collection.json", fragmentNameSuffix);
 		_addZipWriterEntry(
-			zipWriter, _PATH_RESOURCES_COLLECTION + "resources", "image.png");
-		_populateZipWriter(_PATH_RESOURCES_COLLECTION, zipWriter, false);
+			zipWriter, _PATH_RESOURCES_COLLECTION + "resources", "image.png",
+			fragmentNameSuffix);
+		_populateZipWriter(
+			_PATH_RESOURCES_COLLECTION, zipWriter, false, fragmentNameSuffix);
 
 		return zipWriter.getFile();
 	}
 
 	private File _generateZipFile() throws Exception {
+		return _generateZipFile(StringPool.BLANK);
+	}
+
+	private File _generateZipFile(String fragmentNameSuffix) throws Exception {
 		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
 
 		URL collectionURL = _bundle.getEntry(
@@ -585,16 +683,24 @@ public class FragmentsImporterTest {
 
 		try (InputStream inputStream = collectionURL.openStream()) {
 			zipWriter.addEntry(
-				FragmentExportImportConstants.FILE_NAME_COLLECTION,
+				_PATH_COLLECTION +
+					FragmentExportImportConstants.FILE_NAME_COLLECTION,
 				inputStream);
 		}
 
-		_populateZipWriter(_PATH_FRAGMENTS, zipWriter, true);
+		_populateZipWriter(
+			_PATH_FRAGMENTS, zipWriter, true, fragmentNameSuffix);
 
 		return zipWriter.getFile();
 	}
 
 	private File _generateZipFileWithFolderResources() throws Exception {
+		return _generateZipFileWithFolderResources(StringPool.BLANK);
+	}
+
+	private File _generateZipFileWithFolderResources(String fragmentNameSuffix)
+		throws Exception {
+
 		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
 
 		URL collectionURL = _bundle.getEntry(
@@ -609,14 +715,15 @@ public class FragmentsImporterTest {
 
 		_addZipWriterEntry(
 			zipWriter, _PATH_FRAGMENTS_WITH_FOLDER_RESOURCES + "resources",
-			"image1.png");
+			"image1.png", fragmentNameSuffix);
 		_addZipWriterEntry(
 			zipWriter,
 			_PATH_FRAGMENTS_WITH_FOLDER_RESOURCES + "resources/folder1",
-			"image2.png");
+			"image2.png", fragmentNameSuffix);
 
 		_populateZipWriter(
-			_PATH_FRAGMENTS_WITH_FOLDER_RESOURCES, zipWriter, true);
+			_PATH_FRAGMENTS_WITH_FOLDER_RESOURCES, zipWriter, true,
+			fragmentNameSuffix);
 
 		return zipWriter.getFile();
 	}
@@ -654,7 +761,7 @@ public class FragmentsImporterTest {
 
 	private void _populateZipWriter(
 			String basePath, ZipWriter zipWriter,
-			boolean calculateFragmentEntryType)
+			boolean calculateFragmentEntryType, String fragmentNameSuffix)
 		throws Exception {
 
 		Enumeration<URL> enumeration = _bundle.findEntries(
@@ -674,16 +781,23 @@ public class FragmentsImporterTest {
 
 			_addZipWriterEntry(
 				zipWriter, path,
-				FragmentExportImportConstants.FILE_NAME_FRAGMENT);
+				FragmentExportImportConstants.FILE_NAME_FRAGMENT,
+				fragmentNameSuffix);
 			_addZipWriterEntry(
-				zipWriter, path, jsonObject.getString("configurationPath"));
+				zipWriter, path, jsonObject.getString("configurationPath"),
+				fragmentNameSuffix);
 			_addZipWriterEntry(
-				zipWriter, path, jsonObject.getString("cssPath"));
+				zipWriter, path, jsonObject.getString("cssPath"),
+				fragmentNameSuffix);
 			_addZipWriterEntry(
-				zipWriter, path, jsonObject.getString("htmlPath"));
-			_addZipWriterEntry(zipWriter, path, jsonObject.getString("jsPath"));
+				zipWriter, path, jsonObject.getString("htmlPath"),
+				fragmentNameSuffix);
 			_addZipWriterEntry(
-				zipWriter, path, jsonObject.getString("thumbnailPath"));
+				zipWriter, path, jsonObject.getString("jsPath"),
+				fragmentNameSuffix);
+			_addZipWriterEntry(
+				zipWriter, path, jsonObject.getString("thumbnailPath"),
+				fragmentNameSuffix);
 		}
 
 		enumeration = _bundle.findEntries(
@@ -704,10 +818,12 @@ public class FragmentsImporterTest {
 
 			_addZipWriterEntry(
 				zipWriter, path,
-				FragmentExportImportConstants.FILE_NAME_FRAGMENT_COMPOSITION);
+				FragmentExportImportConstants.FILE_NAME_FRAGMENT_COMPOSITION,
+				fragmentNameSuffix);
 			_addZipWriterEntry(
 				zipWriter, path,
-				jsonObject.getString("fragmentCompositionDefinitionPath"));
+				jsonObject.getString("fragmentCompositionDefinitionPath"),
+				fragmentNameSuffix);
 		}
 	}
 
@@ -778,6 +894,8 @@ public class FragmentsImporterTest {
 		Assert.assertTrue(html, html.contains(resourceReference));
 	}
 
+	private static final String _PATH_COLLECTION = "demo-fragments/";
+
 	private static final String _PATH_DEPENDENCIES =
 		"com/liferay/fragment/dependencies/";
 
@@ -789,6 +907,9 @@ public class FragmentsImporterTest {
 
 	private static final String _PATH_RESOURCES_COLLECTION =
 		_PATH_DEPENDENCIES + "resources-collection/";
+
+	private static final Pattern _replaceFragmentNamePattern = Pattern.compile(
+		"(\"name\": \")(.*)\"", Pattern.MULTILINE);
 
 	private Bundle _bundle;
 
