@@ -25,12 +25,12 @@ import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.util.Portal;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Eudaldo Alonso
@@ -70,10 +70,9 @@ public class FragmentEntryLinkModelListener
 
 					masterLayoutPlids.add(fragmentEntryLink.getPlid());
 
-					Layout masterDraftLayout =
-						_layoutLocalService.fetchLayout(
-							_portal.getClassNameId(Layout.class),
-							fragmentEntryLink.getPlid());
+					Layout masterDraftLayout = _layoutLocalService.fetchLayout(
+						_portal.getClassNameId(Layout.class),
+						fragmentEntryLink.getPlid());
 
 					if (masterDraftLayout != null) {
 						masterLayoutPlids.add(masterDraftLayout.getPlid());
@@ -84,10 +83,10 @@ public class FragmentEntryLinkModelListener
 							portletId);
 
 					for (PortletPreferences curPortletPreferences :
-						portletPreferences) {
+							portletPreferences) {
 
 						if (!masterLayoutPlids.contains(
-							curPortletPreferences.getPlid())) {
+								curPortletPreferences.getPlid())) {
 
 							_portletPreferencesLocalService.
 								deletePortletPreferences(
