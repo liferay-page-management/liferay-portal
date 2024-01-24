@@ -370,7 +370,9 @@ export function FieldBase({
 						<fieldset>
 							<legend
 								{...accessiblePropsFields}
-								className="lfr-ddm-legend"
+								className={classNames('lfr-ddm-legend', {
+									'text-muted': showDisabledFieldIcon,
+								})}
 							>
 								{showLabel && label}
 
@@ -402,6 +404,7 @@ export function FieldBase({
 									'ddm-empty': !showLabel && !required,
 									'ddm-label': showLabel || required,
 									'ddm-repeatable': repeatable,
+									'text-muted': showDisabledFieldIcon,
 								})}
 								{...(type === 'select' && {id: id ?? name})}
 							>
