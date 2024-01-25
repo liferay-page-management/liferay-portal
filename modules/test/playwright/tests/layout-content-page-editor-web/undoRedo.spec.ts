@@ -160,3 +160,75 @@ test('Undo and Redo buttons work as expected', async ({
 
 	await apiHelpers.headlessSite.deleteSite(site.id);
 });
+
+test('Undo history works as expected', async ({
+	apiHelpers,
+	page,
+	pageEditorPage,
+}) => {
+	await page.goto('/');
+
+	// Create a site
+
+	const site = await apiHelpers.headlessSite.createSite(getRandomId());
+
+	// Create a page with a Heading fragment
+
+	const headingId = getRandomId();
+
+	const headingFragment = getFragmentDefinition(
+		headingId,
+		'BASIC_COMPONENT-heading'
+	);
+
+	const layout = await apiHelpers.headlessDelivery.createSitePage(
+		site.id,
+		getRandomId(),
+		getPageDefinition([headingFragment])
+	);
+
+	// Go to edit mode of page
+
+	await pageEditorPage.goToEditMode(site, layout);
+
+	// assert History button is visible
+
+	expect(page.getByTitle('History')).toBeVisible();
+
+	// select the fragment
+
+	await pageEditorPage.selectFragment(headingId);
+
+	// Go to General Panel and change the Heading level 5 times
+
+	await pageEditorPage.goToConfigurationTab('General');
+	await page.getByLabel('Heading Level', {exact: true}).selectOption('h2');
+	await page.getByLabel('Heading Level', {exact: true}).selectOption('h3');
+	await page.getByLabel('Heading Level', {exact: true}).selectOption('h4');
+	await page.getByLabel('Heading Level', {exact: true}).selectOption('h5');
+	await page.getByLabel('Heading Level', {exact: true}).selectOption('h6');
+
+	// Open the History dropdown and assert we have 5 + 1 Action inlcuding Undo All
+
+	await page.getByTitle('History').click();
+
+	const historyItems = page
+		.locator('.page-editor__undo-history')
+		.locator('ul > li');
+
+	await expect(historyItems).toHaveCount(6);
+
+	// Assert the current History position is disabled
+
+	await expect(historyItems.nth(0).getByRole('menuitem')).toBeDisabled();
+	await historyItems.nth(1).getByRole('menuitem').click();
+	await expect(historyItems.nth(0).getByRole('menuitem')).toBeEnabled();
+
+	// Assert the heading fragment has the correct heading level
+
+	await expect(page.locator(`.lfr-layout-structure-item-${headingId}`).locator('h5.component-heading')).toBeAttached()
+
+	// delete the site
+
+	await apiHelpers.headlessSite.deleteSite(site.id);
+});
