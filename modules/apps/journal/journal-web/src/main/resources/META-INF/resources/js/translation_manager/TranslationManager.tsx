@@ -33,7 +33,7 @@ export default function TranslationManager({
 	const triggerRef = useRef<HTMLButtonElement | null>(null);
 
 	useEffect(() => {
-		const updateTranslations = () => {
+		const updateTranslations = (fields: Fields) => {
 			if (!fields) {
 				return;
 			}
@@ -72,16 +72,20 @@ export default function TranslationManager({
 
 			setFields(fields);
 
+			updateTranslations(fields);
+
 			triggerRef.current?.removeEventListener(
 				'click',
 				getLocalizableFields
 			);
 		};
 
+		const updateTranslationStatus = () => updateTranslations(fields);
+
 		if (fields) {
 			Liferay.on(
 				'inputLocalized:updateTranslationStatus',
-				updateTranslations
+				updateTranslationStatus
 			);
 		}
 		else {
@@ -91,7 +95,7 @@ export default function TranslationManager({
 		return () => {
 			Liferay.detach(
 				'inputLocalized:updateTranslationStatus',
-				updateTranslations
+				updateTranslationStatus
 			);
 		};
 	}, [fields, initialFields]);
