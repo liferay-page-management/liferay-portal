@@ -19,7 +19,7 @@ import {
 } from 'data-engine-js-components-web';
 import {sub} from 'frontend-js-web';
 import moment from 'moment/min/moment-with-locales';
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 
 import './FieldBase.scss';
 
@@ -230,6 +230,12 @@ export function FieldBase({
 			);
 		});
 	}, [localizedValue, editingLanguageId, fieldName, name, type]);
+
+	useEffect(() => {
+		if (Liferay.FeatureFlags['LPS-114700']) {
+			Liferay.fire('inputLocalized:updateTranslationStatus');
+		}
+	}, [hiddenTranslations.length]);
 
 	const renderLabel =
 		(label && showLabel) || hideField || repeatable || required || tooltip;
