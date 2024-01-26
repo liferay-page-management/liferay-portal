@@ -9,7 +9,14 @@ import ClayDropDown from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import {sub} from 'frontend-js-web';
-import React, {Ref, useEffect, useMemo, useRef, useState} from 'react';
+import React, {
+	MutableRefObject,
+	Ref,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from 'react';
 
 import useId from '../hooks/useId';
 import {Locale, Translations} from './TranslationAdminContent';
@@ -34,6 +41,7 @@ interface IProps extends Translations {
 	showOnlyFlags?: boolean;
 	small?: boolean;
 	translationProgress?: TranslationProgress | null;
+	triggerRef?: MutableRefObject<HTMLButtonElement | null>;
 }
 
 export interface TranslationProgress {
@@ -45,6 +53,7 @@ interface TriggerButtonProps {
 	displayType: DisplayType;
 	selectedItem: Locale;
 	small: boolean;
+	triggerRef?: MutableRefObject<HTMLButtonElement | null>;
 }
 
 // These variables are defined here, out of the component, to avoid
@@ -54,13 +63,28 @@ const noop = () => {};
 
 const TriggerButton = React.forwardRef(
 	(
-		{displayType, selectedItem, small, ...props}: TriggerButtonProps,
+		{
+			displayType,
+			selectedItem,
+			small,
+			triggerRef,
+			...props
+		}: TriggerButtonProps,
 		ref: Ref<HTMLButtonElement>
 	) => {
 		const ariaLabelButton = sub(
 			Liferay.Language.get('select-a-language.-current-language-x'),
 			selectedItem.displayName
 		);
+
+		useEffect(() => {
+			if (ref && triggerRef) {
+
+				// @ts-ignore
+
+				triggerRef.current = ref.current;
+			}
+		}, [ref, triggerRef]);
 
 		return Liferay.FeatureFlags['LPS-114700'] &&
 			displayType === DISPLAY_TYPE.HORIZONTAL ? (
@@ -114,8 +138,9 @@ export default function TranslationAdminSelector({
 	selectedLanguageId: initialSelectedLanguageId,
 	showOnlyFlags,
 	small = false,
-	translations = null,
 	translationProgress = null,
+	translations = null,
+	triggerRef,
 }: IProps) {
 	const [activeLanguageIds, setActiveLanguageIds] = useState<
 		Liferay.Language.Locale[]
@@ -128,7 +153,11 @@ export default function TranslationAdminSelector({
 	const [translationModalVisible, setTranslationModalVisible] = useState(
 		false
 	);
-	const triggerRef = useRef<HTMLButtonElement | null>(null);
+	const buttonRef = useRef<HTMLButtonElement | null>(null);
+
+	if (!triggerRef) {
+		triggerRef = buttonRef;
+	}
 
 	const handleCloseTranslationModal = (
 		activeLanguageIds: Liferay.Language.Locale[]
@@ -188,6 +217,7 @@ export default function TranslationAdminSelector({
 					(locale) => locale.id === selectedLanguageId
 				)}
 				selectedKey={selectedLanguageId}
+				triggerRef={triggerRef}
 			>
 				{(item) => (
 					<Option key={item.id} textValue={item.label}>
@@ -227,7 +257,9 @@ export default function TranslationAdminSelector({
 					<TriggerButton
 						displayType={displayType}
 						ref={(node) => {
-							triggerRef.current = node;
+							if (triggerRef) {
+								triggerRef.current = node;
+							}
 						}}
 						selectedItem={selectedLocale}
 						small={small}
@@ -246,7 +278,7 @@ export default function TranslationAdminSelector({
 									setSelectedLanguageId(activeLocale.id);
 									setSelectorDropdownActive(false);
 
-									triggerRef.current?.focus();
+									triggerRef?.current?.focus();
 								}}
 								symbolLeft={active ? 'check-small' : undefined}
 							>
