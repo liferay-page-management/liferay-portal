@@ -63,23 +63,42 @@ export default function TranslationManager({
 		[fields]
 	);
 
-	const getLocalizableFields = useCallback(() => {
-		const ddmFields = Array.from(
-			document.querySelectorAll<HTMLInputElement>(
-				`[data-ddm-localizable-field]`
+	const getLocalizableFields = useCallback(
+		(event) => {
+			if (
+				event.type === 'keydown' &&
+				event.key !== 'Enter' &&
+				event.key !== 'Scape'
+			) {
+				return;
+			}
+
+			const ddmFields = Array.from(
+				document.querySelectorAll<HTMLInputElement>(
+					`[data-ddm-localizable-field]`
+				)
 			)
-		)
-			.map((field) => field.dataset.fieldName!)
-			.reduce((acc, name) => ({...acc, [name]: {}}), {});
+				.map((field) => field.dataset.fieldName!)
+				.reduce((acc, name) => ({...acc, [name]: {}}), {});
 
-		const fields = {...initialFields, ...ddmFields};
+			const fields = {...initialFields, ...ddmFields};
 
-		setFields(fields);
+			setFields(fields);
 
-		updateTranslations(fields);
+			updateTranslations(fields);
 
-		triggerRef.current?.removeEventListener('click', getLocalizableFields);
-	}, [initialFields]);
+			triggerRef.current?.removeEventListener(
+				'click',
+				getLocalizableFields
+			);
+
+			triggerRef.current?.removeEventListener(
+				'keydown',
+				getLocalizableFields
+			);
+		},
+		[initialFields]
+	);
 
 	useEffect(() => {
 		if (fields) {
@@ -90,6 +109,10 @@ export default function TranslationManager({
 		}
 		else {
 			triggerRef.current?.addEventListener('click', getLocalizableFields);
+			triggerRef.current?.addEventListener(
+				'keydown',
+				getLocalizableFields
+			);
 		}
 
 		return () => {
