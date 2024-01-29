@@ -159,7 +159,14 @@ public class LayoutPageTemplateServiceUpgradeStepRegistrator
 		registry.register("3.4.3", "3.4.4", new DummyUpgradeStep());
 
 		registry.register(
-			"3.4.4", "3.5.0",
+			"3.4.4", "3.4.5",
+			new com.liferay.layout.page.template.internal.upgrade.v3_4_4.
+				LayoutPageTemplateStructureUpgradeProcess(
+					_fragmentEntryLinkLocalService,
+					_segmentsExperienceLocalService));
+
+		registry.register(
+			"3.4.5", "3.5.0",
 			new com.liferay.layout.page.template.internal.upgrade.v3_5_0.
 				LayoutPageTemplateStructureRelUpgradeProcess());
 
