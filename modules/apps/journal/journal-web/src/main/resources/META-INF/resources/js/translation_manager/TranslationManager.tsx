@@ -4,7 +4,7 @@
  */
 
 import {Locale, TranslationAdminSelector} from 'frontend-js-components-web';
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 type Field = Record<Liferay.Language.Locale, string>;
 
@@ -32,56 +32,56 @@ export default function TranslationManager({
 	);
 	const triggerRef = useRef<HTMLButtonElement | null>(null);
 
-	useEffect(() => {
-		const updateTranslations = (fields: Fields) => {
-			if (!fields) {
-				return;
-			}
+	const updateTranslations = (fields: Fields) => {
+		if (!fields) {
+			return;
+		}
 
-			const newTranslations = Object.keys(fields).map((fieldName) => {
-				const languages = Array.from(
-					document.querySelectorAll<HTMLInputElement>(
-						`[type="hidden"][data-field-name="${fieldName}"]`
-					)
-				)
-					.filter((input) => input.value)
-					.map(
-						(input) =>
-							input.dataset.languageid as Liferay.Language.Locale
-					);
-
-				return {
-					fieldName,
-					languages,
-				};
-			});
-
-			setTranslations(newTranslations);
-		};
-
-		const getLocalizableFields = () => {
-			const ddmFields = Array.from(
+		const newTranslations = Object.keys(fields).map((fieldName) => {
+			const languages = Array.from(
 				document.querySelectorAll<HTMLInputElement>(
-					`[data-ddm-localizable-field]`
+					`[type="hidden"][data-field-name="${fieldName}"]`
 				)
 			)
-				.map((field) => field.dataset.fieldName!)
-				.reduce((acc, name) => ({...acc, [name]: {}}), {});
+				.filter((input) => input.value)
+				.map(
+					(input) =>
+						input.dataset.languageid as Liferay.Language.Locale
+				);
 
-			const fields = {...initialFields, ...ddmFields};
+			return {
+				fieldName,
+				languages,
+			};
+		});
 
-			setFields(fields);
+		setTranslations(newTranslations);
+	};
 
-			updateTranslations(fields);
+	const updateTranslationStatus = useCallback(
+		() => updateTranslations(fields),
+		[fields]
+	);
 
-			triggerRef.current?.removeEventListener(
-				'click',
-				getLocalizableFields
-			);
-		};
+	const getLocalizableFields = useCallback(() => {
+		const ddmFields = Array.from(
+			document.querySelectorAll<HTMLInputElement>(
+				`[data-ddm-localizable-field]`
+			)
+		)
+			.map((field) => field.dataset.fieldName!)
+			.reduce((acc, name) => ({...acc, [name]: {}}), {});
 
-		const updateTranslationStatus = () => updateTranslations(fields);
+		const fields = {...initialFields, ...ddmFields};
 
+		setFields(fields);
+
+		updateTranslations(fields);
+
+		triggerRef.current?.removeEventListener('click', getLocalizableFields);
+	}, [initialFields]);
+
+	useEffect(() => {
 		if (fields) {
 			Liferay.on(
 				'inputLocalized:updateTranslationStatus',
@@ -98,7 +98,7 @@ export default function TranslationManager({
 				updateTranslationStatus
 			);
 		};
-	}, [fields, initialFields]);
+	}, [fields, initialFields, getLocalizableFields, updateTranslationStatus]);
 
 	useEffect(() => {
 		Liferay.fire('inputLocalized:localeChanged', {
