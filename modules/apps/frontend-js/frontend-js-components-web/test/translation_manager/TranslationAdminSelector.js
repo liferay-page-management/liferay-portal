@@ -375,4 +375,22 @@ describe('TranslationAdminSelector', () => {
 
 		Liferay.FeatureFlags['LPS-114700'] = false;
 	});
+
+	it('allows passing a trigger reference from outside', () => {
+		Liferay.FeatureFlags['LPS-114700'] = true;
+
+		const triggerRef = React.createRef();
+
+		render(
+			<TranslationAdminSelector
+				{...props}
+				selectedLanguageId="en_US"
+				triggerRef={triggerRef}
+			/>
+		);
+
+		expect(triggerRef.current).toBeInTheDocument();
+
+		Liferay.FeatureFlags['LPS-114700'] = false;
+	});
 });
