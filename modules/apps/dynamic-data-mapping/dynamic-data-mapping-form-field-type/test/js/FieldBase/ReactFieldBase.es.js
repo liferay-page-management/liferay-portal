@@ -218,6 +218,44 @@ describe('ReactFieldBase', () => {
 		expect(getByText('Tooltip Description')).toBeInTheDocument();
 	});
 
+	it('fires inputLocalized:updateTranslationStatus event when component is mounted', () => {
+		Liferay.FeatureFlags['LPS-114700'] = true;
+
+		render(<FieldBaseWithProvider />);
+
+		expect(global.Liferay.fire).toHaveBeenCalledWith(
+			'inputLocalized:updateTranslationStatus'
+		);
+
+		Liferay.FeatureFlags['LPS-114700'] = false;
+	});
+
+	it('renders the hidden inputs with data-languageid and data-field-name', () => {
+		Liferay.FeatureFlags['LPS-114700'] = true;
+
+		const localizedValue = {ca_ES: 'test_ca_ES', en_US: 'test_en_US'};
+
+		render(
+			<FieldBaseWithProvider
+				fieldName="field_name"
+				localizedValue={localizedValue}
+				name="test_name"
+			/>
+		);
+
+		const inputs = document.querySelectorAll('[name="test_name"]');
+
+		inputs.forEach((input, i) => {
+			expect(input).toHaveAttribute('data-field-name', 'field_name');
+			expect(input).toHaveAttribute(
+				'data-languageid',
+				Object.keys(localizedValue)[i]
+			);
+		});
+
+		Liferay.FeatureFlags['LPS-114700'] = false;
+	});
+
 	describe('Hide Field', () => {
 		it('renders the FieldBase with hideField markup', () => {
 			const {getAllByText, getByText} = render(
