@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
 import ClayModal, {useModal} from '@clayui/modal';
 import React, {useState} from 'react';
@@ -13,7 +14,7 @@ import ScheduleOptions from '../ScheduleOptions';
 export default function PublishModal({
 	actionButton,
 	articleId,
-	displayDate,
+	displayDate: defaultDisplayDate,
 	onCloseModal,
 	onPublishButtonClick,
 	permissionsURL,
@@ -35,13 +36,25 @@ export default function PublishModal({
 		workflowEnabled,
 	});
 
+	const [displayDate, setDisplayDate] = useState(defaultDisplayDate);
 	const [dateError, setDateError] = useState('');
+	const [showErrorAlert, setShowErrorAlert] = useState(false);
 
 	return (
 		<ClayModal className="m-0" observer={observer} size="md">
 			<ClayModal.Header>{heading}</ClayModal.Header>
 
 			<ClayModal.Body className="m-0">
+				{showErrorAlert ? (
+					<ClayAlert
+						displayType="danger"
+						onClose={() => setShowErrorAlert(false)}
+						title={`${Liferay.Language.get('error')}:`}
+					>
+						{dateError}
+					</ClayAlert>
+				) : null}
+
 				<p className="text-secondary">{description}</p>
 
 				{actionButton === 'schedule' ? (
@@ -50,6 +63,7 @@ export default function PublishModal({
 						error={dateError}
 						formId={formId}
 						portletNamespace={portletNamespace}
+						setDisplayDate={setDisplayDate}
 						setError={setDateError}
 						timeZone={timeZone}
 					/>
@@ -76,11 +90,24 @@ export default function PublishModal({
 							displayType="primary"
 							form={formId}
 							onClick={() => {
-								if (!dateError) {
+								if (!displayDate) {
+									setDateError(
+										Liferay.Language.get(
+											'please-enter-a-valid-date'
+										)
+									);
+									setShowErrorAlert(true);
+								}
+								else if (dateError) {
+									setShowErrorAlert(true);
+								}
+								else {
 									onPublishButtonClick();
 								}
 							}}
-							type={!dateError ? 'submit' : 'button'}
+							type={
+								!dateError && displayDate ? 'submit' : 'button'
+							}
 						>
 							{button}
 						</ClayButton>

@@ -118,9 +118,6 @@ export default function SaveButtons({
 				: '/journal/add_data_engine_default_values';
 		}
 		else {
-			articleId = document.getElementById(`${portletNamespace}articleId`)
-				.value;
-
 			actionInput.value = articleId
 				? '/journal/update_article'
 				: '/journal/add_article';
@@ -135,6 +132,10 @@ export default function SaveButtons({
 
 		[titleInputComponent, descriptionInputComponent].forEach(
 			(inputComponent) => {
+				if (!inputComponent) {
+					return;
+				}
+
 				const translatedLanguages = inputComponent.get(
 					'translatedLanguages'
 				);
