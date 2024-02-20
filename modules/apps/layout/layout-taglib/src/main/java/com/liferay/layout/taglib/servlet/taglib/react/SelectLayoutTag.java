@@ -7,6 +7,7 @@ package com.liferay.layout.taglib.servlet.taglib.react;
 
 import com.liferay.layout.taglib.internal.servlet.ServletContextUtil;
 import com.liferay.layout.taglib.internal.util.LayoutUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -202,7 +203,7 @@ public class SelectLayoutTag extends IncludeTag {
 					_checkDisplayPage, _enableCurrentPage,
 					themeDisplay.getScopeGroupId(), getRequest(),
 					_itemSelectorReturnType, _privateLayout, 0,
-					selectedLayoutIds, selPlid, 0,
+					selectedLayoutIds, selPlid, QueryUtil.ALL_POS,
 					GetterUtil.getInteger(
 						PropsValues.LAYOUT_MANAGE_PAGES_INITIAL_CHILDREN))
 			).put(
@@ -220,6 +221,10 @@ public class SelectLayoutTag extends IncludeTag {
 			).put(
 				"paginated",
 				() -> {
+					if (PropsValues.LAYOUT_MANAGE_PAGES_INITIAL_CHILDREN == -1) {
+						return false;
+					}
+
 					int layoutsCount = LayoutServiceUtil.getLayoutsCount(
 						themeDisplay.getScopeGroupId(), _privateLayout,
 						LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
