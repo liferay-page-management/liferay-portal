@@ -35,7 +35,7 @@ definition {
 	}
 
 	@description = "This case ensures that the user can add a comment to a fragment of a content page."
-	@priority = 5
+	@priority = 4
 	@refactordone
 	test CanAddComment {
 		JSONLayout.addPublicLayout(
