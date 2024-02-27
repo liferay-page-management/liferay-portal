@@ -35,6 +35,10 @@ export class ApiHelpers {
 	readonly objectAdmin: ObjectAdminApiHelper;
 	readonly page: Page;
 
+	private static readonly _authorization = `Basic ${Buffer.from(
+		`test@liferay.com:test`
+	).toString('base64')}`;
+
 	constructor(page: Page) {
 		this.apiBuilder = new ApiBuilderHelper(this);
 		this.baseUrl = liferayConfig.environment.baseUrl + '/o/';
@@ -121,6 +125,13 @@ export class ApiHelpers {
 		}
 
 		return response.json();
+	}
+
+	getBasicAuthFormHeaders() {
+		return {
+			'Authorization': ApiHelpers._authorization,
+			'Content-Type': 'application/x-www-form-urlencoded',
+		};
 	}
 
 	async getHeader() {
