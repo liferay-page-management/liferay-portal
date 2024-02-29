@@ -128,7 +128,7 @@ definition {
 				alignItems = "Baseline",
 				containerWidth = "Fixed Width",
 				contentDisplay = "Flex Column",
-				height = "600px",
+				height = 600,
 				justifyContent = "Around",
 				panel = "General");
 
@@ -320,7 +320,7 @@ definition {
 			PageEditor.editLayoutContainer(
 				alignItems = "End",
 				contentDisplay = "Flex Column",
-				height = "1000px",
+				height = 1000,
 				justifyContent = "Between",
 				panel = "General");
 		}
@@ -556,7 +556,7 @@ definition {
 
 			PageEditor.editLayoutContainer(
 				containerWidth = "Fixed Width",
-				width = "200px");
+				width = 200);
 
 			PageEditor.addFragment(
 				collectionName = "Layout Elements",
