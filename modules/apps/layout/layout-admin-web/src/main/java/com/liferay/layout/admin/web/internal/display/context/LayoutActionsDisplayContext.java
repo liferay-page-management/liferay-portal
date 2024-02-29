@@ -82,6 +82,8 @@ public class LayoutActionsDisplayContext {
 									_httpServletRequest, "configure"));
 						}
 					).add(
+						() -> _layoutActionsHelper.isShowPreviewDraftActions(
+							layout),
 						dropdownItem -> {
 							String previewLayoutURL = _getPreviewLayoutURL(
 								layout);
