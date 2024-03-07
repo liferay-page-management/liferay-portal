@@ -10,6 +10,8 @@ import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.client.extension.model.ClientExtensionEntryRel;
 import com.liferay.client.extension.service.ClientExtensionEntryRelLocalService;
 import com.liferay.counter.kernel.service.CounterLocalService;
+import com.liferay.fragment.listener.FragmentEntryLinkListener;
+import com.liferay.fragment.listener.FragmentEntryLinkListenerRegistry;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.processor.PortletRegistry;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
@@ -854,6 +856,14 @@ public class LayoutCopyHelperImpl implements LayoutCopyHelper {
 					_fragmentEntryLinkLocalService.updateFragmentEntryLink(
 						targetLayoutFragmentEntryLink);
 
+				for (FragmentEntryLinkListener fragmentEntryLinkListener :
+						_fragmentEntryLinkListenerRegistry.
+							getFragmentEntryLinkListeners()) {
+
+					fragmentEntryLinkListener.onUpdateFragmentEntryLink(
+						newFragmentEntryLink);
+				}
+
 				_commentManager.deleteDiscussion(
 					FragmentEntryLink.class.getName(),
 					newFragmentEntryLink.getFragmentEntryLinkId());
@@ -892,6 +902,14 @@ public class LayoutCopyHelperImpl implements LayoutCopyHelper {
 				newFragmentEntryLink =
 					_fragmentEntryLinkLocalService.addFragmentEntryLink(
 						newFragmentEntryLink);
+
+				for (FragmentEntryLinkListener fragmentEntryLinkListener :
+						_fragmentEntryLinkListenerRegistry.
+							getFragmentEntryLinkListeners()) {
+
+					fragmentEntryLinkListener.onAddFragmentEntryLink(
+						newFragmentEntryLink);
+				}
 			}
 
 			fragmentStyledLayoutStructureItem.setFragmentEntryLinkId(
@@ -927,6 +945,10 @@ public class LayoutCopyHelperImpl implements LayoutCopyHelper {
 
 	@Reference
 	private CounterLocalService _counterLocalService;
+
+	@Reference
+	private FragmentEntryLinkListenerRegistry
+		_fragmentEntryLinkListenerRegistry;
 
 	@Reference
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
