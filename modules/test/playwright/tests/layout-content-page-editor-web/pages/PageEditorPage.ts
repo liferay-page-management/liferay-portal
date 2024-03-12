@@ -89,7 +89,7 @@ export class PageEditorPage {
 	}
 
 	async switchViewport(viewport: Viewport) {
-		await this.page.getByLabel(viewport).click();
+		await this.page.getByLabel(viewport, {exact: true}).click();
 	}
 
 	getFragment(fragmentId: string, isDesktop = true) {
