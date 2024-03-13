@@ -22,7 +22,13 @@ export class JournalEditTemplatePage {
 		this.saveButton = page.getByRole('button', {exact: true, name: 'Save'});
 	}
 
-	async goto() {
+	async goto(siteUrl?: Site['friendlyUrlPath']) {
+		await this.journalPage.goto(siteUrl);
+		await this.journalPage.goToCreateNewTemplate();
+
+		// Do it twice so we decrease flakiness
+
+		await this.journalPage.goto(siteUrl);
 		await this.journalPage.goToCreateNewTemplate();
 
 		// Do it twice so we decrease flakiness
