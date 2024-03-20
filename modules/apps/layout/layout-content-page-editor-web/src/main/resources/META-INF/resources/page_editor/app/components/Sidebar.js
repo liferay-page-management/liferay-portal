@@ -289,6 +289,7 @@ export default function Sidebar() {
 		);
 
 		if (open) {
+			sidebarContentRef.current.style.visibility = 'visible';
 			sidebarContentRef.current?.focus({preventScroll: true});
 		}
 	};
@@ -482,16 +483,7 @@ export default function Sidebar() {
 					})}
 					id={sidebarContentId}
 					onClick={deselectItem}
-					ref={(ref) => {
-						sidebarContentRef.current = ref;
-
-						if (sidebarOpen) {
-							ref?.removeAttribute('inert');
-						}
-						else {
-							ref?.setAttribute('inert', '');
-						}
-					}}
+					ref={sidebarContentRef}
 					role="tabpanel"
 					tabIndex="-1"
 				>
