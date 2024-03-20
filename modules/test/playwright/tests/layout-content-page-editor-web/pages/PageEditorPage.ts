@@ -52,6 +52,8 @@ export class PageEditorPage {
 		// The change is applied on blur
 
 		await field.blur();
+
+		await this.waitForChangesSaved();
 	}
 
 	async changeFragmentSpacing(
@@ -86,6 +88,8 @@ export class PageEditorPage {
 			await selector.click();
 			await selector.waitFor({state: 'hidden'});
 		}
+
+		await this.waitForChangesSaved();
 	}
 
 	async createPageWithFragmentAndGoToEditMode({apiHelpers, fragment, site}) {
@@ -181,6 +185,8 @@ export class PageEditorPage {
 			await resetButton.click();
 			await resetButton.waitFor({state: 'hidden'});
 		}
+
+		await this.waitForChangesSaved();
 	}
 
 	async selectFragment(fragmentId: string, isDesktop = true) {
@@ -193,6 +199,16 @@ export class PageEditorPage {
 
 	async switchViewport(viewport: Viewport) {
 		await this.page.getByLabel(viewport, {exact: true}).click();
+	}
+
+	async waitForChangesSaved() {
+		await this.page.getByLabel('Saved').waitFor();
+
+		await this.page
+			.getByText(
+				'Changes have been saved. Page editor will autosave new changes.'
+			)
+			.waitFor();
 	}
 
 	getFragment(fragmentId: string, isDesktop = true) {
