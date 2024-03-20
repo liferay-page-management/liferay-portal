@@ -80,9 +80,9 @@ test('renders sidebars visible at desktop size and sidebars not visible at small
 
 	await page.setViewportSize({height: 600, width: 600});
 
-	await expect(panel).not.toBeVisible();
+	await panel.waitFor({state: 'hidden'});
 
-	await expect(configurationPanel).not.toBeVisible();
+	await configurationPanel.waitFor({state: 'hidden'});
 });
 
 test('checks if sidebars are open or closed depending on Product Menu', async ({
