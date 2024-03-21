@@ -46,7 +46,7 @@ export class JournalEditArticlePage {
 	}
 
 	async fillTitle(title: string) {
-		await this.titlePlaceholder.fill(title);
+		await fillAndClickOutside(this.page, this.titlePlaceholder, title);
 	}
 
 	async editAndPublishExistingBasicArticle(title: string) {
@@ -54,7 +54,7 @@ export class JournalEditArticlePage {
 
 		await this.propertiesTab.waitFor();
 
-		await fillAndClickOutside(this.page, this.titlePlaceholder, title);
+		await this.fillTitle(title);
 
 		await this.publishButton.waitFor();
 
