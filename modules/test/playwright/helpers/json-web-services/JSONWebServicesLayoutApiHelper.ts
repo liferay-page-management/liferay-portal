@@ -39,4 +39,17 @@ export class JSONWebServicesLayoutApiHelper {
 			await this.apiHelpers.getJSONWebServicesHeaders()
 		);
 	}
+
+	async deleteLayout(plid: number): Promise<Layout> {
+		const urlSearchParams = new URLSearchParams();
+
+		urlSearchParams.append('plid', `${plid}`);
+
+		return this.apiHelpers.post(
+			`${liferayConfig.environment.baseUrl}${this.basePath}/delete-layout`,
+			urlSearchParams.toString(),
+			true,
+			await this.apiHelpers.getJSONWebServicesHeaders()
+		);
+	}
 }
