@@ -49,11 +49,11 @@ test('This is a test for LPD-21554. Some page names result in 404 friendly URLs.
 	// Check that page friendlyURL does not contain the page name (which
 	// should have been replaced by layoutId)
 
-	await expect(sitePage.friendlyUrlPath).not.toContain(`${pageName}`);
+	await expect.soft(sitePage.friendlyUrlPath).not.toContain(`${pageName}`);
 
 	await page.goto(sitePage.friendlyUrlPath);
 
-	await expect(page.getByText('Heading Example')).toBeVisible();
+	await expect.soft(page.getByText('Heading Example')).toBeVisible();
 
 	await apiHelpers.jsonWebServicesLayout.deleteLayout(sitePage.id);
 });
