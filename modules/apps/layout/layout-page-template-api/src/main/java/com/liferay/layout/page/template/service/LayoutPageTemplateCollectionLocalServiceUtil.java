@@ -64,6 +64,17 @@ public class LayoutPageTemplateCollectionLocalServiceUtil {
 			description, type, serviceContext);
 	}
 
+	public static LayoutPageTemplateCollection copyLayoutPageTemplateCollection(
+			long userId, long groupId, long layoutPageTemplateCollectionId,
+			long layoutParentPageTemplateCollectionId,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws Exception {
+
+		return getService().copyLayoutPageTemplateCollection(
+			userId, groupId, layoutPageTemplateCollectionId,
+			layoutParentPageTemplateCollectionId, serviceContext);
+	}
+
 	/**
 	 * Creates a new layout page template collection with the primary key. Does not add the layout page template collection to the database.
 	 *
@@ -364,6 +375,14 @@ public class LayoutPageTemplateCollectionLocalServiceUtil {
 
 	public static List<LayoutPageTemplateCollection>
 		getLayoutPageTemplateCollections(
+			long groupId, long layoutPageTemplateCollectionId, int type) {
+
+		return getService().getLayoutPageTemplateCollections(
+			groupId, layoutPageTemplateCollectionId, type);
+	}
+
+	public static List<LayoutPageTemplateCollection>
+		getLayoutPageTemplateCollections(
 			long groupId, String name, int type, int start, int end,
 			OrderByComparator<LayoutPageTemplateCollection> orderByComparator) {
 
@@ -447,10 +466,10 @@ public class LayoutPageTemplateCollectionLocalServiceUtil {
 	}
 
 	public static String getUniqueLayoutPageTemplateCollectionName(
-		long groupId, String name, int type) {
+		long groupId, String sourceName, int type) {
 
 		return getService().getUniqueLayoutPageTemplateCollectionName(
-			groupId, name, type);
+			groupId, sourceName, type);
 	}
 
 	public static LayoutPageTemplateCollection moveLayoutPageTemplateCollection(

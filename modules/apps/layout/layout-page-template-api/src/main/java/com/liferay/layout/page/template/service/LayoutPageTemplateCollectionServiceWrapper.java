@@ -45,6 +45,19 @@ public class LayoutPageTemplateCollectionServiceWrapper
 	}
 
 	@Override
+	public LayoutPageTemplateCollection copyLayoutPageTemplateCollection(
+			long groupId, long layoutPageTemplateCollectionId,
+			long layoutParentPageTemplateCollectionId,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws Exception {
+
+		return _layoutPageTemplateCollectionService.
+			copyLayoutPageTemplateCollection(
+				groupId, layoutPageTemplateCollectionId,
+				layoutParentPageTemplateCollectionId, serviceContext);
+	}
+
+	@Override
 	public LayoutPageTemplateCollection deleteLayoutPageTemplateCollection(
 			long layoutPageTemplateCollectionId)
 		throws com.liferay.portal.kernel.exception.PortalException {

@@ -41,6 +41,17 @@ public class LayoutPageTemplateCollectionServiceUtil {
 			type, serviceContext);
 	}
 
+	public static LayoutPageTemplateCollection copyLayoutPageTemplateCollection(
+			long groupId, long layoutPageTemplateCollectionId,
+			long layoutParentPageTemplateCollectionId,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws Exception {
+
+		return getService().copyLayoutPageTemplateCollection(
+			groupId, layoutPageTemplateCollectionId,
+			layoutParentPageTemplateCollectionId, serviceContext);
+	}
+
 	public static LayoutPageTemplateCollection
 			deleteLayoutPageTemplateCollection(
 				long layoutPageTemplateCollectionId)
