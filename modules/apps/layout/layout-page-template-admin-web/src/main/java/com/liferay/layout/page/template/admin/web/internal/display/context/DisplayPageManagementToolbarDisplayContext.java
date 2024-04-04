@@ -307,7 +307,7 @@ public class DisplayPageManagementToolbarDisplayContext
 			liferayPortletResponse
 		).setActionName(
 			"/layout_page_template_admin/copy_layout_page_template_entries_" +
-			"and_layout_page_template_collections"
+				"and_layout_page_template_collections"
 		).setRedirect(
 			_themeDisplay.getURLCurrent()
 		).setParameter(
