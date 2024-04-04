@@ -54,6 +54,23 @@ public class LayoutPageTemplateCollectionServiceImpl
 	}
 
 	@Override
+	public LayoutPageTemplateCollection copyLayoutPageTemplateCollection(
+			long groupId, long layoutPageTemplateCollectionId,
+			long layoutParentPageTemplateCollectionId,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_COLLECTION);
+
+		return layoutPageTemplateCollectionLocalService.
+			copyLayoutPageTemplateCollection(
+				getUserId(), groupId, layoutPageTemplateCollectionId,
+				layoutParentPageTemplateCollectionId, serviceContext);
+	}
+
+	@Override
 	public LayoutPageTemplateCollection deleteLayoutPageTemplateCollection(
 			long layoutPageTemplateCollectionId)
 		throws PortalException {
