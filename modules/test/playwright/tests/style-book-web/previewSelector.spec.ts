@@ -9,6 +9,7 @@ import {styleBookPageTest} from '../../fixtures/StyleBookPageTest';
 import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
+import {loginTest} from '../../fixtures/loginTest';
 import getRandomString from '../../utils/getRandomString';
 
 export const test = mergeTests(
@@ -18,6 +19,7 @@ export const test = mergeTests(
 		'LPS-196847': true,
 	}),
 	isolatedSiteTest,
+	loginTest(),
 	styleBookPageTest
 );
 

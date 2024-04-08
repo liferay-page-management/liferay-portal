@@ -8,6 +8,7 @@ import {expect, mergeTests} from '@playwright/test';
 import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
+import {loginTest} from '../../fixtures/loginTest';
 import {liferayConfig} from '../../liferay.config';
 import getRandomString from '../../utils/getRandomString';
 import getPageDefinition from '../layout-content-page-editor-web/utils/getPageDefinition';
@@ -19,13 +20,14 @@ import {editorSamplesPageTest} from './fixtures/editorSamplesPageTest';
 export const test = mergeTests(
 	apiHelpersTest,
 	clientExtensionsPageTest,
+	editEditorConfigContributorPageTest,
 	editorSamplesPageTest,
 	featureFlagsTest({
 		'LPS-178052': true,
 		'LPS-186870': true,
 	}),
 	isolatedSiteTest,
-	editEditorConfigContributorPageTest
+	loginTest()
 );
 
 test('Create, edit and delete editor config contributor client extension @LPS-186870', async ({

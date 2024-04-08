@@ -205,7 +205,8 @@ export const fragmentTest = mergeTests(
 		'LPS-178052': true,
 	}),
 	fdsFragmentPageTest,
-	isolatedSiteTest
+	isolatedSiteTest,
+	loginTest()
 );
 
 fragmentTest.describe('Data Set Default Visualization Mode in fragment', () => {

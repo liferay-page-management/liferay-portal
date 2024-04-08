@@ -7,12 +7,14 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
 import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
+import {loginTest} from '../../fixtures/loginTest';
 import {journalPagesTest} from './fixtures/journalPagesTest';
 
 export const test = mergeTests(
 	apiHelpersTest,
 	isolatedSiteTest,
-	journalPagesTest
+	journalPagesTest,
+	loginTest()
 );
 
 const RESERVED_VARIABLES = [
