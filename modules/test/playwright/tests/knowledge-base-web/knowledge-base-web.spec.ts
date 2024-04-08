@@ -9,6 +9,7 @@ import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import {knowledgeBasePages} from '../../fixtures/knowledgeBasePagesTest';
+import {loginTest} from '../../fixtures/loginTest';
 import getRandomString from '../../utils/getRandomString';
 
 const testFeatureFlagsEnabled = mergeTests(
@@ -17,7 +18,8 @@ const testFeatureFlagsEnabled = mergeTests(
 		'LPS-188058': true,
 	}),
 	isolatedSiteTest,
-	knowledgeBasePages
+	knowledgeBasePages,
+	loginTest()
 );
 
 const testFeatureFlagsDisabled = mergeTests(
@@ -26,7 +28,8 @@ const testFeatureFlagsDisabled = mergeTests(
 		'LPS-188058': false,
 	}),
 	isolatedSiteTest,
-	knowledgeBasePages
+	knowledgeBasePages,
+	loginTest()
 );
 
 testFeatureFlagsDisabled(
