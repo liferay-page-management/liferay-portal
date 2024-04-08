@@ -214,7 +214,8 @@ export const fragmentTest = mergeTests(
 		'LPS-178052': true,
 	}),
 	fdsFragmentPageTest,
-	isolatedSiteTest
+	isolatedSiteTest,
+	loginTest()
 );
 
 fragmentTest.describe('Creation Actions in the fragment', () => {
