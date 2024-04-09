@@ -9,6 +9,7 @@ import {Locator, Page, expect} from '@playwright/test';
 
 import {liferayConfig} from '../../../liferay.config';
 import {SegmentEditorPage} from '../../../pages/segments-web/SegmentEditorPage';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import fillAndClickOutside from '../../../utils/fillAndClickOutside';
 import getRandomString from '../../../utils/getRandomString';
 import {waitForSuccessAlert} from '../../../utils/waitForSuccessAlert';
@@ -265,9 +266,10 @@ export class PageEditorPage {
 			await audienceSelector.selectOption({label: segment});
 		}
 		else {
-			await this.page.getByText('New Segment').click();
-
-			await this.page.getByText('No Conditions yet').waitFor();
+			await clickAndExpectToBeVisible({
+				target: this.page.getByText('No Conditions yet'),
+				trigger: this.page.getByText('New Segment'),
+			});
 
 			await this.segmentEditorPage.createSegment(segment, {
 				user: ['First Name'],

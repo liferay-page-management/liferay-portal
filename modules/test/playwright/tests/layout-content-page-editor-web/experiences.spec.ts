@@ -9,6 +9,7 @@ import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../fixtures/loginTest';
+import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../utils/getRandomString';
 import {pageEditorPagesTest} from './fixtures/pageEditorPagesTest';
 import getFragmentDefinition from './utils/getFragmentDefinition';
@@ -159,11 +160,13 @@ test('keeps modal open when canceling segment creation', async ({
 	await page.getByLabel('New Experience').click();
 
 	await page.getByText('New Segment').waitFor();
-	await page.getByText('New Segment').click();
+
+	await clickAndExpectToBeVisible({
+		target: page.getByText('No Conditions yet'),
+		trigger: page.getByText('New Segment'),
+	});
 
 	// Cancel segment creation and check we are back to page editor
-
-	await page.getByText('No Conditions yet').waitFor();
 
 	await page.getByText('Cancel', {exact: true}).click();
 
