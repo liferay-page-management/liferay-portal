@@ -6,7 +6,8 @@ import {Page} from '@playwright/test';
  */
 export async function waitForSuccessAlert(
 	page: Page,
-	text = 'Success:Your request completed successfully.'
+	text = 'Success:Your request completed successfully.',
+	{autoClose} = {autoClose: true}
 ) {
 	const alert = page.locator('.alert-success', {
 		hasText: text,
@@ -14,7 +15,9 @@ export async function waitForSuccessAlert(
 
 	await alert.waitFor();
 
-	await alert.getByLabel('Close').click();
+	if (autoClose) {
+		await alert.getByLabel('Close').click();
 
-	await alert.waitFor({state: 'hidden'});
+		await alert.waitFor({state: 'hidden'});
+	}
 }
