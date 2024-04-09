@@ -136,7 +136,8 @@ export class PageEditorPage {
 
 		await waitForSuccessAlert(
 			this.page,
-			'Success:The experience was created successfully.'
+			'Success:The experience was created successfully.',
+			{autoClose: false}
 		);
 	}
 
@@ -173,7 +174,8 @@ export class PageEditorPage {
 
 		await waitForSuccessAlert(
 			this.page,
-			'Success:The experience was duplicated successfully.'
+			'Success:The experience was duplicated successfully.',
+			{autoClose: false}
 		);
 	}
 
@@ -237,7 +239,8 @@ export class PageEditorPage {
 
 		await waitForSuccessAlert(
 			this.page,
-			'Success:The experience was updated successfully.'
+			'Success:The experience was updated successfully.',
+			{autoClose: false}
 		);
 	}
 
@@ -283,7 +286,8 @@ export class PageEditorPage {
 
 		await waitForSuccessAlert(
 			this.page,
-			'Success:The experience was updated successfully.'
+			'Success:The experience was updated successfully.',
+			{autoClose: false}
 		);
 	}
 
