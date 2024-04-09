@@ -5,6 +5,7 @@
 
 import {Page} from '@playwright/test';
 
+import fillAndClickOutside from '../../../utils/fillAndClickOutside';
 import {PORTLET_URLS} from '../../../utils/portletUrls';
 import {waitForSuccessAlert} from '../../../utils/waitForSuccessAlert';
 
@@ -24,7 +25,11 @@ export class FragmentsPage {
 	async createFragmentSet(name: string) {
 		await this.page.getByTitle('Add Fragment Set').click();
 
-		await this.page.getByPlaceholder('Name').fill(name);
+		const nameInput = this.page.getByPlaceholder('Name');
+
+		await nameInput.waitFor();
+
+		await fillAndClickOutside(this.page, nameInput, name);
 
 		await this.page.getByRole('button', {name: 'Save'}).click();
 

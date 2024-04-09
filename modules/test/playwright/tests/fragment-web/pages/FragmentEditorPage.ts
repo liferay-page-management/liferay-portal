@@ -18,6 +18,8 @@ export class FragmentEditorPage {
 
 		// Go to Configuration Tab
 
+		await this.page.getByRole('tab', {name: 'Configuration'}).waitFor();
+
 		await this.page.getByRole('tab', {name: 'Configuration'}).click();
 		await this.page.getByText('Add the JSON configuration').waitFor();
 
