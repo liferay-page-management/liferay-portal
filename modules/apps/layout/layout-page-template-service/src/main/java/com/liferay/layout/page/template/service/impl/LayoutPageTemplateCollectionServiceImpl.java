@@ -39,7 +39,7 @@ public class LayoutPageTemplateCollectionServiceImpl
 
 	@Override
 	public LayoutPageTemplateCollection addLayoutPageTemplateCollection(
-			long groupId, long parentLayoutPageTemplateCollectionId,
+		String externalReferenceCode, long groupId, long parentLayoutPageTemplateCollectionId,
 			String name, String description, int type,
 			ServiceContext serviceContext)
 		throws PortalException {
