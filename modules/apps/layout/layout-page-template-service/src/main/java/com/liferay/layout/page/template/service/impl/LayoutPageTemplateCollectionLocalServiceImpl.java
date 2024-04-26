@@ -457,6 +457,34 @@ public class LayoutPageTemplateCollectionLocalServiceImpl
 			layoutPageTemplateCollection);
 	}
 
+	@Override
+	public LayoutPageTemplateCollection updateLayoutPageTemplateCollection(
+			String externalReferenceCode, long groupId, String name,
+			String description)
+		throws PortalException {
+
+		LayoutPageTemplateCollection layoutPageTemplateCollection =
+			layoutPageTemplateCollectionPersistence.findByERC_G(
+				externalReferenceCode, groupId);
+
+		if (!Objects.equals(layoutPageTemplateCollection.getName(), name)) {
+			_validate(
+				layoutPageTemplateCollection.getGroupId(), name,
+				layoutPageTemplateCollection.getType());
+		}
+
+		layoutPageTemplateCollection.setModifiedDate(new Date());
+		layoutPageTemplateCollection.setLayoutPageTemplateCollectionKey(
+			_generateLayoutPageTemplateCollectionKey(
+				layoutPageTemplateCollection.getGroupId(), name,
+				layoutPageTemplateCollection.getType()));
+		layoutPageTemplateCollection.setName(name);
+		layoutPageTemplateCollection.setDescription(description);
+
+		return layoutPageTemplateCollectionPersistence.update(
+			layoutPageTemplateCollection);
+	}
+
 	private String _generateLayoutPageTemplateCollectionKey(
 		long groupId, String name, int type) {
 

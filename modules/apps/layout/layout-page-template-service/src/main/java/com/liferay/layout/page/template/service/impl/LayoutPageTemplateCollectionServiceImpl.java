@@ -262,6 +262,26 @@ public class LayoutPageTemplateCollectionServiceImpl
 				layoutPageTemplateCollectionId, name, description);
 	}
 
+	@Override
+	public LayoutPageTemplateCollection updateLayoutPageTemplateCollection(
+			String externalReferenceCode, long groupId, String name,
+			String description)
+		throws PortalException {
+
+		LayoutPageTemplateCollection layoutPageTemplateCollection =
+			layoutPageTemplateCollectionLocalService.
+				fetchLayoutPageTemplateCollection(
+					externalReferenceCode, groupId);
+
+		_layoutPageTemplateCollectionModelResourcePermission.check(
+			getPermissionChecker(), layoutPageTemplateCollection,
+			ActionKeys.UPDATE);
+
+		return layoutPageTemplateCollectionLocalService.
+			updateLayoutPageTemplateCollection(
+				externalReferenceCode, groupId, name, description);
+	}
+
 	@Reference
 	private CustomSQL _customSQL;
 
