@@ -54,18 +54,35 @@ export class DisplayPageTemplatesPage {
 		await waitForSuccessAlert(this.page);
 	}
 
-	async publishNewTemplate(name: string) {
+	async publishNewTemplate({
+		contentType,
+		name,
+		subtype,
+	}: {
+		contentType: string;
+		name: string;
+		subtype?: string;
+	}) {
 		await this.newButton.click();
+
 		await this.page.getByRole('button', {name: 'Blank'}).click();
+
 		await this.page.getByLabel('Name').fill(name);
+
 		await this.page
 			.getByLabel('Content Type')
-			.selectOption({label: 'Web Content Article'});
+			.selectOption({label: contentType});
+
+		if (contentType === 'Web Content Article') {
 		await this.page
 			.getByLabel('Subtype')
-			.selectOption({label: 'Basic Web Content'});
+				.selectOption({label: subtype});
+		}
+
 		await this.page.getByRole('button', {name: 'Save'}).click();
+
 		await this.publishButton.waitFor();
+
 		await this.publishButton.click();
 	}
 }

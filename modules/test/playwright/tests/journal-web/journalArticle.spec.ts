@@ -239,9 +239,11 @@ prefixUrlTest(
 
 		const displayPageTemplateName = getRandomString();
 
-		await displayPageTemplatesPage.publishNewTemplate(
-			displayPageTemplateName
-		);
+		await displayPageTemplatesPage.publishNewTemplate({
+			contentType: 'Web Content Article',
+			name: displayPageTemplateName,
+			subtype: 'Basic Web Content',
+		});
 
 		await displayPageTemplatesPage.markAsDefault(displayPageTemplateName);
 
