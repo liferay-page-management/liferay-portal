@@ -124,6 +124,9 @@ public class StyleBookEntryVersionPersistenceTest {
 
 		newStyleBookEntryVersion.setUuid(RandomTestUtil.randomString());
 
+		newStyleBookEntryVersion.setExternalReferenceCode(
+			RandomTestUtil.randomString());
+
 		newStyleBookEntryVersion.setStyleBookEntryId(RandomTestUtil.nextLong());
 
 		newStyleBookEntryVersion.setGroupId(RandomTestUtil.nextLong());
@@ -174,6 +177,9 @@ public class StyleBookEntryVersionPersistenceTest {
 		Assert.assertEquals(
 			existingStyleBookEntryVersion.getUuid(),
 			newStyleBookEntryVersion.getUuid());
+		Assert.assertEquals(
+			existingStyleBookEntryVersion.getExternalReferenceCode(),
+			newStyleBookEntryVersion.getExternalReferenceCode());
 		Assert.assertEquals(
 			existingStyleBookEntryVersion.getStyleBookEntryId(),
 			newStyleBookEntryVersion.getStyleBookEntryId());
@@ -356,6 +362,25 @@ public class StyleBookEntryVersionPersistenceTest {
 	}
 
 	@Test
+	public void testCountByERC_G() throws Exception {
+		_persistence.countByERC_G("", RandomTestUtil.nextLong());
+
+		_persistence.countByERC_G("null", 0L);
+
+		_persistence.countByERC_G((String)null, 0L);
+	}
+
+	@Test
+	public void testCountByERC_G_Version() throws Exception {
+		_persistence.countByERC_G_Version(
+			"", RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
+
+		_persistence.countByERC_G_Version("null", 0L, 0);
+
+		_persistence.countByERC_G_Version((String)null, 0L, 0);
+	}
+
+	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		StyleBookEntryVersion newStyleBookEntryVersion =
 			addStyleBookEntryVersion();
@@ -385,10 +410,11 @@ public class StyleBookEntryVersionPersistenceTest {
 		return OrderByComparatorFactoryUtil.create(
 			"StyleBookEntryVersion", "mvccVersion", true, "ctCollectionId",
 			true, "styleBookEntryVersionId", true, "version", true, "uuid",
-			true, "styleBookEntryId", true, "groupId", true, "companyId", true,
-			"userId", true, "userName", true, "createDate", true,
-			"modifiedDate", true, "defaultStyleBookEntry", true, "name", true,
-			"previewFileEntryId", true, "styleBookEntryKey", true);
+			true, "externalReferenceCode", true, "styleBookEntryId", true,
+			"groupId", true, "companyId", true, "userId", true, "userName",
+			true, "createDate", true, "modifiedDate", true,
+			"defaultStyleBookEntry", true, "name", true, "previewFileEntryId",
+			true, "styleBookEntryKey", true);
 	}
 
 	@Test
@@ -699,6 +725,22 @@ public class StyleBookEntryVersionPersistenceTest {
 			ReflectionTestUtil.<Integer>invoke(
 				styleBookEntryVersion, "getColumnOriginalValue",
 				new Class<?>[] {String.class}, "version"));
+
+		Assert.assertEquals(
+			styleBookEntryVersion.getExternalReferenceCode(),
+			ReflectionTestUtil.invoke(
+				styleBookEntryVersion, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "externalReferenceCode"));
+		Assert.assertEquals(
+			Long.valueOf(styleBookEntryVersion.getGroupId()),
+			ReflectionTestUtil.<Long>invoke(
+				styleBookEntryVersion, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "groupId"));
+		Assert.assertEquals(
+			Integer.valueOf(styleBookEntryVersion.getVersion()),
+			ReflectionTestUtil.<Integer>invoke(
+				styleBookEntryVersion, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "version"));
 	}
 
 	protected StyleBookEntryVersion addStyleBookEntryVersion()
@@ -715,6 +757,9 @@ public class StyleBookEntryVersionPersistenceTest {
 		styleBookEntryVersion.setVersion(RandomTestUtil.nextInt());
 
 		styleBookEntryVersion.setUuid(RandomTestUtil.randomString());
+
+		styleBookEntryVersion.setExternalReferenceCode(
+			RandomTestUtil.randomString());
 
 		styleBookEntryVersion.setStyleBookEntryId(RandomTestUtil.nextLong());
 
