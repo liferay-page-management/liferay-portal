@@ -303,7 +303,7 @@ function MappingSelector({
 	);
 
 	const [selectedRelationship, setSelectedRelationship] = useState(
-		mappedItem.classNameId || NOT_SELECTED_OPTION.value
+		isMappedToRelationship(mappedItem) ? mappedItem.classNameId : null
 	);
 
 	const relationships = useCache({
@@ -411,7 +411,7 @@ function MappingSelector({
 			(selectedSourceType === MAPPING_SOURCE_TYPES.content &&
 				!selectedItem.classNameId) ||
 			(selectedSourceType === MAPPING_SOURCE_TYPES.relationship &&
-				selectedRelationship === NOT_SELECTED_OPTION.value)
+				!selectedRelationship)
 		) {
 			setItemFields(null);
 
@@ -474,9 +474,7 @@ function MappingSelector({
 
 								setSelectedItem({});
 
-								setSelectedRelationship(
-									NOT_SELECTED_OPTION.value
-								);
+								setSelectedRelationship(null);
 
 								if (isMapped(mappedItem)) {
 									onMappingSelect({});
@@ -509,7 +507,10 @@ function MappingSelector({
 										})
 									),
 								]}
-								value={selectedRelationship}
+								value={
+									selectedRelationship ||
+									NOT_SELECTED_OPTION.value
+								}
 							/>
 						</ClayForm.Group>
 					) : null}
