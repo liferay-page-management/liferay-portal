@@ -123,6 +123,9 @@ public class FragmentEntryVersionPersistenceTest {
 
 		newFragmentEntryVersion.setUuid(RandomTestUtil.randomString());
 
+		newFragmentEntryVersion.setExternalReferenceCode(
+			RandomTestUtil.randomString());
+
 		newFragmentEntryVersion.setFragmentEntryId(RandomTestUtil.nextLong());
 
 		newFragmentEntryVersion.setGroupId(RandomTestUtil.nextLong());
@@ -199,6 +202,9 @@ public class FragmentEntryVersionPersistenceTest {
 		Assert.assertEquals(
 			existingFragmentEntryVersion.getUuid(),
 			newFragmentEntryVersion.getUuid());
+		Assert.assertEquals(
+			existingFragmentEntryVersion.getExternalReferenceCode(),
+			newFragmentEntryVersion.getExternalReferenceCode());
 		Assert.assertEquals(
 			existingFragmentEntryVersion.getFragmentEntryId(),
 			newFragmentEntryVersion.getFragmentEntryId());
@@ -532,6 +538,25 @@ public class FragmentEntryVersionPersistenceTest {
 	}
 
 	@Test
+	public void testCountByERC_G() throws Exception {
+		_persistence.countByERC_G("", RandomTestUtil.nextLong());
+
+		_persistence.countByERC_G("null", 0L);
+
+		_persistence.countByERC_G((String)null, 0L);
+	}
+
+	@Test
+	public void testCountByERC_G_Version() throws Exception {
+		_persistence.countByERC_G_Version(
+			"", RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
+
+		_persistence.countByERC_G_Version("null", 0L, 0);
+
+		_persistence.countByERC_G_Version((String)null, 0L, 0);
+	}
+
+	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		FragmentEntryVersion newFragmentEntryVersion =
 			addFragmentEntryVersion();
@@ -561,13 +586,13 @@ public class FragmentEntryVersionPersistenceTest {
 		return OrderByComparatorFactoryUtil.create(
 			"FragmentEntryVersion", "mvccVersion", true, "ctCollectionId", true,
 			"fragmentEntryVersionId", true, "version", true, "uuid", true,
-			"fragmentEntryId", true, "groupId", true, "companyId", true,
-			"userId", true, "userName", true, "createDate", true,
-			"modifiedDate", true, "fragmentCollectionId", true,
-			"fragmentEntryKey", true, "name", true, "cacheable", true, "icon",
-			true, "previewFileEntryId", true, "readOnly", true, "type", true,
-			"lastPublishDate", true, "status", true, "statusByUserId", true,
-			"statusByUserName", true, "statusDate", true);
+			"externalReferenceCode", true, "fragmentEntryId", true, "groupId",
+			true, "companyId", true, "userId", true, "userName", true,
+			"createDate", true, "modifiedDate", true, "fragmentCollectionId",
+			true, "fragmentEntryKey", true, "name", true, "cacheable", true,
+			"icon", true, "previewFileEntryId", true, "readOnly", true, "type",
+			true, "lastPublishDate", true, "status", true, "statusByUserId",
+			true, "statusByUserName", true, "statusDate", true);
 	}
 
 	@Test
@@ -876,6 +901,22 @@ public class FragmentEntryVersionPersistenceTest {
 			ReflectionTestUtil.<Integer>invoke(
 				fragmentEntryVersion, "getColumnOriginalValue",
 				new Class<?>[] {String.class}, "version"));
+
+		Assert.assertEquals(
+			fragmentEntryVersion.getExternalReferenceCode(),
+			ReflectionTestUtil.invoke(
+				fragmentEntryVersion, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "externalReferenceCode"));
+		Assert.assertEquals(
+			Long.valueOf(fragmentEntryVersion.getGroupId()),
+			ReflectionTestUtil.<Long>invoke(
+				fragmentEntryVersion, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "groupId"));
+		Assert.assertEquals(
+			Integer.valueOf(fragmentEntryVersion.getVersion()),
+			ReflectionTestUtil.<Integer>invoke(
+				fragmentEntryVersion, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "version"));
 	}
 
 	protected FragmentEntryVersion addFragmentEntryVersion() throws Exception {
@@ -890,6 +931,9 @@ public class FragmentEntryVersionPersistenceTest {
 		fragmentEntryVersion.setVersion(RandomTestUtil.nextInt());
 
 		fragmentEntryVersion.setUuid(RandomTestUtil.randomString());
+
+		fragmentEntryVersion.setExternalReferenceCode(
+			RandomTestUtil.randomString());
 
 		fragmentEntryVersion.setFragmentEntryId(RandomTestUtil.nextLong());
 

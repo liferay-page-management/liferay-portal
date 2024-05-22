@@ -4341,6 +4341,222 @@ public interface FragmentEntryVersionPersistence
 		int version);
 
 	/**
+	 * Returns all the fragment entry versions where externalReferenceCode = &#63; and groupId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @return the matching fragment entry versions
+	 */
+	public java.util.List<FragmentEntryVersion> findByERC_G(
+		String externalReferenceCode, long groupId);
+
+	/**
+	 * Returns a range of all the fragment entry versions where externalReferenceCode = &#63; and groupId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>FragmentEntryVersionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param start the lower bound of the range of fragment entry versions
+	 * @param end the upper bound of the range of fragment entry versions (not inclusive)
+	 * @return the range of matching fragment entry versions
+	 */
+	public java.util.List<FragmentEntryVersion> findByERC_G(
+		String externalReferenceCode, long groupId, int start, int end);
+
+	/**
+	 * Returns an ordered range of all the fragment entry versions where externalReferenceCode = &#63; and groupId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>FragmentEntryVersionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param start the lower bound of the range of fragment entry versions
+	 * @param end the upper bound of the range of fragment entry versions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching fragment entry versions
+	 */
+	public java.util.List<FragmentEntryVersion> findByERC_G(
+		String externalReferenceCode, long groupId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<FragmentEntryVersion>
+			orderByComparator);
+
+	/**
+	 * Returns an ordered range of all the fragment entry versions where externalReferenceCode = &#63; and groupId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>FragmentEntryVersionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param start the lower bound of the range of fragment entry versions
+	 * @param end the upper bound of the range of fragment entry versions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching fragment entry versions
+	 */
+	public java.util.List<FragmentEntryVersion> findByERC_G(
+		String externalReferenceCode, long groupId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<FragmentEntryVersion>
+			orderByComparator,
+		boolean useFinderCache);
+
+	/**
+	 * Returns the first fragment entry version in the ordered set where externalReferenceCode = &#63; and groupId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching fragment entry version
+	 * @throws NoSuchEntryVersionException if a matching fragment entry version could not be found
+	 */
+	public FragmentEntryVersion findByERC_G_First(
+			String externalReferenceCode, long groupId,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<FragmentEntryVersion> orderByComparator)
+		throws NoSuchEntryVersionException;
+
+	/**
+	 * Returns the first fragment entry version in the ordered set where externalReferenceCode = &#63; and groupId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching fragment entry version, or <code>null</code> if a matching fragment entry version could not be found
+	 */
+	public FragmentEntryVersion fetchByERC_G_First(
+		String externalReferenceCode, long groupId,
+		com.liferay.portal.kernel.util.OrderByComparator<FragmentEntryVersion>
+			orderByComparator);
+
+	/**
+	 * Returns the last fragment entry version in the ordered set where externalReferenceCode = &#63; and groupId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching fragment entry version
+	 * @throws NoSuchEntryVersionException if a matching fragment entry version could not be found
+	 */
+	public FragmentEntryVersion findByERC_G_Last(
+			String externalReferenceCode, long groupId,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<FragmentEntryVersion> orderByComparator)
+		throws NoSuchEntryVersionException;
+
+	/**
+	 * Returns the last fragment entry version in the ordered set where externalReferenceCode = &#63; and groupId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching fragment entry version, or <code>null</code> if a matching fragment entry version could not be found
+	 */
+	public FragmentEntryVersion fetchByERC_G_Last(
+		String externalReferenceCode, long groupId,
+		com.liferay.portal.kernel.util.OrderByComparator<FragmentEntryVersion>
+			orderByComparator);
+
+	/**
+	 * Returns the fragment entry versions before and after the current fragment entry version in the ordered set where externalReferenceCode = &#63; and groupId = &#63;.
+	 *
+	 * @param fragmentEntryVersionId the primary key of the current fragment entry version
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next fragment entry version
+	 * @throws NoSuchEntryVersionException if a fragment entry version with the primary key could not be found
+	 */
+	public FragmentEntryVersion[] findByERC_G_PrevAndNext(
+			long fragmentEntryVersionId, String externalReferenceCode,
+			long groupId,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<FragmentEntryVersion> orderByComparator)
+		throws NoSuchEntryVersionException;
+
+	/**
+	 * Removes all the fragment entry versions where externalReferenceCode = &#63; and groupId = &#63; from the database.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 */
+	public void removeByERC_G(String externalReferenceCode, long groupId);
+
+	/**
+	 * Returns the number of fragment entry versions where externalReferenceCode = &#63; and groupId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @return the number of matching fragment entry versions
+	 */
+	public int countByERC_G(String externalReferenceCode, long groupId);
+
+	/**
+	 * Returns the fragment entry version where externalReferenceCode = &#63; and groupId = &#63; and version = &#63; or throws a <code>NoSuchEntryVersionException</code> if it could not be found.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param version the version
+	 * @return the matching fragment entry version
+	 * @throws NoSuchEntryVersionException if a matching fragment entry version could not be found
+	 */
+	public FragmentEntryVersion findByERC_G_Version(
+			String externalReferenceCode, long groupId, int version)
+		throws NoSuchEntryVersionException;
+
+	/**
+	 * Returns the fragment entry version where externalReferenceCode = &#63; and groupId = &#63; and version = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param version the version
+	 * @return the matching fragment entry version, or <code>null</code> if a matching fragment entry version could not be found
+	 */
+	public FragmentEntryVersion fetchByERC_G_Version(
+		String externalReferenceCode, long groupId, int version);
+
+	/**
+	 * Returns the fragment entry version where externalReferenceCode = &#63; and groupId = &#63; and version = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param version the version
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching fragment entry version, or <code>null</code> if a matching fragment entry version could not be found
+	 */
+	public FragmentEntryVersion fetchByERC_G_Version(
+		String externalReferenceCode, long groupId, int version,
+		boolean useFinderCache);
+
+	/**
+	 * Removes the fragment entry version where externalReferenceCode = &#63; and groupId = &#63; and version = &#63; from the database.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param version the version
+	 * @return the fragment entry version that was removed
+	 */
+	public FragmentEntryVersion removeByERC_G_Version(
+			String externalReferenceCode, long groupId, int version)
+		throws NoSuchEntryVersionException;
+
+	/**
+	 * Returns the number of fragment entry versions where externalReferenceCode = &#63; and groupId = &#63; and version = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param version the version
+	 * @return the number of matching fragment entry versions
+	 */
+	public int countByERC_G_Version(
+		String externalReferenceCode, long groupId, int version);
+
+	/**
 	 * Caches the fragment entry version in the entity cache if it is enabled.
 	 *
 	 * @param fragmentEntryVersion the fragment entry version

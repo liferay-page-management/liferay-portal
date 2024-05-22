@@ -6,6 +6,7 @@
 package com.liferay.fragment.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.fragment.exception.DuplicateFragmentEntryExternalReferenceCodeException;
 import com.liferay.fragment.exception.NoSuchEntryException;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.service.FragmentEntryLocalServiceUtil;
@@ -121,6 +122,9 @@ public class FragmentEntryPersistenceTest {
 
 		newFragmentEntry.setUuid(RandomTestUtil.randomString());
 
+		newFragmentEntry.setExternalReferenceCode(
+			RandomTestUtil.randomString());
+
 		newFragmentEntry.setHeadId(RandomTestUtil.nextLong());
 
 		newFragmentEntry.setGroupId(RandomTestUtil.nextLong());
@@ -184,6 +188,9 @@ public class FragmentEntryPersistenceTest {
 			newFragmentEntry.getCtCollectionId());
 		Assert.assertEquals(
 			existingFragmentEntry.getUuid(), newFragmentEntry.getUuid());
+		Assert.assertEquals(
+			existingFragmentEntry.getExternalReferenceCode(),
+			newFragmentEntry.getExternalReferenceCode());
 		Assert.assertEquals(
 			existingFragmentEntry.getHeadId(), newFragmentEntry.getHeadId());
 		Assert.assertEquals(
@@ -251,6 +258,26 @@ public class FragmentEntryPersistenceTest {
 		Assert.assertEquals(
 			Time.getShortTimestamp(existingFragmentEntry.getStatusDate()),
 			Time.getShortTimestamp(newFragmentEntry.getStatusDate()));
+	}
+
+	@Test(expected = DuplicateFragmentEntryExternalReferenceCodeException.class)
+	public void testUpdateWithExistingExternalReferenceCode() throws Exception {
+		FragmentEntry fragmentEntry = addFragmentEntry();
+
+		FragmentEntry newFragmentEntry = addFragmentEntry();
+
+		newFragmentEntry.setGroupId(fragmentEntry.getGroupId());
+
+		newFragmentEntry = _persistence.update(newFragmentEntry);
+
+		Session session = _persistence.getCurrentSession();
+
+		session.evict(newFragmentEntry);
+
+		newFragmentEntry.setExternalReferenceCode(
+			fragmentEntry.getExternalReferenceCode());
+
+		_persistence.update(newFragmentEntry);
 	}
 
 	@Test
@@ -504,6 +531,27 @@ public class FragmentEntryPersistenceTest {
 	}
 
 	@Test
+	public void testCountByERC_G() throws Exception {
+		_persistence.countByERC_G("", RandomTestUtil.nextLong());
+
+		_persistence.countByERC_G("null", 0L);
+
+		_persistence.countByERC_G((String)null, 0L);
+	}
+
+	@Test
+	public void testCountByERC_G_Head() throws Exception {
+		_persistence.countByERC_G_Head(
+			"", RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean());
+
+		_persistence.countByERC_G_Head(
+			"null", 0L, RandomTestUtil.randomBoolean());
+
+		_persistence.countByERC_G_Head(
+			(String)null, 0L, RandomTestUtil.randomBoolean());
+	}
+
+	@Test
 	public void testCountByHeadId() throws Exception {
 		_persistence.countByHeadId(RandomTestUtil.nextLong());
 
@@ -536,13 +584,14 @@ public class FragmentEntryPersistenceTest {
 	protected OrderByComparator<FragmentEntry> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
 			"FragmentEntry", "mvccVersion", true, "ctCollectionId", true,
-			"uuid", true, "headId", true, "fragmentEntryId", true, "groupId",
-			true, "companyId", true, "userId", true, "userName", true,
-			"createDate", true, "modifiedDate", true, "fragmentCollectionId",
-			true, "fragmentEntryKey", true, "name", true, "cacheable", true,
-			"icon", true, "previewFileEntryId", true, "readOnly", true, "type",
-			true, "lastPublishDate", true, "status", true, "statusByUserId",
-			true, "statusByUserName", true, "statusDate", true);
+			"uuid", true, "externalReferenceCode", true, "headId", true,
+			"fragmentEntryId", true, "groupId", true, "companyId", true,
+			"userId", true, "userName", true, "createDate", true,
+			"modifiedDate", true, "fragmentCollectionId", true,
+			"fragmentEntryKey", true, "name", true, "cacheable", true, "icon",
+			true, "previewFileEntryId", true, "readOnly", true, "type", true,
+			"lastPublishDate", true, "status", true, "statusByUserId", true,
+			"statusByUserName", true, "statusDate", true);
 	}
 
 	@Test
@@ -832,6 +881,17 @@ public class FragmentEntryPersistenceTest {
 				new Class<?>[] {String.class}, "fragmentEntryKey"));
 
 		Assert.assertEquals(
+			fragmentEntry.getExternalReferenceCode(),
+			ReflectionTestUtil.invoke(
+				fragmentEntry, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "externalReferenceCode"));
+		Assert.assertEquals(
+			Long.valueOf(fragmentEntry.getGroupId()),
+			ReflectionTestUtil.<Long>invoke(
+				fragmentEntry, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "groupId"));
+
+		Assert.assertEquals(
 			Long.valueOf(fragmentEntry.getHeadId()),
 			ReflectionTestUtil.<Long>invoke(
 				fragmentEntry, "getColumnOriginalValue",
@@ -848,6 +908,8 @@ public class FragmentEntryPersistenceTest {
 		fragmentEntry.setCtCollectionId(RandomTestUtil.nextLong());
 
 		fragmentEntry.setUuid(RandomTestUtil.randomString());
+
+		fragmentEntry.setExternalReferenceCode(RandomTestUtil.randomString());
 
 		fragmentEntry.setHeadId(RandomTestUtil.nextLong());
 

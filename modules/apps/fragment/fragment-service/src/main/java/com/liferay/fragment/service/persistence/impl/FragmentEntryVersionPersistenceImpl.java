@@ -26,19 +26,26 @@ import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.sanitizer.Sanitizer;
+import com.liferay.portal.kernel.sanitizer.SanitizerException;
+import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.change.tracking.helper.CTPersistenceHelper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
 
@@ -16032,6 +16039,913 @@ public class FragmentEntryVersionPersistenceImpl
 	private static final String _FINDER_COLUMN_G_FCI_T_S_VERSION_VERSION_2 =
 		"fragmentEntryVersion.version = ?";
 
+	private FinderPath _finderPathWithPaginationFindByERC_G;
+	private FinderPath _finderPathWithoutPaginationFindByERC_G;
+	private FinderPath _finderPathCountByERC_G;
+
+	/**
+	 * Returns all the fragment entry versions where externalReferenceCode = &#63; and groupId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @return the matching fragment entry versions
+	 */
+	@Override
+	public List<FragmentEntryVersion> findByERC_G(
+		String externalReferenceCode, long groupId) {
+
+		return findByERC_G(
+			externalReferenceCode, groupId, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the fragment entry versions where externalReferenceCode = &#63; and groupId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>FragmentEntryVersionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param start the lower bound of the range of fragment entry versions
+	 * @param end the upper bound of the range of fragment entry versions (not inclusive)
+	 * @return the range of matching fragment entry versions
+	 */
+	@Override
+	public List<FragmentEntryVersion> findByERC_G(
+		String externalReferenceCode, long groupId, int start, int end) {
+
+		return findByERC_G(externalReferenceCode, groupId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the fragment entry versions where externalReferenceCode = &#63; and groupId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>FragmentEntryVersionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param start the lower bound of the range of fragment entry versions
+	 * @param end the upper bound of the range of fragment entry versions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching fragment entry versions
+	 */
+	@Override
+	public List<FragmentEntryVersion> findByERC_G(
+		String externalReferenceCode, long groupId, int start, int end,
+		OrderByComparator<FragmentEntryVersion> orderByComparator) {
+
+		return findByERC_G(
+			externalReferenceCode, groupId, start, end, orderByComparator,
+			true);
+	}
+
+	/**
+	 * Returns an ordered range of all the fragment entry versions where externalReferenceCode = &#63; and groupId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>FragmentEntryVersionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param start the lower bound of the range of fragment entry versions
+	 * @param end the upper bound of the range of fragment entry versions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching fragment entry versions
+	 */
+	@Override
+	public List<FragmentEntryVersion> findByERC_G(
+		String externalReferenceCode, long groupId, int start, int end,
+		OrderByComparator<FragmentEntryVersion> orderByComparator,
+		boolean useFinderCache) {
+
+		try (SafeCloseable safeCloseable =
+				ctPersistenceHelper.setCTCollectionIdWithSafeCloseable(
+					FragmentEntryVersion.class)) {
+
+			externalReferenceCode = Objects.toString(externalReferenceCode, "");
+
+			FinderPath finderPath = null;
+			Object[] finderArgs = null;
+
+			if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+
+				if (useFinderCache) {
+					finderPath = _finderPathWithoutPaginationFindByERC_G;
+					finderArgs = new Object[] {externalReferenceCode, groupId};
+				}
+			}
+			else if (useFinderCache) {
+				finderPath = _finderPathWithPaginationFindByERC_G;
+				finderArgs = new Object[] {
+					externalReferenceCode, groupId, start, end,
+					orderByComparator
+				};
+			}
+
+			List<FragmentEntryVersion> list = null;
+
+			if (useFinderCache) {
+				list = (List<FragmentEntryVersion>)finderCache.getResult(
+					finderPath, finderArgs, this);
+
+				if ((list != null) && !list.isEmpty()) {
+					for (FragmentEntryVersion fragmentEntryVersion : list) {
+						if (!externalReferenceCode.equals(
+								fragmentEntryVersion.
+									getExternalReferenceCode()) ||
+							(groupId != fragmentEntryVersion.getGroupId())) {
+
+							list = null;
+
+							break;
+						}
+					}
+				}
+			}
+
+			if (list == null) {
+				StringBundler sb = null;
+
+				if (orderByComparator != null) {
+					sb = new StringBundler(
+						4 + (orderByComparator.getOrderByFields().length * 2));
+				}
+				else {
+					sb = new StringBundler(4);
+				}
+
+				sb.append(_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE);
+
+				boolean bindExternalReferenceCode = false;
+
+				if (externalReferenceCode.isEmpty()) {
+					sb.append(_FINDER_COLUMN_ERC_G_EXTERNALREFERENCECODE_3);
+				}
+				else {
+					bindExternalReferenceCode = true;
+
+					sb.append(_FINDER_COLUMN_ERC_G_EXTERNALREFERENCECODE_2);
+				}
+
+				sb.append(_FINDER_COLUMN_ERC_G_GROUPID_2);
+
+				if (orderByComparator != null) {
+					appendOrderByComparator(
+						sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+				}
+				else {
+					sb.append(FragmentEntryVersionModelImpl.ORDER_BY_JPQL);
+				}
+
+				String sql = sb.toString();
+
+				Session session = null;
+
+				try {
+					session = openSession();
+
+					Query query = session.createQuery(sql);
+
+					QueryPos queryPos = QueryPos.getInstance(query);
+
+					if (bindExternalReferenceCode) {
+						queryPos.add(externalReferenceCode);
+					}
+
+					queryPos.add(groupId);
+
+					list = (List<FragmentEntryVersion>)QueryUtil.list(
+						query, getDialect(), start, end);
+
+					cacheResult(list);
+
+					if (useFinderCache) {
+						finderCache.putResult(finderPath, finderArgs, list);
+					}
+				}
+				catch (Exception exception) {
+					throw processException(exception);
+				}
+				finally {
+					closeSession(session);
+				}
+			}
+
+			return list;
+		}
+	}
+
+	/**
+	 * Returns the first fragment entry version in the ordered set where externalReferenceCode = &#63; and groupId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching fragment entry version
+	 * @throws NoSuchEntryVersionException if a matching fragment entry version could not be found
+	 */
+	@Override
+	public FragmentEntryVersion findByERC_G_First(
+			String externalReferenceCode, long groupId,
+			OrderByComparator<FragmentEntryVersion> orderByComparator)
+		throws NoSuchEntryVersionException {
+
+		FragmentEntryVersion fragmentEntryVersion = fetchByERC_G_First(
+			externalReferenceCode, groupId, orderByComparator);
+
+		if (fragmentEntryVersion != null) {
+			return fragmentEntryVersion;
+		}
+
+		StringBundler sb = new StringBundler(6);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("externalReferenceCode=");
+		sb.append(externalReferenceCode);
+
+		sb.append(", groupId=");
+		sb.append(groupId);
+
+		sb.append("}");
+
+		throw new NoSuchEntryVersionException(sb.toString());
+	}
+
+	/**
+	 * Returns the first fragment entry version in the ordered set where externalReferenceCode = &#63; and groupId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching fragment entry version, or <code>null</code> if a matching fragment entry version could not be found
+	 */
+	@Override
+	public FragmentEntryVersion fetchByERC_G_First(
+		String externalReferenceCode, long groupId,
+		OrderByComparator<FragmentEntryVersion> orderByComparator) {
+
+		List<FragmentEntryVersion> list = findByERC_G(
+			externalReferenceCode, groupId, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last fragment entry version in the ordered set where externalReferenceCode = &#63; and groupId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching fragment entry version
+	 * @throws NoSuchEntryVersionException if a matching fragment entry version could not be found
+	 */
+	@Override
+	public FragmentEntryVersion findByERC_G_Last(
+			String externalReferenceCode, long groupId,
+			OrderByComparator<FragmentEntryVersion> orderByComparator)
+		throws NoSuchEntryVersionException {
+
+		FragmentEntryVersion fragmentEntryVersion = fetchByERC_G_Last(
+			externalReferenceCode, groupId, orderByComparator);
+
+		if (fragmentEntryVersion != null) {
+			return fragmentEntryVersion;
+		}
+
+		StringBundler sb = new StringBundler(6);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("externalReferenceCode=");
+		sb.append(externalReferenceCode);
+
+		sb.append(", groupId=");
+		sb.append(groupId);
+
+		sb.append("}");
+
+		throw new NoSuchEntryVersionException(sb.toString());
+	}
+
+	/**
+	 * Returns the last fragment entry version in the ordered set where externalReferenceCode = &#63; and groupId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching fragment entry version, or <code>null</code> if a matching fragment entry version could not be found
+	 */
+	@Override
+	public FragmentEntryVersion fetchByERC_G_Last(
+		String externalReferenceCode, long groupId,
+		OrderByComparator<FragmentEntryVersion> orderByComparator) {
+
+		int count = countByERC_G(externalReferenceCode, groupId);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<FragmentEntryVersion> list = findByERC_G(
+			externalReferenceCode, groupId, count - 1, count,
+			orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the fragment entry versions before and after the current fragment entry version in the ordered set where externalReferenceCode = &#63; and groupId = &#63;.
+	 *
+	 * @param fragmentEntryVersionId the primary key of the current fragment entry version
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next fragment entry version
+	 * @throws NoSuchEntryVersionException if a fragment entry version with the primary key could not be found
+	 */
+	@Override
+	public FragmentEntryVersion[] findByERC_G_PrevAndNext(
+			long fragmentEntryVersionId, String externalReferenceCode,
+			long groupId,
+			OrderByComparator<FragmentEntryVersion> orderByComparator)
+		throws NoSuchEntryVersionException {
+
+		externalReferenceCode = Objects.toString(externalReferenceCode, "");
+
+		FragmentEntryVersion fragmentEntryVersion = findByPrimaryKey(
+			fragmentEntryVersionId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			FragmentEntryVersion[] array = new FragmentEntryVersionImpl[3];
+
+			array[0] = getByERC_G_PrevAndNext(
+				session, fragmentEntryVersion, externalReferenceCode, groupId,
+				orderByComparator, true);
+
+			array[1] = fragmentEntryVersion;
+
+			array[2] = getByERC_G_PrevAndNext(
+				session, fragmentEntryVersion, externalReferenceCode, groupId,
+				orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected FragmentEntryVersion getByERC_G_PrevAndNext(
+		Session session, FragmentEntryVersion fragmentEntryVersion,
+		String externalReferenceCode, long groupId,
+		OrderByComparator<FragmentEntryVersion> orderByComparator,
+		boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				5 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(4);
+		}
+
+		sb.append(_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE);
+
+		boolean bindExternalReferenceCode = false;
+
+		if (externalReferenceCode.isEmpty()) {
+			sb.append(_FINDER_COLUMN_ERC_G_EXTERNALREFERENCECODE_3);
+		}
+		else {
+			bindExternalReferenceCode = true;
+
+			sb.append(_FINDER_COLUMN_ERC_G_EXTERNALREFERENCECODE_2);
+		}
+
+		sb.append(_FINDER_COLUMN_ERC_G_GROUPID_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			sb.append(FragmentEntryVersionModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = sb.toString();
+
+		Query query = session.createQuery(sql);
+
+		query.setFirstResult(0);
+		query.setMaxResults(2);
+
+		QueryPos queryPos = QueryPos.getInstance(query);
+
+		if (bindExternalReferenceCode) {
+			queryPos.add(externalReferenceCode);
+		}
+
+		queryPos.add(groupId);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(
+						fragmentEntryVersion)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<FragmentEntryVersion> list = query.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the fragment entry versions where externalReferenceCode = &#63; and groupId = &#63; from the database.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 */
+	@Override
+	public void removeByERC_G(String externalReferenceCode, long groupId) {
+		for (FragmentEntryVersion fragmentEntryVersion :
+				findByERC_G(
+					externalReferenceCode, groupId, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null)) {
+
+			remove(fragmentEntryVersion);
+		}
+	}
+
+	/**
+	 * Returns the number of fragment entry versions where externalReferenceCode = &#63; and groupId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @return the number of matching fragment entry versions
+	 */
+	@Override
+	public int countByERC_G(String externalReferenceCode, long groupId) {
+		try (SafeCloseable safeCloseable =
+				ctPersistenceHelper.setCTCollectionIdWithSafeCloseable(
+					FragmentEntryVersion.class)) {
+
+			externalReferenceCode = Objects.toString(externalReferenceCode, "");
+
+			FinderPath finderPath = _finderPathCountByERC_G;
+
+			Object[] finderArgs = new Object[] {externalReferenceCode, groupId};
+
+			Long count = (Long)finderCache.getResult(
+				finderPath, finderArgs, this);
+
+			if (count == null) {
+				StringBundler sb = new StringBundler(3);
+
+				sb.append(_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE);
+
+				boolean bindExternalReferenceCode = false;
+
+				if (externalReferenceCode.isEmpty()) {
+					sb.append(_FINDER_COLUMN_ERC_G_EXTERNALREFERENCECODE_3);
+				}
+				else {
+					bindExternalReferenceCode = true;
+
+					sb.append(_FINDER_COLUMN_ERC_G_EXTERNALREFERENCECODE_2);
+				}
+
+				sb.append(_FINDER_COLUMN_ERC_G_GROUPID_2);
+
+				String sql = sb.toString();
+
+				Session session = null;
+
+				try {
+					session = openSession();
+
+					Query query = session.createQuery(sql);
+
+					QueryPos queryPos = QueryPos.getInstance(query);
+
+					if (bindExternalReferenceCode) {
+						queryPos.add(externalReferenceCode);
+					}
+
+					queryPos.add(groupId);
+
+					count = (Long)query.uniqueResult();
+
+					finderCache.putResult(finderPath, finderArgs, count);
+				}
+				catch (Exception exception) {
+					throw processException(exception);
+				}
+				finally {
+					closeSession(session);
+				}
+			}
+
+			return count.intValue();
+		}
+	}
+
+	private static final String _FINDER_COLUMN_ERC_G_EXTERNALREFERENCECODE_2 =
+		"fragmentEntryVersion.externalReferenceCode = ? AND ";
+
+	private static final String _FINDER_COLUMN_ERC_G_EXTERNALREFERENCECODE_3 =
+		"(fragmentEntryVersion.externalReferenceCode IS NULL OR fragmentEntryVersion.externalReferenceCode = '') AND ";
+
+	private static final String _FINDER_COLUMN_ERC_G_GROUPID_2 =
+		"fragmentEntryVersion.groupId = ?";
+
+	private FinderPath _finderPathFetchByERC_G_Version;
+	private FinderPath _finderPathCountByERC_G_Version;
+
+	/**
+	 * Returns the fragment entry version where externalReferenceCode = &#63; and groupId = &#63; and version = &#63; or throws a <code>NoSuchEntryVersionException</code> if it could not be found.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param version the version
+	 * @return the matching fragment entry version
+	 * @throws NoSuchEntryVersionException if a matching fragment entry version could not be found
+	 */
+	@Override
+	public FragmentEntryVersion findByERC_G_Version(
+			String externalReferenceCode, long groupId, int version)
+		throws NoSuchEntryVersionException {
+
+		FragmentEntryVersion fragmentEntryVersion = fetchByERC_G_Version(
+			externalReferenceCode, groupId, version);
+
+		if (fragmentEntryVersion == null) {
+			StringBundler sb = new StringBundler(8);
+
+			sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			sb.append("externalReferenceCode=");
+			sb.append(externalReferenceCode);
+
+			sb.append(", groupId=");
+			sb.append(groupId);
+
+			sb.append(", version=");
+			sb.append(version);
+
+			sb.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(sb.toString());
+			}
+
+			throw new NoSuchEntryVersionException(sb.toString());
+		}
+
+		return fragmentEntryVersion;
+	}
+
+	/**
+	 * Returns the fragment entry version where externalReferenceCode = &#63; and groupId = &#63; and version = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param version the version
+	 * @return the matching fragment entry version, or <code>null</code> if a matching fragment entry version could not be found
+	 */
+	@Override
+	public FragmentEntryVersion fetchByERC_G_Version(
+		String externalReferenceCode, long groupId, int version) {
+
+		return fetchByERC_G_Version(
+			externalReferenceCode, groupId, version, true);
+	}
+
+	/**
+	 * Returns the fragment entry version where externalReferenceCode = &#63; and groupId = &#63; and version = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param version the version
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching fragment entry version, or <code>null</code> if a matching fragment entry version could not be found
+	 */
+	@Override
+	public FragmentEntryVersion fetchByERC_G_Version(
+		String externalReferenceCode, long groupId, int version,
+		boolean useFinderCache) {
+
+		try (SafeCloseable safeCloseable =
+				ctPersistenceHelper.setCTCollectionIdWithSafeCloseable(
+					FragmentEntryVersion.class)) {
+
+			externalReferenceCode = Objects.toString(externalReferenceCode, "");
+
+			Object[] finderArgs = null;
+
+			if (useFinderCache) {
+				finderArgs = new Object[] {
+					externalReferenceCode, groupId, version
+				};
+			}
+
+			Object result = null;
+
+			if (useFinderCache) {
+				result = finderCache.getResult(
+					_finderPathFetchByERC_G_Version, finderArgs, this);
+			}
+
+			if (result instanceof FragmentEntryVersion) {
+				FragmentEntryVersion fragmentEntryVersion =
+					(FragmentEntryVersion)result;
+
+				if (!Objects.equals(
+						externalReferenceCode,
+						fragmentEntryVersion.getExternalReferenceCode()) ||
+					(groupId != fragmentEntryVersion.getGroupId()) ||
+					(version != fragmentEntryVersion.getVersion())) {
+
+					result = null;
+				}
+			}
+
+			if (result == null) {
+				StringBundler sb = new StringBundler(5);
+
+				sb.append(_SQL_SELECT_FRAGMENTENTRYVERSION_WHERE);
+
+				boolean bindExternalReferenceCode = false;
+
+				if (externalReferenceCode.isEmpty()) {
+					sb.append(
+						_FINDER_COLUMN_ERC_G_VERSION_EXTERNALREFERENCECODE_3);
+				}
+				else {
+					bindExternalReferenceCode = true;
+
+					sb.append(
+						_FINDER_COLUMN_ERC_G_VERSION_EXTERNALREFERENCECODE_2);
+				}
+
+				sb.append(_FINDER_COLUMN_ERC_G_VERSION_GROUPID_2);
+
+				sb.append(_FINDER_COLUMN_ERC_G_VERSION_VERSION_2);
+
+				String sql = sb.toString();
+
+				Session session = null;
+
+				try {
+					session = openSession();
+
+					Query query = session.createQuery(sql);
+
+					QueryPos queryPos = QueryPos.getInstance(query);
+
+					if (bindExternalReferenceCode) {
+						queryPos.add(externalReferenceCode);
+					}
+
+					queryPos.add(groupId);
+
+					queryPos.add(version);
+
+					List<FragmentEntryVersion> list = query.list();
+
+					if (list.isEmpty()) {
+						if (useFinderCache) {
+							finderCache.putResult(
+								_finderPathFetchByERC_G_Version, finderArgs,
+								list);
+						}
+					}
+					else {
+						FragmentEntryVersion fragmentEntryVersion = list.get(0);
+
+						result = fragmentEntryVersion;
+
+						cacheResult(fragmentEntryVersion);
+					}
+				}
+				catch (Exception exception) {
+					throw processException(exception);
+				}
+				finally {
+					closeSession(session);
+				}
+			}
+
+			if (result instanceof List<?>) {
+				return null;
+			}
+			else {
+				return (FragmentEntryVersion)result;
+			}
+		}
+	}
+
+	/**
+	 * Removes the fragment entry version where externalReferenceCode = &#63; and groupId = &#63; and version = &#63; from the database.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param version the version
+	 * @return the fragment entry version that was removed
+	 */
+	@Override
+	public FragmentEntryVersion removeByERC_G_Version(
+			String externalReferenceCode, long groupId, int version)
+		throws NoSuchEntryVersionException {
+
+		FragmentEntryVersion fragmentEntryVersion = findByERC_G_Version(
+			externalReferenceCode, groupId, version);
+
+		return remove(fragmentEntryVersion);
+	}
+
+	/**
+	 * Returns the number of fragment entry versions where externalReferenceCode = &#63; and groupId = &#63; and version = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param version the version
+	 * @return the number of matching fragment entry versions
+	 */
+	@Override
+	public int countByERC_G_Version(
+		String externalReferenceCode, long groupId, int version) {
+
+		try (SafeCloseable safeCloseable =
+				ctPersistenceHelper.setCTCollectionIdWithSafeCloseable(
+					FragmentEntryVersion.class)) {
+
+			externalReferenceCode = Objects.toString(externalReferenceCode, "");
+
+			FinderPath finderPath = _finderPathCountByERC_G_Version;
+
+			Object[] finderArgs = new Object[] {
+				externalReferenceCode, groupId, version
+			};
+
+			Long count = (Long)finderCache.getResult(
+				finderPath, finderArgs, this);
+
+			if (count == null) {
+				StringBundler sb = new StringBundler(4);
+
+				sb.append(_SQL_COUNT_FRAGMENTENTRYVERSION_WHERE);
+
+				boolean bindExternalReferenceCode = false;
+
+				if (externalReferenceCode.isEmpty()) {
+					sb.append(
+						_FINDER_COLUMN_ERC_G_VERSION_EXTERNALREFERENCECODE_3);
+				}
+				else {
+					bindExternalReferenceCode = true;
+
+					sb.append(
+						_FINDER_COLUMN_ERC_G_VERSION_EXTERNALREFERENCECODE_2);
+				}
+
+				sb.append(_FINDER_COLUMN_ERC_G_VERSION_GROUPID_2);
+
+				sb.append(_FINDER_COLUMN_ERC_G_VERSION_VERSION_2);
+
+				String sql = sb.toString();
+
+				Session session = null;
+
+				try {
+					session = openSession();
+
+					Query query = session.createQuery(sql);
+
+					QueryPos queryPos = QueryPos.getInstance(query);
+
+					if (bindExternalReferenceCode) {
+						queryPos.add(externalReferenceCode);
+					}
+
+					queryPos.add(groupId);
+
+					queryPos.add(version);
+
+					count = (Long)query.uniqueResult();
+
+					finderCache.putResult(finderPath, finderArgs, count);
+				}
+				catch (Exception exception) {
+					throw processException(exception);
+				}
+				finally {
+					closeSession(session);
+				}
+			}
+
+			return count.intValue();
+		}
+	}
+
+	private static final String
+		_FINDER_COLUMN_ERC_G_VERSION_EXTERNALREFERENCECODE_2 =
+			"fragmentEntryVersion.externalReferenceCode = ? AND ";
+
+	private static final String
+		_FINDER_COLUMN_ERC_G_VERSION_EXTERNALREFERENCECODE_3 =
+			"(fragmentEntryVersion.externalReferenceCode IS NULL OR fragmentEntryVersion.externalReferenceCode = '') AND ";
+
+	private static final String _FINDER_COLUMN_ERC_G_VERSION_GROUPID_2 =
+		"fragmentEntryVersion.groupId = ? AND ";
+
+	private static final String _FINDER_COLUMN_ERC_G_VERSION_VERSION_2 =
+		"fragmentEntryVersion.version = ?";
+
 	public FragmentEntryVersionPersistenceImpl() {
 		Map<String, String> dbColumnNames = new HashMap<String, String>();
 
@@ -16085,6 +16999,15 @@ public class FragmentEntryVersionPersistenceImpl
 				new Object[] {
 					fragmentEntryVersion.getGroupId(),
 					fragmentEntryVersion.getFragmentEntryKey(),
+					fragmentEntryVersion.getVersion()
+				},
+				fragmentEntryVersion);
+
+			finderCache.putResult(
+				_finderPathFetchByERC_G_Version,
+				new Object[] {
+					fragmentEntryVersion.getExternalReferenceCode(),
+					fragmentEntryVersion.getGroupId(),
 					fragmentEntryVersion.getVersion()
 				},
 				fragmentEntryVersion);
@@ -16213,6 +17136,18 @@ public class FragmentEntryVersionPersistenceImpl
 				_finderPathCountByG_FEK_Version, args, Long.valueOf(1));
 			finderCache.putResult(
 				_finderPathFetchByG_FEK_Version, args,
+				fragmentEntryVersionModelImpl);
+
+			args = new Object[] {
+				fragmentEntryVersionModelImpl.getExternalReferenceCode(),
+				fragmentEntryVersionModelImpl.getGroupId(),
+				fragmentEntryVersionModelImpl.getVersion()
+			};
+
+			finderCache.putResult(
+				_finderPathCountByERC_G_Version, args, Long.valueOf(1));
+			finderCache.putResult(
+				_finderPathFetchByERC_G_Version, args,
 				fragmentEntryVersionModelImpl);
 		}
 	}
@@ -16352,6 +17287,46 @@ public class FragmentEntryVersionPersistenceImpl
 
 		FragmentEntryVersionModelImpl fragmentEntryVersionModelImpl =
 			(FragmentEntryVersionModelImpl)fragmentEntryVersion;
+
+		if (Validator.isNull(fragmentEntryVersion.getExternalReferenceCode())) {
+			fragmentEntryVersion.setExternalReferenceCode(
+				String.valueOf(fragmentEntryVersion.getPrimaryKey()));
+		}
+		else {
+			if (!Objects.equals(
+					fragmentEntryVersionModelImpl.getColumnOriginalValue(
+						"externalReferenceCode"),
+					fragmentEntryVersion.getExternalReferenceCode())) {
+
+				long userId = GetterUtil.getLong(
+					PrincipalThreadLocal.getName());
+
+				if (userId > 0) {
+					long companyId = fragmentEntryVersion.getCompanyId();
+
+					long groupId = fragmentEntryVersion.getGroupId();
+
+					long classPK = 0;
+
+					if (!isNew) {
+						classPK = fragmentEntryVersion.getPrimaryKey();
+					}
+
+					try {
+						fragmentEntryVersion.setExternalReferenceCode(
+							SanitizerUtil.sanitize(
+								companyId, groupId, userId,
+								FragmentEntryVersion.class.getName(), classPK,
+								ContentTypes.TEXT_HTML, Sanitizer.MODE_ALL,
+								fragmentEntryVersion.getExternalReferenceCode(),
+								null));
+					}
+					catch (SanitizerException sanitizerException) {
+						throw new SystemException(sanitizerException);
+					}
+				}
+			}
+		}
 
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
@@ -16907,6 +17882,7 @@ public class FragmentEntryVersionPersistenceImpl
 		ctControlColumnNames.add("ctCollectionId");
 		ctStrictColumnNames.add("version");
 		ctStrictColumnNames.add("uuid_");
+		ctStrictColumnNames.add("externalReferenceCode");
 		ctStrictColumnNames.add("fragmentEntryId");
 		ctStrictColumnNames.add("groupId");
 		ctStrictColumnNames.add("companyId");
@@ -16952,6 +17928,9 @@ public class FragmentEntryVersionPersistenceImpl
 
 		_uniqueIndexColumnNames.add(
 			new String[] {"groupId", "fragmentEntryKey", "version"});
+
+		_uniqueIndexColumnNames.add(
+			new String[] {"externalReferenceCode", "groupId", "version"});
 	}
 
 	/**
@@ -17628,6 +18607,42 @@ public class FragmentEntryVersionPersistenceImpl
 			new String[] {
 				"groupId", "fragmentCollectionId", "type_", "status", "version"
 			},
+			false);
+
+		_finderPathWithPaginationFindByERC_G = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByERC_G",
+			new String[] {
+				String.class.getName(), Long.class.getName(),
+				Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			},
+			new String[] {"externalReferenceCode", "groupId"}, true);
+
+		_finderPathWithoutPaginationFindByERC_G = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByERC_G",
+			new String[] {String.class.getName(), Long.class.getName()},
+			new String[] {"externalReferenceCode", "groupId"}, true);
+
+		_finderPathCountByERC_G = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByERC_G",
+			new String[] {String.class.getName(), Long.class.getName()},
+			new String[] {"externalReferenceCode", "groupId"}, false);
+
+		_finderPathFetchByERC_G_Version = new FinderPath(
+			FINDER_CLASS_NAME_ENTITY, "fetchByERC_G_Version",
+			new String[] {
+				String.class.getName(), Long.class.getName(),
+				Integer.class.getName()
+			},
+			new String[] {"externalReferenceCode", "groupId", "version"}, true);
+
+		_finderPathCountByERC_G_Version = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByERC_G_Version",
+			new String[] {
+				String.class.getName(), Long.class.getName(),
+				Integer.class.getName()
+			},
+			new String[] {"externalReferenceCode", "groupId", "version"},
 			false);
 
 		FragmentEntryVersionUtil.setPersistence(this);
