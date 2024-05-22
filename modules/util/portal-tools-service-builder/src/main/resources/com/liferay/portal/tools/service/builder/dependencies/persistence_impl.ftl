@@ -31,6 +31,12 @@
 	/>
 </#if>
 
+<#if entity.versionEntity??>
+	<#assign isVersionedEntity = true />
+<#else>
+	<#assign isVersionedEntity = false />
+</#if>
+
 <#assign
 	finderFieldSQLSuffix = "_SQL"
 />
@@ -127,6 +133,11 @@ import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
+
+<#if isVersionedEntity && entity.hasExternalReferenceCode()>
+	import com.liferay.portal.kernel.workflow.WorkflowConstants;
+</#if>
+
 import com.liferay.portal.spring.extender.service.ServiceReference;
 import com.liferay.registry.Registry;
 import com.liferay.registry.RegistryUtil;
@@ -859,19 +870,32 @@ public class ${entity.name}PersistenceImpl extends BasePersistenceImpl<${entity.
 
 				<#if entity.hasExternalReferenceCode()>
 					<#if serviceBuilder.isVersionGTE_7_4_0()>
-						${entity.name} erc${entity.name} = fetchByERC_${entity.externalReferenceCode?cap_first[0..0]}(${entity.variableName}.getExternalReferenceCode(), ${entity.variableName}.get${entity.externalReferenceCode?cap_first}Id());
+						${entity.name} erc${entity.name} = fetchByERC_${entity.externalReferenceCode?cap_first[0..0]}<#if isVersionedEntity>_Head</#if>
+						(${entity.variableName}.getExternalReferenceCode(), ${entity.variableName}.get${entity.externalReferenceCode?cap_first}Id()
+							<#if isVersionedEntity>
+								, true
+							</#if>
+						);
 					<#else>
 						${entity.name} erc${entity.name} = fetchBy${entity.externalReferenceCode?cap_first[0..0]}_ERC(${entity.variableName}.get${entity.externalReferenceCode?cap_first}Id(), ${entity.variableName}.getExternalReferenceCode());
 					</#if>
 
 					if (isNew) {
-						if (erc${entity.name} != null) {
+						if (erc${entity.name} != null
+							<#if isVersionedEntity>
+								 && ${entity.variableName}.getStatus() != WorkflowConstants.STATUS_DRAFT
+							</#if>
+						) {
 								throw new ${duplicateEntityExternalReferenceCode}Exception("Duplicate ${entity.humanName} with external reference code " + ${entity.variableName}.getExternalReferenceCode() + " and ${entity.externalReferenceCode} " + ${entity.variableName}.get${entity.externalReferenceCode?cap_first}Id());
 						}
 					}
 					else {
 						if ((erc${entity.name} != null) &&
-							(${entity.variableName}.get${entity.PKMethodName}() != erc${entity.name}.get${entity.PKMethodName}())) {
+							(${entity.variableName}.get${entity.PKMethodName}() != erc${entity.name}.get${entity.PKMethodName}())
+								<#if isVersionedEntity>
+									&& (${entity.variableName}.getStatus() != WorkflowConstants.STATUS_DRAFT)
+								</#if>
+							) {
 								throw new ${duplicateEntityExternalReferenceCode}Exception("Duplicate ${entity.humanName} with external reference code " + ${entity.variableName}.getExternalReferenceCode() + " and ${entity.externalReferenceCode} " + ${entity.variableName}.get${entity.externalReferenceCode?cap_first}Id());
 						}
 					}
