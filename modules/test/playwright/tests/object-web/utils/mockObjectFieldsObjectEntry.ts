@@ -64,7 +64,7 @@ function mockObjectEntry(
 
 function mockObjectFields(
 	objectFieldBusinessTypesInfo: objectFieldBusinessTypesLabelName,
-	listTypeDefinition: PickList
+	listTypeDefinition: ListTypeDefinition
 ) {
 	return [
 		{
@@ -324,7 +324,7 @@ function mockObjectFields(
 }
 
 export function mockObjectFieldsObjectEntry(
-	listTypeDefinition: PickList,
+	listTypeDefinition: ListTypeDefinition,
 	listTypeDefinitionItems: string[]
 ) {
 	const objectFieldBusinessTypeLabelName =

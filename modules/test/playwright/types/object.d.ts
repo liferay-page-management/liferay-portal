@@ -39,6 +39,30 @@ type IncludesFilterOperator = {
 	in: string[] | number[];
 };
 
+interface ListTypeDefinition {
+	actions: Actions;
+	externalReferenceCode: string;
+	id: number;
+	key: string;
+	listTypeEntries: ListTypeEntry[];
+	name: string;
+	name_i18n: LocalizedValue<string>;
+	system: boolean;
+}
+
+interface ListTypeDefinitions {
+	actions: Actions;
+	items: ListTypeDefinition[];
+}
+
+interface ListTypeEntry {
+	externalReferenceCode: string;
+	id: number;
+	key: string;
+	name: string;
+	name_i18n: LocalizedValue<string>;
+}
+
 type LocalizedValue<T> = Liferay.Language.LocalizedValue<T>;
 
 interface NameValueObject {
@@ -345,24 +369,6 @@ interface ObjectValidationRuleSetting {
 		| 'compositeKeyObjectFieldExternalReferenceCode'
 		| 'outputObjectFieldExternalReferenceCode';
 	value: string;
-}
-
-interface PickListItem {
-	externalReferenceCode: string;
-	id: number;
-	key: string;
-	name: string;
-	name_i18n: LocalizedValue<string>;
-}
-
-interface PickList {
-	actions: Actions;
-	externalReferenceCode: string;
-	id: number;
-	key: string;
-	listTypeEntries: PickListItem[];
-	name: string;
-	name_i18n: LocalizedValue<string>;
 }
 
 type ReadOnlyFieldValue = '' | 'conditional' | 'false' | 'true';
