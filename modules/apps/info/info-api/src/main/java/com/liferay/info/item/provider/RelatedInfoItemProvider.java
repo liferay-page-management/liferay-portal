@@ -5,6 +5,7 @@
 
 package com.liferay.info.item.provider;
 
+import com.liferay.info.item.RelatedInfoItem;
 import com.liferay.info.type.Keyed;
 import com.liferay.petra.reflect.GenericUtil;
 
@@ -15,7 +16,7 @@ import java.util.List;
  */
 public interface RelatedInfoItemProvider<T> extends Keyed {
 
-	public List<String> getRelatedItemClassNames();
+	public List<RelatedInfoItem> getRelatedInfoItems();
 
 	public default Class<?> getSourceItemClass() {
 		return GenericUtil.getGenericClass(this);
