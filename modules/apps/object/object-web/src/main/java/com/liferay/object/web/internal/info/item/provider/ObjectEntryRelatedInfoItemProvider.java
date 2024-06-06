@@ -5,6 +5,7 @@
 
 package com.liferay.object.web.internal.info.item.provider;
 
+import com.liferay.info.item.RelatedInfoItem;
 import com.liferay.info.item.provider.RelatedInfoItemProvider;
 import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.model.ObjectDefinition;
@@ -33,7 +34,7 @@ public class ObjectEntryRelatedInfoItemProvider
 	}
 
 	@Override
-	public List<String> getRelatedItemClassNames() {
+	public List<RelatedInfoItem> getRelatedInfoItems() {
 		return TransformUtil.transform(
 			_objectRelationshipLocalService.getObjectRelationships(
 				_objectDefinition.getObjectDefinitionId(),
@@ -51,7 +52,12 @@ public class ObjectEntryRelatedInfoItemProvider
 					_objectDefinitionLocalService.fetchObjectDefinition(
 						objectRelationship.getObjectDefinitionId1());
 
-				return parentObjectDefinition.getClassName();
+				return RelatedInfoItem.builder(
+				).className(
+					parentObjectDefinition.getClassName()
+				).name(
+					objectRelationship.getName()
+				).build();
 			});
 	}
 
