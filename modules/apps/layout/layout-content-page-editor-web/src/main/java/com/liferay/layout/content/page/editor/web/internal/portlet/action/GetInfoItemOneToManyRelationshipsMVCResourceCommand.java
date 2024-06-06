@@ -7,6 +7,7 @@ package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
 import com.liferay.info.item.InfoItemClassDetails;
 import com.liferay.info.item.InfoItemServiceRegistry;
+import com.liferay.info.item.RelatedInfoItem;
 import com.liferay.info.item.provider.InfoItemDetailsProvider;
 import com.liferay.info.item.provider.RelatedInfoItemProvider;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
@@ -76,12 +77,13 @@ public class GetInfoItemOneToManyRelationshipsMVCResourceCommand
 		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		for (String relatedItemClassName :
-				relatedInfoItemProvider.getRelatedItemClassNames()) {
+		for (RelatedInfoItem relatedInfoItem :
+				relatedInfoItemProvider.getRelatedInfoItems()) {
 
 			InfoItemDetailsProvider<?> infoItemDetailsProvider =
 				_infoItemServiceRegistry.getFirstInfoItemService(
-					InfoItemDetailsProvider.class, relatedItemClassName);
+					InfoItemDetailsProvider.class,
+					relatedInfoItem.getClassName());
 
 			InfoItemClassDetails infoItemClassDetails =
 				infoItemDetailsProvider.getInfoItemClassDetails();
@@ -94,6 +96,8 @@ public class GetInfoItemOneToManyRelationshipsMVCResourceCommand
 				).put(
 					"label",
 					infoItemClassDetails.getLabel(themeDisplay.getLocale())
+				).put(
+					"name", relatedInfoItem.getName()
 				));
 		}
 
