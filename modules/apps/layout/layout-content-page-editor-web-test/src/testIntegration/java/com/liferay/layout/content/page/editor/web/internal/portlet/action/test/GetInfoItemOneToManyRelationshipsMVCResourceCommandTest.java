@@ -103,6 +103,8 @@ public class GetInfoItemOneToManyRelationshipsMVCResourceCommandTest {
 		Assert.assertEquals(
 			_objectDefinition2.getLabel(LocaleUtil.getDefault()),
 			jsonObject.getString("label"));
+		Assert.assertEquals(
+			_objectDefinition2.getName(), jsonObject.getString("name"));
 	}
 
 	@Test
