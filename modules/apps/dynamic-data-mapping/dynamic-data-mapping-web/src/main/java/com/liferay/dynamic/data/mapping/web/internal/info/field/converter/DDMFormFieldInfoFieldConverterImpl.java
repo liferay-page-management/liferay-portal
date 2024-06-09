@@ -15,6 +15,7 @@ import com.liferay.dynamic.data.mapping.storage.constants.FieldConstants;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.type.BooleanInfoFieldType;
 import com.liferay.info.field.type.DateInfoFieldType;
+import com.liferay.info.field.type.FieldsetInfoFieldType;
 import com.liferay.info.field.type.GridInfoFieldType;
 import com.liferay.info.field.type.HTMLInfoFieldType;
 import com.liferay.info.field.type.ImageInfoFieldType;
@@ -156,6 +157,11 @@ public class DDMFormFieldInfoFieldConverterImpl
 					ddmFormFieldType, DDMFormFieldTypeConstants.DATE_TIME)) {
 
 			return DateInfoFieldType.INSTANCE;
+		}
+		else if (Objects.equals(
+					ddmFormFieldType, DDMFormFieldTypeConstants.FIELDSET)) {
+
+			return FieldsetInfoFieldType.INSTANCE;
 		}
 		else if (Objects.equals(
 					ddmFormFieldType, DDMFormFieldTypeConstants.GRID)) {
