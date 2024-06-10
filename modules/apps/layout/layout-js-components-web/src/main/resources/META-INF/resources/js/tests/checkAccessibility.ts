@@ -6,9 +6,6 @@
 import axe, {AxeResults, ContextObject} from 'axe-core';
 
 const config = {
-	rules: {
-		'color-contrast': {enabled: false},
-	},
 	runOnly: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'],
 };
 

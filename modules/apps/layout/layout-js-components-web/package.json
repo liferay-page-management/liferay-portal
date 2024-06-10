@@ -28,6 +28,7 @@
 	"main": "js/index.ts",
 	"name": "@liferay/layout-js-components-web",
 	"optionalDependencies": {
+		"canvas": "^2.11.2",
 		"fsevents": "^1.2.7"
 	},
 	"scripts": {
