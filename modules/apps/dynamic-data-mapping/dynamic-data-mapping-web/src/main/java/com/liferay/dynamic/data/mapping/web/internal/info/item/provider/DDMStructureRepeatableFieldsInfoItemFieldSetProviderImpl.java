@@ -13,6 +13,7 @@ import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
+import com.liferay.dynamic.data.mapping.web.internal.info.item.provider.constants.InfoItemConstants;
 import com.liferay.info.field.InfoFieldSet;
 import com.liferay.info.field.InfoFieldSetEntry;
 import com.liferay.info.localized.InfoLocalizedValue;
@@ -124,7 +125,8 @@ public class DDMStructureRepeatableFieldsInfoItemFieldSetProviderImpl
 			return nestedInfoFieldsetEntries;
 		}
 		else if (ArrayUtil.contains(
-					_SELECTABLE_DDM_STRUCTURE_FIELDS, ddmFormField.getType())) {
+					InfoItemConstants.SELECTABLE_DDM_STRUCTURE_FIELDS,
+					ddmFormField.getType())) {
 
 			return Collections.singletonList(
 				_ddmFormFieldInfoFieldConverter.convert(ddmFormField));
@@ -132,16 +134,6 @@ public class DDMStructureRepeatableFieldsInfoItemFieldSetProviderImpl
 
 		return Collections.emptyList();
 	}
-
-	private static final String[] _SELECTABLE_DDM_STRUCTURE_FIELDS = {
-		DDMFormFieldTypeConstants.CHECKBOX,
-		DDMFormFieldTypeConstants.CHECKBOX_MULTIPLE,
-		DDMFormFieldTypeConstants.DATE, DDMFormFieldTypeConstants.DATE_TIME,
-		DDMFormFieldTypeConstants.LINK_TO_LAYOUT,
-		DDMFormFieldTypeConstants.NUMERIC, DDMFormFieldTypeConstants.IMAGE,
-		DDMFormFieldTypeConstants.TEXT, DDMFormFieldTypeConstants.RADIO,
-		DDMFormFieldTypeConstants.RICH_TEXT, DDMFormFieldTypeConstants.SELECT
-	};
 
 	@Reference
 	private DDMFormFieldInfoFieldConverter _ddmFormFieldInfoFieldConverter;
