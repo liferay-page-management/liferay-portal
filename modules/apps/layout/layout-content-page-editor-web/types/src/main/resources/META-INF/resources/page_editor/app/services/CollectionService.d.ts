@@ -52,6 +52,7 @@ declare const _default: {
 		totalNumberOfItems: number;
 	}>;
 	getCollectionMappingFields(body: {
+		fieldName: string | undefined;
 		itemSubtype: string;
 		itemType: string;
 	}): Promise<{
