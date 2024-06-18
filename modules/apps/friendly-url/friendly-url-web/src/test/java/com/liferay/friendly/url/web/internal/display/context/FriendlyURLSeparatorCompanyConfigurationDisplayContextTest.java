@@ -9,6 +9,7 @@ import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.friendly.url.configuration.manager.FriendlyURLSeparatorConfigurationManager;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
