@@ -6228,6 +6228,409 @@ paths:
                         default response
             # @review
             tags: ["PageSpecification"]
+    "/sites/{siteExternalReferenceCode}/page-templates":
+        get:
+            # @review
+            description:
+                Retrieves the page templates of the site
+            operationId: getSiteSiteExternalReferenceCodePageTemplatesPage
+            parameters:
+                - in: path
+                  name: siteExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: aggregationTerms
+                  schema:
+                      items:
+                          type: string
+                      type: array
+                - in: query
+                  name: fields
+                  schema:
+                      type: string
+                - in: query
+                  name: filter
+                  schema:
+                      type: string
+                - in: query
+                  name: nestedFields
+                  schema:
+                      type: string
+                - in: query
+                  name: page
+                  schema:
+                      type: integer
+                - in: query
+                  name: pageSize
+                  schema:
+                      type: integer
+                - in: query
+                  name: restrictFields
+                  schema:
+                      type: string
+                - in: query
+                  name: search
+                  schema:
+                      type: string
+                - in: query
+                  name: sort
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/PageTemplate"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/PageTemplate"
+                                type: array
+            tags: ["PageTemplate"]
+        post:
+            # @review
+            description:
+                Adds a new page template
+            operationId: postSiteSiteExternalReferenceCodePageTemplate
+            parameters:
+                - in: path
+                  name: siteExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/PageTemplate"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/PageTemplate"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/PageTemplate"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/PageTemplate"
+                    description:
+                        default response
+            # @review
+            tags: ["PageTemplate"]
+    "/sites/{siteExternalReferenceCode}/page-templates/permissions":
+        get:
+            operationId: getSiteSiteExternalReferenceCodePageTemplatePermissionsPage
+            parameters:
+                - in: path
+                  name: siteExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: fields
+                  schema:
+                      type: string
+                - in: query
+                  name: restrictFields
+                  schema:
+                      type: string
+                - in: query
+                  name: roleNames
+                  schema:
+                      type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["PageTemplate"]
+        put:
+            operationId: putSiteSiteExternalReferenceCodePageTemplatePermissionsPage
+            parameters:
+                - in: path
+                  name: siteExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    application/json: {}
+                    application/xml: {}
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["PageTemplate"]
+    "/sites/{siteExternalReferenceCode}/page-templates/{pageTemplateExternalReferenceCode}":
+        delete:
+            # @review
+            description:
+                Deletes a specific page template of a site.
+            operationId: deleteSiteSiteExternalReferenceCodePageTemplate
+            parameters:
+                - in: path
+                  name: siteExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: path
+                  name: pageTemplateExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["PageTemplate"]
+        get:
+            # @review
+            description:
+                Retrieves a specific page template of a site.
+            operationId: getSiteSiteExternalReferenceCodePageTemplate
+            parameters:
+                - in: path
+                  name: siteExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: path
+                  name: pageTemplateExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: fields
+                  schema:
+                      type: string
+                - in: query
+                  name: nestedFields
+                  schema:
+                      type: string
+                - in: query
+                  name: restrictFields
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/PageTemplate"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/PageTemplate"
+                    description:
+                        default response
+            tags: ["PageTemplate"]
+        patch:
+            # @review
+            description:
+                Updates only the fields received in the request body, leaving any other fields untouched.
+            operationId: patchSiteSiteExternalReferenceCodePageTemplate
+            parameters:
+                - in: path
+                  name: siteExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: path
+                  name: pageTemplateExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: fields
+                  schema:
+                      type: string
+                - in: query
+                  name: nestedFields
+                  schema:
+                      type: string
+                - in: query
+                  name: restrictFields
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/PageTemplate"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/PageTemplate"
+            responses:
+                default:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/PageTemplate"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/PageTemplate"
+                    description:
+                        default response
+            tags: ["PageTemplate"]
+        put:
+            # @review
+            description:
+                Updates the page template with the given external reference code, or creates it if it does not exist.
+            operationId: putSiteSiteExternalReferenceCodePageTemplate
+            parameters:
+                - in: path
+                  name: siteExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: path
+                  name: pageTemplateExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: fields
+                  schema:
+                      type: string
+                - in: query
+                  name: nestedFields
+                  schema:
+                      type: string
+                - in: query
+                  name: restrictFields
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/PageTemplate"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/PageTemplate"
+            responses:
+                default:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/PageTemplate"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/PageTemplate"
+                    description:
+                        default response
+            tags: ["PageTemplate"]
+    "/sites/{siteExternalReferenceCode}/page-templates/{pageTemplateExternalReferenceCode}/page-specifications":
+        post:
+            # @review
+            description:
+                Adds a new page specification in draft status to a page template.
+            operationId: postSiteSiteExternalReferenceCodePageTemplatePageSpecification
+            parameters:
+                - in: path
+                  name: siteExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: path
+                  name: pageTemplateExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: fields
+                  schema:
+                      type: string
+                - in: query
+                  name: nestedFields
+                  schema:
+                      type: string
+                - in: query
+                  name: restrictFields
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/ContentPageSpecification"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/ContentPageSpecification"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ContentPageSpecification"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ContentPageSpecification"
+                    description:
+                        default response
+            # @review
+            tags: ["PageTemplate"]
+    "/sites/{siteExternalReferenceCode}/page-templates/{pageTemplateExternalReferenceCode}/permissions":
+        get:
+            parameters:
+                - in: path
+                  name: siteExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: path
+                  name: pageTemplateExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: fields
+                  schema:
+                      type: string
+                - in: query
+                  name: restrictFields
+                  schema:
+                      type: string
+                - in: query
+                  name: roleNames
+                  schema:
+                      type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["PageTemplate"]
+        put:
+            parameters:
+                - in: path
+                  name: siteExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: path
+                  name: pageTemplateExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    application/json: {}
+                    application/xml: {}
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["PageTemplate"]
     "/sites/{siteExternalReferenceCode}/site-pages":
         get:
             # @review
