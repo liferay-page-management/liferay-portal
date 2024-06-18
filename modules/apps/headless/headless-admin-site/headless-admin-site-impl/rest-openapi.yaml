@@ -8110,6 +8110,450 @@ paths:
                         default response
             # @review
             tags: ["SitePage"]
+    "/sites/{siteExternalReferenceCode}/utility-pages":
+        get:
+            # @review
+            description:
+                Retrieves the utility pages of the site.
+            operationId: getSiteSiteExternalReferenceCodeUtilityPagesPage
+            parameters:
+                - in: path
+                  name: siteExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: aggregationTerms
+                  schema:
+                      items:
+                          type: string
+                      type: array
+                - in: query
+                  name: fields
+                  schema:
+                      type: string
+                - in: query
+                  name: filter
+                  schema:
+                      type: string
+                - in: query
+                  name: nestedFields
+                  schema:
+                      type: string
+                - in: query
+                  name: page
+                  schema:
+                      type: integer
+                - in: query
+                  name: pageSize
+                  schema:
+                      type: integer
+                - in: query
+                  name: restrictFields
+                  schema:
+                      type: string
+                - in: query
+                  name: search
+                  schema:
+                      type: string
+                - in: query
+                  name: sort
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/UtilityPage"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/UtilityPage"
+                                type: array
+            tags: ["UtilityPage"]
+        post:
+            # @review
+            description:
+                Adds a new utility page
+            operationId: postSiteSiteExternalReferenceCodeUtilityPage
+            parameters:
+                - in: path
+                  name: siteExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/UtilityPage"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/UtilityPage"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/UtilityPage"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/UtilityPage"
+                    description:
+                        default response
+            # @review
+            tags: ["UtilityPage"]
+    "/sites/{siteExternalReferenceCode}/utility-pages/permissions":
+        get:
+            operationId: getSiteSiteExternalReferenceCodeUtilityPagePermissionsPage
+            parameters:
+                - in: path
+                  name: siteExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: fields
+                  schema:
+                      type: string
+                - in: query
+                  name: restrictFields
+                  schema:
+                      type: string
+                - in: query
+                  name: roleNames
+                  schema:
+                      type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["UtilityPage"]
+        put:
+            operationId: putSiteSiteExternalReferenceCodeUtilityPagePermissionsPage
+            parameters:
+                - in: path
+                  name: siteExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    application/json: {}
+                    application/xml: {}
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["UtilityPage"]
+    "/sites/{siteExternalReferenceCode}/utility-pages/{utilityPageExternalReferenceCode}":
+        delete:
+            # @review
+            description:
+                Deletes a specific utility page of a site.
+            operationId: deleteSiteSiteExternalReferenceCodeUtilityPage
+            parameters:
+                - in: path
+                  name: siteExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: path
+                  name: utilityPageExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["UtilityPage"]
+        get:
+            # @review
+            description:
+                Retrieves a specific utility page of a site.
+            operationId: getSiteSiteExternalReferenceCodeUtilityPage
+            parameters:
+                - in: path
+                  name: siteExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: path
+                  name: utilityPageExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: fields
+                  schema:
+                      type: string
+                - in: query
+                  name: nestedFields
+                  schema:
+                      type: string
+                - in: query
+                  name: restrictFields
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/UtilityPage"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/UtilityPage"
+                    description:
+                        default response
+            tags: ["UtilityPage"]
+        patch:
+            # @review
+            description:
+                Updates only the fields received in the request body, leaving any other fields untouched.
+            operationId: patchSiteSiteExternalReferenceCodeUtilityPage
+            parameters:
+                - in: path
+                  name: siteExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: path
+                  name: utilityPageExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: fields
+                  schema:
+                      type: string
+                - in: query
+                  name: nestedFields
+                  schema:
+                      type: string
+                - in: query
+                  name: restrictFields
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/UtilityPage"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/UtilityPage"
+            responses:
+                default:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/UtilityPage"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/UtilityPage"
+                    description:
+                        default response
+            tags: ["UtilityPage"]
+        put:
+            # @review
+            description:
+                Updates the utility page with the given external reference code, or creates it if it does not exist.
+            operationId: putSiteSiteExternalReferenceCodeUtilityPage
+            parameters:
+                - in: path
+                  name: siteExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: path
+                  name: utilityPageExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: fields
+                  schema:
+                      type: string
+                - in: query
+                  name: nestedFields
+                  schema:
+                      type: string
+                - in: query
+                  name: restrictFields
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/UtilityPage"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/UtilityPage"
+            responses:
+                default:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/UtilityPage"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/UtilityPage"
+                    description:
+                        default response
+            tags: ["UtilityPage"]
+    "/sites/{siteExternalReferenceCode}/utility-pages/{utilityPageExternalReferenceCode}/page-specifications":
+        get:
+            # @review
+            description:
+                Retrieves all the page specifications of a utility page.
+            operationId: getSiteSiteExternalReferenceCodeUtilityPagePageSpecificationsPage
+            parameters:
+                - in: path
+                  name: siteExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: path
+                  name: utilityPageExternalReferenceCode
+                  schema:
+                      type: string
+                - in: query
+                  name: fields
+                  schema:
+                      type: string
+                - in: query
+                  name: nestedFields
+                  schema:
+                      type: string
+                - in: query
+                  name: restrictFields
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/PageSpecification"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/PageSpecification"
+                                type: array
+            # @review
+            tags: ["UtilityPage"]
+        post:
+            # @review
+            description:
+                Adds a new page specification to a utility page.
+            operationId: postSiteSiteExternalReferenceCodeUtilityPagePageSpecification
+            parameters:
+                - in: path
+                  name: siteExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: path
+                  name: utilityPageExternalReferenceCode
+                  schema:
+                      type: string
+                - in: query
+                  name: fields
+                  schema:
+                      type: string
+                - in: query
+                  name: nestedFields
+                  schema:
+                      type: string
+                - in: query
+                  name: restrictFields
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/ContentPageSpecification"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/ContentPageSpecification"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ContentPageSpecification"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ContentPageSpecification"
+                    description:
+                        default response
+            # @review
+            tags: ["UtilityPage"]
+    "/sites/{siteExternalReferenceCode}/utility-pages/{utilityPageExternalReferenceCode}/permissions":
+        get:
+            parameters:
+                - in: path
+                  name: siteExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: path
+                  name: utilityPageExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: fields
+                  schema:
+                      type: string
+                - in: query
+                  name: restrictFields
+                  schema:
+                      type: string
+                - in: query
+                  name: roleNames
+                  schema:
+                      type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["UtilityPage"]
+        put:
+            parameters:
+                - in: path
+                  name: siteExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: path
+                  name: utilityPageExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    application/json: {}
+                    application/xml: {}
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["UtilityPage"]
     "/sites/{siteExternalReferenceCode}/widget-instances/{widgetInstanceExternalReferenceCode}":
         delete:
             # @review
