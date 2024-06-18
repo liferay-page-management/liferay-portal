@@ -403,13 +403,16 @@ const MillerColumnsItem = ({
 
 	return (
 		<ClayLayout.ContentRow
-			className={classNames('list-group-item-flex miller-columns-item', {
-				'dragging': isDragging,
-				'drop-bottom': isOver && dropZone === DROP_ZONES.BOTTOM,
-				'drop-element': isOver && dropZone === DROP_ZONES.ELEMENT,
-				'drop-top': isOver && dropZone === DROP_ZONES.TOP,
-				'miller-columns-item--active': active,
-			})}
+			className={classNames(
+				'list-group-item-flex miller-columns-item test-class',
+				{
+					'dragging': isDragging,
+					'drop-bottom': isOver && dropZone === DROP_ZONES.BOTTOM,
+					'drop-element': isOver && dropZone === DROP_ZONES.ELEMENT,
+					'drop-top': isOver && dropZone === DROP_ZONES.TOP,
+					'miller-columns-item--active': active,
+				}
+			)}
 			containerElement="li"
 			data-actions={bulkActions}
 			ref={ref}
