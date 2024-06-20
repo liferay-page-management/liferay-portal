@@ -65,7 +65,7 @@ public class SiteNavigationMenuItemLayoutTest {
 			SiteNavigationConstants.TYPE_DEFAULT, true, serviceContext);
 
 		LayoutServiceUtil.addLayout(
-			_group.getGroupId(), false, 0,
+			null, _group.getGroupId(), false, 0,
 			HashMapBuilder.put(
 				LocaleUtil.getSiteDefault(), "welcome"
 			).build(),
@@ -94,7 +94,7 @@ public class SiteNavigationMenuItemLayoutTest {
 			serviceContext);
 
 		LayoutServiceUtil.addLayout(
-			_group.getGroupId(), false, 0,
+			null, _group.getGroupId(), false, 0,
 			HashMapBuilder.put(
 				LocaleUtil.getSiteDefault(), "welcome"
 			).build(),
@@ -130,7 +130,7 @@ public class SiteNavigationMenuItemLayoutTest {
 				serviceContext);
 
 		LayoutServiceUtil.addLayout(
-			_group.getGroupId(), false, 0,
+			null, _group.getGroupId(), false, 0,
 			HashMapBuilder.put(
 				LocaleUtil.getSiteDefault(), "welcome"
 			).build(),
@@ -165,7 +165,7 @@ public class SiteNavigationMenuItemLayoutTest {
 				serviceContext);
 
 		LayoutServiceUtil.addLayout(
-			_group.getGroupId(), false, 0,
+			null, _group.getGroupId(), false, 0,
 			HashMapBuilder.put(
 				LocaleUtil.getSiteDefault(), "welcome"
 			).build(),
