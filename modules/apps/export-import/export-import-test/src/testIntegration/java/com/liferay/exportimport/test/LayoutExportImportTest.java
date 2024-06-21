@@ -15,7 +15,10 @@ import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.fragment.service.FragmentEntryLocalService;
+import com.liferay.friendly.url.model.FriendlyURLEntry;
+import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.journal.constants.JournalContentPortletKeys;
+import com.liferay.layout.friendly.url.LayoutFriendlyURLEntryHelper;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
@@ -72,7 +75,6 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -560,7 +562,6 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 		Assert.assertNull(importedLayout);
 	}
 
-	@Ignore
 	@Test
 	public void testFriendlyURLCollision() throws Exception {
 		String defaultLanguageId = LocaleUtil.toLanguageId(
@@ -584,11 +585,27 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 
 		exportImportLayouts(layoutIds, getImportParameterMap());
 
+		FriendlyURLEntry friendlyURLEntry =
+			_friendlyURLEntryLocalService.fetchFriendlyURLEntry(
+				group.getGroupId(),
+				_layoutFriendlyURLEntryHelper.getClassNameId(
+					layoutA.isPrivateLayout()),
+				friendlyURLA);
+
 		layoutA = _layoutLocalService.updateFriendlyURL(
 			layoutA.getUserId(), layoutA.getPlid(), "/temp", defaultLanguageId);
 
 		layoutA = _layoutLocalService.updateFriendlyURL(
 			layoutA.getUserId(), layoutA.getPlid(), "/temp-de", "de");
+
+		_friendlyURLEntryLocalService.deleteFriendlyURLEntry(
+			friendlyURLEntry.getFriendlyURLEntryId());
+
+		friendlyURLEntry = _friendlyURLEntryLocalService.fetchFriendlyURLEntry(
+			group.getGroupId(),
+			_layoutFriendlyURLEntryHelper.getClassNameId(
+				layoutB.isPrivateLayout()),
+			friendlyURLB);
 
 		layoutB = _layoutLocalService.updateFriendlyURL(
 			layoutB.getUserId(), layoutB.getPlid(), friendlyURLA,
@@ -596,6 +613,9 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 
 		_layoutLocalService.updateFriendlyURL(
 			layoutB.getUserId(), layoutB.getPlid(), friendlyURLA + "-de", "de");
+
+		_friendlyURLEntryLocalService.deleteFriendlyURLEntry(
+			friendlyURLEntry.getFriendlyURLEntryId());
 
 		layoutA = _layoutLocalService.updateFriendlyURL(
 			layoutA.getUserId(), layoutA.getPlid(), friendlyURLB,
@@ -605,6 +625,10 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 			layoutA.getUserId(), layoutA.getPlid(), friendlyURLB + "-de", "de");
 
 		exportImportLayouts(layoutIds, getImportParameterMap());
+
+		_assertNewFriendlyURL(layoutA, friendlyURLB);
+
+		_assertNewFriendlyURL(layoutB, friendlyURLA);
 	}
 
 	@FeatureFlags("LPS-199086")
@@ -989,6 +1013,24 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 		}
 	}
 
+	private void _assertNewFriendlyURL(Layout layoutA, String friendlyURLB)
+		throws Exception {
+
+		Layout importedLayoutA = _layoutLocalService.getLayoutByUuidAndGroupId(
+			layoutA.getUuid(), importedGroup.getGroupId(),
+			layoutA.isPrivateLayout());
+
+		FriendlyURLEntry friendlyURLEntry =
+			_friendlyURLEntryLocalService.fetchFriendlyURLEntry(
+				importedGroup.getGroupId(),
+				_layoutFriendlyURLEntryHelper.getClassNameId(
+					importedLayoutA.isPrivateLayout()),
+				friendlyURLB + "-1");
+
+		Assert.assertEquals(
+			importedLayoutA.getPlid(), friendlyURLEntry.getClassPK());
+	}
+
 	private String _getContent(String fileName) throws Exception {
 		Class<?> clazz = getClass();
 
@@ -1101,6 +1143,12 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 
 	@Inject
 	private FragmentEntryLocalService _fragmentEntryLocalService;
+
+	@Inject
+	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
+
+	@Inject
+	private LayoutFriendlyURLEntryHelper _layoutFriendlyURLEntryHelper;
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;
