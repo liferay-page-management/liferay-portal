@@ -47,7 +47,7 @@ definition {
 
 	@priority = 5
 	test CheckMbeanFailedUpgrade {
-		property custom.mysql.sql.statement = "ALTER TABLE FragmentComposition DROP description;";
+		property custom.sql.statement = "ALTER TABLE FragmentComposition DROP description;";
 		property data.archive.type = "data-archive-portal";
 		property portal.version = "7.4.13";
 		property skip.upgrade-legacy-database = "true";
@@ -170,7 +170,7 @@ definition {
 
 	@priority = 5
 	test CheckMbeanWhenUpgradeHaveWarnAndError {
-		property custom.mysql.sql.statement = "ALTER TABLE FragmentComposition DROP description;";
+		property custom.sql.statement = "ALTER TABLE FragmentComposition DROP description;";
 		property data.archive.type = "data-archive-portal";
 		property portal.version = "7.4.13";
 		property skip.get.testcase.database.properties = "true";

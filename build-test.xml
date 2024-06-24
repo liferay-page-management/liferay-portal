@@ -15001,17 +15001,30 @@ go</echo>
 					]]>
 				</execute>
 
-				<get-testcase-property property.name="custom.mysql.sql.statement" />
+				<get-testcase-property property.name="custom.sql.statement" />
 
 				<if>
 					<and>
 						<equals arg1="${database.type}" arg2="mysql" />
-						<isset property="custom.mysql.sql.statement" />
+						<isset property="custom.sql.statement" />
 					</and>
 					<then>
 						<sql classpath="${app.server.shielded-container-lib.portal.dir}/${jdbc.mysql.driver}" driver="${database.mysql.driver}" onerror="continue" output="output.txt" password="${database.mysql.password}" print="true" url="${database.mysql.url}" userid="${database.mysql.username}">
 							<![CDATA[
-								${custom.mysql.sql.statement}
+								${custom.sql.statement}
+							]]>
+						</sql>
+					</then>
+				</if>
+				<if>
+					<and>
+						<equals arg1="${database.type}" arg2="postgresql" />
+						<isset property="custom.sql.statement" />
+					</and>
+					<then>
+						<sql classpath="${app.server.shielded-container-lib.portal.dir}/${jdbc.postgresql.driver}" driver="${database.postgresql.driver}" onerror="continue" output="output.txt" password="${database.postgresql.password}" print="true" url="${database.postgresql.url}" userid="${database.postgresql.username}">
+							<![CDATA[
+								${custom.sql.statement}
 							]]>
 						</sql>
 					</then>
@@ -15105,17 +15118,30 @@ go</echo>
 
 							<exec executable="mysql_upgrade" />
 
-							<get-testcase-property property.name="custom.mysql.sql.statement" />
+							<get-testcase-property property.name="custom.sql.statement" />
 
 							<if>
 								<and>
 									<equals arg1="${database.type}" arg2="mysql" />
-									<isset property="custom.mysql.sql.statement" />
+									<isset property="custom.sql.statement" />
 								</and>
 								<then>
 									<sql classpath="${app.server.shielded-container-lib.portal.dir}/${jdbc.mysql.driver}" driver="${database.mysql.driver}" onerror="continue" output="output.txt" password="${database.mysql.password}" print="true" url="${database.mysql.url}" userid="${database.mysql.username}">
 										<![CDATA[
-											${custom.mysql.sql.statement}
+											${custom.sql.statement}
+										]]>
+									</sql>
+								</then>
+							</if>
+							<if>
+								<and>
+									<equals arg1="${database.type}" arg2="postgresql" />
+									<isset property="custom.sql.statement" />
+								</and>
+								<then>
+									<sql classpath="${app.server.shielded-container-lib.portal.dir}/${jdbc.postgresql.driver}" driver="${database.postgresql.driver}" onerror="continue" output="output.txt" password="${database.postgresql.password}" print="true" url="${database.postgresql.url}" userid="${database.postgresql.username}">
+										<![CDATA[
+											${custom.sql.statement}
 										]]>
 									</sql>
 								</then>
