@@ -19,6 +19,15 @@
 				tofile="temp.expect"
 			/>
 
+			<get-database-property property.name="database.type" />
+
+			<replaceregexp
+				file="temp.expect"
+				flags="gi"
+				match="\[database.type\]"
+				replace="${database.type}"
+			/>
+
 			<get-database-property property.name="database.host" />
 
 			<replaceregexp

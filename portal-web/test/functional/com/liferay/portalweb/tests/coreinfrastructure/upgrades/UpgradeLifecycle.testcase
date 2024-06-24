@@ -40,11 +40,11 @@ definition {
 		property custom.properties = "database.indexes.update.on.startup=true";
 		property database.types = "postgresql";
 
-		SQL.dropMySQLIndex(
+		SQL.dropIndex(
 			indexName = "IX_EC00543C",
 			tableName = "Company");
 
-		SQL.dropMySQLIndex(
+		SQL.dropIndex(
 			indexName = "IX_D3ACAD4A",
 			tableName = "JournalArticle");
 
@@ -54,13 +54,13 @@ definition {
 			Portlet.startServer(keepOsGiState = "true");
 		}
 
-		var hasCompanyMissingIndex = SQL.hasMySQLIndex(indexName = "IX_EC00543C");
+		var hasCompanyMissingIndex = SQL.hasIndex(indexName = "IX_EC00543C");
 
 		if (${hasCompanyMissingIndex} == "false") {
 			fail("Company index IX_EC00543C wasn't recreated");
 		}
 
-		var hasJournalArticleMissingIndex = SQL.hasMySQLIndex(indexName = "IX_D3ACAD4A");
+		var hasJournalArticleMissingIndex = SQL.hasIndex(indexName = "IX_D3ACAD4A");
 
 		if (${hasJournalArticleMissingIndex} == "false") {
 			fail("JournalArticle index IX_D3ACAD4A wasn't recreated");
