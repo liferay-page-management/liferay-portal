@@ -50,13 +50,33 @@ definition {
 		}
 
 		task ("When the server is started again with a fresh database") {
-			AntCommands.runCommand("build-test.xml", "rebuild-database -Ddatabase.type=mysql -Dsql.dir=sql/create-bare/ -Dsql.file=create-bare-mysql.sql");
+			if (${databaseType} == "mysql") {
+				AntCommands.runCommand("build-test.xml", "rebuild-database -Ddatabase.type=mysql -Dsql.dir=sql/create-bare/ -Dsql.file=create-bare-mysql.sql");
+			}
+			else if (${databaseType} == "postgresql") {
+				SQL.executeSettingAutoCommitSQLStatement(
+					autoCommit = "true",
+					sqlStatement = "drop schema public cascade;");
+
+				SQL.executeSettingAutoCommitSQLStatement(
+					autoCommit = "true",
+					sqlStatement = "create schema public;");
+			}
 
 			TestCase.updatePortalProperties(
 				newProperty = "upgrade.database.auto.run=false",
 				oldProperty = "upgrade.database.auto.run=true");
 
-			SQL.executeSQLStatement(sqlStatement = "DROP DATABASE lpartition_${upgradedCompanyId};");
+			if (${databaseType} == "mysql") {
+				AntCommands.runCommand("build-test.xml", "rebuild-database -Ddatabase.type=mysql -Dsql.dir=sql/create-bare/ -Dsql.file=create-bare-mysql.sql");
+			}
+			else if (${databaseType} == "postgresql") {
+				SQL.executeSettingAutoCommitSQLStatement(
+					autoCommit = "true",
+					sqlStatement = "drop schema lpartition_${upgradedCompanyId} cascade;");
+			}
+
+			SQL.executeSQLStatement(sqlStatement = "");
 
 			Portlet.startServer();
 
@@ -116,7 +136,14 @@ definition {
 		}
 
 		task ("When the user rebuild the database And clean the missing partitions") {
-			AntCommands.runCommand("build-test.xml", "rebuild-database -Ddatabase.type=mysql -Dsql.dir=sql/create-bare/ -Dsql.file=create-bare-mysql.sql");
+			if (${databaseType} == "mysql") {
+				AntCommands.runCommand("build-test.xml", "rebuild-database -Ddatabase.type=mysql -Dsql.dir=sql/create-bare/ -Dsql.file=create-bare-mysql.sql");
+			}
+			else if (${databaseType} == "postgresql") {
+				SQL.executeSQLStatement(sqlStatement = "drop schema public cascade;");
+
+				SQL.executeSQLStatement(sqlStatement = "create schema public;");
+			}
 
 			SQL.executeSQLStatement(sqlStatement = "DROP DATABASE lpartition_42638;");
 
