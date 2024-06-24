@@ -3,7 +3,7 @@
 spawn [db.upgrade.client.home]/db_upgrade_client[file.suffix.bat]
 
 expect "Please enter your database" {
-	send "\r"
+	send "[database.type]\r"
 }
 
 expect "Please enter your database JDBC driver class name" {
