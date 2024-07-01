@@ -10,13 +10,14 @@ import com.liferay.fragment.internal.upgrade.v1_1_0.PortletPreferencesUpgradePro
 import com.liferay.fragment.internal.upgrade.v2_0_0.util.FragmentCollectionTable;
 import com.liferay.fragment.internal.upgrade.v2_0_0.util.FragmentEntryLinkTable;
 import com.liferay.fragment.internal.upgrade.v2_0_0.util.FragmentEntryTable;
+import com.liferay.fragment.internal.upgrade.v2_11_1.FragmentCollectionExternalReferenceCodeUpgradeProcess;
+import com.liferay.fragment.internal.upgrade.v2_12_0.FragmentServiceExternalReferenceCodeUpgradeProcess;
 import com.liferay.fragment.internal.upgrade.v2_1_0.SchemaUpgradeProcess;
 import com.liferay.fragment.internal.upgrade.v2_4_0.FragmentEntryLinkUpgradeProcess;
 import com.liferay.fragment.internal.upgrade.v2_6_0.util.FragmentEntryVersionTable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.service.LayoutLocalService;
-import com.liferay.portal.kernel.upgrade.BaseExternalReferenceCodeUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.BaseSQLServerDatetimeUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.CTModelUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
@@ -200,31 +201,11 @@ public class FragmentServiceUpgradeStepRegistrator
 
 		registry.register(
 			"2.10.3", "2.11.0",
-			new BaseExternalReferenceCodeUpgradeProcess() {
-
-				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"FragmentCollection", "fragmentCollectionId"}
-					};
-				}
-
-			});
+			new FragmentCollectionExternalReferenceCodeUpgradeProcess());
 
 		registry.register(
 			"2.11.0", "2.12.0",
-			new BaseExternalReferenceCodeUpgradeProcess() {
-
-				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"FragmentComposition", "fragmentCompositionId"},
-						{"FragmentEntry", "fragmentEntryId"},
-						{"FragmentEntryVersion", "fragmentEntryId"}
-					};
-				}
-
-			});
+			new FragmentServiceExternalReferenceCodeUpgradeProcess());
 	}
 
 	@Reference
