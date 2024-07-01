@@ -6,8 +6,8 @@
 package com.liferay.template.internal.upgrade.registry;
 
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.upgrade.BaseExternalReferenceCodeUpgradeProcess;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
+import com.liferay.template.internal.upgrade.registry.v1_1_0.TemplateEntryExternalReferenceCodeUpgradeProcess;
 import com.liferay.template.internal.upgrade.registry.v1_2_0.PortletPreferenceValuesUpgradeProcess;
 
 import org.osgi.service.component.annotations.Component;
@@ -24,16 +24,7 @@ public class TemplateEntryUpgradeStepRegistrator
 	public void register(Registry registry) {
 		registry.register(
 			"1.0.0", "1.1.0",
-			new BaseExternalReferenceCodeUpgradeProcess() {
-
-				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"TemplateEntry", "templateEntryId"}
-					};
-				}
-
-			});
+			new TemplateEntryExternalReferenceCodeUpgradeProcess());
 
 		registry.register(
 			"1.1.0", "1.2.0",
