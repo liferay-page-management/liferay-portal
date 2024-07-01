@@ -18,7 +18,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
-import com.liferay.portal.upgrade.test.util.BaseUpgradeExternalReferenceCodeTestCase;
+import com.liferay.portal.upgrade.test.util.BaseExternalReferenceCodeUpgradeProcessTestCase;
 import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
 
 import org.junit.runner.RunWith;
@@ -28,7 +28,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class LayoutPageTemplateCollectionExternalReferenceCodeUpgradeProcessTest
-	extends BaseUpgradeExternalReferenceCodeTestCase {
+	extends BaseExternalReferenceCodeUpgradeProcessTestCase {
 
 	@Override
 	protected ExternalReferenceCodeModel addExternalReferenceCodeModel(

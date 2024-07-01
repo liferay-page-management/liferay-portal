@@ -14,7 +14,7 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.test.rule.Inject;
-import com.liferay.portal.upgrade.test.util.BaseUpgradeExternalReferenceCodeTestCase;
+import com.liferay.portal.upgrade.test.util.BaseExternalReferenceCodeUpgradeProcessTestCase;
 import com.liferay.portal.upgrade.v7_4_x.UpgradeLayoutExternalReferenceCode;
 
 import org.junit.runner.RunWith;
@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class LayoutUpgradeExternalReferenceCodeTest
-	extends BaseUpgradeExternalReferenceCodeTestCase {
+	extends BaseExternalReferenceCodeUpgradeProcessTestCase {
 
 	@Override
 	protected ExternalReferenceCodeModel addExternalReferenceCodeModel(
