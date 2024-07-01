@@ -3,19 +3,19 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.layout.page.template.internal.upgrade.v5_7_0.test;
+package com.liferay.layout.page.template.internal.upgrade.v5_6_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
-import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
-import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTypeConstants;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
+import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
+import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionLocalService;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.ExternalReferenceCodeModel;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.test.util.BaseUpgradeExternalReferenceCodeTestCase;
@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
  * @author Rubén Pulido
  */
 @RunWith(Arquillian.class)
-public class LayoutPageTemplateEntryUpgradeExternalReferenceCodeTest
+public class LayoutPageTemplateCollectionExternalReferenceCodeUpgradeProcessTest
 	extends BaseUpgradeExternalReferenceCodeTestCase {
 
 	@Override
@@ -35,12 +35,14 @@ public class LayoutPageTemplateEntryUpgradeExternalReferenceCodeTest
 			String tableName)
 		throws PortalException {
 
-		return _layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
-			null, TestPropsValues.getUserId(), group.getGroupId(), 0,
-			RandomTestUtil.randomString(),
-			LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT, 0,
-			WorkflowConstants.STATUS_APPROVED,
-			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+		return _layoutPageTemplateCollectionLocalService.
+			addLayoutPageTemplateCollection(
+				null, TestPropsValues.getUserId(), group.getGroupId(),
+				LayoutPageTemplateConstants.
+					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
+				RandomTestUtil.randomString(), StringPool.BLANK,
+				LayoutPageTemplateCollectionTypeConstants.BASIC,
+				serviceContext);
 	}
 
 	@Override
@@ -48,12 +50,13 @@ public class LayoutPageTemplateEntryUpgradeExternalReferenceCodeTest
 		ExternalReferenceCodeModel externalReferenceCodeModel,
 		String tableName) {
 
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			(LayoutPageTemplateEntry)externalReferenceCodeModel;
+		LayoutPageTemplateCollection layoutPageTemplateCollection =
+			(LayoutPageTemplateCollection)externalReferenceCodeModel;
 
-		return _layoutPageTemplateEntryLocalService.
-			fetchLayoutPageTemplateEntry(
-				layoutPageTemplateEntry.getLayoutPageTemplateEntryId());
+		return _layoutPageTemplateCollectionLocalService.
+			fetchLayoutPageTemplateCollection(
+				layoutPageTemplateCollection.
+					getLayoutPageTemplateCollectionId());
 	}
 
 	@Override
@@ -61,15 +64,15 @@ public class LayoutPageTemplateEntryUpgradeExternalReferenceCodeTest
 		ExternalReferenceCodeModel externalReferenceCodeModel,
 		String tableName) {
 
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			(LayoutPageTemplateEntry)externalReferenceCodeModel;
+		LayoutPageTemplateCollection layoutPageTemplateCollection =
+			(LayoutPageTemplateCollection)externalReferenceCodeModel;
 
-		return layoutPageTemplateEntry.getUuid();
+		return layoutPageTemplateCollection.getUuid();
 	}
 
 	@Override
 	protected String[] getTableNames() {
-		return new String[] {"LayoutPageTemplateEntry"};
+		return new String[] {"LayoutPageTemplateCollection"};
 	}
 
 	@Override
@@ -79,8 +82,8 @@ public class LayoutPageTemplateEntryUpgradeExternalReferenceCodeTest
 	}
 
 	private static final String _CLASS_NAME =
-		"com.liferay.layout.page.template.internal.upgrade.v5_7_0." +
-			"LayoutPageTemplateEntryExternalReferenceCodeUpgradeProcess";
+		"com.liferay.layout.page.template.internal.upgrade.v5_6_0." +
+			"LayoutPageTemplateCollectionExternalReferenceCodeUpgradeProcess";
 
 	@Inject(
 		filter = "(&(component.name=com.liferay.layout.page.template.internal.upgrade.registry.LayoutPageTemplateServiceUpgradeStepRegistrator))"
@@ -88,7 +91,7 @@ public class LayoutPageTemplateEntryUpgradeExternalReferenceCodeTest
 	private static UpgradeStepRegistrator _upgradeStepRegistrator;
 
 	@Inject
-	private LayoutPageTemplateEntryLocalService
-		_layoutPageTemplateEntryLocalService;
+	private LayoutPageTemplateCollectionLocalService
+		_layoutPageTemplateCollectionLocalService;
 
 }

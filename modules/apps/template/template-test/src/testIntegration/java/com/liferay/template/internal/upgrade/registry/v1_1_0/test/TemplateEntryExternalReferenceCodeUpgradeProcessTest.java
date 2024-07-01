@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
  * @author Rubén Pulido
  */
 @RunWith(Arquillian.class)
-public class TemplateEntryUpgradeExternalReferenceCodeTest
+public class TemplateEntryExternalReferenceCodeUpgradeProcessTest
 	extends BaseUpgradeExternalReferenceCodeTestCase {
 
 	@Override

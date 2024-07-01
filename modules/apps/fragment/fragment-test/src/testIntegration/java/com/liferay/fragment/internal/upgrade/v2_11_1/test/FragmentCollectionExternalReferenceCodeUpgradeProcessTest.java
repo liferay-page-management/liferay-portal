@@ -3,9 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.site.navigation.internal.upgrade.v2_5_0.test;
+package com.liferay.fragment.internal.upgrade.v2_11_1.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.fragment.model.FragmentCollection;
+import com.liferay.fragment.service.FragmentCollectionService;
+import com.liferay.fragment.test.util.FragmentTestUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.ExternalReferenceCodeModel;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
@@ -13,9 +16,6 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.test.util.BaseUpgradeExternalReferenceCodeTestCase;
 import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
-import com.liferay.site.navigation.model.SiteNavigationMenu;
-import com.liferay.site.navigation.service.SiteNavigationMenuService;
-import com.liferay.site.navigation.test.util.SiteNavigationMenuTestUtil;
 
 import org.junit.runner.RunWith;
 
@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
  * @author Rubén Pulido
  */
 @RunWith(Arquillian.class)
-public class SiteNavigationMenuUpgradeExternalReferenceCodeTest
+public class FragmentCollectionExternalReferenceCodeUpgradeProcessTest
 	extends BaseUpgradeExternalReferenceCodeTestCase {
 
 	@Override
@@ -31,7 +31,7 @@ public class SiteNavigationMenuUpgradeExternalReferenceCodeTest
 			String tableName)
 		throws PortalException {
 
-		return SiteNavigationMenuTestUtil.addSiteNavigationMenu(group);
+		return FragmentTestUtil.addFragmentCollection(group.getGroupId());
 	}
 
 	@Override
@@ -40,11 +40,11 @@ public class SiteNavigationMenuUpgradeExternalReferenceCodeTest
 			String tableName)
 		throws PortalException {
 
-		SiteNavigationMenu siteNavigationMenu =
-			(SiteNavigationMenu)externalReferenceCodeModel;
+		FragmentCollection fragmentCollection =
+			(FragmentCollection)externalReferenceCodeModel;
 
-		return _siteNavigationMenuService.fetchSiteNavigationMenu(
-			siteNavigationMenu.getSiteNavigationMenuId());
+		return _fragmentCollectionService.fetchFragmentCollection(
+			fragmentCollection.getFragmentCollectionId());
 	}
 
 	@Override
@@ -52,15 +52,15 @@ public class SiteNavigationMenuUpgradeExternalReferenceCodeTest
 		ExternalReferenceCodeModel externalReferenceCodeModel,
 		String tableName) {
 
-		SiteNavigationMenu siteNavigationMenu =
-			(SiteNavigationMenu)externalReferenceCodeModel;
+		FragmentCollection fragmentCollection =
+			(FragmentCollection)externalReferenceCodeModel;
 
-		return siteNavigationMenu.getUuid();
+		return fragmentCollection.getUuid();
 	}
 
 	@Override
 	protected String[] getTableNames() {
-		return new String[] {"SiteNavigationMenu"};
+		return new String[] {"FragmentCollection"};
 	}
 
 	@Override
@@ -70,15 +70,15 @@ public class SiteNavigationMenuUpgradeExternalReferenceCodeTest
 	}
 
 	private static final String _CLASS_NAME =
-		"com.liferay.site.navigation.internal.upgrade.v2_5_0." +
-			"SiteNavigationMenuExternalReferenceCodeUpgradeProcess";
+		"com.liferay.fragment.internal.upgrade.v2_11_1." +
+			"FragmentCollectionExternalReferenceCodeUpgradeProcess";
 
 	@Inject(
-		filter = "(&(component.name=com.liferay.site.navigation.internal.upgrade.registry.SiteNavigationServiceUpgradeStepRegistrator))"
+		filter = "(&(component.name=com.liferay.fragment.internal.upgrade.registry.FragmentServiceUpgradeStepRegistrator))"
 	)
 	private static UpgradeStepRegistrator _upgradeStepRegistrator;
 
 	@Inject
-	private SiteNavigationMenuService _siteNavigationMenuService;
+	private FragmentCollectionService _fragmentCollectionService;
 
 }
