@@ -36,7 +36,7 @@ import org.junit.Test;
 /**
  * @author Rubén Pulido
  */
-public abstract class BaseUpgradeExternalReferenceCodeTestCase {
+public abstract class BaseExternalReferenceCodeUpgradeProcessTestCase {
 
 	@ClassRule
 	@Rule
