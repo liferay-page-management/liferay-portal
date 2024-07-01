@@ -13,6 +13,7 @@ import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.site.navigation.internal.upgrade.v2_0_0.util.SiteNavigationMenuItemTable;
 import com.liferay.site.navigation.internal.upgrade.v2_0_0.util.SiteNavigationMenuTable;
 import com.liferay.site.navigation.internal.upgrade.v2_3_0.SiteNavigationMenuItemUpgradeProcess;
+import com.liferay.site.navigation.internal.upgrade.v2_5_0.SiteNavigationMenuExternalReferenceCodeUpgradeProcess;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -69,16 +70,7 @@ public class SiteNavigationServiceUpgradeStepRegistrator
 
 		registry.register(
 			"2.4.0", "2.5.0",
-			new BaseExternalReferenceCodeUpgradeProcess() {
-
-				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"SiteNavigationMenu", "siteNavigationMenuId"}
-					};
-				}
-
-			});
+			new SiteNavigationMenuExternalReferenceCodeUpgradeProcess());
 	}
 
 }
