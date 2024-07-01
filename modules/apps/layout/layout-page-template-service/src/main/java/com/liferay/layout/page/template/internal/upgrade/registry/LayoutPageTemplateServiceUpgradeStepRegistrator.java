@@ -17,13 +17,14 @@ import com.liferay.layout.page.template.internal.upgrade.v3_1_4.ResourcePermissi
 import com.liferay.layout.page.template.internal.upgrade.v3_3_0.LayoutPageTemplateStructureRelUpgradeProcess;
 import com.liferay.layout.page.template.internal.upgrade.v3_4_1.FragmentEntryLinkEditableValuesUpgradeProcess;
 import com.liferay.layout.page.template.internal.upgrade.v5_3_0.LayoutPageTemplateCollectionUpgradeProcess;
+import com.liferay.layout.page.template.internal.upgrade.v5_6_0.LayoutPageTemplateCollectionExternalReferenceCodeUpgradeProcess;
+import com.liferay.layout.page.template.internal.upgrade.v5_7_0.LayoutPageTemplateEntryExternalReferenceCodeUpgradeProcess;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutPrototypeLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.upgrade.BaseExternalReferenceCodeUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.BaseSQLServerDatetimeUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.CTModelUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.DummyUpgradeProcess;
@@ -214,32 +215,11 @@ public class LayoutPageTemplateServiceUpgradeStepRegistrator
 
 		registry.register(
 			"5.5.0", "5.6.0",
-			new BaseExternalReferenceCodeUpgradeProcess() {
-
-				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{
-							"LayoutPageTemplateCollection",
-							"layoutPageTemplateCollectionId"
-						}
-					};
-				}
-
-			});
+			new LayoutPageTemplateCollectionExternalReferenceCodeUpgradeProcess());
 
 		registry.register(
 			"5.6.0", "5.7.0",
-			new BaseExternalReferenceCodeUpgradeProcess() {
-
-				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"LayoutPageTemplateEntry", "layoutPageTemplateEntryId"}
-					};
-				}
-
-			});
+			new LayoutPageTemplateEntryExternalReferenceCodeUpgradeProcess());
 	}
 
 	@Reference
