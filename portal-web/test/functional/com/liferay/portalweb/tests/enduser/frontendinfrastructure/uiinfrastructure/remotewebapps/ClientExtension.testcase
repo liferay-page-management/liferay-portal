@@ -512,10 +512,7 @@ definition {
 	@description = "Verify that client extension of type Custom Element can be created"
 	@priority = 5
 	test CustomElementCanBeCreated {
-		property app.server.types = "tomcat";
-		property database.types = "mysql";
 		property environment.acceptance = "true";
-		property operating.system.types = "alpine,amazonlinux,centos,debian,fedora,orcllinux,osx,redhat,rockylinux,solaris,suse,ubuntu,windows";
 		property portal.acceptance = "true";
 		property testray.component.names = "Frontend Data Set,Remote Apps";
 
@@ -553,8 +550,6 @@ definition {
 	@description = "LPS-158083. Client Extension using non-root portal context"
 	@priority = 4
 	test CustomElementCanBeCreatedInNonRootContext {
-		property app.server.types = "tomcat";
-		property database.types = "mysql";
 		property portal.context = "liferay";
 		property skip.clean-app-server-deploy-dir = "true";
 		property test.assert.warning.exceptions = "true";
