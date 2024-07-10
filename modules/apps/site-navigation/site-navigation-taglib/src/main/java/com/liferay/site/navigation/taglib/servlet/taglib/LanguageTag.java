@@ -162,9 +162,9 @@ public class LanguageTag extends IncludeTag {
 				PortletDisplayTemplateManagerUtil.renderDDMTemplate(
 					PortalUtil.getClassNameId(LanguageEntry.class),
 					HashMapBuilder.<String, Object>put(
-						"formAction", formAction
+						"formAction", _getFormAction()
 					).put(
-						"formName", _getFormAction()
+						"formName", getFormName()
 					).put(
 						"languageId",
 						() -> {
