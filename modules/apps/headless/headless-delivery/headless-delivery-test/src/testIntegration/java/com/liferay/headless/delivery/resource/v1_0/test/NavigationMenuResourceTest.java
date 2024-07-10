@@ -15,6 +15,11 @@ import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileEntryTypeConstants;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.test.util.DLAppTestUtil;
+import com.liferay.expando.kernel.model.ExpandoBridge;
+import com.liferay.expando.kernel.model.ExpandoColumnConstants;
+import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
+import com.liferay.headless.delivery.client.dto.v1_0.CustomField;
+import com.liferay.headless.delivery.client.dto.v1_0.CustomValue;
 import com.liferay.headless.delivery.client.dto.v1_0.NavigationMenu;
 import com.liferay.headless.delivery.client.dto.v1_0.NavigationMenuItem;
 import com.liferay.headless.delivery.client.pagination.Page;
@@ -23,12 +28,17 @@ import com.liferay.headless.delivery.client.resource.v1_0.NavigationMenuResource
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.test.util.JournalTestUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -40,10 +50,14 @@ import com.liferay.site.navigation.menu.item.layout.constants.SiteNavigationMenu
 import com.liferay.site.navigation.model.SiteNavigationMenuItem;
 import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalService;
 
+import java.io.Serializable;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,6 +88,31 @@ public class NavigationMenuResourceTest
 
 		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
 			_depotEntry.getDepotEntryId(), testGroup.getGroupId());
+
+		_originalPermissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
+
+		_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(
+			testGroup.getCompanyId(), SiteNavigationMenuItem.class.getName());
+
+		if (_expandoBridgeAttributeName == null) {
+			_expandoBridgeAttributeName = StringUtil.randomString();
+		}
+
+		if (!_expandoBridge.hasAttribute(_expandoBridgeAttributeName)) {
+			_expandoBridge.addAttribute(
+				_expandoBridgeAttributeName, ExpandoColumnConstants.STRING,
+				StringPool.BLANK);
+		}
+	}
+
+	@After
+	@Override
+	public void tearDown() throws Exception {
+		PermissionThreadLocal.setPermissionChecker(_originalPermissionChecker);
 	}
 
 	@Override
@@ -362,6 +401,10 @@ public class NavigationMenuResourceTest
 		NavigationMenu postNavigationMenu =
 			testGetNavigationMenu_addNavigationMenu();
 
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				testGroup.getGroupId(), TestPropsValues.getUserId());
+
 		SiteNavigationMenuItem siteNavigationMenuItem =
 			_siteNavigationMenuItemLocalService.addSiteNavigationMenuItem(
 				null, TestPropsValues.getUserId(), testGroup.getGroupId(),
@@ -393,8 +436,32 @@ public class NavigationMenuResourceTest
 						return null;
 					}
 				).buildString(),
-				ServiceContextTestUtil.getServiceContext(
-					testGroup.getGroupId(), TestPropsValues.getUserId()));
+				serviceContext);
+
+		_expandoBridge.setClassPK(
+			siteNavigationMenuItem.getSiteNavigationMenuItemId());
+
+		Serializable attributeValue = _expandoBridge.getAttribute(
+			_expandoBridgeAttributeName);
+
+		Assert.assertEquals(StringPool.BLANK, attributeValue);
+
+		Map<String, Serializable> expandoAttributes =
+			serviceContext.getExpandoBridgeAttributes();
+
+		String updatedAttributeValue = RandomTestUtil.randomString();
+
+		expandoAttributes.put(
+			_expandoBridgeAttributeName, updatedAttributeValue);
+
+		_siteNavigationMenuItemLocalService.updateSiteNavigationMenuItem(
+			TestPropsValues.getUserId(),
+			siteNavigationMenuItem.getSiteNavigationMenuItemId(),
+			siteNavigationMenuItem.getTypeSettings(), serviceContext);
+
+		Assert.assertEquals(
+			updatedAttributeValue,
+			_expandoBridge.getAttribute(_expandoBridgeAttributeName));
 
 		Page<NavigationMenu> page =
 			navigationMenuResource.getSiteNavigationMenusPage(
@@ -412,6 +479,18 @@ public class NavigationMenuResourceTest
 			).contains(
 				"/headless-delivery/v1.0/" + contentURL
 			));
+
+		CustomField[] customFields = ArrayUtil.filter(
+			navigationMenuItem.getCustomFields(),
+			customField -> Objects.equals(
+				_expandoBridgeAttributeName, customField.getName()));
+
+		CustomField customField = customFields[0];
+
+		CustomValue customValue = customField.getCustomValue();
+
+		Assert.assertEquals(updatedAttributeValue, customValue.getData());
+
 		Assert.assertEquals(
 			siteNavigationMenuItem.getSiteNavigationMenuItemId(),
 			GetterUtil.getLong(navigationMenuItem.getId()));
@@ -432,6 +511,10 @@ public class NavigationMenuResourceTest
 
 	@Inject
 	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
+
+	private ExpandoBridge _expandoBridge;
+	private String _expandoBridgeAttributeName;
+	private PermissionChecker _originalPermissionChecker;
 
 	@Inject
 	private SiteNavigationMenuItemLocalService
