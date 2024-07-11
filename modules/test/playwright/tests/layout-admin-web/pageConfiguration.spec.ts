@@ -67,9 +67,9 @@ test('Can configure an embedded page.', async ({
 
 	await pageConfigurationPage.goToSection('Embedded', 'General');
 
-	await expect(
-		page.getByLabel('URL').first()
-	).toHaveValue('https://www.google.com');
+	await expect(page.getByLabel('URL').first()).toHaveValue(
+		'https://www.google.com'
+	);
 });
 
 test('Can configure a full page application.', async ({
@@ -167,7 +167,7 @@ test('Can edit the page name and layout template via pages administration.', asy
 	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
 
 	await expect(
-		page.getByRole('heading', { name: 'Test Page Title Edit' })
+		page.getByRole('heading', {name: 'Test Page Title Edit'})
 	).toBeVisible();
 
 	await expect(page.locator('#layout-column_column-1')).toBeAttached();

@@ -7,8 +7,8 @@ import {Locator, Page} from '@playwright/test';
 
 import {PagesAdminPage} from '../../../pages/layout-admin-web/PagesAdminPage';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+import fillAndClickOutside from '../../../utils/fillAndClickOutside';
 import {waitForSuccessAlert} from '../../../utils/waitForSuccessAlert';
-import fillAndClickOutside from "../../../utils/fillAndClickOutside";
 
 export class PageConfigurationPage {
 	readonly page: Page;
