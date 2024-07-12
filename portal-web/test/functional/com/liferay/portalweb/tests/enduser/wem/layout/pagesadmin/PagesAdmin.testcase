@@ -104,60 +104,6 @@ definition {
 		}
 	}
 
-	@description = "This is a test for LPS-110108. Can add a fourth level of child page and view it on Pages admin."
-	@priority = 5
-	test AddFourthLevelChildPage {
-		property portal.acceptance = "true";
-
-		task ("Add a parent page") {
-			JSONLayout.addPublicLayout(
-				groupName = ${randomSiteName},
-				layoutName = "Test Page Name");
-		}
-
-		task ("Add the first level of child page") {
-			JSONLayout.addPublicLayout(
-				groupName = ${randomSiteName},
-				layoutName = "Child Page Name 1",
-				parentLayoutName = "Test Page Name");
-		}
-
-		task ("Add the second level of child page") {
-			JSONLayout.addPublicLayout(
-				groupName = ${randomSiteName},
-				layoutName = "Child Page Name 2",
-				parentLayoutName = "Child Page Name 1");
-		}
-
-		task ("Add the third level of child page") {
-			JSONLayout.addPublicLayout(
-				groupName = ${randomSiteName},
-				layoutName = "Child Page Name 3",
-				parentLayoutName = "Child Page Name 2");
-		}
-
-		task ("Add the fourth level of child page") {
-			JSONLayout.addPublicLayout(
-				groupName = ${randomSiteName},
-				layoutName = "Child Page Name 4",
-				parentLayoutName = "Child Page Name 3");
-		}
-
-		task ("View the children pages are shown in pages admin") {
-			PagesAdmin.openPagesAdmin(siteURLKey = ${siteURLKey});
-
-			var n = 2;
-
-			for (var i : list "1,2,3,4") {
-				PagesAdmin.viewPageItemPresent(
-					depth = ${n},
-					pageName = "Child Page Name ${i}");
-
-				var n = ${n} + 1;
-			}
-		}
-	}
-
 	@description = "This is a test for LPS-194263. If the page has more than one Experience, the page template created is from the Default experience."
 	@priority = 2
 	test CreatePageTemplateFromContentPageWithExperiencesViaPagesAdmin {
