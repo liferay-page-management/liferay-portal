@@ -29,6 +29,8 @@ export class PagesAdminPage {
 	readonly widgetPageButton: Locator;
 	readonly newButton: Locator;
 	readonly pageEditorPage: PageEditorPage;
+	readonly searchButton: Locator;
+	readonly searchInput: Locator;
 
 	constructor(page: Page) {
 		this.configurationSaveButton = page.getByRole('button', {
@@ -57,6 +59,8 @@ export class PagesAdminPage {
 			.locator('.management-bar')
 			.getByRole('button', {name: 'New'});
 		this.pageEditorPage = new PageEditorPage(this.page);
+		this.searchButton = this.page.getByLabel('Search for', {exact: true});
+		this.searchInput = this.page.getByPlaceholder('Search for');
 	}
 
 	async addContentPage(pageName: string) {
