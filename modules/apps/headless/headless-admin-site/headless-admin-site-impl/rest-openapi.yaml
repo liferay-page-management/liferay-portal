@@ -963,7 +963,7 @@ components:
             description:
                 Represents the settings of allowed fragments in a page drop zone.
             properties:
-                allowedFragmentItemExternalReferences:
+                itemExternalReferences:
                     # @review
                     description:
                         A list of allowed fragments.
@@ -976,7 +976,7 @@ components:
             description:
                 Represents the settings of unallowed fragments in a page drop zone.
             properties:
-                unallowedFragmentItemExternalReferences:
+                itemExternalReferences:
                     items:
                         $ref: "#/components/schemas/ItemExternalReference"
                     type: array
@@ -1946,7 +1946,7 @@ components:
                         experience will always be assigned priority 0. A priority higher than 0 will result in an
                         experience being active and a priority lower than 0 will result in an experience being inactive.
                     type: integer
-                segmentItemExternalReferences:
+                itemExternalReferences:
                     # @review
                     description:
                         A list of external references to the segments the experience is used for.
