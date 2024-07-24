@@ -3538,8 +3538,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/DisplayPageTemplateFolder"
-                    description:
-                        default response
             # @review
             tags: ["DisplayPageTemplateFolder"]
     "/sites/{siteExternalReferenceCode}/display-page-template-folders/permissions":
@@ -3647,8 +3645,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/DisplayPageTemplateFolder"
-                    description:
-                        default response
             tags: ["DisplayPageTemplateFolder"]
         patch:
             # @review
@@ -3687,7 +3683,7 @@ paths:
                         schema:
                             $ref: "#/components/schemas/DisplayPageTemplateFolder"
             responses:
-                default:
+                200:
                     content:
                         application/json:
                             schema:
@@ -3695,8 +3691,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/DisplayPageTemplateFolder"
-                    description:
-                        default response
             tags: ["DisplayPageTemplateFolder"]
         put:
             # @review
@@ -3736,7 +3730,7 @@ paths:
                         schema:
                             $ref: "#/components/schemas/DisplayPageTemplateFolder"
             responses:
-                default:
+                200:
                     content:
                         application/json:
                             schema:
@@ -3744,8 +3738,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/DisplayPageTemplateFolder"
-                    description:
-                        default response
             tags: ["DisplayPageTemplateFolder"]
     "/sites/{siteExternalReferenceCode}/display-page-template-folders/{displayPageTemplateFolderExternalReferenceCode}/display-page-templates":
         get:
@@ -3840,8 +3832,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/DisplayPageTemplate"
-                    description:
-                        default response
             # @review
             tags: ["DisplayPageTemplateFolder"]
     "/sites/{siteExternalReferenceCode}/display-page-template-folders/{displayPageTemplateFolderExternalReferenceCode}/permissions":
@@ -3989,8 +3979,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/DisplayPageTemplate"
-                    description:
-                        default response
             # @review
             tags: ["DisplayPageTemplate"]
     "/sites/{siteExternalReferenceCode}/display-page-templates/permissions":
@@ -4098,8 +4086,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/DisplayPageTemplate"
-                    description:
-                        default response
             tags: ["DisplayPageTemplate"]
         patch:
             # @review
@@ -4138,7 +4124,7 @@ paths:
                         schema:
                             $ref: "#/components/schemas/DisplayPageTemplate"
             responses:
-                default:
+                200:
                     content:
                         application/json:
                             schema:
@@ -4146,8 +4132,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/DisplayPageTemplate"
-                    description:
-                        default response
             tags: ["DisplayPageTemplate"]
         put:
             # @review
@@ -4187,7 +4171,7 @@ paths:
                         schema:
                             $ref: "#/components/schemas/DisplayPageTemplate"
             responses:
-                default:
+                200:
                     content:
                         application/json:
                             schema:
@@ -4195,8 +4179,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/DisplayPageTemplate"
-                    description:
-                        default response
             tags: ["DisplayPageTemplate"]
     "/sites/{siteExternalReferenceCode}/display-page-templates/{displayPageTemplateExternalReferenceCode}/page-specifications":
         post:
@@ -4244,8 +4226,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/ContentPageSpecification"
-                    description:
-                        default response
             # @review
             tags: ["DisplayPageTemplate"]
     "/sites/{siteExternalReferenceCode}/display-page-templates/{displayPageTemplateExternalReferenceCode}/permissions":
@@ -4401,8 +4381,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/FragmentComposition"
-                    description:
-                        default response
             # @review
             tags: ["FragmentComposition"]
     "/sites/{siteExternalReferenceCode}/fragment-compositions/{fragmentCompositionExternalReferenceCode}":
@@ -4465,8 +4443,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/FragmentComposition"
-                    description:
-                        default response
             tags: ["FragmentComposition"]
         patch:
             # @review
@@ -4505,7 +4481,7 @@ paths:
                         schema:
                             $ref: "#/components/schemas/FragmentComposition"
             responses:
-                default:
+                200:
                     content:
                         application/json:
                             schema:
@@ -4513,8 +4489,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/FragmentComposition"
-                    description:
-                        default response
             tags: ["FragmentComposition"]
         put:
             # @review
@@ -4554,7 +4528,7 @@ paths:
                         schema:
                             $ref: "#/components/schemas/FragmentComposition"
             responses:
-                default:
+                200:
                     content:
                         application/json:
                             schema:
@@ -4562,8 +4536,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/FragmentComposition"
-                    description:
-                        default response
             tags: ["FragmentComposition"]
     "/sites/{siteExternalReferenceCode}/master-pages":
         get:
@@ -4657,8 +4629,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/MasterPage"
-                    description:
-                        default response
             # @review
             tags: ["MasterPage"]
     "/sites/{siteExternalReferenceCode}/master-pages/permissions":
@@ -4766,8 +4736,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/MasterPage"
-                    description:
-                        default response
             tags: ["MasterPage"]
         patch:
             # @review
@@ -4806,7 +4774,7 @@ paths:
                         schema:
                             $ref: "#/components/schemas/MasterPage"
             responses:
-                default:
+                200:
                     content:
                         application/json:
                             schema:
@@ -4814,8 +4782,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/MasterPage"
-                    description:
-                        default response
             tags: ["MasterPage"]
         put:
             # @review
@@ -4854,7 +4820,7 @@ paths:
                         schema:
                             $ref: "#/components/schemas/MasterPage"
             responses:
-                default:
+                200:
                     content:
                         application/json:
                             schema:
@@ -4862,8 +4828,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/MasterPage"
-                    description:
-                        default response
             tags: ["MasterPage"]
     "/sites/{siteExternalReferenceCode}/master-pages/{masterPageExternalReferenceCode}/page-specifications":
         post:
@@ -4911,8 +4875,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/ContentPageSpecification"
-                    description:
-                        default response
             # @review
             tags: ["MasterPage"]
     "/sites/{siteExternalReferenceCode}/master-pages/{masterPageExternalReferenceCode}/permissions":
@@ -5026,13 +4988,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageElement"
-                                type: array
+                                $ref: "#/components/schemas/PageElement"
                         application/xml:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageElement"
+                                $ref: "#/components/schemas/PageElement"
             tags: ["PageElement"]
         patch:
             # @review
@@ -5068,13 +5027,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageElement"
-                                type: array
+                                $ref: "#/components/schemas/PageElement"
                         application/xml:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageElement"
+                                $ref: "#/components/schemas/PageElement"
             tags: ["PageElement"]
         put:
             # @review
@@ -5110,13 +5066,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageElement"
-                                type: array
+                                $ref: "#/components/schemas/PageElement"
                         application/xml:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageElement"
+                                $ref: "#/components/schemas/PageElement"
             tags: ["PageElement"]
     "/sites/{siteExternalReferenceCode}/page-elements/{pageElementExternalReferenceCode}/fragment-compositions":
         post:
@@ -5172,12 +5125,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageElement"
+                                $ref: "#/components/schemas/PageElement"
                         application/xml:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageElement"
+                                $ref: "#/components/schemas/PageElement"
             # @review
             tags: ["PageElement"]
     "/sites/{siteExternalReferenceCode}/page-elements/{pageElementExternalReferenceCode}/page-elements":
@@ -5298,13 +5249,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageExperience"
-                                type: array
+                                $ref: "#/components/schemas/PageExperience"
                         application/xml:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageExperience"
+                                $ref: "#/components/schemas/PageExperience"
             tags: ["PageExperience"]
         patch:
             # @review
@@ -5340,13 +5288,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageExperience"
-                                type: array
+                                $ref: "#/components/schemas/PageExperience"
                         application/xml:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageExperience"
+                                $ref: "#/components/schemas/PageExperience"
             tags: ["PageExperience"]
         put:
             # @review
@@ -5381,13 +5326,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageExperience"
-                                type: array
+                                $ref: "#/components/schemas/PageExperience"
                         application/xml:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageExperience"
+                                $ref: "#/components/schemas/PageExperience"
             tags: ["PageExperience"]
     "/sites/{siteExternalReferenceCode}/page-experiences/{pageExperienceExternalReferenceCode}/page-elements":
         get:
@@ -5481,8 +5423,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/PageElement"
-                    description:
-                        default response
             # @review
             tags: ["PageExperience"]
     "/sites/{siteExternalReferenceCode}/page-experiences/{pageExperienceExternalReferenceCode}/page-rules":
@@ -5576,8 +5516,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/PageRule"
-                    description:
-                        default response
             # @review
             tags: ["PageExperience"]
     "/sites/{siteExternalReferenceCode}/page-rule-actions/{pageRuleActionExternalReferenceCode}":
@@ -5650,13 +5588,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageRuleAction"
-                                type: array
+                                $ref: "#/components/schemas/PageRuleAction"
                         application/xml:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageRuleAction"
+                                $ref: "#/components/schemas/PageRuleAction"
             tags: ["PageRuleAction"]
         patch:
             # @review
@@ -5693,13 +5628,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageRuleAction"
-                                type: array
+                                $ref: "#/components/schemas/PageRuleAction"
                         application/xml:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageRuleAction"
+                                $ref: "#/components/schemas/PageRuleAction"
             tags: ["PageRuleAction"]
         put:
             # @review
@@ -5735,13 +5667,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageRuleAction"
-                                type: array
+                                $ref: "#/components/schemas/PageRuleAction"
                         application/xml:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageRuleAction"
+                                $ref: "#/components/schemas/PageRuleAction"
             tags: ["PageRuleAction"]
     "/sites/{siteExternalReferenceCode}/page-rule-conditions/{pageRuleConditionExternalReferenceCode}":
         delete:
@@ -5813,13 +5742,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageRuleCondition"
-                                type: array
+                                $ref: "#/components/schemas/PageRuleCondition"
                         application/xml:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageRuleCondition"
+                                $ref: "#/components/schemas/PageRuleCondition"
             tags: ["PageRuleCondition"]
         patch:
             # @review
@@ -5856,13 +5782,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageRuleCondition"
-                                type: array
+                                $ref: "#/components/schemas/PageRuleCondition"
                         application/xml:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageRuleCondition"
+                                $ref: "#/components/schemas/PageRuleCondition"
             tags: ["PageRuleCondition"]
         put:
             # @review
@@ -5898,13 +5821,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageRuleCondition"
-                                type: array
+                                $ref: "#/components/schemas/PageRuleCondition"
                         application/xml:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageRuleCondition"
+                                $ref: "#/components/schemas/PageRuleCondition"
             tags: ["PageRuleCondition"]
     "/sites/{siteExternalReferenceCode}/page-rules/{pageRuleExternalReferenceCode}":
         delete:
@@ -5974,13 +5894,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageRule"
-                                type: array
+                                $ref: "#/components/schemas/PageRule"
                         application/xml:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageRule"
+                                $ref: "#/components/schemas/PageRule"
             tags: ["PageRule"]
         patch:
             # @review
@@ -6016,13 +5933,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageRule"
-                                type: array
+                                $ref: "#/components/schemas/PageRule"
                         application/xml:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageRule"
+                                $ref: "#/components/schemas/PageRule"
             tags: ["PageRule"]
         put:
             # @review
@@ -6057,13 +5971,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageRule"
-                                type: array
+                                $ref: "#/components/schemas/PageRule"
                         application/xml:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageRule"
+                                $ref: "#/components/schemas/PageRule"
             tags: ["PageRule"]
     "/sites/{siteExternalReferenceCode}/page-rules/{pageRuleExternalReferenceCode}/page-rule-actions":
         get:
@@ -6158,8 +6069,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/PageRuleAction"
-                    description:
-                        default response
             # @review
             tags: ["PageRule"]
     "/sites/{siteExternalReferenceCode}/page-rules/{pageRuleExternalReferenceCode}/page-rule-conditions":
@@ -6256,8 +6165,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/PageRuleCondition"
-                    description:
-                        default response
             # @review
             tags: ["PageRule"]
     "/sites/{siteExternalReferenceCode}/page-specifications/{pageSpecificationExternalReferenceCode}":
@@ -6328,13 +6235,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageSpecification"
-                                type: array
+                                $ref: "#/components/schemas/PageSpecification"
                         application/xml:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageSpecification"
+                                $ref: "#/components/schemas/PageSpecification"
             tags: ["PageSpecification"]
         patch:
             # @review
@@ -6370,13 +6274,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageSpecification"
-                                type: array
+                                $ref: "#/components/schemas/PageSpecification"
                         application/xml:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageSpecification"
+                                $ref: "#/components/schemas/PageSpecification"
             tags: ["PageSpecification"]
         put:
             # @review
@@ -6411,13 +6312,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageSpecification"
-                                type: array
+                                $ref: "#/components/schemas/PageSpecification"
                         application/xml:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/PageSpecification"
+                                $ref: "#/components/schemas/PageSpecification"
             tags: ["PageSpecification"]
     "/sites/{siteExternalReferenceCode}/page-specifications/{pageSpecificationExternalReferenceCode}/page-experiences":
         get:
@@ -6508,8 +6406,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/PageExperience"
-                    description:
-                        default response
             # @review
             tags: ["PageSpecification"]
     "/sites/{siteExternalReferenceCode}/page-specifications/{pageSpecificationExternalReferenceCode}/publish":
@@ -6550,8 +6446,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/PageSpecification"
-                    description:
-                        default response
             # @review
             tags: ["PageSpecification"]
     "/sites/{siteExternalReferenceCode}/page-template-sets":
@@ -6646,8 +6540,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/PageTemplateSet"
-                    description:
-                        default response
             # @review
             tags: ["PageTemplateSet"]
     "/sites/{siteExternalReferenceCode}/page-template-sets/permissions":
@@ -6755,8 +6647,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/PageTemplateSet"
-                    description:
-                        default response
             tags: ["PageTemplateSet"]
         patch:
             # @review
@@ -6795,7 +6685,7 @@ paths:
                         schema:
                             $ref: "#/components/schemas/PageTemplateSet"
             responses:
-                default:
+                200:
                     content:
                         application/json:
                             schema:
@@ -6803,8 +6693,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/PageTemplateSet"
-                    description:
-                        default response
             tags: ["PageTemplateSet"]
         put:
             # @review
@@ -6844,7 +6732,7 @@ paths:
                         schema:
                             $ref: "#/components/schemas/PageTemplateSet"
             responses:
-                default:
+                200:
                     content:
                         application/json:
                             schema:
@@ -6852,8 +6740,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/PageTemplateSet"
-                    description:
-                        default response
             tags: ["PageTemplateSet"]
     "/sites/{siteExternalReferenceCode}/page-template-sets/{pageTemplateSetExternalReferenceCode}/page-templates":
         get:
@@ -6948,8 +6834,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/PageTemplate"
-                    description:
-                        default response
             # @review
             tags: ["PageTemplateSet"]
     "/sites/{siteExternalReferenceCode}/page-template-sets/{pageTemplateSetExternalReferenceCode}/permissions":
@@ -7097,8 +6981,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/PageTemplate"
-                    description:
-                        default response
             # @review
             tags: ["PageTemplate"]
     "/sites/{siteExternalReferenceCode}/page-templates/permissions":
@@ -7206,8 +7088,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/PageTemplate"
-                    description:
-                        default response
             tags: ["PageTemplate"]
         patch:
             # @review
@@ -7246,7 +7126,7 @@ paths:
                         schema:
                             $ref: "#/components/schemas/PageTemplate"
             responses:
-                default:
+                200:
                     content:
                         application/json:
                             schema:
@@ -7254,8 +7134,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/PageTemplate"
-                    description:
-                        default response
             tags: ["PageTemplate"]
         put:
             # @review
@@ -7294,7 +7172,7 @@ paths:
                         schema:
                             $ref: "#/components/schemas/PageTemplate"
             responses:
-                default:
+                200:
                     content:
                         application/json:
                             schema:
@@ -7302,8 +7180,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/PageTemplate"
-                    description:
-                        default response
             tags: ["PageTemplate"]
     "/sites/{siteExternalReferenceCode}/page-templates/{pageTemplateExternalReferenceCode}/page-specifications":
         post:
@@ -7351,8 +7227,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/ContentPageSpecification"
-                    description:
-                        default response
             # @review
             tags: ["PageTemplate"]
     "/sites/{siteExternalReferenceCode}/page-templates/{pageTemplateExternalReferenceCode}/permissions":
@@ -7500,8 +7374,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/SitePage"
-                    description:
-                        default response
             # @review
             tags: ["SitePage"]
     "/sites/{siteExternalReferenceCode}/site-pages/permissions":
@@ -7609,8 +7481,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/SitePage"
-                    description:
-                        default response
             tags: ["SitePage"]
         patch:
             # @review
@@ -7649,7 +7519,7 @@ paths:
                         schema:
                             $ref: "#/components/schemas/SitePage"
             responses:
-                default:
+                200:
                     content:
                         application/json:
                             schema:
@@ -7657,8 +7527,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/SitePage"
-                    description:
-                        default response
             tags: ["SitePage"]
         put:
             # @review
@@ -7697,7 +7565,7 @@ paths:
                         schema:
                             $ref: "#/components/schemas/SitePage"
             responses:
-                default:
+                200:
                     content:
                         application/json:
                             schema:
@@ -7705,8 +7573,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/SitePage"
-                    description:
-                        default response
             tags: ["SitePage"]
     "/sites/{siteExternalReferenceCode}/site-pages/{sitePageExternalReferenceCode}/friendly-url-history":
         get:
@@ -7836,8 +7702,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/ContentPageSpecification"
-                    description:
-                        default response
             # @review
             tags: ["SitePage"]
     "/sites/{siteExternalReferenceCode}/site-pages/{sitePageExternalReferenceCode}/permissions":
@@ -7981,8 +7845,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/WidgetPageWidgetInstance"
-                    description:
-                        default response
             # @review
             tags: ["SitePage"]
     "/sites/{siteExternalReferenceCode}/utility-pages":
@@ -8077,8 +7939,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/UtilityPage"
-                    description:
-                        default response
             # @review
             tags: ["UtilityPage"]
     "/sites/{siteExternalReferenceCode}/utility-pages/permissions":
@@ -8186,8 +8046,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/UtilityPage"
-                    description:
-                        default response
             tags: ["UtilityPage"]
         patch:
             # @review
@@ -8226,7 +8084,7 @@ paths:
                         schema:
                             $ref: "#/components/schemas/UtilityPage"
             responses:
-                default:
+                200:
                     content:
                         application/json:
                             schema:
@@ -8234,8 +8092,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/UtilityPage"
-                    description:
-                        default response
             tags: ["UtilityPage"]
         put:
             # @review
@@ -8274,7 +8130,7 @@ paths:
                         schema:
                             $ref: "#/components/schemas/UtilityPage"
             responses:
-                default:
+                200:
                     content:
                         application/json:
                             schema:
@@ -8282,8 +8138,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/UtilityPage"
-                    description:
-                        default response
             tags: ["UtilityPage"]
     "/sites/{siteExternalReferenceCode}/utility-pages/{utilityPageExternalReferenceCode}/page-specifications":
         get:
@@ -8372,8 +8226,6 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/ContentPageSpecification"
-                    description:
-                        default response
             # @review
             tags: ["UtilityPage"]
     "/sites/{siteExternalReferenceCode}/utility-pages/{utilityPageExternalReferenceCode}/permissions":
@@ -8483,13 +8335,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/WidgetPageWidgetInstance"
-                                type: array
+                                $ref: "#/components/schemas/WidgetPageWidgetInstance"
                         application/xml:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/WidgetPageWidgetInstance"
+                                $ref: "#/components/schemas/WidgetPageWidgetInstance"
             tags: ["WidgetInstance"]
         patch:
             # @review
@@ -8524,13 +8373,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/WidgetPageWidgetInstance"
-                                type: array
+                                $ref: "#/components/schemas/WidgetPageWidgetInstance"
                         application/xml:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/WidgetPageWidgetInstance"
+                                $ref: "#/components/schemas/WidgetPageWidgetInstance"
             tags: ["WidgetInstance"]
         put:
             # @review
@@ -8564,11 +8410,8 @@ paths:
                     content:
                         application/json:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/WidgetPageWidgetInstance"
-                                type: array
+                                $ref: "#/components/schemas/WidgetPageWidgetInstance"
                         application/xml:
                             schema:
-                                items:
-                                    $ref: "#/components/schemas/WidgetPageWidgetInstance"
+                                $ref: "#/components/schemas/WidgetPageWidgetInstance"
             tags: ["WidgetInstance"]
