@@ -55,6 +55,14 @@ export function getToControlsId(collectionId, index, toControlsId) {
 	};
 }
 
+function getFromControlsId(id) {
+	const splits = id.split(COLLECTION_ID_DIVIDER);
+
+	const itemId = splits.pop();
+
+	return itemId || id;
+}
+
 export function fromControlsId(controlsItemId) {
 	if (!controlsItemId) {
 		return null;
@@ -63,17 +71,10 @@ export function fromControlsId(controlsItemId) {
 		Liferay.FeatureFlags['LPD-18221'] &&
 		Array.isArray(controlsItemId)
 	) {
-
-		// todo: adapt collections for multiselect
-
-		return controlsItemId;
+		return controlsItemId.map(getFromControlsId);
 	}
 	else {
-		const splits = controlsItemId.split(COLLECTION_ID_DIVIDER);
-
-		const itemId = splits.pop();
-
-		return itemId || controlsItemId;
+		return getFromControlsId(controlsItemId);
 	}
 }
 
