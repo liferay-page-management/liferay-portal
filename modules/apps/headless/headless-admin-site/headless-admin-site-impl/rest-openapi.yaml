@@ -274,23 +274,23 @@ components:
                         The client extension's external reference code.
                     type: string
             type: object
-        CollectionConfig:
+        CollectionReference:
+            # @review
+            description:
+                The page collection's reference.
+            discriminator:
+                mapping:
+                    Collection: "#/components/schemas/ItemExternalReference"
+                    CollectionProvider: "#/components/schemas/ClassNameReference"
+                propertyName: collectionType
             properties:
-                collectionReference:
-                    # @review
-                    description:
-                        The page collection's reference.
-                    discriminator:
-                        mapping:
-                            Collection: "#/components/schemas/ItemExternalReference"
-                            CollectionProvider: "#/components/schemas/ClassNameReference"
-                        propertyName: collectionType
                 collectionType:
                     # @review
                     description:
                         The collection's type (Collection, CollectionProvider).
                     enum: [Collection, CollectionProvider]
                     type: string
+            type: object
         CollectionPageSettings:
             allOf:
                 - $ref: "#/components/schemas/PageSettings"
