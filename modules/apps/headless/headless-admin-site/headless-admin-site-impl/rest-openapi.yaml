@@ -2445,14 +2445,10 @@ components:
                     description:
                         The page template's set.
                 pageTemplateSettings:
+                    $ref: "#/components/schemas/PageTemplateSettings"
                     # @review
                     description:
                         The settings of the page template.
-                    discriminator:
-                        mapping:
-                            ContentPageTemplate: "#/components/schemas/ContentPageTemplateSettings"
-                            WidgetPageTemplate: "#/components/schemas/WidgetPageTemplateSettings"
-                        propertyName: type
                 taxonomyCategories:
                     # @review
                     description:
@@ -2536,6 +2532,16 @@ components:
                     description:
                         A valid external identifier to reference this page template set.
                     type: string
+            type: object
+        PageTemplateSettings:
+            # @review
+            description:
+                The settings of the page template.
+            discriminator:
+                mapping:
+                    ContentPageTemplate: "#/components/schemas/ContentPageTemplateSettings"
+                    WidgetPageTemplate: "#/components/schemas/WidgetPageTemplateSettings"
+                propertyName: type
             type: object
         PageWidgetInstanceDefinition:
             # @review
