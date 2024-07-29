@@ -821,15 +821,12 @@ public class NavigationMenuResourceTest
 			nameI18nMap1.get(locale.toLanguageTag()), nameI18nMap1,
 			getNavigationMenu.getNavigationMenuItems()[0], "navigationMenu",
 			false);
-
 		_assertNavigationMenuItem(
 			nameI18nMap1.get(locale.toLanguageTag()), nameI18nMap1,
 			getNavigationMenu.getNavigationMenuItems()[1], "page", true);
-
 		_assertNavigationMenuItem(
 			nameI18nMap2.get(LocaleUtil.US.toLanguageTag()), nameI18nMap2,
 			getNavigationMenu.getNavigationMenuItems()[2], "page", true);
-
 		_assertNavigationMenuItem(
 			layoutNameMap1.get(locale),
 			HashMapBuilder.put(
@@ -839,7 +836,6 @@ public class NavigationMenuResourceTest
 				layoutNameMap1.get(LocaleUtil.SPAIN)
 			).build(),
 			getNavigationMenu.getNavigationMenuItems()[3], "page", false);
-
 		_assertNavigationMenuItem(
 			layoutNameMap2.get(LocaleUtil.US),
 			HashMapBuilder.put(
