@@ -157,10 +157,10 @@ components:
                     description:
                         The settings of the page template.
                     discriminator:
+                        mapping:
+                            ContentPageTemplate: "#/components/schemas/ContentPageTemplateSettings"
+                            WidgetPageTemplate: "#/components/schemas/WidgetPageTemplateSettings"
                         propertyName: type
-                    mapping:
-                        ContentPageTemplate: "#/components/schemas/ContentPageTemplateSettings"
-                        WidgetPageTemplate: "#/components/schemas/WidgetPageTemplateSettings"
                     oneOf:
                         - $ref: "#/components/schemas/ContentPageTemplateSettings"
                         - $ref: "#/components/schemas/WidgetPageTemplateSettings"
@@ -284,10 +284,10 @@ components:
                     description:
                         The page collection's reference.
                     discriminator:
+                        mapping:
+                            Collection: "#/components/schemas/ItemExternalReference"
+                            CollectionProvider: "#/components/schemas/ClassNameReference"
                         propertyName: collectionType
-                    mapping:
-                        Collection: "#/components/schemas/ItemExternalReference"
-                        CollectionProvider: "#/components/schemas/ClassNameReference"
                     oneOf:
                         - $ref: "#/components/schemas/ClassNameReference"
                         - $ref: "#/components/schemas/ItemExternalReference"
@@ -2308,20 +2308,20 @@ components:
                 content page may contain 0 or 1 page specifications in draft status and 0 or 1 page specifications in
                 published status. A widget page contains only 1 page specification in published status.
             discriminator:
+                mapping:
+                    ContentPageSpecification: "#/components/schemas/ContentPageSpecification"
+                    WidgetPageSpecification: "#/components/schemas/WidgetPageSpecification"
                 propertyName: type
-            mapping:
-                ContentPageSpecification: "#/components/schemas/ContentPageSpecification"
-                WidgetPageSpecification: "#/components/schemas/WidgetPageSpecification"
             oneOf:
                 - $ref: "#/components/schemas/ContentPageSpecification"
                 - $ref: "#/components/schemas/WidgetPageSpecification"
             type: object
         PageTemplate:
             discriminator:
+                mapping:
+                    ContentPageTemplate: "#/components/schemas/ContentPageTemplate"
+                    WidgetPageTemplate: "#/components/schemas/WidgetPageTemplate"
                 propertyName: type
-            mapping:
-                ContentPageTemplate: "#/components/schemas/ContentPageTemplate"
-                WidgetPageTemplate: "#/components/schemas/WidgetPageTemplate"
             oneOf:
                 - $ref: "#/components/schemas/ContentPageTemplate"
                 - $ref: "#/components/schemas/WidgetPageTemplate"
@@ -2705,11 +2705,11 @@ components:
                     description:
                         Settings of the page, such as SEO or OpenGraph.
                     discriminator:
+                        mapping:
+                            CollectionPage: "#/components/schemas/CollectionPageSettings"
+                            ContentPage: "#/components/schemas/ContentPageSettings"
+                            WidgetPage: "#/components/schemas/WidgetPageSettings"
                         propertyName: type
-                    mapping:
-                        CollectionPage: "#/components/schemas/CollectionPageSettings"
-                        ContentPage: "#/components/schemas/ContentPageSettings"
-                        WidgetPage: "#/components/schemas/WidgetPageSettings"
                     oneOf:
                         - $ref: "#/components/schemas/CollectionPageSettings"
                         - $ref: "#/components/schemas/ContentPageSettings"
