@@ -28,7 +28,7 @@ export default function addItem({
 			clearPageContents();
 
 			if (addedItemId) {
-				selectItem(addedItemId);
+				selectItem(addedItemId, layoutData);
 			}
 		});
 	};

@@ -36,6 +36,7 @@ import {TARGET_POSITIONS} from '../../utils/drag_and_drop/constants/targetPositi
 import getDropData from '../../utils/drag_and_drop/getDropData';
 import itemIsAncestor from '../../utils/drag_and_drop/itemIsAncestor';
 import {isUnmappedCollection} from '../../utils/isUnmappedCollection';
+import useSelectFirstControlsItem from '../useSelectFirstControlsItem';
 
 const DIRECTIONS = {
 	down: 'down',
@@ -60,6 +61,7 @@ export default function KeyboardMovementManager() {
 	const disableMovement = useDisableKeyboardMovement();
 	const setTarget = useSetMovementTarget();
 	const setText = useSetMovementText();
+	const selectFirstControlsItem = useSelectFirstControlsItem();
 	const selectItem = useSelectItem();
 	const dispatch = useDispatch();
 
@@ -110,7 +112,7 @@ export default function KeyboardMovementManager() {
 								portletId: source.portletId,
 								portletItemId: source.portletItemId,
 								position,
-								selectItem,
+								selectItem: selectFirstControlsItem,
 							});
 						}
 						else {
@@ -119,7 +121,7 @@ export default function KeyboardMovementManager() {
 								groupId: source.groupId,
 								parentItemId: dropItemId,
 								position,
-								selectItem,
+								selectItem: selectFirstControlsItem,
 								type: source.type,
 							});
 						}
@@ -129,7 +131,7 @@ export default function KeyboardMovementManager() {
 							itemType: source.type,
 							parentItemId: dropItemId,
 							position,
-							selectItem,
+							selectItem: selectFirstControlsItem,
 						});
 					}
 				}
