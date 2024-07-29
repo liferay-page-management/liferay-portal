@@ -2542,6 +2542,12 @@ components:
                     ContentPageTemplate: "#/components/schemas/ContentPageTemplateSettings"
                     WidgetPageTemplate: "#/components/schemas/WidgetPageTemplateSettings"
                 propertyName: type
+            properties:
+                type:
+                    enum:
+                        - Content
+                        - Widget
+                    type: string
             type: object
         PageWidgetInstanceDefinition:
             # @review
