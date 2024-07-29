@@ -2295,6 +2295,42 @@ components:
                         The page rule condition's value.
                     type: string
             type: object
+        PageSettings:
+            discriminator:
+                mapping:
+                    CollectionPage: "#/components/schemas/CollectionPageSettings"
+                    ContentPage: "#/components/schemas/ContentPageSettings"
+                    WidgetPage: "#/components/schemas/WidgetPageSettings"
+                propertyName: type
+            properties:
+                customMetaTags:
+                    # @review
+                    description:
+                        A list of custom meta tags this page has.
+                    items:
+                        $ref: "#/components/schemas/CustomMetaTag"
+                    type: array
+                hiddenFromNavigation:
+                    # @review
+                    description:
+                        A flag that indicates whether the page is hidden from navigation.
+                    type: boolean
+                navigationMenuSettings:
+                    $ref: "#/components/schemas/NavigationMenuSettings"
+                    # @review
+                    description:
+                        The page's site navigation menu settings.
+                openGraphSettings:
+                    $ref: "#/components/schemas/OpenGraphSettings"
+                    # @review
+                    description:
+                        The page's Open Graph settings.
+                seoSettings:
+                    $ref: "#/components/schemas/SEOSettings"
+                    # @review
+                    description:
+                        The page's SEO settings.
+            type: object
         PageSpecification:
             # @review
             description:
@@ -2689,16 +2725,10 @@ components:
                     readOnly: true
                     type: array
                 pageSettings:
+                    $ref: "#/components/schemas/PageSettings"
                     # @review
                     description:
                         Settings of the page, such as SEO or OpenGraph.
-                    discriminator:
-                        mapping:
-                            CollectionPage: "#/components/schemas/CollectionPageSettings"
-                            ContentPage: "#/components/schemas/ContentPageSettings"
-                            WidgetPage: "#/components/schemas/WidgetPageSettings"
-                        propertyName: type
-                    type: object
                 pageSpecifications:
                     # @review
                     description:
