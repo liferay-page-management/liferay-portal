@@ -293,7 +293,7 @@ components:
                     type: string
         CollectionPageSettings:
             allOf:
-                - $ref: "#/components/schemas/BasePageSettings"
+                - $ref: "#/components/schemas/PageSettings"
                 - properties:
                       collectionConfig:
                           $ref: "#/components/schemas/CollectionConfig"
@@ -349,7 +349,7 @@ components:
             type: object
         ContentPageSettings:
             allOf:
-                - $ref: "#/components/schemas/BasePageSettings"
+                - $ref: "#/components/schemas/PageSettings"
             # @review
             description:
                 The settings of a content page.
@@ -2974,7 +2974,7 @@ components:
                     type: array
         WidgetPageSettings:
             allOf:
-                - $ref: "#/components/schemas/BasePageSettings"
+                - $ref: "#/components/schemas/PageSettings"
                 - properties:
                       customizable:
                           # @review
