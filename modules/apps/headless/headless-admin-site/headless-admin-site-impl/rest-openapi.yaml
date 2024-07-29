@@ -356,7 +356,7 @@ components:
             type: object
         ContentPageSpecification:
             allOf:
-                - $ref: "#/components/schemas/BasePageSpecification"
+                - $ref: "#/components/schemas/PageSpecification"
                 - properties:
                       pageExperiences:
                           items:
@@ -3023,7 +3023,7 @@ components:
             type: object
         WidgetPageSpecification:
             allOf:
-                - $ref: "#/components/schemas/BasePageSpecification"
+                - $ref: "#/components/schemas/PageSpecification"
                 - properties:
                       widgetPageSections:
                           # @review
