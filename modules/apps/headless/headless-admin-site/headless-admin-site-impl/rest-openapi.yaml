@@ -2349,6 +2349,21 @@ components:
                     ContentPageSpecification: "#/components/schemas/ContentPageSpecification"
                     WidgetPageSpecification: "#/components/schemas/WidgetPageSpecification"
                 propertyName: type
+            properties:
+                externalReferenceCode:
+                    description:
+                        The page specification's external reference code, unique per site.
+                    type: string
+                settings:
+                    $ref: "#/components/schemas/Settings"
+                type:
+                    # @review
+                    description:
+                        The type of the page specification.
+                    enum:
+                        - ContentPageSpecification
+                        - WidgetPageSpecification
+                    type: string
             type: object
         PageTemplate:
             discriminator:
