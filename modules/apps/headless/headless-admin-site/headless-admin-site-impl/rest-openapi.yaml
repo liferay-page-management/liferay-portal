@@ -161,9 +161,6 @@ components:
                             ContentPageTemplate: "#/components/schemas/ContentPageTemplateSettings"
                             WidgetPageTemplate: "#/components/schemas/WidgetPageTemplateSettings"
                         propertyName: type
-                    oneOf:
-                        - $ref: "#/components/schemas/ContentPageTemplateSettings"
-                        - $ref: "#/components/schemas/WidgetPageTemplateSettings"
                 taxonomyCategories:
                     # @review
                     description:
@@ -288,9 +285,6 @@ components:
                             Collection: "#/components/schemas/ItemExternalReference"
                             CollectionProvider: "#/components/schemas/ClassNameReference"
                         propertyName: collectionType
-                    oneOf:
-                        - $ref: "#/components/schemas/ClassNameReference"
-                        - $ref: "#/components/schemas/ItemExternalReference"
                 collectionType:
                     # @review
                     description:
@@ -2312,9 +2306,6 @@ components:
                     ContentPageSpecification: "#/components/schemas/ContentPageSpecification"
                     WidgetPageSpecification: "#/components/schemas/WidgetPageSpecification"
                 propertyName: type
-            oneOf:
-                - $ref: "#/components/schemas/ContentPageSpecification"
-                - $ref: "#/components/schemas/WidgetPageSpecification"
             type: object
         PageTemplate:
             discriminator:
@@ -2322,9 +2313,6 @@ components:
                     ContentPageTemplate: "#/components/schemas/ContentPageTemplate"
                     WidgetPageTemplate: "#/components/schemas/WidgetPageTemplate"
                 propertyName: type
-            oneOf:
-                - $ref: "#/components/schemas/ContentPageTemplate"
-                - $ref: "#/components/schemas/WidgetPageTemplate"
             type: object
         PageTemplateSet:
             # @review
@@ -2710,10 +2698,6 @@ components:
                             ContentPage: "#/components/schemas/ContentPageSettings"
                             WidgetPage: "#/components/schemas/WidgetPageSettings"
                         propertyName: type
-                    oneOf:
-                        - $ref: "#/components/schemas/CollectionPageSettings"
-                        - $ref: "#/components/schemas/ContentPageSettings"
-                        - $ref: "#/components/schemas/WidgetPageSettings"
                     type: object
                 pageSpecifications:
                     # @review
