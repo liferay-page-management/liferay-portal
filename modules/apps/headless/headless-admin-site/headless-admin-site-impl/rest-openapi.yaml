@@ -2330,6 +2330,13 @@ components:
                     # @review
                     description:
                         The page's SEO settings.
+                # @TODO There is already a type at SitePage level. Is it possible not to duplicate it here?
+                type:
+                    enum:
+                        - CollectionPage
+                        - ContentPage
+                        - WidgetPage
+                    type: string
             type: object
         PageSpecification:
             # @review
