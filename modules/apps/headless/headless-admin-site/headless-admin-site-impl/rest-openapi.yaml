@@ -1870,6 +1870,13 @@ components:
                     description:
                         The experience's external reference code, unique per site.
                     type: string
+                itemExternalReferences:
+                    # @review
+                    description:
+                        A list of external references to the segments the experience is used for.
+                    items:
+                        $ref: "#/components/schemas/ItemExternalReference"
+                    type: array
                 key:
                     # @review
                     description:
@@ -1903,13 +1910,6 @@ components:
                         experience will always be assigned priority 0. A priority higher than 0 will result in an
                         experience being active and a priority lower than 0 will result in an experience being inactive.
                     type: integer
-                itemExternalReferences:
-                    # @review
-                    description:
-                        A list of external references to the segments the experience is used for.
-                    items:
-                        $ref: "#/components/schemas/ItemExternalReference"
-                    type: array
             type: object
         PageFormDefinition:
             # @review
