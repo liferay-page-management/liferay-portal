@@ -369,7 +369,7 @@ components:
             type: object
         ContentPageTemplate:
             allOf:
-                - $ref: "#/components/schemas/BasePageTemplate"
+                - $ref: "#/components/schemas/PageTemplate"
             # @review
             description:
                 A content page template.
@@ -3150,7 +3150,7 @@ components:
             type: object
         WidgetPageTemplate:
             allOf:
-                - $ref: "#/components/schemas/BasePageTemplate"
+                - $ref: "#/components/schemas/PageTemplate"
                 - properties:
                       active:
                           # @review
