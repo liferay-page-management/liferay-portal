@@ -293,7 +293,9 @@ function TopperContent({
 								>
 									<ClayIcon
 										className="page-editor__topper__icon"
-										onClick={() => {
+										onClick={(event) => {
+											event.stopPropagation();
+
 											dispatch(
 												switchSidebarPanel({
 													sidebarOpen: true,
