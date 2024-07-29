@@ -274,6 +274,19 @@ components:
                         The client extension's external reference code.
                     type: string
             type: object
+        CollectionPageSettings:
+            allOf:
+                - $ref: "#/components/schemas/PageSettings"
+                - properties:
+                      collectionReference:
+                          $ref: "#/components/schemas/CollectionReference"
+                          writeOnly: true
+                  required:
+                      - collectionReference
+            # @review
+            description:
+                The settings of a collection page.
+            type: object
         CollectionReference:
             # @review
             description:
@@ -290,19 +303,6 @@ components:
                         The collection's type (Collection, CollectionProvider).
                     enum: [Collection, CollectionProvider]
                     type: string
-            type: object
-        CollectionPageSettings:
-            allOf:
-                - $ref: "#/components/schemas/PageSettings"
-                - properties:
-                      collectionConfig:
-                          $ref: "#/components/schemas/CollectionConfig"
-                          writeOnly: true
-                  required:
-                      - collectionConfig
-            # @review
-            description:
-                The settings of a collection page.
             type: object
         CollectionViewport:
             # @review
@@ -1533,8 +1533,8 @@ components:
             description:
                 The definition of a Page Collection.
             properties:
-                collectionConfig:
-                    $ref: "#/components/schemas/CollectionConfig"
+                collectionReference:
+                    $ref: "#/components/schemas/CollectionReference"
                 collectionViewports:
                     # @review
                     description:
