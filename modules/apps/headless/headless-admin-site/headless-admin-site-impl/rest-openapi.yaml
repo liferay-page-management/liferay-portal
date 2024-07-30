@@ -2421,10 +2421,10 @@ components:
                         The custom name of a page widget instance.
                     type: string
                 widgetInstance:
-                    $ref: "#/components/schemas/ContentPageWidgetInstance"
+                    $ref: "#/components/schemas/WidgetInstance"
                     # @review
                     description:
-                        The widget instance of the page widget instance.
+                        The widget instance.
             type: object
         RowViewport:
             # @review
