@@ -208,10 +208,6 @@ components:
             description:
                 The settings of a content page.
             type: object
-        ContentPageWidgetInstance:
-            allOf:
-                - $ref: "#/components/schemas/WidgetInstance"
-            type: object
         ContextReference:
             # @review
             description:
