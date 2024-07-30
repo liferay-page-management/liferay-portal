@@ -20,11 +20,11 @@ components:
                         - $ref: "#/components/schemas/SitePageActionExecutionResult"
                         - $ref: "#/components/schemas/URLActionExecutionResult"
             type: object
-        BaseWidgetInstance:
+        WidgetInstance:
             # @review
             description:
-                A base page widget instance, containing the common properties of both a content page widget instance and
-                a widget page widget instance. It should only be referenced as part of an allOf clause.
+                A widget instance, containing the common properties of both a content page widget instance and a
+                widget page widget instance.
             properties:
                 widgetConfig:
                     additionalProperties:
