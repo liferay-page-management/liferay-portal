@@ -24,6 +24,33 @@ import {hasFormParent} from '../utils/hasFormParent';
 import {isRequiredFormInput} from '../utils/isRequiredFormInput';
 import {clearPageContents} from '../utils/usePageContents';
 
+function getPreviousItemId(itemId, layoutData, nextLayoutData) {
+	const {items} = layoutData;
+	const {items: nextItems} = nextLayoutData;
+	const parentId = items[itemId].parentId;
+
+	const parent = items[parentId];
+
+	let nextItemId = parentId;
+
+	if (nextItems[parentId].children.length) {
+		const index = parent.children.indexOf(itemId);
+
+		nextItemId = nextItems[parentId].children[index ? index - 1 : index];
+	}
+	else if (
+		parent.type === LAYOUT_DATA_ITEM_TYPES.collectionItem ||
+		parent.type === LAYOUT_DATA_ITEM_TYPES.column
+	) {
+		nextItemId = nextItems[parent.parentId].itemId;
+	}
+	else if (parent.type === LAYOUT_DATA_ITEM_TYPES.root) {
+		document.querySelector('button[data-panel-id="browser"]').focus();
+	}
+
+	return nextItemId;
+}
+
 export default function deleteItem({itemId, selectItem = () => {}}) {
 	return (dispatch, getState) => {
 		const {fragmentEntryLinks, layoutData, segmentsExperienceId} =
@@ -36,10 +63,7 @@ export default function deleteItem({itemId, selectItem = () => {}}) {
 			onNetworkStatus: dispatch,
 			segmentsExperienceId,
 		}).then(({portletIds = [], layoutData: nextLayoutData}) => {
-			const [firstChild] =
-				nextLayoutData.items[nextLayoutData.rootItems.main].children;
-
-			selectItem(firstChild, {
+			selectItem(getPreviousItemId(itemId, layoutData, nextLayoutData), {
 				origin: ITEM_ACTIVATION_ORIGINS.itemActions,
 			});
 
