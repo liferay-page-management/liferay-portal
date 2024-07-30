@@ -981,43 +981,6 @@ components:
                         $ref: "#/components/schemas/ItemExternalReference"
                     type: array
             type: object
-        FragmentSnapshot:
-            # @review
-            description:
-                Represents the snapshot of a fragment at the time it was added or propagated to a page or page template.
-            properties:
-                configuration:
-                    additionalProperties:
-                        type: object
-                    # @review
-                    description:
-                        The fragment's configuration at the time the fragment was added or propagated to the page or
-                        page template.
-                    type: object
-                css:
-                    # @review
-                    description:
-                        The fragment's css at the time the fragment was added or propagated to the page or page
-                        template.
-                    type: string
-                html:
-                    # @review
-                    description:
-                        The fragment's html at the time the fragment was added or propagated to the page or page
-                        template.
-                    type: string
-                js:
-                    # @review
-                    description:
-                        The fragment's js at the time the fragment was added or propagated to the page or page template.
-                    type: string
-                type:
-                    # @review
-                    description:
-                        The fragment's type.
-                    enum: [Component, Input, React]
-                    type: string
-            type: object
         FragmentStyle:
             # @review
             description:
@@ -2131,11 +2094,6 @@ components:
                     oneOf:
                         - $ref: "#/components/schemas/DefaultFragmentReference"
                         - $ref: "#/components/schemas/ItemExternalReference"
-                fragmentSnapshot:
-                    $ref: "#/components/schemas/FragmentSnapshot"
-                    # @review
-                    description:
-                        A snapshot of a fragment at the time it was added or propagated to a page or page template.
                 fragmentStyle:
                     $ref: "#/components/schemas/FragmentStyle"
                     # @review
