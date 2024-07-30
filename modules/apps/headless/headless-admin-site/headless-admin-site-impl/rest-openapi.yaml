@@ -211,6 +211,7 @@ components:
         ContentPageWidgetInstance:
             allOf:
                 - $ref: "#/components/schemas/WidgetInstance"
+            type: object
         ContextReference:
             # @review
             description:
