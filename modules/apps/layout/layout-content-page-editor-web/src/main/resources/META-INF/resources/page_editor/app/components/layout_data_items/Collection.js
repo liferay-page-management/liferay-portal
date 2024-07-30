@@ -49,6 +49,10 @@ export function getToControlsId(collectionId, index, toControlsId) {
 			return null;
 		}
 
+		if (collectionId === itemId) {
+			return itemId;
+		}
+
 		return toControlsId(
 			`${getCollectionPrefix(collectionId, index)}${itemId}`
 		);
@@ -252,6 +256,7 @@ const ItemContext = ({
 	const contextValue = useMemo(
 		() => ({
 			collectionConfig,
+			collectionId,
 			collectionItem,
 			collectionItemIndex: index,
 			customCollectionSelectorURL,
