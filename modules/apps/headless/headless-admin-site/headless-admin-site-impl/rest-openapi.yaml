@@ -4978,6 +4978,14 @@ paths:
                   name: restrictFields
                   schema:
                       type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/PageElement"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/PageElement"
             responses:
                 200:
                     content:
@@ -5017,6 +5025,14 @@ paths:
                   name: restrictFields
                   schema:
                       type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/PageElement"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/PageElement"
             responses:
                 200:
                     content:
@@ -5239,6 +5255,14 @@ paths:
                   name: restrictFields
                   schema:
                       type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/PageExperience"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/PageExperience"
             responses:
                 200:
                     content:
@@ -5277,6 +5301,14 @@ paths:
                   name: restrictFields
                   schema:
                       type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/PageExperience"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/PageExperience"
             responses:
                 200:
                     content:
@@ -5579,6 +5611,14 @@ paths:
                   name: restrictFields
                   schema:
                       type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/PageRuleAction"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/PageRuleAction"
             responses:
                 200:
                     content:
@@ -5618,6 +5658,14 @@ paths:
                   name: restrictFields
                   schema:
                       type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/PageRuleAction"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/PageRuleAction"
             responses:
                 200:
                     content:
@@ -5733,6 +5781,14 @@ paths:
                   name: restrictFields
                   schema:
                       type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/PageRuleCondition"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/PageRuleCondition"
             responses:
                 200:
                     content:
@@ -5772,6 +5828,14 @@ paths:
                   name: restrictFields
                   schema:
                       type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/PageRuleCondition"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/PageRuleCondition"
             responses:
                 200:
                     content:
@@ -5884,6 +5948,14 @@ paths:
                   name: restrictFields
                   schema:
                       type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/PageRule"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/PageRule"
             responses:
                 200:
                     content:
@@ -5922,6 +5994,14 @@ paths:
                   name: restrictFields
                   schema:
                       type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/PageRule"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/PageRule"
             responses:
                 200:
                     content:
@@ -6225,6 +6305,14 @@ paths:
                   name: restrictFields
                   schema:
                       type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/PageSpecification"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/PageSpecification"
             responses:
                 200:
                     content:
@@ -6263,6 +6351,14 @@ paths:
                   name: restrictFields
                   schema:
                       type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/PageSpecification"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/PageSpecification"
             responses:
                 200:
                     content:
@@ -6393,6 +6489,10 @@ paths:
                   name: restrictFields
                   schema:
                       type: string
+            requestBody:
+                content:
+                    application/json: {}
+                    application/xml: {}
             responses:
                 200:
                     content:
@@ -8324,6 +8424,14 @@ paths:
                   name: restrictFields
                   schema:
                       type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/WidgetPageWidgetInstance"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/WidgetPageWidgetInstance"
             responses:
                 200:
                     content:
@@ -8361,6 +8469,14 @@ paths:
                   name: restrictFields
                   schema:
                       type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/WidgetPageWidgetInstance"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/WidgetPageWidgetInstance"
             responses:
                 200:
                     content:
