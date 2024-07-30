@@ -210,7 +210,7 @@ components:
             type: object
         ContentPageWidgetInstance:
             allOf:
-                - $ref: "#/components/schemas/BaseWidgetInstance"
+                - $ref: "#/components/schemas/WidgetInstance"
         ContextReference:
             # @review
             description:
@@ -3059,7 +3059,7 @@ components:
             type: object
         WidgetPageWidgetInstance:
             allOf:
-                - $ref: "#/components/schemas/BaseWidgetInstance"
+                - $ref: "#/components/schemas/WidgetInstance"
                 - properties:
                       externalReferenceCode:
                           description:
