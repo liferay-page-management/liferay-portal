@@ -1410,7 +1410,7 @@ components:
                 layout:
                     # @review
                     description:
-                        the page section's layout.
+                        the page collection's layout.
                     properties:
                         align:
                             enum: [Baseline, Center, End, None, Start, Stretch]
@@ -1571,7 +1571,7 @@ components:
                 layout:
                     # @review
                     description:
-                        the page section's layout.
+                        the page container's layout.
                     properties:
                         containerType:
                             # @review
@@ -1803,7 +1803,7 @@ components:
                 layout:
                     # @review
                     description:
-                        The page section's layout.
+                        The page form's layout.
                     properties:
                         align:
                             enum: [Baseline, Center, End, None, Start, Stretch]
