@@ -268,6 +268,43 @@ public class LayoutStructure {
 		return dropZoneLayoutStructureItem;
 	}
 
+	public LayoutStructureItem addFormStepContainerLayoutStructureItem(
+		String parentItemId, int position) {
+
+		return addFormStepContainerLayoutStructureItem(
+			PortalUUIDUtil.generate(), parentItemId, position);
+	}
+
+	public LayoutStructureItem addFormStepContainerLayoutStructureItem(
+		String itemId, String parentItemId, int position) {
+
+		FormStepContainerLayoutStructureItem
+			formStepContainerLayoutStructureItem =
+				new FormStepContainerLayoutStructureItem(itemId, parentItemId);
+
+		_updateLayoutStructure(formStepContainerLayoutStructureItem, position);
+
+		return formStepContainerLayoutStructureItem;
+	}
+
+	public LayoutStructureItem addFormStepLayoutStructureItem(
+		String parentItemId, int position) {
+
+		return addFormStepLayoutStructureItem(
+			PortalUUIDUtil.generate(), parentItemId, position);
+	}
+
+	public LayoutStructureItem addFormStepLayoutStructureItem(
+		String itemId, String parentItemId, int position) {
+
+		FormStepLayoutStructureItem formStepLayoutStructureItem =
+			new FormStepLayoutStructureItem(itemId, parentItemId);
+
+		_updateLayoutStructure(formStepLayoutStructureItem, position);
+
+		return formStepLayoutStructureItem;
+	}
+
 	public LayoutStructureItem addFormStyledLayoutStructureItem(
 		String parentItemId, int position) {
 
