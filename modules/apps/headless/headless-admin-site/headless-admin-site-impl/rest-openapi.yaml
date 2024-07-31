@@ -2373,8 +2373,8 @@ components:
             properties:
                 type:
                     enum:
-                        - Content
-                        - Widget
+                        - ContentPageTemplateSettings
+                        - WidgetPageTemplateSettings
                     type: string
             type: object
         PageWidgetInstanceDefinition:
