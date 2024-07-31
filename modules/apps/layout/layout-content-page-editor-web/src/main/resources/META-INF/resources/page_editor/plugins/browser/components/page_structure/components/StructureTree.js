@@ -78,6 +78,8 @@ const LAYOUT_DATA_ITEM_TYPE_ICONS = {
 	[LAYOUT_DATA_ITEM_TYPES.collectionItem]: 'document',
 	[LAYOUT_DATA_ITEM_TYPES.container]: 'container',
 	[LAYOUT_DATA_ITEM_TYPES.form]: 'container',
+	[LAYOUT_DATA_ITEM_TYPES.formStep]: 'arrow-end',
+	[LAYOUT_DATA_ITEM_TYPES.formStepContainer]: 'table',
 	[LAYOUT_DATA_ITEM_TYPES.dropZone]: 'box-container',
 	[LAYOUT_DATA_ITEM_TYPES.fragment]: 'code',
 	[LAYOUT_DATA_ITEM_TYPES.fragmentDropZone]: 'box-container',
