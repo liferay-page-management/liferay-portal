@@ -206,7 +206,9 @@ components:
         ContentPageTemplateSettings:
             # @review
             description:
-                The settings of a content page.
+                The settings of a content page template.
+            allOf:
+                - $ref: "#/components/schemas/PageTemplateSettings"
             type: object
         ContextReference:
             # @review
@@ -3030,29 +3032,31 @@ components:
             # @review
             description:
                 The settings of a widget page template.
-            properties:
-                layoutTemplateId:
-                    # @review
-                    description:
-                        The identifier of the layout template.
-                    type: string
-                navigationMenuSettings:
-                    # @review
-                    description:
-                        The widget page template's site navigation menu settings.
-                    properties:
-                        target:
-                            # @review
-                            description:
-                                The page's description to be used as summary for search engines.
-                            type: string
-                        targetType:
-                            # @review
-                            description:
-                                The target's type (specific frame or new tab).
-                            enum: [SpecificFrame, NewTab]
-                            type: string
-                    type: object
+            allOf:
+                - $ref: "#/components/schemas/PageTemplateSettings"
+                - properties:
+                    layoutTemplateId:
+                        # @review
+                        description:
+                            The identifier of the layout template.
+                        type: string
+                    navigationMenuSettings:
+                        # @review
+                        description:
+                            The widget page template's site navigation menu settings.
+                        properties:
+                            target:
+                                # @review
+                                description:
+                                    The page's description to be used as summary for search engines.
+                                type: string
+                            targetType:
+                                # @review
+                                description:
+                                    The target's type (specific frame or new tab).
+                                enum: [SpecificFrame, NewTab]
+                                type: string
+                        type: object
             type: object
         WidgetPageWidgetInstance:
             allOf:
