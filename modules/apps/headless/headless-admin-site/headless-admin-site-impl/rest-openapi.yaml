@@ -8331,7 +8331,7 @@ paths:
             # @review
             description:
                 Deletes a widget instance of a specific widget page or widget page template within a site.
-            operationId: deleteSiteSiteExternalReferenceCodeWidgetInstance
+            operationId: deleteSiteSiteExternalReferenceCodeWidgetInstanceWidgetInstanceExternalReferenceCode
             parameters:
                 - in: path
                   name: siteExternalReferenceCode
@@ -8353,7 +8353,7 @@ paths:
             # @review
             description:
                 Retrieves a widget instance of a widget page or widget page template within a site.
-            operationId: getSiteSiteExternalReferenceCodeWidgetInstance
+            operationId: getSiteSiteExternalReferenceCodeWidgetInstanceWidgetInstanceExternalReferenceCode
             parameters:
                 - in: path
                   name: siteExternalReferenceCode
@@ -8392,7 +8392,7 @@ paths:
             description:
                 Updates a widget instance of a widget page or widget page template within a site. Updates only the
                 fields received in the request body, leaving any other fields untouched.
-            operationId: patchSiteSiteExternalReferenceCodeWidgetInstance
+            operationId: patchSiteSiteExternalReferenceCodeWidgetInstanceWidgetInstanceExternalReferenceCode
             parameters:
                 - in: path
                   name: siteExternalReferenceCode
@@ -8438,7 +8438,7 @@ paths:
             # @review
             description:
                 Updates a widget instance of a widget page or widget page template within a site.
-            operationId: putSiteSiteExternalReferenceCodeWidgetInstance
+            operationId: putSiteSiteExternalReferenceCodeWidgetInstanceWidgetInstanceExternalReferenceCode
             parameters:
                 - in: path
                   name: siteExternalReferenceCode
