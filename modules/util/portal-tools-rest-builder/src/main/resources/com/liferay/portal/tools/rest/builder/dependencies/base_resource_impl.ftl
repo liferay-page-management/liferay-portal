@@ -138,7 +138,7 @@ public abstract class Base${schemaName}ResourceImpl
 
 		<#if stringUtil.equals(javaMethodSignature.methodName, "delete" + schemaName)>
 			<#assign deleteBatchJavaMethodSignature = javaMethodSignature />
-		<#elseif stringUtil.equals(javaMethodSignature.methodName, "get" + schemaName + "ByExternalReferenceCode") || stringUtil.equals(javaMethodSignature.methodName, "get" + parentSchemaName + schemaName + "ByExternalReferenceCode")>
+		<#elseif stringUtil.equals(javaMethodSignature.methodName, "get" + schemaName + "ExternalReferenceCode") || stringUtil.equals(javaMethodSignature.methodName, "get" + parentSchemaName + schemaName + "ExternalReferenceCode")>
 			<#assign getByERCBatchJavaMethodSignature = javaMethodSignature />
 		<#elseif stringUtil.equals(javaMethodSignature.methodName, "get" + parentSchemaName + schemaNames + "Page")>
 			<#if stringUtil.equals(javaMethodSignature.methodName, "getAssetLibrary" + schemaNames + "Page")>
@@ -166,11 +166,11 @@ public abstract class Base${schemaName}ResourceImpl
 					<#assign postBatchJavaMethodSignature = javaMethodSignature />
 				</#if>
 			</#if>
-		<#elseif stringUtil.equals(javaMethodSignature.methodName, "post" + parentSchemaName + "ByExternalReferenceCode" + schemaName)>
+		<#elseif stringUtil.equals(javaMethodSignature.methodName, "post" + parentSchemaName + "ExternalReferenceCode" + schemaName)>
 			<#assign postParentByERCBatchJavaMethodSignatures = postParentByERCBatchJavaMethodSignatures + [javaMethodSignature] />
 		<#elseif stringUtil.equals(javaMethodSignature.methodName, "put" + schemaName)>
 			<#assign putBatchJavaMethodSignature = javaMethodSignature />
-		<#elseif stringUtil.equals(javaMethodSignature.methodName, "putByExternalReferenceCode") || stringUtil.equals(javaMethodSignature.methodName, "put" + schemaName + "ByExternalReferenceCode") || stringUtil.equals(javaMethodSignature.methodName, "put" + parentSchemaName + schemaName + "ByExternalReferenceCode")>
+		<#elseif stringUtil.equals(javaMethodSignature.methodName, "putByExternalReferenceCode") || stringUtil.equals(javaMethodSignature.methodName, "put" + schemaName + "ExternalReferenceCode") || stringUtil.equals(javaMethodSignature.methodName, "put" + parentSchemaName + schemaName + "ExternalReferenceCode")>
 			<#assign putByERCBatchJavaMethodSignature = javaMethodSignature />
 		</#if>
 
@@ -367,7 +367,7 @@ public abstract class Base${schemaName}ResourceImpl
 					javaMethodParameterName = ""
 				/>
 
-				<#if javaMethodSignature.methodName?contains("ByExternalReferenceCode")>
+				<#if javaMethodSignature.methodName?contains("ExternalReferenceCode")>
 					<#assign javaMethodParameterName = javaMethodSignature.methodName?replace("patch", "get") />
 				<#else>
 					<#assign javaMethodParameterName = "get" + schemaName />
@@ -405,7 +405,7 @@ public abstract class Base${schemaName}ResourceImpl
 
 				preparePatch(${schemaVarName}, existing${schemaName});
 
-				<#if javaMethodSignature.methodName?contains("ByExternalReferenceCode")>
+				<#if javaMethodSignature.methodName?contains("ExternalReferenceCode")>
 					<#assign javaMethodParameterName = javaMethodSignature.methodName?replace("patch", "put") />
 				<#else>
 					<#assign javaMethodParameterName = "put" + schemaName />
