@@ -659,7 +659,7 @@ public abstract class BasePageTemplateSetResourceImpl
 				PageTemplate pageTemplate)
 		throws Exception {
 
-		return new PageTemplate();
+		return null;
 	}
 
 	/**
