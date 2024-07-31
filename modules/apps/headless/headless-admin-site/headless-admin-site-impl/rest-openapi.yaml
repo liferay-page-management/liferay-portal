@@ -8348,7 +8348,7 @@ paths:
                     content:
                         application/json: {}
                         application/xml: {}
-            tags: ["WidgetInstance"]
+            tags: ["WidgetPageWidgetInstance"]
         get:
             # @review
             description:
@@ -8386,7 +8386,7 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/WidgetPageWidgetInstance"
-            tags: ["WidgetInstance"]
+            tags: ["WidgetPageWidgetInstance"]
         patch:
             # @review
             description:
@@ -8433,7 +8433,7 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/WidgetPageWidgetInstance"
-            tags: ["WidgetInstance"]
+            tags: ["WidgetPageWidgetInstance"]
         put:
             # @review
             description:
@@ -8479,4 +8479,4 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/WidgetPageWidgetInstance"
-            tags: ["WidgetInstance"]
+            tags: ["WidgetPageWidgetInstance"]
