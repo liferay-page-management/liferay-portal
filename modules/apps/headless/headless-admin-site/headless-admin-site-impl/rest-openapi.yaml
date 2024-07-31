@@ -73,6 +73,7 @@ components:
                     type: string
             required:
                 - className
+            type: object
         ClassSubtypeReference:
             # @review
             description:
