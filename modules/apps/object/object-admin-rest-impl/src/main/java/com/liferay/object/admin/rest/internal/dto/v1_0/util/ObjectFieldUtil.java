@@ -72,12 +72,14 @@ public class ObjectFieldUtil {
 					GetterUtil.getLong(objectField.getListTypeDefinitionId()));
 		}
 
-		if (listTypeDefinition == null) {
-			listTypeDefinition =
-				listTypeDefinitionLocalService.addListTypeDefinition(
-					objectField.getListTypeDefinitionExternalReferenceCode(),
-					userId, GetterUtil.getBoolean(objectField.getSystem()));
+		if (listTypeDefinition != null) {
+			return listTypeDefinition.getListTypeDefinitionId();
 		}
+
+		listTypeDefinition =
+			listTypeDefinitionLocalService.addListTypeDefinition(
+				objectField.getListTypeDefinitionExternalReferenceCode(),
+				userId, GetterUtil.getBoolean(objectField.getSystem()));
 
 		Map<String, ListTypeEntry> listTypeEntries = new HashMap<>();
 
