@@ -204,7 +204,7 @@ describe('ShortcutManager', () => {
 
 		expect(updateItemStyle).toBeCalledWith(
 			expect.objectContaining({
-				itemId: 'fragment01',
+				itemIds: 'fragment01',
 				selectedViewportSize: 'desktop',
 				styleName: 'display',
 				styleValue: 'none',

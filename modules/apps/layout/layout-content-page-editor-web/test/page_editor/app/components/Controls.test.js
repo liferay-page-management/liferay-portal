@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {cleanup} from '@testing-library/react';
-
 import {reducer} from '../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/ControlsContext';
 
 import '@testing-library/jest-dom/extend-expect';
@@ -15,6 +13,7 @@ const ACTION = {
 	origin: 'layout',
 };
 const HOVER_ITEM = 'HOVER_ITEM';
+const MULTI_SELECT = 'MULTI_SELECT';
 const SELECT_ITEM = 'SELECT_ITEM';
 const STATE = {
 	activationOrigin: 'layout',
@@ -25,248 +24,274 @@ const STATE = {
 };
 
 describe('Reducer', () => {
-	afterEach(cleanup);
-
-	test.each([
-		[
-			'fragment',
-			{
-				activeItemType: 'layoutItem',
-				hoveredItemType: 'layoutItem',
-			},
-			{
+	describe('Hover action', () => {
+		it('hovers a fragment', () => {
+			const action = {
+				...ACTION,
 				itemId: 'item-1',
 				itemType: 'layoutItem',
 				type: HOVER_ITEM,
-			},
-			{
+			};
+			const state = {
+				...STATE,
+				activeItemType: 'layoutItem',
+				hoveredItemType: 'layoutItem',
+			};
+
+			expect(reducer(state, action)).toEqual({
+				...state,
 				activeItemType: 'layoutItem',
 				hoveredItemId: 'item-1',
 				hoveredItemType: 'layoutItem',
-			},
-		],
-		[
-			'editable when a fragment is selected',
-			{
-				activeItemIds: 'item-1',
-				activeItemType: 'layoutItem',
-				hoveredItemId: 'editable-1',
-				hoveredItemType: 'editable',
-			},
-			{
+			});
+		});
+
+		it('hovers an editable when a fragment is selected', () => {
+			const action = {
+				...ACTION,
 				itemId: 'editable-1',
 				itemType: 'editable',
 				type: HOVER_ITEM,
-			},
-			{
+			};
+			const state = {
+				...STATE,
 				activeItemIds: 'item-1',
 				activeItemType: 'layoutItem',
 				hoveredItemId: 'editable-1',
 				hoveredItemType: 'editable',
-			},
-		],
-		[
-			'mapped content',
-			{
-				activationOrigin: null,
-				hoveredItemId: 'mapped-content-1',
-				hoveredItemType: 'mappedContent',
-			},
-			{
+			};
+
+			expect(reducer(state, action)).toEqual({
+				...state,
+				activeItemIds: 'item-1',
+				activeItemType: 'layoutItem',
+				hoveredItemId: 'editable-1',
+				hoveredItemType: 'editable',
+			});
+		});
+
+		it('hovers a mapped content', () => {
+			const action = {
+				...ACTION,
 				itemId: 'mapped-content-1',
 				itemType: 'mappedContent',
 				type: HOVER_ITEM,
-			},
-			{
+			};
+			const state = {
+				...STATE,
 				activationOrigin: null,
 				hoveredItemId: 'mapped-content-1',
 				hoveredItemType: 'mappedContent',
-			},
-		],
-	])('Hover a %p', (item, state, action, expected) => {
-		expect(reducer({...STATE, ...state}, {...ACTION, ...action})).toEqual({
-			...STATE,
-			...expected,
+			};
+
+			expect(reducer(state, action)).toEqual({
+				...state,
+				activationOrigin: null,
+				hoveredItemId: 'mapped-content-1',
+				hoveredItemType: 'mappedContent',
+			});
 		});
 	});
 
-	test.each([
-		[
-			'fragment',
-			{
-				hoveredItemId: 'item-1',
-				hoveredItemType: 'layoutItem',
-			},
-			{
+	describe('Hover out action', () => {
+		it('hovers a fragment', () => {
+			const action = {
+				...ACTION,
 				itemType: 'layoutItem',
 				type: HOVER_ITEM,
-			},
-			{
+			};
+			const state = {
+				...STATE,
+				hoveredItemId: 'item-1',
 				hoveredItemType: 'layoutItem',
-			},
-		],
-		[
-			'editable',
-			{
+			};
+
+			expect(reducer(state, action)).toEqual({
+				...state,
+				hoveredItemId: null,
+				hoveredItemType: 'layoutItem',
+			});
+		});
+
+		it('hovers out an editable', () => {
+			const action = {
+				...ACTION,
+				itemType: 'layoutItem',
+				type: HOVER_ITEM,
+			};
+			const state = {
+				...STATE,
 				activeItemIds: 'item-1',
 				activeItemType: 'layoutItem',
 				hoveredItemId: 'editable-1',
 				hoveredItemType: 'editable',
-			},
-			{
-				itemType: 'layoutItem',
-				type: HOVER_ITEM,
-			},
-			{
+			};
+
+			expect(reducer(state, action)).toEqual({
+				...state,
 				activeItemIds: 'item-1',
 				activeItemType: 'layoutItem',
+				hoveredItemId: null,
 				hoveredItemType: 'layoutItem',
-			},
-		],
-	])('Hover out a %p', (item, state, action, expected) => {
-		expect(reducer({...STATE, ...state}, {...ACTION, ...action})).toEqual({
-			...STATE,
-			...expected,
+			});
 		});
 	});
 
-	test.each([
-		[
-			'fragment which is hovered',
-			{
-				activeItemType: 'layoutItem',
-				hoveredItemId: 'item-1',
-				hoveredItemType: 'layoutItem',
-			},
-			{
+	describe('Select action', () => {
+		it('selects a fragment which is hovered', () => {
+			const action = {
+				...ACTION,
 				itemId: 'item-1',
 				itemType: 'layoutItem',
 				type: SELECT_ITEM,
-			},
-			{
+			};
+			const state = {
+				...STATE,
+				activeItemType: 'layoutItem',
+				hoveredItemId: 'item-1',
+				hoveredItemType: 'layoutItem',
+			};
+
+			expect(reducer(state, action)).toEqual({
+				...state,
 				activeItemIds: 'item-1',
 				activeItemType: 'layoutItem',
 				hoveredItemId: 'item-1',
 				hoveredItemType: 'layoutItem',
-			},
-		],
-		[
-			'fragment which is already selected',
-			{
-				activeItemIds: 'item-1',
-				activeItemType: 'layoutItem',
-				hoveredItemId: 'item-1',
-				hoveredItemType: 'layoutItem',
-			},
-			{
+			});
+		});
+
+		it('selects a fragment which is already selected', () => {
+			const action = {
+				...ACTION,
 				itemId: 'item-1',
 				itemType: 'layoutItem',
 				type: SELECT_ITEM,
-			},
-			{
+			};
+			const state = {
+				...STATE,
 				activeItemIds: 'item-1',
 				activeItemType: 'layoutItem',
 				hoveredItemId: 'item-1',
 				hoveredItemType: 'layoutItem',
-			},
-		],
-		[
-			'editable when a fragment is selected',
-			{
+			};
+
+			expect(reducer(state, action)).toEqual({
+				...state,
 				activeItemIds: 'item-1',
-				hoveredItemId: 'editable-1',
-				hoveredItemType: 'editable',
-			},
-			{
+				activeItemType: 'layoutItem',
+				hoveredItemId: 'item-1',
+				hoveredItemType: 'layoutItem',
+			});
+		});
+
+		it('selects an editable when a fragment is selected', () => {
+			const action = {
+				...ACTION,
 				itemId: 'editable-1',
 				itemType: 'editable',
 				type: SELECT_ITEM,
-			},
-			{
+			};
+			const state = {
+				...STATE,
+				activeItemIds: 'item-1',
+				hoveredItemId: 'editable-1',
+				hoveredItemType: 'editable',
+			};
+
+			expect(reducer(state, action)).toEqual({
+				...state,
 				activeItemIds: 'editable-1',
 				activeItemType: 'editable',
 				hoveredItemId: 'editable-1',
 				hoveredItemType: 'editable',
-			},
-		],
-		[
-			'item in page structure tree',
-			{
-				hoveredItemId: 'item-1',
-			},
-			{
+			});
+		});
+
+		it('selects an item in page structure tree', () => {
+			const action = {
+				...ACTION,
 				itemId: 'item-1',
 				itemType: 'layoutItem',
 				origin: 'structureTreeNode',
 				type: SELECT_ITEM,
-			},
-			{
+			};
+			const state = {
+				...STATE,
+				hoveredItemId: 'item-1',
+			};
+
+			expect(reducer(state, action)).toEqual({
+				...state,
 				activationOrigin: 'structureTreeNode',
 				activeItemIds: 'item-1',
 				activeItemType: 'layoutItem',
 				hoveredItemId: 'item-1',
-			},
-		],
-	])('Select a %p', (item, state, action, expected) => {
-		expect(reducer({...STATE, ...state}, {...ACTION, ...action})).toEqual({
-			...STATE,
-			...expected,
+			});
 		});
 	});
 
-	test.each([
-		[
-			'fragment',
-			{
-				activeItemIds: 'item-1',
-				activeItemType: 'layoutItem',
-			},
-			{
+	describe('Deselect action', () => {
+		it('Deselects a fragment', () => {
+			const action = {
+				...ACTION,
 				itemType: 'layoutItem',
 				type: SELECT_ITEM,
-			},
-			{
+			};
+			const state = {
+				...STATE,
+				activeItemIds: 'item-1',
 				activeItemType: 'layoutItem',
-			},
-		],
-		[
-			'fragment when other fragment is selected',
-			{
+			};
+
+			expect(reducer(state, action)).toEqual({
+				...state,
+				activeItemIds: null,
+				activeItemType: 'layoutItem',
+			});
+		});
+
+		it('deselects a fragment when other fragment is selected', () => {
+			const action = {
+				...ACTION,
+				itemId: 'item-2',
+				itemType: 'layoutItem',
+				type: SELECT_ITEM,
+			};
+			const state = {
+				...STATE,
 				activeItemIds: 'item-1',
 				activeItemType: 'layoutItem',
 				hoveredItemId: 'item-2',
 				hoveredItemType: 'layoutDataItem',
-			},
-			{
-				itemId: 'item-2',
-				itemType: 'layoutItem',
-				type: SELECT_ITEM,
-			},
-			{
+			};
+
+			expect(reducer(state, action)).toEqual({
+				...state,
 				activeItemIds: 'item-2',
 				activeItemType: 'layoutItem',
 				hoveredItemId: 'item-2',
 				hoveredItemType: 'layoutDataItem',
-			},
-		],
-		[
-			'editable',
-			{
-				activeItemIds: 'editable-1',
-				activeItemType: 'editable',
-			},
-			{
+			});
+		});
+
+		it('deselects an editable', () => {
+			const action = {
+				...ACTION,
 				itemType: 'layoutItem',
 				type: SELECT_ITEM,
-			},
-			{
+			};
+			const state = {
+				...STATE,
+				activeItemIds: 'editable-1',
+				activeItemType: 'editable',
+			};
+
+			expect(reducer(state, action)).toEqual({
+				...state,
+				activeItemIds: null,
 				activeItemType: 'layoutItem',
-			},
-		],
-	])('Deselect a %p', (item, state, action, expected) => {
-		expect(reducer({...STATE, ...state}, {...ACTION, ...action})).toEqual({
-			...STATE,
-			...expected,
+			});
 		});
 	});
 });
