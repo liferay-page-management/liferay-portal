@@ -538,7 +538,7 @@ definition {
 	@description = "This is a use case for LPS-43525."
 	@priority = 3
 	test TestDatabaseConnection {
-		property database.types = "mysql";
+		property database.types = "postgresql";
 
 		var databasePassword = PropsUtil.get("database.mysql.password");
 		var databaseURL = PropsUtil.get("database.mysql.url");

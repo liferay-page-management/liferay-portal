@@ -543,7 +543,7 @@ definition {
 	@priority = 3
 	test NewCompanyStillAccessibleAfterRestartWithCaseInsensitiveDatabase {
 		property database.lowercase.enabled = "true";
-		property database.types = "mysql";
+		property database.types = "postgresql";
 		property test.assert.warning.exceptions = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";

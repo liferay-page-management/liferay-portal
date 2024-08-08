@@ -2,7 +2,7 @@
 definition {
 
 	property ci.retries.disabled = "true";
-	property database.types = "mysql";
+	property database.types = "postgresql";
 	property log.context.enabled = "true";
 	property portal.release = "true";
 	property portal.upstream = "true";

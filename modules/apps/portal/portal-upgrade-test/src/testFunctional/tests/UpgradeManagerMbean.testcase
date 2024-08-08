@@ -3,7 +3,7 @@ definition {
 
 	property app.server.types = "tomcat";
 	property database.auto.upgrade.enabled = "true";
-	property database.types = "mysql";
+	property database.types = "postgresql";
 	property jmxremote.enabled = "true";
 	property portal.release = "true";
 	property portal.upstream = "true";

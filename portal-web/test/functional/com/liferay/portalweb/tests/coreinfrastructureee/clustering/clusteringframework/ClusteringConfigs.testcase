@@ -33,7 +33,7 @@ definition {
 	test StartupJDBCPING {
 		property app.server.types = "tomcat";
 		property cluster.jdbc.ping = "true";
-		property database.types = "mysql";
+		property database.types = "postgresql";
 		property portal.acceptance = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -62,7 +62,7 @@ definition {
 		property app.server.types = "tomcat";
 		property cluster.enabled = "true";
 		property cluster.tcp.jdbc.ping = "true";
-		property database.types = "mysql";
+		property database.types = "postgresql";
 		property portal.acceptance = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";

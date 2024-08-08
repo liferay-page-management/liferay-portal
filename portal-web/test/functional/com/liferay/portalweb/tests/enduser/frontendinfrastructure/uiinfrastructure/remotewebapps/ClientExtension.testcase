@@ -513,7 +513,7 @@ definition {
 	@priority = 5
 	test CustomElementCanBeCreated {
 		property app.server.types = "tomcat";
-		property database.types = "mysql";
+		property database.types = "postgresql";
 		property environment.acceptance = "true";
 		property operating.system.types = "alpine,amazonlinux,centos,debian,fedora,orcllinux,osx,redhat,rockylinux,solaris,suse,ubuntu,windows";
 		property portal.acceptance = "true";
@@ -554,7 +554,7 @@ definition {
 	@priority = 4
 	test CustomElementCanBeCreatedInNonRootContext {
 		property app.server.types = "tomcat";
-		property database.types = "mysql";
+		property database.types = "postgresql";
 		property portal.context = "liferay";
 		property skip.clean-app-server-deploy-dir = "true";
 		property test.assert.warning.exceptions = "true";

@@ -9,7 +9,7 @@ definition {
 	@description = "This is a use case for LPS-142128. Verify restarting with a missing resource permission for a child widget page does not break the portal."
 	@priority = 3
 	test RestartWithMissingChildPagePermission {
-		property database.types = "mysql";
+		property database.types = "postgresql";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -51,7 +51,7 @@ definition {
 	@ignore = "true"
 	@priority = 3
 	test RestartWithMissingPagePermission {
-		property database.types = "mysql";
+		property database.types = "postgresql";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

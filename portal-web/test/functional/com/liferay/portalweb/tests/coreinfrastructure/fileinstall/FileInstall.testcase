@@ -158,7 +158,7 @@ definition {
 
 	@priority = 4
 	test RestartingPortalDuplicatesOSGiConfiguration {
-		property database.types = "mysql";
+		property database.types = "postgresql";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

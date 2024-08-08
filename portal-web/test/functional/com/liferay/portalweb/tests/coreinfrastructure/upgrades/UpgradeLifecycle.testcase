@@ -38,7 +38,7 @@ definition {
 	@priority = 4
 	test MissingIndexesAreCreatedWithIndexesUpdateOnStartup {
 		property custom.properties = "database.indexes.update.on.startup=true";
-		property database.types = "mysql";
+		property database.types = "postgresql";
 
 		SQL.dropMySQLIndex(
 			indexName = "IX_EC00543C",
