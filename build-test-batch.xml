@@ -5150,7 +5150,8 @@ information. Make sure to commit in all format-javadoc results.
 	<target name="functional-bundle-weblogic141-postgresql155-jdk8">
 		<run-functional-test
 			app.server.type="weblogic"
-			database.type="15.5"
+			database.type="postgresql"
+			database.version="15.5"
 			test.build.fix.pack.zip.url="${test.build.fix.pack.zip.url}"
 			test.fix.pack.base.url="${test.fix.pack.base.url}"
 			test.license.xml.url="${test.license.xml.url}"
@@ -5226,7 +5227,8 @@ information. Make sure to commit in all format-javadoc results.
 	<target name="functional-bundle-wildfly-postgresql155-jdk8">
 		<run-functional-test
 			app.server.type="wildfly"
-			database.type="15.5"
+			database.type="postgresql"
+			database.version="15.5"
 			test.build.fix.pack.zip.url="${test.build.fix.pack.zip.url}"
 			test.fix.pack.base.url="${test.fix.pack.base.url}"
 			test.license.xml.url="${test.license.xml.url}"
@@ -5268,7 +5270,8 @@ information. Make sure to commit in all format-javadoc results.
 		<run-functional-test
 			app.server.type="wildfly"
 			app.server.version="26.1.0"
-			database.type="15.5"
+			database.type="postgresql"
+			database.version="15.5"
 			test.build.fix.pack.zip.url="${test.build.fix.pack.zip.url}"
 			test.fix.pack.base.url="${test.fix.pack.base.url}"
 			test.license.xml.url="${test.license.xml.url}"
@@ -5286,31 +5289,31 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="functional-centos6-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-centos8-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-debian7-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-debian8-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-debian9-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-debian11-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-fedora35-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-jboss74-postgresql155-jdk8">
@@ -5320,31 +5323,31 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="functional-orcllinux6-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-orcllinux7-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-orcllinux8-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-orcllinux9-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-redhat8-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-redhat9-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-rockylinux91-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-bundle-jboss-postgresql-jdk21_zulu">
@@ -5372,7 +5375,8 @@ information. Make sure to commit in all format-javadoc results.
 	<target name="functional-smoke-bundle-jboss-postgresql155-jdk8">
 		<run-functional-test
 			app.server.type="jboss"
-			database.type="15.5"
+			database.type="postgresql"
+			database.version="15.5"
 			test.build.fix.pack.zip.url="${test.build.fix.pack.zip.url}"
 			test.fix.pack.base.url="${test.fix.pack.base.url}"
 			test.license.xml.url="${test.license.xml.url}"
@@ -5511,7 +5515,8 @@ information. Make sure to commit in all format-javadoc results.
 	<target name="functional-smoke-bundle-weblogic141-postgresql155-jdk8">
 		<run-functional-test
 			app.server.type="weblogic"
-			database.type="15.5"
+			database.type="postgresql"
+			database.version="15.5"
 			test.build.fix.pack.zip.url="${test.build.fix.pack.zip.url}"
 			test.fix.pack.base.url="${test.fix.pack.base.url}"
 			test.license.xml.url="${test.license.xml.url}"
@@ -5554,7 +5559,8 @@ information. Make sure to commit in all format-javadoc results.
 	<target name="functional-smoke-bundle-wildfly-postgresql155-jdk8">
 		<run-functional-test
 			app.server.type="wildfly"
-			database.type="15.5"
+			database.type="postgresql"
+			database.version="15.5"
 			test.build.fix.pack.zip.url="${test.build.fix.pack.zip.url}"
 			test.fix.pack.base.url="${test.fix.pack.base.url}"
 			test.license.xml.url="${test.license.xml.url}"
@@ -5601,19 +5607,19 @@ information. Make sure to commit in all format-javadoc results.
 	<target name="functional-smoke-jboss74-postgresql155-jdk8">
 		<set-app-server-version-number app.server.type="jboss" app.server.version="7.4.0" />
 
-		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-jboss74-postgresql155-jdk11_open">
 		<set-app-server-version-number app.server.type="jboss" app.server.version="7.4.0" />
 
-		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-jboss74-postgresql155-jdk21_zulu">
 		<set-app-server-version-number app.server.type="jboss" app.server.version="7.4.0" />
 
-		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-startup-cold-tomcat90-hypersonic20-jdk8">
@@ -5621,7 +5627,7 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="functional-smoke-startup-cold-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" startup.testing.cold="true" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" startup.testing.cold="true" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-startup-warm-tomcat90-hypersonic20-jdk8">
@@ -5629,7 +5635,7 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="functional-smoke-startup-warm-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" startup.testing.warm="true" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" startup.testing.warm="true" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-tomcat90-db2111-jdk8">
@@ -5733,35 +5739,35 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="functional-smoke-tomcat90-postgresql155-chrome100-jdk8">
-		<run-functional-test app.server.type="tomcat" browser.type="chrome" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" browser.type="chrome" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-tomcat90-postgresql155-jdk8_redhat">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-tomcat90-postgresql155-jdk8_stable">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-tomcat90-postgresql155-jdk8_zulu">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-tomcat90-postgresql155-jdk11_open">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-tomcat90-postgresql155-jdk11_oracle">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-tomcat90-postgresql155-jdk11_zulu">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-tomcat90-postgresql163-jdk8">
@@ -5807,13 +5813,13 @@ information. Make sure to commit in all format-javadoc results.
 	<target name="functional-smoke-weblogic141-postgresql155-jdk8">
 		<set-app-server-version-number app.server.type="weblogic" app.server.version="14.1.1" />
 
-		<run-functional-test app.server.type="weblogic" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="weblogic" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-weblogic141-postgresql155-jdk21_zulu">
 		<set-app-server-version-number app.server.type="weblogic" app.server.version="14.1.1" />
 
-		<run-functional-test app.server.type="weblogic" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="weblogic" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-wildfly261-mariadb104-jdk8">
@@ -5847,7 +5853,7 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="functional-suse15-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-tomcat90-db2111-jdk8">
@@ -5955,15 +5961,15 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="functional-tomcat90-postgresql155-chrome100-jdk8">
-		<run-functional-test app.server.type="tomcat" browser.type="chrome" database.type="15.5" />
+		<run-functional-test app.server.type="tomcat" browser.type="chrome" database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="functional-tomcat90-postgresql155-chrome100-jdk8_stable">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="functional-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="functional-tomcat90-postgresql155-jdk8-quarantine">
@@ -5971,31 +5977,31 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="functional-tomcat90-postgresql155-jdk8_redhat">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="functional-tomcat90-postgresql155-jdk8_stable">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="functional-tomcat90-postgresql155-jdk8_zulu">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="functional-tomcat90-postgresql155-jdk11_open">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="functional-tomcat90-postgresql155-jdk11_oracle">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="functional-tomcat90-postgresql155-jdk11_zulu">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="functional-tomcat90-postgresql155-jdk21_zulu">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="functional-tomcat90-postgresql163-jdk8">
@@ -6039,35 +6045,35 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="functional-ubuntu14-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-ubuntu16-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-ubuntu18-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-ubuntu20-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-ubuntu22-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-upgrade-jboss74-postgresql155-jdk8">
 		<set-app-server-version-number app.server.type="jboss" app.server.version="7.4.0" />
 
-		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="15.5" />
+		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="functional-upgrade-jboss74-postgresql155-jdk11_open">
 		<set-app-server-version-number app.server.type="jboss" app.server.version="7.4.0" />
 
-		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="15.5" />
+		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="functional-upgrade-tomcat90-db2111-jdk8">
@@ -6163,19 +6169,19 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="functional-upgrade-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="functional-upgrade-tomcat90-postgresql155-jdk8_stable">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="functional-upgrade-tomcat90-postgresql155-jdk11_open">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="functional-upgrade-tomcat90-postgresql155-jdk21_zulu">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="functional-upgrade-tomcat90-postgresql163-jdk8">
@@ -6221,7 +6227,7 @@ information. Make sure to commit in all format-javadoc results.
 	<target name="functional-upgrade-weblogic141-postgresql155-jdk8">
 		<set-app-server-version-number app.server.type="weblogic" app.server.version="14.1.1" />
 
-		<run-functional-test app.server.type="weblogic" database.type="15.5" />
+		<run-functional-test app.server.type="weblogic" database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="functional-upgrade-wildfly261-mariadb104-jdk8">
@@ -6289,7 +6295,8 @@ information. Make sure to commit in all format-javadoc results.
 
 		<run-functional-test
 			app.server.type="tomcat"
-			database.type="15.5"
+			database.type="postgresql"
+			database.version="15.5"
 			setup.proxy="false"
 			test.build.fix.pack.zip.url="${test.build.fix.pack.zip.url}"
 			test.fix.pack.base.url="${test.fix.pack.base.url}"
@@ -6536,7 +6543,7 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="legacy-functional-bundle-tomcat-postgresql155">
-		<run-legacy-database-dump database.type="15.5" />
+		<run-legacy-database-dump database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="legacy-functional-bundle-tomcat-sqlserver2017">
@@ -6706,7 +6713,7 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="modules-functional-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="modules-integration-analytics-cloud">
@@ -6758,7 +6765,8 @@ information. Make sure to commit in all format-javadoc results.
 			<try>
 				<run-modules-integration-test
 					aws.store.enabled="true"
-					database.type="15.5"
+					database.type="postgresql"
+					database.version="15.5"
 				/>
 			</try>
 
@@ -7163,7 +7171,8 @@ information. Make sure to commit in all format-javadoc results.
 		<set-tomcat-version-number liferay.portal.bundle="${test.portal.bundle.version}" />
 
 		<run-modules-integration-test
-			database.type="15.5"
+			database.type="postgresql"
+			database.version="15.5"
 			test.build.fix.pack.zip.url="${test.build.fix.pack.zip.url}"
 			test.fix.pack.base.url="${test.fix.pack.base.url}"
 			test.license.xml.url="${test.license.xml.url}"
@@ -7181,7 +7190,8 @@ information. Make sure to commit in all format-javadoc results.
 		<set-tomcat-version-number liferay.portal.bundle="${test.portal.bundle.version}" />
 
 		<run-modules-integration-test
-			database.type="15.5"
+			database.type="postgresql"
+			database.version="15.5"
 			test.build.fix.pack.zip.url="${test.build.fix.pack.zip.url}"
 			test.fix.pack.base.url="${test.fix.pack.base.url}"
 			test.license.xml.url="${test.license.xml.url}"
@@ -7199,7 +7209,8 @@ information. Make sure to commit in all format-javadoc results.
 		<set-tomcat-version-number liferay.portal.bundle="${test.portal.bundle.version}" />
 
 		<run-modules-integration-test
-			database.type="15.5"
+			database.type="postgresql"
+			database.version="15.5"
 			test.build.fix.pack.zip.url="${test.build.fix.pack.zip.url}"
 			test.fix.pack.base.url="${test.fix.pack.base.url}"
 			test.license.xml.url="${test.license.xml.url}"
@@ -7336,7 +7347,8 @@ information. Make sure to commit in all format-javadoc results.
 	<target name="modules-integration-db-partition-postgresql155-jdk8">
 		<run-modules-integration-test
 			database.partition.enabled="true"
-			database.type="15.5"
+			database.type="postgresql"
+			database.version="15.5"
 		/>
 	</target>
 
@@ -7449,19 +7461,19 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="modules-integration-postgresql155-jdk8">
-		<run-modules-integration-test database.type="15.5" />
+		<run-modules-integration-test database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="modules-integration-postgresql155-jdk8_stable">
-		<run-modules-integration-test database.type="15.5" />
+		<run-modules-integration-test database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="modules-integration-postgresql155-jdk11_open">
-		<run-modules-integration-test database.type="15.5" />
+		<run-modules-integration-test database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="modules-integration-postgresql155-jdk21_zulu">
-		<run-modules-integration-test database.type="15.5" />
+		<run-modules-integration-test database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="modules-integration-postgresql163-jdk8">
@@ -7949,7 +7961,8 @@ ${output.content}</echo>
 
 		<run-functional-test
 			app.server.type="tomcat"
-			database.type="15.5"
+			database.type="postgresql"
+			database.version="15.5"
 			test.build.fix.pack.zip.url="${test.build.fix.pack.zip.url}"
 			test.fix.pack.base.url="${test.fix.pack.base.url}"
 			test.license.xml.url="${test.license.xml.url}"
@@ -7960,7 +7973,7 @@ ${output.content}</echo>
 	</target>
 
 	<target name="plugins-functional-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="plugins-gulp-jdk8">
@@ -9180,13 +9193,13 @@ information. Make sure to commit in all build services results.
 	</target>
 
 	<target name="subrepository-functional-tomcat90-postgresql155-jdk8">
-		<run-functional-test app.server.type="tomcat" database.type="15.5" />
+		<run-functional-test app.server.type="tomcat" database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="subrepository-integration-postgresql155-jdk8">
 		<fail message="Please set the property ${subrepository.name}." unless="subrepository.name" />
 
-		<run-modules-integration-test database.type="15.5" refreshdependencies="true" subrepository.name="${subrepository.name}" />
+		<run-modules-integration-test database.type="postgresql" database.version="15.5" refreshdependencies="true" subrepository.name="${subrepository.name}" />
 	</target>
 
 	<target name="subrepository-pmd-jdk8">
