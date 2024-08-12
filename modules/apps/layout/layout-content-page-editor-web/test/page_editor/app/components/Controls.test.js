@@ -294,4 +294,36 @@ describe('Reducer', () => {
 			});
 		});
 	});
+
+	describe('Multiselect action', () => {
+		it('activates multiselect', async () => {
+			const state = {...STATE, multiSelectIsActive: false};
+			const action = {
+				...ACTION,
+				...{
+					multiSelectIsActive: true,
+					type: MULTI_SELECT,
+				},
+			};
+
+			expect(reducer(state, action)).toEqual({
+				...state,
+				multiSelectIsActive: true,
+			});
+		});
+
+		it('selects multiple fragments', async () => {
+			const state = {...STATE, activeItemIds: []};
+			const action = {
+				...ACTION,
+				activeItemIds: ['item-1', 'item-2'],
+				type: MULTI_SELECT,
+			};
+
+			expect(reducer(state, action)).toEqual({
+				...state,
+				activeItemIds: ['item-1', 'item-2'],
+			});
+		});
+	});
 });
