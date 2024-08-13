@@ -103,7 +103,7 @@ definition {
 	@description = "This is a use case for LPS-187661. Verify the admin user can be configured to a non liferay domain via setup wizard."
 	@priority = 5
 	test ConfigureNonLiferayDomain {
-		property database.types = "postgresql";
+		property database.types = "mysql";
 		property test.assert.warning.exceptions = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -251,7 +251,7 @@ definition {
 	@description = "This is a use case for LPS-187661. Verify a user created with default liferay admin credentials is not given admin rights by default if created by an admin with a non liferay domain."
 	@priority = 5
 	test NonLiferayDomainDoesNotGiveAdminRightsByDefault {
-		property database.types = "postgresql";
+		property database.types = "mysql";
 		property test.assert.warning.exceptions = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -301,7 +301,7 @@ definition {
 
 	@priority = 5
 	test ViewConfiguredSetupWizardValue {
-		property database.types = "postgresql";
+		property database.types = "mysql";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

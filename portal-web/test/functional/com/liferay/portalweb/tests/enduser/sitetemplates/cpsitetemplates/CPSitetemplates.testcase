@@ -346,7 +346,7 @@ definition {
 	@description = "This is a use case for LPS-121139. User is able to propagate pages separately on site templates and in this situation only the corresponding page's SQL value will be updated."
 	@priority = 3
 	test AssertPartialSiteTemplatePropagation {
-		property database.types = "postgresql";
+		property database.types = "mysql";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

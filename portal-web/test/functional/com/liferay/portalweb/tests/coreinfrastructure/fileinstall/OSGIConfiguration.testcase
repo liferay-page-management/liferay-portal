@@ -71,7 +71,7 @@ definition {
 	@description = "This is a usecase for LPS-172690. Verify an UploadServletRequestConfiguration config can be deployed without explicit max size."
 	@priority = 2
 	test CanDeployUploadServletRequestConfigWithoutMaxSize {
-		property database.types = "postgresql";
+		property database.types = "mysql";
 		property osgi.module.configuration.file.names = "com.liferay.portal.upload.internal.configuration.UploadServletRequestConfiguration.config";
 		property osgi.module.configurations = "maxTries=\"50\"${line.separator}tempDir=\"\"";
 		property test.assert.warning.exceptions = "true";
@@ -87,7 +87,7 @@ definition {
 	@description = "Verify if no osgi config file exists, when a config is updated via UI, then the config is added to the database and a config file is not created."
 	@priority = 3
 	test ConfigAddedViaUIDoesNotCreateNewConfigFile {
-		property database.types = "postgresql";
+		property database.types = "mysql";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -129,7 +129,7 @@ definition {
 	@description = "Verify if an osgi config file exists, when a config is updated via UI, then the config file is updated with the new values."
 	@priority = 3
 	test ConfigAddedViaUIUpdatesExistingOSGIConfigFile {
-		property database.types = "postgresql";
+		property database.types = "mysql";
 		property osgi.module.configuration.file.names = "com.liferay.commerce.product.definitions.web.internal.configuration.CPInstanceConfiguration.config";
 		property osgi.module.configurations = "checkInterval=I\"33\"";
 		property test.liferay.virtual.instance = "false";
@@ -183,7 +183,7 @@ definition {
 	@description = "Verify OSGI config files added to auto deploy directories other than osgi/configs are not read."
 	@priority = 3
 	test ConfigFilesReadOnlyFromOSGIConfigs {
-		property database.types = "postgresql";
+		property database.types = "mysql";
 
 		task ("When an OSGI config file is added to an auto deploy directory other than osgi/configs") {
 			var config = "checkInterval=I\"44\"";
@@ -207,7 +207,7 @@ definition {
 	@description = "Verify multiple factory configurations can be created."
 	@priority = 3
 	test DeployFactoryConfigs {
-		property database.types = "postgresql";
+		property database.types = "mysql";
 		property osgi.module.configuration.file.names = "com.liferay.portal.security.auth.verifier.internal.tunnel.configuration.TunnelAuthVerifierConfiguration~test1.config:com.liferay.portal.security.auth.verifier.internal.tunnel.configuration.TunnelAuthVerifierConfiguration~test2.config";
 		property osgi.module.configurations = "urlsIncludes=\"/api/liferay/test1\":urlsIncludes=\"/api/liferay/test2\"";
 
@@ -226,7 +226,7 @@ definition {
 	@priority = 3
 	test ModifyFactoryConfig {
 		property ci.retries.disabled = "false";
-		property database.types = "postgresql";
+		property database.types = "mysql";
 		property osgi.module.configuration.file.names = "com.liferay.portal.security.auth.verifier.internal.tunnel.configuration.TunnelAuthVerifierConfiguration~test1.config";
 		property osgi.module.configurations = "urlsIncludes=\"/api/liferay/original\"";
 
@@ -256,7 +256,7 @@ definition {
 	@description = "Verify if a config exists only in the database, when a OSGI config file is added, the databse entry is updated."
 	@priority = 3
 	test OSGIConfigFileUpdatesExistingConfigInDatabase {
-		property database.types = "postgresql";
+		property database.types = "mysql";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "sequential";
 
@@ -310,7 +310,7 @@ definition {
 	@description = "LPS-132645 Verify the default factory config created by the OSGI configurator can be overriden by an OSGI config file."
 	@priority = 3
 	test OverrideDefaultFactoryConfig {
-		property database.types = "postgresql";
+		property database.types = "mysql";
 		property osgi.module.configuration.file.names = "com.liferay.portal.security.auth.verifier.internal.tunnel.configuration.TunnelAuthVerifierConfiguration~default.config";
 		property osgi.module.configurations = "urlsIncludes=\"/api/liferay/new\"";
 
@@ -328,7 +328,7 @@ definition {
 	@description = "LPS-132645 Verify the default factory config created by the OSGI configurator can be recreated using an OSGI config file if it is deleted."
 	@priority = 3
 	test RecreateDefaultFactoryConfig {
-		property database.types = "postgresql";
+		property database.types = "mysql";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "sequential";
 
@@ -375,7 +375,7 @@ definition {
 	@description = "Verify when an existing factory config is renamed, the old entry is removed and the new one is added."
 	@priority = 3
 	test RenameFactoryConfig {
-		property database.types = "postgresql";
+		property database.types = "mysql";
 		property osgi.module.configuration.file.names = "com.liferay.portal.security.auth.verifier.internal.tunnel.configuration.TunnelAuthVerifierConfiguration~original.config";
 		property osgi.module.configurations = "enabled=\"true\"";
 

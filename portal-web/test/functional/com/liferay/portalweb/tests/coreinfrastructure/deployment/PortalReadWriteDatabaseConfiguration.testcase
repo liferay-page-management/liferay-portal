@@ -4,7 +4,7 @@ definition {
 	property app.server.types = "tomcat";
 	property ci.retries.disabled = "true";
 	property configure.read.write.database = "jdbc";
-	property database.types = "postgresql";
+	property database.types = "mysql";
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property test.assert.warning.exceptions = "true";
