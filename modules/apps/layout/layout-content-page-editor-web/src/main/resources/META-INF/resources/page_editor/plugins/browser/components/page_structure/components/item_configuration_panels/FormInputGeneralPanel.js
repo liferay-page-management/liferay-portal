@@ -214,11 +214,7 @@ export function FormInputGeneralPanel({item}) {
 				);
 			}
 
-			if (
-				Liferay.FeatureFlags['LPD-20213'] &&
-				relationships &&
-				!selectedRelationship
-			) {
+			if (relationships && !selectedRelationship) {
 				fields = fields.filter(
 					(fieldSet) =>
 						!relationships
@@ -478,7 +474,7 @@ function FormInputMappingOptions({
 
 	return (
 		<>
-			{relationships?.length && Liferay.FeatureFlags['LPD-20213'] ? (
+			{relationships?.length ? (
 				<>
 					<ClayForm.Group small>
 						<label htmlFor={sourceSelectId}>

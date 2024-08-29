@@ -71,7 +71,6 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -308,7 +307,6 @@ public class UpdateFormItemConfigMVCActionCommandTest {
 		}
 	}
 
-	@FeatureFlags("LPD-20213")
 	@Test
 	public void testUpdateFormItemConfigMVCActionCommandMappingFormChangingFormType()
 		throws Exception {
@@ -397,7 +395,6 @@ public class UpdateFormItemConfigMVCActionCommandTest {
 		}
 	}
 
-	@FeatureFlags("LPD-20213")
 	@Test
 	public void testUpdateFormItemConfigMVCActionCommandMappingFormDeletingInfoFields()
 		throws Exception {
@@ -472,7 +469,6 @@ public class UpdateFormItemConfigMVCActionCommandTest {
 		}
 	}
 
-	@FeatureFlags("LPD-20213")
 	@Test
 	public void testUpdateFormItemConfigMVCActionCommandMappingFormWithEmptySpecificInfoField()
 		throws Exception {
@@ -520,7 +516,6 @@ public class UpdateFormItemConfigMVCActionCommandTest {
 		}
 	}
 
-	@FeatureFlags("LPD-20213")
 	@Test
 	public void testUpdateFormItemConfigMVCActionCommandMappingFormWithNewInfoFields()
 		throws Exception {

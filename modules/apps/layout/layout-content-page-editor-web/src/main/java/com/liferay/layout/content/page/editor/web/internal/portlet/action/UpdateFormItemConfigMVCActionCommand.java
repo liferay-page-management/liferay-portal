@@ -22,7 +22,6 @@ import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructureItemUtil;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -200,9 +199,7 @@ public class UpdateFormItemConfigMVCActionCommand
 				String[] uniqueInfoFieldIds = StringUtil.split(
 					ParamUtil.getString(actionRequest, "fields"));
 
-				if (!FeatureFlagManagerUtil.isEnabled("LPD-20213") ||
-					ArrayUtil.isNotEmpty(uniqueInfoFieldIds)) {
-
+				if (ArrayUtil.isNotEmpty(uniqueInfoFieldIds)) {
 					addedFragmentEntryLinks =
 						_formItemManager.addFragmentEntryLinks(
 							jsonObject, formStyledLayoutStructureItem, true,
@@ -219,7 +216,6 @@ public class UpdateFormItemConfigMVCActionCommand
 				actionRequest.getParameterMap();
 
 			if (parameterMap.containsKey("fields") &&
-				FeatureFlagManagerUtil.isEnabled("LPD-20213") &&
 				(formStyledLayoutStructureItem.getClassNameId() > 0)) {
 
 				List<String> newUniqueInfoFieldIds = new ArrayList<>();
