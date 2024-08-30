@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import javax.portlet.ActionRequest;
@@ -154,6 +155,22 @@ public class AddFragmentEntryLinkMVCActionCommand
 		FragmentEntryLink fragmentEntryLink = addFragmentEntryLink(
 			actionRequest);
 
+		String editableValues = ParamUtil.getString(
+			actionRequest, "editableValues");
+
+		if (Validator.isNotNull(editableValues)) {
+			JSONObject editableValuesJSONObject =
+				_fragmentEntryLinkManager.mergeEditableValuesJSONObject(
+					_jsonFactory.createJSONObject(
+						fragmentEntryLink.getEditableValues()),
+					_jsonFactory.createJSONObject(editableValues));
+
+			fragmentEntryLink =
+				_fragmentEntryLinkService.updateFragmentEntryLink(
+					fragmentEntryLink.getFragmentEntryLinkId(),
+					editableValuesJSONObject.toString());
+		}
+
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
@@ -165,14 +182,15 @@ public class AddFragmentEntryLinkMVCActionCommand
 
 		JSONObject jsonObject = _jsonFactory.createJSONObject();
 
+		long fragmentEntryLinkId = fragmentEntryLink.getFragmentEntryLinkId();
+
 		LayoutStructureUtil.updateLayoutPageTemplateData(
 			themeDisplay.getScopeGroupId(), segmentsExperienceId,
 			themeDisplay.getPlid(),
 			layoutStructure -> {
 				LayoutStructureItem layoutStructureItem =
 					layoutStructure.addFragmentStyledLayoutStructureItem(
-						fragmentEntryLink.getFragmentEntryLinkId(),
-						parentItemId, position);
+						fragmentEntryLinkId, parentItemId, position);
 
 				jsonObject.put("addedItemId", layoutStructureItem.getItemId());
 			});
