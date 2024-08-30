@@ -5,12 +5,16 @@
 
 package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
+import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.exception.FragmentEntryContentException;
 import com.liferay.fragment.exception.NoSuchEntryException;
 import com.liferay.fragment.listener.FragmentEntryLinkListener;
 import com.liferay.fragment.listener.FragmentEntryLinkListenerRegistry;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
+import com.liferay.fragment.processor.DefaultFragmentEntryProcessorContext;
+import com.liferay.fragment.processor.FragmentEntryProcessorContext;
+import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
 import com.liferay.fragment.renderer.DefaultFragmentRendererContext;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererRegistry;
@@ -32,8 +36,10 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import javax.portlet.ActionRequest;
@@ -165,14 +171,15 @@ public class AddFragmentEntryLinkMVCActionCommand
 
 		JSONObject jsonObject = _jsonFactory.createJSONObject();
 
+		long fragmentEntryLinkId = fragmentEntryLink.getFragmentEntryLinkId();
+
 		LayoutStructureUtil.updateLayoutPageTemplateData(
 			themeDisplay.getScopeGroupId(), segmentsExperienceId,
 			themeDisplay.getPlid(),
 			layoutStructure -> {
 				LayoutStructureItem layoutStructureItem =
 					layoutStructure.addFragmentStyledLayoutStructureItem(
-						fragmentEntryLink.getFragmentEntryLinkId(),
-						parentItemId, position);
+						fragmentEntryLinkId, parentItemId, position);
 
 				jsonObject.put("addedItemId", layoutStructureItem.getItemId());
 			});
@@ -188,6 +195,55 @@ public class AddFragmentEntryLinkMVCActionCommand
 			LayoutStructureUtil.getLayoutStructure(
 				themeDisplay.getScopeGroupId(), themeDisplay.getPlid(),
 				fragmentEntryLink.getSegmentsExperienceId());
+
+		String editableValues = ParamUtil.getString(
+			actionRequest, "editableValues");
+
+		if (Validator.isNotNull(editableValues)) {
+			JSONObject editableValuesJSONObject =
+				_fragmentEntryLinkManager.mergeEditableValuesJSONObject(
+					_jsonFactory.createJSONObject(
+						fragmentEntryLink.getEditableValues()),
+					_jsonFactory.createJSONObject(editableValues));
+
+			fragmentEntryLink =
+				_fragmentEntryLinkService.updateFragmentEntryLink(
+					fragmentEntryLink.getFragmentEntryLinkId(),
+					editableValuesJSONObject.toString());
+
+			FragmentEntryProcessorContext fragmentEntryProcessorContext =
+				new DefaultFragmentEntryProcessorContext(
+					_portal.getHttpServletRequest(actionRequest),
+					_portal.getHttpServletResponse(actionResponse),
+					FragmentEntryLinkConstants.EDIT,
+					LocaleUtil.getMostRelevantLocale());
+
+			String processedHTML =
+				_fragmentEntryProcessorRegistry.processFragmentEntryLinkHTML(
+					fragmentEntryLink, fragmentEntryProcessorContext);
+
+			JSONObject newEditableValuesJSONObject =
+				_fragmentEntryLinkManager.mergeEditableValuesJSONObject(
+					_fragmentEntryProcessorRegistry.
+						getDefaultEditableValuesJSONObject(
+							processedHTML,
+							fragmentEntryLink.getConfiguration()),
+					_jsonFactory.createJSONObject(editableValues));
+
+			fragmentEntryLink =
+				_fragmentEntryLinkService.updateFragmentEntryLink(
+					fragmentEntryLink.getFragmentEntryLinkId(),
+					newEditableValuesJSONObject.toString());
+
+			for (FragmentEntryLinkListener fragmentEntryLinkListener :
+					_fragmentEntryLinkListenerRegistry.
+						getFragmentEntryLinkListeners()) {
+
+				fragmentEntryLinkListener.
+					onUpdateFragmentEntryLinkConfigurationValues(
+						fragmentEntryLink);
+			}
+		}
 
 		return jsonObject.put(
 			"fragmentEntryLink",
@@ -208,6 +264,9 @@ public class AddFragmentEntryLinkMVCActionCommand
 
 	@Reference
 	private FragmentEntryLinkService _fragmentEntryLinkService;
+
+	@Reference
+	private FragmentEntryProcessorRegistry _fragmentEntryProcessorRegistry;
 
 	@Reference
 	private FragmentRendererRegistry _fragmentRendererRegistry;
