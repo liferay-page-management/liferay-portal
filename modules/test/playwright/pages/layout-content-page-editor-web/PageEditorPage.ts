@@ -1017,7 +1017,7 @@ export class PageEditorPage {
 	}
 
 	async waitForChangesSaved() {
-		await this.page.getByLabel('Saved').waitFor();
+		await this.page.getByLabel('Saved', {exact: true}).waitFor();
 
 		await this.page
 			.getByText(
