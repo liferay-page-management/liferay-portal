@@ -20,7 +20,6 @@ import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemFormProvider;
 import com.liferay.info.search.InfoSearchClassMapperRegistry;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
-import com.liferay.layout.util.structure.ContainerStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
 import com.liferay.layout.util.structure.FormStepContainerStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.FormStyledLayoutStructureItem;
@@ -30,10 +29,8 @@ import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructureItemUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -51,7 +48,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -64,51 +60,35 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = FormItemManager.class)
 public class FormItemManager {
 
-	public List<FragmentEntryLink> addFormButtonsFragmentEntryLinks(
-			FormStyledLayoutStructureItem formStyledLayoutStructureItem,
-			Layout layout, LayoutStructure layoutStructure, Locale locale,
-			int numberOfSteps, long segmentsExperienceId,
-			ServiceContext serviceContext)
-		throws PortalException {
+	public LayoutStructureItemChanges addFormStepLayoutStructureItems(
+		FormStyledLayoutStructureItem formStyledLayoutStructureItem,
+		LayoutStructure layoutStructure, int numberOfSteps) {
 
 		LayoutStructureItem formStepContainerStyledLayoutStructureItem =
 			_findFormStepContainerStyledLayoutStructureItem(
 				formStyledLayoutStructureItem, layoutStructure);
 
 		if (formStepContainerStyledLayoutStructureItem == null) {
-			return Collections.emptyList();
+			return new LayoutStructureItemChanges();
 		}
 
-		List<FragmentEntryLink> addedFragmentEntryLinks = new ArrayList<>();
+		List<String> addedItemIds = new ArrayList<>();
 
 		List<String> childrenItemIds =
 			formStepContainerStyledLayoutStructureItem.getChildrenItemIds();
 
-		int initialStepIndex = childrenItemIds.size() - 1;
+		int numberOfStepsNeeded = numberOfSteps - childrenItemIds.size();
 
-		for (int i = initialStepIndex; i < numberOfSteps; i++) {
-			LayoutStructureItem formStepLayoutStructureItem = null;
+		for (int i = 0; i < numberOfStepsNeeded; i++) {
+			LayoutStructureItem layoutStructureItem =
+				layoutStructure.addFormStepLayoutStructureItem(
+					formStepContainerStyledLayoutStructureItem.getItemId(), -1);
 
-			if (i == initialStepIndex) {
-				formStepLayoutStructureItem =
-					layoutStructure.getLayoutStructureItem(
-						childrenItemIds.get(initialStepIndex));
-			}
-			else {
-				formStepLayoutStructureItem =
-					layoutStructure.addFormStepLayoutStructureItem(
-						formStepContainerStyledLayoutStructureItem.getItemId(),
-						-1);
-			}
-
-			addedFragmentEntryLinks.addAll(
-				_addFormButtonsFragmentEntryLinks(
-					formStepLayoutStructureItem, formStyledLayoutStructureItem,
-					layout, locale, layoutStructure, numberOfSteps - 1,
-					segmentsExperienceId, i, serviceContext));
+			addedItemIds.add(layoutStructureItem.getItemId());
 		}
 
-		return addedFragmentEntryLinks;
+		return new LayoutStructureItemChanges(
+			addedItemIds, Collections.emptyList(), Collections.emptyList());
 	}
 
 	public List<FragmentEntryLink> addFragmentEntryLinks(
@@ -229,14 +209,13 @@ public class FormItemManager {
 		return addedFragmentEntryLinks;
 	}
 
-	public List<FragmentEntryLink> changeToMultistepFormType(
-			FormStyledLayoutStructureItem formStyledLayoutStructureItem,
-			Layout layout, LayoutStructure layoutStructure, Locale locale,
-			int numberOfSteps, long segmentsExperienceId,
-			ServiceContext serviceContext)
-		throws PortalException {
+	public LayoutStructureItemChanges changeToMultistepFormType(
+		FormStyledLayoutStructureItem formStyledLayoutStructureItem,
+		LayoutStructure layoutStructure, Locale locale, int numberOfSteps) {
 
-		List<FragmentEntryLink> addedFragmentEntryLinks = new ArrayList<>();
+		List<String> addedItemIds = new ArrayList<>();
+		List<LayoutStructureItemChanges.MovedItem> movedItems =
+			new ArrayList<>();
 
 		List<String> childrenItemIds = new ArrayList<>(
 			formStyledLayoutStructureItem.getChildrenItemIds());
@@ -244,6 +223,9 @@ public class FormItemManager {
 		LayoutStructureItem formStepContainerStyledLayoutStructureItem =
 			layoutStructure.addFormStepContainerStyledLayoutStructureItem(
 				formStyledLayoutStructureItem.getItemId(), -1);
+
+		addedItemIds.add(
+			formStepContainerStyledLayoutStructureItem.getItemId());
 
 		LayoutStructureItem firstFormStepLayoutStructureItem =
 			layoutStructure.addFormStepLayoutStructureItem(
@@ -269,55 +251,42 @@ public class FormItemManager {
 				if (fieldTypes.contains("stepper")) {
 					continue;
 				}
-
-				if (fieldTypes.contains("formButton")) {
-					layoutStructure.markLayoutStructureItemForDeletion(
-						Collections.singletonList(childrenItemId),
-						Collections.emptyList());
-
-					continue;
-				}
 			}
+
+			movedItems.add(
+				new LayoutStructureItemChanges.MovedItem(
+					childrenItemId, formStyledLayoutStructureItem.getItemId()));
 
 			layoutStructure.moveLayoutStructureItem(
 				childrenItemId, firstFormStepLayoutStructureItem.getItemId(),
 				-1);
 		}
 
-		addedFragmentEntryLinks.addAll(
-			_addFormButtonsFragmentEntryLinks(
-				firstFormStepLayoutStructureItem, formStyledLayoutStructureItem,
-				layout, locale, layoutStructure, numberOfSteps - 1,
-				segmentsExperienceId, 0, serviceContext));
-
 		for (int i = 1; i < numberOfSteps; i++) {
-			LayoutStructureItem formStepLayoutStructureItem =
-				layoutStructure.addFormStepLayoutStructureItem(
-					formStepContainerStyledLayoutStructureItem.getItemId(), i);
-
-			addedFragmentEntryLinks.addAll(
-				_addFormButtonsFragmentEntryLinks(
-					formStepLayoutStructureItem, formStyledLayoutStructureItem,
-					layout, locale, layoutStructure, numberOfSteps - 1,
-					segmentsExperienceId, i, serviceContext));
+			layoutStructure.addFormStepLayoutStructureItem(
+				formStepContainerStyledLayoutStructureItem.getItemId(), i);
 		}
 
-		return addedFragmentEntryLinks;
+		return new LayoutStructureItemChanges(
+			addedItemIds, movedItems, Collections.emptyList());
 	}
 
-	public List<FragmentEntryLink> changeToSimpleFormType(
-			FormStyledLayoutStructureItem formStyledLayoutStructureItem,
-			Layout layout, LayoutStructure layoutStructure, Locale locale,
-			long segmentsExperienceId, ServiceContext serviceContext)
-		throws PortalException {
+	public LayoutStructureItemChanges changeToSimpleFormType(
+		FormStyledLayoutStructureItem formStyledLayoutStructureItem,
+		LayoutStructure layoutStructure, Locale locale) {
 
 		LayoutStructureItem formStepContainerStyledLayoutStructureItem =
 			_findFormStepContainerStyledLayoutStructureItem(
 				formStyledLayoutStructureItem, layoutStructure);
 
 		if (formStepContainerStyledLayoutStructureItem == null) {
-			return Collections.emptyList();
+			return new LayoutStructureItemChanges();
 		}
+
+		List<LayoutStructureItemChanges.MovedItem> movedItems =
+			new ArrayList<>();
+
+		List<String> removedItemIds = new ArrayList<>();
 
 		for (String childrenItemId :
 				new ArrayList<>(
@@ -348,6 +317,8 @@ public class FormItemManager {
 			layoutStructure.markLayoutStructureItemForDeletion(
 				Collections.singletonList(childrenItemId),
 				Collections.emptyList());
+
+			removedItemIds.add(childrenItemId);
 		}
 
 		for (String childrenItemId :
@@ -362,16 +333,18 @@ public class FormItemManager {
 					new ArrayList<>(
 						formStepLayoutStructureItem.getChildrenItemIds())) {
 
-				if (!_isFormButtonsContainerStyledLayoutStructureItem(
-						formStepLayoutStructureItem,
-						formStyledLayoutStructureItem,
-						layoutStructure.getLayoutStructureItem(
-							formStepLayoutStructureItemChildrenItemId))) {
+				LayoutStructureItem layoutStructureItem =
+					layoutStructure.getLayoutStructureItem(
+						formStepLayoutStructureItemChildrenItemId);
 
-					layoutStructure.moveLayoutStructureItem(
+				movedItems.add(
+					new LayoutStructureItemChanges.MovedItem(
 						formStepLayoutStructureItemChildrenItemId,
-						formStyledLayoutStructureItem.getItemId(), -1);
-				}
+						layoutStructureItem.getParentItemId()));
+
+				layoutStructure.moveLayoutStructureItem(
+					formStepLayoutStructureItemChildrenItemId,
+					formStyledLayoutStructureItem.getItemId(), -1);
 			}
 		}
 
@@ -380,35 +353,28 @@ public class FormItemManager {
 				formStepContainerStyledLayoutStructureItem.getItemId()),
 			Collections.emptyList());
 
-		FragmentEntryLink fragmentEntryLink = _addFormButtonFragmentEntryLink(
-			layout, locale, _FORM_BUTTON_TYPE_SUBMIT, segmentsExperienceId,
-			serviceContext);
+		removedItemIds.add(
+			formStepContainerStyledLayoutStructureItem.getItemId());
 
-		if (fragmentEntryLink == null) {
-			return Collections.emptyList();
-		}
-
-		layoutStructure.addFragmentStyledLayoutStructureItem(
-			fragmentEntryLink.getFragmentEntryLinkId(),
-			formStyledLayoutStructureItem.getItemId(), -1);
-
-		return Collections.singletonList(fragmentEntryLink);
+		return new LayoutStructureItemChanges(
+			Collections.emptyList(), movedItems, removedItemIds);
 	}
 
-	public List<FragmentEntryLink> removeFormButtonsFragmentEntryLinks(
-			FormStyledLayoutStructureItem formStyledLayoutStructureItem,
-			Layout layout, LayoutStructure layoutStructure, Locale locale,
-			int numberOfSteps, long segmentsExperienceId,
-			ServiceContext serviceContext)
-		throws PortalException {
+	public LayoutStructureItemChanges removeFormStepLayoutStructureItems(
+		FormStyledLayoutStructureItem formStyledLayoutStructureItem,
+		LayoutStructure layoutStructure, int numberOfSteps) {
 
 		LayoutStructureItem formStepContainerStyledLayoutStructureItem =
 			_findFormStepContainerStyledLayoutStructureItem(
 				formStyledLayoutStructureItem, layoutStructure);
 
 		if (formStepContainerStyledLayoutStructureItem == null) {
-			return Collections.emptyList();
+			return new LayoutStructureItemChanges();
 		}
+
+		List<LayoutStructureItemChanges.MovedItem> movedItems =
+			new ArrayList<>();
+		List<String> removedItemIds = new ArrayList<>();
 
 		List<String> childrenItemIds = new ArrayList<>(
 			formStepContainerStyledLayoutStructureItem.getChildrenItemIds());
@@ -425,17 +391,20 @@ public class FormItemManager {
 					new ArrayList<>(
 						formStepLayoutStructureItem.getChildrenItemIds())) {
 
-				if (!_isFormButtonsContainerStyledLayoutStructureItem(
-						formStepLayoutStructureItem,
-						formStyledLayoutStructureItem,
-						layoutStructure.getLayoutStructureItem(
-							childrenItemId))) {
+				LayoutStructureItem layoutStructureItem =
+					layoutStructure.getLayoutStructureItem(childrenItemId);
 
-					layoutStructure.moveLayoutStructureItem(
-						childrenItemId,
-						previousFormStepLayoutStructureItem.getItemId(), -1);
-				}
+				movedItems.add(
+					new LayoutStructureItemChanges.MovedItem(
+						layoutStructureItem.getItemId(),
+						layoutStructureItem.getParentItemId()));
+
+				layoutStructure.moveLayoutStructureItem(
+					childrenItemId,
+					previousFormStepLayoutStructureItem.getItemId(), -1);
 			}
+
+			removedItemIds.add(formStepLayoutStructureItem.getItemId());
 
 			layoutStructure.markLayoutStructureItemForDeletion(
 				Collections.singletonList(
@@ -443,26 +412,23 @@ public class FormItemManager {
 				Collections.emptyList());
 		}
 
-		return _addFormButtonsFragmentEntryLinks(
-			previousFormStepLayoutStructureItem, formStyledLayoutStructureItem,
-			layout, locale, layoutStructure, numberOfSteps,
-			segmentsExperienceId, numberOfSteps - 1, serviceContext);
+		return new LayoutStructureItemChanges(
+			Collections.emptyList(), movedItems, removedItemIds);
 	}
 
-	public JSONArray removeLayoutStructureItemsJSONArray(
+	public LayoutStructureItemChanges removeLayoutStructureItemsJSONArray(
 		FormStyledLayoutStructureItem formStyledLayoutStructureItem,
-		LayoutStructure layoutStructure, List<String> removedItemIds) {
+		LayoutStructure layoutStructure, List<String> initialRemovedItemIds) {
 
-		JSONArray fragmentEntryLinkIdsJSONArray =
-			_jsonFactory.createJSONArray();
+		List<String> removedItemIds = new ArrayList<>();
 
 		for (String itemId :
 				LayoutStructureItemUtil.getChildrenItemIds(
 					formStyledLayoutStructureItem.getItemId(),
 					layoutStructure)) {
 
-			if (ListUtil.isNotEmpty(removedItemIds) &&
-				!removedItemIds.contains(itemId)) {
+			if (ListUtil.isNotEmpty(initialRemovedItemIds) &&
+				!initialRemovedItemIds.contains(itemId)) {
 
 				continue;
 			}
@@ -470,27 +436,11 @@ public class FormItemManager {
 			layoutStructure.markLayoutStructureItemForDeletion(
 				Collections.singletonList(itemId), Collections.emptyList());
 
-			LayoutStructureItem removedLayoutStructureItem =
-				layoutStructure.getLayoutStructureItem(itemId);
-
-			if (!(removedLayoutStructureItem instanceof
-					FragmentStyledLayoutStructureItem)) {
-
-				continue;
-			}
-
-			FragmentStyledLayoutStructureItem
-				fragmentStyledLayoutStructureItem =
-					(FragmentStyledLayoutStructureItem)
-						removedLayoutStructureItem;
-
-			fragmentEntryLinkIdsJSONArray.put(
-				String.valueOf(
-					fragmentStyledLayoutStructureItem.
-						getFragmentEntryLinkId()));
+			removedItemIds.add(itemId);
 		}
 
-		return fragmentEntryLinkIdsJSONArray;
+		return new LayoutStructureItemChanges(
+			Collections.emptyList(), Collections.emptyList(), removedItemIds);
 	}
 
 	public static class LayoutStructureItemChanges {
@@ -548,155 +498,6 @@ public class FormItemManager {
 
 	}
 
-	private FragmentEntryLink _addFormButtonFragmentEntryLink(
-			Layout layout, Locale locale, String type,
-			long segmentsExperienceId, ServiceContext serviceContext)
-		throws PortalException {
-
-		FragmentEntry fragmentEntry = _getFragmentEntry(
-			layout.getCompanyId(),
-			_defaultInputFragmentEntryConfigurationProvider.
-				getDefaultInputFragmentEntryKeysJSONObject(layout.getGroupId()),
-			DefaultInputFragmentEntryConfigurationProvider.
-				FORM_INPUT_SUBMIT_BUTTON);
-
-		if (fragmentEntry == null) {
-			return null;
-		}
-
-		FragmentEntryLink fragmentEntryLink =
-			_fragmentEntryLinkService.addFragmentEntryLink(
-				null, layout.getGroupId(), 0,
-				fragmentEntry.getFragmentEntryId(), segmentsExperienceId,
-				layout.getPlid(), fragmentEntry.getCss(),
-				fragmentEntry.getHtml(), fragmentEntry.getJs(),
-				fragmentEntry.getConfiguration(), null, StringPool.BLANK, 0,
-				fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(),
-				serviceContext);
-
-		JSONObject editableValuesJSONObject = _jsonFactory.createJSONObject(
-			fragmentEntryLink.getEditableValues());
-
-		JSONObject freemarkerJSONObject =
-			editableValuesJSONObject.getJSONObject(
-				FragmentEntryProcessorConstants.
-					KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR);
-
-		if (freemarkerJSONObject == null) {
-			freemarkerJSONObject = _jsonFactory.createJSONObject();
-
-			editableValuesJSONObject.put(
-				FragmentEntryProcessorConstants.
-					KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
-				freemarkerJSONObject);
-		}
-
-		freemarkerJSONObject.put("type", type);
-
-		JSONObject editableJSONObject = editableValuesJSONObject.getJSONObject(
-			FragmentEntryProcessorConstants.
-				KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR);
-
-		if (editableJSONObject == null) {
-			editableJSONObject = _jsonFactory.createJSONObject();
-
-			editableValuesJSONObject.put(
-				FragmentEntryProcessorConstants.
-					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
-				editableJSONObject);
-		}
-
-		editableJSONObject.put(
-			type + "-button-text",
-			JSONUtil.put("defaultValue", _language.get(locale, type)));
-
-		return _fragmentEntryLinkService.updateFragmentEntryLink(
-			fragmentEntryLink.getFragmentEntryLinkId(),
-			editableValuesJSONObject.toString());
-	}
-
-	private List<FragmentEntryLink> _addFormButtonsFragmentEntryLinks(
-			LayoutStructureItem formStepLayoutStructureItem,
-			FormStyledLayoutStructureItem formStyledLayoutStructureItem,
-			Layout layout, Locale locale, LayoutStructure layoutStructure,
-			int numberOfSteps, long segmentsExperienceId, int stepIndex,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		LayoutStructureItem layoutStructureItem =
-			_findFormButtonsContainerStyledLayoutStructureItem(
-				formStepLayoutStructureItem, formStyledLayoutStructureItem,
-				layoutStructure);
-
-		if (layoutStructureItem != null) {
-			layoutStructure.markLayoutStructureItemForDeletion(
-				Collections.singletonList(layoutStructureItem.getItemId()),
-				Collections.emptyList());
-		}
-
-		ContainerStyledLayoutStructureItem containerStyledLayoutStructureItem =
-			(ContainerStyledLayoutStructureItem)
-				layoutStructure.addContainerStyledLayoutStructureItem(
-					_getFormButtonsContainerId(
-						formStepLayoutStructureItem,
-						formStyledLayoutStructureItem),
-					formStepLayoutStructureItem.getItemId(), -1);
-
-		containerStyledLayoutStructureItem.setContentDisplay("flex-row");
-
-		if (stepIndex == 0) {
-			FragmentEntryLink nextFormButtonFragmentEntryLink =
-				_addFormButtonFragmentEntryLink(
-					layout, locale, _FORM_BUTTON_TYPE_NEXT,
-					segmentsExperienceId, serviceContext);
-
-			if (nextFormButtonFragmentEntryLink == null) {
-				return Collections.emptyList();
-			}
-
-			layoutStructure.addFragmentStyledLayoutStructureItem(
-				nextFormButtonFragmentEntryLink.getFragmentEntryLinkId(),
-				containerStyledLayoutStructureItem.getItemId(), -1);
-
-			return Collections.singletonList(nextFormButtonFragmentEntryLink);
-		}
-
-		List<FragmentEntryLink> fragmentEntryLinks = new ArrayList<>();
-
-		FragmentEntryLink previousFormButtonFragmentEntryLink =
-			_addFormButtonFragmentEntryLink(
-				layout, locale, _FORM_BUTTON_TYPE_PREVIOUS,
-				segmentsExperienceId, serviceContext);
-
-		if (previousFormButtonFragmentEntryLink != null) {
-			fragmentEntryLinks.add(previousFormButtonFragmentEntryLink);
-
-			layoutStructure.addFragmentStyledLayoutStructureItem(
-				previousFormButtonFragmentEntryLink.getFragmentEntryLinkId(),
-				containerStyledLayoutStructureItem.getItemId(), -1);
-		}
-
-		String type = _FORM_BUTTON_TYPE_SUBMIT;
-
-		if (stepIndex < numberOfSteps) {
-			type = _FORM_BUTTON_TYPE_NEXT;
-		}
-
-		FragmentEntryLink submitFormButtonFragmentEntryLink =
-			_addFormButtonFragmentEntryLink(
-				layout, locale, type, segmentsExperienceId, serviceContext);
-
-		if (submitFormButtonFragmentEntryLink != null) {
-			fragmentEntryLinks.add(submitFormButtonFragmentEntryLink);
-
-			layoutStructure.addFragmentStyledLayoutStructureItem(
-				submitFormButtonFragmentEntryLink.getFragmentEntryLinkId(),
-				containerStyledLayoutStructureItem.getItemId(), -1);
-		}
-
-		return fragmentEntryLinks;
-	}
-
 	private FragmentEntryLink _addFragmentEntryLink(
 			String formItemId, FragmentEntry fragmentEntry,
 			InfoField<?> infoField, Layout layout,
@@ -745,29 +546,6 @@ public class FormItemManager {
 		return fragmentEntryLink;
 	}
 
-	private LayoutStructureItem
-		_findFormButtonsContainerStyledLayoutStructureItem(
-			LayoutStructureItem formStepLayoutStructureItem,
-			LayoutStructureItem formStyledLayoutStructureItem,
-			LayoutStructure layoutStructure) {
-
-		for (String childrenItemId :
-				formStepLayoutStructureItem.getChildrenItemIds()) {
-
-			LayoutStructureItem layoutStructureItem =
-				layoutStructure.getLayoutStructureItem(childrenItemId);
-
-			if (_isFormButtonsContainerStyledLayoutStructureItem(
-					formStepLayoutStructureItem, formStyledLayoutStructureItem,
-					layoutStructureItem)) {
-
-				return layoutStructureItem;
-			}
-		}
-
-		return null;
-	}
-
 	private LayoutStructureItem _findFormStepContainerStyledLayoutStructureItem(
 		FormStyledLayoutStructureItem formStyledLayoutStructureItem,
 		LayoutStructure layoutStructure) {
@@ -786,14 +564,6 @@ public class FormItemManager {
 		}
 
 		return null;
-	}
-
-	private String _getFormButtonsContainerId(
-		LayoutStructureItem formStepLayoutStructureItem,
-		LayoutStructureItem formStyledLayoutStructureItem) {
-
-		return formStyledLayoutStructureItem.getItemId() + StringPool.DASH +
-			formStepLayoutStructureItem.getItemId();
 	}
 
 	private FragmentEntry _getFragmentEntry(
@@ -915,31 +685,6 @@ public class FormItemManager {
 
 		return false;
 	}
-
-	private boolean _isFormButtonsContainerStyledLayoutStructureItem(
-		LayoutStructureItem formStepLayoutStructureItem,
-		LayoutStructureItem formStyledLayoutStructureItem,
-		LayoutStructureItem layoutStructureItem) {
-
-		if ((layoutStructureItem instanceof
-				ContainerStyledLayoutStructureItem) &&
-			Objects.equals(
-				layoutStructureItem.getItemId(),
-				_getFormButtonsContainerId(
-					formStepLayoutStructureItem,
-					formStyledLayoutStructureItem))) {
-
-			return true;
-		}
-
-		return false;
-	}
-
-	private static final String _FORM_BUTTON_TYPE_NEXT = "next";
-
-	private static final String _FORM_BUTTON_TYPE_PREVIOUS = "previous";
-
-	private static final String _FORM_BUTTON_TYPE_SUBMIT = "submit";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		FormItemManager.class);
