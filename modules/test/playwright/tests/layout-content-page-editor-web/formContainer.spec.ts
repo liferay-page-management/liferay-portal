@@ -17,6 +17,7 @@ import {
 	LEMON_OBJECT_ERC,
 	POTATO_OBJECT_ERC,
 } from '../setup/page-management-site/constants';
+import {deleteObjectEntries} from '../setup/page-management-site/utils/deleteObjectEntries';
 import getFormContainerDefinition from './utils/getFormContainerDefinition';
 import getFragmentDefinition from './utils/getFragmentDefinition';
 import getPageDefinition from './utils/getPageDefinition';
@@ -128,6 +129,14 @@ test.describe('Form Configuration', () => {
 				expect(firstAlertDisappears).toBe(true);
 				expect(moreAlertsAppear).toBe(false);
 			}).toPass();
+
+			// Delete Lemon entry
+
+			await deleteObjectEntries({
+				entityName: 'Lemons',
+				page,
+				siteUrl: pageManagementSite.friendlyUrlPath,
+			});
 		}
 	);
 });

@@ -33,6 +33,7 @@ import {
 	LEMON_BASKET_OBJECT_ERC,
 	LEMON_OBJECT_ERC,
 } from '../setup/page-management-site/constants';
+import {deleteObjectEntries} from '../setup/page-management-site/utils/deleteObjectEntries';
 import getContainerDefinition from './utils/getContainerDefinition';
 import getFormContainerDefinition from './utils/getFormContainerDefinition';
 import getFragmentDefinition from './utils/getFragmentDefinition';
@@ -1623,6 +1624,14 @@ test.describe('Tags Fragment', () => {
 
 		await apiHelpers.headlessAdminTaxonomy.deleteKeyword({
 			id: globalTag.id,
+		});
+
+		// Delete Lemon entry
+
+		await deleteObjectEntries({
+			entityName: 'Lemons',
+			page,
+			siteUrl: pageManagementSite.friendlyUrlPath,
 		});
 	});
 
