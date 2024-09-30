@@ -189,6 +189,7 @@ export class DisplayPageTemplatesPage {
 		else {
 			await clickAndExpectToBeVisible({
 				target: this.page.getByRole('button', {name: 'Blank'}),
+				timeout: 3000,
 				trigger: this.newButton,
 			});
 		}
