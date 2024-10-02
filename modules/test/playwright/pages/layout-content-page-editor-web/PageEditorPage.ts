@@ -873,7 +873,11 @@ export class PageEditorPage {
 		);
 
 		const isForm = await fragment.evaluate(
-			(element) => !!element.closest('.page-editor__form')
+			(element) =>
+				!!element.closest('.page-editor__form') &&
+				!Array.from(element.classList).some((className) =>
+					className.startsWith('lfr-layout-structure-item-inputs')
+				)
 		);
 
 		const isGrid = await fragment.evaluate(
