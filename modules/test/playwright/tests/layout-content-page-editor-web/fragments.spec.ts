@@ -25,14 +25,11 @@ import dragAndDropElement from '../../utils/dragAndDropElement';
 import getGlobalSiteId from '../../utils/getGlobalSiteId';
 import getRandomString from '../../utils/getRandomString';
 import {PORTLET_URLS} from '../../utils/portletUrls';
-import getBasicWebContentStructureId, {
-	getWebContentStructureId,
-} from '../../utils/structured-content/getBasicWebContentStructureId';
+import getBasicWebContentStructureId from '../../utils/structured-content/getBasicWebContentStructureId';
 import {waitForAlert} from '../../utils/waitForAlert';
 import {journalPagesTest} from '../journal-web/fixtures/journalPagesTest';
 import {
 	ANIMAL_DDM_STRUCTURE_KEY,
-	ANIMAL_DDM_TEMPLATE_KEY,
 	LEMON_BASKET_OBJECT_ERC,
 	LEMON_OBJECT_ERC,
 } from '../setup/page-management-site/constants';
@@ -281,25 +278,27 @@ test.describe('Content Display Fragment', () => {
 		{
 			tag: ['@LPS-97182', '@LPS-100545', '@LPS-101249'],
 		},
-		async ({apiHelpers, page, pageEditorPage, pageManagementSite}) => {
+		async ({
+			apiHelpers,
+			journalPage,
+			page,
+			pageEditorPage,
+			pageManagementSite,
+		}) => {
 
 			// Create animal web content
 
 			const animalWebContentTitle = getRandomString();
 
-			const animalWebContentStructureId = await getWebContentStructureId(
-				apiHelpers,
-				pageManagementSite.id,
-				ANIMAL_DDM_STRUCTURE_KEY
-			);
+			await journalPage.goto(pageManagementSite.friendlyUrlPath);
 
-			const {articleId: animalWebContentId} =
-				await apiHelpers.jsonWebServicesJournal.addWebContent({
-					ddmStructureId: animalWebContentStructureId,
-					ddmTemplateKey: ANIMAL_DDM_TEMPLATE_KEY,
-					groupId: pageManagementSite.id,
-					titleMap: {en_US: animalWebContentTitle},
-				});
+			await journalPage.goToCreateArticle('Animal');
+
+			await page.getByLabel('Content', {exact: true}).waitFor();
+
+			await journalPage.articleTitleInput.fill(animalWebContentTitle);
+
+			await journalPage.publishArticle();
 
 			// Create basic web content
 
@@ -414,12 +413,12 @@ test.describe('Content Display Fragment', () => {
 
 			// Remove web contents
 
-			expect(
-				await apiHelpers.jsonWebServicesJournal.moveArticleToTrash(
-					pageManagementSite.id,
-					animalWebContentId
-				)
-			).toHaveProperty('articleId');
+			await journalPage.goto(pageManagementSite.friendlyUrlPath);
+
+			await journalPage.goToJournalArticleAction(
+				'Delete',
+				animalWebContentTitle
+			);
 
 			expect(
 				await apiHelpers.jsonWebServicesJournal.moveArticleToTrash(
