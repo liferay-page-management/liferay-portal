@@ -511,9 +511,11 @@ export class PageEditorPage {
 	}
 
 	async dragTreeNode({
+		position = 'middle',
 		source,
 		target,
 	}: {
+		position?: 'bottom' | 'middle' | 'top';
 		source: {
 			label: string;
 			nth?: number;
@@ -523,6 +525,9 @@ export class PageEditorPage {
 			nth?: number;
 		};
 	}) {
+
+		// Go to Browser
+
 		await this.goToSidebarTab('Browser');
 
 		const sourceNode = this.page
@@ -535,28 +540,46 @@ export class PageEditorPage {
 			.filter({hasText: target.label})
 			.nth(target.nth || 0);
 
+		// Select and drag source node
+
 		await sourceNode.hover();
 
 		await this.page.mouse.down();
 
-		await expect(async () => {
-			await targetNode.hover();
+		// Calculate drop data
 
-			await expect(targetNode).toHaveClass(/drag-over-middle/, {
+		const targetBox = await targetNode.boundingBox();
+
+		const y =
+			position === 'middle'
+				? targetBox.height / 2
+				: position === 'bottom'
+					? targetBox.height - 2
+					: 2;
+
+		const cssClass =
+			position === 'middle'
+				? /drag-over-middle/
+				: position === 'bottom'
+					? /drag-over-bottom/
+					: /drag-over-top/;
+
+		// Check hover is correct
+
+		await expect(async () => {
+			await targetNode.hover({
+				position: {
+					x: targetBox.width / 2,
+					y,
+				},
+			});
+
+			await expect(targetNode).toHaveClass(cssClass, {
 				timeout: 1000,
 			});
 		}).toPass();
 
-		const boundingClientRect = await targetNode.evaluate(
-			(element: HTMLDivElement) => element.getBoundingClientRect()
-		);
-
-		await targetNode.hover({
-			position: {
-				x: boundingClientRect.width / 2,
-				y: boundingClientRect.height / 2,
-			},
-		});
+		// Execute drop
 
 		await this.page.mouse.up();
 	}
