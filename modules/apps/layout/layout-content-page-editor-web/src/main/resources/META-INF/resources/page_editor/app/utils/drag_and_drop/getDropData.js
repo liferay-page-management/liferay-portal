@@ -59,7 +59,9 @@ function getSiblingPosition(
 		targetPosition === TARGET_POSITIONS.BOTTOM ||
 		targetPosition === TARGET_POSITIONS.RIGHT
 	) {
-		return siblingPosition + 1;
+		return dropItemPosition !== -1 && dropItemPosition < siblingPosition
+			? siblingPosition
+			: siblingPosition + 1;
 	}
 	else if (
 		dropItemPosition !== -1 &&
