@@ -70,6 +70,8 @@ export class ObjectDetailsPage {
 			.getByText('The object was saved successfully.')
 			.waitFor();
 
+		await this.page.waitForEvent('load');
+
 		if (value) {
 			await expect(field).toBeChecked();
 		}
