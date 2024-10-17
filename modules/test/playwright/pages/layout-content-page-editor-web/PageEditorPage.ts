@@ -280,13 +280,13 @@ export class PageEditorPage {
 	}) {
 		await this.goToConfigurationTab(tab);
 
-		// Change value in different way depending on field type
-
 		const field = this.page
 			.getByRole('tabpanel', {name: tab})
 			.getByLabel(fieldLabel, {
 				exact: true,
 			});
+
+		await field.waitFor();
 
 		if (valueFromStylebook) {
 			await field
@@ -300,6 +300,9 @@ export class PageEditorPage {
 			await valueButton.click();
 		}
 		else {
+
+			// Change value in different way depending on field type
+
 			const type = await field.evaluate((element) => element.tagName);
 
 			if (type === 'INPUT' || type === 'TEXTAREA') {
