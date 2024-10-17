@@ -16,13 +16,13 @@ import {pageManagementSiteTest} from '../../fixtures/pageManagementSiteTest';
 import {clickAndExpectToBeHidden} from '../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../utils/getRandomString';
-import {PORTLET_URLS} from '../../utils/portletUrls';
 import {waitForAlert} from '../../utils/waitForAlert';
 import {
 	LEMON_OBJECT_ERC,
 	POTATO_OBJECT_ERC,
 } from '../setup/page-management-site/constants';
 import {deleteObjectEntries} from '../setup/page-management-site/utils/deleteObjectEntries';
+import {gotoObjectEntries} from '../setup/page-management-site/utils/gotoObjectEntries';
 import getFormContainerDefinition from './utils/getFormContainerDefinition';
 import getFragmentDefinition from './utils/getFragmentDefinition';
 import getPageDefinition from './utils/getPageDefinition';
@@ -741,30 +741,20 @@ test.describe('Submit button', () => {
 			pageEditorPage,
 			pageManagementSite,
 		}) => {
-
-			// Get the object definition id of the Lemon object
-
-			const objectAdminRestClient = await apiHelpers.buildRestClient(
-				ObjectAdminRestClient
-			);
-
-			const {id: objectDefinitionId} =
-				await objectAdminRestClient.objectDefinition.getObjectDefinitionByExternalReferenceCode(
-					{
-						externalReferenceCode: LEMON_OBJECT_ERC,
-					}
-				);
-
 			const checkObjectEntries = async (
 				value: string,
 				status: string
 			) => {
 
-				// Go to the object page and check the value and status
+				// Go to entity
 
-				await page.goto(
-					`/group${pageManagementSite.friendlyUrlPath}${PORTLET_URLS.objects}_${objectDefinitionId}`
-				);
+				await gotoObjectEntries({
+					entityName: 'Lemons',
+					page,
+					siteUrl: pageManagementSite.friendlyUrlPath,
+				});
+
+				// Check the status of the object entry
 
 				const row = page.locator('.dnd-tr').filter({hasText: value});
 

@@ -1,8 +1,7 @@
 import {Page, expect} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
-import {openProductMenu} from '../../../../utils/productMenu';
-import {JournalPage} from '../../../journal-web/pages/JournalPage';
+import {gotoObjectEntries} from './gotoObjectEntries';
 
 /**
  * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
@@ -18,18 +17,13 @@ export async function deleteObjectEntries({
 	siteUrl: Site['friendlyUrlPath'];
 }) {
 
-	// Go to Web Content admin
+	// Go to Entity
 
-	const journalPage = new JournalPage(page);
-	await journalPage.goto(siteUrl);
-
-	// Go to entity
-
-	await openProductMenu(page);
-
-	await page.getByRole('menuitem', {name: entityName}).click();
-
-	await page.locator('.dnd-tbody').waitFor();
+	await gotoObjectEntries({
+		entityName,
+		page,
+		siteUrl,
+	});
 
 	// Remove all entries one by one
 
