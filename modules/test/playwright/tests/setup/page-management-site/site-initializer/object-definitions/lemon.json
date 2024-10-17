@@ -27,6 +27,17 @@
 			"name": "lemonWeight",
 			"required": false,
 			"type": "Integer"
+		},
+		{
+			"DBType": "Clob",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"label": {
+				"en_US": "Lemon History"
+			},
+			"name": "lemonHistory",
+			"required": false,
+			"type": "Clob"
 		}
 	],
 	"objectLayouts": [
