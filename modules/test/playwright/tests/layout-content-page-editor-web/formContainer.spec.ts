@@ -1043,6 +1043,14 @@ test.describe('Submit button', () => {
 
 				await checkObjectFieldValue('300', 'Approved');
 			});
+
+			// Delete previously created object entries
+
+			await deleteObjectEntries({
+				entityName: 'Lemons',
+				page,
+				siteUrl: pageManagementSite.friendlyUrlPath,
+			});
 		}
 	);
 });
