@@ -36,6 +36,16 @@
 				"en_US": "Lemon History"
 			},
 			"name": "lemonHistory",
+			"objectFieldSettings": [
+				{
+					"name": "showCounter",
+					"value": true
+				},
+				{
+					"name": "maxLength",
+					"value": 300
+				}
+			],
 			"required": false,
 			"type": "Clob"
 		}

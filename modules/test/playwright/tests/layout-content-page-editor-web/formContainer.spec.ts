@@ -1188,7 +1188,7 @@ test.describe('Textarea input field', () => {
 
 			// Show characters count
 
-			const characterText = page.getByText('0 / 65000');
+			const characterText = page.getByText('0 / 300');
 
 			await expect(characterText).toHaveClass(/sr-only/);
 
