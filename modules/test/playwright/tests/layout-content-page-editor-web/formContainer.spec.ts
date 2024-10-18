@@ -1202,6 +1202,64 @@ test.describe('Textarea input field', () => {
 			await expect(characterText).not.toHaveClass(/sr-only/);
 		}
 	);
+
+	test(
+		'Check the Textarea input errors',
+		{tag: ['@LPS-170206', '@LPS-173849', '@LPS-182728']},
+		async ({apiHelpers, page, pageEditorPage, pageManagementSite}) => {
+
+			// Create a page with a Form fragment
+
+			const formId = getRandomString();
+
+			const formDefinition = getFormContainerDefinition({
+				id: formId,
+			});
+
+			const layout = await apiHelpers.headlessDelivery.createSitePage({
+				pageDefinition: getPageDefinition([formDefinition]),
+				siteId: pageManagementSite.id,
+				title: getRandomString(),
+			});
+
+			// Go to edit mode and map the form to Lemon object, specifically to the "Lemon History" field
+
+			await pageEditorPage.goto(
+				layout,
+				pageManagementSite.friendlyUrlPath
+			);
+
+			await pageEditorPage.mapFormFragment(formId, 'Lemon', [
+				'Lemon History',
+			]);
+
+			// Publish and go to view mode
+
+			await pageEditorPage.publishPage();
+
+			await page.goto(
+				`/web${pageManagementSite.friendlyUrlPath}${layout.friendlyUrlPath}`
+			);
+
+			// Type 310 characters and check that the input error is shown
+
+			const inputError = page.getByText(
+				'Maximum Number of Characters Exceeded: 310 / 300'
+			);
+
+			await page.getByLabel('Lemon History').click();
+
+			await page.keyboard.type('a'.repeat(310));
+
+			await expect(inputError).toBeVisible();
+
+			// Submit the form and check that the error is still visible
+
+			await page.getByText('Submit', {exact: true}).click();
+
+			await expect(inputError).toBeVisible();
+		}
+	);
 });
 
 test.describe('Picklist input field', () => {
