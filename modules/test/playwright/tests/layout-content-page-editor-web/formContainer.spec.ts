@@ -1093,14 +1093,113 @@ test.describe('Textarea input field', () => {
 
 			await pageEditorPage.selectFragment(formId);
 
+			const textareaInputId =
+				await pageEditorPage.getFragmentId('Textarea');
+
 			await pageEditorPage.changeFragmentConfiguration({
 				fieldLabel: 'Number of Lines',
-				fragmentId: await pageEditorPage.getFragmentId('Textarea'),
+				fragmentId: textareaInputId,
 				tab: 'General',
 				value: '2',
 			});
 
 			await expect(textareaInput).toHaveAttribute('rows', '2');
+
+			// Check Mark as Required field
+
+			await pageEditorPage.changeFragmentConfiguration({
+				fieldLabel: 'Mark as Required',
+				fragmentId: textareaInputId,
+				tab: 'General',
+				value: true,
+			});
+
+			const requireIcon = page
+				.locator('label')
+				.filter({hasText: 'Lemon History'})
+				.locator('svg.reference-mark');
+
+			await expect(requireIcon).toBeAttached();
+
+			// Check Label and Show Label fields
+
+			await pageEditorPage.changeFragmentConfiguration({
+				fieldLabel: 'Label',
+				fragmentId: textareaInputId,
+				tab: 'General',
+				value: 'Describe the history of the lemon',
+			});
+
+			const label = page
+				.locator('label')
+				.filter({hasText: 'Describe the history of the lemon'});
+
+			await expect(label).not.toHaveClass(/sr-only/);
+
+			await pageEditorPage.changeFragmentConfiguration({
+				fieldLabel: 'Show Label',
+				fragmentId: textareaInputId,
+				tab: 'General',
+				value: false,
+			});
+
+			await expect(label).toHaveClass(/sr-only/);
+
+			// Check Help Text and Show Help Text fields
+
+			const helpText = page.getByText('Add your help text here.', {
+				exact: true,
+			});
+
+			await expect(helpText).not.toBeAttached();
+
+			await pageEditorPage.changeFragmentConfiguration({
+				fieldLabel: 'Show Help Text',
+				fragmentId: textareaInputId,
+				tab: 'General',
+				value: true,
+			});
+
+			await expect(helpText).toBeVisible();
+
+			await pageEditorPage.changeFragmentConfiguration({
+				fieldLabel: 'Help Text',
+				fragmentId: textareaInputId,
+				tab: 'General',
+				value: 'Brief description of the lemon history',
+			});
+
+			await expect(
+				page.getByText('Brief description of the lemon history')
+			).toBeVisible();
+
+			// Check Placeholder field
+
+			await pageEditorPage.changeFragmentConfiguration({
+				fieldLabel: 'Placeholder',
+				fragmentId: textareaInputId,
+				tab: 'General',
+				value: 'Type the lemon history',
+			});
+
+			await expect(
+				page.getByPlaceholder('Type the lemon history')
+			).toBeVisible();
+
+			// Show characters count
+
+			const characterText = page.getByText('0 / 65000');
+
+			await expect(characterText).toHaveClass(/sr-only/);
+
+			await pageEditorPage.changeFragmentConfiguration({
+				fieldLabel: 'Show Characters Count',
+				fragmentId: textareaInputId,
+				tab: 'General',
+				value: true,
+			});
+
+			await expect(characterText).not.toHaveClass(/sr-only/);
 		}
 	);
 });
