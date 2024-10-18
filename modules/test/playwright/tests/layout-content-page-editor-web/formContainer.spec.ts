@@ -969,6 +969,8 @@ test.describe('Submit button', () => {
 
 				await headingFragment.click();
 
+				await expect(headingFragment).not.toBeAttached();
+
 				// Set new value and submit as draft
 
 				await input.fill('200');
@@ -993,6 +995,8 @@ test.describe('Submit button', () => {
 
 				await headingFragment.click();
 
+				await expect(headingFragment).not.toBeAttached();
+
 				// Set new value and submit as approved
 
 				await input.fill('300');
@@ -1016,6 +1020,8 @@ test.describe('Submit button', () => {
 				);
 
 				await headingFragment.click();
+
+				await expect(headingFragment).not.toBeAttached();
 
 				// Set new value and submit as draft
 
