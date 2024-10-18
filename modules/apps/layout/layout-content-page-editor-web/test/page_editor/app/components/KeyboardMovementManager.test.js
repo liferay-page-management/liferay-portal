@@ -242,7 +242,7 @@ describe('KeyboardMovementManager', () => {
 			expect.objectContaining({
 				itemIds: ['item-3', 'item-1'],
 				parentItemIds: ['root-id'],
-				positions: [2],
+				positions: [1],
 			})
 		);
 	});
