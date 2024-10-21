@@ -7,7 +7,7 @@ import ClayButton from '@clayui/button';
 import ClayDropDown, {Align} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import {FeatureIndicator} from 'frontend-js-components-web';
-import {openToast} from 'frontend-js-web';
+import {openModal, openToast} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useMemo, useState} from 'react';
 
@@ -34,6 +34,8 @@ import {
 	FORM_ERROR_TYPES,
 	getFormErrorDescription,
 } from '../../utils/getFormErrorDescription';
+import getPortletId from '../../utils/getPortletId';
+import getWidget from '../../utils/getWidget';
 import hideFragment from '../../utils/hideFragment';
 import isInputFragment from '../../utils/isInputFragment';
 import useHasRequiredChild from '../../utils/useHasRequiredChild';
@@ -58,6 +60,25 @@ export default function TopperItemActions({disabled, item}) {
 	);
 
 	const [openSaveModal, setOpenSaveModal] = useState(false);
+
+	const widget = useMemo(() => {
+		const fragmentEntryLink =
+			fragmentEntryLinks[item.config.fragmentEntryLinkId];
+
+		if (!fragmentEntryLink) {
+			return;
+		}
+
+		const {instanceId, portletId} = fragmentEntryLink.editableValues;
+
+		if (!portletId) {
+			return null;
+		}
+
+		const widget = getWidget(getWidgets(), portletId);
+
+		return {...widget, portletId: getPortletId({instanceId, portletId})};
+	}, [fragmentEntryLinks, getWidgets, item]);
 
 	const dropdownItems = useMemo(() => {
 		const items = [];
@@ -152,6 +173,17 @@ export default function TopperItemActions({disabled, item}) {
 			});
 		}
 
+		if (widget && Liferay.FeatureFlags['LPD-32075']) {
+			items.push({
+				action: () =>
+					Liferay.Util.getPortletConfigurationIconAction(
+						`_${widget.portletId}_exportImport`
+					)(),
+				icon: 'order-arrow',
+				label: Liferay.Language.get('export-import'),
+			});
+		}
+
 		if (
 			Liferay.FeatureFlags['LPD-18221'] &&
 			canBeDuplicated(fragmentEntryLinks, item, layoutData, getWidgets)
@@ -190,6 +222,49 @@ export default function TopperItemActions({disabled, item}) {
 
 		addDivider(items);
 
+		if (widget && Liferay.FeatureFlags['LPD-32075']) {
+			items.push(
+				{
+					action: () =>
+						Liferay.Util.getPortletConfigurationIconAction(
+							`_${widget.portletId}_configuration`
+						)(),
+					icon: 'cog',
+					label: Liferay.Language.get('configuration'),
+				},
+				{
+					action: () => {
+						openModal({
+							onClose: () =>
+								Liferay.Portlet.refresh(
+									`#p_p_id_${widget.portletId}_`
+								),
+							title: Liferay.Language.get(
+								'configuration-templates'
+							),
+							url: widget.configurationTemplatesURL,
+						});
+					},
+					label: Liferay.Language.get('configuration-templates'),
+				},
+				{
+					action: () => {
+						openModal({
+							onClose: () =>
+								Liferay.Portlet.refresh(
+									`#p_p_id_${widget.portletId}_`
+								),
+							title: Liferay.Language.get('permissions'),
+							url: widget.permissionsURL,
+						});
+					},
+					label: Liferay.Language.get('permissions'),
+				}
+			);
+		}
+
+		addDivider(items);
+
 		if (canBeRemoved(item, layoutData)) {
 			items.push({
 				action: () =>
@@ -216,6 +291,7 @@ export default function TopperItemActions({disabled, item}) {
 		selectedViewportSize,
 		setCopiedItemIds,
 		selectItems,
+		widget,
 	]);
 
 	if (!dropdownItems.length) {
