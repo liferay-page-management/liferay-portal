@@ -5,6 +5,7 @@
 
 package com.liferay.portlet.configuration.web.internal.portlet.configuration.icon;
 
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.configuration.icon.BaseJSPPortletConfigurationIcon;
@@ -84,6 +85,10 @@ public class ModalConfigurationPortletConfigurationIcon
 
 	@Override
 	public boolean isShowInEditMode(PortletRequest portletRequest) {
+		if (FeatureFlagManagerUtil.isEnabled("LPD-32075")) {
+			return false;
+		}
+
 		return true;
 	}
 
