@@ -2,7 +2,7 @@
 definition {
 
 	property ci.retries.disabled = "true";
-	property custom.properties = "auth.verifier.TunnelAuthVerifier.hosts.allowed=${line.separator}tunneling.servlet.shared.secret=1234567890123456";
+	property custom.properties = "auth.verifier.TunnelAuthVerifier.hosts.allowed=${line.separator}feature.flag.LPD-39304=true{line.separator}tunneling.servlet.shared.secret=1234567890123456";
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property testray.main.component.name = "Display Page Templates";
