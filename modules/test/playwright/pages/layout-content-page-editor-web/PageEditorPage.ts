@@ -826,24 +826,8 @@ export class PageEditorPage {
 		await selectElement(tabElement);
 	}
 
-	async goToWidgetConfiguration(
-		layout: Layout,
-		site: Site,
-		widgetId: string
-	) {
-		await this.goto(layout, site.friendlyUrlPath);
-
-		const topper = this.getTopper(widgetId);
-
-		await topper.hover();
-
-		await expect(topper.locator('.portlet-options')).toBeVisible();
-
-		await topper.locator('.portlet-options').click();
-
-		await this.page
-			.getByRole('menuitem', {exact: true, name: 'Configuration'})
-			.click();
+	async goToWidgetConfiguration(widgetId: string) {
+		await this.clickFragmentOption(widgetId, 'Configuration');
 	}
 
 	async hideFragment(fragmentId: string, isDesktop = true) {
