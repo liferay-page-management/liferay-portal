@@ -264,7 +264,9 @@ const FragmentContent = ({
 							'custom-height': item.config.styles?.height,
 							'page-editor__fragment-content--portlet-topper-hidden':
 								!canConfigureWidgets ||
-								Liferay.FeatureFlags['LPD-32075'],
+								(Liferay.FeatureFlags['LPD-32075'] &&
+									fragmentEntryLink.fragmentEntryType ===
+										'widget'),
 						}
 					)}
 					contentRef={elementRef}
