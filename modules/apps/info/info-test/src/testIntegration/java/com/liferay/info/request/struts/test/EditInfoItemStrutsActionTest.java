@@ -63,6 +63,7 @@ import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.PipingServletResponse;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.struts.StrutsAction;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -336,6 +337,17 @@ public class EditInfoItemStrutsActionTest {
 			null, null, null, null, null, null, null, "123456", "123456", null,
 			null, WorkflowConstants.STATUS_APPROVED, null,
 			"http://localhost:8080/home");
+	}
+
+	@Test
+	@TestInfo("LPS-194108")
+	public void testCannotSubmitSameValueWithExistingEntryToUniqueField()
+		throws Exception {
+
+		_testAddInfoItem(
+			RandomTestUtil.randomString(), null, null, null, null, null, null,
+			null, null, null, null, WorkflowConstants.STATUS_APPROVED, null,
+			null);
 	}
 
 	@Test
