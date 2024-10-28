@@ -443,7 +443,7 @@ export class PageEditorPage {
 	async copyFragment(fragmentId: string) {
 		await this.selectFragment(fragmentId);
 
-		await this.page.keyboard.press('Shift+Control+C');
+		await this.page.keyboard.press('Control+C');
 
 		await this.waitForChangesSaved();
 	}
@@ -477,7 +477,7 @@ export class PageEditorPage {
 	async cutFragment(fragmentId: string) {
 		await this.selectFragment(fragmentId);
 
-		await this.page.keyboard.press('Shift+Control+X');
+		await this.page.keyboard.press('Control+X');
 
 		await this.waitForChangesSaved();
 	}
@@ -986,7 +986,7 @@ export class PageEditorPage {
 	async pasteFragment(fragmentId: string) {
 		await this.selectFragment(fragmentId);
 
-		await this.page.keyboard.press('Shift+Control+V');
+		await this.page.keyboard.press('Control+V');
 
 		await this.waitForChangesSaved();
 	}
