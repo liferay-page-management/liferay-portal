@@ -59,7 +59,7 @@ export default function ShortcutModal({onCloseModal}) {
 					<KeyboardShorcut
 						betaFeatureIndicator
 						description={Liferay.Language.get('cut')}
-						keyCombinations={['⇧', KEY_LABEL, 'X']}
+						keyCombinations={[KEY_LABEL, 'X']}
 					/>
 				) : null}
 
@@ -67,7 +67,7 @@ export default function ShortcutModal({onCloseModal}) {
 					<KeyboardShorcut
 						betaFeatureIndicator
 						description={Liferay.Language.get('copy')}
-						keyCombinations={['⇧', KEY_LABEL, 'C']}
+						keyCombinations={[KEY_LABEL, 'C']}
 					/>
 				) : null}
 
@@ -75,7 +75,7 @@ export default function ShortcutModal({onCloseModal}) {
 					<KeyboardShorcut
 						betaFeatureIndicator
 						description={Liferay.Language.get('paste')}
-						keyCombinations={['⇧', KEY_LABEL, 'V']}
+						keyCombinations={[KEY_LABEL, 'V']}
 					/>
 				) : null}
 

@@ -267,9 +267,7 @@ export default function ShortcutManager() {
 							)
 					),
 				isKeyCombination: (event) =>
-					event.shiftKey &&
-					isCtrlOrMeta(event) &&
-					event.code === C_KEY_CODE,
+					isCtrlOrMeta(event) && event.code === C_KEY_CODE,
 			},
 		}),
 		...(Liferay.FeatureFlags['LPD-18221'] && {
@@ -289,9 +287,7 @@ export default function ShortcutManager() {
 							!isInteractiveElement(event.target)
 					),
 				isKeyCombination: (event) =>
-					event.shiftKey &&
-					isCtrlOrMeta(event) &&
-					event.code === X_KEY_CODE,
+					isCtrlOrMeta(event) && event.code === X_KEY_CODE,
 			},
 		}),
 		duplicate: {
@@ -389,9 +385,7 @@ export default function ShortcutManager() {
 							)
 					),
 				isKeyCombination: (event) =>
-					event.shiftKey &&
-					isCtrlOrMeta(event) &&
-					event.code === V_KEY_CODE,
+					isCtrlOrMeta(event) && event.code === V_KEY_CODE,
 			},
 		}),
 		remove: {
