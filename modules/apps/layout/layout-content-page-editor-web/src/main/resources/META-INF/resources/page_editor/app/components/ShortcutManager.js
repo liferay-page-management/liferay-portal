@@ -72,6 +72,8 @@ const isInteractiveElement = (element) => {
 	);
 };
 
+const isTextSelected = () => window.getSelection().type === 'Range';
+
 const isWithinIframe = () => {
 	return window.top !== window.self;
 };
@@ -251,6 +253,8 @@ export default function ShortcutManager() {
 			copy: {
 				action: copy,
 				canBeExecuted: () =>
+					!isEditingEditableField() &&
+					!isTextSelected() &&
 					canUpdatePageStructure &&
 					activeItemIds.every(
 						(activeItemId) =>
@@ -272,6 +276,8 @@ export default function ShortcutManager() {
 			cut: {
 				action: cut,
 				canBeExecuted: (event) =>
+					!isEditingEditableField() &&
+					!isTextSelected() &&
 					canUpdatePageStructure &&
 					activeItemIds.every(
 						(activeItemId) =>
