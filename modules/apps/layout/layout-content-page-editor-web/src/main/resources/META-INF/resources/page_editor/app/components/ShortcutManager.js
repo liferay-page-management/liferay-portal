@@ -361,6 +361,8 @@ export default function ShortcutManager() {
 			paste: {
 				action: paste,
 				canBeExecuted: () =>
+					!isEditingEditableField() &&
+					!isInteractiveElement(document.activeElement) &&
 					canUpdatePageStructure &&
 					isOnlyOneParentSelected(activeItemIds) &&
 					!!copiedItemIds.length &&
