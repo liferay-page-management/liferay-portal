@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.upgrade.CTModelUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
 import com.liferay.portal.kernel.upgrade.MVCCVersionUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
 import org.osgi.service.component.annotations.Component;
@@ -238,6 +239,11 @@ public class FragmentServiceUpgradeStepRegistrator
 				}
 
 			});
+
+		registry.register(
+			"2.13.0", "2.13.1",
+			new com.liferay.fragment.internal.upgrade.v2_13_1.
+				FragmentEntryLinkUpgradeProcess(_portal));
 	}
 
 	@Reference
@@ -245,6 +251,9 @@ public class FragmentServiceUpgradeStepRegistrator
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
+
+	@Reference
+	private Portal _portal;
 
 	@Reference
 	private PortletFileRepository _portletFileRepository;
