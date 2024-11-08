@@ -80,7 +80,7 @@
 				}
 			],
 			"outputType": "partialValidation",
-			"script": "futureDates(date, '2023/08/01')",
+			"script": "isEmpty(date) OR futureDates(date, '2023-08-01')",
 			"system": false
 		}
 	],

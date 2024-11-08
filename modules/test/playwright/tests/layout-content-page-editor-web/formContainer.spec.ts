@@ -452,7 +452,7 @@ test.describe('Date and Time Fragment', () => {
 
 			await page.locator('input[name="dateAndTime"]').click();
 
-			await page.keyboard.type('10/10/2022');
+			await page.keyboard.type('10/10/2024');
 			await page.keyboard.press('ArrowRight');
 			await page.keyboard.type('10:10');
 
@@ -487,7 +487,7 @@ test.describe('Date and Time Fragment', () => {
 				.filter({hasText: 'Date And Time'})
 				.last();
 
-			await expect(row).toContainText('Oct 10, 2022, 10:10 AM');
+			await expect(row).toContainText('Oct 10, 2024, 10:10 AM');
 
 			// Delete entries
 
