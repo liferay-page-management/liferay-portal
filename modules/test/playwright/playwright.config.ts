@@ -250,5 +250,4 @@ export default defineConfig({
 		screenshot: 'only-on-failure',
 		trace: 'retain-on-failure',
 	},
-	workers: 1,
 });
