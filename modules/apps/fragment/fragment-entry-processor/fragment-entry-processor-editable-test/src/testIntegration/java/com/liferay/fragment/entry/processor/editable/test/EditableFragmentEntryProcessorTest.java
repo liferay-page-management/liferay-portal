@@ -843,8 +843,7 @@ public class EditableFragmentEntryProcessorTest {
 			journalArticle.getTitle(LocaleUtil.US),
 			element.attr("data-analytics-asset-title"));
 		Assert.assertEquals(
-			JournalArticle.class.getName(),
-			element.attr("data-analytics-asset-type"));
+			"web-content", element.attr("data-analytics-asset-type"));
 	}
 
 	@FeatureFlags("LPD-39437")
@@ -953,8 +952,7 @@ public class EditableFragmentEntryProcessorTest {
 			journalArticle.getTitle(LocaleUtil.US),
 			element.attr("data-analytics-asset-title"));
 		Assert.assertEquals(
-			JournalArticle.class.getName(),
-			element.attr("data-analytics-asset-type"));
+			"web-content", element.attr("data-analytics-asset-type"));
 	}
 
 	@Test

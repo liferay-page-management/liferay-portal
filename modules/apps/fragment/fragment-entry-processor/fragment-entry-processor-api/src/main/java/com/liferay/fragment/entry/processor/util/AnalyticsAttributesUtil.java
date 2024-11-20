@@ -20,6 +20,7 @@ import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemObjectVariationProvider;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import java.util.Locale;
 import java.util.Map;
@@ -77,7 +78,10 @@ public class AnalyticsAttributesUtil {
 				infoDisplaysFieldValues, infoItemFieldMapped,
 				fragmentEntryProcessorContext.getLocale()));
 		element.attr(
-			"data-analytics-asset-type", infoItemFieldMapped.getClassName());
+			"data-analytics-asset-type",
+			_classNameAnalyticsTypeMap.getOrDefault(
+				infoItemFieldMapped.getClassName(),
+				infoItemFieldMapped.getClassName()));
 	}
 
 	private static String _getAnalyticsAction(
@@ -147,5 +151,14 @@ public class AnalyticsAttributesUtil {
 
 		return String.valueOf(infoFieldValue.getValue(locale));
 	}
+
+	private static final Map<String, String> _classNameAnalyticsTypeMap =
+		HashMapBuilder.put(
+			"com.liferay.blogs.model.BlogsEntry", "blog"
+		).put(
+			"com.liferay.journal.model.JournalArticle", "web-content"
+		).put(
+			"com.liferay.portal.kernel.repository.model.FileEntry", "document"
+		).build();
 
 }
