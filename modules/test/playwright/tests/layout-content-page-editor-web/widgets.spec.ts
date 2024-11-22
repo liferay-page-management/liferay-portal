@@ -14,7 +14,7 @@ import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
 import {pageManagementSiteTest} from '../../fixtures/pageManagementSiteTest';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../utils/getRandomString';
-import {LEMON_OBJECT_ERC} from '../setup/page-management-site/constants';
+import {getObjectERC} from '../setup/page-management-site/utils/getObjectERC';
 import getFormContainerDefinition from './utils/getFormContainerDefinition';
 import getPageDefinition from './utils/getPageDefinition';
 import getWidgetDefinition from './utils/getWidgetDefinition';
@@ -113,7 +113,7 @@ test('It is not possible to drag a widget inside a Form Container', async ({
 	const {className: objectDefinitionClassName} =
 		await objectAdminRestClient.objectDefinition.getObjectDefinitionByExternalReferenceCode(
 			{
-				externalReferenceCode: LEMON_OBJECT_ERC,
+				externalReferenceCode: getObjectERC('Lemon'),
 			}
 		);
 

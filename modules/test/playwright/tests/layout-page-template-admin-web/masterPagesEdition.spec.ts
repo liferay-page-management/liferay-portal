@@ -14,8 +14,7 @@ import {pageManagementSiteTest} from '../../fixtures/pageManagementSiteTest';
 import {pagesAdminPagesTest} from '../../fixtures/pagesAdminPagesTest';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../utils/getRandomString';
-import {deleteObjectEntries} from '../setup/page-management-site/utils/deleteObjectEntries';
-import {gotoObjectEntries} from '../setup/page-management-site/utils/gotoObjectEntries';
+import {goToObjectEntity} from '../setup/page-management-site/utils/goToObjectEntity';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -132,8 +131,8 @@ test(
 
 		// Go to custom object admin
 
-		await gotoObjectEntries({
-			entityName: 'Lemons',
+		await goToObjectEntity({
+			entityName: 'Lemon',
 			page,
 		});
 
@@ -148,14 +147,6 @@ test(
 
 		await expect(page.getByText('Cats')).toBeVisible();
 		await expect(page.getByText('Dogs')).toBeVisible();
-
-		// Delete entries
-
-		await deleteObjectEntries({
-			apiHelpers,
-			entityName: 'lemons',
-			site: pageManagementSite,
-		});
 	}
 );
 

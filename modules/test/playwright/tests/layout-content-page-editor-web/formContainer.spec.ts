@@ -18,13 +18,8 @@ import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import fillAndClickOutside from '../../utils/fillAndClickOutside';
 import getRandomString from '../../utils/getRandomString';
 import {waitForAlert} from '../../utils/waitForAlert';
-import {
-	ALL_FIELDS_OBJECT_ERC,
-	LEMON_OBJECT_ERC,
-	POTATO_OBJECT_ERC,
-} from '../setup/page-management-site/constants';
-import {deleteObjectEntries} from '../setup/page-management-site/utils/deleteObjectEntries';
-import {gotoObjectEntries} from '../setup/page-management-site/utils/gotoObjectEntries';
+import {getObjectERC} from '../setup/page-management-site/utils/getObjectERC';
+import {goToObjectEntity} from '../setup/page-management-site/utils/goToObjectEntity';
 import getFormContainerDefinition from './utils/getFormContainerDefinition';
 import getFragmentDefinition from './utils/getFragmentDefinition';
 import getPageDefinition from './utils/getPageDefinition';
@@ -269,7 +264,7 @@ test.describe('Captcha Fragment', () => {
 
 			const {className: objectDefinitionClassName} =
 				await apiHelpers.objectAdmin.getObjectDefinitionByExternalReferenceCode(
-					LEMON_OBJECT_ERC
+					getObjectERC('Lemon')
 				);
 
 			const captchaDefinition = getFragmentDefinition({
@@ -332,7 +327,7 @@ test.describe('Checkbox Fragment', () => {
 
 			const {className: objectDefinitionClassName} =
 				await apiHelpers.objectAdmin.getObjectDefinitionByExternalReferenceCode(
-					ALL_FIELDS_OBJECT_ERC
+					getObjectERC('All Fields')
 				);
 
 			const checkboxId = getRandomString();
@@ -427,7 +422,7 @@ test.describe('Checkbox Fragment', () => {
 			const objectValidationRule =
 				await objectAdminRestClient.objectValidationRule.postObjectDefinitionByExternalReferenceCodeObjectValidationRule(
 					{
-						externalReferenceCode: ALL_FIELDS_OBJECT_ERC,
+						externalReferenceCode: getObjectERC('All Fields'),
 						requestBody: {
 							active: true,
 							engine: 'ddm',
@@ -455,7 +450,7 @@ test.describe('Checkbox Fragment', () => {
 
 			const {className: objectDefinitionClassName} =
 				await apiHelpers.objectAdmin.getObjectDefinitionByExternalReferenceCode(
-					ALL_FIELDS_OBJECT_ERC
+					getObjectERC('All Fields')
 				);
 
 			const checkboxId = getRandomString();
@@ -520,7 +515,7 @@ test.describe('Date Fragment', () => {
 
 			const {className: objectDefinitionClassName} =
 				await apiHelpers.objectAdmin.getObjectDefinitionByExternalReferenceCode(
-					ALL_FIELDS_OBJECT_ERC
+					getObjectERC('All Fields')
 				);
 
 			const dateId = getRandomString();
@@ -613,7 +608,7 @@ test.describe('Date Fragment', () => {
 			const objectValidationRule =
 				await objectAdminRestClient.objectValidationRule.postObjectDefinitionByExternalReferenceCodeObjectValidationRule(
 					{
-						externalReferenceCode: ALL_FIELDS_OBJECT_ERC,
+						externalReferenceCode: getObjectERC('All Fields'),
 						requestBody: {
 							active: true,
 							engine: 'ddm',
@@ -641,7 +636,7 @@ test.describe('Date Fragment', () => {
 
 			const {className: objectDefinitionClassName} =
 				await apiHelpers.objectAdmin.getObjectDefinitionByExternalReferenceCode(
-					ALL_FIELDS_OBJECT_ERC
+					getObjectERC('All Fields')
 				);
 
 			const dateId = getRandomString();
@@ -714,7 +709,7 @@ test.describe('Date and Time Fragment', () => {
 
 			const {className: objectDefinitionClassName} =
 				await apiHelpers.objectAdmin.getObjectDefinitionByExternalReferenceCode(
-					ALL_FIELDS_OBJECT_ERC
+					getObjectERC('All Fields')
 				);
 
 			const dateId = getRandomString();
@@ -823,7 +818,7 @@ test.describe('Date and Time Fragment', () => {
 
 			// Go to custom object admin
 
-			await gotoObjectEntries({
+			await goToObjectEntity({
 				entityName: 'All Fields',
 				page,
 			});
@@ -1385,8 +1380,8 @@ test.describe('Submit button', () => {
 
 				// Go to entity
 
-				await gotoObjectEntries({
-					entityName: 'Lemons',
+				await goToObjectEntity({
+					entityName: 'Lemon',
 					page,
 				});
 
@@ -2008,7 +2003,7 @@ test.describe('Rich Text Fragment', () => {
 
 			const {className: objectDefinitionClassName} =
 				await apiHelpers.objectAdmin.getObjectDefinitionByExternalReferenceCode(
-					ALL_FIELDS_OBJECT_ERC
+					getObjectERC('All Fields')
 				);
 
 			const richTextId = getRandomString();
@@ -2103,7 +2098,7 @@ test.describe('Rich Text Fragment', () => {
 			const objectValidationRule =
 				await objectAdminRestClient.objectValidationRule.postObjectDefinitionByExternalReferenceCodeObjectValidationRule(
 					{
-						externalReferenceCode: ALL_FIELDS_OBJECT_ERC,
+						externalReferenceCode: getObjectERC('All Fields'),
 						requestBody: {
 							active: true,
 							engine: 'ddm',
@@ -2131,7 +2126,7 @@ test.describe('Rich Text Fragment', () => {
 
 			const {className: objectDefinitionClassName} =
 				await apiHelpers.objectAdmin.getObjectDefinitionByExternalReferenceCode(
-					ALL_FIELDS_OBJECT_ERC
+					getObjectERC('All Fields')
 				);
 
 			const richTextId = getRandomString();
@@ -2310,7 +2305,7 @@ test.describe('Multistep', () => {
 			const {className: objectDefinitionClassName} =
 				await objectAdminRestClient.objectDefinition.getObjectDefinitionByExternalReferenceCode(
 					{
-						externalReferenceCode: LEMON_OBJECT_ERC,
+						externalReferenceCode: getObjectERC('Lemon'),
 					}
 				);
 
@@ -2392,7 +2387,7 @@ test.describe('Multistep', () => {
 			const {className: objectDefinitionClassName} =
 				await objectAdminRestClient.objectDefinition.getObjectDefinitionByExternalReferenceCode(
 					{
-						externalReferenceCode: LEMON_OBJECT_ERC,
+						externalReferenceCode: getObjectERC('Lemon'),
 					}
 				);
 
@@ -2491,7 +2486,7 @@ test.describe('Multistep', () => {
 			const {className: objectDefinitionClassName} =
 				await objectAdminRestClient.objectDefinition.getObjectDefinitionByExternalReferenceCode(
 					{
-						externalReferenceCode: LEMON_OBJECT_ERC,
+						externalReferenceCode: getObjectERC('Lemon'),
 					}
 				);
 
@@ -2569,7 +2564,7 @@ test.describe('Multistep', () => {
 			const {className: objectDefinitionClassName} =
 				await objectAdminRestClient.objectDefinition.getObjectDefinitionByExternalReferenceCode(
 					{
-						externalReferenceCode: LEMON_OBJECT_ERC,
+						externalReferenceCode: getObjectERC('Lemon'),
 					}
 				);
 
@@ -2702,7 +2697,7 @@ test.describe('Multistep', () => {
 			const {className: objectDefinitionClassName} =
 				await objectAdminRestClient.objectDefinition.getObjectDefinitionByExternalReferenceCode(
 					{
-						externalReferenceCode: LEMON_OBJECT_ERC,
+						externalReferenceCode: getObjectERC('Lemon'),
 					}
 				);
 
@@ -2800,7 +2795,7 @@ test.describe('Multistep', () => {
 			const {className: objectDefinitionClassName} =
 				await objectAdminRestClient.objectDefinition.getObjectDefinitionByExternalReferenceCode(
 					{
-						externalReferenceCode: LEMON_OBJECT_ERC,
+						externalReferenceCode: getObjectERC('Lemon'),
 					}
 				);
 
@@ -2870,7 +2865,7 @@ test.describe('Multistep', () => {
 			const {className: objectDefinitionClassName} =
 				await objectAdminRestClient.objectDefinition.getObjectDefinitionByExternalReferenceCode(
 					{
-						externalReferenceCode: LEMON_OBJECT_ERC,
+						externalReferenceCode: getObjectERC('Lemon'),
 					}
 				);
 
@@ -2946,7 +2941,7 @@ test.describe('Multistep', () => {
 
 			const {className: objectDefinitionClassName} =
 				await apiHelpers.objectAdmin.getObjectDefinitionByExternalReferenceCode(
-					LEMON_OBJECT_ERC
+					getObjectERC('Lemon')
 				);
 
 			// Create a page containing a multistep form with a stepper and a simple form
@@ -3049,7 +3044,7 @@ test.describe('Multistep', () => {
 
 			const {className: objectDefinitionClassName} =
 				await apiHelpers.objectAdmin.getObjectDefinitionByExternalReferenceCode(
-					POTATO_OBJECT_ERC
+					getObjectERC('Potato')
 				);
 
 			// Create a form with three steps and a stepper
@@ -3196,7 +3191,7 @@ test.describe('Multistep', () => {
 			const {className: objectDefinitionClassName} =
 				await objectAdminRestClient.objectDefinition.getObjectDefinitionByExternalReferenceCode(
 					{
-						externalReferenceCode: LEMON_OBJECT_ERC,
+						externalReferenceCode: getObjectERC('Lemon'),
 					}
 				);
 
@@ -3416,7 +3411,7 @@ test.describe('Edit mode form errors', () => {
 			const {className: objectDefinitionClassName} =
 				await objectAdminRestClient.objectDefinition.getObjectDefinitionByExternalReferenceCode(
 					{
-						externalReferenceCode: LEMON_OBJECT_ERC,
+						externalReferenceCode: getObjectERC('Lemon'),
 					}
 				);
 
@@ -3467,7 +3462,7 @@ test.describe('Edit mode form errors', () => {
 			const {className: objectDefinitionClassName} =
 				await objectAdminRestClient.objectDefinition.getObjectDefinitionByExternalReferenceCode(
 					{
-						externalReferenceCode: LEMON_OBJECT_ERC,
+						externalReferenceCode: getObjectERC('Lemon'),
 					}
 				);
 

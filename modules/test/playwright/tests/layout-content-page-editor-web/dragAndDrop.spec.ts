@@ -14,10 +14,8 @@ import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
 import {pageManagementSiteTest} from '../../fixtures/pageManagementSiteTest';
 import dragAndDropElement from '../../utils/dragAndDropElement';
 import getRandomString from '../../utils/getRandomString';
-import {
-	ANIMALS_COLLECTION_NAME,
-	POTATO_OBJECT_ERC,
-} from '../setup/page-management-site/constants';
+import {ANIMALS_COLLECTION_NAME} from '../setup/page-management-site/constants/animals';
+import {getObjectERC} from '../setup/page-management-site/utils/getObjectERC';
 import getCollectionDefinition from './utils/getCollectionDefinition';
 import getContainerDefinition from './utils/getContainerDefinition';
 import getFormContainerDefinition from './utils/getFormContainerDefinition';
@@ -322,7 +320,7 @@ test(
 
 		const {className: objectDefinitionClassName} =
 			await apiHelpers.objectAdmin.getObjectDefinitionByExternalReferenceCode(
-				POTATO_OBJECT_ERC
+				getObjectERC('Potato')
 			);
 
 		// Create a form with two steps and a stepper
