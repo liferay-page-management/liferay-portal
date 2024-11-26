@@ -58,7 +58,7 @@ const ScreenReaderAnnouncer = React.forwardRef<any, ScreenReaderAnnouncerProps>(
 		useImperativeHandle(ref, () => ({sendMessage}));
 
 		return (
-			<span
+			<div
 				aria-atomic={ariaAtomic}
 				aria-live={ariaLive}
 				className="sr-only"
@@ -66,7 +66,7 @@ const ScreenReaderAnnouncer = React.forwardRef<any, ScreenReaderAnnouncerProps>(
 				{Object.entries(textMap).map(([messageId, message]) => (
 					<p key={messageId}>{message}</p>
 				))}
-			</span>
+			</div>
 		);
 	}
 );
