@@ -153,7 +153,9 @@ test.describe('Page content', () => {
 
 			await expect(
 				page.getByText('Showing content for the experience "Default".')
-			).toBeVisible();
+			).toBeVisible({
+				timeout: 1000,
+			});
 
 			await expect(
 				page.getByText('No experiences have been added yet.')
