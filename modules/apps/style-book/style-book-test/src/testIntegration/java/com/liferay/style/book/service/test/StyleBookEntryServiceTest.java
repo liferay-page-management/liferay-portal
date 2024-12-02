@@ -94,17 +94,11 @@ public class StyleBookEntryServiceTest {
 		Assert.assertNull(
 			_styleBookEntryLocalService.fetchStyleBookEntry(
 				styleBookEntry.getStyleBookEntryId()));
-	}
 
-	@Test
-	public void testDeleteStyleBookEntryByExternalReferenceCodeWithoutDeletePermission()
-		throws Exception {
-
-		StyleBookEntry styleBookEntry =
-			_styleBookEntryService.addStyleBookEntry(
-				RandomTestUtil.randomString(), _group.getGroupId(),
-				RandomTestUtil.randomString(), null,
-				RandomTestUtil.randomString(), _serviceContext);
+		styleBookEntry = _styleBookEntryService.addStyleBookEntry(
+			RandomTestUtil.randomString(), _group.getGroupId(),
+			RandomTestUtil.randomString(), null, RandomTestUtil.randomString(),
+			_serviceContext);
 
 		try {
 			UserTestUtil.setUser(
@@ -182,17 +176,6 @@ public class StyleBookEntryServiceTest {
 		Assert.assertEquals(
 			styleBookEntry.getStyleBookEntryId(),
 			curStyleBookEntry.getStyleBookEntryId());
-	}
-
-	@Test
-	public void testGetStyleBookEntryByExternalReferenceCodeWithoutViewPermission()
-		throws Exception {
-
-		StyleBookEntry styleBookEntry =
-			_styleBookEntryService.addStyleBookEntry(
-				RandomTestUtil.randomString(), _group.getGroupId(),
-				RandomTestUtil.randomString(), null,
-				RandomTestUtil.randomString(), _serviceContext);
 
 		_removeResourcePermissions(styleBookEntry.getStyleBookEntryId());
 
