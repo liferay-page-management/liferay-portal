@@ -21,6 +21,7 @@ import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
 import {pageManagementSiteTest} from '../../fixtures/pageManagementSiteTest';
 import {clickAndExpectToBeHidden} from '../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
+import {deleteObjectEntries} from '../../utils/deleteObjectEntries';
 import fillAndClickOutside from '../../utils/fillAndClickOutside';
 import getRandomString from '../../utils/getRandomString';
 import {waitForAlert} from '../../utils/waitForAlert';
@@ -1041,6 +1042,14 @@ test.describe('File Upload Fragment', () => {
 					'Thank you. Your information was successfully received.'
 				)
 			).not.toBeVisible();
+
+			// Clean up
+
+			await deleteObjectEntries({
+				apiHelpers,
+				entityName: 'allfieldses',
+				scopeKey: pageManagementSite.key,
+			});
 		}
 	);
 
@@ -1232,6 +1241,14 @@ test.describe('File Upload Fragment', () => {
 			await page.getByRole('link', {name: 'FileUpload'}).click();
 
 			await expect(page.getByRole('link', {name: 'image'})).toBeVisible();
+
+			// Clean up
+
+			await deleteObjectEntries({
+				apiHelpers,
+				entityName: 'allfieldses',
+				scopeKey: pageManagementSite.key,
+			});
 		}
 	);
 
