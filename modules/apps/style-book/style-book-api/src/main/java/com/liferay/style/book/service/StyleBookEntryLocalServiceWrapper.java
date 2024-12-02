@@ -331,6 +331,15 @@ public class StyleBookEntryLocalServiceWrapper
 	}
 
 	@Override
+	public StyleBookEntry fetchStyleBookEntryByExternalReferenceCode(
+		String externalReferenceCode, long groupId) {
+
+		return _styleBookEntryLocalService.
+			fetchStyleBookEntryByExternalReferenceCode(
+				externalReferenceCode, groupId);
+	}
+
+	@Override
 	public StyleBookEntry fetchStyleBookEntryByUuidAndGroupId(
 		String uuid, long groupId) {
 
@@ -482,6 +491,16 @@ public class StyleBookEntryLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _styleBookEntryLocalService.getStyleBookEntry(styleBookEntryId);
+	}
+
+	@Override
+	public StyleBookEntry getStyleBookEntryByExternalReferenceCode(
+			String externalReferenceCode, long groupId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _styleBookEntryLocalService.
+			getStyleBookEntryByExternalReferenceCode(
+				externalReferenceCode, groupId);
 	}
 
 	@Override
