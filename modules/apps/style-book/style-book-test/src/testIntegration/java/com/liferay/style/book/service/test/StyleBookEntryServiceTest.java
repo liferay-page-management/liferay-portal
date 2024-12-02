@@ -71,6 +71,9 @@ public class StyleBookEntryServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException);
+			}
 		}
 		finally {
 			UserTestUtil.setUser(TestPropsValues.getUser());
@@ -111,6 +114,9 @@ public class StyleBookEntryServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException);
+			}
 		}
 		finally {
 			UserTestUtil.setUser(TestPropsValues.getUser());
@@ -190,6 +196,9 @@ public class StyleBookEntryServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException);
+			}
 		}
 		finally {
 			UserTestUtil.setUser(TestPropsValues.getUser());
