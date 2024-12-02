@@ -71,6 +71,14 @@ public class FrontendTokenDefinitionRegistryImpl
 	}
 
 	@Override
+	public FrontendTokenDefinition getFrontendTokenDefinition(
+		long companyId, long layoutId, String themeId) {
+
+		return _getFrontendTokenDefinition(
+			companyId, _getCETExternalReferenceCode(layoutId), themeId);
+	}
+
+	@Override
 	public List<FrontendTokenDefinition> getFrontendTokenDefinitions(
 		long companyId) {
 
