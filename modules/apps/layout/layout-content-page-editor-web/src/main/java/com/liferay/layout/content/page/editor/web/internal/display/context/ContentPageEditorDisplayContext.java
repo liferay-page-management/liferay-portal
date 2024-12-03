@@ -67,6 +67,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.editor.configuration.EditorConfiguration;
 import com.liferay.portal.kernel.editor.configuration.EditorConfigurationFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -1888,6 +1889,24 @@ public class ContentPageEditorDisplayContext {
 				_staging.getLiveGroupId(themeDisplay.getScopeGroupId()),
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 				StyleBookEntryNameComparator.getInstance(true));
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				themeDisplay.getCompanyId(), "LPD-30204")) {
+
+			FrontendTokenDefinition frontendTokenDefinition =
+				_frontendTokenDefinitionRegistry.getFrontendTokenDefinition(
+					themeDisplay.getCompanyId(),
+					_staging.getLiveGroupId(themeDisplay.getScopeGroupId()),
+					themeDisplay.getThemeId());
+
+			if (frontendTokenDefinition != null) {
+				styleBookEntries = ListUtil.filter(
+					styleBookEntries,
+					styleBookEntry -> Objects.equals(
+						styleBookEntry.getThemeId(),
+						frontendTokenDefinition.getThemeId()));
+			}
+		}
 
 		for (StyleBookEntry styleBookEntry : styleBookEntries) {
 			styleBooks.add(
