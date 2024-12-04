@@ -665,6 +665,12 @@ public class ContentPageEditorDisplayContext {
 			).put(
 				"styleBookEnabled",
 				() -> {
+					if (FeatureFlagManagerUtil.isEnabled(
+							themeDisplay.getCompanyId(), "LPD-30204")) {
+
+						return true;
+					}
+
 					Layout layout = themeDisplay.getLayout();
 
 					Theme theme = layout.getTheme();
@@ -691,6 +697,8 @@ public class ContentPageEditorDisplayContext {
 				"styleBooks", _getStyleBooks()
 			).put(
 				"themeColorsCssClasses", _getThemeColorsCssClasses()
+			).put(
+				"themeName", _getThemeName()
 			).put(
 				"undoUpdateFormConfigURL",
 				getFragmentEntryActionURL(
@@ -1936,6 +1944,12 @@ public class ContentPageEditorDisplayContext {
 			"primary", "success", "danger", "warning", "info", "dark",
 			"gray-dark", "secondary", "light", "lighter", "white"
 		};
+	}
+
+	private String _getThemeName() {
+		Theme theme = themeDisplay.getTheme();
+
+		return theme.getName();
 	}
 
 	private ItemSelectorCriterion _getURLItemSelectorCriterion() {
