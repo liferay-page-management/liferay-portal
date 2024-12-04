@@ -1417,12 +1417,7 @@ test.describe('Form Localization', () => {
 		pageManagementSite,
 	}) => {
 
-		// Create a page with a Form fragment and a Localization Select fragment
-
-		const fragmentDefinition = getFragmentDefinition({
-			id: getRandomString(),
-			key: 'localization-select',
-		});
+		// Create a page with a Form fragment
 
 		const formId = getRandomString();
 
@@ -1431,10 +1426,7 @@ test.describe('Form Localization', () => {
 		});
 
 		const layout = await apiHelpers.headlessDelivery.createSitePage({
-			pageDefinition: getPageDefinition([
-				fragmentDefinition,
-				formDefinition,
-			]),
+			pageDefinition: getPageDefinition([formDefinition]),
 			siteId: pageManagementSite.id,
 			title: getRandomString(),
 		});
@@ -1444,6 +1436,17 @@ test.describe('Form Localization', () => {
 		// Map the form to the All Fields object and publish the page
 
 		await pageEditorPage.mapFormFragment(formId, 'All Fields');
+
+		// Add a Localization Select from the modal
+
+		await page
+			.getByRole('dialog')
+			.getByRole('button', {name: 'Add Localization Select'})
+			.click();
+
+		await expect(
+			page.locator('[data-name="Localization Select"]')
+		).toBeAttached();
 
 		await pageEditorPage.publishPage();
 
