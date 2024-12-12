@@ -365,46 +365,6 @@ test.describe('Keyboard movement and navigation', () => {
 				getItem('Page 2-1').locator('.miller-columns-item-mask')
 			).toBeFocused();
 
-			// Check dropdowns work well
-
-			await expect(async () => {
-				await page.keyboard.press('Tab');
-
-				await expect(
-					getItem('Page 2-1').getByLabel('Add Child Page')
-				).toBeFocused({timeout: 500});
-			}).toPass();
-
-			await page.keyboard.press('Enter');
-
-			await expect(
-				page.getByRole('menuitem', {name: 'Add Page'})
-			).toBeVisible();
-
-			await page.keyboard.press('Escape');
-
-			await expect(
-				getItem('Page 2-1').getByLabel('Add Child Page')
-			).toBeFocused();
-
-			await page.keyboard.press('Tab');
-
-			await expect(
-				getItem('Page 2-1').getByLabel('Open Page Options Menu')
-			).toBeFocused();
-
-			await page.keyboard.press('Enter');
-
-			await expect(
-				page.getByRole('menuitem', {name: 'Edit'})
-			).toBeVisible();
-
-			await page.keyboard.press('Escape');
-
-			await expect(
-				getItem('Page 2-1').getByLabel('Open Page Options Menu')
-			).toBeFocused();
-
 			// Check title link works well
 
 			await expect(async () => {
@@ -418,6 +378,53 @@ test.describe('Keyboard movement and navigation', () => {
 			await page.keyboard.press('Enter');
 
 			await expect(getItem('Page 1-1')).not.toBeVisible();
+
+			// Com back to pages admin
+
+			await clickAndExpectToBeVisible({
+				target: getItem('Page 1-1'),
+				trigger: page.getByTitle('Go to Pages'),
+			});
+
+			// Check Add child page dropdown works well
+
+			await getItem('Page 1-1')
+				.getByLabel('Add Child Page')
+				.press('Enter');
+
+			await expect(
+				page.getByRole('menuitem', {name: 'Add Page'})
+			).toBeVisible();
+
+			await page.keyboard.press('Escape');
+
+			await expect(
+				getItem('Page 1-1').getByLabel('Add Child Page')
+			).toBeFocused();
+
+			// Check item actions dropdown works well
+
+			await page.keyboard.press('Tab');
+
+			await expect(
+				getItem('Page 1-1').getByLabel('Open Page Options Menu')
+			).toBeFocused();
+
+			await page.keyboard.press('Enter');
+
+			await expect(
+				page.getByRole('menuitem', {name: 'Edit'})
+			).toBeVisible();
+
+			// Move to Convert to Page Template option and press Enter
+
+			await page.keyboard.press('ArrowDown');
+			await page.keyboard.press('ArrowDown');
+			await page.keyboard.press('ArrowDown');
+			await page.keyboard.press('ArrowDown');
+			await page.keyboard.press('Enter');
+
+			await expect(page.getByText('Add Page Template Set')).toBeVisible();
 		}
 	);
 });
