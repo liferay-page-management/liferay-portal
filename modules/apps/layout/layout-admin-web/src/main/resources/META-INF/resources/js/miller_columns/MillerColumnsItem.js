@@ -4,7 +4,7 @@
  */
 
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
-import ClayDropDown, {ClayDropDownWithItems} from '@clayui/drop-down';
+import ClayDropDown from '@clayui/drop-down';
 import {ClayCheckbox} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
@@ -609,15 +609,8 @@ const MillerColumnsItem = ({
 
 				{!!getItemActionsURL && itemId !== '0' ? (
 					<ClayLayout.ContentCol className="miller-columns-item-actions">
-						<ClayDropDownWithItems
-							caption={
-								!loadPromiseRef.current ? (
-									<ClayLoadingIndicator />
-								) : (
-									''
-								)
-							}
-							items={dropdownActions}
+						<ClayDropDown
+							hasLeftSymbols
 							onKeyDown={(event) => event.stopPropagation()}
 							trigger={
 								<ClayButtonWithIcon
@@ -636,7 +629,39 @@ const MillerColumnsItem = ({
 									)}
 								/>
 							}
-						/>
+						>
+							{!loadPromiseRef.current ? (
+								<ClayDropDown.Caption>
+									<ClayLoadingIndicator />
+								</ClayDropDown.Caption>
+							) : (
+								''
+							)}
+
+							<ClayDropDown.ItemList>
+								{dropdownActions.map((action, index) =>
+									action.type === 'divider' ? (
+										<ClayDropDown.Divider />
+									) : (
+										<ClayDropDown.Group
+											items={action.items}
+											key={index}
+										>
+											{(item) => (
+												<ClayDropDown.Item
+													href={item.href}
+													key={item.name}
+													onClick={item.onClick}
+													symbolLeft={item.icon}
+												>
+													{item.label}
+												</ClayDropDown.Item>
+											)}
+										</ClayDropDown.Group>
+									)
+								)}
+							</ClayDropDown.ItemList>
+						</ClayDropDown>
 
 						<span aria-live="polite" className="sr-only">
 							{loadMessage}
