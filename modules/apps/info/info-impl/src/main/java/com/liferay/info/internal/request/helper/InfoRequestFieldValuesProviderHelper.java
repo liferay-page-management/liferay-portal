@@ -143,23 +143,6 @@ public class InfoRequestFieldValuesProviderHelper {
 				continue;
 			}
 
-			List<String> regularParameters = regularParameterMap.get(
-				infoField.getName());
-
-			if (regularParameters == null) {
-				if ((infoField.getInfoFieldType() instanceof
-						BooleanInfoFieldType) &&
-					ArrayUtil.contains(checkboxNames, infoField.getName())) {
-
-					infoFieldValues.put(
-						infoField.getUniqueId(),
-						_getInfoFieldValue(
-							infoField, themeDisplay.getLocale(), false));
-				}
-
-				continue;
-			}
-
 			if (FeatureFlagManagerUtil.isEnabled("LPD-37927") &&
 				infoField.isLocalizable() &&
 				(infoField.getInfoFieldType() instanceof HTMLInfoFieldType ||
@@ -177,8 +160,8 @@ public class InfoRequestFieldValuesProviderHelper {
 						).value(
 							unsafeBiConsumer -> {
 								for (Locale locale :
-										LanguageUtil.getAvailableLocales(
-											themeDisplay.getSiteGroupId())) {
+									LanguageUtil.getAvailableLocales(
+										themeDisplay.getSiteGroupId())) {
 
 									String languageId =
 										LanguageUtil.getLanguageId(locale);
@@ -186,8 +169,8 @@ public class InfoRequestFieldValuesProviderHelper {
 									List<String> values =
 										regularParameterMap.get(
 											infoField.getName() +
-												StringPool.UNDERLINE +
-													languageId);
+											StringPool.UNDERLINE +
+											languageId);
 
 									if (ListUtil.isNotEmpty(values)) {
 										unsafeBiConsumer.accept(
@@ -199,6 +182,25 @@ public class InfoRequestFieldValuesProviderHelper {
 
 				continue;
 			}
+
+			List<String> regularParameters = regularParameterMap.get(
+				infoField.getName());
+
+			if (regularParameters == null) {
+				if ((infoField.getInfoFieldType() instanceof
+						BooleanInfoFieldType) &&
+					ArrayUtil.contains(checkboxNames, infoField.getName())) {
+
+					infoFieldValues.put(
+						infoField.getUniqueId(),
+						_getInfoFieldValue(
+							infoField, themeDisplay.getLocale(), false));
+				}
+
+				continue;
+			}
+
+
 
 			for (String value : regularParameters) {
 				InfoFieldValue<Object> infoFieldValue = _getInfoFieldValue(
