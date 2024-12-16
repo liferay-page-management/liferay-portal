@@ -157,42 +157,6 @@ definition {
 		}
 	}
 
-	@description = "This is a test for LPS-102544. Can navigate to both public and private pages from pages finder."
-	@priority = 5
-	test NavigateToBothPageTypes {
-		property portal.acceptance = "true";
-
-		task ("Enable private pages") {
-			PagesAdmin.enablePrivatePages();
-		}
-
-		task ("Add a public and private pages") {
-			JSONLayout.addPublicLayout(
-				groupName = ${randomSiteName},
-				layoutName = "Test Public Page");
-
-			JSONLayout.addPrivateLayout(
-				groupName = ${randomSiteName},
-				layoutName = "Test Private Page");
-		}
-
-		task ("Navigate to public page via page tree") {
-			Navigator.openSiteURL(siteName = ${randomSiteName});
-
-			PagesFinder.goToPagesFinder();
-
-			PagesFinder.selectPageType(optionValue = "Public Pages");
-
-			PagesFinder.navigateToPage(pageName = "Test Public Page");
-		}
-
-		task ("Navigate to private page via page tree") {
-			PagesFinder.selectPageType(optionValue = "Private Pages");
-
-			PagesFinder.navigateToPage(pageName = "Test Private Page");
-		}
-	}
-
 	@description = "This is a test for LPS-139064. Users can see the preview draft when the content page at draft status."
 	@priority = 5
 	test PreviewDraftWhenContentPageAtDraftStatus {

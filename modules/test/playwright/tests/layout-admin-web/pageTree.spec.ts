@@ -29,6 +29,14 @@ const test = mergeTests(
 	pagesPagesTest
 );
 
+const testWithPrivatePages = mergeTests(
+	test,
+	featureFlagsTest({
+		'LPD-38869': true,
+		'LPS-178052': true,
+	})
+);
+
 test(
 	'Add child page',
 	{
@@ -89,6 +97,72 @@ test(
 
 		await expect(
 			page.getByRole('link', {name: childLayoutTitle})
+		).toBeVisible();
+	}
+);
+
+testWithPrivatePages(
+	'Can navigate to both public and private pages',
+	{
+		tag: '@LPS-102544',
+	},
+	async ({apiHelpers, page, pageTreePage, site}) => {
+
+		// Create a public page and a private page
+
+		const publicLayoutTitle = getRandomString();
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			siteId: site.id,
+			title: publicLayoutTitle,
+		});
+
+		const privateLayoutTitle = getRandomString();
+
+		await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			privateLayout: 'true',
+			title: privateLayoutTitle,
+		});
+
+		await page.goto(
+			`${liferayConfig.environment.baseUrl}/en/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`
+		);
+
+		// Open the Product Menu
+
+		await openProductMenu(page);
+
+		// Open tree if it's not already open
+
+		await pageTreePage.open();
+
+		// Assert public page
+
+		await expect(
+			page.getByRole('link', {name: publicLayoutTitle})
+		).toBeVisible();
+
+		await expect(
+			page.getByRole('link', {name: privateLayoutTitle})
+		).not.toBeVisible();
+
+		// Change pages type
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('option', {name: 'Private Pages'}),
+			trigger: page.getByLabel('Pages Type'),
+		});
+
+		// Assert private page
+
+		await expect(
+			page.getByRole('link', {name: publicLayoutTitle})
+		).not.toBeVisible();
+
+		await expect(
+			page.getByRole('link', {name: privateLayoutTitle})
 		).toBeVisible();
 	}
 );
