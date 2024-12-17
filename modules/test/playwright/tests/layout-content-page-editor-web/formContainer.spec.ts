@@ -1541,7 +1541,10 @@ test.describe('Form Localization', () => {
 				.frameLocator('iframe[title="editor"]')
 				.getByText('rich text english')
 		).toBeVisible();
-		await expect(page.getByText('text english')).toBeVisible();
+
+		await expect(page.locator('input.ddm-field-text')).toHaveValue(
+			'text english'
+		);
 
 		await clickAndExpectToBeVisible({
 			autoClick: true,
@@ -1557,7 +1560,9 @@ test.describe('Form Localization', () => {
 				.frameLocator('iframe[title="editor"]')
 				.getByText('rich text español')
 		).toBeVisible();
-		await expect(page.getByText('text español')).toBeVisible();
+		await expect(page.locator('input.ddm-field-text')).toHaveValue(
+			'text español'
+		);
 	});
 
 	test('Shows a warning modal when the page is published and there is a Localization Select fragment but no localizable fields', async ({
