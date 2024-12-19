@@ -2284,25 +2284,21 @@ test.describe('Text input field', () => {
 				'Maximum Number of Characters Exceeded: 290 / 280'
 			);
 
-			const formError = page.getByText(
-				'Value exceeds maximum length of 280 for field Lemon Size.'
-			);
-
 			await page.getByLabel('Lemon Size', {exact: true}).click();
 
 			await page.keyboard.type('a'.repeat(290));
 
 			await expect(inputError).toBeVisible();
 
-			await expect(formError).not.toBeVisible();
-
-			// Submit the form and check that the form error is shown as an alert
+			// Submit the form and check that the error
 
 			await page.getByText('Submit', {exact: true}).click();
 
-			await expect(formError).toBeVisible();
+			await expect(inputError).not.toBeVisible();
 
-			await expect(formError).toHaveClass(/alert/);
+			await expect(
+				page.getByText('Value exceeds maximum length of 280.')
+			).toBeVisible();
 		}
 	);
 
@@ -2970,11 +2966,15 @@ test.describe('Textarea input field', () => {
 
 			await expect(inputError).toBeVisible();
 
-			// Submit the form and check that the error is still visible
+			// Submit the form and check the error
 
 			await page.getByText('Submit', {exact: true}).click();
 
-			await expect(inputError).toBeVisible();
+			await expect(inputError).not.toBeVisible();
+
+			await expect(
+				page.getByText('Value exceeds maximum length of 300.')
+			).toBeVisible();
 		}
 	);
 });
