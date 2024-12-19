@@ -5572,10 +5572,11 @@ test.describe('Edit mode form errors', () => {
 
 			await masterPagesPage.editMaster(layoutPageTemplateEntryName);
 
-			await masterPagesPage.configureAllowedFragments(
-				['Checkbox', 'Date'],
-				'Form Components'
-			);
+			await masterPagesPage.configureAllowedFragments({
+				fragmentNames: ['Checkbox', 'Date'],
+				mode: 'unselect',
+				prefilter: 'Form Components',
+			});
 
 			await pageEditorPage.publishPage();
 
