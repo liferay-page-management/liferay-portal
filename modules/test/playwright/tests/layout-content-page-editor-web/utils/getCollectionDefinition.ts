@@ -34,7 +34,7 @@ const COLLECTION_PROVIDERS = {
 	'Highest Rated Assets':
 		'com.liferay.asset.internal.info.collection.provider.HighestRatedAssetsInfoCollectionProvider',
 	'Items with Categories in the Same Vocabularies':
-		'com.liferay.asset.internal.info.collection.provider.AssetEntriesWithAssetCategoriesInTheSameAssetVocabulariesRelatedInfoItemCollectionProvider',
+		'com.liferay.asset.internal.info.collection.provider.AssetEntriesWithSameAssetCategoryRelatedInfoItemCollectionProvider',
 	'Recent Content':
 		'com.liferay.asset.internal.info.collection.provider.RecentContentInfoCollectionProvider',
 };
