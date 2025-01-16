@@ -455,6 +455,57 @@ public class FragmentEntryValidatorImplTest {
 	}
 
 	@Test
+	public void testValidateConfigurationInvalidFieldTextDependency()
+		throws Exception {
+
+		_fragmentEntryValidatorImpl.validateConfiguration(
+			_read("configuration_field_text_typeoptions_dependency.json"));
+	}
+
+	@Test
+	public void testValidateConfigurationInvalidFieldTextDependencyItself()
+		throws Exception {
+
+		expectedException.expect(FragmentEntryConfigurationException.class);
+		expectedException.expectMessage(
+			new StringContains("Dependency field can not reference itself"));
+
+		_fragmentEntryValidatorImpl.validateConfiguration(
+			_read("configuration_field_text_typeoptions_dependency_name.json"));
+	}
+
+	@Test
+	public void testValidateConfigurationInvalidFieldTextDependencyUnknownField()
+		throws Exception {
+
+		expectedException.expect(FragmentEntryConfigurationException.class);
+		expectedException.expectMessage(
+			new StringContains(
+				"Can not depend on field field3 which does not exist"));
+
+		_fragmentEntryValidatorImpl.validateConfiguration(
+			_read(
+				"configuration_field_text_typeoptions_dependency_unknown_" +
+					"field.json"));
+	}
+
+	@Test
+	public void testValidateConfigurationInvalidFieldTextDependencyWrongType()
+		throws Exception {
+
+		expectedException.expect(FragmentEntryConfigurationException.class);
+		expectedException.expectMessage(
+			new StringContains(
+				"Dependency field should be either of type checkbox, text or " +
+					"select"));
+
+		_fragmentEntryValidatorImpl.validateConfiguration(
+			_read(
+				"configuration_field_text_typeoptions_dependency_wrong_type." +
+					"json"));
+	}
+
+	@Test
 	public void testValidateConfigurationInvalidFieldTextExtraProperties()
 		throws Exception {
 
