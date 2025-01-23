@@ -735,7 +735,7 @@ public class LayoutLocalServiceWrapper
 			newSegmentsExperience.setModifiedDate(
 				serviceContext.getModifiedDate(new Date()));
 			newSegmentsExperience.setSegmentsExperienceKey(
-				String.valueOf(_counterLocalService.increment()));
+				sourceSegmentsExperience.getSegmentsExperienceKey());
 			newSegmentsExperience.setPlid(targetLayout.getPlid());
 
 			_segmentsExperienceLocalService.addSegmentsExperience(
