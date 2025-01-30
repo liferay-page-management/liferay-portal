@@ -73,8 +73,8 @@ public class SegmentsExperienceUpgradeProcessTest {
 
 			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
 				"{}", _draftLayout,
-				_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
-					_draftLayout.getPlid()));
+				_segmentsExperienceLocalService.
+					fetchDefaultSegmentsExperienceId(_draftLayout.getPlid()));
 
 			SegmentsExperience segmentsExperience =
 				SegmentsTestUtil.addSegmentsExperience(

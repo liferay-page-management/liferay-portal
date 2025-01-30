@@ -132,9 +132,11 @@ public class RelatedAssetsRelatedInfoItemCollectionProviderTest {
 			_portal.getClassNameId(FileEntry.class.getName()),
 			_dlFileEntry.getFileEntryTypeId());
 
+		Layout draftLayout = layout.fetchDraftLayout();
+
 		long segmentsExperienceId =
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
-				layout.getPlid());
+				draftLayout.getPlid());
 
 		_mapCollectionDisplayWithInfoListRenderer(
 			layout, "FileEntry_title", segmentsExperienceId);
@@ -152,9 +154,11 @@ public class RelatedAssetsRelatedInfoItemCollectionProviderTest {
 		Layout layout = _addDefaultDisplayPageTemplateLayout(
 			_portal.getClassNameId(BlogsEntry.class.getName()), 0);
 
+		Layout draftLayout = layout.fetchDraftLayout();
+
 		long segmentsExperienceId =
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
-				layout.getPlid());
+				draftLayout.getPlid());
 
 		_mapContentDisplayInCollectionDisplay(
 			layout, "BlogsEntry_title", segmentsExperienceId);
@@ -173,9 +177,11 @@ public class RelatedAssetsRelatedInfoItemCollectionProviderTest {
 			_portal.getClassNameId(JournalArticle.class.getName()),
 			_journalArticle.getDDMStructureId());
 
+		Layout draftLayout = layout.fetchDraftLayout();
+
 		long segmentsExperienceId =
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
-				layout.getPlid());
+				draftLayout.getPlid());
 
 		_mapInfoFieldInCollectionDisplay(
 			layout, "JournalArticle_title", segmentsExperienceId);
@@ -220,9 +226,11 @@ public class RelatedAssetsRelatedInfoItemCollectionProviderTest {
 		Layout layout = _addDefaultDisplayPageTemplateLayout(
 			_portal.getClassNameId(AssetCategory.class.getName()), 0);
 
+		Layout draftLayout = layout.fetchDraftLayout();
+
 		long segmentsExperienceId =
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
-				layout.getPlid());
+				draftLayout.getPlid());
 
 		_mapInfoFieldInCollectionDisplayNestedInCollectionDisplay(
 			"com.liferay.asset.categories.admin.web.internal.info.collection." +
@@ -251,9 +259,11 @@ public class RelatedAssetsRelatedInfoItemCollectionProviderTest {
 
 		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
 
+		Layout draftLayout = layout.fetchDraftLayout();
+
 		long segmentsExperienceId =
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
-				layout.getPlid());
+				draftLayout.getPlid());
 
 		_mapInfoFieldInCollectionDisplayNestedInCollectionDisplay(
 			"com.liferay.asset.internal.info.collection.provider." +

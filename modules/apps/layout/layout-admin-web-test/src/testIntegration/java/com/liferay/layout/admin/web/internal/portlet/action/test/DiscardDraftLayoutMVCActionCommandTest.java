@@ -93,10 +93,6 @@ public class DiscardDraftLayoutMVCActionCommandTest {
 
 		Layout draftLayout = layout.fetchDraftLayout();
 
-		draftLayout.setStatus(WorkflowConstants.STATUS_DRAFT);
-
-		draftLayout = _layoutLocalService.updateLayout(draftLayout);
-
 		MockActionRequest mockActionRequest =
 			_getMockLiferayPortletActionRequest(
 				draftLayout, TestPropsValues.getUser());
@@ -114,9 +110,19 @@ public class DiscardDraftLayoutMVCActionCommandTest {
 			mockActionRequest, new MockLiferayPortletActionResponse());
 
 		Assert.assertEquals(
-			2,
+			1,
 			_segmentsExperienceLocalService.getSegmentsExperiencesCount(
 				_group.getGroupId(), layout.getPlid()));
+		Assert.assertEquals(
+			2,
+			_segmentsExperienceLocalService.getSegmentsExperiencesCount(
+				_group.getGroupId(), draftLayout.getPlid()));
+
+		draftLayout = layout.fetchDraftLayout();
+
+		draftLayout.setStatus(WorkflowConstants.STATUS_DRAFT);
+
+		draftLayout = _layoutLocalService.updateLayout(draftLayout);
 
 		_discardDraftLayoutMVCActionCommand.processAction(
 			_getMockLiferayPortletActionRequest(
@@ -127,6 +133,10 @@ public class DiscardDraftLayoutMVCActionCommandTest {
 			1,
 			_segmentsExperienceLocalService.getSegmentsExperiencesCount(
 				_group.getGroupId(), layout.getPlid()));
+		Assert.assertEquals(
+			1,
+			_segmentsExperienceLocalService.getSegmentsExperiencesCount(
+				_group.getGroupId(), draftLayout.getPlid()));
 	}
 
 	@Test
