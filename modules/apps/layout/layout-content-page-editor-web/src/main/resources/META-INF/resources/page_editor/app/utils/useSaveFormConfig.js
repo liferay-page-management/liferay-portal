@@ -14,7 +14,7 @@ export function useSaveFormConfig(item) {
 	const updateItemLocalConfig = useUpdateItemLocalConfig();
 
 	return useCallback(
-		(nextConfig, fields) => {
+		(nextConfig, fields, stepperFragmentEntryLinkId) => {
 			const isMapping = Boolean(nextConfig.classNameId);
 
 			if (isMapping) {
@@ -29,6 +29,7 @@ export function useSaveFormConfig(item) {
 					fields,
 					itemConfig: nextConfig,
 					itemIds: [item.itemId],
+					stepperFragmentEntryLinkId,
 				})
 			).then(() =>
 				updateItemLocalConfig(item.itemId, {

@@ -5,6 +5,7 @@
 
 import updateFormItemConfig from '../../actions/updateFormItemConfig';
 import LayoutService from '../../services/LayoutService';
+import {getStepperChild} from '../../utils/getStepperChild';
 
 function undoAction({action, store}) {
 	const {
@@ -15,6 +16,7 @@ function undoAction({action, store}) {
 		itemIds,
 		movedItemIds,
 		removedItemIds,
+		stepperFragmentEntryLinkId,
 	} = action;
 
 	const [itemId] = itemIds;
@@ -36,11 +38,13 @@ function undoAction({action, store}) {
 			onNetworkStatus: dispatch,
 			removedItemIds: addedItemIds,
 			segmentsExperienceId: store.segmentsExperienceId,
-		}).then(({layoutData}) => {
+			stepperFragmentEntryLinkId,
+		}).then(({fragmentEntryLinks, layoutData}) => {
 			dispatch(
 				updateFormItemConfig({
 					addedItemIds: removedItemIds,
 					deletedItems,
+					fragmentEntryLinks,
 					isMapping,
 					itemIds: [itemId],
 					layoutData,
@@ -77,10 +81,12 @@ function getDerivedStateForUndo({action, state}) {
 		triggerItemId,
 	} = action;
 
-	const {layoutData} = state;
+	const {fragmentEntryLinks, layoutData} = state;
 	const [itemId] = itemIds;
 
 	const item = layoutData.items[itemId];
+
+	const stepper = getStepperChild(item, layoutData, fragmentEntryLinks);
 
 	return {
 		addedItemIds,
@@ -90,6 +96,7 @@ function getDerivedStateForUndo({action, state}) {
 		itemIds: [itemId],
 		movedItemIds,
 		removedItemIds,
+		stepperFragmentEntryLinkId: stepper?.config?.fragmentEntryLinkId,
 		triggerItemId,
 	};
 }

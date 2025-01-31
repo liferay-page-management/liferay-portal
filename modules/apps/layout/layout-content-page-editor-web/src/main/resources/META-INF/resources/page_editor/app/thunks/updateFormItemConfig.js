@@ -8,7 +8,12 @@ import {openToast} from 'frontend-js-web';
 import updateFormItemConfigAction from '../actions/updateFormItemConfig';
 import FormService from '../services/FormService';
 
-export default function updateFormItemConfig({fields, itemConfig, itemIds}) {
+export default function updateFormItemConfig({
+	fields,
+	itemConfig,
+	itemIds,
+	stepperFragmentEntryLinkId,
+}) {
 	const isMapping = Boolean(itemConfig.classNameId);
 	const [itemId] = itemIds;
 
@@ -19,11 +24,13 @@ export default function updateFormItemConfig({fields, itemConfig, itemIds}) {
 			itemId,
 			onNetworkStatus: dispatch,
 			segmentsExperienceId: getState().segmentsExperienceId,
+			stepperFragmentEntryLinkId,
 		}).then(
 			({
 				addedFragmentEntryLinks,
 				addedItemIds,
 				errorMessage,
+				fragmentEntryLinks,
 				layoutData,
 				movedItemIds,
 				removedItemIds,
@@ -32,6 +39,7 @@ export default function updateFormItemConfig({fields, itemConfig, itemIds}) {
 					updateFormItemConfigAction({
 						addedFragmentEntryLinks,
 						addedItemIds,
+						fragmentEntryLinks,
 						isMapping,
 						itemIds: [itemId],
 						layoutData,
