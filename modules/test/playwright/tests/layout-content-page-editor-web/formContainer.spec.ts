@@ -1726,7 +1726,10 @@ test.describe('Form Localization', () => {
 
 			await page.getByLabel('Long Text').fill('long text english');
 
-			await page.getByLabel('Text', {exact: true}).fill('text english');
+			await page
+				.getByRole('textbox', {exact: true, name: 'Text'})
+				.fill('text english');
+
 			await page.evaluate(() => {
 				Object.values((window as any).CKEDITOR.instances).forEach(
 					(editor: any) => editor.setData('rich text english')
@@ -1751,7 +1754,9 @@ test.describe('Form Localization', () => {
 
 			await page.getByLabel('Long Text').fill('long text español');
 
-			await page.getByLabel('Text', {exact: true}).fill('text español');
+			await page
+				.getByRole('textbox', {exact: true, name: 'Text'})
+				.fill('text español');
 
 			await translationSelector.click();
 
@@ -2187,23 +2192,32 @@ test.describe('Form Localization', () => {
 
 			// Assert that translation is displayed correctly
 
-			await expect(
-				page.getByRole('textbox', {exact: true, name: 'Long Text'})
-			).toHaveValue('long text english');
+			const textInput = page.getByRole('textbox', {
+				exact: true,
+				name: 'Text',
+			});
+
+			const textareaInput = page.getByRole('textbox', {
+				exact: true,
+				name: 'Long Text',
+			});
+
+			await expect(textareaInput).toHaveValue('long text english');
+
 			await expect(
 				page
 					.frameLocator('iframe[title="editor"]')
 					.getByText('rich text english')
 			).toBeVisible();
-			await expect(
-				page.getByRole('textbox', {exact: true, name: 'Text'})
-			).toHaveValue('text english');
+
+			await expect(textInput).toHaveValue('text english');
 
 			// Fill new values for the translation
 
-			await page.getByLabel('Long Text').fill('long text english 1');
+			await textareaInput.fill('long text english 1');
 
 			await page.getByLabel('Text', {exact: true}).fill('text english 1');
+
 			await page.evaluate(() => {
 				Object.values((window as any).CKEDITOR.instances).forEach(
 					(editor: any) => editor.setData('rich text english 1')
@@ -2222,22 +2236,22 @@ test.describe('Form Localization', () => {
 				),
 			});
 
-			await expect(
-				page.getByRole('textbox', {exact: true, name: 'Long Text'})
-			).toHaveValue('long text spanish');
+			await expect(textareaInput).toHaveValue('long text spanish');
+
 			await expect(
 				page
 					.frameLocator('iframe[title="editor"]')
 					.getByText('rich text spanish')
 			).toBeVisible();
-			await expect(
-				page.getByRole('textbox', {exact: true, name: 'Text'})
-			).toHaveValue('text spanish');
+
+			await expect(textInput).toHaveValue('text spanish');
 
 			// Fill new values
 
-			await page.getByLabel('Long Text').fill('long text spanish 1');
-			await page.getByLabel('Text', {exact: true}).fill('text spanish 1');
+			await textareaInput.fill('long text spanish 1');
+
+			await textInput.fill('text spanish 1');
+
 			await page.evaluate(() => {
 				Object.values((window as any).CKEDITOR.instances).forEach(
 					(editor: any) => editor.setData('rich text spanish 1')
@@ -2272,14 +2286,16 @@ test.describe('Form Localization', () => {
 					.last(),
 			});
 
-			await page.getByRole('textbox', {name: 'Long Text'}).waitFor();
+			await textareaInput.waitFor();
 
 			await expect(page.getByText('long text english 1')).toBeVisible();
+
 			await expect(
 				page
 					.frameLocator('iframe[title="editor"]')
 					.getByText('rich text english 1')
 			).toBeVisible();
+
 			await expect(page.locator('input.ddm-field-text')).toHaveValue(
 				'text english 1'
 			);
@@ -2293,11 +2309,13 @@ test.describe('Form Localization', () => {
 			});
 
 			await expect(page.getByText('long text spanish 1')).toBeVisible();
+
 			await expect(
 				page
 					.frameLocator('iframe[title="editor"]')
 					.getByText('rich text spanish 1')
 			).toBeVisible();
+
 			await expect(page.locator('input.ddm-field-text')).toHaveValue(
 				'text spanish 1'
 			);
