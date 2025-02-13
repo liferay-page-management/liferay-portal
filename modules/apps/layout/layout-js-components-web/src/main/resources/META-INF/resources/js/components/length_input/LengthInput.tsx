@@ -103,6 +103,8 @@ export default function LengthInput({
 	const inputId = useId();
 	const inputRef = useRef<HTMLInputElement>(null);
 
+	const [isValueSubmitted, setValueSubmitted] = useState(false);
+
 	const initialValue = useMemo(
 		() => getInitialValue(currentValue),
 		[currentValue]
@@ -115,10 +117,13 @@ export default function LengthInput({
 	const onSelectUnit = (selectedUnit: Unit) => {
 		setActive(false);
 		setUnit(selectedUnit);
+		setValueSubmitted(true);
 
 		document.getElementById(triggerId)!.focus();
 
 		if (!value || selectedUnit === unit) {
+			setValueSubmitted(false);
+
 			return;
 		}
 
@@ -198,6 +203,8 @@ export default function LengthInput({
 		}
 
 		if (event.key === 'Enter') {
+			setValueSubmitted(true);
+
 			if (onEnter) {
 				onEnter();
 			}
@@ -235,8 +242,13 @@ export default function LengthInput({
 						aria-label={field.label}
 						id={inputId}
 						insetBefore={Boolean(field.icon)}
-						onBlur={() => handleValueSelect()}
+						onBlur={() => {
+							if (!isValueSubmitted) {
+								handleValueSelect();
+							}
+						}}
 						onChange={(event) => {
+							setValueSubmitted(false);
 							setValue(event.target.value);
 						}}
 						onKeyUp={handleKeyUp}
