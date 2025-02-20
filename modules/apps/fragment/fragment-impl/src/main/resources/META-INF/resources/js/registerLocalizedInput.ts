@@ -52,14 +52,16 @@ export function registerLocalizedInput({
 	Liferay.on('localizationSelect:localeChanged', ({languageId}) => {
 		currentLanguageId = languageId;
 
-		const translationInput = getOrCreateTranslationInput(
+		const translationInput = getTranslationInput(
 			inputName,
 			languageId,
-			localizationInputsContainer,
 			namespace
 		);
 
-		if (translationInput.getAttribute('value') !== null) {
+		if (
+			translationInput &&
+			translationInput.getAttribute('value') !== null
+		) {
 			onLocaleChange?.({languageId, value: translationInput.value});
 
 			if (!inputElement) {
@@ -140,4 +142,14 @@ function getOrCreateTranslationInput(
 	}
 
 	return translationInput;
+}
+
+function getTranslationInput(
+	inputName: string,
+	languageId: string,
+	namespace: string
+) {
+	const inputId = `${namespace}${inputName}_${languageId}`;
+
+	return document.getElementById(inputId) as HTMLInputElement;
 }
