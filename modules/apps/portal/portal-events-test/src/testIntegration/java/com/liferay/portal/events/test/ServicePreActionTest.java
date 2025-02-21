@@ -85,6 +85,11 @@ public class ServicePreActionTest {
 
 		_safeCloseable = CompanyThreadLocal.setCompanyIdWithSafeCloseable(
 			_company.getCompanyId());
+
+		Role role = _roleLocalService.getRole(
+			_company.getCompanyId(), RoleConstants.GUEST);
+
+		_guestRoleId = role.getRoleId();
 	}
 
 	@AfterClass
@@ -341,12 +346,9 @@ public class ServicePreActionTest {
 		throws Exception {
 
 		if (!hasGuestViewPermission) {
-			Role role = _roleLocalService.getRole(
-				_group.getCompanyId(), RoleConstants.GUEST);
-
 			_resourcePermissionLocalService.removeResourcePermissions(
 				_group.getCompanyId(), Layout.class.getName(),
-				ResourceConstants.SCOPE_INDIVIDUAL, role.getRoleId(),
+				ResourceConstants.SCOPE_INDIVIDUAL, _guestRoleId,
 				ActionKeys.VIEW);
 		}
 
@@ -365,17 +367,14 @@ public class ServicePreActionTest {
 		}
 		finally {
 			if (!hasGuestViewPermission) {
-				Role role = _roleLocalService.getRole(
-					_group.getCompanyId(), RoleConstants.GUEST);
-
 				for (Layout layout :
 						_layoutLocalService.getLayouts(_group.getCompanyId())) {
 
 					_resourcePermissionLocalService.setResourcePermissions(
 						layout.getCompanyId(), Layout.class.getName(),
 						ResourceConstants.SCOPE_INDIVIDUAL,
-						String.valueOf(layout.getPrimaryKey()),
-						role.getRoleId(), new String[] {ActionKeys.VIEW});
+						String.valueOf(layout.getPrimaryKey()), _guestRoleId,
+						new String[] {ActionKeys.VIEW});
 				}
 			}
 		}
@@ -464,6 +463,11 @@ public class ServicePreActionTest {
 	}
 
 	private static Company _company;
+	private static long _guestRoleId;
+
+	@Inject
+	private static RoleLocalService _roleLocalService;
+
 	private static SafeCloseable _safeCloseable;
 
 	@DeleteAfterTestRun
@@ -491,9 +495,6 @@ public class ServicePreActionTest {
 
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
-
-	@Inject
-	private RoleLocalService _roleLocalService;
 
 	private final ServicePreAction _servicePreAction = new ServicePreAction();
 	private User _user;
