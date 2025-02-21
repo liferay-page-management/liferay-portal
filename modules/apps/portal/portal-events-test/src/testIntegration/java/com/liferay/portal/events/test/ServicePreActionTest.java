@@ -184,24 +184,10 @@ public class ServicePreActionTest {
 	public void testHiddenLayoutsVirtualHostLayoutCompositeWithNonexistentLayout()
 		throws Exception {
 
-		_mockHttpServletRequest.setRequestURI("/nonexistent_page");
-
 		long plid = _getThemeDisplayPlid(true, false);
 
-		Object defaultLayoutComposite = ReflectionTestUtil.invoke(
-			_servicePreAction, "_getDefaultVirtualHostLayoutComposite",
-			new Class<?>[] {HttpServletRequest.class}, _mockHttpServletRequest);
-
-		Object viewableLayoutComposite = ReflectionTestUtil.invoke(
-			_servicePreAction, "_getViewableLayoutComposite",
-			new Class<?>[] {
-				HttpServletRequest.class, User.class, PermissionChecker.class,
-				Layout.class, List.class, boolean.class
-			},
-			_mockHttpServletRequest, _user,
-			_permissionCheckerFactory.create(_user),
-			_getLayout(defaultLayoutComposite),
-			_getLayouts(defaultLayoutComposite), false);
+		Object viewableLayoutComposite = _getViewableLayoutComposite(
+			"/nonexistent_page", false);
 
 		Layout layout = _getLayout(viewableLayoutComposite);
 
@@ -216,32 +202,13 @@ public class ServicePreActionTest {
 	public void testHiddenLayoutsVirtualHostLayoutCompositeWithoutPublicPath()
 		throws Exception {
 
-		String path = "/non/public/path";
-
-		_mockHttpServletRequest.setPathInfo(path);
-		_mockHttpServletRequest.setRequestURI(_portal.getPathMain() + path);
-
 		long plid = _getThemeDisplayPlid(true, false);
 
 		try (AutoCloseable autoCloseable =
 				_setLayoutsToHiddenAndDefaultLayoutToNotGuestViewable(plid)) {
 
-			Object defaultLayoutComposite = ReflectionTestUtil.invoke(
-				_servicePreAction, "_getDefaultVirtualHostLayoutComposite",
-				new Class<?>[] {HttpServletRequest.class},
-				_mockHttpServletRequest);
-
-			Object viewableLayoutComposite = ReflectionTestUtil.invoke(
-				_servicePreAction, "_getViewableLayoutComposite",
-				new Class<?>[] {
-					HttpServletRequest.class, User.class,
-					PermissionChecker.class, Layout.class, List.class,
-					boolean.class
-				},
-				_mockHttpServletRequest, _user,
-				_permissionCheckerFactory.create(_user),
-				_getLayout(defaultLayoutComposite),
-				_getLayouts(defaultLayoutComposite), false);
+			Object viewableLayoutComposite = _getViewableLayoutComposite(
+				"/non/public/path", true);
 
 			Layout layout = _getLayout(viewableLayoutComposite);
 
@@ -262,32 +229,13 @@ public class ServicePreActionTest {
 	public void testHiddenLayoutsVirtualHostLayoutCompositeWithPublicPath()
 		throws Exception {
 
-		String path = "/portal/saml/metadata";
-
-		_mockHttpServletRequest.setPathInfo(path);
-		_mockHttpServletRequest.setRequestURI(_portal.getPathMain() + path);
-
 		long plid = _getThemeDisplayPlid(true, false);
 
 		try (AutoCloseable autoCloseable =
 				_setLayoutsToHiddenAndDefaultLayoutToNotGuestViewable(plid)) {
 
-			Object defaultLayoutComposite = ReflectionTestUtil.invoke(
-				_servicePreAction, "_getDefaultVirtualHostLayoutComposite",
-				new Class<?>[] {HttpServletRequest.class},
-				_mockHttpServletRequest);
-
-			Object viewableLayoutComposite = ReflectionTestUtil.invoke(
-				_servicePreAction, "_getViewableLayoutComposite",
-				new Class<?>[] {
-					HttpServletRequest.class, User.class,
-					PermissionChecker.class, Layout.class, List.class,
-					boolean.class
-				},
-				_mockHttpServletRequest, _user,
-				_permissionCheckerFactory.create(_user),
-				_getLayout(defaultLayoutComposite),
-				_getLayouts(defaultLayoutComposite), false);
+			Object viewableLayoutComposite = _getViewableLayoutComposite(
+				"/portal/saml/metadata", true);
 
 			Layout layout = _getLayout(viewableLayoutComposite);
 
@@ -477,6 +425,35 @@ public class ServicePreActionTest {
 				WebKeys.THEME_DISPLAY);
 
 		return themeDisplay.getPlid();
+	}
+
+	private Object _getViewableLayoutComposite(
+		String requestURI, boolean prependPathMain) {
+
+		_mockHttpServletRequest.setPathInfo(requestURI);
+
+		if (prependPathMain) {
+			_mockHttpServletRequest.setRequestURI(
+				_portal.getPathMain() + requestURI);
+		}
+		else {
+			_mockHttpServletRequest.setRequestURI(requestURI);
+		}
+
+		Object defaultLayoutComposite = ReflectionTestUtil.invoke(
+			_servicePreAction, "_getDefaultVirtualHostLayoutComposite",
+			new Class<?>[] {HttpServletRequest.class}, _mockHttpServletRequest);
+
+		return ReflectionTestUtil.invoke(
+			_servicePreAction, "_getViewableLayoutComposite",
+			new Class<?>[] {
+				HttpServletRequest.class, User.class, PermissionChecker.class,
+				Layout.class, List.class, boolean.class
+			},
+			_mockHttpServletRequest, _user,
+			_permissionCheckerFactory.create(_user),
+			_getLayout(defaultLayoutComposite),
+			_getLayouts(defaultLayoutComposite), false);
 	}
 
 	private AutoCloseable _setLayoutsToHiddenAndDefaultLayoutToNotGuestViewable(
