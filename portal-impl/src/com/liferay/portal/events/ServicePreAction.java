@@ -91,6 +91,7 @@ import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.webserver.WebServerServletTokenUtil;
+import com.liferay.portal.struts.AuthPublicPathRegistry;
 import com.liferay.portal.theme.ThemeDisplayFactory;
 import com.liferay.portal.util.LayoutClone;
 import com.liferay.portal.util.LayoutCloneFactory;
@@ -712,7 +713,9 @@ public class ServicePreAction extends Action {
 			layouts = null;
 
 			if (!_isLoginRequest(httpServletRequest) &&
-				!hasViewLayoutPermission) {
+				!hasViewLayoutPermission &&
+				!AuthPublicPathRegistry.contains(
+					httpServletRequest.getPathInfo())) {
 
 				if (user.isGuestUser() &&
 					AuthLoginGroupSettingsUtil.isPromptEnabled(
