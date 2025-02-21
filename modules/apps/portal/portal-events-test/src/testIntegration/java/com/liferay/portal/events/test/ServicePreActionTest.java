@@ -12,6 +12,8 @@ import com.liferay.portal.events.ServicePreAction;
 import com.liferay.portal.kernel.events.ActionException;
 import com.liferay.portal.kernel.events.LifecycleAction;
 import com.liferay.portal.kernel.events.LifecycleEvent;
+import com.liferay.portal.kernel.exception.LayoutPermissionException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -31,6 +33,7 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
@@ -52,6 +55,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.util.PropsUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -206,6 +210,95 @@ public class ServicePreActionTest {
 		Assert.assertEquals(layout.getPlid(), plid);
 
 		Assert.assertEquals(layouts.toString(), 1, layouts.size());
+	}
+
+	@Test
+	public void testHiddenLayoutsVirtualHostLayoutCompositeWithoutPublicPath()
+		throws Exception {
+
+		String path = "/non/public/path";
+
+		_mockHttpServletRequest.setPathInfo(path);
+		_mockHttpServletRequest.setRequestURI(_portal.getPathMain() + path);
+
+		long plid = _getThemeDisplayPlid(true, false);
+
+		try (AutoCloseable autoCloseable =
+				_setLayoutsToHiddenAndDefaultLayoutToNotGuestViewable(plid)) {
+
+			Object defaultLayoutComposite = ReflectionTestUtil.invoke(
+				_servicePreAction, "_getDefaultVirtualHostLayoutComposite",
+				new Class<?>[] {HttpServletRequest.class},
+				_mockHttpServletRequest);
+
+			Object viewableLayoutComposite = ReflectionTestUtil.invoke(
+				_servicePreAction, "_getViewableLayoutComposite",
+				new Class<?>[] {
+					HttpServletRequest.class, User.class,
+					PermissionChecker.class, Layout.class, List.class,
+					boolean.class
+				},
+				_mockHttpServletRequest, _user,
+				_permissionCheckerFactory.create(_user),
+				_getLayout(defaultLayoutComposite),
+				_getLayouts(defaultLayoutComposite), false);
+
+			Layout layout = _getLayout(viewableLayoutComposite);
+
+			List<Layout> layouts = _getLayouts(viewableLayoutComposite);
+
+			Assert.assertEquals(layout.getPlid(), plid);
+
+			Assert.assertNull(layouts);
+
+			Assert.assertTrue(
+				SessionErrors.contains(
+					_mockHttpServletRequest,
+					LayoutPermissionException.class.getName()));
+		}
+	}
+
+	@Test
+	public void testHiddenLayoutsVirtualHostLayoutCompositeWithPublicPath()
+		throws Exception {
+
+		String path = "/portal/saml/metadata";
+
+		_mockHttpServletRequest.setPathInfo(path);
+		_mockHttpServletRequest.setRequestURI(_portal.getPathMain() + path);
+
+		long plid = _getThemeDisplayPlid(true, false);
+
+		try (AutoCloseable autoCloseable =
+				_setLayoutsToHiddenAndDefaultLayoutToNotGuestViewable(plid)) {
+
+			Object defaultLayoutComposite = ReflectionTestUtil.invoke(
+				_servicePreAction, "_getDefaultVirtualHostLayoutComposite",
+				new Class<?>[] {HttpServletRequest.class},
+				_mockHttpServletRequest);
+
+			Object viewableLayoutComposite = ReflectionTestUtil.invoke(
+				_servicePreAction, "_getViewableLayoutComposite",
+				new Class<?>[] {
+					HttpServletRequest.class, User.class,
+					PermissionChecker.class, Layout.class, List.class,
+					boolean.class
+				},
+				_mockHttpServletRequest, _user,
+				_permissionCheckerFactory.create(_user),
+				_getLayout(defaultLayoutComposite),
+				_getLayouts(defaultLayoutComposite), false);
+
+			Layout layout = _getLayout(viewableLayoutComposite);
+
+			List<Layout> layouts = _getLayouts(viewableLayoutComposite);
+
+			Assert.assertEquals(layout.getPlid(), plid);
+
+			Assert.assertNull(layouts);
+
+			Assert.assertTrue(SessionErrors.isEmpty(_mockHttpServletRequest));
+		}
 	}
 
 	@Test
@@ -384,6 +477,43 @@ public class ServicePreActionTest {
 				WebKeys.THEME_DISPLAY);
 
 		return themeDisplay.getPlid();
+	}
+
+	private AutoCloseable _setLayoutsToHiddenAndDefaultLayoutToNotGuestViewable(
+			long defaultLayoutPlid)
+		throws PortalException {
+
+		_resourcePermissionLocalService.removeResourcePermission(
+			_group.getCompanyId(), Layout.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(defaultLayoutPlid), _guestRoleId, ActionKeys.VIEW);
+
+		List<Layout> updatedLayouts = new ArrayList<>();
+
+		List<Layout> layouts = _layoutLocalService.getLayouts(
+			_group.getCompanyId());
+
+		for (Layout layout : layouts) {
+			if (!layout.isHidden()) {
+				layout.setHidden(true);
+
+				updatedLayouts.add(_layoutLocalService.updateLayout(layout));
+			}
+		}
+
+		return () -> {
+			_resourcePermissionLocalService.setResourcePermissions(
+				_group.getCompanyId(), Layout.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(defaultLayoutPlid), _guestRoleId,
+				new String[] {ActionKeys.VIEW});
+
+			for (Layout layout : updatedLayouts) {
+				layout.setHidden(false);
+
+				_layoutLocalService.updateLayout(layout);
+			}
+		};
 	}
 
 	private void _testCustomErrorPage(String expectedMessage, String location)
