@@ -117,6 +117,7 @@ public class ServicePreActionTest {
 		_mockHttpServletRequest.setAttribute(WebKeys.COMPANY, _company);
 		_mockHttpServletRequest.setAttribute(
 			WebKeys.VIRTUAL_HOST_LAYOUT_SET, _group.getPublicLayoutSet());
+		_mockHttpServletRequest.setPathInfo("/portal/login");
 		_mockHttpServletRequest.setRequestURI(
 			_portal.getPathMain() + "/portal/login");
 	}
