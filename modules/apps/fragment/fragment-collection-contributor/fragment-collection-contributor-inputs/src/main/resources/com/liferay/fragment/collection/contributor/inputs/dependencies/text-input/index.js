@@ -75,12 +75,18 @@ function main() {
 		inputElement.addEventListener('keyup', onInputKeyup);
 
 		if (Liferay.FeatureFlags['LPD-37927']) {
+			const defaultLanguageId = themeDisplay.getDefaultLanguageId();
+
+			inputElement.setAttribute(
+				'dir',
+				Liferay.Language.direction[defaultLanguageId]
+			);
+
 			import('@liferay/fragment-impl').then(
 				({registerLocalizedInput, registerUnlocalizedInput}) => {
 					if (input.localizable) {
 						const {onChange} = registerLocalizedInput({
-							defaultLanguageId:
-								themeDisplay.getDefaultLanguageId(),
+							defaultLanguageId,
 							initialValues: input.valueI18n,
 							inputElement,
 							inputName: input.name,
@@ -95,8 +101,7 @@ function main() {
 					}
 					else {
 						registerUnlocalizedInput({
-							defaultLanguageId:
-								themeDisplay.getDefaultLanguageId(),
+							defaultLanguageId,
 							inputElement,
 							readOnlyInputLabel: document.getElementById(
 								`${fragmentNamespace}-text-input-readonly`

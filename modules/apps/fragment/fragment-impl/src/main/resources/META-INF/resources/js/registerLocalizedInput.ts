@@ -49,55 +49,69 @@ export function registerLocalizedInput({
 
 	let currentLanguageId = defaultLanguageId;
 
-	Liferay.on('localizationSelect:localeChanged', ({languageId}) => {
-		currentLanguageId = languageId;
+	Liferay.on(
+		'localizationSelect:localeChanged',
+		({languageId}: {languageId: Liferay.Language.Locale}) => {
+			currentLanguageId = languageId;
 
-		const translationInput = getOrCreateTranslationInput(
-			inputName,
-			languageId,
-			localizationInputsContainer,
-			namespace
-		);
-
-		if (translationInput.getAttribute('value') !== null) {
-			onLocaleChange?.({languageId, value: translationInput.value});
-
-			if (!inputElement) {
-				return;
+			if (inputElement?.getAttribute('dir')) {
+				inputElement.setAttribute(
+					'dir',
+					Liferay.Language.direction[languageId]!
+				);
 			}
 
-			if (inputElement.type === 'checkbox') {
-				inputElement.checked = translationInput.value === 'true';
-			}
-			else if (inputElement.getAttribute('role') === 'combobox') {
-				inputElement.value = translationInput.dataset.label || '';
-			}
-			else {
-				inputElement.value = translationInput.value;
-			}
-		}
-		else {
-			const defaultLanguageInput = getOrCreateTranslationInput(
+			const translationInput = getOrCreateTranslationInput(
 				inputName,
-				defaultLanguageId,
+				languageId,
 				localizationInputsContainer,
 				namespace
 			);
 
-			onLocaleChange?.({languageId, value: defaultLanguageInput.value});
+			if (translationInput.getAttribute('value') !== null) {
+				onLocaleChange?.({languageId, value: translationInput.value});
 
-			if (!inputElement) {
-				return;
-			}
+				if (!inputElement) {
+					return;
+				}
 
-			if (inputElement.getAttribute('role') === 'combobox') {
-				inputElement.value = defaultLanguageInput.dataset.label || '';
+				if (inputElement.type === 'checkbox') {
+					inputElement.checked = translationInput.value === 'true';
+				}
+				else if (inputElement.getAttribute('role') === 'combobox') {
+					inputElement.value = translationInput.dataset.label || '';
+				}
+				else {
+					inputElement.value = translationInput.value;
+				}
 			}
 			else {
-				inputElement.value = defaultLanguageInput.value;
+				const defaultLanguageInput = getOrCreateTranslationInput(
+					inputName,
+					defaultLanguageId,
+					localizationInputsContainer,
+					namespace
+				);
+
+				onLocaleChange?.({
+					languageId,
+					value: defaultLanguageInput.value,
+				});
+
+				if (!inputElement) {
+					return;
+				}
+
+				if (inputElement.getAttribute('role') === 'combobox') {
+					inputElement.value =
+						defaultLanguageInput.dataset.label || '';
+				}
+				else {
+					inputElement.value = defaultLanguageInput.value;
+				}
 			}
 		}
-	});
+	);
 
 	return {
 		onChange: (value: string, label?: string) => {
