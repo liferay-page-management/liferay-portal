@@ -20,38 +20,48 @@ export function registerUnlocalizedInput({
 	unlocalizedFieldsState,
 	unlocalizedMessageContainer,
 }: Args) {
-	Liferay.on('localizationSelect:localeChanged', ({languageId}) => {
-		onLocaleChange?.(languageId);
+	Liferay.on(
+		'localizationSelect:localeChanged',
+		({languageId}: {languageId: Liferay.Language.Locale}) => {
+			onLocaleChange?.(languageId);
 
-		if (languageId === defaultLanguageId) {
-			if (unlocalizedFieldsState === 'disabled') {
-				inputElement?.removeAttribute('disabled');
-			}
-			else {
-				inputElement?.removeAttribute('readonly');
-				readOnlyInputLabel?.classList.add('d-none');
-			}
-
-			unlocalizedMessageContainer?.classList.add('d-none');
-		}
-		else {
-			if (unlocalizedFieldsState === 'disabled') {
-				inputElement?.setAttribute('disabled', '');
-
-				inputElement?.closest('form')?.addEventListener(
-					'submit',
-					() => {
-						inputElement?.removeAttribute('disabled');
-					},
-					true
+			if (inputElement?.getAttribute('dir')) {
+				inputElement.setAttribute(
+					'dir',
+					Liferay.Language.direction[languageId]!
 				);
 			}
-			else {
-				inputElement?.setAttribute('readonly', '');
-				readOnlyInputLabel?.classList.remove('d-none');
-			}
 
-			unlocalizedMessageContainer.classList.remove('d-none');
+			if (languageId === defaultLanguageId) {
+				if (unlocalizedFieldsState === 'disabled') {
+					inputElement?.removeAttribute('disabled');
+				}
+				else {
+					inputElement?.removeAttribute('readonly');
+					readOnlyInputLabel?.classList.add('d-none');
+				}
+
+				unlocalizedMessageContainer?.classList.add('d-none');
+			}
+			else {
+				if (unlocalizedFieldsState === 'disabled') {
+					inputElement?.setAttribute('disabled', '');
+
+					inputElement?.closest('form')?.addEventListener(
+						'submit',
+						() => {
+							inputElement?.removeAttribute('disabled');
+						},
+						true
+					);
+				}
+				else {
+					inputElement?.setAttribute('readonly', '');
+					readOnlyInputLabel?.classList.remove('d-none');
+				}
+
+				unlocalizedMessageContainer.classList.remove('d-none');
+			}
 		}
-	});
+	);
 }
