@@ -86,13 +86,13 @@ public class ServicePreActionTest {
 	public static void setUpClass() throws Exception {
 		_company = CompanyTestUtil.addCompany();
 
-		_safeCloseable = CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-			_company.getCompanyId());
-
 		Role role = _roleLocalService.getRole(
 			_company.getCompanyId(), RoleConstants.GUEST);
 
 		_guestRoleId = role.getRoleId();
+
+		_safeCloseable = CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+			_company.getCompanyId());
 	}
 
 	@AfterClass
@@ -187,7 +187,7 @@ public class ServicePreActionTest {
 		long plid = _getThemeDisplayPlid(true, false);
 
 		Object viewableLayoutComposite = _getViewableLayoutComposite(
-			"/nonexistent_page", false);
+			false, "/nonexistent_page");
 
 		Layout layout = _getLayout(viewableLayoutComposite);
 
@@ -199,7 +199,7 @@ public class ServicePreActionTest {
 	}
 
 	@Test
-	public void testHiddenLayoutsVirtualHostLayoutCompositeWithoutPublicPath()
+	public void testHiddenLayoutsVirtualHostLayoutCompositeWithNonpublicPath()
 		throws Exception {
 
 		long plid = _getThemeDisplayPlid(true, false);
@@ -208,7 +208,7 @@ public class ServicePreActionTest {
 				_setLayoutsToHiddenAndDefaultLayoutToNotGuestViewable(plid)) {
 
 			Object viewableLayoutComposite = _getViewableLayoutComposite(
-				"/non/public/path", true);
+				true, "/non/public/path");
 
 			Layout layout = _getLayout(viewableLayoutComposite);
 
@@ -233,7 +233,7 @@ public class ServicePreActionTest {
 				_setLayoutsToHiddenAndDefaultLayoutToNotGuestViewable(plid)) {
 
 			Object viewableLayoutComposite = _getViewableLayoutComposite(
-				"/portal/saml/metadata", true);
+				true, "/portal/saml/metadata");
 
 			Layout layout = _getLayout(viewableLayoutComposite);
 
@@ -424,7 +424,7 @@ public class ServicePreActionTest {
 	}
 
 	private Object _getViewableLayoutComposite(
-		String requestURI, boolean prependPathMain) {
+		boolean prependPathMain, String requestURI) {
 
 		_mockHttpServletRequest.setPathInfo(requestURI);
 
