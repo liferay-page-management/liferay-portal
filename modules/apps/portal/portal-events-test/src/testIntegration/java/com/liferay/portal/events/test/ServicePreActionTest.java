@@ -191,9 +191,9 @@ public class ServicePreActionTest {
 
 		Layout layout = _getLayout(viewableLayoutComposite);
 
-		List<Layout> layouts = _getLayouts(viewableLayoutComposite);
-
 		Assert.assertEquals(layout.getPlid(), plid);
+
+		List<Layout> layouts = _getLayouts(viewableLayoutComposite);
 
 		Assert.assertEquals(layouts.toString(), 1, layouts.size());
 	}
@@ -212,11 +212,9 @@ public class ServicePreActionTest {
 
 			Layout layout = _getLayout(viewableLayoutComposite);
 
-			List<Layout> layouts = _getLayouts(viewableLayoutComposite);
-
 			Assert.assertEquals(layout.getPlid(), plid);
 
-			Assert.assertNull(layouts);
+			Assert.assertNull(_getLayouts(viewableLayoutComposite));
 
 			Assert.assertTrue(
 				SessionErrors.contains(
@@ -239,11 +237,9 @@ public class ServicePreActionTest {
 
 			Layout layout = _getLayout(viewableLayoutComposite);
 
-			List<Layout> layouts = _getLayouts(viewableLayoutComposite);
-
 			Assert.assertEquals(layout.getPlid(), plid);
 
-			Assert.assertNull(layouts);
+			Assert.assertNull(_getLayouts(viewableLayoutComposite));
 
 			Assert.assertTrue(SessionErrors.isEmpty(_mockHttpServletRequest));
 		}
