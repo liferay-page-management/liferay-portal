@@ -16,6 +16,8 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.servlet.PageContextFactoryUtil;
 
@@ -91,6 +93,11 @@ public class StructureBuilderFragmentRenderer implements FragmentRenderer {
 				PageContextFactoryUtil.create(
 					httpServletRequest, httpServletResponse));
 			componentTag.setServletContext(_servletContext);
+
+			componentTag.setProps(
+				HashMapBuilder.<String, Object>put(
+					"type", ParamUtil.getString(httpServletRequest, "type")
+				).build());
 
 			componentTag.doStartTag();
 

@@ -19,7 +19,7 @@ import selectStructureName from '../selectors/selectStructureName';
 import selectStructureStatus from '../selectors/selectStructureStatus';
 import StructureService from '../services/StructureService';
 
-export default function ManagementBar() {
+export default function ManagementBar({type}: {type: string}) {
 	const label = useSelector(selectStructureLabel);
 	const status = useSelector(selectStructureStatus);
 
@@ -54,7 +54,7 @@ export default function ManagementBar() {
 				</ManagementToolbar.Item>
 
 				<ManagementToolbar.Item>
-					<SaveButton />
+					<SaveButton type={type} />
 				</ManagementToolbar.Item>
 
 				<ManagementToolbar.Item>
@@ -65,7 +65,7 @@ export default function ManagementBar() {
 	);
 }
 
-function SaveButton() {
+function SaveButton({type}: {type: string}) {
 	const dispatch = useStateDispatch();
 	const fields = useSelector(selectStructureFields);
 	const label = useSelector(selectStructureLabel);
@@ -80,6 +80,7 @@ function SaveButton() {
 			fields,
 			label,
 			name: structureName,
+			type,
 		});
 
 		openToast({

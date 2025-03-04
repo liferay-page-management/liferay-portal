@@ -13,12 +13,14 @@ export default function buildObjectDefinition({
 	id,
 	label,
 	name,
+	type,
 }: {
 	erc: string;
 	fields?: Field[];
 	id?: State['id'];
 	label: State['label'];
 	name?: State['name'];
+	type?: string;
 }): ObjectDefinition {
 	const objectDefinition: ObjectDefinition = {
 		externalReferenceCode: erc,
@@ -26,6 +28,7 @@ export default function buildObjectDefinition({
 			en_US: label,
 		},
 		objectFields: buildFields(fields),
+		objectFolderExternalReferenceCode: type,
 		pluralLabel: {
 			en_US: label,
 		},

@@ -14,17 +14,20 @@ async function createStructure({
 	fields,
 	label,
 	name,
+	type,
 }: {
 	erc?: string;
 	fields: Field[];
 	label: State['label'];
 	name?: State['name'];
+	type: string;
 }) {
 	const objectDefinition = buildObjectDefinition({
 		erc,
 		fields,
 		label,
 		name,
+		type,
 	});
 
 	return await ApiHelper.post(

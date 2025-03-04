@@ -12,11 +12,11 @@ import ManagementBar from './ManagementBar';
 import StructureSettings from './StructureSettings';
 import StructureFields from './structure_fields/StructureFields';
 
-export default function StructureBuilder() {
+export default function StructureBuilder({type}: {type: string}) {
 	return (
 		<StateContextProvider>
 			<div className="d-flex flex-column structure-builder__wrapper">
-				<ManagementBar />
+				<ManagementBar type={type} />
 
 				<div className="d-flex flex-grow-1 p-4">
 					<StructureFields />

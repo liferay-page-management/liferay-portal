@@ -23,6 +23,7 @@ export type ObjectDefinition = {
 	};
 	name?: string;
 	objectFields?: ObjectField[];
+	objectFolderExternalReferenceCode?: string;
 	pluralLabel: {
 		en_US: string;
 	};

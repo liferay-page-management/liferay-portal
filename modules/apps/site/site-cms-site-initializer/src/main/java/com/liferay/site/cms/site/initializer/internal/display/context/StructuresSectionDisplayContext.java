@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.cms.site.initializer.internal.configuration.CMSSiteInitializerConfiguration;
@@ -44,20 +45,20 @@ public class StructuresSectionDisplayContext extends BaseSectionDisplayContext {
 	public CreationMenu getCreationMenu() {
 		return CreationMenuBuilder.addPrimaryDropdownItem(
 			dropdownItem -> {
-				dropdownItem.setHref(_getHref());
+				dropdownItem.setHref(_getHref("L_CMS_CONTENT_STRUCTURES"));
 				dropdownItem.setLabel(
 					LanguageUtil.get(httpServletRequest, "content"));
 			}
 		).addPrimaryDropdownItem(
 			dropdownItem -> {
-				dropdownItem.setHref(_getHref());
+				dropdownItem.setHref(_getHref("L_CMS_FILE_TYPES"));
 				dropdownItem.setLabel(
 					LanguageUtil.get(httpServletRequest, "file"));
 			}
 		).build();
 	}
 
-	private String _getHref() {
+	private String _getHref(String type) {
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
@@ -66,7 +67,9 @@ public class StructuresSectionDisplayContext extends BaseSectionDisplayContext {
 			Layout layout = LayoutLocalServiceUtil.getLayoutByFriendlyURL(
 				themeDisplay.getScopeGroupId(), false, "/structure-builder");
 
-			return PortalUtil.getLayoutFullURL(layout, themeDisplay);
+			return HttpComponentsUtil.addParameters(
+				PortalUtil.getLayoutFullURL(layout, themeDisplay), "type",
+				type);
 		}
 		catch (PortalException portalException) {
 			_log.error(portalException);
