@@ -49,6 +49,7 @@ export default function buildObjectDefinition({
 function buildFields(fields: Field[]) {
 	return fields.map((field) => {
 		const objectField: ObjectField = {
+			DBType: 'String',
 			businessType: FIELD_TYPE_BUSINESS_TYPE[field.type],
 			externalReferenceCode: field.erc,
 			indexed: field.indexableConfig.indexed,
