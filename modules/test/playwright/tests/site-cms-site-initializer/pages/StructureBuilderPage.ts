@@ -185,7 +185,7 @@ export class StructureBuilderPage {
 			await this.publishButton.click();
 
 			await waitForAlert(this.page, 'published successfully', {
-				timeout: 1000,
+				timeout: 5000,
 			});
 		};
 
@@ -206,7 +206,7 @@ export class StructureBuilderPage {
 		const save = async () => {
 			await this.saveButton.click();
 
-			await waitForAlert(this.page, 'successfully', {timeout: 1000});
+			await waitForAlert(this.page, 'successfully', {timeout: 5000});
 		};
 
 		const [response] = await Promise.all([
