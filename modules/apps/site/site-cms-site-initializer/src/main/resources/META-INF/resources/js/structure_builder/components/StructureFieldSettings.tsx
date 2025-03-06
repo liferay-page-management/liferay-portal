@@ -279,6 +279,7 @@ function SearchTab({field}: {field: Field}) {
 
 					{!field.indexableConfig.indexedAsKeyword ? (
 						<Picker
+							aria-label={Liferay.Language.get('language')}
 							defaultSelectedKey={Liferay.ThemeDisplay.getDefaultLanguageId()}
 							items={languageLabels}
 							onSelectionChange={(
