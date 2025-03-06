@@ -80,12 +80,19 @@ export class StructureBuilderPage {
 	}
 
 	async changeStructureSettings({
+		erc,
 		label,
 		name,
 	}: {
+		erc?: string;
 		label?: string;
 		name?: string;
 	}) {
+		if (erc) {
+			await this.page.getByLabel('ERC').fill(erc);
+			await this.page.getByRole('tab', {name: 'General'}).click();
+		}
+
 		if (label) {
 			await this.labelInput.fill(label);
 			await this.page.getByRole('tab', {name: 'General'}).click();
