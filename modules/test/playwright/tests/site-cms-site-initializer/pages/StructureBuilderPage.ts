@@ -71,12 +71,46 @@ export class StructureBuilderPage {
 		});
 	}
 
-	async changeFieldSettings({name}: {name?: string}) {
+	async changeFieldSettings({
+		erc,
+		label,
+		localizable,
+		mandatory,
+		name,
+	}: {
+		erc?: string;
+		label?: string;
+		localizable?: boolean;
+		mandatory?: boolean;
+		name?: string;
+	}) {
+		if (erc) {
+			const ercInput = this.page.getByLabel('ERC');
+
+			await ercInput.fill(erc);
+			await ercInput.blur();
+		}
+
 		if (name) {
 			const fieldNameInput = this.page.getByLabel('Field Name');
 
 			await fieldNameInput.fill(name);
 			await fieldNameInput.blur();
+		}
+
+		if (label) {
+			const labelInput = this.page.getByLabel('Label');
+
+			await labelInput.fill(label);
+			await labelInput.blur();
+		}
+
+		if (localizable) {
+			await this.page.getByLabel('Localizable').click();
+		}
+
+		if (mandatory) {
+			await this.page.getByLabel('Mandatory').click();
 		}
 	}
 
