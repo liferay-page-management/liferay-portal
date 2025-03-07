@@ -86,7 +86,7 @@ public class StructureBuilderFragmentRenderer
 					"state",
 					JSONUtil.put(
 						"objectDefinition",
-						_getObjectDefinition(httpServletRequest))
+						_getObjectDefinitionJSONObject(httpServletRequest))
 				).build());
 
 			componentTag.setServletContext(_servletContext);
@@ -104,8 +104,8 @@ public class StructureBuilderFragmentRenderer
 		}
 	}
 
-	private String _getObjectDefinition(HttpServletRequest httpServletRequest)
-		throws Exception {
+	private JSONObject _getObjectDefinitionJSONObject(
+		HttpServletRequest httpServletRequest) {
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
@@ -145,10 +145,7 @@ public class StructureBuilderFragmentRenderer
 						_jsonFactory::createJSONObject));
 			}
 
-			JSONObject objectDefinitionJSONObject =
-				_jsonFactory.createJSONObject(objectDefinition.toString());
-
-			return objectDefinitionJSONObject.toString();
+			return _jsonFactory.createJSONObject(objectDefinition.toString());
 		}
 		catch (Exception exception) {
 			_log.error(exception);
