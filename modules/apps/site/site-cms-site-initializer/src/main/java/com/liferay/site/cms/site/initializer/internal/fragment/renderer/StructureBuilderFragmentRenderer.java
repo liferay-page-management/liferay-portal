@@ -78,14 +78,15 @@ public class StructureBuilderFragmentRenderer
 				HashMapBuilder.<String, Object>put(
 					"config",
 					JSONUtil.put(
-						"objectDefinition",
-						_getObjectDefinition(httpServletRequest)
-					).put(
 						"objectFolderExternalReferenceCode",
 						ParamUtil.getString(
 							httpServletRequest,
-							"objectFolderExternalReferenceCode")
-					)
+							"objectFolderExternalReferenceCode"))
+				).put(
+					"state",
+					JSONUtil.put(
+						"objectDefinition",
+						_getObjectDefinition(httpServletRequest))
 				).build());
 
 			componentTag.setServletContext(_servletContext);
