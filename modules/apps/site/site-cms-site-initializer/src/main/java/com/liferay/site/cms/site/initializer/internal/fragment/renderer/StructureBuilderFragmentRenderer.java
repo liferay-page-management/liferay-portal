@@ -120,30 +120,40 @@ public class StructureBuilderFragmentRenderer
 			themeDisplay.getUser()
 		).build();
 
-		ObjectDefinition objectDefinition =
-			objectDefinitionResource.getObjectDefinition(objectDefinitionId);
+		try {
+			ObjectDefinition objectDefinition =
+				objectDefinitionResource.getObjectDefinition(
+					objectDefinitionId);
 
-		for (ObjectAction objectAction : objectDefinition.getObjectActions()) {
-			Map<String, Object> parameters =
-				(Map<String, Object>)objectAction.getParameters();
+			for (ObjectAction objectAction :
+					objectDefinition.getObjectActions()) {
 
-			Object object = parameters.get("predefinedValues");
+				Map<String, Object> parameters =
+					(Map<String, Object>)objectAction.getParameters();
 
-			if (object == null) {
-				continue;
+				Object object = parameters.get("predefinedValues");
+
+				if (object == null) {
+					continue;
+				}
+
+				parameters.put(
+					"predefinedValues",
+					ListUtil.toList(
+						(ArrayList<LinkedHashMap>)object,
+						_jsonFactory::createJSONObject));
 			}
 
-			parameters.put(
-				"predefinedValues",
-				ListUtil.toList(
-					(ArrayList<LinkedHashMap>)object,
-					_jsonFactory::createJSONObject));
+			JSONObject objectDefinitionJSONObject =
+				_jsonFactory.createJSONObject(objectDefinition.toString());
+
+			return objectDefinitionJSONObject.toString();
+		}
+		catch (Exception exception) {
+			_log.error(exception);
 		}
 
-		JSONObject objectDefinitionJSONObject = _jsonFactory.createJSONObject(
-			objectDefinition.toString());
-
-		return objectDefinitionJSONObject.toString();
+		return null;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
