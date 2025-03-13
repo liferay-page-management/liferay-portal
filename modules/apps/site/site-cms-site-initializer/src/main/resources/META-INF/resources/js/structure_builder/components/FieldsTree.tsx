@@ -22,6 +22,7 @@ import {
 	useSelector,
 	useStateDispatch,
 } from '../contexts/StateContext';
+import selectInvalids from '../selectors/selectInvalids';
 import selectSelection from '../selectors/selectSelection';
 import selectStructureLocalizedLabel from '../selectors/selectStructureLocalizedLabel';
 import selectStructureUuid from '../selectors/selectStructureUuid';
@@ -38,6 +39,7 @@ type TreeItem = {
 export default function FieldsTree({fields}: {fields: Field[]}) {
 	const dispatch = useStateDispatch();
 
+	const invalids = useSelector(selectInvalids);
 	const selection = useSelector(selectSelection);
 	const structureLabel = useSelector(selectStructureLocalizedLabel);
 	const structureUuid = useSelector(selectStructureUuid);
@@ -129,6 +131,15 @@ export default function FieldsTree({fields}: {fields: Field[]}) {
 						<ClayIcon symbol={item.icon} />
 
 						<span className="ml-1">{item.label}</span>
+
+						{invalids.has(item.id) ? (
+							<ClayIcon
+								className="ml-2 text-danger"
+								symbol="exclamation-full"
+							/>
+						) : (
+							<></>
+						)}
 					</ClayTreeView.ItemStack>
 
 					<ClayTreeView.Group items={item.children}>
@@ -173,6 +184,15 @@ export default function FieldsTree({fields}: {fields: Field[]}) {
 								/>
 
 								<span className="ml-1">{item.label}</span>
+
+								{invalids.has(item.id) ? (
+									<ClayIcon
+										className="ml-2 text-danger"
+										symbol="exclamation-full"
+									/>
+								) : (
+									<></>
+								)}
 							</ClayTreeView.Item>
 						)}
 					</ClayTreeView.Group>
