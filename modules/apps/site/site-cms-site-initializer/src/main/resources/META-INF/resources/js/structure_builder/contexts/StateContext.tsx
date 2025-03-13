@@ -285,6 +285,14 @@ function reducer(state: State, action: Action): State {
 				nextName = action.name;
 			}
 
+			if (
+				nextErc === state.erc &&
+				nextLabel === state.label &&
+				nextName === state.name
+			) {
+				return state;
+			}
+
 			const nextState = {
 				...state,
 				erc: nextErc,
