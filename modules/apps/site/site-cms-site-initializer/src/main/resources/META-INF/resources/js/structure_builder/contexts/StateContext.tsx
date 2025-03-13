@@ -17,6 +17,8 @@ import {Field} from '../utils/field';
 import findAvailableFieldName from '../utils/findAvailableFieldName';
 import getRandomId from '../utils/getRandomId';
 import getUuid from '../utils/getUuid';
+import isFieldInvalid from '../utils/isFieldInvalid';
+import isStructureInvalid from '../utils/isStructureInvalid';
 import openDeletionModal from '../utils/openDeletionModal';
 
 const DEFAULT_STRUCTURE_LABEL = Liferay.Language.get('untitled-structure');
@@ -30,6 +32,7 @@ export type State = {
 	error: string | null;
 	fields: Map<Uuid, Field>;
 	id: number | null;
+	invalids: Set<Uuid>;
 	label: Liferay.Language.LocalizedValue<string>;
 	name: string;
 	publishedFields: Set<Field['name']>;
@@ -43,6 +46,7 @@ const INITIAL_STATE: State = {
 	error: null,
 	fields: new Map(),
 	id: null,
+	invalids: new Set(),
 	label: {
 		[Liferay.ThemeDisplay.getDefaultLanguageId()]: DEFAULT_STRUCTURE_LABEL,
 	},
@@ -126,8 +130,9 @@ function reducer(state: State, action: Action): State {
 		case 'create-structure': {
 			return {
 				...state,
-				error: null,
+				error: INITIAL_STATE.error,
 				id: action.id,
+				invalids: INITIAL_STATE.invalids,
 				name: action.name,
 				status: 'draft' as Status,
 			};
@@ -178,7 +183,8 @@ function reducer(state: State, action: Action): State {
 		case 'publish-structure': {
 			return {
 				...state,
-				error: null,
+				error: INITIAL_STATE.error,
+				invalids: INITIAL_STATE.invalids,
 				publishedFields: new Set(
 					Array.from(state.fields.values()).map((field) => field.name)
 				),
@@ -196,12 +202,18 @@ function reducer(state: State, action: Action): State {
 
 			return {
 				...state,
-				error: null,
+				error: INITIAL_STATE.error,
+				invalids: INITIAL_STATE.invalids,
 				publishedFields: nextPublishedFields,
 			};
 		}
 		case 'set-error':
-			return {...state, error: action.error, selection: [state.uuid]};
+			return {
+				...state,
+				error: action.error,
+				invalids: new Set([state.uuid]),
+				selection: [state.uuid],
+			};
 		case 'set-selection': {
 			const {selection} = action;
 
@@ -240,9 +252,19 @@ function reducer(state: State, action: Action): State {
 
 			nextFields.set(nextField.uuid, nextField);
 
+			const invalids = new Set(state.invalids);
+
+			if (isFieldInvalid(nextField)) {
+				invalids.add(nextField.uuid);
+			}
+			else {
+				invalids.delete(nextField.uuid);
+			}
+
 			return {
 				...state,
 				fields: nextFields,
+				invalids,
 				selection: [nextField.uuid],
 			};
 		}
@@ -263,12 +285,26 @@ function reducer(state: State, action: Action): State {
 				nextName = action.name;
 			}
 
-			return {
+			const nextState = {
 				...state,
 				erc: nextErc,
-				error: null,
+				error: INITIAL_STATE.error,
 				label: nextLabel,
 				name: nextName,
+			};
+
+			const invalids = new Set(state.invalids);
+
+			if (isStructureInvalid(nextState)) {
+				invalids.add(state.uuid);
+			}
+			else {
+				invalids.delete(state.uuid);
+			}
+
+			return {
+				...nextState,
+				invalids,
 			};
 		}
 		default:
