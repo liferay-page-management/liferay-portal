@@ -27,6 +27,7 @@ export type ObjectDefinition = {
 	id?: number;
 	label: Liferay.Language.LocalizedValue<string>;
 	name?: string;
+	objectDefinitionSettings?: ObjectDefinitionSettings[];
 	objectFields?: ObjectField[];
 	objectFolderExternalReferenceCode?: string;
 	pluralLabel: Liferay.Language.LocalizedValue<string>;
@@ -34,4 +35,9 @@ export type ObjectDefinition = {
 	status?: {
 		label: string;
 	};
+};
+
+export type ObjectDefinitionSettings = {
+	name: string;
+	value: string;
 };
