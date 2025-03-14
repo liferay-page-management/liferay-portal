@@ -126,7 +126,9 @@ public class StyleBookUtil {
 		}
 		catch (PortalException portalException) {
 			_log.error(
-				"Unable to get the frontendTokenDefinition", portalException);
+				"Unable to get frontend token definition from layout " +
+					layout.getName(),
+				portalException);
 		}
 
 		return null;
