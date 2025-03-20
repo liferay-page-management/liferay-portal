@@ -5,6 +5,7 @@
 
 import ClayForm, {ClayCheckbox, ClaySelectWithOption} from '@clayui/form';
 import ClayPanel from '@clayui/panel';
+import {isDeepEqual} from '@liferay/layout-js-components-web';
 import {useId} from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
 import PropTypes from 'prop-types';
@@ -19,7 +20,6 @@ import {
 } from '../../../../../../app/contexts/StoreContext';
 import updateItemConfig from '../../../../../../app/thunks/updateItemConfig';
 import updateRowColumns from '../../../../../../app/thunks/updateRowColumns';
-import {deepEqual} from '../../../../../../app/utils/checkDeepEqual';
 import {getResponsiveColumnSize} from '../../../../../../app/utils/getResponsiveColumnSize';
 import {getResponsiveConfig} from '../../../../../../app/utils/getResponsiveConfig';
 import {getLayoutDataItemPropTypes} from '../../../../../../prop_types/index';
@@ -180,7 +180,7 @@ export function RowGeneralPanel({item}) {
 				modulesPerRow
 			] ?? [];
 
-		return !deepEqual(columnConfiguration, columnSizes);
+		return !isDeepEqual(columnConfiguration, columnSizes);
 	}, [item.children, layoutData.items, rowConfig, selectedViewportSize]);
 
 	const modulesPerRowOptions = isCustomRow

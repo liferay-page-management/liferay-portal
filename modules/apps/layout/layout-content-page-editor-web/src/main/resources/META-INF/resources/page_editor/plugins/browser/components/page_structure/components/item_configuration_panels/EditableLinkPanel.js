@@ -4,6 +4,7 @@
  */
 
 import ClayForm, {ClaySelectWithOption} from '@clayui/form';
+import {isDeepEqual} from '@liferay/layout-js-components-web';
 import {useId} from 'frontend-js-components-web';
 import React, {useEffect, useState} from 'react';
 
@@ -18,7 +19,6 @@ import {
 import selectEditableValue from '../../../../../../app/selectors/selectEditableValue';
 import selectEditableValues from '../../../../../../app/selectors/selectEditableValues';
 import updateEditableValues from '../../../../../../app/thunks/updateEditableValues';
-import {deepEqual} from '../../../../../../app/utils/checkDeepEqual';
 import isMapped from '../../../../../../app/utils/editable_value/isMapped';
 import {getEditableLinkValue} from '../../../../../../app/utils/getEditableLinkValue';
 import {getEditableItemPropTypes} from '../../../../../../prop_types/index';
@@ -56,7 +56,7 @@ export default function EditableLinkPanel({item}) {
 				EDITABLE_FRAGMENT_ENTRY_PROCESSOR
 			) || {},
 		[item.fragmentEntryLinkId, item.editableId],
-		deepEqual
+		isDeepEqual
 	);
 
 	const [linkConfig, setLinkConfig] = useState({});

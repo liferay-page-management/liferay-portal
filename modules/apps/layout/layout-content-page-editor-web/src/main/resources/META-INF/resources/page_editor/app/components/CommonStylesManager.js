@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {isDeepEqual} from '@liferay/layout-js-components-web';
 import {useEffect, useRef} from 'react';
 
 import {CONTAINER_WIDTH_TYPES} from '../config/constants/containerWidthTypes';
@@ -11,7 +12,6 @@ import {VIEWPORT_SIZES} from '../config/constants/viewportSizes';
 import {config} from '../config/index';
 import {useGlobalContext} from '../contexts/GlobalContext';
 import {useSelector, useSelectorRef} from '../contexts/StoreContext';
-import {deepEqual} from '../utils/checkDeepEqual';
 import generateStyleSheet from '../utils/generateStyleSheet';
 import {getResponsiveConfig} from '../utils/getResponsiveConfig';
 import hasInnerCommonStyles from '../utils/hasInnerCustomStyles';
@@ -215,7 +215,7 @@ function calculateStyles({
 	if (
 		!previousStyles ||
 		!previousStyleSheet ||
-		!deepEqual(previousStyles, nextStyles)
+		!isDeepEqual(previousStyles, nextStyles)
 	) {
 		const styleSheet = generateStyleSheet(nextStyles, {
 			itemsWithTopper,

@@ -4,12 +4,12 @@
  */
 
 import {usePrevious} from '@liferay/frontend-js-react-web';
+import {isDeepEqual} from '@liferay/layout-js-components-web';
 import React, {useCallback, useEffect, useState} from 'react';
 
 import {useActiveItemIds} from '../../../../../app/contexts/ControlsContext';
 import {useMovementTarget} from '../../../../../app/contexts/KeyboardMovementContext';
 import {useSelector} from '../../../../../app/contexts/StoreContext';
-import {deepEqual} from '../../../../../app/utils/checkDeepEqual';
 import StructureTreeContent from './StructureTreeContent';
 
 export default function StructureTree() {
@@ -65,7 +65,7 @@ export default function StructureTree() {
 
 		const expandedKeys = [];
 
-		if (deepEqual(previousActiveItemIds || [], activeItemIds)) {
+		if (isDeepEqual(previousActiveItemIds || [], activeItemIds)) {
 			return;
 		}
 

@@ -7,6 +7,7 @@ import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import ClayTabs from '@clayui/tabs';
+import {isDeepEqual} from '@liferay/layout-js-components-web';
 import classNames from 'classnames';
 import {useId} from 'frontend-js-components-web';
 import PropTypes from 'prop-types';
@@ -24,7 +25,6 @@ import {useSelectItem} from '../contexts/ControlsContext';
 import {useSelector, useSelectorCallback} from '../contexts/StoreContext';
 import selectCanUpdateItemConfiguration from '../selectors/selectCanUpdateItemConfiguration';
 import selectCanViewItemConfiguration from '../selectors/selectCanViewItemConfiguration';
-import {deepEqual} from '../utils/checkDeepEqual';
 
 export default function ItemConfiguration({activeItemId, activeItemType}) {
 	const collectionContext = useCollectionActiveItemContext();
@@ -60,7 +60,7 @@ function ItemConfigurationContent({
 	const {activeItem, panelsIds} = useSelectorCallback(
 		(state) => selectPanels(activeItemId, activeItemType, state),
 		[activeItemId, activeItemType],
-		deepEqual
+		isDeepEqual
 	);
 
 	const canUpdateItemConfiguration = useSelector(

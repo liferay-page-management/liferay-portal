@@ -4,6 +4,7 @@
  */
 
 import ClayAlert from '@clayui/alert';
+import {isDeepEqual} from '@liferay/layout-js-components-web';
 import PropTypes from 'prop-types';
 import React, {useEffect, useRef} from 'react';
 
@@ -15,7 +16,6 @@ import {LAYOUT_DATA_ITEM_TYPES} from '../config/constants/layoutDataItemTypes';
 import {config} from '../config/index';
 import {useSelectItem} from '../contexts/ControlsContext';
 import {useSelector} from '../contexts/StoreContext';
-import {deepEqual} from '../utils/checkDeepEqual';
 import useDropContainerId from '../utils/useDropContainerId';
 import {FormStepWithControls} from './layout_data_items/FormStep';
 import {FormStepContainerWithControls} from './layout_data_items/FormStepContainer';
@@ -173,8 +173,8 @@ class LayoutDataItem extends React.Component {
 	shouldComponentUpdate(nextProps, nextState) {
 		return (
 			nextState.error ||
-			!deepEqual(this.props.item, nextProps.item) ||
-			!deepEqual(
+			!isDeepEqual(this.props.item, nextProps.item) ||
+			!isDeepEqual(
 				LayoutDataItem.destructureItem(
 					this.props.item,
 					this.props.layoutData

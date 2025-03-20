@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {isDeepEqual} from '@liferay/layout-js-components-web';
 import React, {useCallback, useContext, useState} from 'react';
-
-import {deepEqual} from '../utils/checkDeepEqual';
 
 /**
  * @typedef PreviewItem
@@ -32,7 +31,7 @@ const SelectedItemDispatchContext = React.createContext(() => {});
  * @returns {boolean}
  */
 function itemsAreEqual(itemA, itemB) {
-	return deepEqual(itemA, itemB);
+	return isDeepEqual(itemA, itemB);
 }
 
 export function DisplayPagePreviewItemContextProvider({children}) {

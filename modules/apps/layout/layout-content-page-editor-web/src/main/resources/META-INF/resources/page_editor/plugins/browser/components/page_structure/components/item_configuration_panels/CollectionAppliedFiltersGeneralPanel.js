@@ -5,6 +5,7 @@
 
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayPanel from '@clayui/panel';
+import {isDeepEqual} from '@liferay/layout-js-components-web';
 import PropTypes from 'prop-types';
 import React, {useCallback, useEffect, useState} from 'react';
 
@@ -22,7 +23,6 @@ import {
 } from '../../../../../../app/contexts/StoreContext';
 import selectLanguageId from '../../../../../../app/selectors/selectLanguageId';
 import CollectionService from '../../../../../../app/services/CollectionService';
-import {deepEqual} from '../../../../../../app/utils/checkDeepEqual';
 import {getResponsiveConfig} from '../../../../../../app/utils/getResponsiveConfig';
 import isEmptyArray from '../../../../../../app/utils/isEmptyArray';
 import isEmptyObject from '../../../../../../app/utils/isEmptyObject';
@@ -40,7 +40,7 @@ export function CollectionAppliedFiltersGeneralPanel({item}) {
 	const collections = useSelectorCallback(
 		selectConfiguredCollectionDisplays,
 		[],
-		deepEqual
+		isDeepEqual
 	);
 
 	const [filterableCollections, setFilterableCollections] = useState(null);

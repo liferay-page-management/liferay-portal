@@ -6,7 +6,10 @@
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import {useEventListener} from '@liferay/frontend-js-react-web';
-import {useControlledState} from '@liferay/layout-js-components-web';
+import {
+	isDeepEqual,
+	useControlledState,
+} from '@liferay/layout-js-components-web';
 import classNames from 'classnames';
 import {sub} from 'frontend-js-web';
 import PropTypes from 'prop-types';
@@ -49,7 +52,6 @@ import moveItems from '../../../../../app/thunks/moveItems';
 import moveStepper from '../../../../../app/thunks/moveStepper';
 import updateItemConfig from '../../../../../app/thunks/updateItemConfig';
 import canBeRenamed from '../../../../../app/utils/canBeRenamed';
-import {deepEqual} from '../../../../../app/utils/checkDeepEqual';
 import {collectionIsMapped} from '../../../../../app/utils/collectionIsMapped';
 import {DRAG_DROP_TARGET_TYPE} from '../../../../../app/utils/drag_and_drop/constants/dragDropTargetType';
 import {ORIENTATIONS} from '../../../../../app/utils/drag_and_drop/constants/orientations';
@@ -156,7 +158,7 @@ NodeContent.propTypes = {
 };
 
 const MemoizedNodeContent = React.memo(NodeContent, (prevProps, nextProps) =>
-	deepEqual(prevProps, nextProps)
+	isDeepEqual(prevProps, nextProps)
 );
 
 function NodeContentWithoutDND({isActive, isMapped, node}) {
@@ -279,7 +281,7 @@ function NodeContent({
 			};
 		},
 		[item],
-		deepEqual
+		isDeepEqual
 	);
 
 	const {isOverTarget, targetPosition, targetRef} = useDropTarget(
@@ -297,7 +299,7 @@ function NodeContent({
 			origin: ITEM_ACTIVATION_ORIGINS.sidebar,
 		}),
 		[item],
-		deepEqual
+		isDeepEqual
 	);
 
 	const onDragEnd = (parentItemId, position) => {

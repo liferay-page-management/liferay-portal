@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {isDeepEqual} from '@liferay/layout-js-components-web';
 import {debounce} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useEffect, useMemo} from 'react';
@@ -33,7 +34,6 @@ import selectCanUpdateEditables from '../../selectors/selectCanUpdateEditables';
 import selectCanUpdatePageStructure from '../../selectors/selectCanUpdatePageStructure';
 import selectLanguageId from '../../selectors/selectLanguageId';
 import canActivateEditable from '../../utils/canActivateEditable';
-import {deepEqual} from '../../utils/checkDeepEqual';
 import isMapped from '../../utils/editable_value/isMapped';
 import getEditableId from '../../utils/getEditableId';
 import {getEditableElement} from './getEditableElement';
@@ -90,7 +90,7 @@ function FragmentContentInteractionsFilter({
 				: {};
 		},
 		[fragmentEntryLinkId],
-		deepEqual
+		isDeepEqual
 	);
 
 	const siblingIds = useMemo(

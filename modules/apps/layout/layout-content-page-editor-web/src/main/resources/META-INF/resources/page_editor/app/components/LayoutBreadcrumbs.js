@@ -5,6 +5,7 @@
 
 import ClayBreadcrumb from '@clayui/breadcrumb';
 import {ReactPortal} from '@liferay/frontend-js-react-web';
+import {isDeepEqual} from '@liferay/layout-js-components-web';
 import classNames from 'classnames';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {useDragLayer} from 'react-dnd';
@@ -20,7 +21,6 @@ import {
 import {useGlobalContext} from '../contexts/GlobalContext';
 import {useSelectorCallback} from '../contexts/StoreContext';
 import selectLayoutDataItemLabel from '../selectors/selectLayoutDataItemLabel';
-import {deepEqual} from '../utils/checkDeepEqual';
 
 const DROP_ZONE_BASE_LABEL = Liferay.Language.get('drop-zone');
 
@@ -184,7 +184,7 @@ function useBreadcrumbItems() {
 			return items;
 		},
 		[activeItemId, activeItemType, globalContext, selectItem],
-		deepEqual
+		isDeepEqual
 	);
 }
 

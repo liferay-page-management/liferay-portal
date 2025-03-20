@@ -7,6 +7,7 @@ import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import {useIsMounted} from '@liferay/frontend-js-react-web';
+import {isDeepEqual} from '@liferay/layout-js-components-web';
 import classNames from 'classnames';
 import {useId} from 'frontend-js-components-web';
 import PropTypes from 'prop-types';
@@ -46,7 +47,6 @@ import selectLayoutDataItemLabel from '../../selectors/selectLayoutDataItemLabel
 import moveItems from '../../thunks/moveItems';
 import moveStepper from '../../thunks/moveStepper';
 import switchSidebarPanel from '../../thunks/switchSidebarPanel';
-import {deepEqual} from '../../utils/checkDeepEqual';
 import {TARGET_POSITIONS} from '../../utils/drag_and_drop/constants/targetPositions';
 import {
 	useDragItem,
@@ -147,7 +147,7 @@ function TopperContent({
 				state.fragmentEntryLinks
 			),
 		[item],
-		deepEqual
+		isDeepEqual
 	);
 
 	const onDragBegin = () => {
