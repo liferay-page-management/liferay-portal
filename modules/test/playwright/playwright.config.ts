@@ -109,10 +109,6 @@ import {config as scimConfiguraitonWebConfig} from './tests/scim-configuration-w
 import {config as searchExperiencesWebConfig} from './tests/search-experiences-web/config';
 import {config as segmentExperimentWebConfig} from './tests/segment-experiment-web/config';
 import {config as segmentsWebConfig} from './tests/segments-web/config';
-import {
-	pageManagementSiteSetup,
-	pageManagementSiteTeardown,
-} from './tests/setup/page-management-site/config';
 import {config as siteAdminWebConfig} from './tests/site-admin-web/config';
 import {config as siteCmsSiteInitializerConfig} from './tests/site-cms-site-initializer/config';
 import {config as siteNavigationAdminWebConfig} from './tests/site-navigation-admin-web/config';
@@ -130,8 +126,6 @@ import {config as customerConfig} from './tests/workspaces/liferay-customer-work
 import {config as commerceWorkspaceConfig} from './tests/workspaces/liferay-workspace-commerce/config';
 import {config as jethr0Config} from './tests/workspaces/liferay-workspace-jethr0/config';
 import {config as marketplaceConfig} from './tests/workspaces/liferay-workspace-marketplace/config';
-
-const setupProjects = [pageManagementSiteSetup, pageManagementSiteTeardown];
 
 const resultsPath = 'test-results/TEST-playwright.xml';
 
@@ -261,7 +255,6 @@ export default defineConfig({
 		templateWebConfig,
 		usersAdminWebConfig,
 		wikiWebConfig,
-		...setupProjects,
 	],
 	reporter: [
 		[

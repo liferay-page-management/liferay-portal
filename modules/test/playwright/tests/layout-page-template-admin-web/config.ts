@@ -6,7 +6,6 @@
 import {devices} from '@playwright/test';
 
 export const config = {
-	dependencies: ['page-management-site-setup'],
 	name: 'layout-page-template-admin-web',
 	testDir: 'tests/layout-page-template-admin-web',
 	use: {
