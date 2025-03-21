@@ -9,8 +9,8 @@ import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
 import {loginTest} from '../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
-import {pageManagementSiteTest} from '../../fixtures/pageManagementSiteTest';
 import getRandomString from '../../utils/getRandomString';
+import {pageManagementSiteTest} from '../setup/page-management-site/fixtures/pageManagementSiteTest';
 import getFragmentDefinition from './utils/getFragmentDefinition';
 import getPageDefinition from './utils/getPageDefinition';
 

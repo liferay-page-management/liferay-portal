@@ -13,7 +13,6 @@ import {fragmentsPagesTest} from '../../fixtures/fragmentPagesTest';
 import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
-import {pageManagementSiteTest} from '../../fixtures/pageManagementSiteTest';
 import {clickAndExpectToBeHidden} from '../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import getGlobalSiteId from '../../utils/getGlobalSiteId';
@@ -24,6 +23,7 @@ import {zipFolder} from '../../utils/zip';
 import getFormContainerDefinition from '../layout-content-page-editor-web/utils/getFormContainerDefinition';
 import getFragmentDefinition from '../layout-content-page-editor-web/utils/getFragmentDefinition';
 import getPageDefinition from '../layout-content-page-editor-web/utils/getPageDefinition';
+import {pageManagementSiteTest} from '../setup/page-management-site/fixtures/pageManagementSiteTest';
 import {getObjectERC} from '../setup/page-management-site/utils/getObjectERC';
 
 const test = mergeTests(

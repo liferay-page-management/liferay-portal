@@ -17,7 +17,6 @@ import {fragmentsPagesTest} from '../../fixtures/fragmentPagesTest';
 import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
-import {pageManagementSiteTest} from '../../fixtures/pageManagementSiteTest';
 import {pageViewModePagesTest} from '../../fixtures/pageViewModePagesTest';
 import {checkAccessibility} from '../../utils/checkAccessibility';
 import {clickAndExpectToBeHidden} from '../../utils/clickAndExpectToBeHidden';
@@ -32,6 +31,7 @@ import getBasicWebContentStructureId from '../../utils/structured-content/getBas
 import {waitForAlert} from '../../utils/waitForAlert';
 import {journalPagesTest} from '../journal-web/fixtures/journalPagesTest';
 import {ANIMALS_COLLECTION_NAME} from '../setup/page-management-site/constants/animals';
+import {pageManagementSiteTest} from '../setup/page-management-site/fixtures/pageManagementSiteTest';
 import {getObjectERC} from '../setup/page-management-site/utils/getObjectERC';
 import getCollectionDefinition from './utils/getCollectionDefinition';
 import getFormContainerDefinition from './utils/getFormContainerDefinition';

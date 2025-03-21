@@ -15,7 +15,6 @@ import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
-import {pageManagementSiteTest} from '../../fixtures/pageManagementSiteTest';
 import {ApiHelpers} from '../../helpers/ApiHelpers';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {getRandomInt} from '../../utils/getRandomInt';
@@ -23,6 +22,7 @@ import getRandomString from '../../utils/getRandomString';
 import {performLogout} from '../../utils/performLogin';
 import getBasicWebContentStructureId from '../../utils/structured-content/getBasicWebContentStructureId';
 import {blogsPagesTest} from '../blogs-web/fixtures/blogsPagesTest';
+import {pageManagementSiteTest} from '../setup/page-management-site/fixtures/pageManagementSiteTest';
 
 const test = mergeTests(
 	blogsPagesTest,

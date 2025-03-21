@@ -16,7 +16,6 @@ import {loginTest} from '../../fixtures/loginTest';
 import {masterPagesPagesTest} from '../../fixtures/masterPagesPagesTest';
 import {objectPagesTest} from '../../fixtures/objectPagesTest';
 import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
-import {pageManagementSiteTest} from '../../fixtures/pageManagementSiteTest';
 import {PageEditorPage} from '../../pages/layout-content-page-editor-web/PageEditorPage';
 import {checkAccessibility} from '../../utils/checkAccessibility';
 import {clickAndExpectToBeHidden} from '../../utils/clickAndExpectToBeHidden';
@@ -35,6 +34,7 @@ import {
 	ANIMAL_DDM_STRUCTURE_KEY,
 	ANIMAL_DDM_TEMPLATE_KEY,
 } from '../setup/page-management-site/constants/animals';
+import {pageManagementSiteTest} from '../setup/page-management-site/fixtures/pageManagementSiteTest';
 import {getObjectERC} from '../setup/page-management-site/utils/getObjectERC';
 import {goToObjectEntity} from '../setup/page-management-site/utils/goToObjectEntity';
 import getContainerDefinition from './utils/getContainerDefinition';

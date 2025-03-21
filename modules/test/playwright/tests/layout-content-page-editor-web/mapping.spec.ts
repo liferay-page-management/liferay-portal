@@ -16,7 +16,6 @@ import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
-import {pageManagementSiteTest} from '../../fixtures/pageManagementSiteTest';
 import {clickAndExpectToBeHidden} from '../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../utils/getRandomString';
@@ -29,6 +28,7 @@ import {
 	ANIMALS_COLLECTION_NAME,
 	ANIMAL_DDM_STRUCTURE_KEY,
 } from '../setup/page-management-site/constants/animals';
+import {pageManagementSiteTest} from '../setup/page-management-site/fixtures/pageManagementSiteTest';
 import {getObjectERC} from '../setup/page-management-site/utils/getObjectERC';
 import getCollectionDefinition from './utils/getCollectionDefinition';
 import getFragmentDefinition from './utils/getFragmentDefinition';
