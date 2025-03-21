@@ -75,4 +75,4 @@ const pageManagementSiteTest = test.extend<{
 	],
 });
 
-export {PAGE_MANAGEMENT_SITE_ERC, pageManagementSiteTest};
+export {pageManagementSiteTest};
