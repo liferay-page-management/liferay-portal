@@ -14,6 +14,7 @@ import {sub} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
 import {useSelector, useStateDispatch} from '../contexts/StateContext';
+import selectInvalids from '../selectors/selectInvalids';
 import selectPublishedFields from '../selectors/selectPublishedFields';
 import PicklistService from '../services/PicklistService';
 import {Field, MultiselectField, SingleSelectField} from '../utils/field';
@@ -26,13 +27,15 @@ type Picklist = {
 export default function PicklistPicker({field}: {field: Field}) {
 	const selectField = field as SingleSelectField | MultiselectField;
 
-	const [hasError] = useState<boolean>(false);
+	const [hasError, setHasError] = useState<boolean>(false);
 	const [picklists, setPicklists] = useState<Picklist[]>([]);
 	const [selectedKey, setSelectedKey] = useState<React.Key>(
 		selectField.picklistId
 	);
 
 	const dispatch = useStateDispatch();
+
+	const invalids = useSelector(selectInvalids);
 	const publishedFields = useSelector(selectPublishedFields);
 
 	const isPublished = publishedFields.has(field.uuid);
@@ -45,6 +48,10 @@ export default function PicklistPicker({field}: {field: Field}) {
 			setPicklists(picklists)
 		);
 	}, []);
+
+	useEffect(() => {
+		setHasError(invalids.has(pickerId));
+	}, [invalids, pickerId]);
 
 	return (
 		<ClayForm.Group className={classNames('mb-2', {'has-error': hasError})}>
