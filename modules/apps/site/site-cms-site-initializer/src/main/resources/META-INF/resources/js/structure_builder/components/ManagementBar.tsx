@@ -240,7 +240,7 @@ function PublishButton() {
 function useValidate() {
 	const dispatch = useStateDispatch();
 	const fields = useSelector(selectStructureFields);
-	const invalids = useSelector(selectInvalids);
+	const initialInvalids = useSelector(selectInvalids);
 	const selection = useSelector(selectSelection);
 
 	return useCallback(() => {
@@ -255,9 +255,26 @@ function useValidate() {
 			return false;
 		}
 
+		// When there are Multiselect or Single Select fields in the structure
+		// and the structure is going to be saved, it is necessary to check for
+		// input errors because no picklist may have been selected.
+
+		const invalids = new Set(initialInvalids);
+
+		fields.forEach((field) => {
+			if ('picklistInputUuid' in field && !field.picklistId) {
+				invalids.add(field.uuid).add(field.picklistInputUuid);
+			}
+		});
+
 		if (!invalids.size) {
 			return true;
 		}
+
+		dispatch({
+			invalids: new Set(invalids),
+			type: 'set-invalids',
+		});
 
 		const [uuid] = [...invalids];
 
@@ -274,5 +291,5 @@ function useValidate() {
 		}
 
 		return false;
-	}, [dispatch, fields, invalids, selection]);
+	}, [dispatch, fields, initialInvalids, selection]);
 }

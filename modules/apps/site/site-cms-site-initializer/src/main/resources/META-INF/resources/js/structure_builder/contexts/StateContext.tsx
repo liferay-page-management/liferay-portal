@@ -76,6 +76,8 @@ type PublishStructureAction = {id?: number; type: 'publish-structure'};
 
 type SetErrorAction = {error: string | null; type: 'set-error'};
 
+type SetInvalidsAction = {invalids: Set<Uuid>; type: 'set-invalids'};
+
 type SetSelection = {
 	selection: State['selection'];
 	type: 'set-selection';
@@ -110,6 +112,7 @@ export type Action =
 	| DeleteSelectionAction
 	| PublishStructureAction
 	| SetErrorAction
+	| SetInvalidsAction
 	| SetSelection
 	| UpdateFieldAction
 	| UpdateStructureAction;
@@ -200,6 +203,11 @@ function reducer(state: State, action: Action): State {
 				error: action.error,
 				selection: [state.uuid],
 			};
+		case 'set-invalids': {
+			const {invalids} = action;
+
+			return {...state, invalids};
+		}
 		case 'set-selection': {
 			const {selection} = action;
 
