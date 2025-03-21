@@ -5,6 +5,7 @@
 
 import ClayIcon from '@clayui/icon';
 import ClayLink from '@clayui/link';
+import {isDeepEqual} from '@liferay/layout-js-components-web';
 import {ManagementToolbar, openToast} from 'frontend-js-components-web';
 import React, {useCallback} from 'react';
 
@@ -271,10 +272,12 @@ function useValidate() {
 			return true;
 		}
 
-		dispatch({
-			invalids: new Set(invalids),
-			type: 'set-invalids',
-		});
+		if (!isDeepEqual(invalids, initialInvalids)) {
+			dispatch({
+				invalids: new Set(invalids),
+				type: 'set-invalids',
+			});
+		}
 
 		const [uuid] = [...invalids];
 
