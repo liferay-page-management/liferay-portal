@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-export default function deepEqual(a: any, b: any): boolean {
+export default function isDeepEqual(a: any, b: any): boolean {
 	if (a === b) {
 		return true;
 	}
@@ -14,20 +14,29 @@ export default function deepEqual(a: any, b: any): boolean {
 		}
 
 		return a.every((value, index) => {
-			return deepEqual(value, b[index]);
+			return isDeepEqual(value, b[index]);
 		});
 	}
 
 	if (a && b && typeof a === 'object' && typeof b === 'object') {
-		const keys = Object.keys(a);
+		if (a instanceof Set && b instanceof Set) {
+			if (a.size !== b.size) {
+				return false;
+			}
 
-		if (keys.length !== Object.keys(b).length) {
-			return false;
+			return [...a].every((item) => b.has(item));
 		}
+		else {
+			const keys = Object.keys(a);
 
-		return keys.every((key) => {
-			return deepEqual(a[key], b[key]);
-		});
+			if (keys.length !== Object.keys(b).length) {
+				return false;
+			}
+
+			return keys.every((key) => {
+				return isDeepEqual(a[key], b[key]);
+			});
+		}
 	}
 
 	return false;
