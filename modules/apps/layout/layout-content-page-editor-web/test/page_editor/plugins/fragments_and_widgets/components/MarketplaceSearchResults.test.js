@@ -51,7 +51,7 @@ jest.mock('@liferay/layout-js-components-web', () => {
 
 	return {
 		...jest.requireActual('@liferay/layout-js-components-web'),
-		MarketplaceModal: ({onOpenChange = mockOpenChange, trigger}) => (
+		MarketplaceModal: ({onOpenChange = mockOpenChange, children}) => (
 			<MarketplaceContext.Provider
 				value={{
 					modal: {onOpenChange},
@@ -59,7 +59,7 @@ jest.mock('@liferay/layout-js-components-web', () => {
 					setView: jest.fn(),
 				}}
 			>
-				{trigger}
+				{children}
 			</MarketplaceContext.Provider>
 		),
 	};

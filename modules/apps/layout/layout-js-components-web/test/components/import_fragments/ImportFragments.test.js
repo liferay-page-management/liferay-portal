@@ -9,7 +9,7 @@ import userEvent from '@testing-library/user-event';
 import {navigate} from 'frontend-js-web';
 import React from 'react';
 
-import {Import} from '../../../src/main/resources/META-INF/resources/js';
+import {ImportFragments} from '../../../src/main/resources/META-INF/resources/js';
 
 jest.mock('frontend-js-web', () => ({
 	...jest.requireActual('frontend-js-web'),
@@ -17,7 +17,23 @@ jest.mock('frontend-js-web', () => ({
 	navigate: jest.fn(),
 }));
 
-describe('Import', () => {
+function renderComponent({
+	backURL = 'backURL',
+	helpLink,
+	importURL = 'importURL',
+	portletNamespace = 'namespace',
+}) {
+	return render(
+		<ImportFragments
+			backURL={backURL}
+			helpLink={helpLink}
+			importURL={importURL}
+			portletNamespace={portletNamespace}
+		/>
+	);
+}
+
+describe('ImportFragments', () => {
 	beforeAll(() => {
 		jest.useFakeTimers();
 	});
@@ -27,7 +43,7 @@ describe('Import', () => {
 	});
 
 	it('renders text informing the user should upload a ZIP file', async () => {
-		const {findByText} = render(<Import portletNamespace="namespace" />);
+		const {findByText} = renderComponent({});
 
 		expect(
 			await findByText(
@@ -37,17 +53,13 @@ describe('Import', () => {
 	});
 
 	it('renders file input', async () => {
-		const {findByLabelText} = render(
-			<Import portletNamespace="namespace" />
-		);
+		const {findByLabelText} = renderComponent({});
 
 		expect(await findByLabelText('file-upload')).toBeInTheDocument();
 	});
 
 	it('renders submit button disabled until file input has a valid value', async () => {
-		const {findByLabelText, findByRole} = render(
-			<Import portletNamespace="namespace" />
-		);
+		const {findByLabelText, findByRole} = renderComponent({});
 
 		const button = await findByRole('button', {name: /import/i});
 		expect(button.disabled).toBeTruthy();
@@ -64,9 +76,7 @@ describe('Import', () => {
 	});
 
 	it('renders cancel button enabled', async () => {
-		const {findByRole} = render(
-			<Import backURL="http://test.com" portletNamespace="namespace" />
-		);
+		const {findByRole} = renderComponent({backURL: 'http://test.com'});
 
 		const button = await findByRole('button', {name: /cancel/i});
 		expect(button.disabled).toBeFalsy();
@@ -79,9 +89,7 @@ describe('Import', () => {
 	});
 
 	it('shows required validation when a file with an invalid extension is introduced', async () => {
-		const {findByLabelText, findByRole, findByText} = render(
-			<Import portletNamespace="namespace" />
-		);
+		const {findByLabelText, findByRole, findByText} = renderComponent({});
 
 		const button = await findByRole('button', {name: /import/i});
 
@@ -100,20 +108,15 @@ describe('Import', () => {
 	});
 
 	it('renders help link', async () => {
-		const {findByText} = render(
-			<Import
-				helpLink={{href: 'http://example.com', message: 'Learn more'}}
-				portletNamespace="namespace"
-			/>
-		);
+		const {findByText} = renderComponent({
+			helpLink: {href: 'http://example.com', message: 'Learn more'},
+		});
 
 		expect(await findByText('Learn more')).toBeInTheDocument();
 	});
 
 	it.skip('renders Import Options modal', async () => {
-		const {findByLabelText, findByRole, findByText} = render(
-			<Import portletNamespace="namespace" />
-		);
+		const {findByLabelText, findByRole, findByText} = renderComponent({});
 
 		const button = await findByRole('button', {name: /import/i});
 
