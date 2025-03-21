@@ -5,7 +5,7 @@
 
 export default function focusInvalidInput() {
 	const invalidInput: HTMLInputElement | null = document.querySelector(
-		'.form-group.has-error input'
+		'.form-group.has-error input, .form-group.has-error button'
 	);
 
 	if (invalidInput) {

@@ -80,11 +80,11 @@ export default function PicklistPicker({field}: {field: Field}) {
 						) => {
 							const noOptionSelected = !picklists.some(
 								(picklist) =>
-									picklist.id.toString() ===
-									event.relatedTarget?.id
+									picklist.id ===
+									Number(event.relatedTarget?.id)
 							);
 
-							if (!selectedKey && noOptionSelected) {
+							if (noOptionSelected) {
 								dispatch({
 									inputIdToValidate: pickerId,
 									type: 'update-field',
