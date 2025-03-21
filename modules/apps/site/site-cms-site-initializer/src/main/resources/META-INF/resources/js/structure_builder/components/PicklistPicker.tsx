@@ -75,8 +75,26 @@ export default function PicklistPicker({field}: {field: Field}) {
 						disabled={isPublished || !picklists.length}
 						id={pickerId}
 						items={picklists}
+						onBlur={(
+							event: React.FocusEvent<HTMLButtonElement>
+						) => {
+							const noOptionSelected = !picklists.some(
+								(picklist) =>
+									picklist.id.toString() ===
+									event.relatedTarget?.id
+							);
+
+							if (!selectedKey && noOptionSelected) {
+								dispatch({
+									inputIdToValidate: pickerId,
+									type: 'update-field',
+									uuid: field.uuid,
+								});
+							}
+						}}
 						onSelectionChange={(selectedKey: React.Key) => {
 							dispatch({
+								inputIdToValidate: pickerId,
 								picklistId: selectedKey as string,
 								type: 'update-field',
 								uuid: field.uuid,

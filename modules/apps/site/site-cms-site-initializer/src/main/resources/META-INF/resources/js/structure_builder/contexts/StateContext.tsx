@@ -17,6 +17,7 @@ import {Field} from '../utils/field';
 import findAvailableFieldName from '../utils/findAvailableFieldName';
 import getRandomId from '../utils/getRandomId';
 import getUuid from '../utils/getUuid';
+import hasInvalidInput from '../utils/hasInvalidInput';
 import isFieldInvalid from '../utils/isFieldInvalid';
 import isStructureInvalid from '../utils/isStructureInvalid';
 import openDeletionModal from '../utils/openDeletionModal';
@@ -86,6 +87,7 @@ type SetSelection = {
 type UpdateFieldAction = {
 	erc?: string;
 	indexableConfig?: Field['indexableConfig'];
+	inputIdToValidate?: Uuid;
 	label?: Liferay.Language.LocalizedValue<string>;
 	localized?: boolean;
 	name?: string;
@@ -217,6 +219,7 @@ function reducer(state: State, action: Action): State {
 			const {
 				erc,
 				indexableConfig,
+				inputIdToValidate,
 				label,
 				localized,
 				name,
@@ -252,6 +255,15 @@ function reducer(state: State, action: Action): State {
 			nextFields.set(nextField.uuid, nextField);
 
 			const invalids = new Set(state.invalids);
+
+			if (inputIdToValidate) {
+				if (hasInvalidInput(nextField, inputIdToValidate)) {
+					invalids.add(inputIdToValidate).add(nextField.uuid);
+				}
+				else {
+					invalids.delete(inputIdToValidate);
+				}
+			}
 
 			if (isFieldInvalid(nextField)) {
 				invalids.add(nextField.uuid);
