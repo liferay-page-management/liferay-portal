@@ -125,6 +125,7 @@ export type LongTextField = BaseField & {
 
 export type MultiselectField = BaseField & {
 	picklistId: string;
+	picklistInputUuid: Uuid;
 	type: 'multiselect';
 };
 
@@ -134,6 +135,7 @@ export type NumericField = BaseField & {
 
 export type SingleSelectField = BaseField & {
 	picklistId: string;
+	picklistInputUuid: Uuid;
 	type: 'single-select';
 };
 
@@ -228,6 +230,7 @@ export function getDefaultField(type: FieldType): Field {
 		return {
 			...base,
 			picklistId: '',
+			picklistInputUuid: getUuid(),
 			type: 'single-select',
 		};
 	}
@@ -235,6 +238,7 @@ export function getDefaultField(type: FieldType): Field {
 		return {
 			...base,
 			picklistId: '',
+			picklistInputUuid: getUuid(),
 			type: 'multiselect',
 		};
 	}
