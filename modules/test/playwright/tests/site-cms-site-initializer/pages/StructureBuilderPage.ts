@@ -77,12 +77,14 @@ export class StructureBuilderPage {
 		localizable,
 		mandatory,
 		name,
+		picklist,
 	}: {
 		erc?: string;
 		label?: string;
 		localizable?: boolean;
 		mandatory?: boolean;
 		name?: string;
+		picklist?: string;
 	}) {
 		if (erc !== undefined) {
 			const ercInput = this.page.getByLabel('ERC');
@@ -103,6 +105,13 @@ export class StructureBuilderPage {
 
 			await labelInput.fill(label);
 			await labelInput.blur();
+		}
+
+		if (picklist !== undefined) {
+			const labelInput = this.page.getByLabel('Select Picklist');
+
+			await labelInput.click();
+			await this.page.getByRole('option', {name: picklist}).click();
 		}
 
 		const localizableToggle = this.page.getByLabel('Localizable');
@@ -147,6 +156,12 @@ export class StructureBuilderPage {
 		}
 	}
 
+	async createPicklist() {
+		const apiHelpers = new ApiHelpers(this.page);
+
+		return await apiHelpers.listTypeAdmin.postRandomListTypeDefinition();
+	}
+
 	async deleteField({label, nth = 0}: {label: string; nth?: number}) {
 		const count = await this.page
 			.locator('.treeview-item')
@@ -173,6 +188,12 @@ export class StructureBuilderPage {
 					.getByLabel(label, {exact: true})
 			).toHaveCount(count - 1);
 		}
+	}
+
+	async deletePicklist(id: number) {
+		const apiHelpers = new ApiHelpers(this.page);
+
+		await apiHelpers.listTypeAdmin.deleteListTypeDefinition(id);
 	}
 
 	async deleteStructure(id: number) {
