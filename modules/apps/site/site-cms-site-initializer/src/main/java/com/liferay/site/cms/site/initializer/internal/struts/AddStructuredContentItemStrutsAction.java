@@ -317,7 +317,7 @@ public class AddStructuredContentItemStrutsAction implements StrutsAction {
 		}
 
 		List<DepotEntry> depotEntries = _depotEntryLocalService.getDepotEntries(
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			0, 1);
 
 		if (!depotEntries.isEmpty()) {
 			depotEntry = depotEntries.get(0);
