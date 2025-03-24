@@ -19,6 +19,8 @@ import {
 import PicklistService from '../../../../src/main/resources/META-INF/resources/js/structure_builder/services/PicklistService';
 import {
 	Field,
+	MultiselectField,
+	SingleSelectField,
 	getDefaultField,
 } from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/field';
 import getUuid from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/getUuid';
@@ -435,13 +437,15 @@ describe('StructureFieldSettings', () => {
 		const mockDispatch = jest.fn();
 		const uuid = getUuid();
 
+		const singleSelectField = getDefaultField(
+			'multiselect'
+		) as SingleSelectField;
+
 		renderComponent({
 			dispatch: mockDispatch,
 			state: {
 				...DEFAULT_STATE,
-				fields: new Map([
-					[uuid, {...getDefaultField('single-select'), uuid}],
-				]),
+				fields: new Map([[uuid, {...singleSelectField, uuid}]]),
 			},
 			uuid,
 		});
@@ -454,6 +458,7 @@ describe('StructureFieldSettings', () => {
 		await userEvent.click(screen.getByText('papaya'));
 
 		expect(mockDispatch).toHaveBeenCalledWith({
+			inputIdToValidate: singleSelectField.picklistInputUuid,
 			picklistId: 'papayaId',
 			type: 'update-field',
 			uuid,
@@ -464,13 +469,15 @@ describe('StructureFieldSettings', () => {
 		const mockDispatch = jest.fn();
 		const uuid = getUuid();
 
+		const multiselectField = getDefaultField(
+			'multiselect'
+		) as MultiselectField;
+
 		renderComponent({
 			dispatch: mockDispatch,
 			state: {
 				...DEFAULT_STATE,
-				fields: new Map([
-					[uuid, {...getDefaultField('multiselect'), uuid}],
-				]),
+				fields: new Map([[uuid, {...multiselectField, uuid}]]),
 			},
 			uuid,
 		});
@@ -483,6 +490,7 @@ describe('StructureFieldSettings', () => {
 		await userEvent.click(screen.getByText('papaya'));
 
 		expect(mockDispatch).toHaveBeenCalledWith({
+			inputIdToValidate: multiselectField.picklistInputUuid,
 			picklistId: 'papayaId',
 			type: 'update-field',
 			uuid,
