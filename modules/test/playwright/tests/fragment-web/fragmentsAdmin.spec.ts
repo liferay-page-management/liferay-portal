@@ -1863,3 +1863,83 @@ testEmbeddingWidgets(
 		).toBeVisible();
 	}
 );
+
+test.describe('Marketplace Fragments', () => {
+	test(
+		'Create a fragment using marketplace parameter and check available actions',
+		{
+			tag: '@LPS-34938',
+		},
+		async ({apiHelpers, fragmentsPage, page, site}) => {
+
+			// Create new fragment collection
+
+			const fragmentCollectionName = getRandomString();
+
+			const {fragmentCollectionId} =
+				await apiHelpers.jsonWebServicesFragmentCollection.addFragmentCollection(
+					{
+						groupId: site.id,
+						name: fragmentCollectionName,
+					}
+				);
+
+			// Create custom fragment using data-lfr-priority
+
+			const fragmentName = getRandomString();
+
+			await apiHelpers.jsonWebServicesFragmentEntry.addFragmentEntry({
+				fragmentCollectionId,
+				groupId: site.id,
+				html: `<div class="fragment-example">
+				  Example marketplace fragment
+				</div>`,
+				marketplace: true,
+				name: fragmentName,
+				type: 'component',
+			});
+
+			// Go to fragment administration and check fragment actions
+
+			await fragmentsPage.goto(site.friendlyUrlPath);
+
+			// Click the trigger element to open the menu
+
+			await page
+				.locator('.card-row')
+				.filter({hasText: fragmentName})
+				.getByLabel('More actions')
+				.click();
+
+			// Wait for the menu to appear and check available actions
+
+			await expect(
+				page.getByRole('menuitem', {name: 'View Usages'})
+			).toBeVisible();
+			await expect(
+				page.getByRole('menuitem', {name: 'Move'})
+			).toBeVisible();
+			await expect(
+				page.getByRole('menuitem', {name: 'Delete'})
+			).toBeVisible();
+			await expect(
+				page.getByRole('menuitem', {name: 'Edit'})
+			).not.toBeVisible();
+			await expect(
+				page.getByRole('menuitem', {name: 'Change Thumbnail'})
+			).not.toBeVisible();
+			await expect(
+				page.getByRole('menuitem', {name: 'Mark as Cacheable'})
+			).not.toBeVisible();
+			await expect(
+				page.getByRole('menuitem', {name: 'Export'})
+			).not.toBeVisible();
+			await expect(
+				page.getByRole('menuitem', {name: 'Make a Copy'})
+			).not.toBeVisible();
+			await expect(
+				page.getByRole('menuitem', {name: 'Rename'})
+			).not.toBeVisible();
+		}
+	);
+});
