@@ -6,11 +6,13 @@
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import ClayModal, {useModal} from '@clayui/modal';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import MarketplaceModal from './MarketplaceModal';
 
 import '../../../css/MarketplaceModal.scss';
+
+import {useMarketplaceContext} from '@liferay/marketplace-js-components-web';
 
 interface MarketplacePresentationModalProps {
 	body: string;
@@ -27,13 +29,21 @@ export default function MarketplacePresentationModal({
 	heading,
 	onCloseModal,
 }: MarketplacePresentationModalProps) {
+	const [openMarketplace, setOpenMarketplace] = useState(false);
+
 	const {observer, onClose} = useModal({
 		onClose: () => {
 			onCloseModal();
 		},
 	});
 
-	return (
+	return openMarketplace ? (
+		<MarketplaceModal
+			fragmentPortletNamespace={fragmentPortletNamespace}
+			fragmentsImportURL={fragmentsImportURL}
+			trigger={<OpenMarketplaceModal />}
+		/>
+	) : (
 		<ClayModal center observer={observer}>
 			<ClayModal.Header>{heading}</ClayModal.Header>
 
@@ -55,33 +65,36 @@ export default function MarketplacePresentationModal({
 							{Liferay.Language.get('cancel')}
 						</ClayButton>
 
-						<MarketplaceModal
-							fragmentPortletNamespace={fragmentPortletNamespace}
-							fragmentsImportURL={fragmentsImportURL}
-							trigger={
-								<ClayButton
-									aria-label={Liferay.Language.get(
-										'explore-marketplace'
-									)}
-									displayType="primary"
-									title={Liferay.Language.get(
-										'explore-marketplace'
-									)}
-								>
-									<ClayIcon
-										className="inline-item inline-item-before"
-										symbol="marketplace"
-									/>
+						<ClayButton
+							aria-label={Liferay.Language.get(
+								'explore-marketplace'
+							)}
+							displayType="primary"
+							onClick={() => setOpenMarketplace(true)}
+							title={Liferay.Language.get('explore-marketplace')}
+						>
+							<ClayIcon
+								className="inline-item inline-item-before"
+								symbol="marketplace"
+							/>
 
-									{Liferay.Language.get(
-										'explore-marketplace'
-									)}
-								</ClayButton>
-							}
-						></MarketplaceModal>
+							{Liferay.Language.get('explore-marketplace')}
+						</ClayButton>
 					</ClayButton.Group>
 				}
 			/>
 		</ClayModal>
 	);
+}
+
+function OpenMarketplaceModal() {
+	const {
+		modal: {onOpenChange},
+	} = useMarketplaceContext();
+
+	useEffect(() => {
+		onOpenChange(true);
+	}, [onOpenChange]);
+
+	return null;
 }
