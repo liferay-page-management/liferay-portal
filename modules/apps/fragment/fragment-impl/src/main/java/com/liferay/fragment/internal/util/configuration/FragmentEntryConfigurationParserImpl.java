@@ -498,7 +498,7 @@ public class FragmentEntryConfigurationParserImpl
 					"Unable to parse configuration value JSON", jsonException);
 			}
 		}
-		else if (value == null) {
+		else if (Validator.isNull(value)) {
 			parsedValue = fragmentConfigurationField.getDefaultValue();
 		}
 
