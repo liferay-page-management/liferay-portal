@@ -2,6 +2,7 @@
 	"bodyAppliedStyle": "light",
 	"bodyNumberOfColumns": 3,
 	"bodyTableWidth": 1.1,
+	"editable": true,
 	"footerAppliedStyle": "light",
 	"headingAppliedStyle": "light"
 }

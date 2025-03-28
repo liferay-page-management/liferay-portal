@@ -44,6 +44,12 @@
 					}
 				},
 				{
+					"defaultValue": true,
+					"label": "editable",
+					"name": "editable",
+					"type": "checkbox"
+				},
+				{
 					"dataType": "int",
 					"defaultValue": "3",
 					"description": "the-number-of-columns-displayed",
