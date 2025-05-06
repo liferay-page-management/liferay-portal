@@ -39,9 +39,11 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.kernel.service.LayoutFriendlyURLLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -400,6 +402,9 @@ public class DisplayPageTemplateResourceImpl
 			throw new UnsupportedOperationException();
 		}
 
+		ServiceContext serviceContext = _getServiceContext(
+			displayPageTemplate, groupId);
+
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
 				displayPageTemplate.getExternalReferenceCode(), groupId,
@@ -407,19 +412,17 @@ public class DisplayPageTemplateResourceImpl
 				_portal.getClassNameId(contentTypeReference.getClassName()),
 				_getClassTypeId(contentTypeReference, groupId),
 				displayPageTemplate.getName(),
-				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
 				FileEntryUtil.getPreviewFileEntryId(
 					groupId, displayPageTemplate.getThumbnail()),
-				false, 0, 0, 0L, WorkflowConstants.STATUS_DRAFT,
-				_getServiceContext(displayPageTemplate, groupId));
+				WorkflowConstants.STATUS_DRAFT, serviceContext);
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
 
 		DisplayPageTemplateSettings displayPageTemplateSettings =
 			displayPageTemplate.getDisplayPageTemplateSettings();
 
 		if (displayPageTemplateSettings != null) {
-			Layout layout = _layoutLocalService.getLayout(
-				layoutPageTemplateEntry.getPlid());
-
 			UnicodeProperties unicodeProperties =
 				layout.getTypeSettingsProperties();
 
@@ -492,7 +495,16 @@ public class DisplayPageTemplateResourceImpl
 					String.valueOf(sitemapSettings.getPagePriority()));
 			}
 
-			_layoutLocalService.updateLayout(layout);
+			layout = _layoutLocalService.updateLayout(layout);
+		}
+
+		if (MapUtil.isNotEmpty(displayPageTemplate.getFriendlyUrlPath_i18n())) {
+			_layoutFriendlyURLLocalService.updateLayoutFriendlyURLs(
+				contextUser.getUserId(), layout.getCompanyId(),
+				layout.getGroupId(), layout.getPlid(), layout.isPrivateLayout(),
+				LocalizedMapUtil.getLocalizedMap(
+					displayPageTemplate.getFriendlyUrlPath_i18n()),
+				serviceContext);
 		}
 
 		return _displayPageTemplateDTOConverter.toDTO(layoutPageTemplateEntry);
@@ -587,6 +599,9 @@ public class DisplayPageTemplateResourceImpl
 
 	@Reference
 	private InfoItemServiceRegistry _infoItemServiceRegistry;
+
+	@Reference
+	private LayoutFriendlyURLLocalService _layoutFriendlyURLLocalService;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
