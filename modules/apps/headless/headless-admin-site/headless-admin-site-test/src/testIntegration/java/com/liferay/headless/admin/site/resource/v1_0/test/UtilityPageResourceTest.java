@@ -417,7 +417,8 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 		UtilityPage utilityPage =
 			utilityPageResource.postSiteSiteByExternalReferenceCodeUtilityPage(
 				testGroup.getExternalReferenceCode(),
-				_getUtilityPage(Boolean.FALSE, RandomTestUtil.randomString()));
+				_getUtilityPage(
+					null, Boolean.FALSE, RandomTestUtil.randomString()));
 
 		LayoutUtilityPageEntry layoutUtilityPageEntry =
 			_layoutUtilityPageEntryLocalService.
@@ -473,25 +474,31 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 			() -> _testPutSiteSiteByExternalReferenceCodeUtilityPage(
 				Boolean.TRUE,
 				_getUtilityPage(
-					Boolean.TRUE,
+					null, Boolean.TRUE,
 					layoutUtilityPageEntry.getExternalReferenceCode())));
 
 		ContentLayoutTestUtil.publishLayout(layout.fetchDraftLayout(), layout);
 
+		Repository repository = _portletFileRepository.addPortletRepository(
+			testGroup.getGroupId(), RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(
+				testGroup, TestPropsValues.getUserId()));
+
 		_testPutSiteSiteByExternalReferenceCodeUtilityPage(
 			Boolean.FALSE,
 			_getUtilityPage(
-				Boolean.FALSE,
+				_addPortletFileEntry(repository.getDlFolderId()), Boolean.FALSE,
 				layoutUtilityPageEntry.getExternalReferenceCode()));
 		_testPutSiteSiteByExternalReferenceCodeUtilityPage(
 			Boolean.TRUE,
 			_getUtilityPage(
-				Boolean.TRUE,
+				_addPortletFileEntry(repository.getDlFolderId()), Boolean.TRUE,
 				layoutUtilityPageEntry.getExternalReferenceCode()));
+
 		_testPutSiteSiteByExternalReferenceCodeUtilityPage(
 			Boolean.FALSE,
 			_getUtilityPage(
-				null, layoutUtilityPageEntry.getExternalReferenceCode()));
+				null, null, layoutUtilityPageEntry.getExternalReferenceCode()));
 
 		_testPutSiteSiteByExternalReferenceCodeUtilityPageWithPageSpecifications(
 			PageSpecification.Status.APPROVED,
@@ -708,13 +715,25 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 	}
 
 	private UtilityPage _getUtilityPage(
-			Boolean markedAsDefault, String utilityPageExternalReferenceCode)
+			FileEntry fileEntry, Boolean markedAsDefault,
+			String utilityPageExternalReferenceCode)
 		throws Exception {
 
 		UtilityPage utilityPage = randomUtilityPage();
 
 		utilityPage.setExternalReferenceCode(utilityPageExternalReferenceCode);
 		utilityPage.setMarkedAsDefault(markedAsDefault);
+
+		if (fileEntry != null) {
+			utilityPage.setThumbnail(
+				() -> new ItemExternalReference() {
+					{
+						setClassName(() -> FileEntry.class.getName());
+						setExternalReferenceCode(
+							fileEntry::getExternalReferenceCode);
+					}
+				});
+		}
 
 		return utilityPage;
 	}
@@ -926,7 +945,7 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 		throws Exception {
 
 		UtilityPage utilityPage = _getUtilityPage(
-			Boolean.FALSE, RandomTestUtil.randomString());
+			null, Boolean.FALSE, RandomTestUtil.randomString());
 
 		ContentPageSpecification draftContentPageSpecification =
 			PageSpecificationsTestUtil.getContentPageSpecification(
@@ -978,7 +997,7 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 		throws Exception {
 
 		UtilityPage utilityPage = _getUtilityPage(
-			Boolean.FALSE, RandomTestUtil.randomString());
+			null, Boolean.FALSE, RandomTestUtil.randomString());
 
 		ContentPageSpecification draftContentPageSpecification =
 			PageSpecificationsTestUtil.getContentPageSpecification(
@@ -1016,6 +1035,9 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 
 		Assert.assertEquals(
 			markedAsDefault, putUtilityPage.getMarkedAsDefault());
+
+		Assert.assertEquals(
+			utilityPage.getThumbnail(), putUtilityPage.getThumbnail());
 	}
 
 	private void
@@ -1027,7 +1049,7 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 		throws Exception {
 
 		UtilityPage utilityPage = _getUtilityPage(
-			Boolean.FALSE, RandomTestUtil.randomString());
+			null, Boolean.FALSE, RandomTestUtil.randomString());
 
 		ContentPageSpecification draftContentPageSpecification =
 			PageSpecificationsTestUtil.getContentPageSpecification(
