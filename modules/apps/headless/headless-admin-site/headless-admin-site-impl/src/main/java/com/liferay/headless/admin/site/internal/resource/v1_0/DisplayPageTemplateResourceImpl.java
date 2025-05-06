@@ -54,6 +54,8 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
+import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
@@ -361,6 +363,20 @@ public class DisplayPageTemplateResourceImpl
 				_layoutPageTemplateEntryService.updateLayoutPageTemplateEntry(
 					layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
 					previewFileEntryId);
+		}
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		Map<Locale, String> friendlyURLMap = LocalizedMapUtil.getLocalizedMap(
+			displayPageTemplate.getFriendlyUrlPath_i18n());
+
+		if (!friendlyURLMap.equals(layout.getFriendlyURLMap())) {
+			_layoutFriendlyURLLocalService.updateLayoutFriendlyURLs(
+				contextUser.getUserId(), layout.getCompanyId(),
+				layout.getGroupId(), layout.getPlid(), layout.isPrivateLayout(),
+				friendlyURLMap,
+				_getServiceContext(displayPageTemplate, groupId));
 		}
 
 		return _displayPageTemplateDTOConverter.toDTO(
