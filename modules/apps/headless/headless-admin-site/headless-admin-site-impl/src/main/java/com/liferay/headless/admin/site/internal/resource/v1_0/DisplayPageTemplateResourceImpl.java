@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
@@ -54,6 +55,7 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -529,6 +531,30 @@ public class DisplayPageTemplateResourceImpl
 		}
 
 		return _displayPageTemplateDTOConverter.toDTO(layoutPageTemplateEntry);
+	}
+
+	private Layout _addLayout(
+			DisplayPageTemplate displayPageTemplate, long groupId,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		Map<Locale, String> nameMap = Collections.singletonMap(
+			_portal.getSiteDefaultLocale(groupId),
+			displayPageTemplate.getName());
+
+		serviceContext.setAttribute(
+			"layout.instanceable.allowed", Boolean.TRUE);
+		serviceContext.setAttribute(
+			"layout.page.template.entry.type",
+			LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE);
+
+		return LayoutUtil.addContentLayout(
+			groupId, displayPageTemplate.getPageSpecifications(), false,
+			nameMap, nameMap, null, LayoutConstants.TYPE_ASSET_DISPLAY, true,
+			true,
+			LocalizedMapUtil.getLocalizedMap(
+				displayPageTemplate.getFriendlyUrlPath_i18n()),
+			WorkflowConstants.STATUS_APPROVED, serviceContext);
 	}
 
 	private long _getClassTypeId(
