@@ -438,9 +438,11 @@ public class DisplayPageTemplateResourceImpl
 				_portal.getClassNameId(contentTypeReference.getClassName()),
 				_getClassTypeId(contentTypeReference, groupId),
 				displayPageTemplate.getName(),
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
 				FileEntryUtil.getPreviewFileEntryId(
 					groupId, displayPageTemplate.getThumbnail()),
-				WorkflowConstants.STATUS_DRAFT, serviceContext);
+				false, 0L, layout.getPlid(), 0L, WorkflowConstants.STATUS_DRAFT,
+				serviceContext);
 
 		DisplayPageTemplateSettings displayPageTemplateSettings =
 			displayPageTemplate.getDisplayPageTemplateSettings();
