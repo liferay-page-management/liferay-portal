@@ -44,7 +44,6 @@ import com.liferay.portal.kernel.service.LayoutFriendlyURLLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -520,16 +519,7 @@ public class DisplayPageTemplateResourceImpl
 					String.valueOf(sitemapSettings.getPagePriority()));
 			}
 
-			layout = _layoutLocalService.updateLayout(layout);
-		}
-
-		if (MapUtil.isNotEmpty(displayPageTemplate.getFriendlyUrlPath_i18n())) {
-			_layoutFriendlyURLLocalService.updateLayoutFriendlyURLs(
-				contextUser.getUserId(), layout.getCompanyId(),
-				layout.getGroupId(), layout.getPlid(), layout.isPrivateLayout(),
-				LocalizedMapUtil.getLocalizedMap(
-					displayPageTemplate.getFriendlyUrlPath_i18n()),
-				serviceContext);
+			_layoutLocalService.updateLayout(layout);
 		}
 
 		return _displayPageTemplateDTOConverter.toDTO(layoutPageTemplateEntry);
