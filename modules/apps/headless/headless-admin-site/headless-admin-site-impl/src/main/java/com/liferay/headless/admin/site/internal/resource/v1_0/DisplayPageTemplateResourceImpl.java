@@ -428,6 +428,9 @@ public class DisplayPageTemplateResourceImpl
 		ServiceContext serviceContext = _getServiceContext(
 			displayPageTemplate, groupId);
 
+		Layout layout = _addLayout(
+			displayPageTemplate, groupId, serviceContext);
+
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
 				displayPageTemplate.getExternalReferenceCode(), groupId,
@@ -438,9 +441,6 @@ public class DisplayPageTemplateResourceImpl
 				FileEntryUtil.getPreviewFileEntryId(
 					groupId, displayPageTemplate.getThumbnail()),
 				WorkflowConstants.STATUS_DRAFT, serviceContext);
-
-		Layout layout = _layoutLocalService.getLayout(
-			layoutPageTemplateEntry.getPlid());
 
 		DisplayPageTemplateSettings displayPageTemplateSettings =
 			displayPageTemplate.getDisplayPageTemplateSettings();
