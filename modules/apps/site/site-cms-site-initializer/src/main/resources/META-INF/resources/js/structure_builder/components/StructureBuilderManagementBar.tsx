@@ -196,7 +196,7 @@ function SaveButton() {
 
 		try {
 			if (status === 'new') {
-				const {data} = await StructureService.createStructure({
+				const {data, error} = await StructureService.createStructure({
 					erc,
 					fields,
 					label,
@@ -204,12 +204,15 @@ function SaveButton() {
 					spaces,
 				});
 
-				if (data) {
+				if (error) {
+					throw new Error(error);
+				}
+				else if (data) {
 					dispatch({id: data.id, type: 'create-structure'});
 				}
 			}
 			else {
-				await StructureService.updateStructure({
+				const {error} = await StructureService.updateStructure({
 					erc,
 					fields,
 					id: structureId,
@@ -218,7 +221,12 @@ function SaveButton() {
 					spaces,
 				});
 
-				dispatch({type: 'clear-error'});
+				if (error) {
+					throw new Error(error);
+				}
+				else {
+					dispatch({type: 'clear-error'});
+				}
 			}
 
 			openToast({
