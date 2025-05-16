@@ -31,11 +31,11 @@ public class CommerceOrderServiceWrapper
 	public com.liferay.portal.kernel.repository.model.FileEntry
 			addAttachmentFileEntry(
 				String externalReferenceCode, long userId, long commerceOrderId,
-				String fileName, java.io.InputStream inputStream)
+				String title, java.io.InputStream inputStream)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceOrderService.addAttachmentFileEntry(
-			externalReferenceCode, userId, commerceOrderId, fileName,
+			externalReferenceCode, userId, commerceOrderId, title,
 			inputStream);
 	}
 

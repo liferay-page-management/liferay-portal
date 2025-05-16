@@ -393,11 +393,9 @@ public class EditMessageMVCActionCommand extends BaseMVCActionCommand {
 		).buildString();
 	}
 
-	private boolean _hasFileEntry(
-		long groupId, long folderId, String fileName) {
-
+	private boolean _hasFileEntry(long groupId, long folderId, String title) {
 		FileEntry fileEntry = _portletFileRepository.fetchPortletFileEntry(
-			groupId, folderId, fileName);
+			groupId, folderId, title);
 
 		if (fileEntry == null) {
 			return false;

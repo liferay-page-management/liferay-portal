@@ -54,7 +54,7 @@ public interface BlogsEntryService extends BaseService {
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.blogs.service.impl.BlogsEntryServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the blogs entry remote service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link BlogsEntryServiceUtil} if injection and service tracking are not available.
 	 */
 	public FileEntry addAttachmentFileEntry(
-			String externalReferenceCode, long groupId, String fileName,
+			String externalReferenceCode, long groupId, String title,
 			String mimeType, InputStream inputStream)
 		throws PortalException;
 

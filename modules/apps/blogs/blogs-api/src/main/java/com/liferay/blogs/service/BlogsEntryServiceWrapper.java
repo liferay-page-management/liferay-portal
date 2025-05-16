@@ -29,12 +29,12 @@ public class BlogsEntryServiceWrapper
 	@Override
 	public com.liferay.portal.kernel.repository.model.FileEntry
 			addAttachmentFileEntry(
-				String externalReferenceCode, long groupId, String fileName,
+				String externalReferenceCode, long groupId, String title,
 				String mimeType, java.io.InputStream inputStream)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _blogsEntryService.addAttachmentFileEntry(
-			externalReferenceCode, groupId, fileName, mimeType, inputStream);
+			externalReferenceCode, groupId, title, mimeType, inputStream);
 	}
 
 	@Override

@@ -44,7 +44,7 @@ public class PortletFileRepositoryUtil {
 
 	public static FileEntry addPortletFileEntry(
 			long groupId, long userId, String className, long classPK,
-			String portletId, long folderId, byte[] bytes, String fileName,
+			String portletId, long folderId, byte[] bytes, String title,
 			String mimeType, boolean indexingEnabled)
 		throws PortalException {
 
@@ -53,13 +53,27 @@ public class PortletFileRepositoryUtil {
 
 		return portletFileRepository.addPortletFileEntry(
 			groupId, userId, className, classPK, portletId, folderId, bytes,
-			fileName, mimeType, indexingEnabled);
+			title, mimeType, indexingEnabled);
 	}
 
 	public static FileEntry addPortletFileEntry(
 			String externalReferenceCode, long groupId, long userId,
 			String className, long classPK, String portletId, long folderId,
-			File file, String fileName, String mimeType,
+			File file, String title, String mimeType, boolean indexingEnabled)
+		throws PortalException {
+
+		PortletFileRepository portletFileRepository =
+			_portletFileRepositorySnapshot.get();
+
+		return portletFileRepository.addPortletFileEntry(
+			externalReferenceCode, groupId, userId, className, classPK,
+			portletId, folderId, file, title, mimeType, indexingEnabled);
+	}
+
+	public static FileEntry addPortletFileEntry(
+			String externalReferenceCode, long groupId, long userId,
+			String className, long classPK, String portletId, long folderId,
+			InputStream inputStream, String title, String mimeType,
 			boolean indexingEnabled)
 		throws PortalException {
 
@@ -68,23 +82,7 @@ public class PortletFileRepositoryUtil {
 
 		return portletFileRepository.addPortletFileEntry(
 			externalReferenceCode, groupId, userId, className, classPK,
-			portletId, folderId, file, fileName, mimeType, indexingEnabled);
-	}
-
-	public static FileEntry addPortletFileEntry(
-			String externalReferenceCode, long groupId, long userId,
-			String className, long classPK, String portletId, long folderId,
-			InputStream inputStream, String fileName, String mimeType,
-			boolean indexingEnabled)
-		throws PortalException {
-
-		PortletFileRepository portletFileRepository =
-			_portletFileRepositorySnapshot.get();
-
-		return portletFileRepository.addPortletFileEntry(
-			externalReferenceCode, groupId, userId, className, classPK,
-			portletId, folderId, inputStream, fileName, mimeType,
-			indexingEnabled);
+			portletId, folderId, inputStream, title, mimeType, indexingEnabled);
 	}
 
 	public static Folder addPortletFolder(
@@ -153,14 +151,13 @@ public class PortletFileRepositoryUtil {
 	}
 
 	public static void deletePortletFileEntry(
-			long groupId, long folderId, String fileName)
+			long groupId, long folderId, String title)
 		throws PortalException {
 
 		PortletFileRepository portletFileRepository =
 			_portletFileRepositorySnapshot.get();
 
-		portletFileRepository.deletePortletFileEntry(
-			groupId, folderId, fileName);
+		portletFileRepository.deletePortletFileEntry(groupId, folderId, title);
 	}
 
 	public static void deletePortletFolder(long folderId)
@@ -332,14 +329,14 @@ public class PortletFileRepositoryUtil {
 	}
 
 	public static FileEntry getPortletFileEntry(
-			long groupId, long folderId, String fileName)
+			long groupId, long folderId, String title)
 		throws PortalException {
 
 		PortletFileRepository portletFileRepository =
 			_portletFileRepositorySnapshot.get();
 
 		return portletFileRepository.getPortletFileEntry(
-			groupId, folderId, fileName);
+			groupId, folderId, title);
 	}
 
 	public static FileEntry getPortletFileEntry(String uuid, long groupId)
@@ -418,13 +415,13 @@ public class PortletFileRepositoryUtil {
 	}
 
 	public static String getUniqueFileName(
-		long groupId, long folderId, String fileName) {
+		long groupId, long folderId, String title) {
 
 		PortletFileRepository portletFileRepository =
 			_portletFileRepositorySnapshot.get();
 
 		return portletFileRepository.getUniqueFileName(
-			groupId, folderId, fileName);
+			groupId, folderId, title);
 	}
 
 	public static FileEntry movePortletFileEntryToTrash(
@@ -439,14 +436,14 @@ public class PortletFileRepositoryUtil {
 	}
 
 	public static FileEntry movePortletFileEntryToTrash(
-			long groupId, long userId, long folderId, String fileName)
+			long groupId, long userId, long folderId, String title)
 		throws PortalException {
 
 		PortletFileRepository portletFileRepository =
 			_portletFileRepositorySnapshot.get();
 
 		return portletFileRepository.movePortletFileEntryToTrash(
-			groupId, userId, folderId, fileName);
+			groupId, userId, folderId, title);
 	}
 
 	public static Folder movePortletFolder(
@@ -473,14 +470,14 @@ public class PortletFileRepositoryUtil {
 	}
 
 	public static void restorePortletFileEntryFromTrash(
-			long groupId, long userId, long folderId, String fileName)
+			long groupId, long userId, long folderId, String title)
 		throws PortalException {
 
 		PortletFileRepository portletFileRepository =
 			_portletFileRepositorySnapshot.get();
 
 		portletFileRepository.restorePortletFileEntryFromTrash(
-			groupId, userId, folderId, fileName);
+			groupId, userId, folderId, title);
 	}
 
 	public static Hits searchPortletFileEntries(

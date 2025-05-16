@@ -38,21 +38,20 @@ public interface PortletFileRepository {
 
 	public FileEntry addPortletFileEntry(
 			long groupId, long userId, String className, long classPK,
-			String portletId, long folderId, byte[] bytes, String fileName,
+			String portletId, long folderId, byte[] bytes, String title,
 			String mimeType, boolean indexingEnabled)
 		throws PortalException;
 
 	public FileEntry addPortletFileEntry(
 			String externalReferenceCode, long groupId, long userId,
 			String className, long classPK, String portletId, long folderId,
-			File file, String fileName, String mimeType,
-			boolean indexingEnabled)
+			File file, String title, String mimeType, boolean indexingEnabled)
 		throws PortalException;
 
 	public FileEntry addPortletFileEntry(
 			String externalReferenceCode, long groupId, long userId,
 			String className, long classPK, String portletId, long folderId,
-			InputStream inputStream, String fileName, String mimeType,
+			InputStream inputStream, String title, String mimeType,
 			boolean indexingEnabled)
 		throws PortalException;
 
@@ -80,7 +79,7 @@ public interface PortletFileRepository {
 	public void deletePortletFileEntry(long fileEntryId) throws PortalException;
 
 	public void deletePortletFileEntry(
-			long groupId, long folderId, String fileName)
+			long groupId, long folderId, String title)
 		throws PortalException;
 
 	public void deletePortletFolder(long folderId) throws PortalException;
@@ -140,7 +139,7 @@ public interface PortletFileRepository {
 		throws PortalException;
 
 	public FileEntry getPortletFileEntry(
-			long groupId, long folderId, String fileName)
+			long groupId, long folderId, String title)
 		throws PortalException;
 
 	public FileEntry getPortletFileEntry(String uuid, long groupId)
@@ -166,14 +165,13 @@ public interface PortletFileRepository {
 	public Repository getPortletRepository(long groupId, String portletId)
 		throws PortalException;
 
-	public String getUniqueFileName(
-		long groupId, long folderId, String fileName);
+	public String getUniqueFileName(long groupId, long folderId, String title);
 
 	public FileEntry movePortletFileEntryToTrash(long userId, long fileEntryId)
 		throws PortalException;
 
 	public FileEntry movePortletFileEntryToTrash(
-			long groupId, long userId, long folderId, String fileName)
+			long groupId, long userId, long folderId, String title)
 		throws PortalException;
 
 	public Folder movePortletFolder(
@@ -185,7 +183,7 @@ public interface PortletFileRepository {
 		throws PortalException;
 
 	public void restorePortletFileEntryFromTrash(
-			long groupId, long userId, long folderId, String fileName)
+			long groupId, long userId, long folderId, String title)
 		throws PortalException;
 
 	public Hits searchPortletFileEntries(

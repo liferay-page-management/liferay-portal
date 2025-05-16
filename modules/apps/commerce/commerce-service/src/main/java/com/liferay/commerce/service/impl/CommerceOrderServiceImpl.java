@@ -55,15 +55,14 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 	@Override
 	public FileEntry addAttachmentFileEntry(
 			String externalReferenceCode, long userId, long commerceOrderId,
-			String fileName, InputStream inputStream)
+			String title, InputStream inputStream)
 		throws PortalException {
 
 		_commerceOrderModelResourcePermission.check(
 			getPermissionChecker(), commerceOrderId, ActionKeys.UPDATE);
 
 		return commerceOrderLocalService.addAttachmentFileEntry(
-			externalReferenceCode, userId, commerceOrderId, fileName,
-			inputStream);
+			externalReferenceCode, userId, commerceOrderId, title, inputStream);
 	}
 
 	@Override

@@ -726,12 +726,12 @@ public class MediaWikiImporter {
 			Matcher matcher = _mediaLinkPattern.matcher(content);
 
 			while (matcher.find()) {
-				String fileName = matcher.group(2);
+				String title = matcher.group(2);
 
 				FileEntry fileEntry =
 					_portletFileRepository.fetchPortletFileEntry(
 						node.getGroupId(),
-						sharedImagesPage.getAttachmentsFolderId(), fileName);
+						sharedImagesPage.getAttachmentsFolderId(), title);
 
 				if (fileEntry == null) {
 					matcher.appendReplacement(sb, matcher.group());
@@ -746,7 +746,7 @@ public class MediaWikiImporter {
 				String linkLabel = matcher.group(3);
 
 				if (linkLabel == null) {
-					linkLabel = StringPool.PIPE + fileName;
+					linkLabel = StringPool.PIPE + title;
 				}
 
 				matcher.appendReplacement(

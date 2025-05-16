@@ -285,11 +285,11 @@ public class BlogsEntryLocalServiceTest {
 
 	@Test
 	public void testAddDuplicateAttachmentFileEntry() throws Exception {
-		String fileName = StringUtil.randomString();
+		String title = StringUtil.randomString();
 
-		FileEntry fileEntry1 = _addAttachmentFileEntry(null, fileName);
+		FileEntry fileEntry1 = _addAttachmentFileEntry(null, title);
 
-		FileEntry fileEntry2 = _addAttachmentFileEntry(null, fileName);
+		FileEntry fileEntry2 = _addAttachmentFileEntry(null, title);
 
 		Assert.assertNotEquals(
 			fileEntry1.getFileName(), fileEntry2.getFileName());
@@ -1766,12 +1766,12 @@ public class BlogsEntryLocalServiceTest {
 	}
 
 	private FileEntry _addAttachmentFileEntry(
-			String externalReferenceCode, String fileName)
+			String externalReferenceCode, String title)
 		throws Exception {
 
 		return _blogsEntryLocalService.addAttachmentFileEntry(
 			externalReferenceCode, _user.getUserId(), _group.getGroupId(),
-			fileName, ContentTypes.APPLICATION_OCTET_STREAM,
+			title, ContentTypes.APPLICATION_OCTET_STREAM,
 			new UnsyncByteArrayInputStream(new byte[0]));
 	}
 

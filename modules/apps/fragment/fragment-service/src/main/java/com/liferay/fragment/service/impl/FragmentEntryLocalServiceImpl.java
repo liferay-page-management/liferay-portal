@@ -742,14 +742,14 @@ public class FragmentEntryLocalServiceImpl
 		).build();
 
 		for (Map.Entry<String, FileEntry> entry : fileEntries.entrySet()) {
-			String fileName = entry.getKey();
+			String title = entry.getKey();
 			String folderPath = StringPool.BLANK;
 
-			int index = fileName.lastIndexOf(StringPool.SLASH);
+			int index = title.lastIndexOf(StringPool.SLASH);
 
 			if (index != -1) {
-				folderPath = fileName.substring(0, index);
-				fileName = fileName.substring(index + 1);
+				folderPath = title.substring(0, index);
+				title = title.substring(index + 1);
 			}
 
 			long folderId = _getOrCreateFolderId(
@@ -758,7 +758,7 @@ public class FragmentEntryLocalServiceImpl
 
 			FileEntry existingFileEntry =
 				PortletFileRepositoryUtil.fetchPortletFileEntry(
-					fragmentEntry.getGroupId(), folderId, fileName);
+					fragmentEntry.getGroupId(), folderId, title);
 
 			if (existingFileEntry == null) {
 				FileEntry fileEntry = entry.getValue();
@@ -769,7 +769,7 @@ public class FragmentEntryLocalServiceImpl
 					FragmentCollection.class.getName(),
 					targetFragmentCollection.getFragmentCollectionId(),
 					FragmentPortletKeys.FRAGMENT, folderId,
-					fileEntry.getContentStream(), fileName,
+					fileEntry.getContentStream(), title,
 					fileEntry.getMimeType(), false);
 			}
 		}

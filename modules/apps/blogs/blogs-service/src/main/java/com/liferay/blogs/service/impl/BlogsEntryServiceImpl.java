@@ -74,7 +74,7 @@ public class BlogsEntryServiceImpl extends BlogsEntryServiceBaseImpl {
 
 	@Override
 	public FileEntry addAttachmentFileEntry(
-			String externalReferenceCode, long groupId, String fileName,
+			String externalReferenceCode, long groupId, String title,
 			String mimeType, InputStream inputStream)
 		throws PortalException {
 
@@ -82,7 +82,7 @@ public class BlogsEntryServiceImpl extends BlogsEntryServiceBaseImpl {
 			getPermissionChecker(), groupId, ActionKeys.ADD_ENTRY);
 
 		return blogsEntryLocalService.addAttachmentFileEntry(
-			externalReferenceCode, getUserId(), groupId, fileName, mimeType,
+			externalReferenceCode, getUserId(), groupId, title, mimeType,
 			inputStream);
 	}
 

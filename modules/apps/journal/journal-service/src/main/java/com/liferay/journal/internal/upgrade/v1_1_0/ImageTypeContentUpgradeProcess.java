@@ -88,11 +88,11 @@ public class ImageTypeContentUpgradeProcess extends UpgradeProcess {
 					long groupId = (Long)values[1];
 					long folderId = (Long)values[4];
 
-					String fileName = String.valueOf(articleImageId);
+					String title = String.valueOf(articleImageId);
 
 					FileEntry fileEntry =
 						_portletFileRepository.fetchPortletFileEntry(
-							groupId, folderId, fileName);
+							groupId, folderId, title);
 
 					if (fileEntry != null) {
 						return;
@@ -110,20 +110,20 @@ public class ImageTypeContentUpgradeProcess extends UpgradeProcess {
 						}
 
 						String mimeType = MimeTypesUtil.getContentType(
-							fileName + StringPool.PERIOD + image.getType());
+							title + StringPool.PERIOD + image.getType());
 
 						_portletFileRepository.addPortletFileEntry(
 							groupId, userId, JournalArticle.class.getName(),
 							resourcePrimKey, JournalConstants.SERVICE_NAME,
-							folderId, image.getTextObj(), fileName, mimeType,
+							folderId, image.getTextObj(), title, mimeType,
 							false);
 
 						_imageLocalService.deleteImage(image.getImageId());
 					}
 					catch (Exception exception) {
 						_log.error(
-							"Unable to add the journal article image " +
-								fileName + " into the file repository",
+							"Unable to add the journal article image " + title +
+								" into the file repository",
 							exception);
 
 						throw exception;

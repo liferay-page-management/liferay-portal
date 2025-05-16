@@ -243,14 +243,14 @@ public class BlogsEntryAttachmentFileEntryHelperTest {
 
 	private FileEntry _addBlogsEntryAttachmentFileEntry(
 			long groupId, long userId, long blogsEntryId, long folderId,
-			String fileName, String mimeType, InputStream inputStream)
+			String title, String mimeType, InputStream inputStream)
 		throws Exception {
 
-		String uniqueFileName = _getUniqueFileName(groupId, fileName, folderId);
+		String uniqueTitle = _getUniqueTitle(groupId, title, folderId);
 
 		return PortletFileRepositoryUtil.addPortletFileEntry(
 			null, groupId, userId, BlogsEntry.class.getName(), blogsEntryId,
-			BlogsConstants.SERVICE_NAME, folderId, inputStream, uniqueFileName,
+			BlogsConstants.SERVICE_NAME, folderId, inputStream, uniqueTitle,
 			mimeType, true);
 	}
 
@@ -277,20 +277,16 @@ public class BlogsEntryAttachmentFileEntryHelperTest {
 		return tempBlogsEntryAttachmentFileEntries;
 	}
 
-	private String _getUniqueFileName(
-			long groupId, String fileName, long folderId)
+	private String _getUniqueTitle(long groupId, String title, long folderId)
 		throws Exception {
 
 		return _uniqueFileNameProvider.provide(
-			fileName,
-			curFileName -> _hasFileEntry(groupId, folderId, curFileName));
+			title, curTitle -> _hasFileEntry(groupId, folderId, curTitle));
 	}
 
-	private boolean _hasFileEntry(
-		long groupId, long folderId, String fileName) {
-
+	private boolean _hasFileEntry(long groupId, long folderId, String title) {
 		FileEntry fileEntry = _portletFileRepository.fetchPortletFileEntry(
-			groupId, folderId, fileName);
+			groupId, folderId, title);
 
 		if (fileEntry == null) {
 			return false;

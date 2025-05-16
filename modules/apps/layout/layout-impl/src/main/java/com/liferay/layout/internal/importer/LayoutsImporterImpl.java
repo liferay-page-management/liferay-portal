@@ -877,10 +877,10 @@ public class LayoutsImporterImpl implements LayoutsImporter {
 				ServiceContextThreadLocal.getServiceContext());
 		}
 
-		String imageFileName = classPK + "_preview" + thumbnail.getExtension();
+		String imageTitle = classPK + "_preview" + thumbnail.getExtension();
 
 		FileEntry fileEntry = _portletFileRepository.fetchPortletFileEntry(
-			groupId, repository.getDlFolderId(), imageFileName);
+			groupId, repository.getDlFolderId(), imageTitle);
 
 		if (fileEntry != null) {
 			_portletFileRepository.deletePortletFileEntry(
@@ -890,8 +890,8 @@ public class LayoutsImporterImpl implements LayoutsImporter {
 		fileEntry = _portletFileRepository.addPortletFileEntry(
 			groupId, userId, className, classPK,
 			LayoutAdminPortletKeys.GROUP_PAGES, repository.getDlFolderId(),
-			thumbnail.getBytes(), imageFileName,
-			MimeTypesUtil.getContentType(imageFileName), false);
+			thumbnail.getBytes(), imageTitle,
+			MimeTypesUtil.getContentType(imageTitle), false);
 
 		return fileEntry.getFileEntryId();
 	}

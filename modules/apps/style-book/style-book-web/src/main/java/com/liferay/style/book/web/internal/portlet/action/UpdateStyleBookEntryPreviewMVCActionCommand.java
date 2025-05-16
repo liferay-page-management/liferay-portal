@@ -96,13 +96,13 @@ public class UpdateStyleBookEntryPreviewMVCActionCommand
 			long styleBookEntryId = ParamUtil.getLong(
 				actionRequest, "styleBookEntryId");
 
-			String fileName = StringBundler.concat(
+			String title = StringBundler.concat(
 				styleBookEntryId, "_preview.", extension);
 
 			FileEntry oldFileEntry =
 				PortletFileRepositoryUtil.fetchPortletFileEntry(
 					themeDisplay.getScopeGroupId(), repository.getDlFolderId(),
-					fileName);
+					title);
 
 			if (oldFileEntry != null) {
 				PortletFileRepositoryUtil.deletePortletFileEntry(
@@ -113,7 +113,7 @@ public class UpdateStyleBookEntryPreviewMVCActionCommand
 				null, themeDisplay.getScopeGroupId(), themeDisplay.getUserId(),
 				StyleBookEntry.class.getName(), styleBookEntryId,
 				StyleBookPortletKeys.STYLE_BOOK, repository.getDlFolderId(),
-				fileEntry.getContentStream(), fileName, fileEntry.getMimeType(),
+				fileEntry.getContentStream(), title, fileEntry.getMimeType(),
 				false);
 
 			_styleBookEntryService.updatePreviewFileEntryId(

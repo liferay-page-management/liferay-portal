@@ -159,7 +159,7 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 	@Override
 	public FileEntry addAttachmentFileEntry(
 			String externalReferenceCode, long userId, long groupId,
-			String fileName, String mimeType, InputStream inputStream)
+			String title, String mimeType, InputStream inputStream)
 		throws PortalException {
 
 		Folder folder = addAttachmentsFolder(userId, groupId);
@@ -167,8 +167,8 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 		return _portletFileRepository.addPortletFileEntry(
 			externalReferenceCode, groupId, userId, null, 0,
 			BlogsConstants.SERVICE_NAME, folder.getFolderId(), inputStream,
-			_getUniqueFileName(groupId, fileName, folder.getFolderId()),
-			mimeType, true);
+			_getUniqueTitle(groupId, title, folder.getFolderId()), mimeType,
+			true);
 	}
 
 	@Override
@@ -511,7 +511,7 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 			_portletFileRepository.addPortletFileEntry(
 				groupId, userId, null, 0, BlogsConstants.SERVICE_NAME,
 				folder.getFolderId(), imageBytes,
-				_getUniqueFileName(
+				_getUniqueTitle(
 					groupId, imageSelector.getImageTitle(),
 					folder.getFolderId()),
 				imageSelector.getImageMimeType(), true);
@@ -1692,7 +1692,7 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 			_portletFileRepository.addPortletFileEntry(
 				groupId, userId, BlogsEntry.class.getName(), entryId,
 				BlogsConstants.SERVICE_NAME, folderId, bytes,
-				_getUniqueFileName(groupId, title, folderId), mimeType, true);
+				_getUniqueTitle(groupId, title, folderId), mimeType, true);
 
 		return processedImageFileEntry.getFileEntryId();
 	}
@@ -1837,13 +1837,11 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 			themeDisplay);
 	}
 
-	private String _getUniqueFileName(
-			long groupId, String fileName, long folderId)
+	private String _getUniqueTitle(long groupId, String title, long folderId)
 		throws PortalException {
 
 		return _uniqueFileNameProvider.provide(
-			fileName,
-			curFileName -> _hasFileEntry(groupId, folderId, curFileName));
+			title, curTitle -> _hasFileEntry(groupId, folderId, curTitle));
 	}
 
 	private String _getUniqueUrlTitle(BlogsEntry entry) {
@@ -1892,11 +1890,9 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 		return StringPool.BLANK;
 	}
 
-	private boolean _hasFileEntry(
-		long groupId, long folderId, String fileName) {
-
+	private boolean _hasFileEntry(long groupId, long folderId, String title) {
 		FileEntry fileEntry = _portletFileRepository.fetchPortletFileEntry(
-			groupId, folderId, fileName);
+			groupId, folderId, title);
 
 		if (fileEntry == null) {
 			return false;

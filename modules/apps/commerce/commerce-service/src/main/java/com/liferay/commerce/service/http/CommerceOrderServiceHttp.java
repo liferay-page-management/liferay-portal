@@ -44,7 +44,7 @@ public class CommerceOrderServiceHttp {
 	public static com.liferay.portal.kernel.repository.model.FileEntry
 			addAttachmentFileEntry(
 				HttpPrincipal httpPrincipal, String externalReferenceCode,
-				long userId, long commerceOrderId, String fileName,
+				long userId, long commerceOrderId, String title,
 				java.io.InputStream inputStream)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -55,7 +55,7 @@ public class CommerceOrderServiceHttp {
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, userId, commerceOrderId,
-				fileName, inputStream);
+				title, inputStream);
 
 			Object returnObj = null;
 

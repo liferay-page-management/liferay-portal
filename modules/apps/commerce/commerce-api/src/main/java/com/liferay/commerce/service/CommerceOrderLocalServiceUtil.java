@@ -41,11 +41,11 @@ public class CommerceOrderLocalServiceUtil {
 	public static com.liferay.portal.kernel.repository.model.FileEntry
 			addAttachmentFileEntry(
 				String externalReferenceCode, long userId, long commerceOrderId,
-				String fileName, InputStream inputStream)
+				String title, InputStream inputStream)
 		throws PortalException {
 
 		return getService().addAttachmentFileEntry(
-			externalReferenceCode, userId, commerceOrderId, fileName,
+			externalReferenceCode, userId, commerceOrderId, title,
 			inputStream);
 	}
 

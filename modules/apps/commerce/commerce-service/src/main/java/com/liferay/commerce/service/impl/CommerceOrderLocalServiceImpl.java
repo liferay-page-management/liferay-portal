@@ -177,10 +177,10 @@ public class CommerceOrderLocalServiceImpl
 	@Override
 	public FileEntry addAttachmentFileEntry(
 			String externalReferenceCode, long userId, long commerceOrderId,
-			String fileName, InputStream inputStream)
+			String title, InputStream inputStream)
 		throws PortalException {
 
-		if (Validator.isNull(fileName)) {
+		if (Validator.isNull(title)) {
 			return null;
 		}
 
@@ -224,10 +224,10 @@ public class CommerceOrderLocalServiceImpl
 			serviceContext.setIndexingEnabled(false);
 
 			return localRepository.addFileEntry(
-				externalReferenceCode, userId, folder.getFolderId(), fileName,
-				MimeTypesUtil.getContentType(file, fileName), fileName,
-				fileName, StringPool.BLANK, StringPool.BLANK, file, null, null,
-				null, serviceContext);
+				externalReferenceCode, userId, folder.getFolderId(), title,
+				MimeTypesUtil.getContentType(file, title), title, title,
+				StringPool.BLANK, StringPool.BLANK, file, null, null, null,
+				serviceContext);
 		}
 		catch (IOException ioException) {
 			throw new SystemException(

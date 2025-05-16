@@ -44,7 +44,7 @@ public class BlogsEntryServiceHttp {
 	public static com.liferay.portal.kernel.repository.model.FileEntry
 			addAttachmentFileEntry(
 				HttpPrincipal httpPrincipal, String externalReferenceCode,
-				long groupId, String fileName, String mimeType,
+				long groupId, String title, String mimeType,
 				java.io.InputStream inputStream)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -54,7 +54,7 @@ public class BlogsEntryServiceHttp {
 				_addAttachmentFileEntryParameterTypes0);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, externalReferenceCode, groupId, fileName, mimeType,
+				methodKey, externalReferenceCode, groupId, title, mimeType,
 				inputStream);
 
 			Object returnObj = null;

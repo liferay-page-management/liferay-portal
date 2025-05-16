@@ -71,13 +71,12 @@ public class UpdateFragmentEntryPreviewMVCActionCommand
 				serviceContext);
 		}
 
-		String fileName =
-			fragmentEntryId + "_preview." + fileEntry.getExtension();
+		String title = fragmentEntryId + "_preview." + fileEntry.getExtension();
 
 		FileEntry oldFileEntry =
 			PortletFileRepositoryUtil.fetchPortletFileEntry(
 				themeDisplay.getScopeGroupId(), repository.getDlFolderId(),
-				fileName);
+				title);
 
 		if (oldFileEntry != null) {
 			PortletFileRepositoryUtil.deletePortletFileEntry(
@@ -88,7 +87,7 @@ public class UpdateFragmentEntryPreviewMVCActionCommand
 			null, themeDisplay.getScopeGroupId(), themeDisplay.getUserId(),
 			FragmentEntry.class.getName(), fragmentEntryId,
 			FragmentPortletKeys.FRAGMENT, repository.getDlFolderId(),
-			fileEntry.getContentStream(), fileName, fileEntry.getMimeType(),
+			fileEntry.getContentStream(), title, fileEntry.getMimeType(),
 			false);
 
 		_fragmentEntryService.updateFragmentEntry(

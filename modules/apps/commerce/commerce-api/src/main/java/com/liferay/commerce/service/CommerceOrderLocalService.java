@@ -70,7 +70,7 @@ public interface CommerceOrderLocalService
 	 */
 	public FileEntry addAttachmentFileEntry(
 			String externalReferenceCode, long userId, long commerceOrderId,
-			String fileName, InputStream inputStream)
+			String title, InputStream inputStream)
 		throws PortalException;
 
 	/**

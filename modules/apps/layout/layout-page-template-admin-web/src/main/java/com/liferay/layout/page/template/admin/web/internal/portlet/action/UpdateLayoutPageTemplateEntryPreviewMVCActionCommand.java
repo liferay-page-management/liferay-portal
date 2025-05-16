@@ -71,12 +71,11 @@ public class UpdateLayoutPageTemplateEntryPreviewMVCActionCommand
 				LayoutAdminPortletKeys.GROUP_PAGES, serviceContext);
 		}
 
-		String fileName =
+		String title =
 			layoutPageTemplateEntryId + "_preview." + fileEntry.getExtension();
 
 		FileEntry oldFileEntry = _portletFileRepository.fetchPortletFileEntry(
-			themeDisplay.getScopeGroupId(), repository.getDlFolderId(),
-			fileName);
+			themeDisplay.getScopeGroupId(), repository.getDlFolderId(), title);
 
 		if (oldFileEntry != null) {
 			_portletFileRepository.deletePortletFileEntry(
@@ -87,7 +86,7 @@ public class UpdateLayoutPageTemplateEntryPreviewMVCActionCommand
 			null, themeDisplay.getScopeGroupId(), themeDisplay.getUserId(),
 			LayoutPageTemplateEntry.class.getName(), layoutPageTemplateEntryId,
 			LayoutAdminPortletKeys.GROUP_PAGES, repository.getDlFolderId(),
-			fileEntry.getContentStream(), fileName, fileEntry.getMimeType(),
+			fileEntry.getContentStream(), title, fileEntry.getMimeType(),
 			false);
 
 		_layoutPageTemplateEntryService.updateLayoutPageTemplateEntry(

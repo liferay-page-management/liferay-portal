@@ -41,11 +41,11 @@ public class BlogsEntryLocalServiceUtil {
 	public static com.liferay.portal.kernel.repository.model.FileEntry
 			addAttachmentFileEntry(
 				String externalReferenceCode, long userId, long groupId,
-				String fileName, String mimeType, InputStream inputStream)
+				String title, String mimeType, InputStream inputStream)
 		throws PortalException {
 
 		return getService().addAttachmentFileEntry(
-			externalReferenceCode, userId, groupId, fileName, mimeType,
+			externalReferenceCode, userId, groupId, title, mimeType,
 			inputStream);
 	}
 

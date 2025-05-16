@@ -79,7 +79,7 @@ public class BlogsImagesUpgradeProcess extends UpgradeProcess {
 
 				byte[] bytes = smallImage.getTextObj();
 
-				String fileName = StringBundler.concat(
+				String title = StringBundler.concat(
 					smallImage.getImageId(), StringPool.PERIOD,
 					smallImage.getType());
 
@@ -92,15 +92,15 @@ public class BlogsImagesUpgradeProcess extends UpgradeProcess {
 					_portletFileRepository.addPortletFileEntry(
 						groupId, userId, BlogsEntry.class.getName(), entryId,
 						BlogsConstants.SERVICE_NAME,
-						smallImagefolder.getFolderId(), bytes, fileName,
-						mimeType, true);
+						smallImagefolder.getFolderId(), bytes, title, mimeType,
+						true);
 
 				Folder blogsImagefolder = _addFolder(
 					userId, groupId, BlogsConstants.SERVICE_NAME);
 
 				_portletFileRepository.addPortletFileEntry(
 					groupId, userId, null, 0, BlogsConstants.SERVICE_NAME,
-					blogsImagefolder.getFolderId(), bytes, fileName, mimeType,
+					blogsImagefolder.getFolderId(), bytes, title, mimeType,
 					true);
 
 				preparedStatement2.setLong(
