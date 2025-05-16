@@ -401,13 +401,13 @@ public class PortletFileRepositoryImpl implements PortletFileRepository {
 
 	@Override
 	public FileEntry fetchPortletFileEntry(
-		long groupId, long folderId, String fileName) {
+		long groupId, long folderId, String title) {
 
 		try {
 			LocalRepository localRepository =
 				_repositoryProvider.getLocalRepository(groupId);
 
-			return localRepository.fetchFileEntry(folderId, fileName);
+			return localRepository.fetchFileEntry(folderId, title);
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {

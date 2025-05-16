@@ -6103,7 +6103,7 @@ public class JournalArticleLocalServiceImpl
 							_portletFileRepository.fetchPortletFileEntry(
 								finalTempFileEntry.getGroupId(),
 								finalTempFileEntry.getFolderId(),
-								finalTempFileEntry.getFileName());
+								finalTempFileEntry.getTitle());
 
 						if (persistedFileEntry != null) {
 							TempFileEntryUtil.deleteTempFileEntry(

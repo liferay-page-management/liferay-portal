@@ -89,7 +89,7 @@ public interface PortletFileRepository {
 		throws PortalException;
 
 	public FileEntry fetchPortletFileEntry(
-		long groupId, long folderId, String fileName);
+		long groupId, long folderId, String title);
 
 	public FileEntry fetchPortletFileEntryByExternalReferenceCode(
 		String externalReferenceCode, long groupId);

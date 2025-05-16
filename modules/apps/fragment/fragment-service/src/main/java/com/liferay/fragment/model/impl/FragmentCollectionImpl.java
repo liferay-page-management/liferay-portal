@@ -51,7 +51,7 @@ public class FragmentCollectionImpl extends FragmentCollectionBaseImpl {
 				_getResourcesFolderId(
 					getResourcesFolderId(true), path,
 					repository.getRepositoryId()),
-				_getFileName(path));
+				_getFileTitle(path));
 		}
 		catch (PortalException portalException) {
 			if (_log.isDebugEnabled()) {
@@ -203,7 +203,7 @@ public class FragmentCollectionImpl extends FragmentCollectionBaseImpl {
 		}
 	}
 
-	private String _getFileName(String path) {
+	private String _getFileTitle(String path) {
 		if (Validator.isNull(path) || path.endsWith(StringPool.SLASH)) {
 			return StringPool.BLANK;
 		}

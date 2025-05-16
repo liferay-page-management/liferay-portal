@@ -182,13 +182,13 @@ public class PortletFileRepositoryUtil {
 	}
 
 	public static FileEntry fetchPortletFileEntry(
-		long groupId, long folderId, String fileName) {
+		long groupId, long folderId, String title) {
 
 		PortletFileRepository portletFileRepository =
 			_portletFileRepositorySnapshot.get();
 
 		return portletFileRepository.fetchPortletFileEntry(
-			groupId, folderId, fileName);
+			groupId, folderId, title);
 	}
 
 	public static FileEntry fetchPortletFileEntryByExternalReferenceCode(
