@@ -6,6 +6,8 @@
 package com.liferay.fragment.model.impl.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
+import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.fragment.constants.FragmentExportImportConstants;
 import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.model.FragmentCollection;
@@ -16,9 +18,11 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
@@ -74,12 +78,18 @@ public class FragmentCollectionImplTest {
 
 	@Test
 	public void testGetResourcesMap() throws Exception {
-		Map<String, FileEntry> resourcesMap =
-			_fragmentCollection.getResourcesMap();
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
 
-		Assert.assertEquals(resourcesMap.toString(), 1, resourcesMap.size());
+		FileEntry fileEntry = _assertResourcesMap("liferay.png");
 
-		Assert.assertNotNull(resourcesMap.get("liferay.png"));
+		_dlAppService.updateFileEntry(
+			fileEntry.getFileEntryId(), null, null, "liferay", null, null, null,
+			DLVersionNumberIncrease.NONE, (byte[])null, null, null, null,
+			serviceContext);
+
+		_assertResourcesMap("liferay");
 	}
 
 	@Test
@@ -116,6 +126,22 @@ public class FragmentCollectionImplTest {
 
 		FileUtil.delete(zipWriter.getFile());
 	}
+
+	private FileEntry _assertResourcesMap(String fileTitle) throws Exception {
+		Map<String, FileEntry> resourcesMap =
+			_fragmentCollection.getResourcesMap();
+
+		Assert.assertEquals(resourcesMap.toString(), 1, resourcesMap.size());
+
+		FileEntry fileEntry = resourcesMap.get(fileTitle);
+
+		Assert.assertNotNull(fileEntry);
+
+		return fileEntry;
+	}
+
+	@Inject
+	private static DLAppService _dlAppService;
 
 	private FragmentCollection _fragmentCollection;
 
