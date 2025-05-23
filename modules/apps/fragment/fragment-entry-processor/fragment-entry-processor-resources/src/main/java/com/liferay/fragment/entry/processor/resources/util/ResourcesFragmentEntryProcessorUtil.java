@@ -47,8 +47,13 @@ public class ResourcesFragmentEntryProcessorUtil {
 				continue;
 			}
 
-			FileEntry fileEntry = fragmentCollection.getResource(
-				matcher.group(1));
+			String path = matcher.group(1);
+
+			FileEntry fileEntry = fragmentCollection.getResource(path);
+
+			if (fileEntry == null) {
+				fileEntry = fragmentCollection.getResourceByPathWithTitle(path);
+			}
 
 			String fileEntryURL = StringPool.BLANK;
 
