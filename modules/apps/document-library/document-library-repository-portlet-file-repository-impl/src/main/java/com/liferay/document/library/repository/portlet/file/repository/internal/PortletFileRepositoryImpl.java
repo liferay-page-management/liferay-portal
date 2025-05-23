@@ -439,6 +439,25 @@ public class PortletFileRepositoryImpl implements PortletFileRepository {
 	}
 
 	@Override
+	public FileEntry fetchPortletFileEntryByTitle(
+		long groupId, long folderId, String title) {
+
+		try {
+			LocalRepository localRepository =
+				_repositoryProvider.getLocalRepository(groupId);
+
+			return localRepository.fetchFileEntry(folderId, title);
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+		}
+
+		return null;
+	}
+
+	@Override
 	public Repository fetchPortletRepository(long groupId, String portletId) {
 		return _repositoryLocalService.fetchRepository(groupId, portletId);
 	}

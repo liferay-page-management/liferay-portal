@@ -94,6 +94,9 @@ public interface PortletFileRepository {
 	public FileEntry fetchPortletFileEntryByExternalReferenceCode(
 		String externalReferenceCode, long groupId);
 
+	public FileEntry fetchPortletFileEntryByTitle(
+		long groupId, long folderId, String title);
+
 	public Repository fetchPortletRepository(long groupId, String portletId);
 
 	public String getDownloadPortletFileEntryURL(
