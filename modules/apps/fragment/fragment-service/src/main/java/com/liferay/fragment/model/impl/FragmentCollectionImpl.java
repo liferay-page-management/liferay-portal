@@ -63,6 +63,27 @@ public class FragmentCollectionImpl extends FragmentCollectionBaseImpl {
 	}
 
 	@Override
+	public FileEntry getResourceByPathWithTitle(String path) {
+		try {
+			Repository repository = _getRepository(true);
+
+			return PortletFileRepositoryUtil.fetchPortletFileEntryByTitle(
+				getGroupId(),
+				_getResourcesFolderId(
+					getResourcesFolderId(true), path,
+					repository.getRepositoryId()),
+				_getLastPathPart(path));
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug("Unable to get file entry", portalException);
+			}
+		}
+
+		return null;
+	}
+
+	@Override
 	public List<FileEntry> getResources() throws PortalException {
 		Map<String, FileEntry> resourcesMap = _getResourcesMap(
 			PortletFileRepositoryUtil.getPortletFolder(getResourcesFolderId()),
