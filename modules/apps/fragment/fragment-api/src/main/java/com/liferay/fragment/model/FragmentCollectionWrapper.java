@@ -311,6 +311,13 @@ public class FragmentCollectionWrapper
 	}
 
 	@Override
+	public com.liferay.portal.kernel.repository.model.FileEntry
+		getResourceByPathWithTitle(String path) {
+
+		return model.getResourceByPathWithTitle(path);
+	}
+
+	@Override
 	public java.util.List<com.liferay.portal.kernel.repository.model.FileEntry>
 			getResources()
 		throws com.liferay.portal.kernel.exception.PortalException {

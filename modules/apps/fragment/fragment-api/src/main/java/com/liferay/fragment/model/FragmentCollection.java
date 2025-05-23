@@ -54,6 +54,9 @@ public interface FragmentCollection
 	public com.liferay.portal.kernel.repository.model.FileEntry getResource(
 		String path);
 
+	public com.liferay.portal.kernel.repository.model.FileEntry
+		getResourceByPathWithTitle(String path);
+
 	public java.util.List<com.liferay.portal.kernel.repository.model.FileEntry>
 			getResources()
 		throws com.liferay.portal.kernel.exception.PortalException;
