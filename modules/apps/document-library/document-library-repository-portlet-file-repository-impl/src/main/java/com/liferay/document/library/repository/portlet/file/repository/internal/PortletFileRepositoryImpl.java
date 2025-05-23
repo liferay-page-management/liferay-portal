@@ -407,7 +407,7 @@ public class PortletFileRepositoryImpl implements PortletFileRepository {
 			LocalRepository localRepository =
 				_repositoryProvider.getLocalRepository(groupId);
 
-			return localRepository.fetchFileEntry(folderId, fileName);
+			return localRepository.getFileEntryByFileName(folderId, fileName);
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
