@@ -80,7 +80,7 @@ public class ActionUtil {
 				fragmentEntryLinkService, fragmentRendererRegistry,
 				GroupLocalServiceUtil.getGroup(
 					themeDisplay.getCompanyId(), GroupConstants.CMS),
-				objectDefinition, 0,
+				objectDefinition,
 				ServiceContextFactory.getInstance(httpServletRequest));
 
 			String editURL = HttpComponentsUtil.addParameters(
@@ -128,7 +128,7 @@ public class ActionUtil {
 			Layout layout = _getLayout(
 				classNameId, formManager, fragmentEntryLinkListenerRegistry,
 				fragmentEntryLinkService, fragmentRendererRegistry, group,
-				objectDefinition, ParamUtil.getLong(httpServletRequest, "plid"),
+				objectDefinition,
 				ServiceContextFactory.getInstance(httpServletRequest));
 
 			String editURL = PortalUtil.addPreservedParameters(
@@ -164,7 +164,7 @@ public class ActionUtil {
 			FragmentEntryLinkListenerRegistry fragmentEntryLinkListenerRegistry,
 			FragmentEntryLinkService fragmentEntryLinkService,
 			FragmentRendererRegistry fragmentRendererRegistry, long groupId,
-			String name, long plid, ServiceContext serviceContext)
+			String name, ServiceContext serviceContext)
 		throws Exception {
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
@@ -226,30 +226,6 @@ public class ActionUtil {
 
 		formStyledLayoutStructureItem.setClassNameId(
 			layoutPageTemplateEntry.getClassNameId());
-
-		Layout backLayout = LayoutLocalServiceUtil.fetchLayout(plid);
-
-		if (backLayout != null) {
-			formStyledLayoutStructureItem.setSuccessMessageJSONObject(
-				JSONUtil.put(
-					"layout",
-					JSONUtil.put(
-						"groupId", backLayout.getGroupId()
-					).put(
-						"layoutId", backLayout.getLayoutId()
-					).put(
-						"layoutUuid", backLayout.getUuid()
-					).put(
-						"private", backLayout.isPrivateLayout()
-					).put(
-						"title", backLayout.getTitle()
-					)
-				).put(
-					"showNotification", true
-				).put(
-					"type", "page"
-				));
-		}
 
 		List<FragmentEntryLink> addedFragmentEntryLinks = new ArrayList<>();
 
@@ -362,8 +338,7 @@ public class ActionUtil {
 			FragmentEntryLinkListenerRegistry fragmentEntryLinkListenerRegistry,
 			FragmentEntryLinkService fragmentEntryLinkService,
 			FragmentRendererRegistry fragmentRendererRegistry, Group group,
-			ObjectDefinition objectDefinition, long plid,
-			ServiceContext serviceContext)
+			ObjectDefinition objectDefinition, ServiceContext serviceContext)
 		throws Exception {
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
@@ -375,8 +350,7 @@ public class ActionUtil {
 			layoutPageTemplateEntry = _addDefaultLayoutPageTemplateEntry(
 				classNameId, formManager, fragmentEntryLinkListenerRegistry,
 				fragmentEntryLinkService, fragmentRendererRegistry,
-				group.getGroupId(), objectDefinition.getName(), plid,
-				serviceContext);
+				group.getGroupId(), objectDefinition.getName(), serviceContext);
 		}
 
 		return LayoutLocalServiceUtil.fetchLayout(
