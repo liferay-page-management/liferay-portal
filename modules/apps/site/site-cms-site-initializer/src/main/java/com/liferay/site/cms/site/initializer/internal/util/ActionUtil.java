@@ -16,7 +16,6 @@ import com.liferay.layout.constants.LayoutTypeSettingsConstants;
 import com.liferay.layout.manager.FormManager;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
-import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalServiceUtil;
 import com.liferay.layout.util.structure.ContainerStyledLayoutStructureItem;
@@ -60,6 +59,94 @@ import java.util.List;
  * @author Eudaldo Alonso
  */
 public class ActionUtil {
+
+	public static void generateLayoutStructure(
+			FormManager formManager,
+			FragmentEntryLinkListenerRegistry fragmentEntryLinkListenerRegistry,
+			FragmentEntryLinkService fragmentEntryLinkService,
+			FragmentRendererRegistry fragmentRendererRegistry, Layout layout,
+			LayoutPageTemplateEntry layoutPageTemplateEntry,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		long segmentsExperienceId =
+			SegmentsExperienceLocalServiceUtil.fetchDefaultSegmentsExperienceId(
+				layout.getPlid());
+
+		LayoutStructure layoutStructure = new LayoutStructure();
+
+		layoutStructure.addRootLayoutStructureItem();
+
+		ContainerStyledLayoutStructureItem
+			parentContainerStyledLayoutStructureItem =
+				(ContainerStyledLayoutStructureItem)
+					layoutStructure.addContainerStyledLayoutStructureItem(
+						layoutStructure.getMainItemId(), 0);
+
+		parentContainerStyledLayoutStructureItem.updateItemConfig(
+			JSONUtil.put(
+				"styles",
+				JSONUtil.put(
+					"paddingBottom", "6"
+				).put(
+					"paddingTop", "6"
+				)));
+
+		ContainerStyledLayoutStructureItem
+			childContainerStyledLayoutStructureItem =
+				(ContainerStyledLayoutStructureItem)
+					layoutStructure.addContainerStyledLayoutStructureItem(
+						parentContainerStyledLayoutStructureItem.getItemId(),
+						0);
+
+		childContainerStyledLayoutStructureItem.setWidthType("fixed");
+
+		FormStyledLayoutStructureItem formStyledLayoutStructureItem =
+			(FormStyledLayoutStructureItem)
+				layoutStructure.addFormStyledLayoutStructureItem(
+					childContainerStyledLayoutStructureItem.getItemId(), 0);
+
+		formStyledLayoutStructureItem.setClassNameId(
+			layoutPageTemplateEntry.getClassNameId());
+
+		List<FragmentEntryLink> addedFragmentEntryLinks = new ArrayList<>();
+
+		FragmentEntryLink spacesListFragmentEntryLink =
+			_addSpacesListFragmentEntryLink(
+				fragmentEntryLinkService, fragmentRendererRegistry, layout,
+				segmentsExperienceId, serviceContext);
+
+		if (spacesListFragmentEntryLink != null) {
+			layoutStructure.addFragmentStyledLayoutStructureItem(
+				spacesListFragmentEntryLink.getFragmentEntryLinkId(),
+				childContainerStyledLayoutStructureItem.getItemId(), 0);
+
+			addedFragmentEntryLinks.add(spacesListFragmentEntryLink);
+		}
+
+		formManager.addFragmentEntryLinksLayoutStructureItems(
+			addedFragmentEntryLinks, JSONFactoryUtil.createJSONObject(),
+			formStyledLayoutStructureItem, false, layout, layoutStructure,
+			LocaleUtil.getMostRelevantLocale(), segmentsExperienceId,
+			serviceContext, null);
+
+		LayoutPageTemplateStructureLocalServiceUtil.
+			updateLayoutPageTemplateStructureData(
+				layout.getGroupId(), layout.getPlid(), segmentsExperienceId,
+				layoutStructure.toString());
+
+		for (FragmentEntryLink addedFragmentEntryLink :
+				addedFragmentEntryLinks) {
+
+			for (FragmentEntryLinkListener fragmentEntryLinkListener :
+					fragmentEntryLinkListenerRegistry.
+						getFragmentEntryLinkListeners()) {
+
+				fragmentEntryLinkListener.onAddFragmentEntryLink(
+					addedFragmentEntryLink);
+			}
+		}
+	}
 
 	public static String getDisplayPageEditURL(
 		FormManager formManager,
@@ -179,91 +266,10 @@ public class ActionUtil {
 
 		Layout draftLayout = layout.fetchDraftLayout();
 
-		LayoutPageTemplateStructure layoutPageTemplateStructure =
-			LayoutPageTemplateStructureLocalServiceUtil.
-				fetchLayoutPageTemplateStructure(
-					draftLayout.getGroupId(), draftLayout.getPlid());
-
-		if (layoutPageTemplateStructure == null) {
-			return layoutPageTemplateEntry;
-		}
-
-		long segmentsExperienceId =
-			SegmentsExperienceLocalServiceUtil.fetchDefaultSegmentsExperienceId(
-				draftLayout.getPlid());
-
-		LayoutStructure layoutStructure = LayoutStructure.of(
-			layoutPageTemplateStructure.getData(segmentsExperienceId));
-
-		ContainerStyledLayoutStructureItem
-			parentContainerStyledLayoutStructureItem =
-				(ContainerStyledLayoutStructureItem)
-					layoutStructure.addContainerStyledLayoutStructureItem(
-						layoutStructure.getMainItemId(), 0);
-
-		parentContainerStyledLayoutStructureItem.updateItemConfig(
-			JSONUtil.put(
-				"styles",
-				JSONUtil.put(
-					"paddingBottom", "6"
-				).put(
-					"paddingTop", "6"
-				)));
-
-		ContainerStyledLayoutStructureItem
-			childContainerStyledLayoutStructureItem =
-				(ContainerStyledLayoutStructureItem)
-					layoutStructure.addContainerStyledLayoutStructureItem(
-						parentContainerStyledLayoutStructureItem.getItemId(),
-						0);
-
-		childContainerStyledLayoutStructureItem.setWidthType("fixed");
-
-		FormStyledLayoutStructureItem formStyledLayoutStructureItem =
-			(FormStyledLayoutStructureItem)
-				layoutStructure.addFormStyledLayoutStructureItem(
-					childContainerStyledLayoutStructureItem.getItemId(), 0);
-
-		formStyledLayoutStructureItem.setClassNameId(
-			layoutPageTemplateEntry.getClassNameId());
-
-		List<FragmentEntryLink> addedFragmentEntryLinks = new ArrayList<>();
-
-		FragmentEntryLink spacesListFragmentEntryLink =
-			_addSpacesListFragmentEntryLink(
-				fragmentEntryLinkService, fragmentRendererRegistry, draftLayout,
-				segmentsExperienceId, serviceContext);
-
-		if (spacesListFragmentEntryLink != null) {
-			layoutStructure.addFragmentStyledLayoutStructureItem(
-				spacesListFragmentEntryLink.getFragmentEntryLinkId(),
-				childContainerStyledLayoutStructureItem.getItemId(), 0);
-
-			addedFragmentEntryLinks.add(spacesListFragmentEntryLink);
-		}
-
-		formManager.addFragmentEntryLinksLayoutStructureItems(
-			addedFragmentEntryLinks, JSONFactoryUtil.createJSONObject(),
-			formStyledLayoutStructureItem, false, draftLayout, layoutStructure,
-			LocaleUtil.getMostRelevantLocale(), segmentsExperienceId,
-			serviceContext, null);
-
-		LayoutPageTemplateStructureLocalServiceUtil.
-			updateLayoutPageTemplateStructureData(
-				draftLayout.getGroupId(), draftLayout.getPlid(),
-				segmentsExperienceId, layoutStructure.toString());
-
-		for (FragmentEntryLink addedFragmentEntryLink :
-				addedFragmentEntryLinks) {
-
-			for (FragmentEntryLinkListener fragmentEntryLinkListener :
-					fragmentEntryLinkListenerRegistry.
-						getFragmentEntryLinkListeners()) {
-
-				fragmentEntryLinkListener.onAddFragmentEntryLink(
-					addedFragmentEntryLink);
-			}
-		}
+		generateLayoutStructure(
+			formManager, fragmentEntryLinkListenerRegistry,
+			fragmentEntryLinkService, fragmentRendererRegistry, draftLayout,
+			layoutPageTemplateEntry, serviceContext);
 
 		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
 			LayoutPageTemplateEntryLocalServiceUtil.
