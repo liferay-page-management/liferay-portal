@@ -304,8 +304,17 @@ export class ApiHelpers {
 
 	async post<T>(url: string, options: RequestOptions<T> = {}) {
 		const response = await this.postResponse(url, options);
+		const status = response.status();
 
-		if (response.status() === 204) {
+		if (!response.ok()) {
+			const error = await response.text();
+
+			throw new Error(
+				`POST request to ${url} failed with code ${status}:\n\n${error}`
+			);
+		}
+
+		if (status === 204) {
 			return;
 		}
 
