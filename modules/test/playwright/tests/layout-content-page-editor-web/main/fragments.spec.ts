@@ -599,7 +599,7 @@ test.describe('Related Asset Fragment', () => {
 });
 
 test.describe('Banner Slider Fragment', () => {
-	test('Check the functionality of the Dropdown fragment', async ({
+	test('Check the functionality of the Banner Slider fragment', async ({
 		apiHelpers,
 		page,
 		pageEditorPage,
