@@ -129,13 +129,13 @@ public class RepositoryBrowserServletTest {
 	@Test
 	@TestInfo("LPD-55643")
 	public void testIncludeExtension() throws Exception {
-		_assertExtension("file.txt", true);
+		_assertExtension(RandomTestUtil.randomString() + ".txt", true);
 
-		_assertExtension("file.txt", false);
+		_assertExtension(RandomTestUtil.randomString() + ".txt", false);
 
-		_assertExtension("file", true);
+		_assertExtension(RandomTestUtil.randomString(), true);
 
-		_assertExtension("file", false);
+		_assertExtension(RandomTestUtil.randomString(), false);
 	}
 
 	private void _assertExtension(String fileName, boolean includeExtension)
@@ -157,10 +157,17 @@ public class RepositoryBrowserServletTest {
 
 		Assert.assertEquals(fileName, fileEntry.getFileName());
 
-		_assertUpdatedExtension(fileEntry, includeExtension, "file_update.txt");
-		_assertUpdatedExtension(fileEntry, includeExtension, "File_Update.TXT");
-		_assertUpdatedExtension(fileEntry, includeExtension, "file_update.pdf");
-		_assertUpdatedExtension(fileEntry, includeExtension, "file_update");
+		_assertUpdatedExtension(
+			fileEntry, includeExtension,
+			RandomTestUtil.randomString() + ".txt");
+		_assertUpdatedExtension(
+			fileEntry, includeExtension,
+			RandomTestUtil.randomString() + ".TXT");
+		_assertUpdatedExtension(
+			fileEntry, includeExtension,
+			RandomTestUtil.randomString() + ".pdf");
+		_assertUpdatedExtension(
+			fileEntry, includeExtension, RandomTestUtil.randomString());
 
 		_dlAppService.deleteFileEntry(fileEntry.getFileEntryId());
 	}
