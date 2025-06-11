@@ -81,6 +81,18 @@ export default function ContentFDSPropsTransformer({
 				};
 			}
 
+			if (action?.data?.id === 'viewContent') {
+				return {
+					...action,
+					data: {
+						...action.data,
+						disableHeader: false,
+						size: 'full-screen',
+						title: Liferay.Language.get('view'),
+					},
+				};
+			}
+
 			return action;
 		}),
 	};
