@@ -251,6 +251,9 @@ public class ObjectFieldInfoFieldConverter {
 			).attribute(
 				RelationshipInfoFieldType.URL, _getRelationshipURL(objectField)
 			).attribute(
+				RelationshipInfoFieldType.URL,
+				_isObjectRelationshipInverse(objectField)
+			).attribute(
 				RelationshipInfoFieldType.VALUE_FIELD_NAME, "id"
 			);
 		}
@@ -536,6 +539,28 @@ public class ObjectFieldInfoFieldConverter {
 		}
 
 		return false;
+	}
+
+	private Boolean _isObjectRelationshipInverse(ObjectField objectField) {
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		if ((serviceContext == null) || (serviceContext.getRequest() == null)) {
+			return false;
+		}
+
+		ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.
+				fetchObjectRelationshipByObjectFieldId2(
+					objectField.getObjectFieldId());
+
+		if (objectRelationship == null) {
+			return false;
+		}
+
+		return Objects.equals(
+			objectRelationship.getObjectDefinitionId2(),
+			objectField.getObjectDefinitionId());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

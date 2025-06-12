@@ -13,6 +13,9 @@ public class RelationshipInfoFieldType implements InfoFieldType {
 	public static final RelationshipInfoFieldType INSTANCE =
 		new RelationshipInfoFieldType();
 
+	public static final Attribute<RelationshipInfoFieldType, Boolean> INVERSE =
+		new Attribute<>();
+
 	public static final Attribute<RelationshipInfoFieldType, String>
 		LABEL_FIELD_NAME = new Attribute<>();
 
