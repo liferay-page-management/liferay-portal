@@ -89,7 +89,7 @@ public class ObjectEntryInfoItemFormProviderUtil {
 							objectDefinitionLocalService,
 							objectFieldInfoFieldConverter,
 							objectFieldLocalService,
-							objectRelationshipLocalService));
+							objectRelationshipLocalService, null));
 				}
 			}
 		).infoFieldSetEntry(
@@ -190,17 +190,26 @@ public class ObjectEntryInfoItemFormProviderUtil {
 							objectDefinitionId,
 							ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
 
-					if (!objectRelationship.isSelf() &&
-						Objects.equals(
-							objectDefinitionId,
-							objectRelationship.getObjectDefinitionId1())) {
-
+					if (objectRelationship.isSelf()) {
 						continue;
 					}
 
-					ObjectDefinition parentObjectDefinition =
-						objectDefinitionLocalService.fetchObjectDefinition(
-							objectRelationship.getObjectDefinitionId1());
+					ObjectDefinition parentObjectDefinition = null;
+
+					if (Objects.equals(
+							objectDefinitionId,
+							objectRelationship.getObjectDefinitionId1()) &&
+						FeatureFlagManagerUtil.isEnabled("LPD-50377")) {
+
+						parentObjectDefinition =
+							objectDefinitionLocalService.fetchObjectDefinition(
+								objectRelationship.getObjectDefinitionId2());
+					}
+					else {
+						parentObjectDefinition =
+							objectDefinitionLocalService.fetchObjectDefinition(
+								objectRelationship.getObjectDefinitionId1());
+					}
 
 					if (parentObjectDefinition == null) {
 						_log.error(
@@ -247,7 +256,7 @@ public class ObjectEntryInfoItemFormProviderUtil {
 							objectDefinitionLocalService,
 							objectFieldInfoFieldConverter,
 							objectFieldLocalService,
-							objectRelationshipLocalService));
+							objectRelationshipLocalService, objectDefinition));
 				}
 			}
 		).infoFieldSetEntry(
@@ -311,7 +320,8 @@ public class ObjectEntryInfoItemFormProviderUtil {
 		ObjectDefinitionLocalService objectDefinitionLocalService,
 		ObjectFieldInfoFieldConverter objectFieldInfoFieldConverter,
 		ObjectFieldLocalService objectFieldLocalService,
-		ObjectRelationshipLocalService objectRelationshipLocalService) {
+		ObjectRelationshipLocalService objectRelationshipLocalService,
+		ObjectDefinition parentObjectDefinition) {
 
 		return InfoFieldSet.builder(
 		).infoFieldSetEntry(
@@ -332,12 +342,17 @@ public class ObjectEntryInfoItemFormProviderUtil {
 								fetchObjectRelationshipByObjectFieldId2(
 									objectField.getObjectFieldId());
 
-						ObjectDefinition parentObjectDefinition =
+						ObjectDefinition relatedObjectDefinition =
 							objectDefinitionLocalService.fetchObjectDefinition(
 								objectRelationship.getObjectDefinitionId1());
 
-						if ((parentObjectDefinition == null) ||
-							!parentObjectDefinition.isActive()) {
+						if ((relatedObjectDefinition == null) ||
+							!relatedObjectDefinition.isActive() ||
+							((parentObjectDefinition != null) &&
+							 Objects.equals(
+								 objectRelationship.getObjectDefinitionId1(),
+								 parentObjectDefinition.
+									 getObjectDefinitionId()))) {
 
 							continue;
 						}
