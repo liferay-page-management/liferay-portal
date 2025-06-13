@@ -119,7 +119,7 @@ public class ActionUtil {
 			StringPool.BLANK, fragmentEntryLinkService,
 			fragmentRendererRegistry,
 			"com.liferay.site.cms.site.initializer.internal.fragment." +
-				"renderer.SpaceListFragmentRenderer",
+				"renderer.SpaceListComponentSectionFragmentRenderer",
 			layout, segmentsExperienceId, serviceContext);
 
 		if (spaceListFragmentEntryLink != null) {
