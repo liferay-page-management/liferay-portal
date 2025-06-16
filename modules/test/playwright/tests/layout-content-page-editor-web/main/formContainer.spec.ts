@@ -1572,7 +1572,10 @@ test.describe('File Upload Fragment', () => {
 			await page.getByRole('link', {name: 'FileUpload'}).click();
 
 			await expect(
-				page.getByRole('link', {name: 'file_upload_image_2'})
+				page.getByRole('link', {
+					exact: true,
+					name: 'file_upload_image_2',
+				})
 			).toBeVisible();
 		}
 	);
