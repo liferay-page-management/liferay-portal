@@ -1348,6 +1348,37 @@ test.describe('File Upload Fragment', () => {
 					'Thank you. Your information was successfully received.'
 				)
 			).not.toBeVisible();
+
+			// Add another file and submit form
+
+			const displayPageFileChooserPromise =
+				page.waitForEvent('filechooser');
+
+			await fileUploadInput
+				.getByText('Select File', {exact: true})
+				.click();
+
+			const displayPageFileChooser = await displayPageFileChooserPromise;
+
+			await displayPageFileChooser.setFiles(
+				path.join(__dirname, '/dependencies/file_upload_image_2.jpg')
+			);
+
+			await page.getByRole('button', {name: 'Submit'}).click();
+
+			// Check that is edited correctly
+
+			await expect(
+				page.getByText(
+					'Thank you. Your information was successfully received.'
+				)
+			).toBeVisible();
+
+			await page.reload();
+
+			await expect(
+				fileUploadInput.getByText('file_upload_image_2')
+			).toBeVisible();
 		}
 	);
 
