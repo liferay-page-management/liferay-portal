@@ -297,8 +297,7 @@ public class PageFragmentInstanceDefinitionMapper {
 									value.toString());
 							}
 						}
-
-						if (value instanceof JSONArray jsonArray) {
+						else if (value instanceof JSONArray jsonArray) {
 							List<String> values = new ArrayList<>();
 
 							for (int i = 0; i < jsonArray.length(); i++) {
