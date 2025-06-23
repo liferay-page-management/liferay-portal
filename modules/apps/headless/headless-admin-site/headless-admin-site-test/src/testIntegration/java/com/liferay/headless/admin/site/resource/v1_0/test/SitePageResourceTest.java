@@ -984,6 +984,92 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				sitePage.getUuid()));
 	}
 
+	private void _testUpdateSiteSiteByExternalReferenceCodeSitePageWithPriority(
+			Http.Method httpMethod, SitePage.Type type)
+		throws Exception {
+
+		SitePage sitePage1 =
+			testPostByExternalReferenceCodeSitePage_addSitePage(
+				_getRandomSitePage(
+					StringUtil.toLowerCase(RandomTestUtil.randomString()), null,
+					type, null));
+		SitePage sitePage2 =
+			testPostByExternalReferenceCodeSitePage_addSitePage(
+				_getRandomSitePage(
+					StringUtil.toLowerCase(RandomTestUtil.randomString()), null,
+					type, null));
+		SitePage sitePage3 =
+			testPostByExternalReferenceCodeSitePage_addSitePage(
+				_getRandomSitePage(
+					StringUtil.toLowerCase(RandomTestUtil.randomString()), null,
+					type, null));
+		SitePage sitePage4 =
+			testPostByExternalReferenceCodeSitePage_addSitePage(
+				_getRandomSitePage(
+					StringUtil.toLowerCase(RandomTestUtil.randomString()), null,
+					type, null));
+		SitePage sitePage5 =
+			testPostByExternalReferenceCodeSitePage_addSitePage(
+				_getRandomSitePage(
+					StringUtil.toLowerCase(RandomTestUtil.randomString()), null,
+					type, null));
+
+		_assertParentAndPriority(null, 0, sitePage1);
+		_assertParentAndPriority(null, 1, sitePage2);
+		_assertParentAndPriority(null, 2, sitePage3);
+		_assertParentAndPriority(null, 3, sitePage4);
+		_assertParentAndPriority(null, 4, sitePage5);
+
+		_updateParentAndPriority(httpMethod, null, 1, sitePage4);
+		_assertParentAndPriority(null, 0, sitePage1);
+		_assertParentAndPriority(null, 1, sitePage4);
+		_assertParentAndPriority(null, 2, sitePage2);
+		_assertParentAndPriority(null, 3, sitePage3);
+		_assertParentAndPriority(null, 4, sitePage5);
+
+		_updateParentAndPriority(httpMethod, null, 5, sitePage5);
+		_assertParentAndPriority(null, 0, sitePage1);
+		_assertParentAndPriority(null, 1, sitePage4);
+		_assertParentAndPriority(null, 2, sitePage2);
+		_assertParentAndPriority(null, 3, sitePage3);
+		_assertParentAndPriority(null, 4, sitePage5);
+
+		_updateParentAndPriority(httpMethod, null, null, sitePage3);
+		_assertParentAndPriority(null, 0, sitePage1);
+		_assertParentAndPriority(null, 1, sitePage4);
+		_assertParentAndPriority(null, 2, sitePage2);
+		_assertParentAndPriority(null, 3, sitePage5);
+		_assertParentAndPriority(null, 4, sitePage3);
+
+		_updateParentAndPriority(httpMethod, sitePage1, 2, sitePage2);
+		_assertParentAndPriority(null, 0, sitePage1);
+		_assertParentAndPriority(null, 1, sitePage4);
+		_assertParentAndPriority(null, 3, sitePage5);
+		_assertParentAndPriority(null, 4, sitePage3);
+		_assertParentAndPriority(sitePage1, 0, sitePage2);
+
+		_updateParentAndPriority(httpMethod, sitePage1, 1, sitePage4);
+		_assertParentAndPriority(null, 0, sitePage1);
+		_assertParentAndPriority(null, 3, sitePage5);
+		_assertParentAndPriority(null, 4, sitePage3);
+		_assertParentAndPriority(sitePage1, 0, sitePage2);
+		_assertParentAndPriority(sitePage1, 1, sitePage4);
+
+		_updateParentAndPriority(httpMethod, sitePage1, 3, sitePage3);
+		_assertParentAndPriority(null, 0, sitePage1);
+		_assertParentAndPriority(null, 3, sitePage5);
+		_assertParentAndPriority(sitePage1, 0, sitePage2);
+		_assertParentAndPriority(sitePage1, 1, sitePage4);
+		_assertParentAndPriority(sitePage1, 2, sitePage3);
+
+		SitePage finalSitePage1 = sitePage1;
+
+		_assertProblemException(
+			"pageSettings.priority must be greater than or equal to 0",
+			() -> _updateParentAndPriority(
+				httpMethod, null, -1, finalSitePage1));
+	}
+
 	private void _updateParentAndPriority(
 			Http.Method httpMethod, SitePage parentSitePage, Integer priority,
 			SitePage sitePage)
