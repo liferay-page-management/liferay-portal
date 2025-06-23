@@ -40,6 +40,8 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
+import jakarta.validation.ValidationException;
+
 import jakarta.ws.rs.NotSupportedException;
 
 import java.io.Serializable;
@@ -201,6 +203,8 @@ public class SitePageResourceImpl extends BaseSitePageResourceImpl {
 		if (!FeatureFlagManagerUtil.isEnabled("LPD-35443")) {
 			throw new UnsupportedOperationException();
 		}
+
+		_validateSitePage(sitePage);
 
 		long groupId = GroupUtil.getGroupId(
 			false, contextCompany.getCompanyId(), siteExternalReferenceCode);
@@ -421,6 +425,23 @@ public class SitePageResourceImpl extends BaseSitePageResourceImpl {
 		return _layoutService.updateLayout(
 			layout.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
 			typeSettings);
+	}
+
+	private void _validateSitePage(SitePage sitePage) {
+		if (sitePage.getPageSettings() == null) {
+			return;
+		}
+
+		PageSettings pageSettings = sitePage.getPageSettings();
+
+		if (pageSettings.getPriority() == null) {
+			return;
+		}
+
+		if (pageSettings.getPriority() < 0) {
+			throw new ValidationException(
+				"pageSettings.priority must be greater than or equal to 0");
+		}
 	}
 
 	private void _validateSitePageLayout(Layout layout) {
