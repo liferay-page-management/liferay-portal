@@ -441,6 +441,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		for (Layout layout : layouts) {
 			_assertProblemException(
+				null,
 				() ->
 					sitePageResource.
 						deleteSiteSiteByExternalReferenceCodeSitePage(
@@ -530,6 +531,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		throws Exception {
 
 		_assertProblemException(
+			null,
 			() -> sitePageResource.patchSiteSiteByExternalReferenceCodeSitePage(
 				testGroup.getExternalReferenceCode(),
 				sitePage.getExternalReferenceCode(), sitePage));
@@ -541,6 +543,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		throws Exception {
 
 		_assertProblemException(
+			null,
 			() ->
 				sitePageResource.
 					postSiteSiteByExternalReferenceCodeSitePagePageSpecification(
@@ -557,7 +560,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	}
 
 	private void _assertProblemException(
-			UnsafeRunnable<Exception> unsafeRunnable)
+			String title, UnsafeRunnable<Exception> unsafeRunnable)
 		throws Exception {
 
 		try {
@@ -568,7 +571,14 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			Problem problem = problemException.getProblem();
 
 			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
-			Assert.assertNull(problem.getTitle());
+
+			if (title == null) {
+				Assert.assertNull(problem.getTitle());
+			}
+			else {
+				Assert.assertTrue(
+					StringUtil.startsWith(problem.getTitle(), title));
+			}
 		}
 	}
 
@@ -591,6 +601,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		throws Exception {
 
 		_assertProblemException(
+			null,
 			() -> sitePageResource.putSiteSiteByExternalReferenceCodeSitePage(
 				testGroup.getExternalReferenceCode(),
 				sitePage.getExternalReferenceCode(), sitePage));
