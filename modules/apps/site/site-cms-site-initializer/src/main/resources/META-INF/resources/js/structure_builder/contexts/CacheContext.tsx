@@ -188,10 +188,10 @@ function useCache<T extends CacheKey>(
 }
 
 function useStaleCache() {
-	const {broadcastRef} = useContext(CacheContext);
+	const broadcast = new BroadcastChannel('update-cache');
 
 	return (key: CacheKey) => {
-		broadcastRef.current?.postMessage({key, type: 'staleCache'});
+		broadcast.postMessage({key, type: 'staleCache'});
 	};
 }
 export default CacheContextProvider;
