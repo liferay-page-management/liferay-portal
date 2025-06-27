@@ -10,6 +10,7 @@ import com.liferay.headless.admin.site.client.dto.v1_0.ContentPageSettings;
 import com.liferay.headless.admin.site.client.dto.v1_0.ContentPageSpecification;
 import com.liferay.headless.admin.site.client.dto.v1_0.FriendlyUrlHistory;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageSettings;
+import com.liferay.headless.admin.site.client.dto.v1_0.PageSpecification;
 import com.liferay.headless.admin.site.client.dto.v1_0.SitePage;
 import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPageSettings;
 import com.liferay.headless.admin.site.client.problem.Problem;
@@ -20,6 +21,7 @@ import com.liferay.headless.admin.site.resource.v1_0.test.util.PageSpecification
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.function.UnsafeRunnable;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -251,6 +253,25 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				StringUtil.toLowerCase(RandomTestUtil.randomString()),
 				layout.getExternalReferenceCode(), SitePage.Type.CONTENT_PAGE,
 				StringUtil.toLowerCase(RandomTestUtil.randomString())));
+
+		String publishedPageSpecificationExternalReferenceCode =
+			StringUtil.toLowerCase(RandomTestUtil.randomString());
+		String sitePageExternalReferenceCode = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
+
+		_assertProblemException(
+			StringBundler.concat(
+				"Site page external reference code ",
+				sitePageExternalReferenceCode,
+				" does not match published page specification external ",
+				"reference code ",
+				publishedPageSpecificationExternalReferenceCode),
+			() -> sitePageResource.postByExternalReferenceCodeSitePage(
+				testGroup.getExternalReferenceCode(),
+				_getContentSitePage(
+					StringUtil.toLowerCase(RandomTestUtil.randomString()),
+					publishedPageSpecificationExternalReferenceCode,
+					sitePageExternalReferenceCode)));
 	}
 
 	@Override
@@ -643,6 +664,44 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			layout.getTypeSettingsProperty(
 				LayoutTypePortletConstants.LAYOUT_TEMPLATE_ID),
 			widgetPageSettings.getLayoutTemplateId());
+	}
+
+	private ContentPageSpecification _getContentPageSpecification(
+		String curDraftContentPageSpecificationExternalReferenceCode,
+		String curExternalReferenceCode, PageSpecification.Status curStatus) {
+
+		return new ContentPageSpecification() {
+			{
+				setDraftContentPageSpecificationExternalReferenceCode(
+					curDraftContentPageSpecificationExternalReferenceCode);
+				setExternalReferenceCode(curExternalReferenceCode);
+				setStatus(curStatus);
+				setType(Type.CONTENT_PAGE_SPECIFICATION);
+			}
+		};
+	}
+
+	private SitePage _getContentSitePage(
+		String draftPageSpecificationExternalReferenceCode,
+		String publishedPageSpecificationExternalReferenceCode,
+		String sitePageExternalReferenceCode) {
+
+		return new SitePage() {
+			{
+				setExternalReferenceCode(sitePageExternalReferenceCode);
+				setPageSpecifications(
+					new PageSpecification[] {
+						_getContentPageSpecification(
+							draftPageSpecificationExternalReferenceCode,
+							publishedPageSpecificationExternalReferenceCode,
+							PageSpecification.Status.APPROVED),
+						_getContentPageSpecification(
+							null, draftPageSpecificationExternalReferenceCode,
+							PageSpecification.Status.DRAFT)
+					});
+				setType(Type.CONTENT_PAGE);
+			}
+		};
 	}
 
 	private PageSettings _getPageSettings(SitePage.Type type) throws Exception {
