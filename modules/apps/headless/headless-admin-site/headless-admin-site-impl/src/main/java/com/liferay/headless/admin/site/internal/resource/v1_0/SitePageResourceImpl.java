@@ -264,6 +264,7 @@ public class SitePageResourceImpl extends BaseSitePageResourceImpl {
 			groupId, contextHttpServletRequest, sitePage.getViewableByAsString()
 		).build();
 
+		serviceContext.setUserId(contextUser.getUserId());
 		serviceContext.setUuid(sitePage.getUuid());
 
 		return _layoutService.addLayout(
