@@ -137,7 +137,7 @@ export default function ReferencedStructureModal({
 }
 
 function getItems(objectDefinitions: ObjectDefinitions): Item[] {
-	return Array.from(objectDefinitions.values()).map((objectDefinition) => ({
+	return Object.values(objectDefinitions).map((objectDefinition) => ({
 		label:
 			objectDefinition.label[
 				Liferay.ThemeDisplay.getDefaultLanguageId()

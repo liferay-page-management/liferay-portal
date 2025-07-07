@@ -54,7 +54,7 @@ export type ObjectDefinition = {
 	};
 };
 
-export type ObjectDefinitions = Map<
+export type ObjectDefinitions = Record<
 	ObjectDefinition['externalReferenceCode'],
 	ObjectDefinition
 >;

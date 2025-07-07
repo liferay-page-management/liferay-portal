@@ -15,17 +15,15 @@ async function getObjectDefinitions(): Promise<ObjectDefinitions> {
 	);
 
 	if (data) {
-		const objectDefinitions = new Map();
+		const objectDefinitions: ObjectDefinitions = {};
 
 		for (const objectDefinition of data.items) {
 			if (objectDefinition.status?.code !== 0) {
 				continue;
 			}
 
-			objectDefinitions.set(
-				objectDefinition.externalReferenceCode,
-				objectDefinition
-			);
+			objectDefinitions[objectDefinition.externalReferenceCode] =
+				objectDefinition;
 		}
 
 		return objectDefinitions;

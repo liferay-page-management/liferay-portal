@@ -11,7 +11,7 @@ import {Config, initializeConfig} from '../config';
 import CacheContextProvider from '../contexts/CacheContext';
 import StateContextProvider, {useSelector} from '../contexts/StateContext';
 import selectStructureId from '../selectors/selectStructureId';
-import {ObjectDefinition} from '../types/ObjectDefinition';
+import {ObjectDefinition, ObjectDefinitions} from '../types/ObjectDefinition';
 import buildState from '../utils/buildState';
 import Sidebar from './Sidebar';
 import StructureBuilderToolbar from './StructureBuilderToolbar';
@@ -24,28 +24,16 @@ export default function StructureBuilder({
 	config: Config;
 	state: {
 		mainObjectDefinition: ObjectDefinition;
-		objectDefinitions: ObjectDefinition[];
+		objectDefinitions: ObjectDefinitions;
 	};
 }) {
 	initializeConfig(config);
 
-	const objectDefinitions = new Map(
-		state.objectDefinitions.map((objectDefinition) => [
-			objectDefinition.externalReferenceCode,
-			objectDefinition,
-		])
-	);
-
 	return (
-		<StateContextProvider
-			initialState={buildState({
-				mainObjectDefinition: state.mainObjectDefinition,
-				objectDefinitions,
-			})}
-		>
+		<StateContextProvider initialState={buildState(state)}>
 			<CacheContextProvider
 				initialData={{
-					'object-definitions': objectDefinitions,
+					'object-definitions': state.objectDefinitions,
 				}}
 			>
 				<div className="d-flex flex-column structure-builder__wrapper">

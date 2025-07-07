@@ -53,7 +53,7 @@ type InitialData = Partial<{
 function getInitialCache(initialData: InitialData = {}): Cache {
 	return {
 		'object-definitions': {
-			data: initialData['object-definitions'] ?? new Map(),
+			data: initialData['object-definitions'] ?? {},
 			fetcher: ObjectDefinitionService.getObjectDefinitions,
 			status: initialData['object-definitions'] ? 'saved' : 'idle',
 		},

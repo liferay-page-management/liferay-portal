@@ -151,7 +151,7 @@ export function buildReferencedStructure({
 }): ReferencedStructure {
 	const uuid = getUuid();
 
-	const objectDefinition = objectDefinitions.get(erc)!;
+	const objectDefinition = objectDefinitions[erc]!;
 
 	const url = new URL(window.location.href);
 
