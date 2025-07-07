@@ -42,6 +42,7 @@ type TreeItem = {
 	erc?: string;
 	icon: string;
 	id: Uuid;
+	invalid?: boolean;
 	label: string;
 	name?: string;
 	type?: FieldType | ReferencedStructure['type'] | RepeatableGroup['type'];
@@ -82,6 +83,7 @@ export default function StructureTree({search}: {search: string}) {
 			{
 				children: buildItems({
 					children,
+					invalids,
 					search,
 					structureERC,
 				}),
@@ -94,6 +96,7 @@ export default function StructureTree({search}: {search: string}) {
 	}, [
 		children,
 		hasReferencedStructure,
+		invalids,
 		objectDefinitionsStatus,
 		search,
 		structureERC,
@@ -216,7 +219,7 @@ export default function StructureTree({search}: {search: string}) {
 							<></>
 						)}
 
-						{invalids.has(item.id) ||
+						{item.invalid ||
 						(item.id === structureUuid && structureError) ? (
 							<ClayIcon
 								className="ml-2 text-danger"
@@ -271,7 +274,7 @@ export default function StructureTree({search}: {search: string}) {
 										{childItem.label}
 									</span>
 
-									{invalids.has(childItem.id) ? (
+									{childItem.invalid ? (
 										<ClayIcon
 											className="ml-2 text-danger"
 											symbol="exclamation-full"
@@ -329,11 +332,13 @@ function useSelectionMode() {
 
 function buildItems({
 	children,
+	invalids,
 	path = [],
 	search,
 	structureERC,
 }: {
 	children: (ReferencedStructure | RepeatableGroup | Structure)['children'];
+	invalids: State['invalids'];
 	path?: string[];
 	search: string;
 	structureERC: Structure['erc'];
@@ -349,6 +354,7 @@ function buildItems({
 				const item: TreeItem = {
 					children: buildItems({
 						children: child.children,
+						invalids,
 						path: [...path, child.name],
 						search,
 						structureERC,
@@ -356,6 +362,7 @@ function buildItems({
 					erc: child.erc,
 					icon: 'fieldset',
 					id: child.uuid,
+					invalid: invalids.has(child.uuid),
 					label,
 					type: child.type,
 				};
@@ -376,6 +383,7 @@ function buildItems({
 					items.push({
 						icon: FIELD_TYPE_ICON[child.type],
 						id: child.uuid,
+						invalid: invalids.has(child.uuid),
 						label: child.label[
 							Liferay.ThemeDisplay.getDefaultLanguageId()
 						]!,
