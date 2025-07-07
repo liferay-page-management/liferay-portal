@@ -37,6 +37,14 @@ import {FIELD_TYPE_ICON, FieldType} from '../utils/field';
 import getLocalizedLabel from '../utils/getLocalizedLabel';
 
 type TreeItem = {
+	actions?: Array<{
+		href?: string;
+		label: string;
+		onClick?: () => void;
+		symbolLeft?: string;
+		symbolRight?: string;
+		target?: string;
+	}>;
 	children?: TreeItem[];
 	editURL?: string;
 	erc?: string;
@@ -83,6 +91,7 @@ export default function StructureTree({search}: {search: string}) {
 			{
 				children: buildItems({
 					children,
+					dispatch,
 					invalids,
 					search,
 					structureERC,
@@ -95,6 +104,7 @@ export default function StructureTree({search}: {search: string}) {
 		];
 	}, [
 		children,
+		dispatch,
 		hasReferencedStructure,
 		invalids,
 		objectDefinitionsStatus,
@@ -231,60 +241,50 @@ export default function StructureTree({search}: {search: string}) {
 					</ClayTreeView.ItemStack>
 
 					<ClayTreeView.Group items={item.children}>
-						{(childItem, selectedKeys) => {
-							const actions = getItemActions({
-								dispatch,
-								item: childItem,
-								parent: item,
-							});
-
-							return (
-								<ClayTreeView.Item
-									actions={
-										actions.length ? (
-											<ClayDropDownWithItems
-												items={actions}
-												trigger={
-													<ClayButtonWithIcon
-														aria-label={Liferay.Language.get(
-															'field-options'
-														)}
-														borderless
-														disabled={
-															selection.length > 1
-														}
-														displayType="unstyled"
-														size="sm"
-														symbol="ellipsis-v"
-													/>
-												}
-											/>
-										) : undefined
-									}
-									className={classNames({
-										active: selectedKeys.has(childItem.id),
-									})}
-								>
-									<ClayIcon
-										className="structure-builder__tree-node--field-icon"
-										symbol={childItem.icon}
-									/>
-
-									<span className="ml-1">
-										{childItem.label}
-									</span>
-
-									{childItem.invalid ? (
-										<ClayIcon
-											className="ml-2 text-danger"
-											symbol="exclamation-full"
+						{(childItem, selectedKeys) => (
+							<ClayTreeView.Item
+								actions={
+									childItem.actions?.length ? (
+										<ClayDropDownWithItems
+											items={childItem.actions}
+											trigger={
+												<ClayButtonWithIcon
+													aria-label={Liferay.Language.get(
+														'field-options'
+													)}
+													borderless
+													disabled={
+														selection.length > 1
+													}
+													displayType="unstyled"
+													size="sm"
+													symbol="ellipsis-v"
+												/>
+											}
 										/>
-									) : (
-										<></>
-									)}
-								</ClayTreeView.Item>
-							);
-						}}
+									) : undefined
+								}
+								className={classNames({
+									active: selectedKeys.has(childItem.id),
+								})}
+							>
+								<ClayIcon
+									className="structure-builder__tree-node--field-icon"
+									symbol={childItem.icon}
+								/>
+
+								<span className="ml-1">{childItem.label}</span>
+
+								{childItem.invalid ? (
+									<ClayIcon
+										className="ml-2 text-danger"
+										symbol="exclamation-full"
+									/>
+								) : (
+									<></>
+								)}
+							</ClayTreeView.Item>
+						)}
 					</ClayTreeView.Group>
 				</ClayTreeView.Item>
 			)}
@@ -332,12 +332,16 @@ function useSelectionMode() {
 
 function buildItems({
 	children,
+	dispatch,
 	invalids,
+	isReferenced,
 	search,
 	structureERC,
 }: {
 	children: (ReferencedStructure | RepeatableGroup | Structure)['children'];
+	dispatch: React.Dispatch<Action>;
 	invalids: State['invalids'];
+	isReferenced?: boolean;
 	search: string;
 	structureERC: Structure['erc'];
 }): TreeItem[] {
@@ -350,9 +354,16 @@ function buildItems({
 				const label = getLocalizedLabel(child);
 
 				const item: TreeItem = {
+					actions: getItemActions({
+						dispatch,
+						isReferenced,
+						item: child,
+					}),
 					children: buildItems({
 						children: child.children,
+						dispatch,
 						invalids,
+						isReferenced: child.type === 'referenced-structure',
 						search,
 						structureERC,
 					}),
@@ -378,6 +389,11 @@ function buildItems({
 
 				if (match(label, search)) {
 					items.push({
+						actions: getItemActions({
+							dispatch,
+							isReferenced,
+							item: child,
+						}),
 						icon: FIELD_TYPE_ICON[child.type],
 						id: child.uuid,
 						invalid: invalids.has(child.uuid),
@@ -405,12 +421,12 @@ function match(value: string, keyword: string) {
 
 function getItemActions({
 	dispatch,
+	isReferenced,
 	item,
-	parent,
 }: {
 	dispatch: React.Dispatch<Action>;
-	item: TreeItem;
-	parent: TreeItem;
+	isReferenced?: boolean;
+	item: StructureChild;
 }) {
 	const actions = [];
 
@@ -424,7 +440,7 @@ function getItemActions({
 		});
 	}
 
-	if (parent.type !== 'referenced-structure') {
+	if (!isReferenced) {
 		if (
 			item.type !== 'referenced-structure' &&
 			item.type !== 'repeatable-group'
@@ -444,7 +460,7 @@ function getItemActions({
 			onClick: () =>
 				dispatch({
 					type: 'delete-child',
-					uuid: item.id,
+					uuid: item.uuid,
 				}),
 			symbolLeft: 'trash',
 		});
