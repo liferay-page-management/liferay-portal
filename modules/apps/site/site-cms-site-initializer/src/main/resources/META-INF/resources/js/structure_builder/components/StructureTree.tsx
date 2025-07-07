@@ -34,6 +34,7 @@ import {
 } from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 import {FIELD_TYPE_ICON, FieldType} from '../utils/field';
+import getLocalizedLabel from '../utils/getLocalizedLabel';
 
 type TreeItem = {
 	children?: TreeItem[];
@@ -335,8 +336,7 @@ function buildItems({
 				child.type === 'referenced-structure' ||
 				child.type === 'repeatable-group'
 			) {
-				const label =
-					child.label[Liferay.ThemeDisplay.getDefaultLanguageId()]!;
+				const label = getLocalizedLabel(child);
 
 				const item: TreeItem = {
 					children: buildItems({
@@ -362,8 +362,7 @@ function buildItems({
 				}
 			}
 			else {
-				const label =
-					child.label[Liferay.ThemeDisplay.getDefaultLanguageId()]!;
+				const label = getLocalizedLabel(child);
 
 				if (match(label, search)) {
 					items.push({

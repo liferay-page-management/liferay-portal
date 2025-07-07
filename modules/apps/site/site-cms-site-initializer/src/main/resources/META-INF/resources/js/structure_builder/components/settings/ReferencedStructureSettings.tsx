@@ -13,6 +13,7 @@ import {sub} from 'frontend-js-web';
 import React from 'react';
 
 import {ReferencedStructure} from '../../types/Structure';
+import getLocalizedLabel from '../../utils/getLocalizedLabel';
 import Breadcrumb from '../Breadcrumb';
 import ERCInput from '../ERCInput';
 import Input from '../Input';
@@ -23,8 +24,7 @@ export default function ReferencedStructureSettings({
 }: {
 	referencedStructure: ReferencedStructure;
 }) {
-	const label =
-		referencedStructure.label[Liferay.ThemeDisplay.getDefaultLanguageId()]!;
+	const label = getLocalizedLabel(referencedStructure);
 
 	return (
 		<ClayLayout.ContainerFluid className="px-4" size="md" view>

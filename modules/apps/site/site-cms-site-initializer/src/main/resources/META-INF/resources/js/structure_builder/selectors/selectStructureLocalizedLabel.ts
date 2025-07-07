@@ -4,7 +4,8 @@
  */
 
 import {State} from '../contexts/StateContext';
+import getLocalizedLabel from '../utils/getLocalizedLabel';
 
 export default function selectStructureLocalizedLabel(state: State) {
-	return state.structure.label[Liferay.ThemeDisplay.getDefaultLanguageId()]!;
+	return getLocalizedLabel(state.structure);
 }
