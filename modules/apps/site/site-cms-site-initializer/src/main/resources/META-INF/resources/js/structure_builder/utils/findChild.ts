@@ -11,17 +11,24 @@ import {
 } from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 
-export default function findChild(
-	parent: ReferencedStructure | RepeatableGroup | Structure,
-	uuid: Uuid
-): StructureChild | null {
-	for (const child of parent.children.values()) {
+export default function findChild({
+	root,
+	uuid,
+}: {
+	root: ReferencedStructure | RepeatableGroup | Structure;
+	uuid: Uuid;
+}): StructureChild | null {
+	for (const child of root.children.values()) {
 		if (child.uuid === uuid) {
 			return child;
 		}
 
 		if (child.type === 'repeatable-group') {
-			return findChild(child, uuid);
+			const found = findChild({root: child, uuid});
+
+			if (found) {
+				return found;
+			}
 		}
 	}
 

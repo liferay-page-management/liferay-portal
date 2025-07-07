@@ -36,6 +36,7 @@ import insertGroup from '../utils/insertGroup';
 import normalizeName from '../utils/normalizeName';
 import openDeletionModal from '../utils/openDeletionModal';
 import refreshReferencedStructures from '../utils/refreshReferencedStructures';
+import updateChild from '../utils/updateChild';
 import {
 	ValidationError,
 	validateField,
@@ -248,7 +249,7 @@ function reducer(state: State, action: Action): State {
 			}
 
 			const children = selection.map(
-				(uuid) => findChild(structure, uuid)!
+				(uuid) => findChild({root: structure, uuid})!
 			);
 
 			const uuid = getUuid();
@@ -438,11 +439,7 @@ function reducer(state: State, action: Action): State {
 
 			const {structure} = state;
 
-			const nextChildren: Structure['children'] = new Map(
-				structure.children
-			);
-
-			const field = nextChildren.get(uuid) as Field;
+			const field = findChild({root: structure, uuid}) as Field;
 
 			if (!field) {
 				return state;
@@ -466,7 +463,10 @@ function reducer(state: State, action: Action): State {
 					picklistId;
 			}
 
-			nextChildren.set(nextField.uuid, nextField);
+			const nextChildren = updateChild({
+				child: nextField,
+				root: structure,
+			});
 
 			// Validate the data sent in the action
 
@@ -503,20 +503,21 @@ function reducer(state: State, action: Action): State {
 
 			const {structure} = state;
 
-			const child = findChild(structure, uuid);
+			const group = findChild({root: structure, uuid}) as RepeatableGroup;
 
-			if (!child || child.type !== 'repeatable-group') {
+			if (!group) {
 				return state;
 			}
 
-			const group: RepeatableGroup = {
-				...child,
+			const nextGroup = {
+				...group,
 				label,
 			};
 
-			const nextChildren = new Map(structure.children);
-
-			nextChildren.set(uuid, group);
+			const nextChildren = updateChild({
+				child: nextGroup,
+				root: structure,
+			});
 
 			const nextState: State = {
 				...state,
