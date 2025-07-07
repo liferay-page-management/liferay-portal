@@ -36,6 +36,7 @@ import insertGroup from '../utils/insertGroup';
 import normalizeName from '../utils/normalizeName';
 import openDeletionModal from '../utils/openDeletionModal';
 import refreshReferencedStructures from '../utils/refreshReferencedStructures';
+import ungroup from '../utils/ungroup';
 import updateChild from '../utils/updateChild';
 import {
 	ValidationError,
@@ -128,6 +129,11 @@ type SetSelection = {
 	type: 'set-selection';
 };
 
+type UngroupAction = {
+	type: 'ungroup';
+	uuid: Uuid;
+};
+
 type UpdateFieldAction = {
 	erc?: string;
 	indexableConfig?: Field['indexableConfig'];
@@ -174,6 +180,7 @@ export type Action =
 	| RefreshReferencedStructuresAction
 	| SetErrorAction
 	| SetSelection
+	| UngroupAction
 	| UpdateFieldAction
 	| UpdateRepeatableGroupAction
 	| UpdateStructureAction
@@ -431,6 +438,36 @@ function reducer(state: State, action: Action): State {
 			const {selection} = action;
 
 			return {...state, selection};
+		}
+		case 'ungroup': {
+			const {publishedChildren, structure} = state;
+
+			const {uuid} = action;
+
+			if (publishedChildren.has(uuid)) {
+				openConfirmModal({
+					buttonLabel: Liferay.Language.get('done'),
+					center: true,
+					hideCancel: true,
+					status: 'warning',
+					text: Liferay.Language.get(
+						'the-ungroup-action-cannot-be-done-because-this-repeatable-group-is-already-published'
+					),
+					title: Liferay.Language.get('ungroup-action-not-allowed'),
+				});
+
+				return state;
+			}
+
+			const nextChildren = ungroup({root: structure, uuid});
+
+			return {
+				...state,
+				structure: {
+					...structure,
+					children: nextChildren,
+				},
+			};
 		}
 		case 'update-field': {
 			const {

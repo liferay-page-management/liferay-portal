@@ -455,6 +455,17 @@ function getItemActions({
 			});
 		}
 
+		if (item.type === 'repeatable-group') {
+			actions.push({
+				label: Liferay.Language.get('ungroup'),
+				onClick: () =>
+					dispatch({
+						type: 'ungroup',
+						uuid: item.uuid,
+					}),
+			});
+		}
+
 		actions.push({
 			label: Liferay.Language.get('delete-field'),
 			onClick: () =>
