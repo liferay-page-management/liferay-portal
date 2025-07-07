@@ -100,7 +100,7 @@ describe('buildState', () => {
 
 		const result = buildState({
 			mainObjectDefinition: objectDefinition,
-			objectDefinitions: new Map(),
+			objectDefinitions: {},
 		});
 
 		const {children, uuid} = result!.structure;
@@ -156,7 +156,7 @@ describe('buildState', () => {
 					code: 0,
 				},
 			},
-			objectDefinitions: new Map(),
+			objectDefinitions: {},
 		});
 
 		const {children, uuid} = result!.structure;
@@ -215,7 +215,7 @@ describe('buildState', () => {
 					code: 0,
 				},
 			},
-			objectDefinitions: new Map(),
+			objectDefinitions: {},
 		});
 
 		const {children, uuid} = result!.structure;
@@ -269,7 +269,7 @@ describe('buildState', () => {
 
 		const state = buildState({
 			mainObjectDefinition: objectDefinition,
-			objectDefinitions: new Map(),
+			objectDefinitions: {},
 		});
 
 		const [, field] = [...state!.structure.children][0];

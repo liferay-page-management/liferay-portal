@@ -114,9 +114,9 @@ describe('refreshReferencedStructures', () => {
 			scope: 'depot',
 		};
 
-		const objectDefinitions = new Map<string, ObjectDefinition>([
-			[objectDefinition.externalReferenceCode, objectDefinition],
-		]);
+		const objectDefinitions = {
+			[objectDefinition.externalReferenceCode]: objectDefinition,
+		};
 
 		const result = refreshReferencedStructures({
 			objectDefinitions,

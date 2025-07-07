@@ -24,7 +24,7 @@ function getCache({
 }) {
 	return {
 		'object-definitions': {
-			data: objectDefinitions || new Map(),
+			data: objectDefinitions || {},
 			fetcher: ObjectDefinitionService.getObjectDefinitions,
 			status: objectDefinitions ? ('saved' as const) : ('idle' as const),
 		},
