@@ -20,6 +20,7 @@ import {
 } from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 import actionGeneratesChanges from '../utils/actionGeneratesChanges';
+import deleteChildren from '../utils/deleteChildren';
 import {
 	Field,
 	MultiselectField,
@@ -302,18 +303,27 @@ function reducer(state: State, action: Action): State {
 		}
 		case 'delete-child': {
 			const {structure} = state;
+			const {uuid} = action;
 
-			if (structure.children.size === 1) {
+			const child = findChild({root: structure, uuid});
+
+			if (!child) {
+				return state;
+			}
+
+			if (
+				child.parent === structure.uuid &&
+				structure.children.size === 1
+			) {
 				openDeletionModal();
 
 				return state;
 			}
 
-			const {uuid} = action;
-
-			const nextChildren = new Map(structure.children);
-
-			nextChildren.delete(uuid);
+			const nextChildren = deleteChildren({
+				root: structure,
+				uuids: [child.uuid],
+			});
 
 			const invalids = new Map(state.invalids);
 
@@ -342,13 +352,12 @@ function reducer(state: State, action: Action): State {
 			return nextState;
 		}
 		case 'delete-selection': {
-			const {structure} = state;
+			const {selection, structure} = state;
 
-			const nextChildren = new Map(structure.children);
-
-			for (const uuid of state.selection) {
-				nextChildren.delete(uuid);
-			}
+			const nextChildren = deleteChildren({
+				root: structure,
+				uuids: selection,
+			});
 
 			if (nextChildren.size === 0) {
 				openDeletionModal();
