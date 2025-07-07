@@ -10,18 +10,21 @@ import {
 } from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 
-export function getChildrenUuids(
-	item: ReferencedStructure | RepeatableGroup | Structure,
-	uuids: Set<Uuid> = new Set()
-) {
-	for (const child of item.children.values()) {
+export function getChildrenUuids({
+	root,
+	uuids = new Set(),
+}: {
+	root: ReferencedStructure | RepeatableGroup | Structure;
+	uuids?: Set<Uuid>;
+}) {
+	for (const child of root.children.values()) {
 		uuids.add(child.uuid);
 
 		if (
 			child.type === 'referenced-structure' ||
 			child.type === 'repeatable-group'
 		) {
-			getChildrenUuids(child, uuids);
+			getChildrenUuids({root: child, uuids});
 		}
 	}
 

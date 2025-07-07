@@ -29,7 +29,7 @@ export default function buildState({
 		invalids: new Map(),
 		publishedChildren:
 			structure.status === 'published'
-				? getChildrenUuids(structure)
+				? getChildrenUuids({root: structure})
 				: new Set(),
 		selection: [],
 		structure,

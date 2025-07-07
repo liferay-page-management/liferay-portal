@@ -205,9 +205,11 @@ function reducer(state: State, action: Action): State {
 		case 'add-referenced-structures': {
 			const {referencedStructures} = action;
 
-			const {structure} = state;
+			const {publishedChildren, structure} = state;
 
 			const nextChildren = new Map(structure.children);
+
+			let nextPublishedChildren = new Set(publishedChildren);
 
 			let selection: State['selection'] = [];
 
@@ -217,6 +219,11 @@ function reducer(state: State, action: Action): State {
 			] of referencedStructures.entries()) {
 				nextChildren.set(referencedStructure.uuid, referencedStructure);
 
+				nextPublishedChildren = new Set([
+					...nextPublishedChildren,
+					...getChildrenUuids({root: referencedStructure}),
+				]);
+
 				if (i === 0) {
 					selection = [referencedStructure.uuid];
 				}
@@ -224,6 +231,7 @@ function reducer(state: State, action: Action): State {
 
 			return {
 				...state,
+				publishedChildren: nextPublishedChildren,
 				selection,
 				structure: {...structure, children: nextChildren},
 			};
@@ -391,7 +399,7 @@ function reducer(state: State, action: Action): State {
 				...state,
 				error: INITIAL_STATE.error,
 				history: INITIAL_STATE.history,
-				publishedChildren: getChildrenUuids(structure),
+				publishedChildren: getChildrenUuids({root: structure}),
 				structure: nextStructure,
 				unsavedChanges: false,
 			};
