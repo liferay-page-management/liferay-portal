@@ -68,8 +68,9 @@ export default function StructureTree({search}: {search: string}) {
 	);
 	const [selectedKeys, setSelectedKeys] = useState<Set<Key>>(new Set());
 
-	const hasReferencedStructure = Array.from(children.values()).some(
-		({type}) => type === 'referenced-structure'
+	const hasReferencedStructure = useMemo(
+		() => hasReferencedStructureChild(children),
+		[children]
 	);
 
 	const items: TreeItem[] = useMemo(() => {
@@ -445,4 +446,20 @@ function getItemActions({
 	}
 
 	return actions;
+}
+
+function hasReferencedStructureChild(
+	children: (RepeatableGroup | Structure)['children']
+): boolean {
+	for (const child of children.values()) {
+		if (child.type === 'referenced-structure') {
+			return true;
+		}
+
+		if (child.type === 'repeatable-group') {
+			return hasReferencedStructureChild(child.children);
+		}
+	}
+
+	return false;
 }
