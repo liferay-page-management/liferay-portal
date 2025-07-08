@@ -246,10 +246,57 @@ function reducer(state: State, action: Action): State {
 		case 'add-repeatable-group': {
 			const {publishedChildren, selection, structure} = state;
 
-			if (selection.some((uuid) => publishedChildren.has(uuid))) {
+			const children = selection.map(
+				(uuid) => findChild({root: structure, uuid})!
+			);
+
+			let parent: Structure | RepeatableGroup = structure;
+
+			if (children[0].parent !== structure.uuid) {
+				parent = findChild({
+					root: structure,
+					uuid: children[0].parent,
+				})! as RepeatableGroup;
+			}
+
+			for (const child of children) {
+				if (publishedChildren.has(child.uuid)) {
+					showWarning({
+						text: Liferay.Language.get(
+							'the-repeatable-group-cannot-be-created-because-one-or-more-fields-of-the-selection-are-already-published'
+						),
+						title: Liferay.Language.get(
+							'repeatable-group-creation-not-allowed'
+						),
+					});
+
+					return state;
+				}
+
+				if (child.parent !== parent.uuid) {
+					showWarning({
+						text: Liferay.Language.get(
+							'the-repeatable-group-cannot-be-created-because-the-selection-includes-items-from-different-levels'
+						),
+						title: Liferay.Language.get(
+							'repeatable-group-creation-not-allowed'
+						),
+					});
+
+					return state;
+				}
+			}
+
+			const parentFields = Array.from(parent.children.values()).filter(
+				(child) =>
+					child.type !== 'referenced-structure' &&
+					child.type !== 'repeatable-group'
+			);
+
+			if (parentFields.length === children.length) {
 				showWarning({
 					text: Liferay.Language.get(
-						'the-repeatable-group-cannot-be-created-because-one-or-more-fields-of-the-selection-are-already-published'
+						'the-repeatable-group-cannot-be-created-because-at-least-one-field-is-required'
 					),
 					title: Liferay.Language.get(
 						'repeatable-group-creation-not-allowed'
@@ -259,15 +306,11 @@ function reducer(state: State, action: Action): State {
 				return state;
 			}
 
-			const children = selection.map(
-				(uuid) => findChild({root: structure, uuid})!
-			);
-
 			const uuid = getUuid();
 
 			const nextChildren = insertGroup({
 				groupChildren: children,
-				groupParent: children[0].parent,
+				groupParent: parent.uuid,
 				groupUuid: uuid,
 				root: structure,
 			});
