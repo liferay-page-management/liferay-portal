@@ -94,6 +94,7 @@ type AddReferencedStructuresAction = {
 
 type AddRepeatableGroup = {
 	type: 'add-repeatable-group';
+	uuid?: Uuid;
 };
 
 type AddValidationError = {
@@ -246,7 +247,11 @@ function reducer(state: State, action: Action): State {
 		case 'add-repeatable-group': {
 			const {publishedChildren, selection, structure} = state;
 
-			const children = selection.map(
+			const {uuid} = action;
+
+			const uuids = uuid ? [uuid] : selection;
+
+			const children = uuids.map(
 				(uuid) => findChild({root: structure, uuid})!
 			);
 
@@ -306,18 +311,18 @@ function reducer(state: State, action: Action): State {
 				return state;
 			}
 
-			const uuid = getUuid();
+			const groupUuid = getUuid();
 
 			const nextChildren = insertGroup({
 				groupChildren: children,
 				groupParent: parent.uuid,
-				groupUuid: uuid,
+				groupUuid,
 				root: structure,
 			});
 
 			return {
 				...state,
-				selection: [uuid],
+				selection: [groupUuid],
 				structure: {...structure, children: nextChildren},
 			};
 		}

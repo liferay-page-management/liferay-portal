@@ -450,6 +450,7 @@ function getItemActions({
 				onClick: () =>
 					dispatch({
 						type: 'add-repeatable-group',
+						uuid: item.uuid,
 					}),
 				symbolLeft: 'repeat',
 			});
