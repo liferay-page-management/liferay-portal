@@ -247,11 +247,7 @@ function reducer(state: State, action: Action): State {
 			const {publishedChildren, selection, structure} = state;
 
 			if (selection.some((uuid) => publishedChildren.has(uuid))) {
-				openConfirmModal({
-					buttonLabel: Liferay.Language.get('done'),
-					center: true,
-					hideCancel: true,
-					status: 'warning',
+				showWarning({
 					text: Liferay.Language.get(
 						'the-repeatable-group-cannot-be-created-because-one-or-more-fields-of-the-selection-are-already-published'
 					),
@@ -445,11 +441,7 @@ function reducer(state: State, action: Action): State {
 			const {uuid} = action;
 
 			if (publishedChildren.has(uuid)) {
-				openConfirmModal({
-					buttonLabel: Liferay.Language.get('done'),
-					center: true,
-					hideCancel: true,
-					status: 'warning',
+				showWarning({
 					text: Liferay.Language.get(
 						'the-ungroup-action-cannot-be-done-because-this-repeatable-group-is-already-published'
 					),
@@ -737,6 +729,17 @@ function getDefaultChildren(structureUuid: Uuid) {
 	}
 
 	return children;
+}
+
+function showWarning({text, title}: {text: string; title: string}) {
+	openConfirmModal({
+		buttonLabel: Liferay.Language.get('done'),
+		center: true,
+		hideCancel: true,
+		status: 'warning',
+		text,
+		title,
+	});
 }
 
 export {StateContext, StateContextProvider, useSelector, useStateDispatch};
