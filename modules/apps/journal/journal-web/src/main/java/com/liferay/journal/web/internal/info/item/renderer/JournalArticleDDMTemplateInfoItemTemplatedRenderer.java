@@ -51,6 +51,10 @@ public class JournalArticleDDMTemplateInfoItemTemplatedRenderer
 		List<InfoItemRendererTemplate> infoItemRendererTemplates =
 			new ArrayList<>();
 
+		if (article == null) {
+			return infoItemRendererTemplates;
+		}
+
 		DDMStructure ddmStructure = article.getDDMStructure();
 
 		for (DDMTemplate ddmTemplate : ddmStructure.getTemplates()) {
