@@ -1346,6 +1346,10 @@ test.describe('SEO configuration', () => {
 
 		await content2.fill(content2DefaultValue);
 
+		// Wait a bit until the multivalues component register the value
+
+		await page.waitForTimeout(1000);
+
 		// Switch language
 
 		await clickAndExpectToBeVisible({
