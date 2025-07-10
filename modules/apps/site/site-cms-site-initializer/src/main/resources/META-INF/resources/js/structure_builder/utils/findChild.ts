@@ -23,7 +23,10 @@ export default function findChild({
 			return child;
 		}
 
-		if (child.type === 'repeatable-group') {
+		if (
+			child.type === 'referenced-structure' ||
+			child.type === 'repeatable-group'
+		) {
 			const found = findChild({root: child, uuid});
 
 			if (found) {
