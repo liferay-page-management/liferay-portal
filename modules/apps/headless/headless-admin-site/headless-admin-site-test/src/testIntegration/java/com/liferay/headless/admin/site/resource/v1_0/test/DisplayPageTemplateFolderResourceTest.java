@@ -23,6 +23,9 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Ignore;
@@ -294,6 +297,14 @@ public class DisplayPageTemplateFolderResourceTest
 		return displayPageTemplateFolder;
 	}
 
+	@Override
+	protected String
+			testBatchEngineDeleteImportTask_getSiteExternalReferenceCode()
+		throws Exception {
+
+		return testGroup.getExternalReferenceCode();
+	}
+
 	@Ignore
 	@Override
 	@Test
@@ -315,6 +326,23 @@ public class DisplayPageTemplateFolderResourceTest
 		return displayPageTemplateFolderResource.
 			postSiteDisplayPageTemplateFolder(
 				siteExternalReferenceCode, displayPageTemplateFolder);
+	}
+
+	@Override
+	protected Map<String, Map<String, String>>
+			testGetSiteDisplayPageTemplateFoldersPage_getExpectedActions(
+				String siteExternalReferenceCode)
+		throws Exception {
+
+		return Collections.emptyMap();
+	}
+
+	@Override
+	protected String
+			testGraphQLGetSiteDisplayPageTemplateFolder_getSiteExternalReferenceCode()
+		throws Exception {
+
+		return testGroup.getExternalReferenceCode();
 	}
 
 	@Override
