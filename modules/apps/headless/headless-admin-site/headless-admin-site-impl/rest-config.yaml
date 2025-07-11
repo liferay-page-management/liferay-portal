@@ -7,7 +7,7 @@ application:
 author: Rubén Pulido
 clientDir: ../headless-admin-site-client/src/main/java
 compatibilityVersion: 9
-forcePredictableOperationId: false
+forcePredictableOperationId: true
 generateBatch: true
 generateGraphQL: true
 javaEEPackage: jakarta
