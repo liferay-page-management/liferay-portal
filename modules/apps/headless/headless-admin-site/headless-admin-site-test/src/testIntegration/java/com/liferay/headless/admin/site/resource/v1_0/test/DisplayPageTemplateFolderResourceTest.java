@@ -119,7 +119,6 @@ public class DisplayPageTemplateFolderResourceTest
 		super.testGetSiteDisplayPageTemplateFolderPermissionsPage();
 	}
 
-	@Ignore
 	@Override
 	@Test
 	public void testGraphQLGetSiteDisplayPageTemplateFolder() throws Exception {
