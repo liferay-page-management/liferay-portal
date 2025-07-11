@@ -285,13 +285,9 @@ public abstract class BaseDisplayPageTemplateFolderResourceTestCase {
 			JSONUtil.getValueAsBoolean(
 				invokeGraphQLMutation(
 					new GraphQLField(
-						"deleteSiteDisplayPageTemplateFolder",
+						"deleteDisplayPageTemplateFolder",
 						new HashMap<String, Object>() {
 							{
-								put(
-									"siteExternalReferenceCode",
-									"\"" +
-										testGroup.getExternalReferenceCode() + "\"");
 								put(
 									"displayPageTemplateFolderExternalReferenceCode",
 									"\"" +
@@ -299,7 +295,7 @@ public abstract class BaseDisplayPageTemplateFolderResourceTestCase {
 											getExternalReferenceCode() + "\"");
 							}
 						})),
-				"JSONObject/data", "Object/deleteSiteDisplayPageTemplateFolder"));
+				"JSONObject/data", "Object/deleteDisplayPageTemplateFolder"));
 
 		JSONArray errorsJSONArray1 = JSONUtil.getValueAsJSONArray(
 			invokeGraphQLQuery(
@@ -330,13 +326,9 @@ public abstract class BaseDisplayPageTemplateFolderResourceTestCase {
 					new GraphQLField(
 						"headlessAdminSite_v1_0",
 						new GraphQLField(
-							"deleteSiteDisplayPageTemplateFolder",
+							"deleteDisplayPageTemplateFolder",
 							new HashMap<String, Object>() {
 								{
-								put(
-									"siteExternalReferenceCode",
-									"\"" +
-										testGroup.getExternalReferenceCode() + "\"");
 									put(
 										"displayPageTemplateFolderExternalReferenceCode",
 										"\"" +
@@ -346,7 +338,7 @@ public abstract class BaseDisplayPageTemplateFolderResourceTestCase {
 								}
 							}))),
 				"JSONObject/data", "JSONObject/headlessAdminSite_v1_0",
-				"Object/deleteSiteDisplayPageTemplateFolder"));
+				"Object/deleteDisplayPageTemplateFolder"));
 
 		JSONArray errorsJSONArray2 = JSONUtil.getValueAsJSONArray(
 			invokeGraphQLQuery(
@@ -1517,8 +1509,8 @@ public abstract class BaseDisplayPageTemplateFolderResourceTestCase {
 						new HashMap<String, Object>() {
 							{
 								put(
-									"siteExternalReferenceCode",
-									"\"" + testGroup.getExternalReferenceCode() + "\"");
+									"siteKey",
+									"\"" + testGroup.getGroupId() + "\"");
 								put("displayPageTemplateFolder", sb.toString());
 							}
 						},
