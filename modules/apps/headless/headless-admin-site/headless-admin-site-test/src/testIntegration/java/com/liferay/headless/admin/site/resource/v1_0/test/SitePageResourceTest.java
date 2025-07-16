@@ -6,6 +6,14 @@
 package com.liferay.headless.admin.site.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.expando.kernel.model.ExpandoBridge;
+import com.liferay.expando.kernel.model.ExpandoColumnConstants;
+import com.liferay.expando.kernel.model.ExpandoTable;
+import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
+import com.liferay.expando.kernel.service.ExpandoTableLocalService;
+import com.liferay.expando.kernel.service.ExpandoTableLocalServiceUtil;
+import com.liferay.headless.admin.site.client.custom.field.CustomField;
+import com.liferay.headless.admin.site.client.custom.field.CustomValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.ContentPageSettings;
 import com.liferay.headless.admin.site.client.dto.v1_0.ContentPageSpecification;
 import com.liferay.headless.admin.site.client.dto.v1_0.FriendlyUrlHistory;
@@ -24,8 +32,10 @@ import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.function.UnsafeTriConsumer;
+import com.liferay.petra.function.UnsafeTriFunction;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -33,6 +43,9 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutTypePortletConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -40,11 +53,13 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
@@ -55,6 +70,8 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
+import java.io.Serializable;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -62,6 +79,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -399,6 +417,27 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		return super.testPutSiteSitePagePermissionsPage_addSitePage();
 	}
 
+	private ExpandoTable _addExpandoTable() throws PortalException {
+		ExpandoTable expandoTable = _expandoTableLocalService.addDefaultTable(
+			PortalUtil.getDefaultCompanyId(), Layout.class.getName());
+
+		for (String attributeName : _EXPANDO_ATTRIBUTE_LOCALIZED_NAMES) {
+			_expandoColumnLocalService.addColumn(
+				expandoTable.getTableId(), attributeName,
+				ExpandoColumnConstants.STRING_LOCALIZED, null);
+		}
+
+		for (int i = 0; i < _EXPANDO_ATTRIBUTE_NONLOCALIZED_NAMES.length; i++) {
+			_expandoColumnLocalService.addColumn(
+				expandoTable.getTableId(),
+				_EXPANDO_ATTRIBUTE_NONLOCALIZED_NAMES[i],
+				ExpandoColumnConstants.STRING,
+				_EXPANDO_ATTRIBUTE_NONLOCALIZED_DEFAULT_VALUES[i]);
+		}
+
+		return expandoTable;
+	}
+
 	private Layout _addLayout(
 			String type, String typeSettings, ServiceContext serviceContext)
 		throws Exception {
@@ -419,6 +458,55 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			sitePage.getPageSettings() instanceof ContentPageSettings);
 	}
 
+	private void _assertCustomField(
+		Map<String, Serializable> attributes, CustomField customField) {
+
+		CustomValue customValue = customField.getCustomValue();
+
+		Assert.assertEquals(
+			customValue.getData(), attributes.get(customField.getName()));
+	}
+
+	private void _assertCustomFields(
+		CustomField[] expectedLocalizedCustomFields,
+		CustomField[] expectedNonlocalizedCustomFields, SitePage sitePage) {
+
+		CustomField[] customFields = sitePage.getCustomFields();
+
+		CustomField[] expectedCustomFields = ArrayUtil.append(
+			expectedLocalizedCustomFields, expectedNonlocalizedCustomFields);
+
+		Assert.assertEquals(
+			Arrays.toString(customFields), expectedCustomFields.length,
+			customFields.length);
+
+		Assert.assertTrue(
+			Arrays.toString(customFields),
+			ArrayUtil.containsAll(customFields, expectedCustomFields));
+
+		Layout layout = _layoutLocalService.fetchLayoutByExternalReferenceCode(
+			sitePage.getExternalReferenceCode(), testGroup.getGroupId());
+
+		Assert.assertNotNull(layout);
+
+		ExpandoBridge expandoBridge = layout.getExpandoBridge();
+
+		Assert.assertNotNull(expandoBridge);
+
+		Map<String, Serializable> attributes = expandoBridge.getAttributes();
+
+		Assert.assertNotNull(attributes);
+		Assert.assertFalse(attributes.isEmpty());
+
+		for (CustomField customField : expectedNonlocalizedCustomFields) {
+			_assertCustomField(attributes, customField);
+		}
+
+		for (CustomField customField : expectedLocalizedCustomFields) {
+			_assertLocalizedCustomField(attributes, customField);
+		}
+	}
+
 	private void
 			_assertDeleteSiteSiteByExternalReferenceCodeSitePageProblemException(
 				Layout... layouts)
@@ -433,6 +521,14 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 							testGroup.getExternalReferenceCode(),
 							layout.getExternalReferenceCode()));
 		}
+	}
+
+	private void _assertLocalizedCustomField(
+		Map<String, Serializable> attributes, CustomField customField) {
+
+		Assert.assertEquals(
+			attributes.get(customField.getName()),
+			_toLocaleMap(customField.getCustomValue()));
 	}
 
 	private void _assertMapEquals(
@@ -683,6 +779,126 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			widgetPageSettings.getLayoutTemplateId());
 	}
 
+	private void
+			_doTestAddOrUpdateSiteSiteByExternalReferenceCodeSitePageWithCustomFields(
+				Function<SitePage, SitePage> getUpdateBodySitePageFunction,
+				UnsafeTriFunction<String, String, SitePage, SitePage, Throwable>
+					updateSitePageUnsafeTriFunction)
+		throws Exception {
+
+		CustomField localizedCustomField1 = _getLocalizedCustomField(
+			_EXPANDO_ATTRIBUTE_LOCALIZED_NAMES[0], _randomLocalizedMap());
+		CustomField localizedCustomField3 = _getLocalizedCustomField(
+			_EXPANDO_ATTRIBUTE_LOCALIZED_NAMES[2], _randomLocalizedMap());
+		CustomField localizedCustomField4 = _getLocalizedCustomField(
+			_EXPANDO_ATTRIBUTE_LOCALIZED_NAMES[3], _randomLocalizedMap());
+		CustomField localizedCustomField5 = _getLocalizedCustomField(
+			_EXPANDO_ATTRIBUTE_LOCALIZED_NAMES[4], _randomLocalizedMap());
+
+		CustomField nonlocalizedCustomField1 = _getCustomField(
+			_EXPANDO_ATTRIBUTE_NONLOCALIZED_NAMES[0],
+			RandomTestUtil.randomString());
+		CustomField nonlocalizedCustomField3 = _getCustomField(
+			_EXPANDO_ATTRIBUTE_NONLOCALIZED_NAMES[2],
+			RandomTestUtil.randomString());
+
+		SitePage randomSitePage = randomSitePage();
+
+		randomSitePage.setCustomFields(
+			new CustomField[] {
+				localizedCustomField1, localizedCustomField3,
+				localizedCustomField4, localizedCustomField5,
+				nonlocalizedCustomField1, nonlocalizedCustomField3
+			});
+
+		SitePage sitePage =
+			sitePageResource.postByExternalReferenceCodeSitePage(
+				testGroup.getExternalReferenceCode(), randomSitePage);
+
+		CustomField localizedCustomField2 = _getLocalizedCustomField(
+			_EXPANDO_ATTRIBUTE_LOCALIZED_NAMES[1], new HashMap<>());
+		CustomField nonlocalizedCustomField2 = _getCustomField(
+			_EXPANDO_ATTRIBUTE_NONLOCALIZED_NAMES[1],
+			_EXPANDO_ATTRIBUTE_NONLOCALIZED_DEFAULT_VALUES[1]);
+
+		CustomField[] expectedLocalizedCustomFields = {
+			localizedCustomField1, localizedCustomField2, localizedCustomField3,
+			localizedCustomField4, localizedCustomField5
+		};
+		CustomField[] expectedNonlocalizedCustomFields = {
+			nonlocalizedCustomField1, nonlocalizedCustomField2,
+			nonlocalizedCustomField3
+		};
+
+		_assertCustomFields(
+			expectedLocalizedCustomFields, expectedNonlocalizedCustomFields,
+			sitePage);
+
+		if (getUpdateBodySitePageFunction == null) {
+			return;
+		}
+
+		CustomField updatedLocalizedCustomField1 = _getLocalizedCustomField(
+			_EXPANDO_ATTRIBUTE_LOCALIZED_NAMES[0], _randomLocalizedMap());
+		CustomField updatedLocalizedCustomField5 = _getLocalizedCustomField(
+			_EXPANDO_ATTRIBUTE_LOCALIZED_NAMES[1], _randomLocalizedMap());
+		CustomField updatedLocalizedCustomField6 = _getLocalizedCustomField(
+			_EXPANDO_ATTRIBUTE_LOCALIZED_NAMES[2], null);
+		CustomField updatedLocalizedCustomField7 = _getLocalizedCustomField(
+			_EXPANDO_ATTRIBUTE_LOCALIZED_NAMES[3], new HashMap<>());
+		CustomField updatedNonlocalizedCustomField1 = _getCustomField(
+			_EXPANDO_ATTRIBUTE_NONLOCALIZED_NAMES[0], null);
+		CustomField updatedNonlocalizedCustomField2 = _getCustomField(
+			_EXPANDO_ATTRIBUTE_NONLOCALIZED_NAMES[1],
+			RandomTestUtil.randomString());
+
+		SitePage updateBodySitePage = getUpdateBodySitePageFunction.apply(
+			sitePage);
+
+		updateBodySitePage.setCustomFields(
+			new CustomField[] {
+				updatedNonlocalizedCustomField1,
+				updatedNonlocalizedCustomField2, updatedLocalizedCustomField1,
+				updatedLocalizedCustomField5, updatedLocalizedCustomField6,
+				updatedLocalizedCustomField7
+			});
+
+		try {
+			sitePage = updateSitePageUnsafeTriFunction.apply(
+				testGroup.getExternalReferenceCode(),
+				sitePage.getExternalReferenceCode(), updateBodySitePage);
+		}
+		catch (Throwable throwable) {
+			throw new RuntimeException(throwable);
+		}
+
+		_assertCustomFields(
+			new CustomField[] {
+				updatedLocalizedCustomField1, updatedLocalizedCustomField5,
+				localizedCustomField3, updatedLocalizedCustomField7,
+				localizedCustomField5
+			},
+			new CustomField[] {
+				nonlocalizedCustomField1, updatedNonlocalizedCustomField2,
+				nonlocalizedCustomField3
+			},
+			sitePage);
+	}
+
+	private CustomField _getCustomField(String curName, String curData) {
+		return new CustomField() {
+			{
+				customValue = new CustomValue() {
+					{
+						data = curData;
+						dataType = "Text";
+					}
+				};
+				name = curName;
+			}
+		};
+	}
+
 	private int _getExpectedPriority(
 			String defaultParentSitePageExternalReferenceCode,
 			String parentSitePageExternalReferenceCode, Integer priority)
@@ -730,6 +946,22 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		return Math.min(priority, maxPriority);
 	}
 
+	private CustomField _getLocalizedCustomField(
+		String curName, Map<String, String> curData_i18n) {
+
+		return new CustomField() {
+			{
+				customValue = new CustomValue() {
+					{
+						data_i18n = curData_i18n;
+						dataType = "Text";
+					}
+				};
+				name = curName;
+			}
+		};
+	}
+
 	private PageSettings _getPageSettings(SitePage.Type type) throws Exception {
 		if (type == SitePage.Type.CONTENT_PAGE) {
 			return new ContentPageSettings() {
@@ -761,9 +993,6 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		SitePage sitePage = new SitePage();
 
-		sitePage.setAvailableLanguages(
-			() -> LocaleUtil.toW3cLanguageIds(
-				new Locale[] {LocaleUtil.US, LocaleUtil.SPAIN}));
 		sitePage.setExternalReferenceCode(externalReferenceCode);
 		sitePage.setFriendlyUrlPath_i18n(
 			() -> HashMapBuilder.put(
@@ -819,6 +1048,45 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		).parameters(
 			"nestedFields", "friendlyUrlHistory,pageSpecifications"
 		).build();
+	}
+
+	private Map<String, String> _randomLocalizedMap() {
+		return HashMapBuilder.put(
+			"en-US", RandomTestUtil.randomString()
+		).put(
+			"es-ES", RandomTestUtil.randomString()
+		).build();
+	}
+
+	private void
+			_testAddOrUpdateSiteSiteByExternalReferenceCodeSitePageWithCustomFields(
+				Function<SitePage, SitePage> getUpdateBodySitePageFunction,
+				UnsafeTriFunction<String, String, SitePage, SitePage, Throwable>
+					updateSitePageUnsafeTriFunction)
+		throws Exception {
+
+		PermissionChecker originalPermissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		try {
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
+
+			ExpandoTable expandoTable = _addExpandoTable();
+
+			try {
+				_doTestAddOrUpdateSiteSiteByExternalReferenceCodeSitePageWithCustomFields(
+					getUpdateBodySitePageFunction,
+					updateSitePageUnsafeTriFunction);
+			}
+			finally {
+				ExpandoTableLocalServiceUtil.deleteTable(expandoTable);
+			}
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(
+				originalPermissionChecker);
+		}
 	}
 
 	private void _testDeleteSiteSiteByExternalReferenceCodeSitePage(
@@ -1424,6 +1692,48 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_assertParentAndPriority(
 			sitePage1.getExternalReferenceCode(), 2, sitePage4);
 	}
+
+	private Map<Locale, String> _toLocaleMap(CustomValue customValue) {
+		if (MapUtil.isEmpty(customValue.getData_i18n())) {
+			return new HashMap<>();
+		}
+
+		return HashMapBuilder.put(
+			LocaleUtil.SPAIN,
+			customValue.getData_i18n(
+			).get(
+				"es-ES"
+			)
+		).put(
+			LocaleUtil.US,
+			customValue.getData_i18n(
+			).get(
+				"en-US"
+			)
+		).build();
+	}
+
+	private static final String[] _EXPANDO_ATTRIBUTE_LOCALIZED_NAMES = {
+		RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+		RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+		RandomTestUtil.randomString()
+	};
+
+	private static final String[]
+		_EXPANDO_ATTRIBUTE_NONLOCALIZED_DEFAULT_VALUES = {
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null
+		};
+
+	private static final String[] _EXPANDO_ATTRIBUTE_NONLOCALIZED_NAMES = {
+		RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+		RandomTestUtil.randomString()
+	};
+
+	@Inject
+	private static ExpandoColumnLocalService _expandoColumnLocalService;
+
+	@Inject
+	private static ExpandoTableLocalService _expandoTableLocalService;
 
 	private static final List<SitePage.Type> _types = Arrays.asList(
 		SitePage.Type.CONTENT_PAGE, SitePage.Type.WIDGET_PAGE);
