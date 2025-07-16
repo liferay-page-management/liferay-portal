@@ -220,6 +220,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			SitePage.Type.CONTENT_PAGE);
 		_testPatchSiteSiteByExternalReferenceCodeSitePage(
 			SitePage.Type.WIDGET_PAGE);
+		_testPatchSiteSiteByExternalReferenceCodeSitePageWithCustomFields();
 		_testPatchSiteSiteByExternalReferenceCodeSitePageWithPageSpecifications();
 		_testPatchSiteSiteByExternalReferenceCodeSitePageWithPriority();
 
@@ -1233,6 +1234,14 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 					ListUtil.filter(
 						_types, curType -> !Objects.equals(curType, type))),
 				sitePage.getUuid()));
+	}
+
+	private void _testPatchSiteSiteByExternalReferenceCodeSitePageWithCustomFields()
+		throws Exception {
+
+		_testAddOrUpdateSiteSiteByExternalReferenceCodeSitePageWithCustomFields(
+			(SitePage sitePage) -> new SitePage(),
+			sitePageResource::patchSiteSiteByExternalReferenceCodeSitePage);
 	}
 
 	private void _testPatchSiteSiteByExternalReferenceCodeSitePageWithPageSpecifications()
