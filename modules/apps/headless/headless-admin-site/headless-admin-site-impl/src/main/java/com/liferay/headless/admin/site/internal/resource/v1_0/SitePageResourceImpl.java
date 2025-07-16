@@ -441,6 +441,11 @@ public class SitePageResourceImpl extends BaseSitePageResourceImpl {
 			layout.getGroupId(), contextHttpServletRequest,
 			contextUser.getUserId());
 
+		serviceContext.setExpandoBridgeAttributes(
+			CustomFieldsUtil.toMap(
+				Layout.class.getName(), contextCompany.getCompanyId(),
+				sitePage.getCustomFields(), null));
+
 		if (Objects.equals(sitePage.getType(), SitePage.Type.CONTENT_PAGE)) {
 			serviceContext.setAttribute("hidden", hiddenFromNavigation);
 			serviceContext.setAttribute("parentLayoutId", parentLayoutId);
