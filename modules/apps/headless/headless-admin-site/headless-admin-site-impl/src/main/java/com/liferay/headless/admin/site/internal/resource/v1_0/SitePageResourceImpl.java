@@ -443,6 +443,10 @@ public class SitePageResourceImpl extends BaseSitePageResourceImpl {
 			_getParentLayoutId(
 				layout.getParentLayoutId(), layout.getGroupId(),
 				sitePage.getParentSitePageExternalReferenceCode()));
+		serviceContext.setExpandoBridgeAttributes(
+			CustomFieldsUtil.toMap(
+				Layout.class.getName(), contextCompany.getCompanyId(),
+				sitePage.getCustomFields(), null));
 
 		if (Objects.equals(sitePage.getType(), SitePage.Type.CONTENT_PAGE)) {
 			layout = LayoutUtil.updateContentLayout(
