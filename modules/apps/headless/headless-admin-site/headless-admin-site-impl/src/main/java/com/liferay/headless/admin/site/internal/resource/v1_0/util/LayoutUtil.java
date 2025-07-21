@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.vulcan.custom.field.CustomFieldsUtil;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsExperienceServiceUtil;
 import com.liferay.style.book.model.StyleBookEntry;
@@ -483,6 +484,11 @@ public class LayoutUtil {
 
 		if (pageSpecification != null) {
 			settings = pageSpecification.getSettings();
+
+			serviceContext.setExpandoBridgeAttributes(
+				CustomFieldsUtil.toMap(
+					Layout.class.getName(), layout.getCompanyId(),
+					pageSpecification.getCustomFields(), null));
 		}
 
 		layout = _updateLookAndFeel(layout, settings);
