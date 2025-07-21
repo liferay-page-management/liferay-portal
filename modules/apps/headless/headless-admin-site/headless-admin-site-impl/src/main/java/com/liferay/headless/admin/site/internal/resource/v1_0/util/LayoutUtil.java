@@ -477,8 +477,14 @@ public class LayoutUtil {
 			Layout layout, Map<Locale, String> nameMap,
 			Map<Locale, String> titleMap, Map<Locale, String> descriptionMap,
 			Map<Locale, String> robotsMap, Map<Locale, String> friendlyURLMap,
-			Settings settings, ServiceContext serviceContext)
+			PageSpecification pageSpecification, ServiceContext serviceContext)
 		throws Exception {
+
+		Settings settings = null;
+
+		if (pageSpecification != null) {
+			settings = pageSpecification.getSettings();
+		}
 
 		layout = _updateLookAndFeel(layout, settings);
 
