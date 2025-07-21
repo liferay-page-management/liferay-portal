@@ -461,8 +461,7 @@ public class LayoutUtil {
 
 		updateLayout(
 			layout, nameMap, titleMap, descriptionMap, robotsMap,
-			friendlyURLMap, contentPageSpecification.getSettings(),
-			serviceContext);
+			friendlyURLMap, contentPageSpecification, serviceContext);
 
 		_updatePageExperiences(
 			layout, contentPageSpecification.getPageExperiences(),
@@ -505,15 +504,10 @@ public class LayoutUtil {
 			WidgetPageSpecification widgetPageSpecification)
 		throws Exception {
 
-		Settings settings = null;
-
-		if (widgetPageSpecification != null) {
-			settings = widgetPageSpecification.getSettings();
-		}
-
 		layout = updateLayout(
 			layout, nameMap, layout.getTitleMap(), layout.getDescriptionMap(),
-			layout.getRobotsMap(), friendlyURLMap, settings, serviceContext);
+			layout.getRobotsMap(), friendlyURLMap, widgetPageSpecification,
+			serviceContext);
 
 		if (typeSettingsUnicodeProperties == null) {
 			return layout;
