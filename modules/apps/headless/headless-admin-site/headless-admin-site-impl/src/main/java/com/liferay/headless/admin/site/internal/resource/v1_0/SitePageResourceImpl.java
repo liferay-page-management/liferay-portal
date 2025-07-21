@@ -11,9 +11,11 @@ import com.liferay.headless.admin.site.dto.v1_0.PageSettings;
 import com.liferay.headless.admin.site.dto.v1_0.PageSpecification;
 import com.liferay.headless.admin.site.dto.v1_0.SitePage;
 import com.liferay.headless.admin.site.dto.v1_0.WidgetPageSettings;
+import com.liferay.headless.admin.site.dto.v1_0.WidgetPageSpecification;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.SitePageTypeUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.GroupUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutUtil;
+import com.liferay.headless.admin.site.internal.resource.v1_0.util.PageSpecificationUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.ServiceContextUtil;
 import com.liferay.headless.admin.site.resource.v1_0.SitePageResource;
 import com.liferay.headless.common.spi.service.context.ServiceContextBuilder;
@@ -274,10 +276,6 @@ public class SitePageResourceImpl extends BaseSitePageResourceImpl {
 
 		ServiceContext serviceContext = ServiceContextBuilder.create(
 			groupId, contextHttpServletRequest, sitePage.getViewableByAsString()
-		).expandoBridgeAttributes(
-			CustomFieldsUtil.toMap(
-				Layout.class.getName(), contextCompany.getCompanyId(),
-				sitePage.getCustomFields(), null)
 		).build();
 
 		serviceContext.setUserId(contextUser.getUserId());
@@ -310,6 +308,17 @@ public class SitePageResourceImpl extends BaseSitePageResourceImpl {
 
 			if (typeSettingsUnicodeProperties != null) {
 				typeSettings = typeSettingsUnicodeProperties.toString();
+			}
+
+			WidgetPageSpecification widgetPageSpecification =
+				PageSpecificationUtil.getWidgetPageSpecification(
+					sitePage.getPageSpecifications());
+
+			if (widgetPageSpecification != null) {
+				serviceContext.setExpandoBridgeAttributes(
+					CustomFieldsUtil.toMap(
+						Layout.class.getName(), contextCompany.getCompanyId(),
+						widgetPageSpecification.getCustomFields(), null));
 			}
 
 			layout = _layoutService.addLayout(
