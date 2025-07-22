@@ -262,7 +262,6 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				StringUtil.toLowerCase(RandomTestUtil.randomString())));
 
 		_testPostByExternalReferenceCodeSitePageWithCustomFields();
-
 		_testPostByExternalReferenceCodeSitePageWithPageSpecifications();
 	}
 
@@ -1406,7 +1405,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_assertSitePage(
 			_layoutLocalService.getLayoutByExternalReferenceCode(
 				sitePage.getExternalReferenceCode(), testGroup.getGroupId()),
-			sitePage);
+			putSitePage);
 
 		_assertPutSiteSiteByExternalReferenceCodeSitePageProblemException(
 			_getRandomSitePage(
