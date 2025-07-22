@@ -487,11 +487,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		ExpandoBridge expandoBridge = layout.getExpandoBridge();
 
-		Assert.assertNotNull(expandoBridge);
-
 		Map<String, Serializable> attributes = expandoBridge.getAttributes();
 
-		Assert.assertNotNull(attributes);
 		Assert.assertFalse(attributes.isEmpty());
 
 		for (CustomField customField : expectedNonlocalizedCustomFields) {
