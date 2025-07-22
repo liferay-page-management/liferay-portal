@@ -1457,9 +1457,26 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	private void _testPutSiteSiteByExternalReferenceCodeSitePageWithCustomFields()
 		throws Exception {
 
+		Function<SitePage, SitePage> getUpdateBodySitePageFunction =
+			(SitePage sitePage) -> sitePage;
+
+		UnsafeTriFunction<String, String, SitePage, SitePage, Throwable>
+			updateSitePageUnsafeTriFunction =
+				(siteExternalReferenceCode, sitePageExternalReferenceCode,
+				 sitePage) -> {
+
+					SitePageResource sitePageResource = _getSitePageResource(
+						"pageSpecifications");
+
+					return sitePageResource.
+						putSiteSiteByExternalReferenceCodeSitePage(
+							siteExternalReferenceCode,
+							sitePageExternalReferenceCode, sitePage);
+				};
+
 		_testAddOrUpdateSiteSiteByExternalReferenceCodeSitePageWithCustomFields(
-			(SitePage sitePage) -> sitePage,
-			sitePageResource::putSiteSiteByExternalReferenceCodeSitePage);
+			getUpdateBodySitePageFunction, updateSitePageUnsafeTriFunction,
+			SitePage.Type.CONTENT_PAGE);
 	}
 
 	private void _testPutSiteSiteByExternalReferenceCodeSitePageWithPageSpecifications()
