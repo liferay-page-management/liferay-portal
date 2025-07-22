@@ -264,26 +264,22 @@ public class PageSpecificationsTestUtil {
 	}
 
 	public static ContentPageSpecification getContentPageSpecification(
-		String curContentPageSpecificationExternalReferenceCode,
-		String curDraftContentPageSpecificationExternalReferenceCode,
-		PageSpecification.Status curStatus) {
+		String contentPageSpecificationExternalReferenceCode,
+		String draftContentPageSpecificationExternalReferenceCode,
+		PageSpecification.Status status) {
 
 		ContentPageSpecification contentPageSpecification =
 			new ContentPageSpecification() {
 				{
-					setDraftContentPageSpecificationExternalReferenceCode(
-						() ->
-							curDraftContentPageSpecificationExternalReferenceCode);
-					setExternalReferenceCode(
-						() -> curContentPageSpecificationExternalReferenceCode);
-					setStatus(() -> curStatus);
 					setType(() -> Type.CONTENT_PAGE_SPECIFICATION);
 				}
 			};
 
 		contentPageSpecification.
 			setDraftContentPageSpecificationExternalReferenceCode(
-				curDraftContentPageSpecificationExternalReferenceCode);
+				draftContentPageSpecificationExternalReferenceCode);
+		contentPageSpecification.setExternalReferenceCode(
+			contentPageSpecificationExternalReferenceCode);
 		contentPageSpecification.setPageExperiences(
 			() -> {
 				PageExperience pageExperience = new PageExperience();
