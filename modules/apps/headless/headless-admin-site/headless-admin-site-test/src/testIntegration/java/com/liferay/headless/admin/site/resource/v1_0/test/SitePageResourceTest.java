@@ -474,7 +474,9 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			expectedNonlocalizedCustomFields.length, customFields.length);
 
 		Assert.assertTrue(
-			Arrays.toString(customFields),
+			Arrays.toString(customFields) +
+				" does not contain all custom fields in " +
+					Arrays.toString(expectedNonlocalizedCustomFields),
 			ArrayUtil.containsAll(
 				customFields, expectedNonlocalizedCustomFields));
 
