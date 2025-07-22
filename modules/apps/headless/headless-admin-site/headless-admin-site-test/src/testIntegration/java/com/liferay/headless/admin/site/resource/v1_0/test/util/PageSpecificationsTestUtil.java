@@ -257,17 +257,32 @@ public class PageSpecificationsTestUtil {
 		String draftContentPageSpecificationExternalReferenceCode,
 		PageSpecification.Status status) {
 
+		return getContentPageSpecification(
+			RandomTestUtil.randomString(),
+			draftContentPageSpecificationExternalReferenceCode, status);
+	}
+
+	public static ContentPageSpecification getContentPageSpecification(
+		String curContentPageSpecificationExternalReferenceCode,
+		String curDraftContentPageSpecificationExternalReferenceCode,
+		PageSpecification.Status curStatus) {
+
 		ContentPageSpecification contentPageSpecification =
 			new ContentPageSpecification() {
 				{
-					setExternalReferenceCode(RandomTestUtil::randomString);
+					setDraftContentPageSpecificationExternalReferenceCode(
+						() ->
+							curDraftContentPageSpecificationExternalReferenceCode);
+					setExternalReferenceCode(
+						() -> curContentPageSpecificationExternalReferenceCode);
+					setStatus(() -> curStatus);
 					setType(() -> Type.CONTENT_PAGE_SPECIFICATION);
 				}
 			};
 
 		contentPageSpecification.
 			setDraftContentPageSpecificationExternalReferenceCode(
-				draftContentPageSpecificationExternalReferenceCode);
+				curDraftContentPageSpecificationExternalReferenceCode);
 		contentPageSpecification.setPageExperiences(
 			() -> {
 				PageExperience pageExperience = new PageExperience();
