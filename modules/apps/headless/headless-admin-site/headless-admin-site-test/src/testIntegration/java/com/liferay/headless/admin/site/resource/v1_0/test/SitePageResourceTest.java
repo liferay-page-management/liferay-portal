@@ -786,10 +786,25 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		SitePage randomSitePage = _getRandomSitePage(type);
 
-		randomSitePage.setCustomFields(
-			new CustomField[] {
-				nonlocalizedCustomField1, nonlocalizedCustomField3
-			});
+		String draftPageSpecificationExternalReferenceCode =
+			RandomTestUtil.randomString();
+
+		PageSpecification[] pageSpecifications =
+			PageSpecificationsTestUtil.getPageSpecifications(
+				draftPageSpecificationExternalReferenceCode,
+				randomSitePage.getExternalReferenceCode(), type);
+
+		for (PageSpecification pageSpecification : pageSpecifications) {
+			pageSpecification.setCustomFields(
+				new CustomField[] {
+					nonlocalizedCustomField1, nonlocalizedCustomField3
+				});
+		}
+
+		randomSitePage.setPageSpecifications(pageSpecifications);
+
+		SitePageResource sitePageResource = _getSitePageResource(
+			"pageSpecifications");
 
 		SitePage sitePage =
 			sitePageResource.postByExternalReferenceCodeSitePage(
@@ -819,10 +834,18 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		SitePage updateBodySitePage = getUpdateBodySitePageFunction.apply(
 			sitePage);
 
-		updateBodySitePage.setCustomFields(
-			new CustomField[] {
-				updatedNonlocalizedCustomField1, updatedNonlocalizedCustomField2
-			});
+		PageSpecification[] updateBodySitePagePageSpecifications =
+			updateBodySitePage.getPageSpecifications();
+
+		for (PageSpecification updateBodySitePageSpecification :
+				updateBodySitePagePageSpecifications) {
+
+			updateBodySitePageSpecification.setCustomFields(
+				new CustomField[] {
+					updatedNonlocalizedCustomField1,
+					updatedNonlocalizedCustomField2
+				});
+		}
 
 		try {
 			sitePage = updateSitePageUnsafeTriFunction.apply(
