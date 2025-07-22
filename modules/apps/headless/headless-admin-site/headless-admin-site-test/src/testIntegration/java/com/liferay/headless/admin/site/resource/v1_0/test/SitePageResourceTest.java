@@ -466,33 +466,42 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	}
 
 	private void _assertCustomFields(
-		CustomField[] expectedNonlocalizedCustomFields, SitePage sitePage) {
-
-		CustomField[] customFields = sitePage.getCustomFields();
-
-		Assert.assertEquals(
-			Arrays.toString(customFields),
-			expectedNonlocalizedCustomFields.length, customFields.length);
+			CustomField[] expectedCustomFields, SitePage sitePage)
+		throws Exception {
 
 		Assert.assertTrue(
-			Arrays.toString(customFields) +
-				" does not contain all custom fields in " +
-					Arrays.toString(expectedNonlocalizedCustomFields),
-			ArrayUtil.containsAll(
-				customFields, expectedNonlocalizedCustomFields));
+			ArrayUtil.isNotEmpty(sitePage.getPageSpecifications()));
 
-		Layout layout = _layoutLocalService.getLayoutByExternalReferenceCode(
-			pageSpecification.getExternalReferenceCode(),
-			testGroup.getGroupId());
+		for (PageSpecification pageSpecification :
+				sitePage.getPageSpecifications()) {
 
-		ExpandoBridge expandoBridge = layout.getExpandoBridge();
+			CustomField[] customFields = pageSpecification.getCustomFields();
 
-		Map<String, Serializable> attributes = expandoBridge.getAttributes();
+			Assert.assertEquals(
+				Arrays.toString(customFields), expectedCustomFields.length,
+				customFields.length);
 
-		Assert.assertFalse(attributes.isEmpty());
+			Assert.assertTrue(
+				Arrays.toString(customFields) +
+					" does not contain all custom fields in " +
+						Arrays.toString(expectedCustomFields),
+				ArrayUtil.containsAll(customFields, expectedCustomFields));
 
-		for (CustomField customField : expectedNonlocalizedCustomFields) {
-			_assertCustomField(attributes, customField);
+			Layout layout =
+				_layoutLocalService.getLayoutByExternalReferenceCode(
+					pageSpecification.getExternalReferenceCode(),
+					testGroup.getGroupId());
+
+			ExpandoBridge expandoBridge = layout.getExpandoBridge();
+
+			Map<String, Serializable> attributes =
+				expandoBridge.getAttributes();
+
+			Assert.assertFalse(attributes.isEmpty());
+
+			for (CustomField customField : expectedCustomFields) {
+				_assertCustomField(attributes, customField);
+			}
 		}
 	}
 
