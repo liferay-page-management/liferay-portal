@@ -968,7 +968,9 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		return types.get(RandomTestUtil.randomInt(0, types.size() - 1));
 	}
 
-	private SitePageResource _getSitePageResource() throws Exception {
+	private SitePageResource _getSitePageResource(String nestedFields)
+		throws Exception {
+
 		User user = UserTestUtil.getAdminUser(testCompany.getCompanyId());
 
 		return SitePageResource.builder(
@@ -979,7 +981,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		).locale(
 			LocaleUtil.getDefault()
 		).parameters(
-			"nestedFields", "friendlyUrlHistory,pageSpecifications"
+			"nestedFields", nestedFields
 		).build();
 	}
 
