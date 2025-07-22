@@ -425,12 +425,11 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		ExpandoTable expandoTable = _expandoTableLocalService.addDefaultTable(
 			PortalUtil.getDefaultCompanyId(), Layout.class.getName());
 
-		for (int i = 0; i < _EXPANDO_ATTRIBUTE_NONLOCALIZED_NAMES.length; i++) {
+		for (int i = 0; i < _EXPANDO_ATTRIBUTE_NAMES.length; i++) {
 			_expandoColumnLocalService.addColumn(
-				expandoTable.getTableId(),
-				_EXPANDO_ATTRIBUTE_NONLOCALIZED_NAMES[i],
+				expandoTable.getTableId(), _EXPANDO_ATTRIBUTE_NAMES[i],
 				ExpandoColumnConstants.STRING,
-				_EXPANDO_ATTRIBUTE_NONLOCALIZED_DEFAULT_VALUES[i]);
+				_EXPANDO_ATTRIBUTE_DEFAULT_VALUES[i]);
 		}
 
 		return expandoTable;
@@ -777,12 +776,10 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				SitePage.Type type)
 		throws Exception {
 
-		CustomField nonlocalizedCustomField1 = _getCustomField(
-			_EXPANDO_ATTRIBUTE_NONLOCALIZED_NAMES[0],
-			RandomTestUtil.randomString());
-		CustomField nonlocalizedCustomField3 = _getCustomField(
-			_EXPANDO_ATTRIBUTE_NONLOCALIZED_NAMES[2],
-			RandomTestUtil.randomString());
+		CustomField customField1 = _getCustomField(
+			_EXPANDO_ATTRIBUTE_NAMES[0], RandomTestUtil.randomString());
+		CustomField customField3 = _getCustomField(
+			_EXPANDO_ATTRIBUTE_NAMES[2], RandomTestUtil.randomString());
 
 		SitePage randomSitePage = _getRandomSitePage(type);
 
@@ -796,9 +793,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		for (PageSpecification pageSpecification : pageSpecifications) {
 			pageSpecification.setCustomFields(
-				new CustomField[] {
-					nonlocalizedCustomField1, nonlocalizedCustomField3
-				});
+				new CustomField[] {customField1, customField3});
 		}
 
 		randomSitePage.setPageSpecifications(pageSpecifications);
@@ -810,26 +805,23 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			sitePageResource.postByExternalReferenceCodeSitePage(
 				testGroup.getExternalReferenceCode(), randomSitePage);
 
-		CustomField nonlocalizedCustomField2 = _getCustomField(
-			_EXPANDO_ATTRIBUTE_NONLOCALIZED_NAMES[1],
-			_EXPANDO_ATTRIBUTE_NONLOCALIZED_DEFAULT_VALUES[1]);
+		CustomField customField2 = _getCustomField(
+			_EXPANDO_ATTRIBUTE_NAMES[1], _EXPANDO_ATTRIBUTE_DEFAULT_VALUES[1]);
 
-		CustomField[] expectedNonlocalizedCustomFields = {
-			nonlocalizedCustomField1, nonlocalizedCustomField2,
-			nonlocalizedCustomField3
+		CustomField[] expectedCustomFields = {
+			customField1, customField2, customField3
 		};
 
-		_assertCustomFields(expectedNonlocalizedCustomFields, sitePage);
+		_assertCustomFields(expectedCustomFields, sitePage);
 
 		if (getUpdateBodySitePageFunction == null) {
 			return;
 		}
 
-		CustomField updatedNonlocalizedCustomField1 = _getCustomField(
-			_EXPANDO_ATTRIBUTE_NONLOCALIZED_NAMES[0], null);
-		CustomField updatedNonlocalizedCustomField2 = _getCustomField(
-			_EXPANDO_ATTRIBUTE_NONLOCALIZED_NAMES[1],
-			RandomTestUtil.randomString());
+		CustomField updatedCustomField1 = _getCustomField(
+			_EXPANDO_ATTRIBUTE_NAMES[0], null);
+		CustomField updatedCustomField2 = _getCustomField(
+			_EXPANDO_ATTRIBUTE_NAMES[1], RandomTestUtil.randomString());
 
 		SitePage updateBodySitePage = getUpdateBodySitePageFunction.apply(
 			sitePage);
@@ -841,10 +833,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				updateBodySitePagePageSpecifications) {
 
 			updateBodySitePageSpecification.setCustomFields(
-				new CustomField[] {
-					updatedNonlocalizedCustomField1,
-					updatedNonlocalizedCustomField2
-				});
+				new CustomField[] {updatedCustomField1, updatedCustomField2});
 		}
 
 		try {
@@ -857,10 +846,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		}
 
 		_assertCustomFields(
-			new CustomField[] {
-				nonlocalizedCustomField1, updatedNonlocalizedCustomField2,
-				nonlocalizedCustomField3
-			},
+			new CustomField[] {customField1, updatedCustomField2, customField3},
 			sitePage);
 	}
 
@@ -1729,12 +1715,11 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			sitePage1.getExternalReferenceCode(), 2, sitePage4);
 	}
 
-	private static final String[]
-		_EXPANDO_ATTRIBUTE_NONLOCALIZED_DEFAULT_VALUES = {
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null
-		};
+	private static final String[] _EXPANDO_ATTRIBUTE_DEFAULT_VALUES = {
+		RandomTestUtil.randomString(), RandomTestUtil.randomString(), null
+	};
 
-	private static final String[] _EXPANDO_ATTRIBUTE_NONLOCALIZED_NAMES = {
+	private static final String[] _EXPANDO_ATTRIBUTE_NAMES = {
 		RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 		RandomTestUtil.randomString()
 	};
