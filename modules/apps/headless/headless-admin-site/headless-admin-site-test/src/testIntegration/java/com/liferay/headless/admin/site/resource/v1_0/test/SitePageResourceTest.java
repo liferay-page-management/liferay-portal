@@ -808,11 +808,9 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		CustomField customField2 = _getCustomField(
 			_EXPANDO_ATTRIBUTE_NAMES[1], _EXPANDO_ATTRIBUTE_DEFAULT_VALUES[1]);
 
-		CustomField[] expectedCustomFields = {
-			customField1, customField2, customField3
-		};
-
-		_assertCustomFields(expectedCustomFields, sitePage);
+		_assertCustomFields(
+			new CustomField[] {customField1, customField2, customField3},
+			sitePage);
 
 		if (getUpdateBodySitePageFunction == null) {
 			return;
