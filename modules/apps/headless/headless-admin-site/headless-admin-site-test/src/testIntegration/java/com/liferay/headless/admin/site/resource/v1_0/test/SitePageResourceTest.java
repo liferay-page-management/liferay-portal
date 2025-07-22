@@ -769,7 +769,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	}
 
 	private void
-			_doTestAddOrUpdateSiteSiteByExternalReferenceCodeSitePageWithCustomFields(
+	_testAddOrUpdateSiteSiteByExternalReferenceCodeSitePageWithCustomFields2(
 				Function<SitePage, SitePage> getUpdateBodySitePageFunction,
 				UnsafeTriFunction<String, String, SitePage, SitePage, Throwable>
 					updateSitePageUnsafeTriFunction,
@@ -1017,7 +1017,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			ExpandoTable expandoTable = _addExpandoTable();
 
 			try {
-				_doTestAddOrUpdateSiteSiteByExternalReferenceCodeSitePageWithCustomFields(
+				_testAddOrUpdateSiteSiteByExternalReferenceCodeSitePageWithCustomFields2(
 					getUpdateBodySitePageFunction,
 					updateSitePageUnsafeTriFunction, type);
 			}
