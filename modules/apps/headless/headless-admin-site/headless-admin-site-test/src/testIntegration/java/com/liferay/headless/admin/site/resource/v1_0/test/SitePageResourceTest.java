@@ -481,10 +481,9 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			ArrayUtil.containsAll(
 				customFields, expectedNonlocalizedCustomFields));
 
-		Layout layout = _layoutLocalService.fetchLayoutByExternalReferenceCode(
-			sitePage.getExternalReferenceCode(), testGroup.getGroupId());
-
-		Assert.assertNotNull(layout);
+		Layout layout = _layoutLocalService.getLayoutByExternalReferenceCode(
+			pageSpecification.getExternalReferenceCode(),
+			testGroup.getGroupId());
 
 		ExpandoBridge expandoBridge = layout.getExpandoBridge();
 
