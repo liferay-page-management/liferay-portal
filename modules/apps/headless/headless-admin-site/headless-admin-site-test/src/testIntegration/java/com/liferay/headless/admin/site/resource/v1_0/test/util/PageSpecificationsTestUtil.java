@@ -10,6 +10,7 @@ import com.liferay.headless.admin.site.client.dto.v1_0.PageElement;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageExperience;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageSpecification;
 import com.liferay.headless.admin.site.client.dto.v1_0.Settings;
+import com.liferay.headless.admin.site.client.dto.v1_0.SitePage;
 import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPageSpecification;
 import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.layout.constants.LayoutTypeSettingsConstants;
@@ -304,6 +305,24 @@ public class PageSpecificationsTestUtil {
 		return contentPageSpecification;
 	}
 
+	public static PageSpecification[] getPageSpecifications(
+		String draftPageSpecificationExternalReferenceCode,
+		String publishedPageSpecificationExternalReferenceCode,
+		SitePage.Type type) {
+
+		if (type == SitePage.Type.CONTENT_PAGE) {
+			return _getContentPageSpecifications(
+				draftPageSpecificationExternalReferenceCode,
+				publishedPageSpecificationExternalReferenceCode);
+		}
+
+		return new PageSpecification[] {
+			getWidgetPageSpecification(
+				publishedPageSpecificationExternalReferenceCode, null,
+				PageSpecification.Status.APPROVED)
+		};
+	}
+
 	public static WidgetPageSpecification getWidgetPageSpecification(
 		String externalReferenceCode, Settings settings,
 		PageSpecification.Status status) {
@@ -445,6 +464,26 @@ public class PageSpecificationsTestUtil {
 			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
 			Assert.assertNull(problem.getTitle());
 		}
+	}
+
+	private static ContentPageSpecification[] _getContentPageSpecifications(
+		String draftPageSpecificationExternalReferenceCode,
+		String publishedPageSpecificationExternalReferenceCode) {
+
+		ContentPageSpecification draftContentPageSpecification =
+			getContentPageSpecification(
+				draftPageSpecificationExternalReferenceCode, null,
+				PageSpecification.Status.DRAFT);
+
+		ContentPageSpecification publishedContentPageSpecification =
+			getContentPageSpecification(
+				publishedPageSpecificationExternalReferenceCode,
+				draftContentPageSpecification.getExternalReferenceCode(),
+				PageSpecification.Status.APPROVED);
+
+		return new ContentPageSpecification[] {
+			publishedContentPageSpecification, draftContentPageSpecification
+		};
 	}
 
 	private static boolean _isPublished(Layout draftLayout) {
