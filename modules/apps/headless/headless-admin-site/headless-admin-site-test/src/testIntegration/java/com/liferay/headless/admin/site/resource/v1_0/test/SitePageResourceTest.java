@@ -773,7 +773,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			_doTestAddOrUpdateSiteSiteByExternalReferenceCodeSitePageWithCustomFields(
 				Function<SitePage, SitePage> getUpdateBodySitePageFunction,
 				UnsafeTriFunction<String, String, SitePage, SitePage, Throwable>
-					updateSitePageUnsafeTriFunction)
+					updateSitePageUnsafeTriFunction,
+				SitePage.Type type)
 		throws Exception {
 
 		CustomField nonlocalizedCustomField1 = _getCustomField(
@@ -783,7 +784,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			_EXPANDO_ATTRIBUTE_NONLOCALIZED_NAMES[2],
 			RandomTestUtil.randomString());
 
-		SitePage randomSitePage = randomSitePage();
+		SitePage randomSitePage = _getRandomSitePage(type);
 
 		randomSitePage.setCustomFields(
 			new CustomField[] {
@@ -995,7 +996,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			_testAddOrUpdateSiteSiteByExternalReferenceCodeSitePageWithCustomFields(
 				Function<SitePage, SitePage> getUpdateBodySitePageFunction,
 				UnsafeTriFunction<String, String, SitePage, SitePage, Throwable>
-					updateSitePageUnsafeTriFunction)
+					updateSitePageUnsafeTriFunction,
+				SitePage.Type type)
 		throws Exception {
 
 		PermissionChecker originalPermissionChecker =
@@ -1010,7 +1012,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			try {
 				_doTestAddOrUpdateSiteSiteByExternalReferenceCodeSitePageWithCustomFields(
 					getUpdateBodySitePageFunction,
-					updateSitePageUnsafeTriFunction);
+					updateSitePageUnsafeTriFunction, type);
 			}
 			finally {
 				ExpandoTableLocalServiceUtil.deleteTable(expandoTable);
