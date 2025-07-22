@@ -272,7 +272,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		Layout layout = LayoutTestUtil.addTypeContentLayout(testGroup);
 
-		SitePageResource sitePageResource = _getSitePageResource();
+		SitePageResource sitePageResource = _getSitePageResource(
+			"pageSpecifications");
 
 		SitePage sitePage =
 			sitePageResource.getSiteSiteByExternalReferenceCodeSitePage(
@@ -1049,7 +1050,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				SitePage sitePage)
 		throws Exception {
 
-		SitePageResource sitePageResource = _getSitePageResource();
+		SitePageResource sitePageResource = _getSitePageResource(
+			"friendlyUrlHistory,pageSpecifications");
 
 		_assertNestedFields(
 			sitePageResource.getSiteSiteByExternalReferenceCodeSitePage(
@@ -1214,7 +1216,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				publishedContentPageSpecification, draftContentPageSpecification
 			});
 
-		SitePageResource sitePageResource = _getSitePageResource();
+		SitePageResource sitePageResource = _getSitePageResource(
+			"pageSpecifications");
 
 		SitePage postSitePage =
 			sitePageResource.postByExternalReferenceCodeSitePage(
@@ -1372,7 +1375,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				publishedContentPageSpecification, draftContentPageSpecification
 			});
 
-		SitePageResource sitePageResource = _getSitePageResource();
+		SitePageResource sitePageResource = _getSitePageResource(
+			"pageSpecifications");
 
 		_assertPageSpecifications(
 			draftContentPageSpecification, publishedContentPageSpecification,
@@ -1475,7 +1479,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				publishedContentPageSpecification, draftContentPageSpecification
 			});
 
-		SitePageResource sitePageResource = _getSitePageResource();
+		SitePageResource sitePageResource = _getSitePageResource(
+			"pageSpecifications");
 
 		_assertPageSpecifications(
 			draftContentPageSpecification, publishedContentPageSpecification,
