@@ -1223,6 +1223,9 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testAddOrUpdateSiteSiteByExternalReferenceCodeSitePageWithCustomFields(
 			getUpdateBodySitePageFunction, updateSitePageUnsafeTriFunction,
 			SitePage.Type.CONTENT_PAGE);
+		_testAddOrUpdateSiteSiteByExternalReferenceCodeSitePageWithCustomFields(
+			getUpdateBodySitePageFunction, updateSitePageUnsafeTriFunction,
+			SitePage.Type.WIDGET_PAGE);
 	}
 
 	private void _testPatchSiteSiteByExternalReferenceCodeSitePageWithPageSpecifications()
@@ -1364,7 +1367,9 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		throws Exception {
 
 		_testAddOrUpdateSiteSiteByExternalReferenceCodeSitePageWithCustomFields(
-			null, null);
+			null, null, SitePage.Type.CONTENT_PAGE);
+		_testAddOrUpdateSiteSiteByExternalReferenceCodeSitePageWithCustomFields(
+			null, null, SitePage.Type.WIDGET_PAGE);
 	}
 
 	private void _testPostByExternalReferenceCodeSitePageWithPageSpecifications()
@@ -1503,6 +1508,9 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testAddOrUpdateSiteSiteByExternalReferenceCodeSitePageWithCustomFields(
 			getUpdateBodySitePageFunction, updateSitePageUnsafeTriFunction,
 			SitePage.Type.CONTENT_PAGE);
+		_testAddOrUpdateSiteSiteByExternalReferenceCodeSitePageWithCustomFields(
+			getUpdateBodySitePageFunction, updateSitePageUnsafeTriFunction,
+			SitePage.Type.WIDGET_PAGE);
 	}
 
 	private void _testPutSiteSiteByExternalReferenceCodeSitePageWithPageSpecifications()
