@@ -1271,6 +1271,10 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 
 		_assertWidgetPageSpecifications(
 			pageTemplate.getPageSpecifications(), widgetPageSpecification);
+
+		_layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
+			layoutPageTemplateEntry.getExternalReferenceCode(),
+			testGroup.getGroupId());
 	}
 
 	private void _testPatchSiteSiteByExternalReferenceCodePageTemplateWithPageSpecifications()
