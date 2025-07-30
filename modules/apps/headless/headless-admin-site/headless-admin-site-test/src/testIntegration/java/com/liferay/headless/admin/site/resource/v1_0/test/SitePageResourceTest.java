@@ -958,6 +958,25 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				}
 			});
 
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				testGroup, TestPropsValues.getUserId());
+
+		sitePage.setKeywords(
+			() -> AssetTestUtil.randomKeywords(serviceContext));
+
+		_assertPatchSiteSiteByExternalReferenceCodeSitePage(
+			sitePage,
+			new SitePage() {
+				{
+					setExternalReferenceCode(
+						sitePage::getExternalReferenceCode);
+					setKeywords(sitePage::getKeywords);
+					setType(sitePage::getType);
+					setUuid(sitePage::getUuid);
+				}
+			});
+
 		sitePage.setName_i18n(
 			() -> HashMapBuilder.put(
 				LocaleUtil.toBCP47LanguageId(LocaleUtil.US),
@@ -1011,6 +1030,23 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 						sitePage::getExternalReferenceCode);
 					setParentSitePageExternalReferenceCode(
 						layout::getExternalReferenceCode);
+					setType(sitePage::getType);
+					setUuid(sitePage::getUuid);
+				}
+			});
+
+		sitePage.setTaxonomyCategoryItemExternalReferences(
+			AssetTestUtil.randomTaxonomyCategoryItemExternalReferences(
+				testCompany.getGroupId(), serviceContext));
+
+		_assertPatchSiteSiteByExternalReferenceCodeSitePage(
+			sitePage,
+			new SitePage() {
+				{
+					setExternalReferenceCode(
+						sitePage::getExternalReferenceCode);
+					setTaxonomyCategoryItemExternalReferences(
+						sitePage::getTaxonomyCategoryItemExternalReferences);
 					setType(sitePage::getType);
 					setUuid(sitePage::getUuid);
 				}
