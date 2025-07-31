@@ -96,15 +96,21 @@ export function LocalizationSelect({
 				return;
 			}
 
-			setTranslations((previousState) => ({
-				...previousState,
-				...(translated && {
+			setTranslations((previous) => {
+				const nextTranslations: Translations = {
+					...previous,
 					[label]: {
 						total,
 						translated,
 					},
-				}),
-			}));
+				};
+
+				if (!translated) {
+					delete nextTranslations[label];
+				}
+
+				return nextTranslations;
+			});
 		};
 
 		Liferay.on(EVENT_TRANSLATION_STATUS, updateTranslationStatus);
