@@ -21,6 +21,8 @@ type Args = {
 		languageId: string;
 		value?: string;
 	}) => void;
+	onMarkAsTranslated?: () => void;
+	onResetTranslation?: () => void;
 };
 
 export function registerLocalizedInput({
@@ -33,6 +35,8 @@ export function registerLocalizedInput({
 	localizationInputsContainer,
 	namespace,
 	onLocaleChange,
+	onMarkAsTranslated,
+	onResetTranslation,
 }: Args) {
 
 	// Create hidden inputs for initial values if any
@@ -131,6 +135,136 @@ export function registerLocalizedInput({
 
 				inputElement.value = defaultLanguageInput.value;
 			}
+		}
+	);
+
+	Liferay.on(
+		'localizationSelect:markAsTranslated',
+		({
+			formId,
+			languageId,
+		}: {
+			formId?: string;
+			languageId: Liferay.Language.Locale;
+		}) => {
+
+			// Return if event is sent from a different form
+
+			const form = inputElement?.closest(
+				'.lfr-layout-structure-item-form'
+			);
+
+			if (form && formId && !form.classList.contains(formId)) {
+				return;
+			}
+
+			const defaultLanguageInput = getOrCreateTranslationInput(
+				inputElement?.id || inputName,
+				inputName,
+				defaultLanguageId,
+				localizationInputsContainer,
+				namespace
+			);
+
+			const translationInput = getOrCreateTranslationInput(
+				inputElement?.id || inputName,
+				inputName,
+				languageId,
+				localizationInputsContainer,
+				namespace
+			);
+
+			// Do nothing if it's already translated
+
+			if (translationInput.getAttribute('value')) {
+				return;
+			}
+
+			// Call custom value change handler if passed
+
+			if (onMarkAsTranslated) {
+				onMarkAsTranslated();
+			}
+
+			// Otherwise update both visible and hidden input manually
+
+			else {
+				setInputValue({
+					input: inputElement,
+					value: defaultLanguageInput.value,
+				});
+
+				setInputValue({
+					input: translationInput,
+					value: defaultLanguageInput.value,
+				});
+			}
+
+			Liferay.fire('localizationSelect:updateTranslationStatus', {
+				languageId: currentLanguageId,
+			});
+		}
+	);
+
+	Liferay.on(
+		'localizationSelect:resetTranslation',
+		({
+			formId,
+			languageId,
+		}: {
+			formId?: string;
+			languageId: Liferay.Language.Locale;
+		}) => {
+
+			// Return if event is sent from a different form
+
+			const form = inputElement?.closest(
+				'.lfr-layout-structure-item-form'
+			);
+
+			if (form && formId && !form.classList.contains(formId)) {
+				return;
+			}
+
+			const defaultLanguageInput = getOrCreateTranslationInput(
+				inputElement?.id || inputName,
+				inputName,
+				defaultLanguageId,
+				localizationInputsContainer,
+				namespace
+			);
+
+			const translationInput = getOrCreateTranslationInput(
+				inputElement?.id || inputName,
+				inputName,
+				languageId,
+				localizationInputsContainer,
+				namespace
+			);
+
+			// Call custom value change handler if passed
+
+			if (onResetTranslation) {
+				onResetTranslation();
+			}
+
+			// Otherwise update both visible and hidden input manually
+
+			else {
+				setInputValue({
+					input: inputElement,
+					value: defaultLanguageInput.value,
+				});
+
+				setInputValue({
+					input: translationInput,
+					value: null,
+				});
+			}
+
+			Liferay.fire('localizationSelect:updateTranslationStatus', {
+				languageId: currentLanguageId,
+			});
 		}
 	);
 

@@ -1,5 +1,5 @@
 {
-	"@generated": "9a3db6461536429d4ec89c937a7305d557cad697",
+	"@generated": "191b6e3f1b4edfbf4cba8df725791ae4dce40866",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -13,6 +13,9 @@
 		"paths": {
 			"@liferay/fragment-impl/api": [
 				"./js/api/api.ts"
+			],
+			"@liferay/layout-js-components-web": [
+				"../../../../../../../layout/layout-js-components-web/src/main/resources/META-INF/resources/js/index.ts"
 			],
 			"document-library-video": [
 				"../../../../../../../document-library/document-library-video/src/main/resources/META-INF/resources/js/index.d.ts"
@@ -43,6 +46,9 @@
 		"../../../../../../../../global.d.ts"
 	],
 	"references": [
+		{
+			"path": "../../../../../../../layout/layout-js-components-web/src/main/resources/META-INF/resources/tsconfig.json"
+		},
 		{
 			"path": "../../../../../../../document-library/document-library-video/src/main/resources/META-INF/resources/tsconfig.json"
 		},

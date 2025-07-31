@@ -5,11 +5,13 @@
 
 import {LanguagePicker} from '@clayui/core';
 import ClayDropDown from '@clayui/drop-down';
+import {openConfirmModal} from '@liferay/layout-js-components-web';
 import React, {Key, useEffect, useRef, useState} from 'react';
 
 import './LocalizationSelect.scss';
 
 import {ClayButtonWithIcon} from '@clayui/button';
+import {sub} from 'frontend-js-web';
 
 const EVENT_TRANSLATION_STATUS = 'localizationSelect:updateTranslationStatus';
 
@@ -210,11 +212,77 @@ export function LocalizationSelect({
 							{Liferay.Language.get('auto-translate')}
 						</ClayDropDown.Item>
 
-						<ClayDropDown.Item symbolLeft="check-circle">
+						<ClayDropDown.Item
+							onClick={async () => {
+								if (
+									await openConfirmModal({
+										buttonLabel:
+											Liferay.Language.get(
+												'mark-as-translated'
+											),
+										center: true,
+										status: 'info',
+										text: sub(
+											Liferay.Language.get(
+												'all-the-fields-for-x-will-be-marked-as-translated'
+											),
+											selectedLocaleId
+										),
+										title: sub(
+											Liferay.Language.get(
+												'mark-x-as-translated'
+											),
+											selectedLocaleId
+										),
+									})
+								) {
+									Liferay.fire(
+										'localizationSelect:markAsTranslated',
+										{
+											formId: form?.id,
+											languageId: selectedLocaleId,
+										}
+									);
+								}
+							}}
+							symbolLeft="check-circle"
+						>
 							{Liferay.Language.get('mark-as-translated')}
 						</ClayDropDown.Item>
 
-						<ClayDropDown.Item symbolLeft="trash">
+						<ClayDropDown.Item
+							onClick={async () => {
+								if (
+									await openConfirmModal({
+										buttonLabel:
+											Liferay.Language.get('delete'),
+										center: true,
+										status: 'danger',
+										text: sub(
+											Liferay.Language.get(
+												'x-translation-will-be-deleted-and-content-fields-will-be-set-to-default-value'
+											),
+											selectedLocaleId
+										),
+										title: sub(
+											Liferay.Language.get(
+												'delete-x-translation'
+											),
+											selectedLocaleId
+										),
+									})
+								) {
+									Liferay.fire(
+										'localizationSelect:resetTranslation',
+										{
+											formId: form?.id,
+											languageId: selectedLocaleId,
+										}
+									);
+								}
+							}}
+							symbolLeft="trash"
+						>
 							{Liferay.Language.get('reset-translation')}
 						</ClayDropDown.Item>
 					</ClayDropDown.ItemList>
