@@ -4,13 +4,17 @@
  */
 
 import {LanguagePicker} from '@clayui/core';
+import ClayDropDown from '@clayui/drop-down';
 import React, {Key, useEffect, useRef, useState} from 'react';
 
 import './LocalizationSelect.scss';
 
+import {ClayButtonWithIcon} from '@clayui/button';
+
 const EVENT_TRANSLATION_STATUS = 'localizationSelect:updateTranslationStatus';
 
 type Props = {
+	allowLocalizationManagement: boolean;
 	defaultLanguageId: Liferay.Language.Locale;
 	editMode: boolean;
 	hideLanguageLabel: boolean;
@@ -28,6 +32,7 @@ type Translations = {
 };
 
 export function LocalizationSelect({
+	allowLocalizationManagement,
 	defaultLanguageId,
 	editMode,
 	hideLanguageLabel,
@@ -138,7 +143,7 @@ export function LocalizationSelect({
 	}, [form, selectedLocaleId]);
 
 	return (
-		<div ref={containerRef}>
+		<div className="align-items-center c-gap-2 d-flex" ref={containerRef}>
 			<LanguagePicker
 				active={active}
 				defaultLocaleId={defaultLanguageId}
@@ -171,6 +176,44 @@ export function LocalizationSelect({
 				small={size === 'small'}
 				translations={translations}
 			/>
+
+			{allowLocalizationManagement &&
+			selectedLocaleId !== defaultLanguageId ? (
+				<ClayDropDown
+					hasLeftSymbols
+					menuElementAttrs={{
+						containerProps: {
+							className: 'cadmin',
+						},
+					}}
+					trigger={
+						<ClayButtonWithIcon
+							aria-label={Liferay.Language.get(
+								'localization-actions'
+							)}
+							displayType="secondary"
+							monospaced
+							size={size === 'small' ? 'sm' : 'regular'}
+							symbol="ellipsis-v"
+							title={Liferay.Language.get('localization-actions')}
+						/>
+					}
+				>
+					<ClayDropDown.ItemList>
+						<ClayDropDown.Item disabled symbolLeft="stars">
+							{Liferay.Language.get('auto-translate')}
+						</ClayDropDown.Item>
+
+						<ClayDropDown.Item symbolLeft="check-circle">
+							{Liferay.Language.get('mark-as-translated')}
+						</ClayDropDown.Item>
+
+						<ClayDropDown.Item symbolLeft="trash">
+							{Liferay.Language.get('reset-translation')}
+						</ClayDropDown.Item>
+					</ClayDropDown.ItemList>
+				</ClayDropDown>
+			) : null}
 		</div>
 	);
 }

@@ -165,6 +165,14 @@ public class LocalizationSelectFragmentRenderer implements FragmentRenderer {
 
 			componentTag.setProps(
 				HashMapBuilder.<String, Object>put(
+					"allowLocalizationManagement",
+					GetterUtil.getBoolean(
+						_fragmentEntryConfigurationParser.getFieldValue(
+							fragmentEntryLink.getConfiguration(),
+							fragmentEntryLink.getEditableValues(),
+							LocaleUtil.getMostRelevantLocale(),
+							"allowLocalizationManagement"))
+				).put(
 					"defaultLanguageId",
 					LocaleUtil.toLanguageId(themeDisplay.getSiteDefaultLocale())
 				).put(
