@@ -106,16 +106,10 @@ export function registerLocalizedInput({
 			if (translationInput.getAttribute('value') !== null) {
 				onLocaleChange?.({languageId, value: translationInput.value});
 
-				if (!inputElement) {
-					return;
-				}
-
-				if (inputElement.type === 'checkbox') {
-					inputElement.checked = translationInput.value === 'true';
-				}
-				else {
-					inputElement.value = translationInput.value;
-				}
+				setInputValue({
+					input: inputElement,
+					value: translationInput.value,
+				});
 			}
 			else {
 				const defaultLanguageInput = getOrCreateTranslationInput(
@@ -159,4 +153,26 @@ export function registerLocalizedInput({
 			});
 		},
 	};
+}
+
+function setInputValue({
+	input,
+	value,
+}: {
+	input?: HTMLInputElement;
+	value: string | null;
+}) {
+	if (!input) {
+		return;
+	}
+
+	if (input.type === 'checkbox') {
+		input.checked = value === 'true';
+	}
+	else if (value) {
+		input.value = value;
+	}
+	else {
+		input.removeAttribute('value');
+	}
 }
