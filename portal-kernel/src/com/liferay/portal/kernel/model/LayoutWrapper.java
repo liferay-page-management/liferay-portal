@@ -1891,6 +1891,11 @@ public class LayoutWrapper
 	}
 
 	@Override
+	public boolean isTypeEmpty() {
+		return model.isTypeEmpty();
+	}
+
+	@Override
 	public boolean isTypeLinkToLayout() {
 		return model.isTypeLinkToLayout();
 	}
