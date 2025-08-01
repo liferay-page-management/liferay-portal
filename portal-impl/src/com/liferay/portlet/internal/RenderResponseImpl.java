@@ -73,8 +73,7 @@ public class RenderResponseImpl
 		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
 
 		String localizedCustomTitle = PortletConfigurationUtil.getPortletTitle(
-			portletDisplay.getPortletName(),
-			portletDisplay.getPortletPreferences(),
+			portletDisplay.getId(), portletDisplay.getPortletPreferences(),
 			themeDisplay.getLanguageId());
 
 		if (Validator.isNull(localizedCustomTitle)) {
@@ -82,7 +81,7 @@ public class RenderResponseImpl
 				themeDisplay.getSiteDefaultLocale());
 
 			localizedCustomTitle = PortletConfigurationUtil.getPortletTitle(
-				portletDisplay.getPortletName(),
+				portletDisplay.getId(),
 				portletDisplay.getPortletPreferences(), siteDefaultLanguageId);
 		}
 
