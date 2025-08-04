@@ -152,7 +152,7 @@ function onInputChange() {
 	changeButton.focus();
 }
 
-function getTranslationInput(namespace, languageId, inputId) {
+function getFragmentTranslationInput(namespace, languageId, inputId) {
 	return document.getElementById(`${namespace}${inputId}_${languageId}`);
 }
 
@@ -203,7 +203,7 @@ else {
 
 	import('@liferay/fragment-impl/api').then(
 		({
-			getOrCreateTranslationInput,
+			getTranslationInput,
 			registerLocalizedInput,
 			registerUnlocalizedInput,
 		}) => {
@@ -240,13 +240,13 @@ else {
 				);
 
 				initialValues.forEach(([languageId, value]) => {
-					const translationInput = getOrCreateTranslationInput(
-						inputElement.id,
-						input.name,
+					const translationInput = getTranslationInput({
+						inputId: inputElement.id,
+						inputName: input.name,
 						languageId,
-						inputElement.parentNode,
-						fragmentNamespace
-					);
+						localizationInputsContainer: inputElement.parentNode,
+						namespace: fragmentNamespace,
+					});
 
 					translationInput.value = value.fileEntryId;
 					translationInput.dataset.fileName = value.fileName;
@@ -267,7 +267,7 @@ else {
 					onLocaleChange: ({languageId}) => {
 						currentLanguageId = languageId;
 
-						const translationInput = getTranslationInput(
+						const translationInput = getFragmentTranslationInput(
 							fragmentNamespace,
 							languageId,
 							inputElement.id
@@ -282,13 +282,14 @@ else {
 							showPreview(previewURL, fileName);
 						}
 						else {
-							const defaultInput = getOrCreateTranslationInput(
-								inputElement.id,
-								input.name,
-								defaultLanguageId,
-								inputElement.parentNode,
-								fragmentNamespace
-							);
+							const defaultInput = getTranslationInput({
+								inputId: inputElement.id,
+								inputName: input.name,
+								languageId: defaultLanguageId,
+								localizationInputsContainer:
+									inputElement.parentNode,
+								namespace: fragmentNamespace,
+							});
 
 							previewURL = defaultInput?.dataset?.previewURL;
 
@@ -313,14 +314,14 @@ else {
 					const type =
 						isFromDocumentLibrary === false ? 'file' : 'hidden';
 
-					const translationInput = getOrCreateTranslationInput(
-						inputElement.id,
-						input.name,
-						currentLanguageId,
-						inputElement.parentNode,
-						fragmentNamespace,
-						type
-					);
+					const translationInput = getTranslationInput({
+						inputId: inputElement.id,
+						inputName: input.name,
+						languageId: currentLanguageId,
+						localizationInputsContainer: inputElement.parentNode,
+						namespace: fragmentNamespace,
+						type,
+					});
 
 					if (isFromDocumentLibrary) {
 						translationInput.value = value;
@@ -395,13 +396,13 @@ else {
 					fileInput.value = '';
 					hiddenFileInput.value = '';
 
-					const translationInput = getOrCreateTranslationInput(
-						inputElement.id,
-						input.name,
-						currentLanguageId,
-						inputElement.parentNode,
-						fragmentNamespace
-					);
+					const translationInput = getTranslationInput({
+						inputId: inputElement.id,
+						inputName: input.name,
+						languageId: currentLanguageId,
+						localizationInputsContainer: inputElement.parentNode,
+						namespace: fragmentNamespace,
+					});
 
 					translationInput.value = '';
 					translationInput.dataset.previewURL = '';
@@ -410,13 +411,14 @@ else {
 						showDropzone(DROP_ZONE_CONTAINER_TYPE.DEFAULT);
 					}
 					else {
-						const defaultInput = getOrCreateTranslationInput(
-							inputElement.id,
-							input.name,
-							defaultLanguageId,
-							inputElement.parentNode,
-							fragmentNamespace
-						);
+						const defaultInput = getTranslationInput({
+							inputId: inputElement.id,
+							inputName: input.name,
+							languageId: defaultLanguageId,
+							localizationInputsContainer:
+								inputElement.parentNode,
+							namespace: fragmentNamespace,
+						});
 
 						if (defaultInput.dataset?.previewURL) {
 							showPreview(

@@ -41,7 +41,7 @@ else if (layoutMode === 'edit') {
 else {
 	import('@liferay/fragment-impl/api').then(
 		({
-			getOrCreateTranslationInput,
+			getTranslationInput,
 			registerLocalizedInput,
 			registerUnlocalizedInput,
 		}) => {
@@ -56,13 +56,14 @@ else {
 				allInputs.forEach((inputElement) => {
 					Object.entries(input.valueI18n).forEach(
 						([languageId, value]) => {
-							const input = getOrCreateTranslationInput(
-								inputElement.id,
-								inputElement.name,
+							const input = getTranslationInput({
+								inputId: inputElement.id,
+								inputName: inputElement.name,
 								languageId,
-								inputElement.parentNode,
-								fragmentNamespace
-							);
+								localizationInputsContainer:
+									inputElement.parentNode,
+								namespace: fragmentNamespace,
+							});
 
 							input.value = value.includes(inputElement.value)
 								? inputElement.value
@@ -79,14 +80,13 @@ else {
 						currentLanguageId = languageId;
 
 						allInputs.forEach((input) => {
-							const translationInput =
-								getOrCreateTranslationInput(
-									input.id,
-									input.name,
-									languageId,
-									input.parentNode,
-									fragmentNamespace
-								);
+							const translationInput = getTranslationInput({
+								inputId: input.id,
+								inputName: input.name,
+								languageId,
+								localizationInputsContainer: input.parentNode,
+								namespace: fragmentNamespace,
+							});
 
 							if (translationInput) {
 								if (
@@ -100,13 +100,14 @@ else {
 							}
 							else {
 								const defaultLanguageInput =
-									getOrCreateTranslationInput(
-										input.id,
-										input.name,
-										defaultLanguageId,
-										input.parentNode,
-										fragmentNamespace
-									);
+									getTranslationInput({
+										inputId: input.id,
+										inputName: input.name,
+										languageId: defaultLanguageId,
+										localizationInputsContainer:
+											input.parentNode,
+										namespace: fragmentNamespace,
+									});
 
 								if (defaultLanguageInput) {
 									input.checked = Boolean(
@@ -120,13 +121,13 @@ else {
 
 				fieldSet.addEventListener('change', () => {
 					allInputs.forEach((input) => {
-						const translationInput = getOrCreateTranslationInput(
-							input.id,
-							input.name,
-							currentLanguageId,
-							input.parentNode,
-							fragmentNamespace
-						);
+						const translationInput = getTranslationInput({
+							inputId: input.id,
+							inputName: input.name,
+							languageId: currentLanguageId,
+							localizationInputsContainer: input.parentNode,
+							namespace: fragmentNamespace,
+						});
 
 						translationInput.value = input.checked
 							? input.value

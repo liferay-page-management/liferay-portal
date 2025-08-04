@@ -83,7 +83,7 @@ else {
 
 	import('@liferay/fragment-impl/api').then(
 		({
-			getOrCreateTranslationInput,
+			getTranslationInput,
 			registerLocalizedInput,
 			registerUnlocalizedInput,
 		}) => {
@@ -92,13 +92,14 @@ else {
 			if (input.localizable) {
 				Object.entries(input.valueI18n).forEach(
 					([languageId, value]) => {
-						const input = getOrCreateTranslationInput(
-							uiInputElement.id,
-							input.name,
+						const input = getTranslationInput({
+							inputId: uiInputElement.id,
+							inputName: input.name,
 							languageId,
-							uiInputElement.parentNode,
-							fragmentNamespace
-						);
+							localizationInputsContainer:
+								uiInputElement.parentNode,
+							namespace: fragmentNamespace,
+						});
 
 						// Set data-label with the option label for each translation input
 
@@ -115,27 +116,29 @@ else {
 					onLocaleChange: ({languageId}) => {
 						currentLanguageId = languageId;
 
-						const translationInput = getOrCreateTranslationInput(
-							uiInputElement.id,
-							input.name,
+						const translationInput = getTranslationInput({
+							inputId: uiInputElement.id,
+							inputName: input.name,
 							languageId,
-							uiInputElement.parentNode,
-							fragmentNamespace
-						);
+							localizationInputsContainer:
+								uiInputElement.parentNode,
+							namespace: fragmentNamespace,
+						});
 
 						if (translationInput.getAttribute('value') !== null) {
 							uiInputElement.checked =
 								translationInput.value === 'true';
 						}
 						else {
-							const defaultLanguageInput =
-								getOrCreateTranslationInput(
-									uiInputElement.id,
-									input.name,
-									defaultLanguageId,
+							const defaultLanguageInput = getTranslationInput({
+								inputId: uiInputElement.id,
+								inputName: input.name,
+								languageId: defaultLanguageId,
+								localizationInputsContainer:
 									uiInputElement.parentNode,
-									fragmentNamespace
-								);
+								namespace: fragmentNamespace,
+							});
+
 							uiInputElement.value =
 								defaultLanguageInput.dataset.label || '';
 						}
@@ -143,13 +146,13 @@ else {
 				});
 
 				optionListElement.addEventListener('click', (event) => {
-					const translationInput = getOrCreateTranslationInput(
-						uiInputElement.id,
-						input.name,
-						currentLanguageId,
-						uiInputElement.parentNode,
-						fragmentNamespace
-					);
+					const translationInput = getTranslationInput({
+						inputId: uiInputElement.id,
+						inputName: input.name,
+						languageId: currentLanguageId,
+						localizationInputsContainer: uiInputElement.parentNode,
+						namespace: fragmentNamespace,
+					});
 
 					handleResultListClick(event, onChange, translationInput);
 				});
