@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {getOrCreateTranslationInput} from './getOrCreateTranslationInput';
+import {getTranslationInput} from './getTranslationInput';
 
 type Args = {
 	changeTextDirection: boolean;
@@ -43,13 +43,13 @@ export function registerLocalizedInput({
 
 	if (initialValues) {
 		Object.entries(initialValues).forEach(([languageId, value]) => {
-			const input = getOrCreateTranslationInput(
-				inputElement?.id || inputName,
+			const input = getTranslationInput({
+				inputId: inputElement?.id || inputName,
 				inputName,
 				languageId,
 				localizationInputsContainer,
-				namespace
-			);
+				namespace,
+			});
 
 			input.value = value;
 		});
@@ -99,13 +99,13 @@ export function registerLocalizedInput({
 				return;
 			}
 
-			const translationInput = getOrCreateTranslationInput(
-				inputElement?.id || inputName,
+			const translationInput = getTranslationInput({
+				inputId: inputElement?.id || inputName,
 				inputName,
 				languageId,
 				localizationInputsContainer,
-				namespace
-			);
+				namespace,
+			});
 
 			if (translationInput.getAttribute('value') !== null) {
 				onLocaleChange?.({languageId, value: translationInput.value});
@@ -116,13 +116,13 @@ export function registerLocalizedInput({
 				});
 			}
 			else {
-				const defaultLanguageInput = getOrCreateTranslationInput(
-					inputElement?.id || inputName,
+				const defaultLanguageInput = getTranslationInput({
+					inputId: inputElement?.id || inputName,
 					inputName,
-					defaultLanguageId,
+					languageId: defaultLanguageId,
 					localizationInputsContainer,
-					namespace
-				);
+					namespace,
+				});
 
 				onLocaleChange?.({
 					languageId,
@@ -158,21 +158,21 @@ export function registerLocalizedInput({
 				return;
 			}
 
-			const defaultLanguageInput = getOrCreateTranslationInput(
-				inputElement?.id || inputName,
+			const defaultLanguageInput = getTranslationInput({
+				inputId: inputElement?.id || inputName,
 				inputName,
-				defaultLanguageId,
+				languageId: defaultLanguageId,
 				localizationInputsContainer,
-				namespace
-			);
+				namespace,
+			});
 
-			const translationInput = getOrCreateTranslationInput(
-				inputElement?.id || inputName,
+			const translationInput = getTranslationInput({
+				inputId: inputElement?.id || inputName,
 				inputName,
 				languageId,
 				localizationInputsContainer,
-				namespace
-			);
+				namespace,
+			});
 
 			// Do nothing if it's already translated
 
@@ -226,21 +226,21 @@ export function registerLocalizedInput({
 				return;
 			}
 
-			const defaultLanguageInput = getOrCreateTranslationInput(
-				inputElement?.id || inputName,
+			const defaultLanguageInput = getTranslationInput({
+				inputId: inputElement?.id || inputName,
 				inputName,
-				defaultLanguageId,
+				languageId: defaultLanguageId,
 				localizationInputsContainer,
-				namespace
-			);
+				namespace,
+			});
 
-			const translationInput = getOrCreateTranslationInput(
-				inputElement?.id || inputName,
+			const translationInput = getTranslationInput({
+				inputId: inputElement?.id || inputName,
 				inputName,
 				languageId,
 				localizationInputsContainer,
-				namespace
-			);
+				namespace,
+			});
 
 			// Call custom value change handler if passed
 
@@ -271,13 +271,13 @@ export function registerLocalizedInput({
 	return {
 		onChange: (value = null) => {
 			if (value !== null) {
-				const translationInput = getOrCreateTranslationInput(
-					inputElement?.id || inputName,
+				const translationInput = getTranslationInput({
+					inputId: inputElement?.id || inputName,
 					inputName,
-					currentLanguageId,
+					languageId: currentLanguageId,
 					localizationInputsContainer,
-					namespace
-				);
+					namespace,
+				});
 
 				translationInput.value = value;
 			}
