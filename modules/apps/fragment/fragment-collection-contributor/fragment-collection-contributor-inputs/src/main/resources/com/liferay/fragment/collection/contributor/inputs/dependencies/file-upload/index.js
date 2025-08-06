@@ -183,8 +183,19 @@ else {
 					changeTextDirection: false,
 					customLocaleChangeHandler: true,
 					defaultLanguageId,
+					inputElement: fileInput,
+					inputName: input.name,
+					localizationInputsContainer: inputElement.parentNode,
+					namespace: fragmentNamespace,
 					onLocaleChange: ({languageId}) => {
 						currentLanguageId = languageId;
+
+						const defaultTranslationInput =
+							getFragmentTranslationInput(
+								fragmentNamespace,
+								defaultLanguageId,
+								inputElement.id
+							);
 
 						const translationInput = getFragmentTranslationInput(
 							fragmentNamespace,
@@ -196,21 +207,70 @@ else {
 							setFileName(translationInput);
 						}
 						else {
-							const defaultTranslationInput =
-								getFragmentTranslationInput(
-									fragmentNamespace,
-									defaultLanguageId,
-									inputElement.id
-								);
-
 							setFileName(defaultTranslationInput);
+						}
+					},
+					onMarkAsTranslated: () => {
+						const defaultTranslationInput =
+							getFragmentTranslationInput(
+								fragmentNamespace,
+								defaultLanguageId,
+								inputElement.id
+							);
+
+						setFileName(defaultTranslationInput);
+
+						if (defaultTranslationInput.type === 'file') {
+							setTranslationInputValue({
+								fileName:
+									defaultTranslationInput.dataset.fileName,
+								type: 'file',
+								value: defaultTranslationInput.files,
+							});
+						}
+						else {
+							setTranslationInputValue({
+								fileName:
+									defaultTranslationInput.dataset.fileName,
+								type: 'document',
+								value: defaultTranslationInput.value,
+							});
+						}
+					},
+					onResetTranslation: () => {
+						const defaultTranslationInput =
+							getFragmentTranslationInput(
+								fragmentNamespace,
+								defaultLanguageId,
+								inputElement.id
+							);
+
+						const translationInput = getFragmentTranslationInput(
+							fragmentNamespace,
+							currentLanguageId,
+							fileInput.id
+						);
+
+						setFileName(defaultTranslationInput);
+
+						if (translationInput.type === 'file') {
+							translationInput.parentNode.removeChild(
+								translationInput
+							);
+						}
+						else {
+							translationInput.removeAttribute('data-file-name');
+							translationInput.removeAttribute('value');
 						}
 					},
 				});
 
-				const setTranslationInputValue = ({fileName, value}) => {
+				const setTranslationInputValue = (props) => {
+					const {fileName, value} = props;
+
 					const type =
-						isFromDocumentLibrary === false ? 'file' : 'hidden';
+						props.type ||
+						(isFromDocumentLibrary ? 'document' : 'file');
 
 					const translationInput = getTranslationInput({
 						inputId: inputElement.id,
@@ -218,10 +278,10 @@ else {
 						languageId: currentLanguageId,
 						localizationInputsContainer: inputElement.parentNode,
 						namespace: fragmentNamespace,
-						type,
+						type: type === 'file' ? 'file' : 'hidden',
 					});
 
-					if (isFromDocumentLibrary) {
+					if (type === 'document') {
 						translationInput.value = value;
 						translationInput.dataset.fileName = fileName;
 					}
