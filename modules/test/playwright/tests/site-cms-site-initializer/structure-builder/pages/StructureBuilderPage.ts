@@ -9,6 +9,8 @@ import {Locator, Page, expect} from '@playwright/test';
 import {ApiHelpers} from '../../../../helpers/ApiHelpers';
 import {clickAndExpectToBeHidden} from '../../../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
+import {getRandomInt} from '../../../../utils/getRandomInt';
+import getRandomString from '../../../../utils/getRandomString';
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
 import {waitForAlert} from '../../../../utils/waitForAlert';
 
@@ -297,6 +299,44 @@ export class StructureBuilderPage {
 				this.page.locator('.treeview-link', {hasText: label})
 			).toBeVisible();
 		}
+	}
+
+	async createStructureFromData({
+		erc = getRandomString(),
+		label,
+		name = `StructureName${getRandomInt()}`,
+		page,
+		publish = true,
+		structureIds,
+	}: {
+		erc?: string;
+		label: string;
+		name?: string;
+		page: StructureBuilderPage;
+		publish?: boolean;
+		structureIds?: string[];
+	}) {
+		await page.goToCreateStructure();
+
+		await page.enableForAllSpaces();
+
+		await page.changeStructureSettings({
+			erc,
+			label,
+			name,
+		});
+
+		const {externalReferenceCode, id} = await page.saveStructure();
+
+		if (publish) {
+			await page.publishStructure();
+		}
+
+		if (structureIds) {
+			structureIds.push(id);
+		}
+
+		return externalReferenceCode;
 	}
 
 	async customizeExperience() {

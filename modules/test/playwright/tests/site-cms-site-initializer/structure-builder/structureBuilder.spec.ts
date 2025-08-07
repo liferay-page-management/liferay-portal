@@ -30,40 +30,6 @@ const test = mergeTests(
 
 let structureIds = [];
 
-const createStructure = async ({
-	erc = getRandomString(),
-	label,
-	name = `StructureName${getRandomInt()}`,
-	page,
-	publish = true,
-}: {
-	erc?: string;
-	label: string;
-	name?: string;
-	page: StructureBuilderPage;
-	publish?: boolean;
-}) => {
-	await page.goToCreateStructure();
-
-	await page.enableForAllSpaces();
-
-	await page.changeStructureSettings({
-		erc,
-		label,
-		name,
-	});
-
-	const {externalReferenceCode, id} = await page.saveStructure();
-
-	if (publish) {
-		await page.publishStructure();
-	}
-
-	structureIds.push(id);
-
-	return externalReferenceCode;
-};
-
 test.beforeEach(() => {
 	structureIds = [];
 });
@@ -161,10 +127,11 @@ test(
 
 		const label = `Structure${getRandomInt()}`;
 
-		await createStructure({
+		await structureBuilderPage.createStructureFromData({
 			label,
 			name: label,
 			page: structureBuilderPage,
+			structureIds,
 		});
 
 		// Add a field of each type
@@ -198,10 +165,11 @@ test(
 
 		const label = `Structure${getRandomInt()}`;
 
-		await createStructure({
+		await structureBuilderPage.createStructureFromData({
 			label,
 			name: label,
 			page: structureBuilderPage,
+			structureIds,
 		});
 
 		// Add four fields
@@ -236,11 +204,12 @@ test(
 		const label = `Structure${getRandomInt()}`;
 		const erc = getRandomString();
 
-		await createStructure({
+		await structureBuilderPage.createStructureFromData({
 			erc,
 			label,
 			name: label,
 			page: structureBuilderPage,
+			structureIds,
 		});
 
 		// Add a text field
@@ -561,9 +530,10 @@ test.describe('Customize experience', () => {
 
 			// Create structure
 
-			await createStructure({
+			await structureBuilderPage.createStructureFromData({
 				label: `StructureName${getRandomInt()}`,
 				page: structureBuilderPage,
+				structureIds,
 			});
 
 			// Add two Text fields
@@ -677,9 +647,10 @@ test.describe('Customize experience', () => {
 
 			const label = `StructureName${getRandomInt()}`;
 
-			await createStructure({
+			await structureBuilderPage.createStructureFromData({
 				label,
 				page: structureBuilderPage,
+				structureIds,
 			});
 
 			// Add two Text fields
@@ -747,9 +718,10 @@ test.describe('Customize experience', () => {
 
 			// Create structure
 
-			await createStructure({
+			await structureBuilderPage.createStructureFromData({
 				label: `StructureName${getRandomInt()}`,
 				page: structureBuilderPage,
+				structureIds,
 			});
 
 			// Customize the experience and add a fragment
@@ -784,9 +756,10 @@ test(
 
 		// Create structure
 
-		await createStructure({
+		await structureBuilderPage.createStructureFromData({
 			label: `StructureName${getRandomInt()}`,
 			page: structureBuilderPage,
+			structureIds,
 		});
 
 		// Type content and check initial fields
@@ -838,30 +811,35 @@ test.describe('Referenced structures', () => {
 
 			// Create three structures, one of them in draft
 
-			await createStructure({
+			await structureBuilderPage.createStructureFromData({
 				label: label1,
 				name: name1,
 				page: structureBuilderPage,
+				structureIds,
 			});
 
-			await createStructure({
+			await structureBuilderPage.createStructureFromData({
 				label: label2,
 				name: name2,
 				page: structureBuilderPage,
+				structureIds,
 			});
 
-			await createStructure({
+			await structureBuilderPage.createStructureFromData({
 				label: label3,
 				page: structureBuilderPage,
 				publish: false,
+				structureIds,
 			});
 
 			// Create another one and reference the first two
 
-			const externalReferenceCode4 = await createStructure({
-				label: label4,
-				page: structureBuilderPage,
-			});
+			const externalReferenceCode4 =
+				await structureBuilderPage.createStructureFromData({
+					label: label4,
+					page: structureBuilderPage,
+					structureIds,
+				});
 
 			await structureBuilderPage.addReferencedStructures([
 				label1,
@@ -973,16 +951,18 @@ test.describe('Referenced structures', () => {
 
 			// Create one structure
 
-			await createStructure({
+			await structureBuilderPage.createStructureFromData({
 				label: label1,
 				page: structureBuilderPage,
+				structureIds,
 			});
 
 			// Create another one and reference the first one
 
-			await createStructure({
+			await structureBuilderPage.createStructureFromData({
 				label: label2,
 				page: structureBuilderPage,
+				structureIds,
 			});
 
 			await structureBuilderPage.addReferencedStructures([label1]);
@@ -1093,11 +1073,12 @@ test.describe('Repeatable groups', () => {
 
 			// Create structure
 
-			const erc = await createStructure({
+			const erc = await structureBuilderPage.createStructureFromData({
 				label: getRandomString(),
 				name: `StructureName${getRandomInt()}`,
 				page: structureBuilderPage,
 				publish: false,
+				structureIds,
 			});
 
 			// Add fields
@@ -1187,11 +1168,12 @@ test.describe('Repeatable groups', () => {
 
 			// Create structure
 
-			const erc = await createStructure({
+			const erc = await structureBuilderPage.createStructureFromData({
 				label: getRandomString(),
 				name: `StructureName${getRandomInt()}`,
 				page: structureBuilderPage,
 				publish: false,
+				structureIds,
 			});
 
 			// Check a group can't be created if there's only one field
@@ -1331,16 +1313,18 @@ test(
 
 		// Create one structure to reference it later
 
-		await createStructure({
+		await structureBuilderPage.createStructureFromData({
 			label: label1,
 			page: structureBuilderPage,
+			structureIds,
 		});
 
 		// Create main structure
 
-		const erc = await createStructure({
+		const erc = await structureBuilderPage.createStructureFromData({
 			label: getRandomString(),
 			page: structureBuilderPage,
+			structureIds,
 		});
 
 		// Add a referenced structure
