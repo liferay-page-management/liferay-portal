@@ -13,8 +13,11 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRel;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelLocalService;
 import com.liferay.layout.service.LayoutClassedModelUsageLocalService;
+import com.liferay.petra.function.UnsafeBiConsumer;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.dao.orm.common.SQLTransformer;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Release;
@@ -29,7 +32,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiConsumer;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -47,60 +49,75 @@ public class CleanUpdateLayoutClassedModelUsagesVerifyProcess
 	}
 
 	private void _cleanUpdateLayoutClassedModelUsage() throws Exception {
-		long containerTypeFragmentEntryLink =
+		long fragmentEntryLinkClassNameId =
 			_classNameLocalService.getClassNameId(
 				FragmentEntryLink.class.getName());
-		long containerTypeLayoutPageTemplateStructure =
+		long layoutPageTemplateStructureClassNameId =
 			_classNameLocalService.getClassNameId(
 				LayoutPageTemplateStructure.class.getName());
-		Map<Long, Set<Long>> fragmentEntryLinkPlid = new HashMap<>();
-		Map<Long, Set<Long>> layoutPageTemplateStructurePlid = new HashMap<>();
+		Map<Long, Map<Long, Set<Long>>> fragmentEntryLinkMap = new HashMap<>();
+		Map<Long, Map<Long, Set<Long>>> layoutPageTemplateStructureMap =
+			new HashMap<>();
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				SQLTransformer.transform(
 					StringBundler.concat(
-						"SELECT containerKey, containerType, groupId, ",
-						"layoutClassedModelUsageId, plid FROM ",
+						"SELECT ctCollectionId, layoutClassedModelUsageId, ",
+						"groupId, containerType, plid FROM ",
 						"LayoutClassedModelUsage WHERE (containerType = ? AND ",
 						"(plid <> (SELECT plid FROM FragmentEntryLink WHERE ",
-						"fragmentEntryLinkId = CAST_LONG(containerKey)) OR ",
-						"((SELECT count(*) FROM FragmentEntryLink WHERE ",
-						"fragmentEntryLinkId = CAST_LONG(containerKey)) = 0)) ",
-						") OR (containerType = ? AND (plid <> (SELECT plid ",
-						"FROM LayoutPageTemplateStructure WHERE ",
-						"layoutPageTemplateStructureId = CAST_LONG( ",
-						"containerKey)) OR ((SELECT count(*) FROM ",
+						"fragmentEntryLinkId = CAST_LONG(containerKey) AND ",
+						"LayoutClassedModelUsage.ctCollectionId = ",
+						"FragmentEntryLink.ctCollectionId) OR (NOT EXISTS ",
+						"(SELECT 1 FROM FragmentEntryLink WHERE ",
+						"fragmentEntryLinkId = CAST_LONG(containerKey) AND ",
+						"LayoutClassedModelUsage.ctCollectionId = ",
+						"FragmentEntryLink.ctCollectionId)))) OR ",
+						"(containerType = ? AND (plid <> (SELECT plid FROM ",
 						"LayoutPageTemplateStructure WHERE ",
-						"layoutPageTemplateStructureId = CAST_LONG( ",
-						"containerKey)) = 0)))")))) {
+						"layoutPageTemplateStructureId = ",
+						"CAST_LONG(containerKey) AND ",
+						"LayoutClassedModelUsage.ctCollectionId = ",
+						"LayoutPageTemplateStructure.ctCollectionId) OR (NOT ",
+						"EXISTS (SELECT 1 FROM LayoutPageTemplateStructure ",
+						"WHERE layoutPageTemplateStructureId = ",
+						"CAST_LONG(containerKey) AND ",
+						"LayoutClassedModelUsage.ctCollectionId = ",
+						"LayoutPageTemplateStructure.ctCollectionId)) ",
+						"))")))) {
 
-			preparedStatement.setLong(1, containerTypeFragmentEntryLink);
+			preparedStatement.setLong(1, fragmentEntryLinkClassNameId);
 			preparedStatement.setLong(
-				2, containerTypeLayoutPageTemplateStructure);
+				2, layoutPageTemplateStructureClassNameId);
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next()) {
 				long containerType = resultSet.getLong("containerType");
 				long groupId = resultSet.getLong("groupId");
+				long ctCollectionId = resultSet.getLong("ctCollectionId");
+				long plid = resultSet.getLong("plid");
 				long layoutClassedModelUsageId = resultSet.getLong(
 					"layoutClassedModelUsageId");
-				long plid = resultSet.getLong("plid");
 
 				try {
-					if (containerType == containerTypeFragmentEntryLink) {
-						Set<Long> plids = fragmentEntryLinkPlid.computeIfAbsent(
-							groupId, key -> new HashSet<>());
+					Map<Long, Map<Long, Set<Long>>> targetMap;
 
-						plids.add(plid);
+					if (containerType == fragmentEntryLinkClassNameId) {
+						targetMap = fragmentEntryLinkMap;
 					}
 					else {
-						Set<Long> plids =
-							layoutPageTemplateStructurePlid.computeIfAbsent(
-								groupId, key -> new HashSet<>());
-
-						plids.add(plid);
+						targetMap = layoutPageTemplateStructureMap;
 					}
+
+					Map<Long, Set<Long>> ctCollectionIdMap =
+						targetMap.computeIfAbsent(
+							groupId, key -> new HashMap<>());
+
+					Set<Long> plids = ctCollectionIdMap.computeIfAbsent(
+						ctCollectionId, key -> new HashSet<>());
+
+					plids.add(plid);
 
 					_layoutClassedModelUsageLocalService.
 						deleteLayoutClassedModelUsage(
@@ -120,23 +137,44 @@ public class CleanUpdateLayoutClassedModelUsagesVerifyProcess
 		}
 
 		_processClassedModelUsage(
-			fragmentEntryLinkPlid,
+			fragmentEntryLinkMap,
 			this::_updateFragmentEntryLayoutClassedModelUsage);
 
 		_processClassedModelUsage(
-			layoutPageTemplateStructurePlid,
+			layoutPageTemplateStructureMap,
 			this::_updateLayoutPageTemplateStructureClassedModelUsage);
 	}
 
 	private void _processClassedModelUsage(
-		Map<Long, Set<Long>> plidMap, BiConsumer<Long, Long> action) {
+		Map<Long, Map<Long, Set<Long>>> plidMap,
+		UnsafeBiConsumer<Long, Long, Exception> action) {
 
-		for (Map.Entry<Long, Set<Long>> entry : plidMap.entrySet()) {
-			long groupId = entry.getKey();
-			Set<Long> plids = entry.getValue();
+		for (Map.Entry<Long, Map<Long, Set<Long>>> groupIdEntry :
+				plidMap.entrySet()) {
 
-			for (long plid : plids) {
-				action.accept(groupId, plid);
+			long groupId = groupIdEntry.getKey();
+			Map<Long, Set<Long>> ctCollectionIdMap = groupIdEntry.getValue();
+
+			for (Map.Entry<Long, Set<Long>> ctCollectionIdEntry :
+					ctCollectionIdMap.entrySet()) {
+
+				long ctCollectionId = ctCollectionIdEntry.getKey();
+				Set<Long> plids = ctCollectionIdEntry.getValue();
+
+				for (long plid : plids) {
+					try (SafeCloseable safeCloseable =
+							CTCollectionThreadLocal.
+								setCTCollectionIdWithSafeCloseable(
+									ctCollectionId)) {
+
+						action.accept(groupId, plid);
+					}
+					catch (Exception exception) {
+						if (_log.isWarnEnabled()) {
+							_log.warn(exception);
+						}
+					}
+				}
 			}
 		}
 	}
@@ -149,11 +187,11 @@ public class CleanUpdateLayoutClassedModelUsagesVerifyProcess
 				groupId, plid);
 
 		for (FragmentEntryLink fragmentEntryLink : fragmentEntryLinks) {
-			try {
-				if (fragmentEntryLink == null) {
-					continue;
-				}
+			if (fragmentEntryLink == null) {
+				continue;
+			}
 
+			try {
 				_contentManager.updateLayoutClassedModelUsage(
 					fragmentEntryLink);
 			}
@@ -186,13 +224,6 @@ public class CleanUpdateLayoutClassedModelUsagesVerifyProcess
 					layoutPageTemplateStructure.
 						getLayoutPageTemplateStructureId());
 
-		_layoutClassedModelUsageLocalService.deleteLayoutClassedModelUsages(
-			String.valueOf(
-				layoutPageTemplateStructure.getLayoutPageTemplateStructureId()),
-			_classNameLocalService.getClassNameId(
-				LayoutPageTemplateStructure.class.getName()),
-			layoutPageTemplateStructure.getPlid());
-
 		for (LayoutPageTemplateStructureRel layoutPageTemplateStructureRel :
 				layoutPageTemplateStructureRels) {
 
@@ -200,8 +231,21 @@ public class CleanUpdateLayoutClassedModelUsagesVerifyProcess
 				continue;
 			}
 
-			_contentManager.updateLayoutClassedModelUsage(
-				layoutPageTemplateStructureRel);
+			try {
+				_contentManager.updateLayoutClassedModelUsage(
+					layoutPageTemplateStructureRel);
+			}
+			catch (Exception exception) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						StringBundler.concat(
+							"Unable to update usages for layout page template ",
+							"structure rel ID ",
+							layoutPageTemplateStructureRel.
+								getLayoutPageTemplateStructureRelId()),
+						exception);
+				}
+			}
 		}
 	}
 
