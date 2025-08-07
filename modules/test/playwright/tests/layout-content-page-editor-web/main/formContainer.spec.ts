@@ -9895,7 +9895,7 @@ test.describe('Edit mode form errors', () => {
 	);
 
 	test(
-		'Show	 error message after mapping the Form Container to object when multiple OOTB input fragments are unavailable',
+		'Show error message after mapping the Form Container to object when multiple OOTB input fragments are unavailable',
 		{tag: '@LPS-158143'},
 		async ({
 			apiHelpers,
