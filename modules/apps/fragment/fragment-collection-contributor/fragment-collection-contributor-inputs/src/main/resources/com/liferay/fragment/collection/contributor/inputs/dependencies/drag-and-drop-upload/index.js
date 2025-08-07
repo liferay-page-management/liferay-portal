@@ -264,6 +264,10 @@ else {
 					changeTextDirection: false,
 					customLocaleChangeHandler: true,
 					defaultLanguageId,
+					inputElement: fileInput,
+					inputName: input.name,
+					localizationInputsContainer: inputElement.parentNode,
+					namespace: fragmentNamespace,
 					onLocaleChange: ({languageId}) => {
 						currentLanguageId = languageId;
 
@@ -304,15 +308,75 @@ else {
 							}
 						}
 					},
+					onMarkAsTranslated: () => {
+						const defaultTranslationInput =
+							getFragmentTranslationInput(
+								fragmentNamespace,
+								defaultLanguageId,
+								inputElement.id
+							);
+
+						if (defaultTranslationInput.type === 'file') {
+							setTranslationInputValue({
+								previewURL:
+									defaultTranslationInput.dataset.previewURL,
+								title: defaultTranslationInput.dataset.fileName,
+								type: 'file',
+								value: defaultTranslationInput.files[0],
+							});
+						}
+						else {
+							setTranslationInputValue({
+								previewURL:
+									defaultTranslationInput.dataset.previewURL,
+								title: defaultTranslationInput.dataset.fileName,
+								type: 'document',
+								value: defaultTranslationInput.value,
+							});
+						}
+					},
+					onResetTranslation: () => {
+						const defaultTranslationInput =
+							getFragmentTranslationInput(
+								fragmentNamespace,
+								defaultLanguageId,
+								inputElement.id
+							);
+
+						const translationInput = getFragmentTranslationInput(
+							fragmentNamespace,
+							currentLanguageId,
+							fileInput.id
+						);
+
+						const previewURL =
+							defaultTranslationInput?.dataset?.previewURL;
+
+						if (previewURL) {
+							showPreview(
+								defaultTranslationInput?.dataset?.previewURL,
+								defaultTranslationInput?.dataset?.fileName
+							);
+						}
+
+						if (translationInput.type === 'file') {
+							translationInput.parentNode.removeChild(
+								translationInput
+							);
+						}
+						else {
+							translationInput.removeAttribute('data-file-name');
+							translationInput.removeAttribute('value');
+						}
+					},
 				});
 
-				const setTranslationInputValue = ({
-					previewURL,
-					title,
-					value,
-				}) => {
+				const setTranslationInputValue = (props) => {
+					const {previewURL, title, value} = props;
+
 					const type =
-						isFromDocumentLibrary === false ? 'file' : 'hidden';
+						props.type ||
+						(isFromDocumentLibrary ? 'document' : 'file');
 
 					const translationInput = getTranslationInput({
 						inputId: inputElement.id,
@@ -320,10 +384,10 @@ else {
 						languageId: currentLanguageId,
 						localizationInputsContainer: inputElement.parentNode,
 						namespace: fragmentNamespace,
-						type,
+						type: type === 'file' ? 'file' : 'hidden',
 					});
 
-					if (isFromDocumentLibrary) {
+					if (type === 'document') {
 						translationInput.value = value;
 						translationInput.dataset.previewURL = previewURL;
 						translationInput.dataset.fileName = title;
