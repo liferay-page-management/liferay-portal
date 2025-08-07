@@ -19,6 +19,10 @@ const videoPreview = document.getElementById(
 	`${fragmentNamespace}-video-preview`
 );
 
+function getFragmentTranslationInput(namespace, languageId, inputId) {
+	return document.getElementById(`${namespace}${inputId}_${languageId}`);
+}
+
 function main() {
 	if (layoutMode === 'edit' && inputElement) {
 		inputElement.setAttribute('disabled', true);
@@ -95,6 +99,8 @@ function main() {
 
 				const defaultLanguageId = themeDisplay.getDefaultLanguageId();
 
+				let currentLanguageId = defaultLanguageId;
+
 				if (input.localizable) {
 					const {onChange} = registerLocalizedInput({
 						defaultLanguageId,
@@ -103,8 +109,31 @@ function main() {
 						inputName: input.name,
 						localizationInputsContainer: inputElement.parentNode,
 						namespace: fragmentNamespace,
-						onLocaleChange: ({value}) => {
+						onLocaleChange: ({languageId, value}) => {
+							currentLanguageId = languageId;
+
 							updateVideoPreview(value);
+						},
+						onResetTranslation: () => {
+							const defaultTranslationInput =
+								getFragmentTranslationInput(
+									fragmentNamespace,
+									defaultLanguageId,
+									inputElement.id
+								);
+
+							const translationInput =
+								getFragmentTranslationInput(
+									fragmentNamespace,
+									currentLanguageId,
+									inputElement.id
+								);
+
+							updateVideoPreview(defaultTranslationInput.value);
+
+							inputElement.value = defaultTranslationInput.value;
+
+							translationInput.removeAttribute('value');
 						},
 					});
 
