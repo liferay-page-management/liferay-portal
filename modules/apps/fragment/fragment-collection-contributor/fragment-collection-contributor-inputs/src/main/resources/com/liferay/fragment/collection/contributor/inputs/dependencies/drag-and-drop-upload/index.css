@@ -1,9 +1,10 @@
-.drag-and-drop-upload{
+.drag-and-drop-upload {
 	--default-fragment-height: 281px;
 	height: var(--default-fragment-height, fit-content);
 }
 
-.dropzone-default-content, .dropzone-no-preview {
+.dropzone-default-content,
+.dropzone-no-preview {
 	align-content: center;
 	border-radius: 8px;
 	height: 100%;
@@ -12,19 +13,19 @@
 }
 
 .dropzone-default-content {
-	background: #F7F8F9;
-	border: 2px dashed #CDCED9;
+	background: #f7f8f9;
+	border: 2px dashed #cdced9;
 
 	&.dropzone-hover {
-		background-color: #F0F5FF;
-		border: 2px solid #80ACFF;
+		background-color: #f0f5ff;
+		border: 2px solid #80acff;
 		cursor: grabbing;
 	}
 }
 
 .dropzone-no-preview {
-	background: #FFFFFF;
-	border: 1px solid #E7E7ED;
+	background: #ffffff;
+	border: 1px solid #e7e7ed;
 }
 
 .preview-container {
