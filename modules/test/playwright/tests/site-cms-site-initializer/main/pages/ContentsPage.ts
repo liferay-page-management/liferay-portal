@@ -12,6 +12,25 @@ import {waitForAlert} from '../../../../utils/waitForAlert';
 
 type SidePanelName = 'General' | 'Comments' | 'Schedule';
 
+type Field =
+	| {
+			label: string;
+			nth?: number;
+			value: string;
+	  }
+	| {
+			label: string;
+			nth?: number;
+			type: 'Rich Text';
+			value: string;
+	  }
+	| {
+			label: string;
+			nth?: number;
+			type: 'Checkbox';
+			value: boolean;
+	  };
+
 export class ContentsPage {
 	readonly page: Page;
 
@@ -86,6 +105,26 @@ export class ContentsPage {
 		await this.openSidePanel('General');
 
 		await this.closeSidePanel();
+	}
+
+	async fillData(fields: Field[]) {
+		for (const field of fields) {
+			const element = this.page
+				.getByLabel(field.label)
+				.nth(field.nth || 0);
+
+			if (!('type' in field)) {
+				await element.fill(field.value);
+			}
+			else if (field.type === 'Rich Text') {
+				await element.getByRole('textbox').click();
+
+				await this.page.keyboard.type(field.value);
+			}
+			else if (field.type === 'Checkbox') {
+				await element.setChecked(field.value);
+			}
+		}
 	}
 
 	async openSidePanel(panelName: SidePanelName = 'General') {

@@ -28,7 +28,7 @@ export const FIELD_TYPES = [
 	'Upload',
 ] as const;
 
-type FieldType = (typeof FIELD_TYPES)[number];
+export type FieldType = (typeof FIELD_TYPES)[number];
 
 type Field = {label: string; nth?: number};
 
@@ -341,7 +341,9 @@ export class StructureBuilderPage {
 
 	async customizeExperience() {
 		await expect(async () => {
-			await this.customizeExperienceButton.click();
+			if (await this.customizeExperienceButton.isVisible()) {
+				await this.customizeExperienceButton.click({timeout: 2000});
+			}
 
 			await expect(
 				this.page.getByText('Select a Page Element', {exact: true})
