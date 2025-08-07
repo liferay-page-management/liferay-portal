@@ -17,7 +17,6 @@ import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
-import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
@@ -27,6 +26,9 @@ import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+
+import org.owasp.html.HtmlPolicyBuilder;
+import org.owasp.html.PolicyFactory;
 
 /**
  * @author Javier Moral
@@ -69,6 +71,13 @@ public class FragmentEntryLinkModelListener
 	private String _escapeTextEditableValues(
 		JSONObject editableValuesJSONObject, List<InfoField<?>> infoFields) {
 
+		HtmlPolicyBuilder htmlPolicyBuilder = new HtmlPolicyBuilder();
+
+		htmlPolicyBuilder.allowElements("p", "br");
+		htmlPolicyBuilder.allowWithoutAttributes("p", "br");
+
+		PolicyFactory policyFactory = htmlPolicyBuilder.toFactory();
+
 		for (String fragmentEntryProcessorKey :
 				_FRAGMENT_ENTRY_PROCESSOR_KEYS) {
 
@@ -103,10 +112,8 @@ public class FragmentEntryLinkModelListener
 					"defaultValue");
 
 				if (Validator.isNotNull(defaultValue)) {
-					defaultValue = HtmlUtil.unescape(defaultValue);
-
 					editableValueJSONObject.put(
-						"defaultValue", HtmlUtil.escape(defaultValue));
+						"defaultValue", policyFactory.sanitize(defaultValue));
 				}
 
 				if (!_fragmentEntryProcessorHelper.isMapped(
@@ -131,10 +138,8 @@ public class FragmentEntryLinkModelListener
 						String value = editableValueJSONObject.getString(
 							valueKey);
 
-						value = HtmlUtil.unescape(value);
-
 						editableValueJSONObject.put(
-							valueKey, HtmlUtil.escape(value));
+							valueKey, policyFactory.sanitize(value));
 					}
 				}
 			}

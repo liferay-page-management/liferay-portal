@@ -2,6 +2,10 @@ Bundle-Name: Liferay Fragment Service
 Bundle-SymbolicName: com.liferay.fragment.service
 Bundle-Version: 4.0.130
 Import-Package:\
+	!javax.annotation,\
+	\
+	!sun.misc,\
+	\
 	com.liferay.fragment.util.comparator,\
 	\
 	*
