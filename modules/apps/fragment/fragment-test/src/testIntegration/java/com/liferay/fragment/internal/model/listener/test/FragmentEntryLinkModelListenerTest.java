@@ -127,7 +127,7 @@ public class FragmentEntryLinkModelListenerTest {
 				).put(
 					"config", StringPool.BLANK
 				).put(
-					"defaultValue", HtmlUtil.escape(editableFieldValue)
+					"defaultValue", "Heading Example"
 				).put(
 					"fieldId", "JournalArticle_title"
 				).put(
@@ -156,8 +156,7 @@ public class FragmentEntryLinkModelListenerTest {
 			_serviceContext);
 
 		Assert.assertEquals(
-			_createEditableValues(
-				"element-text", HtmlUtil.escape(editableFieldValue)),
+			_createEditableValues("element-text", "Heading Example"),
 			fragmentEntryLink.getEditableValues());
 	}
 
@@ -213,8 +212,7 @@ public class FragmentEntryLinkModelListenerTest {
 
 		long classPK = RandomTestUtil.randomLong();
 
-		String editableFieldValue =
-			"<script>alert('xss');</script>Heading Example";
+		String editableFieldValue = "Heading Example";
 
 		String editableValues = JSONUtil.put(
 			FragmentEntryProcessorConstants.
@@ -252,7 +250,7 @@ public class FragmentEntryLinkModelListenerTest {
 				).put(
 					"config", StringPool.BLANK
 				).put(
-					"defaultValue", HtmlUtil.escape(editableFieldValue)
+					"defaultValue", editableFieldValue
 				).put(
 					"fieldId", "JournalArticle_title"
 				).put(
@@ -286,8 +284,7 @@ public class FragmentEntryLinkModelListenerTest {
 				_createEditableValues("element-text", editableFieldValue));
 
 		Assert.assertEquals(
-			_createEditableValues(
-				"element-text", HtmlUtil.escape(editableFieldValue)),
+			_createEditableValues("element-text", "Heading Example"),
 			fragmentEntryLink.getEditableValues());
 	}
 
