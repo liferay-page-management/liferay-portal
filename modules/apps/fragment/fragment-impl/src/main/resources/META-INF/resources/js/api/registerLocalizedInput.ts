@@ -14,6 +14,13 @@ type Args = {
 	inputName: string;
 	localizationInputsContainer: HTMLElement;
 	namespace: string;
+	onAutoTranslate?: ({
+		languageId,
+		value,
+	}: {
+		languageId: string;
+		value?: string;
+	}) => void;
 	onLocaleChange?: ({
 		languageId,
 		value,
@@ -34,6 +41,7 @@ export function registerLocalizedInput({
 	inputName,
 	localizationInputsContainer,
 	namespace,
+	onAutoTranslate,
 	onLocaleChange,
 	onMarkAsTranslated,
 	onResetTranslation,
@@ -63,6 +71,70 @@ export function registerLocalizedInput({
 			Liferay.Language.direction[defaultLanguageId]!
 		);
 	}
+
+	Liferay.on(
+		'localizationSelect:autoTranslate',
+		({
+			fields,
+			formId,
+			languageId,
+		}: {
+			fields: Record<string, string>;
+			formId?: string;
+			languageId: Liferay.Language.Locale;
+		}) => {
+
+			// Return if event is sent from a different form
+
+			const form = inputElement?.closest(
+				'.lfr-layout-structure-item-form'
+			);
+
+			if (form && formId && !form.classList.contains(formId)) {
+				return;
+			}
+
+			// Return if this field was not translated
+
+			const value = fields[inputName];
+
+			if (!value) {
+				return;
+			}
+
+			// Call custom auto translation handler if passed
+
+			if (onAutoTranslate) {
+				onAutoTranslate({languageId, value});
+			}
+
+			// Otherwise update both visible and hidden input with translated value
+
+			else {
+				const translationInput = getTranslationInput({
+					inputId: inputElement?.id || inputName,
+					inputName,
+					languageId,
+					localizationInputsContainer,
+					namespace,
+				});
+
+				setInputValue({
+					input: inputElement,
+					value,
+				});
+
+				setInputValue({
+					input: translationInput,
+					value,
+				});
+			}
+
+			Liferay.fire('localizationSelect:updateTranslationStatus', {
+				languageId,
+			});
+		}
+	);
 
 	Liferay.on(
 		'localizationSelect:localeChanged',
