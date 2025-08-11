@@ -6,7 +6,7 @@
 import {LanguagePicker} from '@clayui/core';
 import ClayDropDown from '@clayui/drop-down';
 import {openConfirmModal} from '@liferay/layout-js-components-web';
-import React, {Key, useEffect, useRef, useState} from 'react';
+import React, {Key, useEffect, useMemo, useRef, useState} from 'react';
 
 import './LocalizationSelect.scss';
 
@@ -55,6 +55,10 @@ export function LocalizationSelect({
 		setSelectedLocaleId(localeId);
 		setActive(false);
 	};
+
+	const selectedLocaleLabel = useMemo(() => {
+		return locales.find(({id}) => id === selectedLocaleId)?.label;
+	}, [locales, selectedLocaleId]);
 
 	useEffect(() => {
 		const form = containerRef.current?.closest(
@@ -227,13 +231,13 @@ export function LocalizationSelect({
 											Liferay.Language.get(
 												'all-the-fields-for-x-will-be-marked-as-translated'
 											),
-											selectedLocaleId
+											selectedLocaleLabel
 										),
 										title: sub(
 											Liferay.Language.get(
 												'mark-x-as-translated'
 											),
-											selectedLocaleId
+											selectedLocaleLabel
 										),
 									})
 								) {
@@ -264,13 +268,13 @@ export function LocalizationSelect({
 											Liferay.Language.get(
 												'x-translation-will-be-deleted-and-content-fields-will-be-set-to-default-value'
 											),
-											selectedLocaleId
+											selectedLocaleLabel
 										),
 										title: sub(
 											Liferay.Language.get(
 												'delete-x-translation'
 											),
-											selectedLocaleId
+											selectedLocaleLabel
 										),
 									})
 								) {
