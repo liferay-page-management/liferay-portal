@@ -56,8 +56,11 @@ export function getTranslationInput({
 		translationInput.type = type;
 		translationInput.id = id;
 		translationInput.name = `${inputName}_${languageId}`;
-		translationInput.className = 'd-none';
 		localizationInputsContainer.appendChild(translationInput);
+
+		if (translationInput.type !== 'hidden') {
+			translationInput.className = 'd-none';
+		}
 	}
 
 	// When a file upload input (files from computer) has initial values and
