@@ -6,41 +6,33 @@
 import {ObjectDefinitionAPI} from '@liferay/object-admin-rest-client-js';
 import {Page, expect, mergeTests} from '@playwright/test';
 
-import {apiHelpersTest} from '../../../../fixtures/apiHelpersTest';
-import {displayPageTemplatesPagesTest} from '../../../../fixtures/displayPageTemplatesPagesTest';
-import {documentLibraryPagesTest} from '../../../../fixtures/documentLibraryPages.fixtures';
-import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
-import {fragmentsPagesTest} from '../../../../fixtures/fragmentPagesTest';
-import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
-import {loginTest} from '../../../../fixtures/loginTest';
-import {masterPagesPagesTest} from '../../../../fixtures/masterPagesPagesTest';
-import {objectPagesTest} from '../../../../fixtures/objectPagesTest';
-import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
-import {pageManagementSiteTest} from '../../../../fixtures/pageManagementSiteTest';
-import {PageEditorPage} from '../../../../pages/layout-content-page-editor-web/PageEditorPage';
-import {checkAccessibility} from '../../../../utils/checkAccessibility';
-import {clickAndExpectToBeHidden} from '../../../../utils/clickAndExpectToBeHidden';
-import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
-import dragAndDropElement from '../../../../utils/dragAndDropElement';
-import getGlobalSiteId from '../../../../utils/getGlobalSiteId';
-import getRandomString from '../../../../utils/getRandomString';
-import {hoverAndExpectToBeVisible} from '../../../../utils/hoverAndExpectToBeVisible';
-import {performLogout} from '../../../../utils/performLogin';
-import getBasicWebContentStructureId, {
-	getWebContentStructureId,
-} from '../../../../utils/structured-content/getBasicWebContentStructureId';
-import {waitForAlert} from '../../../../utils/waitForAlert';
-import {journalPagesTest} from '../../../journal-web/main/fixtures/journalPagesTest';
-import {
-	ANIMAL_DDM_STRUCTURE_KEY,
-	ANIMAL_DDM_TEMPLATE_KEY,
-} from '../../../setup/page-management-site/main/constants/animals';
-import {getObjectERC} from '../../../setup/page-management-site/main/utils/getObjectERC';
-import {goToObjectEntity} from '../../../setup/page-management-site/main/utils/goToObjectEntity';
-import getContainerDefinition from '../utils/getContainerDefinition';
-import getFormContainerDefinition from '../utils/getFormContainerDefinition';
-import getFragmentDefinition from '../utils/getFragmentDefinition';
-import getPageDefinition from '../utils/getPageDefinition';
+import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
+import {displayPageTemplatesPagesTest} from '../../../fixtures/displayPageTemplatesPagesTest';
+import {documentLibraryPagesTest} from '../../../fixtures/documentLibraryPages.fixtures';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
+import {fragmentsPagesTest} from '../../../fixtures/fragmentPagesTest';
+import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
+import {loginTest} from '../../../fixtures/loginTest';
+import {masterPagesPagesTest} from '../../../fixtures/masterPagesPagesTest';
+import {objectPagesTest} from '../../../fixtures/objectPagesTest';
+import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
+import {pageManagementSiteTest} from '../../../fixtures/pageManagementSiteTest';
+import {PageEditorPage} from '../../../pages/layout-content-page-editor-web/PageEditorPage';
+import {checkAccessibility} from '../../../utils/checkAccessibility';
+import {clickAndExpectToBeHidden} from '../../../utils/clickAndExpectToBeHidden';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+import dragAndDropElement from '../../../utils/dragAndDropElement';
+import getGlobalSiteId from '../../../utils/getGlobalSiteId';
+import getRandomString from '../../../utils/getRandomString';
+import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
+import {waitForAlert} from '../../../utils/waitForAlert';
+import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
+import {getObjectERC} from '../../setup/page-management-site/main/utils/getObjectERC';
+import {goToObjectEntity} from '../../setup/page-management-site/main/utils/goToObjectEntity';
+import getContainerDefinition from '../main/utils/getContainerDefinition';
+import getFormContainerDefinition from '../main/utils/getFormContainerDefinition';
+import getFragmentDefinition from '../main/utils/getFragmentDefinition';
+import getPageDefinition from '../main/utils/getPageDefinition';
 
 const test = mergeTests(
 	apiHelpersTest,
@@ -62,409 +54,7 @@ const test = mergeTests(
 	pageManagementSiteTest
 );
 
-const testWithCKEditor4 = mergeTests(
-	test,
-	featureFlagsTest({
-		'LPD-17564': {enabled: true},
-		'LPD-39304': {enabled: true},
-		'LPS-178052': {enabled: true},
-	})
-);
-
-const testWithPrivatePages = mergeTests(
-	test,
-	featureFlagsTest({
-		'LPD-38869': {enabled: true},
-		'LPD-39304': {enabled: true},
-		'LPS-178052': {enabled: true},
-	})
-);
-
 const ENTER_KEY = 'Enter';
-
-test.describe('Content Display Fragment', () => {
-	const CONTENT_DISPLAY_FRAGMENT_HTML = `<div class="content-display-fragment">
-		[#if itemSelectorNameObject??]
-			\${itemSelectorNameObject.getTitle()}
-		[#else]
-			<div class="portlet-msg-info">The selected content will be shown here.</div>
-		[/#if]
-	</div>`;
-
-	function getContentDisplayFragmentConfiguration({
-		itemSubtype,
-		itemType,
-	}: {
-		itemSubtype?: string;
-		itemType: string;
-	}): FragmentConfiguration {
-		return {
-			fieldSets: [
-				{
-					fields: [
-						{
-							label: 'Item',
-							name: 'itemSelectorName',
-							type: 'itemSelector',
-							typeOptions: {
-								enableSelectTemplate: true,
-								itemSubtype,
-								itemType,
-							},
-						},
-					],
-				},
-			],
-		};
-	}
-
-	test('Does not show alert when accessing a page with a web content display mapped to a restricted web content', async ({
-		apiHelpers,
-		browser,
-		page,
-		pageEditorPage,
-		pageManagementSite,
-	}) => {
-
-		// Create bird web content
-
-		const birdWebContentTitle = getRandomString();
-
-		const birdWebContentStructureId = await getWebContentStructureId(
-			apiHelpers,
-			pageManagementSite.id,
-			ANIMAL_DDM_STRUCTURE_KEY
-		);
-
-		await apiHelpers.jsonWebServicesJournal.addWebContent({
-			ddmStructureId: birdWebContentStructureId,
-			ddmTemplateKey: ANIMAL_DDM_TEMPLATE_KEY,
-			groupId: pageManagementSite.id,
-			titleMap: {en_US: birdWebContentTitle},
-		});
-
-		// Create a page with a content display fragment and go to edit mode
-
-		const contentDisplayId = getRandomString();
-
-		const contentDisplayDefinition = getFragmentDefinition({
-			fragmentConfig: {
-				itemSelector: {
-					template: {
-						infoItemRendererKey:
-							'com.liferay.journal.web.internal.info.item.renderer.JournalArticleFullContentInfoItemRenderer',
-					},
-				},
-			},
-			id: contentDisplayId,
-			key: 'com.liferay.fragment.internal.renderer.ContentObjectFragmentRenderer',
-		});
-
-		const layout = await apiHelpers.headlessDelivery.createSitePage({
-			pageDefinition: getPageDefinition([contentDisplayDefinition]),
-			siteId: pageManagementSite.id,
-			title: getRandomString(),
-		});
-
-		await pageEditorPage.goto(layout, pageManagementSite.friendlyUrlPath);
-
-		// Map the content display fragment to the created web content and publish the page
-
-		await pageEditorPage.selectFragment(contentDisplayId);
-
-		await pageEditorPage.setMappedItem({
-			entity: 'Web Content',
-			entry: 'Hummingbird',
-			folder: 'Birds',
-		});
-
-		await expect(
-			page.locator('#page-editor').getByText('Hummingbird', {exact: true})
-		).toBeVisible();
-
-		await pageEditorPage.publishPage();
-
-		// Navigate to page in incognito mode to simulate not logged user
-
-		const context = await browser.newContext();
-
-		const incognitoPage = await context.newPage();
-
-		await incognitoPage.goto(
-			`/web${pageManagementSite.friendlyUrlPath}${layout.friendlyUrlPath}`
-		);
-
-		// Check the content is not displayed and no alert is shown
-
-		await expect(incognitoPage.getByText('Hummingbird')).not.toBeVisible();
-		await expect(incognitoPage.getByRole('alert')).not.toBeVisible();
-	});
-
-	test(
-		'Can only select Documents and Media when set itemType to FileEntry',
-		{
-			tag: ['@LPS-97182', '@LPS-100545', '@LPS-101249'],
-		},
-		async ({apiHelpers, page, pageEditorPage, pageManagementSite}) => {
-
-			// Create a fragment with itemSelector configuration for file entries
-
-			const {fragmentCollectionId} =
-				await apiHelpers.jsonWebServicesFragmentCollection.addFragmentCollection(
-					{
-						groupId: pageManagementSite.id,
-						name: getRandomString(),
-					}
-				);
-
-			const fragmentEntryName = getRandomString();
-
-			await apiHelpers.jsonWebServicesFragmentEntry.addFragmentEntry({
-				configuration: getContentDisplayFragmentConfiguration({
-					itemType:
-						'com.liferay.portal.kernel.repository.model.FileEntry',
-				}),
-				fragmentCollectionId,
-				groupId: pageManagementSite.id,
-				html: CONTENT_DISPLAY_FRAGMENT_HTML,
-				name: fragmentEntryName,
-			});
-
-			// Create a content page with created fragment
-
-			const fragmentName = getRandomString();
-
-			const fragmentDefinition = getFragmentDefinition({
-				id: fragmentName,
-				key: fragmentEntryName,
-			});
-
-			// Create a content page and go to edit mode
-
-			const layoutTitle = getRandomString();
-
-			const layout = await apiHelpers.headlessDelivery.createSitePage({
-				pageDefinition: getPageDefinition([fragmentDefinition]),
-				siteId: pageManagementSite.id,
-				title: layoutTitle,
-			});
-
-			await pageEditorPage.goto(
-				layout,
-				pageManagementSite.friendlyUrlPath
-			);
-
-			// Assert only documents and media is shown
-
-			await pageEditorPage.selectFragment(fragmentName);
-
-			await pageEditorPage.openMappingSelector();
-
-			const iframe = page.frameLocator('iframe[title="Select"]');
-
-			await expect(iframe.getByRole('menubar')).not.toBeVisible();
-
-			await expect(
-				iframe.getByTitle('poodle.jpg', {exact: true})
-			).toBeVisible();
-
-			await page
-				.getByRole('dialog')
-				.getByLabel('close', {exact: true})
-				.click();
-
-			// Select specific document and media file
-
-			await pageEditorPage.setMappedItem({
-				entity: 'Documents and Media',
-				entry: 'poodle.jpg',
-				entryLocator: page
-					.frameLocator('iframe[title="Select"]')
-					.getByText('poodle.jpg', {exact: false}),
-			});
-
-			await expect(
-				page
-					.locator('.content-display-fragment')
-					.getByText('poodle.jpg')
-			).toBeVisible();
-
-			// Remove the page
-
-			await apiHelpers.jsonWebServicesLayout.deleteLayout(layout.id);
-
-			// Remove fragment set
-
-			await apiHelpers.jsonWebServicesFragmentCollection.deleteFragmentCollection(
-				fragmentCollectionId
-			);
-		}
-	);
-
-	test(
-		'Can only select web content of type animal when set itemSubtype to animal',
-		{
-			tag: ['@LPS-97182', '@LPS-100545', '@LPS-101249'],
-		},
-		async ({apiHelpers, page, pageEditorPage, pageManagementSite}) => {
-
-			// Create animal web content
-
-			const animalWebContentTitle = getRandomString();
-
-			const animalWebContentStructureId = await getWebContentStructureId(
-				apiHelpers,
-				pageManagementSite.id,
-				ANIMAL_DDM_STRUCTURE_KEY
-			);
-
-			const {articleId: animalWebContentId} =
-				await apiHelpers.jsonWebServicesJournal.addWebContent({
-					ddmStructureId: animalWebContentStructureId,
-					ddmTemplateKey: ANIMAL_DDM_TEMPLATE_KEY,
-					groupId: pageManagementSite.id,
-					titleMap: {en_US: animalWebContentTitle},
-				});
-
-			// Create basic web content
-
-			const basicWebContentTitle = getRandomString();
-
-			const basicWebContentStructureId =
-				await getBasicWebContentStructureId(apiHelpers);
-
-			const {articleId: basicWebContentId} =
-				await apiHelpers.jsonWebServicesJournal.addWebContent({
-					ddmStructureId: basicWebContentStructureId,
-					groupId: pageManagementSite.id,
-					titleMap: {en_US: basicWebContentTitle},
-				});
-
-			// Create a fragment with itemSelector configuration for animals
-
-			const {fragmentCollectionId} =
-				await apiHelpers.jsonWebServicesFragmentCollection.addFragmentCollection(
-					{
-						groupId: pageManagementSite.id,
-						name: getRandomString(),
-					}
-				);
-
-			const fragmentEntryName = getRandomString();
-
-			await apiHelpers.jsonWebServicesFragmentEntry.addFragmentEntry({
-				configuration: getContentDisplayFragmentConfiguration({
-					itemSubtype: ANIMAL_DDM_STRUCTURE_KEY,
-					itemType: 'com.liferay.journal.model.JournalArticle',
-				}),
-				fragmentCollectionId,
-				groupId: pageManagementSite.id,
-				html: CONTENT_DISPLAY_FRAGMENT_HTML,
-				name: fragmentEntryName,
-			});
-
-			// Create a content page with created fragment
-
-			const fragmentName = getRandomString();
-
-			const fragmentDefinition = getFragmentDefinition({
-				id: fragmentName,
-				key: fragmentEntryName,
-			});
-
-			// Create a content page and go to edit mode
-
-			const layoutTitle = getRandomString();
-
-			const layout = await apiHelpers.headlessDelivery.createSitePage({
-				pageDefinition: getPageDefinition([fragmentDefinition]),
-				siteId: pageManagementSite.id,
-				title: layoutTitle,
-			});
-
-			await pageEditorPage.goto(
-				layout,
-				pageManagementSite.friendlyUrlPath
-			);
-
-			// Assert basic web content is not showed and animal is showed
-
-			await pageEditorPage.selectFragment(fragmentName);
-
-			await pageEditorPage.openMappingSelector();
-
-			const iframe = page.frameLocator('iframe[title="Select"]');
-
-			await expect(iframe.getByRole('menubar')).not.toBeVisible();
-
-			await expect(
-				iframe
-					.getByRole('paragraph')
-					.filter({hasText: animalWebContentTitle})
-			).toBeVisible();
-
-			await expect(
-				iframe
-					.getByRole('paragraph')
-					.filter({hasText: basicWebContentTitle})
-			).not.toBeVisible();
-
-			await page
-				.getByRole('dialog')
-				.getByLabel('close', {exact: true})
-				.click();
-
-			// Select animal
-
-			await pageEditorPage.setMappedItem({
-				entity: 'Web Content',
-				entry: animalWebContentTitle,
-			});
-
-			await expect(page.locator('.content-display-fragment')).toHaveText(
-				animalWebContentTitle
-			);
-
-			await pageEditorPage.publishPage();
-
-			// Go to view mode of the created page
-
-			await page.goto(
-				`/web${pageManagementSite.friendlyUrlPath}${layout.friendlyUrlPath}`
-			);
-
-			await expect(page.locator('.content-display-fragment')).toHaveText(
-				animalWebContentTitle
-			);
-
-			// Remove web contents
-
-			expect(
-				await apiHelpers.jsonWebServicesJournal.moveArticleToTrash(
-					pageManagementSite.id,
-					animalWebContentId
-				)
-			).toHaveProperty('articleId');
-
-			expect(
-				await apiHelpers.jsonWebServicesJournal.moveArticleToTrash(
-					pageManagementSite.id,
-					basicWebContentId
-				)
-			).toHaveProperty('articleId');
-
-			// Remove the page
-
-			await apiHelpers.jsonWebServicesLayout.deleteLayout(layout.id);
-
-			// Remove fragment set
-
-			await apiHelpers.jsonWebServicesFragmentCollection.deleteFragmentCollection(
-				fragmentCollectionId
-			);
-		}
-	);
-});
 
 test.describe('Related Asset Fragment', () => {
 	test(
@@ -1237,297 +827,6 @@ test.describe('Image Fragment', () => {
 	);
 });
 
-testWithPrivatePages.describe('Menu Display Fragment', () => {
-	async function changeSource(
-		menuDisplayId: string,
-		name: string,
-		page: Page,
-		pageEditorPage: PageEditorPage
-	) {
-		await pageEditorPage.selectFragment(menuDisplayId);
-
-		const iframe = page.frameLocator('iframe[title="Select"]');
-
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: iframe.getByText(name),
-			timeout: 3000,
-			trigger: page.getByLabel('Change Source'),
-		});
-
-		await iframe.getByRole('button', {name: 'Select This Level'}).click();
-
-		await pageEditorPage.waitForChangesSaved();
-	}
-
-	testWithPrivatePages(
-		'Can configure sublevels, display style, selected item color and hovered item color',
-		{
-			tag: ['@LPS-120091', '@LPS-140988'],
-		},
-		async ({apiHelpers, page, pageEditorPage, site}) => {
-
-			// Add layouts
-
-			const parentLayoutTitle = getRandomString();
-
-			const parentLayout =
-				await apiHelpers.jsonWebServicesLayout.addLayout({
-					groupId: site.id,
-					title: parentLayoutTitle,
-				});
-
-			const childLayoutTitle = getRandomString();
-
-			const childLayout =
-				await apiHelpers.jsonWebServicesLayout.addLayout({
-					groupId: site.id,
-					parentLayoutId: parentLayout.layoutId,
-					title: childLayoutTitle,
-				});
-
-			const grandChildLayoutLayoutTitle = getRandomString();
-
-			await apiHelpers.jsonWebServicesLayout.addLayout({
-				groupId: site.id,
-				parentLayoutId: childLayout.layoutId,
-				title: grandChildLayoutLayoutTitle,
-			});
-
-			// Add layout with menu display fragment and go to edit mode
-
-			const menuDisplayId = getRandomString();
-
-			const layout = await apiHelpers.headlessDelivery.createSitePage({
-				pageDefinition: getPageDefinition([
-					getFragmentDefinition({
-						fragmentConfig: {
-							sublevels: -1,
-						},
-						id: menuDisplayId,
-						key: 'com.liferay.fragment.renderer.menu.display.internal.MenuDisplayFragmentRenderer',
-					}),
-				]),
-				siteId: site.id,
-				title: getRandomString(),
-			});
-
-			await pageEditorPage.goto(layout, site.friendlyUrlPath);
-
-			// Assert layouts in menu display fragment
-
-			const menuDisplay = page.locator(
-				'.lfr-layout-structure-item-com-liferay-fragment-renderer-menu-display-internal-menudisplayfragmentrenderer'
-			);
-
-			await expect(
-				menuDisplay.getByText(parentLayoutTitle)
-			).toBeVisible();
-
-			await hoverAndExpectToBeVisible({
-				autoClick: false,
-				target: menuDisplay.getByText(childLayoutTitle),
-				trigger: menuDisplay.locator('.nav-link', {
-					hasText: parentLayoutTitle,
-				}),
-			});
-
-			await expect(
-				menuDisplay.getByText(grandChildLayoutLayoutTitle)
-			).toBeVisible();
-
-			// Configure levels
-
-			await pageEditorPage.changeFragmentConfiguration({
-				fieldLabel: 'Sublevels',
-				fragmentId: menuDisplayId,
-				tab: 'General',
-				value: '1',
-			});
-
-			// Assert layouts in menu display fragment
-
-			await hoverAndExpectToBeVisible({
-				autoClick: false,
-				target: menuDisplay.getByText(childLayoutTitle),
-				trigger: menuDisplay.locator('.nav-link', {
-					hasText: parentLayoutTitle,
-				}),
-			});
-
-			await expect(
-				menuDisplay.getByText(grandChildLayoutLayoutTitle)
-			).not.toBeVisible();
-
-			// Change displayStyle
-
-			await pageEditorPage.changeFragmentConfiguration({
-				fieldLabel: 'Display Style',
-				fragmentId: menuDisplayId,
-				tab: 'General',
-				value: 'Stacked',
-			});
-
-			// Assert layouts in menu display fragment
-
-			await expect(
-				menuDisplay.getByText(parentLayoutTitle)
-			).toBeVisible();
-
-			await expect(menuDisplay.getByText(childLayoutTitle)).toBeVisible();
-
-			await expect(
-				menuDisplay.getByText(grandChildLayoutLayoutTitle)
-			).not.toBeVisible();
-
-			// Change color style
-
-			await pageEditorPage.changeFragmentConfiguration({
-				fieldLabel: 'Selected Item Color',
-				fragmentId: menuDisplayId,
-				tab: 'Styles',
-				value: 'Success',
-				valueFromStylebook: true,
-			});
-
-			await pageEditorPage.changeFragmentConfiguration({
-				fieldLabel: 'Hovered Item Color',
-				fragmentId: menuDisplayId,
-				tab: 'Styles',
-				value: 'Warning',
-				valueFromStylebook: true,
-			});
-
-			// Assert color style in edit mode
-
-			await menuDisplay.getByText(parentLayoutTitle).hover();
-
-			await expect(menuDisplay.getByText(parentLayoutTitle)).toHaveCSS(
-				'color',
-				'rgb(185, 80, 0)'
-			);
-
-			// Publish page
-
-			await pageEditorPage.publishPage();
-
-			// logout and assert guest user can see menu fragment
-
-			await performLogout(page);
-
-			await page.goto(
-				`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`
-			);
-
-			await expect(
-				menuDisplay.getByText(parentLayoutTitle)
-			).toBeVisible();
-
-			// Assert color style in view mode
-
-			await expect(menuDisplay.getByText(parentLayoutTitle)).toHaveCSS(
-				'color',
-				'rgb(28, 28, 36)'
-			);
-		}
-	);
-
-	testWithPrivatePages(
-		'Can select a navigation menu from existing ones',
-		{
-			tag: '@LPS-120091',
-		},
-		async ({apiHelpers, page, pageEditorPage, site}) => {
-
-			// Add public and private layouts
-
-			const publicLayoutTitle = getRandomString();
-
-			await apiHelpers.jsonWebServicesLayout.addLayout({
-				groupId: site.id,
-				title: publicLayoutTitle,
-			});
-
-			const privateLayoutTitle = getRandomString();
-
-			await apiHelpers.jsonWebServicesLayout.addLayout({
-				groupId: site.id,
-				privateLayout: 'true',
-				title: privateLayoutTitle,
-			});
-
-			// Add navigation menu
-
-			const siteNavigationMenuName = getRandomString();
-
-			await apiHelpers.jsonWebServicesSiteNavigationMenu.addSiteNavigationMenu(
-				site.id,
-				siteNavigationMenuName
-			);
-
-			// Add layout with menu display fragment and go to edit mode
-
-			const menuDisplayId = getRandomString();
-
-			const layout = await apiHelpers.headlessDelivery.createSitePage({
-				pageDefinition: getPageDefinition([
-					getFragmentDefinition({
-						fragmentConfig: {
-							sublevels: -1,
-						},
-						id: menuDisplayId,
-						key: 'com.liferay.fragment.renderer.menu.display.internal.MenuDisplayFragmentRenderer',
-					}),
-				]),
-				siteId: site.id,
-				title: getRandomString(),
-			});
-
-			await pageEditorPage.goto(layout, site.friendlyUrlPath);
-
-			// Assert public page
-
-			const menuDisplay = page.locator(
-				'.lfr-layout-structure-item-com-liferay-fragment-renderer-menu-display-internal-menudisplayfragmentrenderer'
-			);
-
-			await expect(
-				menuDisplay.getByText(publicLayoutTitle)
-			).toBeVisible();
-
-			// Select private pages hierarchy
-
-			await changeSource(
-				menuDisplayId,
-				'Private Pages Hierarchy',
-				page,
-				pageEditorPage
-			);
-
-			// Assert private page
-
-			await expect(
-				menuDisplay.getByText(privateLayoutTitle)
-			).toBeVisible();
-
-			// Select navigation menu
-
-			await changeSource(
-				menuDisplayId,
-				siteNavigationMenuName,
-				page,
-				pageEditorPage
-			);
-
-			// Assert navigation item
-
-			await expect(
-				menuDisplay.getByText('There are no menu items to display')
-			).toBeVisible();
-		}
-	);
-});
-
 test.describe('Multiselect Fragment', () => {
 	test(
 		'Allow submit form if the field is required and at least one item is checked',
@@ -1625,140 +924,6 @@ test.describe('Multiselect Fragment', () => {
 					'Thank you. Your information was successfully received.'
 				)
 			).toBeVisible();
-		}
-	);
-});
-
-// Remove when the feature flag LPD-11235 is removed
-
-testWithCKEditor4.describe('Paragraph Fragment with CKEditor 4', () => {
-	testWithCKEditor4(
-		'Can edit text editable with CKEditor 4',
-		{tag: ['@LPS-127732']},
-		async ({apiHelpers, page, pageEditorPage, site}) => {
-
-			// Create page with a paragraph fragment and go to edit mode
-
-			const fragmentId = getRandomString();
-
-			const fragment = getFragmentDefinition({
-				id: fragmentId,
-				key: 'BASIC_COMPONENT-paragraph',
-			});
-
-			const layout = await apiHelpers.headlessDelivery.createSitePage({
-				pageDefinition: getPageDefinition([fragment]),
-				siteId: site.id,
-				title: getRandomString(),
-			});
-
-			await pageEditorPage.goto(layout, site.friendlyUrlPath);
-
-			// Check paragraph editable can be edited
-
-			await pageEditorPage.editTextEditable(
-				fragmentId,
-				'element-text',
-				'New editable fragment text'
-			);
-
-			await expect(
-				page.getByText('New editable fragment text')
-			).toBeAttached();
-		}
-	);
-
-	testWithCKEditor4(
-		'Can use CKEditor options when editing a rich text editable with CKEditor 4',
-		{tag: ['@LPS-127732']},
-		async ({apiHelpers, page, pageEditorPage, site}) => {
-
-			// Create page with a paragraph fragment and go to edit mode
-
-			const fragmentId = getRandomString();
-
-			const fragment = getFragmentDefinition({
-				id: fragmentId,
-				key: 'BASIC_COMPONENT-paragraph',
-			});
-
-			const layout = await apiHelpers.headlessDelivery.createSitePage({
-				pageDefinition: getPageDefinition([fragment]),
-				siteId: site.id,
-				title: getRandomString(),
-			});
-
-			await pageEditorPage.goto(layout, site.friendlyUrlPath);
-
-			// Open editor options
-
-			await pageEditorPage.selectEditable(fragmentId, 'element-text');
-
-			const editable = pageEditorPage.getEditable({
-				editableId: 'element-text',
-				fragmentId,
-			});
-
-			await editable.click();
-
-			await editable.locator('.cke_editable_inline').click();
-
-			await page.keyboard.press('ControlOrMeta+KeyA');
-
-			// Check that the button is visible and works
-
-			await expect(page.getByTitle('Right')).toBeVisible();
-
-			await page.getByTitle('Right').click();
-
-			expect(
-				await page
-					.locator('.ae-editable p')
-					.evaluate((element) => element.style.textAlign)
-			).toBe('right');
-		}
-	);
-
-	testWithCKEditor4(
-		'Editor config contributor client extension is applied with CKEditor 4',
-		{tag: ['@LPD-54262']},
-		async ({apiHelpers, page, pageEditorPage, site}) => {
-
-			// Create page with a paragraph fragment and go to edit mode
-
-			const fragmentId = getRandomString();
-
-			const fragment = getFragmentDefinition({
-				id: fragmentId,
-				key: 'BASIC_COMPONENT-paragraph',
-			});
-
-			const layout = await apiHelpers.headlessDelivery.createSitePage({
-				pageDefinition: getPageDefinition([fragment]),
-				siteId: site.id,
-				title: getRandomString(),
-			});
-
-			await pageEditorPage.goto(layout, site.friendlyUrlPath);
-
-			// Open editor options
-
-			await pageEditorPage.selectEditable(fragmentId, 'element-text');
-
-			const editable = pageEditorPage.getEditable({
-				editableId: 'element-text',
-				fragmentId,
-			});
-
-			await editable.dblclick();
-
-			await editable.locator('.cke_editable_inline').dblclick();
-
-			// Assert "Insert Video" button is visible as provided by the CX
-
-			await page.getByText('A paragraph').selectText();
-
-			await expect(page.getByTitle('Insert Video')).toBeInViewport();
 		}
 	);
 });
@@ -2724,6 +1889,79 @@ test.describe('Custom Fragments', () => {
 	);
 });
 
+test.describe('Accordion Fragment', () => {
+	test('Check the functionality of the Accordion fragment', async ({
+		apiHelpers,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+
+		// Create content page with an Accordion fragment inside a Container
+
+		const accordionId = getRandomString();
+
+		const accordionDefinition = getFragmentDefinition({
+			id: accordionId,
+			key: 'BASIC_COMPONENT-accordion',
+		});
+
+		const containerDefinition = getContainerDefinition({
+			id: getRandomString(),
+			pageElements: [accordionDefinition],
+		});
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([containerDefinition]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		// Change the accordion text
+
+		await pageEditorPage.editTextEditable(
+			accordionId,
+			'accordion-title',
+			'My Accordion'
+		);
+
+		// Check that a fragment can be added to the dropzone of the accordion
+
+		await pageEditorPage.addFragment(
+			'Basic Components',
+			'Heading',
+			page.getByText('Drag and drop fragments or widgets here.', {
+				exact: true,
+			})
+		);
+
+		await expect(page.getByText('Heading Example')).toHaveCount(1);
+
+		await pageEditorPage.publishPage();
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
+
+		const accordionButton = page
+			.locator('button')
+			.filter({hasText: 'My Accordion'});
+
+		await accordionButton.click();
+
+		await expect(
+			page.locator('.collapse-icon-closed').first()
+		).toBeVisible();
+		await expect(
+			page.locator('.collapse-icon-open').first()
+		).not.toBeVisible();
+
+		await expect(
+			accordionButton.getByText('Heading Example')
+		).not.toBeVisible();
+	});
+});
+
 test(
 	'Check multiple fragments can be duplicated after multiselecting them',
 	{tag: ['@LPD-47080']},
@@ -2893,76 +2131,3 @@ test(
 		});
 	}
 );
-
-test.describe('Accordion Fragment', () => {
-	test('Check the functionality of the Accordion fragment', async ({
-		apiHelpers,
-		page,
-		pageEditorPage,
-		site,
-	}) => {
-
-		// Create content page with an Accordion fragment inside a Container
-
-		const accordionId = getRandomString();
-
-		const accordionDefinition = getFragmentDefinition({
-			id: accordionId,
-			key: 'BASIC_COMPONENT-accordion',
-		});
-
-		const containerDefinition = getContainerDefinition({
-			id: getRandomString(),
-			pageElements: [accordionDefinition],
-		});
-
-		const layout = await apiHelpers.headlessDelivery.createSitePage({
-			pageDefinition: getPageDefinition([containerDefinition]),
-			siteId: site.id,
-			title: getRandomString(),
-		});
-
-		await pageEditorPage.goto(layout, site.friendlyUrlPath);
-
-		// Change the accordion text
-
-		await pageEditorPage.editTextEditable(
-			accordionId,
-			'accordion-title',
-			'My Accordion'
-		);
-
-		// Check that a fragment can be added to the dropzone of the accordion
-
-		await pageEditorPage.addFragment(
-			'Basic Components',
-			'Heading',
-			page.getByText('Drag and drop fragments or widgets here.', {
-				exact: true,
-			})
-		);
-
-		await expect(page.getByText('Heading Example')).toHaveCount(1);
-
-		await pageEditorPage.publishPage();
-
-		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
-
-		const accordionButton = page
-			.locator('button')
-			.filter({hasText: 'My Accordion'});
-
-		await accordionButton.click();
-
-		await expect(
-			page.locator('.collapse-icon-closed').first()
-		).toBeVisible();
-		await expect(
-			page.locator('.collapse-icon-open').first()
-		).not.toBeVisible();
-
-		await expect(
-			accordionButton.getByText('Heading Example')
-		).not.toBeVisible();
-	});
-});

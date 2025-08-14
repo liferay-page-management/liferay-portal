@@ -7,18 +7,18 @@ import {expect, mergeTests} from '@playwright/test';
 import {createReadStream} from 'fs';
 import path from 'path';
 
-import {apiHelpersTest} from '../../../../fixtures/apiHelpersTest';
-import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
-import {fragmentsPagesTest} from '../../../../fixtures/fragmentPagesTest';
-import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
-import {loginTest} from '../../../../fixtures/loginTest';
-import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
-import getRandomString from '../../../../utils/getRandomString';
-import getBasicWebContentStructureId from '../../../../utils/structured-content/getBasicWebContentStructureId';
-import {waitForAlert} from '../../../../utils/waitForAlert';
-import getContainerDefinition from '../utils/getContainerDefinition';
-import getFragmentDefinition from '../utils/getFragmentDefinition';
-import getPageDefinition from '../utils/getPageDefinition';
+import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
+import {fragmentsPagesTest} from '../../../fixtures/fragmentPagesTest';
+import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
+import {loginTest} from '../../../fixtures/loginTest';
+import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
+import getRandomString from '../../../utils/getRandomString';
+import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
+import {waitForAlert} from '../../../utils/waitForAlert';
+import getContainerDefinition from '../main/utils/getContainerDefinition';
+import getFragmentDefinition from '../main/utils/getFragmentDefinition';
+import getPageDefinition from '../main/utils/getPageDefinition';
 
 const test = mergeTests(
 	apiHelpersTest,
@@ -54,7 +54,10 @@ test(
 		const document = await apiHelpers.headlessDelivery.postDocument(
 			site.id,
 			createReadStream(
-				path.join(__dirname, '/dependencies/file_upload_image_1.jpg')
+				path.join(
+					__dirname,
+					'../main/dependencies/file_upload_image_1.jpg'
+				)
 			)
 		);
 
@@ -289,7 +292,10 @@ test(
 		const document = await apiHelpers.headlessDelivery.postDocument(
 			site.id,
 			createReadStream(
-				path.join(__dirname, '/dependencies/file_upload_image_1.jpg')
+				path.join(
+					__dirname,
+					'../main/dependencies/file_upload_image_1.jpg'
+				)
 			)
 		);
 
