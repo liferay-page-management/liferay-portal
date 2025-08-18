@@ -92,7 +92,7 @@ else {
 			if (input.localizable) {
 				Object.entries(input.valueI18n).forEach(
 					([languageId, value]) => {
-						const input = getTranslationInput({
+						const translationInput = getTranslationInput({
 							inputId: uiInputElement.id,
 							inputName: input.name,
 							languageId,
@@ -103,16 +103,21 @@ else {
 
 						// Set data-label with the option label for each translation input
 
-						input.dataset.label = input.attributes.options.find(
-							(option) => option.value === value
-						).label;
+						translationInput.dataset.label =
+							input.attributes.options.find(
+								(option) => option.value === value
+							).label;
 					}
 				);
 
 				const {onChange} = registerLocalizedInput({
 					customLocaleChangeHandler: true,
 					defaultLanguageId,
+					initialValues: input.valueI18n,
 					inputElement: uiInputElement,
+					inputName: input.name,
+					localizationInputsContainer: uiInputElement.parentNode,
+					namespace: fragmentNamespace,
 					onLocaleChange: ({languageId}) => {
 						currentLanguageId = languageId;
 
@@ -126,8 +131,8 @@ else {
 						});
 
 						if (translationInput.getAttribute('value') !== null) {
-							uiInputElement.checked =
-								translationInput.value === 'true';
+							uiInputElement.value =
+								translationInput.dataset.label;
 						}
 						else {
 							const defaultLanguageInput = getTranslationInput({
@@ -142,6 +147,58 @@ else {
 							uiInputElement.value =
 								defaultLanguageInput.dataset.label || '';
 						}
+					},
+					onMarkAsTranslated: () => {
+						const defaultLanguageInput = getTranslationInput({
+							inputId: uiInputElement.id,
+							inputName: input.name,
+							languageId: defaultLanguageId,
+							localizationInputsContainer:
+								uiInputElement.parentNode,
+							namespace: fragmentNamespace,
+						});
+
+						const translationInput = getTranslationInput({
+							inputId: uiInputElement.id,
+							inputName: input.name,
+							languageId: currentLanguageId,
+							localizationInputsContainer:
+								uiInputElement.parentNode,
+							namespace: fragmentNamespace,
+						});
+
+						translationInput.dataset.label =
+							defaultLanguageInput.dataset.label;
+
+						translationInput.value = defaultLanguageInput.value;
+
+						uiInputElement.value =
+							defaultLanguageInput.dataset.label;
+					},
+					onResetTranslation: () => {
+						const defaultLanguageInput = getTranslationInput({
+							inputId: uiInputElement.id,
+							inputName: input.name,
+							languageId: defaultLanguageId,
+							localizationInputsContainer:
+								uiInputElement.parentNode,
+							namespace: fragmentNamespace,
+						});
+
+						const translationInput = getTranslationInput({
+							inputId: uiInputElement.id,
+							inputName: input.name,
+							languageId: currentLanguageId,
+							localizationInputsContainer:
+								uiInputElement.parentNode,
+							namespace: fragmentNamespace,
+						});
+
+						translationInput.dataset.label = '';
+						translationInput.value = '';
+
+						uiInputElement.value =
+							defaultLanguageInput.dataset.label || '';
 					},
 				});
 
