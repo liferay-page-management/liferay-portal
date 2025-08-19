@@ -80,7 +80,14 @@ public class SettingsSerDes {
 
 			sb.append("\"favIcon\": ");
 
-			sb.append(String.valueOf(settings.getFavIcon()));
+			if (settings.getFavIcon() instanceof String) {
+				sb.append("\"");
+				sb.append((String)settings.getFavIcon());
+				sb.append("\"");
+			}
+			else {
+				sb.append(settings.getFavIcon());
+			}
 		}
 
 		if (settings.getGlobalCSSClientExtensions() != null) {
@@ -415,8 +422,7 @@ public class SettingsSerDes {
 			}
 			else if (Objects.equals(jsonParserFieldName, "favIcon")) {
 				if (jsonParserFieldValue != null) {
-					settings.setFavIcon(
-						FavIconSerDes.toDTO((String)jsonParserFieldValue));
+					settings.setFavIcon((Object)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(
