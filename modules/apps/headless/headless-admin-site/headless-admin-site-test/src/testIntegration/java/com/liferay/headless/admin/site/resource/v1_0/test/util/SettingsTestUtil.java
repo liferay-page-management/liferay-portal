@@ -21,6 +21,8 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -222,9 +224,20 @@ public class SettingsTestUtil {
 			expectedSettings.getColorSchemeName(),
 			actualSettings.getColorSchemeName());
 		Assert.assertEquals(expectedSettings.getCss(), actualSettings.getCss());
-		Assert.assertTrue(
-			Objects.deepEquals(
-				expectedSettings.getFavIcon(), actualSettings.getFavIcon()));
+
+		try {
+			Assert.assertEquals(
+				String.valueOf(
+					JSONFactoryUtil.createJSONObject(
+						String.valueOf(expectedSettings.getFavIcon()))),
+				String.valueOf(
+					JSONFactoryUtil.createJSONObject(
+						String.valueOf(actualSettings.getFavIcon()))));
+		}
+		catch (JSONException jsonException) {
+			throw new RuntimeException(jsonException);
+		}
+
 		Assert.assertTrue(
 			Objects.deepEquals(
 				expectedSettings.getGlobalCSSClientExtensions(),
