@@ -243,8 +243,9 @@
 
 		<!-- Other fields -->
 
-		<column name="originalFragmentEntryLinkId" type="long" />
-		<column name="fragmentEntryId" type="long" />
+		<column db-name="originalFragmentEntryLinkERC" name="originalFragmentEntryLinkExternalReferenceCode" type="String" />
+		<column db-name="fragmentEntryERC" name="fragmentEntryExternalReferenceCode" type="String" />
+		<column db-name="fragmentEntryScopeERC" name="fragmentEntryScopeExternalReferenceCode" type="String" />
 		<column name="segmentsExperienceId" type="long" />
 		<column name="classNameId" type="long" />
 		<column name="classPK" type="long" />
