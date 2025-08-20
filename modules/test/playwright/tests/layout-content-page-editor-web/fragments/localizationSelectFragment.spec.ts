@@ -9,6 +9,7 @@ import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {fragmentsPagesTest} from '../../../fixtures/fragmentPagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {cmsPagesTest} from '../../site-cms-site-initializer/main/fixtures/cmsPagesTest';
 import {structureBuilderPagesTest} from '../../site-cms-site-initializer/structure-builder/fixtures/structureBuilderPagesTest';
@@ -151,6 +152,19 @@ test(
 
 		await localizationSelectPage.markAsTranslated('es-ES');
 
+		// Check option is disabled when values are filled
+
+		const option = page.getByRole('menuitem', {
+			name: 'Mark as Translated',
+		});
+
+		await clickAndExpectToBeVisible({
+			target: option,
+			trigger: localizationSelectPage.actionsDropdownTrigger,
+		});
+
+		await expect(option).toBeDisabled();
+
 		// Save content, edit it again and check values were persisted for spanish
 
 		await contentsPage.saveContent();
@@ -179,6 +193,7 @@ test(
 	async ({
 		contentsPage,
 		localizationSelectPage,
+		page,
 		pageEditorPage,
 		structureBuilderPage,
 	}) => {
@@ -249,11 +264,28 @@ test(
 
 		await pageEditorPage.publishPage();
 
-		// Edit the content again and mark spanish language as translated
+		// Edit the content again
 
 		await contentsPage.goto();
 
 		await contentsPage.editContent(contentTitle);
+
+		// Switch to spanish and check option is disabled when values are empty
+
+		await localizationSelectPage.switchLanguage('es-ES');
+
+		const option = page.getByRole('menuitem', {
+			name: 'Reset Translation',
+		});
+
+		await clickAndExpectToBeVisible({
+			target: option,
+			trigger: localizationSelectPage.actionsDropdownTrigger,
+		});
+
+		await expect(option).toBeDisabled();
+
+		// Mark language as translated
 
 		await localizationSelectPage.markAsTranslated('es-ES');
 
