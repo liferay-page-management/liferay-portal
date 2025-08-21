@@ -207,6 +207,13 @@ public class PageSpecificationsTestUtil {
 			expectedDraftContentPageSpecification.getPageExperiences(),
 			draftLayout, draftContentPageSpecification.getPageExperiences());
 
+		SettingsTestUtil.assertSettings(
+			expectedDraftContentPageSpecification.getSettings(),
+			draftContentPageSpecification.getSettings());
+		SettingsTestUtil.assertSettings(
+			expectedPublishedContentPageSpecification.getSettings(),
+			publishedContentPageSpecification.getSettings());
+
 		Assert.assertEquals(
 			expectedDraftContentPageSpecification.
 				getSiteTemplatePageSpecificationExternalReferenceCode(),
