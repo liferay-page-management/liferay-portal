@@ -552,7 +552,7 @@ public class LayoutUtil {
 			ServiceContext serviceContext)
 		throws Exception {
 
-		_updateLayout(
+		layout = _updateLayout(
 			cetManager, layout, nameMap, titleMap, descriptionMap, robotsMap,
 			friendlyURLMap, pageSpecification, serviceContext);
 
