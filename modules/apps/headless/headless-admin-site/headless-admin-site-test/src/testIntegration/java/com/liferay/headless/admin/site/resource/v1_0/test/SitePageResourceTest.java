@@ -1415,9 +1415,14 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			ServiceContextTestUtil.getServiceContext(
 				testGroup.getGroupId(), TestPropsValues.getUserId());
 
+		SettingsTestUtil.FaviconType faviconType =
+			SettingsTestUtil.FaviconType.ITEM_EXTERNAL_REFERENCE;
+
 		for (PageSpecification pageSpecification : pageSpecifications) {
 			pageSpecification.setSettings(
-				SettingsTestUtil.getSettings(serviceContext));
+				SettingsTestUtil.getSettings(faviconType, serviceContext));
+
+			faviconType = SettingsTestUtil.FaviconType.CLIENT_EXTENSION;
 		}
 
 		sitePage.setPageSpecifications(pageSpecifications);
