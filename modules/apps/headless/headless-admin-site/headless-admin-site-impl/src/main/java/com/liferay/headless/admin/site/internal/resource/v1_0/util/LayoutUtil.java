@@ -262,13 +262,13 @@ public class LayoutUtil {
 		}
 
 		updateLayout(
-			cetManager, draftContentPageSpecification, draftLayout, nameMap,
-			titleMap, descriptionMap, draftLayout.getRobotsMap(),
-			draftLayout.getFriendlyURLMap(), draftLayoutStatus, serviceContext);
+			cetManager, draftLayout, nameMap, titleMap, descriptionMap,
+			draftLayout.getRobotsMap(), draftLayout.getFriendlyURLMap(),
+			draftContentPageSpecification, draftLayoutStatus, serviceContext);
 
 		return updateLayout(
-			cetManager, publishedContentPageSpecification, layout, nameMap,
-			titleMap, descriptionMap, robotsMap, friendlyURLMap, status,
+			cetManager, layout, nameMap, titleMap, descriptionMap, robotsMap,
+			friendlyURLMap, publishedContentPageSpecification, status,
 			serviceContext);
 	}
 
@@ -301,11 +301,10 @@ public class LayoutUtil {
 		}
 
 		return updateLayout(
-			cetManager, contentPageSpecification, draftLayout,
-			layout.getNameMap(), layout.getTitleMap(),
+			cetManager, draftLayout, layout.getNameMap(), layout.getTitleMap(),
 			layout.getDescriptionMap(), draftLayout.getRobotsMap(),
-			draftLayout.getFriendlyURLMap(), WorkflowConstants.STATUS_DRAFT,
-			serviceContext);
+			draftLayout.getFriendlyURLMap(), contentPageSpecification,
+			WorkflowConstants.STATUS_DRAFT, serviceContext);
 	}
 
 	public static Layout addPortletLayout(
@@ -528,13 +527,13 @@ public class LayoutUtil {
 		}
 
 		updateLayout(
-			cetManager, draftContentPageSpecification, draftLayout, nameMap,
-			titleMap, descriptionMap, robotsMap,
-			draftLayout.getFriendlyURLMap(), draftLayoutStatus, serviceContext);
+			cetManager, draftLayout, nameMap, titleMap, descriptionMap,
+			robotsMap, draftLayout.getFriendlyURLMap(),
+			draftContentPageSpecification, draftLayoutStatus, serviceContext);
 
 		return updateLayout(
-			cetManager, publishedContentPageSpecification, layout, nameMap,
-			titleMap, descriptionMap, robotsMap, friendlyURLMap, status,
+			cetManager, layout, nameMap, titleMap, descriptionMap, robotsMap,
+			friendlyURLMap, publishedContentPageSpecification, status,
 			serviceContext);
 	}
 
