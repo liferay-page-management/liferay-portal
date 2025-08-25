@@ -303,12 +303,14 @@ public class SettingsTestUtil {
 		};
 	}
 
-	public static Settings getSettings(ServiceContext serviceContext) {
+	public static Settings getSettings(
+		FaviconType faviconType, ServiceContext serviceContext) {
+
 		return new Settings() {
 			{
 				setColorSchemeName(() -> "01");
 				setCss(RandomTestUtil::randomString);
-				setFavIcon(() -> _getFavIcon());
+				setFavIcon(() -> _getFavIcon(faviconType));
 				setGlobalCSSClientExtensions(
 					() -> new ClientExtension[] {
 						_getClientExtension(
@@ -369,14 +371,15 @@ public class SettingsTestUtil {
 	}
 
 	public static void modifySettings(
-			ServiceContext serviceContext, Settings settings)
+			FaviconType faviconType, ServiceContext serviceContext,
+			Settings settings)
 		throws Exception {
 
 		if (Validator.isNotNull(settings.getFavIcon())) {
 			settings.setFavIcon(() -> null);
 		}
 		else {
-			settings.setFavIcon(() -> _getFavIcon());
+			settings.setFavIcon(() -> _getFavIcon(faviconType));
 		}
 
 		if (Validator.isNotNull(settings.getGlobalCSSClientExtensions())) {
@@ -493,6 +496,12 @@ public class SettingsTestUtil {
 		}
 	}
 
+	public enum FaviconType {
+
+		CLIENT_EXTENSION, ITEM_EXTERNAL_REFERENCE
+
+	}
+
 	private static void _assertClientExtension(
 		ClientExtension clientExtension, Layout layout, String type) {
 
@@ -582,8 +591,10 @@ public class SettingsTestUtil {
 		return clientExtension;
 	}
 
-	private static Object _getFavIcon() throws Exception {
-		if (RandomTestUtil.randomBoolean()) {
+	private static Object _getFavIcon(FaviconType faviconType)
+		throws Exception {
+
+		if (faviconType == FaviconType.CLIENT_EXTENSION) {
 			return _getClientExtension(
 				ClientExtensionEntryConstants.TYPE_THEME_FAVICON);
 		}
