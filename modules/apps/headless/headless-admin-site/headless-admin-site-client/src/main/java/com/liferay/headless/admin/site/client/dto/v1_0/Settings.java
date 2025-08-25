@@ -66,16 +66,16 @@ public class Settings implements Cloneable, Serializable {
 
 	protected String css;
 
-	public FavIcon getFavIcon() {
+	public Object getFavIcon() {
 		return favIcon;
 	}
 
-	public void setFavIcon(FavIcon favIcon) {
+	public void setFavIcon(Object favIcon) {
 		this.favIcon = favIcon;
 	}
 
 	public void setFavIcon(
-		UnsafeSupplier<FavIcon, Exception> favIconUnsafeSupplier) {
+		UnsafeSupplier<Object, Exception> favIconUnsafeSupplier) {
 
 		try {
 			favIcon = favIconUnsafeSupplier.get();
@@ -85,7 +85,7 @@ public class Settings implements Cloneable, Serializable {
 		}
 	}
 
-	protected FavIcon favIcon;
+	protected Object favIcon;
 
 	public ClientExtension[] getGlobalCSSClientExtensions() {
 		return globalCSSClientExtensions;
