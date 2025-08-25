@@ -13,11 +13,9 @@ import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLFileEntryServiceUtil;
 import com.liferay.headless.admin.site.dto.v1_0.ClientExtension;
 import com.liferay.headless.admin.site.dto.v1_0.ContentPageSpecification;
-import com.liferay.headless.admin.site.dto.v1_0.FavIcon;
 import com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.dto.v1_0.PageExperience;
 import com.liferay.headless.admin.site.dto.v1_0.PageSpecification;
-import com.liferay.headless.admin.site.dto.v1_0.Scope;
 import com.liferay.headless.admin.site.dto.v1_0.Settings;
 import com.liferay.headless.admin.site.dto.v1_0.WidgetPageSection;
 import com.liferay.headless.admin.site.dto.v1_0.WidgetPageSpecification;
@@ -646,28 +644,29 @@ public class LayoutUtil {
 			return 0;
 		}
 
-		FavIcon favIcon = settings.getFavIcon();
+		Map<String, Object> favIcon =
+			(Map<String, Object>)settings.getFavIcon();
 
 		if (!Objects.equals(
-				favIcon.getClassName(), FileEntry.class.getName()) ||
-			Validator.isNull(favIcon.getExternalReferenceCode())) {
+				favIcon.get("className"), FileEntry.class.getName()) ||
+			Validator.isNull(favIcon.get("className"))) {
 
 			return 0;
 		}
 
 		long groupId = serviceContext.getScopeGroupId();
 
-		Scope scope = favIcon.getScope();
+		Map<String, String> scope = (Map<String, String>)favIcon.get("scope");
 
 		if (scope != null) {
 			groupId = GroupUtil.getGroupId(
 				true, true, serviceContext.getCompanyId(),
-				scope.getExternalReferenceCode());
+				scope.get("externalReferenceCode"));
 		}
 
 		DLFileEntry dlFileEntry =
 			DLFileEntryServiceUtil.fetchFileEntryByExternalReferenceCode(
-				groupId, favIcon.getExternalReferenceCode());
+				groupId, (String)favIcon.get("externalReferenceCode"));
 
 		if (dlFileEntry == null) {
 			throw new UnsupportedOperationException();
@@ -845,16 +844,17 @@ public class LayoutUtil {
 
 		ClientExtension clientExtension = null;
 
-		FavIcon favIcon = settings.getFavIcon();
+		Map<String, Object> favIcon =
+			(Map<String, Object>)settings.getFavIcon();
 
-		if ((favIcon != null) &&
-			Objects.equals(
-				favIcon.getClassName(), ClientExtension.class.getName())) {
-
+		if ((favIcon != null) && (favIcon.get("className") == null)) {
 			clientExtension = new ClientExtension() {
 				{
-					setClientExtensionConfig(favIcon::getClientExtensionConfig);
-					setExternalReferenceCode(favIcon::getExternalReferenceCode);
+					setClientExtensionConfig(
+						() -> (Map<String, String>)favIcon.get(
+							"clientExtensionConfig"));
+					setExternalReferenceCode(
+						() -> (String)favIcon.get("externalReferenceCode"));
 				}
 			};
 		}
