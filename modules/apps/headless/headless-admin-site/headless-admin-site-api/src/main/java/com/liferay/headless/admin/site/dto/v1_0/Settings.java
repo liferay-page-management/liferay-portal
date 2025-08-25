@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
@@ -139,7 +140,7 @@ public class Settings implements Serializable {
 		description = "The FavIcon of the page specification."
 	)
 	@Valid
-	public FavIcon getFavIcon() {
+	public Object getFavIcon() {
 		if (_favIconSupplier != null) {
 			favIcon = _favIconSupplier.get();
 
@@ -149,7 +150,7 @@ public class Settings implements Serializable {
 		return favIcon;
 	}
 
-	public void setFavIcon(FavIcon favIcon) {
+	public void setFavIcon(Object favIcon) {
 		this.favIcon = favIcon;
 
 		_favIconSupplier = null;
@@ -157,7 +158,7 @@ public class Settings implements Serializable {
 
 	@JsonIgnore
 	public void setFavIcon(
-		UnsafeSupplier<FavIcon, Exception> favIconUnsafeSupplier) {
+		UnsafeSupplier<Object, Exception> favIconUnsafeSupplier) {
 
 		_favIconSupplier = () -> {
 			try {
@@ -174,10 +175,10 @@ public class Settings implements Serializable {
 
 	@GraphQLField(description = "The FavIcon of the page specification.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected FavIcon favIcon;
+	protected Object favIcon;
 
 	@JsonIgnore
-	private Supplier<FavIcon> _favIconSupplier;
+	private Supplier<Object> _favIconSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The client extensions for global CSS associated to the page."
@@ -669,7 +670,7 @@ public class Settings implements Serializable {
 			sb.append("\"");
 		}
 
-		FavIcon favIcon = getFavIcon();
+		Object favIcon = getFavIcon();
 
 		if (favIcon != null) {
 			if (sb.length() > 1) {
@@ -678,7 +679,17 @@ public class Settings implements Serializable {
 
 			sb.append("\"favIcon\": ");
 
-			sb.append(String.valueOf(favIcon));
+			if (favIcon instanceof Map) {
+				sb.append(JSONFactoryUtil.createJSONObject((Map<?, ?>)favIcon));
+			}
+			else if (favIcon instanceof String) {
+				sb.append("\"");
+				sb.append(_escape((String)favIcon));
+				sb.append("\"");
+			}
+			else {
+				sb.append(favIcon);
+			}
 		}
 
 		ClientExtension[] globalCSSClientExtensions =
