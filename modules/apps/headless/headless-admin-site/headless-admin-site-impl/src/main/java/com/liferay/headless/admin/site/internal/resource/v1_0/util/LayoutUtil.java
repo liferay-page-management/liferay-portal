@@ -553,7 +553,7 @@ public class LayoutUtil {
 			ServiceContext serviceContext)
 		throws Exception {
 
-		updateLayout(
+		_updateLayout(
 			cetManager, layout, nameMap, titleMap, descriptionMap, robotsMap,
 			friendlyURLMap, pageSpecification, serviceContext);
 
@@ -611,7 +611,7 @@ public class LayoutUtil {
 			WidgetPageSpecification widgetPageSpecification)
 		throws Exception {
 
-		layout = updateLayout(
+		layout = _updateLayout(
 			cetManager, layout, nameMap, layout.getTitleMap(),
 			layout.getDescriptionMap(), layout.getRobotsMap(), friendlyURLMap,
 			widgetPageSpecification, serviceContext);
