@@ -67,21 +67,50 @@ public class SettingsTestUtil {
 		}
 
 		ClientExtension clientExtension = null;
+		ItemExternalReference itemExternalReference = null;
 
-		FavIcon favIcon = settings.getFavIcon();
+		Object favIcon = settings.getFavIcon();
 
-		if ((favIcon != null) &&
-			Objects.equals(
-				favIcon.getClassName(),
-				com.liferay.headless.admin.site.dto.v1_0.ClientExtension.class.
-					getName())) {
+		if (favIcon == null) {
+			Assert.assertEquals(0, layout.getFaviconFileEntryId());
+		}
+		else if (favIcon instanceof ClientExtension) {
+			clientExtension = (ClientExtension)favIcon;
+		}
+		else if (favIcon instanceof ItemExternalReference) {
+			itemExternalReference = (ItemExternalReference)favIcon;
+		}
+		else {
+			Assert.fail("Unexpected FavIcon class: " + favIcon.getClass());
+		}
 
-			clientExtension = new ClientExtension() {
-				{
-					setClientExtensionConfig(favIcon::getClientExtensionConfig);
-					setExternalReferenceCode(favIcon::getExternalReferenceCode);
-				}
-			};
+		if (layout.getFaviconFileEntryId() == 0) {
+			Assert.assertNull(itemExternalReference);
+		}
+		else {
+			DLFileEntry dlFileEntry =
+				DLFileEntryLocalServiceUtil.fetchDLFileEntry(
+					layout.getFaviconFileEntryId());
+
+			Assert.assertEquals(
+				dlFileEntry.getExternalReferenceCode(),
+				itemExternalReference.getExternalReferenceCode());
+
+			Scope scope = itemExternalReference.getScope();
+
+			if (scope == null) {
+				Assert.assertEquals(
+					dlFileEntry.getGroupId(), layout.getGroupId());
+			}
+			else {
+				Group group =
+					GroupLocalServiceUtil.fetchGroupByExternalReferenceCode(
+						scope.getExternalReferenceCode(),
+						layout.getCompanyId());
+
+				Assert.assertEquals(
+					dlFileEntry.getGroupId(), group.getGroupId());
+			}
 		}
 
 		_assertClientExtensions(
