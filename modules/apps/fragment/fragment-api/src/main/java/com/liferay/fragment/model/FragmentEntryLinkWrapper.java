@@ -48,8 +48,14 @@ public class FragmentEntryLinkWrapper
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put(
-			"originalFragmentEntryLinkId", getOriginalFragmentEntryLinkId());
-		attributes.put("fragmentEntryId", getFragmentEntryId());
+			"originalFragmentEntryLinkExternalReferenceCode",
+			getOriginalFragmentEntryLinkExternalReferenceCode());
+		attributes.put(
+			"fragmentEntryExternalReferenceCode",
+			getFragmentEntryExternalReferenceCode());
+		attributes.put(
+			"fragmentEntryScopeExternalReferenceCode",
+			getFragmentEntryScopeExternalReferenceCode());
 		attributes.put("segmentsExperienceId", getSegmentsExperienceId());
 		attributes.put("classNameId", getClassNameId());
 		attributes.put("classPK", getClassPK());
@@ -139,17 +145,29 @@ public class FragmentEntryLinkWrapper
 			setModifiedDate(modifiedDate);
 		}
 
-		Long originalFragmentEntryLinkId = (Long)attributes.get(
-			"originalFragmentEntryLinkId");
+		String originalFragmentEntryLinkExternalReferenceCode =
+			(String)attributes.get(
+				"originalFragmentEntryLinkExternalReferenceCode");
 
-		if (originalFragmentEntryLinkId != null) {
-			setOriginalFragmentEntryLinkId(originalFragmentEntryLinkId);
+		if (originalFragmentEntryLinkExternalReferenceCode != null) {
+			setOriginalFragmentEntryLinkExternalReferenceCode(
+				originalFragmentEntryLinkExternalReferenceCode);
 		}
 
-		Long fragmentEntryId = (Long)attributes.get("fragmentEntryId");
+		String fragmentEntryExternalReferenceCode = (String)attributes.get(
+			"fragmentEntryExternalReferenceCode");
 
-		if (fragmentEntryId != null) {
-			setFragmentEntryId(fragmentEntryId);
+		if (fragmentEntryExternalReferenceCode != null) {
+			setFragmentEntryExternalReferenceCode(
+				fragmentEntryExternalReferenceCode);
+		}
+
+		String fragmentEntryScopeExternalReferenceCode = (String)attributes.get(
+			"fragmentEntryScopeExternalReferenceCode");
+
+		if (fragmentEntryScopeExternalReferenceCode != null) {
+			setFragmentEntryScopeExternalReferenceCode(
+				fragmentEntryScopeExternalReferenceCode);
 		}
 
 		Long segmentsExperienceId = (Long)attributes.get(
@@ -394,13 +412,13 @@ public class FragmentEntryLinkWrapper
 	}
 
 	/**
-	 * Returns the fragment entry ID of this fragment entry link.
+	 * Returns the fragment entry external reference code of this fragment entry link.
 	 *
-	 * @return the fragment entry ID of this fragment entry link
+	 * @return the fragment entry external reference code of this fragment entry link
 	 */
 	@Override
-	public long getFragmentEntryId() {
-		return model.getFragmentEntryId();
+	public String getFragmentEntryExternalReferenceCode() {
+		return model.getFragmentEntryExternalReferenceCode();
 	}
 
 	/**
@@ -411,6 +429,16 @@ public class FragmentEntryLinkWrapper
 	@Override
 	public long getFragmentEntryLinkId() {
 		return model.getFragmentEntryLinkId();
+	}
+
+	/**
+	 * Returns the fragment entry scope external reference code of this fragment entry link.
+	 *
+	 * @return the fragment entry scope external reference code of this fragment entry link
+	 */
+	@Override
+	public String getFragmentEntryScopeExternalReferenceCode() {
+		return model.getFragmentEntryScopeExternalReferenceCode();
 	}
 
 	/**
@@ -494,13 +522,13 @@ public class FragmentEntryLinkWrapper
 	}
 
 	/**
-	 * Returns the original fragment entry link ID of this fragment entry link.
+	 * Returns the original fragment entry link external reference code of this fragment entry link.
 	 *
-	 * @return the original fragment entry link ID of this fragment entry link
+	 * @return the original fragment entry link external reference code of this fragment entry link
 	 */
 	@Override
-	public long getOriginalFragmentEntryLinkId() {
-		return model.getOriginalFragmentEntryLinkId();
+	public String getOriginalFragmentEntryLinkExternalReferenceCode() {
+		return model.getOriginalFragmentEntryLinkExternalReferenceCode();
 	}
 
 	/**
@@ -768,13 +796,16 @@ public class FragmentEntryLinkWrapper
 	}
 
 	/**
-	 * Sets the fragment entry ID of this fragment entry link.
+	 * Sets the fragment entry external reference code of this fragment entry link.
 	 *
-	 * @param fragmentEntryId the fragment entry ID of this fragment entry link
+	 * @param fragmentEntryExternalReferenceCode the fragment entry external reference code of this fragment entry link
 	 */
 	@Override
-	public void setFragmentEntryId(long fragmentEntryId) {
-		model.setFragmentEntryId(fragmentEntryId);
+	public void setFragmentEntryExternalReferenceCode(
+		String fragmentEntryExternalReferenceCode) {
+
+		model.setFragmentEntryExternalReferenceCode(
+			fragmentEntryExternalReferenceCode);
 	}
 
 	/**
@@ -785,6 +816,19 @@ public class FragmentEntryLinkWrapper
 	@Override
 	public void setFragmentEntryLinkId(long fragmentEntryLinkId) {
 		model.setFragmentEntryLinkId(fragmentEntryLinkId);
+	}
+
+	/**
+	 * Sets the fragment entry scope external reference code of this fragment entry link.
+	 *
+	 * @param fragmentEntryScopeExternalReferenceCode the fragment entry scope external reference code of this fragment entry link
+	 */
+	@Override
+	public void setFragmentEntryScopeExternalReferenceCode(
+		String fragmentEntryScopeExternalReferenceCode) {
+
+		model.setFragmentEntryScopeExternalReferenceCode(
+			fragmentEntryScopeExternalReferenceCode);
 	}
 
 	/**
@@ -868,15 +912,16 @@ public class FragmentEntryLinkWrapper
 	}
 
 	/**
-	 * Sets the original fragment entry link ID of this fragment entry link.
+	 * Sets the original fragment entry link external reference code of this fragment entry link.
 	 *
-	 * @param originalFragmentEntryLinkId the original fragment entry link ID of this fragment entry link
+	 * @param originalFragmentEntryLinkExternalReferenceCode the original fragment entry link external reference code of this fragment entry link
 	 */
 	@Override
-	public void setOriginalFragmentEntryLinkId(
-		long originalFragmentEntryLinkId) {
+	public void setOriginalFragmentEntryLinkExternalReferenceCode(
+		String originalFragmentEntryLinkExternalReferenceCode) {
 
-		model.setOriginalFragmentEntryLinkId(originalFragmentEntryLinkId);
+		model.setOriginalFragmentEntryLinkExternalReferenceCode(
+			originalFragmentEntryLinkExternalReferenceCode);
 	}
 
 	/**

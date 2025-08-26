@@ -35,6 +35,13 @@ public abstract class FragmentEntryLinkFinderBaseImpl
 		Map<String, String> dbColumnNames = new HashMap<String, String>();
 
 		dbColumnNames.put("uuid", "uuid_");
+		dbColumnNames.put(
+			"originalFragmentEntryLinkExternalReferenceCode",
+			"originalFragmentEntryLinkERC");
+		dbColumnNames.put(
+			"fragmentEntryExternalReferenceCode", "fragmentEntryERC");
+		dbColumnNames.put(
+			"fragmentEntryScopeExternalReferenceCode", "fragmentEntryScopeERC");
 		dbColumnNames.put("type", "type_");
 
 		setDBColumnNames(dbColumnNames);

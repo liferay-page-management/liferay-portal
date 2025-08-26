@@ -251,33 +251,52 @@ public interface FragmentEntryLinkModel
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
-	 * Returns the original fragment entry link ID of this fragment entry link.
+	 * Returns the original fragment entry link external reference code of this fragment entry link.
 	 *
-	 * @return the original fragment entry link ID of this fragment entry link
+	 * @return the original fragment entry link external reference code of this fragment entry link
 	 */
-	public long getOriginalFragmentEntryLinkId();
+	@AutoEscape
+	public String getOriginalFragmentEntryLinkExternalReferenceCode();
 
 	/**
-	 * Sets the original fragment entry link ID of this fragment entry link.
+	 * Sets the original fragment entry link external reference code of this fragment entry link.
 	 *
-	 * @param originalFragmentEntryLinkId the original fragment entry link ID of this fragment entry link
+	 * @param originalFragmentEntryLinkExternalReferenceCode the original fragment entry link external reference code of this fragment entry link
 	 */
-	public void setOriginalFragmentEntryLinkId(
-		long originalFragmentEntryLinkId);
+	public void setOriginalFragmentEntryLinkExternalReferenceCode(
+		String originalFragmentEntryLinkExternalReferenceCode);
 
 	/**
-	 * Returns the fragment entry ID of this fragment entry link.
+	 * Returns the fragment entry external reference code of this fragment entry link.
 	 *
-	 * @return the fragment entry ID of this fragment entry link
+	 * @return the fragment entry external reference code of this fragment entry link
 	 */
-	public long getFragmentEntryId();
+	@AutoEscape
+	public String getFragmentEntryExternalReferenceCode();
 
 	/**
-	 * Sets the fragment entry ID of this fragment entry link.
+	 * Sets the fragment entry external reference code of this fragment entry link.
 	 *
-	 * @param fragmentEntryId the fragment entry ID of this fragment entry link
+	 * @param fragmentEntryExternalReferenceCode the fragment entry external reference code of this fragment entry link
 	 */
-	public void setFragmentEntryId(long fragmentEntryId);
+	public void setFragmentEntryExternalReferenceCode(
+		String fragmentEntryExternalReferenceCode);
+
+	/**
+	 * Returns the fragment entry scope external reference code of this fragment entry link.
+	 *
+	 * @return the fragment entry scope external reference code of this fragment entry link
+	 */
+	@AutoEscape
+	public String getFragmentEntryScopeExternalReferenceCode();
+
+	/**
+	 * Sets the fragment entry scope external reference code of this fragment entry link.
+	 *
+	 * @param fragmentEntryScopeExternalReferenceCode the fragment entry scope external reference code of this fragment entry link
+	 */
+	public void setFragmentEntryScopeExternalReferenceCode(
+		String fragmentEntryScopeExternalReferenceCode);
 
 	/**
 	 * Returns the segments experience ID of this fragment entry link.
