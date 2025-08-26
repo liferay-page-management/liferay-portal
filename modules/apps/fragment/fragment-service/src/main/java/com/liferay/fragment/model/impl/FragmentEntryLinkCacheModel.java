@@ -73,7 +73,7 @@ public class FragmentEntryLinkCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(59);
+		StringBundler sb = new StringBundler(61);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -97,10 +97,12 @@ public class FragmentEntryLinkCacheModel
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
-		sb.append(", originalFragmentEntryLinkId=");
-		sb.append(originalFragmentEntryLinkId);
-		sb.append(", fragmentEntryId=");
-		sb.append(fragmentEntryId);
+		sb.append(", originalFragmentEntryLinkExternalReferenceCode=");
+		sb.append(originalFragmentEntryLinkExternalReferenceCode);
+		sb.append(", fragmentEntryExternalReferenceCode=");
+		sb.append(fragmentEntryExternalReferenceCode);
+		sb.append(", fragmentEntryScopeExternalReferenceCode=");
+		sb.append(fragmentEntryScopeExternalReferenceCode);
 		sb.append(", segmentsExperienceId=");
 		sb.append(segmentsExperienceId);
 		sb.append(", classNameId=");
@@ -187,9 +189,33 @@ public class FragmentEntryLinkCacheModel
 			fragmentEntryLinkImpl.setModifiedDate(new Date(modifiedDate));
 		}
 
-		fragmentEntryLinkImpl.setOriginalFragmentEntryLinkId(
-			originalFragmentEntryLinkId);
-		fragmentEntryLinkImpl.setFragmentEntryId(fragmentEntryId);
+		if (originalFragmentEntryLinkExternalReferenceCode == null) {
+			fragmentEntryLinkImpl.
+				setOriginalFragmentEntryLinkExternalReferenceCode("");
+		}
+		else {
+			fragmentEntryLinkImpl.
+				setOriginalFragmentEntryLinkExternalReferenceCode(
+					originalFragmentEntryLinkExternalReferenceCode);
+		}
+
+		if (fragmentEntryExternalReferenceCode == null) {
+			fragmentEntryLinkImpl.setFragmentEntryExternalReferenceCode("");
+		}
+		else {
+			fragmentEntryLinkImpl.setFragmentEntryExternalReferenceCode(
+				fragmentEntryExternalReferenceCode);
+		}
+
+		if (fragmentEntryScopeExternalReferenceCode == null) {
+			fragmentEntryLinkImpl.setFragmentEntryScopeExternalReferenceCode(
+				"");
+		}
+		else {
+			fragmentEntryLinkImpl.setFragmentEntryScopeExternalReferenceCode(
+				fragmentEntryScopeExternalReferenceCode);
+		}
+
 		fragmentEntryLinkImpl.setSegmentsExperienceId(segmentsExperienceId);
 		fragmentEntryLinkImpl.setClassNameId(classNameId);
 		fragmentEntryLinkImpl.setClassPK(classPK);
@@ -301,10 +327,9 @@ public class FragmentEntryLinkCacheModel
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-
-		originalFragmentEntryLinkId = objectInput.readLong();
-
-		fragmentEntryId = objectInput.readLong();
+		originalFragmentEntryLinkExternalReferenceCode = objectInput.readUTF();
+		fragmentEntryExternalReferenceCode = objectInput.readUTF();
+		fragmentEntryScopeExternalReferenceCode = objectInput.readUTF();
 
 		segmentsExperienceId = objectInput.readLong();
 
@@ -374,9 +399,27 @@ public class FragmentEntryLinkCacheModel
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
-		objectOutput.writeLong(originalFragmentEntryLinkId);
+		if (originalFragmentEntryLinkExternalReferenceCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(
+				originalFragmentEntryLinkExternalReferenceCode);
+		}
 
-		objectOutput.writeLong(fragmentEntryId);
+		if (fragmentEntryExternalReferenceCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(fragmentEntryExternalReferenceCode);
+		}
+
+		if (fragmentEntryScopeExternalReferenceCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(fragmentEntryScopeExternalReferenceCode);
+		}
 
 		objectOutput.writeLong(segmentsExperienceId);
 
@@ -459,8 +502,9 @@ public class FragmentEntryLinkCacheModel
 	public String userName;
 	public long createDate;
 	public long modifiedDate;
-	public long originalFragmentEntryLinkId;
-	public long fragmentEntryId;
+	public String originalFragmentEntryLinkExternalReferenceCode;
+	public String fragmentEntryExternalReferenceCode;
+	public String fragmentEntryScopeExternalReferenceCode;
 	public long segmentsExperienceId;
 	public long classNameId;
 	public long classPK;

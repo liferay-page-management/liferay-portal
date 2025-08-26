@@ -54,13 +54,18 @@ public class FragmentEntryLinkTable extends BaseTable<FragmentEntryLinkTable> {
 	public final Column<FragmentEntryLinkTable, Date> modifiedDate =
 		createColumn(
 			"modifiedDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
-	public final Column<FragmentEntryLinkTable, Long>
-		originalFragmentEntryLinkId = createColumn(
-			"originalFragmentEntryLinkId", Long.class, Types.BIGINT,
+	public final Column<FragmentEntryLinkTable, String>
+		originalFragmentEntryLinkExternalReferenceCode = createColumn(
+			"originalFragmentEntryLinkERC", String.class, Types.VARCHAR,
 			Column.FLAG_DEFAULT);
-	public final Column<FragmentEntryLinkTable, Long> fragmentEntryId =
-		createColumn(
-			"fragmentEntryId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
+	public final Column<FragmentEntryLinkTable, String>
+		fragmentEntryExternalReferenceCode = createColumn(
+			"fragmentEntryERC", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
+	public final Column<FragmentEntryLinkTable, String>
+		fragmentEntryScopeExternalReferenceCode = createColumn(
+			"fragmentEntryScopeERC", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
 	public final Column<FragmentEntryLinkTable, Long> segmentsExperienceId =
 		createColumn(
 			"segmentsExperienceId", Long.class, Types.BIGINT,
