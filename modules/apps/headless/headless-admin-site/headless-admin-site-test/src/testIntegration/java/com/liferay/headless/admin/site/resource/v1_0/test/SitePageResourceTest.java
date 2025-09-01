@@ -347,8 +347,21 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	protected boolean equals(SitePage sitePage1, SitePage sitePage2) {
 		super.equals(sitePage1, sitePage2);
 
-		return Objects.deepEquals(
-			sitePage1.getPageSettings(), sitePage2.getPageSettings());
+		PageSettings pageSettings1 = sitePage1.getPageSettings();
+		PageSettings pageSettings2 = sitePage2.getPageSettings();
+
+		try {
+			PageSettings clonedPageSettings1 = pageSettings1.clone();
+			PageSettings clonedPageSettings2 = pageSettings2.clone();
+
+			clonedPageSettings1.setPriority((Integer)null);
+			clonedPageSettings2.setPriority((Integer)null);
+
+			return Objects.deepEquals(clonedPageSettings1, clonedPageSettings2);
+		}
+		catch (CloneNotSupportedException cloneNotSupportedException) {
+			throw new RuntimeException(cloneNotSupportedException);
+		}
 	}
 
 	@Override
@@ -1302,7 +1315,11 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 								}
 							});
 
-				curPageSettings.setPriority(expectedPriority);
+				PageSettings patchPageSettings =
+					patchSitePage.getPageSettings();
+
+				Assert.assertEquals(
+					expectedPriority, (int)patchPageSettings.getPriority());
 
 				assertEquals(sitePage, patchSitePage);
 				assertValid(patchSitePage);
@@ -1865,7 +1882,10 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 						testGroup.getExternalReferenceCode(),
 						sitePage.getExternalReferenceCode(), sitePage);
 
-				pageSettings.setPriority(expectedPriority);
+				PageSettings putPageSettings = putSitePage.getPageSettings();
+
+				Assert.assertEquals(
+					expectedPriority, (int)putPageSettings.getPriority());
 
 				assertEquals(sitePage, putSitePage);
 				assertValid(putSitePage);
