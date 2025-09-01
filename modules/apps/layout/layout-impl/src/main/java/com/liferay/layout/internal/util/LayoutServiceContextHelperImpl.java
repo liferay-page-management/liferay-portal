@@ -260,8 +260,7 @@ public class LayoutServiceContextHelperImpl
 			PermissionThreadLocal.setPermissionChecker(
 				_originalPermissionChecker);
 			PrincipalThreadLocal.setName(_originalName, false);
-			ServiceContextThreadLocal.pushServiceContext(
-				_originalServiceContext);
+			ServiceContextThreadLocal.popServiceContext();
 
 			if (_originalHttpServletRequest == null) {
 				return;
