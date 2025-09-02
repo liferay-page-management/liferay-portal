@@ -721,7 +721,9 @@ function FormInputMappingOptions({
 				</>
 			) : null}
 
-			{fields.flatMap((fieldSet) => fieldSet.fields).length ? (
+			{fields.flatMap((field) =>
+				'fields' in field ? field.fields : [field]
+			).length ? (
 				<>
 					<MappingFieldSelector
 						fields={fields}
