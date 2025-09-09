@@ -422,6 +422,15 @@ public class FragmentEntryLinkWrapper
 	}
 
 	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
+	@Override
+	public long getFragmentEntryId() {
+		return model.getFragmentEntryId();
+	}
+
+	/**
 	 * Returns the fragment entry link ID of this fragment entry link.
 	 *
 	 * @return the fragment entry link ID of this fragment entry link
@@ -529,6 +538,15 @@ public class FragmentEntryLinkWrapper
 	@Override
 	public String getOriginalFragmentEntryLinkExternalReferenceCode() {
 		return model.getOriginalFragmentEntryLinkExternalReferenceCode();
+	}
+
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
+	@Override
+	public long getOriginalFragmentEntryLinkId() {
+		return model.getOriginalFragmentEntryLinkId();
 	}
 
 	/**
@@ -809,6 +827,15 @@ public class FragmentEntryLinkWrapper
 	}
 
 	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
+	@Override
+	public void setFragmentEntryId(long fragmentEntryId) {
+		model.setFragmentEntryId(fragmentEntryId);
+	}
+
+	/**
 	 * Sets the fragment entry link ID of this fragment entry link.
 	 *
 	 * @param fragmentEntryLinkId the fragment entry link ID of this fragment entry link
@@ -922,6 +949,17 @@ public class FragmentEntryLinkWrapper
 
 		model.setOriginalFragmentEntryLinkExternalReferenceCode(
 			originalFragmentEntryLinkExternalReferenceCode);
+	}
+
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
+	@Override
+	public void setOriginalFragmentEntryLinkId(
+		long originalFragmentEntryLinkId) {
+
+		model.setOriginalFragmentEntryLinkId(originalFragmentEntryLinkId);
 	}
 
 	/**
