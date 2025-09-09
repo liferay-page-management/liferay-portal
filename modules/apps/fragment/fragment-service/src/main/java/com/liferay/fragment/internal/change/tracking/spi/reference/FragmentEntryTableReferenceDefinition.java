@@ -32,8 +32,8 @@ public class FragmentEntryTableReferenceDefinition
 			childTableReferenceInfoBuilder) {
 
 		childTableReferenceInfoBuilder.singleColumnReference(
-			FragmentEntryTable.INSTANCE.fragmentEntryId,
-			FragmentEntryLinkTable.INSTANCE.fragmentEntryId
+			FragmentEntryTable.INSTANCE.externalReferenceCode,
+			FragmentEntryLinkTable.INSTANCE.fragmentEntryExternalReferenceCode
 		).singleColumnReference(
 			FragmentEntryTable.INSTANCE.previewFileEntryId,
 			DLFileEntryTable.INSTANCE.fileEntryId
