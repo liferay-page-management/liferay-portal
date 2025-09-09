@@ -8,13 +8,17 @@ package com.liferay.fragment.model.impl;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
 import com.liferay.fragment.model.FragmentEntry;
+import com.liferay.fragment.model.FragmentEntryLink;
+import com.liferay.fragment.service.FragmentEntryLinkLocalServiceUtil;
 import com.liferay.fragment.service.FragmentEntryLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.cache.CacheField;
 import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -60,6 +64,73 @@ public class FragmentEntryLinkImpl extends FragmentEntryLinkBaseImpl {
 		}
 
 		return _editableValuesJSONObject;
+	}
+
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
+	@Override
+	public long getFragmentEntryId() {
+		if (Validator.isNull(getFragmentEntryExternalReferenceCode())) {
+			return 0;
+		}
+
+		FragmentEntry fragmentEntry;
+
+		try {
+			long fragmentEntryGroupId = getGroupId();
+
+			if (Validator.isNotNull(
+					getFragmentEntryScopeExternalReferenceCode())) {
+
+				Group fragmentEntryGroup =
+					GroupLocalServiceUtil.getGroupByExternalReferenceCode(
+						getFragmentEntryScopeExternalReferenceCode(),
+						getCompanyId());
+
+				fragmentEntryGroupId = fragmentEntryGroup.getGroupId();
+			}
+
+			fragmentEntry =
+				FragmentEntryLocalServiceUtil.
+					getFragmentEntryByExternalReferenceCode(
+						getFragmentEntryExternalReferenceCode(),
+						fragmentEntryGroupId);
+		}
+		catch (PortalException portalException) {
+			throw new RuntimeException(portalException);
+		}
+
+		return fragmentEntry.getFragmentEntryId();
+	}
+
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
+	@Override
+	public long getOriginalFragmentEntryLinkId() {
+		if (Validator.isNull(
+				getOriginalFragmentEntryLinkExternalReferenceCode())) {
+
+			return 0;
+		}
+
+		FragmentEntryLink originalFragmentEntryLink;
+
+		try {
+			originalFragmentEntryLink =
+				FragmentEntryLinkLocalServiceUtil.
+					getFragmentEntryLinkByExternalReferenceCode(
+						getOriginalFragmentEntryLinkExternalReferenceCode(),
+						getGroupId());
+		}
+		catch (PortalException portalException) {
+			throw new RuntimeException(portalException);
+		}
+
+		return originalFragmentEntryLink.getFragmentEntryLinkId();
 	}
 
 	@Override
@@ -191,6 +262,71 @@ public class FragmentEntryLinkImpl extends FragmentEntryLinkBaseImpl {
 		super.setEditableValues(editableValues);
 
 		_editableValuesJSONObject = null;
+	}
+
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
+	@Override
+	public void setFragmentEntryId(long fragmentEntryId) {
+		if (fragmentEntryId == 0) {
+			setFragmentEntryExternalReferenceCode(null);
+			setFragmentEntryScopeExternalReferenceCode(null);
+		}
+		else {
+			try {
+				FragmentEntry fragmentEntry =
+					FragmentEntryLocalServiceUtil.getFragmentEntry(
+						fragmentEntryId);
+
+				setFragmentEntryExternalReferenceCode(
+					fragmentEntry.getExternalReferenceCode());
+
+				String fragmentEntryScopeERC = null;
+
+				if (fragmentEntry.getGroupId() != getGroupId()) {
+					Group fragmentEntryScopeGroup =
+						GroupLocalServiceUtil.getGroup(
+							fragmentEntry.getGroupId());
+
+					fragmentEntryScopeERC =
+						fragmentEntryScopeGroup.getExternalReferenceCode();
+				}
+
+				setFragmentEntryScopeExternalReferenceCode(
+					fragmentEntryScopeERC);
+			}
+			catch (PortalException portalException) {
+				throw new RuntimeException(portalException);
+			}
+		}
+	}
+
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
+	@Override
+	public void setOriginalFragmentEntryLinkId(
+		long originalFragmentEntryLinkId) {
+
+		if (originalFragmentEntryLinkId == 0) {
+			setOriginalFragmentEntryLinkExternalReferenceCode(null);
+		}
+		else {
+			try {
+				FragmentEntryLink originalFragmentEntryLink =
+					FragmentEntryLinkLocalServiceUtil.getFragmentEntryLink(
+						originalFragmentEntryLinkId);
+
+				setOriginalFragmentEntryLinkExternalReferenceCode(
+					originalFragmentEntryLink.getExternalReferenceCode());
+			}
+			catch (PortalException portalException) {
+				throw new RuntimeException(portalException);
+			}
+		}
 	}
 
 	private static final Snapshot<FragmentCollectionContributorRegistry>
