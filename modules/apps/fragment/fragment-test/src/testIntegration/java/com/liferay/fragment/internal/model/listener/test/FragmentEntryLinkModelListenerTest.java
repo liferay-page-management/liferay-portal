@@ -476,7 +476,7 @@ public class FragmentEntryLinkModelListenerTest {
 
 		return _fragmentEntryLinkLocalService.updateFragmentEntryLink(
 			TestPropsValues.getUserId(),
-			fragmentEntryLink.getFragmentEntryLinkId(), editableValues);
+			fragmentEntryLink.getFragmentEntryLinkId(), editableValues, true);
 	}
 
 	@Inject
