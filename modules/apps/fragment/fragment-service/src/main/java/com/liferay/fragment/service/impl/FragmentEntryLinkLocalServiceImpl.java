@@ -487,24 +487,6 @@ public class FragmentEntryLinkLocalServiceImpl
 	}
 
 	@Override
-	public List<FragmentEntryLink> getFragmentEntryLinksByFragmentEntryId(
-		long fragmentEntryId, boolean deleted) {
-
-		ResultERC resultERC = _getResultERC(fragmentEntryId);
-
-		if (resultERC.isFragmentEntryScopeGlobal()) {
-			return fragmentEntryLinkPersistence.findByFEERC_FESERC_D(
-				resultERC.getFragmentEntryERC(),
-				resultERC.getFragmentEntryScopeERC(), deleted);
-		}
-
-		return fragmentEntryLinkPersistence.findByG_FEERC_FESERC_D(
-			resultERC.getFragmentEntryGroupId(),
-			resultERC.getFragmentEntryERC(),
-			resultERC.getFragmentEntryScopeERC(), deleted);
-	}
-
-	@Override
 	public List<FragmentEntryLink> getFragmentEntryLinksByPlid(
 		long groupId, long plid) {
 
@@ -792,21 +774,6 @@ public class FragmentEntryLinkLocalServiceImpl
 
 	@Override
 	public FragmentEntryLink updateFragmentEntryLink(
-			long userId, long fragmentEntryLinkId, int position)
-		throws PortalException {
-
-		FragmentEntryLink fragmentEntryLink = fetchFragmentEntryLink(
-			fragmentEntryLinkId);
-
-		_checkUnlockedLayout(fragmentEntryLink.getPlid(), userId);
-
-		fragmentEntryLink.setPosition(position);
-
-		return fragmentEntryLinkPersistence.update(fragmentEntryLink);
-	}
-
-	@Override
-	public FragmentEntryLink updateFragmentEntryLink(
 			long userId, long fragmentEntryLinkId,
 			long originalFragmentEntryLinkId, long fragmentEntryId, long plid,
 			String css, String html, String js, String configuration,
@@ -852,15 +819,6 @@ public class FragmentEntryLinkLocalServiceImpl
 		fragmentEntryLink.setType(type);
 
 		return fragmentEntryLinkPersistence.update(fragmentEntryLink);
-	}
-
-	@Override
-	public FragmentEntryLink updateFragmentEntryLink(
-			long userId, long fragmentEntryLinkId, String editableValues)
-		throws PortalException {
-
-		return updateFragmentEntryLink(
-			userId, fragmentEntryLinkId, editableValues, true);
 	}
 
 	@Override
