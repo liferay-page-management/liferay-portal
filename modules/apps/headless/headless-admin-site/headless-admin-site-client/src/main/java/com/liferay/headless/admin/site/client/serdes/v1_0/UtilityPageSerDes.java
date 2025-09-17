@@ -63,20 +63,6 @@ public class UtilityPageSerDes {
 			sb.append(utilityPage.getCreator());
 		}
 
-		if (utilityPage.getCreatorExternalReferenceCode() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"creatorExternalReferenceCode\": ");
-
-			sb.append("\"");
-
-			sb.append(_escape(utilityPage.getCreatorExternalReferenceCode()));
-
-			sb.append("\"");
-		}
-
 		if (utilityPage.getDateCreated() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -280,15 +266,6 @@ public class UtilityPageSerDes {
 			map.put("creator", String.valueOf(utilityPage.getCreator()));
 		}
 
-		if (utilityPage.getCreatorExternalReferenceCode() == null) {
-			map.put("creatorExternalReferenceCode", null);
-		}
-		else {
-			map.put(
-				"creatorExternalReferenceCode",
-				String.valueOf(utilityPage.getCreatorExternalReferenceCode()));
-		}
-
 		if (utilityPage.getDateCreated() == null) {
 			map.put("dateCreated", null);
 		}
@@ -419,11 +396,6 @@ public class UtilityPageSerDes {
 			if (Objects.equals(jsonParserFieldName, "creator")) {
 				return false;
 			}
-			else if (Objects.equals(
-						jsonParserFieldName, "creatorExternalReferenceCode")) {
-
-				return false;
-			}
 			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
 				return false;
 			}
@@ -486,14 +458,6 @@ public class UtilityPageSerDes {
 				if (jsonParserFieldValue != null) {
 					utilityPage.setCreator(
 						CreatorSerDes.toDTO((String)jsonParserFieldValue));
-				}
-			}
-			else if (Objects.equals(
-						jsonParserFieldName, "creatorExternalReferenceCode")) {
-
-				if (jsonParserFieldValue != null) {
-					utilityPage.setCreatorExternalReferenceCode(
-						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {

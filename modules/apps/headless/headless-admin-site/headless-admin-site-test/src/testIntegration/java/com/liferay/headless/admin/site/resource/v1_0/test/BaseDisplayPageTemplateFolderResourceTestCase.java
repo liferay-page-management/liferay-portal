@@ -195,7 +195,6 @@ public abstract class BaseDisplayPageTemplateFolderResourceTestCase {
 		DisplayPageTemplateFolder displayPageTemplateFolder =
 			randomDisplayPageTemplateFolder();
 
-		displayPageTemplateFolder.setCreatorExternalReferenceCode(regex);
 		displayPageTemplateFolder.setDescription(regex);
 		displayPageTemplateFolder.setExternalReferenceCode(regex);
 		displayPageTemplateFolder.setKey(regex);
@@ -211,8 +210,6 @@ public abstract class BaseDisplayPageTemplateFolderResourceTestCase {
 
 		displayPageTemplateFolder = DisplayPageTemplateFolderSerDes.toDTO(json);
 
-		Assert.assertEquals(
-			regex, displayPageTemplateFolder.getCreatorExternalReferenceCode());
 		Assert.assertEquals(regex, displayPageTemplateFolder.getDescription());
 		Assert.assertEquals(
 			regex, displayPageTemplateFolder.getExternalReferenceCode());
@@ -1190,19 +1187,6 @@ public abstract class BaseDisplayPageTemplateFolderResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals(
-					"creatorExternalReferenceCode",
-					additionalAssertFieldName)) {
-
-				if (displayPageTemplateFolder.
-						getCreatorExternalReferenceCode() == null) {
-
-					valid = false;
-				}
-
-				continue;
-			}
-
 			if (Objects.equals("description", additionalAssertFieldName)) {
 				if (displayPageTemplateFolder.getDescription() == null) {
 					valid = false;
@@ -1399,22 +1383,6 @@ public abstract class BaseDisplayPageTemplateFolderResourceTestCase {
 				if (!Objects.deepEquals(
 						displayPageTemplateFolder1.getCreator(),
 						displayPageTemplateFolder2.getCreator())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals(
-					"creatorExternalReferenceCode",
-					additionalAssertFieldName)) {
-
-				if (!Objects.deepEquals(
-						displayPageTemplateFolder1.
-							getCreatorExternalReferenceCode(),
-						displayPageTemplateFolder2.
-							getCreatorExternalReferenceCode())) {
 
 					return false;
 				}
@@ -1647,53 +1615,6 @@ public abstract class BaseDisplayPageTemplateFolderResourceTestCase {
 		if (entityFieldName.equals("creator")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
-		}
-
-		if (entityFieldName.equals("creatorExternalReferenceCode")) {
-			Object object =
-				displayPageTemplateFolder.getCreatorExternalReferenceCode();
-
-			String value = String.valueOf(object);
-
-			if (operator.equals("contains")) {
-				sb = new StringBundler();
-
-				sb.append("contains(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 2)) {
-					sb.append(value.substring(1, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else if (operator.equals("startswith")) {
-				sb = new StringBundler();
-
-				sb.append("startswith(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 1)) {
-					sb.append(value.substring(0, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else {
-				sb.append("'");
-				sb.append(value);
-				sb.append("'");
-			}
-
-			return sb.toString();
 		}
 
 		if (entityFieldName.equals("dateCreated")) {
@@ -2090,8 +2011,6 @@ public abstract class BaseDisplayPageTemplateFolderResourceTestCase {
 
 		return new DisplayPageTemplateFolder() {
 			{
-				creatorExternalReferenceCode = StringUtil.toLowerCase(
-					RandomTestUtil.randomString());
 				dateCreated = RandomTestUtil.nextDate();
 				dateModified = RandomTestUtil.nextDate();
 				description = StringUtil.toLowerCase(

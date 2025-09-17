@@ -339,7 +339,7 @@ public abstract class BaseUtilityPageResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/utility-pages/{utilityPageExternalReferenceCode}' -d $'{"creatorExternalReferenceCode": ___, "dateCreated": ___, "dateModified": ___, "datePublished": ___, "externalReferenceCode": ___, "friendlyUrlHistory": ___, "friendlyUrlPath_i18n": ___, "markedAsDefault": ___, "name": ___, "pageSpecifications": ___, "thumbnail": ___, "type": ___, "utilityPageSettings": ___, "uuid": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/utility-pages/{utilityPageExternalReferenceCode}' -d $'{"dateCreated": ___, "dateModified": ___, "datePublished": ___, "externalReferenceCode": ___, "friendlyUrlHistory": ___, "friendlyUrlPath_i18n": ___, "markedAsDefault": ___, "name": ___, "pageSpecifications": ___, "thumbnail": ___, "type": ___, "utilityPageSettings": ___, "uuid": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Updates only the fields received in the request body, leaving any other fields untouched."
@@ -393,11 +393,6 @@ public abstract class BaseUtilityPageResourceImpl
 		UtilityPage existingUtilityPage = getSiteUtilityPage(
 			siteExternalReferenceCode, utilityPageExternalReferenceCode);
 
-		if (utilityPage.getCreatorExternalReferenceCode() != null) {
-			existingUtilityPage.setCreatorExternalReferenceCode(
-				utilityPage.getCreatorExternalReferenceCode());
-		}
-
 		if (utilityPage.getDateCreated() != null) {
 			existingUtilityPage.setDateCreated(utilityPage.getDateCreated());
 		}
@@ -448,7 +443,7 @@ public abstract class BaseUtilityPageResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/utility-pages' -d $'{"creatorExternalReferenceCode": ___, "dateCreated": ___, "dateModified": ___, "datePublished": ___, "externalReferenceCode": ___, "friendlyUrlHistory": ___, "friendlyUrlPath_i18n": ___, "markedAsDefault": ___, "name": ___, "pageSpecifications": ___, "thumbnail": ___, "type": ___, "utilityPageSettings": ___, "uuid": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/utility-pages' -d $'{"dateCreated": ___, "dateModified": ___, "datePublished": ___, "externalReferenceCode": ___, "friendlyUrlHistory": ___, "friendlyUrlPath_i18n": ___, "markedAsDefault": ___, "name": ___, "pageSpecifications": ___, "thumbnail": ___, "type": ___, "utilityPageSettings": ___, "uuid": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Adds a new utility page"
@@ -683,7 +678,7 @@ public abstract class BaseUtilityPageResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/utility-pages/{utilityPageExternalReferenceCode}' -d $'{"creatorExternalReferenceCode": ___, "dateCreated": ___, "dateModified": ___, "datePublished": ___, "externalReferenceCode": ___, "friendlyUrlHistory": ___, "friendlyUrlPath_i18n": ___, "markedAsDefault": ___, "name": ___, "pageSpecifications": ___, "thumbnail": ___, "type": ___, "utilityPageSettings": ___, "uuid": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/utility-pages/{utilityPageExternalReferenceCode}' -d $'{"dateCreated": ___, "dateModified": ___, "datePublished": ___, "externalReferenceCode": ___, "friendlyUrlHistory": ___, "friendlyUrlPath_i18n": ___, "markedAsDefault": ___, "name": ___, "pageSpecifications": ___, "thumbnail": ___, "type": ___, "utilityPageSettings": ___, "uuid": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Updates the utility page with the given external reference code, or creates it if it does not exist."

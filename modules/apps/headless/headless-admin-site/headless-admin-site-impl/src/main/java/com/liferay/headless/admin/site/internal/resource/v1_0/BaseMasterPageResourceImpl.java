@@ -339,7 +339,7 @@ public abstract class BaseMasterPageResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/master-pages/{masterPageExternalReferenceCode}' -d $'{"creatorExternalReferenceCode": ___, "dateCreated": ___, "dateModified": ___, "datePublished": ___, "externalReferenceCode": ___, "key": ___, "keywords": ___, "markedAsDefault": ___, "name": ___, "pageSpecifications": ___, "taxonomyCategoryItemExternalReferences": ___, "thumbnail": ___, "uuid": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/master-pages/{masterPageExternalReferenceCode}' -d $'{"dateCreated": ___, "dateModified": ___, "datePublished": ___, "externalReferenceCode": ___, "key": ___, "keywords": ___, "markedAsDefault": ___, "name": ___, "pageSpecifications": ___, "taxonomyCategoryItemExternalReferences": ___, "thumbnail": ___, "uuid": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Updates only the fields received in the request body, leaving any other fields untouched."
@@ -393,11 +393,6 @@ public abstract class BaseMasterPageResourceImpl
 		MasterPage existingMasterPage = getSiteMasterPage(
 			siteExternalReferenceCode, masterPageExternalReferenceCode);
 
-		if (masterPage.getCreatorExternalReferenceCode() != null) {
-			existingMasterPage.setCreatorExternalReferenceCode(
-				masterPage.getCreatorExternalReferenceCode());
-		}
-
 		if (masterPage.getDateCreated() != null) {
 			existingMasterPage.setDateCreated(masterPage.getDateCreated());
 		}
@@ -446,7 +441,7 @@ public abstract class BaseMasterPageResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/master-pages' -d $'{"creatorExternalReferenceCode": ___, "dateCreated": ___, "dateModified": ___, "datePublished": ___, "externalReferenceCode": ___, "key": ___, "keywords": ___, "markedAsDefault": ___, "name": ___, "pageSpecifications": ___, "taxonomyCategoryItemExternalReferences": ___, "thumbnail": ___, "uuid": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/master-pages' -d $'{"dateCreated": ___, "dateModified": ___, "datePublished": ___, "externalReferenceCode": ___, "key": ___, "keywords": ___, "markedAsDefault": ___, "name": ___, "pageSpecifications": ___, "taxonomyCategoryItemExternalReferences": ___, "thumbnail": ___, "uuid": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Adds a new master page."
@@ -680,7 +675,7 @@ public abstract class BaseMasterPageResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/master-pages/{masterPageExternalReferenceCode}' -d $'{"creatorExternalReferenceCode": ___, "dateCreated": ___, "dateModified": ___, "datePublished": ___, "externalReferenceCode": ___, "key": ___, "keywords": ___, "markedAsDefault": ___, "name": ___, "pageSpecifications": ___, "taxonomyCategoryItemExternalReferences": ___, "thumbnail": ___, "uuid": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/master-pages/{masterPageExternalReferenceCode}' -d $'{"dateCreated": ___, "dateModified": ___, "datePublished": ___, "externalReferenceCode": ___, "key": ___, "keywords": ___, "markedAsDefault": ___, "name": ___, "pageSpecifications": ___, "taxonomyCategoryItemExternalReferences": ___, "thumbnail": ___, "uuid": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Updates the master page with the given external reference code, or creates it if it does not exist."

@@ -7,7 +7,7 @@ package com.liferay.headless.admin.site.dto.v1_0;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 
-import com.liferay.headless.admin.user.dto.v1_0.Creator;
+import com.liferay.headless.delivery.dto.v1_0.Creator;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
@@ -89,22 +89,6 @@ public class ContentPageTemplate extends PageTemplate implements Serializable {
 			sb.append("\"creator\": ");
 
 			sb.append(creator);
-		}
-
-		String creatorExternalReferenceCode = getCreatorExternalReferenceCode();
-
-		if (creatorExternalReferenceCode != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"creatorExternalReferenceCode\": ");
-
-			sb.append("\"");
-
-			sb.append(_escape(creatorExternalReferenceCode));
-
-			sb.append("\"");
 		}
 
 		Date dateCreated = getDateCreated();
