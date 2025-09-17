@@ -492,11 +492,6 @@ components:
                         The display page template's creator. It is not returned by default. It can be embedded via
                         nestedFields.
                     readOnly: true
-                creatorExternalReferenceCode:
-                    # @review
-                    description:
-                        The display page template's creator external reference code.
-                    type: string
                 dateCreated:
                     # @review
                     description:
@@ -590,11 +585,6 @@ components:
                         The display page template folder's creator. It is not returned by default. It can be embedded
                         via nestedFields.
                     readOnly: true
-                creatorExternalReferenceCode:
-                    # @review
-                    description:
-                        The display page template folder's creator external reference code.
-                    type: string
                 dateCreated:
                     # @review
                     description:
@@ -968,11 +958,6 @@ components:
                         The fragment composition's creator. It is not returned by default. It can be embedded via
                         nestedFields.
                     readOnly: true
-                creatorExternalReferenceCode:
-                    # @review
-                    description:
-                        The page's creator external reference code.
-                    type: string
                 dateCreated:
                     description:
                         The structured content's creation date.
@@ -1759,11 +1744,6 @@ components:
                     description:
                         The master page's creator. It is not returned by default. It can be embedded via nestedFields.
                     readOnly: true
-                creatorExternalReferenceCode:
-                    # @review
-                    description:
-                        The page's creator external reference code.
-                    type: string
                 dateCreated:
                     # @review
                     description:
@@ -2260,11 +2240,6 @@ components:
                     description:
                         The page template's creator. It is not returned by default. It can be embedded via nestedFields.
                     readOnly: true
-                creatorExternalReferenceCode:
-                    # @review
-                    description:
-                        The page's creator external reference code.
-                    type: string
                 dateCreated:
                     # @review
                     description:
@@ -2357,11 +2332,6 @@ components:
                         The page template set's creator. It is not returned by default. It can be embedded via
                         nestedFields.
                     readOnly: true
-                creatorExternalReferenceCode:
-                    # @review
-                    description:
-                        The page template set's creator external reference code.
-                    type: string
                 dateCreated:
                     # @review
                     description:
@@ -2667,11 +2637,6 @@ components:
                     description:
                         The page's creator. It is not returned by default. It can be embedded via nestedFields.
                     readOnly: true
-                creatorExternalReferenceCode:
-                    # @review
-                    description:
-                        The page's creator external reference code.
-                    type: string
                 dateCreated:
                     # @review
                     description:
@@ -2855,11 +2820,6 @@ components:
                     description:
                         The utility page's creator. It is not returned by default. It can be embedded via nestedFields.
                     readOnly: true
-                creatorExternalReferenceCode:
-                    # @review
-                    description:
-                        The utility page's creator external reference code.
-                    type: string
                 dateCreated:
                     # @review
                     description:
