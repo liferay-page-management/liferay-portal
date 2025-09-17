@@ -103,10 +103,6 @@ public class LayoutModelDocumentContributor
 	}
 
 	private int _getStatus(Layout layout) {
-		if (layout.getStatus() == WorkflowConstants.STATUS_EMPTY) {
-			return layout.getStatus();
-		}
-
 		if (layout.isPublished()) {
 			return WorkflowConstants.STATUS_APPROVED;
 		}
