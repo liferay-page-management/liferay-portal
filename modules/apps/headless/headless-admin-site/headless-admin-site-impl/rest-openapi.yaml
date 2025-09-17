@@ -486,7 +486,7 @@ components:
                     description:
                         The content type (and optionally subtype) associated to the display page template.
                 creator:
-                    $ref: ../../headless-admin-user/headless-admin-user-impl/rest-openapi.yaml#Creator
+                    $ref: ../../headless-delivery/headless-delivery-impl/rest-openapi.yaml#Creator
                     # @review
                     description:
                         The display page template's creator. It is not returned by default. It can be embedded via
@@ -584,7 +584,7 @@ components:
                 A display page template folder.
             properties:
                 creator:
-                    $ref: ../../headless-admin-user/headless-admin-user-impl/rest-openapi.yaml#Creator
+                    $ref: ../../headless-delivery/headless-delivery-impl/rest-openapi.yaml#Creator
                     # @review
                     description:
                         The display page template folder's creator. It is not returned by default. It can be embedded
@@ -962,7 +962,7 @@ components:
                 A composition of fragments that can be added to a site page.
             properties:
                 creator:
-                    $ref: ../../headless-admin-user/headless-admin-user-impl/rest-openapi.yaml#Creator
+                    $ref: ../../headless-delivery/headless-delivery-impl/rest-openapi.yaml#Creator
                     # @review
                     description:
                         The fragment composition's creator. It is not returned by default. It can be embedded via
@@ -1754,7 +1754,7 @@ components:
                 A page with common elements (header, footer, ...) used for all or several pages of a site.
             properties:
                 creator:
-                    $ref: ../../headless-admin-user/headless-admin-user-impl/rest-openapi.yaml#Creator
+                    $ref: ../../headless-delivery/headless-delivery-impl/rest-openapi.yaml#Creator
                     # @review
                     description:
                         The master page's creator. It is not returned by default. It can be embedded via nestedFields.
@@ -2255,7 +2255,7 @@ components:
                 propertyName: type
             properties:
                 creator:
-                    $ref: ../../headless-admin-user/headless-admin-user-impl/rest-openapi.yaml#Creator
+                    $ref: ../../headless-delivery/headless-delivery-impl/rest-openapi.yaml#Creator
                     # @review
                     description:
                         The page template's creator. It is not returned by default. It can be embedded via nestedFields.
@@ -2351,7 +2351,7 @@ components:
                 A page template set.
             properties:
                 creator:
-                    $ref: ../../headless-admin-user/headless-admin-user-impl/rest-openapi.yaml#Creator
+                    $ref: ../../headless-delivery/headless-delivery-impl/rest-openapi.yaml#Creator
                     # @review
                     description:
                         The page template set's creator. It is not returned by default. It can be embedded via
@@ -2662,7 +2662,7 @@ components:
                     readOnly: true
                     type: array
                 creator:
-                    $ref: ../../headless-admin-user/headless-admin-user-impl/rest-openapi.yaml#Creator
+                    $ref: ../../headless-delivery/headless-delivery-impl/rest-openapi.yaml#Creator
                     # @review
                     description:
                         The page's creator. It is not returned by default. It can be embedded via nestedFields.
@@ -2850,7 +2850,7 @@ components:
                 The definition of a Utility Page.
             properties:
                 creator:
-                    $ref: ../../headless-admin-user/headless-admin-user-impl/rest-openapi.yaml#Creator
+                    $ref: ../../headless-delivery/headless-delivery-impl/rest-openapi.yaml#Creator
                     # @review
                     description:
                         The utility page's creator. It is not returned by default. It can be embedded via nestedFields.
