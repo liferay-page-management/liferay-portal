@@ -13,6 +13,7 @@ import com.liferay.headless.admin.site.dto.v1_0.PageTemplateSet;
 import com.liferay.headless.admin.site.dto.v1_0.WidgetPageTemplate;
 import com.liferay.headless.admin.site.dto.v1_0.WidgetPageTemplateSettings;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.AssetUtil;
+import com.liferay.headless.delivery.dto.v1_0.util.CreatorUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
@@ -22,8 +23,10 @@ import com.liferay.portal.kernel.model.LayoutPrototype;
 import com.liferay.portal.kernel.model.LayoutTypePortletConstants;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutPrototypeService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -59,13 +62,16 @@ public class PageTemplateDTOConverter
 		if (layoutPageTemplateEntry.getType() ==
 				LayoutPageTemplateEntryTypeConstants.BASIC) {
 
-			return _getContentPageTemplate(layoutPageTemplateEntry);
+			return _getContentPageTemplate(
+				dtoConverterContext, layoutPageTemplateEntry);
 		}
 
-		return _getWidgetPageTemplate(layoutPageTemplateEntry);
+		return _getWidgetPageTemplate(
+			dtoConverterContext, layoutPageTemplateEntry);
 	}
 
 	private PageTemplate _getContentPageTemplate(
+			DTOConverterContext dtoConverterContext,
 			LayoutPageTemplateEntry layoutPageTemplateEntry)
 		throws Exception {
 
@@ -74,6 +80,11 @@ public class PageTemplateDTOConverter
 
 		return new ContentPageTemplate() {
 			{
+				setCreator(
+					() -> CreatorUtil.toCreator(
+						dtoConverterContext, _portal,
+						_userLocalService.fetchUser(
+							layoutPageTemplateEntry.getUserId())));
 				setDateCreated(layoutPageTemplateEntry::getCreateDate);
 				setDateModified(layoutPageTemplateEntry::getModifiedDate);
 				setDatePublished(layout::getPublishDate);
@@ -122,6 +133,7 @@ public class PageTemplateDTOConverter
 	}
 
 	private PageTemplate _getWidgetPageTemplate(
+			DTOConverterContext dtoConverterContext,
 			LayoutPageTemplateEntry layoutPageTemplateEntry)
 		throws Exception {
 
@@ -134,6 +146,11 @@ public class PageTemplateDTOConverter
 		return new WidgetPageTemplate() {
 			{
 				setActive(layoutPrototype::isActive);
+				setCreator(
+					() -> CreatorUtil.toCreator(
+						dtoConverterContext, _portal,
+						_userLocalService.fetchUser(
+							layoutPageTemplateEntry.getUserId())));
 				setDateCreated(layoutPageTemplateEntry::getCreateDate);
 				setDateModified(layoutPageTemplateEntry::getModifiedDate);
 				setDatePublished(layout::getPublishDate);
@@ -231,5 +248,11 @@ public class PageTemplateDTOConverter
 	)
 	private DTOConverter<LayoutPageTemplateCollection, PageTemplateSet>
 		_pageTemplateSetDTOConverter;
+
+	@Reference
+	private Portal _portal;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }
