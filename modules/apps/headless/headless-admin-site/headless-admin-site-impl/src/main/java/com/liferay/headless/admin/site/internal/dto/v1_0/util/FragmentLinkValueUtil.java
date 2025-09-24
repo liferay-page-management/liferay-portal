@@ -191,18 +191,18 @@ public class FragmentLinkValueUtil {
 		}
 
 		try {
+			Object infoItem = infoItemObjectProvider.getInfoItem(
+				scopeGroupId,
+				new ERCInfoItemIdentifier(
+					fragmentMappedValueItemExternalReference.
+						getExternalReferenceCode(),
+					ScopeUtil.getScopeExternalReferenceCode(
+						fragmentMappedValueItemExternalReference.getScope(),
+						scopeGroupId)));
+
 			InfoItemDetails infoItemDetails =
 				infoItemDetailsProvider.getInfoItemDetails(
-					scopeGroupId, ClassPKInfoItemIdentifier.class,
-					infoItemObjectProvider.getInfoItem(
-						scopeGroupId,
-						new ERCInfoItemIdentifier(
-							fragmentMappedValueItemExternalReference.
-								getExternalReferenceCode(),
-							ScopeUtil.getScopeExternalReferenceCode(
-								fragmentMappedValueItemExternalReference.
-									getScope(),
-								scopeGroupId))));
+					scopeGroupId, ClassPKInfoItemIdentifier.class, infoItem);
 
 			if (infoItemDetails == null) {
 				return null;
