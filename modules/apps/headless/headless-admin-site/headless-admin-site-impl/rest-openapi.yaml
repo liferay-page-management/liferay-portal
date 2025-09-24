@@ -277,11 +277,6 @@ components:
             allOf:
                 -   $ref: "#/components/schemas/PageElementDefinition"
                 -   properties:
-                        backgroundFragmentImage:
-                            $ref: "#/components/schemas/FragmentImage"
-                            # @review
-                            description:
-                                The background fragment image of the container page element.
                         contentVisibility:
                             # @review
                             description:
