@@ -1310,13 +1310,10 @@ components:
             description:
                 A fragment link.
             properties:
-                value_i18n:
-                    additionalProperties:
-                        $ref: "#/components/schemas/FragmentLinkValue"
-                    # @review
+                value:
+                    $ref: "#/components/schemas/FragmentLinkValue"
                     description:
-                        The localized fragment link's values.
-                    type: object
+                        The fragment link's value.
         FragmentLinkValue:
             # @review
             description:
