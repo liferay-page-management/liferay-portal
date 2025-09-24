@@ -278,6 +278,7 @@ components:
                 -   $ref: "#/components/schemas/PageElementDefinition"
                 -   properties:
                         contentVisibility:
+                            enum: [Auto]
                             description:
                                 The content visibility of the container.
                             type: string
