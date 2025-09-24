@@ -44,7 +44,7 @@ import java.util.Objects;
  */
 public class FragmentLinkValueUtil {
 
-	public static boolean isSaveFragmentMappedValue(JSONObject jsonObject) {
+	public static boolean isMappedValue(JSONObject jsonObject) {
 		if (jsonObject == null) {
 			return false;
 		}
@@ -68,9 +68,9 @@ public class FragmentLinkValueUtil {
 			return null;
 		}
 
-		boolean saveFragmentMappedValue = isSaveFragmentMappedValue(jsonObject);
+		boolean mappedValue = isMappedValue(jsonObject);
 
-		if (jsonObject.isNull("href") && !saveFragmentMappedValue) {
+		if (jsonObject.isNull("href") && !mappedValue) {
 			return null;
 		}
 
@@ -95,8 +95,8 @@ public class FragmentLinkValueUtil {
 					});
 				setValue(
 					() -> _toFragmentLinkValue(
-						infoItemServiceRegistry, jsonObject,
-						saveFragmentMappedValue, scopeGroupId));
+						infoItemServiceRegistry, jsonObject, mappedValue,
+						scopeGroupId));
 			}
 		};
 	}
@@ -435,9 +435,9 @@ public class FragmentLinkValueUtil {
 
 	private static FragmentLinkValue _toFragmentLinkValue(
 		InfoItemServiceRegistry infoItemServiceRegistry, JSONObject jsonObject,
-		boolean saveFragmentMappedValue, long scopeGroupId) {
+		boolean mappedValue, long scopeGroupId) {
 
-		if (saveFragmentMappedValue) {
+		if (mappedValue) {
 			return toFragmentLinkMappedValue(
 				infoItemServiceRegistry, jsonObject, scopeGroupId);
 		}
