@@ -396,37 +396,37 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 	}
 
 	private PageElement _createContainerPageElement(
-			String[] containerPageElementCssClasses,
-			String containerPageElementCustomCss,
-			String containerPageElementFragmentLinkClassName,
-			String containerPageElementFragmentLinkExternalReferenceCode,
-			String containerPageElementFragmentLinkFieldKey,
-			boolean containerPageElementIndexed,
-			Map<String, String> containerPageElementUrls,
-			String pageElementExternalReferenceCode)
+			String[] curCssClasses,
+			String curCustomCss,
+			String curFragmentLinkClassName,
+			String curFragmentLinkExternalReferenceCode,
+			String curFragmentLinkFieldKey,
+			boolean curIndexed,
+			Map<String, String> curUrls,
+			String curPageElementExternalReferenceCode)
 		throws Exception {
 
 		return _getPageElement(
 			new ContainerPageElementDefinition() {
 				{
 					setContentVisibility(ContentVisibility.AUTO);
-					setCssClasses(containerPageElementCssClasses);
-					setCustomCSS(containerPageElementCustomCss);
+					setCssClasses(curCssClasses);
+					setCustomCSS(curCustomCss);
 					setFragmentLink(
 						() -> new FragmentLink() {
 							{
 								setTarget(Target.BLANK);
 								setValue(
 									() -> {
-										if (containerPageElementUrls != null) {
+										if (curUrls != null) {
 											return _getFragmentLinkInlineValue(
-												containerPageElementUrls);
+												curUrls);
 										}
 
 										return _getFragmentLinkMappedValue(
-											containerPageElementFragmentLinkClassName,
-											containerPageElementFragmentLinkExternalReferenceCode,
-											containerPageElementFragmentLinkFieldKey);
+											curFragmentLinkClassName,
+											curFragmentLinkExternalReferenceCode,
+											curFragmentLinkFieldKey);
 									});
 							}
 						});
@@ -437,7 +437,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 								setHtmlTag(HtmlTag.DIV);
 							}
 						});
-					setIndexed(containerPageElementIndexed);
+					setIndexed(curIndexed);
 					setLayout(
 						() ->
 							new com.liferay.headless.admin.site.client.dto.v1_0.
@@ -454,20 +454,20 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 					setType(PageElementDefinition.Type.CONTAINER);
 				}
 			},
-			pageElementExternalReferenceCode);
+			curPageElementExternalReferenceCode);
 	}
 
 	private PageElement _createContainerPageElementWithMappedField(
-			String containerPageElementFragmentLinkClassName,
-			String containerPageElementFragmentLinkExternalReferenceCode,
-			String containerPageElementFragmentLinkFieldKey,
+			String fragmentLinkClassName,
+			String fragmentLinkExternalReferenceCode,
+			String fragmentLinkFieldKey,
 			String pageElementExternalReferenceCode)
 		throws Exception {
 
 		return _createContainerPageElement(
-			null, "custom css 1", containerPageElementFragmentLinkClassName,
-			containerPageElementFragmentLinkExternalReferenceCode,
-			containerPageElementFragmentLinkFieldKey, false, null,
+			null, "custom css 1", fragmentLinkClassName,
+			fragmentLinkExternalReferenceCode,
+			fragmentLinkFieldKey, false, null,
 			pageElementExternalReferenceCode);
 	}
 
