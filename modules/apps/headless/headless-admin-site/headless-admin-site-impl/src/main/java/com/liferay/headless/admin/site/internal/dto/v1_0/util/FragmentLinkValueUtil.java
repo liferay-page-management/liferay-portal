@@ -161,12 +161,6 @@ public class FragmentLinkValueUtil {
 		FragmentLink.Target target = fragmentLink.getTarget();
 
 		if (target != null) {
-			if ((target == FragmentLink.Target.PARENT) ||
-				(target == FragmentLink.Target.TOP)) {
-
-				target = FragmentLink.Target.SELF;
-			}
-
 			jsonObject.put(
 				"target", TargetUtil.toInternalValue(target.getValue()));
 		}
