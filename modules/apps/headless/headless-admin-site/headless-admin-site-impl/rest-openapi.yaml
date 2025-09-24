@@ -1579,7 +1579,7 @@ components:
             properties:
                 customCSS:
                     description:
-                        Custom CSS that is applied on the container viewport's page element.
+                        Custom CSS that is applied to the fragment viewport.
                     type: string
                 fragmentViewportStyle:
                     # @review
