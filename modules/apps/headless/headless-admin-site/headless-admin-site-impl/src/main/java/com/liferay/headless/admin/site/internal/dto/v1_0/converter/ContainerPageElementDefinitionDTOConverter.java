@@ -127,6 +127,15 @@ public class ContainerPageElementDefinitionDTOConverter
 	private Layout _toLayout(
 		ContainerStyledLayoutStructureItem containerStyledLayoutStructureItem) {
 
+		if ((containerStyledLayoutStructureItem.getAlign() == null) &&
+			(containerStyledLayoutStructureItem.getContentDisplay() == null) &&
+			(containerStyledLayoutStructureItem.getFlexWrap() == null) &&
+			(containerStyledLayoutStructureItem.getJustify() == null) &&
+			(containerStyledLayoutStructureItem.getWidthType() == null)) {
+
+			return null;
+		}
+
 		return new Layout() {
 			{
 				setAlign(
