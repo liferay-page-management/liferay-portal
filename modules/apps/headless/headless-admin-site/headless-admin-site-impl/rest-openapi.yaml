@@ -291,13 +291,6 @@ components:
                             description:
                                 Custom CSS that is applied on the container page element.
                             type: string
-                        customCSSViewports:
-                            # @review
-                            description:
-                                The custom CSS viewports of the container page element.
-                            items:
-                                $ref: "#/components/schemas/CustomCSSViewport"
-                            type: array
                         fragmentLink:
                             $ref: "#/components/schemas/FragmentLink"
                             # @review
@@ -1541,6 +1534,10 @@ components:
             description:
                 A fragment viewport.
             properties:
+                customCSS:
+                    description:
+                        Custom CSS that is applied on the container viewport's page element.
+                    type: string
                 fragmentViewportStyle:
                     # @review
                     description:
