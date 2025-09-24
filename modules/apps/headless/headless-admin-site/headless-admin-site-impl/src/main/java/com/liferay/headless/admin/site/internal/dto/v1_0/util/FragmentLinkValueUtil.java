@@ -5,7 +5,6 @@
 
 package com.liferay.headless.admin.site.internal.dto.v1_0.util;
 
-import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentLink;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentLinkInlineValue;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentLinkMappedValue;
