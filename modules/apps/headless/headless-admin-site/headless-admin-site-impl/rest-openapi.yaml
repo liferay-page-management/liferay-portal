@@ -278,19 +278,16 @@ components:
                 -   $ref: "#/components/schemas/PageElementDefinition"
                 -   properties:
                         contentVisibility:
-                            # @review
                             description:
                                 The content visibility of the container.
                             type: string
                         cssClasses:
-                            # @review
                             description:
-                                A list of CSS Classes that are applied to the element.
+                                A list of CSS Classes that are applied to all viewports.
                             items:
                                 type: string
                             type: array
                         customCSS:
-                            # @review
                             description:
                                 Custom CSS that is applied on the container page element.
                             type: string
@@ -321,7 +318,6 @@ components:
                         htmlProperties:
                             $ref: "#/components/schemas/HtmlProperties"
                         indexed:
-                            # @review
                             description:
                                 A flag that indicates whether the container page element is indexed or not.
                             type: boolean
@@ -346,7 +342,6 @@ components:
                                     type: string
                             type: object
                         name:
-                            # @review
                             description:
                                 The custom name of a container page element.
                             type: string
