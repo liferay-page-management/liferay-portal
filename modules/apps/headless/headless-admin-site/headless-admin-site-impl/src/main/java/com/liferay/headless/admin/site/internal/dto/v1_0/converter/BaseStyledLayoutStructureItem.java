@@ -123,7 +123,7 @@ public abstract class BaseStyledLayoutStructureItem {
 		};
 	}
 
-	protected FragmentViewport[] toFragmentViewPorts(JSONObject jsonObject) {
+	protected FragmentViewport[] toFragmentViewports(JSONObject jsonObject) {
 		if (JSONUtil.isEmpty(jsonObject)) {
 			return null;
 		}

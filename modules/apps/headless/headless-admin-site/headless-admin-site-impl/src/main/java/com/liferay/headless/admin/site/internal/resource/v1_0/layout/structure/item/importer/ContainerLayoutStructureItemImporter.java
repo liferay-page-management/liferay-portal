@@ -130,7 +130,7 @@ public class ContainerLayoutStructureItemImporter
 			containerPageElementDefinition.getName());
 
 		JSONObject fragmentViewportsJSONObject =
-			FragmentViewportUtil.toFragmentViewPortJSONObject(
+			FragmentViewportUtil.toFragmentViewportJSONObject(
 				containerPageElementDefinition.getFragmentViewports());
 
 		if (fragmentViewportsJSONObject != null) {

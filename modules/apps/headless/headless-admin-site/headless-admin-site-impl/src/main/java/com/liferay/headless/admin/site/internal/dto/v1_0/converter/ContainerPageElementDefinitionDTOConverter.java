@@ -98,7 +98,7 @@ public class ContainerPageElementDefinitionDTOConverter
 							getStylesJSONObject(),
 						scopeGroupId));
 				setFragmentViewports(
-					() -> toFragmentViewPorts(
+					() -> toFragmentViewports(
 						containerStyledLayoutStructureItem.
 							getItemConfigJSONObject()));
 				setHtmlProperties(
