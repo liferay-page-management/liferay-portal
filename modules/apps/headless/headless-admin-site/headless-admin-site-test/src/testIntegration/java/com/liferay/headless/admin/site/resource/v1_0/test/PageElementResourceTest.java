@@ -12,6 +12,7 @@ import com.liferay.headless.admin.site.client.dto.v1_0.ContainerPageElementDefin
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentLink;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentLinkInlineValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentLinkMappedValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.FragmentMappedValueItemContextReference;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentMappedValueItemExternalReference;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentViewport;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentViewportStyle;
@@ -39,6 +40,7 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
@@ -222,6 +224,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 	public void testPostSitePageSpecificationPageExperiencePageElement()
 		throws Exception {
 
+		_testPostSitePageSpecificationPageExperiencePageElementWithContainerAndMappedContextField();
 		_testPostSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedFileEntry();
 		_testPostSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedJournalArticle();
 		_testPostSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedLayout();
@@ -245,6 +248,8 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 
 		String externalReferenceCode = RandomTestUtil.randomString();
 
+		_testPutSitePageSpecificationPageExperiencePageElementWithContainerAndMappedContextField(
+			externalReferenceCode);
 		_testPutSitePageSpecificationPageExperiencePageElementWithContainerAndMappedFileEntry(
 			externalReferenceCode);
 		_testPutSitePageSpecificationPageExperiencePageElementWithContainerAndMappedJournalArticle(
@@ -512,13 +517,28 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 						{
 							setFieldKey(() -> itemFieldKey);
 							setItemReference(
-								new FragmentMappedValueItemExternalReference() {
-									{
-										setClassName(itemClassName);
-										setExternalReferenceCode(
-											itemExternalReferenceCode);
-										setType(Type.ITEM_EXTERNAL_REFERENCE);
+								() -> {
+									if (Validator.isNull(itemClassName)) {
+										return new FragmentMappedValueItemContextReference() {
+											{
+												setContextSource(
+													() ->
+														ContextSource.
+															DISPLAY_PAGE_ITEM);
+												setType(Type.CONTEXT_REFERENCE);
+											}
+										};
 									}
+
+									return new FragmentMappedValueItemExternalReference() {
+										{
+											setClassName(itemClassName);
+											setExternalReferenceCode(
+												itemExternalReferenceCode);
+											setType(
+												Type.ITEM_EXTERNAL_REFERENCE);
+										}
+									};
 								});
 						}
 					});
@@ -656,6 +676,15 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 				).build()));
 	}
 
+	private void _testPostSitePageSpecificationPageExperiencePageElementWithContainerAndMappedContextField()
+		throws Exception {
+
+		_testPostSitePageSpecificationPageExperiencePageElement(
+			_createContainerPageElementWithMappedField(
+				null, null, "FileEntry_fileName",
+				RandomTestUtil.randomString()));
+	}
+
 	private void _testPutSitePageSpecificationPageExperiencePageElement(
 			PageElement pageElement)
 		throws Exception {
@@ -675,6 +704,17 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 
 		assertEquals(pageElement, putPageElement);
 		assertValid(putPageElement);
+	}
+
+	private void
+			_testPutSitePageSpecificationPageExperiencePageElementWithContainerAndMappedContextField(
+				String pageElementExternalReferenceCode)
+		throws Exception {
+
+		_testPutSitePageSpecificationPageExperiencePageElement(
+			_createContainerPageElementWithMappedField(
+				null, null, "FileEntry_fileName",
+				pageElementExternalReferenceCode));
 	}
 
 	private void
