@@ -41,4 +41,8 @@ public class TargetUtil {
 		return null;
 	}
 
+	public static String toInternalValue(String label) {
+		return externalToInternalValuesMap.get(label);
+	}
+
 }
