@@ -326,23 +326,22 @@ components:
                                 A flag that indicates whether the container page element is indexed or not.
                             type: boolean
                         layout:
-                            # @review
                             description:
                                 the container page element's layout.
                             properties:
-                                containerType:
-                                    # @review
-                                    description:
-                                        The container's type (fixed or fluid).
-                                    enum: [Fixed, Fluid]
+                                align:
+                                    enum: [Baseline, Center, End, None, Start, Stretch]
+                                    type: string
+                                contentDisplay:
+                                    enum: [Block, FlexColumn, FlexRow]
                                     type: string
                                 flexWrap:
                                     enum: [NoWrap, Wrap, WrapReverse]
                                     type: string
+                                justify:
+                                    enum: [Center, End, None, SpaceAround, SpaceBetween, Start]
+                                    type: string
                                 widthType:
-                                    # @review
-                                    description:
-                                        The width's type (fixed or fluid).
                                     enum: [Fixed, Fluid]
                                     type: string
                             type: object
@@ -838,7 +837,6 @@ components:
                                 A flag that indicates whether the page fragment instance is indexed or not.
                             type: boolean
                         layout:
-                            # @review
                             description:
                                 The form page element's layout.
                             properties:
