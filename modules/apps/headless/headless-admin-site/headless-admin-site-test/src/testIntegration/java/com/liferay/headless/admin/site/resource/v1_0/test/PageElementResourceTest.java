@@ -403,12 +403,10 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 	}
 
 	private PageElement _createContainerPageElement(
-			String[] curCssClasses,
-			String curCustomCss,
+			String[] curCssClasses, String curCustomCss,
 			String curFragmentLinkClassName,
 			String curFragmentLinkExternalReferenceCode,
-			String curFragmentLinkFieldKey,
-			boolean curIndexed,
+			String curFragmentLinkFieldKey, boolean curIndexed,
 			Map<String, String> curUrls,
 			String curPageElementExternalReferenceCode)
 		throws Exception {
@@ -473,9 +471,8 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 
 		return _createContainerPageElement(
 			null, "custom css 1", fragmentLinkClassName,
-			fragmentLinkExternalReferenceCode,
-			fragmentLinkFieldKey, false, null,
-			pageElementExternalReferenceCode);
+			fragmentLinkExternalReferenceCode, fragmentLinkFieldKey, false,
+			null, pageElementExternalReferenceCode);
 	}
 
 	private PageElement _createContainerPageElementWithMappedLayout(
