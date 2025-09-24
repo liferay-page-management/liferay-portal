@@ -294,7 +294,6 @@ components:
                             type: string
                         fragmentLink:
                             $ref: "#/components/schemas/FragmentLink"
-                            # @review
                             description:
                                 The fragment link of the container page element.
                         fragmentStyle:
@@ -1191,7 +1190,6 @@ components:
                         -   $ref: "#/components/schemas/FragmentMappedValue"
             type: object
         FragmentInlineValue:
-            # @review
             description:
                 A fragment inline value.
             properties:
@@ -1311,29 +1309,50 @@ components:
             description:
                 A fragment link.
             properties:
-                value:
-                    $ref: "#/components/schemas/FragmentLinkValue"
-                    description:
-                        The fragment link's value.
-        FragmentLinkValue:
-            # @review
-            description:
-                A fragment link value.
-            properties:
-                href:
-                    # @review
-                    description:
-                        The fragment link value's hypertext reference. Can be an inline value or mapped to an external
-                        value.
-                    oneOf:
-                        -   $ref: "#/components/schemas/FragmentInlineValue"
-                        -   $ref: "#/components/schemas/FragmentMappedValue"
                 target:
                     # @review
                     description:
                         The fragment link value's target (blank, parent, self, top).
                     enum: [Blank, Parent, Self, Top]
                     type: string
+                value:
+                    $ref: "#/components/schemas/FragmentLinkValue"
+                    description:
+                        The fragment link's value.
+        FragmentLinkInlineValue:
+            allOf:
+                -   $ref: "#/components/schemas/FragmentInlineValue"
+                -   $ref: "#/components/schemas/FragmentLinkValue"
+            description:
+                A unique reference to a FragmentLinkValue of type FragmentInlineValue which remains constant across
+                environments.
+            type: object
+        FragmentLinkMappedValue:
+            allOf:
+                -   $ref: "#/components/schemas/FragmentLinkValue"
+                -   $ref: "#/components/schemas/FragmentMappedValue"
+            description:
+                A unique reference to a FragmentLinkValue of type FragmentMappedValue which remains constant across
+                environments.
+            type: object
+        FragmentLinkValue:
+            # @review
+            description:
+                A fragment link value.
+            discriminator:
+                mapping:
+                    FragmentInlineValue: "#/components/schemas/FragmentLinkInlineValue"
+                    FragmentMappedValue: "#/components/schemas/FragmentLinkMappedValue"
+                propertyName: type
+            properties:
+                type:
+                    # @review
+                    description:
+                        The fragment link value's hypertext reference. Can be an inline value or mapped to an external
+                        value.
+                    enum: [FragmentInlineValue, FragmentMappedValue]
+                    type: string
+            type: object
         FragmentMappedValue:
             # @review
             description:
