@@ -25,14 +25,13 @@ public class LocalizedValueUtil {
 	}
 
 	public static JSONObject toJSONObject(Map<String, String> localizedValues) {
-		JSONObject localizedValueJSONObject =
-			JSONFactoryUtil.createJSONObject();
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
 		for (Map.Entry<String, String> entry : localizedValues.entrySet()) {
-			localizedValueJSONObject.put(entry.getKey(), entry.getValue());
+			jsonObject.put(entry.getKey(), entry.getValue());
 		}
 
-		return localizedValueJSONObject;
+		return jsonObject;
 	}
 
 	public static Map<String, String> toLocalizedValues(JSONObject jsonObject) {
