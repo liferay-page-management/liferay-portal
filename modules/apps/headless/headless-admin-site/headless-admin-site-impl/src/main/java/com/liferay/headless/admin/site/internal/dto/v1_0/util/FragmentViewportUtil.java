@@ -16,7 +16,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
  */
 public class FragmentViewportUtil {
 
-	public static JSONObject toFragmentViewportJSONObject(
+	public static JSONObject toFragmentViewportsJSONObject(
 		FragmentViewport[] fragmentViewports) {
 
 		if (ArrayUtil.isEmpty(fragmentViewports)) {
