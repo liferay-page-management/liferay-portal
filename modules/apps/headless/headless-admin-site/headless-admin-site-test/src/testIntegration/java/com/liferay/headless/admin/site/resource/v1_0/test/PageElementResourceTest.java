@@ -258,6 +258,8 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 			externalReferenceCode);
 		_testPutSitePageSpecificationPageExperiencePageElementWithContainerAndMappedURL(
 			externalReferenceCode);
+		_testPutSitePageSpecificationPageExperiencePageElementWithDefaultValues(
+			externalReferenceCode);
 	}
 
 	@Override
@@ -776,6 +778,22 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 				).put(
 					LocaleUtil.US.toString(), "https://www.liferay.com"
 				).build()));
+	}
+
+	private void
+			_testPutSitePageSpecificationPageExperiencePageElementWithDefaultValues(
+				String pageElementExternalReferenceCode)
+		throws Exception {
+
+		_testPutSitePageSpecificationPageExperiencePageElement(
+			_getPageElement(
+				new ContainerPageElementDefinition() {
+					{
+						setIndexed(false);
+						setType(Type.CONTAINER);
+					}
+				},
+				pageElementExternalReferenceCode));
 	}
 
 	private Layout _draftLayout;
