@@ -222,10 +222,10 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 	public void testPostSitePageSpecificationPageExperiencePageElement()
 		throws Exception {
 
-		_testPostSitePageSpecificationPageExperiencePageElementWithContainerAndMappedFileEntry();
-		_testPostSitePageSpecificationPageExperiencePageElementWithContainerAndMappedJournalArticle();
-		_testPostSitePageSpecificationPageExperiencePageElementWithContainerAndMappedLayout();
-		_testPostSitePageSpecificationPageExperiencePageElementWithContainerAndMappedURL();
+		_testPostSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedFileEntry();
+		_testPostSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedJournalArticle();
+		_testPostSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedLayout();
+		_testPostSitePageSpecificationPageExperiencePageElementContainerFragmentLinkURL();
 	}
 
 	@Ignore
@@ -481,7 +481,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 			pageElementExternalReferenceCode);
 	}
 
-	private PageElement _createContainerPageElementWithMappedURLs(
+	private PageElement _createContainerPageElementWithURLs(
 			String pageElementExternalReferenceCode, Map<String, String> urls)
 		throws Exception {
 
@@ -603,7 +603,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 		assertValid(postPageElement);
 	}
 
-	private void _testPostSitePageSpecificationPageExperiencePageElementWithContainerAndMappedFileEntry()
+	private void _testPostSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedFileEntry()
 		throws Exception {
 
 		FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(
@@ -620,7 +620,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 				"FileEntry_fileName", RandomTestUtil.randomString()));
 	}
 
-	private void _testPostSitePageSpecificationPageExperiencePageElementWithContainerAndMappedJournalArticle()
+	private void _testPostSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedJournalArticle()
 		throws Exception {
 
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
@@ -634,7 +634,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 				"JournalArticle_title", RandomTestUtil.randomString()));
 	}
 
-	private void _testPostSitePageSpecificationPageExperiencePageElementWithContainerAndMappedLayout()
+	private void _testPostSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedLayout()
 		throws Exception {
 
 		_testPutSitePageSpecificationPageExperiencePageElement(
@@ -643,11 +643,11 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 				RandomTestUtil.randomString()));
 	}
 
-	private void _testPostSitePageSpecificationPageExperiencePageElementWithContainerAndMappedURL()
+	private void _testPostSitePageSpecificationPageExperiencePageElementContainerFragmentLinkURL()
 		throws Exception {
 
 		_testPutSitePageSpecificationPageExperiencePageElement(
-			_createContainerPageElementWithMappedURLs(
+			_createContainerPageElementWithURLs(
 				RandomTestUtil.randomString(),
 				HashMapBuilder.put(
 					LocaleUtil.SPAIN.toString(), "https://www.liferay.es"
@@ -729,7 +729,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 		throws Exception {
 
 		_testPutSitePageSpecificationPageExperiencePageElement(
-			_createContainerPageElementWithMappedURLs(
+			_createContainerPageElementWithURLs(
 				pageElementExternalReferenceCode,
 				HashMapBuilder.put(
 					LocaleUtil.SPAIN.toString(), "https://www.liferay.es"
