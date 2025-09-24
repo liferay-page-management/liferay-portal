@@ -1312,8 +1312,8 @@ components:
                 target:
                     # @review
                     description:
-                        The fragment link value's target (blank, parent, self, top).
-                    enum: [Blank, Parent, Self, Top]
+                        The fragment link value's target (blank, self).
+                    enum: [Blank, Self]
                     type: string
                 value:
                     $ref: "#/components/schemas/FragmentLinkValue"
