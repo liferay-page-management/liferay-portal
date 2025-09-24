@@ -75,7 +75,7 @@ public abstract class FragmentMappedValueItemReference implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The fragment mapped item reference. Can be an context reference value or external reference to an external value."
+		description = "The fragment mapped item reference. Can be a context reference value or external reference to an external value."
 	)
 	@JsonGetter("type")
 	@Valid
@@ -122,7 +122,7 @@ public abstract class FragmentMappedValueItemReference implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "The fragment mapped item reference. Can be an context reference value or external reference to an external value."
+		description = "The fragment mapped item reference. Can be a context reference value or external reference to an external value."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Type type;

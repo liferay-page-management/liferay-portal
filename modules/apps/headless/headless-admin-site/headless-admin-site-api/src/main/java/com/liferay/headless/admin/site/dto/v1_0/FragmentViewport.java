@@ -55,7 +55,7 @@ public class FragmentViewport implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Custom CSS that is applied on the container viewport's page element."
+		description = "Custom CSS that is applied to the fragment viewport."
 	)
 	public String getCustomCSS() {
 		if (_customCSSSupplier != null) {
@@ -91,7 +91,7 @@ public class FragmentViewport implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Custom CSS that is applied on the container viewport's page element."
+		description = "Custom CSS that is applied to the fragment viewport."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String customCSS;

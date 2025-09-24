@@ -108,7 +108,7 @@ public class FragmentLink implements Cloneable, Serializable {
 
 	public static enum Target {
 
-		BLANK("Blank"), PARENT("Parent"), SELF("Self"), TOP("Top");
+		BLANK("Blank"), SELF("Self");
 
 		public static Target create(String value) {
 			for (Target target : values()) {

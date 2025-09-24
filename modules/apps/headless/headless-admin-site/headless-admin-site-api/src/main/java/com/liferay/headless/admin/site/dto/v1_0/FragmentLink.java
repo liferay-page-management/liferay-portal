@@ -52,7 +52,7 @@ public class FragmentLink implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The fragment link value's target (blank, parent, self, top)."
+		description = "The fragment link value's target (blank, self)."
 	)
 	@JsonGetter("target")
 	@Valid
@@ -101,7 +101,7 @@ public class FragmentLink implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "The fragment link value's target (blank, parent, self, top)."
+		description = "The fragment link value's target (blank, self)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Target target;
@@ -223,7 +223,7 @@ public class FragmentLink implements Serializable {
 	@GraphQLName("Target")
 	public static enum Target {
 
-		BLANK("Blank"), PARENT("Parent"), SELF("Self"), TOP("Top");
+		BLANK("Blank"), SELF("Self");
 
 		@JsonCreator
 		public static Target create(String value) {
