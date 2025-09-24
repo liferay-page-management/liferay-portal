@@ -12,7 +12,7 @@ import com.liferay.headless.admin.site.dto.v1_0.FragmentStyle;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentViewport;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentViewportStyle;
 import com.liferay.headless.admin.site.dto.v1_0.Mapping;
-import com.liferay.headless.admin.site.internal.dto.v1_0.util.FragmentMappedValueUtil;
+import com.liferay.headless.admin.site.internal.dto.v1_0.util.FragmentLinkValueUtil;
 import com.liferay.layout.responsive.ViewportSize;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -54,10 +54,10 @@ public abstract class BaseStyledLayoutStructureItem {
 					() -> new Mapping() {
 						{
 							setFieldKey(
-								() -> FragmentMappedValueUtil.getFieldKey(
+								() -> FragmentLinkValueUtil.getFieldKey(
 									jsonObject));
 							setItemReference(
-								() -> FragmentMappedValueUtil.toItemReference(
+								() -> FragmentLinkValueUtil.toItemReference(
 									jsonObject));
 						}
 					});
@@ -255,7 +255,7 @@ public abstract class BaseStyledLayoutStructureItem {
 				setTitle(() -> jsonObject.getString("title"));
 				setUrl(
 					() -> {
-						if (FragmentMappedValueUtil.isSaveFragmentMappedValue(
+						if (FragmentLinkValueUtil.isSaveFragmentMappedValue(
 								jsonObject)) {
 
 							return toFragmentMappedValue(jsonObject);

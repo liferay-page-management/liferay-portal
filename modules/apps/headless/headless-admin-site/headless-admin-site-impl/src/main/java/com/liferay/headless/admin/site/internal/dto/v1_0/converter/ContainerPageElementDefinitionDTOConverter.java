@@ -13,7 +13,7 @@ import com.liferay.headless.admin.site.dto.v1_0.FragmentLinkValue;
 import com.liferay.headless.admin.site.dto.v1_0.HtmlProperties;
 import com.liferay.headless.admin.site.dto.v1_0.Layout;
 import com.liferay.headless.admin.site.dto.v1_0.PageElementDefinition;
-import com.liferay.headless.admin.site.internal.dto.v1_0.util.FragmentMappedValueUtil;
+import com.liferay.headless.admin.site.internal.dto.v1_0.util.FragmentLinkValueUtil;
 import com.liferay.layout.converter.AlignConverter;
 import com.liferay.layout.converter.ContentDisplayConverter;
 import com.liferay.layout.converter.ContentVisibilityConverter;
@@ -118,7 +118,7 @@ public class ContainerPageElementDefinitionDTOConverter
 		}
 
 		boolean saveFragmentMappedValue =
-			FragmentMappedValueUtil.isSaveFragmentMappedValue(jsonObject);
+			FragmentLinkValueUtil.isSaveFragmentMappedValue(jsonObject);
 
 		if (jsonObject.isNull("href") && !saveFragmentMappedValue) {
 			return null;

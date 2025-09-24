@@ -18,7 +18,7 @@ import com.liferay.portal.kernel.util.Validator;
 /**
  * @author Mikel Lorza
  */
-public class FragmentMappedValueUtil {
+public class FragmentLinkValueUtil {
 
 	public static String getFieldKey(JSONObject jsonObject) {
 		String fieldId = jsonObject.getString("fieldId");
@@ -151,6 +151,6 @@ public class FragmentMappedValueUtil {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		FragmentMappedValueUtil.class);
+		FragmentLinkValueUtil.class);
 
 }
