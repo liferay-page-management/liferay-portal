@@ -131,8 +131,6 @@ public class ContainerLayoutStructureItemImporter
 				containerStyledLayoutStructureItem.setWidthType(
 					WidthTypeConverter.convertToInternalValue(widthType));
 			}
-
-			containerPageElementDefinition.getFragmentStyle();
 		}
 		else {
 			containerStyledLayoutStructureItem.setAlign(null);
