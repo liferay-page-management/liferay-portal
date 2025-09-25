@@ -69,11 +69,7 @@ public class ObjectEntryLayoutDisplayPageObjectProvider
 
 	@Override
 	public String getExternalReferenceCode() {
-		if (!_objectDefinition.isDefaultStorageType()) {
-			return _objectEntry.getExternalReferenceCode();
-		}
-
-		return StringPool.BLANK;
+		return _objectEntry.getExternalReferenceCode();
 	}
 
 	@Override
