@@ -622,6 +622,15 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 		assertValid(postPageElement);
 	}
 
+	private void _testPostSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedContextField()
+		throws Exception {
+
+		_testPostSitePageSpecificationPageExperiencePageElement(
+			_createContainerPageElementWithMappedField(
+				null, null, "FileEntry_fileName",
+				RandomTestUtil.randomString()));
+	}
+
 	private void _testPostSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedFileEntry()
 		throws Exception {
 
@@ -675,15 +684,6 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 				).build()));
 	}
 
-	private void _testPostSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedContextField()
-		throws Exception {
-
-		_testPostSitePageSpecificationPageExperiencePageElement(
-			_createContainerPageElementWithMappedField(
-				null, null, "FileEntry_fileName",
-				RandomTestUtil.randomString()));
-	}
-
 	private void _testPutSitePageSpecificationPageExperiencePageElement(
 			PageElement pageElement)
 		throws Exception {
@@ -706,7 +706,23 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 	}
 
 	private void
-	_testPutSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedContextField(
+			_testPutSitePageSpecificationPageExperiencePageElementContainerDefaultValues(
+				String pageElementExternalReferenceCode)
+		throws Exception {
+
+		_testPutSitePageSpecificationPageExperiencePageElement(
+			_getPageElement(
+				new ContainerPageElementDefinition() {
+					{
+						setIndexed(false);
+						setType(Type.CONTAINER);
+					}
+				},
+				pageElementExternalReferenceCode));
+	}
+
+	private void
+			_testPutSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedContextField(
 				String pageElementExternalReferenceCode)
 		throws Exception {
 
@@ -717,7 +733,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 	}
 
 	private void
-	_testPutSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedFileEntry(
+			_testPutSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedFileEntry(
 				String pageElementExternalReferenceCode)
 		throws Exception {
 
@@ -736,23 +752,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 	}
 
 	private void
-	_testPutSitePageSpecificationPageExperiencePageElementContainerMappedJournalArticle(
-				String pageElementExternalReferenceCode)
-		throws Exception {
-
-		JournalArticle journalArticle = JournalTestUtil.addArticle(
-			testGroup.getGroupId(),
-			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
-
-		_testPutSitePageSpecificationPageExperiencePageElement(
-			_createContainerPageElementWithMappedField(
-				JournalArticle.class.getName(),
-				journalArticle.getExternalReferenceCode(),
-				"JournalArticle_title", pageElementExternalReferenceCode));
-	}
-
-	private void
-	_testPutSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedLayout(
+			_testPutSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedLayout(
 				String pageElementExternalReferenceCode)
 		throws Exception {
 
@@ -763,7 +763,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 	}
 
 	private void
-	_testPutSitePageSpecificationPageExperiencePageElementContainerFragmentLinkURL(
+			_testPutSitePageSpecificationPageExperiencePageElementContainerFragmentLinkURL(
 				String pageElementExternalReferenceCode)
 		throws Exception {
 
@@ -778,19 +778,19 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 	}
 
 	private void
-	_testPutSitePageSpecificationPageExperiencePageElementContainerDefaultValues(
+			_testPutSitePageSpecificationPageExperiencePageElementContainerMappedJournalArticle(
 				String pageElementExternalReferenceCode)
 		throws Exception {
 
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			testGroup.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
 		_testPutSitePageSpecificationPageExperiencePageElement(
-			_getPageElement(
-				new ContainerPageElementDefinition() {
-					{
-						setIndexed(false);
-						setType(Type.CONTAINER);
-					}
-				},
-				pageElementExternalReferenceCode));
+			_createContainerPageElementWithMappedField(
+				JournalArticle.class.getName(),
+				journalArticle.getExternalReferenceCode(),
+				"JournalArticle_title", pageElementExternalReferenceCode));
 	}
 
 	private Layout _draftLayout;
