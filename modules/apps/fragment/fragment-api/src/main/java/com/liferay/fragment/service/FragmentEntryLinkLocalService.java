@@ -81,11 +81,11 @@ public interface FragmentEntryLinkLocalService
 
 	public FragmentEntryLink addFragmentEntryLink(
 			String externalReferenceCode, long userId, long groupId,
-			long originalFragmentEntryLinkId, long fragmentEntryId,
-			long segmentsExperienceId, long plid, String css, String html,
-			String js, String configuration, String editableValues,
-			String namespace, int position, String rendererKey, int type,
-			ServiceContext serviceContext)
+			String originalFragmentEntryLinkERC, String fragmentEntryERC,
+			String fragmentEntryScopeERC, long segmentsExperienceId, long plid,
+			String css, String html, String js, String configuration,
+			String editableValues, String namespace, int position,
+			String rendererKey, int type, ServiceContext serviceContext)
 		throws PortalException;
 
 	/**
@@ -145,10 +145,12 @@ public interface FragmentEntryLinkLocalService
 	public void deleteFragmentEntryLinks(long[] fragmentEntryLinkIds)
 		throws PortalException;
 
-	public void deleteFragmentEntryLinksByFragmentEntryId(long fragmentEntryId);
+	public void deleteFragmentEntryLinksByFragmentEntryERCScopeERC(
+		long groupId, String fragmentEntryERC, String fragmentEntryScopeERC);
 
-	public void deleteFragmentEntryLinksByFragmentEntryId(
-		long fragmentEntryId, boolean deleted);
+	public void deleteFragmentEntryLinksByFragmentEntryERCScopeERC(
+		long groupId, String fragmentEntryERC, String fragmentEntryScopeERC,
+		boolean deleted);
 
 	public List<FragmentEntryLink>
 		deleteLayoutPageTemplateEntryFragmentEntryLinks(
@@ -268,13 +270,15 @@ public interface FragmentEntryLinkLocalService
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<FragmentEntryLink> getAllFragmentEntryLinksByFragmentEntryId(
-		long groupId, long fragmentEntryId, int start, int end,
-		OrderByComparator<FragmentEntryLink> orderByComparator);
+	public List<FragmentEntryLink>
+		getAllFragmentEntryLinksByFragmentEntryERCScopeERC(
+			long groupId, String fragmentEntryERC, String fragmentEntryScopeERC,
+			int start, int end,
+			OrderByComparator<FragmentEntryLink> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getAllFragmentEntryLinksCountByFragmentEntryId(
-		long groupId, long fragmentEntryId);
+	public int getAllFragmentEntryLinksCountByFragmentEntryERCScopeERC(
+		long groupId, String fragmentEntryERC, String fragmentEntryScopeERC);
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
@@ -302,7 +306,7 @@ public interface FragmentEntryLinkLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public FragmentEntryLink getFragmentEntryLink(
-		long groupId, long originalFragmentEntryLinkId, long plid);
+		long groupId, String originalFragmentEntryLinkERC, long plid);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public FragmentEntryLink getFragmentEntryLinkByExternalReferenceCode(
@@ -362,8 +366,15 @@ public interface FragmentEntryLinkLocalService
 	public List<FragmentEntryLink> getFragmentEntryLinks(String rendererKey);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<FragmentEntryLink> getFragmentEntryLinksByFragmentEntryId(
-		long fragmentEntryId);
+	public List<FragmentEntryLink>
+		getFragmentEntryLinksByFragmentEntryERCScopeERC(
+			long groupId, String fragmentEntryERC,
+			String fragmentEntryScopeERC);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<FragmentEntryLink>
+		getFragmentEntryLinksByFragmentEntryERCScopeERC(
+			String fragmentEntryERC, String fragmentEntryScopeERC);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<FragmentEntryLink> getFragmentEntryLinksByPlid(
@@ -424,16 +435,17 @@ public interface FragmentEntryLinkLocalService
 	public int getFragmentEntryLinksCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getFragmentEntryLinksCountByFragmentEntryId(
-		long fragmentEntryId);
+	public int getFragmentEntryLinksCountByFragmentEntryERCScopeERC(
+		long groupId, String fragmentEntryERC, String fragmentEntryScopeERC,
+		boolean deleted);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getFragmentEntryLinksCountByFragmentEntryId(
-		long fragmentEntryId, boolean deleted);
+	public int getFragmentEntryLinksCountByFragmentEntryERCScopeERC(
+		String fragmentEntryERC, String fragmentEntryScopeERC);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getFragmentEntryLinksCountByFragmentEntryId(
-		long groupId, long fragmentEntryId, boolean deleted);
+	public int getFragmentEntryLinksCountByFragmentEntryERCScopeERC(
+		String fragmentEntryERC, String fragmentEntryScopeERC, boolean deleted);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getFragmentEntryLinksCountByPlid(long groupId, long plid);
@@ -442,24 +454,28 @@ public interface FragmentEntryLinkLocalService
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<FragmentEntryLink> getLayoutFragmentEntryLinksByFragmentEntryId(
-		long groupId, long fragmentEntryId, int start, int end,
-		OrderByComparator<FragmentEntryLink> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getLayoutFragmentEntryLinksCountByFragmentEntryId(
-		long groupId, long fragmentEntryId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<FragmentEntryLink>
-		getLayoutPageTemplateFragmentEntryLinksByFragmentEntryId(
-			long groupId, long fragmentEntryId, int layoutPageTemplateType,
+		getLayoutFragmentEntryLinksByFragmentEntryERCScopeERC(
+			long groupId, String fragmentEntryERC, String fragmentEntryScopeERC,
 			int start, int end,
 			OrderByComparator<FragmentEntryLink> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getLayoutPageTemplateFragmentEntryLinksCountByFragmentEntryId(
-		long groupId, long fragmentEntryId, int layoutPageTemplateType);
+	public int getLayoutFragmentEntryLinksCountByFragmentEntryERCScopeERC(
+		long groupId, String fragmentEntryERC, String fragmentEntryScopeERC);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<FragmentEntryLink>
+		getLayoutPageTemplateFragmentEntryLinksByFragmentEntryERCScopeERC(
+			long groupId, String fragmentEntryERC, String fragmentEntryScopeERC,
+			int layoutPageTemplateType, int start, int end,
+			OrderByComparator<FragmentEntryLink> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int
+		getLayoutPageTemplateFragmentEntryLinksCountByFragmentEntryERCScopeERC(
+			long groupId, String fragmentEntryERC, String fragmentEntryScopeERC,
+			int layoutPageTemplateType);
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -497,16 +513,17 @@ public interface FragmentEntryLinkLocalService
 		FragmentEntryLink fragmentEntryLink);
 
 	public FragmentEntryLink updateFragmentEntryLink(
-			long userId, long fragmentEntryLinkId,
-			long originalFragmentEntryLinkId, long fragmentEntryId, long plid,
-			String css, String html, String js, String configuration,
-			String editableValues, String namespace, int position, int type,
-			ServiceContext serviceContext)
+			long userId, long fragmentEntryLinkId, String editableValues,
+			boolean updateClassedModel)
 		throws PortalException;
 
 	public FragmentEntryLink updateFragmentEntryLink(
-			long userId, long fragmentEntryLinkId, String editableValues,
-			boolean updateClassedModel)
+			long userId, long fragmentEntryLinkId,
+			String originalFragmentEntryLinkERC, String fragmentEntryERC,
+			String fragmentEntryScopeERC, long plid, String css, String html,
+			String js, String configuration, String editableValues,
+			String namespace, int position, int type,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 	public void updateLatestChanges(
