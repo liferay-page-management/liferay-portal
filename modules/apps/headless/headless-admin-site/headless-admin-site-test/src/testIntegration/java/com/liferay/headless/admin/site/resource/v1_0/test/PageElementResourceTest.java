@@ -224,7 +224,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 	public void testPostSitePageSpecificationPageExperiencePageElement()
 		throws Exception {
 
-		_testPostSitePageSpecificationPageExperiencePageElementWithContainerAndMappedContextField();
+		_testPostSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedContextField();
 		_testPostSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedFileEntry();
 		_testPostSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedJournalArticle();
 		_testPostSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedLayout();
@@ -248,17 +248,17 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 
 		String externalReferenceCode = RandomTestUtil.randomString();
 
-		_testPutSitePageSpecificationPageExperiencePageElementWithContainerAndMappedContextField(
+		_testPutSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedContextField(
 			externalReferenceCode);
-		_testPutSitePageSpecificationPageExperiencePageElementWithContainerAndMappedFileEntry(
+		_testPutSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedFileEntry(
 			externalReferenceCode);
-		_testPutSitePageSpecificationPageExperiencePageElementWithContainerAndMappedJournalArticle(
+		_testPutSitePageSpecificationPageExperiencePageElementContainerMappedJournalArticle(
 			externalReferenceCode);
-		_testPutSitePageSpecificationPageExperiencePageElementWithContainerAndMappedLayout(
+		_testPutSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedLayout(
 			externalReferenceCode);
-		_testPutSitePageSpecificationPageExperiencePageElementWithContainerAndMappedURL(
+		_testPutSitePageSpecificationPageExperiencePageElementContainerFragmentLinkURL(
 			externalReferenceCode);
-		_testPutSitePageSpecificationPageExperiencePageElementWithDefaultValues(
+		_testPutSitePageSpecificationPageExperiencePageElementContainerDefaultValues(
 			externalReferenceCode);
 	}
 
@@ -675,7 +675,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 				).build()));
 	}
 
-	private void _testPostSitePageSpecificationPageExperiencePageElementWithContainerAndMappedContextField()
+	private void _testPostSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedContextField()
 		throws Exception {
 
 		_testPostSitePageSpecificationPageExperiencePageElement(
@@ -706,7 +706,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 	}
 
 	private void
-			_testPutSitePageSpecificationPageExperiencePageElementWithContainerAndMappedContextField(
+	_testPutSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedContextField(
 				String pageElementExternalReferenceCode)
 		throws Exception {
 
@@ -717,7 +717,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 	}
 
 	private void
-			_testPutSitePageSpecificationPageExperiencePageElementWithContainerAndMappedFileEntry(
+	_testPutSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedFileEntry(
 				String pageElementExternalReferenceCode)
 		throws Exception {
 
@@ -736,7 +736,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 	}
 
 	private void
-			_testPutSitePageSpecificationPageExperiencePageElementWithContainerAndMappedJournalArticle(
+	_testPutSitePageSpecificationPageExperiencePageElementContainerMappedJournalArticle(
 				String pageElementExternalReferenceCode)
 		throws Exception {
 
@@ -752,7 +752,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 	}
 
 	private void
-			_testPutSitePageSpecificationPageExperiencePageElementWithContainerAndMappedLayout(
+	_testPutSitePageSpecificationPageExperiencePageElementContainerFragmentLinkMappedLayout(
 				String pageElementExternalReferenceCode)
 		throws Exception {
 
@@ -763,7 +763,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 	}
 
 	private void
-			_testPutSitePageSpecificationPageExperiencePageElementWithContainerAndMappedURL(
+	_testPutSitePageSpecificationPageExperiencePageElementContainerFragmentLinkURL(
 				String pageElementExternalReferenceCode)
 		throws Exception {
 
@@ -778,7 +778,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 	}
 
 	private void
-			_testPutSitePageSpecificationPageExperiencePageElementWithDefaultValues(
+	_testPutSitePageSpecificationPageExperiencePageElementContainerDefaultValues(
 				String pageElementExternalReferenceCode)
 		throws Exception {
 
