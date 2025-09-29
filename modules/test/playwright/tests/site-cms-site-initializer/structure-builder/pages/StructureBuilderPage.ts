@@ -526,6 +526,8 @@ export class StructureBuilderPage {
 	}
 
 	async selectSpaces(spaces: string[]) {
+		this.spaceCheckbox.uncheck();
+
 		for (const space of spaces) {
 			await expect(async () => {
 				await this.spaceSelector.click({timeout: 1000});
