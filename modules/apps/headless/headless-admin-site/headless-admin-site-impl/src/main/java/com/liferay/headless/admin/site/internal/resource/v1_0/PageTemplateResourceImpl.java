@@ -543,7 +543,8 @@ public class PageTemplateResourceImpl
 
 			if (prototypeLayout != null) {
 				serviceContext.setAttribute(
-					"layoutSetPrototypeLayoutERC", prototypeLayout.getUuid());
+					"layoutSetPrototypeLayoutERC",
+					prototypeLayout.getExternalReferenceCode());
 			}
 		}
 
