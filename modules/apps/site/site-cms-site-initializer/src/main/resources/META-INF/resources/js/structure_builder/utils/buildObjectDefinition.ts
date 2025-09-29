@@ -89,8 +89,9 @@ export default function buildObjectDefinition({
 	}
 
 	if (workflows && Object.keys(workflows).length) {
-		objectDefinition.workflowDefinitionLinks =
-			buildWorkflowDefinitionLinks(workflows);
+		objectDefinition.workflowDefinitionLinks = buildWorkflowDefinitionLinks(
+			{spaces, workflows}
+		);
 	}
 
 	return objectDefinition;
@@ -196,13 +197,30 @@ function buildRelationships({
 	return relationships;
 }
 
-function buildWorkflowDefinitionLinks(workflows: Structure['workflows']) {
+function buildWorkflowDefinitionLinks({
+	spaces,
+	workflows,
+}: {
+	spaces: Structure['spaces'];
+	workflows: Structure['workflows'];
+}) {
 	const definitionLinks: ObjectDefinition['workflowDefinitionLinks'] = [];
 
 	for (const [
 		groupExternalReferenceCode,
 		workflowDefinitionName,
 	] of Object.entries(workflows)) {
+
+		// Don't insert workflow if structure does not include the space or
+		// if there's no workflow name, what means the Default one was selected
+
+		if (
+			!workflowDefinitionName ||
+			(spaces !== 'all' && !spaces.includes(groupExternalReferenceCode))
+		) {
+			continue;
+		}
+
 		if (workflowDefinitionName) {
 			definitionLinks.push({
 				groupExternalReferenceCode,
