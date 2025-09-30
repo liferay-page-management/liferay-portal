@@ -12,9 +12,11 @@ import com.liferay.fragment.service.FragmentEntryLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.cache.CacheField;
 import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -60,6 +62,24 @@ public class FragmentEntryLinkImpl extends FragmentEntryLinkBaseImpl {
 		}
 
 		return _editableValuesJSONObject;
+	}
+
+	public long getFragmentEntryGroupId() {
+		if (Validator.isNotNull(getFragmentEntryScopeExternalReferenceCode())) {
+			try {
+				Group fragmentEntryGroup =
+					GroupLocalServiceUtil.getGroupByExternalReferenceCode(
+						getFragmentEntryScopeExternalReferenceCode(),
+						getCompanyId());
+
+				return fragmentEntryGroup.getGroupId();
+			}
+			catch (PortalException portalException) {
+				throw new RuntimeException(portalException);
+			}
+		}
+
+		return getGroupId();
 	}
 
 	@Override
