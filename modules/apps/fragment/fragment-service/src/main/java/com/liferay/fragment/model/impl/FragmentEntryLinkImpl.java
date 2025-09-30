@@ -66,6 +66,25 @@ public class FragmentEntryLinkImpl extends FragmentEntryLinkBaseImpl {
 		return _editableValuesJSONObject;
 	}
 
+	@Override
+	public long getFragmentEntryGroupId() {
+		if (Validator.isNotNull(getFragmentEntryScopeExternalReferenceCode())) {
+			try {
+				Group fragmentEntryGroup =
+					GroupLocalServiceUtil.getGroupByExternalReferenceCode(
+						getFragmentEntryScopeExternalReferenceCode(),
+						getCompanyId());
+
+				return fragmentEntryGroup.getGroupId();
+			}
+			catch (PortalException portalException) {
+				throw new RuntimeException(portalException);
+			}
+		}
+
+		return getGroupId();
+	}
+
 	/**
 	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
 	 */
