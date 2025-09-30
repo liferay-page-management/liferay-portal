@@ -519,6 +519,11 @@ public class FragmentEntryWrapper
 		return model.getReadOnly();
 	}
 
+	@Override
+	public String getScopeExternalReferenceCode() {
+		return model.getScopeExternalReferenceCode();
+	}
+
 	/**
 	 * Returns the status of this fragment entry.
 	 *

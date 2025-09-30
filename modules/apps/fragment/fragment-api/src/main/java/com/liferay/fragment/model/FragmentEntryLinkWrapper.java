@@ -421,6 +421,11 @@ public class FragmentEntryLinkWrapper
 		return model.getFragmentEntryExternalReferenceCode();
 	}
 
+	@Override
+	public long getFragmentEntryGroupId() {
+		return model.getFragmentEntryGroupId();
+	}
+
 	/**
 	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
 	 */
