@@ -302,8 +302,10 @@ public class FragmentEntryLocalServiceImpl
 
 		long fragmentEntryLinkCount =
 			_fragmentEntryLinkLocalService.
-				getFragmentEntryLinksCountByFragmentEntryId(
-					fragmentEntry.getFragmentEntryId(), false);
+				getFragmentEntryLinksCountByFragmentEntryERCScopeERC(
+					fragmentEntry.getGroupId(),
+					fragmentEntry.getExternalReferenceCode(),
+					fragmentEntry.getScopeERC(), false);
 
 		if (fragmentEntryLinkCount > 0) {
 			throw new RequiredFragmentEntryException();
@@ -315,8 +317,10 @@ public class FragmentEntryLocalServiceImpl
 			fragmentEntry.getFragmentEntryId());
 
 		_fragmentEntryLinkLocalService.
-			deleteFragmentEntryLinksByFragmentEntryId(
-				fragmentEntry.getFragmentEntryId(), true);
+			deleteFragmentEntryLinksByFragmentEntryERCScopeERC(
+				fragmentEntry.getGroupId(),
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(), true);
 
 		if (fragmentEntry.getPreviewFileEntryId() > 0) {
 			boolean deletePreviewFileEntry = true;
