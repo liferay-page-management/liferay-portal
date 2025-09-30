@@ -203,8 +203,9 @@ public class LayoutPublishedSearchTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkService.addFragmentEntryLink(
-				null, _group.getGroupId(), 0,
-				fragmentEntry.getFragmentEntryId(),
+				null, _group.getGroupId(), null,
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeExternalReferenceCode(),
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(draftLayout.getPlid()),
 				draftLayout.getPlid(), fragmentEntry.getCss(),
@@ -231,8 +232,9 @@ public class LayoutPublishedSearchTest {
 
 		FragmentEntryLink inlineFragmentEntryLink =
 			_fragmentEntryLinkService.addFragmentEntryLink(
-				null, _group.getGroupId(), 0,
-				contributedFragmentEntry.getFragmentEntryId(),
+				null, _group.getGroupId(), null,
+				contributedFragmentEntry.getExternalReferenceCode(),
+				contributedFragmentEntry.getScopeExternalReferenceCode(),
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(draftLayout.getPlid()),
 				draftLayout.getPlid(), contributedFragmentEntry.getCss(),
@@ -382,8 +384,9 @@ public class LayoutPublishedSearchTest {
 
 		FragmentEntryLink inlineFragmentEntryLink =
 			_fragmentEntryLinkService.addFragmentEntryLink(
-				null, _group.getGroupId(), 0,
-				contributedFragmentEntry.getFragmentEntryId(),
+				null, _group.getGroupId(), null,
+				contributedFragmentEntry.getExternalReferenceCode(),
+				contributedFragmentEntry.getScopeExternalReferenceCode(),
 				defaultSegmentsExperienceId, draftLayout.getPlid(),
 				contributedFragmentEntry.getCss(),
 				contributedFragmentEntry.getHtml(),
@@ -444,13 +447,14 @@ public class LayoutPublishedSearchTest {
 
 		FragmentEntryLink inlineFragmentEntryLink =
 			_fragmentEntryLinkService.addFragmentEntryLink(
-				null, _group.getGroupId(), 0,
-				fragmentEntry.getFragmentEntryId(), defaultSegmentsExperienceId,
-				draftLayout.getPlid(), fragmentEntry.getCss(),
-				fragmentEntry.getHtml(), fragmentEntry.getJs(),
-				fragmentEntry.getConfiguration(), StringPool.BLANK,
-				StringPool.BLANK, 0, fragmentEntry.getFragmentEntryKey(),
-				fragmentEntry.getType(),
+				null, _group.getGroupId(), null,
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeExternalReferenceCode(),
+				defaultSegmentsExperienceId, draftLayout.getPlid(),
+				fragmentEntry.getCss(), fragmentEntry.getHtml(),
+				fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
+				StringPool.BLANK, StringPool.BLANK, 0,
+				fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(),
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		_addFragmentEntryLinkToLayout(

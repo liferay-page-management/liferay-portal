@@ -164,8 +164,9 @@ public class GroupModelListenerTest {
 				WorkflowConstants.STATUS_APPROVED, serviceContext);
 
 		return _fragmentEntryLinkLocalService.addFragmentEntryLink(
-			null, TestPropsValues.getUserId(), groupId, 0,
-			fragmentEntry.getFragmentEntryId(),
+			null, TestPropsValues.getUserId(), groupId, null,
+			fragmentEntry.getExternalReferenceCode(),
+			fragmentEntry.getScopeExternalReferenceCode(),
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				plid),
 			plid, fragmentEntry.getCss(), fragmentEntry.getHtml(),

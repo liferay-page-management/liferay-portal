@@ -611,7 +611,7 @@ public class LayoutStagedModelDataHandlerTest
 		Assert.assertNotNull(
 			_fragmentEntryLinkLocalService.getFragmentEntryLink(
 				stagingGroup.getGroupId(),
-				draftLayoutFragmentEntryLink.getFragmentEntryLinkId(),
+				draftLayoutFragmentEntryLink.getExternalReferenceCode(),
 				layout.getPlid()));
 
 		_updateDraftLayout(
@@ -985,8 +985,9 @@ public class LayoutStagedModelDataHandlerTest
 						))
 				).toString(),
 				fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
-				fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml(),
-				fragmentEntry.getJs(), stagingLayout1,
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeExternalReferenceCode(),
+				fragmentEntry.getHtml(), fragmentEntry.getJs(), stagingLayout1,
 				fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(),
 				null, 0,
 				_segmentsExperienceLocalService.
@@ -1785,10 +1786,11 @@ public class LayoutStagedModelDataHandlerTest
 					editableJSONObject
 				).toString(),
 				fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
-				fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml(),
-				fragmentEntry.getJs(), layout.fetchDraftLayout(),
-				fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(),
-				null, 0,
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeExternalReferenceCode(),
+				fragmentEntry.getHtml(), fragmentEntry.getJs(),
+				layout.fetchDraftLayout(), fragmentEntry.getFragmentEntryKey(),
+				fragmentEntry.getType(), null, 0,
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(draftLayout.getPlid()));
 
@@ -1813,9 +1815,11 @@ public class LayoutStagedModelDataHandlerTest
 				editableFragmentEntryProcessorJSONObject
 			).toString(),
 			fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
-			fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml(),
-			fragmentEntry.getJs(), layout, fragmentEntry.getFragmentEntryKey(),
-			fragmentEntry.getType(), null, 0, segmentsExperienceId);
+			fragmentEntry.getExternalReferenceCode(),
+			fragmentEntry.getScopeExternalReferenceCode(),
+			fragmentEntry.getHtml(), fragmentEntry.getJs(), layout,
+			fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(), null,
+			0, segmentsExperienceId);
 	}
 
 	private JournalArticle _addJournalArticle(String content, Group group)
@@ -1974,7 +1978,7 @@ public class LayoutStagedModelDataHandlerTest
 		FragmentEntryLink publishedLayoutFragmentEntryLink =
 			_fragmentEntryLinkLocalService.getFragmentEntryLink(
 				stagingGroup.getGroupId(),
-				draftLayoutFragmentEntryLink.getFragmentEntryLinkId(),
+				draftLayoutFragmentEntryLink.getExternalReferenceCode(),
 				layout.getPlid());
 
 		Assert.assertNotNull(publishedLayoutFragmentEntryLink);

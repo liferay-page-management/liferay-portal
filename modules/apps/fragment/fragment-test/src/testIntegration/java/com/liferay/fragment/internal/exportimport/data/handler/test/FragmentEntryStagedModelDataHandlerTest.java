@@ -186,8 +186,9 @@ public class FragmentEntryStagedModelDataHandlerTest
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), stagingGroup.getGroupId(), 0,
-				fragmentEntry.getFragmentEntryId(),
+				null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
+				null, fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeExternalReferenceCode(),
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
 				stagingGroup.getDefaultPublicPlid(), fragmentEntry.getCss(),
@@ -243,13 +244,14 @@ public class FragmentEntryStagedModelDataHandlerTest
 
 		String itemId = ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), stagingGroup.getGroupId(), 0,
-				fragmentEntry.getFragmentEntryId(), segmentsExperienceId,
-				draftLayout.getPlid(), fragmentEntry.getCss(),
-				fragmentEntry.getHtml(), fragmentEntry.getJs(),
-				fragmentEntry.getConfiguration(), StringPool.BLANK,
-				StringPool.BLANK, 0, StringPool.BLANK, fragmentEntry.getType(),
-				serviceContext),
+				null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
+				null, fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeExternalReferenceCode(),
+				segmentsExperienceId, draftLayout.getPlid(),
+				fragmentEntry.getCss(), fragmentEntry.getHtml(),
+				fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
+				StringPool.BLANK, StringPool.BLANK, 0, StringPool.BLANK,
+				fragmentEntry.getType(), serviceContext),
 			draftLayout, null, 0, segmentsExperienceId);
 
 		String dropZoneId1 = RandomTestUtil.randomString();
@@ -274,10 +276,14 @@ public class FragmentEntryStagedModelDataHandlerTest
 
 		ContentLayoutTestUtil.publishLayout(draftLayout, _layout);
 
+		FragmentEntryLink originalFragmentEntryLink =
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				fragmentStyledLayoutStructureItem.getFragmentEntryLinkId());
+
 		FragmentEntryLink publishedFragmentEntryLink =
 			_fragmentEntryLinkLocalService.getFragmentEntryLink(
 				stagingGroup.getGroupId(),
-				fragmentStyledLayoutStructureItem.getFragmentEntryLinkId(),
+				originalFragmentEntryLink.getExternalReferenceCode(),
 				_layout.getPlid());
 
 		Company company = _companyLocalService.getCompany(
@@ -437,11 +443,12 @@ public class FragmentEntryStagedModelDataHandlerTest
 			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
 				_fragmentEntryLinkLocalService.addFragmentEntryLink(
 					null, TestPropsValues.getUserId(),
-					stagingGroup.getGroupId(), 0,
-					fragmentEntry.getFragmentEntryId(), segmentsExperienceId,
-					layout.getPlid(), fragmentEntry.getCss(),
-					fragmentEntry.getHtml(), fragmentEntry.getJs(),
-					fragmentEntry.getConfiguration(),
+					stagingGroup.getGroupId(), null,
+					fragmentEntry.getExternalReferenceCode(),
+					fragmentEntry.getScopeExternalReferenceCode(),
+					segmentsExperienceId, layout.getPlid(),
+					fragmentEntry.getCss(), fragmentEntry.getHtml(),
+					fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
 					JSONUtil.put(
 						FragmentEntryProcessorConstants.
 							KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,

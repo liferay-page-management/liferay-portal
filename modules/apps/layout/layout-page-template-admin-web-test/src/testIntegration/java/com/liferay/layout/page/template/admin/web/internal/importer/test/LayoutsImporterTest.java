@@ -213,9 +213,10 @@ public class LayoutsImporterTest {
 
 			FragmentEntryLink fragmentEntryLink =
 				_fragmentEntryLinkLocalService.addFragmentEntryLink(
-					null, TestPropsValues.getUserId(), _group1.getGroupId(), 0,
-					0, defaultSegmentsExperienceId, draftLayout.getPlid(),
-					StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+					null, TestPropsValues.getUserId(), _group1.getGroupId(),
+					null, null, null, defaultSegmentsExperienceId,
+					draftLayout.getPlid(), StringPool.BLANK, StringPool.BLANK,
+					StringPool.BLANK,
 					"com.liferay.fragment.renderer.collection.filter." +
 						"internal.CollectionAppliedFiltersFragmentRenderer",
 					JSONUtil.put(
@@ -1348,7 +1349,8 @@ public class LayoutsImporterTest {
 					ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
 						null, fragmentEntry.getCss(),
 						fragmentEntry.getConfiguration(),
-						fragmentEntry.getFragmentEntryId(),
+						fragmentEntry.getExternalReferenceCode(),
+						fragmentEntry.getScopeExternalReferenceCode(),
 						fragmentEntry.getHtml(), fragmentEntry.getJs(),
 						draftLayout, fragmentEntry.getFragmentEntryKey(),
 						_segmentsExperienceLocalService.
@@ -1473,10 +1475,12 @@ public class LayoutsImporterTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _group1.getGroupId(), 0,
-				fragmentEntry.getFragmentEntryId(), segmentsExperienceId,
-				draftLayout.getPlid(), fragmentEntry.getCss(),
-				fragmentEntry.getHtml(), fragmentEntry.getConfiguration(),
+				null, TestPropsValues.getUserId(), _group1.getGroupId(), null,
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeExternalReferenceCode(),
+				segmentsExperienceId, draftLayout.getPlid(),
+				fragmentEntry.getCss(), fragmentEntry.getHtml(),
+				fragmentEntry.getConfiguration(),
 				fragmentEntry.getConfiguration(), editableValues,
 				StringPool.BLANK, 0, fragmentEntry.getFragmentEntryKey(),
 				fragmentEntry.getType(), _serviceContext1);
@@ -1505,10 +1509,11 @@ public class LayoutsImporterTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _group1.getGroupId(), 0,
-				fragmentEntry.getFragmentEntryId(), defaultSegmentsExperienceId,
-				layoutPageTemplateEntry.getPlid(), StringPool.BLANK, html,
-				StringPool.BLANK,
+				null, TestPropsValues.getUserId(), _group1.getGroupId(), null,
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeExternalReferenceCode(),
+				defaultSegmentsExperienceId, layoutPageTemplateEntry.getPlid(),
+				StringPool.BLANK, html, StringPool.BLANK,
 				_read("export_import_fragment_field_text_config.json"),
 				_read("export_import_fragment_field_text_editable_values.json"),
 				StringPool.BLANK, 0, null, fragmentEntry.getType(),
@@ -2042,10 +2047,12 @@ public class LayoutsImporterTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _group1.getGroupId(), 0,
-				fragmentEntry.getFragmentEntryId(), segmentsExperienceId,
-				draftLayout.getPlid(), fragmentEntry.getCss(),
-				fragmentEntry.getHtml(), fragmentEntry.getConfiguration(),
+				null, TestPropsValues.getUserId(), _group1.getGroupId(), null,
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeExternalReferenceCode(),
+				segmentsExperienceId, draftLayout.getPlid(),
+				fragmentEntry.getCss(), fragmentEntry.getHtml(),
+				fragmentEntry.getConfiguration(),
 				fragmentEntry.getConfiguration(),
 				JSONUtil.put(
 					FragmentEntryProcessorConstants.
