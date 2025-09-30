@@ -221,8 +221,9 @@ public class GroupFragmentEntryLinkDisplayContext {
 			groupFragmentEntryUsages.put(
 				GroupLocalServiceUtil.fetchGroup(groupId),
 				FragmentEntryLinkLocalServiceUtil.
-					getFragmentEntryLinksCountByFragmentEntryId(
-						groupId, getFragmentEntryId(), false));
+					getFragmentEntryLinksCountByFragmentEntryERCScopeERC(
+						groupId, getFragmentEntry().getExternalReferenceCode(),
+						getFragmentEntry().getScopeERC(), false));
 		}
 
 		_groupFragmentEntryUsages = groupFragmentEntryUsages;

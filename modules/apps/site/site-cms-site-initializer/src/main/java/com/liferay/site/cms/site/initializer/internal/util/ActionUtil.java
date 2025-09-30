@@ -1117,7 +1117,7 @@ public class ActionUtil {
 			new DefaultFragmentRendererContext(null);
 
 		return fragmentEntryLinkService.addFragmentEntryLink(
-			null, layout.getGroupId(), 0, 0, segmentsExperienceId,
+			null, layout.getGroupId(), null, null, null, segmentsExperienceId,
 			layout.getPlid(), StringPool.BLANK, StringPool.BLANK,
 			StringPool.BLANK,
 			JSONFactoryUtil.toString(

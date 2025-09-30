@@ -1236,8 +1236,8 @@ public class RenderLayoutStructureTagTest {
 		_addCollectionStyledLayoutStructureItem(
 			assetListEntry, layout, 10, "none", segmentsExperienceId,
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _group.getGroupId(), 0, 0,
-				segmentsExperienceId, draftLayout.getPlid(),
+				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
+				null, null, segmentsExperienceId, draftLayout.getPlid(),
 				fragmentEntry.getCss(), fragmentEntry.getHtml(),
 				fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
 				JSONUtil.put(
@@ -1365,10 +1365,11 @@ public class RenderLayoutStructureTagTest {
 				),
 				layout, null, segmentsExperienceId,
 				_fragmentEntryLinkLocalService.addFragmentEntryLink(
-					null, TestPropsValues.getUserId(), _group.getGroupId(), 0,
-					0, segmentsExperienceId, draftLayout.getPlid(),
-					fragmentEntry.getCss(), fragmentEntry.getHtml(),
-					fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
+					null, TestPropsValues.getUserId(), _group.getGroupId(),
+					null, null, null, segmentsExperienceId,
+					draftLayout.getPlid(), fragmentEntry.getCss(),
+					fragmentEntry.getHtml(), fragmentEntry.getJs(),
+					fragmentEntry.getConfiguration(),
 					JSONUtil.put(
 						FragmentEntryProcessorConstants.
 							KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
@@ -2880,7 +2881,8 @@ public class RenderLayoutStructureTagTest {
 						JSONUtil.put("inputFieldId", infoField.getUniqueId())
 					).toString(),
 					fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
-					fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml(),
+					fragmentEntry.getExternalReferenceCode(),
+					fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
 					fragmentEntry.getJs(), layout,
 					fragmentEntry.getFragmentEntryKey(),
 					fragmentEntry.getType(), parentItemId, position,
@@ -2902,7 +2904,8 @@ public class RenderLayoutStructureTagTest {
 		FragmentEntryLink fragmentEntryLink =
 			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
 				"{}", fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
-				fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml(),
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
 				fragmentEntry.getJs(), layout,
 				fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(),
 				parentItemId, position, segmentsExperienceId);
@@ -2965,8 +2968,8 @@ public class RenderLayoutStructureTagTest {
 		for (int i = 0; i < count; i++) {
 			fragmentEntryLinks[i] =
 				_fragmentEntryLinkLocalService.addFragmentEntryLink(
-					null, TestPropsValues.getUserId(), _group.getGroupId(), 0,
-					0, segmentsExperienceId, layout.getPlid(),
+					null, TestPropsValues.getUserId(), _group.getGroupId(),
+					null, null, null, segmentsExperienceId, layout.getPlid(),
 					fragmentEntry.getCss(), fragmentEntry.getHtml(),
 					fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
 					JSONUtil.put(
@@ -2994,7 +2997,8 @@ public class RenderLayoutStructureTagTest {
 				editableFragmentEntryProcessorJSONObject
 			).toString(),
 			fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
-			fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml(),
+			fragmentEntry.getExternalReferenceCode(),
+			fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
 			fragmentEntry.getJs(), layout, fragmentEntry.getFragmentEntryKey(),
 			fragmentEntry.getType(), parentItemId, position,
 			segmentsExperienceId);
@@ -3028,7 +3032,8 @@ public class RenderLayoutStructureTagTest {
 				editableFragmentEntryProcessorJSONObject
 			).toString(),
 			fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
-			fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml(),
+			fragmentEntry.getExternalReferenceCode(),
+			fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
 			fragmentEntry.getJs(), layout, fragmentEntry.getFragmentEntryKey(),
 			fragmentEntry.getType(), null, 0, segmentsExperienceId);
 	}

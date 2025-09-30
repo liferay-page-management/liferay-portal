@@ -136,7 +136,8 @@ public class FragmentEntryLinkERCUpgradeProcessTest
 			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
 				null, globalFragmentEntry.getCss(),
 				globalFragmentEntry.getConfiguration(),
-				globalFragmentEntry.getFragmentEntryId(),
+				globalFragmentEntry.getExternalReferenceCode(),
+				globalFragmentEntry.getScopeERC(),
 				globalFragmentEntry.getHtml(), globalFragmentEntry.getJs(),
 				_draftLayout, globalFragmentEntry.getFragmentEntryKey(),
 				globalFragmentEntry.getType(), null, 0, _segmentsExperienceId);
@@ -157,13 +158,13 @@ public class FragmentEntryLinkERCUpgradeProcessTest
 		FragmentEntryLink globalPublishedLayoutFragmentEntryLink =
 			_fragmentEntryLinkLocalService.getFragmentEntryLink(
 				_layout.getGroupId(),
-				globalDraftLayoutFragmentEntryLink.getFragmentEntryLinkId(),
+				globalDraftLayoutFragmentEntryLink.getExternalReferenceCode(),
 				_layout.getPlid());
 
 		FragmentEntryLink publishedLayoutFragmentEntryLink =
 			_fragmentEntryLinkLocalService.getFragmentEntryLink(
 				_layout.getGroupId(),
-				draftLayoutFragmentEntryLink.getFragmentEntryLinkId(),
+				draftLayoutFragmentEntryLink.getExternalReferenceCode(),
 				_layout.getPlid());
 
 		List<Long> fragmentEntryLinkIds = Arrays.asList(
