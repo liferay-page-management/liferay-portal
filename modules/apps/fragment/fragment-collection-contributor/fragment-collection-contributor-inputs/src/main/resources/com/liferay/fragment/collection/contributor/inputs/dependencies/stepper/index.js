@@ -1,4 +1,4 @@
-const ACTIVE_INDEX_SESSION_KEY = `${fragmentNamespace}-activeIndex`;
+const ACTIVE_INDEX_SESSION_KEY = `${fragmentElementId}-activeIndex`;
 
 const steps = fragmentElement.querySelectorAll('li');
 
