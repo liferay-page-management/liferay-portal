@@ -114,10 +114,19 @@ export async function performLoginViaApi({
 
 		const url = `${loginUrl}/c/portal/login`;
 
-		await page.request.post(url, {
-			data: params.toString(),
-			headers: await getHeader(page, 'application/x-www-form-urlencoded'),
-		});
+		await expect
+			.poll(async () => {
+				const response = await page.request.post(url, {
+					data: params.toString(),
+					headers: await getHeader(
+						page,
+						'application/x-www-form-urlencoded'
+					),
+				});
+
+				return response.status();
+			})
+			.toBe(200);
 
 		await page.goto(loginUrl);
 
@@ -125,10 +134,14 @@ export async function performLoginViaApi({
 			apiHelpers = new ApiHelpers(page, loginUrl);
 		}
 
-		const {alternateName} =
-			await apiHelpers.headlessAdminUser.getMyUserAccount();
+		await expect
+			.poll(async () => {
+				const {alternateName} =
+					await apiHelpers.headlessAdminUser.getMyUserAccount();
 
-		expect(alternateName).toBe(screenName);
+				return alternateName;
+			})
+			.toBe(screenName);
 	}
 	catch (error) {
 		error.message = `Login via API failed\n\n${error.message}`;
