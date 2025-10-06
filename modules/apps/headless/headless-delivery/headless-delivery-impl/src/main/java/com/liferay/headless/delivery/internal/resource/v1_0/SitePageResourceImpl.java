@@ -346,12 +346,12 @@ public class SitePageResourceImpl
 					contextAcceptLanguage.getPreferredLocale(),
 					seoSettings.getRobots(), seoSettings.getRobots_i18n());
 
-				SiteMapSettings siteMapSettings =
+				SiteMapSettings sitemapSettings =
 					seoSettings.getSiteMapSettings();
 
-				if (siteMapSettings != null) {
+				if (sitemapSettings != null) {
 					SiteMapSettings.ChangeFrequency changeFrequency =
-						siteMapSettings.getChangeFrequency();
+						sitemapSettings.getChangeFrequency();
 
 					if (changeFrequency != null) {
 						typeSettingsUnicodeProperties.setProperty(
@@ -359,7 +359,7 @@ public class SitePageResourceImpl
 							StringUtil.toLowerCase(changeFrequency.getValue()));
 					}
 
-					Boolean include = siteMapSettings.getInclude();
+					Boolean include = sitemapSettings.getInclude();
 
 					if (include != null) {
 						String siteMapInclude = "0";
@@ -374,7 +374,7 @@ public class SitePageResourceImpl
 					}
 
 					Boolean includeChildSitePages =
-						siteMapSettings.getIncludeChildSitePages();
+						sitemapSettings.getIncludeChildSitePages();
 
 					if (includeChildSitePages != null) {
 						String siteMapIncludeChildLayouts = "false";
@@ -388,7 +388,7 @@ public class SitePageResourceImpl
 							siteMapIncludeChildLayouts);
 					}
 
-					Double pagePriority = siteMapSettings.getPagePriority();
+					Double pagePriority = sitemapSettings.getPagePriority();
 
 					if (pagePriority != null) {
 						typeSettingsUnicodeProperties.setProperty(
