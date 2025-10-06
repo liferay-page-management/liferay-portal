@@ -390,41 +390,9 @@ public class FragmentEntryLinkLocalServiceImpl
 
 		ResultERC resultERC = _getResultERC(groupId, fragmentEntryId, 0);
 
-		Predicate fragmentEntryScopeERCPredicate =
-			FragmentEntryLinkTable.INSTANCE.
-				fragmentEntryScopeExternalReferenceCode.eq(
-					resultERC.getFragmentEntryScopeERC());
-
-		if (resultERC.getFragmentEntryScopeERC() == null) {
-			fragmentEntryScopeERCPredicate =
-				FragmentEntryLinkTable.INSTANCE.
-					fragmentEntryScopeExternalReferenceCode.isNull();
-		}
-
-		return fragmentEntryLinkPersistence.dslQueryCount(
-			DSLQueryFactoryUtil.count(
-			).from(
-				DSLQueryFactoryUtil.selectDistinct(
-					FragmentEntryLinkTable.INSTANCE.classNameId,
-					FragmentEntryLinkTable.INSTANCE.classPK
-				).from(
-					FragmentEntryLinkTable.INSTANCE
-				).where(
-					FragmentEntryLinkTable.INSTANCE.groupId.eq(
-						groupId
-					).and(
-						FragmentEntryLinkTable.INSTANCE.
-							fragmentEntryExternalReferenceCode.eq(
-								resultERC.getFragmentEntryERC())
-					).and(
-						fragmentEntryScopeERCPredicate
-					).and(
-						FragmentEntryLinkTable.INSTANCE.deleted.eq(false)
-					)
-				).as(
-					"tempFragmentEntryLinkTable"
-				)
-			));
+		return fragmentEntryLinkPersistence.countByG_FEERC_FESERC_D(
+			groupId, resultERC.getFragmentEntryERC(),
+			resultERC.getFragmentEntryScopeERC(), false);
 	}
 
 	/**
