@@ -659,9 +659,7 @@ public class FragmentEntryLinkWrapper
 	}
 
 	@Override
-	public boolean isSystem()
-		throws com.liferay.portal.kernel.exception.PortalException {
-
+	public boolean isSystem() {
 		return model.isSystem();
 	}
 
