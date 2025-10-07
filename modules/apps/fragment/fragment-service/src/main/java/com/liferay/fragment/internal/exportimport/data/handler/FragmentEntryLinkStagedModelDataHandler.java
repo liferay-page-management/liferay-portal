@@ -19,7 +19,6 @@ import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Element;
@@ -95,8 +94,10 @@ public class FragmentEntryLinkStagedModelDataHandler
 		fragmentEntryLink.setEditableValues(editableValues);
 
 		FragmentEntry fragmentEntry =
-			_fragmentEntryLocalService.fetchFragmentEntry(
-				fragmentEntryLink.getFragmentEntryId());
+			_fragmentEntryLocalService.
+				fetchFragmentEntryByExternalReferenceCode(
+					fragmentEntryLink.getFragmentEntryExternalReferenceCode(),
+					fragmentEntryLink.getFragmentEntryGroupId());
 
 		if (fragmentEntry != null) {
 			if (fragmentEntry.getGroupId() != fragmentEntryLink.getGroupId()) {
@@ -160,68 +161,6 @@ public class FragmentEntryLinkStagedModelDataHandler
 			FragmentEntryLink fragmentEntryLink)
 		throws Exception {
 
-		Map<Long, Long> originalFragmentEntryLinkIds =
-			(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
-				FragmentEntryLink.class);
-
-		long originalFragmentEntryLinkId = MapUtil.getLong(
-			originalFragmentEntryLinkIds,
-			fragmentEntryLink.getOriginalFragmentEntryLinkId(),
-			fragmentEntryLink.getOriginalFragmentEntryLinkId());
-
-		Map<Long, Long> fragmentEntryIds =
-			(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
-				FragmentEntry.class);
-
-		long fragmentEntryId = MapUtil.getLong(
-			fragmentEntryIds, fragmentEntryLink.getFragmentEntryId());
-
-		if ((fragmentEntryId == 0) &&
-			(fragmentEntryLink.getFragmentEntryId() > 0)) {
-
-			FragmentEntry fragmentEntry =
-				_fragmentEntryLocalService.fetchFragmentEntry(
-					fragmentEntryLink.getFragmentEntryId());
-
-			if (fragmentEntry != null) {
-				FragmentEntry targetFragmentEntry =
-					_fragmentEntryLocalService.
-						fetchFragmentEntryByUuidAndGroupId(
-							fragmentEntry.getUuid(),
-							portletDataContext.getGroupId());
-
-				if (targetFragmentEntry != null) {
-					fragmentEntryId = targetFragmentEntry.getFragmentEntryId();
-				}
-				else {
-					fragmentEntryId = fragmentEntryLink.getFragmentEntryId();
-				}
-			}
-			else {
-				Element fragmentEntryLinkElement =
-					portletDataContext.getImportDataStagedModelElement(
-						fragmentEntryLink);
-
-				Group group = _fetchGroup(
-					portletDataContext.getCompanyId(),
-					fragmentEntryLinkElement);
-
-				if (group != null) {
-					String fragmentEntryKey = GetterUtil.getString(
-						fragmentEntryLinkElement.attributeValue(
-							"fragment-entry-key"));
-
-					fragmentEntry =
-						_fragmentEntryLocalService.fetchFragmentEntry(
-							group.getGroupId(), fragmentEntryKey);
-				}
-
-				if (fragmentEntry != null) {
-					fragmentEntryId = fragmentEntry.getFragmentEntryId();
-				}
-			}
-		}
-
 		Map<Long, Long> referenceClassPKs =
 			(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
 				fragmentEntryLink.getClassName());
@@ -235,9 +174,14 @@ public class FragmentEntryLinkStagedModelDataHandler
 
 		importedFragmentEntryLink.setGroupId(
 			portletDataContext.getScopeGroupId());
-		importedFragmentEntryLink.setOriginalFragmentEntryLinkId(
-			originalFragmentEntryLinkId);
-		importedFragmentEntryLink.setFragmentEntryId(fragmentEntryId);
+		importedFragmentEntryLink.
+			setOriginalFragmentEntryLinkExternalReferenceCode(
+				fragmentEntryLink.
+					getOriginalFragmentEntryLinkExternalReferenceCode());
+		importedFragmentEntryLink.setFragmentEntryExternalReferenceCode(
+			fragmentEntryLink.getFragmentEntryExternalReferenceCode());
+		importedFragmentEntryLink.setFragmentEntryScopeExternalReferenceCode(
+			fragmentEntryLink.getFragmentEntryScopeExternalReferenceCode());
 
 		Map<Long, Long> segmentsExperienceIds =
 			(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
@@ -293,24 +237,6 @@ public class FragmentEntryLinkStagedModelDataHandler
 		getStagedModelRepository() {
 
 		return _stagedModelRepository;
-	}
-
-	private Group _fetchGroup(
-		long companyId, Element fragmentEntryLinkElement) {
-
-		boolean fragmentEntryGroupGlobal = GetterUtil.getBoolean(
-			fragmentEntryLinkElement.attributeValue(
-				"fragment-entry-group-global"));
-
-		if (fragmentEntryGroupGlobal) {
-			return _groupLocalService.fetchCompanyGroup(companyId);
-		}
-
-		String fragmentEntryGroupKey = GetterUtil.getString(
-			fragmentEntryLinkElement.attributeValue(
-				"fragment-entry-group-key"));
-
-		return _groupLocalService.fetchGroup(companyId, fragmentEntryGroupKey);
 	}
 
 	@Reference(target = "(content.processor.type=DLReferences)")

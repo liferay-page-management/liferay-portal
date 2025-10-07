@@ -987,13 +987,13 @@ public class LayoutLocalServiceWrapper
 
 				if (sourceLayout.getClassPK() == targetLayout.getPlid()) {
 					targetLayoutFragmentEntryLink.
-						setOriginalFragmentEntryLinkId(
+						setOriginalFragmentEntryLinkExternalReferenceCode(
 							sourceLayoutfragmentEntryLink.
-								getFragmentEntryLinkId());
+								getExternalReferenceCode());
 				}
 				else {
 					targetLayoutFragmentEntryLink.
-						setOriginalFragmentEntryLinkId(0);
+						setOriginalFragmentEntryLinkExternalReferenceCode(null);
 				}
 
 				targetLayoutFragmentEntryLink.setSegmentsExperienceId(
@@ -1041,11 +1041,14 @@ public class LayoutLocalServiceWrapper
 					serviceContext.getModifiedDate(new Date()));
 
 				if (sourceLayout.getClassPK() == targetLayout.getPlid()) {
-					newFragmentEntryLink.setOriginalFragmentEntryLinkId(
-						sourceLayoutfragmentEntryLink.getFragmentEntryLinkId());
+					newFragmentEntryLink.
+						setOriginalFragmentEntryLinkExternalReferenceCode(
+							sourceLayoutfragmentEntryLink.
+								getExternalReferenceCode());
 				}
 				else {
-					newFragmentEntryLink.setOriginalFragmentEntryLinkId(0);
+					newFragmentEntryLink.
+						setOriginalFragmentEntryLinkExternalReferenceCode(null);
 				}
 
 				newFragmentEntryLink.setSegmentsExperienceId(

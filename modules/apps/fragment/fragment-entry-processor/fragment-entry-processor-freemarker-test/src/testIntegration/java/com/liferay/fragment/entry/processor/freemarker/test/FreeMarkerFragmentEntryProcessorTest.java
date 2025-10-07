@@ -159,8 +159,11 @@ public class FreeMarkerFragmentEntryProcessorTest {
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.createFragmentEntryLink(0);
 
-		fragmentEntryLink.setFragmentEntryId(
-			fragmentEntry.getFragmentEntryId());
+		fragmentEntryLink.setGroupId(fragmentEntry.getGroupId());
+		fragmentEntryLink.setFragmentEntryExternalReferenceCode(
+			fragmentEntry.getExternalReferenceCode());
+		fragmentEntryLink.setFragmentEntryScopeExternalReferenceCode(
+			fragmentEntry.getScopeERC());
 		fragmentEntryLink.setHtml(fragmentEntry.getHtml());
 
 		DefaultFragmentEntryProcessorContext
