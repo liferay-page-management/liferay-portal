@@ -128,8 +128,11 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 			(FragmentEntryLink)_getExportImportStagedModel(stagedModel);
 
 		Assert.assertEquals(
-			fragmentEntry.getFragmentEntryId(),
-			importedFragmentEntryLink.getFragmentEntryId());
+			fragmentEntry.getGroupId(),
+			importedFragmentEntryLink.getFragmentEntryGroupId());
+		Assert.assertEquals(
+			fragmentEntry.getExternalReferenceCode(),
+			importedFragmentEntryLink.getFragmentEntryExternalReferenceCode());
 	}
 
 	@Test
@@ -374,8 +377,9 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 		FragmentEntryLink fragmentEntryLink = (FragmentEntryLink)stagedModel;
 
 		Assert.assertNotNull(
-			_fragmentEntryLocalService.getFragmentEntry(
-				fragmentEntryLink.getFragmentEntryId()));
+			_fragmentEntryLocalService.getFragmentEntryByExternalReferenceCode(
+				fragmentEntryLink.getFragmentEntryExternalReferenceCode(),
+				fragmentEntryLink.getFragmentEntryGroupId()));
 
 		try {
 			_exportImportStagedModel(stagedModel, true);
@@ -391,8 +395,10 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 			(FragmentEntryLink)importedStagedModel;
 
 		Assert.assertNotNull(
-			_fragmentEntryLocalService.getFragmentEntry(
-				importedFragmentEntryLink.getFragmentEntryId()));
+			_fragmentEntryLocalService.getFragmentEntryByExternalReferenceCode(
+				importedFragmentEntryLink.
+					getFragmentEntryExternalReferenceCode(),
+				importedFragmentEntryLink.getFragmentEntryGroupId()));
 	}
 
 	@Override
@@ -516,7 +522,8 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 			fragmentEntryLink);
 
 		_fragmentEntryLocalService.deleteFragmentEntry(
-			fragmentEntryLink.getFragmentEntryId());
+			fragmentEntryLink.getFragmentEntryExternalReferenceCode(),
+			fragmentEntryLink.getFragmentEntryGroupId());
 
 		initImport();
 

@@ -588,14 +588,18 @@ public class FragmentEntryLinkManager {
 	private FragmentEntry _getFragmentEntry(
 		FragmentEntryLink fragmentEntryLink, Locale locale) {
 
-		if (fragmentEntryLink.getFragmentEntryId() <= 0) {
+		if (Validator.isNull(
+				fragmentEntryLink.getFragmentEntryExternalReferenceCode())) {
+
 			return getFragmentEntry(
 				fragmentEntryLink.getGroupId(),
 				fragmentEntryLink.getRendererKey(), locale);
 		}
 
-		return _fragmentEntryLocalService.fetchFragmentEntry(
-			fragmentEntryLink.getFragmentEntryId());
+		return _fragmentEntryLocalService.
+			fetchFragmentEntryByExternalReferenceCode(
+				fragmentEntryLink.getFragmentEntryExternalReferenceCode(),
+				fragmentEntryLink.getFragmentEntryGroupId());
 	}
 
 	private JSONArray _getFragmentEntryLinkCommentsJSONArray(

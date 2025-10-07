@@ -477,8 +477,8 @@ public class FragmentLayoutStructureItemImporter
 				null, serviceContext.getUserId(), layout.getGroupId(), null,
 				fragmentEntryERC, fragmentEntryScopeERC, segmentsExperienceId,
 				layout.getPlid(), css, html, js, configuration,
-				jsonObject.toString(), namespace, position,
-				fragmentKey, type, serviceContext);
+				jsonObject.toString(), namespace, position, fragmentKey, type,
+				serviceContext);
 
 		List<Object> widgetInstances = (List<Object>)definitionMap.get(
 			"widgetInstances");

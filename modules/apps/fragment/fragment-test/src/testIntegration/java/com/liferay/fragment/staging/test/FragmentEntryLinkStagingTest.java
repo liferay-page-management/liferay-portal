@@ -196,8 +196,9 @@ public class FragmentEntryLinkStagingTest {
 				liveFragmentEntryLink.getUuid(), _liveGroup.getGroupId());
 
 		FragmentEntry liveFragmentEntry =
-			_fragmentEntryLocalService.getFragmentEntry(
-				liveFragmentEntryLink.getFragmentEntryId());
+			_fragmentEntryLocalService.getFragmentEntryByExternalReferenceCode(
+				liveFragmentEntryLink.getFragmentEntryExternalReferenceCode(),
+				liveFragmentEntryLink.getFragmentEntryGroupId());
 
 		Assert.assertEquals(
 			liveFragmentEntryLink.getGroupId(), liveFragmentEntry.getGroupId());
@@ -210,8 +211,9 @@ public class FragmentEntryLinkStagingTest {
 				liveFragmentEntryLink.getUuid(), _liveGroup.getGroupId());
 
 		Assert.assertNotNull(
-			_fragmentEntryLocalService.getFragmentEntry(
-				fragmentEntryLink.getFragmentEntryId()));
+			_fragmentEntryLocalService.getFragmentEntryByExternalReferenceCode(
+				fragmentEntryLink.getFragmentEntryExternalReferenceCode(),
+				fragmentEntryLink.getFragmentEntryGroupId()));
 	}
 
 	@Inject
