@@ -31,8 +31,10 @@ public class ResourcesFragmentEntryProcessorUtil {
 		throws PortalException {
 
 		FragmentEntry fragmentEntry =
-			FragmentEntryLocalServiceUtil.fetchFragmentEntry(
-				fragmentEntryLink.getFragmentEntryId());
+			FragmentEntryLocalServiceUtil.
+				fetchFragmentEntryByExternalReferenceCode(
+					fragmentEntryLink.getFragmentEntryExternalReferenceCode(),
+					fragmentEntryLink.getFragmentEntryGroupId());
 
 		if (fragmentEntry == null) {
 			return code;

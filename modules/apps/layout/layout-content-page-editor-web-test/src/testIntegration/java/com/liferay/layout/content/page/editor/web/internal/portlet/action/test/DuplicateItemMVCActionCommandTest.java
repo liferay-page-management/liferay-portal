@@ -51,6 +51,7 @@ import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
@@ -437,15 +438,21 @@ public class DuplicateItemMVCActionCommandTest {
 		FragmentEntryLink fragmentEntryLink) {
 
 		Assert.assertEquals(
-			fragmentEntryLink.getFragmentEntryId(),
-			duplicatedFragmentEntryLink.getFragmentEntryId());
+			fragmentEntryLink.getFragmentEntryExternalReferenceCode(),
+			duplicatedFragmentEntryLink.
+				getFragmentEntryExternalReferenceCode());
+		Assert.assertEquals(
+			fragmentEntryLink.getFragmentEntryGroupId(),
+			duplicatedFragmentEntryLink.getFragmentEntryGroupId());
 		Assert.assertEquals(
 			fragmentEntryLink.getHtml(), duplicatedFragmentEntryLink.getHtml());
 		Assert.assertNotEquals(
 			fragmentEntryLink.getNamespace(),
 			duplicatedFragmentEntryLink.getNamespace());
-		Assert.assertEquals(
-			0, duplicatedFragmentEntryLink.getOriginalFragmentEntryLinkId());
+		Assert.assertTrue(
+			Validator.isNull(
+				duplicatedFragmentEntryLink.
+					getOriginalFragmentEntryLinkExternalReferenceCode()));
 	}
 
 	private FragmentDropZoneLayoutStructureItem
