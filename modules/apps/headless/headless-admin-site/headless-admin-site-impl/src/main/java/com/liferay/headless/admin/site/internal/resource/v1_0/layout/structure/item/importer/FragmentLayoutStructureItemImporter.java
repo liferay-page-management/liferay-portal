@@ -280,6 +280,10 @@ public class FragmentLayoutStructureItemImporter
 				fragmentInstancePageElementDefinition,
 				layoutStructureItemImporterContext));
 
+		fragmentEntryLink.setFragmentEntryExternalReferenceCode(
+			fragmentEntry.getExternalReferenceCode());
+		fragmentEntryLink.setFragmentEntryScopeExternalReferenceCode(
+			fragmentEntry.getScopeExternalReferenceCode());
 		fragmentEntryLink.setCss(
 			GetterUtil.getString(
 				fragmentInstancePageElementDefinition.getCss()));
@@ -299,8 +303,6 @@ public class FragmentLayoutStructureItemImporter
 			_getType(fragmentInstancePageElementDefinition));
 		fragmentEntryLink.setLastPropagationDate(
 			fragmentInstancePageElementDefinition.getDatePropagated());
-		fragmentEntryLink.setFragmentEntryId(
-			fragmentEntry.getFragmentEntryId());
 
 		return FragmentEntryLinkLocalServiceUtil.updateFragmentEntryLink(
 			fragmentEntryLink);

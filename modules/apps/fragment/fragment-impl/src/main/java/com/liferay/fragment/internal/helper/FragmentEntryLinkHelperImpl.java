@@ -32,8 +32,10 @@ public class FragmentEntryLinkHelperImpl implements FragmentEntryLinkHelper {
 		FragmentEntryLink fragmentEntryLink, Locale locale) {
 
 		FragmentEntry fragmentEntry =
-			_fragmentEntryLocalService.fetchFragmentEntry(
-				fragmentEntryLink.getFragmentEntryId());
+			_fragmentEntryLocalService.
+				fetchFragmentEntryByExternalReferenceCode(
+					fragmentEntryLink.getFragmentEntryExternalReferenceCode(),
+					fragmentEntryLink.getFragmentEntryGroupId());
 
 		if (fragmentEntry != null) {
 			return fragmentEntry.getName();

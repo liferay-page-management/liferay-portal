@@ -86,8 +86,10 @@ public class FragmentEntryLinkImpl extends FragmentEntryLinkBaseImpl {
 	@Override
 	public boolean isCacheable() {
 		FragmentEntry fragmentEntry =
-			FragmentEntryLocalServiceUtil.fetchFragmentEntry(
-				getFragmentEntryId());
+			FragmentEntryLocalServiceUtil.
+				fetchFragmentEntryByExternalReferenceCode(
+					getFragmentEntryExternalReferenceCode(),
+					getFragmentEntryGroupId());
 
 		if (fragmentEntry != null) {
 			return fragmentEntry.isCacheable();
@@ -117,8 +119,10 @@ public class FragmentEntryLinkImpl extends FragmentEntryLinkBaseImpl {
 	@Override
 	public boolean isLatestVersion() throws PortalException {
 		FragmentEntry fragmentEntry =
-			FragmentEntryLocalServiceUtil.getFragmentEntry(
-				getFragmentEntryId());
+			FragmentEntryLocalServiceUtil.
+				getFragmentEntryByExternalReferenceCode(
+					getFragmentEntryExternalReferenceCode(),
+					getFragmentEntryGroupId());
 
 		Date fragmentEntryModifiedDate = fragmentEntry.getModifiedDate();
 
@@ -133,14 +137,16 @@ public class FragmentEntryLinkImpl extends FragmentEntryLinkBaseImpl {
 	}
 
 	@Override
-	public boolean isSystem() throws PortalException {
-		if (getFragmentEntryId() == 0) {
+	public boolean isSystem() {
+		if (Validator.isNull(getFragmentEntryExternalReferenceCode())) {
 			return false;
 		}
 
 		FragmentEntry fragmentEntry =
-			FragmentEntryLocalServiceUtil.fetchFragmentEntry(
-				getFragmentEntryId());
+			FragmentEntryLocalServiceUtil.
+				fetchFragmentEntryByExternalReferenceCode(
+					getFragmentEntryExternalReferenceCode(),
+					getFragmentEntryGroupId());
 
 		if (fragmentEntry == null) {
 			return false;
