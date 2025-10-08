@@ -2263,10 +2263,10 @@ components:
                         A flag that indicates whether the page is hidden from navigation.
                     type: boolean
                 navigationSettings:
-                    $ref: "#/components/schemas/NavigationSettings"
+                    $ref: "#/components/schemas/SitePageNavigationSettings"
                     # @review
                     description:
-                        The page's site navigation settings.
+                        The page's navigation settings.
                 openGraphSettings:
                     $ref: "#/components/schemas/OpenGraphSettings"
                     # @review
@@ -3578,10 +3578,10 @@ components:
                                 The identifier of the layout template.
                             type: string
                         navigationSettings:
-                            $ref: "#/components/schemas/NavigationSettings"
+                            $ref: "#/components/schemas/WidgetPageTemplateNavigationSettings"
                             # @review
                             description:
-                                The widget page template's site navigation settings.
+                                The widget page template's navigation settings.
             # @review
             description:
                 The settings of a widget page template.
