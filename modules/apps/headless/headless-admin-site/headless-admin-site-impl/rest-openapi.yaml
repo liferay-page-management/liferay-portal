@@ -2252,10 +2252,10 @@ components:
                         A flag that indicates whether the page is hidden from navigation.
                     type: boolean
                 navigationSettings:
-                    $ref: "#/components/schemas/NavigationSettings"
+                    $ref: "#/components/schemas/SitePageNavigationSettings"
                     # @review
                     description:
-                        The page's site navigation settings.
+                        The page's navigation settings.
                 openGraphSettings:
                     $ref: "#/components/schemas/OpenGraphSettings"
                     # @review
@@ -2270,11 +2270,6 @@ components:
                     maximum: 2147483647
                     minimum: 0
                     type: integer
-                queryString:
-                    # @review
-                    description:
-                        The default parameter for a page.
-                    type: string
                 seoSettings:
                     $ref: "#/components/schemas/SEOSettings"
                     # @review
@@ -2872,6 +2867,19 @@ components:
                     # @review
                     description:
                         The localized submission of page type.
+            type: object
+        SitePageNavigationSettings:
+            allOf:
+                -   $ref: "#/components/schemas/NavigationSettings"
+                -   properties:
+                        queryString:
+                            # @review
+                            description:
+                                The default parameter for a page.
+                            type: string
+            # @review
+            description:
+                The navigation settings of a site page.
             type: object
         SitemapSettings:
             # @review
@@ -3555,7 +3563,7 @@ components:
                             $ref: "#/components/schemas/NavigationSettings"
                             # @review
                             description:
-                                The widget page template's site navigation settings.
+                                The widget page template's navigation settings.
             # @review
             description:
                 The settings of a widget page template.
