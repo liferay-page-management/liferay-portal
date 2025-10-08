@@ -2873,6 +2873,13 @@ components:
                     description:
                         The localized submission of page type.
             type: object
+        SitePageNavigationSettings:
+            allOf:
+                -   $ref: "#/components/schemas/NavigationSettings"
+            # @review
+            description:
+                The navigation settings of a site page.
+            type: object
         SitemapSettings:
             # @review
             description:
@@ -3541,6 +3548,13 @@ components:
             # @review
             description:
                 A widget page template.
+            type: object
+        WidgetPageTemplateNavigationSettings:
+            allOf:
+                -   $ref: "#/components/schemas/NavigationSettings"
+            # @review
+            description:
+                The navigation settings of a widget page template.
             type: object
         WidgetPageTemplateSettings:
             allOf:
