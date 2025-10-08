@@ -7,9 +7,11 @@ package com.liferay.headless.admin.site.internal.dto.v1_0.converter;
 
 import com.liferay.headless.admin.site.dto.v1_0.ContentPageTemplate;
 import com.liferay.headless.admin.site.dto.v1_0.ContentPageTemplateSettings;
+import com.liferay.headless.admin.site.dto.v1_0.NavigationSettings;
 import com.liferay.headless.admin.site.dto.v1_0.PageTemplate;
 import com.liferay.headless.admin.site.dto.v1_0.PageTemplateSet;
 import com.liferay.headless.admin.site.dto.v1_0.WidgetPageTemplate;
+import com.liferay.headless.admin.site.dto.v1_0.WidgetPageTemplateNavigationSettings;
 import com.liferay.headless.admin.site.dto.v1_0.WidgetPageTemplateSettings;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.AssetUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.NavigationSettingsUtil;
@@ -224,8 +226,12 @@ public class PageTemplateDTOConverter
 							LayoutTypePortletConstants.LAYOUT_TEMPLATE_ID),
 						PropsValues.DEFAULT_LAYOUT_TEMPLATE_ID));
 				setNavigationSettings(
-					() -> NavigationSettingsUtil.toNavigationSettings(
-						unicodeProperties));
+					() ->
+						(WidgetPageTemplateNavigationSettings)
+							NavigationSettingsUtil.toNavigationSettings(
+								NavigationSettings.NavigationSettingsType.
+									WIDGET_PAGE_TEMPLATE,
+								unicodeProperties));
 				setType(Type.WIDGET_PAGE_TEMPLATE_SETTINGS);
 			}
 		};

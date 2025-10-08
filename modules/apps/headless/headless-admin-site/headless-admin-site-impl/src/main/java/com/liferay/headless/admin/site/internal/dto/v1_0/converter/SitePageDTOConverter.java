@@ -9,8 +9,10 @@ import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.headless.admin.site.dto.v1_0.ContentPageSettings;
 import com.liferay.headless.admin.site.dto.v1_0.CustomMetaTag;
 import com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference;
+import com.liferay.headless.admin.site.dto.v1_0.NavigationSettings;
 import com.liferay.headless.admin.site.dto.v1_0.PageSettings;
 import com.liferay.headless.admin.site.dto.v1_0.SitePage;
+import com.liferay.headless.admin.site.dto.v1_0.SitePageNavigationSettings;
 import com.liferay.headless.admin.site.dto.v1_0.WidgetPageSettings;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.AssetUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.ScopeUtil;
@@ -173,20 +175,14 @@ public class SitePageDTOConverter implements DTOConverter<Layout, SitePage> {
 			() -> _getCustomMetaTags(layout, _layoutSEOEntryLocalService));
 		pageSettings.setHiddenFromNavigation(layout::isHidden);
 		pageSettings.setNavigationSettings(
-			() -> NavigationSettingsUtil.toNavigationSettings(
-				layout.getTypeSettingsProperties()));
+			() ->
+				(SitePageNavigationSettings)
+					NavigationSettingsUtil.toNavigationSettings(
+						NavigationSettings.NavigationSettingsType.SITE_PAGE,
+						layout.getTypeSettingsProperties()));
 		pageSettings.setOpenGraphSettings(
 			() -> OpenGraphSettingsUtil.getOpenGraphSettings(
 				_dlAppService, _layoutSEOEntryLocalService, layout));
-		pageSettings.setQueryString(
-			() -> {
-				UnicodeProperties unicodeProperties =
-					layout.getTypeSettingsProperties();
-
-				return unicodeProperties.getProperty(
-					com.liferay.layout.admin.kernel.model.
-						LayoutTypePortletConstants.QUERY_STRING);
-			});
 		pageSettings.setPriority(layout::getPriority);
 		pageSettings.setSeoSettings(
 			() -> SEOSettingsUtil.getSeoSettings(

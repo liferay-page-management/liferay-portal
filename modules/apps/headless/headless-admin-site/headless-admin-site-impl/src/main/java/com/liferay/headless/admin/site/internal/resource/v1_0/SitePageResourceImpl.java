@@ -20,6 +20,7 @@ import com.liferay.headless.admin.site.dto.v1_0.PageSettings;
 import com.liferay.headless.admin.site.dto.v1_0.PageSpecification;
 import com.liferay.headless.admin.site.dto.v1_0.SEOSettings;
 import com.liferay.headless.admin.site.dto.v1_0.SitePage;
+import com.liferay.headless.admin.site.dto.v1_0.SitePageNavigationSettings;
 import com.liferay.headless.admin.site.dto.v1_0.SitemapSettings;
 import com.liferay.headless.admin.site.dto.v1_0.WidgetPageSettings;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.SitePageTypeUtil;
@@ -597,16 +598,20 @@ public class SitePageResourceImpl
 			throw new UnsupportedOperationException();
 		}
 
+		String queryString = StringPool.BLANK;
 		String target = StringPool.BLANK;
 		String targetTypeString = StringPool.BLANK;
-		NavigationSettings navigationSettings =
+		SitePageNavigationSettings sitePageNavigationSettings =
 			pageSettings.getNavigationSettings();
 
-		if (navigationSettings != null) {
-			target = navigationSettings.getTarget();
+		if (sitePageNavigationSettings != null) {
+			queryString = GetterUtil.getString(
+				sitePageNavigationSettings.getQueryString());
+
+			target = sitePageNavigationSettings.getTarget();
 
 			NavigationSettings.TargetType targetType =
-				navigationSettings.getTargetType();
+				sitePageNavigationSettings.getTargetType();
 
 			if (targetType == NavigationSettings.TargetType.NEW_TAB) {
 				targetTypeString = "useNewTab";
@@ -649,8 +654,7 @@ public class SitePageResourceImpl
 			unicodePropertiesWrapper = UnicodePropertiesBuilder.create(
 				true
 			).setProperty(
-				LayoutTypePortletConstants.QUERY_STRING,
-				GetterUtil.getString(pageSettings.getQueryString())
+				LayoutTypePortletConstants.QUERY_STRING, queryString
 			).setProperty(
 				LayoutTypePortletConstants.SITEMAP_CHANGEFREQ,
 				StringUtil.toLowerCase(changeFrequency.getValue())

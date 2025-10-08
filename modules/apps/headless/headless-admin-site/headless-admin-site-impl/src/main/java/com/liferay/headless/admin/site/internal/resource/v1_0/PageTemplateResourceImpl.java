@@ -17,6 +17,7 @@ import com.liferay.headless.admin.site.dto.v1_0.PageTemplateSet;
 import com.liferay.headless.admin.site.dto.v1_0.PageTemplateSettings;
 import com.liferay.headless.admin.site.dto.v1_0.WidgetPageSpecification;
 import com.liferay.headless.admin.site.dto.v1_0.WidgetPageTemplate;
+import com.liferay.headless.admin.site.dto.v1_0.WidgetPageTemplateNavigationSettings;
 import com.liferay.headless.admin.site.dto.v1_0.WidgetPageTemplateSettings;
 import com.liferay.headless.admin.site.internal.odata.entity.v1_0.PageTemplateEntityModel;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.GroupUtil;
@@ -730,15 +731,16 @@ public class PageTemplateResourceImpl
 				widgetPageTemplateSettings.getLayoutTemplateId(),
 				PropsValues.DEFAULT_LAYOUT_TEMPLATE_ID));
 
-		NavigationSettings navigationSettings =
-			widgetPageTemplateSettings.getNavigationSettings();
+		WidgetPageTemplateNavigationSettings
+			widgetPageTemplateNavigationSettings =
+				widgetPageTemplateSettings.getNavigationSettings();
 
-		if (navigationSettings != null) {
+		if (widgetPageTemplateNavigationSettings != null) {
 			unicodeProperties.setProperty(
-				"target", navigationSettings.getTarget());
+				"target", widgetPageTemplateNavigationSettings.getTarget());
 
 			if (Objects.equals(
-					navigationSettings.getTargetType(),
+					widgetPageTemplateNavigationSettings.getTargetType(),
 					NavigationSettings.TargetType.NEW_TAB)) {
 
 				unicodeProperties.setProperty("targetType", "useNewTab");

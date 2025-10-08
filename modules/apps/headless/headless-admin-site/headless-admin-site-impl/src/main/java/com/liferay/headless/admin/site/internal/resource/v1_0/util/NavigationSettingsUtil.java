@@ -6,6 +6,9 @@
 package com.liferay.headless.admin.site.internal.resource.v1_0.util;
 
 import com.liferay.headless.admin.site.dto.v1_0.NavigationSettings;
+import com.liferay.headless.admin.site.dto.v1_0.SitePageNavigationSettings;
+import com.liferay.headless.admin.site.dto.v1_0.WidgetPageTemplateNavigationSettings;
+import com.liferay.layout.admin.kernel.model.LayoutTypePortletConstants;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 
 import java.util.Objects;
@@ -17,24 +20,42 @@ import java.util.Objects;
 public class NavigationSettingsUtil {
 
 	public static NavigationSettings toNavigationSettings(
+		NavigationSettings.NavigationSettingsType navigationSettingsType,
 		UnicodeProperties unicodeProperties) {
 
-		return new NavigationSettings() {
-			{
-				setTarget(() -> unicodeProperties.getProperty("target"));
-				setTargetType(
-					() -> {
-						if (Objects.equals(
-								unicodeProperties.getProperty("targetType"),
-								"useNewTab")) {
+		NavigationSettings navigationSettings = null;
 
-							return TargetType.NEW_TAB;
-						}
+		if (navigationSettingsType ==
+				NavigationSettings.NavigationSettingsType.SITE_PAGE) {
 
-						return TargetType.SPECIFIC_FRAME;
-					});
-			}
-		};
+			navigationSettings = new SitePageNavigationSettings();
+
+			SitePageNavigationSettings sitePageNavigationSettings =
+				(SitePageNavigationSettings)navigationSettings;
+
+			sitePageNavigationSettings.setQueryString(
+				() -> unicodeProperties.getProperty(
+					LayoutTypePortletConstants.QUERY_STRING));
+		}
+		else {
+			navigationSettings = new WidgetPageTemplateNavigationSettings();
+		}
+
+		navigationSettings.setTarget(
+			() -> unicodeProperties.getProperty("target"));
+		navigationSettings.setTargetType(
+			() -> {
+				if (Objects.equals(
+						unicodeProperties.getProperty("targetType"),
+						"useNewTab")) {
+
+					return NavigationSettings.TargetType.NEW_TAB;
+				}
+
+				return NavigationSettings.TargetType.SPECIFIC_FRAME;
+			});
+
+		return navigationSettings;
 	}
 
 }
