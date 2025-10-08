@@ -1944,7 +1944,18 @@ components:
             # @review
             description:
                 Represents settings related with the site navigation of a page.
+            discriminator:
+                mapping:
+                    SitePage: "#/components/schemas/SitePageNavigationSettings"
+                    WidgetPageTemplate: "#/components/schemas/WidgetPageTemplateNavigationSettings"
+                propertyName: navigationSettingsType
             properties:
+                navigationSettingsType:
+                    # @review
+                    description:
+                        The navigation settings's type (SitePage, WidgetPageTemplate).
+                    enum: [SitePage, WidgetPageTemplate]
+                    type: string
                 target:
                     # @review
                     description:
