@@ -1,14 +1,18 @@
 /**
- * SPDX-FileCopyrightText: (c) 2024 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.headless.admin.site.dto.v1_0;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
 import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 
@@ -22,6 +26,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * @author Rubén Pulido
@@ -29,21 +34,66 @@ import java.util.Set;
  */
 @Generated("")
 @GraphQLName(
-	description = "The settings of a content page.",
-	value = "ContentPageSettings"
+	description = "The navigation settings of a site page.",
+	value = "SitePageNavigationSettings"
 )
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "ContentPageSettings")
-public class ContentPageSettings extends PageSettings implements Serializable {
+@XmlRootElement(name = "SitePageNavigationSettings")
+public class SitePageNavigationSettings
+	extends NavigationSettings implements Serializable {
 
-	public static ContentPageSettings toDTO(String json) {
-		return ObjectMapperUtil.readValue(ContentPageSettings.class, json);
+	public static SitePageNavigationSettings toDTO(String json) {
+		return ObjectMapperUtil.readValue(
+			SitePageNavigationSettings.class, json);
 	}
 
-	public static ContentPageSettings unsafeToDTO(String json) {
+	public static SitePageNavigationSettings unsafeToDTO(String json) {
 		return ObjectMapperUtil.unsafeReadValue(
-			ContentPageSettings.class, json);
+			SitePageNavigationSettings.class, json);
 	}
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The default parameter for a page."
+	)
+	public String getQueryString() {
+		if (_queryStringSupplier != null) {
+			queryString = _queryStringSupplier.get();
+
+			_queryStringSupplier = null;
+		}
+
+		return queryString;
+	}
+
+	public void setQueryString(String queryString) {
+		this.queryString = queryString;
+
+		_queryStringSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setQueryString(
+		UnsafeSupplier<String, Exception> queryStringUnsafeSupplier) {
+
+		_queryStringSupplier = () -> {
+			try {
+				return queryStringUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "The default parameter for a page.")
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String queryString;
+
+	@JsonIgnore
+	private Supplier<String> _queryStringSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -51,13 +101,15 @@ public class ContentPageSettings extends PageSettings implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof ContentPageSettings)) {
+		if (!(object instanceof SitePageNavigationSettings)) {
 			return false;
 		}
 
-		ContentPageSettings contentPageSettings = (ContentPageSettings)object;
+		SitePageNavigationSettings sitePageNavigationSettings =
+			(SitePageNavigationSettings)object;
 
-		return Objects.equals(toString(), contentPageSettings.toString());
+		return Objects.equals(
+			toString(), sitePageNavigationSettings.toString());
 	}
 
 	@Override
@@ -72,100 +124,67 @@ public class ContentPageSettings extends PageSettings implements Serializable {
 
 		sb.append("{");
 
-		CustomMetaTag[] customMetaTags = getCustomMetaTags();
+		String queryString = getQueryString();
 
-		if (customMetaTags != null) {
+		if (queryString != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"customMetaTags\": ");
-
-			sb.append("[");
-
-			for (int i = 0; i < customMetaTags.length; i++) {
-				sb.append(String.valueOf(customMetaTags[i]));
-
-				if ((i + 1) < customMetaTags.length) {
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
-		}
-
-		Boolean hiddenFromNavigation = getHiddenFromNavigation();
-
-		if (hiddenFromNavigation != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"hiddenFromNavigation\": ");
-
-			sb.append(hiddenFromNavigation);
-		}
-
-		SitePageNavigationSettings navigationSettings = getNavigationSettings();
-
-		if (navigationSettings != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"navigationSettings\": ");
-
-			sb.append(String.valueOf(navigationSettings));
-		}
-
-		OpenGraphSettings openGraphSettings = getOpenGraphSettings();
-
-		if (openGraphSettings != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"openGraphSettings\": ");
-
-			sb.append(String.valueOf(openGraphSettings));
-		}
-
-		Integer priority = getPriority();
-
-		if (priority != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"priority\": ");
-
-			sb.append(priority);
-		}
-
-		SEOSettings seoSettings = getSeoSettings();
-
-		if (seoSettings != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"seoSettings\": ");
-
-			sb.append(String.valueOf(seoSettings));
-		}
-
-		Type type = getType();
-
-		if (type != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"type\": ");
+			sb.append("\"queryString\": ");
 
 			sb.append("\"");
 
-			sb.append(type);
+			sb.append(_escape(queryString));
+
+			sb.append("\"");
+		}
+
+		NavigationSettingsType navigationSettingsType =
+			getNavigationSettingsType();
+
+		if (navigationSettingsType != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"navigationSettingsType\": ");
+
+			sb.append("\"");
+
+			sb.append(navigationSettingsType);
+
+			sb.append("\"");
+		}
+
+		String target = getTarget();
+
+		if (target != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"target\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(target));
+
+			sb.append("\"");
+		}
+
+		TargetType targetType = getTargetType();
+
+		if (targetType != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"targetType\": ");
+
+			sb.append("\"");
+
+			sb.append(targetType);
 
 			sb.append("\"");
 		}
@@ -177,7 +196,7 @@ public class ContentPageSettings extends PageSettings implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		accessMode = io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.headless.admin.site.dto.v1_0.ContentPageSettings",
+		defaultValue = "com.liferay.headless.admin.site.dto.v1_0.SitePageNavigationSettings",
 		name = "x-class-name"
 	)
 	public String xClassName;

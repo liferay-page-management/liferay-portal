@@ -98,10 +98,10 @@ public class WidgetPageTemplateSettings
 	private Supplier<String> _layoutTemplateIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The widget page template's site navigation settings."
+		description = "The widget page template's navigation settings."
 	)
 	@Valid
-	public NavigationSettings getNavigationSettings() {
+	public WidgetPageTemplateNavigationSettings getNavigationSettings() {
 		if (_navigationSettingsSupplier != null) {
 			navigationSettings = _navigationSettingsSupplier.get();
 
@@ -111,7 +111,9 @@ public class WidgetPageTemplateSettings
 		return navigationSettings;
 	}
 
-	public void setNavigationSettings(NavigationSettings navigationSettings) {
+	public void setNavigationSettings(
+		WidgetPageTemplateNavigationSettings navigationSettings) {
+
 		this.navigationSettings = navigationSettings;
 
 		_navigationSettingsSupplier = null;
@@ -119,7 +121,7 @@ public class WidgetPageTemplateSettings
 
 	@JsonIgnore
 	public void setNavigationSettings(
-		UnsafeSupplier<NavigationSettings, Exception>
+		UnsafeSupplier<WidgetPageTemplateNavigationSettings, Exception>
 			navigationSettingsUnsafeSupplier) {
 
 		_navigationSettingsSupplier = () -> {
@@ -136,13 +138,14 @@ public class WidgetPageTemplateSettings
 	}
 
 	@GraphQLField(
-		description = "The widget page template's site navigation settings."
+		description = "The widget page template's navigation settings."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected NavigationSettings navigationSettings;
+	protected WidgetPageTemplateNavigationSettings navigationSettings;
 
 	@JsonIgnore
-	private Supplier<NavigationSettings> _navigationSettingsSupplier;
+	private Supplier<WidgetPageTemplateNavigationSettings>
+		_navigationSettingsSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -189,7 +192,8 @@ public class WidgetPageTemplateSettings
 			sb.append("\"");
 		}
 
-		NavigationSettings navigationSettings = getNavigationSettings();
+		WidgetPageTemplateNavigationSettings navigationSettings =
+			getNavigationSettings();
 
 		if (navigationSettings != null) {
 			if (sb.length() > 1) {

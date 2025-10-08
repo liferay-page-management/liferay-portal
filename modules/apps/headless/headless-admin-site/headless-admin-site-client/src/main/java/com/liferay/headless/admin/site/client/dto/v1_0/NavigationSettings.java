@@ -19,11 +19,43 @@ import java.util.Objects;
  * @generated
  */
 @Generated("")
-public class NavigationSettings implements Cloneable, Serializable {
+public abstract class NavigationSettings implements Cloneable, Serializable {
 
 	public static NavigationSettings toDTO(String json) {
 		return NavigationSettingsSerDes.toDTO(json);
 	}
+
+	public NavigationSettingsType getNavigationSettingsType() {
+		return navigationSettingsType;
+	}
+
+	public String getNavigationSettingsTypeAsString() {
+		if (navigationSettingsType == null) {
+			return null;
+		}
+
+		return navigationSettingsType.toString();
+	}
+
+	public void setNavigationSettingsType(
+		NavigationSettingsType navigationSettingsType) {
+
+		this.navigationSettingsType = navigationSettingsType;
+	}
+
+	public void setNavigationSettingsType(
+		UnsafeSupplier<NavigationSettingsType, Exception>
+			navigationSettingsTypeUnsafeSupplier) {
+
+		try {
+			navigationSettingsType = navigationSettingsTypeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected NavigationSettingsType navigationSettingsType;
 
 	public String getTarget() {
 		return target;
@@ -104,6 +136,39 @@ public class NavigationSettings implements Cloneable, Serializable {
 
 	public String toString() {
 		return NavigationSettingsSerDes.toJSON(this);
+	}
+
+	public static enum NavigationSettingsType {
+
+		SITE_PAGE("SitePage"), WIDGET_PAGE_TEMPLATE("WidgetPageTemplate");
+
+		public static NavigationSettingsType create(String value) {
+			for (NavigationSettingsType navigationSettingsType : values()) {
+				if (Objects.equals(navigationSettingsType.getValue(), value) ||
+					Objects.equals(navigationSettingsType.name(), value)) {
+
+					return navigationSettingsType;
+				}
+			}
+
+			return null;
+		}
+
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private NavigationSettingsType(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
 	}
 
 	public static enum TargetType {

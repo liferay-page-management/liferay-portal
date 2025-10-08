@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2024 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -29,20 +29,24 @@ import java.util.Set;
  */
 @Generated("")
 @GraphQLName(
-	description = "The settings of a content page.",
-	value = "ContentPageSettings"
+	description = "The navigation settings of a widget page template.",
+	value = "WidgetPageTemplateNavigationSettings"
 )
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "ContentPageSettings")
-public class ContentPageSettings extends PageSettings implements Serializable {
+@XmlRootElement(name = "WidgetPageTemplateNavigationSettings")
+public class WidgetPageTemplateNavigationSettings
+	extends NavigationSettings implements Serializable {
 
-	public static ContentPageSettings toDTO(String json) {
-		return ObjectMapperUtil.readValue(ContentPageSettings.class, json);
+	public static WidgetPageTemplateNavigationSettings toDTO(String json) {
+		return ObjectMapperUtil.readValue(
+			WidgetPageTemplateNavigationSettings.class, json);
 	}
 
-	public static ContentPageSettings unsafeToDTO(String json) {
+	public static WidgetPageTemplateNavigationSettings unsafeToDTO(
+		String json) {
+
 		return ObjectMapperUtil.unsafeReadValue(
-			ContentPageSettings.class, json);
+			WidgetPageTemplateNavigationSettings.class, json);
 	}
 
 	@Override
@@ -51,13 +55,16 @@ public class ContentPageSettings extends PageSettings implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof ContentPageSettings)) {
+		if (!(object instanceof WidgetPageTemplateNavigationSettings)) {
 			return false;
 		}
 
-		ContentPageSettings contentPageSettings = (ContentPageSettings)object;
+		WidgetPageTemplateNavigationSettings
+			widgetPageTemplateNavigationSettings =
+				(WidgetPageTemplateNavigationSettings)object;
 
-		return Objects.equals(toString(), contentPageSettings.toString());
+		return Objects.equals(
+			toString(), widgetPageTemplateNavigationSettings.toString());
 	}
 
 	@Override
@@ -72,100 +79,51 @@ public class ContentPageSettings extends PageSettings implements Serializable {
 
 		sb.append("{");
 
-		CustomMetaTag[] customMetaTags = getCustomMetaTags();
+		NavigationSettingsType navigationSettingsType =
+			getNavigationSettingsType();
 
-		if (customMetaTags != null) {
+		if (navigationSettingsType != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"customMetaTags\": ");
-
-			sb.append("[");
-
-			for (int i = 0; i < customMetaTags.length; i++) {
-				sb.append(String.valueOf(customMetaTags[i]));
-
-				if ((i + 1) < customMetaTags.length) {
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
-		}
-
-		Boolean hiddenFromNavigation = getHiddenFromNavigation();
-
-		if (hiddenFromNavigation != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"hiddenFromNavigation\": ");
-
-			sb.append(hiddenFromNavigation);
-		}
-
-		SitePageNavigationSettings navigationSettings = getNavigationSettings();
-
-		if (navigationSettings != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"navigationSettings\": ");
-
-			sb.append(String.valueOf(navigationSettings));
-		}
-
-		OpenGraphSettings openGraphSettings = getOpenGraphSettings();
-
-		if (openGraphSettings != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"openGraphSettings\": ");
-
-			sb.append(String.valueOf(openGraphSettings));
-		}
-
-		Integer priority = getPriority();
-
-		if (priority != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"priority\": ");
-
-			sb.append(priority);
-		}
-
-		SEOSettings seoSettings = getSeoSettings();
-
-		if (seoSettings != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"seoSettings\": ");
-
-			sb.append(String.valueOf(seoSettings));
-		}
-
-		Type type = getType();
-
-		if (type != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"type\": ");
+			sb.append("\"navigationSettingsType\": ");
 
 			sb.append("\"");
 
-			sb.append(type);
+			sb.append(navigationSettingsType);
+
+			sb.append("\"");
+		}
+
+		String target = getTarget();
+
+		if (target != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"target\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(target));
+
+			sb.append("\"");
+		}
+
+		TargetType targetType = getTargetType();
+
+		if (targetType != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"targetType\": ");
+
+			sb.append("\"");
+
+			sb.append(targetType);
 
 			sb.append("\"");
 		}
@@ -177,7 +135,7 @@ public class ContentPageSettings extends PageSettings implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		accessMode = io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.headless.admin.site.dto.v1_0.ContentPageSettings",
+		defaultValue = "com.liferay.headless.admin.site.dto.v1_0.WidgetPageTemplateNavigationSettings",
 		name = "x-class-name"
 	)
 	public String xClassName;

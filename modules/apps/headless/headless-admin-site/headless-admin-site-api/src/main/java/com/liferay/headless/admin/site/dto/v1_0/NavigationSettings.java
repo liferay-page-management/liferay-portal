@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import com.liferay.petra.function.UnsafeSupplier;
@@ -43,8 +45,23 @@ import java.util.function.Supplier;
 	value = "NavigationSettings"
 )
 @JsonFilter("Liferay.Vulcan")
+@JsonSubTypes(
+	{
+		@JsonSubTypes.Type(
+			name = "SitePage", value = SitePageNavigationSettings.class
+		),
+		@JsonSubTypes.Type(
+			name = "WidgetPageTemplate",
+			value = WidgetPageTemplateNavigationSettings.class
+		)
+	}
+)
+@JsonTypeInfo(
+	include = JsonTypeInfo.As.PROPERTY, property = "navigationSettingsType",
+	use = JsonTypeInfo.Id.NAME, visible = true
+)
 @XmlRootElement(name = "NavigationSettings")
-public class NavigationSettings implements Serializable {
+public abstract class NavigationSettings implements Serializable {
 
 	public static NavigationSettings toDTO(String json) {
 		return ObjectMapperUtil.readValue(NavigationSettings.class, json);
@@ -53,6 +70,68 @@ public class NavigationSettings implements Serializable {
 	public static NavigationSettings unsafeToDTO(String json) {
 		return ObjectMapperUtil.unsafeReadValue(NavigationSettings.class, json);
 	}
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The navigation settings's type (SitePage, WidgetPageTemplate)."
+	)
+	@JsonGetter("navigationSettingsType")
+	@Valid
+	public NavigationSettingsType getNavigationSettingsType() {
+		if (_navigationSettingsTypeSupplier != null) {
+			navigationSettingsType = _navigationSettingsTypeSupplier.get();
+
+			_navigationSettingsTypeSupplier = null;
+		}
+
+		return navigationSettingsType;
+	}
+
+	@JsonIgnore
+	public String getNavigationSettingsTypeAsString() {
+		NavigationSettingsType navigationSettingsType =
+			getNavigationSettingsType();
+
+		if (navigationSettingsType == null) {
+			return null;
+		}
+
+		return navigationSettingsType.toString();
+	}
+
+	public void setNavigationSettingsType(
+		NavigationSettingsType navigationSettingsType) {
+
+		this.navigationSettingsType = navigationSettingsType;
+
+		_navigationSettingsTypeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setNavigationSettingsType(
+		UnsafeSupplier<NavigationSettingsType, Exception>
+			navigationSettingsTypeUnsafeSupplier) {
+
+		_navigationSettingsTypeSupplier = () -> {
+			try {
+				return navigationSettingsTypeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The navigation settings's type (SitePage, WidgetPageTemplate)."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected NavigationSettingsType navigationSettingsType;
+
+	@JsonIgnore
+	private Supplier<NavigationSettingsType> _navigationSettingsTypeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The ID of the target specific frame."
@@ -182,6 +261,23 @@ public class NavigationSettings implements Serializable {
 
 		sb.append("{");
 
+		NavigationSettingsType navigationSettingsType =
+			getNavigationSettingsType();
+
+		if (navigationSettingsType != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"navigationSettingsType\": ");
+
+			sb.append("\"");
+
+			sb.append(navigationSettingsType);
+
+			sb.append("\"");
+		}
+
 		String target = getTarget();
 
 		if (target != null) {
@@ -225,6 +321,44 @@ public class NavigationSettings implements Serializable {
 		name = "x-class-name"
 	)
 	public String xClassName;
+
+	@GraphQLName("NavigationSettingsType")
+	public static enum NavigationSettingsType {
+
+		SITE_PAGE("SitePage"), WIDGET_PAGE_TEMPLATE("WidgetPageTemplate");
+
+		@JsonCreator
+		public static NavigationSettingsType create(String value) {
+			if ((value == null) || value.equals("")) {
+				return null;
+			}
+
+			for (NavigationSettingsType navigationSettingsType : values()) {
+				if (Objects.equals(navigationSettingsType.getValue(), value)) {
+					return navigationSettingsType;
+				}
+			}
+
+			throw new IllegalArgumentException("Invalid enum value: " + value);
+		}
+
+		@JsonValue
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private NavigationSettingsType(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
+	}
 
 	@GraphQLName("TargetType")
 	public static enum TargetType {

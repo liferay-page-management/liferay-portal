@@ -6,6 +6,8 @@
 package com.liferay.headless.admin.site.client.serdes.v1_0;
 
 import com.liferay.headless.admin.site.client.dto.v1_0.NavigationSettings;
+import com.liferay.headless.admin.site.client.dto.v1_0.SitePageNavigationSettings;
+import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPageTemplateNavigationSettings;
 import com.liferay.headless.admin.site.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
@@ -42,41 +44,31 @@ public class NavigationSettingsSerDes {
 			return "null";
 		}
 
-		StringBuilder sb = new StringBuilder();
+		NavigationSettings.NavigationSettingsType navigationSettingsType =
+			navigationSettings.getNavigationSettingsType();
 
-		sb.append("{");
+		if (navigationSettingsType != null) {
+			String navigationSettingsTypeString =
+				navigationSettingsType.toString();
 
-		if (navigationSettings.getTarget() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
+			if (navigationSettingsTypeString.equals("SitePage")) {
+				return SitePageNavigationSettingsSerDes.toJSON(
+					(SitePageNavigationSettings)navigationSettings);
 			}
 
-			sb.append("\"target\": ");
-
-			sb.append("\"");
-
-			sb.append(_escape(navigationSettings.getTarget()));
-
-			sb.append("\"");
-		}
-
-		if (navigationSettings.getTargetType() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
+			if (navigationSettingsTypeString.equals("WidgetPageTemplate")) {
+				return WidgetPageTemplateNavigationSettingsSerDes.toJSON(
+					(WidgetPageTemplateNavigationSettings)navigationSettings);
 			}
 
-			sb.append("\"targetType\": ");
-
-			sb.append("\"");
-
-			sb.append(navigationSettings.getTargetType());
-
-			sb.append("\"");
+			throw new IllegalArgumentException(
+				"Unknown navigationSettingsType " +
+					navigationSettingsTypeString);
 		}
-
-		sb.append("}");
-
-		return sb.toString();
+		else {
+			throw new IllegalArgumentException(
+				"Missing navigationSettingsType parameter");
+		}
 	}
 
 	public static Map<String, Object> toMap(String json) {
@@ -94,6 +86,15 @@ public class NavigationSettingsSerDes {
 		}
 
 		Map<String, String> map = new TreeMap<>();
+
+		if (navigationSettings.getNavigationSettingsType() == null) {
+			map.put("navigationSettingsType", null);
+		}
+		else {
+			map.put(
+				"navigationSettingsType",
+				String.valueOf(navigationSettings.getNavigationSettingsType()));
+		}
 
 		if (navigationSettings.getTarget() == null) {
 			map.put("target", null);
@@ -119,7 +120,7 @@ public class NavigationSettingsSerDes {
 
 		@Override
 		protected NavigationSettings createDTO() {
-			return new NavigationSettings();
+			return null;
 		}
 
 		@Override
@@ -129,7 +130,10 @@ public class NavigationSettingsSerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "target")) {
+			if (Objects.equals(jsonParserFieldName, "navigationSettingsType")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "target")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "targetType")) {
@@ -140,11 +144,47 @@ public class NavigationSettingsSerDes {
 		}
 
 		@Override
+		public NavigationSettings parseToDTO(String json) {
+			Map<String, Object> jsonMap = parseToMap(json);
+
+			Object navigationSettingsType = jsonMap.get(
+				"navigationSettingsType");
+
+			if (navigationSettingsType != null) {
+				String navigationSettingsTypeString =
+					navigationSettingsType.toString();
+
+				if (navigationSettingsTypeString.equals("SitePage")) {
+					return SitePageNavigationSettings.toDTO(json);
+				}
+
+				if (navigationSettingsTypeString.equals("WidgetPageTemplate")) {
+					return WidgetPageTemplateNavigationSettings.toDTO(json);
+				}
+
+				throw new IllegalArgumentException(
+					"Unknown navigationSettingsType " +
+						navigationSettingsTypeString);
+			}
+			else {
+				throw new IllegalArgumentException(
+					"Missing navigationSettingsType parameter");
+			}
+		}
+
+		@Override
 		protected void setField(
 			NavigationSettings navigationSettings, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "target")) {
+			if (Objects.equals(jsonParserFieldName, "navigationSettingsType")) {
+				if (jsonParserFieldValue != null) {
+					navigationSettings.setNavigationSettingsType(
+						NavigationSettings.NavigationSettingsType.create(
+							(String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "target")) {
 				if (jsonParserFieldValue != null) {
 					navigationSettings.setTarget((String)jsonParserFieldValue);
 				}

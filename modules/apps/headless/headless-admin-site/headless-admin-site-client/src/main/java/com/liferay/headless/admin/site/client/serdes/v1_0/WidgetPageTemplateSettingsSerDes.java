@@ -190,7 +190,7 @@ public class WidgetPageTemplateSettingsSerDes {
 
 				if (jsonParserFieldValue != null) {
 					widgetPageTemplateSettings.setNavigationSettings(
-						NavigationSettingsSerDes.toDTO(
+						WidgetPageTemplateNavigationSettingsSerDes.toDTO(
 							(String)jsonParserFieldValue));
 				}
 			}

@@ -47,16 +47,18 @@ public class WidgetPageTemplateSettings
 
 	protected String layoutTemplateId;
 
-	public NavigationSettings getNavigationSettings() {
+	public WidgetPageTemplateNavigationSettings getNavigationSettings() {
 		return navigationSettings;
 	}
 
-	public void setNavigationSettings(NavigationSettings navigationSettings) {
+	public void setNavigationSettings(
+		WidgetPageTemplateNavigationSettings navigationSettings) {
+
 		this.navigationSettings = navigationSettings;
 	}
 
 	public void setNavigationSettings(
-		UnsafeSupplier<NavigationSettings, Exception>
+		UnsafeSupplier<WidgetPageTemplateNavigationSettings, Exception>
 			navigationSettingsUnsafeSupplier) {
 
 		try {
@@ -67,7 +69,7 @@ public class WidgetPageTemplateSettings
 		}
 	}
 
-	protected NavigationSettings navigationSettings;
+	protected WidgetPageTemplateNavigationSettings navigationSettings;
 
 	@Override
 	public WidgetPageTemplateSettings clone()
