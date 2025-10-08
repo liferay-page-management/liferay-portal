@@ -13,7 +13,7 @@ import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.headless.admin.site.dto.v1_0.DefaultFragmentReference;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentInstancePageElementDefinition;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentItemExternalReference;
-import com.liferay.headless.admin.site.dto.v1_0.PageElementDefinition;
+import com.liferay.headless.admin.site.dto.v1_0.FragmentReference;
 import com.liferay.headless.admin.site.dto.v1_0.Scope;
 import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.portal.kernel.model.Group;
@@ -95,36 +95,37 @@ public class FragmentInstancePageElementDefinitionDTOConverter
 						fragmentEntryLink.getFragmentEntryId());
 
 				if (fragmentEntry != null) {
-					return new FragmentItemExternalReference() {
-						{
-							setExternalReferenceCode(
-								fragmentEntry::getExternalReferenceCode);
-							setFragmentReferenceType(
-								() ->
-									FragmentReferenceType.
-										FRAGMENT_ITEM_EXTERNAL_REFERENCE);
-							setScope(
-								() -> {
-									if (fragmentEntry.getGroupId() ==
-											fragmentEntryLink.getGroupId()) {
+					FragmentItemExternalReference
+						fragmentItemExternalReference =
+							new FragmentItemExternalReference();
 
-										return null;
-									}
+					fragmentItemExternalReference.setExternalReferenceCode(
+						fragmentEntry::getExternalReferenceCode);
+					fragmentItemExternalReference.setFragmentReferenceType(
+						() ->
+							FragmentReference.FragmentReferenceType.
+								FRAGMENT_ITEM_EXTERNAL_REFERENCE);
+					fragmentItemExternalReference.setScope(
+						() -> {
+							if (fragmentEntry.getGroupId() ==
+									fragmentEntryLink.getGroupId()) {
 
-									Group group = _groupLocalService.getGroup(
-										fragmentEntry.getGroupId());
+								return null;
+							}
 
-									return new Scope() {
-										{
-											setExternalReferenceCode(
-												group::
-													getExternalReferenceCode);
-											setType(() -> Type.SITE);
-										}
-									};
-								});
-						}
-					};
+							Group group = _groupLocalService.getGroup(
+								fragmentEntry.getGroupId());
+
+							return new Scope() {
+								{
+									setExternalReferenceCode(
+										group::getExternalReferenceCode);
+									setType(() -> Type.SITE);
+								}
+							};
+						});
+
+					return fragmentItemExternalReference;
 				}
 
 				Map<String, FragmentEntry> fragmentEntries =
@@ -136,16 +137,17 @@ public class FragmentInstancePageElementDefinitionDTOConverter
 					return null;
 				}
 
-				return new DefaultFragmentReference() {
-					{
-						setDefaultFragmentKey(
-							fragmentEntryLink::getRendererKey);
-						setFragmentReferenceType(
-							() ->
-								FragmentReferenceType.
-									DEFAULT_FRAGMENT_REFERENCE);
-					}
-				};
+				DefaultFragmentReference defaultFragmentReference =
+					new DefaultFragmentReference();
+
+				defaultFragmentReference.setDefaultFragmentKey(
+					fragmentEntryLink::getRendererKey);
+				defaultFragmentReference.setFragmentReferenceType(
+					() ->
+						FragmentReference.FragmentReferenceType.
+							DEFAULT_FRAGMENT_REFERENCE);
+
+				return defaultFragmentReference;
 			});
 		fragmentInstancePageElementDefinition.setFragmentType(
 			() -> {
