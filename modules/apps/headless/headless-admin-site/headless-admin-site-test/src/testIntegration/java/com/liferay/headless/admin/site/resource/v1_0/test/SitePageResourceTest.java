@@ -23,6 +23,7 @@ import com.liferay.headless.admin.site.client.dto.v1_0.PageSpecification;
 import com.liferay.headless.admin.site.client.dto.v1_0.SEOSettings;
 import com.liferay.headless.admin.site.client.dto.v1_0.Scope;
 import com.liferay.headless.admin.site.client.dto.v1_0.SitePage;
+import com.liferay.headless.admin.site.client.dto.v1_0.SitePageNavigationSettings;
 import com.liferay.headless.admin.site.client.dto.v1_0.SitemapSettings;
 import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPageSettings;
 import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPageSpecification;
@@ -799,8 +800,11 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				}
 			});
 		pageSettings.setNavigationSettings(
-			() -> new NavigationSettings() {
+			() -> new SitePageNavigationSettings() {
 				{
+					setNavigationSettingsType(
+						NavigationSettings.NavigationSettingsType.SITE_PAGE);
+					setQueryString(RandomTestUtil::randomString);
 					setTarget(RandomTestUtil::randomString);
 					setTargetType(
 						() -> RandomTestUtil.randomEnum(
@@ -908,7 +912,6 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 						});
 				}
 			});
-		pageSettings.setQueryString(RandomTestUtil::randomString);
 
 		return pageSettings;
 	}
@@ -1498,8 +1501,11 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		widgetPageSettings.setCustomMetaTags(new CustomMetaTag[0]);
 		widgetPageSettings.setLayoutTemplateId("1_2_columns_i");
 		widgetPageSettings.setNavigationSettings(
-			new NavigationSettings() {
+			new SitePageNavigationSettings() {
 				{
+					setNavigationSettingsType(
+						NavigationSettings.NavigationSettingsType.SITE_PAGE);
+					setQueryString(() -> null);
 					setTarget(() -> null);
 					setTargetType(TargetType.SPECIFIC_FRAME);
 				}
@@ -1512,7 +1518,6 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 					setTitle_i18n(new HashMap<>());
 				}
 			});
-		widgetPageSettings.setQueryString(() -> null);
 		widgetPageSettings.setSeoSettings(
 			new SEOSettings() {
 				{
@@ -1617,8 +1622,11 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		widgetPageSettings.setInheritChanges(false);
 		widgetPageSettings.setLayoutTemplateId("2_columns_ii");
 		widgetPageSettings.setNavigationSettings(
-			new NavigationSettings() {
+			new SitePageNavigationSettings() {
 				{
+					setNavigationSettingsType(
+						NavigationSettings.NavigationSettingsType.SITE_PAGE);
+					setQueryString(() -> null);
 					setTarget(() -> null);
 					setTargetType(TargetType.SPECIFIC_FRAME);
 				}
@@ -1631,7 +1639,6 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 					setTitle_i18n(new HashMap<>());
 				}
 			});
-		widgetPageSettings.setQueryString(() -> null);
 		widgetPageSettings.setSeoSettings(
 			new SEOSettings() {
 				{

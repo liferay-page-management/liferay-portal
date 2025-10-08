@@ -21,6 +21,7 @@ import com.liferay.headless.admin.site.client.dto.v1_0.PageTemplate;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageTemplateSet;
 import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPageSpecification;
 import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPageTemplate;
+import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPageTemplateNavigationSettings;
 import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPageTemplateSettings;
 import com.liferay.headless.admin.site.client.pagination.Page;
 import com.liferay.headless.admin.site.client.problem.Problem;
@@ -503,8 +504,11 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 				{
 					setLayoutTemplateId(PropsValues.DEFAULT_LAYOUT_TEMPLATE_ID);
 					setNavigationSettings(
-						new NavigationSettings() {
+						new WidgetPageTemplateNavigationSettings() {
 							{
+								setNavigationSettingsType(
+									NavigationSettings.NavigationSettingsType.
+										WIDGET_PAGE_TEMPLATE);
 								setTargetType(TargetType.SPECIFIC_FRAME);
 							}
 						});
@@ -984,8 +988,12 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 						return "2_columns_ii";
 					});
 				setNavigationSettings(
-					new NavigationSettings() {
+					new WidgetPageTemplateNavigationSettings() {
 						{
+							setNavigationSettingsType(
+								NavigationSettings.NavigationSettingsType.
+									WIDGET_PAGE_TEMPLATE);
+
 							if (RandomTestUtil.randomBoolean()) {
 								setTarget("_blank");
 								setTargetType(() -> TargetType.NEW_TAB);
