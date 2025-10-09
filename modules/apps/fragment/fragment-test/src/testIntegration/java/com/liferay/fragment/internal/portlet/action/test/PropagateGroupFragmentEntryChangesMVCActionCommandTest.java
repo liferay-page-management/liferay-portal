@@ -28,16 +28,15 @@ import com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.Sync;
-import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -76,115 +75,43 @@ public class PropagateGroupFragmentEntryChangesMVCActionCommandTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_group = GroupTestUtil.addGroup();
+		_group = _groupLocalService.fetchGroup(TestPropsValues.getGroupId());
 
 		_company = _companyLocalService.getCompany(_group.getCompanyId());
+
+		Group globalGroup = _company.getGroup();
 
 		_fragmentCollection = FragmentTestUtil.addFragmentCollection(
 			_group.getGroupId());
 
+		_globalFragmentCollection = FragmentTestUtil.addFragmentCollection(
+			globalGroup.getGroupId());
+
 		_fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
 			_fragmentCollection.getFragmentCollectionId());
 
-		_layout = LayoutTestUtil.addTypeContentLayout(_group);
+		_globalFragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
+			_globalFragmentCollection.getFragmentCollectionId());
 	}
 
 	@Test
 	public void testAddFragmentEntryLink() throws Exception {
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				_group, TestPropsValues.getUserId());
-
-		FragmentEntryLink fragmentEntryLink =
-			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
-				_fragmentEntry.getExternalReferenceCode(),
-				_fragmentEntry.getScopeERC(),
-				_segmentsExperienceLocalService.
-					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
-				_layout.getPlid(), "css value", "<div>HTML value</div>",
-				"js value", "{fieldSets: []}", StringPool.BLANK,
-				StringPool.BLANK, 0, null, _fragmentEntry.getType(),
-				serviceContext);
-
-		_fragmentEntry.setCss("new css value");
-		_fragmentEntry.setHtml("<div>new updated HTML value</div>");
-		_fragmentEntry.setJs("new js value");
-
-		_fragmentEntry = _fragmentEntryLocalService.updateFragmentEntry(
-			_fragmentEntry);
-
-		ReflectionTestUtil.invoke(
-			_mvcActionCommand, "processAction",
-			new Class<?>[] {ActionRequest.class, ActionResponse.class},
-			_getMockLiferayPortletActionRequest(),
-			new MockLiferayPortletActionResponse());
-
-		FragmentEntryLink persistedFragmentEntryLink =
-			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
-				fragmentEntryLink.getFragmentEntryLinkId());
-
-		Assert.assertEquals(
-			_fragmentEntry.getCss(), persistedFragmentEntryLink.getCss());
-		Assert.assertEquals(
-			_fragmentEntry.getHtml(), persistedFragmentEntryLink.getHtml());
-		Assert.assertEquals(
-			_fragmentEntry.getJs(), persistedFragmentEntryLink.getJs());
+		_testAddFragmentEntryLink(_fragmentEntry);
+		_testAddFragmentEntryLink(_globalFragmentEntry);
 	}
 
 	@Test
 	public void testPropagateChangesOfFragmentEntryToLockedContentLayout()
 		throws Exception {
 
-		FragmentEntryLink fragmentEntryLink =
-			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
-				_fragmentEntry.getExternalReferenceCode(),
-				_fragmentEntry.getScopeERC(),
-				_segmentsExperienceLocalService.
-					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
-				_layout.getPlid(), "css value", "<div>HTML value</div>",
-				"js value", "{fieldSets: []}", StringPool.BLANK,
-				StringPool.BLANK, 0, null, _fragmentEntry.getType(),
-				ServiceContextTestUtil.getServiceContext(
-					_group, TestPropsValues.getUserId()));
-
-		_fragmentEntry.setCss("new css value");
-		_fragmentEntry.setHtml("<div>new updated HTML value</div>");
-		_fragmentEntry.setJs("new js value");
-
-		_fragmentEntry = _fragmentEntryLocalService.updateFragmentEntry(
+		_testPropagateChangesOfFragmentEntryToLockedContentLayout(
 			_fragmentEntry);
-
-		Layout draftLayout = _layout.fetchDraftLayout();
-
-		Assert.assertNotNull(draftLayout);
-
-		User user = UserTestUtil.addCompanyAdminUser(
-			_companyLocalService.getCompany(_group.getCompanyId()));
-
-		_layoutLockManager.getLock(draftLayout, user.getUserId());
-
-		ReflectionTestUtil.invoke(
-			_mvcActionCommand, "processAction",
-			new Class<?>[] {ActionRequest.class, ActionResponse.class},
-			_getMockLiferayPortletActionRequest(),
-			new MockLiferayPortletActionResponse());
-
-		FragmentEntryLink persistedFragmentEntryLink =
-			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
-				fragmentEntryLink.getFragmentEntryLinkId());
-
-		Assert.assertEquals(
-			_fragmentEntry.getCss(), persistedFragmentEntryLink.getCss());
-		Assert.assertEquals(
-			_fragmentEntry.getHtml(), persistedFragmentEntryLink.getHtml());
-		Assert.assertEquals(
-			_fragmentEntry.getJs(), persistedFragmentEntryLink.getJs());
+		_testPropagateChangesOfFragmentEntryToLockedContentLayout(
+			_globalFragmentEntry);
 	}
 
-	private MockLiferayPortletActionRequest
-			_getMockLiferayPortletActionRequest()
+	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(
+			FragmentEntry fragmentEntry, Layout layout)
 		throws Exception {
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
@@ -210,13 +137,13 @@ public class PropagateGroupFragmentEntryChangesMVCActionCommandTest {
 			"segmentsExperienceId",
 			String.valueOf(
 				_segmentsExperienceLocalService.
-					fetchDefaultSegmentsExperienceId(_layout.getPlid())));
+					fetchDefaultSegmentsExperienceId(layout.getPlid())));
 		mockLiferayPortletActionRequest.setParameter(
 			"fragmentEntryERC",
-			String.valueOf(_fragmentEntry.getExternalReferenceCode()));
+			String.valueOf(fragmentEntry.getExternalReferenceCode()));
 		mockLiferayPortletActionRequest.setParameter(
 			"fragmentEntryScopeERC",
-			String.valueOf(_fragmentEntry.getScopeERC()));
+			String.valueOf(fragmentEntry.getScopeERC()));
 		mockLiferayPortletActionRequest.setParameter(
 			"rowIds", new String[] {String.valueOf(_group.getGroupId())});
 
@@ -247,12 +174,114 @@ public class PropagateGroupFragmentEntryChangesMVCActionCommandTest {
 		return themeDisplay;
 	}
 
+	private void _testAddFragmentEntryLink(FragmentEntry fragmentEntry)
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		FragmentEntryLink fragmentEntryLink =
+			_fragmentEntryLinkLocalService.addFragmentEntryLink(
+				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(),
+				_segmentsExperienceLocalService.
+					fetchDefaultSegmentsExperienceId(layout.getPlid()),
+				layout.getPlid(), "css value", "<div>HTML value</div>",
+				"js value", "{fieldSets: []}", StringPool.BLANK,
+				StringPool.BLANK, 0, null, fragmentEntry.getType(),
+				ServiceContextTestUtil.getServiceContext(
+					_group, TestPropsValues.getUserId()));
+
+		fragmentEntry.setCss("new css value");
+		fragmentEntry.setHtml("<div>new updated HTML value</div>");
+		fragmentEntry.setJs("new js value");
+
+		fragmentEntry = _fragmentEntryLocalService.updateFragmentEntry(
+			fragmentEntry);
+
+		ReflectionTestUtil.invoke(
+			_mvcActionCommand, "processAction",
+			new Class<?>[] {ActionRequest.class, ActionResponse.class},
+			_getMockLiferayPortletActionRequest(fragmentEntry, layout),
+			new MockLiferayPortletActionResponse());
+
+		FragmentEntryLink persistedFragmentEntryLink =
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				fragmentEntryLink.getFragmentEntryLinkId());
+
+		Assert.assertEquals(
+			fragmentEntry.getCss(), persistedFragmentEntryLink.getCss());
+		Assert.assertEquals(
+			fragmentEntry.getHtml(), persistedFragmentEntryLink.getHtml());
+		Assert.assertEquals(
+			fragmentEntry.getJs(), persistedFragmentEntryLink.getJs());
+
+		_layoutLocalService.deleteLayout(layout);
+	}
+
+	private void _testPropagateChangesOfFragmentEntryToLockedContentLayout(
+			FragmentEntry fragmentEntry)
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		FragmentEntryLink fragmentEntryLink =
+			_fragmentEntryLinkLocalService.addFragmentEntryLink(
+				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(),
+				_segmentsExperienceLocalService.
+					fetchDefaultSegmentsExperienceId(layout.getPlid()),
+				layout.getPlid(), "css value", "<div>HTML value</div>",
+				"js value", "{fieldSets: []}", StringPool.BLANK,
+				StringPool.BLANK, 0, null, fragmentEntry.getType(),
+				ServiceContextTestUtil.getServiceContext(
+					_group, TestPropsValues.getUserId()));
+
+		fragmentEntry.setCss("new css value");
+		fragmentEntry.setHtml("<div>new updated HTML value</div>");
+		fragmentEntry.setJs("new js value");
+
+		fragmentEntry = _fragmentEntryLocalService.updateFragmentEntry(
+			fragmentEntry);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		Assert.assertNotNull(draftLayout);
+
+		User user = UserTestUtil.addCompanyAdminUser(
+			_companyLocalService.getCompany(_group.getCompanyId()));
+
+		_layoutLockManager.getLock(draftLayout, user.getUserId());
+
+		ReflectionTestUtil.invoke(
+			_mvcActionCommand, "processAction",
+			new Class<?>[] {ActionRequest.class, ActionResponse.class},
+			_getMockLiferayPortletActionRequest(fragmentEntry, layout),
+			new MockLiferayPortletActionResponse());
+
+		FragmentEntryLink persistedFragmentEntryLink =
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				fragmentEntryLink.getFragmentEntryLinkId());
+
+		Assert.assertEquals(
+			fragmentEntry.getCss(), persistedFragmentEntryLink.getCss());
+		Assert.assertEquals(
+			fragmentEntry.getHtml(), persistedFragmentEntryLink.getHtml());
+		Assert.assertEquals(
+			fragmentEntry.getJs(), persistedFragmentEntryLink.getJs());
+
+		_layoutLocalService.deleteLayout(layout);
+	}
+
 	private Company _company;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
+	@DeleteAfterTestRun
 	private FragmentCollection _fragmentCollection;
+
 	private FragmentEntry _fragmentEntry;
 
 	@Inject
@@ -262,9 +291,13 @@ public class PropagateGroupFragmentEntryChangesMVCActionCommandTest {
 	private FragmentEntryLocalService _fragmentEntryLocalService;
 
 	@DeleteAfterTestRun
+	private FragmentCollection _globalFragmentCollection;
+
+	private FragmentEntry _globalFragmentEntry;
 	private Group _group;
 
-	private Layout _layout;
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;
