@@ -88,7 +88,7 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 	}
 
 	@Test
-	@TestInfo("LPD-40868")
+	@TestInfo({"LPD-40868", "LPS-149718"})
 	public void testFragmentEntryLinkWithFragmentEntryInCompanyGroup()
 		throws Exception {
 
@@ -133,6 +133,8 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 		Assert.assertEquals(
 			fragmentEntry.getExternalReferenceCode(),
 			importedFragmentEntryLink.getFragmentEntryExternalReferenceCode());
+
+		_testUpdateERCAfterExportImportStagedModel(fragmentEntry, stagedModel);
 	}
 
 	@Test
@@ -569,6 +571,43 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 	private String _read(String fileName) throws Exception {
 		return new String(
 			FileUtil.getBytes(getClass(), "dependencies/" + fileName));
+	}
+
+	private void _testUpdateERCAfterExportImportStagedModel(
+			FragmentEntry fragmentEntry, StagedModel stagedModel)
+		throws Exception {
+
+		ExportImportThreadLocal.setPortletImportInProcess(true);
+
+		try {
+			exportStagedModel(stagedModel);
+
+			fragmentEntry.setExternalReferenceCode(
+				RandomTestUtil.randomString());
+
+			fragmentEntry = _fragmentEntryLocalService.updateFragmentEntry(
+				fragmentEntry);
+
+			importStagedModel(stagedModel);
+		}
+		finally {
+			ExportImportThreadLocal.setPortletImportInProcess(false);
+		}
+
+		StagedModel importedStagedModel = getStagedModel(
+			stagedModel.getUuid(), liveGroup);
+
+		Assert.assertNotNull(importedStagedModel);
+
+		FragmentEntryLink importedFragmentEntryLink =
+			(FragmentEntryLink)importedStagedModel;
+
+		Assert.assertEquals(
+			fragmentEntry.getGroupId(),
+			importedFragmentEntryLink.getFragmentEntryGroupId());
+		Assert.assertEquals(
+			fragmentEntry.getExternalReferenceCode(),
+			importedFragmentEntryLink.getFragmentEntryExternalReferenceCode());
 	}
 
 	@Inject
