@@ -13,6 +13,8 @@ import com.liferay.client.extension.service.ClientExtensionEntryRelLocalService;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.constants.LayoutTypeSettingsConstants;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.LayoutJavaScriptException;
 import com.liferay.portal.kernel.exception.LayoutNameException;
@@ -249,6 +251,10 @@ public class EditLayoutDesignMVCActionCommand extends BaseMVCActionCommand {
 						Sites.LAYOUT_UPDATEABLE));
 			}
 
+			LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
+				_layoutPageTemplateEntryService.
+					fetchLayoutPageTemplateEntryByPlid(masterLayoutPlid);
+
 			layout = _layoutService.updateLayout(
 				groupId, layout.isPrivateLayout(), layout.getLayoutId(),
 				layout.getParentLayoutId(), layout.getNameMap(),
@@ -256,7 +262,8 @@ public class EditLayoutDesignMVCActionCommand extends BaseMVCActionCommand {
 				layout.getKeywordsMap(), layout.getRobotsMap(),
 				layout.getType(), layout.isHidden(), layout.getFriendlyURLMap(),
 				!deleteLogo, iconBytes, styleBookEntryERC, faviconFileEntryId,
-				masterLayoutPlid, serviceContext);
+				masterLayoutPageTemplateEntry.getExternalReferenceCode(),
+				serviceContext);
 
 			_updateClientExtensionEntryRels(
 				actionRequest, layout, themeDisplay.getUserId());
@@ -367,6 +374,9 @@ public class EditLayoutDesignMVCActionCommand extends BaseMVCActionCommand {
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
+
+	@Reference
+	private LayoutPageTemplateEntryLocalService _layoutPageTemplateEntryService;
 
 	@Reference
 	private LayoutService _layoutService;
