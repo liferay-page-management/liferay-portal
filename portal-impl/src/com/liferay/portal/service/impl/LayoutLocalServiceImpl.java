@@ -30,7 +30,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.LayoutJavaScriptException;
 import com.liferay.portal.kernel.exception.LayoutNameException;
 import com.liferay.portal.kernel.exception.LayoutTypeException;
-import com.liferay.portal.kernel.exception.MasterLayoutException;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.RequiredLayoutException;
@@ -2262,13 +2261,19 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<Layout> getMasterLayouts(long groupId, long masterLayoutPlid) {
-		return layoutPersistence.findByG_MLP(groupId, masterLayoutPlid);
+	public List<Layout> getMasterLayouts(
+		long groupId, String masterLayoutPageTemplateEntryERC) {
+
+		return layoutPersistence.findByG_MLPTEERC(
+			groupId, masterLayoutPageTemplateEntryERC);
 	}
 
 	@Override
-	public int getMasterLayoutsCount(long groupId, long masterLayoutPlid) {
-		return layoutPersistence.countByG_MLP(groupId, masterLayoutPlid);
+	public int getMasterLayoutsCount(
+		long groupId, String masterLayoutPageTemplateEntryERC) {
+
+		return layoutPersistence.countByG_MLPTEERC(
+			groupId, masterLayoutPageTemplateEntryERC);
 	}
 
 	/**
@@ -2958,7 +2963,8 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 	 * @param  styleBookEntryERC the external reference code of the style book
 	 *         entry
 	 * @param  faviconFileEntryId the file entry ID of the layout's new favicon
-	 * @param  masterLayoutPlid the primary key of the master layout
+	 * @param  masterLayoutPageTemplateEntryERC the external reference code of
+	 *         the master layout page template entry
 	 * @param  serviceContext the service context to be applied. Can set the
 	 *         modification date and expando bridge attributes for the layout.
 	 *         For layouts that are linked to a layout prototype, attributes
@@ -2979,7 +2985,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 			Map<Locale, String> keywordsMap, Map<Locale, String> robotsMap,
 			String type, boolean hidden, Map<Locale, String> friendlyURLMap,
 			boolean hasIconImage, byte[] iconBytes, String styleBookEntryERC,
-			long faviconFileEntryId, long masterLayoutPlid,
+			long faviconFileEntryId, String masterLayoutPageTemplateEntryERC,
 			ServiceContext serviceContext)
 		throws PortalException {
 
@@ -3019,8 +3025,6 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		layoutLocalServiceHelper.validateParentLayoutId(
 			groupId, privateLayout, layoutId, parentLayoutId);
 
-		_validateMasterLayout(masterLayoutPlid, layout.getPlid());
-
 		if (parentLayoutId != layout.getParentLayoutId()) {
 			layout.setParentPlid(
 				_getParentPlid(groupId, privateLayout, parentLayoutId));
@@ -3048,7 +3052,8 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		layout.setStyleBookEntryERC(styleBookEntryERC);
 		layout.setFaviconFileEntryId(faviconFileEntryId);
-		layout.setMasterLayoutPlid(masterLayoutPlid);
+		layout.setMasterLayoutPageTemplateEntryERC(
+			masterLayoutPageTemplateEntryERC);
 
 		boolean layoutUpdateable = ParamUtil.getBoolean(
 			serviceContext, Sites.LAYOUT_UPDATEABLE, true);
@@ -3129,7 +3134,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 			long groupId, boolean privateLayout, long layoutId,
 			String typeSettings, byte[] iconBytes, String themeId,
 			String colorSchemeId, String styleBookEntryERC, String css,
-			long faviconFileEntryId, long masterLayoutPlid)
+			long faviconFileEntryId, String masterLayoutPageTemplateEntryERC)
 		throws PortalException {
 
 		Layout layout = layoutPersistence.findByG_P_L(
@@ -3142,8 +3147,6 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		validateTypeSettingsProperties(layout, typeSettingsUnicodeProperties);
 
-		_validateMasterLayout(masterLayoutPlid, layout.getPlid());
-
 		layout.setModifiedDate(new Date());
 		layout.setTypeSettings(typeSettingsUnicodeProperties.toString());
 		layout.setThemeId(themeId);
@@ -3151,7 +3154,8 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		layout.setStyleBookEntryERC(styleBookEntryERC);
 		layout.setCss(css);
 		layout.setFaviconFileEntryId(faviconFileEntryId);
-		layout.setMasterLayoutPlid(masterLayoutPlid);
+		layout.setMasterLayoutPageTemplateEntryERC(
+			masterLayoutPageTemplateEntryERC);
 
 		PortalUtil.updateImageId(
 			layout, iconBytes != null, iconBytes, "iconImageId", 0, 0, 0);
@@ -3202,22 +3206,22 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 	 * @param  groupId the primary key of the group
 	 * @param  privateLayout whether the layout is private to the group
 	 * @param  layoutId the layout ID of the layout
-	 * @param  masterLayoutPlid the primary key of the master layout
+	 * @param  masterLayoutPageTemplateEntryERC the external reference code of
+	 *         the master layout page template entry
 	 * @return the updated layout
 	 * @throws PortalException if a portal exception occurred
 	 */
 	@Override
 	public Layout updateMasterLayoutPlid(
 			long groupId, boolean privateLayout, long layoutId,
-			long masterLayoutPlid)
+			String masterLayoutPageTemplateEntryERC)
 		throws PortalException {
 
 		Layout layout = layoutPersistence.findByG_P_L(
 			groupId, privateLayout, layoutId);
 
-		_validateMasterLayout(masterLayoutPlid, layout.getPlid());
-
-		layout.setMasterLayoutPlid(masterLayoutPlid);
+		layout.setMasterLayoutPageTemplateEntryERC(
+			masterLayoutPageTemplateEntryERC);
 
 		return layoutPersistence.update(layout);
 	}
@@ -4502,15 +4506,6 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 						portalPreferencesModel, false);
 
 			portalPreferences.resetValues(namespace);
-		}
-	}
-
-	private void _validateMasterLayout(long masterLayoutPlid, long plid)
-		throws PortalException {
-
-		if (masterLayoutPlid == plid) {
-			throw new MasterLayoutException(
-				"Master page cannot point to itself");
 		}
 	}
 
