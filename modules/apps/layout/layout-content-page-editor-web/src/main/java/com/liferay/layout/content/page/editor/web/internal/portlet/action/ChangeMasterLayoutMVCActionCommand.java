@@ -14,6 +14,8 @@ import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortlet
 import com.liferay.layout.content.page.editor.web.internal.manager.FragmentEntryLinkManager;
 import com.liferay.layout.content.page.editor.web.internal.util.StyleBookEntryUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -76,10 +78,15 @@ public class ChangeMasterLayoutMVCActionCommand
 		LayoutPermissionUtil.checkLayoutRestrictedUpdatePermission(
 			themeDisplay.getPermissionChecker(), layout);
 
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.fetchLayoutPageTemplateEntry(
+				masterLayoutPlid);
+
 		Layout updatedLayout =
 			_layoutLocalService.updateMasterLayoutPageTemplateEntryERC(
 				layout.getGroupId(), layout.isPrivateLayout(),
-				layout.getLayoutId(), masterLayoutPlid);
+				layout.getLayoutId(),
+				layoutPageTemplateEntry.getExternalReferenceCode());
 
 		if (layout.isDraftLayout()) {
 			UnicodeProperties layoutTypeSettingsUnicodeProperties =
@@ -267,6 +274,10 @@ public class ChangeMasterLayoutMVCActionCommand
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
+
+	@Reference
+	private LayoutPageTemplateEntryLocalService
+		_layoutPageTemplateEntryLocalService;
 
 	@Reference
 	private Portal _portal;
