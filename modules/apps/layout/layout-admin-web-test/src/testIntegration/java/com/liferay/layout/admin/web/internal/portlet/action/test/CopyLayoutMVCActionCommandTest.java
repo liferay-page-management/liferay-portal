@@ -225,7 +225,7 @@ public class CopyLayoutMVCActionCommandTest {
 
 		_layout = _layoutLocalService.updateMasterLayoutPageTemplateEntryERC(
 			_group.getGroupId(), _layout.isPrivateLayout(),
-			_layout.getLayoutId(), masterLayoutPageTemplateEntry.getPlid());
+			_layout.getLayoutId(), masterLayoutPageTemplateEntry.getExternalReferenceCode());
 
 		_processAction(false, Collections.emptyMap());
 
