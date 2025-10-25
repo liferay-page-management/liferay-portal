@@ -261,14 +261,18 @@ public class PageSpecificationDTOConverter
 					() -> unicodeProperties.getProperty("javascript", null));
 				setMasterPageItemExternalReference(
 					() -> {
-						if (layout.getMasterLayoutPlid() == 0) {
+						if (Validator.isNotNull(
+								layout.getMasterLayoutPageTemplateEntryERC())) {
+
 							return null;
 						}
 
 						LayoutPageTemplateEntry layoutPageTemplateEntry =
 							_layoutPageTemplateEntryLocalService.
-								fetchLayoutPageTemplateEntryByPlid(
-									layout.getMasterLayoutPlid());
+								fetchLayoutPageTemplateEntryByExternalReferenceCode(
+									layout.
+										getMasterLayoutPageTemplateEntryERC(),
+									layout.getGroupId());
 
 						if (layoutPageTemplateEntry == null) {
 							return null;
