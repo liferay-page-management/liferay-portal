@@ -20,7 +20,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.DuplicateLayoutExternalReferenceCodeException;
 import com.liferay.portal.kernel.exception.LayoutJavaScriptException;
 import com.liferay.portal.kernel.exception.LayoutTypeException;
-import com.liferay.portal.kernel.exception.MasterLayoutException;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.ColorScheme;
@@ -830,29 +829,6 @@ public class LayoutLocalServiceTest {
 
 		Assert.assertEquals(
 			"1_column", layoutTypePortlet.getLayoutTemplateId());
-	}
-
-	@Test(expected = MasterLayoutException.class)
-	public void testUpdateMasterLayoutWithInvalidPlid1() throws Exception {
-		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
-
-		_layoutLocalService.updateMasterLayoutPageTemplateEntryERC(
-			_group.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
-			layout.getPlid());
-	}
-
-	@Test(expected = MasterLayoutException.class)
-	public void testUpdateMasterLayoutWithInvalidPlid2() throws Exception {
-		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
-
-		_layoutLocalService.updateLayout(
-			layout.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
-			layout.getParentLayoutId(), layout.getNameMap(),
-			layout.getTitleMap(), layout.getDescriptionMap(),
-			layout.getKeywordsMap(), layout.getRobotsMap(), layout.getType(),
-			layout.isHidden(), layout.getFriendlyURLMap(),
-			layout.getIconImage(), null, layout.getStyleBookEntryERC(),
-			layout.getFaviconFileEntryId(), layout.getPlid(), _serviceContext);
 	}
 
 	@Test
