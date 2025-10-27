@@ -1144,11 +1144,6 @@ public class LayoutStagedModelDataHandlerTest
 		Layout stagingMasterLayout = _layoutLocalService.fetchLayout(
 			masterLayout.getUuid(), stagingGroup.getGroupId(), true);
 
-		stagingLayout =
-			_layoutLocalService.updateMasterLayoutPageTemplateEntryERC(
-				stagingGroup.getGroupId(), false, stagingLayout.getLayoutId(),
-				stagingMasterLayout.getPlid());
-
 		stagingMasterLayout.setLayoutId(layout.getLayoutId());
 
 		stagingMasterLayout = _layoutLocalService.updateLayout(
