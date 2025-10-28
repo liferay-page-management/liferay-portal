@@ -763,13 +763,17 @@ public class LayoutStagedModelDataHandler
 			long masterLayoutPlid = GetterUtil.getLong(
 				layoutElement.attributeValue("master-layout-plid"));
 
-			long importedMasterLayoutPlid = MapUtil.getLong(
-				layoutPlids, masterLayoutPlid, masterLayoutPlid);
+			LayoutPageTemplateEntry layoutPageTemplateEntry =
+				_layoutPageTemplateEntryLocalService.
+					fetchLayoutPageTemplateEntryByPlid(
+						MapUtil.getLong(
+							layoutPlids, masterLayoutPlid, masterLayoutPlid));
 
-			importedLayout.setMasterLayoutPlid(importedMasterLayoutPlid);
+			importedLayout.setMasterLayoutPageTemplateEntryERC(
+				layoutPageTemplateEntry.getExternalReferenceCode());
 		}
 		else {
-			importedLayout.setMasterLayoutPlid(0);
+			importedLayout.setMasterLayoutPageTemplateEntryERC(null);
 		}
 
 		long parentPlid = layout.getParentPlid();
