@@ -1076,8 +1076,8 @@ public class ActionUtil {
 				fetchLayoutPageTemplateEntry(groupId, "content-editor-master");
 
 		if (masterLayoutPageTemplateEntry != null) {
-			draftLayout.setMasterLayoutPlid(
-				masterLayoutPageTemplateEntry.getPlid());
+			draftLayout.setMasterLayoutPageTemplateEntryERC(
+				masterLayoutPageTemplateEntry.getExternalReferenceCode());
 		}
 
 		LayoutLocalServiceUtil.copyLayoutContent(draftLayout, layout);
@@ -1085,8 +1085,8 @@ public class ActionUtil {
 		draftLayout = LayoutLocalServiceUtil.getLayout(draftLayout.getPlid());
 
 		if (masterLayoutPageTemplateEntry != null) {
-			draftLayout.setMasterLayoutPlid(
-				masterLayoutPageTemplateEntry.getPlid());
+			draftLayout.setMasterLayoutPageTemplateEntryERC(
+				masterLayoutPageTemplateEntry.getExternalReferenceCode());
 		}
 
 		draftLayout.setStatus(WorkflowConstants.STATUS_APPROVED);
@@ -1399,8 +1399,8 @@ public class ActionUtil {
 				fetchLayoutPageTemplateEntry(groupId, "cms-translation-master");
 
 		if (masterLayoutPageTemplateEntry != null) {
-			draftLayout.setMasterLayoutPlid(
-				masterLayoutPageTemplateEntry.getPlid());
+			draftLayout.setMasterLayoutPageTemplateEntryERC(
+				masterLayoutPageTemplateEntry.getExternalReferenceCode());
 		}
 
 		LayoutLocalServiceUtil.copyLayoutContent(draftLayout, layout);
@@ -1408,8 +1408,8 @@ public class ActionUtil {
 		draftLayout = LayoutLocalServiceUtil.getLayout(draftLayout.getPlid());
 
 		if (masterLayoutPageTemplateEntry != null) {
-			draftLayout.setMasterLayoutPlid(
-				masterLayoutPageTemplateEntry.getPlid());
+			draftLayout.setMasterLayoutPageTemplateEntryERC(
+				masterLayoutPageTemplateEntry.getExternalReferenceCode());
 		}
 
 		draftLayout.setStatus(WorkflowConstants.STATUS_APPROVED);
