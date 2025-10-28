@@ -2126,11 +2126,24 @@ public class ContentPageEditorDisplayContext {
 
 		Layout draftLayout = themeDisplay.getLayout();
 
-		int masterUsagesCount = _layoutLocalService.getMasterLayoutsCount(
-			themeDisplay.getScopeGroupId(), draftLayout.getClassPK());
+		try {
+			LayoutPageTemplateEntry layoutPageTemplateEntry =
+				_layoutPageTemplateEntryService.
+					fetchLayoutPageTemplateEntryByPlid(
+						draftLayout.getClassPK());
 
-		if (masterUsagesCount > 0) {
-			return true;
+			int masterUsagesCount = _layoutLocalService.getMasterLayoutsCount(
+				themeDisplay.getScopeGroupId(),
+				layoutPageTemplateEntry.getExternalReferenceCode());
+
+			if (masterUsagesCount > 0) {
+				return true;
+			}
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug("Unable to check if master is used", exception);
+			}
 		}
 
 		return false;

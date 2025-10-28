@@ -769,7 +769,8 @@ public class LayoutStagedModelDataHandlerTest
 				WorkflowConstants.STATUS_APPROVED);
 
 		Layout layout = LayoutTestUtil.addTypeContentLayout(
-			stagingGroup, false, false, layoutPageTemplateEntry.getPlid());
+			stagingGroup, false, false,
+			layoutPageTemplateEntry.getExternalReferenceCode());
 
 		initExport();
 
