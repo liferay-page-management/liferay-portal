@@ -218,10 +218,10 @@ public class UpdateTemplateEntryMVCActionCommandTest {
 
 		try {
 			if (noPermission) {
-				User user = UserTestUtil.addUser();
+				_user = UserTestUtil.addUser();
 
 				PermissionThreadLocal.setPermissionChecker(
-					_permissionCheckerFactory.create(user));
+					_permissionCheckerFactory.create(_user));
 			}
 
 			ReflectionTestUtil.invoke(
@@ -320,6 +320,9 @@ public class UpdateTemplateEntryMVCActionCommandTest {
 
 	@Inject
 	private TemplateEntryLocalService _templateEntryLocalService;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 	private static class ActionRequestSetupTest {
 
