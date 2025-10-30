@@ -542,7 +542,7 @@ test.describe('Schedule Panel', () => {
 
 			// Fill the input with an error
 
-			const expireCheckbox = page.getByLabel('Never Expire').first();
+			const expireCheckbox = page.getByLabel('Never Expire');
 
 			await expireCheckbox.uncheck();
 
@@ -878,7 +878,7 @@ test.describe('Schedule Publication', () => {
 
 			// Fill the expiration date input with an error
 
-			const expireCheckbox = page.getByLabel('Never Expire').first();
+			const expireCheckbox = page.getByLabel('Never Expire');
 
 			await expireCheckbox.uncheck();
 
