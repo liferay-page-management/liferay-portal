@@ -33,8 +33,8 @@ public class UpgradeLayoutMasterLayoutPageTemplateEntryERC
 			PreparedStatement preparedStatement2 =
 				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
 					connection,
-					"update Layout set MLayoutPageTemplateEntryERC = ? " +
-						"where plid = ?")) {
+					"update Layout set MLayoutPageTemplateEntryERC = ? where " +
+						"plid = ?")) {
 
 			while (resultSet.next()) {
 				preparedStatement2.setString(1, resultSet.getString(1));

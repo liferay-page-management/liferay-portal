@@ -123,7 +123,8 @@ public class LayoutLocalServiceStagingAdvice {
 			Map<Locale, String> robotsMap, String type, boolean hidden,
 			Map<Locale, String> friendlyURLMap, boolean hasIconImage,
 			byte[] iconBytes, String styleBookEntryERC, long faviconFileEntryId,
-			String masterLayoutPageTemplateEntryERC, ServiceContext serviceContext)
+			String masterLayoutPageTemplateEntryERC,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		// Layout
@@ -181,7 +182,8 @@ public class LayoutLocalServiceStagingAdvice {
 				groupId, privateLayout, layoutId, parentLayoutId, nameMap,
 				titleMap, descriptionMap, keywordsMap, robotsMap, type, hidden,
 				friendlyURLMap, hasIconImage, iconBytes, styleBookEntryERC,
-				faviconFileEntryId, masterLayoutPageTemplateEntryERC, serviceContext);
+				faviconFileEntryId, masterLayoutPageTemplateEntryERC,
+				serviceContext);
 		}
 
 		layoutLocalService.updateAsset(
@@ -851,8 +853,8 @@ public class LayoutLocalServiceStagingAdvice {
 					(Map<Locale, String>)arguments[8], (String)arguments[9],
 					(Boolean)arguments[10], friendlyURLMap,
 					(Boolean)arguments[12], (byte[])arguments[13],
-					styleBookEntryERC, faviconFileEntryId, masterLayoutPageTemplateEntryERC,
-					serviceContext);
+					styleBookEntryERC, faviconFileEntryId,
+					masterLayoutPageTemplateEntryERC, serviceContext);
 			}
 			else {
 				if (methodName.equals("updateLayout") &&
