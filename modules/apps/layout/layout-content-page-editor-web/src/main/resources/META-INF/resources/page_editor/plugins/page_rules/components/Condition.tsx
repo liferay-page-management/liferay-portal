@@ -15,7 +15,7 @@ import useConditionValues from '../../../app/utils/useConditionValues';
 import RuleBuilderItem from './RuleBuilderItem';
 import RuleSelect from './RuleSelect';
 
-export interface Condition {
+export type Condition = {
 	field?: 'user' | 'role' | 'segment' | string;
 	id: string;
 	options?: {
@@ -23,7 +23,7 @@ export interface Condition {
 		value?: string;
 	};
 	type: 'user' | 'form' | undefined;
-}
+};
 
 interface ConditionProps {
 	condition: Condition;

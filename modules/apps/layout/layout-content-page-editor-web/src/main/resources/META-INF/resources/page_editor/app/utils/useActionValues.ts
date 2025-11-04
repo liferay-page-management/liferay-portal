@@ -15,11 +15,21 @@ type Props = {
 	items: Item[];
 };
 
-export default function useActionValues({actions, items}: Props) {
+export type ActionValues = Omit<Action, 'type'> & {
+	description: string;
+	item: string | undefined;
+	prefix: string;
+	type: string | undefined;
+};
+
+export default function useActionValues({
+	actions,
+	items,
+}: Props): ActionValues[] {
 	return actions.map((_action, index) => {
 		const item = getItem(items, _action.itemId);
 		const prefix = getPrefix(index);
-		const type = getType(_action.type);
+		const type = getType(_action.type) as Action['type'];
 
 		const description = getDescription(item, prefix, type);
 

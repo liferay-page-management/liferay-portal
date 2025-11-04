@@ -11,11 +11,11 @@ import useActionValues from '../../../app/utils/useActionValues';
 import RuleBuilderItem from './RuleBuilderItem';
 import RuleSelect from './RuleSelect';
 
-export interface Action {
+export type Action = {
 	id: string;
 	itemId?: string;
 	type: 'show' | 'hide' | 'enable' | 'disable' | undefined;
-}
+};
 
 interface ActionProps {
 	action: Action;
