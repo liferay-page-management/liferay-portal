@@ -108,12 +108,18 @@ public class AddSimpleLayoutMVCActionCommand
 			Layout.class.getName(), actionRequest);
 
 		try {
+			String masterLayoutPageTemplateEntryERC = null;
+
+			if (masterLayoutPageTemplateEntry != null) {
+				masterLayoutPageTemplateEntryERC =
+					masterLayoutPageTemplateEntry.getExternalReferenceCode();
+			}
+
 			Layout layout = _layoutService.addLayout(
 				null, groupId, privateLayout, parentLayoutId, nameMap,
 				new HashMap<>(), new HashMap<>(), new HashMap<>(),
 				new HashMap<>(), type, typeSettingsUnicodeProperties.toString(),
-				false, new HashMap<>(),
-				masterLayoutPageTemplateEntry.getExternalReferenceCode(),
+				false, new HashMap<>(), masterLayoutPageTemplateEntryERC,
 				serviceContext);
 
 			if (!Objects.equals(type, LayoutConstants.TYPE_CONTENT)) {

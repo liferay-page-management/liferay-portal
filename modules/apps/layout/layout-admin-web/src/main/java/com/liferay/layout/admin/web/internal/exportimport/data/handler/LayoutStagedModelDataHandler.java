@@ -769,11 +769,10 @@ public class LayoutStagedModelDataHandler
 						MapUtil.getLong(
 							layoutPlids, masterLayoutPlid, masterLayoutPlid));
 
-			importedLayout.setMasterLayoutPageTemplateEntryERC(
-				layoutPageTemplateEntry.getExternalReferenceCode());
-		}
-		else {
-			importedLayout.setMasterLayoutPageTemplateEntryERC(null);
+			if (layoutPageTemplateEntry != null) {
+				importedLayout.setMasterLayoutPageTemplateEntryERC(
+					layoutPageTemplateEntry.getExternalReferenceCode());
+			}
 		}
 
 		long parentPlid = layout.getParentPlid();

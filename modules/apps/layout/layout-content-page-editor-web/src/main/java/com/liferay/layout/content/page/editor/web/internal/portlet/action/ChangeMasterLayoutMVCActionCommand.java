@@ -78,15 +78,21 @@ public class ChangeMasterLayoutMVCActionCommand
 		LayoutPermissionUtil.checkLayoutRestrictedUpdatePermission(
 			themeDisplay.getPermissionChecker(), layout);
 
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
+		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
 			_layoutPageTemplateEntryLocalService.fetchLayoutPageTemplateEntry(
 				masterLayoutPlid);
+
+		String masterLayoutPageTemplateEntryERC = null;
+
+		if (masterLayoutPageTemplateEntry != null) {
+			masterLayoutPageTemplateEntryERC =
+				masterLayoutPageTemplateEntry.getExternalReferenceCode();
+		}
 
 		Layout updatedLayout =
 			_layoutLocalService.updateMasterLayoutPageTemplateEntryERC(
 				layout.getGroupId(), layout.isPrivateLayout(),
-				layout.getLayoutId(),
-				layoutPageTemplateEntry.getExternalReferenceCode());
+				layout.getLayoutId(), masterLayoutPageTemplateEntryERC);
 
 		if (layout.isDraftLayout()) {
 			UnicodeProperties layoutTypeSettingsUnicodeProperties =

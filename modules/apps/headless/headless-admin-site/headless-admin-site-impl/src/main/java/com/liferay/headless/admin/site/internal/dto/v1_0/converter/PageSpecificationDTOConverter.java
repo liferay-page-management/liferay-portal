@@ -261,7 +261,7 @@ public class PageSpecificationDTOConverter
 					() -> unicodeProperties.getProperty("javascript", null));
 				setMasterPageItemExternalReference(
 					() -> {
-						if (Validator.isNotNull(
+						if (Validator.isNull(
 								layout.getMasterLayoutPageTemplateEntryERC())) {
 
 							return null;

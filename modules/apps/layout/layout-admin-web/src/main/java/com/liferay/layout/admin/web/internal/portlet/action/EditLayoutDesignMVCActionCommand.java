@@ -255,6 +255,13 @@ public class EditLayoutDesignMVCActionCommand extends BaseMVCActionCommand {
 				_layoutPageTemplateEntryService.
 					fetchLayoutPageTemplateEntryByPlid(masterLayoutPlid);
 
+			String masterLayoutPageTemplateEntryERC = null;
+
+			if (masterLayoutPageTemplateEntry != null) {
+				masterLayoutPageTemplateEntryERC =
+					masterLayoutPageTemplateEntry.getExternalReferenceCode();
+			}
+
 			layout = _layoutService.updateLayout(
 				groupId, layout.isPrivateLayout(), layout.getLayoutId(),
 				layout.getParentLayoutId(), layout.getNameMap(),
@@ -262,8 +269,7 @@ public class EditLayoutDesignMVCActionCommand extends BaseMVCActionCommand {
 				layout.getKeywordsMap(), layout.getRobotsMap(),
 				layout.getType(), layout.isHidden(), layout.getFriendlyURLMap(),
 				!deleteLogo, iconBytes, styleBookEntryERC, faviconFileEntryId,
-				masterLayoutPageTemplateEntry.getExternalReferenceCode(),
-				serviceContext);
+				masterLayoutPageTemplateEntryERC, serviceContext);
 
 			_updateClientExtensionEntryRels(
 				actionRequest, layout, themeDisplay.getUserId());
