@@ -55,6 +55,7 @@ import com.liferay.headless.admin.site.client.dto.v1_0.HtmlProperties;
 import com.liferay.headless.admin.site.client.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.client.dto.v1_0.ListStyle;
 import com.liferay.headless.admin.site.client.dto.v1_0.ListStyleDefinition;
+import com.liferay.headless.admin.site.client.dto.v1_0.LocalizationConfig;
 import com.liferay.headless.admin.site.client.dto.v1_0.Mapping;
 import com.liferay.headless.admin.site.client.dto.v1_0.ModulePageElementDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.ModuleViewport;
@@ -865,7 +866,8 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 	private FormContainerConfig _getFormContainerConfig(
 		String className,
 		boolean formContainerSubmissionResultDefaultDisplayPage,
-		String formContainerSubmissionResultType) {
+		String formContainerSubmissionResultType,
+		LocalizationConfig.UnlocalizedFieldsState unlocalizedFieldsState) {
 
 		FormContainerConfig formContainerConfig = new FormContainerConfig();
 
@@ -900,6 +902,8 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 		formContainerConfig.setFormContainerType(
 			FormContainerConfig.FormContainerType.SIMPLE);
 		formContainerConfig.setNumberOfSteps(1);
+		formContainerConfig.setLocalizationConfig(
+			() -> _getLocalizationConfig(unlocalizedFieldsState));
 		formContainerConfig.setSuccessFormContainerSubmissionResult(
 			() -> _getSuccessFormContainerSubmissionResult(
 				className, formContainerSubmissionResultDefaultDisplayPage,
@@ -912,7 +916,8 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 			String className, String[] cssClasses, String customCss,
 			boolean formContainerSubmissionResultDefaultDisplayPage,
 			String formContainerSubmissionResultType, boolean indexed,
-			String pageElementExternalReferenceCode)
+			String pageElementExternalReferenceCode,
+			LocalizationConfig.UnlocalizedFieldsState unlocalizedFieldsState)
 		throws Exception {
 
 		FormContainerPageElementDefinition formContainerPageElementDefinition =
@@ -923,7 +928,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 		formContainerPageElementDefinition.setFormContainerConfig(
 			_getFormContainerConfig(
 				className, formContainerSubmissionResultDefaultDisplayPage,
-				formContainerSubmissionResultType));
+				formContainerSubmissionResultType, unlocalizedFieldsState));
 		formContainerPageElementDefinition.setFragmentViewports(
 			_getFragmentViewports());
 		formContainerPageElementDefinition.setIndexed(indexed);
@@ -1232,6 +1237,23 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 
 		return LayoutStructure.of(
 			layoutPageTemplateStructure.getDefaultSegmentsExperienceData());
+	}
+
+	private LocalizationConfig _getLocalizationConfig(
+		LocalizationConfig.UnlocalizedFieldsState unlocalizedFieldsState) {
+
+		if (unlocalizedFieldsState == null) {
+			return null;
+		}
+
+		LocalizationConfig localizationConfig = new LocalizationConfig();
+
+		localizationConfig.setUnlocalizedFieldsMessage(
+			this::_getRandomFragmentInlineValue);
+		localizationConfig.setUnlocalizedFieldsState(
+			() -> unlocalizedFieldsState);
+
+		return localizationConfig;
 	}
 
 	private PageElement _getModulePageElement(
@@ -1837,34 +1859,38 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 				objectDefinition.getClassName(),
 				RandomTestUtil.randomStrings(RandomTestUtil.randomInt(1, 10)),
 				RandomTestUtil.randomString(), true, "displayPage", true,
-				RandomTestUtil.randomString()));
+				RandomTestUtil.randomString(),
+				LocalizationConfig.UnlocalizedFieldsState.READ_ONLY));
 		_testPostSitePageSpecificationPageExperiencePageElement(
 			_getFormContainerPageElement(
 				objectDefinition.getClassName(), null, null, false,
-				"displayPage", false, RandomTestUtil.randomString()));
+				"displayPage", false, RandomTestUtil.randomString(), null));
 
 		_testPostSitePageSpecificationPageExperiencePageElement(
 			_getFormContainerPageElement(
 				null,
 				RandomTestUtil.randomStrings(RandomTestUtil.randomInt(1, 10)),
 				RandomTestUtil.randomString(), false, "embedded", false,
-				RandomTestUtil.randomString()));
+				RandomTestUtil.randomString(),
+				LocalizationConfig.UnlocalizedFieldsState.DISABLED));
 		_testPostSitePageSpecificationPageExperiencePageElement(
 			_getFormContainerPageElement(
 				objectDefinition.getClassName(), null, null, false, "none",
-				false, RandomTestUtil.randomString()));
+				false, RandomTestUtil.randomString(), null));
 		_testPostSitePageSpecificationPageExperiencePageElement(
 			_getFormContainerPageElement(
 				null,
 				RandomTestUtil.randomStrings(RandomTestUtil.randomInt(1, 10)),
 				RandomTestUtil.randomString(), false, "page", false,
-				RandomTestUtil.randomString()));
+				RandomTestUtil.randomString(),
+				LocalizationConfig.UnlocalizedFieldsState.READ_ONLY));
 		_testPostSitePageSpecificationPageExperiencePageElement(
 			_getFormContainerPageElement(
 				objectDefinition.getClassName(),
 				RandomTestUtil.randomStrings(RandomTestUtil.randomInt(1, 10)),
 				RandomTestUtil.randomString(), false, "url", false,
-				RandomTestUtil.randomString()));
+				RandomTestUtil.randomString(),
+				LocalizationConfig.UnlocalizedFieldsState.DISABLED));
 	}
 
 	private void _testPostSitePageSpecificationPageExperiencePageElementWithFragmentPageElement()
@@ -2098,33 +2124,37 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 				objectDefinition.getClassName(),
 				RandomTestUtil.randomStrings(RandomTestUtil.randomInt(1, 10)),
 				RandomTestUtil.randomString(), true, "displayPage", true,
-				externalReferenceCode));
+				externalReferenceCode,
+				LocalizationConfig.UnlocalizedFieldsState.READ_ONLY));
 		_testPutSitePageSpecificationPageExperiencePageElement(
 			_getFormContainerPageElement(
 				objectDefinition.getClassName(), null, null, false,
-				"displayPage", false, externalReferenceCode));
+				"displayPage", false, externalReferenceCode, null));
 		_testPutSitePageSpecificationPageExperiencePageElement(
 			_getFormContainerPageElement(
 				null,
 				RandomTestUtil.randomStrings(RandomTestUtil.randomInt(1, 10)),
 				RandomTestUtil.randomString(), false, "embedded", false,
-				externalReferenceCode));
+				externalReferenceCode,
+				LocalizationConfig.UnlocalizedFieldsState.DISABLED));
 		_testPutSitePageSpecificationPageExperiencePageElement(
 			_getFormContainerPageElement(
 				objectDefinition.getClassName(), null, null, false, "none",
-				false, externalReferenceCode));
+				false, externalReferenceCode,
+				LocalizationConfig.UnlocalizedFieldsState.READ_ONLY));
 		_testPutSitePageSpecificationPageExperiencePageElement(
 			_getFormContainerPageElement(
 				null,
 				RandomTestUtil.randomStrings(RandomTestUtil.randomInt(1, 10)),
 				RandomTestUtil.randomString(), false, "page", false,
-				externalReferenceCode));
+				externalReferenceCode, null));
 		_testPutSitePageSpecificationPageExperiencePageElement(
 			_getFormContainerPageElement(
 				objectDefinition.getClassName(),
 				RandomTestUtil.randomStrings(RandomTestUtil.randomInt(1, 10)),
 				RandomTestUtil.randomString(), false, "url", false,
-				externalReferenceCode));
+				externalReferenceCode,
+				LocalizationConfig.UnlocalizedFieldsState.DISABLED));
 		_testPutSitePageSpecificationPageExperiencePageElement(
 			_getPageElement(
 				new FormContainerPageElementDefinition() {
