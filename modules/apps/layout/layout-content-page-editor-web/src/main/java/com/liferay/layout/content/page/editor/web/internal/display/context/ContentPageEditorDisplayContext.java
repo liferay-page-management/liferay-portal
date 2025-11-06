@@ -1787,11 +1787,11 @@ public class ContentPageEditorDisplayContext {
 				return null;
 			}
 		).put(
-			"masterLayoutPlid",
+			"masterLayoutPageTemplateEntryERC",
 			() -> {
 				Layout layout = themeDisplay.getLayout();
 
-				return String.valueOf(layout.getMasterLayoutPlid());
+				return layout.getMasterLayoutPageTemplateEntryERC();
 			}
 		);
 	}
@@ -1803,7 +1803,7 @@ public class ContentPageEditorDisplayContext {
 			HashMapBuilder.<String, Object>put(
 				"imagePreviewURL", StringPool.BLANK
 			).put(
-				"masterLayoutPlid", "0"
+				"masterLayoutPageTemplateEntryERC", StringPool.BLANK
 			).put(
 				"name", language.get(httpServletRequest, "blank")
 			).build());
@@ -1824,8 +1824,9 @@ public class ContentPageEditorDisplayContext {
 					"imagePreviewURL",
 					layoutPageTemplateEntry.getImagePreviewURL(themeDisplay)
 				).put(
-					"masterLayoutPlid",
-					String.valueOf(layoutPageTemplateEntry.getPlid())
+					"masterLayoutPageTemplateEntryERC",
+					String.valueOf(
+						layoutPageTemplateEntry.getExternalReferenceCode())
 				).put(
 					"name", layoutPageTemplateEntry.getName()
 				).build());

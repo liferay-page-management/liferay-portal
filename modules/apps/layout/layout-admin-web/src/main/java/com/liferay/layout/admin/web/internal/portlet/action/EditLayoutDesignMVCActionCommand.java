@@ -13,8 +13,6 @@ import com.liferay.client.extension.service.ClientExtensionEntryRelLocalService;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.constants.LayoutTypeSettingsConstants;
-import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
-import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.LayoutJavaScriptException;
 import com.liferay.portal.kernel.exception.LayoutNameException;
@@ -221,9 +219,9 @@ public class EditLayoutDesignMVCActionCommand extends BaseMVCActionCommand {
 			long faviconFileEntryId = ParamUtil.getLong(
 				uploadPortletRequest, "faviconFileEntryId",
 				layout.getFaviconFileEntryId());
-			long masterLayoutPlid = ParamUtil.getLong(
-				uploadPortletRequest, "masterLayoutPlid",
-				layout.getMasterLayoutPlid());
+			String masterLayoutPageTemplateEntryERC = ParamUtil.getString(
+				uploadPortletRequest, "masterLayoutPageTemplateEntryERC",
+				layout.getMasterLayoutPageTemplateEntryERC());
 
 			ServiceContext serviceContext = ServiceContextFactory.getInstance(
 				Layout.class.getName(), actionRequest);
@@ -249,17 +247,6 @@ public class EditLayoutDesignMVCActionCommand extends BaseMVCActionCommand {
 					Sites.LAYOUT_UPDATEABLE,
 					layoutTypeSettingsUnicodeProperties.get(
 						Sites.LAYOUT_UPDATEABLE));
-			}
-
-			LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
-				_layoutPageTemplateEntryService.
-					fetchLayoutPageTemplateEntryByPlid(masterLayoutPlid);
-
-			String masterLayoutPageTemplateEntryERC = null;
-
-			if (masterLayoutPageTemplateEntry != null) {
-				masterLayoutPageTemplateEntryERC =
-					masterLayoutPageTemplateEntry.getExternalReferenceCode();
 			}
 
 			layout = _layoutService.updateLayout(
@@ -380,9 +367,6 @@ public class EditLayoutDesignMVCActionCommand extends BaseMVCActionCommand {
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
-
-	@Reference
-	private LayoutPageTemplateEntryLocalService _layoutPageTemplateEntryService;
 
 	@Reference
 	private LayoutService _layoutService;

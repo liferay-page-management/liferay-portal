@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
 import com.liferay.style.book.model.StyleBookEntry;
@@ -70,24 +71,13 @@ public class ChangeMasterLayoutMVCActionCommand
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		long masterLayoutPlid = ParamUtil.getLong(
-			actionRequest, "masterLayoutPlid");
+		String masterLayoutPageTemplateEntryERC = ParamUtil.getString(
+			actionRequest, "masterLayoutPageTemplateEntryERC");
 
 		Layout layout = _layoutLocalService.fetchLayout(themeDisplay.getPlid());
 
 		LayoutPermissionUtil.checkLayoutRestrictedUpdatePermission(
 			themeDisplay.getPermissionChecker(), layout);
-
-		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
-			_layoutPageTemplateEntryLocalService.fetchLayoutPageTemplateEntry(
-				masterLayoutPlid);
-
-		String masterLayoutPageTemplateEntryERC = null;
-
-		if (masterLayoutPageTemplateEntry != null) {
-			masterLayoutPageTemplateEntryERC =
-				masterLayoutPageTemplateEntry.getExternalReferenceCode();
-		}
 
 		Layout updatedLayout =
 			_layoutLocalService.updateMasterLayoutPageTemplateEntryERC(
@@ -108,7 +98,7 @@ public class ChangeMasterLayoutMVCActionCommand
 
 		actionRequest.setAttribute(WebKeys.LAYOUT, updatedLayout);
 
-		if (masterLayoutPlid == 0) {
+		if (Validator.isNull(masterLayoutPageTemplateEntryERC)) {
 			return JSONUtil.put(
 				"styleBookEntryERC", _getStyleBookEntryERC(updatedLayout)
 			).put(
@@ -117,14 +107,22 @@ public class ChangeMasterLayoutMVCActionCommand
 			);
 		}
 
+		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.
+				getLayoutPageTemplateEntryByExternalReferenceCode(
+					masterLayoutPageTemplateEntryERC,
+					themeDisplay.getScopeGroupId());
+
 		LayoutStructure layoutStructure =
 			LayoutStructureUtil.getLayoutStructure(
-				themeDisplay.getScopeGroupId(), masterLayoutPlid,
+				themeDisplay.getScopeGroupId(),
+				masterLayoutPageTemplateEntry.getPlid(),
 				SegmentsExperienceConstants.KEY_DEFAULT);
 
 		List<FragmentEntryLink> fragmentEntryLinks =
 			_fragmentEntryLinkLocalService.getFragmentEntryLinksByPlid(
-				themeDisplay.getScopeGroupId(), masterLayoutPlid);
+				themeDisplay.getScopeGroupId(),
+				masterLayoutPageTemplateEntry.getPlid());
 
 		JSONObject fragmentEntryLinksJSONObject =
 			_jsonFactory.createJSONObject();
