@@ -21,9 +21,15 @@ public class LayoutUpgradeProcess extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
+		String columnName = "externalReferenceCode";
+
+		if (!hasColumn("LayoutPageTemplateEntry", "externalReferenceCode")) {
+			columnName = "uuid_";
+		}
+
 		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
 				StringBundler.concat(
-					"select LayoutPageTemplateEntry.externalReferenceCode, ",
+					"select LayoutPageTemplateEntry.", columnName, ",",
 					"Layout.plid from Layout inner join ",
 					"LayoutPageTemplateEntry on Layout.masterLayoutPlid = ",
 					"LayoutPageTemplateEntry.plid where ",
