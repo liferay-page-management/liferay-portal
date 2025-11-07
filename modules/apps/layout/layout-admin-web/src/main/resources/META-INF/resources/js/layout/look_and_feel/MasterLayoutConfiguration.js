@@ -37,7 +37,7 @@ export default function MasterLayoutConfiguration({
 
 					setMasterLayout({
 						masterLayoutPageTemplateEntryERC:
-							itemValue.externalReferenceCode,
+							itemValue.masterLayoutPageTemplateEntryERC,
 						name: itemValue.name,
 					});
 				}
