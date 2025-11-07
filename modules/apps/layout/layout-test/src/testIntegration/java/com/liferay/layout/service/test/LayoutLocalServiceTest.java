@@ -697,7 +697,7 @@ public class LayoutLocalServiceTest {
 			layout.getTitleMap(), layout.getDescriptionMap(),
 			layout.getKeywordsMap(), layout.getRobotsMap(), layout.getType(),
 			layout.isHidden(), friendlyURLMap, layout.getIconImage(), null,
-			null, 0, 0, serviceContext);
+			null, 0, null, serviceContext);
 
 		Assert.assertEquals(
 			friendlyURL, layout.getFriendlyURL(LocaleUtil.GERMANY));
@@ -941,7 +941,7 @@ public class LayoutLocalServiceTest {
 			layout.getTitleMap(), layout.getDescriptionMap(),
 			layout.getKeywordsMap(), layout.getRobotsMap(), layout.getType(),
 			layout.isHidden(), layout.getFriendlyURLMap(),
-			layout.getIconImage(), null, null, 0, 0, serviceContext);
+			layout.getIconImage(), null, null, 0, null, serviceContext);
 
 		Layout updatedLayout = _layoutLocalService.getLayout(layout.getPlid());
 

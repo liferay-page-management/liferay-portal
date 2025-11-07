@@ -448,7 +448,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			RandomTestUtil.randomLocaleStringMap(), Collections.emptyMap(),
 			Collections.emptyMap(), Collections.emptyMap(),
 			Collections.emptyMap(), type, typeSettings, false, false,
-			Collections.emptyMap(), 0L, serviceContext);
+			Collections.emptyMap(), null, serviceContext);
 	}
 
 	private void _assertContentSitePage(SitePage sitePage) {
