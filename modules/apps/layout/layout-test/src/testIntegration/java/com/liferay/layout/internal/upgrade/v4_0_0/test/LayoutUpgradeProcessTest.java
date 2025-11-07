@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.portal.upgrade.v7_4_x.test;
+package com.liferay.layout.internal.upgrade.v4_0_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
@@ -18,15 +18,18 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.version.Version;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.model.impl.LayoutImpl;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.upgrade.v7_4_x.UpgradeLayoutMasterLayoutPageTemplateEntryERC;
+import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
+import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -43,7 +46,7 @@ import org.junit.runner.RunWith;
  * @author Alberto Chaparro
  */
 @RunWith(Arquillian.class)
-public class UpgradeLayoutMasterLayoutPageTemplateEntryERCTest {
+public class LayoutUpgradeProcessTest {
 
 	@ClassRule
 	@Rule
@@ -68,6 +71,7 @@ public class UpgradeLayoutMasterLayoutPageTemplateEntryERCTest {
 	}
 
 	@Test
+	@TestInfo("LPD-63478")
 	public void testUpgrade() throws Exception {
 		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
 			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
@@ -86,12 +90,7 @@ public class UpgradeLayoutMasterLayoutPageTemplateEntryERCTest {
 			masterLayoutPageTemplateEntry.getPlid(), masterLayout1.getPlid());
 		_updateLayout(RandomTestUtil.nextLong(), masterLayout2.getPlid());
 
-		UpgradeProcess upgradeProcess =
-			new UpgradeLayoutMasterLayoutPageTemplateEntryERC();
-
-		upgradeProcess.upgrade();
-
-		_entityCache.clearCache(LayoutImpl.class);
+		_runUpgrade();
 
 		masterLayout1 = _layoutLocalService.fetchLayout(
 			masterLayout1.getPlid());
@@ -111,6 +110,17 @@ public class UpgradeLayoutMasterLayoutPageTemplateEntryERCTest {
 				masterLayout3.getMasterLayoutPageTemplateEntryERC()));
 	}
 
+	private void _runUpgrade() throws Exception {
+		UpgradeProcess[] upgradeProcesses = UpgradeTestUtil.getUpgradeSteps(
+			_upgradeStepRegistrator, new Version(4, 0, 0));
+
+		UpgradeProcess upgradeProcess = upgradeProcesses[0];
+
+		upgradeProcess.upgrade();
+
+		_entityCache.clearCache(LayoutImpl.class);
+	}
+
 	private void _updateLayout(long masterLayoutPlid, long plid)
 		throws Exception {
 
@@ -123,6 +133,11 @@ public class UpgradeLayoutMasterLayoutPageTemplateEntryERCTest {
 			preparedStatement.executeUpdate();
 		}
 	}
+
+	@Inject(
+		filter = "(&(component.name=com.liferay.layout.internal.upgrade.registry.LayoutServiceUpgradeStepRegistrator))"
+	)
+	private static UpgradeStepRegistrator _upgradeStepRegistrator;
 
 	private Connection _connection;
 	private DB _db;
