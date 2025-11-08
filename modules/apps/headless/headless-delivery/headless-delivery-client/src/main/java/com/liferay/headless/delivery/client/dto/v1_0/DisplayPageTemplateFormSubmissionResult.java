@@ -1,12 +1,12 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.headless.delivery.client.dto.v1_0;
 
 import com.liferay.headless.delivery.client.function.UnsafeSupplier;
-import com.liferay.headless.delivery.client.serdes.v1_0.SitePageFormSubmissionResultSerDes;
+import com.liferay.headless.delivery.client.serdes.v1_0.DisplayPageTemplateFormSubmissionResultSerDes;
 
 import jakarta.annotation.Generated;
 
@@ -19,33 +19,33 @@ import java.util.Objects;
  * @generated
  */
 @Generated("")
-public class SitePageFormSubmissionResult implements Cloneable, Serializable {
+public class DisplayPageTemplateFormSubmissionResult
+	implements Cloneable, Serializable {
 
-	public static SitePageFormSubmissionResult toDTO(String json) {
-		return SitePageFormSubmissionResultSerDes.toDTO(json);
+	public static DisplayPageTemplateFormSubmissionResult toDTO(String json) {
+		return DisplayPageTemplateFormSubmissionResultSerDes.toDTO(json);
 	}
 
-	public ClassFieldsReference getItemReference() {
-		return itemReference;
+	public Mapping getMapping() {
+		return mapping;
 	}
 
-	public void setItemReference(ClassFieldsReference itemReference) {
-		this.itemReference = itemReference;
+	public void setMapping(Mapping mapping) {
+		this.mapping = mapping;
 	}
 
-	public void setItemReference(
-		UnsafeSupplier<ClassFieldsReference, Exception>
-			itemReferenceUnsafeSupplier) {
+	public void setMapping(
+		UnsafeSupplier<Mapping, Exception> mappingUnsafeSupplier) {
 
 		try {
-			itemReference = itemReferenceUnsafeSupplier.get();
+			mapping = mappingUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected ClassFieldsReference itemReference;
+	protected Mapping mapping;
 
 	public FragmentInlineValue getNotificationText() {
 		return notificationText;
@@ -91,10 +91,10 @@ public class SitePageFormSubmissionResult implements Cloneable, Serializable {
 	protected Boolean showNotification;
 
 	@Override
-	public SitePageFormSubmissionResult clone()
+	public DisplayPageTemplateFormSubmissionResult clone()
 		throws CloneNotSupportedException {
 
-		return (SitePageFormSubmissionResult)super.clone();
+		return (DisplayPageTemplateFormSubmissionResult)super.clone();
 	}
 
 	@Override
@@ -103,15 +103,16 @@ public class SitePageFormSubmissionResult implements Cloneable, Serializable {
 			return true;
 		}
 
-		if (!(object instanceof SitePageFormSubmissionResult)) {
+		if (!(object instanceof DisplayPageTemplateFormSubmissionResult)) {
 			return false;
 		}
 
-		SitePageFormSubmissionResult sitePageFormSubmissionResult =
-			(SitePageFormSubmissionResult)object;
+		DisplayPageTemplateFormSubmissionResult
+			displayPageTemplateFormSubmissionResult =
+				(DisplayPageTemplateFormSubmissionResult)object;
 
 		return Objects.equals(
-			toString(), sitePageFormSubmissionResult.toString());
+			toString(), displayPageTemplateFormSubmissionResult.toString());
 	}
 
 	@Override
@@ -122,7 +123,7 @@ public class SitePageFormSubmissionResult implements Cloneable, Serializable {
 	}
 
 	public String toString() {
-		return SitePageFormSubmissionResultSerDes.toJSON(this);
+		return DisplayPageTemplateFormSubmissionResultSerDes.toJSON(this);
 	}
 
 }
