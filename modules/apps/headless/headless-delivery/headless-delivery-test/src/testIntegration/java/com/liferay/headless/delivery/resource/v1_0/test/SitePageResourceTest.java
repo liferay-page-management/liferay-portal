@@ -705,8 +705,6 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
 			).header(
 				"Accept-Language", "nl-NL"
-			).locale(
-				LocaleUtil.getDefault()
 			).build();
 
 		String name = RandomTestUtil.randomString();
