@@ -7,14 +7,17 @@ import changeMasterLayout from '../../../app/thunks/changeMasterLayout';
 
 function undoAction({action}) {
 	return changeMasterLayout({
-		masterLayoutPlid: action.masterLayoutPlid,
+		masterLayoutPageTemplateEntryERC:
+			action.masterLayoutPageTemplateEntryERC,
 	});
 }
 
 function getDerivedStateForUndo({action, state}) {
 	return {
-		masterLayoutPlid: state.masterLayout.masterLayoutPlid,
-		nextMasterLayoutPlid: action.masterLayoutPlid,
+		masterLayoutPageTemplateEntryERC:
+			state.masterLayout.masterLayoutPageTemplateEntryERC,
+		nextMasterLayoutPageTemplateEntryERC:
+			action.masterLayoutPageTemplateEntryERC,
 	};
 }
 
