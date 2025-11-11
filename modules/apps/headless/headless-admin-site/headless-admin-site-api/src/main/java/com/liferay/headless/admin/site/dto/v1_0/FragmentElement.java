@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2024 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -11,7 +11,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
@@ -36,21 +35,21 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName(description = "A fragment field.", value = "FragmentField")
+@GraphQLName(description = "A fragment element.", value = "FragmentElement")
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "FragmentField")
-public class FragmentField implements Serializable {
+@XmlRootElement(name = "FragmentElement")
+public class FragmentElement implements Serializable {
 
-	public static FragmentField toDTO(String json) {
-		return ObjectMapperUtil.readValue(FragmentField.class, json);
+	public static FragmentElement toDTO(String json) {
+		return ObjectMapperUtil.readValue(FragmentElement.class, json);
 	}
 
-	public static FragmentField unsafeToDTO(String json) {
-		return ObjectMapperUtil.unsafeReadValue(FragmentField.class, json);
+	public static FragmentElement unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(FragmentElement.class, json);
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The fragment field's ID."
+		description = "The fragment element's ID."
 	)
 	public String getId() {
 		if (_idSupplier != null) {
@@ -83,18 +82,16 @@ public class FragmentField implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "The fragment field's ID.")
+	@GraphQLField(description = "The fragment element's ID.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String id;
 
 	@JsonIgnore
 	private Supplier<String> _idSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The fragment field's value."
-	)
+	@io.swagger.v3.oas.annotations.media.Schema
 	@Valid
-	public Object getValue() {
+	public FragmentElementValue getValue() {
 		if (_valueSupplier != null) {
 			value = _valueSupplier.get();
 
@@ -104,7 +101,7 @@ public class FragmentField implements Serializable {
 		return value;
 	}
 
-	public void setValue(Object value) {
+	public void setValue(FragmentElementValue value) {
 		this.value = value;
 
 		_valueSupplier = null;
@@ -112,7 +109,7 @@ public class FragmentField implements Serializable {
 
 	@JsonIgnore
 	public void setValue(
-		UnsafeSupplier<Object, Exception> valueUnsafeSupplier) {
+		UnsafeSupplier<FragmentElementValue, Exception> valueUnsafeSupplier) {
 
 		_valueSupplier = () -> {
 			try {
@@ -127,12 +124,12 @@ public class FragmentField implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "The fragment field's value.")
+	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Object value;
+	protected FragmentElementValue value;
 
 	@JsonIgnore
-	private Supplier<Object> _valueSupplier;
+	private Supplier<FragmentElementValue> _valueSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -140,13 +137,13 @@ public class FragmentField implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof FragmentField)) {
+		if (!(object instanceof FragmentElement)) {
 			return false;
 		}
 
-		FragmentField fragmentField = (FragmentField)object;
+		FragmentElement fragmentElement = (FragmentElement)object;
 
-		return Objects.equals(toString(), fragmentField.toString());
+		return Objects.equals(toString(), fragmentElement.toString());
 	}
 
 	@Override
@@ -177,7 +174,7 @@ public class FragmentField implements Serializable {
 			sb.append("\"");
 		}
 
-		Object value = getValue();
+		FragmentElementValue value = getValue();
 
 		if (value != null) {
 			if (sb.length() > 1) {
@@ -186,17 +183,7 @@ public class FragmentField implements Serializable {
 
 			sb.append("\"value\": ");
 
-			if (value instanceof Map) {
-				sb.append(JSONFactoryUtil.createJSONObject((Map<?, ?>)value));
-			}
-			else if (value instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)value));
-				sb.append("\"");
-			}
-			else {
-				sb.append(value);
-			}
+			sb.append(String.valueOf(value));
 		}
 
 		sb.append("}");
@@ -206,7 +193,7 @@ public class FragmentField implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		accessMode = io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.headless.admin.site.dto.v1_0.FragmentField",
+		defaultValue = "com.liferay.headless.admin.site.dto.v1_0.FragmentElement",
 		name = "x-class-name"
 	)
 	public String xClassName;

@@ -1,11 +1,11 @@
 /**
- * SPDX-FileCopyrightText: (c) 2024 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.headless.admin.site.client.serdes.v1_0;
 
-import com.liferay.headless.admin.site.client.dto.v1_0.FragmentFieldText;
+import com.liferay.headless.admin.site.client.dto.v1_0.TextMappedFragmentValue;
 import com.liferay.headless.admin.site.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
@@ -21,24 +21,26 @@ import java.util.TreeMap;
  * @generated
  */
 @Generated("")
-public class FragmentFieldTextSerDes {
+public class TextMappedFragmentValueSerDes {
 
-	public static FragmentFieldText toDTO(String json) {
-		FragmentFieldTextJSONParser fragmentFieldTextJSONParser =
-			new FragmentFieldTextJSONParser();
+	public static TextMappedFragmentValue toDTO(String json) {
+		TextMappedFragmentValueJSONParser textMappedFragmentValueJSONParser =
+			new TextMappedFragmentValueJSONParser();
 
-		return fragmentFieldTextJSONParser.parseToDTO(json);
+		return textMappedFragmentValueJSONParser.parseToDTO(json);
 	}
 
-	public static FragmentFieldText[] toDTOs(String json) {
-		FragmentFieldTextJSONParser fragmentFieldTextJSONParser =
-			new FragmentFieldTextJSONParser();
+	public static TextMappedFragmentValue[] toDTOs(String json) {
+		TextMappedFragmentValueJSONParser textMappedFragmentValueJSONParser =
+			new TextMappedFragmentValueJSONParser();
 
-		return fragmentFieldTextJSONParser.parseToDTOs(json);
+		return textMappedFragmentValueJSONParser.parseToDTOs(json);
 	}
 
-	public static String toJSON(FragmentFieldText fragmentFieldText) {
-		if (fragmentFieldText == null) {
+	public static String toJSON(
+		TextMappedFragmentValue textMappedFragmentValue) {
+
+		if (textMappedFragmentValue == null) {
 			return "null";
 		}
 
@@ -46,31 +48,26 @@ public class FragmentFieldTextSerDes {
 
 		sb.append("{");
 
-		if (fragmentFieldText.getFragmentLink() != null) {
+		if (textMappedFragmentValue.getMappedValue() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"fragmentLink\": ");
+			sb.append("\"mappedValue\": ");
 
-			sb.append(String.valueOf(fragmentFieldText.getFragmentLink()));
+			sb.append(String.valueOf(textMappedFragmentValue.getMappedValue()));
 		}
 
-		if (fragmentFieldText.getText() != null) {
+		if (textMappedFragmentValue.getType() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"text\": ");
+			sb.append("\"type\": ");
 
-			if (fragmentFieldText.getText() instanceof String) {
-				sb.append("\"");
-				sb.append((String)fragmentFieldText.getText());
-				sb.append("\"");
-			}
-			else {
-				sb.append(fragmentFieldText.getText());
-			}
+			sb.append("\"");
+			sb.append(textMappedFragmentValue.getType());
+			sb.append("\"");
 		}
 
 		sb.append("}");
@@ -79,59 +76,59 @@ public class FragmentFieldTextSerDes {
 	}
 
 	public static Map<String, Object> toMap(String json) {
-		FragmentFieldTextJSONParser fragmentFieldTextJSONParser =
-			new FragmentFieldTextJSONParser();
+		TextMappedFragmentValueJSONParser textMappedFragmentValueJSONParser =
+			new TextMappedFragmentValueJSONParser();
 
-		return fragmentFieldTextJSONParser.parseToMap(json);
+		return textMappedFragmentValueJSONParser.parseToMap(json);
 	}
 
 	public static Map<String, String> toMap(
-		FragmentFieldText fragmentFieldText) {
+		TextMappedFragmentValue textMappedFragmentValue) {
 
-		if (fragmentFieldText == null) {
+		if (textMappedFragmentValue == null) {
 			return null;
 		}
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (fragmentFieldText.getFragmentLink() == null) {
-			map.put("fragmentLink", null);
+		if (textMappedFragmentValue.getMappedValue() == null) {
+			map.put("mappedValue", null);
 		}
 		else {
 			map.put(
-				"fragmentLink",
-				String.valueOf(fragmentFieldText.getFragmentLink()));
+				"mappedValue",
+				String.valueOf(textMappedFragmentValue.getMappedValue()));
 		}
 
-		if (fragmentFieldText.getText() == null) {
-			map.put("text", null);
+		if (textMappedFragmentValue.getType() == null) {
+			map.put("type", null);
 		}
 		else {
-			map.put("text", String.valueOf(fragmentFieldText.getText()));
+			map.put("type", String.valueOf(textMappedFragmentValue.getType()));
 		}
 
 		return map;
 	}
 
-	public static class FragmentFieldTextJSONParser
-		extends BaseJSONParser<FragmentFieldText> {
+	public static class TextMappedFragmentValueJSONParser
+		extends BaseJSONParser<TextMappedFragmentValue> {
 
 		@Override
-		protected FragmentFieldText createDTO() {
-			return new FragmentFieldText();
+		protected TextMappedFragmentValue createDTO() {
+			return new TextMappedFragmentValue();
 		}
 
 		@Override
-		protected FragmentFieldText[] createDTOArray(int size) {
-			return new FragmentFieldText[size];
+		protected TextMappedFragmentValue[] createDTOArray(int size) {
+			return new TextMappedFragmentValue[size];
 		}
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "fragmentLink")) {
+			if (Objects.equals(jsonParserFieldName, "mappedValue")) {
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "text")) {
+			else if (Objects.equals(jsonParserFieldName, "type")) {
 				return false;
 			}
 
@@ -140,18 +137,21 @@ public class FragmentFieldTextSerDes {
 
 		@Override
 		protected void setField(
-			FragmentFieldText fragmentFieldText, String jsonParserFieldName,
-			Object jsonParserFieldValue) {
+			TextMappedFragmentValue textMappedFragmentValue,
+			String jsonParserFieldName, Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "fragmentLink")) {
+			if (Objects.equals(jsonParserFieldName, "mappedValue")) {
 				if (jsonParserFieldValue != null) {
-					fragmentFieldText.setFragmentLink(
-						FragmentLinkSerDes.toDTO((String)jsonParserFieldValue));
+					textMappedFragmentValue.setMappedValue(
+						FragmentMappedValueSerDes.toDTO(
+							(String)jsonParserFieldValue));
 				}
 			}
-			else if (Objects.equals(jsonParserFieldName, "text")) {
+			else if (Objects.equals(jsonParserFieldName, "type")) {
 				if (jsonParserFieldValue != null) {
-					fragmentFieldText.setText((Object)jsonParserFieldValue);
+					textMappedFragmentValue.setType(
+						TextMappedFragmentValue.Type.create(
+							(String)jsonParserFieldValue));
 				}
 			}
 		}

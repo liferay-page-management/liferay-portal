@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2024 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -11,7 +11,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
@@ -37,47 +36,51 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "A fragment field with text.", value = "FragmentFieldText"
+	description = "A mapped value of a fragment text element.",
+	value = "TextMappedFragmentValue"
 )
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "FragmentFieldText")
-public class FragmentFieldText implements Serializable {
+@XmlRootElement(name = "TextMappedFragmentValue")
+public class TextMappedFragmentValue
+	extends TextFragmentValue implements Serializable {
 
-	public static FragmentFieldText toDTO(String json) {
-		return ObjectMapperUtil.readValue(FragmentFieldText.class, json);
+	public static TextMappedFragmentValue toDTO(String json) {
+		return ObjectMapperUtil.readValue(TextMappedFragmentValue.class, json);
 	}
 
-	public static FragmentFieldText unsafeToDTO(String json) {
-		return ObjectMapperUtil.unsafeReadValue(FragmentFieldText.class, json);
+	public static TextMappedFragmentValue unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			TextMappedFragmentValue.class, json);
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "A link to a fragment."
+		description = "The fragment mapped value."
 	)
 	@Valid
-	public FragmentLink getFragmentLink() {
-		if (_fragmentLinkSupplier != null) {
-			fragmentLink = _fragmentLinkSupplier.get();
+	public FragmentMappedValue getMappedValue() {
+		if (_mappedValueSupplier != null) {
+			mappedValue = _mappedValueSupplier.get();
 
-			_fragmentLinkSupplier = null;
+			_mappedValueSupplier = null;
 		}
 
-		return fragmentLink;
+		return mappedValue;
 	}
 
-	public void setFragmentLink(FragmentLink fragmentLink) {
-		this.fragmentLink = fragmentLink;
+	public void setMappedValue(FragmentMappedValue mappedValue) {
+		this.mappedValue = mappedValue;
 
-		_fragmentLinkSupplier = null;
+		_mappedValueSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setFragmentLink(
-		UnsafeSupplier<FragmentLink, Exception> fragmentLinkUnsafeSupplier) {
+	public void setMappedValue(
+		UnsafeSupplier<FragmentMappedValue, Exception>
+			mappedValueUnsafeSupplier) {
 
-		_fragmentLinkSupplier = () -> {
+		_mappedValueSupplier = () -> {
 			try {
-				return fragmentLinkUnsafeSupplier.get();
+				return mappedValueUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -88,54 +91,12 @@ public class FragmentFieldText implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "A link to a fragment.")
+	@GraphQLField(description = "The fragment mapped value.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected FragmentLink fragmentLink;
+	protected FragmentMappedValue mappedValue;
 
 	@JsonIgnore
-	private Supplier<FragmentLink> _fragmentLinkSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The fragment field's text."
-	)
-	@Valid
-	public Object getText() {
-		if (_textSupplier != null) {
-			text = _textSupplier.get();
-
-			_textSupplier = null;
-		}
-
-		return text;
-	}
-
-	public void setText(Object text) {
-		this.text = text;
-
-		_textSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setText(UnsafeSupplier<Object, Exception> textUnsafeSupplier) {
-		_textSupplier = () -> {
-			try {
-				return textUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField(description = "The fragment field's text.")
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Object text;
-
-	@JsonIgnore
-	private Supplier<Object> _textSupplier;
+	private Supplier<FragmentMappedValue> _mappedValueSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -143,13 +104,14 @@ public class FragmentFieldText implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof FragmentFieldText)) {
+		if (!(object instanceof TextMappedFragmentValue)) {
 			return false;
 		}
 
-		FragmentFieldText fragmentFieldText = (FragmentFieldText)object;
+		TextMappedFragmentValue textMappedFragmentValue =
+			(TextMappedFragmentValue)object;
 
-		return Objects.equals(toString(), fragmentFieldText.toString());
+		return Objects.equals(toString(), textMappedFragmentValue.toString());
 	}
 
 	@Override
@@ -164,38 +126,30 @@ public class FragmentFieldText implements Serializable {
 
 		sb.append("{");
 
-		FragmentLink fragmentLink = getFragmentLink();
+		FragmentMappedValue mappedValue = getMappedValue();
 
-		if (fragmentLink != null) {
+		if (mappedValue != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"fragmentLink\": ");
+			sb.append("\"mappedValue\": ");
 
-			sb.append(String.valueOf(fragmentLink));
+			sb.append(String.valueOf(mappedValue));
 		}
 
-		Object text = getText();
+		Type type = getType();
 
-		if (text != null) {
+		if (type != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"text\": ");
+			sb.append("\"type\": ");
 
-			if (text instanceof Map) {
-				sb.append(JSONFactoryUtil.createJSONObject((Map<?, ?>)text));
-			}
-			else if (text instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)text));
-				sb.append("\"");
-			}
-			else {
-				sb.append(text);
-			}
+			sb.append("\"");
+			sb.append(type);
+			sb.append("\"");
 		}
 
 		sb.append("}");
@@ -205,7 +159,7 @@ public class FragmentFieldText implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		accessMode = io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.headless.admin.site.dto.v1_0.FragmentFieldText",
+		defaultValue = "com.liferay.headless.admin.site.dto.v1_0.TextMappedFragmentValue",
 		name = "x-class-name"
 	)
 	public String xClassName;

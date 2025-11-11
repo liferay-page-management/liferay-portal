@@ -1,12 +1,12 @@
 /**
- * SPDX-FileCopyrightText: (c) 2024 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.headless.admin.site.client.dto.v1_0;
 
 import com.liferay.headless.admin.site.client.function.UnsafeSupplier;
-import com.liferay.headless.admin.site.client.serdes.v1_0.FragmentFieldSerDes;
+import com.liferay.headless.admin.site.client.serdes.v1_0.FragmentElementSerDes;
 
 import jakarta.annotation.Generated;
 
@@ -19,10 +19,10 @@ import java.util.Objects;
  * @generated
  */
 @Generated("")
-public class FragmentField implements Cloneable, Serializable {
+public class FragmentElement implements Cloneable, Serializable {
 
-	public static FragmentField toDTO(String json) {
-		return FragmentFieldSerDes.toDTO(json);
+	public static FragmentElement toDTO(String json) {
+		return FragmentElementSerDes.toDTO(json);
 	}
 
 	public String getId() {
@@ -44,16 +44,16 @@ public class FragmentField implements Cloneable, Serializable {
 
 	protected String id;
 
-	public Object getValue() {
+	public FragmentElementValue getValue() {
 		return value;
 	}
 
-	public void setValue(Object value) {
+	public void setValue(FragmentElementValue value) {
 		this.value = value;
 	}
 
 	public void setValue(
-		UnsafeSupplier<Object, Exception> valueUnsafeSupplier) {
+		UnsafeSupplier<FragmentElementValue, Exception> valueUnsafeSupplier) {
 
 		try {
 			value = valueUnsafeSupplier.get();
@@ -63,11 +63,11 @@ public class FragmentField implements Cloneable, Serializable {
 		}
 	}
 
-	protected Object value;
+	protected FragmentElementValue value;
 
 	@Override
-	public FragmentField clone() throws CloneNotSupportedException {
-		return (FragmentField)super.clone();
+	public FragmentElement clone() throws CloneNotSupportedException {
+		return (FragmentElement)super.clone();
 	}
 
 	@Override
@@ -76,13 +76,13 @@ public class FragmentField implements Cloneable, Serializable {
 			return true;
 		}
 
-		if (!(object instanceof FragmentField)) {
+		if (!(object instanceof FragmentElement)) {
 			return false;
 		}
 
-		FragmentField fragmentField = (FragmentField)object;
+		FragmentElement fragmentElement = (FragmentElement)object;
 
-		return Objects.equals(toString(), fragmentField.toString());
+		return Objects.equals(toString(), fragmentElement.toString());
 	}
 
 	@Override
@@ -93,7 +93,7 @@ public class FragmentField implements Cloneable, Serializable {
 	}
 
 	public String toString() {
-		return FragmentFieldSerDes.toJSON(this);
+		return FragmentElementSerDes.toJSON(this);
 	}
 
 }
