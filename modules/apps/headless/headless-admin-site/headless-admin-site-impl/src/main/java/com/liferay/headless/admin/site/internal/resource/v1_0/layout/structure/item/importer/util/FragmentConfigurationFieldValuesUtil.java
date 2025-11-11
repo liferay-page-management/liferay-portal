@@ -43,51 +43,6 @@ public class FragmentConfigurationFieldValuesUtil {
 				configuration, fragmentConfigurationFieldValuesMap));
 	}
 
-	private static JSONObject _getFreeMarkerFragmentEntryProcessorJSONObject(
-			String configuration,
-			Map<String, FragmentConfigurationFieldValue>
-				fragmentConfigurationFieldValuesMap)
-		throws Exception {
-
-		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-
-		if (fragmentConfigurationFieldValuesMap == null) {
-			return jsonObject;
-		}
-
-		JSONObject configurationJSONObject = JSONFactoryUtil.createJSONObject(
-			configuration);
-
-		for (FragmentConfigurationField fragmentConfigurationField :
-				FragmentEntryConfigurationParserUtil.
-					getFragmentConfigurationFields(configurationJSONObject)) {
-
-			FragmentConfigurationFieldValue fragmentConfigurationFieldValue =
-				fragmentConfigurationFieldValuesMap.get(
-					fragmentConfigurationField.getName());
-
-			if (fragmentConfigurationFieldValue == null) {
-				continue;
-			}
-
-			if (!Objects.equals(
-					fragmentConfigurationFieldValue.getType(),
-					FragmentConfigurationFieldValueTypeUtil.toExternalType(
-						fragmentConfigurationField.getType()))) {
-
-				throw new UnsupportedOperationException();
-			}
-
-			jsonObject.put(
-				fragmentConfigurationField.getName(),
-				_fromFragmentConfigurationFieldValue(
-					fragmentConfigurationFieldValue,
-					fragmentConfigurationField));
-		}
-
-		return jsonObject;
-	}
-
 	private static Object _fromFragmentConfigurationFieldValue(
 			FragmentConfigurationFieldValue fragmentConfigurationFieldValue,
 			FragmentConfigurationField fragmentConfigurationField)
@@ -187,6 +142,51 @@ public class FragmentConfigurationFieldValuesUtil {
 		}
 
 		return LocalizedValueUtil.toJSONObject(valuesMap, unsafeFunction);
+	}
+
+	private static JSONObject _getFreeMarkerFragmentEntryProcessorJSONObject(
+			String configuration,
+			Map<String, FragmentConfigurationFieldValue>
+				fragmentConfigurationFieldValuesMap)
+		throws Exception {
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+
+		if (fragmentConfigurationFieldValuesMap == null) {
+			return jsonObject;
+		}
+
+		JSONObject configurationJSONObject = JSONFactoryUtil.createJSONObject(
+			configuration);
+
+		for (FragmentConfigurationField fragmentConfigurationField :
+				FragmentEntryConfigurationParserUtil.
+					getFragmentConfigurationFields(configurationJSONObject)) {
+
+			FragmentConfigurationFieldValue fragmentConfigurationFieldValue =
+				fragmentConfigurationFieldValuesMap.get(
+					fragmentConfigurationField.getName());
+
+			if (fragmentConfigurationFieldValue == null) {
+				continue;
+			}
+
+			if (!Objects.equals(
+					fragmentConfigurationFieldValue.getType(),
+					FragmentConfigurationFieldValueTypeUtil.toExternalType(
+						fragmentConfigurationField.getType()))) {
+
+				throw new UnsupportedOperationException();
+			}
+
+			jsonObject.put(
+				fragmentConfigurationField.getName(),
+				_fromFragmentConfigurationFieldValue(
+					fragmentConfigurationFieldValue,
+					fragmentConfigurationField));
+		}
+
+		return jsonObject;
 	}
 
 	private static boolean _isValidValue(
