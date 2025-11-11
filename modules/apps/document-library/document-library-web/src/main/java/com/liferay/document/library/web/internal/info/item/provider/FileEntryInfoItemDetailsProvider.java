@@ -40,6 +40,10 @@ public class FileEntryInfoItemDetailsProvider
 			public ClassPKInfoItemIdentifier createClassPKInfoItemIdentifier(
 				FileEntry fileEntry) {
 
+				if (fileEntry == null) {
+					return null;
+				}
+
 				return new ClassPKInfoItemIdentifier(
 					fileEntry.getFileEntryId());
 			}
