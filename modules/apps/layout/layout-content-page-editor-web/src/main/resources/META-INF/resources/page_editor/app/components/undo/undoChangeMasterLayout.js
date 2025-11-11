@@ -4,6 +4,7 @@
  */
 
 import changeMasterLayout from '../../../app/thunks/changeMasterLayout';
+import {config} from '../../config/index';
 
 function undoAction({action}) {
 	return changeMasterLayout({
@@ -13,6 +14,16 @@ function undoAction({action}) {
 }
 
 function getDerivedStateForUndo({action, state}) {
+	const masterLayoutExists = config.masterLayouts.some(
+		(masterLayout) =>
+			masterLayout.masterLayoutPageTemplateEntryERC ===
+			state.masterLayout.masterLayoutPageTemplateEntryERC
+	);
+
+	if (!masterLayoutExists) {
+		return null;
+	}
+
 	return {
 		masterLayoutPageTemplateEntryERC:
 			state.masterLayout.masterLayoutPageTemplateEntryERC,
