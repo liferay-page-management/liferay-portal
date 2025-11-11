@@ -5,6 +5,7 @@
 
 package com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.util;
 
+import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
 import com.liferay.fragment.util.configuration.FragmentConfigurationField;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParserUtil;
 import com.liferay.headless.admin.site.dto.v1_0.CheckboxFragmentConfigurationFieldValue;
@@ -18,6 +19,7 @@ import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 
 import java.util.Map;
 import java.util.Objects;
@@ -26,6 +28,20 @@ import java.util.Objects;
  * @author Lourdes Fernández Besada
  */
 public class FragmentConfigurationFieldValuesUtil {
+
+	public static JSONObject
+			getFragmentConfigurationFieldValuesEditableValuesJSONObject(
+				String configuration,
+				Map<String, FragmentConfigurationFieldValue>
+					fragmentConfigurationFieldValuesMap)
+		throws Exception {
+
+		return JSONUtil.put(
+			FragmentEntryProcessorConstants.
+				KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
+			getFreeMarkerFragmentEntryProcessorJSONObject(
+				configuration, fragmentConfigurationFieldValuesMap));
+	}
 
 	public static JSONObject getFreeMarkerFragmentEntryProcessorJSONObject(
 			String configuration,
