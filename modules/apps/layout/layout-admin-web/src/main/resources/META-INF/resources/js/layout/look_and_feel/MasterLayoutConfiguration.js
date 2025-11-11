@@ -14,14 +14,13 @@ export default function MasterLayoutConfiguration({
 	changeMasterLayoutURL,
 	editMasterLayoutURL,
 	isReadOnly,
-	masterLayoutName: initialMasterLayoutName,
-	masterLayoutPageTemplateEntryERC: initialMasterLayoutPageTemplateEntryERC,
+	masterLayoutName,
+	masterLayoutPageTemplateEntryERC,
 	portletNamespace,
 }) {
 	const [masterLayout, setMasterLayout] = useState({
-		masterLayoutPageTemplateEntryERC:
-			initialMasterLayoutPageTemplateEntryERC,
-		name: initialMasterLayoutName,
+		erc: masterLayoutPageTemplateEntryERC,
+		name: masterLayoutName,
 	});
 
 	const handleChangeMasterButtonClick = () => {
@@ -36,8 +35,7 @@ export default function MasterLayoutConfiguration({
 					const itemValue = JSON.parse(selectedItem.value);
 
 					setMasterLayout({
-						masterLayoutPageTemplateEntryERC:
-							itemValue.masterLayoutPageTemplateEntryERC,
+						erc: itemValue.masterLayoutPageTemplateEntryERC,
 						name: itemValue.name,
 					});
 				}
@@ -54,7 +52,7 @@ export default function MasterLayoutConfiguration({
 		);
 
 		if (customCSS) {
-			if (!masterLayout.masterLayoutPageTemplateEntryERC) {
+			if (!masterLayout.erc) {
 				customCSS.classList.remove('hide');
 			}
 			else {
@@ -69,7 +67,7 @@ export default function MasterLayoutConfiguration({
 		if (themeContainer) {
 			const sheet = themeContainer.closest('.sheet');
 
-			if (!masterLayout.masterLayoutPageTemplateEntryERC) {
+			if (!masterLayout.erc) {
 				sheet.classList.remove('hide');
 
 				sheet.removeAttribute('aria-hidden');
@@ -80,22 +78,21 @@ export default function MasterLayoutConfiguration({
 				sheet.setAttribute('aria-hidden', 'true');
 			}
 		}
-	}, [masterLayout.masterLayoutPageTemplateEntryERC, portletNamespace]);
+	}, [masterLayout.erc, portletNamespace]);
 
 	return (
 		<>
 			<input
 				name={`${portletNamespace}masterLayoutPageTemplateEntryERC`}
 				type="hidden"
-				value={masterLayout.masterLayoutPageTemplateEntryERC}
+				value={masterLayout.erc}
 			/>
 
 			<label htmlFor={`${portletNamespace}masterLayout`}>
 				{Liferay.Language.get('master')}
 			</label>
 
-			{editMasterLayoutURL &&
-			masterLayout.masterLayoutPageTemplateEntryERC ? (
+			{editMasterLayoutURL && masterLayout.erc ? (
 				<div className="d-flex">
 					<ClayForm.Group className="c-mb-0 flex-grow-1">
 						<ClayInput
