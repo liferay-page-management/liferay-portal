@@ -39,11 +39,11 @@ public class FragmentConfigurationFieldValuesUtil {
 		return JSONUtil.put(
 			FragmentEntryProcessorConstants.
 				KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
-			getFreeMarkerFragmentEntryProcessorJSONObject(
+			_getFreeMarkerFragmentEntryProcessorJSONObject(
 				configuration, fragmentConfigurationFieldValuesMap));
 	}
 
-	public static JSONObject getFreeMarkerFragmentEntryProcessorJSONObject(
+	private static JSONObject _getFreeMarkerFragmentEntryProcessorJSONObject(
 			String configuration,
 			Map<String, FragmentConfigurationFieldValue>
 				fragmentConfigurationFieldValuesMap)
