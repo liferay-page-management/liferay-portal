@@ -41,6 +41,7 @@ import com.liferay.headless.admin.site.client.dto.v1_0.FormContainerConfig;
 import com.liferay.headless.admin.site.client.dto.v1_0.FormContainerContextReference;
 import com.liferay.headless.admin.site.client.dto.v1_0.FormContainerPageElementDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.FormContainerReference;
+import com.liferay.headless.admin.site.client.dto.v1_0.FragmentElement;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentInlineValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentInstancePageElementDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentLink;
@@ -2197,7 +2198,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 			_getFragmentInstancePageElement(
 				externalReferenceCode,
 				PageElementsTestUtil.getFragmentInstancePageElementDefinition(
-					Collections.emptyMap(),
+					Collections.emptyMap(), new FragmentElement[0],
 					_addFragmentEntry(
 						null, irrelevantGroup.getGroupId(), serviceContext),
 					testGroup.getGroupId())));
@@ -2205,7 +2206,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 			_getFragmentInstancePageElement(
 				externalReferenceCode,
 				PageElementsTestUtil.getFragmentInstancePageElementDefinition(
-					Collections.emptyMap(),
+					Collections.emptyMap(), new FragmentElement[0],
 					_addFragmentEntry(
 						null, testGroup.getGroupId(), serviceContext),
 					testGroup.getGroupId())));
@@ -2238,8 +2239,8 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 					externalReferenceCode,
 					PageElementsTestUtil.
 						getFragmentInstancePageElementDefinition(
-							Collections.emptyMap(), fragmentEntry,
-							testGroup.getGroupId()))));
+							Collections.emptyMap(), new FragmentElement[0],
+							fragmentEntry, testGroup.getGroupId()))));
 	}
 
 	private void
@@ -2253,7 +2254,8 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 					externalReferenceCode,
 					PageElementsTestUtil.
 						getFragmentInstancePageElementDefinition(
-							Collections.emptyMap(), fragmentRenderer))));
+							Collections.emptyMap(), new FragmentElement[0],
+							fragmentRenderer))));
 	}
 
 	private void _testPutSitePageSpecificationPageExperiencePageElementWithFragmentPageElementWithConfiguration()
@@ -2440,8 +2442,8 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 					externalReferenceCode,
 					PageElementsTestUtil.
 						getFragmentInstancePageElementDefinition(
-							configurationValuesMap, fragmentEntry,
-							testGroup.getGroupId())));
+							configurationValuesMap, new FragmentElement[0],
+							fragmentEntry, testGroup.getGroupId())));
 		}
 	}
 
