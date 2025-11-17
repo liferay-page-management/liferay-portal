@@ -53,7 +53,7 @@ export default function EditLayout({
 		) {
 			openConfirmModal({
 				message: Liferay.Language.get(
-					'reactivating-inherited-changes-may-update-the-page-with-the-possible-changes-that-could-have-been-made-in-the-original-template'
+					'reactivating-inheristed-changes-may-update-the-page-with-the-possible-changes-that-could-have-been-made-in-the-original-template'
 				),
 				onConfirm: (isConfirm: boolean) => {
 					if (isConfirm) {
