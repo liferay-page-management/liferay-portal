@@ -77,17 +77,17 @@ public class FragmentMappedValueUtil {
 	}
 
 	public static ClassFieldsReference toDisplayPageClassFieldsReference(
-		String displayPageTemplateId) {
+		String displayPageUniqueFieldId) {
 
 		if (!StringUtil.startsWith(
-				displayPageTemplateId,
+				displayPageUniqueFieldId,
 				LayoutPageTemplateEntry.class.getSimpleName())) {
 
 			return null;
 		}
 
 		try {
-			Matcher matcher = _pattern.matcher(displayPageTemplateId);
+			Matcher matcher = _pattern.matcher(displayPageUniqueFieldId);
 
 			if (!matcher.find()) {
 				return null;
