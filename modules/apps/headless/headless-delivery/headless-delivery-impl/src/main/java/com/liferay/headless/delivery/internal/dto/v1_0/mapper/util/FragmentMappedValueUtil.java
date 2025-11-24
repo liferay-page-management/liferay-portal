@@ -79,48 +79,49 @@ public class FragmentMappedValueUtil {
 	public static ClassFieldsReference toDisplayPageClassFieldsReference(
 		String displayPageTemplateId) {
 
-		if (StringUtil.startsWith(
+		if (!StringUtil.startsWith(
 				displayPageTemplateId,
 				LayoutPageTemplateEntry.class.getSimpleName())) {
 
-			try {
-				Matcher matcher = _pattern.matcher(displayPageTemplateId);
+			return null;
+		}
 
-				if (matcher.find()) {
-					LayoutPageTemplateEntry layoutPageTemplateEntry =
-						LayoutPageTemplateEntryLocalServiceUtil.
-							getLayoutPageTemplateEntry(
-								GetterUtil.getLong(matcher.group(1)));
+		try {
+			Matcher matcher = _pattern.matcher(displayPageTemplateId);
 
-					return new ClassFieldsReference() {
-						{
-							setClassName(
-								() -> LayoutPageTemplateEntry.class.getName());
-							setFields(
-								() -> new Field[] {
-									new Field() {
-										{
-											setFieldName(
-												() -> "externalReferenceCode");
-											setFieldValue(
-												layoutPageTemplateEntry::
-													getExternalReferenceCode);
-										}
-									}
-								});
-						}
-					};
-				}
-			}
-			catch (Exception exception) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(
-						"Item reference could not be set since no display " +
-							"page template could be obtained",
-						exception);
-				}
-
+			if (!matcher.find()) {
 				return null;
+			}
+
+			long layoutPageTemplateEntryId = GetterUtil.getLong(
+				matcher.group(1));
+
+			LayoutPageTemplateEntry layoutPageTemplateEntry =
+				LayoutPageTemplateEntryLocalServiceUtil.
+					getLayoutPageTemplateEntry(layoutPageTemplateEntryId);
+
+			Field externalReferenceCodeField = new Field();
+
+			externalReferenceCodeField.setFieldName(
+				() -> "externalReferenceCode");
+			externalReferenceCodeField.setFieldValue(
+				layoutPageTemplateEntry::getExternalReferenceCode);
+
+			ClassFieldsReference classFieldsReference =
+				new ClassFieldsReference();
+
+			classFieldsReference.setClassName(
+				LayoutPageTemplateEntry.class::getName);
+			classFieldsReference.setFields(
+				() -> new Field[] {externalReferenceCodeField});
+
+			return classFieldsReference;
+		}
+		catch (PortalException portalException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Could not obtain display page for item reference",
+					portalException);
 			}
 		}
 
