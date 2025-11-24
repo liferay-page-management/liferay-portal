@@ -15,9 +15,11 @@ import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.model.CacheModel;
+import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.ModelWrapper;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.impl.BaseModelImpl;
+import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -1148,9 +1150,18 @@ public class LayoutPageTemplateEntryModelImpl
 
 	@Override
 	public StagedModelType getStagedModelType() {
+		ClassName className = ClassNameLocalServiceUtil.fetchClassName(
+			getClassNameId());
+
+		if (className == null) {
+			return new StagedModelType(
+				PortalUtil.getClassNameId(
+					LayoutPageTemplateEntry.class.getName()));
+		}
+
 		return new StagedModelType(
 			PortalUtil.getClassNameId(LayoutPageTemplateEntry.class.getName()),
-			getClassNameId());
+			className.getClassNameId());
 	}
 
 	@Override
