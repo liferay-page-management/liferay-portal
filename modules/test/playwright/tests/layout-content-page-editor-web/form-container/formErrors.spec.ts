@@ -472,10 +472,18 @@ test.describe('Edit mode form errors', () => {
 				key: 'INPUTS-submit-button',
 			});
 
+			const lastNextButton = getFragmentDefinition({
+				fragmentConfig: {
+					type: 'next',
+				},
+				id: getRandomString(),
+				key: 'INPUTS-submit-button',
+			});
+
 			const formDefinition = getFormContainerDefinition({
 				id: getRandomString(),
 				objectDefinitionClassName,
-				steps: [[nextButton], [previousButton], [], [nextButton]],
+				steps: [[nextButton], [previousButton], [], [lastNextButton]],
 			});
 
 			const layout = await apiHelpers.headlessDelivery.createSitePage({
