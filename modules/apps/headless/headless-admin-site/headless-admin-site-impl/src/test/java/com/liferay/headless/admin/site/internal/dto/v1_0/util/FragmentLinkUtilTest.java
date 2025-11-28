@@ -8,6 +8,7 @@ package com.liferay.headless.admin.site.internal.dto.v1_0.util;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentLink;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentLinkInlineValue;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentLinkMappedValue;
+import com.liferay.headless.admin.site.dto.v1_0.FragmentLinkValue;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentMappedValueItemContextReference;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentMappedValueItemExternalReference;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentMappedValueItemReference;
@@ -1121,7 +1122,8 @@ public class FragmentLinkUtilTest {
 
 		return new FragmentLinkInlineValue() {
 			{
-				setValue_i18n(localizedValues);
+				setType(() -> Type.FRAGMENT_INLINE_VALUE);
+				setValue_i18n(() -> localizedValues);
 			}
 		};
 	}
@@ -1140,7 +1142,10 @@ public class FragmentLinkUtilTest {
 			() -> _getFragmentMappedValueItemReference(
 				className, externalReferenceCode, scope));
 
-		fragmentLinkMappedValue.setMapping(mapping);
+		fragmentLinkMappedValue.setMapping(() -> mapping);
+
+		fragmentLinkMappedValue.setType(
+			() -> FragmentLinkValue.Type.FRAGMENT_MAPPED_VALUE);
 
 		return fragmentLinkMappedValue;
 	}
@@ -1153,6 +1158,10 @@ public class FragmentLinkUtilTest {
 			return new FragmentMappedValueItemContextReference() {
 				{
 					setContextSource(() -> ContextSource.DISPLAY_PAGE_ITEM);
+					setType(
+						() ->
+							FragmentMappedValueItemReference.Type.
+								CONTEXT_REFERENCE);
 				}
 			};
 		}
@@ -1168,6 +1177,10 @@ public class FragmentLinkUtilTest {
 		if (scope != null) {
 			fragmentMappedValueItemExternalReference.setScope(scope);
 		}
+
+		fragmentMappedValueItemExternalReference.setType(
+			() ->
+				FragmentMappedValueItemReference.Type.ITEM_EXTERNAL_REFERENCE);
 
 		return fragmentMappedValueItemExternalReference;
 	}
