@@ -240,6 +240,8 @@ public class FragmentEditableElementUtil {
 		textFragmentEditableElementValue.setTextFragmentValue(
 			() -> _toTextFragmentValue(
 				companyId, infoItemServiceRegistry, jsonObject, scopeGroupId));
+		textFragmentEditableElementValue.setType(
+			() -> FragmentEditableElementValue.Type.TEXT);
 
 		return textFragmentEditableElementValue;
 	}
@@ -260,6 +262,8 @@ public class FragmentEditableElementUtil {
 				() -> FragmentMappingUtil.toFragmentMappedValue(
 					companyId, infoItemServiceRegistry, jsonObject,
 					scopeGroupId));
+			textMappedFragmentValue.setType(
+				() -> TextFragmentValue.Type.MAPPED);
 
 			return textMappedFragmentValue;
 		}
@@ -285,6 +289,7 @@ public class FragmentEditableElementUtil {
 
 				return fragmentInlineValue;
 			});
+		textInlineFragmentValue.setType(() -> TextFragmentValue.Type.INLINE);
 
 		return textInlineFragmentValue;
 	}

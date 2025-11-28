@@ -138,6 +138,8 @@ public class FragmentLinkUtil {
 					setItemReference(() -> fragmentMappedValueItemReference);
 				}
 			});
+		fragmentLinkMappedValue.setType(
+			() -> FragmentLinkValue.Type.FRAGMENT_MAPPED_VALUE);
 
 		return fragmentLinkMappedValue;
 	}
@@ -158,6 +160,8 @@ public class FragmentLinkUtil {
 		fragmentLinkInlineValue.setValue_i18n(
 			() -> LocalizedValueUtil.toLocalizedValues(
 				jsonObject.getJSONObject("href")));
+		fragmentLinkInlineValue.setType(
+			() -> FragmentLinkValue.Type.FRAGMENT_INLINE_VALUE);
 
 		return fragmentLinkInlineValue;
 	}

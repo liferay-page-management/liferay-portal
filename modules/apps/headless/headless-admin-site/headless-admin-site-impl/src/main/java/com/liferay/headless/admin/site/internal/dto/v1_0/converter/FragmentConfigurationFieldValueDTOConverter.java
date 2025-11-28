@@ -168,6 +168,9 @@ public class FragmentConfigurationFieldValueDTOConverter
 			categoryFragmentConfigurationFieldValue =
 				new CategoryFragmentConfigurationFieldValue();
 
+		categoryFragmentConfigurationFieldValue.setType(
+			() -> FragmentConfigurationFieldValue.Type.CATEGORY);
+
 		if (fragmentConfigurationField.isLocalizable()) {
 			categoryFragmentConfigurationFieldValue.setValue_i18n(
 				() -> LocalizedValueUtil.toLocalizedValues(
@@ -272,6 +275,9 @@ public class FragmentConfigurationFieldValueDTOConverter
 			checkboxFragmentConfigurationFieldValue =
 				new CheckboxFragmentConfigurationFieldValue();
 
+		checkboxFragmentConfigurationFieldValue.setType(
+			() -> FragmentConfigurationFieldValue.Type.CHECKBOX);
+
 		if (fragmentConfigurationField.isLocalizable()) {
 			JSONObject jsonObject =
 				(JSONObject)fragmentFragmentConfigurationFieldValue;
@@ -340,6 +346,8 @@ public class FragmentConfigurationFieldValueDTOConverter
 
 		contextualMenuNavigationMenuValue.setContextualMenuType(
 			() -> ContextualMenuTypeUtil.toExternalType(contextualMenu));
+		contextualMenuNavigationMenuValue.setNavigationMenuType(
+			() -> NavigationMenuValue.NavigationMenuType.CONTEXTUAL_MENU);
 
 		return contextualMenuNavigationMenuValue;
 	}
@@ -427,6 +435,9 @@ public class FragmentConfigurationFieldValueDTOConverter
 			itemFragmentConfigurationFieldValue.setValue(
 				() -> _getItemValue(companyId, jsonObject, scopeGroupId));
 		}
+
+		itemFragmentConfigurationFieldValue.setType(
+			() -> FragmentConfigurationFieldValue.Type.ITEM);
 
 		return itemFragmentConfigurationFieldValue;
 	}
@@ -624,6 +635,8 @@ public class FragmentConfigurationFieldValueDTOConverter
 
 		siteMenuNavigationMenuValue.setNavigationMenuItemExternalReference(
 			() -> itemExternalReference);
+		siteMenuNavigationMenuValue.setNavigationMenuType(
+			() -> NavigationMenuValue.NavigationMenuType.SITE_MENU);
 		siteMenuNavigationMenuValue.setParentMenuItemExternalReferenceCode(
 			() -> {
 				SiteNavigationMenuItem siteNavigationMenuItem =
@@ -678,6 +691,8 @@ public class FragmentConfigurationFieldValueDTOConverter
 		SitePagesNavigationMenuValue sitePagesNavigationMenuValue =
 			new SitePagesNavigationMenuValue();
 
+		sitePagesNavigationMenuValue.setNavigationMenuType(
+			() -> NavigationMenuValue.NavigationMenuType.SITE_PAGES);
 		sitePagesNavigationMenuValue.setPageSetType(
 			() -> {
 				if (GetterUtil.getBoolean(privateLayout)) {
