@@ -313,7 +313,7 @@ public class FragmentConfigurationFieldValueDTOConverter
 			collectionFragmentConfigurationFieldValue =
 				new CollectionFragmentConfigurationFieldValue() {
 					{
-						setType(Type.COLLECTION);
+						setType(() -> Type.COLLECTION);
 					}
 				};
 
@@ -488,7 +488,7 @@ public class FragmentConfigurationFieldValueDTOConverter
 			lengthFragmentConfigurationFieldValue =
 				new LengthFragmentConfigurationFieldValue() {
 					{
-						setType(Type.LENGTH);
+						setType(() -> Type.LENGTH);
 					}
 				};
 
@@ -605,7 +605,7 @@ public class FragmentConfigurationFieldValueDTOConverter
 			selectFragmentConfigurationFieldValue =
 				new SelectFragmentConfigurationFieldValue() {
 					{
-						setType(Type.SELECT);
+						setType(() -> Type.SELECT);
 					}
 				};
 
@@ -739,7 +739,7 @@ public class FragmentConfigurationFieldValueDTOConverter
 			textFragmentConfigurationFieldValue =
 				new TextFragmentConfigurationFieldValue() {
 					{
-						setType(Type.TEXT);
+						setType(() -> Type.TEXT);
 					}
 				};
 
