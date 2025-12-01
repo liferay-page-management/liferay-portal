@@ -5,6 +5,7 @@
 
 import {IInternalRenderer} from '@liferay/frontend-data-set-web';
 
+import {ObjectDefinition} from '../../common/types/ObjectDefinition';
 import getLocalizedValue from '../../common/utils/getLocalizedValue';
 import deleteStructureAction from './actions/deleteStructureAction';
 import importStructureAction from './actions/importStructureAction';
@@ -58,6 +59,7 @@ export default function StructuresFDSPropsTransformer({
 				};
 				label: Partial<Liferay.Language.FullyLocalizedValue<string>>;
 				objectFolderExternalReferenceCode: string;
+				objectRelationships: ObjectDefinition['objectRelationships'];
 				status: {code: number};
 			};
 			loadData: () => {};
@@ -85,6 +87,7 @@ export default function StructuresFDSPropsTransformer({
 							itemData.label,
 							Liferay.ThemeDisplay.getLanguageId()
 						) || getLocalizedValue(itemData.label),
+					relationships: itemData.objectRelationships,
 					status: itemData.status.code,
 				});
 			}

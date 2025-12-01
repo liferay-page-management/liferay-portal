@@ -7,6 +7,7 @@ import {openModal} from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
 
 import ApiHelper from '../../../common/services/ApiHelper';
+import {ObjectDefinition} from '../../../common/types/ObjectDefinition';
 import DeleteStructureModalContent from '../../modal/DeleteStructureModalContent';
 import {executeAsyncItemAction} from '../utils/executeAsyncItemAction';
 
@@ -17,12 +18,14 @@ export default async function deleteStructureAction({
 	getObjectDefinitionDeleteInfoURL,
 	loadData,
 	name,
+	relationships,
 	status,
 }: {
 	deleteAction: {href: string; method: string};
 	getObjectDefinitionDeleteInfoURL: string;
 	loadData: () => {};
 	name: string;
+	relationships: ObjectDefinition['objectRelationships'];
 	status: number;
 }) {
 	const deleteStructureToast = async () => {
@@ -54,7 +57,16 @@ export default async function deleteStructureAction({
 
 	const {hasObjectRelationship, objectEntriesCount} = data;
 
-	if (hasObjectRelationship) {
+	const {referencedStructureIds, repeatableGroupIds} =
+		await classifyRelationships(relationships);
+
+	if (
+		!canBeDeleted(
+			hasObjectRelationship,
+			referencedStructureIds,
+			repeatableGroupIds
+		)
+	) {
 		openModal({
 			bodyHTML: `<p>${sub(
 				Liferay.Language.get(
@@ -75,20 +87,21 @@ export default async function deleteStructureAction({
 			status: 'warning',
 			title: Liferay.Language.get('deletion-not-allowed'),
 		});
+
+		return;
 	}
-	else {
-		openModal({
-			contentComponent: ({closeModal}: {closeModal: () => void}) =>
-				DeleteStructureModalContent({
-					closeModal,
-					name,
-					onDelete: deleteStructureToast,
-					usesCount: objectEntriesCount,
-				}),
-			size: 'md',
-			status: 'danger',
-		});
-	}
+
+	openModal({
+		contentComponent: ({closeModal}: {closeModal: () => void}) =>
+			DeleteStructureModalContent({
+				closeModal,
+				name,
+				onDelete: deleteStructureToast,
+				usesCount: objectEntriesCount,
+			}),
+		size: 'md',
+		status: 'danger',
+	});
 }
 
 async function classifyRelationships(
@@ -142,4 +155,30 @@ async function classifyRelationships(
 	}
 
 	return {referencedStructureIds, repeatableGroupIds};
+}
+
+function canBeDeleted(
+	hasObjectRelationship: boolean,
+	referencedStructureIds: number[],
+	repeatableGroupIds: number[]
+) {
+
+	// If it does not have relationships but hasObjectRelationship is true,
+	// it means it's being referenced from another structure
+
+	if (
+		hasObjectRelationship &&
+		!repeatableGroupIds.length &&
+		!referencedStructureIds.length
+	) {
+		return false;
+	}
+
+	// Return whether it has referenced structures or not
+
+	if (referencedStructureIds.length) {
+		return false;
+	}
+
+	return true;
 }
