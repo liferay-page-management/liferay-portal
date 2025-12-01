@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {ObjectField} from '../../common/types/ObjectDefinition';
 import {Uuid} from '../types/Uuid';
 import getRandomId from './getRandomId';
 import getUuid from './getUuid';
@@ -52,7 +53,10 @@ export const FIELD_TYPE_ICON: Record<FieldType, string> = {
 	'upload': 'upload',
 } as const;
 
-export const FIELD_TYPE_TO_BUSINESS_TYPE: Record<FieldType, string> = {
+export const FIELD_TYPE_TO_BUSINESS_TYPE: Record<
+	FieldType,
+	ObjectField['businessType']
+> = {
 	'boolean': 'Boolean',
 	'date': 'Date',
 	'datetime': 'DateTime',
@@ -181,9 +185,6 @@ export type Field =
 	  });
 
 export type FieldType = (typeof FIELD_TYPES)[number];
-
-export type FieldBusinessType =
-	(typeof FIELD_TYPE_TO_BUSINESS_TYPE)[keyof typeof FIELD_TYPE_TO_BUSINESS_TYPE];
 
 // Functions
 
