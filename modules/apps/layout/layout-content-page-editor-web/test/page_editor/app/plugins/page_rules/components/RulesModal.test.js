@@ -57,6 +57,7 @@ function MockRulesContextProvider({children, editingRule: initialEditingRule}) {
 	const [editingRule, setEditingRule] = React.useState(initialEditingRule);
 	const [visible, setVisible] = React.useState(true);
 	const [trigger, setTrigger] = React.useState(null);
+	const [validateRule, setValidateRule] = React.useState(false);
 
 	return (
 		<RulesModalContext.Provider
@@ -64,8 +65,10 @@ function MockRulesContextProvider({children, editingRule: initialEditingRule}) {
 				editingRule,
 				setEditingRule,
 				setTrigger,
+				setValidateRule,
 				setVisible,
 				trigger,
+				validateRule,
 				visible,
 			}}
 		>
@@ -150,9 +153,7 @@ describe('RulesSidebar', () => {
 		await userEvent.click(screen.getByText('save'));
 
 		expect(
-			screen.getByText(
-				'the-rule-is-incomplete.-please-check-that-the-conditions-and-actions-are-completed-before-saving'
-			)
+			screen.getByText('review-the-next-fields-in-order-to-save-the-rule')
 		).toBeInTheDocument();
 	});
 
@@ -161,7 +162,9 @@ describe('RulesSidebar', () => {
 
 		await userEvent.click(screen.getByText('save'));
 
-		expect(screen.getByText('this-field-is-required')).toBeInTheDocument();
+		expect(screen.getByLabelText('rule-name')).toHaveAccessibleDescription(
+			'this-field-is-required'
+		);
 	});
 
 	it('does allow completing a condition', async () => {
