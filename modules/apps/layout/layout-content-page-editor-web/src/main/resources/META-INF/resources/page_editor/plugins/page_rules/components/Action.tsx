@@ -12,8 +12,10 @@ import isInputFragment from '../../../app/utils/isInputFragment';
 import useActionValues from '../../../app/utils/useActionValues';
 import RuleBuilderItem from './RuleBuilderItem';
 import RuleSelect from './RuleSelect';
+import {RuleError} from './RulesModal';
 
 export interface Action {
+	error?: RuleError | null;
 	id: string;
 	itemId?: string;
 	readOnly?: boolean;
@@ -26,6 +28,7 @@ interface ActionProps {
 	layoutDataItems: {label: string; value: string}[];
 	onActionChange: (action: Action) => void;
 	onDeleteAction: () => void;
+	onErrorChange: (error: RuleError | null) => void;
 	showDeleteButton: boolean;
 	wrapperRef?: ComponentProps<typeof RuleBuilderItem>['wrapperRef'];
 }
@@ -62,6 +65,7 @@ export default function Action({
 	layoutDataItems,
 	onActionChange,
 	onDeleteAction,
+	onErrorChange,
 	showDeleteButton,
 	wrapperRef,
 }: ActionProps) {
@@ -116,6 +120,7 @@ export default function Action({
 					Liferay.Language.get('action')
 				)}
 				items={actionTypes}
+				onErrorChange={onErrorChange}
 				onSelectionChange={(type) => onActionChange({...action, type})}
 				selectedKey={action.type}
 				triggerRef={selectRef}
@@ -129,6 +134,7 @@ export default function Action({
 							? inputFragmentItems
 							: layoutDataItems
 					}
+					onErrorChange={onErrorChange}
 					onItemIdChanged={(itemId) => {
 						onActionChange({
 							...action,
@@ -147,11 +153,13 @@ export default function Action({
 function FragmentSelector({
 	itemId,
 	layoutDataItems,
+	onErrorChange,
 	onItemIdChanged,
 	readOnly,
 }: {
 	itemId: string | undefined;
 	layoutDataItems: {label: string; value: string}[];
+	onErrorChange: (error: RuleError | null) => void;
 	onItemIdChanged: (itemId: string) => void;
 	readOnly?: boolean;
 }) {
@@ -166,6 +174,7 @@ function FragmentSelector({
 				Liferay.Language.get('fragment')
 			)}
 			items={layoutDataItems}
+			onErrorChange={onErrorChange}
 			onSelectionChange={onItemIdChanged}
 			readOnly={readOnly}
 			selectedKey={selectedKey}
