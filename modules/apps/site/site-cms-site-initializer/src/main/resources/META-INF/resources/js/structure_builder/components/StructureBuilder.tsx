@@ -7,12 +7,15 @@ import '../../../css/structure_builder/StructureBuilder.scss';
 
 import React, {useEffect} from 'react';
 
+import {
+	ObjectDefinition,
+	ObjectDefinitions,
+} from '../../common/types/ObjectDefinition';
 import {Config, initializeConfig} from '../config';
 import CacheContextProvider from '../contexts/CacheContext';
 import StateContextProvider, {useSelector} from '../contexts/StateContext';
 import selectStructureId from '../selectors/selectStructureId';
 import selectStructureStatus from '../selectors/selectStructureStatus';
-import {ObjectDefinition, ObjectDefinitions} from '../types/ObjectDefinition';
 import buildState from '../utils/buildState';
 import Sidebar from './Sidebar';
 import StructureBuilderToolbar from './StructureBuilderToolbar';

@@ -12,10 +12,10 @@ import React, {
 	useReducer,
 } from 'react';
 
+import {ObjectDefinitions} from '../../common/types/ObjectDefinition';
 import {Space} from '../../common/types/Space';
 import {Workflow} from '../../common/types/Workflow';
 import getLocalizedValue from '../../common/utils/getLocalizedValue';
-import {ObjectDefinitions} from '../types/ObjectDefinition';
 import {
 	ReferencedStructure,
 	RepeatableGroup,

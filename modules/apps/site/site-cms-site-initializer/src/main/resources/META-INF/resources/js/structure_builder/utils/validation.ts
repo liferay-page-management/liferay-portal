@@ -7,11 +7,11 @@ import {isNullOrUndefined} from '@liferay/layout-js-components-web';
 import {sub} from 'frontend-js-web';
 import {useCallback} from 'react';
 
+import {ObjectDefinitions} from '../../common/types/ObjectDefinition';
 import focusInvalidElement from '../../common/utils/focusInvalidElement';
 import {State, useSelector, useStateDispatch} from '../contexts/StateContext';
 import selectState from '../selectors/selectState';
 import selectStructureChildren from '../selectors/selectStructureChildren';
-import {ObjectDefinitions} from '../types/ObjectDefinition';
 import {RepeatableGroup, Structure, StructureChild} from '../types/Structure';
 import {Field, MultiselectField, SingleSelectField} from './field';
 

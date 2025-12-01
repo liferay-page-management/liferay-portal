@@ -12,12 +12,15 @@ import classNames from 'classnames';
 import {FieldFeedback, useId} from 'frontend-js-components-web';
 import React, {useEffect, useState} from 'react';
 
+import {
+	ObjectDefinition,
+	ObjectDefinitions,
+} from '../../common/types/ObjectDefinition';
 import getLocalizedValue from '../../common/utils/getLocalizedValue';
 import {useCache} from '../contexts/CacheContext';
 import {useSelector, useStateDispatch} from '../contexts/StateContext';
 import selectStructureERC from '../selectors/selectStructureERC';
 import selectStructureUuid from '../selectors/selectStructureUuid';
-import {ObjectDefinition, ObjectDefinitions} from '../types/ObjectDefinition';
 import {ReferencedStructure, Structure} from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 import {buildReferencedStructure} from '../utils/buildStructure';

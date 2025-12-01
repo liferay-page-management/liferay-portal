@@ -5,12 +5,12 @@
 
 import {isNullOrUndefined} from '@liferay/layout-js-components-web';
 
-import {config} from '../config';
 import {
 	ObjectDefinition,
 	ObjectField,
 	ObjectRelationship,
-} from '../types/ObjectDefinition';
+} from '../../common/types/ObjectDefinition';
+import {config} from '../config';
 import {
 	ReferencedStructure,
 	RepeatableGroup,

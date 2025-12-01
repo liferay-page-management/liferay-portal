@@ -10,7 +10,7 @@ import {
 	ObjectDefinitions,
 	ObjectField,
 	ObjectRelationship,
-} from '../types/ObjectDefinition';
+} from '../../common/types/ObjectDefinition';
 import {
 	ReferencedStructure,
 	RepeatableGroup,

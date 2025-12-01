@@ -4,7 +4,10 @@
  */
 
 import ApiHelper from '../../common/services/ApiHelper';
-import {ObjectDefinition, ObjectDefinitions} from '../types/ObjectDefinition';
+import {
+	ObjectDefinition,
+	ObjectDefinitions,
+} from '../../common/types/ObjectDefinition';
 
 async function getObjectDefinitions(): Promise<ObjectDefinitions> {
 	const filter =

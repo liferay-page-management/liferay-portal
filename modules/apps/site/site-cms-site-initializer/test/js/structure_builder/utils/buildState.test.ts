@@ -274,7 +274,7 @@ describe('buildState', () => {
 			objectFields: [
 				{
 					DBType: 'Double',
-					businessType: 'Decimal',
+					businessType: 'Decimal' as const,
 					externalReferenceCode: 'decimal-field',
 					indexed: true,
 					label: {

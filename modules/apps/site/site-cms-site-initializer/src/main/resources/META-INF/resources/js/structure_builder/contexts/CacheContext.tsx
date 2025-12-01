@@ -17,11 +17,11 @@ import React, {
 import PicklistService from '../../common/services/PicklistService';
 import SpaceService from '../../common/services/SpaceService';
 import {getWorkflowDefinitions} from '../../common/services/WorkflowService';
+import {ObjectDefinitions} from '../../common/types/ObjectDefinition';
 import {Picklist} from '../../common/types/Picklist';
 import {Space} from '../../common/types/Space';
 import {Workflow} from '../../common/types/Workflow';
 import ObjectDefinitionService from '../services/ObjectDefinitionService';
-import {ObjectDefinitions} from '../types/ObjectDefinition';
 
 export type CacheKey =
 	| 'object-definitions'
