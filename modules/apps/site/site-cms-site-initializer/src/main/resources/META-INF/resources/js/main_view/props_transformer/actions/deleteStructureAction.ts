@@ -10,6 +10,8 @@ import ApiHelper from '../../../common/services/ApiHelper';
 import DeleteStructureModalContent from '../../modal/DeleteStructureModalContent';
 import {executeAsyncItemAction} from '../utils/executeAsyncItemAction';
 
+const REPEATABLE_GROUPS_FOLDER_ERC = 'L_CMS_STRUCTURE_REPEATABLE_GROUPS';
+
 export default async function deleteStructureAction({
 	deleteAction,
 	getObjectDefinitionDeleteInfoURL,
@@ -87,4 +89,57 @@ export default async function deleteStructureAction({
 			status: 'danger',
 		});
 	}
+}
+
+async function classifyRelationships(
+	relationships: ObjectDefinition['objectRelationships']
+): Promise<{
+	referencedStructureIds: number[];
+	repeatableGroupIds: number[];
+}> {
+	const referencedStructureIds: number[] = [];
+	const repeatableGroupIds: number[] = [];
+
+	if (!relationships?.length) {
+		return {referencedStructureIds, repeatableGroupIds};
+	}
+
+	// Get all related object definitions
+
+	const names = relationships.map((rel) => rel.objectDefinitionName2!);
+
+	const objectDefinitions = await ApiHelper.getAll<ObjectDefinition>({
+		filter: names
+			.map((n) => `name eq '${n.replace(/'/g, "''")}'`)
+			.join(' or '),
+		url: '/o/object-admin/v1.0/object-definitions',
+	});
+
+	for (const objectDefinition of objectDefinitions) {
+
+		// If it's a referenced structure, just push id to proper array
+
+		if (
+			objectDefinition.objectFolderExternalReferenceCode !==
+			REPEATABLE_GROUPS_FOLDER_ERC
+		) {
+			referencedStructureIds.push(objectDefinition.id!);
+
+			continue;
+		}
+
+		// If it's a repeatable group, push id to proper array and get nested ones
+
+		if (objectDefinition.objectRelationships?.length) {
+			const {repeatableGroupIds: nestedIds} = await classifyRelationships(
+				objectDefinition.objectRelationships
+			);
+
+			repeatableGroupIds.push(...nestedIds);
+		}
+
+		repeatableGroupIds.push(objectDefinition.id!);
+	}
+
+	return {referencedStructureIds, repeatableGroupIds};
 }

@@ -39,6 +39,7 @@ export type ObjectRelationship = {
 	name: string;
 	objectDefinitionExternalReferenceCode1: string;
 	objectDefinitionExternalReferenceCode2: string;
+	objectDefinitionName2?: string;
 	type: string;
 };
 
