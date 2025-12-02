@@ -121,7 +121,11 @@ export default function Action({
 				)}
 				items={actionTypes}
 				onErrorChange={onErrorChange}
-				onSelectionChange={(type) => onActionChange({...action, type})}
+				onSelectionChange={(type) => {
+					const {itemId: _, ...newAction} = action;
+
+					onActionChange({...newAction, type});
+				}}
 				selectedKey={action.type}
 				triggerRef={selectRef}
 			/>
