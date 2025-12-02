@@ -10,7 +10,9 @@ import com.liferay.item.selector.ItemSelectorReturnTypeResolver;
 import com.liferay.item.selector.criteria.DownloadFileEntryItemSelectorReturnType;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
 
@@ -44,10 +46,21 @@ public class FileEntryDownloadFileEntryItemSelectorReturnTypeResolver
 	public String getValue(FileEntry fileEntry, ThemeDisplay themeDisplay)
 		throws Exception {
 
+		Group group = _groupLocalService.fetchGroup(fileEntry.getGroupId());
+		String groupERC = StringPool.BLANK;
+
+		if (group != null) {
+			groupERC = group.getExternalReferenceCode();
+		}
+
 		return JSONUtil.put(
 			"classNameId", _portal.getClassNameId(FileEntry.class)
 		).put(
+			"externalReferenceCode", fileEntry.getExternalReferenceCode()
+		).put(
 			"fileEntryId", String.valueOf(fileEntry.getFileEntryId())
+		).put(
+			"groupERC", groupERC
 		).put(
 			"groupId", String.valueOf(fileEntry.getGroupId())
 		).put(
@@ -66,6 +79,9 @@ public class FileEntryDownloadFileEntryItemSelectorReturnTypeResolver
 
 	@Reference
 	private DLURLHelper _dlURLHelper;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private Portal _portal;

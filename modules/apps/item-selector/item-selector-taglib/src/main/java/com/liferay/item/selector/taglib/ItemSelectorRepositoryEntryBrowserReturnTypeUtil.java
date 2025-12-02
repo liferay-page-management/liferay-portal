@@ -11,7 +11,9 @@ import com.liferay.item.selector.criteria.FileEntryItemSelectorReturnType;
 import com.liferay.item.selector.criteria.URLItemSelectorReturnType;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ClassUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -59,8 +61,19 @@ public class ItemSelectorRepositoryEntryBrowserReturnTypeUtil
 			FileEntry fileEntry, ThemeDisplay themeDisplay)
 		throws Exception {
 
+		Group group = GroupLocalServiceUtil.fetchGroup(fileEntry.getGroupId());
+		String groupERC = StringPool.BLANK;
+
+		if (group != null) {
+			groupERC = group.getExternalReferenceCode();
+		}
+
 		return JSONUtil.put(
+			"externalReferenceCode", fileEntry.getExternalReferenceCode()
+		).put(
 			"fileEntryId", fileEntry.getFileEntryId()
+		).put(
+			"groupERC", groupERC
 		).put(
 			"groupId", fileEntry.getGroupId()
 		).put(
