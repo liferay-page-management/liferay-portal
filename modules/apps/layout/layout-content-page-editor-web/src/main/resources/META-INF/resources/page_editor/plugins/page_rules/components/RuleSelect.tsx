@@ -11,6 +11,7 @@ import classNames from 'classnames';
 import {useId} from 'frontend-js-components-web';
 import React, {MutableRefObject, useEffect, useRef, useState} from 'react';
 
+import {useRulesModalState} from '../../../app/contexts/RulesModalContext';
 import {getSelectOptions} from '../../../common/getSelectOptions';
 import RuleField from './RuleField';
 import {RuleError} from './RulesModal';
@@ -70,6 +71,7 @@ export default function RuleSelect<T extends string>({
 	const id = useId();
 	const inputRef = useRef<HTMLInputElement | null>(null);
 	const previousSelectedKey = usePrevious(selectedKey);
+	const {setValidateRule, validateRule} = useRulesModalState();
 
 	const label = otherProps['aria-label'] || '';
 	const fieldRef = inputRef || triggerRef;
@@ -81,6 +83,15 @@ export default function RuleSelect<T extends string>({
 			);
 		}
 	}, [label, id, fieldRef, onErrorChange, previousSelectedKey, selectedKey]);
+
+	useEffect(() => {
+		if (!validateRule) {
+			return;
+		}
+
+		setError(!selectedKey && !previousSelectedKey);
+		setValidateRule(false);
+	}, [previousSelectedKey, selectedKey, validateRule, setValidateRule]);
 
 	if (readOnly) {
 		const item = items.find(({value}) => value === selectedKey);
