@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {act, render, screen} from '@testing-library/react';
+import {act, render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -368,5 +368,28 @@ describe('RulesSidebar', () => {
 		await userEvent.click(screen.getByText('save'));
 
 		await expect(addRule).toBeCalled();
+	});
+
+	it('resets the fragment when the action changes', async () => {
+		renderComponent({
+			editingRule: {
+				...DEFAULT_RULE,
+				actions: [{id: 'action-1', itemId: 'item1', type: 'show'}],
+			},
+		});
+
+		await expect(
+			screen.getByRole('combobox', {
+				name: 'select-fragment-for-the-action',
+			})
+		).toHaveTextContent('containercillo');
+
+		await selectPickerOption('select-action', 'hide');
+
+		await expect(
+			screen.getByRole('combobox', {
+				name: 'select-fragment-for-the-action',
+			})
+		).toHaveTextContent('select');
 	});
 });
