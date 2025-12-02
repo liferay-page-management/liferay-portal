@@ -22,21 +22,26 @@ const RulesModalContext = React.createContext<{
 	editingRule: Rule;
 	setEditingRule: Dispatch<SetStateAction<Rule>>;
 	setTrigger: Dispatch<SetStateAction<HTMLButtonElement | null>>;
+	setValidateRule: Dispatch<SetStateAction<boolean>>;
 	setVisible: Dispatch<SetStateAction<boolean>>;
 	trigger: HTMLElement | null;
+	validateRule: boolean;
 	visible: boolean;
 }>({
 	editingRule: getDefaultRule([]),
 	setEditingRule: () => {},
 	setTrigger: () => {},
+	setValidateRule: () => false,
 	setVisible: () => {},
 	trigger: null,
+	validateRule: false,
 	visible: false,
 });
 
 function RulesModalContextProvider({children}: {children: ReactNode}) {
 	const rules = useSelector(selectPageRules);
 
+	const [validateRule, setValidateRule] = useState<boolean>(false);
 	const [visible, setVisible] = useState<boolean>(false);
 	const [editingRule, setEditingRule] = useState<Rule>(getDefaultRule(rules));
 	const [trigger, setTrigger] = useState<HTMLButtonElement | null>(null);
@@ -47,8 +52,10 @@ function RulesModalContextProvider({children}: {children: ReactNode}) {
 				editingRule,
 				setEditingRule,
 				setTrigger,
+				setValidateRule,
 				setVisible,
 				trigger,
+				validateRule,
 				visible,
 			}}
 		>
@@ -131,9 +138,10 @@ function useRulesModal() {
 }
 
 function useRulesModalState() {
-	const {editingRule, visible} = useContext(RulesModalContext);
+	const {editingRule, setValidateRule, validateRule, visible} =
+		useContext(RulesModalContext);
 
-	return {editingRule, visible};
+	return {editingRule, setValidateRule, validateRule, visible};
 }
 
 function getDefaultRule(rules: Rule[]): Rule {
