@@ -58,19 +58,27 @@ export class DataSetPage {
 		await dropdownMenuItemDelete.click();
 	}
 
-	async execItemAction({action, filter}: {action: string; filter: string}) {
+	async execItemAction({
+		action,
+		filter,
+		timeout,
+	}: {
+		action: string;
+		filter: string;
+		timeout?: number;
+	}) {
 		const item = this.getRow(filter);
 		const button = item.getByRole('button', {
 			exact: true,
 			name: 'Actions',
 		});
 		const dropdownId = await button.getAttribute('aria-controls');
-		await button.click();
+		await button.click({timeout});
 
 		const dropdownMenu = this.page
 			.locator(`#${dropdownId}`)
 			.filter({has: this.page.getByRole('menu')});
-		await dropdownMenu.waitFor();
+		await dropdownMenu.waitFor({timeout});
 
 		const dropdownMenuActionItem = dropdownMenu
 			.getByRole('menuitem', {
@@ -78,8 +86,8 @@ export class DataSetPage {
 			})
 			.first();
 
-		await dropdownMenuActionItem.waitFor();
-		await dropdownMenuActionItem.click();
+		await dropdownMenuActionItem.waitFor({timeout});
+		await dropdownMenuActionItem.click({timeout});
 	}
 
 	async changeVisualizationMode(

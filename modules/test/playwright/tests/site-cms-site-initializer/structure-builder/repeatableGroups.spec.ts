@@ -7,11 +7,13 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {objectPagesTest} from '../../../fixtures/objectPagesTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {clickAndExpectToBeHidden} from '../../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
+import {waitForAlert} from '../../../utils/waitForAlert';
 import {cmsPagesTest} from '../main/fixtures/cmsPagesTest';
 import {structureBuilderPagesTest} from './fixtures/structureBuilderPagesTest';
 
@@ -21,6 +23,7 @@ const test = mergeTests(
 		'LPD-17564': {enabled: true},
 	}),
 	loginTest(),
+	objectPagesTest,
 	pageEditorPagesTest,
 	structureBuilderPagesTest
 );
@@ -276,5 +279,146 @@ test(
 			),
 			trigger: page.locator('.modal-footer').getByText('Done'),
 		});
+	}
+);
+
+test(
+	'Repeatable groups object definitions are deleted when updating or deleting the structure',
+	{
+		tag: '@LPD-72877',
+	},
+	async ({
+		page,
+		structureBuilderPage,
+		structuresPage,
+		viewObjectDefinitionsPage,
+	}) => {
+
+		// Create structure
+
+		const structureLabel = getRandomString();
+
+		await structureBuilderPage.createStructureFromData({
+			autoDelete: false,
+			label: structureLabel,
+			name: `StructureName${getRandomInt()}`,
+			page: structureBuilderPage,
+		});
+
+		// Add fields
+
+		await structureBuilderPage.addField('Text');
+		await structureBuilderPage.addField('Date');
+
+		// Create nested repeatable groups
+
+		const group1Label = getRandomString();
+		const group2Label = getRandomString();
+
+		await structureBuilderPage.createRepeatableGroup({
+			fields: [{label: 'Text'}],
+			label: group1Label,
+		});
+
+		await structureBuilderPage.createRepeatableGroup({
+			fields: [{label: 'Date'}],
+			label: group2Label,
+		});
+
+		// Publish
+
+		await structureBuilderPage.publishStructure();
+
+		// Now delete one group, publish and check object definition was deleted as well
+
+		await structureBuilderPage.deleteFields([{label: group2Label}]);
+
+		await expect(async () => {
+			await structureBuilderPage.publishButton.click({timeout: 1000});
+
+			await expect(
+				page.getByText('You removed one or more fields')
+			).toBeVisible({timeout: 2000});
+
+			await page
+				.locator('.modal-footer')
+				.getByText('Publish')
+				.click({timeout: 1000});
+
+			await waitForAlert(page, 'published successfully', {
+				timeout: 5000,
+			});
+		}).toPass();
+
+		await structureBuilderPage.publishStructure();
+
+		await viewObjectDefinitionsPage.goto();
+
+		await expect(async () => {
+			await viewObjectDefinitionsPage.openObjectFolder(
+				'CMS Structure Repeatable Groups'
+			);
+
+			await expect(page.getByText(group1Label)).toBeVisible();
+		}).toPass();
+
+		await expect(page.getByText(group2Label)).not.toBeVisible();
+
+		// Now go to Structures admin, delete the structure and check
+		// the other object definition was also deleted
+
+		await structuresPage.goto();
+
+		await expect(async () => {
+			await structuresPage.execItemAction({
+				action: 'Delete',
+				filter: structureLabel,
+				timeout: 1000,
+			});
+
+			await page
+				.getByText(
+					'Deleting a content structure will also remove all of its associated entries'
+				)
+				.waitFor({timeout: 2000});
+
+			await page
+				.getByPlaceholder('Confirm Content Structure Name')
+				.fill(structureLabel, {timeout: 1000});
+
+			await page
+				.locator('.modal-footer')
+				.getByText('Delete')
+				.click({timeout: 1000});
+
+			await waitForAlert(page, 'was deleted successfully', {
+				timeout: 2000,
+			});
+		}).toPass();
+
+		await viewObjectDefinitionsPage.goto();
+
+		await page
+			.locator('[class*="card-header"]', {hasText: 'Default'})
+			.first()
+			.waitFor();
+
+		await expect(async () => {
+			await viewObjectDefinitionsPage.openObjectFolder(
+				'CMS Structure Repeatable Groups',
+				{timeout: 1000}
+			);
+
+			await page
+				.locator('[class*="card-header"]', {
+					hasText: 'CMS Structure Repeatable Groups',
+				})
+				.first()
+				.waitFor({timeout: 1000});
+
+			await expect(page.getByText(group1Label)).not.toBeVisible({
+				timeout: 1000,
+			});
+		}).toPass();
 	}
 );

@@ -32,13 +32,16 @@ export class StructuresPage {
 	async execItemAction({
 		action,
 		filter,
+		timeout,
 	}: {
 		action: 'Delete' | 'Edit';
 		filter: string;
+		timeout?: number;
 	}) {
 		await this.dataSetFragmentPage.execItemAction({
 			action,
 			filter,
+			timeout,
 		});
 	}
 }

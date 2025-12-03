@@ -139,10 +139,13 @@ export class ViewObjectDefinitionsPage {
 		);
 	}
 
-	async openObjectFolder(objectFolderLabel: string) {
+	async openObjectFolder(
+		objectFolderLabel: string,
+		options: {timeout?: number} = {}
+	) {
 		await this.page
 			.getByRole('listitem')
 			.filter({hasText: objectFolderLabel})
-			.click();
+			.click({timeout: options?.timeout});
 	}
 }
