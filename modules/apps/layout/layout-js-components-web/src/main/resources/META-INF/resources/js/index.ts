@@ -36,6 +36,7 @@ export {
 	StyleErrorsContextProvider,
 	useHasStyleErrors,
 } from './contexts/StyleErrorsContext';
+export {default as useDragAndDrop} from './hooks/drag_and_drop/useDragAndDrop';
 export {default as useControlledState} from './hooks/useControlledState';
 export {default as SegmentExperience} from './types/SegmentExperience';
 export {default as convertRGBtoHex} from './utils/convertRGBtoHex';
