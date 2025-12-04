@@ -14,6 +14,7 @@ interface Props<T> {
 	dropItemRef: React.RefObject<HTMLElement>;
 	item: T;
 	items: T[];
+	onDrop: (items: T[]) => void;
 }
 
 export default function useDragAndDrop<T extends {id: string; name: string}>({
@@ -21,6 +22,7 @@ export default function useDragAndDrop<T extends {id: string; name: string}>({
 	dropItemRef,
 	item,
 	items,
+	onDrop,
 }: Props<T>) {
 	const {
 		isPointerDragging,
@@ -30,6 +32,7 @@ export default function useDragAndDrop<T extends {id: string; name: string}>({
 		dragHandlerRef,
 		dropItemRef,
 		items,
+		onDrop,
 		targetItem: item,
 	});
 

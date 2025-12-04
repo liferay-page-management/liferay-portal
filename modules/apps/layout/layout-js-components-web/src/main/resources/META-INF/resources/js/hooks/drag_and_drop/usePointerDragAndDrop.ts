@@ -28,12 +28,14 @@ export default function usePointerDragAndDrop<
 	dropItemRef,
 	hoverLimit = HOVER_BORDER_LIMIT,
 	items,
+	onDrop,
 	targetItem,
 }: {
 	dragHandlerRef: React.RefObject<HTMLElement>;
 	dropItemRef: React.RefObject<HTMLElement>;
 	hoverLimit?: number;
 	items: T[];
+	onDrop?: (items: T[]) => void;
 	targetItem: T;
 }) {
 	const dropIndexRef = useRef<number>(0);
@@ -64,6 +66,8 @@ export default function usePointerDragAndDrop<
 			const newItems = items.filter(({id}) => id !== droppedItem.id);
 
 			newItems.splice(dropIndexRef.current, 0, droppedItem);
+
+			onDrop?.(newItems);
 		},
 		hover(draggedItem, monitor) {
 			if (!dropItemRef.current) {

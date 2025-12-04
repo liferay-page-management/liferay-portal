@@ -37,6 +37,7 @@ import {
 	UPDATE_PREVIEW_IMAGE,
 	UPDATE_ROW_COLUMNS,
 	UPDATE_RULE,
+	UPDATE_RULES,
 } from '../actions/types';
 import updateColSize from '../actions/updateColSize';
 import updateCollectionDisplayCollection from '../actions/updateCollectionDisplayCollection';
@@ -46,6 +47,7 @@ import updateItemConfig from '../actions/updateItemConfig';
 import updatePreviewImage from '../actions/updatePreviewImage';
 import updateRowColumns from '../actions/updateRowColumns';
 import updateRule from '../actions/updateRule';
+import updateRules from '../actions/updateRules';
 import {setIn} from '../utils/setIn';
 
 export const INITIAL_STATE: LayoutData = {
@@ -79,6 +81,7 @@ export default function layoutDataReducer(
 		| ReturnType<typeof updatePreviewImage>
 		| ReturnType<typeof updateRowColumns>
 		| ReturnType<typeof updateRule>
+		| ReturnType<typeof updateRules>
 ): LayoutData {
 	switch (action.type) {
 		case ADD_FRAGMENT_ENTRY_LINKS:
@@ -98,6 +101,7 @@ export default function layoutDataReducer(
 		case UPDATE_FRAGMENT_ENTRY_LINK_CONFIGURATION:
 		case UPDATE_ROW_COLUMNS:
 		case UPDATE_RULE:
+		case UPDATE_RULES:
 			return action.layoutData;
 
 		case UPDATE_FORM_ITEM_CONFIG: {
