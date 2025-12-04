@@ -308,6 +308,25 @@ function RuleItem({
 							className="flex-grow-1 font-weight-semi-bold"
 							onDoubleClick={() => setEditing(true)}
 						>
+							<ClayButtonWithIcon
+								aria-label={sub(
+									Liferay.Language.get('move-x'),
+									name
+								)}
+								className="mr-2 text-secondary"
+								displayType="unstyled"
+								monospaced={false}
+								onClick={(event) => {
+									event.stopPropagation();
+								}}
+								symbol="drag"
+								tabIndex={tabIndex}
+								title={sub(
+									Liferay.Language.get('move-x'),
+									name
+								)}
+							/>
+
 							{name}
 
 							{isRuleDisabled ? (
