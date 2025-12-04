@@ -4,7 +4,7 @@
  */
 
 import {ConditionType} from '../../plugins/page_rules/components/RuleBuilderSection';
-import {Action, Condition} from '../../types/Rule';
+import {Action, Condition, Rule} from '../../types/Rule';
 import {LayoutData} from '../../types/layout_data/LayoutData';
 import {config} from '../config/index';
 import draftServiceFetch, {OnNetworkStatus} from './draftServiceFetch';
@@ -129,4 +129,34 @@ function updateRule({
 	);
 }
 
-export default {addRule, deleteRule, getRoles, getUsers, updateRule};
+type UpdateRulesProps = {
+	onNetworkStatus: OnNetworkStatus;
+	rules: Rule[];
+	segmentsExperienceId: string;
+};
+
+function updateRules({
+	onNetworkStatus,
+	rules,
+	segmentsExperienceId,
+}: UpdateRulesProps): Promise<{layoutData: LayoutData}> {
+	return draftServiceFetch(
+		config.updateRulesURL,
+		{
+			body: {
+				rules: JSON.stringify(rules),
+				segmentsExperienceId,
+			},
+		},
+		onNetworkStatus
+	);
+}
+
+export default {
+	addRule,
+	deleteRule,
+	getRoles,
+	getUsers,
+	updateRule,
+	updateRules,
+};
