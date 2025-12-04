@@ -5,6 +5,8 @@
 
 import usePointerDragAndDrop from './usePointerDragAndDrop';
 
+import './useDragAndDrop.scss';
+
 export const DROP_POSITIONS = {
 	bottom: 'bottom',
 	top: 'top',
