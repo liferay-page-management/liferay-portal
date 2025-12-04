@@ -27,8 +27,8 @@ interface DragItem {
 interface Props<T> {
 	alignment?: Alignment;
 	focusElement?: boolean;
-	getIcon: (item: T) => string;
-	getLabel: (item: T) => string;
+	getIcon?: (item: T) => string;
+	getLabel?: (item: T) => string;
 }
 
 const getItemStyles = ({
