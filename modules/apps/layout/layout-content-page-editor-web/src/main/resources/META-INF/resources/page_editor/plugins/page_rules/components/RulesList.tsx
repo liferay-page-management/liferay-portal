@@ -142,7 +142,7 @@ function RuleItem({
 	rule: Rule;
 }) {
 	const highlightItems = useHighlightItems();
-	const {isTarget, setElement} = useKeyboardNavigation({
+	const {isTarget: isNavigationTarget, setElement} = useKeyboardNavigation({
 		type: LIST_ITEM_TYPES.listItem,
 	});
 	const layoutData = useSelector((state) => state.layoutData);
@@ -225,6 +225,11 @@ function RuleItem({
 		isLayoutDataItemDeleted(layoutData, id)
 	);
 
+	const tabIndex = useMemo(
+		() => (isNavigationTarget ? 0 : -1),
+		[isNavigationTarget]
+	);
+
 	return (
 		<ClayList.Item
 			aria-description={Liferay.Language.get(
@@ -252,7 +257,7 @@ function RuleItem({
 			}}
 			ref={setElement}
 			role="menuitem"
-			tabIndex={isTarget ? 0 : -1}
+			tabIndex={tabIndex}
 		>
 			<ClayList.ItemField expand>
 				<div className="align-items-center d-flex">
@@ -335,6 +340,7 @@ function RuleItem({
 								ref={setTriggerElement}
 								size="sm"
 								symbol="ellipsis-v"
+								tabIndex={tabIndex}
 								title={sub(
 									Liferay.Language.get('view-x-options'),
 									rule.name
