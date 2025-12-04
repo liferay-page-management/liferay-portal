@@ -23,6 +23,7 @@ import {useHighlightItems, useKeyboardNavigation} from '../../../app/js-index';
 import selectLayoutDataItemLabel from '../../../app/selectors/selectLayoutDataItemLabel';
 import deleteRule from '../../../app/thunks/deleteRule';
 import updateRule from '../../../app/thunks/updateRule';
+import updateRules from '../../../app/thunks/updateRules';
 import {isLayoutDataItemDeleted} from '../../../app/utils/isLayoutDataItemDeleted';
 import useActionValues, {
 	ActionValues,
@@ -167,6 +168,9 @@ function RuleItem({
 			dropItemRef,
 			item: rule,
 			items: rules,
+			onDrop: (rules) => {
+				dispatch(updateRules(rules));
+			},
 		});
 
 	useEffect(() => {
