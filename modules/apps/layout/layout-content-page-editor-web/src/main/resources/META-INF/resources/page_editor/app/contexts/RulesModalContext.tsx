@@ -180,6 +180,7 @@ function getDefaultRule(rules: Rule[]): Rule {
 		actions: [{id: uuidv4(), type: undefined}],
 		conditionType: 'all',
 		conditions: [{id: uuidv4(), type: undefined}],
+		id: '',
 		name,
 	};
 }
