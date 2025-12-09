@@ -134,7 +134,7 @@ public class FragmentFieldDate implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "The fragment editable element's action. Must be mapped to an external value."
+		description = "The fragment editable element's date format."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected FragmentInlineValue dateFormat;

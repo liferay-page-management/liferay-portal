@@ -2023,7 +2023,7 @@ components:
         FragmentFieldDate:
             # @review
             description:
-                Represents a fragment field with text.
+                Represents a fragment field with a date.
             properties:
                 date:
                     $ref: "#/components/schemas/FragmentMappedValue"
@@ -2034,7 +2034,7 @@ components:
                     $ref: "#/components/schemas/FragmentInlineValue"
                     # @review
                     description:
-                        The fragment editable element's action. Must be mapped to an external value.
+                        The fragment editable element's date format.
             type: object
         FragmentFieldHTML:
             # @review
