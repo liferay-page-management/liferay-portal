@@ -30,6 +30,7 @@ import {
 	UPDATE_LANGUAGE_ID,
 	UPDATE_ROW_COLUMNS,
 	UPDATE_RULE,
+	UPDATE_RULES,
 } from '../../actions/types';
 import {getItemNameFromAction} from './getItemNameFromAction';
 import * as undoAddFragmentEntryLinks from './undoAddFragmentEntryLinks';
@@ -57,6 +58,7 @@ import * as undoUpdateItemConfig from './undoUpdateItemConfig';
 import * as undoUpdateLanguage from './undoUpdateLanguage';
 import * as undoUpdateRowColumns from './undoUpdateRowColumns';
 import * as undoUpdateRule from './undoUpdateRule';
+import * as undoUpdateRules from './undoUpdateRules';
 
 const UNDO_ACTIONS = {
 	[ADD_FRAGMENT_ENTRY_LINKS]: undoAddFragmentEntryLinks,
@@ -86,6 +88,7 @@ const UNDO_ACTIONS = {
 	[UPDATE_LANGUAGE_ID]: undoUpdateLanguage,
 	[UPDATE_ROW_COLUMNS]: undoUpdateRowColumns,
 	[UPDATE_RULE]: undoUpdateRule,
+	[UPDATE_RULES]: undoUpdateRules,
 };
 
 export function canUndoAction(action) {
