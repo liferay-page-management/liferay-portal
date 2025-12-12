@@ -3,12 +3,14 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {sub} from 'frontend-js-web';
 import {useCallback, useMemo, useState} from 'react';
 
 import {
 	useKeyboardItem,
 	useUpdateKeyboardItem,
 } from '../../contexts/DragAndDropContext';
+import {useScreenReaderAnnounce} from '../../contexts/ScreenReaderContext';
 
 interface Props<T extends {id: string}> {
 	draggedItem: T;
@@ -22,6 +24,7 @@ export default function useKeyboardDragAndDrop<
 >({draggedItem, draggedItemIndex, items, onDrop}: Props<T>) {
 	const [isActive, setIsActive] = useState(false);
 
+	const announce = useScreenReaderAnnounce();
 	const keyboardItem = useKeyboardItem();
 	const updateKeyboardItem = useUpdateKeyboardItem();
 
@@ -50,6 +53,7 @@ export default function useKeyboardDragAndDrop<
 			if (key === 'Enter') {
 				if (!isActive) {
 					setIsActive(true);
+
 					updateKeyboardItem({
 						index: draggedItemIndex,
 						name: draggedItem.name,
@@ -58,6 +62,12 @@ export default function useKeyboardDragAndDrop<
 								? 'top'
 								: 'bottom',
 					});
+
+					announce(
+						Liferay.Language.get(
+							'use-arrows-to-move-it-and-press-enter-to-select-the-new-position-press-esc-to-cancel'
+						)
+					);
 
 					return;
 				}
@@ -69,6 +79,14 @@ export default function useKeyboardDragAndDrop<
 
 				if (draggedItemIndex !== keyboardItem.index) {
 					onDrop?.(newItems);
+
+					announce(
+						sub(Liferay.Language.get('x-moved-to-the-x-of-x'), [
+							draggedItem.name,
+							keyboardItem.position,
+							items[keyboardItem.index!].name,
+						])
+					);
 				}
 
 				updateKeyboardItem({
@@ -104,15 +122,24 @@ export default function useKeyboardDragAndDrop<
 				}
 			}
 
+			announce(
+				sub(Liferay.Language.get('move-x-at-the-x-of-x'), [
+					draggedItem.name,
+					nextPosition,
+					items[nextIndex].name,
+				])
+			);
+
 			updateKeyboardItem({
 				index: nextIndex,
 				position: nextPosition,
 			});
 		},
 		[
+			announce,
+			draggedItem,
 			draggedItemIndex,
 			isActive,
-			draggedItem,
 			items,
 			keyboardItem,
 			onDrop,
