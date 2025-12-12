@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {DragPreview} from '@liferay/layout-js-components-web';
+import {
+	DragPreview,
+	useKeyboardDragPreviewProps,
+} from '@liferay/layout-js-components-web';
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
@@ -40,6 +43,7 @@ export default function DragPreviewWrapper() {
 	const fragmentEntryLinks = useSelector((state) => state.fragmentEntryLinks);
 	const fragments = useSelector((state) => state.fragments);
 	const getWidgets = useGetWidgets();
+	const keyboardDragPreviewProps = useKeyboardDragPreviewProps();
 
 	return (
 		<DragPreview
@@ -53,6 +57,7 @@ export default function DragPreviewWrapper() {
 				})
 			}
 			getLabel={(item) => getLabel({activeItemIds, item})}
+			{...keyboardDragPreviewProps}
 		/>
 	);
 }

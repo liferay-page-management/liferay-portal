@@ -9,10 +9,12 @@ import React, {
 	SetStateAction,
 	useCallback,
 	useContext,
+	useMemo,
 	useState,
 } from 'react';
 
 import {DropPosition} from '../hooks/drag_and_drop/useDragAndDrop';
+import isNullOrUndefined from '../utils/isNullOrUndefined';
 
 type KeyboardItem = {
 	index: number | null;
@@ -66,9 +68,32 @@ function useUpdateKeyboardItem() {
 	);
 }
 
+function useKeyboardDragPreviewProps() {
+	const {keyboardItem} = useContext(DragAndDropContext);
+
+	const {index, name, position} = keyboardItem;
+
+	return useMemo(() => {
+		if (!name || isNullOrUndefined(index) || !position) {
+			return null;
+		}
+
+		const element = document.querySelectorAll('.page-editor__rule')[index];
+
+		return {
+			alignment: {
+				element,
+				position,
+			},
+			getLabel: () => name || Liferay.Language.get('element'),
+		};
+	}, [index, name, position]);
+}
+
 export {
 	DragAndDropContext,
 	DragAndDropContextProvider,
+	useKeyboardDragPreviewProps,
 	useKeyboardItem,
 	useUpdateKeyboardItem,
 };
