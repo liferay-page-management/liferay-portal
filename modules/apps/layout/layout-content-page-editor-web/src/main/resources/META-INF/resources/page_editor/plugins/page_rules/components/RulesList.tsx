@@ -120,8 +120,9 @@ export default function RulesList({
 				) : null}
 
 				<ClayList role="menubar">
-					{rules.map((rule) => (
+					{rules.map((rule, index) => (
 						<RuleItem
+							index={index}
 							key={rule.id}
 							onDelete={onDeleteRule}
 							onEdit={onEditRule}
@@ -136,11 +137,13 @@ export default function RulesList({
 }
 
 function RuleItem({
+	index,
 	onDelete,
 	onEdit,
 	rule,
 	rules,
 }: {
+	index: number;
 	onDelete: (rule: Rule) => void;
 	onEdit: (rule: Rule, trigger: HTMLButtonElement | null) => void;
 	rule: Rule;
@@ -163,16 +166,22 @@ function RuleItem({
 
 	const dispatch = useDispatch();
 
-	const {isDragging, isDropBottomPosition, isDropTopPosition} =
-		useDragAndDrop({
-			dragItemRef,
-			dropItemRef,
-			item: rule,
-			items: rules,
-			onDrop: (rules) => {
-				dispatch(updateRules(rules));
-			},
-		});
+	const {
+		handleKeyboardDragAndDrop,
+		isDragging,
+		isDropBottomPosition,
+		isDropTopPosition,
+		isKeyboardDragging,
+	} = useDragAndDrop({
+		dragItemRef,
+		dropItemRef,
+		item: rule,
+		itemIndex: index,
+		items: rules,
+		onDrop: (rules) => {
+			dispatch(updateRules(rules));
+		},
+	});
 
 	useEffect(() => {
 		if (editing && inputRef.current) {
@@ -247,9 +256,11 @@ function RuleItem({
 		(node: HTMLLIElement) => {
 			dropItemRef.current = node;
 
-			setElement(node);
+			if (!isKeyboardDragging) {
+				setElement(node);
+			}
 		},
-		[setElement]
+		[setElement, isKeyboardDragging]
 	);
 
 	const tabIndex = useMemo(
@@ -350,6 +361,7 @@ function RuleItem({
 								onClick={(event) => {
 									event.stopPropagation();
 								}}
+								onKeyDown={handleKeyboardDragAndDrop}
 								ref={dragItemRef}
 								symbol="drag"
 								tabIndex={tabIndex}
