@@ -27,7 +27,10 @@ export {default as Resizer} from './components/resizer/Resizer';
 export {default as ScreenReaderAnnouncer} from './components/screen_reader_announcer/ScreenReaderAnnouncer';
 export {default as SearchForm} from './components/search_form/SearchForm';
 export {default as SearchResultsMessage} from './components/search_results_message/SearchResultsMessage';
-export {DragAndDropContextProvider} from './contexts/DragAndDropContext';
+export {
+	DragAndDropContextProvider,
+	useKeyboardDragPreviewProps,
+} from './contexts/DragAndDropContext';
 export {
 	ScreenReaderAnnouncerContext,
 	ScreenReaderAnnouncerContextProvider,
