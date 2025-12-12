@@ -15,6 +15,7 @@ import React, {
 
 import {DropPosition} from '../hooks/drag_and_drop/useDragAndDrop';
 import isNullOrUndefined from '../utils/isNullOrUndefined';
+import {ScreenReaderAnnouncerContextProvider} from './ScreenReaderContext';
 
 type KeyboardItem = {
 	index: number | null;
@@ -48,7 +49,9 @@ function DragAndDropContextProvider({children}: {children: ReactNode}) {
 				setKeyboardItem,
 			}}
 		>
-			{children}
+			<ScreenReaderAnnouncerContextProvider>
+				{children}
+			</ScreenReaderAnnouncerContextProvider>
 		</DragAndDropContext.Provider>
 	);
 }
