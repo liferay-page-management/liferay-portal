@@ -626,7 +626,6 @@ test(
 		await dragAndDropElement({
 			dragTarget: treeViewItems.nth(3),
 			dropTarget: treeViewItems.nth(1),
-			page,
 		});
 
 		// Assert order
