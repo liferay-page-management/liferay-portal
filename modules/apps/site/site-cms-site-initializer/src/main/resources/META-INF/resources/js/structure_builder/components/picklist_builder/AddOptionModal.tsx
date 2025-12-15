@@ -18,6 +18,11 @@ import getRandomId from '../../utils/getRandomId';
 import ERCInput from '../ERCInput';
 import Input from '../Input';
 
+const DEFAULT_NAME = {
+	[Liferay.ThemeDisplay.getDefaultLanguageId()]:
+		Liferay.Language.get('option'),
+};
+
 export default function AddOptionModal({
 	onCloseModal,
 	option = null,
@@ -28,10 +33,7 @@ export default function AddOptionModal({
 	const [erc, setErc] = useState<string>(option?.erc || getRandomId());
 	const [key, setKey] = useState<string>(option?.key || getRandomKey());
 	const [name, setName] = useState<Liferay.Language.LocalizedValue<string>>(
-		option?.name || {
-			[Liferay.ThemeDisplay.getDefaultLanguageId()]:
-				Liferay.Language.get('option'),
-		}
+		option?.name || DEFAULT_NAME
 	);
 	const addOption = useAddOption();
 
@@ -50,6 +52,7 @@ export default function AddOptionModal({
 
 		setKey(getRandomKey());
 		setErc(getRandomId());
+		setName(DEFAULT_NAME);
 	};
 
 	return (
