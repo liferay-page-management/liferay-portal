@@ -180,7 +180,10 @@ export class PageEditorPage {
 
 		const modal = await this.openRulesModal();
 
-		await modal.getByLabel('Rule Name').fill(name);
+		const nameInput = modal.getByLabel('Rule Name');
+
+		await nameInput.waitFor();
+		await nameInput.fill(name);
 
 		for (const [index, condition] of conditions.entries()) {
 			if (index) {
@@ -1293,11 +1296,9 @@ export class PageEditorPage {
 	async openRulesModal() {
 		const modal = this.page.locator('.modal-dialog');
 
-		await clickAndExpectToBeVisible({
-			target: modal.getByRole('heading', {name: 'New Rule'}),
-			timeout: 3000,
-			trigger: this.newRuleButton,
-		});
+		await this.newRuleButton.click();
+
+		await expect(modal).toBeVisible();
 
 		return modal;
 	}
