@@ -14,6 +14,7 @@ import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {pageManagementSiteTest} from '../../../fixtures/pageManagementSiteTest';
 import {checkAccessibility} from '../../../utils/checkAccessibility';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+import dragAndDropElement from '../../../utils/dragAndDropElement';
 import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {getObjectERC} from '../../setup/page-management-site/main/utils/getObjectERC';
@@ -781,5 +782,131 @@ test(
 		await expect(
 			rule.locator('[data-title="Disabled Rule"]')
 		).toBeAttached();
+	}
+);
+
+test(
+	'Reorder rules',
+	{
+		tag: '@LPD-73194',
+	},
+	async ({apiHelpers, page, pageEditorPage, site}) => {
+
+		// Create content page with a button fragment and go to edit mode
+
+		const buttonDefinition = getFragmentDefinition({
+			id: getRandomString(),
+			key: 'BASIC_COMPONENT-button',
+		});
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([buttonDefinition]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		// Create three rules
+
+		for (const name of ['Banana Rule', 'Orange Rule', 'Strawberry Rule']) {
+			const condition = [
+				{label: 'Select Item for the Condition', option: 'User'},
+				{label: 'Select Condition', option: 'Has the Role Of'},
+				{label: 'Select Role', option: 'User'},
+			];
+
+			const action = [
+				{label: 'Select Action', option: 'Hide'},
+				{label: 'Select Fragment for the Action', option: 'Button'},
+			];
+
+			await pageEditorPage.addRule({
+				actions: [action],
+				conditions: [condition],
+				name,
+			});
+		}
+
+		// Reorder rules by mouse
+		// Check that moving the same element does not reorder it
+
+		const rule = page.locator('.page-editor__rule');
+
+		await dragAndDropElement({
+			dragTarget: page.getByRole('button', {name: 'Move Banana Rule'}),
+			dropTarget: page.getByRole('menuitem', {name: /Banana Rule/}),
+			offset: {y: 20},
+		});
+
+		await expect(rule.nth(0)).toContainText('Banana Rule');
+		await expect(rule.nth(1)).toContainText('Orange Rule');
+		await expect(rule.nth(2)).toContainText('Strawberry Rule');
+
+		await dragAndDropElement({
+			dragTarget: page.getByRole('button', {name: 'Move Banana Rule'}),
+			dropTarget: page.getByRole('menuitem', {name: /Banana Rule/}),
+			offset: {y: 120},
+		});
+
+		await expect(rule.nth(0)).toContainText('Banana Rule');
+		await expect(rule.nth(1)).toContainText('Orange Rule');
+		await expect(rule.nth(2)).toContainText('Strawberry Rule');
+
+		// Check that it is reordered to a top position
+
+		await dragAndDropElement({
+			dragTarget: page.getByRole('button', {name: 'Move Banana Rule'}),
+			dropTarget: page.getByRole('menuitem', {name: /Strawberry Rule/}),
+			offset: {y: 20},
+		});
+
+		await expect(rule.nth(0)).toContainText('Orange Rule');
+		await expect(rule.nth(1)).toContainText('Banana Rule');
+		await expect(rule.nth(2)).toContainText('Strawberry Rule');
+
+		// Check that it is reordered to a bottom position
+
+		await dragAndDropElement({
+			dragTarget: page.getByRole('button', {name: 'Move Orange Rule'}),
+			dropTarget: page.getByRole('menuitem', {name: /Strawberry Rule/}),
+			offset: {y: 120},
+		});
+
+		await expect(rule.nth(0)).toContainText('Banana Rule');
+		await expect(rule.nth(1)).toContainText('Strawberry Rule');
+		await expect(rule.nth(2)).toContainText('Orange Rule');
+
+		// Reorder rules by keyboard
+		// Check that moving the same element does not reorder it
+
+		await page.getByTitle('Move Banana Rule').press('Enter');
+
+		await page.keyboard.press('Enter');
+
+		await expect(rule.nth(0)).toContainText('Banana Rule');
+		await expect(rule.nth(1)).toContainText('Strawberry Rule');
+		await expect(rule.nth(2)).toContainText('Orange Rule');
+
+		// Check that it is reordered to a bottom position
+
+		await page.keyboard.press('Enter');
+		await page.keyboard.press('ArrowDown');
+		await page.keyboard.press('ArrowDown');
+		await page.keyboard.press('Enter');
+
+		await expect(rule.nth(0)).toContainText('Strawberry Rule');
+		await expect(rule.nth(1)).toContainText('Orange Rule');
+		await expect(rule.nth(2)).toContainText('Banana Rule');
+
+		// Check that it is reordered to a top position
+
+		await page.keyboard.press('Enter');
+		await page.keyboard.press('ArrowUp');
+		await page.keyboard.press('Enter');
+
+		await expect(rule.nth(0)).toContainText('Strawberry Rule');
+		await expect(rule.nth(1)).toContainText('Banana Rule');
+		await expect(rule.nth(2)).toContainText('Orange Rule');
 	}
 );
