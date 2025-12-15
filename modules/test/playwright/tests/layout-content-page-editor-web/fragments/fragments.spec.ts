@@ -1405,7 +1405,6 @@ test.describe('Tabs Fragment', () => {
 		await dragAndDropElement({
 			dragTarget: page.locator('[data-name="Drop Zone"]'),
 			dropTarget: tabDropZone,
-			page,
 		});
 
 		await pageEditorPage.addFragment('Basic Components', 'Heading');
@@ -1421,7 +1420,6 @@ test.describe('Tabs Fragment', () => {
 			dropTarget: page
 				.getByText('Drag and drop fragments or widgets here.')
 				.first(),
-			page,
 		});
 
 		// Check that each tab has the corresponding content

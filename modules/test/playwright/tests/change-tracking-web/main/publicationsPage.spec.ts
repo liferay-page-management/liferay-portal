@@ -1354,7 +1354,6 @@ test(
 		await dragAndDropElement({
 			dragTarget: page.locator('[data-name="Button"]'),
 			dropTarget: middleGridColumn,
-			page,
 		});
 
 		await expect(

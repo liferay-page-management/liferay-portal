@@ -83,7 +83,6 @@ test('Checks that a widget can be added and dragged to another part of the page'
 	await dragAndDropElement({
 		dragTarget: page.locator('[data-name="Sort"]'),
 		dropTarget: gridColumn.nth(2),
-		page,
 	});
 
 	expect(gridColumn.nth(2).locator('[data-name="Sort"]')).toBeVisible();
@@ -204,7 +203,7 @@ test(
 
 		const dropTarget = page.locator('[data-name="Container"]');
 
-		await dragAndDropElement({
+		await pageEditorPage.dragAndDropFragment({
 			dragTarget: page.locator('[data-name="Button"]'),
 			dropTarget,
 			page,
@@ -708,7 +707,7 @@ test(
 
 		// Drag and drop a fragment inside master page fragments area, should throw an error
 
-		await dragAndDropElement({
+		await pageEditorPage.dragAndDropFragment({
 			dragTarget: page.getByRole('menuitem', {
 				name: 'Add Button',
 			}),
