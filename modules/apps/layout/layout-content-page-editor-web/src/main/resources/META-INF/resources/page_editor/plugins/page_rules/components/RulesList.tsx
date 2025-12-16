@@ -119,7 +119,7 @@ export default function RulesList({
 					</ClayAlert>
 				) : null}
 
-				<ClayList role="menubar">
+				<ClayList data-menu role="menu">
 					{rules.map((rule, index) => (
 						<RuleItem
 							index={index}

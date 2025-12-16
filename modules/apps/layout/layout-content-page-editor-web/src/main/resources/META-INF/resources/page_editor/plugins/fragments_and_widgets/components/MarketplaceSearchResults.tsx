@@ -206,8 +206,9 @@ function SearchResults({
 							'marketplace-fragments'
 						)}
 						className="list-unstyled px-3"
+						data-menu
 						ref={listRef}
-						role="menubar"
+						role="menu"
 					>
 						{results.items.map((item: Product) => (
 							<MarketplaceSearchResultsList
