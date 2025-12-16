@@ -41,7 +41,7 @@ const COLLECTION = {
 const renderComponent = ({initialOpen = true} = {}) => {
 	return render(
 		<DndProvider backend={HTML5Backend}>
-			<div role="menubar">
+			<div data-menu role="menu">
 				<TabCollection
 					collection={COLLECTION}
 					displayStyle="list"

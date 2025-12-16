@@ -306,7 +306,7 @@ describe('MarketplaceSearchResults', () => {
 			screen.getByRole('button', {name: 'see-marketplace-results'})
 		);
 
-		expect(screen.getAllByRole('menubar').length).toBe(1);
+		expect(screen.getAllByRole('menu').length).toBe(1);
 		expect(screen.getAllByRole('menuitem').length).toBe(2);
 
 		expect(
