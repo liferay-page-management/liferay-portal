@@ -346,7 +346,6 @@ function RuleItem({
 						/>
 					) : (
 						<span
-							aria-hidden="true"
 							className="flex-grow-1 font-weight-semi-bold"
 							onDoubleClick={() => setEditing(true)}
 						>
@@ -355,14 +354,14 @@ function RuleItem({
 									Liferay.Language.get('move-x'),
 									name
 								)}
-								className="mr-2 text-secondary"
-								displayType="unstyled"
-								monospaced={false}
+								borderless
+								className="ml-n2 mt-n1 text-secondary"
 								onClick={(event) => {
 									event.stopPropagation();
 								}}
 								onKeyDown={handleKeyboardDragAndDrop}
 								ref={dragHandlerRef}
+								size="sm"
 								symbol="drag"
 								tabIndex={tabIndex}
 								title={sub(
@@ -371,17 +370,19 @@ function RuleItem({
 								)}
 							/>
 
-							{name}
+							<span aria-hidden="true">
+								{name}
 
-							{isRuleDisabled ? (
-								<ClayIcon
-									className="lfr-tooltip-scope ml-2 text-warning"
-									data-title={Liferay.Language.get(
-										'disabled-rule'
-									)}
-									symbol="warning-full"
-								/>
-							) : null}
+								{isRuleDisabled ? (
+									<ClayIcon
+										className="lfr-tooltip-scope ml-2 text-warning"
+										data-title={Liferay.Language.get(
+											'disabled-rule'
+										)}
+										symbol="warning-full"
+									/>
+								) : null}
+							</span>
 						</span>
 					)}
 
