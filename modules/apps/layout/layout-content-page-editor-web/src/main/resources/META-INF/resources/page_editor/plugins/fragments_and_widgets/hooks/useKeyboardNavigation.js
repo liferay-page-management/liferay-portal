@@ -29,7 +29,8 @@ export default function useKeyboardNavigation({handleOpen, type}) {
 		Liferay.Language.direction?.[themeDisplay?.getLanguageId()] === 'rtl';
 
 	useEffect(() => {
-		const list = element?.closest('[role="menubar"]');
+		const list = element?.closest('[data-menu][role="menu"]');
+
 		const listItem = element?.closest('li');
 
 		const isFirstChild = listItem === list?.firstChild;
@@ -74,7 +75,7 @@ export default function useKeyboardNavigation({handleOpen, type}) {
 	useEventListener(
 		'blur',
 		(event) => {
-			const list = event.target.closest('[role="menubar"]');
+			const list = event.target.closest('[data-menu][role="menu"]');
 
 			const nextActiveElement = event.relatedTarget;
 

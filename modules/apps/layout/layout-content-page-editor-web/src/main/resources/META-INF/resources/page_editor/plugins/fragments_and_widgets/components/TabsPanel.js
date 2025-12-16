@@ -118,7 +118,8 @@ export default function TabsPanel({
 								<ul
 									aria-orientation="vertical"
 									className="list-unstyled panel-group-sm"
-									role="menubar"
+									data-menu
+									role="menu"
 								>
 									{tab.collections.map(
 										(collection, index) => (
