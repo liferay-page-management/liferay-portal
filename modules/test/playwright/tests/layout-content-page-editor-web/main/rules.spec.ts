@@ -788,7 +788,7 @@ test(
 test(
 	'Reorder rules',
 	{
-		tag: '@LPD-73194',
+		tag: ['@LPD-73194', '@LPD-74326'],
 	},
 	async ({apiHelpers, page, pageEditorPage, site}) => {
 
@@ -882,7 +882,17 @@ test(
 
 		await page.getByTitle('Move Banana Rule').press('Enter');
 
+		await expect(
+			page.getByText(
+				'Use Arrows to move it and press Enter to select the new position. Press Esc to cancel.'
+			)
+		).toBeAttached();
+
 		await page.keyboard.press('Enter');
+
+		await expect(
+			page.getByText('Banana Rule moved to the bottom of Banana Rule.')
+		).not.toBeAttached();
 
 		await expect(rule.nth(0)).toContainText('Banana Rule');
 		await expect(rule.nth(1)).toContainText('Strawberry Rule');
@@ -892,8 +902,22 @@ test(
 
 		await page.keyboard.press('Enter');
 		await page.keyboard.press('ArrowDown');
+
+		await expect(
+			page.getByText('Move Banana Rule at the bottom of Strawberry Rule.')
+		).toBeAttached();
+
 		await page.keyboard.press('ArrowDown');
+
+		await expect(
+			page.getByText('Move Banana Rule at the bottom of Orange Rule.')
+		).toBeAttached();
+
 		await page.keyboard.press('Enter');
+
+		await expect(
+			page.getByText('Banana Rule moved to the bottom of Orange Rule.')
+		).toBeAttached();
 
 		await expect(rule.nth(0)).toContainText('Strawberry Rule');
 		await expect(rule.nth(1)).toContainText('Orange Rule');
@@ -903,7 +927,16 @@ test(
 
 		await page.keyboard.press('Enter');
 		await page.keyboard.press('ArrowUp');
+
+		await expect(
+			page.getByText('Move Banana Rule at the top of Orange Rule.')
+		).toBeAttached();
+
 		await page.keyboard.press('Enter');
+
+		await expect(
+			page.getByText('Banana Rule moved to the top of Orange Rule.')
+		).toBeAttached();
 
 		await expect(rule.nth(0)).toContainText('Strawberry Rule');
 		await expect(rule.nth(1)).toContainText('Banana Rule');
