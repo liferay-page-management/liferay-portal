@@ -30,7 +30,7 @@ export type BasicRule = {
 	actions: Action[];
 	conditionType?: ConditionType;
 	conditions?: Condition[];
-	id?: string;
+	id: string;
 	name: string;
 	script?: never;
 };
@@ -39,7 +39,7 @@ export type AdvancedRule = {
 	actions: Action[];
 	conditionType?: never;
 	conditions?: never;
-	id?: string;
+	id: string;
 	name: string;
 	script: string;
 };
