@@ -1324,9 +1324,12 @@ export class PageEditorPage {
 		const button = isMaster ? this.publishMasterButton : this.publishButton;
 
 		await button.waitFor();
-		await button.click();
 
-		await waitForAlert(this.page, 'successfully');
+		await expect(async () => {
+			await button.click({timeout: 1000});
+
+			await waitForAlert(this.page, 'successfully', {timeout: 2000});
+		}).toPass();
 	}
 
 	async redoAction() {
@@ -1785,6 +1788,11 @@ export class PageEditorPage {
 				.getByLabel('Configuration Panel')
 				.locator('header', {hasText: fragmentName})
 		).toBeVisible();
+
+		await this.page
+			.getByLabel('Configuration Panel')
+			.locator('header', {hasText: fragmentName})
+			.click();
 	}
 
 	async switchExperience(experience: string) {
@@ -1811,13 +1819,17 @@ export class PageEditorPage {
 			.click();
 	}
 
-	async switchViewport(viewport: Viewport) {
-		await this.page.getByLabel(viewport, {exact: true}).click();
+	async switchViewport(
+		viewport: Viewport,
+		{timeout}: {timeout?: number} = {}
+	) {
+		await this.page.getByLabel(viewport, {exact: true}).click({timeout});
+
 		await this.page
 			.locator(
 				`.page-editor__layout-viewport--size-${VIEWPORTS_CLASSNAMES[viewport]}`
 			)
-			.waitFor();
+			.waitFor({timeout});
 	}
 
 	async undoAction() {
