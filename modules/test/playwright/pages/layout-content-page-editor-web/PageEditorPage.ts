@@ -717,29 +717,31 @@ export class PageEditorPage {
 	async dragAndDropFragment({
 		dragTarget,
 		dropTarget,
-		force = false,
 		page,
 	}: {
 		dragTarget: Locator;
 		dropTarget: Locator;
-		force?: boolean;
 		page: Page;
 	}) {
-		await dragTarget.hover({force});
+		await dragTarget.scrollIntoViewIfNeeded();
 
-		await page.mouse.down();
+		const startBox = await dragTarget.boundingBox();
 
-		const boundingClientRect = await dropTarget.evaluate((element) =>
-			element.getBoundingClientRect()
+		const endBox = await dropTarget.boundingBox();
+
+		await page.mouse.move(
+			startBox.x + startBox.width / 2,
+			startBox.y + startBox.height / 2,
+			{steps: 10}
 		);
 
-		await dropTarget.hover({
-			force,
-			position: {
-				x: boundingClientRect.width / 2,
-				y: boundingClientRect.height / 2,
-			},
-		});
+		await page.mouse.down({button: 'left'});
+
+		await page.mouse.move(
+			endBox.x + endBox.width / 2,
+			endBox.y + endBox.height / 2,
+			{steps: 10}
+		);
 
 		await page.mouse.up();
 	}

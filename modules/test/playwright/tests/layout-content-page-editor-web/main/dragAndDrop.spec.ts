@@ -712,7 +712,6 @@ test(
 				name: 'Add Button',
 			}),
 			dropTarget: page.locator('.page-editor__fragment-content--master'),
-			force: true,
 			page,
 		});
 
