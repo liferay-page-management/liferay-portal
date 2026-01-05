@@ -7,19 +7,30 @@ package com.liferay.fragment.item.selector.web.internal.frontend.taglib.clay.ser
 
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.frontend.taglib.clay.servlet.taglib.VerticalCard;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 /**
  * @author Víctor Galán
  */
 public class FragmentEntryVerticalCard implements VerticalCard {
 
-	public FragmentEntryVerticalCard(FragmentEntry fragmentEntry) {
+	private final ThemeDisplay _themeDisplay;
+
+	public FragmentEntryVerticalCard(
+		FragmentEntry fragmentEntry, ThemeDisplay themeDisplay) {
+
 		_fragmentEntry = fragmentEntry;
+		_themeDisplay = themeDisplay;
 	}
 
 	@Override
 	public String getCssClass() {
 		return "card-interactive card-interactive-secondary selector-button";
+	}
+
+	@Override
+	public String getImageSrc() {
+		return _fragmentEntry.getImagePreviewURL(_themeDisplay);
 	}
 
 	@Override
