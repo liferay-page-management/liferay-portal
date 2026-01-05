@@ -1,0 +1,35 @@
+<svg fill="none" height="300" viewBox="0 0 200 150" width="400" xmlns="http://www.w3.org/2000/svg">
+	<rect fill="white" height="300" width="400" />
+	<g filter="url(#filter0_d_309_884)">
+		<rect fill="white" height="23" rx="4" width="98" x="51" y="68" />
+		<rect height="23" rx="4" stroke="#0B5FFF" stroke-opacity="0.4" stroke-width="6" width="98" x="51" y="68" />
+	</g>
+	<rect fill="white" height="22" rx="3.5" stroke="#0B5FFF" width="97" x="51.5" y="68.5" />
+	<rect fill="#0B5FFF" height="3" width="39" x="51" y="60" />
+	<mask height="10" id="mask0_309_884" maskUnits="userSpaceOnUse" style="mask-type:alpha" width="6" x="136" y="75">
+		<path d="M139.269 75.9947L141.512 78.398C141.753 78.6554 141.583 79.0954 141.243 79.0954H136.757C136.417 79.0954 136.247 78.6554 136.488 78.398L138.73 75.9947C138.879 75.8352 139.121 75.8352 139.269 75.9947Z" fill="#6B6C7E" />
+		<path d="M138.73 84.0054L136.488 81.6022C136.247 81.3449 136.417 80.9049 136.757 80.9049H141.243C141.583 80.9049 141.753 81.3449 141.512 81.6022L139.269 84.0054C139.121 84.165 138.879 84.165 138.73 84.0054Z" fill="#6B6C7E" />
+	</mask>
+	<g mask="url(#mask0_309_884)">
+		<rect fill="#80ACFF" height="12" width="12" x="133" y="74" />
+	</g>
+	<mask height="8" id="mask1_309_884" maskUnits="userSpaceOnUse" style="mask-type:alpha" width="15" x="57" y="76">
+		<path d="M62.7115 82.6741C62.8252 82.5329 63.0251 82.3315 63.2695 82.0865C64.1163 81.2362 65.4852 79.8606 65.5579 78.6517C65.5493 76.8719 63.6968 77.4582 63.2952 78.2398L62.6637 77.5634C65.2263 74.8878 67.9633 77.8039 65.9783 80.4254C65.7706 80.7411 64.682 82.0668 64.3727 82.4216C65.4092 82.3434 66.9609 82.3464 66.9609 82.3464V83.3836H62.7115V82.6741Z" fill="#6B6C7E" />
+		<path d="M57.999 82.3885H59.4021V77.9662H58.246V77.2026C58.692 77.0974 59.2286 76.9681 59.6969 76.6525H60.548V82.3885H61.7827V83.3836H57.999V82.3885Z" fill="#6B6C7E" />
+		<path d="M70.5114 82.2473C69.4791 82.9748 68.5247 82.133 68.1846 81.7752L67.6403 82.5569C68.2153 83.3055 69.3945 83.7263 70.6293 83.3776C72.8467 82.4937 72.005 80.1188 70.6746 79.8482C71.8649 79.5927 72.4536 77.3379 70.5677 76.6435C69.0741 76.2152 68.141 77.0992 67.859 77.3656L67.8505 77.374L68.4315 78.1256C69.0861 77.368 70.5592 77.0824 70.6241 78.3902C70.6293 79.4708 69.3339 79.4697 68.9989 79.4694H68.9844V80.3593C70.6993 80.1789 71.3453 81.4265 70.5114 82.2473Z" fill="#6B6C7E" />
+	</mask>
+	<g mask="url(#mask1_309_884)">
+		<rect fill="#5791FF" height="14" width="14" x="58" y="73" />
+	</g>
+	<defs>
+		<filter color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse" height="45" id="filter0_d_309_884" width="120" x="40" y="61">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feColorMatrix in="SourceAlpha" result="hardAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+			<feOffset dy="4" />
+			<feGaussianBlur stdDeviation="4" />
+			<feColorMatrix type="matrix" values="0 0 0 0 0.152941 0 0 0 0 0.156863 0 0 0 0 0.2 0 0 0 0.12 0" />
+			<feBlend in2="BackgroundImageFix" mode="normal" result="effect1_dropShadow_309_884" />
+			<feBlend in="SourceGraphic" in2="effect1_dropShadow_309_884" mode="normal" result="shape" />
+		</filter>
+	</defs>
+</svg>

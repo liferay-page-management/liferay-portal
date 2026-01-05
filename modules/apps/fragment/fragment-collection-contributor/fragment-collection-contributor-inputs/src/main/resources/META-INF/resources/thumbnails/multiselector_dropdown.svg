@@ -1,0 +1,57 @@
+<svg fill="none" height="300" viewBox="0 0 200 150" width="400" xmlns="http://www.w3.org/2000/svg">
+	<rect fill="white" height="300" width="400" />
+	<rect fill="#F0F5FF" height="56" rx="4" width="96" x="64" y="59" />
+	<rect fill="white" height="1" width="96" x="64" y="72" />
+	<rect fill="#B3CDFF" height="2" width="54" x="78" y="65" />
+	<rect fill="white" height="1" width="96" x="64" y="86" />
+	<rect fill="#B3CDFF" height="2" width="20" x="78" y="79" />
+	<rect fill="white" height="1" width="96" x="64" y="100" />
+	<rect fill="#B3CDFF" height="2" width="70" x="78" y="93" />
+	<rect fill="#B3CDFF" height="2" width="12" x="78" y="107" />
+	<g filter="url(#filter0_d_309_1028)">
+		<rect fill="white" height="18" rx="4" width="98" x="40" y="43" />
+		<rect height="18" rx="4" stroke="#0B5FFF" stroke-opacity="0.4" stroke-width="6" width="98" x="40" y="43" />
+	</g>
+	<rect fill="white" height="17" rx="3.5" stroke="#0B5FFF" width="97" x="40.5" y="43.5" />
+	<rect fill="#F0F5FF" height="10" rx="2" width="26" x="46" y="47" />
+	<rect fill="#B3CDFF" height="2" width="13" x="49" y="51" />
+	<rect fill="#F0F5FF" height="10" rx="2" width="33" x="75" y="47" />
+	<rect fill="#0B5FFF" height="3" width="51" x="40" y="35" />
+	<path d="M126.128 50.902L128.692 53.576C128.862 53.7522 129.138 53.7522 129.308 53.576L131.872 50.902C132.146 50.6158 131.951 50.125 131.564 50.125H126.436C126.049 50.1281 125.854 50.6158 126.128 50.902V50.902Z" fill="#80ACFF" />
+	<mask height="6" id="mask0_309_1028" maskUnits="userSpaceOnUse" style="mask-type:alpha" width="6" x="64" y="49">
+		<path d="M67.7046 52.001L69.3448 50.3607C69.8151 49.8905 69.1105 49.1859 68.6403 49.6562L67 51.2964L65.3597 49.6562C64.8895 49.1859 64.1849 49.8905 64.6552 50.3607L66.2954 52.001L64.6552 53.6412C64.1849 54.1115 64.8895 54.816 65.3597 54.3458L67 52.7055L68.6403 54.3458C69.1105 54.816 69.8151 54.1115 69.3448 53.6412L67.7046 52.001Z" fill="black" />
+	</mask>
+	<g mask="url(#mask0_309_1028)">
+		<rect fill="#80ACFF" height="8" width="8" x="63" y="48" />
+	</g>
+	<mask height="5" id="mask1_309_1028" maskUnits="userSpaceOnUse" style="mask-type:alpha" width="6" x="69" y="78">
+		<path d="M71.4397 82.0001C71.3122 82.0001 71.1878 81.9473 71.0969 81.8533L69.6461 80.3517C69.1981 79.888 69.8821 79.1801 70.3301 79.6438L71.4174 80.7691L73.6462 78.1752C74.0671 77.6802 74.7941 78.3418 74.3732 78.8369L71.8032 81.8302C71.7155 81.9341 71.5896 81.9952 71.4557 82.0001C71.4493 82.0001 71.4445 82.0001 71.4397 82.0001Z" fill="#6B6C7E" />
+	</mask>
+	<g mask="url(#mask1_309_1028)">
+		<rect fill="#5791FF" height="8" width="8" x="68" y="76" />
+	</g>
+	<mask height="5" id="mask2_309_1028" maskUnits="userSpaceOnUse" style="mask-type:alpha" width="6" x="69" y="106">
+		<path d="M71.4397 110C71.3122 110 71.1878 109.947 71.0969 109.853L69.6461 108.352C69.1981 107.888 69.8821 107.18 70.3301 107.644L71.4174 108.769L73.6462 106.175C74.0671 105.68 74.7941 106.342 74.3732 106.837L71.8032 109.83C71.7155 109.934 71.5896 109.995 71.4557 110C71.4493 110 71.4445 110 71.4397 110Z" fill="#6B6C7E" />
+	</mask>
+	<g mask="url(#mask2_309_1028)">
+		<rect fill="#5791FF" height="8" width="8" x="68" y="104" />
+	</g>
+	<mask height="6" id="mask3_309_1028" maskUnits="userSpaceOnUse" style="mask-type:alpha" width="6" x="100" y="49">
+		<path d="M103.705 52.001L105.345 50.3607C105.815 49.8905 105.11 49.1859 104.64 49.6562L103 51.2964L101.36 49.6562C100.89 49.1859 100.185 49.8905 100.655 50.3607L102.295 52.001L100.655 53.6412C100.185 54.1115 100.89 54.816 101.36 54.3458L103 52.7055L104.64 54.3458C105.11 54.816 105.815 54.1115 105.345 53.6412L103.705 52.001Z" fill="black" />
+	</mask>
+	<g mask="url(#mask3_309_1028)">
+		<rect fill="#80ACFF" height="8" width="8" x="99" y="48" />
+	</g>
+	<rect fill="#B3CDFF" height="2" width="19" x="78" y="51" />
+	<defs>
+		<filter color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse" height="40" id="filter0_d_309_1028" width="120" x="29" y="36">
+			<feFlood flood-opacity="0" result="BackgroundImageFix" />
+			<feColorMatrix in="SourceAlpha" result="hardAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+			<feOffset dy="4" />
+			<feGaussianBlur stdDeviation="4" />
+			<feColorMatrix type="matrix" values="0 0 0 0 0.152941 0 0 0 0 0.156863 0 0 0 0 0.2 0 0 0 0.12 0" />
+			<feBlend in2="BackgroundImageFix" mode="normal" result="effect1_dropShadow_309_1028" />
+			<feBlend in="SourceGraphic" in2="effect1_dropShadow_309_1028" mode="normal" result="shape" />
+		</filter>
+	</defs>
+</svg>
