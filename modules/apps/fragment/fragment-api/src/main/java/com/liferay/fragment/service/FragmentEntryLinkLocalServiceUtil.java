@@ -166,6 +166,14 @@ public class FragmentEntryLinkLocalServiceUtil {
 			groupId, fragmentEntryERC, fragmentEntryScopeERC, deleted);
 	}
 
+	public static void deleteFragmentEntryLinksByFragmentEntryERC(
+		String fragmentEntryERC, String fragmentEntryScopeERC,
+		boolean deleted) {
+
+		getService().deleteFragmentEntryLinksByFragmentEntryERC(
+			fragmentEntryERC, fragmentEntryScopeERC, deleted);
+	}
+
 	public static List<FragmentEntryLink>
 		deleteLayoutPageTemplateEntryFragmentEntryLinks(
 			long groupId, long plid) {
@@ -335,11 +343,11 @@ public class FragmentEntryLinkLocalServiceUtil {
 			orderByComparator);
 	}
 
-	public static int getAllFragmentEntryLinksCountByFragmentEntryERC(
-		long groupId, String fragmentEntryERC, String fragmentEntryScopeERC) {
+	public static int getAllFragmentEntryLinksCountByFragmentEntryId(
+		long fragmentEntryId) {
 
-		return getService().getAllFragmentEntryLinksCountByFragmentEntryERC(
-			groupId, fragmentEntryERC, fragmentEntryScopeERC);
+		return getService().getAllFragmentEntryLinksCountByFragmentEntryId(
+			fragmentEntryId);
 	}
 
 	/**

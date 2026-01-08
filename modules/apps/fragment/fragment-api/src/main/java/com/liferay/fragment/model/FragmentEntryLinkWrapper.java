@@ -411,11 +411,6 @@ public class FragmentEntryLinkWrapper
 		return model.getFragmentEntryERC();
 	}
 
-	@Override
-	public long getFragmentEntryGroupId() {
-		return model.getFragmentEntryGroupId();
-	}
-
 	/**
 	 * Returns the fragment entry link ID of this fragment entry link.
 	 *

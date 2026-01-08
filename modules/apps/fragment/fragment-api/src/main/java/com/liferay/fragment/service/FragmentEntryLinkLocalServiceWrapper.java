@@ -180,6 +180,16 @@ public class FragmentEntryLinkLocalServiceWrapper
 	}
 
 	@Override
+	public void deleteFragmentEntryLinksByFragmentEntryERC(
+		String fragmentEntryERC, String fragmentEntryScopeERC,
+		boolean deleted) {
+
+		_fragmentEntryLinkLocalService.
+			deleteFragmentEntryLinksByFragmentEntryERC(
+				fragmentEntryERC, fragmentEntryScopeERC, deleted);
+	}
+
+	@Override
 	public java.util.List<FragmentEntryLink>
 		deleteLayoutPageTemplateEntryFragmentEntryLinks(
 			long groupId, long plid) {
@@ -380,12 +390,11 @@ public class FragmentEntryLinkLocalServiceWrapper
 	}
 
 	@Override
-	public int getAllFragmentEntryLinksCountByFragmentEntryERC(
-		long groupId, String fragmentEntryERC, String fragmentEntryScopeERC) {
+	public int getAllFragmentEntryLinksCountByFragmentEntryId(
+		long fragmentEntryId) {
 
 		return _fragmentEntryLinkLocalService.
-			getAllFragmentEntryLinksCountByFragmentEntryERC(
-				groupId, fragmentEntryERC, fragmentEntryScopeERC);
+			getAllFragmentEntryLinksCountByFragmentEntryId(fragmentEntryId);
 	}
 
 	/**

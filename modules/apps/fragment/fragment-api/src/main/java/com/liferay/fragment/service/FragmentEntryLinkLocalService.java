@@ -152,6 +152,9 @@ public interface FragmentEntryLinkLocalService
 		long groupId, String fragmentEntryERC, String fragmentEntryScopeERC,
 		boolean deleted);
 
+	public void deleteFragmentEntryLinksByFragmentEntryERC(
+		String fragmentEntryERC, String fragmentEntryScopeERC, boolean deleted);
+
 	public List<FragmentEntryLink>
 		deleteLayoutPageTemplateEntryFragmentEntryLinks(
 			long groupId, long plid);
@@ -276,8 +279,8 @@ public interface FragmentEntryLinkLocalService
 		OrderByComparator<FragmentEntryLink> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getAllFragmentEntryLinksCountByFragmentEntryERC(
-		long groupId, String fragmentEntryERC, String fragmentEntryScopeERC);
+	public int getAllFragmentEntryLinksCountByFragmentEntryId(
+		long fragmentEntryId);
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
