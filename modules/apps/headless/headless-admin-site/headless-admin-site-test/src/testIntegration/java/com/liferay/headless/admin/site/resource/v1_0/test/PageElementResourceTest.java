@@ -3532,7 +3532,8 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 		_assertDefaultValues(
 			(FragmentInstancePageElementDefinition)
 				pageElement.getPageElementDefinition(),
-			"element-html", "element-text");
+			"element-html", "element-link", "element-rich-text",
+			"element-text");
 	}
 
 	private void _testPutSitePageSpecificationPageExperiencePageElementWithGridPageElement()
