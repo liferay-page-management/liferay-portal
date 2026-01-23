@@ -298,6 +298,14 @@ public class FragmentEntryConfigurationParserImpl
 		return null;
 	}
 
+	public Object getFieldValue(
+		JSONObject configurationJSONObject, JSONObject editableValuesJSONObject,
+		String name) {
+
+		return getFieldValue(
+			configurationJSONObject, editableValuesJSONObject, null, name);
+	}
+
 	@Override
 	public List<FragmentConfigurationField> getFragmentConfigurationFields(
 		JSONObject configurationJSONObject) {
