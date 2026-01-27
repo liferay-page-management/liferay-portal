@@ -165,6 +165,7 @@ export default function refreshReferencedStructures({
 				ancestors,
 				erc: objectRelationship.objectDefinitionExternalReferenceCode2,
 				objectDefinitions,
+				objectRelationshipERC: objectRelationship.externalReferenceCode,
 				parent: root.uuid,
 				relationshipName: objectRelationship.name,
 			});

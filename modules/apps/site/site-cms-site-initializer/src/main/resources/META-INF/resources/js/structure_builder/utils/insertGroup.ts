@@ -69,6 +69,7 @@ export default function insertGroup({
 					DEFAULT_GROUP_LABEL,
 			},
 			name: getRandomName({capitalize: true}),
+			objectRelationshipERC: getRandomId(),
 			parent: groupParent,
 			relationshipName: getRandomName(),
 			type: 'repeatable-group',
