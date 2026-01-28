@@ -498,29 +498,6 @@ public class FragmentEntryConfigurationParserImpl
 			return _getInfoDisplayObjectEntryJSONObject(parsedValue);
 		}
 		else if (StringUtil.equalsIgnoreCase(
-					fragmentConfigurationField.getType(), "text")) {
-
-			if (fragmentConfigurationField.isLocalizable() &&
-				(locale == null)) {
-
-				return _getFieldValue(
-					FragmentConfigurationFieldDataType.OBJECT, parsedValue);
-			}
-
-			FragmentConfigurationFieldDataType
-				fragmentConfigurationFieldDataType =
-					fragmentConfigurationField.
-						getFragmentConfigurationFieldDataType();
-
-			if (fragmentConfigurationFieldDataType == null) {
-				fragmentConfigurationFieldDataType =
-					FragmentConfigurationFieldDataType.STRING;
-			}
-
-			return _getFieldValue(
-				fragmentConfigurationFieldDataType, parsedValue);
-		}
-		else if (StringUtil.equalsIgnoreCase(
 					fragmentConfigurationField.getType(), "length") ||
 				 StringUtil.equalsIgnoreCase(
 					 fragmentConfigurationField.getType(), "select") ||
