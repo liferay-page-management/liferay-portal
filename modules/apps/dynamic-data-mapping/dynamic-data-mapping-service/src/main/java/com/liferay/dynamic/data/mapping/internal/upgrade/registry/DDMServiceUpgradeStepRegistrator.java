@@ -69,6 +69,8 @@ import com.liferay.expando.kernel.service.ExpandoValueLocalService;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.dao.db.DBType;
+import com.liferay.portal.kernel.dao.db.DBTypeToSQLMap;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.repository.friendly.url.resolver.FileEntryFriendlyURLResolver;
@@ -706,6 +708,42 @@ public class DDMServiceUpgradeStepRegistrator
 		registry.register(
 			"7.0.6", "7.1.0",
 			new DDMFacetTemplateVersionUpgradeProcess(_classNameLocalService));
+
+		registry.register(
+			"7.1.0", "7.1.1",
+			() -> {
+				DBTypeToSQLMap dbTypeToSQLMap = new DBTypeToSQLMap(
+					StringBundler.concat(
+						"update FragmentEntry set html = ( select ",
+						"FragmentEntryVersion.html from FragmentEntryVersion ",
+						"where FragmentEntry.fragmentEntryId = ",
+						"FragmentEntryVersion.fragmentEntryId and ",
+						"FragmentEntry.fragmentCollectionId = ",
+						"FragmentEntryVersion.fragmentCollectionId and ",
+						"FragmentEntry.modifiedDate = ",
+						"FragmentEntryVersion.modifiedDate ) where exists ( ",
+						"select 1 from FragmentEntryVersion where ",
+						"FragmentEntry.fragmentEntryId = ",
+						"FragmentEntryVersion.fragmentEntryId and ",
+						"FragmentEntry.fragmentCollectionId = ",
+						"FragmentEntryVersion.fragmentCollectionId and ",
+						"FragmentEntry.modifiedDate = ",
+						"FragmentEntryVersion.modifiedDate)"));
+				String sql = StringBundler.concat(
+					"update FragmentEntry join FragmentEntryVersion on ",
+					"FragmentEntry.fragmentEntryId = ",
+					"FragmentEntryVersion.fragmentEntryId and ",
+					"FragmentEntry.fragmentCollectionId = ",
+					"FragmentEntryVersion.fragmentCollectionId and ",
+					"FragmentEntry.modifiedDate = ",
+					"FragmentEntryVersion.modifiedDate set FragmentEntry.html ",
+					"= FragmentEntryVersion.html");
+
+				dbTypeToSQLMap.add(DBType.MARIADB, sql);
+				dbTypeToSQLMap.add(DBType.MYSQL, sql);
+
+				UpgradeProcessFactory.runSQL(dbTypeToSQLMap);
+			});
 	}
 
 	@Activate
