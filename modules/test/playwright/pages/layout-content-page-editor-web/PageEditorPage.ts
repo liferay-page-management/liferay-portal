@@ -1334,11 +1334,12 @@ export class PageEditorPage {
 
 		await button.waitFor();
 
-		await expect(async () => {
-			await button.click({timeout: 1000});
-
-			await waitForAlert(this.page, 'successfully', {timeout: 2000});
-		}).toPass();
+		await clickAndExpectToBeVisible({
+			target: this.page.locator('.alert-success', {
+				hasText: 'successfully',
+			}),
+			trigger: button,
+		});
 	}
 
 	async redoAction() {
