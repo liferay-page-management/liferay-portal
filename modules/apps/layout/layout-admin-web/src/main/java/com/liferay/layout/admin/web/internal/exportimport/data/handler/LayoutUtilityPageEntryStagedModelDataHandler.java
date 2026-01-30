@@ -14,9 +14,6 @@ import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.exportimport.staged.model.repository.StagedModelRepository;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -119,16 +116,15 @@ public class LayoutUtilityPageEntryStagedModelDataHandler
 						portletDataContext, importedLayoutUtilityPageEntry);
 				}
 				else {
-					if (_log.isWarnEnabled()) {
-						_log.warn(
-							StringBundler.concat(
-								"Unable to import layout utility page entry ",
-								"with external reference code ",
-								importedLayoutUtilityPageEntry.
-									getExternalReferenceCode()));
-					}
+					importedLayoutUtilityPageEntry.setMvccVersion(
+						existingLayoutUtilityPageEntry.getMvccVersion());
+					importedLayoutUtilityPageEntry.setLayoutUtilityPageEntryId(
+						existingLayoutUtilityPageEntry.
+							getLayoutUtilityPageEntryId());
 
-					return;
+					importedLayoutUtilityPageEntry =
+						_stagedModelRepository.updateStagedModel(
+							portletDataContext, importedLayoutUtilityPageEntry);
 				}
 			}
 			else {
@@ -244,9 +240,6 @@ public class LayoutUtilityPageEntryStagedModelDataHandler
 			portletDataContext, layoutUtilityPageEntry, layout,
 			PortletDataContext.REFERENCE_TYPE_DEPENDENCY);
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		LayoutUtilityPageEntryStagedModelDataHandler.class);
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
