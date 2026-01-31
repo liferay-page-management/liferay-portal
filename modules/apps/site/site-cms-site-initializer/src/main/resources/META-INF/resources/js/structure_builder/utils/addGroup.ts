@@ -71,7 +71,6 @@ export default function addGroup({
 			},
 			name: getRandomName({capitalize: true}),
 			parent: groupParent,
-			relationshipERC: getRandomId(),
 			relationshipName: getRandomName(),
 			type: 'repeatable-group',
 			uuid: groupUuid,

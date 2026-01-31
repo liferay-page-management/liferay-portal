@@ -63,7 +63,7 @@ type UndeletableReason = 'is-locked' | 'is-referenced' | 'causes-invalid-group';
 type History = {
 	deletedChildren: Array<StructureChild>;
 	deletedGroupERCs: Array<RepeatableGroup['erc']>;
-	deletedRelationshipERCs: Array<string>;
+	deletedRelationshipIds: Array<number>;
 	modifiedNames: Set<Uuid>;
 };
 
@@ -81,7 +81,7 @@ const INITIAL_STATE: State = {
 	history: {
 		deletedChildren: [],
 		deletedGroupERCs: [],
-		deletedRelationshipERCs: [],
+		deletedRelationshipIds: [],
 		modifiedNames: new Set(),
 	},
 	invalids: new Map(),
@@ -546,19 +546,23 @@ function reducer(state: State, action: Action): State {
 				};
 
 				if (
-					child.type === 'repeatable-group' ||
-					child.type === 'referenced-structure'
+					child.type === 'referenced-structure' ||
+					child.type === 'repeatable-group'
 				) {
-					nextState = {
-						...nextState,
-						history: {
-							...nextState.history,
-							deletedRelationshipERCs: [
-								...nextState.history.deletedRelationshipERCs,
-								child.relationshipERC,
-							],
-						},
-					};
+					const relationshipId = child.relationshipId;
+
+					if (relationshipId) {
+						nextState = {
+							...nextState,
+							history: {
+								...nextState.history,
+								deletedRelationshipIds: [
+									...nextState.history.deletedRelationshipIds,
+									relationshipId,
+								],
+							},
+						};
+					}
 				}
 
 				if (child.type === 'repeatable-group') {
@@ -631,20 +635,24 @@ function reducer(state: State, action: Action): State {
 					};
 
 					if (
-						child.type === 'repeatable-group' ||
-						child.type === 'referenced-structure'
+						child.type === 'referenced-structure' ||
+						child.type === 'repeatable-group'
 					) {
-						nextState = {
-							...nextState,
-							history: {
-								...nextState.history,
-								deletedRelationshipERCs: [
-									...nextState.history
-										.deletedRelationshipERCs,
-									child.relationshipERC,
-								],
-							},
-						};
+						const relationshipId = child.relationshipId;
+
+						if (relationshipId) {
+							nextState = {
+								...nextState,
+								history: {
+									...nextState.history,
+									deletedRelationshipIds: [
+										...nextState.history
+											.deletedRelationshipIds,
+										relationshipId,
+									],
+								},
+							};
+						}
 					}
 
 					if (child.type === 'repeatable-group') {
@@ -692,7 +700,6 @@ function reducer(state: State, action: Action): State {
 			else if (copy.type === 'repeatable-group') {
 				copy.erc = getRandomId();
 				copy.name = getRandomName({capitalize: true});
-				copy.relationshipERC = getRandomId();
 				copy.relationshipName = getRandomName();
 			}
 			else {

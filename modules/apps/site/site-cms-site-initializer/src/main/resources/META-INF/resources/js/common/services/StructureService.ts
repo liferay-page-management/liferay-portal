@@ -143,8 +143,8 @@ async function updateStructure({
 	formData.append('objectDefinition', JSON.stringify(mainObjectDefinition));
 
 	formData.append(
-		'deletedObjectRelationshipERCs',
-		history.deletedRelationshipERCs.join(',')
+		'deletedObjectRelationshipIds',
+		history.deletedRelationshipIds.join(',')
 	);
 
 	formData.append(

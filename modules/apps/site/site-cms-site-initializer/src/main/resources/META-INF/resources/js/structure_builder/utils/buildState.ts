@@ -35,7 +35,7 @@ export default function buildState({
 		history: {
 			deletedChildren: [],
 			deletedGroupERCs: [],
-			deletedRelationshipERCs: [],
+			deletedRelationshipIds: [],
 			modifiedNames: new Set(),
 		},
 		invalids: new Map(),

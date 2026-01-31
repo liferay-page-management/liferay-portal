@@ -65,6 +65,7 @@ export default function refreshReferencedStructures({
 					root: child,
 				}),
 				label: relatedObjectDefinition.label,
+				relationshipId: objectRelationship?.id ?? child.relationshipId,
 				spaces: getSpaces(relatedObjectDefinition),
 			};
 
@@ -105,6 +106,7 @@ export default function refreshReferencedStructures({
 					root: child,
 				}),
 				label: relatedObjectDefinition.label,
+				relationshipId: objectRelationship?.id ?? child.relationshipId,
 			};
 
 			children.set(repeatableGroup.uuid, repeatableGroup);
@@ -182,7 +184,7 @@ export default function refreshReferencedStructures({
 					erc: objectRelationship.objectDefinitionExternalReferenceCode2,
 					objectDefinitions,
 					parent: root.uuid,
-					relationshipERC: objectRelationship.externalReferenceCode,
+					relationshipId: objectRelationship.id,
 					relationshipName: objectRelationship.name,
 				});
 
@@ -194,7 +196,7 @@ export default function refreshReferencedStructures({
 					erc: objectRelationship.objectDefinitionExternalReferenceCode2,
 					objectDefinitions,
 					parent: root.uuid,
-					relationshipERC: objectRelationship.externalReferenceCode,
+					relationshipId: objectRelationship.id,
 					relationshipName: objectRelationship.name,
 				});
 

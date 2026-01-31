@@ -22,7 +22,6 @@ import {Action} from '../contexts/StateContext';
 import {ReferencedStructure, Structure} from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 import {buildReferencedStructure} from '../utils/buildStructure';
-import getRandomId from '../utils/getRandomId';
 import getRandomName from '../utils/getRandomName';
 
 type Item = {
@@ -252,7 +251,6 @@ function buildStructures(
 			erc,
 			objectDefinitions,
 			parent: mainStructureUuid,
-			relationshipERC: getRandomId(),
 			relationshipName: getRandomName(),
 		});
 

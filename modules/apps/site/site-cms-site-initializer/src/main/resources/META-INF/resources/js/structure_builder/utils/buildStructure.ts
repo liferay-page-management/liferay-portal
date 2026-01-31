@@ -91,13 +91,14 @@ export function buildChildren({
 	for (const objectRelationship of objectRelationships) {
 		if (isRelatedContent(objectRelationship)) {
 			const relatedContent: RelatedContent = {
-				erc: objectRelationship.externalReferenceCode,
+				erc: objectRelationship.externalReferenceCode!,
 				label: objectRelationship.label,
 				multiselection: true,
 				name: objectRelationship.name,
 				parent,
 				relatedStructureERC:
 					objectRelationship.objectDefinitionExternalReferenceCode2,
+				relationshipId: objectRelationship.id,
 				type: 'related-content',
 				uuid: getUuid(),
 			};
@@ -113,7 +114,7 @@ export function buildChildren({
 				erc: objectRelationship.objectDefinitionExternalReferenceCode2,
 				objectDefinitions,
 				parent,
-				relationshipERC: objectRelationship.externalReferenceCode,
+				relationshipId: objectRelationship.id,
 				relationshipName: objectRelationship.name,
 			});
 
@@ -128,7 +129,7 @@ export function buildChildren({
 				erc: objectRelationship.objectDefinitionExternalReferenceCode2,
 				objectDefinitions,
 				parent,
-				relationshipERC: objectRelationship.externalReferenceCode,
+				relationshipId: objectRelationship.id,
 				relationshipName: objectRelationship.name,
 			});
 
@@ -139,13 +140,14 @@ export function buildChildren({
 	if (relatedContentObjectRelationships) {
 		for (const relatedContentObjectRelationship of relatedContentObjectRelationships) {
 			const relatedContent: RelatedContent = {
-				erc: relatedContentObjectRelationship.externalReferenceCode,
+				erc: relatedContentObjectRelationship.externalReferenceCode!,
 				label: relatedContentObjectRelationship.label,
 				multiselection: false,
 				name: relatedContentObjectRelationship.name,
 				parent,
 				relatedStructureERC:
 					relatedContentObjectRelationship.objectDefinitionExternalReferenceCode1,
+				relationshipId: relatedContentObjectRelationship.id,
 				type: 'related-content',
 				uuid: getUuid(),
 			};
@@ -209,14 +211,14 @@ export function buildReferencedStructure({
 	erc,
 	objectDefinitions,
 	parent,
-	relationshipERC,
+	relationshipId,
 	relationshipName,
 }: {
 	ancestors: Array<ObjectDefinition['externalReferenceCode']>;
 	erc: ReferencedStructure['erc'];
 	objectDefinitions: ObjectDefinitions;
 	parent: Uuid;
-	relationshipERC: string;
+	relationshipId?: number;
 	relationshipName: ObjectRelationship['name'];
 }): ReferencedStructure {
 	const uuid = getUuid();
@@ -243,7 +245,7 @@ export function buildReferencedStructure({
 		label: objectDefinition.label,
 		name: objectDefinition.name!,
 		parent,
-		relationshipERC,
+		relationshipId,
 		relationshipName,
 		spaces: getSpaces(objectDefinition),
 		type: 'referenced-structure',
@@ -257,14 +259,14 @@ export function buildRepeatableGroup({
 	erc,
 	objectDefinitions,
 	parent,
-	relationshipERC,
+	relationshipId,
 	relationshipName,
 }: {
 	ancestors: Array<ObjectDefinition['externalReferenceCode']>;
 	erc: RepeatableGroup['erc'];
 	objectDefinitions: ObjectDefinitions;
 	parent: Uuid;
-	relationshipERC: string;
+	relationshipId?: number;
 	relationshipName: ObjectRelationship['name'];
 }): RepeatableGroup {
 	const uuid = getUuid();
@@ -282,7 +284,7 @@ export function buildRepeatableGroup({
 		label: objectDefinition.label,
 		name: objectDefinition.name!,
 		parent,
-		relationshipERC,
+		relationshipId,
 		relationshipName,
 		type: 'repeatable-group',
 		uuid,
