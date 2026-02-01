@@ -81,8 +81,7 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 				"error",
 				_language.get(
 					httpServletRequest.getLocale(),
-					"an-unexpected-error-occurred-while-saving-or-publishing-" +
-					"the-content-structure"));
+					"an-unexpected-error-occurred"));
 
 			if (_log.isWarnEnabled()) {
 				_log.warn(exception);
