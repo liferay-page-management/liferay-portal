@@ -136,11 +136,14 @@ async function updateStructure({
 		workflows,
 	});
 
+	const objectRelationships = buildObjectRelationships({
+		children,
+		structureERC: erc,
+	});
+
 	const pathMain = Liferay.ThemeDisplay.getPathMain();
 
 	const formData = new FormData();
-
-	formData.append('objectDefinition', JSON.stringify(mainObjectDefinition));
 
 	formData.append(
 		'deletedObjectRelationshipIds',
@@ -148,13 +151,17 @@ async function updateStructure({
 	);
 
 	formData.append(
-		'repeatableGroupObjectDefinitions',
-		JSON.stringify(groupObjectDefinitions)
-	);
-
-	formData.append(
 		'deletedRepeatableGroupsERCs',
 		history.deletedGroupERCs.join(',')
+	);
+
+	formData.append('objectDefinition', JSON.stringify(mainObjectDefinition));
+
+	formData.append('objectRelationships', JSON.stringify(objectRelationships));
+
+	formData.append(
+		'repeatableGroupObjectDefinitions',
+		JSON.stringify(groupObjectDefinitions)
 	);
 
 	const response = await ApiHelper.postFormData(

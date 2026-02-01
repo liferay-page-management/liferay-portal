@@ -6,8 +6,9 @@
 package com.liferay.site.cms.site.initializer.internal.struts;
 
 import com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition;
+import com.liferay.object.admin.rest.dto.v1_0.ObjectRelationship;
 import com.liferay.object.admin.rest.resource.v1_0.ObjectDefinitionResource;
-import com.liferay.object.model.ObjectRelationship;
+import com.liferay.object.admin.rest.resource.v1_0.ObjectRelationshipResource;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
@@ -63,6 +64,10 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 				httpServletRequest, "deletedRepeatableGroupsERCs");
 			String objectDefinition = ParamUtil.getString(
 				httpServletRequest, "objectDefinition");
+			JSONArray objectRelationshipsJSONArray =
+				_jsonFactory.createJSONArray(
+					ParamUtil.getString(
+						httpServletRequest, "objectRelationships"));
 			JSONArray repeatableGroupObjectDefinitionsJSONArray =
 				_jsonFactory.createJSONArray(
 					ParamUtil.getString(
@@ -72,6 +77,7 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 			_updateStructure(
 				deletedRepeatableGroupsERCs, httpServletRequest,
 				objectDefinition, deletedObjectRelationshipIds,
+				objectRelationshipsJSONArray,
 				repeatableGroupObjectDefinitionsJSONArray);
 		}
 		catch (Exception exception) {
@@ -120,10 +126,37 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 		return objectDefinitions;
 	}
 
+	private ObjectRelationshipResource _getObjectRelationshipResource(
+		User user) {
+
+		ObjectRelationshipResource.Builder builder =
+			_objectRelationshipResourceFactory.create();
+
+		builder.user(user);
+
+		return builder.build();
+	}
+
+	private List<ObjectRelationship> _getObjectRelationships(
+		JSONArray objectRelationshipsJSONArray) {
+
+		List<ObjectRelationship> objectRelationships = new ArrayList<>();
+
+		for (int i = 0; i < objectRelationshipsJSONArray.length(); i++) {
+			ObjectRelationship objectRelationship = ObjectRelationship.toDTO(
+				String.valueOf(objectRelationshipsJSONArray.getJSONObject(i)));
+
+			objectRelationships.add(objectRelationship);
+		}
+
+		return objectRelationships;
+	}
+
 	private void _updateStructure(
 			String[] deletedRepeatableGroupsERCs,
 			HttpServletRequest httpServletRequest,
-			String objectDefinitionString, long[] objectRelationshipIds,
+			String objectDefinitionString, long[] deletedObjectRelationshipIds,
+			JSONArray objectRelationshipsJSONArray,
 			JSONArray repeatableGroupObjectDefinitionsJSONArray)
 		throws Exception {
 
@@ -134,10 +167,13 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 		List<ObjectDefinition> repeatableGroupObjectDefinitions =
 			_getObjectDefinitions(repeatableGroupObjectDefinitionsJSONArray);
 
+		List<ObjectRelationship> objectRelationships = _getObjectRelationships(
+			objectRelationshipsJSONArray);
+
 		Callable<Void> callable = new UpdateStructureCallable(
-			themeDisplay.getCompanyId(), objectRelationshipIds,
+			themeDisplay.getCompanyId(), deletedObjectRelationshipIds,
 			deletedRepeatableGroupsERCs,
-			ObjectDefinition.toDTO(objectDefinitionString),
+			ObjectDefinition.toDTO(objectDefinitionString), objectRelationships,
 			repeatableGroupObjectDefinitions, themeDisplay.getUser());
 
 		try {
@@ -177,20 +213,22 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 	@Reference
 	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
+	@Reference
+	private ObjectRelationshipResource.Factory
+		_objectRelationshipResourceFactory;
+
 	private class UpdateStructureCallable implements Callable<Void> {
 
 		@Override
 		public Void call() throws Exception {
-			ObjectDefinitionResource objectDefinitionResource =
-				_getObjectDefinitionResource(_user);
-
 			if (ArrayUtil.isNotEmpty(_deletedObjectRelationshipIds)) {
 				for (long objectRelationshipId :
 						_deletedObjectRelationshipIds) {
 
-					ObjectRelationship objectRelationship =
-						_objectRelationshipLocalService.getObjectRelationship(
-							objectRelationshipId);
+					com.liferay.object.model.ObjectRelationship
+						objectRelationship =
+							_objectRelationshipLocalService.
+								getObjectRelationship(objectRelationshipId);
 
 					if (objectRelationship.isEdge()) {
 						objectRelationship =
@@ -223,6 +261,9 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 				}
 			}
 
+			ObjectDefinitionResource objectDefinitionResource =
+				_getObjectDefinitionResource(_user);
+
 			if (ListUtil.isNotEmpty(_repeatableGroupObjectDefinitions)) {
 				for (ObjectDefinition objectDefinition :
 						_repeatableGroupObjectDefinitions) {
@@ -238,6 +279,21 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 				_objectDefinition.getExternalReferenceCode(),
 				_objectDefinition);
 
+			if (ListUtil.isNotEmpty(_objectRelationships)) {
+				ObjectRelationshipResource objectRelationshipResource =
+					_getObjectRelationshipResource(_user);
+
+				for (ObjectRelationship objectRelationship :
+						_objectRelationships) {
+
+					objectRelationshipResource.
+						postObjectDefinitionByExternalReferenceCodeObjectRelationship(
+							objectRelationship.
+								getObjectDefinitionExternalReferenceCode1(),
+							objectRelationship);
+				}
+			}
+
 			return null;
 		}
 
@@ -245,6 +301,7 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 			long companyId, long[] deletedObjectRelationshipIds,
 			String[] deletedRepeatableGroupsERCs,
 			ObjectDefinition objectDefinition,
+			List<ObjectRelationship> objectRelationships,
 			List<ObjectDefinition> repeatableGroupObjectDefinitions,
 			User user) {
 
@@ -252,6 +309,7 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 			_deletedObjectRelationshipIds = deletedObjectRelationshipIds;
 			_deletedRepeatableGroupsERCs = deletedRepeatableGroupsERCs;
 			_objectDefinition = objectDefinition;
+			_objectRelationships = objectRelationships;
 			_repeatableGroupObjectDefinitions =
 				repeatableGroupObjectDefinitions;
 			_user = user;
@@ -261,6 +319,7 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 		private final long[] _deletedObjectRelationshipIds;
 		private final String[] _deletedRepeatableGroupsERCs;
 		private final ObjectDefinition _objectDefinition;
+		private final List<ObjectRelationship> _objectRelationships;
 		private final List<ObjectDefinition> _repeatableGroupObjectDefinitions;
 		private final User _user;
 

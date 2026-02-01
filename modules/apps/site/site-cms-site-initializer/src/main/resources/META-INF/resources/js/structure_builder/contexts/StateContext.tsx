@@ -547,6 +547,7 @@ function reducer(state: State, action: Action): State {
 
 				if (
 					child.type === 'referenced-structure' ||
+					child.type === 'related-content' ||
 					child.type === 'repeatable-group'
 				) {
 					const relationshipId = child.relationshipId;
@@ -636,6 +637,7 @@ function reducer(state: State, action: Action): State {
 
 					if (
 						child.type === 'referenced-structure' ||
+						child.type === 'related-content' ||
 						child.type === 'repeatable-group'
 					) {
 						const relationshipId = child.relationshipId;
