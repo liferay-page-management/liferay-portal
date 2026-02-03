@@ -94,18 +94,22 @@ type Props<T> = {
 	mode: 'single' | 'multiple';
 	nestedKey: string;
 	onItemHover?: (
-		item: T,
+		items: T | Set<React.Key>,
 		parentItem: T,
 		index: MoveItemIndex,
 		position: Position
 	) => boolean;
-	onItemMove?: (item: T, parentItem: T, index: MoveItemIndex) => boolean;
+	onItemMove?: (
+		items: T | Set<React.Key>,
+		parentItem: T,
+		index: MoveItemIndex
+	) => boolean;
 	rootRef: React.RefObject<HTMLUListElement>;
 };
 
 const emptySet = () => new Set<React.Key>();
 
-function getFocusableTree(rootRef: React.RefObject<HTMLUListElement>) {
+function getFocusableElements(rootRef: React.RefObject<HTMLUListElement>) {
 	if (!rootRef.current) {
 		return [];
 	}
@@ -159,6 +163,7 @@ function getNextTarget<T>({
 	direction,
 	items,
 	layout,
+	mode,
 	nestedKey,
 	onItemHover,
 	rootRef,
@@ -167,9 +172,10 @@ function getNextTarget<T>({
 	direction: 'up' | 'down';
 	items?: Record<string, T>[];
 	layout: Layout;
+	mode: 'single' | 'multiple';
 	nestedKey: string;
 	onItemHover?: (
-		item: T,
+		item: T | Set<React.Key>,
 		parentItem: T,
 		index: MoveItemIndex,
 		position: Position
@@ -291,7 +297,9 @@ function getNextTarget<T>({
 			}
 
 			const isValid = onItemHover(
-				dragNode.item as Record<any, any>,
+				mode === 'multiple'
+					? state.currentDragKeys
+					: (dragNode.item as Record<any, any>),
 				parentNode as Record<any, any>,
 				{
 					next: targetIndexes[targetIndexes.length - 1]!,
@@ -443,7 +451,9 @@ export function DragAndDropProvider<T>({
 			const dragNode = tree.nodeByPath(dragLayoutItem!.loc);
 
 			const isMoved = onItemMove(
-				dragNode.item as Record<any, any>,
+				mode === 'multiple'
+					? state.currentDragKeys
+					: (dragNode.item as Record<any, any>),
 				tree.nodeByPath(indexes).parent as Record<any, any>,
 				{
 					next: indexes[indexes.length - 1]!,
