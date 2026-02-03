@@ -217,7 +217,7 @@ export function DragAndDropProvider<T>({
 			source: null,
 			status: null,
 		}));
-	}, []);
+	}, [state.currentDrag]);
 
 	const onPositionChange = useCallback(
 		(key: React.Key, position: Position) => {
