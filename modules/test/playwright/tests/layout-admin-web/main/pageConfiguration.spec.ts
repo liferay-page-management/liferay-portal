@@ -1302,11 +1302,15 @@ test.describe('SEO configuration', () => {
 
 		// Configure custom canonical url
 
-		await page.getByLabel('Use Custom Canonical URL').check();
+		await expect(async () => {
+			await page
+				.getByLabel('Use Custom Canonical URL')
+				.check({timeout: 2000});
 
-		await expect(
-			page.getByText('Due to the customization of the canonical URL')
-		).toBeAttached();
+			await expect(
+				page.getByText('Due to the customization of the canonical URL')
+			).toBeVisible({timeout: 2000});
+		}).toPass();
 
 		const canonicalURL = page.getByLabel('Canonical URL', {exact: true});
 

@@ -742,7 +742,7 @@ test(
 		// Open tree if it's not already open
 
 		await page.goto(
-			`/web${site.friendlyUrlPath}${firstLayout.friendlyURL}`
+			`${liferayConfig.environment.baseUrl}/en/web${site.friendlyUrlPath}${firstLayout.friendlyUrlPath}`
 		);
 
 		await openProductMenu(page);
