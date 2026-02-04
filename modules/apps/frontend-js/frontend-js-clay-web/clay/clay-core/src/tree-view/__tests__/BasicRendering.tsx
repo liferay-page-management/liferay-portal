@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {ClayDropDownWithItems as DropDownWithItems} from '@clayui/drop-down';
-import {ClayCheckbox as Checkbox} from '@clayui/form';
-import {cleanup, render} from '@testing-library/react';
+import { ClayDropDownWithItems as DropDownWithItems } from '@clayui/drop-down';
+import { ClayCheckbox as Checkbox } from '@clayui/form';
+import { cleanup, render } from '@testing-library/react';
 import React from 'react';
 
-import {Button, Icon, Provider, Text, TreeView} from '../..';
+import { Button, Icon, Provider, Text, TreeView } from '../..';
 
 const spritemap = 'icons.svg';
 
@@ -428,5 +428,45 @@ describe('TreeView basic rendering', () => {
 		);
 
 		expect(container).toMatchSnapshot();
+	});
+
+	it('render drag handler visible by default', () => {
+		const {getAllByLabelText} = render(
+			<Provider spritemap={spritemap}>
+				<TreeView dragAndDrop>
+					<TreeView.Item>
+						<TreeView.ItemStack>Root</TreeView.ItemStack>
+					</TreeView.Item>
+				</TreeView>
+			</Provider>
+		);
+
+		const dragButtons = getAllByLabelText('Drag');
+
+		dragButtons.forEach((dragButton) => {
+			expect(dragButton.classList.contains('sr-only')).toBe(false);
+			expect(dragButton.classList.contains('sr-only-focusable')).toBe(
+				false
+			);
+		});
+	});
+
+	it('render drag handler as keyboard-only', () => {
+		const {getAllByLabelText} = render(
+			<Provider spritemap={spritemap}>
+				<TreeView dragAndDrop dragHandlerVisibility="keyboard">
+					<TreeView.Item>
+						<TreeView.ItemStack>Root</TreeView.ItemStack>
+					</TreeView.Item>
+				</TreeView>
+			</Provider>
+		);
+
+		const dragButtons = getAllByLabelText('Drag');
+
+		dragButtons.forEach((dragButton) => {
+			expect(dragButton.classList.contains('sr-only')).toBe(true);
+			expect(dragButton.classList.contains('sr-only-focusable')).toBe(true);
+		});
 	});
 });
