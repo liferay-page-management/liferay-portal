@@ -61,7 +61,7 @@ public class LayoutWrapper
 		attributes.put("hidden", isHidden());
 		attributes.put("system", isSystem());
 		attributes.put("friendlyURL", getFriendlyURL());
-		attributes.put("iconImageId", getIconImageId());
+		attributes.put("iconImageERC", getIconImageERC());
 		attributes.put("themeId", getThemeId());
 		attributes.put("colorSchemeId", getColorSchemeId());
 		attributes.put("styleBookEntryERC", getStyleBookEntryERC());
@@ -259,10 +259,10 @@ public class LayoutWrapper
 			setFriendlyURL(friendlyURL);
 		}
 
-		Long iconImageId = (Long)attributes.get("iconImageId");
+		String iconImageERC = (String)attributes.get("iconImageERC");
 
-		if (iconImageId != null) {
-			setIconImageId(iconImageId);
+		if (iconImageERC != null) {
+			setIconImageERC(iconImageERC);
 		}
 
 		String themeId = (String)attributes.get("themeId");
@@ -856,13 +856,13 @@ public class LayoutWrapper
 	}
 
 	/**
-	 * Returns the icon image ID of this layout.
+	 * Returns the icon image erc of this layout.
 	 *
-	 * @return the icon image ID of this layout
+	 * @return the icon image erc of this layout
 	 */
 	@Override
-	public long getIconImageId() {
-		return model.getIconImageId();
+	public String getIconImageERC() {
+		return model.getIconImageERC();
 	}
 
 	/**
@@ -2227,13 +2227,13 @@ public class LayoutWrapper
 	}
 
 	/**
-	 * Sets the icon image ID of this layout.
+	 * Sets the icon image erc of this layout.
 	 *
-	 * @param iconImageId the icon image ID of this layout
+	 * @param iconImageERC the icon image erc of this layout
 	 */
 	@Override
-	public void setIconImageId(long iconImageId) {
-		model.setIconImageId(iconImageId);
+	public void setIconImageERC(String iconImageERC) {
+		model.setIconImageERC(iconImageERC);
 	}
 
 	/**
