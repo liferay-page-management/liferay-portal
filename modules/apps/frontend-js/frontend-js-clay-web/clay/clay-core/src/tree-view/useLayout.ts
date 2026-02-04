@@ -22,6 +22,7 @@ export type LayoutInfo = {
 	 */
 	lazyChild: boolean;
 	loc: Array<number>;
+	name: string;
 	parentKey?: Key;
 };
 
@@ -30,6 +31,7 @@ export type Layout = {
 		key: Key,
 		lazy: boolean,
 		loc: Array<number>,
+		name: string,
 		cursor: Cursor,
 		parentKey?: Key
 	) => () => void;
@@ -59,6 +61,7 @@ export function useLayout(): Layout {
 			key: Key,
 			lazyChild: boolean,
 			loc: Array<number>,
+			name: string,
 			cursor: Cursor,
 			parentKey?: Key
 		) => {
@@ -70,6 +73,7 @@ export function useLayout(): Layout {
 					cursor,
 					lazyChild,
 					loc,
+					name,
 					parentKey,
 				});
 			}
@@ -105,6 +109,7 @@ export function useLayout(): Layout {
 						cursor: cursor.slice(0, -1),
 						lazyChild: false,
 						loc: loc.slice(0, -1),
+						name,
 						parentKey: undefined,
 					});
 				}
