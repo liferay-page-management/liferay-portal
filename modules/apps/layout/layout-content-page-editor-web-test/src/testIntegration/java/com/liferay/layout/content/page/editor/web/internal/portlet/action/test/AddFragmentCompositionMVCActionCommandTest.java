@@ -54,7 +54,9 @@ import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.Sync;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -102,7 +104,7 @@ public class AddFragmentCompositionMVCActionCommandTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_group = _groupLocalService.getGroup(TestPropsValues.getGroupId());
+		_group = GroupTestUtil.addGroup();
 
 		_company = _companyLocalService.getCompany(_group.getCompanyId());
 
@@ -868,6 +870,7 @@ public class AddFragmentCompositionMVCActionCommandTest {
 	@Inject
 	private FragmentEntryLocalService _fragmentEntryLocalService;
 
+	@DeleteAfterTestRun
 	private Group _group;
 
 	@Inject
