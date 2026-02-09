@@ -511,7 +511,7 @@ public abstract class BaseSitePageResourceImpl
 		preparePatch(sitePage, existingSitePage);
 
 		return putSiteSitePage(
-			siteExternalReferenceCode, sitePageExternalReferenceCode,
+			siteExternalReferenceCode, sitePageExternalReferenceCode, false,
 			existingSitePage);
 	}
 
