@@ -226,6 +226,13 @@ public interface Layout extends LayoutModel, PersistedModel {
 	 */
 	public Image getIconImage();
 
+	/**
+	 * Returns the icon image ID associated with the layout.
+	 *
+	 * @return the icon image ID, or <code>0</code> if the layout has no icon image
+	 */
+	public long getIconImageId();
+
 	public String getLayoutPrototypeUuid();
 
 	/**
@@ -464,6 +471,13 @@ public interface Layout extends LayoutModel, PersistedModel {
 	public boolean matches(
 		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		String friendlyURL);
+
+	/**
+	 * Sets the icon image ID associated with the layout.
+	 *
+	 * @param iconImageId the icon image ID
+	 */
+	public void setIconImageId(long iconImageId);
 
 	public void setLayoutSet(LayoutSet layoutSet);
 

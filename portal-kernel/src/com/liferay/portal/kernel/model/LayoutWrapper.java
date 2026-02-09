@@ -866,6 +866,16 @@ public class LayoutWrapper
 	}
 
 	/**
+	 * Returns the icon image ID associated with the layout.
+	 *
+	 * @return the icon image ID, or <code>0</code> if the layout has no icon image
+	 */
+	@Override
+	public long getIconImageId() {
+		return model.getIconImageId();
+	}
+
+	/**
 	 * Returns the keywords of this layout.
 	 *
 	 * @return the keywords of this layout
@@ -2234,6 +2244,16 @@ public class LayoutWrapper
 	@Override
 	public void setIconImageERC(String iconImageERC) {
 		model.setIconImageERC(iconImageERC);
+	}
+
+	/**
+	 * Sets the icon image ID associated with the layout.
+	 *
+	 * @param iconImageId the icon image ID
+	 */
+	@Override
+	public void setIconImageId(long iconImageId) {
+		model.setIconImageId(iconImageId);
 	}
 
 	/**
