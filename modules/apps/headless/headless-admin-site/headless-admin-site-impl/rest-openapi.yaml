@@ -9123,6 +9123,11 @@ paths:
                     schema:
                         type: integer
                 -   in: query
+                    name: privatePages
+                    schema:
+                        default: false
+                        type: boolean
+                -   in: query
                     name: restrictFields
                     schema:
                         type: string
@@ -9159,6 +9164,11 @@ paths:
                     required: true
                     schema:
                         type: string
+                -   in: query
+                    name: privatePage
+                    schema:
+                        default: false
+                        type: boolean
             requestBody:
                 content:
                     application/json:
@@ -9309,6 +9319,11 @@ paths:
                     name: nestedFields
                     schema:
                         type: string
+                -   in: query
+                    name: privatePage
+                    schema:
+                        default: false
+                        type: boolean
                 -   in: query
                     name: restrictFields
                     schema:
