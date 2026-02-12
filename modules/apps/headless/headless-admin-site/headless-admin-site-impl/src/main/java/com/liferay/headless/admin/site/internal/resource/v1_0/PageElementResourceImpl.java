@@ -152,7 +152,8 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 		return _pageElementDTOConverter.toDTO(
 			_getDTOConverterContext(
 				layoutPageTemplateStructure.getCompanyId(),
-				layoutStructureItem.getItemId(), layoutStructure, groupId),
+				layoutStructureItem.getItemId(), layout.getPlid(),
+				layoutStructure, groupId),
 			layoutStructureItem);
 	}
 
@@ -208,7 +209,7 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 				itemId -> _pageElementDTOConverter.toDTO(
 					_getDTOConverterContext(
 						layoutPageTemplateStructure.getCompanyId(), itemId,
-						layoutStructure, groupId),
+						layout.getPlid(), layoutStructure, groupId),
 					layoutStructure.getLayoutStructureItem(itemId))));
 	}
 
@@ -259,7 +260,7 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 				itemId -> _pageElementDTOConverter.toDTO(
 					_getDTOConverterContext(
 						layoutPageTemplateStructure.getCompanyId(), itemId,
-						layoutStructure, groupId),
+						layout.getPlid(), layoutStructure, groupId),
 					layoutStructure.getLayoutStructureItem(itemId))));
 	}
 
@@ -386,14 +387,14 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 			return _pageElementDTOConverter.toDTO(
 				_getDTOConverterContext(
 					layout.getCompanyId(), layoutStructureItem.getItemId(),
-					layoutStructure, groupId),
+					layout.getPlid(), layoutStructure, groupId),
 				layoutStructureItem);
 		}
 	}
 
 	private DTOConverterContext _getDTOConverterContext(
-		long companyId, String itemId, LayoutStructure layoutStructure,
-		long scopeGroupId) {
+		long companyId, String itemId, long layoutPlid,
+		LayoutStructure layoutStructure, long scopeGroupId) {
 
 		return DTOConverterContextUtil.getDTOConverterContext(
 			contextAcceptLanguage,
@@ -401,6 +402,8 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 				LayoutStructure.class.getName(), layoutStructure
 			).put(
 				"companyId", companyId
+			).put(
+				"layoutPlid", layoutPlid
 			).put(
 				"scopeGroupId", scopeGroupId
 			).build(),
