@@ -846,13 +846,12 @@ public class LayoutWrapper
 	}
 
 	/**
-	 * Returns <code>true</code> if the current layout has a configured icon.
+	 * Returns the icon image associated with the layout.
 	 *
-	 * @return <code>true</code> if the current layout has a configured icon;
-	 <code>false</code> otherwise
+	 * @return the icon image, or <code>null</code> if the layout has no icon image
 	 */
 	@Override
-	public boolean getIconImage() {
+	public Image getIconImage() {
 		return model.getIconImage();
 	}
 
@@ -1623,6 +1622,17 @@ public class LayoutWrapper
 		return model.hasChildren();
 	}
 
+	/**
+	 * Returns <code>true</code> if the current layout has a configured icon.
+	 *
+	 * @return <code>true</code> if the current layout has a configured icon;
+	 <code>false</code> otherwise
+	 */
+	@Override
+	public boolean hasIconImage() {
+		return model.hasIconImage();
+	}
+
 	@Override
 	public boolean hasScopeGroup()
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -1757,11 +1767,6 @@ public class LayoutWrapper
 	@Override
 	public boolean isHidden() {
 		return model.isHidden();
-	}
-
-	@Override
-	public boolean isIconImage() {
-		return model.isIconImage();
 	}
 
 	/**

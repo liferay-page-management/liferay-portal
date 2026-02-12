@@ -220,12 +220,11 @@ public interface Layout extends LayoutModel, PersistedModel {
 	public String getIcon();
 
 	/**
-	 * Returns <code>true</code> if the current layout has a configured icon.
+	 * Returns the icon image associated with the layout.
 	 *
-	 * @return <code>true</code> if the current layout has a configured icon;
-	 <code>false</code> otherwise
+	 * @return the icon image, or <code>null</code> if the layout has no icon image
 	 */
-	public boolean getIconImage();
+	public Image getIconImage();
 
 	public String getLayoutPrototypeUuid();
 
@@ -315,6 +314,14 @@ public interface Layout extends LayoutModel, PersistedModel {
 	 */
 	public boolean hasChildren();
 
+	/**
+	 * Returns <code>true</code> if the current layout has a configured icon.
+	 *
+	 * @return <code>true</code> if the current layout has a configured icon;
+	 <code>false</code> otherwise
+	 */
+	public boolean hasIconImage();
+
 	public boolean hasScopeGroup()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
@@ -366,8 +373,6 @@ public interface Layout extends LayoutModel, PersistedModel {
 	 layout; <code>false</code> otherwise
 	 */
 	public boolean isFirstParent();
-
-	public boolean isIconImage();
 
 	/**
 	 * Returns <code>true</code> if the current layout utilizes its {@link
