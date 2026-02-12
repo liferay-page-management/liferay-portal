@@ -1040,6 +1040,11 @@ public class PageElementsTestUtil {
 		pageElement.setParentExternalReferenceCode(parentExternalReferenceCode);
 		pageElement.setPosition(position);
 
+		for (PageElement childPageElement : pageElements) {
+			childPageElement.setParentExternalReferenceCode(
+				externalReferenceCode);
+		}
+
 		return pageElement;
 	}
 
