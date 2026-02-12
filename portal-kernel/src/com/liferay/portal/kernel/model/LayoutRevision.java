@@ -63,7 +63,7 @@ public interface LayoutRevision extends LayoutRevisionModel, PersistedModel {
 
 	public String getHTMLTitle(String localeLanguageId);
 
-	public boolean getIconImage();
+	public Image getIconImage();
 
 	public LayoutBranch getLayoutBranch()
 		throws com.liferay.portal.kernel.exception.PortalException;
@@ -91,12 +91,12 @@ public interface LayoutRevision extends LayoutRevisionModel, PersistedModel {
 
 	public boolean hasChildren();
 
+	public boolean hasIconImage();
+
 	public boolean isContentDisplayPage();
 
 	public boolean isCustomizable()
 		throws com.liferay.portal.kernel.exception.PortalException;
-
-	public boolean isIconImage();
 
 	public boolean isInheritLookAndFeel();
 
