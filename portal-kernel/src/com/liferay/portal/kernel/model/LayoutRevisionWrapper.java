@@ -436,7 +436,7 @@ public class LayoutRevisionWrapper
 	}
 
 	@Override
-	public boolean getIconImage() {
+	public Image getIconImage() {
 		return model.getIconImage();
 	}
 
@@ -1015,6 +1015,11 @@ public class LayoutRevisionWrapper
 		return model.hasChildren();
 	}
 
+	@Override
+	public boolean hasIconImage() {
+		return model.hasIconImage();
+	}
+
 	/**
 	 * Returns <code>true</code> if this layout revision is approved.
 	 *
@@ -1075,11 +1080,6 @@ public class LayoutRevisionWrapper
 	@Override
 	public boolean isHead() {
 		return model.isHead();
-	}
-
-	@Override
-	public boolean isIconImage() {
-		return model.isIconImage();
 	}
 
 	/**
