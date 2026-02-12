@@ -65,6 +65,7 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -766,15 +767,29 @@ public class DisplayPageTemplateResourceTest
 		InfoItemFormVariation infoItemFormVariation =
 			infoItemFormVariations.get(0);
 
+		List<InfoItemFormVariation> filteredInfoItemFormVariations =
+			ListUtil.filter(
+				infoItemFormVariations,
+				curInfoItemFormVariation -> Objects.equals(
+					curInfoItemFormVariation.getLabelInfoLocalizedValue(
+					).getValue(),
+					"Test Structure"));
+
+		if (!filteredInfoItemFormVariations.isEmpty()) {
+			infoItemFormVariation = filteredInfoItemFormVariations.get(0);
+		}
+
+		String subtypeExternalReferenceCode =
+			infoItemFormVariation.getExternalReferenceCode();
+
 		return new ClassSubtypeReference() {
 			{
 				setClassName(classSubtypeReferenceClassName);
 				setSubTypeExternalReference(
-					() -> new ItemExternalReference() {
+					new ItemExternalReference() {
 						{
 							setExternalReferenceCode(
-								infoItemFormVariation::
-									getExternalReferenceCode);
+								subtypeExternalReferenceCode);
 						}
 					});
 			}
