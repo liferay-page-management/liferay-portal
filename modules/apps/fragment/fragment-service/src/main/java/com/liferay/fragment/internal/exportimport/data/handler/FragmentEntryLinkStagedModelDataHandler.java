@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.segments.model.SegmentsExperience;
@@ -185,7 +186,10 @@ public class FragmentEntryLinkStagedModelDataHandler
 
 					fragmentEntryERC =
 						targetFragmentEntry.getExternalReferenceCode();
-					fragmentEntryScopeERC = targetFragmentEntry.getScopeERC();
+					fragmentEntryScopeERC =
+						ScopeUtil.getItemScopeExternalReferenceCode(
+							targetFragmentEntry.getGroupId(),
+							portletDataContext.getScopeGroupId());
 				}
 				else {
 					fragmentEntryERC = fragmentEntryLink.getFragmentEntryERC();
@@ -214,7 +218,10 @@ public class FragmentEntryLinkStagedModelDataHandler
 
 				if (fragmentEntry != null) {
 					fragmentEntryERC = fragmentEntry.getExternalReferenceCode();
-					fragmentEntryScopeERC = fragmentEntry.getScopeERC();
+					fragmentEntryScopeERC =
+						ScopeUtil.getItemScopeExternalReferenceCode(
+							fragmentEntry.getGroupId(),
+							portletDataContext.getScopeGroupId());
 				}
 			}
 		}
