@@ -51,6 +51,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
@@ -1261,11 +1262,10 @@ public class EditableValuesExportImportContentProcessorTest {
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
 				null, TestPropsValues.getUserId(), _draftLayout.getGroupId(),
-				null, fragmentEntry.getExternalReferenceCode(),
-				fragmentEntry.getScopeERC(), segmentsExperienceId,
-				_draftLayout.getPlid(), fragmentEntry.getCss(),
-				fragmentEntry.getHtml(), fragmentEntry.getJs(),
-				fragmentEntry.getConfiguration(),
+				null, fragmentEntry.getExternalReferenceCode(), null,
+				segmentsExperienceId, _draftLayout.getPlid(),
+				fragmentEntry.getCss(), fragmentEntry.getHtml(),
+				fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
 				JSONUtil.put(
 					FragmentEntryProcessorConstants.
 						KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
@@ -1320,10 +1320,11 @@ public class EditableValuesExportImportContentProcessorTest {
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
 				null, TestPropsValues.getUserId(), _draftLayout.getGroupId(),
 				null, fragmentEntry.getExternalReferenceCode(),
-				fragmentEntry.getScopeERC(), segmentsExperienceId,
-				_draftLayout.getPlid(), fragmentEntry.getCss(),
-				fragmentEntry.getHtml(), fragmentEntry.getJs(),
-				fragmentEntry.getConfiguration(),
+				ScopeUtil.getItemScopeExternalReferenceCode(
+					fragmentEntry.getGroupId(), _draftLayout.getGroupId()),
+				segmentsExperienceId, _draftLayout.getPlid(),
+				fragmentEntry.getCss(), fragmentEntry.getHtml(),
+				fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
 				JSONUtil.put(
 					FragmentEntryProcessorConstants.
 						KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,

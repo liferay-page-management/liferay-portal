@@ -117,9 +117,8 @@ public class DisplayPageTemplateStagedModelDataHandlerTest
 						"element-text", JSONUtil.put(languageId, originalText))
 				).toString(),
 				fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
-				fragmentEntry.getExternalReferenceCode(),
-				fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
-				fragmentEntry.getJs(), draftLayout,
+				fragmentEntry.getExternalReferenceCode(), null,
+				fragmentEntry.getHtml(), fragmentEntry.getJs(), draftLayout,
 				fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(),
 				null, 0,
 				_segmentsExperienceLocalService.

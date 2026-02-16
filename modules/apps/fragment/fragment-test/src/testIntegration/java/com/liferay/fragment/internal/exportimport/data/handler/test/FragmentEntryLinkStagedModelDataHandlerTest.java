@@ -48,6 +48,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
@@ -115,7 +116,8 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
 				null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
 				null, fragmentEntry.getExternalReferenceCode(),
-				fragmentEntry.getScopeERC(),
+				ScopeUtil.getItemScopeExternalReferenceCode(
+					fragmentEntry.getGroupId(), stagingGroup.getGroupId()),
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
 				stagingGroup.getDefaultPublicPlid(), StringPool.BLANK, "html",
@@ -431,7 +433,8 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 		return _fragmentEntryLinkLocalService.addFragmentEntryLink(
 			null, TestPropsValues.getUserId(), serviceContext.getScopeGroupId(),
 			null, fragmentEntry.getExternalReferenceCode(),
-			fragmentEntry.getScopeERC(),
+			ScopeUtil.getItemScopeExternalReferenceCode(
+				fragmentEntry.getGroupId(), serviceContext.getScopeGroupId()),
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				_layout.getPlid()),
 			group.getDefaultPublicPlid(), fragmentEntry.getCss(),

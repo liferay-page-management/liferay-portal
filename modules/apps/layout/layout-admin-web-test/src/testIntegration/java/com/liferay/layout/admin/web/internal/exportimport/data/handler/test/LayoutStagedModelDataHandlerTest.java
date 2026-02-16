@@ -134,6 +134,7 @@ import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
@@ -1100,8 +1101,9 @@ public class LayoutStagedModelDataHandlerTest
 				).toString(),
 				fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
 				fragmentEntry.getExternalReferenceCode(),
-				fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
-				fragmentEntry.getJs(), stagingLayout1,
+				ScopeUtil.getItemScopeExternalReferenceCode(
+					fragmentEntry.getGroupId(), stagingLayout1.getGroupId()),
+				fragmentEntry.getHtml(), fragmentEntry.getJs(), stagingLayout1,
 				fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(),
 				null, 0,
 				_segmentsExperienceLocalService.
@@ -1876,8 +1878,9 @@ public class LayoutStagedModelDataHandlerTest
 				).toString(),
 				fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
 				fragmentEntry.getExternalReferenceCode(),
-				fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
-				fragmentEntry.getJs(), layout.fetchDraftLayout(),
+				ScopeUtil.getItemScopeExternalReferenceCode(
+					fragmentEntry.getGroupId(), draftLayout.getGroupId()),
+				fragmentEntry.getHtml(), fragmentEntry.getJs(), draftLayout,
 				fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(),
 				null, 0,
 				_segmentsExperienceLocalService.
@@ -1904,10 +1907,10 @@ public class LayoutStagedModelDataHandlerTest
 				editableFragmentEntryProcessorJSONObject
 			).toString(),
 			fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
-			fragmentEntry.getExternalReferenceCode(),
-			fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
-			fragmentEntry.getJs(), layout, fragmentEntry.getFragmentEntryKey(),
-			fragmentEntry.getType(), null, 0, segmentsExperienceId);
+			fragmentEntry.getExternalReferenceCode(), null,
+			fragmentEntry.getHtml(), fragmentEntry.getJs(), layout,
+			fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(), null,
+			0, segmentsExperienceId);
 	}
 
 	private JournalArticle _addJournalArticle(String content, Group group)
