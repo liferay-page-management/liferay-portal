@@ -392,6 +392,11 @@ public class LayoutWrapper
 	}
 
 	@Override
+	public void deleteUnusedIconImage() {
+		model.deleteUnusedIconImage();
+	}
+
+	@Override
 	public Layout fetchDraftLayout() {
 		return model.fetchDraftLayout();
 	}
