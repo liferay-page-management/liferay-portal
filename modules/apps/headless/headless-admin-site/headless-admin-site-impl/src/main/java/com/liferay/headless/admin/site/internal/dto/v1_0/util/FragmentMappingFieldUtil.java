@@ -18,6 +18,7 @@ import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemFormProvider;
 import com.liferay.info.item.provider.InfoItemFormVariationsProvider;
 import com.liferay.info.item.provider.InfoItemObjectProvider;
+import com.liferay.info.search.InfoSearchClassMapperRegistryUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
 import com.liferay.layout.util.constants.LayoutDataItemTypeConstants;
@@ -119,7 +120,8 @@ public class FragmentMappingFieldUtil {
 
 		InfoItemFormProvider<Object> infoItemFormProvider =
 			infoItemServiceRegistry.getFirstInfoItemService(
-				InfoItemFormProvider.class, itemType);
+				InfoItemFormProvider.class,
+				InfoSearchClassMapperRegistryUtil.getClassName(itemType));
 
 		if (infoItemFormProvider == null) {
 			return collectionFieldId;
