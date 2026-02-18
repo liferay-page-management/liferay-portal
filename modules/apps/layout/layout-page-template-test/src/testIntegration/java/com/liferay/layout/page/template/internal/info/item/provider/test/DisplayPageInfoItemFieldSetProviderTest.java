@@ -101,8 +101,8 @@ public class DisplayPageInfoItemFieldSetProviderTest {
 		_layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				_group.getGroupId(), _classNameId,
-				_journalArticle.getDDMStructureId(), true,
-				WorkflowConstants.STATUS_APPROVED);
+				_journalArticle.getDDMStructureId(), true, null,
+				"layoutPageTemplateEntry", WorkflowConstants.STATUS_APPROVED);
 
 		AssetDisplayPageEntry assetDisplayPageEntry =
 			_assetDisplayPageEntryLocalService.addAssetDisplayPageEntry(
