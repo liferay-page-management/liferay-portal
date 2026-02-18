@@ -95,11 +95,19 @@ public class FragmentEntryLinkStagedModelDataHandler
 
 		fragmentEntryLink.setEditableValues(editableValues);
 
-		FragmentEntry fragmentEntry =
-			_fragmentEntryLocalService.
-				fetchFragmentEntryByExternalReferenceCode(
-					fragmentEntryLink.getFragmentEntryERC(),
-					fragmentEntryLink.getFragmentEntryGroupId());
+		FragmentEntry fragmentEntry = null;
+
+		Long groupId = ScopeUtil.getItemGroupId(
+			fragmentEntryLink.getCompanyId(),
+			fragmentEntryLink.getFragmentEntryScopeERC(),
+			fragmentEntryLink.getGroupId());
+
+		if (groupId != null) {
+			fragmentEntry =
+				_fragmentEntryLocalService.
+					fetchFragmentEntryByExternalReferenceCode(
+						fragmentEntryLink.getFragmentEntryERC(), groupId);
+		}
 
 		if (fragmentEntry != null) {
 			if (fragmentEntry.getGroupId() != fragmentEntryLink.getGroupId()) {
@@ -168,11 +176,19 @@ public class FragmentEntryLinkStagedModelDataHandler
 			fragmentEntryLink.getFragmentEntryScopeERC();
 
 		if (Validator.isNotNull(fragmentEntryERC)) {
-			FragmentEntry fragmentEntry =
-				_fragmentEntryLocalService.
-					fetchFragmentEntryByExternalReferenceCode(
-						fragmentEntryLink.getFragmentEntryERC(),
-						fragmentEntryLink.getFragmentEntryGroupId());
+			FragmentEntry fragmentEntry = null;
+
+			Long groupId = ScopeUtil.getItemGroupId(
+				fragmentEntryLink.getCompanyId(),
+				fragmentEntryLink.getFragmentEntryScopeERC(),
+				fragmentEntryLink.getGroupId());
+
+			if (groupId != null) {
+				fragmentEntry =
+					_fragmentEntryLocalService.
+						fetchFragmentEntryByExternalReferenceCode(
+							fragmentEntryLink.getFragmentEntryERC(), groupId);
+			}
 
 			if (fragmentEntry != null) {
 				FragmentEntry targetFragmentEntry =
