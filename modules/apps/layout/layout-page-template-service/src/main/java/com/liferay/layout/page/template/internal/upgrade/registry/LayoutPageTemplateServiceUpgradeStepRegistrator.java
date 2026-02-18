@@ -17,6 +17,7 @@ import com.liferay.layout.page.template.internal.upgrade.v3_1_4.ResourcePermissi
 import com.liferay.layout.page.template.internal.upgrade.v3_3_0.LayoutPageTemplateStructureRelUpgradeProcess;
 import com.liferay.layout.page.template.internal.upgrade.v3_4_1.FragmentEntryLinkEditableValuesUpgradeProcess;
 import com.liferay.layout.page.template.internal.upgrade.v5_3_0.LayoutPageTemplateCollectionUpgradeProcess;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutPrototypeLocalService;
@@ -253,6 +254,21 @@ public class LayoutPageTemplateServiceUpgradeStepRegistrator
 			"5.7.1", "5.8.0",
 			UpgradeProcessFactory.addColumns(
 				"LayoutPageTemplateEntry", "classTypeKey VARCHAR(75) null"));
+
+		registry.register(
+			"5.8.0", "5.8.1",
+			UpgradeProcessFactory.runSQL(
+				StringBundler.concat(
+					"update FragmentEntryLink set segmentsExperienceId = ( ",
+					"select SegmentsExperience.segmentsExperienceId from ",
+					"SegmentsExperience where FragmentEntryLink.groupId = ",
+					"SegmentsExperience.groupId and FragmentEntryLink.plid = ",
+					"SegmentsExperience.plid ) where exists ( select 1 from ",
+					"SegmentsExperience where FragmentEntryLink.plid = ",
+					"SegmentsExperience.plid and FragmentEntryLink.groupId = ",
+					"SegmentsExperience.groupId group by ",
+					"SegmentsExperience.groupId, SegmentsExperience.plid ",
+					"having count(*) = 1 )")));
 	}
 
 	@Reference
