@@ -130,9 +130,13 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 		FragmentEntryLink importedFragmentEntryLink =
 			(FragmentEntryLink)_getExportImportStagedModel(stagedModel);
 
-		Assert.assertEquals(
-			fragmentEntry.getGroupId(),
-			importedFragmentEntryLink.getFragmentEntryGroupId());
+		Long groupId = ScopeUtil.getItemGroupId(
+			importedFragmentEntryLink.getCompanyId(),
+			importedFragmentEntryLink.getFragmentEntryScopeERC(),
+			importedFragmentEntryLink.getGroupId());
+
+		Assert.assertEquals(fragmentEntry.getGroupId(), groupId.longValue());
+
 		Assert.assertEquals(
 			fragmentEntry.getExternalReferenceCode(),
 			importedFragmentEntryLink.getFragmentEntryERC());
@@ -381,10 +385,14 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 
 		FragmentEntryLink fragmentEntryLink = (FragmentEntryLink)stagedModel;
 
+		Long groupId1 = ScopeUtil.getItemGroupId(
+			fragmentEntryLink.getCompanyId(),
+			fragmentEntryLink.getFragmentEntryScopeERC(),
+			fragmentEntryLink.getGroupId());
+
 		Assert.assertNotNull(
 			_fragmentEntryLocalService.getFragmentEntryByExternalReferenceCode(
-				fragmentEntryLink.getFragmentEntryERC(),
-				fragmentEntryLink.getFragmentEntryGroupId()));
+				fragmentEntryLink.getFragmentEntryERC(), groupId1.longValue()));
 
 		try {
 			_exportImportStagedModel(stagedModel, true);
@@ -399,10 +407,15 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 		FragmentEntryLink importedFragmentEntryLink =
 			(FragmentEntryLink)importedStagedModel;
 
+		Long groupId2 = ScopeUtil.getItemGroupId(
+			importedFragmentEntryLink.getCompanyId(),
+			importedFragmentEntryLink.getFragmentEntryScopeERC(),
+			importedFragmentEntryLink.getGroupId());
+
 		Assert.assertNotNull(
 			_fragmentEntryLocalService.getFragmentEntryByExternalReferenceCode(
 				importedFragmentEntryLink.getFragmentEntryERC(),
-				importedFragmentEntryLink.getFragmentEntryGroupId()));
+				groupId2.longValue()));
 	}
 
 	@Override
@@ -526,9 +539,13 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 		_fragmentEntryLinkLocalService.deleteFragmentEntryLink(
 			fragmentEntryLink);
 
+		Long groupId = ScopeUtil.getItemGroupId(
+			fragmentEntryLink.getCompanyId(),
+			fragmentEntryLink.getFragmentEntryScopeERC(),
+			fragmentEntryLink.getGroupId());
+
 		_fragmentEntryLocalService.deleteFragmentEntry(
-			fragmentEntryLink.getFragmentEntryERC(),
-			fragmentEntryLink.getFragmentEntryGroupId());
+			fragmentEntryLink.getFragmentEntryERC(), groupId.longValue());
 
 		try (SafeCloseable safeCloseable = initImportWithSafeCloseable()) {
 			StagedModel exportedStagedModel = readExportedStagedModel(
@@ -606,9 +623,13 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 		FragmentEntryLink importedFragmentEntryLink =
 			(FragmentEntryLink)importedStagedModel;
 
-		Assert.assertEquals(
-			fragmentEntry.getGroupId(),
-			importedFragmentEntryLink.getFragmentEntryGroupId());
+		Long groupId = ScopeUtil.getItemGroupId(
+			importedFragmentEntryLink.getCompanyId(),
+			importedFragmentEntryLink.getFragmentEntryScopeERC(),
+			importedFragmentEntryLink.getGroupId());
+
+		Assert.assertEquals(fragmentEntry.getGroupId(), groupId.longValue());
+
 		Assert.assertEquals(
 			fragmentEntry.getExternalReferenceCode(),
 			importedFragmentEntryLink.getFragmentEntryERC());
