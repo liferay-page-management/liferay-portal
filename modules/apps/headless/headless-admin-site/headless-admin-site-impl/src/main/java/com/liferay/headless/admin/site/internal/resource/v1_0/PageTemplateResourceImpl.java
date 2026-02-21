@@ -39,6 +39,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Layout;
@@ -646,7 +647,7 @@ public class PageTemplateResourceImpl
 			layout.getDescriptionMap(), layout.getKeywordsMap(),
 			layout.getRobotsMap(), layout.getFriendlyURLMap(),
 			_getWidgetPageTemplateTypeSettingsUnicodeProperties(
-				layout, widgetPageTemplate.getPageTemplateSettings()),
+				widgetPageTemplate.getPageTemplateSettings()),
 			serviceContext, widgetPageSpecification);
 
 		return _pageTemplateDTOConverter.toDTO(
@@ -764,17 +765,16 @@ public class PageTemplateResourceImpl
 
 	private UnicodeProperties
 		_getWidgetPageTemplateTypeSettingsUnicodeProperties(
-			Layout layout, PageTemplateSettings pageTemplateSettings) {
+			PageTemplateSettings pageTemplateSettings) {
 
-		UnicodeProperties unicodeProperties =
-			layout.getTypeSettingsProperties();
+		UnicodeProperties unicodeProperties = new UnicodeProperties(true);
 
 		if (pageTemplateSettings == null) {
 			unicodeProperties.setProperty(
 				LayoutTypePortletConstants.LAYOUT_TEMPLATE_ID,
 				PropsValues.DEFAULT_LAYOUT_TEMPLATE_ID);
-			unicodeProperties.remove("target");
-			unicodeProperties.remove("targetType");
+			unicodeProperties.setProperty("target", StringPool.BLANK);
+			unicodeProperties.setProperty("targetType", StringPool.BLANK);
 
 			return unicodeProperties;
 		}
@@ -805,12 +805,12 @@ public class PageTemplateResourceImpl
 				unicodeProperties.setProperty("targetType", "useNewTab");
 			}
 			else {
-				unicodeProperties.remove("targetType");
+				unicodeProperties.setProperty("targetType", StringPool.BLANK);
 			}
 		}
 		else {
-			unicodeProperties.remove("target");
-			unicodeProperties.remove("targetType");
+			unicodeProperties.setProperty("target", StringPool.BLANK);
+			unicodeProperties.setProperty("targetType", StringPool.BLANK);
 		}
 
 		return unicodeProperties;
@@ -933,7 +933,7 @@ public class PageTemplateResourceImpl
 			layout.getDescriptionMap(), layout.getKeywordsMap(),
 			layout.getRobotsMap(), layout.getFriendlyURLMap(),
 			_getWidgetPageTemplateTypeSettingsUnicodeProperties(
-				layout, widgetPageTemplate.getPageTemplateSettings()),
+				widgetPageTemplate.getPageTemplateSettings()),
 			serviceContext,
 			PageSpecificationUtil.getWidgetPageSpecification(
 				widgetPageTemplate.getPageSpecifications()));
