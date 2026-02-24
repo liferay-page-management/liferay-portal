@@ -94,6 +94,7 @@ import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.webserver.WebServerServletTokenUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.theme.ThemeDisplayFactory;
 import com.liferay.portal.util.LayoutClone;
 import com.liferay.portal.util.LayoutCloneFactory;
@@ -983,6 +984,17 @@ public class ServicePreAction extends Action {
 		Layout layout = null;
 
 		long plid = ParamUtil.getLong(httpServletRequest, "p_l_id");
+		if(plid == LayoutConstants.DEFAULT_PLID){
+			long selPlid = ParamUtil.getLong(httpServletRequest, "selPlid");
+
+			if(selPlid > LayoutConstants.DEFAULT_PLID){
+				layout = LayoutLocalServiceUtil.getLayout(selPlid);
+
+				if(Validator.isNotNull(layout) && layout.getStatus() == WorkflowConstants.STATUS_DRAFT){
+					plid = selPlid;
+				}
+			}
+		}
 
 		if (plid > 0) {
 			layout = LayoutLocalServiceUtil.getLayout(plid);
