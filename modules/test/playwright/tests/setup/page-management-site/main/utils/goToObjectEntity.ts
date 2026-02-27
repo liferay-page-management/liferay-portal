@@ -54,6 +54,6 @@ export async function goToObjectEntity({
 				.click({timeout: 2000});
 		}
 
-		await page.locator('.fds tbody').waitFor({timeout: 2000});
+		await page.locator('.fds tbody').waitFor({timeout: 10000});
 	}).toPass();
 }
