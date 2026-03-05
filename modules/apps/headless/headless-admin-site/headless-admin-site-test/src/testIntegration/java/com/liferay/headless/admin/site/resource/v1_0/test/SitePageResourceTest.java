@@ -114,6 +114,7 @@ import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutTypePortletConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -149,8 +150,6 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -866,7 +865,19 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			_fragmentEntryLinkLocalService.getFragmentEntryLinksCountByPlid(
 				layout.getGroupId(), layout.getPlid()));
 
-		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		themeDisplay.setCompany(
+			_companyLocalService.getCompany(layout.getCompanyId()));
+		themeDisplay.setScopeGroupId(layout.getGroupId());
+
+		themeDisplay.setUser(TestPropsValues.getUser());
+
+		mockHttpServletRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, themeDisplay);
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
@@ -905,12 +916,12 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 					_fragmentEntryInputTemplateNodeContextHelper.
 						toInputTemplateNode(
 							Collections.emptyMap(), defaultInputLabel,
-							fragmentEntryLink, httpServletRequest,
+							fragmentEntryLink, mockHttpServletRequest,
 							expectedInfoForm, locale),
 					_fragmentEntryInputTemplateNodeContextHelper.
 						toInputTemplateNode(
 							Collections.emptyMap(), defaultInputLabel,
-							importedFragmentEntryLink, httpServletRequest,
+							importedFragmentEntryLink, mockHttpServletRequest,
 							infoForm, locale));
 			}
 		}
@@ -3923,6 +3934,9 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 	@Inject
 	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Inject
+	private CompanyLocalService _companyLocalService;
 
 	@Inject
 	private DefaultInputFragmentEntryConfigurationProvider
