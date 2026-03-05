@@ -125,8 +125,14 @@ public class PageSpecificationUtil {
 	public static WidgetPageSpecification getWidgetPageSpecification(
 		PageSpecification[] pageSpecifications) {
 
-		return (WidgetPageSpecification)getPageSpecification(
+		PageSpecification pageSpecification = getPageSpecification(
 			pageSpecifications);
+
+		if (pageSpecification instanceof WidgetPageSpecification) {
+			return (WidgetPageSpecification)pageSpecification;
+		}
+
+		return null;
 	}
 
 }
