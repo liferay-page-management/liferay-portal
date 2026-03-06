@@ -27,8 +27,7 @@ public interface FragmentEntryProcessorRegistry {
 		String html, JSONObject configurationJSONObject);
 
 	public String mergeDefaultEditableValues(
-		JSONObject configurationJSONObject, JSONObject editableValuesJSONObject,
-		String html);
+		String configuration, String editableValues, String html);
 
 	public default String processFragmentEntryLinkCSS(
 			FragmentEntryLink fragmentEntryLink,

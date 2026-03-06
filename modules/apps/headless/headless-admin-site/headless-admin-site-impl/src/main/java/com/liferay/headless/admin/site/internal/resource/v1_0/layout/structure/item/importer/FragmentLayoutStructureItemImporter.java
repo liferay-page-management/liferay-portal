@@ -247,8 +247,8 @@ public class FragmentLayoutStructureItemImporter
 				fragmentEntryLink.getUserId(),
 				fragmentEntryLink.getFragmentEntryLinkId(),
 				fragmentEntryProcessorRegistry.mergeDefaultEditableValues(
-					fragmentEntryLink.getConfigurationJSONObject(),
-					fragmentEntryLink.getEditableValuesJSONObject(),
+					fragmentEntryLink.getConfiguration(),
+					fragmentEntryLink.getEditableValues(),
 					FragmentEntryLinkUtil.getProcessedHTML(
 						fragmentEntryLink, fragmentEntryProcessorRegistry,
 						layoutStructureItemImporterContext.getUser())),
@@ -435,8 +435,8 @@ public class FragmentLayoutStructureItemImporter
 			fragmentEntryLink.getUserId(),
 			fragmentEntryLink.getFragmentEntryLinkId(),
 			fragmentEntryProcessorRegistry.mergeDefaultEditableValues(
-				fragmentEntryLink.getConfigurationJSONObject(),
-				fragmentEntryLink.getEditableValuesJSONObject(),
+				fragmentEntryLink.getConfiguration(),
+				fragmentEntryLink.getEditableValues(),
 				FragmentEntryLinkUtil.getProcessedHTML(
 					fragmentEntryLink, fragmentEntryProcessorRegistry,
 					layoutStructureItemImporterContext.getUser())),

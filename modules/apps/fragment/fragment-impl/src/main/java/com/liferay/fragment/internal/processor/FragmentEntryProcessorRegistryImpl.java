@@ -158,8 +158,12 @@ public class FragmentEntryProcessorRegistryImpl
 
 	@Override
 	public String mergeDefaultEditableValues(
-		JSONObject configurationJSONObject, JSONObject editableValuesJSONObject,
-		String html) {
+		String configuration, String editableValues, String html) {
+
+		JSONObject configurationJSONObject = _jsonFactory.safeCreateJSONObject(
+			configuration);
+		JSONObject editableValuesJSONObject = _jsonFactory.safeCreateJSONObject(
+			editableValues);
 
 		JSONObject defaultEditableValuesJSONObject =
 			getDefaultEditableValuesJSONObject(html, configurationJSONObject);

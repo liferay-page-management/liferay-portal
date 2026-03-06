@@ -798,16 +798,13 @@ public class FragmentEntryLinkLocalServiceImpl
 			fragmentEntry.getGroupId(), fragmentEntry.getHtml());
 
 		if (!Objects.equals(fragmentEntryLink.getHtml(), html)) {
-			JSONObject editableValuesJSONObject =
-				fragmentEntryLink.getEditableValuesJSONObject();
-
 			fragmentEntryLink.setHtml(html);
 			fragmentEntryLink.setEditableValues(null);
 
 			fragmentEntryLink.setEditableValues(
 				_fragmentEntryProcessorRegistry.mergeDefaultEditableValues(
-					fragmentEntryLink.getConfigurationJSONObject(),
-					editableValuesJSONObject,
+					fragmentEntryLink.getConfiguration(),
+					fragmentEntryLink.getEditableValues(),
 					_getProcessedHTML(
 						fragmentEntryLink,
 						ServiceContextThreadLocal.getServiceContext())));

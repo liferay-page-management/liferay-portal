@@ -58,7 +58,8 @@ public class BackgroundImageDocumentFragmentEntryProcessor
 			FragmentEntryProcessorContext fragmentEntryProcessorContext)
 		throws PortalException {
 
-		JSONObject jsonObject = fragmentEntryLink.getEditableValuesJSONObject();
+		JSONObject jsonObject = _jsonFactory.safeCreateJSONObject(
+			fragmentEntryLink.getEditableValues());
 
 		JSONObject editableValuesJSONObject = jsonObject.getJSONObject(
 			FragmentEntryProcessorConstants.

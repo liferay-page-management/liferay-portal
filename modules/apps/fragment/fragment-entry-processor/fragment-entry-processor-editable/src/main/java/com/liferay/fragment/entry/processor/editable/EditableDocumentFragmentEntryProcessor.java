@@ -61,7 +61,8 @@ public class EditableDocumentFragmentEntryProcessor
 			FragmentEntryProcessorContext fragmentEntryProcessorContext)
 		throws PortalException {
 
-		JSONObject jsonObject = fragmentEntryLink.getEditableValuesJSONObject();
+		JSONObject jsonObject = _jsonFactory.safeCreateJSONObject(
+			fragmentEntryLink.getEditableValues());
 
 		if (jsonObject.length() == 0) {
 			jsonObject.put(
