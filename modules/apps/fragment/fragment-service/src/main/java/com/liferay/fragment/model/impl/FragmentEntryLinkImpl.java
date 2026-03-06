@@ -35,8 +35,15 @@ public class FragmentEntryLinkImpl extends FragmentEntryLinkBaseImpl {
 	@Override
 	public JSONObject getConfigurationJSONObject(boolean strict) {
 		if (_configurationJSONObject == null) {
-			_configurationJSONObject = JSONFactoryUtil.safeCreateJSONObject(
+			JSONObject jsonObject = JSONFactoryUtil.safeCreateJSONObject(
 				getConfiguration(), strict);
+
+			if (jsonObject == null) {
+				return null;
+			}
+
+			_configurationJSONObject =
+				JSONFactoryUtil.createUnmodifiableJSONObject(jsonObject);
 
 			configurationJSONObjectUpdateEntityCacheBiConsumer.accept(
 				this, _configurationJSONObject);
@@ -53,8 +60,15 @@ public class FragmentEntryLinkImpl extends FragmentEntryLinkBaseImpl {
 	@Override
 	public JSONObject getEditableValuesJSONObject(boolean strict) {
 		if (_editableValuesJSONObject == null) {
-			_editableValuesJSONObject = JSONFactoryUtil.safeCreateJSONObject(
+			JSONObject jsonObject = JSONFactoryUtil.safeCreateJSONObject(
 				getEditableValues(), strict);
+
+			if (jsonObject == null) {
+				return null;
+			}
+
+			_editableValuesJSONObject =
+				JSONFactoryUtil.createUnmodifiableJSONObject(jsonObject);
 
 			editableValuesJSONObjectUpdateEntityCacheBiConsumer.accept(
 				this, _editableValuesJSONObject);
@@ -200,6 +214,11 @@ public class FragmentEntryLinkImpl extends FragmentEntryLinkBaseImpl {
 		super.setConfiguration(configuration);
 
 		_configurationJSONObject = null;
+
+		if (configurationJSONObjectUpdateEntityCacheBiConsumer != null) {
+			configurationJSONObjectUpdateEntityCacheBiConsumer.accept(
+				this, null);
+		}
 	}
 
 	@Override
@@ -207,6 +226,11 @@ public class FragmentEntryLinkImpl extends FragmentEntryLinkBaseImpl {
 		super.setEditableValues(editableValues);
 
 		_editableValuesJSONObject = null;
+
+		if (editableValuesJSONObjectUpdateEntityCacheBiConsumer != null) {
+			editableValuesJSONObjectUpdateEntityCacheBiConsumer.accept(
+				this, null);
+		}
 	}
 
 	private static final Snapshot<FragmentCollectionContributorRegistry>
