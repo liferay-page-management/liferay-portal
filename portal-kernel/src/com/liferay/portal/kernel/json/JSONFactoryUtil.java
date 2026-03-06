@@ -75,6 +75,12 @@ public class JSONFactoryUtil {
 		return _jsonFactory.createJSONSerializer();
 	}
 
+	public static JSONObject createUnmodifiableJSONObject(
+		JSONObject jsonObject) {
+
+		return new UnmodifiableJSONObjectWrapper(jsonObject);
+	}
+
 	public static Object deserialize(JSONObject jsonObject) {
 		return _jsonFactory.deserialize(jsonObject);
 	}
