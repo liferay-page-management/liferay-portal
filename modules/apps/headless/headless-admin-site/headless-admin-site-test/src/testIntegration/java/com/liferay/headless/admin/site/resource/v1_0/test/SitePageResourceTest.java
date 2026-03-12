@@ -1247,17 +1247,6 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		return objectFieldSetting;
 	}
 
-	private SitePage _exportImportSitePage(
-			Layout layout, SitePageResource sitePageResource)
-		throws Exception {
-
-		SitePage sitePage = sitePageResource.getSiteSitePage(
-			irrelevantGroup.getExternalReferenceCode(),
-			layout.getExternalReferenceCode());
-
-		return _testPutSiteSitePage(sitePage, testGroup, sitePage);
-	}
-
 	private CustomMetaTag[] _getCustomMetaTags() {
 		return new CustomMetaTag[] {
 			new CustomMetaTag() {
@@ -2944,6 +2933,17 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				sitePage.getUuid()));
 	}
 
+	private SitePage _testPutSiteSitePage(
+			Layout layout, SitePageResource sitePageResource)
+		throws Exception {
+
+		SitePage sitePage = sitePageResource.getSiteSitePage(
+			irrelevantGroup.getExternalReferenceCode(),
+			layout.getExternalReferenceCode());
+
+		return _testPutSiteSitePage(sitePage, testGroup, sitePage);
+	}
+
 	private void _testPutSiteSitePage(
 			ServiceContext serviceContext, SitePage.Type type)
 		throws Exception {
@@ -3803,32 +3803,30 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		SitePageResource sitePageResource = _getSitePageResource(
 			"pageSpecifications");
 
-		SitePage importedParentSitePage = _exportImportSitePage(
+		SitePage parentSitePage = _testPutSiteSitePage(
 			parentLayout, sitePageResource);
 
 		Assert.assertTrue(
 			Validator.isNull(
-				importedParentSitePage.
-					getParentSitePageExternalReferenceCode()));
+				parentSitePage.getParentSitePageExternalReferenceCode()));
 
 		Layout layout = LayoutTestUtil.addTypePortletLayout(
 			irrelevantGroup, parentLayout.getPlid());
 
-		SitePage importedSitePage = _exportImportSitePage(
-			layout, sitePageResource);
+		SitePage sitePage = _testPutSiteSitePage(layout, sitePageResource);
 
 		Assert.assertEquals(
 			parentLayout.getExternalReferenceCode(),
-			importedSitePage.getParentSitePageExternalReferenceCode());
+			sitePage.getParentSitePageExternalReferenceCode());
 
 		layout = _layoutLocalService.updateParentLayoutId(
 			layout.getPlid(), LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
 
-		importedSitePage = _exportImportSitePage(layout, sitePageResource);
+		sitePage = _testPutSiteSitePage(layout, sitePageResource);
 
 		Assert.assertTrue(
 			Validator.isNull(
-				importedSitePage.getParentSitePageExternalReferenceCode()));
+				sitePage.getParentSitePageExternalReferenceCode()));
 	}
 
 	private void _testPutSiteSitePageWithPriority() throws Exception {
