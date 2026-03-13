@@ -1,0 +1,16 @@
+{
+	"com.liferay.fragment.entry.processor.editable.EditableFragmentEntryProcessor": {
+		"image-element": {
+			"classPK": 100,
+			"config": {
+				"classPK": 100,
+				"externalReferenceCode": "file-erc-100",
+				"fileEntryId": 100,
+				"scopeExternalReferenceCode": "group-erc-10"
+			},
+			"externalReferenceCode": "file-erc-100",
+			"fileEntryId": 100,
+			"scopeExternalReferenceCode": "group-erc-10"
+		}
+	}
+}

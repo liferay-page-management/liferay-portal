@@ -1,0 +1,12 @@
+{
+	"com.liferay.fragment.entry.processor.background.image.BackgroundImageFragmentEntryProcessor": {
+		"bg-element": {
+			"classPK": 100,
+			"en_US": {
+				"classPK": 300,
+				"fileEntryId": 0
+			},
+			"fileEntryId": 999
+		}
+	}
+}

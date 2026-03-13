@@ -1,0 +1,8 @@
+{
+	"com.liferay.fragment.entry.processor.editable.EditableFragmentEntryProcessor": {
+		"image-element": {
+			"classPK": 999,
+			"fileEntryId": 998
+		}
+	}
+}

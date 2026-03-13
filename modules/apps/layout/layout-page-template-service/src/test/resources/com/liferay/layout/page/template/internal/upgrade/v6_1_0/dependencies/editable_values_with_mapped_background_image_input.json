@@ -1,0 +1,14 @@
+{
+	"com.liferay.fragment.entry.processor.background.image.BackgroundImageFragmentEntryProcessor": {
+		"bg-direct": {
+			"classPK": 100,
+			"fileEntryId": 999
+		},
+		"bg-mapped": {
+			"classNameId": 67890,
+			"classPK": 500,
+			"fieldId": "image",
+			"fileEntryId": 0
+		}
+	}
+}

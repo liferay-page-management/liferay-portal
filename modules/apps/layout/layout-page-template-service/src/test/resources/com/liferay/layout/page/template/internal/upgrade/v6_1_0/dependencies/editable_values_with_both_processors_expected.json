@@ -1,0 +1,18 @@
+{
+	"com.liferay.fragment.entry.processor.background.image.BackgroundImageFragmentEntryProcessor": {
+		"bg-element": {
+			"classPK": 300,
+			"externalReferenceCode": "file-erc-300",
+			"fileEntryId": "300",
+			"scopeExternalReferenceCode": "group-erc-30"
+		}
+	},
+	"com.liferay.fragment.entry.processor.editable.EditableFragmentEntryProcessor": {
+		"image-element": {
+			"classPK": 100,
+			"externalReferenceCode": "file-erc-100",
+			"fileEntryId": "100",
+			"scopeExternalReferenceCode": "group-erc-10"
+		}
+	}
+}
