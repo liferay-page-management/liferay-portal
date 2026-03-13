@@ -139,7 +139,7 @@ public abstract class BaseValidateRootFolderConfigurationAction
 		ThemeDisplay themeDisplay = (ThemeDisplay)portletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		if ((themeDisplay != null) &&
+		if ((themeDisplay == null) ||
 			(selectedGroup.getGroupId() != themeDisplay.getScopeGroupId())) {
 
 			portletPreferences.setValue(
