@@ -258,6 +258,11 @@ public class LayoutPageTemplateServiceUpgradeStepRegistrator
 			"5.8.0", "6.0.0",
 			new com.liferay.layout.page.template.internal.upgrade.v6_0_0.
 				LayoutPageTemplateStructureRelUpgradeProcess());
+
+		registry.register(
+			"6.0.0", "6.1.0",
+			new com.liferay.layout.page.template.internal.upgrade.v6_1_0.
+				FragmentEntryLinkEditableValuesUpgradeProcess());
 	}
 
 	@Reference
