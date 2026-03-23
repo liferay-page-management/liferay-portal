@@ -4,6 +4,7 @@
  */
 
 export {LocalizationSelect} from './LocalizationSelect';
+export {default as SimpleInputField} from './SimpleInputField';
 
 export {focusInput} from './focusInput';
 export {getTranslationInput} from './getTranslationInput';

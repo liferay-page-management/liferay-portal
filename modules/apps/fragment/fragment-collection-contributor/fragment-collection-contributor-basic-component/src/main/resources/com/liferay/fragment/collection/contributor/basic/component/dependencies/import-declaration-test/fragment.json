@@ -1,0 +1,7 @@
+{
+	"cacheable": true,
+	"fragmentEntryKey": "import-declaration-test",
+	"icon": "custom-field",
+	"name": "import-declaration-test",
+	"type": "component"
+}

@@ -1,0 +1,28 @@
+{
+	"fieldSets": [
+		{
+			"customComponentModule": "{SimpleInputField} from @liferay/fragment-impl/api",
+			"fields": [
+				{
+					"dataType": "string",
+					"label": "title",
+					"name": "title",
+					"type": "text"
+				},
+				{
+					"dataType": "string",
+					"label": "description",
+					"name": "description",
+					"type": "text"
+				},
+				{
+					"dataType": "int",
+					"label": "order",
+					"name": "order",
+					"type": "text"
+				}
+			],
+			"label": "jaunito"
+		}
+	]
+}
