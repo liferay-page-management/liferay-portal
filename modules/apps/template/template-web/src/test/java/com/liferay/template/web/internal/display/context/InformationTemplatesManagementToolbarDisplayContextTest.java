@@ -34,6 +34,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -119,11 +120,15 @@ public class InformationTemplatesManagementToolbarDisplayContextTest {
 	@Test
 	@TestInfo("LPD-56468")
 	public void testGetItemTypesJSONArray() {
-		_testGetItemTypesJSONArray(StringPool.BLANK, null);
+		_testGetItemTypesJSONArray(
+			Collections.singletonList(StringPool.BLANK),
+			Collections.singletonList(null));
 
 		String label = RandomTestUtil.randomString();
 
-		_testGetItemTypesJSONArray(label, label);
+		_testGetItemTypesJSONArray(
+			Collections.singletonList(label), Collections.singletonList(label));
+	}
 
 	@Test
 	public void testSortedGetItemTypesJSONArray() {
@@ -237,45 +242,6 @@ public class InformationTemplatesManagementToolbarDisplayContextTest {
 			Assert.assertEquals(
 				expectedLabel, subtypesJSONObject.getString("label"));
 		}
-	}
-
-	private void _testGetItemTypesJSONArray(
-		String expectedLabel, String label) {
-
-		String key = RandomTestUtil.randomString();
-
-		InfoItemFormVariation informationItemFormVariation =
-			_mockInfoItemFormVariation(key, label);
-
-		Mockito.when(
-			_infoItemFormVariationsProvider.getInfoItemFormVariations(0)
-		).thenReturn(
-			List.of(informationItemFormVariation)
-		);
-
-		JSONArray jsonArray = ReflectionTestUtil.invoke(
-			_informationTemplatesManagementToolbarDisplayContext,
-			"_getItemTypesJSONArray", new Class<?>[0]);
-
-		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
-
-		JSONObject jsonObject = jsonArray.getJSONObject(0);
-
-		Assert.assertEquals(_CLASS_NAME, jsonObject.getString("value"));
-		Assert.assertEquals(_LABEL, jsonObject.getString("label"));
-
-		Assert.assertTrue(jsonObject.has("subtypes"));
-
-		JSONArray subtypesJSONArray = jsonObject.getJSONArray("subtypes");
-
-		Assert.assertEquals(
-			subtypesJSONArray.toString(), 1, subtypesJSONArray.length());
-
-		JSONObject subtypesJSONObject = subtypesJSONArray.getJSONObject(0);
-
-		Assert.assertEquals(key, subtypesJSONObject.getString("value"));
-		Assert.assertEquals(
-			expectedLabel, subtypesJSONObject.getString("label"));
 	}
 
 	private static final String _CLASS_NAME = RandomTestUtil.randomString();
