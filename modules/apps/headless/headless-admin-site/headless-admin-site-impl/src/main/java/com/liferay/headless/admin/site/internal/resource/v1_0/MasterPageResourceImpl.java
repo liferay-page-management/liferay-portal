@@ -430,7 +430,7 @@ public class MasterPageResourceImpl
 				_getLayoutPlid(groupId, masterPage, serviceContext), 0,
 				PageSpecificationUtil.getPublishedStatus(
 					masterPage.getPageSpecifications()),
-				serviceContext);
+				_getServiceContext(groupId, masterPage));
 
 		return _masterPageDTOConverter.toDTO(
 			DTOConverterContextUtil.getDTOConverterContext(
