@@ -594,9 +594,6 @@ public class DisplayPageTemplateResourceImpl
 
 		serviceContext.setAttribute(
 			"layout.instanceable.allowed", Boolean.TRUE);
-		serviceContext.setAttribute(
-			"layout.page.template.entry.type",
-			LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE);
 
 		Layout layout = LayoutUtil.addContentLayout(
 			_cetManager, _fragmentEntryProcessorRegistry, groupId,
@@ -609,6 +606,12 @@ public class DisplayPageTemplateResourceImpl
 			LocalizedMapUtil.getLocalizedMap(
 				displayPageTemplate.getFriendlyUrlPath_i18n()),
 			WorkflowConstants.STATUS_APPROVED, serviceContext);
+
+		serviceContext = _getServiceContext(displayPageTemplate, groupId);
+
+		serviceContext.setAttribute(
+			"layout.page.template.entry.type",
+			LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE);
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
