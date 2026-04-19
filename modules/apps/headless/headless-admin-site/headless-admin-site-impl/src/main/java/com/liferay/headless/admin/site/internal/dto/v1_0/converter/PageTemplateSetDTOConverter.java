@@ -64,6 +64,7 @@ public class PageTemplateSetDTOConverter
 					layoutPageTemplateCollection::
 						getLayoutPageTemplateCollectionKey);
 				setName(layoutPageTemplateCollection::getName);
+				setUuid(layoutPageTemplateCollection::getUuid);
 			}
 		};
 	}
