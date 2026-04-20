@@ -15,7 +15,6 @@ import com.liferay.exportimport.staged.model.repository.StagedModelRepository;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentComposition;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
-import com.liferay.fragment.service.FragmentCompositionLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -153,6 +152,9 @@ public class FragmentCompositionStagedModelDataHandler
 			FragmentComposition fragmentComposition)
 		throws Exception {
 
+		StagedModelDataHandlerUtil.importReferenceStagedModels(
+			portletDataContext, fragmentComposition, FileEntry.class);
+
 		Map<Long, Long> fragmentCollectionIds =
 			(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
 				FragmentCollection.class);
@@ -162,6 +164,17 @@ public class FragmentCompositionStagedModelDataHandler
 			fragmentComposition.getFragmentCollectionId(),
 			fragmentComposition.getFragmentCollectionId());
 
+		long previewFileEntryId = 0;
+
+		if (fragmentComposition.getPreviewFileEntryId() > 0) {
+			Map<Long, Long> fileEntryIds =
+				(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
+					FileEntry.class);
+
+			previewFileEntryId = MapUtil.getLong(
+				fileEntryIds, fragmentComposition.getPreviewFileEntryId(), 0);
+		}
+
 		FragmentComposition importedFragmentComposition =
 			(FragmentComposition)fragmentComposition.clone();
 
@@ -169,6 +182,7 @@ public class FragmentCompositionStagedModelDataHandler
 			portletDataContext.getScopeGroupId());
 		importedFragmentComposition.setFragmentCollectionId(
 			fragmentCollectionId);
+		importedFragmentComposition.setPreviewFileEntryId(previewFileEntryId);
 
 		FragmentComposition existingFragmentComposition =
 			_stagedModelRepository.fetchStagedModelByUuidAndGroupId(
@@ -182,6 +196,13 @@ public class FragmentCompositionStagedModelDataHandler
 				portletDataContext, importedFragmentComposition);
 		}
 		else {
+			if ((previewFileEntryId == 0) &&
+				(existingFragmentComposition.getPreviewFileEntryId() > 0)) {
+
+				PortletFileRepositoryUtil.deletePortletFileEntry(
+					existingFragmentComposition.getPreviewFileEntryId());
+			}
+
 			importedFragmentComposition.setMvccVersion(
 				existingFragmentComposition.getMvccVersion());
 			importedFragmentComposition.setFragmentCompositionId(
@@ -190,30 +211,6 @@ public class FragmentCompositionStagedModelDataHandler
 			importedFragmentComposition =
 				_stagedModelRepository.updateStagedModel(
 					portletDataContext, importedFragmentComposition);
-		}
-
-		if ((fragmentComposition.getPreviewFileEntryId() == 0) &&
-			(importedFragmentComposition.getPreviewFileEntryId() > 0)) {
-
-			PortletFileRepositoryUtil.deletePortletFileEntry(
-				importedFragmentComposition.getPreviewFileEntryId());
-
-			importedFragmentComposition =
-				_fragmentCompositionLocalService.updateFragmentComposition(
-					importedFragmentComposition.getFragmentCompositionId(), 0);
-		}
-		else if (fragmentComposition.getPreviewFileEntryId() > 0) {
-			Map<Long, Long> fileEntryIds =
-				(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
-					FileEntry.class);
-
-			long previewFileEntryId = MapUtil.getLong(
-				fileEntryIds, fragmentComposition.getPreviewFileEntryId(), 0);
-
-			importedFragmentComposition =
-				_fragmentCompositionLocalService.updateFragmentComposition(
-					importedFragmentComposition.getFragmentCompositionId(),
-					previewFileEntryId);
 		}
 
 		portletDataContext.importClassedModel(
@@ -232,9 +229,6 @@ public class FragmentCompositionStagedModelDataHandler
 
 	@Reference
 	private FragmentCollectionLocalService _fragmentCollectionLocalService;
-
-	@Reference
-	private FragmentCompositionLocalService _fragmentCompositionLocalService;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.fragment.model.FragmentComposition)",
