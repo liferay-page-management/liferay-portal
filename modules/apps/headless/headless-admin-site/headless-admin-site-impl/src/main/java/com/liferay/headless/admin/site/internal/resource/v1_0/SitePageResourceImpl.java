@@ -413,6 +413,8 @@ public class SitePageResourceImpl
 					"privacy");
 		}
 
+		layout = _syncLayoutUuid(layout, sitePage);
+
 		ServiceContext serviceContext = _getServiceContext(
 			layout.getGroupId(), sitePage);
 
@@ -644,17 +646,24 @@ public class SitePageResourceImpl
 			return LayoutConstants.DEFAULT_PARENT_LAYOUT_ID;
 		}
 
-		Layout layout = _layoutService.getOrAddEmptyLayout(
-			parentSitePageExternalReferenceCode, groupId, privateLayout,
-			serviceContext);
+		String uuid = serviceContext.getUuid();
 
-		if (layout.isPrivateLayout() != privateLayout) {
-			throw new IllegalArgumentException(
-				"The private page setting does not match the target page's " +
-					"privacy");
+		try {
+			Layout layout = _layoutService.getOrAddEmptyLayout(
+				parentSitePageExternalReferenceCode, groupId, privateLayout,
+				serviceContext);
+
+			if (layout.isPrivateLayout() != privateLayout) {
+				throw new IllegalArgumentException(
+					"The private page setting does not match the target " +
+						"page's privacy");
+			}
+
+			return layout.getLayoutId();
 		}
-
-		return layout.getLayoutId();
+		finally {
+			serviceContext.setUuid(uuid);
+		}
 	}
 
 	private SEOSettings _getSEOSettings(PageSettings pageSettings) {
@@ -974,6 +983,30 @@ public class SitePageResourceImpl
 
 		return GetterUtil.getBoolean(
 			pageSettings.getHiddenFromNavigation(), defaultValue);
+	}
+
+	private Layout _syncLayoutUuid(Layout layout, SitePage sitePage) {
+		String sitePageUuid = sitePage.getUuid();
+
+		if (Validator.isNull(sitePageUuid) ||
+			Objects.equals(layout.getUuid(), sitePageUuid)) {
+
+			return layout;
+		}
+
+		Layout existingLayout = _layoutLocalService.fetchLayoutByUuidAndGroupId(
+			sitePageUuid, layout.getGroupId(), layout.isPrivateLayout());
+
+		if ((existingLayout != null) &&
+			(existingLayout.getPlid() != layout.getPlid())) {
+
+			throw new ValidationException(
+				"UUID " + sitePageUuid + " is already in use");
+		}
+
+		layout.setUuid(sitePageUuid);
+
+		return _layoutLocalService.updateLayout(layout);
 	}
 
 	private SitePage _toSitePage(Layout layout) throws Exception {
