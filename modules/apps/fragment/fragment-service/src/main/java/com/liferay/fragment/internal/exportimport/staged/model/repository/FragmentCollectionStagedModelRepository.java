@@ -9,12 +9,14 @@ import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.StagedModelModifiedDateComparator;
 import com.liferay.exportimport.staged.model.repository.StagedModelRepository;
 import com.liferay.exportimport.staged.model.repository.StagedModelRepositoryHelper;
+import com.liferay.fragment.exception.FragmentCollectionNameException;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
 
@@ -45,6 +47,13 @@ public class FragmentCollectionStagedModelRepository
 
 		if (portletDataContext.isDataStrategyMirror()) {
 			serviceContext.setUuid(fragmentCollection.getUuid());
+
+			return _fragmentCollectionLocalService.addFragmentCollection(
+				fragmentCollection.getExternalReferenceCode(), userId,
+				fragmentCollection.getGroupId(),
+				fragmentCollection.getFragmentCollectionKey(),
+				fragmentCollection.getName(),
+				fragmentCollection.getDescription(), false, serviceContext);
 		}
 
 		return _fragmentCollectionLocalService.addFragmentCollection(
@@ -132,9 +141,22 @@ public class FragmentCollectionStagedModelRepository
 			FragmentCollection fragmentCollection)
 		throws PortalException {
 
+		if (Validator.isNull(fragmentCollection.getName())) {
+			throw new FragmentCollectionNameException("Name must not be null");
+		}
+
+		FragmentCollection existingFragmentCollection =
+			_fragmentCollectionLocalService.fetchFragmentCollection(
+				fragmentCollection.getFragmentCollectionId());
+
+		existingFragmentCollection.setFragmentCollectionKey(
+			fragmentCollection.getFragmentCollectionKey());
+		existingFragmentCollection.setName(fragmentCollection.getName());
+		existingFragmentCollection.setDescription(
+			fragmentCollection.getDescription());
+
 		return _fragmentCollectionLocalService.updateFragmentCollection(
-			fragmentCollection.getFragmentCollectionId(),
-			fragmentCollection.getName(), fragmentCollection.getDescription());
+			existingFragmentCollection);
 	}
 
 	@Reference
