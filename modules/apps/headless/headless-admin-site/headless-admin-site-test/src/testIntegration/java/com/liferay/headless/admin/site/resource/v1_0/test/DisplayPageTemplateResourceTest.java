@@ -78,6 +78,7 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -411,6 +412,7 @@ public class DisplayPageTemplateResourceTest
 
 	@Override
 	@Test
+	@TestInfo("LPD-86553")
 	public void testPostSiteDisplayPageTemplate() throws Exception {
 		super.testPostSiteDisplayPageTemplate();
 
@@ -420,6 +422,7 @@ public class DisplayPageTemplateResourceTest
 		_testPostSiteDisplayPageTemplateWithPageSpecifications();
 		_testPostSiteDisplayPageTemplateWithParentFolder();
 		_testPostSiteDisplayPageTemplateWithThumbnail();
+		_testPostSiteDisplayPageTemplateWithUuid();
 	}
 
 	@Ignore
@@ -1854,6 +1857,33 @@ public class DisplayPageTemplateResourceTest
 					thumbnailURLReference.getUrl(),
 				problem.getTitle());
 		}
+	}
+
+	private void _testPostSiteDisplayPageTemplateWithUuid() throws Exception {
+		DisplayPageTemplate displayPageTemplate = randomDisplayPageTemplate();
+
+		String uuid = StringUtil.toLowerCase(RandomTestUtil.randomString());
+
+		displayPageTemplate.setUuid(uuid);
+
+		DisplayPageTemplate postDisplayPageTemplate =
+			testPostSiteDisplayPageTemplate_addDisplayPageTemplate(
+				displayPageTemplate);
+
+		Assert.assertEquals(uuid, postDisplayPageTemplate.getUuid());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.
+				getLayoutPageTemplateEntryByExternalReferenceCode(
+					postDisplayPageTemplate.getExternalReferenceCode(),
+					testGroup.getGroupId());
+
+		Assert.assertEquals(uuid, layoutPageTemplateEntry.getUuid());
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		Assert.assertEquals(uuid, layout.getUuid());
 	}
 
 	private void _testPutSiteDisplayPageTemplate(

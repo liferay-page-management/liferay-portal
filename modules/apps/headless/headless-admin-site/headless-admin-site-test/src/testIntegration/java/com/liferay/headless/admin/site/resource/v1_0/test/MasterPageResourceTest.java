@@ -320,6 +320,7 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 	@Override
 	@Test
+	@TestInfo("LPD-86553")
 	public void testPostSiteMasterPage() throws Exception {
 		super.testPostSiteMasterPage();
 
@@ -338,6 +339,7 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 		_testPostSiteMasterPageWithPageSpecifications();
 		_testPostSiteMasterPageWithSiteTemplatePageSpecification();
 		_testPostSiteMasterPageWithThumbnail();
+		_testPostSiteMasterPageWithUuid();
 	}
 
 	@Override
@@ -1243,6 +1245,32 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 					thumbnailURLReference.getUrl(),
 				problem.getTitle());
 		}
+	}
+
+	private void _testPostSiteMasterPageWithUuid() throws Exception {
+		MasterPage masterPage = randomMasterPage();
+
+		String uuid = StringUtil.toLowerCase(RandomTestUtil.randomString());
+
+		masterPage.setUuid(uuid);
+
+		MasterPage postMasterPage = testPostSiteMasterPage_addMasterPage(
+			masterPage);
+
+		Assert.assertEquals(uuid, postMasterPage.getUuid());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.
+				getLayoutPageTemplateEntryByExternalReferenceCode(
+					postMasterPage.getExternalReferenceCode(),
+					testGroup.getGroupId());
+
+		Assert.assertEquals(uuid, layoutPageTemplateEntry.getUuid());
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		Assert.assertEquals(uuid, layout.getUuid());
 	}
 
 	private void _testPutSiteMasterPage(MasterPage masterPage)

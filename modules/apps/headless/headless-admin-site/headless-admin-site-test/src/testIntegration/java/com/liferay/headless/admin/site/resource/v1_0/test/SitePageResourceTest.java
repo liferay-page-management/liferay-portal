@@ -414,7 +414,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	@TestInfo(
 		{
 			"LPD-72013", "LPD-74331", "LPD-75450", "LPD-77124", "LPD-77505",
-			"LPD-77576", "LPD-77852", "LPD-78667", "LPD-79415", "LPD-81793"
+			"LPD-77576", "LPD-77852", "LPD-78667", "LPD-79415", "LPD-81793",
+			"LPD-86553"
 		}
 	)
 	public void testPutSiteSitePage() throws Exception {
@@ -449,6 +450,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testPutSiteSitePageWithPageSpecifications();
 		_testPutSiteSitePageWithParentLayout();
 		_testPutSiteSitePageWithPriority();
+		_testPutSiteSitePageWithUuid(serviceContext);
 		_testPutSiteSitePageWithWidgetPageSettings();
 		_testPutSiteSitePageWithWidgetPageSettingsWithWidgetPageTemplate();
 
@@ -3900,6 +3902,49 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 						testGroup.getGroupId()),
 					putSitePage);
 			});
+	}
+
+	private void _testPutSiteSitePageWithUuid(ServiceContext serviceContext)
+		throws Exception {
+
+		SitePage sitePage = sitePageResource.postSiteSitePage(
+			testGroup.getExternalReferenceCode(), false,
+			_getRandomSitePage(SitePage.Type.CONTENT_PAGE));
+
+		String newUuid = StringUtil.toLowerCase(RandomTestUtil.randomString());
+
+		SitePage putSitePage = sitePageResource.putSiteSitePage(
+			testGroup.getExternalReferenceCode(),
+			sitePage.getExternalReferenceCode(), false,
+			_getRandomSitePage(
+				sitePage.getExternalReferenceCode(), null, serviceContext,
+				SitePage.Type.CONTENT_PAGE, newUuid));
+
+		Assert.assertEquals(newUuid, putSitePage.getUuid());
+
+		_assertSitePage(
+			_layoutLocalService.getLayoutByExternalReferenceCode(
+				sitePage.getExternalReferenceCode(), testGroup.getGroupId()),
+			putSitePage);
+
+		SitePage putSitePageWithNullUuid = sitePageResource.putSiteSitePage(
+			testGroup.getExternalReferenceCode(),
+			sitePage.getExternalReferenceCode(), false,
+			_getRandomSitePage(
+				sitePage.getExternalReferenceCode(), null, serviceContext,
+				SitePage.Type.CONTENT_PAGE, null));
+
+		Assert.assertEquals(newUuid, putSitePageWithNullUuid.getUuid());
+
+		SitePage otherSitePage = sitePageResource.postSiteSitePage(
+			testGroup.getExternalReferenceCode(), false,
+			_getRandomSitePage(SitePage.Type.CONTENT_PAGE));
+
+		_assertPutSiteSitePageProblemException(
+			"UUID " + otherSitePage.getUuid() + " is already in use",
+			_getRandomSitePage(
+				sitePage.getExternalReferenceCode(), null, serviceContext,
+				SitePage.Type.CONTENT_PAGE, otherSitePage.getUuid()));
 	}
 
 	private void _testPutSiteSitePageWithWidgetPageSettings() throws Exception {
