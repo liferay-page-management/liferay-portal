@@ -26,6 +26,7 @@ import com.liferay.info.field.type.LongTextInfoFieldType;
 import com.liferay.info.field.type.MultiselectInfoFieldType;
 import com.liferay.info.field.type.NumberInfoFieldType;
 import com.liferay.info.field.type.OptionInfoFieldType;
+import com.liferay.info.field.type.PhoneNumberInfoFieldType;
 import com.liferay.info.field.type.PicklistMultiselectInfoFieldType;
 import com.liferay.info.field.type.PicklistSelectInfoFieldType;
 import com.liferay.info.field.type.RelationshipInfoFieldType;
@@ -62,22 +63,29 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupedModel;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.service.CountryLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.KeyValuePair;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -97,7 +105,9 @@ import java.time.temporal.TemporalAccessor;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -549,6 +559,12 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 				infoField, inputTemplateNode);
 		}
 		else if (infoField.getInfoFieldType() instanceof
+					PhoneNumberInfoFieldType) {
+
+			_addPhoneNumberInfoFieldTypeInputTemplateNodeAttributes(
+				inputTemplateNode);
+		}
+		else if (infoField.getInfoFieldType() instanceof
 					RelationshipInfoFieldType) {
 
 			_addRelationshipInfoFieldTypeInputTemplateNodeAttributes(
@@ -718,6 +734,12 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 		}
 	}
 
+	private void _addPhoneNumberInfoFieldTypeInputTemplateNodeAttributes(
+		InputTemplateNode inputTemplateNode) {
+
+		inputTemplateNode.addAttribute("countries", _getCountries());
+	}
+
 	private void _addRelationshipInfoFieldTypeInputTemplateNodeAttributes(
 		InfoField infoField, InputTemplateNode inputTemplateNode, String label,
 		String value) {
@@ -819,6 +841,81 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 		sb.setIndex(sb.index() - 1);
 
 		return sb.toString();
+	}
+
+	private Set<String> _getAvailableCountryA2List() {
+		if (_availableCountryA2List != null) {
+			return _availableCountryA2List;
+		}
+
+		Set<String> countryA2List = new HashSet<>();
+
+		for (String languageId : PropsValues.LOCALES) {
+			Locale locale = LocaleUtil.fromLanguageId(languageId, false);
+
+			String country = locale.getCountry();
+
+			if (Validator.isNotNull(country)) {
+				countryA2List.add(country);
+			}
+		}
+
+		_availableCountryA2List = countryA2List;
+
+		return _availableCountryA2List;
+	}
+
+	private List<Map<String, String>> _getCountries() {
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		if (serviceContext == null) {
+			return Collections.emptyList();
+		}
+
+		long companyId = serviceContext.getCompanyId();
+
+		if (companyId == 0) {
+			return Collections.emptyList();
+		}
+
+		Locale locale = LocaleThreadLocal.getThemeDisplayLocale();
+
+		if (locale == null) {
+			locale = LocaleUtil.getDefault();
+		}
+
+		List<Map<String, String>> countries = new ArrayList<>();
+
+		Set<String> availableCountryA2List = _getAvailableCountryA2List();
+
+		String languageId = LocaleUtil.toLanguageId(locale);
+
+		for (Country country :
+				_countryLocalService.getCompanyCountries(companyId, true)) {
+
+			if (!availableCountryA2List.contains(country.getA2())) {
+				continue;
+			}
+
+			String idd = country.getIdd();
+
+			if (Validator.isNull(idd)) {
+				continue;
+			}
+
+			countries.add(
+				HashMapBuilder.put(
+					"a2", country.getA2()
+				).put(
+					"idd", idd
+				).put(
+					"name", country.getTitle(languageId)
+				).build());
+		}
+
+		return ListUtil.sort(
+			countries, Comparator.comparing(country -> country.get("name")));
 	}
 
 	private Locale _getCurrentLocale(
@@ -1338,6 +1435,11 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		FragmentEntryInputTemplateNodeContextHelperImpl.class);
+
+	private volatile Set<String> _availableCountryA2List;
+
+	@Reference
+	private CountryLocalService _countryLocalService;
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
