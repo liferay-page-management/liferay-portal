@@ -79,4 +79,4 @@ public class BackgroundStylesConfig implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-805789665
+// LIFERAY-REST-BUILDER-HASH:-147665033

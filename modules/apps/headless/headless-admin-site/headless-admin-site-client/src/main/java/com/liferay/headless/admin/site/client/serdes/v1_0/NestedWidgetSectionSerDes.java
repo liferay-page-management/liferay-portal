@@ -271,4 +271,4 @@ public class NestedWidgetSectionSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:233423845
+// LIFERAY-REST-BUILDER-HASH:-1308805763

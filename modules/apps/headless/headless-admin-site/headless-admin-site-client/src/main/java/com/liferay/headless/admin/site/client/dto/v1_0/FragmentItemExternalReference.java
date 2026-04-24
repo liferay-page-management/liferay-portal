@@ -129,4 +129,4 @@ public class FragmentItemExternalReference
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1032380046
+// LIFERAY-REST-BUILDER-HASH:-2062732746

@@ -87,4 +87,4 @@ public class BasicFragmentInstancePageElementDefinition
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:417586475
+// LIFERAY-REST-BUILDER-HASH:851782595
