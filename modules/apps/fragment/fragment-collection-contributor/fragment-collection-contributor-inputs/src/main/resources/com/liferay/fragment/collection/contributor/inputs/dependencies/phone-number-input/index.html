@@ -9,6 +9,12 @@
 		<div class="d-flex" id="${fragmentElementId}-inputs-container">
 			<select class="btn btn-secondary form-control mr-2" [#if input.attributes.disabled?? && input.attributes.disabled]disabled[/#if] id="${fragmentElementId}-country-select" [#if input.readOnly]disabled[/#if] style="max-width: 140px;">
 				<option value="">${languageUtil.get(locale, "country")}</option>
+
+				[#if input.attributes.countries??]
+					[#list input.attributes.countries as country]
+						<option data-idd="${country.idd}" value="${country.a2}">+${country.idd} ${country.name}</option>
+					[/#list]
+				[/#if]
 			</select>
 
 			<input aria-describedby="${fragmentElementId}-phone-input-help-text" aria-labelledby="${fragmentElementId}-phone-input-label [#if input.errorMessage?has_content]${fragmentElementId}-phone-input-error-message[/#if]" class="form-control" [#if input.attributes.disabled?? && input.attributes.disabled]disabled[/#if] id="${fragmentElementId}-phone-display" name="${input.name}" pattern="[0-9\s\-().]*" placeholder="${configuration.placeholder}" [#if input.readOnly]readonly[/#if] ${input.required?then('required', '')} type="tel" [#if input.value??]value="${input.value}"[/#if] />
