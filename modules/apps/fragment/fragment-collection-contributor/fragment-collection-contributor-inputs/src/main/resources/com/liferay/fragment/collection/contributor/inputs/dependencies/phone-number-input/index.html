@@ -1,0 +1,37 @@
+<div class="phone-number-input">
+	<div class="form-group [#if input.errorMessage?has_content]has-error[/#if] mb-0" id="${fragmentElementId}-form-group">
+		<label class="[#if !input.showLabel || !input.label?has_content]sr-only[/#if]" for="${fragmentElementId}-phone-display" id="${fragmentElementId}-phone-input-label">${htmlUtil.escape(input.label)}
+
+			<span id="${fragmentElementId}-phone-input-readonly" class="[#if !input.readOnly]d-none[/#if]">(${languageUtil.get(locale, "read-only")})</span>
+
+			[#if input.required][@clay["icon"] className="reference-mark" symbol="asterisk" /][/#if]</label>
+
+		<div class="d-flex" id="${fragmentElementId}-inputs-container">
+			<select class="btn btn-secondary form-control mr-2" [#if input.attributes.disabled?? && input.attributes.disabled]disabled[/#if] id="${fragmentElementId}-country-select" [#if input.readOnly]disabled[/#if] style="max-width: 140px;">
+				<option value="">${languageUtil.get(locale, "country")}</option>
+			</select>
+
+			<input aria-describedby="${fragmentElementId}-phone-input-help-text" aria-labelledby="${fragmentElementId}-phone-input-label [#if input.errorMessage?has_content]${fragmentElementId}-phone-input-error-message[/#if]" class="form-control" [#if input.attributes.disabled?? && input.attributes.disabled]disabled[/#if] id="${fragmentElementId}-phone-display" name="${input.name}" pattern="[0-9\s\-().]*" placeholder="${configuration.placeholder}" [#if input.readOnly]readonly[/#if] ${input.required?then('required', '')} type="tel" [#if input.value??]value="${input.value}"[/#if] />
+
+			[#if !input.localizable && input.attributes.unlocalizedFieldsMessage??]
+				<div aria-label="${input.attributes.unlocalizedFieldsMessage}" class="d-none lfr-portal-tooltip mt-1 pt-2" data-title="${input.attributes.unlocalizedFieldsMessage}" id="${fragmentElementId}-unlocalized-info" role="tooltip" tabindex="0">
+					[@clay["icon"] className="ml-2 mt-0 text-secondary" symbol="question-circle-full" /]
+				</div>
+			[/#if]
+		</div>
+
+		<p class="font-weight-semi-bold mt-1 text-danger[#if !input.errorMessage?has_content] sr-only[/#if]" id="${fragmentElementId}-phone-input-error">
+			[@clay["icon"] symbol="info-circle" /]
+
+			<span id="${fragmentElementId}-phone-input-error-message" role="alert">
+				[#if input.errorMessage?has_content]
+					${input.errorMessage}
+				[/#if]
+			</span>
+		</p>
+
+		[#if input.showHelpText && input.helpText?has_content]
+			<p class="mb-0 mt-1 text-secondary" id="${fragmentElementId}-phone-input-help-text">${htmlUtil.escape(input.helpText)}</p>
+		[/#if]
+	</div>
+</div>
