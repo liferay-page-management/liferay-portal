@@ -597,6 +597,9 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 				"image1\">", RandomTestUtil.randomString(), "</div>",
 				"<div data-lfr-background-image-id=\"element-background-",
 				"image2\">", RandomTestUtil.randomString(), "</div>",
+				"<time data-lfr-editable-id=\"element-date\" ",
+				"data-lfr-editable-type=\"date-time\">",
+				RandomTestUtil.randomString(), "</time>",
 				"<div data-lfr-editable-id=\"element-html\" ",
 				"data-lfr-editable-type=\"html\">",
 				RandomTestUtil.randomString(), "</div>",
@@ -3708,6 +3711,22 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 							fileEntry2, testGroup.getGroupId()),
 						null),
 					"element-background-image2"),
+			FragmentEditableElementTestUtil.getDateFragmentEditableElement(
+				FragmentMappedValueTestUtil.getFragmentMappedValue(
+					JournalArticle.class.getName(),
+					journalArticle.getExternalReferenceCode(),
+					"JournalArticle_displayDate", null),
+				new FragmentInlineValue() {
+					{
+						setValue_i18n(
+							HashMapBuilder.put(
+								"en-US", "d MMM yyyy"
+							).put(
+								"es-ES", "d MMM yyyy"
+							).build());
+					}
+				},
+				"element-date"),
 			FragmentEditableElementTestUtil.getHTMLFragmentEditableElement(
 				null, FragmentEditableElementValue.Type.HTML, null,
 				HTMLFragmentValue.Type.INLINE, "element-html"),
@@ -3835,6 +3854,12 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 						FragmentMappedValueItemReference.Type.
 							CONTEXT_REFERENCE),
 					"element-background-image2"),
+			FragmentEditableElementTestUtil.getDateFragmentEditableElement(
+				FragmentMappedValueTestUtil.getFragmentMappedValue(
+					JournalArticle.class.getName(),
+					journalArticle.getExternalReferenceCode(),
+					"JournalArticle_modifiedDate", null),
+				null, "element-date"),
 			FragmentEditableElementTestUtil.getHTMLFragmentEditableElement(
 				FragmentMappedValueItemContextReference.ContextSource.
 					COLLECTION_ITEM,
@@ -3941,6 +3966,23 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 						FragmentMappedValueItemReference.Type.
 							CONTEXT_REFERENCE),
 					"element-background-image1"),
+			FragmentEditableElementTestUtil.getDateFragmentEditableElement(
+				FragmentMappedValueTestUtil.getFragmentMappedValue(
+					FragmentMappedValueItemContextReference.ContextSource.
+						DISPLAY_PAGE_ITEM,
+					"JournalArticle_displayDate",
+					FragmentMappedValueItemReference.Type.CONTEXT_REFERENCE),
+				new FragmentInlineValue() {
+					{
+						setValue_i18n(
+							HashMapBuilder.put(
+								"en-US", "yyyy-MM-dd"
+							).put(
+								"es-ES", "dd/MM/yyyy"
+							).build());
+					}
+				},
+				"element-date"),
 			FragmentEditableElementTestUtil.getHTMLFragmentEditableElement(
 				FragmentMappedValueItemContextReference.ContextSource.
 					DISPLAY_PAGE_ITEM,
