@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import jakarta.servlet.ServletContext;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
@@ -61,6 +62,16 @@ public class InputsFragmentCollectionContributor
 				fragmentEntries,
 				fragmentEntry -> !excludedKeys.contains(
 					fragmentEntry.getFragmentEntryKey()));
+		}
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-83570")) {
+
+			fragmentEntries = ListUtil.filter(
+				fragmentEntries,
+				fragmentEntry -> !Objects.equals(
+					fragmentEntry.getFragmentEntryKey(),
+					"INPUTS-phone-number-input"));
 		}
 
 		return fragmentEntries;
