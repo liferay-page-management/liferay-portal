@@ -5,6 +5,7 @@
 
 package com.liferay.headless.admin.site.internal.resource.v1_0;
 
+import com.liferay.batch.engine.thread.local.BatchEngineThreadLocal;
 import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
@@ -476,9 +477,12 @@ public class MasterPageResourceImpl
 		throws Exception {
 
 		return ServiceContextUtil.createServiceContext(
-			contextCompany.getCompanyId(), masterPage.getDateCreated(), groupId,
-			contextHttpServletRequest, masterPage.getKeywords(),
-			masterPage.getDateModified(),
+			contextCompany.getCompanyId(),
+			BatchEngineThreadLocal.isBatchImportInProcess() ?
+				masterPage.getDateCreated() : null,
+			groupId, contextHttpServletRequest, masterPage.getKeywords(),
+			BatchEngineThreadLocal.isBatchImportInProcess() ?
+				masterPage.getDateModified() : null,
 			masterPage.getTaxonomyCategoryBriefs(), contextUser.getUserId(),
 			masterPage.getUuid());
 	}

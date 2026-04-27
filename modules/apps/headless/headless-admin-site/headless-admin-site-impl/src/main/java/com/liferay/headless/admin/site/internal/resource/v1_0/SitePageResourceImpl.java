@@ -5,6 +5,7 @@
 
 package com.liferay.headless.admin.site.internal.resource.v1_0;
 
+import com.liferay.batch.engine.thread.local.BatchEngineThreadLocal;
 import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
@@ -694,10 +695,14 @@ public class SitePageResourceImpl
 		throws Exception {
 
 		ServiceContext serviceContext = ServiceContextUtil.createServiceContext(
-			contextCompany.getCompanyId(), sitePage.getDateCreated(), groupId,
-			contextHttpServletRequest, sitePage.getKeywords(),
-			sitePage.getDateModified(), sitePage.getTaxonomyCategoryBriefs(),
-			contextUser.getUserId(), sitePage.getUuid());
+			contextCompany.getCompanyId(),
+			BatchEngineThreadLocal.isBatchImportInProcess() ?
+				sitePage.getDateCreated() : null,
+			groupId, contextHttpServletRequest, sitePage.getKeywords(),
+			BatchEngineThreadLocal.isBatchImportInProcess() ?
+				sitePage.getDateModified() : null,
+			sitePage.getTaxonomyCategoryBriefs(), contextUser.getUserId(),
+			sitePage.getUuid());
 
 		if (Objects.equals(sitePage.getType(), SitePage.Type.CONTENT_PAGE)) {
 			if (sitePage.getPageSpecifications() == null) {
