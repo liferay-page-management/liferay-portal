@@ -298,10 +298,10 @@ public class MasterPageResourceImpl
 			return _addMasterPage(groupId, masterPage);
 		}
 
-		ServiceContext serviceContext = _getServiceContext(groupId, masterPage);
-
 		long previewFileEntryId = FileEntryUtil.getPreviewFileEntryId(
-			groupId, getResourceName(), serviceContext,
+			groupId, getResourceName(),
+			ServiceContextUtil.createServiceContext(
+				groupId, contextHttpServletRequest, contextUser.getUserId()),
 			masterPage.getThumbnailURLReference());
 
 		if (previewFileEntryId !=
@@ -322,7 +322,8 @@ public class MasterPageResourceImpl
 			layout.getTitleMap(), layout.getDescriptionMap(),
 			layout.getKeywordsMap(), layout.getRobotsMap(),
 			layout.getFriendlyURLMap(), layout.getTypeSettingsProperties(),
-			masterPage.getPageSpecifications(), serviceContext);
+			masterPage.getPageSpecifications(),
+			_getServiceContext(groupId, masterPage));
 
 		if (!layoutPageTemplateEntry.isApproved() && layout.isPublished()) {
 			layoutPageTemplateEntry =
@@ -341,7 +342,8 @@ public class MasterPageResourceImpl
 					GetterUtil.getBoolean(masterPage.getMarkedAsDefault()));
 		}
 
-		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+		ServiceContextThreadLocal.pushServiceContext(
+			_getServiceContext(groupId, masterPage));
 
 		try {
 			return _masterPageDTOConverter.toDTO(
@@ -414,8 +416,6 @@ public class MasterPageResourceImpl
 			defaultTemplate = true;
 		}
 
-		ServiceContext serviceContext = _getServiceContext(groupId, masterPage);
-
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
 				masterPage.getExternalReferenceCode(), groupId,
@@ -424,10 +424,16 @@ public class MasterPageResourceImpl
 				masterPage.getKey(), 0, null, masterPage.getName(),
 				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
 				FileEntryUtil.getPreviewFileEntryId(
-					groupId, getResourceName(), serviceContext,
+					groupId, getResourceName(),
+					ServiceContextUtil.createServiceContext(
+						groupId, contextHttpServletRequest,
+						contextUser.getUserId()),
 					masterPage.getThumbnailURLReference()),
 				defaultTemplate, 0,
-				_getLayoutPlid(groupId, masterPage, serviceContext), 0,
+				_getLayoutPlid(
+					groupId, masterPage,
+					_getServiceContext(groupId, masterPage)),
+				0,
 				PageSpecificationUtil.getPublishedStatus(
 					masterPage.getPageSpecifications()),
 				_getServiceContext(groupId, masterPage));
