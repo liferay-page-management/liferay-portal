@@ -646,7 +646,9 @@ public class SitePageResourceImpl
 			return LayoutConstants.DEFAULT_PARENT_LAYOUT_ID;
 		}
 
-		String uuid = serviceContext.getUuid();
+		String uuid = serviceContext.getUuidWithoutReset();
+
+		serviceContext.setUuid(null);
 
 		try {
 			Layout layout = _layoutService.getOrAddEmptyLayout(
