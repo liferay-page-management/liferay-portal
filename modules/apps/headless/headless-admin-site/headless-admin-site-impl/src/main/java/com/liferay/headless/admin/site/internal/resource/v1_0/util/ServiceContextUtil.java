@@ -75,8 +75,11 @@ public class ServiceContextUtil {
 			groupId, httpServletRequest, null
 		).build();
 
-		serviceContext.setCompanyId(
-			PortalUtil.getCompanyId(httpServletRequest));
+		if (httpServletRequest != null) {
+			serviceContext.setCompanyId(
+				PortalUtil.getCompanyId(httpServletRequest));
+		}
+
 		serviceContext.setUserId(userId);
 
 		return serviceContext;
