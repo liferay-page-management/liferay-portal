@@ -5,6 +5,7 @@
 
 package com.liferay.headless.admin.site.internal.resource.v1_0;
 
+import com.liferay.batch.engine.thread.local.BatchEngineThreadLocal;
 import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
@@ -28,7 +29,6 @@ import com.liferay.headless.admin.site.internal.resource.v1_0.util.ServiceContex
 import com.liferay.headless.admin.site.internal.util.EnabledUtil;
 import com.liferay.headless.admin.site.internal.util.LogUtil;
 import com.liferay.headless.admin.site.resource.v1_0.DisplayPageTemplateResource;
-import com.liferay.headless.common.spi.service.context.ServiceContextBuilder;
 import com.liferay.headless.common.spi.util.GroupUtil;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
@@ -448,7 +448,8 @@ public class DisplayPageTemplateResourceImpl
 
 		long previewFileEntryId = FileEntryUtil.getPreviewFileEntryId(
 			groupId, getResourceName(),
-			_getServiceContext(displayPageTemplate, groupId),
+			ServiceContextUtil.createServiceContext(
+				groupId, contextHttpServletRequest, contextUser.getUserId()),
 			displayPageTemplate.getThumbnailURLReference());
 
 		if (previewFileEntryId !=
@@ -628,7 +629,9 @@ public class DisplayPageTemplateResourceImpl
 				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
 				FileEntryUtil.getPreviewFileEntryId(
 					groupId, getResourceName(),
-					_getServiceContext(displayPageTemplate, groupId),
+					ServiceContextUtil.createServiceContext(
+						groupId, contextHttpServletRequest,
+						contextUser.getUserId()),
 					displayPageTemplate.getThumbnailURLReference()),
 				GetterUtil.getBoolean(displayPageTemplate.getMarkedAsDefault()),
 				0L, layout.getPlid(), 0L,
@@ -722,14 +725,15 @@ public class DisplayPageTemplateResourceImpl
 	private ServiceContext _getServiceContext(
 		DisplayPageTemplate displayPageTemplate, long groupId) {
 
-		ServiceContext serviceContext = ServiceContextBuilder.create(
-			groupId, contextHttpServletRequest, null
-		).build();
+		ServiceContext serviceContext = ServiceContextUtil.createServiceContext(
+			groupId, contextHttpServletRequest, contextUser.getUserId());
 
-		serviceContext.setCompanyId(contextCompany.getCompanyId());
-		serviceContext.setCreateDate(displayPageTemplate.getDateCreated());
-		serviceContext.setModifiedDate(displayPageTemplate.getDateModified());
-		serviceContext.setUserId(contextUser.getUserId());
+		if (BatchEngineThreadLocal.isBatchImportInProcess()) {
+			serviceContext.setCreateDate(displayPageTemplate.getDateCreated());
+			serviceContext.setModifiedDate(
+				displayPageTemplate.getDateModified());
+		}
+
 		serviceContext.setUuid(displayPageTemplate.getUuid());
 
 		return serviceContext;
