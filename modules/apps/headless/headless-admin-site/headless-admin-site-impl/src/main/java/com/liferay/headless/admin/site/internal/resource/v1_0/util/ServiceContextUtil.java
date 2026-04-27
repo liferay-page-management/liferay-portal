@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.scope.Scope;
 
@@ -74,6 +75,8 @@ public class ServiceContextUtil {
 			groupId, httpServletRequest, null
 		).build();
 
+		serviceContext.setCompanyId(
+			PortalUtil.getCompanyId(httpServletRequest));
 		serviceContext.setUserId(userId);
 
 		return serviceContext;
