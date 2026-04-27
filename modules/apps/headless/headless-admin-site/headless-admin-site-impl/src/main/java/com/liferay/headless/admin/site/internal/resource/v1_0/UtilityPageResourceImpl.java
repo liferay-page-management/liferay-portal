@@ -5,6 +5,7 @@
 
 package com.liferay.headless.admin.site.internal.resource.v1_0;
 
+import com.liferay.batch.engine.thread.local.BatchEngineThreadLocal;
 import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
@@ -454,8 +455,11 @@ public class UtilityPageResourceImpl
 		ServiceContext serviceContext = ServiceContextUtil.createServiceContext(
 			groupId, contextHttpServletRequest, contextUser.getUserId());
 
-		serviceContext.setCreateDate(utilityPage.getDateCreated());
-		serviceContext.setModifiedDate(utilityPage.getDateModified());
+		if (BatchEngineThreadLocal.isBatchImportInProcess()) {
+			serviceContext.setCreateDate(utilityPage.getDateCreated());
+			serviceContext.setModifiedDate(utilityPage.getDateModified());
+		}
+
 		serviceContext.setUuid(utilityPage.getUuid());
 
 		return serviceContext;
