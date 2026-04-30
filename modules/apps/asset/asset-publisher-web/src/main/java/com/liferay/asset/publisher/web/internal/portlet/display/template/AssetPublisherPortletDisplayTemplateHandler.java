@@ -16,6 +16,8 @@ import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyService;
 import com.liferay.asset.publisher.constants.AssetPublisherPortletKeys;
 import com.liferay.asset.publisher.util.AssetPublisherHelper;
+import com.liferay.asset.publisher.web.internal.util.AssetAnalyticsAttributesHelper;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.template.TemplateHandler;
 import com.liferay.portal.kernel.template.TemplateVariableGroup;
@@ -49,6 +51,9 @@ public class AssetPublisherPortletDisplayTemplateHandler
 	@Override
 	public Map<String, Object> getCustomContextObjects() {
 		return HashMapBuilder.<String, Object>put(
+			"assetAnalyticsAttributesHelper",
+			new AssetAnalyticsAttributesHelper()
+		).put(
 			"assetPublisherHelper", assetPublisherHelper
 		).build();
 	}
@@ -81,6 +86,19 @@ public class AssetPublisherPortletDisplayTemplateHandler
 			new TemplateVariableGroup(
 				"asset-publisher-util", restrictedVariables);
 
+		assetPublisherUtilTemplateVariableGroup.addFieldVariable(
+			"asset-analytics-attributes-helper",
+			AssetAnalyticsAttributesHelper.class,
+			"assetAnalyticsAttributesHelper",
+			"asset-analytics-attributes-helper-help",
+			"asset-analytics-attributes-helper", false,
+			(definition, languageType) -> new String[] {
+				StringBundler.concat(
+					"<#if entry?has_content>\n\t<div ",
+					"${assetAnalyticsAttributesHelper.buildAttributes(",
+					"entry, \"impression\", \"title\", locale)}>",
+					"${entry.getTitle(locale)}</div>\n</#if>")
+			});
 		assetPublisherUtilTemplateVariableGroup.addVariable(
 			"asset-publisher-helper", AssetPublisherHelper.class,
 			"assetPublisherHelper");
