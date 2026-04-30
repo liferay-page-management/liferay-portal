@@ -8,14 +8,11 @@ import {expect, mergeTests} from '@playwright/test';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
-import {clickAndExpectToBeHidden} from '../../../utils/clickAndExpectToBeHidden';
-import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
+import {createAssetPublisherPage} from '../../asset-publisher-web/main/utils/createAssetPublisherPage';
 import {samplePageTest} from '../../frontend-taglib/main/fixtures/samplePageTest';
 import {TabName} from '../../frontend-taglib/main/pages/SamplePage';
-import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
-import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 
 const test = mergeTests(
 	dataApiHelpersTest,
@@ -106,81 +103,30 @@ test(
 	'Dropdown menu adjusts to screen size',
 	{tag: '@LPD-50471'},
 	async ({apiHelpers, page, pageEditorPage, site}) => {
-		const widgetId = getRandomString();
+		const layout = await createAssetPublisherPage({
+			apiHelpers,
+			beforeSave: async (configurationIframe) => {
+				await configurationIframe
+					.getByRole('tab', {name: 'Display Settings'})
+					.click();
 
-		const widgetDefinition = getWidgetDefinition({
-			id: widgetId,
-			widgetName:
-				'com_liferay_asset_publisher_web_portlet_AssetPublisherPortlet',
-		});
+				const itemDisplayInput = configurationIframe.getByLabel(
+					'Number of Items to Display'
+				);
 
-		const layout = await apiHelpers.headlessDelivery.createSitePage({
-			pageDefinition: getPageDefinition([widgetDefinition]),
-			siteId: site.id,
-			title: getRandomString(),
-		});
+				await itemDisplayInput.waitFor({state: 'visible'});
 
-		await test.step('Configure asset publisher to display pagination', async () => {
-			await pageEditorPage.goto(layout, site.friendlyUrlPath);
+				await itemDisplayInput.click();
 
-			await pageEditorPage.goToWidgetConfiguration(widgetId);
+				await itemDisplayInput.fill('1');
 
-			const configurationIframe = page.frameLocator(
-				'iframe[title="Configuration"]'
-			);
-
-			const assetSelectionTab = configurationIframe.getByRole('tab', {
-				name: 'Asset Selection',
-			});
-			await assetSelectionTab.waitFor({state: 'visible'});
-			await assetSelectionTab.click();
-
-			await clickAndExpectToBeVisible({
-				autoClick: true,
-
-				target: configurationIframe
-					.frameLocator('iframe[title="Select Collection"]')
-					.getByRole('link', {name: 'Collection Providers'}),
-				timeout: 2000,
-				trigger: configurationIframe.getByRole('button', {
-					exact: true,
-					name: 'Select Collection',
-				}),
-			});
-
-			await clickAndExpectToBeHidden({
-				target: configurationIframe.locator('.modal-dialog'),
-				timeout: 2000,
-				trigger: configurationIframe
-					.frameLocator('iframe[title="Select Collection"]')
-					.getByRole('button', {name: 'Select Recent Content'}),
-			});
-
-			await configurationIframe
-				.getByRole('tab', {name: 'Display Settings'})
-				.click();
-
-			const itemDisplayInput = configurationIframe.getByLabel(
-				'Number of Items to Display'
-			);
-
-			await itemDisplayInput.waitFor({state: 'visible'});
-
-			await itemDisplayInput.click();
-
-			await itemDisplayInput.fill('1');
-
-			await configurationIframe
-				.getByLabel('Pagination Type')
-				.selectOption('Regular');
-
-			await configurationIframe
-				.getByRole('button', {name: 'Save'})
-				.click();
-
-			await page.press('body', 'Escape');
-
-			await page.getByLabel('Publish', {exact: true}).click();
+				await configurationIframe
+					.getByLabel('Pagination Type')
+					.selectOption('Regular');
+			},
+			page,
+			pageEditorPage,
+			site,
 		});
 
 		await test.step('Create web content articles and test dropdown', async () => {
