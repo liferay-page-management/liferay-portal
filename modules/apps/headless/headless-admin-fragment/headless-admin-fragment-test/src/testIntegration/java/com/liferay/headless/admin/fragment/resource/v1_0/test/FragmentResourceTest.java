@@ -279,6 +279,11 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testPutSiteFragmentUpdateFragmentSetNonexisting();
 		_testPutSiteFragmentUpdateFragmentSetNonexistingProblemException();
 		_testPutSiteFragmentUpdateFragmentSetNull();
+		_testPutSiteFragmentUpdateThumbnailExternalReferenceCode();
+		_testPutSiteFragmentUpdateThumbnailExternalReferenceCodeAndFileBase64();
+		_testPutSiteFragmentUpdateThumbnailFileBase64();
+		_testPutSiteFragmentUpdateThumbnailNull();
+		_testPutSiteFragmentUpdateThumbnailURL();
 	}
 
 	@Override
@@ -637,6 +642,41 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		return fragmentResource.postSiteFragmentSetFragment(
 			testGroup.getExternalReferenceCode(),
 			_fragmentCollection.getExternalReferenceCode(), fragment);
+	}
+
+	private Fragment _putSiteFragment(
+			String externalReferenceCode, Fragment fragment,
+			String nestedFields)
+		throws Exception {
+
+		FragmentResource fragmentResource = _getFragmentResource(nestedFields);
+
+		return fragmentResource.putSiteFragment(
+			testGroup.getExternalReferenceCode(), externalReferenceCode,
+			fragment);
+	}
+
+	private Fragment _putSiteFragmentAndAssertThumbnail(
+			byte[] expectedBytes, String expectedExternalReferenceCode,
+			Fragment fragment, Thumbnail thumbnail)
+		throws Exception {
+
+		fragment.setThumbnail(thumbnail);
+
+		Fragment putFragment = _putSiteFragment(
+			fragment.getExternalReferenceCode(), fragment, "thumbnail");
+
+		if (expectedExternalReferenceCode == null) {
+			Thumbnail putThumbnail = putFragment.getThumbnail();
+
+			expectedExternalReferenceCode =
+				putThumbnail.getExternalReferenceCode();
+		}
+
+		_assertThumbnail(
+			expectedBytes, expectedExternalReferenceCode, putFragment);
+
+		return putFragment;
 	}
 
 	private Fragment _randomFragment(boolean approved, boolean draft)
@@ -1658,6 +1698,124 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			postFragment.getExternalReferenceCode(), fragment);
 
 		_assertFragmentSet(_fragmentCollection, putFragment.getFragmentSet());
+	}
+
+	private void _testPutSiteFragmentUpdateThumbnailExternalReferenceCode()
+		throws Exception {
+
+		Fragment postFragment = _postSiteFragmentSetFragment(randomFragment());
+
+		Assert.assertNull(postFragment.getThumbnail());
+
+		Thumbnail thumbnail1 = new Thumbnail();
+
+		FileEntry fileEntry1 = _addPortletFileEntry("thumbnail1.png");
+
+		String externalReferenceCode1 = fileEntry1.getExternalReferenceCode();
+
+		thumbnail1.setExternalReferenceCode(externalReferenceCode1);
+
+		Fragment putFragment = _putSiteFragmentAndAssertThumbnail(
+			_thumbnail1Bytes, externalReferenceCode1, postFragment, thumbnail1);
+
+		Thumbnail thumbnail2 = new Thumbnail();
+
+		FileEntry fileEntry2 = _addPortletFileEntry("thumbnail2.png");
+
+		String externalReferenceCode2 = fileEntry2.getExternalReferenceCode();
+
+		thumbnail2.setExternalReferenceCode(externalReferenceCode2);
+
+		_putSiteFragmentAndAssertThumbnail(
+			_thumbnail2Bytes, externalReferenceCode2, putFragment, thumbnail2);
+	}
+
+	private void _testPutSiteFragmentUpdateThumbnailExternalReferenceCodeAndFileBase64()
+		throws Exception {
+
+		Fragment postFragment = _postSiteFragmentSetFragment(randomFragment());
+
+		Assert.assertNull(postFragment.getThumbnail());
+
+		Thumbnail thumbnail = new Thumbnail();
+
+		FileEntry fileEntry = _addPortletFileEntry("thumbnail1.png");
+
+		String externalReferenceCode = fileEntry.getExternalReferenceCode();
+
+		thumbnail.setExternalReferenceCode(externalReferenceCode);
+
+		thumbnail.setFileBase64(_thumbnail2Base64);
+
+		_putSiteFragmentAndAssertThumbnail(
+			_thumbnail1Bytes, externalReferenceCode, postFragment, thumbnail);
+	}
+
+	private void _testPutSiteFragmentUpdateThumbnailFileBase64()
+		throws Exception {
+
+		Fragment postFragment = _postSiteFragmentSetFragment(randomFragment());
+
+		Assert.assertNull(postFragment.getThumbnail());
+
+		Thumbnail thumbnail1 = new Thumbnail();
+
+		thumbnail1.setFileBase64(_thumbnail1Base64);
+
+		Fragment putFragment = _putSiteFragmentAndAssertThumbnail(
+			_thumbnail1Bytes, null, postFragment, thumbnail1);
+
+		Thumbnail thumbnail2 = new Thumbnail();
+
+		thumbnail2.setFileBase64(_thumbnail2Base64);
+
+		_putSiteFragmentAndAssertThumbnail(
+			_thumbnail2Bytes, null, putFragment, thumbnail2);
+	}
+
+	private void _testPutSiteFragmentUpdateThumbnailNull() throws Exception {
+		Fragment postFragment = _postSiteFragmentSetFragment(randomFragment());
+
+		FragmentEntry fragmentEntry =
+			_fragmentEntryLocalService.getFragmentEntryByExternalReferenceCode(
+				postFragment.getExternalReferenceCode(),
+				testGroup.getGroupId());
+
+		FileEntry fileEntry = _addPortletFileEntry("thumbnail1.png");
+
+		_fragmentEntryLocalService.updateFragmentEntry(
+			fragmentEntry.getFragmentEntryId(), fileEntry.getFileEntryId());
+
+		fragmentResource.putSiteFragment(
+			testGroup.getExternalReferenceCode(),
+			postFragment.getExternalReferenceCode(), postFragment);
+
+		fragmentEntry =
+			_fragmentEntryLocalService.getFragmentEntryByExternalReferenceCode(
+				postFragment.getExternalReferenceCode(),
+				testGroup.getGroupId());
+
+		Assert.assertEquals(0L, fragmentEntry.getPreviewFileEntryId());
+	}
+
+	private void _testPutSiteFragmentUpdateThumbnailURL() throws Exception {
+		Fragment postFragment = _postSiteFragmentSetFragment(randomFragment());
+
+		Assert.assertNull(postFragment.getThumbnail());
+
+		Thumbnail thumbnail1 = new Thumbnail();
+
+		thumbnail1.setUrl(_thumbnail1URL);
+
+		Fragment putFragment = _putSiteFragmentAndAssertThumbnail(
+			_thumbnail1Bytes, null, postFragment, thumbnail1);
+
+		Thumbnail thumbnail2 = new Thumbnail();
+
+		thumbnail2.setUrl(_thumbnail2URL);
+
+		_putSiteFragmentAndAssertThumbnail(
+			_thumbnail2Bytes, null, putFragment, thumbnail2);
 	}
 
 	private FragmentSet _toFragmentSet(FragmentCollection fragmentCollection) {
