@@ -50,14 +50,22 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
+
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
 import java.net.URL;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -92,7 +100,41 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 		_authorization = "Basic " + Base64.encode(credentials.getBytes());
 
+		_httpServer = HttpServer.create(
+			new InetSocketAddress("127.0.0.1", 0), 0);
+
 		_thumbnail1Bytes = _getBytes("thumbnail1.png");
+
+		_thumbnail2Bytes = _getBytes("thumbnail2.png");
+
+		_httpServer.createContext(
+			"/thumbnail1.png",
+			httpExchange -> _writeBytes(httpExchange, _thumbnail1Bytes));
+
+		_httpServer.createContext(
+			"/thumbnail2.png",
+			httpExchange -> _writeBytes(httpExchange, _thumbnail2Bytes));
+
+		_httpServer.start();
+
+		_thumbnail1Base64 = Base64.encode(_thumbnail1Bytes);
+
+		_thumbnail2Base64 = Base64.encode(_thumbnail2Bytes);
+
+		InetSocketAddress inetSocketAddress = _httpServer.getAddress();
+
+		String baseURL = "http://127.0.0.1:" + inetSocketAddress.getPort();
+
+		_thumbnail1URL = baseURL + "/thumbnail1.png";
+
+		_thumbnail2URL = baseURL + "/thumbnail2.png";
+	}
+
+	@AfterClass
+	public static void tearDownClass() {
+		if (_httpServer != null) {
+			_httpServer.stop(0);
+		}
 	}
 
 	@Before
@@ -179,6 +221,17 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testPostSiteFragmentFragmentSetNonexisting();
 		_testPostSiteFragmentFragmentSetNonexistingProblemException();
 		_testPostSiteFragmentFragmentSetNullProblemException();
+		_testPostSiteFragmentThumbnailExternalReferenceCode();
+		_testPostSiteFragmentThumbnailExternalReferenceCodeAndFileBase64();
+		_testPostSiteFragmentThumbnailExternalReferenceCodeEmptyAndFileBase64();
+		_testPostSiteFragmentThumbnailExternalReferenceCodeNullAndFileBase64();
+		_testPostSiteFragmentThumbnailExternalReferenceCodeNullAndURL();
+		_testPostSiteFragmentThumbnailFileBase64();
+		_testPostSiteFragmentThumbnailFileBase64AndURL();
+		_testPostSiteFragmentThumbnailNonexistingProblemException();
+		_testPostSiteFragmentThumbnailURL();
+		_testPostSiteFragmentThumbnailURLUnreachableProblemException();
+		_testPostSiteFragmentThumbnailURLUnsupportedProtocolProblemException();
 	}
 
 	@Override
@@ -320,6 +373,20 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 					"dependencies/" + fileName)) {
 
 			return StreamUtil.toByteArray(inputStream);
+		}
+	}
+
+	private static void _writeBytes(HttpExchange httpExchange, byte[] bytes)
+		throws IOException {
+
+		Headers responseHeaders = httpExchange.getResponseHeaders();
+
+		responseHeaders.set("Content-Type", ContentTypes.IMAGE_PNG);
+
+		httpExchange.sendResponseHeaders(200, bytes.length);
+
+		try (OutputStream outputStream = httpExchange.getResponseBody()) {
+			outputStream.write(bytes);
 		}
 	}
 
@@ -531,6 +598,39 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			testGroup.getExternalReferenceCode(), fragment);
 	}
 
+	private Fragment _postSiteFragment(Fragment fragment, String nestedFields)
+		throws Exception {
+
+		FragmentResource fragmentResource = _getFragmentResource(nestedFields);
+
+		return fragmentResource.postSiteFragment(
+			testGroup.getExternalReferenceCode(), fragment);
+	}
+
+	private Fragment _postSiteFragmentAndAssertThumbnail(
+			byte[] expectedBytes, String expectedExternalReferenceCode,
+			Thumbnail thumbnail)
+		throws Exception {
+
+		Fragment fragment = randomFragment();
+
+		fragment.setThumbnail(thumbnail);
+
+		Fragment postFragment = _postSiteFragment(fragment, "thumbnail");
+
+		if (expectedExternalReferenceCode == null) {
+			Thumbnail postThumbnail = postFragment.getThumbnail();
+
+			expectedExternalReferenceCode =
+				postThumbnail.getExternalReferenceCode();
+		}
+
+		_assertThumbnail(
+			expectedBytes, expectedExternalReferenceCode, postFragment);
+
+		return postFragment;
+	}
+
 	private Fragment _postSiteFragmentSetFragment(Fragment fragment)
 		throws Exception {
 
@@ -723,6 +823,33 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		throws Exception {
 
 		_testPostFragmentApproved(false, false, postFragmentUnsafeFunction);
+	}
+
+	private void _testPostFragmentThumbnailProblemException(
+			String expectedTitle, String externalReferenceCode, String url)
+		throws Exception {
+
+		Fragment fragment = randomFragment();
+
+		Thumbnail thumbnail = new Thumbnail();
+
+		thumbnail.setExternalReferenceCode(externalReferenceCode);
+
+		thumbnail.setUrl(url);
+
+		fragment.setThumbnail(thumbnail);
+
+		try {
+			_postSiteFragment(fragment);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+			Assert.assertEquals(expectedTitle, problem.getTitle());
+		}
 	}
 
 	private void _testPostSiteFragmentApproved() throws Exception {
@@ -943,6 +1070,143 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		Fragment postFragment = _postSiteFragmentSetFragment(fragment);
 
 		_assertFragmentSet(_fragmentCollection, postFragment.getFragmentSet());
+	}
+
+	private void _testPostSiteFragmentThumbnailExternalReferenceCode()
+		throws Exception {
+
+		Thumbnail thumbnail = new Thumbnail();
+
+		FileEntry fileEntry = _addPortletFileEntry("thumbnail1.png");
+
+		String externalReferenceCode = fileEntry.getExternalReferenceCode();
+
+		thumbnail.setExternalReferenceCode(externalReferenceCode);
+
+		_postSiteFragmentAndAssertThumbnail(
+			_thumbnail1Bytes, externalReferenceCode, thumbnail);
+	}
+
+	private void _testPostSiteFragmentThumbnailExternalReferenceCodeAndFileBase64()
+		throws Exception {
+
+		Thumbnail thumbnail = new Thumbnail();
+
+		FileEntry fileEntry = _addPortletFileEntry("thumbnail1.png");
+
+		String externalReferenceCode = fileEntry.getExternalReferenceCode();
+
+		thumbnail.setExternalReferenceCode(externalReferenceCode);
+
+		thumbnail.setFileBase64(_thumbnail2Base64);
+
+		_postSiteFragmentAndAssertThumbnail(
+			_thumbnail1Bytes, externalReferenceCode, thumbnail);
+	}
+
+	private void _testPostSiteFragmentThumbnailExternalReferenceCodeEmptyAndFileBase64()
+		throws Exception {
+
+		Thumbnail thumbnail = new Thumbnail();
+
+		thumbnail.setExternalReferenceCode(StringPool.BLANK);
+
+		thumbnail.setFileBase64(_thumbnail1Base64);
+
+		_postSiteFragmentAndAssertThumbnail(_thumbnail1Bytes, null, thumbnail);
+	}
+
+	private void _testPostSiteFragmentThumbnailExternalReferenceCodeNullAndFileBase64()
+		throws Exception {
+
+		Thumbnail thumbnail = new Thumbnail();
+
+		thumbnail.setFileBase64(_thumbnail1Base64);
+
+		_postSiteFragmentAndAssertThumbnail(_thumbnail1Bytes, null, thumbnail);
+	}
+
+	private void _testPostSiteFragmentThumbnailExternalReferenceCodeNullAndURL()
+		throws Exception {
+
+		Thumbnail thumbnail = new Thumbnail();
+
+		thumbnail.setUrl(_thumbnail1URL);
+
+		_postSiteFragmentAndAssertThumbnail(_thumbnail1Bytes, null, thumbnail);
+	}
+
+	private void _testPostSiteFragmentThumbnailFileBase64() throws Exception {
+		Thumbnail thumbnail = new Thumbnail();
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		thumbnail.setExternalReferenceCode(externalReferenceCode);
+
+		thumbnail.setFileBase64(_thumbnail1Base64);
+
+		_postSiteFragmentAndAssertThumbnail(
+			_thumbnail1Bytes, externalReferenceCode, thumbnail);
+	}
+
+	private void _testPostSiteFragmentThumbnailFileBase64AndURL()
+		throws Exception {
+
+		Thumbnail thumbnail = new Thumbnail();
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		thumbnail.setExternalReferenceCode(externalReferenceCode);
+
+		thumbnail.setFileBase64(_thumbnail1Base64);
+
+		thumbnail.setUrl(_thumbnail2URL);
+
+		_postSiteFragmentAndAssertThumbnail(
+			_thumbnail1Bytes, externalReferenceCode, thumbnail);
+	}
+
+	private void _testPostSiteFragmentThumbnailNonexistingProblemException()
+		throws Exception {
+
+		_testPostFragmentThumbnailProblemException(
+			"Unable to resolve file", RandomTestUtil.randomString(), null);
+	}
+
+	private void _testPostSiteFragmentThumbnailURL() throws Exception {
+		Thumbnail thumbnail = new Thumbnail();
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		thumbnail.setExternalReferenceCode(externalReferenceCode);
+
+		thumbnail.setUrl(_thumbnail1URL);
+
+		_postSiteFragmentAndAssertThumbnail(
+			_thumbnail1Bytes, externalReferenceCode, thumbnail);
+	}
+
+	private void _testPostSiteFragmentThumbnailURLUnreachableProblemException()
+		throws Exception {
+
+		String url =
+			"http://invalid.example.test/" + RandomTestUtil.randomString();
+
+		_testPostFragmentThumbnailProblemException(
+			"Unable to download file from " + url,
+			RandomTestUtil.randomString(), url);
+	}
+
+	private void _testPostSiteFragmentThumbnailURLUnsupportedProtocolProblemException()
+		throws Exception {
+
+		String url =
+			"ftp://invalid.example.test/" + RandomTestUtil.randomString();
+
+		_testPostFragmentThumbnailProblemException(
+			"Unable to download file from " + url +
+				" because of unsupported protocol ftp",
+			RandomTestUtil.randomString(), url);
 	}
 
 	private void _testPutFragment(
@@ -1431,7 +1695,13 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		FragmentResourceTest.class);
 
 	private static String _authorization;
+	private static HttpServer _httpServer;
+	private static String _thumbnail1Base64;
 	private static byte[] _thumbnail1Bytes;
+	private static String _thumbnail1URL;
+	private static String _thumbnail2Base64;
+	private static byte[] _thumbnail2Bytes;
+	private static String _thumbnail2URL;
 
 	private FragmentCollection _fragmentCollection;
 
