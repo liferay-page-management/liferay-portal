@@ -16,30 +16,51 @@ import com.liferay.headless.admin.fragment.client.dto.v1_0.Creator;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.Fragment;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.FragmentSet;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.FragmentVersion;
+import com.liferay.headless.admin.fragment.client.dto.v1_0.Thumbnail;
 import com.liferay.headless.admin.fragment.client.pagination.Page;
 import com.liferay.headless.admin.fragment.client.pagination.Pagination;
 import com.liferay.headless.admin.fragment.client.problem.Problem;
+import com.liferay.headless.admin.fragment.client.resource.v1_0.FragmentResource;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.UnsafeRunnable;
+import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
+import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.Base64;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import java.io.InputStream;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -58,6 +79,21 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
+
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		BaseFragmentResourceTestCase.setUpClass();
+
+		User user = UserTestUtil.getAdminUser(TestPropsValues.getCompanyId());
+
+		String credentials =
+			user.getEmailAddress() + StringPool.COLON +
+				PropsValues.DEFAULT_ADMIN_PASSWORD;
+
+		_authorization = "Basic " + Base64.encode(credentials.getBytes());
+
+		_thumbnail1Bytes = _getBytes("thumbnail1.png");
+	}
 
 	@Before
 	@Override
@@ -101,6 +137,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testGetSiteFragmentApprovedAndDraft();
 		_testGetSiteFragmentApproved();
 		_testGetSiteFragmentDraft();
+		_testGetSiteFragmentThumbnail();
 	}
 
 	@Override
@@ -277,6 +314,15 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		return _postSiteFragmentSetFragment(randomFragment());
 	}
 
+	private static byte[] _getBytes(String fileName) throws Exception {
+		try (InputStream inputStream =
+				FragmentResourceTest.class.getResourceAsStream(
+					"dependencies/" + fileName)) {
+
+			return StreamUtil.toByteArray(inputStream);
+		}
+	}
+
 	private FragmentCollection _addFragmentCollection() throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId());
@@ -285,6 +331,23 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			null, serviceContext.getUserId(), testGroup.getGroupId(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			serviceContext);
+	}
+
+	private FileEntry _addPortletFileEntry(String fileName) throws Exception {
+		Repository repository = _portletFileRepository.addPortletRepository(
+			testGroup.getGroupId(), RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(
+				testGroup, TestPropsValues.getUserId()));
+
+		Class<?> clazz = getClass();
+
+		return _portletFileRepository.addPortletFileEntry(
+			null, testGroup.getGroupId(), TestPropsValues.getUserId(),
+			FragmentEntry.class.getName(), RandomTestUtil.randomLong(),
+			RandomTestUtil.randomString(), repository.getDlFolderId(),
+			clazz.getResourceAsStream("dependencies/" + fileName),
+			RandomTestUtil.randomString() + ".png", ContentTypes.IMAGE_PNG,
+			false);
 	}
 
 	private void _assertFragmentSet(
@@ -342,6 +405,75 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			"BAD_REQUEST", titleKey, unsafeRunnable, titleArguments);
 	}
 
+	private void _assertThumbnail(
+			byte[] expectedBytes, String expectedExternalReferenceCode,
+			Fragment fragment)
+		throws Exception {
+
+		Assert.assertNotNull(expectedExternalReferenceCode);
+
+		Thumbnail thumbnail = fragment.getThumbnail();
+
+		Assert.assertNotNull(thumbnail);
+		Assert.assertEquals(
+			expectedExternalReferenceCode,
+			thumbnail.getExternalReferenceCode());
+
+		FileEntry fileEntry =
+			PortletFileRepositoryUtil.
+				fetchPortletFileEntryByExternalReferenceCode(
+					expectedExternalReferenceCode, testGroup.getGroupId());
+
+		Assert.assertNotNull(fileEntry);
+
+		FragmentEntry fragmentEntry =
+			_fragmentEntryLocalService.getFragmentEntryByExternalReferenceCode(
+				fragment.getExternalReferenceCode(), testGroup.getGroupId());
+
+		Assert.assertEquals(
+			fileEntry.getFileEntryId(), fragmentEntry.getPreviewFileEntryId());
+
+		try (InputStream inputStream = fileEntry.getContentStream()) {
+			Assert.assertArrayEquals(
+				expectedBytes, StreamUtil.toByteArray(inputStream));
+		}
+
+		URL url = new URL(
+			_pollThumbnailURL(fragment.getExternalReferenceCode()));
+
+		HttpURLConnection httpURLConnection =
+			(HttpURLConnection)url.openConnection();
+
+		httpURLConnection.setRequestProperty("Authorization", _authorization);
+
+		Assert.assertEquals(
+			HttpURLConnection.HTTP_OK, httpURLConnection.getResponseCode());
+
+		String contentType = httpURLConnection.getContentType();
+
+		Assert.assertNotNull(contentType);
+		Assert.assertTrue(
+			"Expected image/* content type but got: " + contentType,
+			contentType.startsWith("image/"));
+	}
+
+	private FragmentResource _getFragmentResource(String nestedFields)
+		throws Exception {
+
+		User user = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+
+		return FragmentResource.builder(
+		).authentication(
+			user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).parameters(
+			"nestedFields", nestedFields
+		).build();
+	}
+
 	private FragmentVersion _getFragmentVersion(
 		Fragment fragment, FragmentVersion.Status status) {
 
@@ -358,6 +490,40 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		}
 
 		return null;
+	}
+
+	private String _pollThumbnailURL(String fragmentExternalReferenceCode)
+		throws Exception {
+
+		FragmentResource fragmentResource = _getFragmentResource("thumbnail");
+
+		long deadline = System.currentTimeMillis() + 30_000;
+
+		while (System.currentTimeMillis() < deadline) {
+			Fragment fragment = fragmentResource.getSiteFragment(
+				testGroup.getExternalReferenceCode(),
+				fragmentExternalReferenceCode);
+
+			Thumbnail thumbnail = fragment.getThumbnail();
+
+			String url = thumbnail.getUrl();
+
+			if (url != null) {
+				return url;
+			}
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					"Thumbnail URL still null for fragment " +
+						fragmentExternalReferenceCode + "; retrying");
+			}
+
+			Thread.sleep(500);
+		}
+
+		throw new AssertionError(
+			"Thumbnail URL did not become non-null within timeout for " +
+				"fragment " + fragmentExternalReferenceCode);
 	}
 
 	private Fragment _postSiteFragment(Fragment fragment) throws Exception {
@@ -462,6 +628,34 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 	private void _testGetSiteFragmentDraft() throws Exception {
 		_testGetSiteFragment(false, true);
+	}
+
+	private void _testGetSiteFragmentThumbnail() throws Exception {
+		Fragment postFragment = _postSiteFragmentSetFragment(randomFragment());
+
+		FragmentEntry fragmentEntry =
+			_fragmentEntryLocalService.getFragmentEntryByExternalReferenceCode(
+				postFragment.getExternalReferenceCode(),
+				testGroup.getGroupId());
+
+		FileEntry fileEntry = _addPortletFileEntry("thumbnail1.png");
+
+		_fragmentEntryLocalService.updateFragmentEntry(
+			fragmentEntry.getFragmentEntryId(), fileEntry.getFileEntryId());
+
+		Fragment getFragment = fragmentResource.getSiteFragment(
+			testGroup.getExternalReferenceCode(),
+			postFragment.getExternalReferenceCode());
+
+		Assert.assertNull(getFragment.getThumbnail());
+
+		FragmentResource fragmentResource = _getFragmentResource("thumbnail");
+
+		_assertThumbnail(
+			_thumbnail1Bytes, fileEntry.getExternalReferenceCode(),
+			fragmentResource.getSiteFragment(
+				testGroup.getExternalReferenceCode(),
+				postFragment.getExternalReferenceCode()));
 	}
 
 	private void _testPostFragmentApproved(
@@ -1233,6 +1427,12 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		};
 	}
 
+	private static final Log _log = LogFactoryUtil.getLog(
+		FragmentResourceTest.class);
+
+	private static String _authorization;
+	private static byte[] _thumbnail1Bytes;
+
 	private FragmentCollection _fragmentCollection;
 
 	@Inject
@@ -1243,6 +1443,9 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 	@Inject
 	private Language _language;
+
+	@Inject
+	private PortletFileRepository _portletFileRepository;
 
 	@Inject
 	private UserLocalService _userLocalService;
