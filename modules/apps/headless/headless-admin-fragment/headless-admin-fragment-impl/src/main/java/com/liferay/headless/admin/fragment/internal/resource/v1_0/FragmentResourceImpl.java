@@ -6,6 +6,7 @@
 package com.liferay.headless.admin.fragment.internal.resource.v1_0;
 
 import com.liferay.fragment.constants.FragmentConstants;
+import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.exception.RequiredFragmentEntryVersionException;
 import com.liferay.fragment.exception.UnsupportedUnpublishFragmentEntryOperationException;
 import com.liferay.fragment.model.FragmentCollection;
@@ -17,10 +18,12 @@ import com.liferay.fragment.service.FragmentEntryService;
 import com.liferay.headless.admin.fragment.dto.v1_0.Fragment;
 import com.liferay.headless.admin.fragment.dto.v1_0.FragmentSet;
 import com.liferay.headless.admin.fragment.dto.v1_0.FragmentVersion;
+import com.liferay.headless.admin.fragment.dto.v1_0.Thumbnail;
 import com.liferay.headless.admin.fragment.internal.resource.v1_0.util.FragmentSetUtil;
 import com.liferay.headless.admin.fragment.internal.resource.v1_0.util.ServiceContextUtil;
 import com.liferay.headless.admin.fragment.internal.util.EnabledUtil;
 import com.liferay.headless.admin.fragment.resource.v1_0.FragmentResource;
+import com.liferay.headless.common.spi.util.FileEntryUtil;
 import com.liferay.headless.common.spi.util.GroupUtil;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.language.Language;
@@ -232,7 +235,8 @@ public class FragmentResourceImpl extends BaseFragmentResourceImpl {
 				approvedFragmentVersion.getJs(),
 				GetterUtil.getBoolean(fragment.getCacheable()),
 				approvedFragmentVersion.getConfiguration(), fragment.getIcon(),
-				0L, GetterUtil.getBoolean(fragment.getMarketplace()),
+				_getPreviewFileEntryId(fragment, groupId, serviceContext),
+				GetterUtil.getBoolean(fragment.getMarketplace()),
 				GetterUtil.getBoolean(fragment.getReadOnly()),
 				FragmentConstants.TYPE_COMPONENT, null,
 				WorkflowConstants.STATUS_APPROVED,
@@ -253,7 +257,8 @@ public class FragmentResourceImpl extends BaseFragmentResourceImpl {
 				fragment.getName(), draftFragmentVersion.getCss(),
 				draftFragmentVersion.getHtml(), draftFragmentVersion.getJs(),
 				GetterUtil.getBoolean(fragment.getCacheable()),
-				draftFragmentVersion.getConfiguration(), fragment.getIcon(), 0L,
+				draftFragmentVersion.getConfiguration(), fragment.getIcon(),
+				_getPreviewFileEntryId(fragment, groupId, serviceContext),
 				GetterUtil.getBoolean(fragment.getMarketplace()),
 				GetterUtil.getBoolean(fragment.getReadOnly()),
 				FragmentConstants.TYPE_COMPONENT, null,
@@ -268,7 +273,8 @@ public class FragmentResourceImpl extends BaseFragmentResourceImpl {
 				externalReferenceCode, groupId,
 				fragmentCollection.getFragmentCollectionId(), fragment.getKey(),
 				fragment.getName(), null, null, null,
-				GetterUtil.getBoolean(fragment.getCacheable()), null, null, 0L,
+				GetterUtil.getBoolean(fragment.getCacheable()), null, null,
+				_getPreviewFileEntryId(fragment, groupId, serviceContext),
 				GetterUtil.getBoolean(fragment.getMarketplace()),
 				GetterUtil.getBoolean(fragment.getReadOnly()),
 				FragmentConstants.TYPE_COMPONENT, null,
@@ -339,6 +345,23 @@ public class FragmentResourceImpl extends BaseFragmentResourceImpl {
 				fragmentSet.getDateModified(), contextUser.getUserId()));
 	}
 
+	private long _getPreviewFileEntryId(
+			Fragment fragment, long groupId, ServiceContext serviceContext)
+		throws Exception {
+
+		Thumbnail thumbnail = fragment.getThumbnail();
+
+		if (thumbnail == null) {
+			return 0L;
+		}
+
+		return FileEntryUtil.getPreviewFileEntryId(
+			thumbnail.getExternalReferenceCode(), thumbnail.getFileBase64(),
+			groupId, FragmentPortletKeys.FRAGMENT,
+			FragmentEntry.class.getSimpleName(), serviceContext,
+			thumbnail.getUrl());
+	}
+
 	private Fragment _toFragment(FragmentEntry fragmentEntry) throws Exception {
 		return _fragmentDTOConverter.toDTO(
 			new DefaultDTOConverterContext(
@@ -407,6 +430,13 @@ public class FragmentResourceImpl extends BaseFragmentResourceImpl {
 			fragmentEntryId = draftFragmentEntry.getFragmentEntryId();
 		}
 
+		long previewFileEntryId = _getPreviewFileEntryId(
+			fragment, groupId,
+			ServiceContextUtil.getServiceContext(
+				contextCompany.getCompanyId(), fragment.getDateCreated(),
+				groupId, contextHttpServletRequest, fragment.getDateModified(),
+				contextUser.getUserId()));
+
 		if (approvedFragmentVersion != null) {
 			updatedFragmentEntry = _fragmentEntryService.updateFragmentEntry(
 				fragmentEntryId, fragmentCollectionId, fragment.getName(),
@@ -415,7 +445,7 @@ public class FragmentResourceImpl extends BaseFragmentResourceImpl {
 				approvedFragmentVersion.getJs(),
 				GetterUtil.getBoolean(fragment.getCacheable()),
 				approvedFragmentVersion.getConfiguration(), fragment.getIcon(),
-				fragmentEntry.getPreviewFileEntryId(),
+				previewFileEntryId,
 				GetterUtil.getBoolean(fragment.getReadOnly()),
 				fragmentEntry.getTypeOptions(),
 				WorkflowConstants.STATUS_APPROVED);
@@ -433,7 +463,7 @@ public class FragmentResourceImpl extends BaseFragmentResourceImpl {
 				draftFragmentVersion.getJs(),
 				GetterUtil.getBoolean(fragment.getCacheable()),
 				draftFragmentVersion.getConfiguration(), fragment.getIcon(),
-				fragmentEntry.getPreviewFileEntryId(),
+				previewFileEntryId,
 				GetterUtil.getBoolean(fragment.getReadOnly()),
 				fragmentEntry.getTypeOptions(), WorkflowConstants.STATUS_DRAFT);
 
