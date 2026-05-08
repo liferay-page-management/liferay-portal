@@ -579,6 +579,52 @@ public class Fragment implements Serializable {
 	private Supplier<Boolean> _readOnlySupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The fragment's thumbnail. On read, returned only when `nestedFields=thumbnail` is requested. On POST or PUT, omitting `thumbnail` clears any previously bound preview."
+	)
+	@Valid
+	public Thumbnail getThumbnail() {
+		if (_thumbnailSupplier != null) {
+			thumbnail = _thumbnailSupplier.get();
+
+			_thumbnailSupplier = null;
+		}
+
+		return thumbnail;
+	}
+
+	public void setThumbnail(Thumbnail thumbnail) {
+		this.thumbnail = thumbnail;
+
+		_thumbnailSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setThumbnail(
+		UnsafeSupplier<Thumbnail, Exception> thumbnailUnsafeSupplier) {
+
+		_thumbnailSupplier = () -> {
+			try {
+				return thumbnailUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The fragment's thumbnail. On read, returned only when `nestedFields=thumbnail` is requested. On POST or PUT, omitting `thumbnail` clears any previously bound preview."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Thumbnail thumbnail;
+
+	@JsonIgnore
+	private Supplier<Thumbnail> _thumbnailSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The fragment's type."
 	)
 	@JsonGetter("type")
@@ -840,6 +886,18 @@ public class Fragment implements Serializable {
 			sb.append(readOnly);
 		}
 
+		Thumbnail thumbnail = getThumbnail();
+
+		if (thumbnail != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"thumbnail\": ");
+
+			sb.append(String.valueOf(thumbnail));
+		}
+
 		Type type = getType();
 
 		if (type != null) {
@@ -993,4 +1051,4 @@ public class Fragment implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1029568033
+// LIFERAY-REST-BUILDER-HASH:77388184

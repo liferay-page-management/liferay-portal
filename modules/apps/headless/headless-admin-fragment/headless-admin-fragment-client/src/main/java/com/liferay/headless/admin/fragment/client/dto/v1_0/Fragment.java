@@ -273,6 +273,27 @@ public class Fragment implements Cloneable, Serializable {
 
 	protected Boolean readOnly;
 
+	public Thumbnail getThumbnail() {
+		return thumbnail;
+	}
+
+	public void setThumbnail(Thumbnail thumbnail) {
+		this.thumbnail = thumbnail;
+	}
+
+	public void setThumbnail(
+		UnsafeSupplier<Thumbnail, Exception> thumbnailUnsafeSupplier) {
+
+		try {
+			thumbnail = thumbnailUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Thumbnail thumbnail;
+
 	public Type getType() {
 		return type;
 	}
@@ -365,4 +386,4 @@ public class Fragment implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1435204289
+// LIFERAY-REST-BUILDER-HASH:1550908414

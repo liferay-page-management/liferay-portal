@@ -1,0 +1,361 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.headless.admin.fragment.dto.v1_0;
+
+import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import com.liferay.petra.function.UnsafeSupplier;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
+import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
+import com.liferay.portal.vulcan.util.ObjectMapperUtil;
+
+import jakarta.annotation.Generated;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
+
+import java.io.Serializable;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Supplier;
+
+/**
+ * @author Rubén Pulido
+ * @generated
+ */
+@Generated("")
+@GraphQLName(
+	description = "A reference to a thumbnail file. On read, `externalReferenceCode` and `url` are populated from the underlying file entry; during a staging export, `url` is a `lar://` URL pointing at bytes embedded in the LAR archive. On write, the binary source is resolved by the precedence `externalReferenceCode` → `fileBase64` → `url`. An `externalReferenceCode` that resolves to an existing file binds it; otherwise a new file is materialized from `fileBase64` (or downloaded from `url` when `fileBase64` is absent), carrying the supplied or server-generated `externalReferenceCode`.",
+	value = "Thumbnail"
+)
+@JsonFilter("Liferay.Vulcan")
+@XmlRootElement(name = "Thumbnail")
+public class Thumbnail implements Serializable {
+
+	public static Thumbnail toDTO(String json) {
+		return ObjectMapperUtil.readValue(Thumbnail.class, json);
+	}
+
+	public static Thumbnail unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Thumbnail.class, json);
+	}
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The thumbnail file's external reference code. On write, the canonical identifier of the file to bind."
+	)
+	public String getExternalReferenceCode() {
+		if (_externalReferenceCodeSupplier != null) {
+			externalReferenceCode = _externalReferenceCodeSupplier.get();
+
+			_externalReferenceCodeSupplier = null;
+		}
+
+		return externalReferenceCode;
+	}
+
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		this.externalReferenceCode = externalReferenceCode;
+
+		_externalReferenceCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setExternalReferenceCode(
+		UnsafeSupplier<String, Exception> externalReferenceCodeUnsafeSupplier) {
+
+		_externalReferenceCodeSupplier = () -> {
+			try {
+				return externalReferenceCodeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The thumbnail file's external reference code. On write, the canonical identifier of the file to bind."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String externalReferenceCode;
+
+	@JsonIgnore
+	private Supplier<String> _externalReferenceCodeSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Base64-encoded file content. Used to create a new file when `externalReferenceCode` does not resolve in the destination."
+	)
+	public String getFileBase64() {
+		if (_fileBase64Supplier != null) {
+			fileBase64 = _fileBase64Supplier.get();
+
+			_fileBase64Supplier = null;
+		}
+
+		return fileBase64;
+	}
+
+	public void setFileBase64(String fileBase64) {
+		this.fileBase64 = fileBase64;
+
+		_fileBase64Supplier = null;
+	}
+
+	@JsonIgnore
+	public void setFileBase64(
+		UnsafeSupplier<String, Exception> fileBase64UnsafeSupplier) {
+
+		_fileBase64Supplier = () -> {
+			try {
+				return fileBase64UnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Base64-encoded file content. Used to create a new file when `externalReferenceCode` does not resolve in the destination."
+	)
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	protected String fileBase64;
+
+	@JsonIgnore
+	private Supplier<String> _fileBase64Supplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "A URL the thumbnail can be fetched from. On read, the canonical URL of the stored file. On write, used to download bytes (supports `http://`, `https://` and `lar://`) when `externalReferenceCode` does not resolve and `fileBase64` is absent."
+	)
+	public String getUrl() {
+		if (_urlSupplier != null) {
+			url = _urlSupplier.get();
+
+			_urlSupplier = null;
+		}
+
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+
+		_urlSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setUrl(UnsafeSupplier<String, Exception> urlUnsafeSupplier) {
+		_urlSupplier = () -> {
+			try {
+				return urlUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "A URL the thumbnail can be fetched from. On read, the canonical URL of the stored file. On write, used to download bytes (supports `http://`, `https://` and `lar://`) when `externalReferenceCode` does not resolve and `fileBase64` is absent."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String url;
+
+	@JsonIgnore
+	private Supplier<String> _urlSupplier;
+
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+
+		if (!(object instanceof Thumbnail)) {
+			return false;
+		}
+
+		Thumbnail thumbnail = (Thumbnail)object;
+
+		return Objects.equals(toString(), thumbnail.toString());
+	}
+
+	@Override
+	public int hashCode() {
+		String string = toString();
+
+		return string.hashCode();
+	}
+
+	public String toString() {
+		StringBundler sb = new StringBundler();
+
+		sb.append("{");
+
+		String externalReferenceCode = getExternalReferenceCode();
+
+		if (externalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"externalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(externalReferenceCode));
+
+			sb.append("\"");
+		}
+
+		String fileBase64 = getFileBase64();
+
+		if (fileBase64 != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"fileBase64\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(fileBase64));
+
+			sb.append("\"");
+		}
+
+		String url = getUrl();
+
+		if (url != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"url\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(url));
+
+			sb.append("\"");
+		}
+
+		sb.append("}");
+
+		return sb.toString();
+	}
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		accessMode = io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY,
+		defaultValue = "com.liferay.headless.admin.fragment.dto.v1_0.Thumbnail",
+		name = "x-class-name"
+	)
+	public String xClassName;
+
+	private static String _escape(Object object) {
+		return StringUtil.replace(
+			String.valueOf(object), _JSON_ESCAPE_STRINGS[0],
+			_JSON_ESCAPE_STRINGS[1]);
+	}
+
+	private static boolean _isArray(Object value) {
+		if (value == null) {
+			return false;
+		}
+
+		Class<?> clazz = value.getClass();
+
+		return clazz.isArray();
+	}
+
+	private static String _toJSON(Map<String, ?> map) {
+		StringBuilder sb = new StringBuilder("{");
+
+		@SuppressWarnings("unchecked")
+		Set set = map.entrySet();
+
+		@SuppressWarnings("unchecked")
+		Iterator<Map.Entry<String, ?>> iterator = set.iterator();
+
+		while (iterator.hasNext()) {
+			Map.Entry<String, ?> entry = iterator.next();
+
+			sb.append("\"");
+			sb.append(_escape(entry.getKey()));
+			sb.append("\": ");
+
+			Object value = entry.getValue();
+
+			if (_isArray(value)) {
+				sb.append("[");
+
+				Object[] valueArray = (Object[])value;
+
+				for (int i = 0; i < valueArray.length; i++) {
+					if (valueArray[i] instanceof Map) {
+						sb.append(_toJSON((Map<String, ?>)valueArray[i]));
+					}
+					else if (valueArray[i] instanceof String) {
+						sb.append("\"");
+						sb.append(valueArray[i]);
+						sb.append("\"");
+					}
+					else {
+						sb.append(valueArray[i]);
+					}
+
+					if ((i + 1) < valueArray.length) {
+						sb.append(", ");
+					}
+				}
+
+				sb.append("]");
+			}
+			else if (value instanceof Map) {
+				sb.append(_toJSON((Map<String, ?>)value));
+			}
+			else if (value instanceof String) {
+				sb.append("\"");
+				sb.append(_escape(value));
+				sb.append("\"");
+			}
+			else {
+				sb.append(value);
+			}
+
+			if (iterator.hasNext()) {
+				sb.append(", ");
+			}
+		}
+
+		sb.append("}");
+
+		return sb.toString();
+	}
+
+	private static final String[][] _JSON_ESCAPE_STRINGS = {
+		{"\\", "\"", "\b", "\f", "\n", "\r", "\t"},
+		{"\\\\", "\\\"", "\\b", "\\f", "\\n", "\\r", "\\t"}
+	};
+
+	private Map<String, Serializable> _extendedProperties;
+
+}
+// LIFERAY-REST-BUILDER-HASH:1383750197
