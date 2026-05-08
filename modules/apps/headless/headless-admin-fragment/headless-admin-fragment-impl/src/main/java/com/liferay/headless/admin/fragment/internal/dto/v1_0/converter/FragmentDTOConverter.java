@@ -13,6 +13,7 @@ import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.headless.admin.fragment.dto.v1_0.Fragment;
 import com.liferay.headless.admin.fragment.dto.v1_0.FragmentSet;
 import com.liferay.headless.admin.fragment.dto.v1_0.FragmentVersion;
+import com.liferay.headless.admin.fragment.internal.dto.v1_0.util.ThumbnailUtil;
 import com.liferay.headless.admin.user.dto.v1_0.Creator;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.User;
@@ -20,6 +21,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
+import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,6 +132,11 @@ public class FragmentDTOConverter
 				setMarketplace(fragmentEntry::isMarketplace);
 				setName(fragmentEntry::getName);
 				setReadOnly(fragmentEntry::isReadOnly);
+				setThumbnail(
+					() -> NestedFieldsSupplier.supply(
+						"thumbnail",
+						fieldName -> ThumbnailUtil.getThumbnail(
+							fragmentEntry.getPreviewFileEntryId())));
 				setType(
 					() -> Fragment.Type.create(
 						StringUtil.upperCaseFirstLetter(
