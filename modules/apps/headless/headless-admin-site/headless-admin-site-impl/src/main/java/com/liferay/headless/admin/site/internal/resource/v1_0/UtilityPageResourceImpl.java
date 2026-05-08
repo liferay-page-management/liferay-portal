@@ -11,6 +11,7 @@ import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngin
 import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
 import com.liferay.headless.admin.site.dto.v1_0.ContentPageSpecification;
 import com.liferay.headless.admin.site.dto.v1_0.PageSpecification;
+import com.liferay.headless.admin.site.dto.v1_0.ThumbnailURLReference;
 import com.liferay.headless.admin.site.dto.v1_0.UtilityPage;
 import com.liferay.headless.admin.site.dto.v1_0.UtilityPageSEOSettings;
 import com.liferay.headless.admin.site.dto.v1_0.UtilityPageSettings;
@@ -38,6 +39,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.aggregation.Aggregation;
@@ -322,9 +324,20 @@ public class UtilityPageResourceImpl
 						layoutUtilityPageEntry.getLayoutUtilityPageEntryId());
 		}
 
-		long previewFileEntryId = FileEntryUtil.getPreviewFileEntryId(
-			groupId, getResourceName(), serviceContext,
-			utilityPage.getThumbnailURLReference());
+		long previewFileEntryId = 0;
+
+		ThumbnailURLReference thumbnailURLReference =
+			utilityPage.getThumbnailURLReference();
+
+		if ((thumbnailURLReference != null) &&
+			Validator.isNotNull(
+				thumbnailURLReference.getExternalReferenceCode())) {
+
+			previewFileEntryId = FileEntryUtil.getPreviewFileEntryId(
+				thumbnailURLReference.getExternalReferenceCode(), null, groupId,
+				LayoutAdminPortletKeys.GROUP_PAGES, getResourceName(),
+				serviceContext, thumbnailURLReference.getUrl());
+		}
 
 		if (previewFileEntryId !=
 				layoutUtilityPageEntry.getPreviewFileEntryId()) {
@@ -390,15 +403,28 @@ public class UtilityPageResourceImpl
 		ServiceContext serviceContext = _getServiceContext(
 			groupId, utilityPage);
 
+		ThumbnailURLReference thumbnailURLReference =
+			utilityPage.getThumbnailURLReference();
+
+		long previewFileEntryId = 0;
+
+		if ((thumbnailURLReference != null) &&
+			Validator.isNotNull(
+				thumbnailURLReference.getExternalReferenceCode())) {
+
+			previewFileEntryId = FileEntryUtil.getPreviewFileEntryId(
+				thumbnailURLReference.getExternalReferenceCode(), null, groupId,
+				LayoutAdminPortletKeys.GROUP_PAGES, getResourceName(),
+				serviceContext, thumbnailURLReference.getUrl());
+		}
+
 		LayoutUtilityPageEntry layoutUtilityPageEntry =
 			_layoutUtilityPageEntryService.addLayoutUtilityPageEntry(
 				utilityPage.getExternalReferenceCode(), groupId,
 				_getLayoutPlid(groupId, utilityPage, serviceContext),
-				FileEntryUtil.getPreviewFileEntryId(
-					groupId, getResourceName(), serviceContext,
-					utilityPage.getThumbnailURLReference()),
-				utilityPage.getMarkedAsDefault(), utilityPage.getName(),
-				_getType(utilityPage.getType()), null, serviceContext);
+				previewFileEntryId, utilityPage.getMarkedAsDefault(),
+				utilityPage.getName(), _getType(utilityPage.getType()), null,
+				serviceContext);
 
 		return _utilityPageDTOConverter.toDTO(
 			DTOConverterContextUtil.getDTOConverterContext(

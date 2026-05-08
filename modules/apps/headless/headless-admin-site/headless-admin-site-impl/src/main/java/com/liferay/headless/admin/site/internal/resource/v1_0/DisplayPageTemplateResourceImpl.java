@@ -18,6 +18,7 @@ import com.liferay.headless.admin.site.dto.v1_0.DisplayPageTemplateSEOSettings;
 import com.liferay.headless.admin.site.dto.v1_0.DisplayPageTemplateSettings;
 import com.liferay.headless.admin.site.dto.v1_0.PageSpecification;
 import com.liferay.headless.admin.site.dto.v1_0.SitemapSettings;
+import com.liferay.headless.admin.site.dto.v1_0.ThumbnailURLReference;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.DTOConverterContextUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.SubtypeUtil;
 import com.liferay.headless.admin.site.internal.odata.entity.v1_0.DisplayPageTemplateEntityModel;
@@ -452,10 +453,21 @@ public class DisplayPageTemplateResourceImpl
 				classNameId, classTypeKey);
 		}
 
-		long previewFileEntryId = FileEntryUtil.getPreviewFileEntryId(
-			groupId, getResourceName(),
-			_getServiceContext(displayPageTemplate, groupId),
-			displayPageTemplate.getThumbnailURLReference());
+		long previewFileEntryId = 0;
+
+		ThumbnailURLReference thumbnailURLReference =
+			displayPageTemplate.getThumbnailURLReference();
+
+		if ((thumbnailURLReference != null) &&
+			Validator.isNotNull(
+				thumbnailURLReference.getExternalReferenceCode())) {
+
+			previewFileEntryId = FileEntryUtil.getPreviewFileEntryId(
+				thumbnailURLReference.getExternalReferenceCode(), null, groupId,
+				LayoutAdminPortletKeys.GROUP_PAGES, getResourceName(),
+				_getServiceContext(displayPageTemplate, groupId),
+				thumbnailURLReference.getUrl());
+		}
 
 		if (previewFileEntryId !=
 				layoutPageTemplateEntry.getPreviewFileEntryId()) {
@@ -616,6 +628,22 @@ public class DisplayPageTemplateResourceImpl
 				displayPageTemplate.getFriendlyUrlPath_i18n()),
 			WorkflowConstants.STATUS_APPROVED, serviceContext);
 
+		ThumbnailURLReference thumbnailURLReference =
+			displayPageTemplate.getThumbnailURLReference();
+
+		long previewFileEntryId = 0;
+
+		if ((thumbnailURLReference != null) &&
+			Validator.isNotNull(
+				thumbnailURLReference.getExternalReferenceCode())) {
+
+			previewFileEntryId = FileEntryUtil.getPreviewFileEntryId(
+				thumbnailURLReference.getExternalReferenceCode(), null, groupId,
+				LayoutAdminPortletKeys.GROUP_PAGES, getResourceName(),
+				_getServiceContext(displayPageTemplate, groupId),
+				thumbnailURLReference.getUrl());
+		}
+
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
 				displayPageTemplate.getExternalReferenceCode(), groupId,
@@ -629,10 +657,7 @@ public class DisplayPageTemplateResourceImpl
 						getSubTypeExternalReference()),
 				displayPageTemplate.getName(),
 				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
-				FileEntryUtil.getPreviewFileEntryId(
-					groupId, getResourceName(),
-					_getServiceContext(displayPageTemplate, groupId),
-					displayPageTemplate.getThumbnailURLReference()),
+				previewFileEntryId,
 				GetterUtil.getBoolean(displayPageTemplate.getMarkedAsDefault()),
 				0L, layout.getPlid(), 0L,
 				PageSpecificationUtil.getPublishedStatus(
