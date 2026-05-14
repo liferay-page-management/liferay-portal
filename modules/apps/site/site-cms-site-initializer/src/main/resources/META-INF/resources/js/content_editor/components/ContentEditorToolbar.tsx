@@ -31,6 +31,7 @@ const STATUS_DRAFT_CODE = 2;
 
 export default function ContentEditorToolbar({
 	backURL,
+	defaultLanguageId,
 	displayDate: initialDisplayDate,
 	getPreviewDataURL,
 	hasWorkflow,
@@ -39,6 +40,7 @@ export default function ContentEditorToolbar({
 	type,
 }: {
 	backURL: string;
+	defaultLanguageId: Liferay.Language.Locale;
 	displayDate: string;
 	getPreviewDataURL: string;
 	hasWorkflow: boolean;
