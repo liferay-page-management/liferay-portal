@@ -70,6 +70,7 @@ public class VariableNameCheck extends BaseCheck {
 			if (firstChildDetailAST.getType() != TokenTypes.DOT) {
 				_checkCountVariableName(detailAST, name, typeName);
 				_checkInstanceVariableName(detailAST, name, typeName);
+				_checkStringSuffixVariableName(detailAST, name, typeName);
 				_checkTypeName(detailAST, name, typeName);
 				_checkTypo(detailAST, name, typeName, true);
 			}
@@ -467,6 +468,43 @@ public class VariableNameCheck extends BaseCheck {
 			log(
 				detailAST, MSG_RENAME_VARIABLE, variableName,
 				"_" + expectedVariableName);
+		}
+	}
+
+	private void _checkStringSuffixVariableName(
+		DetailAST detailAST, String variableName, String typeName) {
+
+		if (!typeName.equals("String") ||
+			(detailAST.getType() != TokenTypes.VARIABLE_DEF)) {
+
+			return;
+		}
+
+		DetailAST parentDetailAST = detailAST.getParent();
+
+		if (parentDetailAST.getType() != TokenTypes.SLIST) {
+			return;
+		}
+
+		String trailingDigits = _getTrailingDigits(variableName);
+
+		String trimmedName = StringUtil.replaceLast(
+			variableName, trailingDigits, StringPool.BLANK);
+
+		for (String enforceStringSuffixTypeName :
+				getAttributeValues(_ENFORCE_STRING_SUFFIX_TYPE_NAMES_KEY)) {
+
+			String expectedVariableName = getExpectedVariableName(
+				enforceStringSuffixTypeName);
+
+			if (trimmedName.equals(expectedVariableName)) {
+				log(
+					detailAST, MSG_RENAME_VARIABLE, variableName,
+					StringBundler.concat(
+						expectedVariableName, "String", trailingDigits));
+
+				return;
+			}
 		}
 	}
 
@@ -1049,6 +1087,9 @@ public class VariableNameCheck extends BaseCheck {
 
 	private static final String _ENFORCE_SHORT_TYPE_NAMES_KEY =
 		"enforceShortTypeNames";
+
+	private static final String _ENFORCE_STRING_SUFFIX_TYPE_NAMES_KEY =
+		"enforceStringSuffixTypeNames";
 
 	private static final String _ENFORCE_TABLE_SCHEMA_FIELD_TYPE_NAMES_KEY =
 		"enforceTableSchemaFieldTypeNames";

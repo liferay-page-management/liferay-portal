@@ -1098,6 +1098,7 @@
 			<property name="allowedVariableNames" value="bitMode,metadata,superClass,userName" />
 			<property name="category" value="Naming Conventions" />
 			<property name="description" value="Checks that variable names follow naming conventions." />
+			<property name="enforceStringSuffixTypeNames" value="PortletURL" />
 			<property name="enforceTypeNames" value="" />
 			<message key="variable.incorrect.count" value="Rename variable &quot;{0}&quot; to &quot;{1}&quot; (and increment counts for other variables &quot;{0}*&quot;)" />
 			<message key="variable.incorrect.ending.1" value="Name of variable with type &quot;{0}&quot; should end with &quot;{1}&quot;" />
