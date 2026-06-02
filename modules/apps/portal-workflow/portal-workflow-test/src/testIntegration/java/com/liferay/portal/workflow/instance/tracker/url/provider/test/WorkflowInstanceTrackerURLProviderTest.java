@@ -104,7 +104,7 @@ public class WorkflowInstanceTrackerURLProviderTest {
 			_workflowInstanceLinkLocalService.getWorkflowInstanceLink(
 				TestPropsValues.getCompanyId(), 0, clazz.getName(), 1);
 
-		String portletURL = PortletURLBuilder.create(
+		String portletURLString = PortletURLBuilder.create(
 			_portal.getControlPanelPortletURL(
 				mockHttpServletRequest, null,
 				_WORKFLOW_INSTANCE_TRACKER_PORTLET, 0, 0,
@@ -121,12 +121,12 @@ public class WorkflowInstanceTrackerURLProviderTest {
 				"title: '",
 				UnicodeLanguageUtil.get(
 					mockHttpServletRequest, "track-workflow"),
-				"', url: '", portletURL, "'});;"),
+				"', url: '", portletURLString, "'});;"),
 			_workflowInstanceTrackerURLProvider.getURL(
 				object, mockHttpServletRequest, clazz, true));
 
 		Assert.assertEquals(
-			portletURL,
+			portletURLString,
 			_workflowInstanceTrackerURLProvider.getURL(
 				object, mockHttpServletRequest, clazz, false));
 

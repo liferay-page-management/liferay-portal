@@ -149,13 +149,14 @@ public class LayoutsAdminDisplayContextTest {
 
 		Layout layout = _getContentLayout(true, true);
 
-		String portletURL = String.valueOf(
+		String portletURLString = String.valueOf(
 			layoutsAdminDisplayContext.getLayoutScreenNavigationPortletURL(
 				layout.getPlid()));
 
 		Assert.assertTrue(
-			portletURL,
-			StringUtil.contains(portletURL, "param_privateLayout=true", ";"));
+			portletURLString,
+			StringUtil.contains(
+				portletURLString, "param_privateLayout=true", ";"));
 	}
 
 	private void _assertGetEditOrViewLayoutURL(Layout layout, String layoutMode)

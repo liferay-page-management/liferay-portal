@@ -842,7 +842,7 @@ public class CommerceOrderContentDisplayContext {
 		}
 
 		if (!commerceOrder.isOpen()) {
-			String portletURL = PortletURLBuilder.createActionURL(
+			String portletURLString = PortletURLBuilder.createActionURL(
 				_cpRequestHelper.getLiferayPortletResponse()
 			).setActionName(
 				"/commerce_open_order_content/edit_commerce_order"
@@ -854,7 +854,7 @@ public class CommerceOrderContentDisplayContext {
 
 			headerActionModels.add(
 				new HeaderActionModel(
-					"btn-primary", null, portletURL, null, "reorder"));
+					"btn-primary", null, portletURLString, null, "reorder"));
 		}
 
 		List<CommerceOrderStatus> commerceOrderStatuses =

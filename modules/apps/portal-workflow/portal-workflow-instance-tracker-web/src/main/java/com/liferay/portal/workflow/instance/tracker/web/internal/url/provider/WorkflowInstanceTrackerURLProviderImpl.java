@@ -38,7 +38,7 @@ public class WorkflowInstanceTrackerURLProviderImpl
 		Object bean, HttpServletRequest httpServletRequest, Class<?> modelClass,
 		boolean useDialog) {
 
-		String portletURL = PortletURLBuilder.create(
+		String portletURLString = PortletURLBuilder.create(
 			_portal.getControlPanelPortletURL(
 				httpServletRequest, null,
 				WorkflowPortletKeys.WORKFLOW_INSTANCE_TRACKER, 0, 0,
@@ -74,10 +74,10 @@ public class WorkflowInstanceTrackerURLProviderImpl
 				"javascript:",
 				"Liferay.Util.openModal({iframeBodyCssClass: '', title: '",
 				UnicodeLanguageUtil.get(httpServletRequest, "track-workflow"),
-				"', url: '", portletURL, "'});;");
+				"', url: '", portletURLString, "'});;");
 		}
 
-		return portletURL;
+		return portletURLString;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

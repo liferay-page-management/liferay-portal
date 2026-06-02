@@ -92,40 +92,42 @@ public class CommerceThemeMiniumHttpHelper {
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		String portletURL = _getPortletURL(
+		String portletURLString = _getPortletURLString(
 			"/dashboard", httpServletRequest, themeDisplay,
 			CommercePortletKeys.COMMERCE_DASHBOARD_FORECASTS_CHART);
 
-		if (Validator.isBlank(portletURL)) {
-			portletURL = _getPortletURL(
+		if (Validator.isBlank(portletURLString)) {
+			portletURLString = _getPortletURLString(
 				"/catalog", httpServletRequest, themeDisplay,
 				CPPortletKeys.CP_SEARCH_RESULTS);
 		}
 
 		List<Layout> layouts = themeDisplay.getLayouts();
 
-		if (Validator.isBlank(portletURL) && ListUtil.isNotEmpty(layouts)) {
+		if (Validator.isBlank(portletURLString) &&
+			ListUtil.isNotEmpty(layouts)) {
+
 			return _portal.getLayoutURL(layouts.get(0), themeDisplay);
 		}
 
-		if (!Validator.isBlank(portletURL) &&
-			portletURL.contains(StringPool.QUESTION)) {
+		if (!Validator.isBlank(portletURLString) &&
+			portletURLString.contains(StringPool.QUESTION)) {
 
-			portletURL = portletURL.substring(
-				0, portletURL.lastIndexOf(StringPool.QUESTION));
+			portletURLString = portletURLString.substring(
+				0, portletURLString.lastIndexOf(StringPool.QUESTION));
 		}
 
-		if (!Validator.isBlank(portletURL) &&
+		if (!Validator.isBlank(portletURLString) &&
 			Validator.isNotNull(themeDisplay.getDoAsUserId())) {
 
-			portletURL = _portal.addPreservedParameters(
-				themeDisplay, portletURL, false, true);
+			portletURLString = _portal.addPreservedParameters(
+				themeDisplay, portletURLString, false, true);
 		}
 
-		return portletURL;
+		return portletURLString;
 	}
 
-	private String _getPortletURL(
+	private String _getPortletURLString(
 			String friendlyURL, HttpServletRequest httpServletRequest,
 			ThemeDisplay themeDisplay, String portletId)
 		throws PortalException {
