@@ -121,7 +121,7 @@ export class PagesAdminPage {
 		await this.clickOnJavaScriptClientExtensionsTab();
 
 		await this.page
-			.getByRole('button', {name: 'Add JavaScript Client Extensions'})
+			.getByRole('button', {name: 'Add JavaScripst Client Extensions'})
 			.click();
 
 		await this.page.getByRole('menuitem', {name: 'In Page Head'}).click();
