@@ -13,11 +13,9 @@ import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.headless.admin.fragment.dto.v1_0.Fragment;
 import com.liferay.headless.admin.fragment.dto.v1_0.FragmentSet;
 import com.liferay.headless.admin.fragment.dto.v1_0.FragmentVersion;
+import com.liferay.headless.admin.fragment.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.headless.admin.site.dto.v1_0.util.ThumbnailURLReferenceUtil;
-import com.liferay.headless.admin.user.dto.v1_0.Creator;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
@@ -101,21 +99,7 @@ public class FragmentDTOConverter
 			{
 				setCacheable(fragmentEntry::isCacheable);
 				setCreator(
-					() -> {
-						User user = _userLocalService.fetchUser(
-							fragmentEntry.getUserId());
-
-						if (user == null) {
-							return null;
-						}
-
-						return new Creator() {
-							{
-								setExternalReferenceCode(
-									user::getExternalReferenceCode);
-							}
-						};
-					});
+					() -> CreatorUtil.toCreator(fragmentEntry.getUserId()));
 				setDateCreated(fragmentEntry::getCreateDate);
 				setDateModified(fragmentEntry::getModifiedDate);
 				setExternalReferenceCode(
@@ -174,8 +158,5 @@ public class FragmentDTOConverter
 	)
 	private DTOConverter<FragmentCollection, FragmentSet>
 		_fragmentSetDTOConverter;
-
-	@Reference
-	private UserLocalService _userLocalService;
 
 }
