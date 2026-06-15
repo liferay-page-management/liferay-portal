@@ -94,6 +94,15 @@ public class ResourceFolderResourceTest
 
 	@Override
 	@Test
+	public void testDeleteSiteResourceFolder() throws Exception {
+		super.testDeleteSiteResourceFolder();
+
+		_testDeleteSiteResourceFolderChildResourceFolders();
+		_testDeleteSiteResourceFolderNoPermissionProblemException();
+	}
+
+	@Override
+	@Test
 	public void testGetSiteFragmentSetResourceFoldersPage() throws Exception {
 		super.testGetSiteFragmentSetResourceFoldersPage();
 
@@ -386,6 +395,54 @@ public class ResourceFolderResourceTest
 		resourceFolder.setParentResourceFolder(parentResourceFolder);
 
 		return resourceFolder;
+	}
+
+	private void _testDeleteSiteResourceFolderChildResourceFolders()
+		throws Exception {
+
+		ResourceFolder resourceFolder = _postSiteResourceFolder(
+			_addFragmentCollection(testGroup.getGroupId()));
+
+		ResourceFolder childResourceFolder = _postSiteResourceFolder(
+			resourceFolder);
+
+		resourceFolderResource.deleteSiteResourceFolder(
+			testGroup.getExternalReferenceCode(),
+			resourceFolder.getExternalReferenceCode());
+
+		try {
+			resourceFolderResource.getSiteResourceFolder(
+				testGroup.getExternalReferenceCode(),
+				childResourceFolder.getExternalReferenceCode());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
+	}
+
+	private void _testDeleteSiteResourceFolderNoPermissionProblemException()
+		throws Exception {
+
+		ResourceFolder resourceFolder =
+			resourceFolderResource.postSiteResourceFolder(
+				testGroup.getExternalReferenceCode(), randomResourceFolder());
+
+		try {
+			_resourceFolderResource.deleteSiteResourceFolder(
+				testGroup.getExternalReferenceCode(),
+				resourceFolder.getExternalReferenceCode());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
 	}
 
 	private void _testGetSiteFragmentSetResourceFoldersPage() throws Exception {
