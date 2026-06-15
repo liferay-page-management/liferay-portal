@@ -6,32 +6,49 @@
 package com.liferay.headless.admin.fragment.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.FragmentSet;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.ResourceFolder;
+import com.liferay.headless.admin.fragment.client.problem.Problem;
 import com.liferay.headless.admin.fragment.client.resource.v1_0.ResourceFolderResource;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import java.io.InputStream;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.ZipInputStream;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
@@ -67,6 +84,27 @@ public class ResourceFolderResourceTest
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
+	}
+
+	@Override
+	@Test
+	public void testPostSiteFragmentSetResourceFolder() throws Exception {
+		super.testPostSiteFragmentSetResourceFolder();
+
+		_testPostSiteFragmentSetResourceFolderNoPermissionProblemException();
+	}
+
+	@Override
+	@Test
+	public void testPostSiteResourceFolder() throws Exception {
+		super.testPostSiteResourceFolder();
+
+		_testPostSiteResourceFolder();
+		_testPostSiteResourceFolderBatch();
+		_testPostSiteResourceFolderDuplicateExternalReferenceCodeProblemException();
+		_testPostSiteResourceFolderFragmentSetExternalReferenceCodeNullProblemException();
+		_testPostSiteResourceFolderFragmentSetNonexistingProblemException();
+		_testPostSiteResourceFolderNoPermissionProblemException();
 	}
 
 	@Override
@@ -198,6 +236,38 @@ public class ResourceFolderResourceTest
 		return fragmentCollection.getExternalReferenceCode();
 	}
 
+	private String _exportResourceFoldersToJSON(
+			String siteExternalReferenceCode)
+		throws Exception {
+
+		JSONObject exportTaskJSONObject = _waitForExportFinish(
+			HTTPTestUtil.invokeToJSONObject(
+				null,
+				"headless-admin-fragment/v1.0/sites/" +
+					siteExternalReferenceCode +
+						"/resource-folders/export-batch?contentType=JSON",
+				Http.Method.POST));
+
+		try (InputStream inputStream = HTTPTestUtil.invokeToInputStream(
+				null,
+				StringBundler.concat(
+					"headless-batch-engine/v1.0/export-task",
+					"/by-external-reference-code/",
+					exportTaskJSONObject.getString("externalReferenceCode"),
+					"/content"),
+				HashMapBuilder.put(
+					HttpHeaders.ACCEPT, ContentTypes.APPLICATION_OCTET_STREAM
+				).build(),
+				Http.Method.GET)) {
+
+			ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+
+			zipInputStream.getNextEntry();
+
+			return StringUtil.read(zipInputStream);
+		}
+	}
+
 	private String _getFragmentSetExternalReferenceCode() throws Exception {
 		if (_fragmentSetExternalReferenceCode == null) {
 			_fragmentSetExternalReferenceCode = _addFragmentCollection(
@@ -217,6 +287,243 @@ public class ResourceFolderResourceTest
 		return resourceFolder;
 	}
 
+	private ResourceFolder _randomResourceFolder(
+			ResourceFolder parentResourceFolder)
+		throws Exception {
+
+		ResourceFolder resourceFolder = super.randomResourceFolder();
+
+		resourceFolder.setFragmentSet(parentResourceFolder.getFragmentSet());
+		resourceFolder.setParentResourceFolder(parentResourceFolder);
+
+		return resourceFolder;
+	}
+
+	private void _testPostSiteFragmentSetResourceFolderNoPermissionProblemException()
+		throws Exception {
+
+		String fragmentSetExternalReferenceCode = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		ResourceFolder resourceFolder = new ResourceFolder();
+
+		resourceFolder.setExternalReferenceCode(RandomTestUtil.randomString());
+		resourceFolder.setName(RandomTestUtil.randomString());
+
+		try {
+			_resourceFolderResource.postSiteFragmentSetResourceFolder(
+				testGroup.getExternalReferenceCode(),
+				fragmentSetExternalReferenceCode, resourceFolder);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+	}
+
+	private void _testPostSiteResourceFolder() throws Exception {
+		String fragmentSetExternalReferenceCode = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		ResourceFolder parentResourceFolder = _randomResourceFolder(
+			_toFragmentSet(fragmentSetExternalReferenceCode));
+
+		ResourceFolder postParentResourceFolder =
+			resourceFolderResource.postSiteResourceFolder(
+				testGroup.getExternalReferenceCode(), parentResourceFolder);
+
+		ResourceFolder resourceFolder = _randomResourceFolder(
+			parentResourceFolder);
+
+		ResourceFolder postResourceFolder =
+			resourceFolderResource.postSiteResourceFolder(
+				testGroup.getExternalReferenceCode(), resourceFolder);
+
+		ResourceFolder getResourceFolder =
+			resourceFolderResource.getSiteResourceFolder(
+				testGroup.getExternalReferenceCode(),
+				postResourceFolder.getExternalReferenceCode());
+
+		ResourceFolder getParentResourceFolder =
+			getResourceFolder.getParentResourceFolder();
+
+		FragmentSet getFragmentSet = getResourceFolder.getFragmentSet();
+
+		Assert.assertEquals(
+			fragmentSetExternalReferenceCode,
+			getFragmentSet.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			postParentResourceFolder.getExternalReferenceCode(),
+			getParentResourceFolder.getExternalReferenceCode());
+	}
+
+	private void _testPostSiteResourceFolderBatch() throws Exception {
+		String fragmentSetExternalReferenceCode = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		ResourceFolder parentResourceFolder = _randomResourceFolder(
+			_toFragmentSet(fragmentSetExternalReferenceCode));
+
+		ResourceFolder postParentResourceFolder =
+			resourceFolderResource.postSiteResourceFolder(
+				testGroup.getExternalReferenceCode(), parentResourceFolder);
+
+		ResourceFolder resourceFolder = _randomResourceFolder(
+			parentResourceFolder);
+
+		ResourceFolder postResourceFolder =
+			resourceFolderResource.postSiteResourceFolder(
+				testGroup.getExternalReferenceCode(), resourceFolder);
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
+					true)) {
+
+			waitForFinish(
+				"COMPLETED",
+				HTTPTestUtil.invokeToJSONObject(
+					_exportResourceFoldersToJSON(
+						testGroup.getExternalReferenceCode()),
+					"headless-admin-fragment/v1.0/sites/" +
+						irrelevantGroup.getExternalReferenceCode() +
+							"/resource-folders/batch?createStrategy=INSERT",
+					Http.Method.POST));
+		}
+
+		ResourceFolder importedResourceFolder =
+			resourceFolderResource.getSiteResourceFolder(
+				irrelevantGroup.getExternalReferenceCode(),
+				postResourceFolder.getExternalReferenceCode());
+
+		ResourceFolder importedParentResourceFolder =
+			importedResourceFolder.getParentResourceFolder();
+
+		Assert.assertEquals(
+			postParentResourceFolder.getExternalReferenceCode(),
+			importedParentResourceFolder.getExternalReferenceCode());
+
+		FragmentSet importedFragmentSet =
+			importedResourceFolder.getFragmentSet();
+
+		Assert.assertEquals(
+			fragmentSetExternalReferenceCode,
+			importedFragmentSet.getExternalReferenceCode());
+
+		Assert.assertNotNull(
+			_fragmentCollectionLocalService.
+				fetchFragmentCollectionByExternalReferenceCode(
+					fragmentSetExternalReferenceCode,
+					irrelevantGroup.getGroupId()));
+	}
+
+	private void _testPostSiteResourceFolderDuplicateExternalReferenceCodeProblemException()
+		throws Exception {
+
+		String fragmentSetExternalReferenceCode = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		ResourceFolder postResourceFolder =
+			resourceFolderResource.postSiteResourceFolder(
+				testGroup.getExternalReferenceCode(),
+				_randomResourceFolder(
+					_toFragmentSet(fragmentSetExternalReferenceCode)));
+
+		ResourceFolder resourceFolder = _randomResourceFolder(
+			_toFragmentSet(fragmentSetExternalReferenceCode));
+
+		resourceFolder.setExternalReferenceCode(
+			postResourceFolder.getExternalReferenceCode());
+
+		try {
+			resourceFolderResource.postSiteResourceFolder(
+				testGroup.getExternalReferenceCode(), resourceFolder);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+			Assert.assertEquals(
+				LanguageUtil.get(
+					LocaleUtil.getDefault(),
+					"this-external-reference-code-is-already-in-use"),
+				problem.getTitle());
+		}
+	}
+
+	private void _testPostSiteResourceFolderFragmentSetExternalReferenceCodeNullProblemException()
+		throws Exception {
+
+		ResourceFolder resourceFolder = _randomResourceFolder(
+			new FragmentSet());
+
+		try {
+			resourceFolderResource.postSiteResourceFolder(
+				testGroup.getExternalReferenceCode(), resourceFolder);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+			Assert.assertEquals(
+				LanguageUtil.get(
+					LocaleUtil.getDefault(),
+					"a-fragment-set-external-reference-code-is-required-to-" +
+						"create-a-new-resource-folder"),
+				problem.getTitle());
+		}
+	}
+
+	private void _testPostSiteResourceFolderFragmentSetNonexistingProblemException()
+		throws Exception {
+
+		String fragmentSetExternalReferenceCode = RandomTestUtil.randomString();
+
+		ResourceFolder resourceFolder = _randomResourceFolder(
+			_toFragmentSet(fragmentSetExternalReferenceCode));
+
+		try {
+			resourceFolderResource.postSiteResourceFolder(
+				testGroup.getExternalReferenceCode(), resourceFolder);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+			Assert.assertEquals(
+				LanguageUtil.format(
+					LocaleUtil.getDefault(),
+					"no-fragment-set-was-found-with-external-reference-code-x",
+					fragmentSetExternalReferenceCode),
+				problem.getTitle());
+		}
+	}
+
+	private void _testPostSiteResourceFolderNoPermissionProblemException()
+		throws Exception {
+
+		try {
+			_resourceFolderResource.postSiteResourceFolder(
+				testGroup.getExternalReferenceCode(), randomResourceFolder());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+	}
+
 	private FragmentSet _toFragmentSet(String externalReferenceCode) {
 		FragmentSet fragmentSet = new FragmentSet();
 
@@ -232,6 +539,46 @@ public class ResourceFolderResourceTest
 
 		return resourceFolder;
 	}
+
+	private JSONObject _waitForExportFinish(JSONObject jsonObject)
+		throws Exception {
+
+		String externalReferenceCode = jsonObject.getString(
+			"externalReferenceCode");
+
+		long time = System.currentTimeMillis() + _EXPORT_TIMEOUT;
+
+		while (true) {
+			jsonObject = HTTPTestUtil.invokeToJSONObject(
+				null,
+				"headless-batch-engine/v1.0/export-task" +
+					"/by-external-reference-code/" + externalReferenceCode,
+				Http.Method.GET);
+
+			String executeStatus = jsonObject.getString("executeStatus");
+
+			if (StringUtil.equals(executeStatus, "COMPLETED") ||
+				StringUtil.equals(executeStatus, "FAILED")) {
+
+				Assert.assertEquals("COMPLETED", executeStatus);
+
+				return jsonObject;
+			}
+
+			if (System.currentTimeMillis() > time) {
+				throw new AssertionError(
+					StringBundler.concat(
+						"Export task ", externalReferenceCode,
+						" did not finish within ", _EXPORT_TIMEOUT, " ms"));
+			}
+
+			Thread.sleep(_EXPORT_POLL_INTERVAL);
+		}
+	}
+
+	private static final long _EXPORT_POLL_INTERVAL = 500;
+
+	private static final long _EXPORT_TIMEOUT = 60000;
 
 	@Inject
 	private FragmentCollectionLocalService _fragmentCollectionLocalService;
