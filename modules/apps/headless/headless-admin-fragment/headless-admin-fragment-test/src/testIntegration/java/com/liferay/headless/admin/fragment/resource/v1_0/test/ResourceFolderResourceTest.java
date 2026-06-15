@@ -108,6 +108,13 @@ public class ResourceFolderResourceTest
 	}
 
 	@Override
+	@Test
+	public void testPutSiteResourceFolder() throws Exception {
+		_testPutSiteResourceFolder();
+		_testPutSiteResourceFolderNoPermissionProblemException();
+	}
+
+	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {"externalReferenceCode", "name"};
 	}
@@ -275,6 +282,25 @@ public class ResourceFolderResourceTest
 		}
 
 		return _fragmentSetExternalReferenceCode;
+	}
+
+	private ResourceFolder _postSiteResourceFolder(
+			ResourceFolder parentResourceFolder)
+		throws Exception {
+
+		return resourceFolderResource.postSiteResourceFolder(
+			testGroup.getExternalReferenceCode(),
+			_randomResourceFolder(parentResourceFolder));
+	}
+
+	private ResourceFolder _postSiteResourceFolder(
+			String fragmentSetExternalReferenceCode)
+		throws Exception {
+
+		return resourceFolderResource.postSiteResourceFolder(
+			testGroup.getExternalReferenceCode(),
+			_randomResourceFolder(
+				_toFragmentSet(fragmentSetExternalReferenceCode)));
 	}
 
 	private ResourceFolder _randomResourceFolder(FragmentSet fragmentSet)
@@ -514,6 +540,98 @@ public class ResourceFolderResourceTest
 		try {
 			_resourceFolderResource.postSiteResourceFolder(
 				testGroup.getExternalReferenceCode(), randomResourceFolder());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+	}
+
+	private void _testPutSiteResourceFolder() throws Exception {
+		String fragmentSetExternalReferenceCode = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		ResourceFolder originalResourceFolder = _randomResourceFolder(
+			_toFragmentSet(fragmentSetExternalReferenceCode));
+
+		ResourceFolder putResourceFolder =
+			resourceFolderResource.putSiteResourceFolder(
+				testGroup.getExternalReferenceCode(),
+				originalResourceFolder.getExternalReferenceCode(),
+				originalResourceFolder);
+
+		assertEquals(originalResourceFolder, putResourceFolder);
+		assertValid(putResourceFolder);
+
+		ResourceFolder updatedResourceFolder = _randomResourceFolder(
+			_postSiteResourceFolder(
+				_addFragmentCollection(testGroup.getGroupId())));
+
+		Assert.assertNotNull(updatedResourceFolder.getParentResourceFolder());
+
+		putResourceFolder = resourceFolderResource.putSiteResourceFolder(
+			testGroup.getExternalReferenceCode(),
+			originalResourceFolder.getExternalReferenceCode(),
+			updatedResourceFolder);
+
+		Assert.assertEquals(
+			originalResourceFolder.getExternalReferenceCode(),
+			putResourceFolder.getExternalReferenceCode());
+		Assert.assertEquals(
+			updatedResourceFolder.getName(), putResourceFolder.getName());
+		Assert.assertNull(putResourceFolder.getParentResourceFolder());
+
+		FragmentSet fragmentSet = putResourceFolder.getFragmentSet();
+
+		Assert.assertEquals(
+			fragmentSetExternalReferenceCode,
+			fragmentSet.getExternalReferenceCode());
+
+		ResourceFolder getResourceFolder =
+			resourceFolderResource.getSiteResourceFolder(
+				testGroup.getExternalReferenceCode(),
+				originalResourceFolder.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			updatedResourceFolder.getName(), getResourceFolder.getName());
+
+		ResourceFolder parentResourceFolder = _postSiteResourceFolder(
+			fragmentSetExternalReferenceCode);
+
+		ResourceFolder childResourceFolder = _postSiteResourceFolder(
+			parentResourceFolder);
+
+		putResourceFolder = resourceFolderResource.putSiteResourceFolder(
+			testGroup.getExternalReferenceCode(),
+			childResourceFolder.getExternalReferenceCode(),
+			_randomResourceFolder(
+				_postSiteResourceFolder(
+					_addFragmentCollection(testGroup.getGroupId()))));
+
+		ResourceFolder putParentResourceFolder =
+			putResourceFolder.getParentResourceFolder();
+
+		Assert.assertEquals(
+			parentResourceFolder.getExternalReferenceCode(),
+			putParentResourceFolder.getExternalReferenceCode());
+	}
+
+	private void _testPutSiteResourceFolderNoPermissionProblemException()
+		throws Exception {
+
+		ResourceFolder resourceFolder =
+			resourceFolderResource.postSiteResourceFolder(
+				testGroup.getExternalReferenceCode(), randomResourceFolder());
+
+		resourceFolder.setName(RandomTestUtil.randomString());
+
+		try {
+			_resourceFolderResource.putSiteResourceFolder(
+				testGroup.getExternalReferenceCode(),
+				resourceFolder.getExternalReferenceCode(), resourceFolder);
 
 			Assert.fail();
 		}
