@@ -11,6 +11,8 @@ import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.FragmentSet;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.ResourceFolder;
+import com.liferay.headless.admin.fragment.client.pagination.Page;
+import com.liferay.headless.admin.fragment.client.pagination.Pagination;
 import com.liferay.headless.admin.fragment.client.problem.Problem;
 import com.liferay.headless.admin.fragment.client.resource.v1_0.ResourceFolderResource;
 import com.liferay.petra.lang.SafeCloseable;
@@ -18,8 +20,11 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
@@ -41,6 +46,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import java.io.InputStream;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipInputStream;
 
@@ -84,6 +90,49 @@ public class ResourceFolderResourceTest
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
+	}
+
+	@Override
+	@Test
+	public void testGetSiteFragmentSetResourceFoldersPage() throws Exception {
+		super.testGetSiteFragmentSetResourceFoldersPage();
+
+		_testGetSiteFragmentSetResourceFoldersPage();
+		_testGetSiteFragmentSetResourceFoldersPageEmpty();
+		_testGetSiteFragmentSetResourceFoldersPageFragmentSetNonexistentProblemException();
+		_testGetSiteFragmentSetResourceFoldersPageNoPermissionProblemException();
+	}
+
+	@Override
+	@Test
+	public void testGetSiteResourceFolder() throws Exception {
+		super.testGetSiteResourceFolder();
+
+		_testGetSiteResourceFolderNoPermissionProblemException();
+		_testGetSiteResourceFolderResourceFolderNonexistentProblemException();
+	}
+
+	@Override
+	@Test
+	public void testGetSiteResourceFolderResourceFoldersPage()
+		throws Exception {
+
+		super.testGetSiteResourceFolderResourceFoldersPage();
+
+		_testGetSiteResourceFolderResourceFoldersPage();
+		_testGetSiteResourceFolderResourceFoldersPageEmpty();
+		_testGetSiteResourceFolderResourceFoldersPageNoPermissionProblemException();
+		_testGetSiteResourceFolderResourceFoldersPageResourceFolderNonexistentProblemException();
+	}
+
+	@Override
+	@Test
+	public void testGetSiteResourceFoldersPage() throws Exception {
+		super.testGetSiteResourceFoldersPage();
+
+		_testGetSiteResourceFoldersPage();
+		_testGetSiteResourceFoldersPageNoPermissionProblemException();
+		_testGetSiteResourceFoldersPagePortletFolder();
 	}
 
 	@Override
@@ -243,6 +292,20 @@ public class ResourceFolderResourceTest
 		return fragmentCollection.getExternalReferenceCode();
 	}
 
+	private void _addPortletFolder() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId());
+
+		Repository repository = PortletFileRepositoryUtil.addPortletRepository(
+			testGroup.getGroupId(), RandomTestUtil.randomString(),
+			serviceContext);
+
+		PortletFileRepositoryUtil.addPortletFolder(
+			TestPropsValues.getUserId(), repository.getRepositoryId(),
+			repository.getDlFolderId(), RandomTestUtil.randomString(),
+			serviceContext);
+	}
+
 	private String _exportResourceFoldersToJSON(
 			String siteExternalReferenceCode)
 		throws Exception {
@@ -323,6 +386,266 @@ public class ResourceFolderResourceTest
 		resourceFolder.setParentResourceFolder(parentResourceFolder);
 
 		return resourceFolder;
+	}
+
+	private void _testGetSiteFragmentSetResourceFoldersPage() throws Exception {
+		String fragmentSetExternalReferenceCode = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		ResourceFolder resourceFolder = _postSiteResourceFolder(
+			fragmentSetExternalReferenceCode);
+
+		_postSiteResourceFolder(resourceFolder);
+
+		Page<ResourceFolder> page =
+			resourceFolderResource.getSiteFragmentSetResourceFoldersPage(
+				testGroup.getExternalReferenceCode(),
+				fragmentSetExternalReferenceCode, Pagination.of(1, 10));
+
+		assertContains(resourceFolder, (List<ResourceFolder>)page.getItems());
+		Assert.assertEquals(1, page.getTotalCount());
+	}
+
+	private void _testGetSiteFragmentSetResourceFoldersPageEmpty()
+		throws Exception {
+
+		String fragmentSetExternalReferenceCode = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		Page<ResourceFolder> page =
+			resourceFolderResource.getSiteFragmentSetResourceFoldersPage(
+				testGroup.getExternalReferenceCode(),
+				fragmentSetExternalReferenceCode, Pagination.of(1, 10));
+
+		Assert.assertEquals(0, page.getTotalCount());
+	}
+
+	private void _testGetSiteFragmentSetResourceFoldersPageFragmentSetNonexistentProblemException()
+		throws Exception {
+
+		try {
+			resourceFolderResource.getSiteFragmentSetResourceFoldersPage(
+				testGroup.getExternalReferenceCode(),
+				RandomTestUtil.randomString(), Pagination.of(1, 10));
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
+	}
+
+	private void _testGetSiteFragmentSetResourceFoldersPageNoPermissionProblemException()
+		throws Exception {
+
+		String fragmentSetExternalReferenceCode = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		FragmentSet fragmentSet = _toFragmentSet(
+			_addFragmentCollection(testGroup.getGroupId()));
+
+		ResourceFolder resourceFolder = _randomResourceFolder(fragmentSet);
+
+		resourceFolderResource.postSiteFragmentSetResourceFolder(
+			testGroup.getExternalReferenceCode(),
+			fragmentSetExternalReferenceCode, resourceFolder);
+
+		Page<ResourceFolder> page =
+			_resourceFolderResource.getSiteFragmentSetResourceFoldersPage(
+				testGroup.getExternalReferenceCode(),
+				fragmentSetExternalReferenceCode, Pagination.of(1, 10));
+
+		Assert.assertEquals(0, page.getTotalCount());
+	}
+
+	private void _testGetSiteResourceFolderNoPermissionProblemException()
+		throws Exception {
+
+		ResourceFolder resourceFolder =
+			resourceFolderResource.postSiteResourceFolder(
+				testGroup.getExternalReferenceCode(), randomResourceFolder());
+
+		try {
+			_resourceFolderResource.getSiteResourceFolder(
+				testGroup.getExternalReferenceCode(),
+				resourceFolder.getExternalReferenceCode());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
+	}
+
+	private void _testGetSiteResourceFolderResourceFolderNonexistentProblemException()
+		throws Exception {
+
+		try {
+			resourceFolderResource.getSiteResourceFolder(
+				testGroup.getExternalReferenceCode(),
+				RandomTestUtil.randomString());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
+	}
+
+	private void _testGetSiteResourceFolderResourceFoldersPage()
+		throws Exception {
+
+		String fragmentSetExternalReferenceCode = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		ResourceFolder resourceFolder = _postSiteResourceFolder(
+			fragmentSetExternalReferenceCode);
+
+		ResourceFolder childResourceFolder = _postSiteResourceFolder(
+			resourceFolder);
+
+		_postSiteResourceFolder(childResourceFolder);
+
+		Page<ResourceFolder> page =
+			resourceFolderResource.getSiteResourceFolderResourceFoldersPage(
+				testGroup.getExternalReferenceCode(),
+				resourceFolder.getExternalReferenceCode(),
+				Pagination.of(1, 10));
+
+		assertContains(
+			childResourceFolder, (List<ResourceFolder>)page.getItems());
+		Assert.assertEquals(1, page.getTotalCount());
+	}
+
+	private void _testGetSiteResourceFolderResourceFoldersPageEmpty()
+		throws Exception {
+
+		ResourceFolder resourceFolder = _postSiteResourceFolder(
+			_addFragmentCollection(testGroup.getGroupId()));
+
+		Page<ResourceFolder> page =
+			resourceFolderResource.getSiteResourceFolderResourceFoldersPage(
+				testGroup.getExternalReferenceCode(),
+				resourceFolder.getExternalReferenceCode(),
+				Pagination.of(1, 10));
+
+		Assert.assertEquals(0, page.getTotalCount());
+	}
+
+	private void _testGetSiteResourceFolderResourceFoldersPageNoPermissionProblemException()
+		throws Exception {
+
+		ResourceFolder resourceFolder = _postSiteResourceFolder(
+			_addFragmentCollection(testGroup.getGroupId()));
+
+		try {
+			_resourceFolderResource.getSiteResourceFolderResourceFoldersPage(
+				testGroup.getExternalReferenceCode(),
+				resourceFolder.getExternalReferenceCode(),
+				Pagination.of(1, 10));
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
+	}
+
+	private void _testGetSiteResourceFolderResourceFoldersPageResourceFolderNonexistentProblemException()
+		throws Exception {
+
+		try {
+			resourceFolderResource.getSiteResourceFolderResourceFoldersPage(
+				testGroup.getExternalReferenceCode(),
+				RandomTestUtil.randomString(), Pagination.of(1, 10));
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
+	}
+
+	private void _testGetSiteResourceFoldersPage() throws Exception {
+		ResourceFolder resourceFolder1 = _postSiteResourceFolder(
+			_addFragmentCollection(testGroup.getGroupId()));
+
+		ResourceFolder childResourceFolder1 = _postSiteResourceFolder(
+			resourceFolder1);
+
+		ResourceFolder resourceFolder2 = _postSiteResourceFolder(
+			_addFragmentCollection(testGroup.getGroupId()));
+
+		ResourceFolder childResourceFolder2 = _postSiteResourceFolder(
+			resourceFolder2);
+
+		Page<ResourceFolder> page =
+			resourceFolderResource.getSiteResourceFoldersPage(
+				testGroup.getExternalReferenceCode(), null,
+				Pagination.of(1, 1));
+
+		long totalCount = page.getTotalCount();
+
+		page = resourceFolderResource.getSiteResourceFoldersPage(
+			testGroup.getExternalReferenceCode(), null,
+			Pagination.of(1, (int)totalCount));
+
+		List<ResourceFolder> resourceFolders =
+			(List<ResourceFolder>)page.getItems();
+
+		assertContains(childResourceFolder1, resourceFolders);
+		assertContains(childResourceFolder2, resourceFolders);
+		assertContains(resourceFolder1, resourceFolders);
+		assertContains(resourceFolder2, resourceFolders);
+	}
+
+	private void _testGetSiteResourceFoldersPageNoPermissionProblemException()
+		throws Exception {
+
+		resourceFolderResource.postSiteResourceFolder(
+			testGroup.getExternalReferenceCode(), randomResourceFolder());
+
+		Page<ResourceFolder> page =
+			_resourceFolderResource.getSiteResourceFoldersPage(
+				testGroup.getExternalReferenceCode(), null,
+				Pagination.of(1, 10));
+
+		Assert.assertEquals(0, page.getTotalCount());
+	}
+
+	private void _testGetSiteResourceFoldersPagePortletFolder()
+		throws Exception {
+
+		ResourceFolder resourceFolder = _postSiteResourceFolder(
+			_addFragmentCollection(testGroup.getGroupId()));
+
+		Page<ResourceFolder> page =
+			resourceFolderResource.getSiteResourceFoldersPage(
+				testGroup.getExternalReferenceCode(), null,
+				Pagination.of(1, 1));
+
+		assertContains(resourceFolder, (List<ResourceFolder>)page.getItems());
+
+		long totalCount = page.getTotalCount();
+
+		_addPortletFolder();
+
+		page = resourceFolderResource.getSiteResourceFoldersPage(
+			testGroup.getExternalReferenceCode(), null,
+			Pagination.of(1, (int)totalCount));
+
+		assertContains(resourceFolder, (List<ResourceFolder>)page.getItems());
+		Assert.assertEquals(totalCount, page.getTotalCount());
 	}
 
 	private void _testPostSiteFragmentSetResourceFolderNoPermissionProblemException()
