@@ -77,6 +77,45 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 				groupId, resourceFolder));
 	}
 
+	@Override
+	public ResourceFolder putSiteResourceFolder(
+			String siteExternalReferenceCode,
+			String resourceFolderExternalReferenceCode,
+			ResourceFolder resourceFolder)
+		throws Exception {
+
+		EnabledUtil.checkEnabled(contextCompany);
+
+		long groupId = GroupUtil.getStagingAwareGroupId(
+			true, contextCompany.getCompanyId(), siteExternalReferenceCode);
+
+		DLFolder dlFolder =
+			_dlFolderLocalService.fetchDLFolderByExternalReferenceCode(
+				resourceFolderExternalReferenceCode, groupId);
+
+		if (dlFolder == null) {
+			resourceFolder.setExternalReferenceCode(
+				() -> resourceFolderExternalReferenceCode);
+
+			return _toResourceFolder(
+				_addDLFolder(
+					_getOrAddFragmentCollection(
+						resourceFolder.getFragmentSet(), groupId),
+					groupId, resourceFolder));
+		}
+
+		Folder folder = _dlAppService.updateFolder(
+			dlFolder.getFolderId(), resourceFolder.getName(),
+			dlFolder.getDescription(),
+			ServiceContextUtil.getServiceContext(
+				contextCompany.getCompanyId(), resourceFolder.getDateCreated(),
+				groupId, contextHttpServletRequest,
+				resourceFolder.getDateModified(), contextUser.getUserId()));
+
+		return _toResourceFolder(
+			_dlFolderLocalService.getDLFolder(folder.getFolderId()));
+	}
+
 	private DLFolder _addDLFolder(
 			FragmentCollection fragmentCollection, long groupId,
 			ResourceFolder resourceFolder)
