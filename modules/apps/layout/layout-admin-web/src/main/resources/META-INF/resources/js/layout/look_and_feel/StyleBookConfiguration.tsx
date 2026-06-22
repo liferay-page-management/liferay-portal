@@ -27,6 +27,14 @@ const STYLE_BOOK_VIEWS: IFrontendDataSetProps['views'] = [
 			symbol: '',
 			title: 'name',
 		},
+		setItemComponentProps: ({props}: {item: StyleBook; props: object}) => ({
+			...props,
+			stickerProps: {
+				className: 'file-icon-color-5',
+				displayType: 'unstyled',
+			},
+			symbol: 'book',
+		}),
 		thumbnail: 'cards2',
 	},
 	{
