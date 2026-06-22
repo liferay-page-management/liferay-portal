@@ -18,6 +18,18 @@ type StyleBook = {
 
 const STYLE_BOOK_VIEWS: IFrontendDataSetProps['views'] = [
 	{
+		contentRenderer: 'cards',
+		default: true,
+		label: Liferay.Language.get('cards'),
+		name: 'cards',
+		schema: {
+			description: 'designLibraryName',
+			symbol: '',
+			title: 'name',
+		},
+		thumbnail: 'cards2',
+	},
+	{
 		contentRenderer: 'table',
 		label: Liferay.Language.get('table'),
 		name: 'table',
