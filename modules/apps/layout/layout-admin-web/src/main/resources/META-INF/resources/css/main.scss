@@ -8,6 +8,12 @@
 @import '../js/layout/look_and_feel/GlobalJSCETsConfiguration';
 
 .style-book-selector-card {
+	.aspect-ratio {
+		margin-left: 0 !important;
+		margin-right: 0 !important;
+		top: 0 !important;
+	}
+
 	.card-type-asset-icon {
 		color: $purple;
 	}
