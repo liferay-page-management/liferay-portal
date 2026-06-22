@@ -203,6 +203,7 @@ public abstract class BaseStyleBookResourceTestCase {
 
 		StyleBook styleBook = randomStyleBook();
 
+		styleBook.setDesignLibraryName(regex);
 		styleBook.setExternalReferenceCode(regex);
 		styleBook.setFrontendTokensValues(regex);
 		styleBook.setKey(regex);
@@ -216,6 +217,7 @@ public abstract class BaseStyleBookResourceTestCase {
 
 		styleBook = StyleBookSerDes.toDTO(json);
 
+		Assert.assertEquals(regex, styleBook.getDesignLibraryName());
 		Assert.assertEquals(regex, styleBook.getExternalReferenceCode());
 		Assert.assertEquals(regex, styleBook.getFrontendTokensValues());
 		Assert.assertEquals(regex, styleBook.getKey());
@@ -707,6 +709,152 @@ public abstract class BaseStyleBookResourceTestCase {
 		return irrelevantDepotEntryGroup.getExternalReferenceCode();
 	}
 
+	@Test
+	public void testGetSiteStyleBooksPage() throws Exception {
+		Long siteId = testGetSiteStyleBooksPage_getSiteId();
+		Long irrelevantSiteId = testGetSiteStyleBooksPage_getIrrelevantSiteId();
+
+		Page<StyleBook> page = styleBookResource.getSiteStyleBooksPage(
+			siteId, null, Pagination.of(1, 10));
+
+		long totalCount = page.getTotalCount();
+
+		if (irrelevantSiteId != null) {
+			StyleBook irrelevantStyleBook =
+				testGetSiteStyleBooksPage_addStyleBook(
+					irrelevantSiteId, randomIrrelevantStyleBook());
+
+			page = styleBookResource.getSiteStyleBooksPage(
+				irrelevantSiteId, null, Pagination.of(1, (int)totalCount + 1));
+
+			Assert.assertEquals(totalCount + 1, page.getTotalCount());
+
+			assertContains(
+				irrelevantStyleBook, (List<StyleBook>)page.getItems());
+			assertValid(
+				page,
+				testGetSiteStyleBooksPage_getExpectedActions(irrelevantSiteId));
+		}
+
+		StyleBook styleBook1 = testGetSiteStyleBooksPage_addStyleBook(
+			siteId, randomStyleBook());
+
+		StyleBook styleBook2 = testGetSiteStyleBooksPage_addStyleBook(
+			siteId, randomStyleBook());
+
+		page = styleBookResource.getSiteStyleBooksPage(
+			siteId, null, Pagination.of(1, 10));
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(styleBook1, (List<StyleBook>)page.getItems());
+		assertContains(styleBook2, (List<StyleBook>)page.getItems());
+		assertValid(page, testGetSiteStyleBooksPage_getExpectedActions(siteId));
+	}
+
+	protected Map<String, Map<String, String>>
+			testGetSiteStyleBooksPage_getExpectedActions(Long siteId)
+		throws Exception {
+
+		Map<String, Map<String, String>> expectedActions = new HashMap<>();
+
+		return expectedActions;
+	}
+
+	@Test
+	public void testGetSiteStyleBooksPageWithPagination() throws Exception {
+		Long siteId = testGetSiteStyleBooksPage_getSiteId();
+
+		Page<StyleBook> styleBooksPage =
+			styleBookResource.getSiteStyleBooksPage(siteId, null, null);
+
+		int totalCount = GetterUtil.getInteger(styleBooksPage.getTotalCount());
+
+		StyleBook styleBook1 = testGetSiteStyleBooksPage_addStyleBook(
+			siteId, randomStyleBook());
+
+		StyleBook styleBook2 = testGetSiteStyleBooksPage_addStyleBook(
+			siteId, randomStyleBook());
+
+		StyleBook styleBook3 = testGetSiteStyleBooksPage_addStyleBook(
+			siteId, randomStyleBook());
+
+		// See com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration#pageSizeLimit
+
+		int pageSizeLimit = 500;
+
+		if (totalCount >= (pageSizeLimit - 2)) {
+			Page<StyleBook> page1 = styleBookResource.getSiteStyleBooksPage(
+				siteId, null,
+				Pagination.of(
+					(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
+					pageSizeLimit));
+
+			Assert.assertEquals(totalCount + 3, page1.getTotalCount());
+
+			assertContains(styleBook1, (List<StyleBook>)page1.getItems());
+
+			Page<StyleBook> page2 = styleBookResource.getSiteStyleBooksPage(
+				siteId, null,
+				Pagination.of(
+					(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
+					pageSizeLimit));
+
+			assertContains(styleBook2, (List<StyleBook>)page2.getItems());
+
+			Page<StyleBook> page3 = styleBookResource.getSiteStyleBooksPage(
+				siteId, null,
+				Pagination.of(
+					(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
+					pageSizeLimit));
+
+			assertContains(styleBook3, (List<StyleBook>)page3.getItems());
+		}
+		else {
+			Page<StyleBook> page1 = styleBookResource.getSiteStyleBooksPage(
+				siteId, null, Pagination.of(1, totalCount + 2));
+
+			List<StyleBook> styleBooks1 = (List<StyleBook>)page1.getItems();
+
+			Assert.assertEquals(
+				styleBooks1.toString(), totalCount + 2, styleBooks1.size());
+
+			Page<StyleBook> page2 = styleBookResource.getSiteStyleBooksPage(
+				siteId, null, Pagination.of(2, totalCount + 2));
+
+			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
+
+			List<StyleBook> styleBooks2 = (List<StyleBook>)page2.getItems();
+
+			Assert.assertEquals(styleBooks2.toString(), 1, styleBooks2.size());
+
+			Page<StyleBook> page3 = styleBookResource.getSiteStyleBooksPage(
+				siteId, null, Pagination.of(1, (int)totalCount + 3));
+
+			assertContains(styleBook1, (List<StyleBook>)page3.getItems());
+			assertContains(styleBook2, (List<StyleBook>)page3.getItems());
+			assertContains(styleBook3, (List<StyleBook>)page3.getItems());
+		}
+	}
+
+	protected StyleBook testGetSiteStyleBooksPage_addStyleBook(
+			Long siteId, StyleBook styleBook)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Long testGetSiteStyleBooksPage_getSiteId() throws Exception {
+		return testGroup.getGroupId();
+	}
+
+	protected Long testGetSiteStyleBooksPage_getIrrelevantSiteId()
+		throws Exception {
+
+		return irrelevantGroup.getGroupId();
+	}
+
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
 
@@ -811,6 +959,16 @@ public abstract class BaseStyleBookResourceTestCase {
 
 			if (Objects.equals("defaultStyleBook", additionalAssertFieldName)) {
 				if (styleBook.getDefaultStyleBook() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"designLibraryName", additionalAssertFieldName)) {
+
+				if (styleBook.getDesignLibraryName() == null) {
 					valid = false;
 				}
 
@@ -1042,6 +1200,19 @@ public abstract class BaseStyleBookResourceTestCase {
 				if (!Objects.deepEquals(
 						styleBook1.getDefaultStyleBook(),
 						styleBook2.getDefaultStyleBook())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"designLibraryName", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						styleBook1.getDesignLibraryName(),
+						styleBook2.getDesignLibraryName())) {
 
 					return false;
 				}
@@ -1308,6 +1479,52 @@ public abstract class BaseStyleBookResourceTestCase {
 		if (entityFieldName.equals("defaultStyleBook")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("designLibraryName")) {
+			Object object = styleBook.getDesignLibraryName();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
 		}
 
 		if (entityFieldName.equals("externalReferenceCode")) {
@@ -1642,6 +1859,8 @@ public abstract class BaseStyleBookResourceTestCase {
 				dateCreated = RandomTestUtil.nextDate();
 				dateModified = RandomTestUtil.nextDate();
 				defaultStyleBook = RandomTestUtil.randomBoolean();
+				designLibraryName = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				externalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				frontendTokensValues = StringUtil.toLowerCase(
@@ -1880,4 +2099,4 @@ public abstract class BaseStyleBookResourceTestCase {
 		_styleBookResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:207749244
+// LIFERAY-REST-BUILDER-HASH:-219448086

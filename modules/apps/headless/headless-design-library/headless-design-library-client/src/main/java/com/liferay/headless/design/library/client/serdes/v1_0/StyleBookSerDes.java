@@ -110,6 +110,20 @@ public class StyleBookSerDes {
 			sb.append(styleBook.getDefaultStyleBook());
 		}
 
+		if (styleBook.getDesignLibraryName() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"designLibraryName\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(styleBook.getDesignLibraryName()));
+
+			sb.append("\"");
+		}
+
 		if (styleBook.getExternalReferenceCode() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -267,6 +281,15 @@ public class StyleBookSerDes {
 				String.valueOf(styleBook.getDefaultStyleBook()));
 		}
 
+		if (styleBook.getDesignLibraryName() == null) {
+			map.put("designLibraryName", null);
+		}
+		else {
+			map.put(
+				"designLibraryName",
+				String.valueOf(styleBook.getDesignLibraryName()));
+		}
+
 		if (styleBook.getExternalReferenceCode() == null) {
 			map.put("externalReferenceCode", null);
 		}
@@ -355,6 +378,9 @@ public class StyleBookSerDes {
 			else if (Objects.equals(jsonParserFieldName, "defaultStyleBook")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "designLibraryName")) {
+				return false;
+			}
 			else if (Objects.equals(
 						jsonParserFieldName, "externalReferenceCode")) {
 
@@ -420,6 +446,12 @@ public class StyleBookSerDes {
 				if (jsonParserFieldValue != null) {
 					styleBook.setDefaultStyleBook(
 						(Boolean)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "designLibraryName")) {
+				if (jsonParserFieldValue != null) {
+					styleBook.setDesignLibraryName(
+						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(
@@ -548,4 +580,4 @@ public class StyleBookSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:428673208
+// LIFERAY-REST-BUILDER-HASH:384159526
