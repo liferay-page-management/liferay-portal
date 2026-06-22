@@ -47,7 +47,9 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.style.book.item.selector.StyleBookEntryItemSelectorCriterion;
+import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
+import com.liferay.style.book.util.StyleBookEntryProviderUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -270,6 +272,15 @@ public class LayoutLookAndFeelDisplayContext {
 
 	public String getStyleBookEntryName() {
 		Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();
+
+		StyleBookEntry styleBookEntry =
+			StyleBookEntryProviderUtil.getStyleBookEntry(selLayout);
+
+		if ((styleBookEntry != null) &&
+			(styleBookEntry.getStyleBookEntryId() > 0)) {
+
+			return styleBookEntry.getName();
+		}
 
 		return DefaultStyleBookEntryUtil.getStyleBookEntryName(
 			selLayout, _themeDisplay.getLocale(),
