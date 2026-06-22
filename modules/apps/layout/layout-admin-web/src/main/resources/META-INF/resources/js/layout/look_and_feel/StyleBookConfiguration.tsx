@@ -5,6 +5,8 @@
 
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayForm, {ClayInput} from '@clayui/form';
+import ClayIcon from '@clayui/icon';
+import ClayLabel from '@clayui/label';
 import {useModal} from '@clayui/modal';
 import {IFrontendDataSetProps} from '@liferay/frontend-data-set-web';
 import {ItemSelectorModal} from '@liferay/frontend-js-item-selector-web';
@@ -17,6 +19,16 @@ type StyleBook = {
 	name: string;
 };
 
+const DesignLibraryNameLabel = ({value}: {value: string}) => (
+	<ClayLabel displayType="success" inverse withClose={false}>
+		<ClayLabel.ItemBefore>
+			<ClayIcon symbol="books-brush" />
+		</ClayLabel.ItemBefore>
+
+		<ClayLabel.ItemExpand>{value}</ClayLabel.ItemExpand>
+	</ClayLabel>
+);
+
 const STYLE_BOOK_VIEWS: IFrontendDataSetProps['views'] = [
 	{
 		contentRenderer: 'cards',
@@ -24,13 +36,39 @@ const STYLE_BOOK_VIEWS: IFrontendDataSetProps['views'] = [
 		label: Liferay.Language.get('cards'),
 		name: 'cards',
 		schema: {
-			description: 'designLibraryName',
+			description: '',
 			symbol: '',
 			title: 'name',
 		},
-		setItemComponentProps: ({props}: {item: StyleBook; props: object}) => ({
+		setItemComponentProps: ({
+			item,
+			props,
+		}: {
+			item: StyleBook;
+			props: object;
+		}) => ({
 			...props,
 			className: 'style-book-selector-card',
+			labels: item.designLibraryName
+				? [
+						{
+							displayType: 'success',
+							inverse: true,
+							value: (
+								<>
+									<ClayLabel.ItemBefore>
+										<ClayIcon symbol="books-brush" />
+									</ClayLabel.ItemBefore>
+
+									<ClayLabel.ItemExpand>
+										{item.designLibraryName}
+									</ClayLabel.ItemExpand>
+								</>
+							),
+							withClose: false,
+						},
+					]
+				: undefined,
 			symbol: 'book',
 		}),
 		thumbnail: 'cards2',
@@ -47,6 +85,7 @@ const STYLE_BOOK_VIEWS: IFrontendDataSetProps['views'] = [
 					sortable: false,
 				},
 				{
+					contentRenderer: 'designLibraryNameRenderer',
 					fieldName: 'designLibraryName',
 					label: Liferay.Language.get('design-library'),
 					sortable: false,
@@ -147,6 +186,20 @@ export default function StyleBookConfiguration({
 				<ItemSelectorModal<StyleBook>
 					apiURL={styleBooksApiURL}
 					fdsProps={{
+						customRenderers: {
+							tableCell: [
+								{
+									component: ({value}: {value: string}) =>
+										value ? (
+											<DesignLibraryNameLabel
+												value={value}
+											/>
+										) : null,
+									name: 'designLibraryNameRenderer',
+									type: 'internal',
+								},
+							],
+						},
 						id: `${portletNamespace}styleBookSelector`,
 						pagination: {
 							deltas: [{label: 20}],
