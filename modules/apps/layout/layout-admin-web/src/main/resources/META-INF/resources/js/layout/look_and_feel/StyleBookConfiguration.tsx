@@ -29,10 +29,7 @@ const STYLE_BOOK_VIEWS: IFrontendDataSetProps['views'] = [
 		},
 		setItemComponentProps: ({props}: {item: StyleBook; props: object}) => ({
 			...props,
-			stickerProps: {
-				className: 'file-icon-color-5',
-				displayType: 'unstyled',
-			},
+			className: 'style-book-selector-card',
 			symbol: 'book',
 		}),
 		thumbnail: 'cards2',

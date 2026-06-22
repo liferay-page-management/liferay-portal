@@ -7,6 +7,12 @@
 @import '../js/layout/look_and_feel/GlobalCSSCETsConfiguration';
 @import '../js/layout/look_and_feel/GlobalJSCETsConfiguration';
 
+.style-book-selector-card {
+	.card-type-asset-icon {
+		color: $purple;
+	}
+}
+
 .portlet-layouts-admin {
 	.card-page-item-directory {
 		@include media-breakpoint-up(lg) {
