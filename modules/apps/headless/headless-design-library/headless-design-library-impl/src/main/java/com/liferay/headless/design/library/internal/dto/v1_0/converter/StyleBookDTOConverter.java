@@ -8,8 +8,10 @@ package com.liferay.headless.design.library.internal.dto.v1_0.converter;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.headless.admin.user.dto.v1_0.Creator;
 import com.liferay.headless.design.library.dto.v1_0.StyleBook;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -77,6 +79,18 @@ public class StyleBookDTOConverter
 						styleBookEntry.getModifiedDate(),
 						styleBookEntry::getCreateDate));
 				setDefaultStyleBook(styleBookEntry::getDefaultStyleBookEntry);
+				setDesignLibraryName(
+					() -> {
+						Group group = _groupLocalService.fetchGroup(
+							styleBookEntry.getGroupId());
+
+						if ((group == null) || !group.isDepot()) {
+							return null;
+						}
+
+						return group.getDescriptiveName(
+							dtoConverterContext.getLocale());
+					});
 				setExternalReferenceCode(
 					styleBookEntry::getExternalReferenceCode);
 				setFrontendTokensValues(
@@ -109,6 +123,9 @@ public class StyleBookDTOConverter
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private StyleBookEntryLocalService _styleBookEntryLocalService;

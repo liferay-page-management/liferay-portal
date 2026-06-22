@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.security.permission.resource.PortletResourcePer
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.aggregation.Aggregation;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
@@ -30,8 +31,11 @@ import com.liferay.style.book.constants.StyleBookActionKeys;
 import com.liferay.style.book.constants.StyleBookConstants;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryService;
+import com.liferay.style.book.util.StyleBookEntryProviderUtil;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -116,6 +120,30 @@ public class StyleBookResourceImpl
 		_checkFeatureFlag();
 
 		return _toStyleBook(_styleBookEntryService.getStyleBookEntry(id));
+	}
+
+	@Override
+	public Page<StyleBook> getSiteStyleBooksPage(
+			Long siteId, String search, Pagination pagination)
+		throws Exception {
+
+		_checkFeatureFlag();
+
+		List<StyleBookEntry> styleBookEntries =
+			StyleBookEntryProviderUtil.getStyleBookEntries(
+				contextCompany.getCompanyId(), siteId);
+
+		List<StyleBookEntry> pageStyleBookEntries = ListUtil.subList(
+			styleBookEntries, pagination.getStartPosition(),
+			pagination.getEndPosition());
+
+		List<StyleBook> styleBooks = new ArrayList<>();
+
+		for (StyleBookEntry styleBookEntry : pageStyleBookEntries) {
+			styleBooks.add(_toStyleBook(styleBookEntry));
+		}
+
+		return Page.of(styleBooks, pagination, styleBookEntries.size());
 	}
 
 	private void _checkFeatureFlag() {
