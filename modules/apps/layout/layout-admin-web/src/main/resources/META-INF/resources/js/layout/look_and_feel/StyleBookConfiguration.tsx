@@ -8,6 +8,7 @@ import ClayForm, {ClayInput} from '@clayui/form';
 import {useModal} from '@clayui/modal';
 import {IFrontendDataSetProps} from '@liferay/frontend-data-set-web';
 import {ItemSelectorModal} from '@liferay/frontend-js-item-selector-web';
+import {openSelectionModal} from 'frontend-js-components-web';
 import React, {useState} from 'react';
 
 type StyleBook = {
@@ -57,12 +58,16 @@ const STYLE_BOOK_VIEWS: IFrontendDataSetProps['views'] = [
 ];
 
 export default function StyleBookConfiguration({
+	changeStyleBookURL,
+	isDesignLibraryEnabled,
 	isReadOnly,
 	portletNamespace,
 	styleBookEntryERC: initialStyleBookEntryERC,
 	styleBookEntryName: initialStyleBookEntryName,
 	styleBooksApiURL,
 }: {
+	changeStyleBookURL: string;
+	isDesignLibraryEnabled: boolean;
 	isReadOnly: boolean;
 	portletNamespace: string;
 	styleBookEntryERC: string;
@@ -77,6 +82,34 @@ export default function StyleBookConfiguration({
 	const [selectedItems, setSelectedItems] = useState<StyleBook[]>([]);
 
 	const {observer, onOpenChange, open} = useModal();
+
+	const handleChangeStyleBook = () => {
+		if (isReadOnly) {
+			return;
+		}
+
+		if (isDesignLibraryEnabled) {
+			onOpenChange(true);
+		}
+		else {
+			openSelectionModal({
+				iframeBodyCssClass: '',
+				onSelect(selectedItem: {value: string}) {
+					if (selectedItem) {
+						const itemValue = JSON.parse(selectedItem.value);
+
+						setStyleBookEntry({
+							name: itemValue.name,
+							styleBookEntryERC: itemValue.externalReferenceCode,
+						});
+					}
+				},
+				selectEventName: `${portletNamespace}selectStyleBook`,
+				title: Liferay.Language.get('select-style-book'),
+				url: changeStyleBookURL,
+			});
+		}
+	};
 
 	return (
 		<>
@@ -94,7 +127,7 @@ export default function StyleBookConfiguration({
 				<ClayForm.Group className="c-mb-0 flex-grow-1">
 					<ClayInput
 						id={`${portletNamespace}styleBookEntry`}
-						onClick={() => !isReadOnly && onOpenChange(true)}
+						onClick={handleChangeStyleBook}
 						readOnly
 						value={styleBookEntry.name}
 					/>
@@ -105,12 +138,12 @@ export default function StyleBookConfiguration({
 					className="c-ml-2"
 					disabled={isReadOnly}
 					displayType="secondary"
-					onClick={() => onOpenChange(true)}
+					onClick={handleChangeStyleBook}
 					symbol="change"
 				/>
 			</div>
 
-			{open && (
+			{open && isDesignLibraryEnabled && (
 				<ItemSelectorModal<StyleBook>
 					apiURL={styleBooksApiURL}
 					fdsProps={{

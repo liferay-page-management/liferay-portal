@@ -22,6 +22,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -45,6 +46,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.style.book.item.selector.StyleBookEntryItemSelectorCriterion;
 import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -210,6 +212,34 @@ public class LayoutLookAndFeelDisplayContext {
 
 	public Map<String, Object> getStyleBookConfigurationProps() {
 		return HashMapBuilder.<String, Object>put(
+			"changeStyleBookURL",
+			() -> {
+				RequestBackedPortletURLFactory requestBackedPortletURLFactory =
+					RequestBackedPortletURLFactoryUtil.create(
+						_httpServletRequest);
+
+				StyleBookEntryItemSelectorCriterion
+					styleBookEntryItemSelectorCriterion =
+						new StyleBookEntryItemSelectorCriterion();
+
+				styleBookEntryItemSelectorCriterion.
+					setDesiredItemSelectorReturnTypes(
+						new UUIDItemSelectorReturnType());
+				styleBookEntryItemSelectorCriterion.setSelPlid(
+					_layoutsAdminDisplayContext.getSelPlid());
+
+				return String.valueOf(
+					_itemSelector.getItemSelectorURL(
+						requestBackedPortletURLFactory,
+						_liferayPortletResponse.getNamespace() +
+							"selectStyleBook",
+						styleBookEntryItemSelectorCriterion));
+			}
+		).put(
+			"isDesignLibraryEnabled",
+			FeatureFlagManagerUtil.isEnabled(
+				_themeDisplay.getCompanyId(), "LPD-57283")
+		).put(
 			"isReadOnly", _layoutsAdminDisplayContext.isReadOnly()
 		).put(
 			"styleBookEntryERC",
