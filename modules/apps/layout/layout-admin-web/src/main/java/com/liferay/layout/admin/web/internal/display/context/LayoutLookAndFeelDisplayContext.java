@@ -255,7 +255,8 @@ public class LayoutLookAndFeelDisplayContext {
 			() -> StringBundler.concat(
 				_themeDisplay.getPortalURL(),
 				"/o/headless-design-library/v1.0/sites/",
-				_themeDisplay.getSiteGroupId(), "/style-books")
+				_themeDisplay.getSiteGroupId(), "/style-books?plid=",
+				_layoutsAdminDisplayContext.getSelPlid())
 		).build();
 	}
 

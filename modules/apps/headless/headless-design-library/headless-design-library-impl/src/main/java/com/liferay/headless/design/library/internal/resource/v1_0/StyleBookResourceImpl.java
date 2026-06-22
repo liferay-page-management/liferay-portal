@@ -9,12 +9,14 @@ import com.liferay.headless.design.library.dto.v1_0.StyleBook;
 import com.liferay.headless.design.library.resource.v1_0.StyleBookResource;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -32,6 +34,7 @@ import com.liferay.style.book.constants.StyleBookConstants;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryService;
 import com.liferay.style.book.util.StyleBookEntryProviderUtil;
+import com.liferay.style.book.util.StyleBookUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -133,17 +136,49 @@ public class StyleBookResourceImpl
 			StyleBookEntryProviderUtil.getStyleBookEntries(
 				contextCompany.getCompanyId(), siteId);
 
-		List<StyleBookEntry> pageStyleBookEntries = ListUtil.subList(
-			styleBookEntries, pagination.getStartPosition(),
-			pagination.getEndPosition());
+		StyleBookEntry themeStyleBookEntry = _getThemeStyleBookEntry();
+
+		int totalCount = styleBookEntries.size();
+
+		if (themeStyleBookEntry != null) {
+			totalCount++;
+		}
 
 		List<StyleBook> styleBooks = new ArrayList<>();
 
-		for (StyleBookEntry styleBookEntry : pageStyleBookEntries) {
-			styleBooks.add(_toStyleBook(styleBookEntry));
+		if (themeStyleBookEntry != null) {
+			if (pagination.getStartPosition() == 0) {
+				styleBooks.add(_toStyleBook(themeStyleBookEntry));
+
+				for (StyleBookEntry styleBookEntry :
+						ListUtil.subList(
+							styleBookEntries, 0,
+							pagination.getEndPosition() - 1)) {
+
+					styleBooks.add(_toStyleBook(styleBookEntry));
+				}
+			}
+			else {
+				for (StyleBookEntry styleBookEntry :
+						ListUtil.subList(
+							styleBookEntries, pagination.getStartPosition() - 1,
+							pagination.getEndPosition() - 1)) {
+
+					styleBooks.add(_toStyleBook(styleBookEntry));
+				}
+			}
+		}
+		else {
+			for (StyleBookEntry styleBookEntry :
+					ListUtil.subList(
+						styleBookEntries, pagination.getStartPosition(),
+						pagination.getEndPosition())) {
+
+				styleBooks.add(_toStyleBook(styleBookEntry));
+			}
 		}
 
-		return Page.of(styleBooks, pagination, styleBookEntries.size());
+		return Page.of(styleBooks, pagination, totalCount);
 	}
 
 	private void _checkFeatureFlag() {
@@ -218,6 +253,31 @@ public class StyleBookResourceImpl
 			_getGroupId(groupExternalReferenceCode));
 	}
 
+	private StyleBookEntry _getThemeStyleBookEntry() {
+		long plid = GetterUtil.getLong(
+			contextHttpServletRequest.getParameter("plid"));
+
+		if (plid <= 0) {
+			return null;
+		}
+
+		Layout layout = _layoutLocalService.fetchLayout(plid);
+
+		if (layout == null) {
+			return null;
+		}
+
+		StyleBookEntry themeStyleBookEntry =
+			StyleBookUtil.getStyleFromThemeStyleBookEntry(
+				layout, contextAcceptLanguage.getPreferredLocale());
+
+		if (themeStyleBookEntry.getName() == null) {
+			return null;
+		}
+
+		return themeStyleBookEntry;
+	}
+
 	private Map<String, String> _resolveStyleBookERCInActionHref(
 		Map<String, String> action, String styleBookExternalReferenceCode) {
 
@@ -252,6 +312,9 @@ public class StyleBookResourceImpl
 
 	@Reference
 	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private LayoutLocalService _layoutLocalService;
 
 	@Reference(
 		target = "(resource.name=" + StyleBookConstants.RESOURCE_NAME + ")"
