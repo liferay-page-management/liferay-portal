@@ -14,6 +14,7 @@ import {openSelectionModal} from 'frontend-js-components-web';
 import React, {useState} from 'react';
 
 type StyleBook = {
+	designLibraryExternalReferenceCode: string | null;
 	designLibraryName: string | null;
 	externalReferenceCode: string;
 	name: string;
@@ -103,6 +104,7 @@ export default function StyleBookConfiguration({
 	portletNamespace,
 	styleBookEntryERC: initialStyleBookEntryERC,
 	styleBookEntryName: initialStyleBookEntryName,
+	styleBookEntryScopeERC: initialStyleBookEntryScopeERC,
 	styleBooksApiURL,
 }: {
 	changeStyleBookURL: string;
@@ -111,11 +113,13 @@ export default function StyleBookConfiguration({
 	portletNamespace: string;
 	styleBookEntryERC: string;
 	styleBookEntryName: string;
+	styleBookEntryScopeERC: string;
 	styleBooksApiURL: string;
 }) {
 	const [styleBookEntry, setStyleBookEntry] = useState({
 		name: initialStyleBookEntryName,
 		styleBookEntryERC: initialStyleBookEntryERC,
+		styleBookEntryScopeERC: initialStyleBookEntryScopeERC,
 	});
 
 	const [selectedItems, setSelectedItems] = useState<StyleBook[]>([]);
@@ -140,6 +144,7 @@ export default function StyleBookConfiguration({
 						setStyleBookEntry({
 							name: itemValue.name,
 							styleBookEntryERC: itemValue.externalReferenceCode,
+							styleBookEntryScopeERC: '',
 						});
 					}
 				},
@@ -156,6 +161,12 @@ export default function StyleBookConfiguration({
 				name={`${portletNamespace}styleBookEntryERC`}
 				type="hidden"
 				value={styleBookEntry.styleBookEntryERC}
+			/>
+
+			<input
+				name={`${portletNamespace}styleBookEntryScopeERC`}
+				type="hidden"
+				value={styleBookEntry.styleBookEntryScopeERC}
 			/>
 
 			<label htmlFor={`${portletNamespace}styleBookEntry`}>
@@ -220,6 +231,10 @@ export default function StyleBookConfiguration({
 								name: items[0].name,
 								styleBookEntryERC:
 									items[0].externalReferenceCode,
+								styleBookEntryScopeERC:
+									items[0]
+										.designLibraryExternalReferenceCode ??
+									'',
 							});
 						}
 

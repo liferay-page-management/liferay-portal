@@ -79,6 +79,17 @@ public class StyleBookDTOConverter
 						styleBookEntry.getModifiedDate(),
 						styleBookEntry::getCreateDate));
 				setDefaultStyleBook(styleBookEntry::getDefaultStyleBookEntry);
+				setDesignLibraryExternalReferenceCode(
+					() -> {
+						Group group = _groupLocalService.fetchGroup(
+							styleBookEntry.getGroupId());
+
+						if ((group == null) || !group.isDepot()) {
+							return null;
+						}
+
+						return group.getExternalReferenceCode();
+					});
 				setDesignLibraryName(
 					() -> {
 						Group group = _groupLocalService.fetchGroup(

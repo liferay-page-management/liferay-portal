@@ -251,6 +251,14 @@ public class LayoutLookAndFeelDisplayContext {
 		).put(
 			"styleBookEntryName", getStyleBookEntryName()
 		).put(
+			"styleBookEntryScopeERC",
+			() -> {
+				Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();
+
+				return GetterUtil.getString(
+					selLayout.getStyleBookEntryScopeERC());
+			}
+		).put(
 			"styleBooksApiURL",
 			() -> StringBundler.concat(
 				_themeDisplay.getPortalURL(),
