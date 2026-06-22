@@ -132,11 +132,19 @@ public class StyleBookResourceImpl
 
 		_checkFeatureFlag();
 
-		List<StyleBookEntry> styleBookEntries =
-			StyleBookEntryProviderUtil.getStyleBookEntries(
-				contextCompany.getCompanyId(), siteId);
-
 		StyleBookEntry themeStyleBookEntry = _getThemeStyleBookEntry();
+
+		List<StyleBookEntry> styleBookEntries;
+
+		if (themeStyleBookEntry != null) {
+			styleBookEntries = StyleBookEntryProviderUtil.getStyleBookEntries(
+				contextCompany.getCompanyId(), siteId,
+				themeStyleBookEntry.getThemeId());
+		}
+		else {
+			styleBookEntries = StyleBookEntryProviderUtil.getStyleBookEntries(
+				contextCompany.getCompanyId(), siteId);
+		}
 
 		int totalCount = styleBookEntries.size();
 
