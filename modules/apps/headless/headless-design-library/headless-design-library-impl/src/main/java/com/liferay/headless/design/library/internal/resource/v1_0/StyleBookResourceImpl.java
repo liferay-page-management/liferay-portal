@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -132,18 +133,27 @@ public class StyleBookResourceImpl
 
 		_checkFeatureFlag();
 
+		List<StyleBook> styleBooks = new ArrayList<>();
+
 		StyleBookEntry themeStyleBookEntry = _getThemeStyleBookEntry();
+
+		List<StyleBookEntry> allStyleBookEntries =
+			StyleBookEntryProviderUtil.getStyleBookEntries(
+				contextCompany.getCompanyId(), siteId);
 
 		List<StyleBookEntry> styleBookEntries;
 
 		if (themeStyleBookEntry != null) {
-			styleBookEntries = StyleBookEntryProviderUtil.getStyleBookEntries(
-				contextCompany.getCompanyId(), siteId,
-				themeStyleBookEntry.getThemeId());
+			String themeId = themeStyleBookEntry.getThemeId();
+
+			styleBookEntries = ListUtil.filter(
+				allStyleBookEntries,
+				styleBookEntry ->
+					(styleBookEntry.getGroupId() != siteId) ||
+					Objects.equals(themeId, styleBookEntry.getThemeId()));
 		}
 		else {
-			styleBookEntries = StyleBookEntryProviderUtil.getStyleBookEntries(
-				contextCompany.getCompanyId(), siteId);
+			styleBookEntries = allStyleBookEntries;
 		}
 
 		int totalCount = styleBookEntries.size();
@@ -151,8 +161,6 @@ public class StyleBookResourceImpl
 		if (themeStyleBookEntry != null) {
 			totalCount++;
 		}
-
-		List<StyleBook> styleBooks = new ArrayList<>();
 
 		if (themeStyleBookEntry != null) {
 			if (pagination.getStartPosition() == 0) {
