@@ -244,6 +244,28 @@ public class LayoutLookAndFeelDisplayContext {
 		).put(
 			"isReadOnly", _layoutsAdminDisplayContext.isReadOnly()
 		).put(
+			"styleBookEntryDesignLibraryName",
+			() -> {
+				StyleBookEntry styleBookEntry =
+					StyleBookEntryProviderUtil.getStyleBookEntry(
+						_layoutsAdminDisplayContext.getSelLayout());
+
+				if ((styleBookEntry == null) ||
+					(styleBookEntry.getStyleBookEntryId() <= 0)) {
+
+					return null;
+				}
+
+				Group group = GroupLocalServiceUtil.fetchGroup(
+					styleBookEntry.getGroupId());
+
+				if ((group == null) || !group.isDepot()) {
+					return null;
+				}
+
+				return group.getDescriptiveName(_themeDisplay.getLocale());
+			}
+		).put(
 			"styleBookEntryERC",
 			() -> {
 				Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();

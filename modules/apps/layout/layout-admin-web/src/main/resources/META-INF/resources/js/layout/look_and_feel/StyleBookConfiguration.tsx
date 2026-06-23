@@ -10,6 +10,7 @@ import ClayLabel from '@clayui/label';
 import {useModal} from '@clayui/modal';
 import {IFrontendDataSetProps} from '@liferay/frontend-data-set-web';
 import {ItemSelectorModal} from '@liferay/frontend-js-item-selector-web';
+import {sub} from 'frontend-js-web';
 import {openSelectionModal} from 'frontend-js-components-web';
 import React, {useState} from 'react';
 
@@ -20,8 +21,19 @@ type StyleBook = {
 	name: string;
 };
 
-const DesignLibraryNameLabel = ({value}: {value: string}) => (
-	<ClayLabel displayType="success" inverse withClose={false}>
+const DesignLibraryNameLabel = ({
+	ariaLabel,
+	value,
+}: {
+	ariaLabel?: string;
+	value: string;
+}) => (
+	<ClayLabel
+		aria-label={ariaLabel}
+		displayType="success"
+		inverse
+		withClose={false}
+	>
 		<ClayLabel.ItemBefore>
 			<ClayIcon symbol="books-brush" />
 		</ClayLabel.ItemBefore>
@@ -102,6 +114,7 @@ export default function StyleBookConfiguration({
 	isDesignLibraryEnabled,
 	isReadOnly,
 	portletNamespace,
+	styleBookEntryDesignLibraryName: initialStyleBookEntryDesignLibraryName,
 	styleBookEntryERC: initialStyleBookEntryERC,
 	styleBookEntryName: initialStyleBookEntryName,
 	styleBookEntryScopeERC: initialStyleBookEntryScopeERC,
@@ -111,12 +124,14 @@ export default function StyleBookConfiguration({
 	isDesignLibraryEnabled: boolean;
 	isReadOnly: boolean;
 	portletNamespace: string;
+	styleBookEntryDesignLibraryName: string | null;
 	styleBookEntryERC: string;
 	styleBookEntryName: string;
 	styleBookEntryScopeERC: string;
 	styleBooksApiURL: string;
 }) {
 	const [styleBookEntry, setStyleBookEntry] = useState({
+		designLibraryName: initialStyleBookEntryDesignLibraryName,
 		name: initialStyleBookEntryName,
 		styleBookEntryERC: initialStyleBookEntryERC,
 		styleBookEntryScopeERC: initialStyleBookEntryScopeERC,
@@ -142,6 +157,7 @@ export default function StyleBookConfiguration({
 						const itemValue = JSON.parse(selectedItem.value);
 
 						setStyleBookEntry({
+							designLibraryName: null,
 							name: itemValue.name,
 							styleBookEntryERC: itemValue.externalReferenceCode,
 							styleBookEntryScopeERC: '',
@@ -193,6 +209,17 @@ export default function StyleBookConfiguration({
 				/>
 			</div>
 
+			{styleBookEntry.designLibraryName && (
+				<div className="mt-2">
+					<DesignLibraryNameLabel
+						ariaLabel={
+							sub(Liferay.Language.get('style-book-from-x-design-library'), styleBookEntry.designLibraryName)
+						}
+						value={styleBookEntry.designLibraryName}
+					/>
+				</div>
+			)}
+
 			{open && isDesignLibraryEnabled && (
 				<ItemSelectorModal<StyleBook>
 					apiURL={styleBooksApiURL}
@@ -228,6 +255,7 @@ export default function StyleBookConfiguration({
 					onItemsChange={(items) => {
 						if (items[0]) {
 							setStyleBookEntry({
+								designLibraryName: items[0].designLibraryName,
 								name: items[0].name,
 								styleBookEntryERC:
 									items[0].externalReferenceCode,
