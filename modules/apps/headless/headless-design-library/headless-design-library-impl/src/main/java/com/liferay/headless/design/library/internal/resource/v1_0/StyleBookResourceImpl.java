@@ -259,7 +259,7 @@ public class StyleBookResourceImpl
 				StyleBookEntryProviderUtil.getStyleBookEntries(
 					contextCompany.getCompanyId(), groupId)) {
 
-			if ((themeId != null) && (styleBookEntry.getGroupId() == groupId) &&
+			if ((themeId != null) &&
 				!Objects.equals(themeId, styleBookEntry.getThemeId())) {
 
 				continue;
