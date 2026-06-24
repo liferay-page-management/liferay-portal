@@ -7,7 +7,10 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
+import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {pagesAdminPagesTest} from '../../../fixtures/pagesAdminPagesTest';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {
 	performLoginViaApi,
@@ -403,5 +406,164 @@ test(
 				connectedSite.externalReferenceCode
 			);
 		});
+	}
+);
+
+const testWithSite = mergeTests(test, isolatedSiteTest, pagesAdminPagesTest);
+
+testWithSite(
+	'Design library style books are filtered by page theme in the style book selector',
+	{tag: '@LPD-89206'},
+	async ({apiHelpers, designLibrariesPage, page, pagesAdminPage, site}) => {
+		const classicStyleBookName = getRandomString();
+		const designLibraryName = getRandomString();
+		const dialectStyleBookName = getRandomString();
+		const pageName = getRandomString();
+
+		const createdDesignLibrary = await testWithSite.step(
+			'Create a design library via headless',
+			async () => {
+				return await apiHelpers.headlessAssetLibrary.createAssetLibrary(
+					{
+						name: designLibraryName,
+						settings: {},
+						type: 'DesignLibrary',
+					}
+				);
+			}
+		);
+
+		try {
+			await testWithSite.step(
+				'Create a widget page in the site',
+				async () => {
+					await apiHelpers.headlessAdminSite.createPage(
+						site.externalReferenceCode,
+						{
+							name_i18n: {en_US: pageName},
+							type: 'WidgetPage',
+						}
+					);
+				}
+			);
+
+			await testWithSite.step(
+				'Create a Classic Theme style book in the design library',
+				async () => {
+					await designLibrariesPage.createStyleBook(
+						designLibraryName,
+						classicStyleBookName,
+						'Classic Theme'
+					);
+				}
+			);
+
+			await testWithSite.step(
+				'Create a Dialect Theme style book in the design library',
+				async () => {
+					await designLibrariesPage.createStyleBook(
+						designLibraryName,
+						dialectStyleBookName,
+						'Dialect Theme'
+					);
+				}
+			);
+
+			await testWithSite.step(
+				'Assert no design library style books are visible when not connected to the site',
+				async () => {
+					await pagesAdminPage.goto(site.friendlyUrlPath);
+
+					await pagesAdminPage.goToDesignTabConfiguration(pageName);
+
+					const styleBookTextbox = page.getByRole('textbox', {
+						name: 'Style Book',
+					});
+
+					const selectStyleBookDialog = page.getByRole('dialog', {
+						name: 'Select Style Book',
+					});
+
+					await clickAndExpectToBeVisible({
+						target: selectStyleBookDialog,
+						trigger: styleBookTextbox,
+					});
+
+					await expect(
+						selectStyleBookDialog.getByText(
+							'Styles from Classic Theme',
+							{exact: true}
+						)
+					).toBeVisible();
+
+					await expect(
+						selectStyleBookDialog.getByText(classicStyleBookName, {
+							exact: true,
+						})
+					).toBeHidden();
+
+					await expect(
+						selectStyleBookDialog.getByText(dialectStyleBookName, {
+							exact: true,
+						})
+					).toBeHidden();
+
+					await selectStyleBookDialog.getByLabel('Close').click();
+				}
+			);
+
+			await testWithSite.step(
+				'Connect the design library to the site',
+				async () => {
+					await apiHelpers.jsonWebServicesDepotGroupRel.addDepotEntryGroupRel(
+						createdDesignLibrary.id,
+						site.id
+					);
+				}
+			);
+
+			await testWithSite.step(
+				'Assert only the Classic Theme style book is visible in the selector after connecting',
+				async () => {
+					await pagesAdminPage.goto(site.friendlyUrlPath);
+
+					await pagesAdminPage.goToDesignTabConfiguration(pageName);
+
+					const styleBookTextbox = page.getByRole('textbox', {
+						name: 'Style Book',
+					});
+
+					const selectStyleBookDialog = page.getByRole('dialog', {
+						name: 'Select Style Book',
+					});
+
+					await clickAndExpectToBeVisible({
+						target: selectStyleBookDialog,
+						trigger: styleBookTextbox,
+					});
+
+					await expect(
+						selectStyleBookDialog.getByText(classicStyleBookName, {
+							exact: true,
+						})
+					).toBeVisible();
+
+					await expect(
+						selectStyleBookDialog.getByText(dialectStyleBookName, {
+							exact: true,
+						})
+					).toBeHidden();
+
+					await selectStyleBookDialog.getByLabel('Close').click();
+				}
+			);
+		}
+		finally {
+			await testWithSite.step('Remove the design library', async () => {
+				await apiHelpers.headlessAssetLibrary.deleteAssetLibrary(
+					createdDesignLibrary.externalReferenceCode
+				);
+			});
+		}
 	}
 );

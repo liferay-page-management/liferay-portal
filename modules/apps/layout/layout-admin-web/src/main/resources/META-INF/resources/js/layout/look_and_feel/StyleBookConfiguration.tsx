@@ -10,8 +10,8 @@ import ClayLabel from '@clayui/label';
 import {useModal} from '@clayui/modal';
 import {IFrontendDataSetProps} from '@liferay/frontend-data-set-web';
 import {ItemSelectorModal} from '@liferay/frontend-js-item-selector-web';
-import {sub} from 'frontend-js-web';
 import {openSelectionModal} from 'frontend-js-components-web';
+import {sub} from 'frontend-js-web';
 import React, {useState} from 'react';
 
 type StyleBook = {
@@ -212,9 +212,12 @@ export default function StyleBookConfiguration({
 			{styleBookEntry.designLibraryName && (
 				<div className="mt-2">
 					<DesignLibraryNameLabel
-						ariaLabel={
-							sub(Liferay.Language.get('style-book-from-x-design-library'), styleBookEntry.designLibraryName)
-						}
+						ariaLabel={sub(
+							Liferay.Language.get(
+								'style-book-from-x-design-library'
+							),
+							styleBookEntry.designLibraryName
+						)}
 						value={styleBookEntry.designLibraryName}
 					/>
 				</div>
