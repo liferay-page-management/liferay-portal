@@ -82,6 +82,20 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 			styleBookEntry.getExternalReferenceCode());
 	}
 
+	@Override
+	protected StyleBook testGetSiteStyleBook_addStyleBook() throws Exception {
+		return _addSiteStyleBook(
+			testGroup.getExternalReferenceCode(), randomStyleBook());
+	}
+
+	@Override
+	protected StyleBook testGetSiteStyleBooksPage_addStyleBook(
+			String siteExternalReferenceCode, StyleBook styleBook)
+		throws Exception {
+
+		return _addSiteStyleBook(siteExternalReferenceCode, styleBook);
+	}
+
 	private StyleBook _addAssetLibraryStyleBook(StyleBook styleBook)
 		throws Exception {
 
@@ -90,6 +104,21 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 
 		return styleBookResource.getAssetLibraryStyleBook(
 			testDepotEntryGroup.getExternalReferenceCode(),
+			styleBookEntry.getExternalReferenceCode());
+	}
+
+	private StyleBook _addSiteStyleBook(
+			String siteExternalReferenceCode, StyleBook styleBook)
+		throws Exception {
+
+		Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
+			siteExternalReferenceCode, TestPropsValues.getCompanyId());
+
+		StyleBookEntry styleBookEntry = _addStyleBookEntry(
+			group.getGroupId(), styleBook);
+
+		return styleBookResource.getSiteStyleBook(
+			siteExternalReferenceCode,
 			styleBookEntry.getExternalReferenceCode());
 	}
 
