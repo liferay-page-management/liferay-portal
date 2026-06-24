@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.aggregation.Aggregation;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -127,73 +128,53 @@ public class StyleBookResourceImpl
 	}
 
 	@Override
-	public Page<StyleBook> getSiteStyleBooksPage(
-			Long siteId, String search, Pagination pagination)
+	public StyleBook getSiteStyleBook(
+			String siteExternalReferenceCode,
+			String styleBookExternalReferenceCode)
 		throws Exception {
 
 		_checkFeatureFlag();
 
-		List<StyleBook> styleBooks = new ArrayList<>();
+		for (StyleBookEntry styleBookEntry :
+				StyleBookEntryProviderUtil.getStyleBookEntries(
+					contextCompany.getCompanyId(),
+					_getGroupId(siteExternalReferenceCode))) {
 
-		StyleBookEntry themeStyleBookEntry = _getThemeStyleBookEntry();
+			if (Objects.equals(
+					styleBookExternalReferenceCode,
+					styleBookEntry.getExternalReferenceCode())) {
 
-		List<StyleBookEntry> allStyleBookEntries =
-			StyleBookEntryProviderUtil.getStyleBookEntries(
-				contextCompany.getCompanyId(), siteId);
-
-		List<StyleBookEntry> styleBookEntries;
-
-		if (themeStyleBookEntry != null) {
-			String themeId = themeStyleBookEntry.getThemeId();
-
-			styleBookEntries = ListUtil.filter(
-				allStyleBookEntries,
-				styleBookEntry ->
-					Objects.equals(themeId, styleBookEntry.getThemeId()));
-		}
-		else {
-			styleBookEntries = allStyleBookEntries;
-		}
-
-		int totalCount = styleBookEntries.size();
-
-		if (themeStyleBookEntry != null) {
-			totalCount++;
-		}
-
-		if (themeStyleBookEntry != null) {
-			if (pagination.getStartPosition() == 0) {
-				styleBooks.add(_toStyleBook(themeStyleBookEntry));
-
-				for (StyleBookEntry styleBookEntry :
-						ListUtil.subList(
-							styleBookEntries, 0,
-							pagination.getEndPosition() - 1)) {
-
-					styleBooks.add(_toStyleBook(styleBookEntry));
-				}
-			}
-			else {
-				for (StyleBookEntry styleBookEntry :
-						ListUtil.subList(
-							styleBookEntries, pagination.getStartPosition() - 1,
-							pagination.getEndPosition() - 1)) {
-
-					styleBooks.add(_toStyleBook(styleBookEntry));
-				}
-			}
-		}
-		else {
-			for (StyleBookEntry styleBookEntry :
-					ListUtil.subList(
-						styleBookEntries, pagination.getStartPosition(),
-						pagination.getEndPosition())) {
-
-				styleBooks.add(_toStyleBook(styleBookEntry));
+				return _toStyleBook(styleBookEntry);
 			}
 		}
 
-		return Page.of(styleBooks, pagination, totalCount);
+		return _toStyleBook(
+			_getStyleBookEntry(
+				siteExternalReferenceCode, styleBookExternalReferenceCode));
+	}
+
+	@Override
+	public Page<StyleBook> getSiteStyleBooksPage(
+			String siteExternalReferenceCode, Long plid, String search,
+			Pagination pagination)
+		throws Exception {
+
+		_checkFeatureFlag();
+
+		List<StyleBookEntry> styleBookEntries = _getStyleBookEntries(
+			_getGroupId(siteExternalReferenceCode), plid, search);
+
+		if (pagination == null) {
+			return Page.of(transform(styleBookEntries, this::_toStyleBook));
+		}
+
+		return Page.of(
+			transform(
+				ListUtil.subList(
+					styleBookEntries, pagination.getStartPosition(),
+					pagination.getEndPosition()),
+				this::_toStyleBook),
+			pagination, styleBookEntries.size());
 	}
 
 	private void _checkFeatureFlag() {
@@ -258,6 +239,47 @@ public class StyleBookResourceImpl
 		return group.getGroupId();
 	}
 
+	private List<StyleBookEntry> _getStyleBookEntries(
+			long groupId, Long plid, String search)
+		throws Exception {
+
+		List<StyleBookEntry> styleBookEntries = new ArrayList<>();
+
+		StyleBookEntry themeStyleBookEntry = _getThemeStyleBookEntry(plid);
+
+		String themeId = null;
+
+		if (themeStyleBookEntry != null) {
+			styleBookEntries.add(themeStyleBookEntry);
+
+			themeId = themeStyleBookEntry.getThemeId();
+		}
+
+		for (StyleBookEntry styleBookEntry :
+				StyleBookEntryProviderUtil.getStyleBookEntries(
+					contextCompany.getCompanyId(), groupId)) {
+
+			if ((themeId != null) && (styleBookEntry.getGroupId() == groupId) &&
+				!Objects.equals(themeId, styleBookEntry.getThemeId())) {
+
+				continue;
+			}
+
+			if (Validator.isNotNull(search)) {
+				String name = StringUtil.toLowerCase(
+					GetterUtil.getString(styleBookEntry.getName()));
+
+				if (!name.contains(StringUtil.toLowerCase(search))) {
+					continue;
+				}
+			}
+
+			styleBookEntries.add(styleBookEntry);
+		}
+
+		return styleBookEntries;
+	}
+
 	private StyleBookEntry _getStyleBookEntry(
 			String groupExternalReferenceCode,
 			String styleBookExternalReferenceCode)
@@ -268,11 +290,8 @@ public class StyleBookResourceImpl
 			_getGroupId(groupExternalReferenceCode));
 	}
 
-	private StyleBookEntry _getThemeStyleBookEntry() {
-		long plid = GetterUtil.getLong(
-			contextHttpServletRequest.getParameter("plid"));
-
-		if (plid <= 0) {
+	private StyleBookEntry _getThemeStyleBookEntry(Long plid) {
+		if ((plid == null) || (plid <= 0)) {
 			return null;
 		}
 
