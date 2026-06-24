@@ -216,18 +216,17 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/StyleBook"
             tags: ["StyleBook"]
-    "/sites/{siteId}/style-books":
+    "/sites/{siteExternalReferenceCode}/style-books":
         get:
             description:
                 Retrieves the style books available for a site, including those from connected Design Libraries when the LPD-57283 feature flag is enabled.
             operationId: getSiteStyleBooksPage
             parameters:
                 -   in: path
-                    name: siteId
+                    name: siteExternalReferenceCode
                     required: true
                     schema:
-                        format: int64
-                        type: integer
+                        type: string
                 -   in: query
                     name: fields
                     schema:
@@ -239,6 +238,11 @@ paths:
                 -   in: query
                     name: pageSize
                     schema:
+                        type: integer
+                -   in: query
+                    name: plid
+                    schema:
+                        format: int64
                         type: integer
                 -   in: query
                     name: restrictFields
@@ -261,4 +265,42 @@ paths:
                                 items:
                                     $ref: "#/components/schemas/StyleBook"
                                 type: array
+            tags: ["StyleBook"]
+    "/sites/{siteExternalReferenceCode}/style-books/{styleBookExternalReferenceCode}":
+        get:
+            description:
+                Retrieves a specific style book of a site.
+            operationId: getSiteStyleBook
+            parameters:
+                -   in: path
+                    name: siteExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: styleBookExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/StyleBook"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/StyleBook"
             tags: ["StyleBook"]
