@@ -13,10 +13,13 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -161,8 +164,12 @@ public class StyleBookResourceImpl
 
 		_checkFeatureFlag();
 
+		long groupId = _getGroupId(siteExternalReferenceCode);
+
+		_checkSiteStyleBooksPermission(groupId, plid);
+
 		List<StyleBookEntry> styleBookEntries = _getStyleBookEntries(
-			_getGroupId(siteExternalReferenceCode), plid, search);
+			groupId, plid, search);
 
 		if (pagination == null) {
 			return Page.of(transform(styleBookEntries, this::_toStyleBook));
@@ -183,6 +190,28 @@ public class StyleBookResourceImpl
 
 			throw new UnsupportedOperationException();
 		}
+	}
+
+	private void _checkSiteStyleBooksPermission(long groupId, Long plid)
+		throws Exception {
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if ((plid != null) && (plid > 0)) {
+			Layout layout = _layoutLocalService.fetchLayout(plid);
+
+			if ((layout != null) &&
+				LayoutPermissionUtil.contains(
+					permissionChecker, layout, ActionKeys.UPDATE)) {
+
+				return;
+			}
+		}
+
+		_portletResourcePermission.check(
+			permissionChecker, groupId,
+			StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES);
 	}
 
 	private Map<String, Map<String, String>> _getActions(
