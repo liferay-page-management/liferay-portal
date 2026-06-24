@@ -61,8 +61,14 @@ public interface StyleBookResource {
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
+	public StyleBook getSiteStyleBook(
+			String siteExternalReferenceCode,
+			String styleBookExternalReferenceCode)
+		throws Exception;
+
 	public Page<StyleBook> getSiteStyleBooksPage(
-			Long siteId, String search, Pagination pagination)
+			String siteExternalReferenceCode, Long plid, String search,
+			Pagination pagination)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -153,4 +159,4 @@ public interface StyleBookResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1890294270
+// LIFERAY-REST-BUILDER-HASH:521759033

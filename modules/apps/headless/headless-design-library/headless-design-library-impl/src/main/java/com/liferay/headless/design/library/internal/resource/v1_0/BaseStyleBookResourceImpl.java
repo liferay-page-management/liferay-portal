@@ -228,7 +228,62 @@ public abstract class BaseStyleBookResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'GET' 'http://localhost:8080/o/headless-design-library/v1.0/sites/{siteId}/style-books'  -u 'test@liferay.com:test'
+	 * curl -X 'GET' 'http://localhost:8080/o/headless-design-library/v1.0/sites/{siteExternalReferenceCode}/style-books/{styleBookExternalReferenceCode}'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Retrieves a specific style book of a site."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "siteExternalReferenceCode"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "styleBookExternalReferenceCode"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "fields"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "nestedFields"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "restrictFields"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "StyleBook")}
+	)
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
+		"/sites/{siteExternalReferenceCode}/style-books/{styleBookExternalReferenceCode}"
+	)
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public StyleBook getSiteStyleBook(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("siteExternalReferenceCode")
+			String siteExternalReferenceCode,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("styleBookExternalReferenceCode")
+			String styleBookExternalReferenceCode)
+		throws Exception {
+
+		return new StyleBook();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'GET' 'http://localhost:8080/o/headless-design-library/v1.0/sites/{siteExternalReferenceCode}/style-books'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Retrieves the style books available for a site, including those from connected Design Libraries when the LPD-57283 feature flag is enabled."
@@ -237,7 +292,7 @@ public abstract class BaseStyleBookResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteExternalReferenceCode"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -253,6 +308,10 @@ public abstract class BaseStyleBookResourceImpl
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "plid"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "restrictFields"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -265,14 +324,17 @@ public abstract class BaseStyleBookResourceImpl
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "StyleBook")}
 	)
 	@jakarta.ws.rs.GET
-	@jakarta.ws.rs.Path("/sites/{siteId}/style-books")
+	@jakarta.ws.rs.Path("/sites/{siteExternalReferenceCode}/style-books")
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<StyleBook> getSiteStyleBooksPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.validation.constraints.NotNull
-			@jakarta.ws.rs.PathParam("siteId")
-			Long siteId,
+			@jakarta.ws.rs.PathParam("siteExternalReferenceCode")
+			String siteExternalReferenceCode,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("plid")
+			Long plid,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("search")
 			String search,
@@ -734,4 +796,4 @@ public abstract class BaseStyleBookResourceImpl
 		LogFactoryUtil.getLog(BaseStyleBookResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1778854111
+// LIFERAY-REST-BUILDER-HASH:1148245308

@@ -713,22 +713,49 @@ public abstract class BaseStyleBookResourceTestCase {
 	}
 
 	@Test
+	public void testGetSiteStyleBook() throws Exception {
+		StyleBook postStyleBook = testGetSiteStyleBook_addStyleBook();
+
+		StyleBook getStyleBook = styleBookResource.getSiteStyleBook(
+			testGetSiteStyleBook_getSiteExternalReferenceCode(),
+			postStyleBook.getExternalReferenceCode());
+
+		assertEquals(postStyleBook, getStyleBook);
+		assertValid(getStyleBook);
+	}
+
+	protected StyleBook testGetSiteStyleBook_addStyleBook() throws Exception {
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String testGetSiteStyleBook_getSiteExternalReferenceCode()
+		throws Exception {
+
+		return testGroup.getExternalReferenceCode();
+	}
+
+	@Test
 	public void testGetSiteStyleBooksPage() throws Exception {
-		Long siteId = testGetSiteStyleBooksPage_getSiteId();
-		Long irrelevantSiteId = testGetSiteStyleBooksPage_getIrrelevantSiteId();
+		String siteExternalReferenceCode =
+			testGetSiteStyleBooksPage_getSiteExternalReferenceCode();
+		String irrelevantSiteExternalReferenceCode =
+			testGetSiteStyleBooksPage_getIrrelevantSiteExternalReferenceCode();
 
 		Page<StyleBook> page = styleBookResource.getSiteStyleBooksPage(
-			siteId, null, Pagination.of(1, 10));
+			siteExternalReferenceCode, null, null, Pagination.of(1, 10));
 
 		long totalCount = page.getTotalCount();
 
-		if (irrelevantSiteId != null) {
+		if (irrelevantSiteExternalReferenceCode != null) {
 			StyleBook irrelevantStyleBook =
 				testGetSiteStyleBooksPage_addStyleBook(
-					irrelevantSiteId, randomIrrelevantStyleBook());
+					irrelevantSiteExternalReferenceCode,
+					randomIrrelevantStyleBook());
 
 			page = styleBookResource.getSiteStyleBooksPage(
-				irrelevantSiteId, null, Pagination.of(1, (int)totalCount + 1));
+				irrelevantSiteExternalReferenceCode, null, null,
+				Pagination.of(1, (int)totalCount + 1));
 
 			Assert.assertEquals(totalCount + 1, page.getTotalCount());
 
@@ -736,27 +763,32 @@ public abstract class BaseStyleBookResourceTestCase {
 				irrelevantStyleBook, (List<StyleBook>)page.getItems());
 			assertValid(
 				page,
-				testGetSiteStyleBooksPage_getExpectedActions(irrelevantSiteId));
+				testGetSiteStyleBooksPage_getExpectedActions(
+					irrelevantSiteExternalReferenceCode));
 		}
 
 		StyleBook styleBook1 = testGetSiteStyleBooksPage_addStyleBook(
-			siteId, randomStyleBook());
+			siteExternalReferenceCode, randomStyleBook());
 
 		StyleBook styleBook2 = testGetSiteStyleBooksPage_addStyleBook(
-			siteId, randomStyleBook());
+			siteExternalReferenceCode, randomStyleBook());
 
 		page = styleBookResource.getSiteStyleBooksPage(
-			siteId, null, Pagination.of(1, 10));
+			siteExternalReferenceCode, null, null, Pagination.of(1, 10));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
 		assertContains(styleBook1, (List<StyleBook>)page.getItems());
 		assertContains(styleBook2, (List<StyleBook>)page.getItems());
-		assertValid(page, testGetSiteStyleBooksPage_getExpectedActions(siteId));
+		assertValid(
+			page,
+			testGetSiteStyleBooksPage_getExpectedActions(
+				siteExternalReferenceCode));
 	}
 
 	protected Map<String, Map<String, String>>
-			testGetSiteStyleBooksPage_getExpectedActions(Long siteId)
+			testGetSiteStyleBooksPage_getExpectedActions(
+				String siteExternalReferenceCode)
 		throws Exception {
 
 		Map<String, Map<String, String>> expectedActions = new HashMap<>();
@@ -766,21 +798,23 @@ public abstract class BaseStyleBookResourceTestCase {
 
 	@Test
 	public void testGetSiteStyleBooksPageWithPagination() throws Exception {
-		Long siteId = testGetSiteStyleBooksPage_getSiteId();
+		String siteExternalReferenceCode =
+			testGetSiteStyleBooksPage_getSiteExternalReferenceCode();
 
 		Page<StyleBook> styleBooksPage =
-			styleBookResource.getSiteStyleBooksPage(siteId, null, null);
+			styleBookResource.getSiteStyleBooksPage(
+				siteExternalReferenceCode, null, null, null);
 
 		int totalCount = GetterUtil.getInteger(styleBooksPage.getTotalCount());
 
 		StyleBook styleBook1 = testGetSiteStyleBooksPage_addStyleBook(
-			siteId, randomStyleBook());
+			siteExternalReferenceCode, randomStyleBook());
 
 		StyleBook styleBook2 = testGetSiteStyleBooksPage_addStyleBook(
-			siteId, randomStyleBook());
+			siteExternalReferenceCode, randomStyleBook());
 
 		StyleBook styleBook3 = testGetSiteStyleBooksPage_addStyleBook(
-			siteId, randomStyleBook());
+			siteExternalReferenceCode, randomStyleBook());
 
 		// See com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration#pageSizeLimit
 
@@ -788,7 +822,7 @@ public abstract class BaseStyleBookResourceTestCase {
 
 		if (totalCount >= (pageSizeLimit - 2)) {
 			Page<StyleBook> page1 = styleBookResource.getSiteStyleBooksPage(
-				siteId, null,
+				siteExternalReferenceCode, null, null,
 				Pagination.of(
 					(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 					pageSizeLimit));
@@ -798,7 +832,7 @@ public abstract class BaseStyleBookResourceTestCase {
 			assertContains(styleBook1, (List<StyleBook>)page1.getItems());
 
 			Page<StyleBook> page2 = styleBookResource.getSiteStyleBooksPage(
-				siteId, null,
+				siteExternalReferenceCode, null, null,
 				Pagination.of(
 					(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 					pageSizeLimit));
@@ -806,7 +840,7 @@ public abstract class BaseStyleBookResourceTestCase {
 			assertContains(styleBook2, (List<StyleBook>)page2.getItems());
 
 			Page<StyleBook> page3 = styleBookResource.getSiteStyleBooksPage(
-				siteId, null,
+				siteExternalReferenceCode, null, null,
 				Pagination.of(
 					(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 					pageSizeLimit));
@@ -815,7 +849,8 @@ public abstract class BaseStyleBookResourceTestCase {
 		}
 		else {
 			Page<StyleBook> page1 = styleBookResource.getSiteStyleBooksPage(
-				siteId, null, Pagination.of(1, totalCount + 2));
+				siteExternalReferenceCode, null, null,
+				Pagination.of(1, totalCount + 2));
 
 			List<StyleBook> styleBooks1 = (List<StyleBook>)page1.getItems();
 
@@ -823,7 +858,8 @@ public abstract class BaseStyleBookResourceTestCase {
 				styleBooks1.toString(), totalCount + 2, styleBooks1.size());
 
 			Page<StyleBook> page2 = styleBookResource.getSiteStyleBooksPage(
-				siteId, null, Pagination.of(2, totalCount + 2));
+				siteExternalReferenceCode, null, null,
+				Pagination.of(2, totalCount + 2));
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
 
@@ -832,7 +868,8 @@ public abstract class BaseStyleBookResourceTestCase {
 			Assert.assertEquals(styleBooks2.toString(), 1, styleBooks2.size());
 
 			Page<StyleBook> page3 = styleBookResource.getSiteStyleBooksPage(
-				siteId, null, Pagination.of(1, (int)totalCount + 3));
+				siteExternalReferenceCode, null, null,
+				Pagination.of(1, (int)totalCount + 3));
 
 			assertContains(styleBook1, (List<StyleBook>)page3.getItems());
 			assertContains(styleBook2, (List<StyleBook>)page3.getItems());
@@ -841,21 +878,24 @@ public abstract class BaseStyleBookResourceTestCase {
 	}
 
 	protected StyleBook testGetSiteStyleBooksPage_addStyleBook(
-			Long siteId, StyleBook styleBook)
+			String siteExternalReferenceCode, StyleBook styleBook)
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Long testGetSiteStyleBooksPage_getSiteId() throws Exception {
-		return testGroup.getGroupId();
-	}
-
-	protected Long testGetSiteStyleBooksPage_getIrrelevantSiteId()
+	protected String testGetSiteStyleBooksPage_getSiteExternalReferenceCode()
 		throws Exception {
 
-		return irrelevantGroup.getGroupId();
+		return testGroup.getExternalReferenceCode();
+	}
+
+	protected String
+			testGetSiteStyleBooksPage_getIrrelevantSiteExternalReferenceCode()
+		throws Exception {
+
+		return irrelevantGroup.getExternalReferenceCode();
 	}
 
 	@Rule
@@ -2175,4 +2215,4 @@ public abstract class BaseStyleBookResourceTestCase {
 		_styleBookResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1297272648
+// LIFERAY-REST-BUILDER-HASH:1870644253
