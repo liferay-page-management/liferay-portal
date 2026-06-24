@@ -149,7 +149,6 @@ public class StyleBookResourceImpl
 			styleBookEntries = ListUtil.filter(
 				allStyleBookEntries,
 				styleBookEntry ->
-					(styleBookEntry.getGroupId() != siteId) ||
 					Objects.equals(themeId, styleBookEntry.getThemeId()));
 		}
 		else {
