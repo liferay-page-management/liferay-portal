@@ -137,7 +137,21 @@ export default function StyleBookConfiguration({
 		styleBookEntryScopeERC: initialStyleBookEntryScopeERC,
 	});
 
-	const [selectedItems, setSelectedItems] = useState<StyleBook[]>([]);
+	const [selectedItems, setSelectedItems] = useState<StyleBook[]>(() => {
+		if (initialStyleBookEntryERC) {
+			return [
+				{
+					designLibraryExternalReferenceCode:
+						initialStyleBookEntryScopeERC,
+					designLibraryName: null,
+					externalReferenceCode: initialStyleBookEntryERC,
+					name: initialStyleBookEntryName,
+				},
+			];
+		}
+
+		return [];
+	});
 
 	const {observer, onOpenChange, open} = useModal();
 
@@ -267,9 +281,11 @@ export default function StyleBookConfiguration({
 										.designLibraryExternalReferenceCode ??
 									'',
 							});
+							setSelectedItems([items[0]]);
 						}
-
-						setSelectedItems([]);
+						else {
+							setSelectedItems([]);
+						}
 					}}
 					onOpenChange={onOpenChange}
 					open={open}
