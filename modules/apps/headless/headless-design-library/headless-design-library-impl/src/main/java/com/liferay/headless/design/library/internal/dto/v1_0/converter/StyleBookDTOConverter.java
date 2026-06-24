@@ -53,6 +53,9 @@ public class StyleBookDTOConverter
 			StyleBookEntry styleBookEntry)
 		throws Exception {
 
+		Group group = _groupLocalService.fetchGroup(
+			styleBookEntry.getGroupId());
+
 		return new StyleBook() {
 			{
 				setActions(dtoConverterContext::getActions);
@@ -81,9 +84,6 @@ public class StyleBookDTOConverter
 				setDefaultStyleBook(styleBookEntry::getDefaultStyleBookEntry);
 				setDesignLibraryExternalReferenceCode(
 					() -> {
-						Group group = _groupLocalService.fetchGroup(
-							styleBookEntry.getGroupId());
-
 						if ((group == null) || !group.isDepot()) {
 							return null;
 						}
@@ -92,9 +92,6 @@ public class StyleBookDTOConverter
 					});
 				setDesignLibraryName(
 					() -> {
-						Group group = _groupLocalService.fetchGroup(
-							styleBookEntry.getGroupId());
-
 						if ((group == null) || !group.isDepot()) {
 							return null;
 						}
