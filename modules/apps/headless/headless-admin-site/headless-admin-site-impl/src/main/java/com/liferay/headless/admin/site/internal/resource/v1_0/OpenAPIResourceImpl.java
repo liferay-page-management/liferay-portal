@@ -111,8 +111,6 @@ public class OpenAPIResourceImpl {
 
 			add(SiteTemplateResourceImpl.class);
 
-			add(StyleBookResourceImpl.class);
-
 			add(UtilityPageResourceImpl.class);
 
 			add(WidgetPageWidgetInstanceResourceImpl.class);
@@ -122,4 +120,4 @@ public class OpenAPIResourceImpl {
 	};
 
 }
-// LIFERAY-REST-BUILDER-HASH:-973604041
+// LIFERAY-REST-BUILDER-HASH:-1371008437
