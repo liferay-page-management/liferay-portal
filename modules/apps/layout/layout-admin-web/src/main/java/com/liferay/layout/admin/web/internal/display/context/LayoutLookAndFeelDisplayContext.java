@@ -284,11 +284,16 @@ public class LayoutLookAndFeelDisplayContext {
 			}
 		).put(
 			"styleBooksApiURL",
-			() -> StringBundler.concat(
-				_themeDisplay.getPortalURL(),
-				"/o/headless-design-library/v1.0/sites/",
-				_themeDisplay.getSiteGroupId(), "/style-books?plid=",
-				_layoutsAdminDisplayContext.getSelPlid())
+			() -> {
+				Group group = GroupLocalServiceUtil.fetchGroup(
+					_themeDisplay.getSiteGroupId());
+
+				return StringBundler.concat(
+					_themeDisplay.getPortalURL(),
+					"/o/headless-design-library/v1.0/sites/",
+					group.getExternalReferenceCode(), "/style-books?plid=",
+					_layoutsAdminDisplayContext.getSelPlid());
+			}
 		).build();
 	}
 
