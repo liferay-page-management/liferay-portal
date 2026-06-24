@@ -183,7 +183,8 @@ public class ServletContextUtil {
 			ServletContextUtil.class, LayoutStructureProvider.class);
 	private static final Snapshot<LayoutStructureRulesHelper>
 		_layoutStructureRulesHelperSnapshot = new Snapshot<>(
-			ServletContextUtil.class, LayoutStructureRulesHelper.class);
+			ServletContextUtil.class, LayoutStructureRulesHelper.class, null,
+			true);
 	private static final Snapshot<ListObjectReferenceFactoryRegistry>
 		_listObjectReferenceFactoryRegistrySnapshot = new Snapshot<>(
 			ServletContextUtil.class, ListObjectReferenceFactoryRegistry.class);

@@ -40,6 +40,8 @@ import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Lourdes Fernández Besada
@@ -141,8 +143,11 @@ public class EvaluateLayoutStructureRulesStrutsAction implements StrutsAction {
 	@Reference
 	private LayoutStructureProvider _layoutStructureProvider;
 
-	@Reference
-	private LayoutStructureRulesHelper _layoutStructureRulesHelper;
+	@Reference(
+		policy = ReferencePolicy.DYNAMIC,
+		policyOption = ReferencePolicyOption.GREEDY
+	)
+	private volatile LayoutStructureRulesHelper _layoutStructureRulesHelper;
 
 	@Reference
 	private RequestContextMapper _requestContextMapper;
