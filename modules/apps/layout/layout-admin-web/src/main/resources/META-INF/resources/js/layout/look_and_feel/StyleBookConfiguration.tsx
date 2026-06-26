@@ -108,7 +108,6 @@ const STYLE_BOOK_VIEWS: IFrontendDataSetProps['views'] = [
 
 export default function StyleBookConfiguration({
 	changeStyleBookURL,
-	isDesignLibraryEnabled,
 	isReadOnly,
 	portletNamespace,
 	styleBookEntryDesignLibraryName: initialStyleBookEntryDesignLibraryName,
@@ -118,7 +117,6 @@ export default function StyleBookConfiguration({
 	styleBooksApiURL,
 }: {
 	changeStyleBookURL: string;
-	isDesignLibraryEnabled: boolean;
 	isReadOnly: boolean;
 	portletNamespace: string;
 	styleBookEntryDesignLibraryName: string | null;
@@ -143,7 +141,7 @@ export default function StyleBookConfiguration({
 			return;
 		}
 
-		if (isDesignLibraryEnabled) {
+		if (Liferay.FeatureFlags['LPD-57283']) {
 			onOpenChange(true);
 		}
 		else {
@@ -214,7 +212,7 @@ export default function StyleBookConfiguration({
 				</div>
 			)}
 
-			{open && isDesignLibraryEnabled && (
+			{open && Liferay.FeatureFlags['LPD-57283'] && (
 				<ItemSelectorModal<StyleBook>
 					apiURL={styleBooksApiURL}
 					fdsProps={{

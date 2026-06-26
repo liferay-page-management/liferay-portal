@@ -238,10 +238,6 @@ public class LayoutLookAndFeelDisplayContext {
 						styleBookEntryItemSelectorCriterion));
 			}
 		).put(
-			"isDesignLibraryEnabled",
-			FeatureFlagManagerUtil.isEnabled(
-				_themeDisplay.getCompanyId(), "LPD-57283")
-		).put(
 			"isReadOnly", _layoutsAdminDisplayContext.isReadOnly()
 		).put(
 			"styleBookEntryDesignLibraryName",

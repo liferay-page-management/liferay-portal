@@ -55,7 +55,6 @@ const openSelectionModalMock = openSelectionModal as jest.Mock<
 
 const DEFAULT_PROPS = {
 	changeStyleBookURL: '/change-style-book',
-	isDesignLibraryEnabled: false,
 	isReadOnly: false,
 	portletNamespace: 'ns_',
 	styleBookEntryDesignLibraryName: null,
@@ -164,41 +163,41 @@ describe('StyleBookConfiguration', () => {
 		expect(screen.queryByText('Old Library')).not.toBeInTheDocument();
 	});
 
-	it('opens the ItemSelectorModal when design library is enabled', async () => {
-		render(
-			<StyleBookConfiguration
-				{...DEFAULT_PROPS}
-				isDesignLibraryEnabled={true}
-			/>
-		);
+	describe('when design library is enabled', () => {
+		beforeEach(() => {
+			Liferay.FeatureFlags['LPD-57283'] = true;
+		});
 
-		await userEvent.click(
-			screen.getByRole('textbox', {name: 'style-book'})
-		);
+		afterEach(() => {
+			Liferay.FeatureFlags['LPD-57283'] = false;
+		});
 
-		expect(
-			screen.getByRole('dialog', {name: 'select-style-book'})
-		).toBeInTheDocument();
-	});
+		it('opens the ItemSelectorModal', async () => {
+			render(<StyleBookConfiguration {...DEFAULT_PROPS} />);
 
-	it('updates the style book name and shows the design library label after ItemSelectorModal selection', async () => {
-		render(
-			<StyleBookConfiguration
-				{...DEFAULT_PROPS}
-				isDesignLibraryEnabled={true}
-			/>
-		);
+			await userEvent.click(
+				screen.getByRole('textbox', {name: 'style-book'})
+			);
 
-		await userEvent.click(
-			screen.getByRole('textbox', {name: 'style-book'})
-		);
+			expect(
+				screen.getByRole('dialog', {name: 'select-style-book'})
+			).toBeInTheDocument();
+		});
 
-		await userEvent.click(screen.getByRole('button', {name: 'select'}));
+		it('updates the style book name and shows the design library label after ItemSelectorModal selection', async () => {
+			render(<StyleBookConfiguration {...DEFAULT_PROPS} />);
 
-		expect(screen.getByRole('textbox', {name: 'style-book'})).toHaveValue(
-			'Selected Style Book'
-		);
+			await userEvent.click(
+				screen.getByRole('textbox', {name: 'style-book'})
+			);
 
-		expect(screen.getByText('Selected Library')).toBeInTheDocument();
+			await userEvent.click(screen.getByRole('button', {name: 'select'}));
+
+			expect(
+				screen.getByRole('textbox', {name: 'style-book'})
+			).toHaveValue('Selected Style Book');
+
+			expect(screen.getByText('Selected Library')).toBeInTheDocument();
+		});
 	});
 });
