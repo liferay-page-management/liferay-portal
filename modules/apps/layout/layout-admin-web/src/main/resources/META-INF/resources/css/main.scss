@@ -1,3 +1,4 @@
+@import 'atlas-custom-properties/_variables';
 @import 'atlas-variables';
 
 @import 'LayoutPageTemplateEntryCard';
@@ -9,9 +10,9 @@
 
 .style-book-selector-card {
 	.aspect-ratio {
-		margin-left: 0 !important;
-		margin-right: 0 !important;
-		top: 0 !important;
+		margin-left: 0;
+		margin-right: 0;
+		top: 0;
 	}
 
 	.card-type-asset-icon {

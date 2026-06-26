@@ -21,15 +21,12 @@ type StyleBook = {
 	name: string;
 };
 
-const DesignLibraryNameLabel = ({
-	ariaLabel,
-	value,
-}: {
-	ariaLabel?: string;
-	value: string;
-}) => (
+const DesignLibraryNameLabel = ({value}: {value: string}) => (
 	<ClayLabel
-		aria-label={ariaLabel}
+		aria-label={sub(
+			Liferay.Language.get('style-book-from-x-design-library'),
+			value
+		)}
 		displayType="success"
 		inverse
 		withClose={false}
@@ -137,21 +134,7 @@ export default function StyleBookConfiguration({
 		styleBookEntryScopeERC: initialStyleBookEntryScopeERC,
 	});
 
-	const [selectedItems, setSelectedItems] = useState<StyleBook[]>(() => {
-		if (initialStyleBookEntryERC) {
-			return [
-				{
-					designLibraryExternalReferenceCode:
-						initialStyleBookEntryScopeERC,
-					designLibraryName: null,
-					externalReferenceCode: initialStyleBookEntryERC,
-					name: initialStyleBookEntryName,
-				},
-			];
-		}
-
-		return [];
-	});
+	const [selectedItems, setSelectedItems] = useState<StyleBook[]>([]);
 
 	const {observer, onOpenChange, open} = useModal();
 
@@ -226,12 +209,6 @@ export default function StyleBookConfiguration({
 			{styleBookEntry.designLibraryName && (
 				<div className="mt-2">
 					<DesignLibraryNameLabel
-						ariaLabel={sub(
-							Liferay.Language.get(
-								'style-book-from-x-design-library'
-							),
-							styleBookEntry.designLibraryName
-						)}
 						value={styleBookEntry.designLibraryName}
 					/>
 				</div>
@@ -281,11 +258,9 @@ export default function StyleBookConfiguration({
 										.designLibraryExternalReferenceCode ??
 									'',
 							});
-							setSelectedItems([items[0]]);
 						}
-						else {
-							setSelectedItems([]);
-						}
+
+						setSelectedItems([]);
 					}}
 					onOpenChange={onOpenChange}
 					open={open}
