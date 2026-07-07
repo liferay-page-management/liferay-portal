@@ -2098,9 +2098,7 @@ export class PageEditorPage {
 			target: iframe.locator('.card', {
 				hasText: fragmentName,
 			}),
-			trigger: iframe.locator('.card', {
-				hasText: folder,
-			}),
+			trigger: iframe.getByRole('link', {exact: true, name: folder}),
 		});
 
 		await clickAndExpectToBeHidden({
