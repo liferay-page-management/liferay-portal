@@ -266,6 +266,12 @@ public class LayoutPageTemplateServiceUpgradeStepRegistrator
 			LayoutPageTemplateStructureRelElementVariationAudienceEntryRelTable.
 				create(),
 			LayoutPageTemplateStructureRelElementVariationTable.create());
+
+		registry.register(
+			"6.1.0", "6.2.0",
+			UpgradeProcessFactory.runSQL(
+				"delete from LayoutPageTemplateStructureRel where " +
+					"segmentsExperienceId = 0"));
 	}
 
 	@Reference
