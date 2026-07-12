@@ -8,6 +8,7 @@ package com.liferay.headless.admin.site.internal.resource.v1_0;
 import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
 import com.liferay.headless.admin.site.dto.v1_0.PageExperience;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.DTOConverterContextUtil;
+import com.liferay.headless.admin.site.internal.exception.NoSuchEntityException;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.SegmentsExperienceUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.ServiceContextUtil;
 import com.liferay.headless.admin.site.resource.v1_0.PageExperienceResource;
@@ -33,7 +34,6 @@ import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.segments.constants.SegmentsActionKeys;
 import com.liferay.segments.constants.SegmentsConstants;
-import com.liferay.segments.exception.NoSuchExperienceException;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsExperienceService;
 
@@ -77,14 +77,22 @@ public class PageExperienceResourceImpl extends BasePageExperienceResourceImpl {
 					pageExperienceExternalReferenceCode, groupId);
 
 		if (segmentsExperience == null) {
-			throw new NoSuchExperienceException();
+			throw new NoSuchEntityException(
+				"page experience", pageExperienceExternalReferenceCode);
+		}
+
+		if (segmentsExperience.isDefault()) {
+			throw new IllegalArgumentException(
+				"The default page experience cannot be deleted or modified");
 		}
 
 		Layout layout = _layoutLocalService.fetchLayout(
 			segmentsExperience.getPlid());
 
 		if (!layout.isDraftLayout()) {
-			throw new UnsupportedOperationException();
+			throw new IllegalArgumentException(
+				"Page experiences can only be modified on a draft page " +
+					"specification");
 		}
 
 		_segmentsExperienceService.deleteSegmentsExperience(
@@ -103,13 +111,20 @@ public class PageExperienceResourceImpl extends BasePageExperienceResourceImpl {
 			throw new UnsupportedOperationException();
 		}
 
-		return _toPageExperience(
+		SegmentsExperience segmentsExperience =
 			_segmentsExperienceService.
-				getSegmentsExperienceByExternalReferenceCode(
+				fetchSegmentsExperienceByExternalReferenceCode(
 					pageExperienceExternalReferenceCode,
 					GroupUtil.getGroupId(
 						true, contextCompany.getCompanyId(),
-						siteExternalReferenceCode)));
+						siteExternalReferenceCode));
+
+		if (segmentsExperience == null) {
+			throw new NoSuchEntityException(
+				"page experience", pageExperienceExternalReferenceCode);
+		}
+
+		return _toPageExperience(segmentsExperience);
 	}
 
 	@Override
@@ -163,7 +178,9 @@ public class PageExperienceResourceImpl extends BasePageExperienceResourceImpl {
 			groupId);
 
 		if (!layout.isDraftLayout()) {
-			throw new UnsupportedOperationException();
+			throw new IllegalArgumentException(
+				"Page experiences can only be modified on a draft page " +
+					"specification");
 		}
 
 		return _addPageExperience(layout, groupId, pageExperience);
@@ -190,7 +207,9 @@ public class PageExperienceResourceImpl extends BasePageExperienceResourceImpl {
 			groupId);
 
 		if (!layout.isDraftLayout()) {
-			throw new UnsupportedOperationException();
+			throw new IllegalArgumentException(
+				"Page experiences can only be modified on a draft page " +
+					"specification");
 		}
 
 		SegmentsExperience segmentsExperience =
@@ -202,8 +221,15 @@ public class PageExperienceResourceImpl extends BasePageExperienceResourceImpl {
 			return _addPageExperience(layout, groupId, pageExperience);
 		}
 
+		if (segmentsExperience.isDefault()) {
+			throw new IllegalArgumentException(
+				"The default page experience cannot be deleted or modified");
+		}
+
 		if (layout.getPlid() != segmentsExperience.getPlid()) {
-			throw new UnsupportedOperationException();
+			throw new IllegalArgumentException(
+				"The page experience does not belong to this page " +
+					"specification");
 		}
 
 		_segmentsExperienceResourcePermission.check(
@@ -281,7 +307,9 @@ public class PageExperienceResourceImpl extends BasePageExperienceResourceImpl {
 					segmentsExperience.getSegmentsExperienceId());
 
 		if (layoutPageTemplateStructureRel == null) {
-			throw new UnsupportedOperationException();
+			throw new NoSuchEntityException(
+				"page experience",
+				segmentsExperience.getExternalReferenceCode());
 		}
 
 		return _pageExperienceDTOConverter.toDTO(

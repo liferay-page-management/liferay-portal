@@ -38,6 +38,8 @@ import com.liferay.portal.util.PortalInstances;
 import com.liferay.segments.constants.SegmentsEntryConstants;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
 import com.liferay.segments.exception.DefaultSegmentsExperienceException;
+import com.liferay.segments.exception.DefaultSegmentsExperienceKeyException;
+import com.liferay.segments.exception.DefaultSegmentsExperiencePriorityException;
 import com.liferay.segments.exception.DuplicateSegmentsExperienceKeyException;
 import com.liferay.segments.exception.LockedSegmentsExperimentException;
 import com.liferay.segments.exception.RequiredSegmentsExperienceException;
@@ -151,8 +153,9 @@ public class SegmentsExperienceLocalServiceImpl
 			segmentsEntryERC, segmentsExperienceKey);
 		_validateLayout(plid, segmentsExperienceKey);
 		_validateName(nameMap);
-		_validatePriority(groupId, plid, priority);
 		_validateSegmentsExperienceKey(groupId, plid, segmentsExperienceKey);
+
+		_validatePriority(groupId, plid, priority);
 
 		long segmentsExperienceId = counterLocalService.increment();
 
@@ -891,11 +894,18 @@ public class SegmentsExperienceLocalServiceImpl
 		SegmentsExperience segmentsExperience =
 			segmentsExperiencePersistence.fetchByG_P_P(groupId, plid, priority);
 
-		if (segmentsExperience != null) {
-			throw new SegmentsExperiencePriorityException(
-				"A segments experience with the priority " + priority +
-					" already exists");
+		if (segmentsExperience == null) {
+			return;
 		}
+
+		if (priority == 0) {
+			throw new DefaultSegmentsExperiencePriorityException(
+				"Only the default segments experience can have priority 0");
+		}
+
+		throw new SegmentsExperiencePriorityException(
+			"A segments experience with the priority " + priority +
+				" already exists");
 	}
 
 	private void _validateSegmentsExperienceKey(
@@ -906,10 +916,20 @@ public class SegmentsExperienceLocalServiceImpl
 			segmentsExperiencePersistence.fetchByG_SEK_P(
 				groupId, segmentsExperienceKey, plid);
 
-		if (segmentsExperience != null) {
-			throw new DuplicateSegmentsExperienceKeyException(
-				segmentsExperienceKey);
+		if (segmentsExperience == null) {
+			return;
 		}
+
+		if (SegmentsExperienceConstants.KEY_DEFAULT.equals(
+				segmentsExperienceKey)) {
+
+			throw new DefaultSegmentsExperienceKeyException(
+				"Only the default segments experience can use the key \"" +
+					SegmentsExperienceConstants.KEY_DEFAULT + "\"");
+		}
+
+		throw new DuplicateSegmentsExperienceKeyException(
+			segmentsExperienceKey);
 	}
 
 	private static final Snapshot<LayoutPageTemplateEntryLocalService>
