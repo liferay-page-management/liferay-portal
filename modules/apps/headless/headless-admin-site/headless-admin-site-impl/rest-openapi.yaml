@@ -2877,7 +2877,7 @@ components:
                 priority:
                     # @review
                     description:
-                        The experience's priority. It must be a unique value within the page specification. The default experience is always assigned priority 0; a positive priority results in an active experience and a negative priority results in an inactive one. After every create, update, or delete operation, the server compacts the priorities of the remaining experiences into sequential values (1, 2, 3, ... for active experiences and -1, -2, -3, ... for inactive experiences), so the priority returned or persisted may differ from the one supplied in the request.
+                        The experience's priority. It must be a unique value within the page specification. The default experience is always assigned priority 0; a positive priority results in an active experience and a negative priority results in an inactive one. Only the default experience can be created with priority 0. Supplying priority 0 when updating an experience moves it across the default, so an active experience becomes inactive and an inactive one becomes active. After every create, update, or delete operation, the server compacts the priorities of the remaining experiences into sequential values (1, 2, 3, ... for active experiences and -1, -2, -3, ... for inactive experiences), so the priority returned or persisted may differ from the one supplied in the request.
                     type: integer
                 segmentItemExternalReference:
                     $ref: "#/components/schemas/ItemExternalReference"
@@ -6913,6 +6913,9 @@ paths:
                     content:
                         application/json: {}
                         application/xml: {}
+                404:
+                    description:
+                        "The requested page experience could not be found."
             tags: ["PageExperience"]
         get:
             # @review
@@ -6951,6 +6954,9 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/PageExperience"
+                404:
+                    description:
+                        "The requested page experience could not be found."
             tags: ["PageExperience"]
         patch:
             # @review
@@ -6997,6 +7003,9 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/PageExperience"
+                404:
+                    description:
+                        "The requested page experience could not be found."
             tags: ["PageExperience"]
         put:
             # @review
@@ -7043,6 +7052,12 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/PageExperience"
+                404:
+                    description:
+                        "The requested page specification or page experience could not be found."
+                409:
+                    description:
+                        "A page experience key is duplicated."
             tags: ["PageExperience"]
     "/sites/{siteExternalReferenceCode}/page-specifications/{pageSpecificationExternalReferenceCode}":
         delete:
@@ -7298,6 +7313,9 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/PageExperience"
+                404:
+                    description:
+                        "The requested page specification could not be found."
             # @review
             tags: ["PageExperience"]
     "/sites/{siteExternalReferenceCode}/page-specifications/{pageSpecificationExternalReferenceCode}/page-experiences/{pageExperienceExternalReferenceCode}/page-elements":
