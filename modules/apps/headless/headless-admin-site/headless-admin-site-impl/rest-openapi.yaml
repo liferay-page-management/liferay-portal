@@ -5819,6 +5819,9 @@ paths:
                     content:
                         application/json: {}
                         application/xml: {}
+                400:
+                    description:
+                        "The request is invalid. For example, the external reference code does not point to a master page."
             tags: ["MasterPage"]
             x-feature-flag: LPD-57283
         put:
@@ -5843,6 +5846,9 @@ paths:
                     content:
                         application/json: {}
                         application/xml: {}
+                400:
+                    description:
+                        "The request is invalid. For example, the external reference code does not point to a master page."
             tags: ["MasterPage"]
             x-feature-flag: LPD-57283
     "/design-libraries/{designLibraryExternalReferenceCode}/master-pages/{masterPageExternalReferenceCode}/unmark-as-default":
@@ -7034,6 +7040,9 @@ paths:
                                 items:
                                     $ref: "#/components/schemas/PageSpecification"
                                 type: array
+                404:
+                    description:
+                        "The requested display page template could not be found."
             # @review
             tags: ["PageSpecification"]
         post:
@@ -7081,6 +7090,9 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/ContentPageSpecification"
+                404:
+                    description:
+                        "The requested display page template could not be found."
             # @review
             tags: ["DisplayPageTemplate"]
     "/sites/{siteExternalReferenceCode}/display-page-templates/{displayPageTemplateExternalReferenceCode}/permissions":
@@ -7384,6 +7396,12 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/MasterPage"
+                400:
+                    description:
+                        "The request is invalid. For example, the external reference code does not point to a master page."
+                409:
+                    description:
+                        "The default master page must be published first."
             tags: ["MasterPage"]
     "/sites/{siteExternalReferenceCode}/master-pages/{masterPageExternalReferenceCode}/page-specifications":
         get:
@@ -7426,6 +7444,9 @@ paths:
                                 items:
                                     $ref: "#/components/schemas/PageSpecification"
                                 type: array
+                404:
+                    description:
+                        "The requested master page could not be found."
             # @review
             tags: ["PageSpecification"]
         post:
@@ -7473,6 +7494,12 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/ContentPageSpecification"
+                404:
+                    description:
+                        "The requested master page could not be found."
+                409:
+                    description:
+                        "A page experience key is duplicated."
             # @review
             tags: ["MasterPage"]
     "/sites/{siteExternalReferenceCode}/master-pages/{masterPageExternalReferenceCode}/permissions":
@@ -7506,6 +7533,9 @@ paths:
                     content:
                         application/json: {}
                         application/xml: {}
+                400:
+                    description:
+                        "The request is invalid. For example, the external reference code does not point to a master page."
             tags: ["MasterPage"]
         put:
             operationId: putSiteMasterPagePermissionsPage
@@ -7529,6 +7559,9 @@ paths:
                     content:
                         application/json: {}
                         application/xml: {}
+                400:
+                    description:
+                        "The request is invalid. For example, the external reference code does not point to a master page."
             tags: ["MasterPage"]
     "/sites/{siteExternalReferenceCode}/navigation-menus":
         get:
@@ -7986,6 +8019,15 @@ paths:
                     content:
                         application/json: {}
                         application/xml: {}
+                400:
+                    description:
+                        "The request is invalid. For example, the page is not a content, widget, or asset display page, or the page specification does not have unpublished changes."
+                404:
+                    description:
+                        "The requested page specification could not be found."
+                409:
+                    description:
+                        "The page is locked."
             tags: ["PageSpecification"]
             x-feature-flag: LPD-74328
         get:
@@ -8025,6 +8067,9 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/PageSpecification"
+                404:
+                    description:
+                        "The requested page specification could not be found."
             tags: ["PageSpecification"]
         patch:
             # @review
@@ -8071,6 +8116,15 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/PageSpecification"
+                400:
+                    description:
+                        "The request is invalid. For example, the page is not a content, widget, or asset display page, or a sitemap setting value is invalid."
+                404:
+                    description:
+                        "The requested page specification could not be found."
+                409:
+                    description:
+                        "A page experience key is duplicated, a page experience is used by an A/B test, or the page is locked by another user."
             tags: ["PageSpecification"]
             x-feature-flag: LPD-74328
         put:
@@ -8118,6 +8172,15 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/PageSpecification"
+                400:
+                    description:
+                        "The request is invalid. For example, the page is not a content, widget, or asset display page, or a sitemap setting value is invalid."
+                404:
+                    description:
+                        "The requested page specification could not be found."
+                409:
+                    description:
+                        "A page experience key is duplicated, a page experience is used by an A/B test, or the page is locked by another user."
             tags: ["PageSpecification"]
             x-feature-flag: LPD-74328
     "/sites/{siteExternalReferenceCode}/page-specifications/{pageSpecificationExternalReferenceCode}/page-experiences":
@@ -8810,6 +8873,9 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/PageTemplateSet"
+                409:
+                    description:
+                        "A page template set with the same name already exists."
             # @review
             tags: ["PageTemplateSet"]
     "/sites/{siteExternalReferenceCode}/page-template-sets/{pageTemplateSetExternalReferenceCode}":
@@ -9403,6 +9469,9 @@ paths:
                                 items:
                                     $ref: "#/components/schemas/PageSpecification"
                                 type: array
+                404:
+                    description:
+                        "The requested page template could not be found."
             # @review
             tags: ["PageSpecification"]
         post:
@@ -10140,6 +10209,9 @@ paths:
                                 items:
                                     $ref: "#/components/schemas/PageSpecification"
                                 type: array
+                404:
+                    description:
+                        "The requested site page could not be found."
             # @review
             tags: ["PageSpecification"]
         post:
@@ -10186,6 +10258,12 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/ContentPageSpecification"
+                404:
+                    description:
+                        "The requested site page could not be found."
+                409:
+                    description:
+                        "A page experience key is duplicated, or the page is locked by another user."
             # @review
             tags: ["SitePage"]
     "/sites/{siteExternalReferenceCode}/site-pages/{sitePageExternalReferenceCode}/permissions":
