@@ -183,6 +183,24 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 	}
 
 	@Override
+	@Test
+	@TestInfo("LPD-88395")
+	public void testPutSiteResourceFile() throws Exception {
+		_testPutSiteResourceFile();
+		_testPutSiteResourceFileBatch();
+		_testPutSiteResourceFileFileURLReferenceFileBase64();
+		_testPutSiteResourceFileFileURLReferenceFileBase64AndURLNullProblemException();
+		_testPutSiteResourceFileFileURLReferenceNullProblemException();
+		_testPutSiteResourceFileFileURLReferenceURL();
+		_testPutSiteResourceFileName();
+		_testPutSiteResourceFileNameNullProblemException();
+		_testPutSiteResourceFileParentResourceFolderExternalReferenceCode();
+		_testPutSiteResourceFileParentResourceFolderPortletFolderProblemException();
+		_testPutSiteResourceFilePortletFileProblemException();
+		_testPutSiteResourceFileWithoutPermissionsProblemException();
+	}
+
+	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {
 			"externalReferenceCode", "fragmentSetExternalReferenceCode", "name"
@@ -234,6 +252,18 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(), groupId,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
 			false, ServiceContextTestUtil.getServiceContext(groupId));
+	}
+
+	private FileEntry _addPortletFileEntry() throws Exception {
+		Repository repository = PortletFileRepositoryUtil.addPortletRepository(
+			testGroup.getGroupId(), RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
+
+		return PortletFileRepositoryUtil.addPortletFileEntry(
+			testGroup.getGroupId(), TestPropsValues.getUserId(), null, 0,
+			repository.getPortletId(), repository.getDlFolderId(),
+			RandomTestUtil.randomBytes(), RandomTestUtil.randomString(),
+			ContentTypes.APPLICATION_OCTET_STREAM, false);
 	}
 
 	private Folder _addPortletFolder() throws Exception {
@@ -456,6 +486,18 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		return resourceFolderResource.postSiteResourceFolder(
 			testGroup.getExternalReferenceCode(),
 			_randomResourceFolder(fragmentSetExternalReferenceCode));
+	}
+
+	private ResourceFile _putSiteResourceFile(
+			ResourceFile resourceFile, String resourceFileExternalReferenceCode)
+		throws Exception {
+
+		ResourceFileResource resourceFileResource = _getResourceFileResource(
+			"fragmentSet,parentResourceFolder");
+
+		return resourceFileResource.putSiteResourceFile(
+			testGroup.getExternalReferenceCode(),
+			resourceFileExternalReferenceCode, resourceFile);
 	}
 
 	private ResourceFile _randomResourceFile(
@@ -1019,6 +1061,437 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		try {
 			_resourceFileResource.postSiteResourceFile(
 				testGroup.getExternalReferenceCode(), randomResourceFile());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+	}
+
+	private void _testPutSiteResourceFile() throws Exception {
+		FragmentCollection fragmentCollection = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		ResourceFile originalResourceFile = _randomResourceFile(
+			fragmentCollection.getExternalReferenceCode());
+
+		ResourceFile putResourceFile = resourceFileResource.putSiteResourceFile(
+			testGroup.getExternalReferenceCode(),
+			originalResourceFile.getExternalReferenceCode(),
+			originalResourceFile);
+
+		assertEquals(originalResourceFile, putResourceFile);
+		assertValid(putResourceFile);
+
+		Date dateCreated = putResourceFile.getDateCreated();
+
+		FileURLReference fileURLReference =
+			putResourceFile.getFileURLReference();
+
+		FragmentCollection irrelevantFragmentCollection =
+			_addFragmentCollection(testGroup.getGroupId());
+
+		ResourceFile updatedResourceFile = _randomResourceFile(
+			_postSiteResourceFolder(
+				irrelevantFragmentCollection.getExternalReferenceCode()));
+
+		updatedResourceFile.setDateCreated(RandomTestUtil.nextDate());
+
+		byte[] bytes = RandomTestUtil.randomBytes();
+
+		updatedResourceFile.setFileURLReference(_toFileURLReference(bytes));
+
+		putResourceFile = _putSiteResourceFile(
+			updatedResourceFile,
+			originalResourceFile.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			originalResourceFile.getExternalReferenceCode(),
+			putResourceFile.getExternalReferenceCode());
+
+		FragmentSet fragmentSet = putResourceFile.getFragmentSet();
+
+		Assert.assertEquals(
+			fragmentCollection.getExternalReferenceCode(),
+			fragmentSet.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			updatedResourceFile.getName(), putResourceFile.getName());
+		Assert.assertNull(putResourceFile.getParentResourceFolder());
+		Assert.assertNull(
+			putResourceFile.getParentResourceFolderExternalReferenceCode());
+
+		_assertContent(
+			bytes, originalResourceFile.getExternalReferenceCode(),
+			testGroup.getGroupId());
+
+		ResourceFile getResourceFile = resourceFileResource.getSiteResourceFile(
+			testGroup.getExternalReferenceCode(),
+			originalResourceFile.getExternalReferenceCode());
+
+		Assert.assertEquals(dateCreated, getResourceFile.getDateCreated());
+		Assert.assertEquals(
+			originalResourceFile.getExternalReferenceCode(),
+			getResourceFile.getExternalReferenceCode());
+		Assert.assertEquals(
+			updatedResourceFile.getName(), getResourceFile.getName());
+
+		_assertURLContent(bytes, fileURLReference.getUrl());
+
+		FileEntry fileEntry =
+			PortletFileRepositoryUtil.
+				fetchPortletFileEntryByExternalReferenceCode(
+					originalResourceFile.getExternalReferenceCode(),
+					testGroup.getGroupId());
+
+		Assert.assertEquals("1.0", fileEntry.getVersion());
+	}
+
+	private void _testPutSiteResourceFileBatch() throws Exception {
+		FragmentCollection fragmentCollection = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		ResourceFile postResourceFile =
+			resourceFileResource.postSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				_randomResourceFile(
+					fragmentCollection.getExternalReferenceCode()));
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
+					true)) {
+
+			waitForFinish(
+				"COMPLETED",
+				HTTPTestUtil.invokeToJSONObject(
+					_exportResourceFilesToJSON(
+						testGroup.getExternalReferenceCode()),
+					"headless-admin-fragment/v1.0/sites/" +
+						irrelevantGroup.getExternalReferenceCode() +
+							"/resource-files/batch?createStrategy=INSERT",
+					Http.Method.POST));
+		}
+
+		ResourceFile updatedResourceFile = _randomResourceFile(
+			fragmentCollection.getExternalReferenceCode());
+
+		byte[] bytes = RandomTestUtil.randomBytes();
+
+		updatedResourceFile.setFileURLReference(_toFileURLReference(bytes));
+
+		ResourceFile putResourceFile = resourceFileResource.putSiteResourceFile(
+			testGroup.getExternalReferenceCode(),
+			postResourceFile.getExternalReferenceCode(), updatedResourceFile);
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
+					true)) {
+
+			waitForFinish(
+				"COMPLETED",
+				HTTPTestUtil.invokeToJSONObject(
+					_exportResourceFilesToJSON(
+						testGroup.getExternalReferenceCode()),
+					"headless-admin-fragment/v1.0/sites/" +
+						irrelevantGroup.getExternalReferenceCode() +
+							"/resource-files/batch?createStrategy=UPSERT",
+					Http.Method.POST));
+		}
+
+		ResourceFile importedResourceFile = _getSiteResourceFile(
+			postResourceFile.getExternalReferenceCode(),
+			irrelevantGroup.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			putResourceFile.getName(), importedResourceFile.getName());
+
+		_assertContent(
+			bytes, postResourceFile.getExternalReferenceCode(),
+			irrelevantGroup.getGroupId());
+	}
+
+	private void _testPutSiteResourceFileFileURLReferenceFileBase64()
+		throws Exception {
+
+		FragmentCollection fragmentCollection = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		ResourceFile resourceFile = _randomResourceFile(
+			fragmentCollection.getExternalReferenceCode());
+
+		resourceFile.setFileURLReference(
+			_toFileURLReference(RandomTestUtil.randomBytes()));
+
+		ResourceFile postResourceFile =
+			resourceFileResource.postSiteResourceFile(
+				testGroup.getExternalReferenceCode(), resourceFile);
+
+		FileURLReference postFileURLReference =
+			postResourceFile.getFileURLReference();
+
+		byte[] bytes = RandomTestUtil.randomBytes();
+
+		postResourceFile.setFileURLReference(_toFileURLReference(bytes));
+
+		ResourceFile putResourceFile = resourceFileResource.putSiteResourceFile(
+			testGroup.getExternalReferenceCode(),
+			postResourceFile.getExternalReferenceCode(), postResourceFile);
+
+		FileURLReference putFileURLReference =
+			putResourceFile.getFileURLReference();
+
+		Assert.assertEquals(
+			postFileURLReference.getUrl(), putFileURLReference.getUrl());
+
+		_assertURLContent(bytes, postFileURLReference.getUrl());
+	}
+
+	private void _testPutSiteResourceFileFileURLReferenceFileBase64AndURLNullProblemException()
+		throws Exception {
+
+		ResourceFile postResourceFile =
+			resourceFileResource.postSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				_randomResourceFile(_getFragmentSetExternalReferenceCode()));
+
+		ResourceFile updatedResourceFile = _randomResourceFile(
+			_getFragmentSetExternalReferenceCode());
+
+		updatedResourceFile.setFileURLReference(new FileURLReference());
+
+		_assertProblemException(
+			"a-file-url-reference-with-content-is-required",
+			() -> resourceFileResource.putSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				postResourceFile.getExternalReferenceCode(),
+				updatedResourceFile));
+	}
+
+	private void _testPutSiteResourceFileFileURLReferenceNullProblemException()
+		throws Exception {
+
+		ResourceFile postResourceFile =
+			resourceFileResource.postSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				_randomResourceFile(_getFragmentSetExternalReferenceCode()));
+
+		ResourceFile updatedResourceFile = _randomResourceFile(
+			_getFragmentSetExternalReferenceCode());
+
+		updatedResourceFile.setFileURLReference((FileURLReference)null);
+
+		_assertProblemException(
+			"a-file-url-reference-with-content-is-required",
+			() -> resourceFileResource.putSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				postResourceFile.getExternalReferenceCode(),
+				updatedResourceFile));
+	}
+
+	private void _testPutSiteResourceFileFileURLReferenceURL()
+		throws Exception {
+
+		FragmentCollection fragmentCollection = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		ResourceFile postResourceFile =
+			resourceFileResource.postSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				_randomResourceFile(
+					fragmentCollection.getExternalReferenceCode()));
+
+		ResourceFile updatedResourceFile = _randomResourceFile(
+			fragmentCollection.getExternalReferenceCode());
+
+		FileURLReference fileURLReference = new FileURLReference();
+
+		fileURLReference.setUrl(_content2URL);
+
+		updatedResourceFile.setFileURLReference(fileURLReference);
+
+		resourceFileResource.putSiteResourceFile(
+			testGroup.getExternalReferenceCode(),
+			postResourceFile.getExternalReferenceCode(), updatedResourceFile);
+
+		_assertContent(
+			_content2Bytes, postResourceFile.getExternalReferenceCode(),
+			testGroup.getGroupId());
+	}
+
+	private void _testPutSiteResourceFileName() throws Exception {
+		FragmentCollection fragmentCollection = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		ResourceFile originalResourceFile = _randomResourceFile(
+			fragmentCollection.getExternalReferenceCode());
+
+		byte[] bytes = RandomTestUtil.randomBytes();
+
+		originalResourceFile.setFileURLReference(_toFileURLReference(bytes));
+
+		ResourceFileResource resourceFileResource = _getResourceFileResource(
+			"fileURLReference.fileBase64");
+
+		ResourceFile postResourceFile =
+			resourceFileResource.postSiteResourceFile(
+				testGroup.getExternalReferenceCode(), originalResourceFile);
+
+		ResourceFile getResourceFile = resourceFileResource.getSiteResourceFile(
+			testGroup.getExternalReferenceCode(),
+			postResourceFile.getExternalReferenceCode());
+
+		FileURLReference getFileURLReference =
+			getResourceFile.getFileURLReference();
+
+		ResourceFile updatedResourceFile = _randomResourceFile(
+			fragmentCollection.getExternalReferenceCode());
+
+		FileURLReference updatedFileURLReference = new FileURLReference();
+
+		updatedFileURLReference.setFileBase64(
+			getFileURLReference.getFileBase64());
+
+		updatedResourceFile.setFileURLReference(updatedFileURLReference);
+
+		ResourceFile putResourceFile = resourceFileResource.putSiteResourceFile(
+			testGroup.getExternalReferenceCode(),
+			postResourceFile.getExternalReferenceCode(), updatedResourceFile);
+
+		FileURLReference putFileURLReference =
+			putResourceFile.getFileURLReference();
+
+		Assert.assertNotEquals(
+			getFileURLReference.getUrl(), putFileURLReference.getUrl());
+
+		Assert.assertEquals(
+			updatedResourceFile.getName(), putResourceFile.getName());
+		Assert.assertNotEquals(
+			postResourceFile.getName(), putResourceFile.getName());
+
+		_assertContent(
+			bytes, postResourceFile.getExternalReferenceCode(),
+			testGroup.getGroupId());
+	}
+
+	private void _testPutSiteResourceFileNameNullProblemException()
+		throws Exception {
+
+		ResourceFile postResourceFile =
+			resourceFileResource.postSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				_randomResourceFile(_getFragmentSetExternalReferenceCode()));
+
+		ResourceFile updatedResourceFile = _randomResourceFile(
+			_getFragmentSetExternalReferenceCode());
+
+		updatedResourceFile.setName((String)null);
+
+		_assertProblemException(
+			"name-is-required",
+			() -> resourceFileResource.putSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				postResourceFile.getExternalReferenceCode(),
+				updatedResourceFile));
+	}
+
+	private void _testPutSiteResourceFileParentResourceFolderExternalReferenceCode()
+		throws Exception {
+
+		FragmentCollection fragmentCollection = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		ResourceFile resourceFile = _randomResourceFile(
+			fragmentCollection.getExternalReferenceCode());
+
+		ResourceFolder postParentResourceFolder = _postSiteResourceFolder(
+			fragmentCollection.getExternalReferenceCode());
+
+		resourceFile.setParentResourceFolderExternalReferenceCode(
+			postParentResourceFolder.getExternalReferenceCode());
+
+		ResourceFile putResourceFile = resourceFileResource.putSiteResourceFile(
+			testGroup.getExternalReferenceCode(),
+			resourceFile.getExternalReferenceCode(), resourceFile);
+
+		ResourceFile getResourceFile = _getSiteResourceFile(
+			putResourceFile.getExternalReferenceCode());
+
+		ResourceFolder getParentResourceFolder =
+			getResourceFile.getParentResourceFolder();
+
+		Assert.assertEquals(
+			postParentResourceFolder.getExternalReferenceCode(),
+			getParentResourceFolder.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			postParentResourceFolder.getExternalReferenceCode(),
+			getResourceFile.getParentResourceFolderExternalReferenceCode());
+	}
+
+	private void _testPutSiteResourceFileParentResourceFolderPortletFolderProblemException()
+		throws Exception {
+
+		FragmentCollection fragmentCollection = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		ResourceFile resourceFile = _randomResourceFile(
+			fragmentCollection.getExternalReferenceCode());
+
+		Folder folder = _addPortletFolder();
+
+		String parentResourceFolderExternalReferenceCode =
+			folder.getExternalReferenceCode();
+
+		resourceFile.setParentResourceFolderExternalReferenceCode(
+			parentResourceFolderExternalReferenceCode);
+
+		_assertProblemException(
+			"no-resource-folder-was-found-with-external-reference-code-x",
+			() -> resourceFileResource.putSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				resourceFile.getExternalReferenceCode(), resourceFile),
+			parentResourceFolderExternalReferenceCode);
+	}
+
+	private void _testPutSiteResourceFilePortletFileProblemException()
+		throws Exception {
+
+		ResourceFile resourceFile = randomResourceFile();
+
+		FileEntry fileEntry = _addPortletFileEntry();
+
+		resourceFile.setExternalReferenceCode(
+			fileEntry.getExternalReferenceCode());
+
+		try {
+			resourceFileResource.putSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				fileEntry.getExternalReferenceCode(), resourceFile);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
+	}
+
+	private void _testPutSiteResourceFileWithoutPermissionsProblemException()
+		throws Exception {
+
+		ResourceFile resourceFile = resourceFileResource.postSiteResourceFile(
+			testGroup.getExternalReferenceCode(), randomResourceFile());
+
+		resourceFile.setName(RandomTestUtil.randomString());
+
+		try {
+			_resourceFileResource.putSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				resourceFile.getExternalReferenceCode(), resourceFile);
 
 			Assert.fail();
 		}
