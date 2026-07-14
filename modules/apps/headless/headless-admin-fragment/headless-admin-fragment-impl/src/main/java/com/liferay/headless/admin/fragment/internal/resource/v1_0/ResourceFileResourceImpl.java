@@ -69,6 +69,25 @@ import org.osgi.service.component.annotations.ServiceScope;
 public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 
 	@Override
+	public void deleteSiteResourceFile(
+			String siteExternalReferenceCode,
+			String resourceFileExternalReferenceCode)
+		throws Exception {
+
+		EnabledUtil.checkEnabled(contextCompany);
+
+		FileEntry fileEntry = _dlAppService.getFileEntryByExternalReferenceCode(
+			resourceFileExternalReferenceCode,
+			GroupUtil.getStagingAwareGroupId(
+				true, contextCompany.getCompanyId(),
+				siteExternalReferenceCode));
+
+		_checkResourceFile(fileEntry);
+
+		_dlAppService.deleteFileEntry(fileEntry.getFileEntryId());
+	}
+
+	@Override
 	public EntityModel getEntityModel(MultivaluedMap multivaluedMap) {
 		return _entityModel;
 	}
