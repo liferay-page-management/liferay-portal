@@ -153,6 +153,16 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 	@Override
 	@Test
 	@TestInfo("LPD-88395")
+	public void testDeleteSiteResourceFile() throws Exception {
+		super.testDeleteSiteResourceFile();
+
+		_testDeleteSiteResourceFilePortletFileProblemException();
+		_testDeleteSiteResourceFileWithoutPermissionsProblemException();
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-88395")
 	public void testGetSiteFragmentSetResourceFilesPage() throws Exception {
 		super.testGetSiteFragmentSetResourceFilesPage();
 
@@ -716,6 +726,45 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		resourceFolder.setName(RandomTestUtil.randomString());
 
 		return resourceFolder;
+	}
+
+	private void _testDeleteSiteResourceFilePortletFileProblemException()
+		throws Exception {
+
+		FileEntry fileEntry = _addPortletFileEntry();
+
+		try {
+			resourceFileResource.deleteSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				fileEntry.getExternalReferenceCode());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
+	}
+
+	private void _testDeleteSiteResourceFileWithoutPermissionsProblemException()
+		throws Exception {
+
+		ResourceFile resourceFile = resourceFileResource.postSiteResourceFile(
+			testGroup.getExternalReferenceCode(), randomResourceFile());
+
+		try {
+			_resourceFileResource.deleteSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				resourceFile.getExternalReferenceCode());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
 	}
 
 	private void _testGetSiteFragmentSetResourceFilesPage() throws Exception {
