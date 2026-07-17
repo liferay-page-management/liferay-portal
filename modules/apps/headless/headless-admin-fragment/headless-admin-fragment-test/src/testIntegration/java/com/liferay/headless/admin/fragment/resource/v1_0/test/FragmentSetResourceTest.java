@@ -129,6 +129,7 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 
 	@Override
 	@Test
+	@TestInfo("LPD-88395")
 	public void testDeleteSiteFragmentSet() throws Exception {
 		super.testDeleteSiteFragmentSet();
 
@@ -144,6 +145,9 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 				fetchFragmentCollectionByExternalReferenceCode(
 					fragmentSet.getExternalReferenceCode(),
 					testGroup.getGroupId()));
+
+		_testDeleteSiteFragmentSetWithoutPermissionsProblemException();
+		_testDeleteSiteFragmentSetWithPermissions();
 	}
 
 	@Override
@@ -184,6 +188,7 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 
 	@Override
 	@Test
+	@TestInfo("LPD-88395")
 	public void testPostSiteFragmentSet() throws Exception {
 		FragmentSet randomFragmentSet = randomFragmentSet();
 
@@ -232,10 +237,13 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 				testGroup.getExternalReferenceCode(), invalidNameFragmentSet));
 
 		_testPostSiteFragmentSetBatch();
+		_testPostSiteFragmentSetWithoutPermissionsProblemException();
+		_testPostSiteFragmentSetWithPermissions();
 	}
 
 	@Override
 	@Test
+	@TestInfo("LPD-88395")
 	public void testPutSiteFragmentSet() throws Exception {
 		FragmentSet fragmentSet = randomFragmentSet();
 
@@ -323,6 +331,8 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 
 		_testPutSiteFragmentSetBatch();
 		_testPutSiteFragmentSetWithDates();
+		_testPutSiteFragmentSetWithoutPermissionsProblemException();
+		_testPutSiteFragmentSetWithPermissions();
 	}
 
 	@Override
@@ -683,6 +693,38 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 				RandomTestUtil.randomString()));
 	}
 
+	private void _testDeleteSiteFragmentSetWithoutPermissionsProblemException()
+		throws Exception {
+
+		FragmentSet fragmentSet = testGetSiteFragmentSetsPage_addFragmentSet(
+			testGroup.getExternalReferenceCode(), randomFragmentSet());
+
+		try {
+			_userWithoutPermissionsFragmentSetResource.deleteSiteFragmentSet(
+				testGroup.getExternalReferenceCode(),
+				fragmentSet.getExternalReferenceCode());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+	}
+
+	private void _testDeleteSiteFragmentSetWithPermissions() throws Exception {
+		FragmentSet fragmentSet = testGetSiteFragmentSetsPage_addFragmentSet(
+			testGroup.getExternalReferenceCode(), randomFragmentSet());
+
+		assertHttpResponseStatusCode(
+			204,
+			_userWithPermissionsFragmentSetResource.
+				deleteSiteFragmentSetHttpResponse(
+					testGroup.getExternalReferenceCode(),
+					fragmentSet.getExternalReferenceCode()));
+	}
+
 	private void _testGetDesignLibraryFragmentSetActions() throws Exception {
 		Group group = _depotEntry.getGroup();
 
@@ -856,6 +898,34 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 		_assertFragmentCollection(fragmentSet2, irrelevantGroup);
 	}
 
+	private void _testPostSiteFragmentSetWithoutPermissionsProblemException()
+		throws Exception {
+
+		try {
+			_userWithoutPermissionsFragmentSetResource.postSiteFragmentSet(
+				testGroup.getExternalReferenceCode(), randomFragmentSet());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+	}
+
+	private void _testPostSiteFragmentSetWithPermissions() throws Exception {
+		FragmentSet fragmentSet = randomFragmentSet();
+
+		FragmentSet postFragmentSet =
+			_userWithPermissionsFragmentSetResource.postSiteFragmentSet(
+				testGroup.getExternalReferenceCode(), fragmentSet);
+
+		Assert.assertEquals(
+			fragmentSet.getExternalReferenceCode(),
+			postFragmentSet.getExternalReferenceCode());
+	}
+
 	private void _testPutSiteFragmentSetBatch() throws Exception {
 		FragmentSet fragmentSet1 = testPutSiteFragmentSet_addFragmentSet();
 		FragmentSet fragmentSet2 = testPutSiteFragmentSet_addFragmentSet();
@@ -919,6 +989,35 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 		Assert.assertEquals(date, putFragmentSet.getDateCreated());
 		Assert.assertEquals(
 			fragmentSet.getDateModified(), putFragmentSet.getDateModified());
+	}
+
+	private void _testPutSiteFragmentSetWithoutPermissionsProblemException()
+		throws Exception {
+
+		try {
+			_userWithoutPermissionsFragmentSetResource.putSiteFragmentSet(
+				testGroup.getExternalReferenceCode(),
+				RandomTestUtil.randomString(), randomFragmentSet());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+	}
+
+	private void _testPutSiteFragmentSetWithPermissions() throws Exception {
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		FragmentSet putFragmentSet =
+			_userWithPermissionsFragmentSetResource.putSiteFragmentSet(
+				testGroup.getExternalReferenceCode(), externalReferenceCode,
+				randomFragmentSet());
+
+		Assert.assertEquals(
+			externalReferenceCode, putFragmentSet.getExternalReferenceCode());
 	}
 
 	private JSONObject _waitForExportFinish(
