@@ -289,7 +289,13 @@ public class DesignLibraryResourcesDisplayContext {
 		DepotEntry depotEntry = DepotEntryLocalServiceUtil.getDepotEntry(
 			designLibraryEntryId);
 
-		return _hasManageStyleBookEntriesPermission(depotEntry.getGroupId());
+		if (_hasManageFragmentEntriesPermission(depotEntry.getGroupId()) &&
+			_hasManageStyleBookEntriesPermission(depotEntry.getGroupId())) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private JSONArray _getActionItemsJSONArray(
