@@ -204,6 +204,15 @@ public class FragmentEntryLinkLocalServiceWrapper
 				groupId, segmentsExperienceIds, plid);
 	}
 
+	@Override
+	public void deleteMissingLayoutFragmentEntryLinksByFragmentEntry(
+			com.liferay.fragment.model.FragmentEntry fragmentEntry)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_fragmentEntryLinkLocalService.
+			deleteMissingLayoutFragmentEntryLinksByFragmentEntry(fragmentEntry);
+	}
+
 	/**
 	 * @throws PortalException
 	 */
@@ -665,6 +674,15 @@ public class FragmentEntryLinkLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.Map<Long, Integer> getGroupFragmentEntryUsageCounts(
+			com.liferay.fragment.model.FragmentEntry fragmentEntry)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _fragmentEntryLinkLocalService.getGroupFragmentEntryUsageCounts(
+			fragmentEntry);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 
@@ -724,6 +742,15 @@ public class FragmentEntryLinkLocalServiceWrapper
 		return _fragmentEntryLinkLocalService.
 			getLayoutPageTemplateFragmentEntryLinksCountByFragmentEntry(
 				groupId, fragmentEntry, layoutPageTemplateType);
+	}
+
+	@Override
+	public java.util.Map<String, java.util.List<Long>> getMissingLayoutPlidsMap(
+			long fragmentCollectionId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _fragmentEntryLinkLocalService.getMissingLayoutPlidsMap(
+			fragmentCollectionId);
 	}
 
 	/**
@@ -863,4 +890,4 @@ public class FragmentEntryLinkLocalServiceWrapper
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:564296629
+// LIFERAY-SERVICE-BUILDER-HASH:-347092745

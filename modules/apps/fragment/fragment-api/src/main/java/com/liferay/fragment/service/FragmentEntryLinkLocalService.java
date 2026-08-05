@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import java.io.Serializable;
 
 import java.util.List;
+import java.util.Map;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -165,6 +166,10 @@ public interface FragmentEntryLinkLocalService
 	public List<FragmentEntryLink>
 		deleteLayoutPageTemplateEntryFragmentEntryLinks(
 			long groupId, long[] segmentsExperienceIds, long plid);
+
+	public void deleteMissingLayoutFragmentEntryLinksByFragmentEntry(
+			FragmentEntry fragmentEntry)
+		throws PortalException;
 
 	/**
 	 * @throws PortalException
@@ -439,6 +444,11 @@ public interface FragmentEntryLinkLocalService
 	public int getFragmentEntryLinksCountByPlid(long groupId, long plid);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Map<Long, Integer> getGroupFragmentEntryUsageCounts(
+			FragmentEntry fragmentEntry)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -464,6 +474,11 @@ public interface FragmentEntryLinkLocalService
 	public int getLayoutPageTemplateFragmentEntryLinksCountByFragmentEntry(
 			long groupId, FragmentEntry fragmentEntry,
 			int layoutPageTemplateType)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Map<String, List<Long>> getMissingLayoutPlidsMap(
+			long fragmentCollectionId)
 		throws PortalException;
 
 	/**
@@ -538,4 +553,4 @@ public interface FragmentEntryLinkLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1523302530
+// LIFERAY-SERVICE-BUILDER-HASH:2090890009
