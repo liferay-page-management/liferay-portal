@@ -336,6 +336,20 @@ public class FragmentEntryLinkLocalServiceImpl
 	}
 
 	@Override
+	public void deleteMissingLayoutFragmentEntryLinksByFragmentEntry(
+			FragmentEntry fragmentEntry)
+		throws PortalException {
+
+		for (FragmentEntryLink fragmentEntryLink :
+				_getMissingLayoutFragmentEntryLinksByFragmentEntry(
+					fragmentEntry)) {
+
+			fragmentEntryLinkLocalService.deleteFragmentEntryLink(
+				fragmentEntryLink);
+		}
+	}
+
+	@Override
 	public FragmentEntryLink fetchFragmentEntryLink(
 		long groupId, String originalFragmentEntryLinkERC, long plid) {
 
@@ -567,7 +581,8 @@ public class FragmentEntryLinkLocalServiceImpl
 		for (Object[] result : results) {
 			Number count = (Number)result[1];
 
-			groupFragmentEntryUsageCounts.put((Long)result[0], count.intValue());
+			groupFragmentEntryUsageCounts.put(
+				(Long)result[0], count.intValue());
 		}
 
 		return groupFragmentEntryUsageCounts;
@@ -688,7 +703,7 @@ public class FragmentEntryLinkLocalServiceImpl
 
 		for (Object[] result : results) {
 			List<Long> plids = missingLayoutPlidsMap.computeIfAbsent(
-				(String)result[0], key -> new ArrayList<>());
+				(String)result[0], fragmentEntryERC -> new ArrayList<>());
 
 			plids.add((Long)result[1]);
 		}
@@ -1130,6 +1145,29 @@ public class FragmentEntryLinkLocalServiceImpl
 			FragmentEntryLinkTable.INSTANCE.plid.notIn(
 				layoutRevisionIdsDSLQuery)
 		);
+	}
+
+	private List<FragmentEntryLink>
+			_getMissingLayoutFragmentEntryLinksByFragmentEntry(
+				FragmentEntry fragmentEntry)
+		throws PortalException {
+
+		return fragmentEntryLinkPersistence.dslQuery(
+			DSLQueryFactoryUtil.select(
+				FragmentEntryLinkTable.INSTANCE
+			).from(
+				FragmentEntryLinkTable.INSTANCE
+			).where(
+				FragmentEntryLinkTable.INSTANCE.fragmentEntryERC.eq(
+					fragmentEntry.getExternalReferenceCode()
+				).and(
+					_getFragmentEntryGroupScopePredicate(
+						FragmentEntryLinkTable.INSTANCE,
+						_groupLocalService.getGroup(fragmentEntry.getGroupId()))
+				).and(
+					_getLayoutPredicate(false)
+				)
+			));
 	}
 
 	private Function<OrderByStep, LimitStep> _getOrderByStepLimitStepFunction(

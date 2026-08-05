@@ -330,6 +330,17 @@ public class FragmentEntryLocalServiceImpl
 		_fragmentEntryLinkLocalService.deleteFragmentEntryLinksByFragmentEntry(
 			fragmentEntry, true);
 
+		FragmentEntry headFragmentEntry =
+			fragmentEntryPersistence.fetchByERC_G_Head(
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getGroupId(), true);
+
+		if (fragmentEntry.isHead() || (headFragmentEntry == null)) {
+			_fragmentEntryLinkLocalService.
+				deleteMissingLayoutFragmentEntryLinksByFragmentEntry(
+					fragmentEntry);
+		}
+
 		if (fragmentEntry.getPreviewFileEntryId() > 0) {
 			boolean deletePreviewFileEntry = true;
 
