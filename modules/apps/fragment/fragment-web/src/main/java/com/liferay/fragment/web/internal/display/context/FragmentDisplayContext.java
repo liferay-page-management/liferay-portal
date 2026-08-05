@@ -13,6 +13,7 @@ import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentComposition;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.service.FragmentCollectionLocalServiceUtil;
+import com.liferay.fragment.service.FragmentEntryLinkLocalServiceUtil;
 import com.liferay.fragment.service.FragmentEntryServiceUtil;
 import com.liferay.fragment.util.comparator.FragmentCollectionContributorNameComparator;
 import com.liferay.fragment.util.comparator.FragmentCompositionFragmentEntryNameComparator;
@@ -28,6 +29,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemListBu
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItemList;
 import com.liferay.marketplace.constants.MarketplaceActionKeys;
 import com.liferay.marketplace.constants.MarketplacePortletKeys;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
@@ -38,6 +40,8 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
@@ -579,6 +583,8 @@ public class FragmentDisplayContext {
 		fragmentEntriesSearchContainer.setRowChecker(
 			new EmptyOnClickRowChecker(_renderResponse));
 
+		_logMissingLayoutPlids();
+
 		_fragmentEntriesSearchContainer = fragmentEntriesSearchContainer;
 
 		return _fragmentEntriesSearchContainer;
@@ -1092,6 +1098,30 @@ public class FragmentDisplayContext {
 		return true;
 	}
 
+	private void _logMissingLayoutPlids() {
+		if (_log.isDebugEnabled()) {
+			try {
+				Map<String, List<Long>> missingLayoutPlidsMap =
+					FragmentEntryLinkLocalServiceUtil.getMissingLayoutPlidsMap(
+						getFragmentCollectionId());
+
+				for (Map.Entry<String, List<Long>> entry :
+						missingLayoutPlidsMap.entrySet()) {
+
+					_log.debug(
+						StringBundler.concat(
+							"Fragment entry ", entry.getKey(),
+							" references missing layouts ",
+							StringUtil.merge(
+								entry.getValue(), StringPool.COMMA_AND_SPACE)));
+				}
+			}
+			catch (Exception exception) {
+				_log.debug(exception);
+			}
+		}
+	}
+
 	private void _updatePortletDisplay() {
 		if (!DesignLibraryUtil.isDesignLibraryScope(
 				_themeDisplay.getScopeGroup())) {
@@ -1117,6 +1147,9 @@ public class FragmentDisplayContext {
 
 		portletDisplay.setURLBack(backURL);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		FragmentDisplayContext.class);
 
 	private SearchContainer<Object> _contributedEntriesSearchContainer;
 	private FragmentCollection _fragmentCollection;

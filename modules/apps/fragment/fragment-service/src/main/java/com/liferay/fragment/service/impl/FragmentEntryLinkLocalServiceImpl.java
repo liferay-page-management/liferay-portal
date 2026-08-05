@@ -16,6 +16,7 @@ import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.model.FragmentEntryLinkTable;
+import com.liferay.fragment.model.FragmentEntryTable;
 import com.liferay.fragment.processor.DefaultFragmentEntryProcessorContext;
 import com.liferay.fragment.processor.FragmentEntryProcessorContext;
 import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
@@ -44,6 +45,7 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutRevisionTable;
@@ -73,6 +75,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -636,6 +639,64 @@ public class FragmentEntryLinkLocalServiceImpl
 	}
 
 	@Override
+	public Map<String, List<Long>> getMissingLayoutPlidsMap(
+			long fragmentCollectionId)
+		throws PortalException {
+
+		Map<String, List<Long>> missingLayoutPlidsMap = new HashMap<>();
+
+		FragmentCollection fragmentCollection =
+			_fragmentCollectionPersistence.fetchByPrimaryKey(
+				fragmentCollectionId);
+
+		if ((fragmentCollection == null) ||
+			(fragmentCollection.getGroupId() == CompanyConstants.SYSTEM)) {
+
+			return missingLayoutPlidsMap;
+		}
+
+		List<Object[]> results = fragmentEntryLinkPersistence.dslQuery(
+			DSLQueryFactoryUtil.selectDistinct(
+				FragmentEntryLinkTable.INSTANCE.fragmentEntryERC,
+				FragmentEntryLinkTable.INSTANCE.plid
+			).from(
+				FragmentEntryLinkTable.INSTANCE
+			).innerJoinON(
+				FragmentEntryTable.INSTANCE,
+				FragmentEntryTable.INSTANCE.externalReferenceCode.eq(
+					FragmentEntryLinkTable.INSTANCE.fragmentEntryERC
+				).and(
+					FragmentEntryTable.INSTANCE.groupId.eq(
+						fragmentCollection.getGroupId())
+				)
+			).where(
+				FragmentEntryTable.INSTANCE.fragmentCollectionId.eq(
+					fragmentCollectionId
+				).and(
+					_getFragmentEntryGroupScopePredicate(
+						FragmentEntryLinkTable.INSTANCE,
+						_groupLocalService.getGroup(
+							fragmentCollection.getGroupId()))
+				).and(
+					FragmentEntryLinkTable.INSTANCE.deleted.eq(false)
+				).and(
+					_getLayoutPredicate(false)
+				)
+			).orderBy(
+				FragmentEntryLinkTable.INSTANCE.plid.ascending()
+			));
+
+		for (Object[] result : results) {
+			List<Long> plids = missingLayoutPlidsMap.computeIfAbsent(
+				(String)result[0], key -> new ArrayList<>());
+
+			plids.add((Long)result[1]);
+		}
+
+		return missingLayoutPlidsMap;
+	}
+
+	@Override
 	public void updateClassedModel(long userId, long plid) {
 		if (UpdateLayoutStatusThreadLocal.isUpdateLayoutStatus()) {
 			try {
@@ -866,25 +927,30 @@ public class FragmentEntryLinkLocalServiceImpl
 			FragmentEntryLinkTable fragmentEntryLinkTable)
 		throws PortalException {
 
-		Group group = _groupLocalService.getGroup(fragmentEntry.getGroupId());
-
 		return fragmentEntryLinkTable.fragmentEntryERC.eq(
 			fragmentEntry.getExternalReferenceCode()
 		).and(
-			Predicate.withParentheses(
-				fragmentEntryLinkTable.fragmentEntryScopeERC.eq(
-					group.getExternalReferenceCode()
-				).or(
-					Predicate.withParentheses(
-						fragmentEntryLinkTable.fragmentEntryScopeERC.isNull(
-						).and(
-							fragmentEntryLinkTable.groupId.eq(
-								group.getGroupId())
-						))
-				))
+			_getFragmentEntryGroupScopePredicate(
+				fragmentEntryLinkTable,
+				_groupLocalService.getGroup(fragmentEntry.getGroupId()))
 		).and(
 			fragmentEntryLinkTable.deleted.eq(false)
 		);
+	}
+
+	private Predicate _getFragmentEntryGroupScopePredicate(
+		FragmentEntryLinkTable fragmentEntryLinkTable, Group group) {
+
+		return Predicate.withParentheses(
+			fragmentEntryLinkTable.fragmentEntryScopeERC.eq(
+				group.getExternalReferenceCode()
+			).or(
+				Predicate.withParentheses(
+					fragmentEntryLinkTable.fragmentEntryScopeERC.isNull(
+					).and(
+						fragmentEntryLinkTable.groupId.eq(group.getGroupId())
+					))
+			));
 	}
 
 	private Predicate _getFragmentEntryLinksByFragmentEntryPredicate(
@@ -928,20 +994,16 @@ public class FragmentEntryLinkLocalServiceImpl
 	private Predicate _getFragmentEntryScopePredicate(Group group)
 		throws PortalException {
 
+		if (!group.isDepot()) {
+			return _getFragmentEntryGroupScopePredicate(
+				FragmentEntryLinkTable.INSTANCE, group);
+		}
+
 		Predicate emptyScopePredicate = Predicate.withParentheses(
 			FragmentEntryLinkTable.INSTANCE.fragmentEntryScopeERC.isNull(
 			).and(
 				FragmentEntryLinkTable.INSTANCE.groupId.eq(group.getGroupId())
 			));
-
-		if (!group.isDepot()) {
-			return Predicate.withParentheses(
-				FragmentEntryLinkTable.INSTANCE.fragmentEntryScopeERC.eq(
-					group.getExternalReferenceCode()
-				).or(
-					emptyScopePredicate
-				));
-		}
 
 		Long[] connectedSiteGroupIds = TransformUtil.transformToArray(
 			_depotEntryGroupRelLocalService.getDepotEntryGroupRels(
