@@ -126,11 +126,15 @@ public class FragmentEntryLocalServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-99652")
 	public void testDeleteFragmentEntry() throws Exception {
 		_testDeleteFragmentEntry();
 		_testDeleteFragmentEntryByExternalReferenceCode();
 		_testDeleteFragmentEntryDraftByExternalReferenceCode();
+		_testDeleteFragmentEntryDraftWithMissingLayoutFragmentEntryLink();
+		_testDeleteFragmentEntryDraftWithoutHeadWithMissingLayoutFragmentEntryLink();
 		_testDeleteFragmentEntryNonexistentByExternalReferenceCode();
+		_testDeleteFragmentEntryWithMissingLayoutFragmentEntryLink();
 	}
 
 	@Test
@@ -884,6 +888,58 @@ public class FragmentEntryLocalServiceTest {
 				fragmentEntry.getFragmentEntryId()));
 	}
 
+	private void _testDeleteFragmentEntryDraftWithMissingLayoutFragmentEntryLink()
+		throws Exception {
+
+		FragmentEntry fragmentEntry =
+			FragmentEntryTestUtil.addFragmentEntryByStatus(
+				_fragmentCollection.getFragmentCollectionId(),
+				WorkflowConstants.STATUS_APPROVED);
+
+		FragmentEntryLink fragmentEntryLink =
+			FragmentTestUtil.addFragmentEntryLink(
+				fragmentEntry, RandomTestUtil.randomLong());
+
+		FragmentEntry draftFragmentEntry = _fragmentEntryLocalService.getDraft(
+			fragmentEntry.getFragmentEntryId());
+
+		_fragmentEntryLocalService.deleteFragmentEntry(draftFragmentEntry);
+
+		Assert.assertNull(
+			_fragmentEntryLocalService.fetchFragmentEntry(
+				draftFragmentEntry.getFragmentEntryId()));
+
+		Assert.assertNotNull(
+			_fragmentEntryLocalService.fetchFragmentEntry(
+				fragmentEntry.getFragmentEntryId()));
+		Assert.assertNotNull(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				fragmentEntryLink.getFragmentEntryLinkId()));
+	}
+
+	private void _testDeleteFragmentEntryDraftWithoutHeadWithMissingLayoutFragmentEntryLink()
+		throws Exception {
+
+		FragmentEntry fragmentEntry =
+			FragmentEntryTestUtil.addFragmentEntryByStatus(
+				_fragmentCollection.getFragmentCollectionId(),
+				WorkflowConstants.STATUS_DRAFT);
+
+		FragmentEntryLink fragmentEntryLink =
+			FragmentTestUtil.addFragmentEntryLink(
+				fragmentEntry, RandomTestUtil.randomLong());
+
+		_fragmentEntryLocalService.deleteFragmentEntry(fragmentEntry);
+
+		Assert.assertNull(
+			_fragmentEntryLocalService.fetchFragmentEntry(
+				fragmentEntry.getFragmentEntryId()));
+
+		Assert.assertNull(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				fragmentEntryLink.getFragmentEntryLinkId()));
+	}
+
 	private void _testDeleteFragmentEntryNonexistentByExternalReferenceCode()
 		throws Exception {
 
@@ -891,6 +947,28 @@ public class FragmentEntryLocalServiceTest {
 			NoSuchEntryException.class,
 			() -> _fragmentEntryLocalService.deleteFragmentEntry(
 				RandomTestUtil.randomString(), _group.getGroupId()));
+	}
+
+	private void _testDeleteFragmentEntryWithMissingLayoutFragmentEntryLink()
+		throws Exception {
+
+		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
+			_fragmentCollection.getFragmentCollectionId());
+
+		FragmentEntryLink fragmentEntryLink =
+			FragmentTestUtil.addFragmentEntryLink(
+				fragmentEntry, RandomTestUtil.randomLong());
+
+		_fragmentEntryLocalService.deleteFragmentEntry(
+			fragmentEntry.getFragmentEntryId());
+
+		Assert.assertNull(
+			_fragmentEntryLocalService.fetchFragmentEntry(
+				fragmentEntry.getFragmentEntryId()));
+
+		Assert.assertNull(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				fragmentEntryLink.getFragmentEntryLinkId()));
 	}
 
 	private void _testFetchFragmentEntryByFragmentEntryId() throws Exception {

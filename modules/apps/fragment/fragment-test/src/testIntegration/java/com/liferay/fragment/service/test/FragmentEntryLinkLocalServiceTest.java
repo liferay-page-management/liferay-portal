@@ -417,6 +417,89 @@ public class FragmentEntryLinkLocalServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-99652")
+	public void testDeleteFragmentEntryLinksByFragmentEntry() throws Exception {
+		FragmentEntryLink fragmentEntryLink1 = _addFragmentEntryLinkToLayout();
+		FragmentEntryLink fragmentEntryLink2 =
+			_addFragmentEntryLinkFromGlobalToLayout();
+		FragmentEntryLink fragmentEntryLink3 =
+			_addFragmentEntryLinkToMissingLayout();
+
+		_fragmentEntryLinkLocalService.deleteFragmentEntryLinksByFragmentEntry(
+			_fragmentEntry, true);
+
+		Assert.assertNotNull(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				fragmentEntryLink1.getFragmentEntryLinkId()));
+		Assert.assertNotNull(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				fragmentEntryLink2.getFragmentEntryLinkId()));
+		Assert.assertNotNull(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				fragmentEntryLink3.getFragmentEntryLinkId()));
+
+		_fragmentEntryLinkLocalService.deleteFragmentEntryLinksByFragmentEntry(
+			_fragmentEntry, false);
+
+		Assert.assertNull(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				fragmentEntryLink1.getFragmentEntryLinkId()));
+		Assert.assertNotNull(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				fragmentEntryLink2.getFragmentEntryLinkId()));
+		Assert.assertNull(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				fragmentEntryLink3.getFragmentEntryLinkId()));
+
+		_fragmentEntryLinkLocalService.deleteFragmentEntryLinksByFragmentEntry(
+			_globalFragmentEntry, false);
+
+		Assert.assertNull(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				fragmentEntryLink2.getFragmentEntryLinkId()));
+	}
+
+	@Test
+	@TestInfo("LPD-99652")
+	public void testDeleteMissingLayoutFragmentEntryLinksByFragmentEntry()
+		throws Exception {
+
+		FragmentEntryLink fragmentEntryLink1 = _addFragmentEntryLinkToLayout();
+		FragmentEntryLink fragmentEntryLink2 =
+			_addFragmentEntryLinkToMissingLayout();
+		FragmentEntryLink fragmentEntryLink3 =
+			_addFragmentEntryLinkFromGlobalToMissingLayout();
+
+		fragmentEntryLink2.setDeleted(true);
+
+		fragmentEntryLink2 =
+			_fragmentEntryLinkLocalService.updateFragmentEntryLink(
+				fragmentEntryLink2);
+
+		_fragmentEntryLinkLocalService.
+			deleteMissingLayoutFragmentEntryLinksByFragmentEntry(
+				_fragmentEntry);
+
+		Assert.assertNotNull(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				fragmentEntryLink1.getFragmentEntryLinkId()));
+		Assert.assertNull(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				fragmentEntryLink2.getFragmentEntryLinkId()));
+		Assert.assertNotNull(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				fragmentEntryLink3.getFragmentEntryLinkId()));
+
+		_fragmentEntryLinkLocalService.
+			deleteMissingLayoutFragmentEntryLinksByFragmentEntry(
+				_globalFragmentEntry);
+
+		Assert.assertNull(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				fragmentEntryLink3.getFragmentEntryLinkId()));
+	}
+
+	@Test
 	public void testFragmentEntryLinksDeleted() throws PortalException {
 		_assertFragmentEntryLinksDeleted(_fragmentEntry);
 		_assertFragmentEntryLinksDeleted(_globalFragmentEntry);
@@ -493,12 +576,10 @@ public class FragmentEntryLinkLocalServiceTest {
 
 		Map<Long, Integer> groupFragmentEntryUsageCounts1 =
 			_fragmentEntryLinkLocalService.getGroupFragmentEntryUsageCounts(
-				_fragmentEntry, _group);
+				_fragmentEntry);
 		Map<Long, Integer> groupFragmentEntryUsageCounts2 =
 			_fragmentEntryLinkLocalService.getGroupFragmentEntryUsageCounts(
-				_globalFragmentEntry,
-				_groupLocalService.getCompanyGroup(
-					TestPropsValues.getCompanyId()));
+				_globalFragmentEntry);
 
 		Assert.assertEquals(
 			groupFragmentEntryUsageCounts1.toString(), 1,
@@ -638,9 +719,7 @@ public class FragmentEntryLinkLocalServiceTest {
 
 	@Test
 	@TestInfo("LPD-99652")
-	public void testGetMissingLayoutPlidsMap()
-		throws Exception {
-
+	public void testGetMissingLayoutPlidsMap() throws Exception {
 		_addFragmentEntryLinkToLayout();
 
 		FragmentEntryLink fragmentEntryLink =
@@ -650,15 +729,15 @@ public class FragmentEntryLinkLocalServiceTest {
 			_fragmentEntry.getFragmentEntryId());
 
 		Map<String, List<Long>> missingLayoutPlidsMap =
-			_fragmentEntryLinkLocalService.
-				getMissingLayoutPlidsMap(
-					_fragmentCollection.getFragmentCollectionId());
+			_fragmentEntryLinkLocalService.getMissingLayoutPlidsMap(
+				_fragmentCollection.getFragmentCollectionId());
 
 		Assert.assertEquals(
 			missingLayoutPlidsMap.toString(), 1, missingLayoutPlidsMap.size());
 		Assert.assertEquals(
 			Collections.singletonList(fragmentEntryLink.getPlid()),
-			missingLayoutPlidsMap.get(_fragmentEntry.getExternalReferenceCode()));
+			missingLayoutPlidsMap.get(
+				_fragmentEntry.getExternalReferenceCode()));
 	}
 
 	@Test
