@@ -50,7 +50,8 @@ public class BasicFragmentEntryVerticalCard
 		BasicFragmentEntryActionDropdownItemsProvider
 			basicFragmentEntryActionDropdownItemsProvider =
 				new BasicFragmentEntryActionDropdownItemsProvider(
-					fragmentEntry, _renderRequest, _renderResponse);
+					fragmentEntry, _renderRequest, _renderResponse,
+					_getUsageCount());
 
 		try {
 			return basicFragmentEntryActionDropdownItemsProvider.
@@ -151,7 +152,7 @@ public class BasicFragmentEntryVerticalCard
 	@Override
 	public String getSubtitle() {
 		return LanguageUtil.format(
-			_httpServletRequest, "x-usages", fragmentEntry.getUsageCount());
+			_httpServletRequest, "x-usages", _getUsageCount());
 	}
 
 	@Override
@@ -163,11 +164,20 @@ public class BasicFragmentEntryVerticalCard
 		return super.isSelectable();
 	}
 
+	private int _getUsageCount() {
+		if (_usageCount == null) {
+			_usageCount = fragmentEntry.getUsageCount();
+		}
+
+		return _usageCount;
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		BasicFragmentEntryVerticalCard.class);
 
 	private final HttpServletRequest _httpServletRequest;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
+	private Integer _usageCount;
 
 }
