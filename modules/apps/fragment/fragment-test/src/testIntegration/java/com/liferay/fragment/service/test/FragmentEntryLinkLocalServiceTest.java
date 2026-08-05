@@ -66,6 +66,7 @@ import com.liferay.segments.service.SegmentsExperienceLocalService;
 
 import java.io.InputStream;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -633,6 +634,31 @@ public class FragmentEntryLinkLocalServiceTest {
 				getLayoutPageTemplateFragmentEntryLinksCountByFragmentEntry(
 					_group.getGroupId(), _globalFragmentEntry,
 					LayoutPageTemplateEntryTypeConstants.BASIC));
+	}
+
+	@Test
+	@TestInfo("LPD-99652")
+	public void testGetMissingLayoutPlidsMap()
+		throws Exception {
+
+		_addFragmentEntryLinkToLayout();
+
+		FragmentEntryLink fragmentEntryLink =
+			_addFragmentEntryLinkToMissingLayout();
+
+		_fragmentEntryLocalService.getDraft(
+			_fragmentEntry.getFragmentEntryId());
+
+		Map<String, List<Long>> missingLayoutPlidsMap =
+			_fragmentEntryLinkLocalService.
+				getMissingLayoutPlidsMap(
+					_fragmentCollection.getFragmentCollectionId());
+
+		Assert.assertEquals(
+			missingLayoutPlidsMap.toString(), 1, missingLayoutPlidsMap.size());
+		Assert.assertEquals(
+			Collections.singletonList(fragmentEntryLink.getPlid()),
+			missingLayoutPlidsMap.get(_fragmentEntry.getExternalReferenceCode()));
 	}
 
 	@Test
