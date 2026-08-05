@@ -109,15 +109,8 @@ public class FragmentEntryLinkDisplayContext {
 			return StringPool.BLANK;
 		}
 
-		long layoutPageTemplateEntryPlid = fragmentEntryLink.getPlid();
-
-		if (layout.isDraftLayout()) {
-			layoutPageTemplateEntryPlid = layout.getClassPK();
-		}
-
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			LayoutPageTemplateEntryLocalServiceUtil.
-				fetchLayoutPageTemplateEntryByPlid(layoutPageTemplateEntryPlid);
+			_fetchLayoutPageTemplateEntry(layout);
 
 		ThemeDisplay themeDisplay = _getThemeDisplay();
 
@@ -149,15 +142,8 @@ public class FragmentEntryLinkDisplayContext {
 			return StringPool.BLANK;
 		}
 
-		long layoutPageTemplateEntryPlid = fragmentEntryLink.getPlid();
-
-		if (layout.isDraftLayout()) {
-			layoutPageTemplateEntryPlid = layout.getClassPK();
-		}
-
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			LayoutPageTemplateEntryLocalServiceUtil.
-				fetchLayoutPageTemplateEntryByPlid(layoutPageTemplateEntryPlid);
+			_fetchLayoutPageTemplateEntry(layout);
 
 		if (layoutPageTemplateEntry != null) {
 			if (layoutPageTemplateEntry.getType() ==
@@ -468,6 +454,19 @@ public class FragmentEntryLinkDisplayContext {
 				verticalNavItem.setLabel(name);
 			}
 		).build();
+	}
+
+	private LayoutPageTemplateEntry _fetchLayoutPageTemplateEntry(
+		Layout layout) {
+
+		long layoutPageTemplateEntryPlid = layout.getPlid();
+
+		if (layout.isDraftLayout()) {
+			layoutPageTemplateEntryPlid = layout.getClassPK();
+		}
+
+		return LayoutPageTemplateEntryLocalServiceUtil.
+			fetchLayoutPageTemplateEntryByPlid(layoutPageTemplateEntryPlid);
 	}
 
 	private long _getScopeGroupId() {
