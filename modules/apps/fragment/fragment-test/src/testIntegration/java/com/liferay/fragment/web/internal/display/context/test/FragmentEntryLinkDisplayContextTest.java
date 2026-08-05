@@ -12,6 +12,9 @@ import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.test.util.DisplayContextTestUtil;
 import com.liferay.fragment.test.util.FragmentEntryTestUtil;
 import com.liferay.fragment.test.util.FragmentTestUtil;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
@@ -24,6 +27,8 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
@@ -69,16 +74,43 @@ public class FragmentEntryLinkDisplayContextTest {
 	public void testGetFragmentEntryLinkName() throws Exception {
 		FragmentEntry fragmentEntry = _addFragmentEntry();
 
-		FragmentEntryLink fragmentEntryLink =
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		FragmentEntryLink fragmentEntryLink1 =
+			FragmentTestUtil.addFragmentEntryLink(
+				fragmentEntry, layout.getPlid());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				_group.getGroupId(), LayoutPageTemplateEntryTypeConstants.BASIC,
+				WorkflowConstants.STATUS_APPROVED);
+
+		FragmentEntryLink fragmentEntryLink2 =
+			FragmentTestUtil.addFragmentEntryLink(
+				fragmentEntry, layoutPageTemplateEntry.getPlid());
+
+		FragmentEntryLink fragmentEntryLink3 =
 			FragmentTestUtil.addFragmentEntryLink(
 				fragmentEntry, RandomTestUtil.randomLong());
 
+		Object fragmentEntryLinkDisplayContext =
+			_getFragmentEntryLinkDisplayContext(fragmentEntry);
+
+		Assert.assertEquals(
+			layout.getName(LocaleUtil.getDefault()),
+			ReflectionTestUtil.invoke(
+				fragmentEntryLinkDisplayContext, "getFragmentEntryLinkName",
+				new Class<?>[] {FragmentEntryLink.class}, fragmentEntryLink1));
+		Assert.assertEquals(
+			layoutPageTemplateEntry.getName(),
+			ReflectionTestUtil.invoke(
+				fragmentEntryLinkDisplayContext, "getFragmentEntryLinkName",
+				new Class<?>[] {FragmentEntryLink.class}, fragmentEntryLink2));
 		Assert.assertEquals(
 			StringPool.BLANK,
 			ReflectionTestUtil.invoke(
-				_getFragmentEntryLinkDisplayContext(fragmentEntry),
-				"getFragmentEntryLinkName",
-				new Class<?>[] {FragmentEntryLink.class}, fragmentEntryLink));
+				fragmentEntryLinkDisplayContext, "getFragmentEntryLinkName",
+				new Class<?>[] {FragmentEntryLink.class}, fragmentEntryLink3));
 	}
 
 	@Test
@@ -86,16 +118,64 @@ public class FragmentEntryLinkDisplayContextTest {
 	public void testGetFragmentEntryLinkTypeLabel() throws Exception {
 		FragmentEntry fragmentEntry = _addFragmentEntry();
 
-		FragmentEntryLink fragmentEntryLink =
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		FragmentEntryLink fragmentEntryLink1 =
+			FragmentTestUtil.addFragmentEntryLink(
+				fragmentEntry, layout.getPlid());
+
+		FragmentEntryLink fragmentEntryLink2 =
+			FragmentTestUtil.addFragmentEntryLink(
+				fragmentEntry,
+				_addLayoutPageTemplateEntryPlid(
+					LayoutPageTemplateEntryTypeConstants.BASIC));
+		FragmentEntryLink fragmentEntryLink3 =
+			FragmentTestUtil.addFragmentEntryLink(
+				fragmentEntry,
+				_addLayoutPageTemplateEntryPlid(
+					LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE));
+		FragmentEntryLink fragmentEntryLink4 =
+			FragmentTestUtil.addFragmentEntryLink(
+				fragmentEntry,
+				_addLayoutPageTemplateEntryPlid(
+					LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT));
+		FragmentEntryLink fragmentEntryLink5 =
 			FragmentTestUtil.addFragmentEntryLink(
 				fragmentEntry, RandomTestUtil.randomLong());
 
+		Object fragmentEntryLinkDisplayContext =
+			_getFragmentEntryLinkDisplayContext(fragmentEntry);
+
+		Assert.assertEquals(
+			"page",
+			ReflectionTestUtil.invoke(
+				fragmentEntryLinkDisplayContext,
+				"getFragmentEntryLinkTypeLabel",
+				new Class<?>[] {FragmentEntryLink.class}, fragmentEntryLink1));
+		Assert.assertEquals(
+			"page-template",
+			ReflectionTestUtil.invoke(
+				fragmentEntryLinkDisplayContext,
+				"getFragmentEntryLinkTypeLabel",
+				new Class<?>[] {FragmentEntryLink.class}, fragmentEntryLink2));
+		Assert.assertEquals(
+			"display-page-template",
+			ReflectionTestUtil.invoke(
+				fragmentEntryLinkDisplayContext,
+				"getFragmentEntryLinkTypeLabel",
+				new Class<?>[] {FragmentEntryLink.class}, fragmentEntryLink3));
+		Assert.assertEquals(
+			"master-page",
+			ReflectionTestUtil.invoke(
+				fragmentEntryLinkDisplayContext,
+				"getFragmentEntryLinkTypeLabel",
+				new Class<?>[] {FragmentEntryLink.class}, fragmentEntryLink4));
 		Assert.assertEquals(
 			StringPool.BLANK,
 			ReflectionTestUtil.invoke(
-				_getFragmentEntryLinkDisplayContext(fragmentEntry),
+				fragmentEntryLinkDisplayContext,
 				"getFragmentEntryLinkTypeLabel",
-				new Class<?>[] {FragmentEntryLink.class}, fragmentEntryLink));
+				new Class<?>[] {FragmentEntryLink.class}, fragmentEntryLink5));
 	}
 
 	@Test
@@ -133,6 +213,14 @@ public class FragmentEntryLinkDisplayContextTest {
 
 		return FragmentEntryTestUtil.addFragmentEntry(
 			fragmentCollection.getFragmentCollectionId());
+	}
+
+	private long _addLayoutPageTemplateEntryPlid(int type) throws Exception {
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				_group.getGroupId(), type, WorkflowConstants.STATUS_APPROVED);
+
+		return layoutPageTemplateEntry.getPlid();
 	}
 
 	private Object _getFragmentEntryLinkDisplayContext(
