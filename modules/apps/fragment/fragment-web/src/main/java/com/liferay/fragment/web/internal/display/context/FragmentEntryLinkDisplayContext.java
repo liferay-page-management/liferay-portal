@@ -102,10 +102,14 @@ public class FragmentEntryLinkDisplayContext {
 	public String getFragmentEntryLinkName(
 		FragmentEntryLink fragmentEntryLink) {
 
-		long layoutPageTemplateEntryPlid = fragmentEntryLink.getPlid();
-
 		Layout layout = LayoutLocalServiceUtil.fetchLayout(
 			fragmentEntryLink.getPlid());
+
+		if (layout == null) {
+			return StringPool.BLANK;
+		}
+
+		long layoutPageTemplateEntryPlid = fragmentEntryLink.getPlid();
 
 		if (layout.isDraftLayout()) {
 			layoutPageTemplateEntryPlid = layout.getClassPK();
@@ -138,10 +142,14 @@ public class FragmentEntryLinkDisplayContext {
 	public String getFragmentEntryLinkTypeLabel(
 		FragmentEntryLink fragmentEntryLink) {
 
-		long layoutPageTemplateEntryPlid = fragmentEntryLink.getPlid();
-
 		Layout layout = LayoutLocalServiceUtil.fetchLayout(
 			fragmentEntryLink.getPlid());
+
+		if (layout == null) {
+			return StringPool.BLANK;
+		}
+
+		long layoutPageTemplateEntryPlid = fragmentEntryLink.getPlid();
 
 		if (layout.isDraftLayout()) {
 			layoutPageTemplateEntryPlid = layout.getClassPK();

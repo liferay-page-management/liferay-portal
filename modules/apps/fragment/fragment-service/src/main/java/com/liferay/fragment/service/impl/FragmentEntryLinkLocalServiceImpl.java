@@ -46,6 +46,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutRevisionTable;
 import com.liferay.portal.kernel.model.LayoutTable;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
@@ -353,7 +354,10 @@ public class FragmentEntryLinkLocalServiceImpl
 			).where(
 				_getLatestFragmentEntryLinkPredicate(
 					_getAllFragmentEntryLinksByFragmentEntryPredicate(
-						fragmentEntry, FragmentEntryLinkTable.INSTANCE))
+						fragmentEntry, FragmentEntryLinkTable.INSTANCE)
+				).and(
+					_getLayoutPredicate(true)
+				)
 			).orderBy(
 				_getOrderByStepLimitStepFunction(orderByComparator)
 			).limit(
@@ -375,7 +379,10 @@ public class FragmentEntryLinkLocalServiceImpl
 					FragmentEntryLinkTable.INSTANCE
 				).where(
 					_getAllFragmentEntryLinksByFragmentEntryPredicate(
-						fragmentEntry, FragmentEntryLinkTable.INSTANCE)
+						fragmentEntry, FragmentEntryLinkTable.INSTANCE
+					).and(
+						_getLayoutPredicate(true)
+					)
 				).as(
 					"tempFragmentEntryLinkTable"
 				)
@@ -547,6 +554,8 @@ public class FragmentEntryLinkLocalServiceImpl
 						_groupLocalService.getGroup(fragmentEntry.getGroupId()))
 				).and(
 					FragmentEntryLinkTable.INSTANCE.deleted.eq(false)
+				).and(
+					_getLayoutPredicate(true)
 				)
 			).groupBy(
 				FragmentEntryLinkTable.INSTANCE.groupId
@@ -979,7 +988,11 @@ public class FragmentEntryLinkLocalServiceImpl
 
 		Predicate predicate = _getFragmentEntryLinksByFragmentEntryPredicate(
 			fragmentEntry,
-			FragmentEntryLinkTable.INSTANCE.plid.notIn(_getPlidsDSLQuery(null)),
+			FragmentEntryLinkTable.INSTANCE.plid.notIn(
+				_getPlidsDSLQuery(null)
+			).and(
+				_getLayoutPredicate(true)
+			),
 			scopeGroupId);
 
 		if (latest) {
@@ -1023,6 +1036,37 @@ public class FragmentEntryLinkLocalServiceImpl
 			FragmentEntryLinkTable.INSTANCE
 		).where(
 			predicate
+		);
+	}
+
+	private Predicate _getLayoutPredicate(boolean layoutExists) {
+		DSLQuery layoutPlidsDSLQuery = DSLQueryFactoryUtil.select(
+			LayoutTable.INSTANCE.plid
+		).from(
+			LayoutTable.INSTANCE
+		);
+
+		DSLQuery layoutRevisionIdsDSLQuery = DSLQueryFactoryUtil.select(
+			LayoutRevisionTable.INSTANCE.layoutRevisionId
+		).from(
+			LayoutRevisionTable.INSTANCE
+		);
+
+		if (layoutExists) {
+			return Predicate.withParentheses(
+				FragmentEntryLinkTable.INSTANCE.plid.in(
+					layoutPlidsDSLQuery
+				).or(
+					FragmentEntryLinkTable.INSTANCE.plid.in(
+						layoutRevisionIdsDSLQuery)
+				));
+		}
+
+		return FragmentEntryLinkTable.INSTANCE.plid.notIn(
+			layoutPlidsDSLQuery
+		).and(
+			FragmentEntryLinkTable.INSTANCE.plid.notIn(
+				layoutRevisionIdsDSLQuery)
 		);
 	}
 
