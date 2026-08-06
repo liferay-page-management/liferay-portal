@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -71,8 +72,18 @@ public class PageSpecificationVersionResourceTest
 	@Ignore
 	@Override
 	@Test
+	@TestInfo("LPD-90029")
 	public void testBatchEngineDeleteImportTask() throws Exception {
 		super.testBatchEngineDeleteImportTask();
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-90029")
+	public void testDeleteSiteSitePagePageSpecificationVersion()
+		throws Exception {
+
+		super.testDeleteSiteSitePagePageSpecificationVersion();
 	}
 
 	@Override
@@ -95,6 +106,22 @@ public class PageSpecificationVersionResourceTest
 	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {"externalReferenceCode", "name"};
+	}
+
+	@Override
+	protected PageSpecificationVersion
+			testDeleteSiteSitePagePageSpecificationVersion_addPageSpecificationVersion()
+		throws Exception {
+
+		return _addPageSpecificationVersion(WorkflowConstants.STATUS_DRAFT);
+	}
+
+	@Override
+	protected String
+			testDeleteSiteSitePagePageSpecificationVersion_getSitePageExternalReferenceCode()
+		throws Exception {
+
+		return _testGroupLayout.getExternalReferenceCode();
 	}
 
 	@Override
@@ -145,9 +172,7 @@ public class PageSpecificationVersionResourceTest
 	private PageSpecificationVersion _addPageSpecificationVersion()
 		throws Exception {
 
-		return _addPageSpecificationVersion(
-			RandomTestUtil.randomString(), testGroup, _testGroupLayout,
-			RandomTestUtil.randomString());
+		return _addPageSpecificationVersion(WorkflowConstants.STATUS_APPROVED);
 	}
 
 	private PageSpecificationVersion _addPageSpecificationVersion(
@@ -157,12 +182,21 @@ public class PageSpecificationVersionResourceTest
 
 		return _addPageSpecificationVersion(
 			pageSpecificationVersion.getExternalReferenceCode(), group, layout,
-			pageSpecificationVersion.getName());
+			pageSpecificationVersion.getName(),
+			WorkflowConstants.STATUS_APPROVED);
+	}
+
+	private PageSpecificationVersion _addPageSpecificationVersion(int status)
+		throws Exception {
+
+		return _addPageSpecificationVersion(
+			RandomTestUtil.randomString(), testGroup, _testGroupLayout,
+			RandomTestUtil.randomString(), status);
 	}
 
 	private PageSpecificationVersion _addPageSpecificationVersion(
 			String externalReferenceCode, Group group, Layout layout,
-			String name)
+			String name, int status)
 		throws Exception {
 
 		Layout draftLayout = layout.fetchDraftLayout();
@@ -177,7 +211,7 @@ public class PageSpecificationVersionResourceTest
 				HashMapBuilder.put(
 					LocaleUtil.getSiteDefault(), name
 				).build(),
-				draftLayout.getPlid(), WorkflowConstants.STATUS_APPROVED);
+				draftLayout.getPlid(), status);
 
 		if (Validator.isNotNull(externalReferenceCode)) {
 			Assert.assertEquals(
