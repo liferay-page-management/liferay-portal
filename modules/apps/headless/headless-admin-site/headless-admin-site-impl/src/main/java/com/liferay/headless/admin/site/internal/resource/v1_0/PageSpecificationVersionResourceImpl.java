@@ -8,6 +8,7 @@ package com.liferay.headless.admin.site.internal.resource.v1_0;
 import com.liferay.headless.admin.site.dto.v1_0.PageSpecificationVersion;
 import com.liferay.headless.admin.site.dto.v1_0.SitePage;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutContentVersionActionUtil;
+import com.liferay.headless.admin.site.internal.util.EnabledUtil;
 import com.liferay.headless.admin.site.internal.util.SitePageUtil;
 import com.liferay.headless.admin.site.resource.v1_0.PageSpecificationVersionResource;
 import com.liferay.headless.common.spi.util.GroupUtil;
@@ -15,7 +16,6 @@ import com.liferay.layout.content.model.LayoutContentVersion;
 import com.liferay.layout.content.service.LayoutContentVersionLocalService;
 import com.liferay.layout.content.service.LayoutContentVersionService;
 import com.liferay.petra.function.UnsafeFunction;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -50,8 +50,7 @@ public class PageSpecificationVersionResourceImpl
 			String pageSpecificationVersionExternalReferenceCode)
 		throws Exception {
 
-		FeatureFlagManagerUtil.checkEnabled(
-			contextCompany.getCompanyId(), "LPD-10622");
+		EnabledUtil.checkPageSpecificationVersionEnabled(contextCompany);
 
 		Layout layout = _getLayout(
 			false, siteExternalReferenceCode, sitePageExternalReferenceCode);
@@ -71,8 +70,7 @@ public class PageSpecificationVersionResourceImpl
 			String pageSpecificationVersionExternalReferenceCode)
 		throws Exception {
 
-		FeatureFlagManagerUtil.checkEnabled(
-			contextCompany.getCompanyId(), "LPD-10622");
+		EnabledUtil.checkPageSpecificationVersionEnabled(contextCompany);
 
 		Layout layout = _getLayout(
 			false, siteExternalReferenceCode, sitePageExternalReferenceCode);
@@ -101,8 +99,7 @@ public class PageSpecificationVersionResourceImpl
 					sitePageExternalReferenceCode)
 		throws Exception {
 
-		FeatureFlagManagerUtil.checkEnabled(
-			contextCompany.getCompanyId(), "LPD-10622");
+		EnabledUtil.checkPageSpecificationVersionEnabled(contextCompany);
 
 		Layout layout = _getLayout(
 			true, siteExternalReferenceCode, sitePageExternalReferenceCode);
