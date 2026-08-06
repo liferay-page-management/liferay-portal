@@ -12,11 +12,13 @@ import com.liferay.headless.admin.site.internal.util.SitePageUtil;
 import com.liferay.headless.admin.site.resource.v1_0.PageSpecificationVersionResource;
 import com.liferay.headless.common.spi.util.GroupUtil;
 import com.liferay.layout.content.model.LayoutContentVersion;
+import com.liferay.layout.content.service.LayoutContentVersionLocalService;
 import com.liferay.layout.content.service.LayoutContentVersionService;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
@@ -75,13 +77,16 @@ public class PageSpecificationVersionResourceImpl
 		Layout layout = _getLayout(
 			false, siteExternalReferenceCode, sitePageExternalReferenceCode);
 
-		LayoutContentVersion layoutContentVersion = _getLayoutContentVersion(
-			pageSpecificationVersionExternalReferenceCode,
-			layout.fetchDraftLayout(), siteExternalReferenceCode);
+		Layout draftLayout = layout.fetchDraftLayout();
 
 		return _toPageSpecificationVersion(
-			layoutContentVersion,
+			_getLayoutContentVersion(
+				pageSpecificationVersionExternalReferenceCode, draftLayout,
+				siteExternalReferenceCode),
 			_getActionsUnsafeFunction(
+				_layoutContentVersionLocalService.
+					getLatestApprovedLayoutContentVersionId(
+						draftLayout.getPlid()),
 				siteExternalReferenceCode, sitePageExternalReferenceCode));
 	}
 
@@ -107,6 +112,9 @@ public class PageSpecificationVersionResourceImpl
 		UnsafeFunction
 			<LayoutContentVersion, Map<String, Map<String, String>>, Exception>
 				unsafeFunction = _getActionsUnsafeFunction(
+					_layoutContentVersionLocalService.
+						getLatestApprovedLayoutContentVersionId(
+							draftLayout.getPlid()),
 					siteExternalReferenceCode, sitePageExternalReferenceCode);
 
 		return Page.of(
@@ -120,14 +128,22 @@ public class PageSpecificationVersionResourceImpl
 	private UnsafeFunction
 		<LayoutContentVersion, Map<String, Map<String, String>>, Exception>
 			_getActionsUnsafeFunction(
+				long latestApprovedLayoutContentVersionId,
 				String siteExternalReferenceCode,
 				String sitePageExternalReferenceCode) {
 
-		return layoutContentVersion ->
-			LayoutContentVersionActionUtil.getActions(
-				contextScopeChecker, layoutContentVersion,
+		return layoutContentVersion -> {
+			boolean deletable =
+				(layoutContentVersion.getStatus() !=
+					WorkflowConstants.STATUS_APPROVED) ||
+				(layoutContentVersion.getLayoutContentVersionId() !=
+					latestApprovedLayoutContentVersionId);
+
+			return LayoutContentVersionActionUtil.getActions(
+				contextScopeChecker, deletable, layoutContentVersion,
 				_layoutModelResourcePermission, siteExternalReferenceCode,
 				sitePageExternalReferenceCode, contextUriInfo);
+		};
 	}
 
 	private Layout _getLayout(
@@ -190,6 +206,9 @@ public class PageSpecificationVersionResourceImpl
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;
+
+	@Reference
+	private LayoutContentVersionLocalService _layoutContentVersionLocalService;
 
 	@Reference
 	private LayoutContentVersionService _layoutContentVersionService;
