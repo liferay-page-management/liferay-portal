@@ -9,11 +9,13 @@ import {
 	useMediaQuery,
 } from '@liferay/layout-js-components-web';
 import {openToast} from 'frontend-js-components-web';
-import React, {useEffect, useState} from 'react';
+import {sub} from 'frontend-js-web';
+import React, {useCallback, useEffect, useState} from 'react';
 
 import {Config, initializeConfig} from '../config';
 import PageVersionService from '../services/PageVersionService';
 import {PageVersion} from '../types/PageVersion';
+import DeleteVersionModal from './DeleteVersionModal';
 import ResponsivePanel from './ResponsivePanel';
 import Toolbar from './Toolbar';
 import VersionList from './VersionList';
@@ -31,6 +33,9 @@ export default function VersionHistory({config}: Props) {
 	const [search, setSearch] = useState('');
 
 	const [versions, setVersions] = useState<PageVersion[] | null>(null);
+	const [versionToDelete, setVersionToDelete] = useState<PageVersion | null>(
+		null
+	);
 
 	const isScreenLarge = useMediaQuery(LARGE_MEDIA_QUERY);
 
@@ -38,29 +43,54 @@ export default function VersionHistory({config}: Props) {
 		hideProductMenuIfPresent({onHide: () => setIsPanelOpen(true)});
 	}, []);
 
+	const loadVersions = useCallback(async (signal?: AbortSignal) => {
+		const {data, error} = await PageVersionService.getPageVersions(signal);
+
+		if (signal?.aborted) {
+			return;
+		}
+
+		if (error) {
+			openToast({message: error, type: 'danger'});
+		}
+
+		setVersions(data?.items ?? []);
+	}, []);
+
 	useEffect(() => {
 		const controller = new AbortController();
 
-		const loadVersions = async () => {
-			const {data, error} = await PageVersionService.getPageVersions(
-				controller.signal
-			);
-
-			if (controller.signal.aborted) {
-				return;
-			}
-
-			if (error) {
-				openToast({message: error, type: 'danger'});
-			}
-
-			setVersions(data?.items ?? []);
-		};
-
-		loadVersions();
+		loadVersions(controller.signal);
 
 		return () => controller.abort();
-	}, []);
+	}, [loadVersions]);
+
+	const handleConfirmDelete = async () => {
+		if (!versionToDelete?.actions?.delete) {
+			return;
+		}
+
+		const {error} = await PageVersionService.deletePageVersion(
+			versionToDelete.actions.delete.href
+		);
+
+		setVersionToDelete(null);
+
+		if (error) {
+			openToast({message: error, type: 'danger'});
+
+			return;
+		}
+
+		openToast({
+			message: sub(Liferay.Language.get('x-was-deleted-successfully'), [
+				versionToDelete.name,
+			]),
+			type: 'success',
+		});
+
+		loadVersions();
+	};
 
 	const keywords = search.trim().toLowerCase();
 
@@ -86,6 +116,7 @@ export default function VersionHistory({config}: Props) {
 								? config.layout
 								: undefined
 						}
+						onDelete={setVersionToDelete}
 						searching={Boolean(keywords)}
 						versions={versions.filter(({creator, name}) =>
 							matches(name, creator?.name)
@@ -99,6 +130,13 @@ export default function VersionHistory({config}: Props) {
 					/>
 				)}
 			</ResponsivePanel>
+
+			{versionToDelete ? (
+				<DeleteVersionModal
+					onClose={() => setVersionToDelete(null)}
+					onConfirm={handleConfirmDelete}
+				/>
+			) : null}
 		</>
 	);
 }

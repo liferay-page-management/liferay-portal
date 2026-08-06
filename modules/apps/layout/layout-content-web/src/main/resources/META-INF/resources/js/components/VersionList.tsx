@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {ClayButtonWithIcon} from '@clayui/button';
+import {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayEmptyState from '@clayui/empty-state';
 import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
@@ -38,10 +40,12 @@ type Row = {
 
 export default function VersionList({
 	layout,
+	onDelete,
 	searching,
 	versions,
 }: {
 	layout?: Layout;
+	onDelete?: (version: PageVersion) => void;
 	searching: boolean;
 	versions: PageVersion[];
 }) {
@@ -169,6 +173,39 @@ export default function VersionList({
 								</ClayLabel>
 							</ClayList.ItemText>
 						</ClayList.ItemField>
+
+						{version?.actions?.delete ? (
+							<ClayList.ItemField className="px-2">
+								<ClayDropDownWithItems
+									items={[
+										{
+											label: Liferay.Language.get(
+												'delete-version'
+											),
+											onClick: (event) => {
+												event.stopPropagation();
+
+												onDelete?.(version);
+											},
+											symbolLeft: 'trash',
+										},
+									]}
+									trigger={
+										<ClayButtonWithIcon
+											aria-label={Liferay.Language.get(
+												'show-options'
+											)}
+											displayType="unstyled"
+											onClick={(event) =>
+												event.stopPropagation()
+											}
+											small
+											symbol="ellipsis-v"
+										/>
+									}
+								/>
+							</ClayList.ItemField>
+						) : null}
 					</ClayList.Item>
 				);
 			})}
