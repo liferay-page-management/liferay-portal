@@ -37,6 +37,34 @@ public class PageSpecificationVersionResourceImpl
 	extends BasePageSpecificationVersionResourceImpl {
 
 	@Override
+	public void deleteSiteSitePagePageSpecificationVersion(
+			String siteExternalReferenceCode,
+			String sitePageExternalReferenceCode,
+			String pageSpecificationVersionExternalReferenceCode)
+		throws Exception {
+
+		FeatureFlagManagerUtil.checkEnabled(
+			contextCompany.getCompanyId(), "LPD-10622");
+
+		Layout layout = _getLayout(
+			false, siteExternalReferenceCode, sitePageExternalReferenceCode);
+
+		LayoutContentVersion layoutContentVersion = _getLayoutContentVersion(
+			siteExternalReferenceCode,
+			pageSpecificationVersionExternalReferenceCode);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		if (layoutContentVersion.getPlid() != draftLayout.getPlid()) {
+			throw new IllegalArgumentException(
+				"The page specification version must belong to the site page");
+		}
+
+		_layoutContentVersionService.deleteLayoutContentVersion(
+			layoutContentVersion.getLayoutContentVersionId());
+	}
+
+	@Override
 	public PageSpecificationVersion getSiteSitePagePageSpecificationVersion(
 			String siteExternalReferenceCode,
 			String sitePageExternalReferenceCode,
