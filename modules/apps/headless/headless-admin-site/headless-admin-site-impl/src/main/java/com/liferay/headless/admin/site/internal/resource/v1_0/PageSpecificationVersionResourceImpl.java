@@ -55,15 +55,8 @@ public class PageSpecificationVersionResourceImpl
 			false, siteExternalReferenceCode, sitePageExternalReferenceCode);
 
 		LayoutContentVersion layoutContentVersion = _getLayoutContentVersion(
-			siteExternalReferenceCode,
-			pageSpecificationVersionExternalReferenceCode);
-
-		Layout draftLayout = layout.fetchDraftLayout();
-
-		if (layoutContentVersion.getPlid() != draftLayout.getPlid()) {
-			throw new IllegalArgumentException(
-				"The page specification version must belong to the site page");
-		}
+			pageSpecificationVersionExternalReferenceCode,
+			layout.fetchDraftLayout(), siteExternalReferenceCode);
 
 		_layoutContentVersionService.deleteLayoutContentVersion(
 			layoutContentVersion.getLayoutContentVersionId());
@@ -83,15 +76,8 @@ public class PageSpecificationVersionResourceImpl
 			false, siteExternalReferenceCode, sitePageExternalReferenceCode);
 
 		LayoutContentVersion layoutContentVersion = _getLayoutContentVersion(
-			siteExternalReferenceCode,
-			pageSpecificationVersionExternalReferenceCode);
-
-		Layout draftLayout = layout.fetchDraftLayout();
-
-		if (layoutContentVersion.getPlid() != draftLayout.getPlid()) {
-			throw new IllegalArgumentException(
-				"The page specification version must belong to the site page");
-		}
+			pageSpecificationVersionExternalReferenceCode,
+			layout.fetchDraftLayout(), siteExternalReferenceCode);
 
 		return _toPageSpecificationVersion(
 			layoutContentVersion,
@@ -164,14 +150,24 @@ public class PageSpecificationVersionResourceImpl
 	}
 
 	private LayoutContentVersion _getLayoutContentVersion(
-			String siteExternalReferenceCode, String externalReferenceCode)
+			String externalReferenceCode, Layout layout,
+			String siteExternalReferenceCode)
 		throws Exception {
 
-		return _layoutContentVersionService.
-			getLayoutContentVersionByExternalReferenceCode(
-				externalReferenceCode,
-				GroupUtil.getStagingAwareGroupId(
-					contextCompany.getCompanyId(), siteExternalReferenceCode));
+		LayoutContentVersion layoutContentVersion =
+			_layoutContentVersionService.
+				getLayoutContentVersionByExternalReferenceCode(
+					externalReferenceCode,
+					GroupUtil.getStagingAwareGroupId(
+						contextCompany.getCompanyId(),
+						siteExternalReferenceCode));
+
+		if (layoutContentVersion.getPlid() != layout.getPlid()) {
+			throw new IllegalArgumentException(
+				"The page specification version must belong to the site page");
+		}
+
+		return layoutContentVersion;
 	}
 
 	private PageSpecificationVersion _toPageSpecificationVersion(
