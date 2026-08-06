@@ -5,7 +5,13 @@
 
 export type Status = 'approved' | 'draft';
 
+export type Action = {
+	href: string;
+	method: string;
+};
+
 export type PageVersion = {
+	actions?: Record<string, Action>;
 	creator?: {
 		externalReferenceCode?: string;
 		image?: string;
