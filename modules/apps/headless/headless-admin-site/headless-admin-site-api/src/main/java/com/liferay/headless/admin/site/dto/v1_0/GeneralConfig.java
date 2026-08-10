@@ -5,12 +5,9 @@
 
 package com.liferay.headless.admin.site.dto.v1_0;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
@@ -52,9 +49,7 @@ public class GeneralConfig implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	@JsonGetter("applicationDecorator")
-	@Valid
-	public ApplicationDecorator getApplicationDecorator() {
+	public String getApplicationDecorator() {
 		if (_applicationDecoratorSupplier != null) {
 			applicationDecorator = _applicationDecoratorSupplier.get();
 
@@ -64,20 +59,7 @@ public class GeneralConfig implements Serializable {
 		return applicationDecorator;
 	}
 
-	@JsonIgnore
-	public String getApplicationDecoratorAsString() {
-		ApplicationDecorator applicationDecorator = getApplicationDecorator();
-
-		if (applicationDecorator == null) {
-			return null;
-		}
-
-		return applicationDecorator.toString();
-	}
-
-	public void setApplicationDecorator(
-		ApplicationDecorator applicationDecorator) {
-
+	public void setApplicationDecorator(String applicationDecorator) {
 		this.applicationDecorator = applicationDecorator;
 
 		_applicationDecoratorSupplier = null;
@@ -85,8 +67,7 @@ public class GeneralConfig implements Serializable {
 
 	@JsonIgnore
 	public void setApplicationDecorator(
-		UnsafeSupplier<ApplicationDecorator, Exception>
-			applicationDecoratorUnsafeSupplier) {
+		UnsafeSupplier<String, Exception> applicationDecoratorUnsafeSupplier) {
 
 		_applicationDecoratorSupplier = () -> {
 			try {
@@ -103,10 +84,10 @@ public class GeneralConfig implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected ApplicationDecorator applicationDecorator;
+	protected String applicationDecorator;
 
 	@JsonIgnore
-	private Supplier<ApplicationDecorator> _applicationDecoratorSupplier;
+	private Supplier<String> _applicationDecoratorSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The localized custom titles."
@@ -223,7 +204,7 @@ public class GeneralConfig implements Serializable {
 
 		sb.append("{");
 
-		ApplicationDecorator applicationDecorator = getApplicationDecorator();
+		String applicationDecorator = getApplicationDecorator();
 
 		if (applicationDecorator != null) {
 			if (sb.length() > 1) {
@@ -233,7 +214,9 @@ public class GeneralConfig implements Serializable {
 			sb.append("\"applicationDecorator\": ");
 
 			sb.append("\"");
-			sb.append(applicationDecorator);
+
+			sb.append(_escape(applicationDecorator));
+
 			sb.append("\"");
 		}
 
@@ -272,44 +255,6 @@ public class GeneralConfig implements Serializable {
 		name = "x-class-name"
 	)
 	public String xClassName;
-
-	@GraphQLName("ApplicationDecorator")
-	public static enum ApplicationDecorator {
-
-		BAREBONE("Barebone"), BORDERLESS("Borderless"), DECORATE("Decorate");
-
-		@JsonCreator
-		public static ApplicationDecorator create(String value) {
-			if ((value == null) || value.equals("")) {
-				return null;
-			}
-
-			for (ApplicationDecorator applicationDecorator : values()) {
-				if (Objects.equals(applicationDecorator.getValue(), value)) {
-					return applicationDecorator;
-				}
-			}
-
-			throw new IllegalArgumentException("Invalid enum value: " + value);
-		}
-
-		@JsonValue
-		public String getValue() {
-			return _value;
-		}
-
-		@Override
-		public String toString() {
-			return _value;
-		}
-
-		private ApplicationDecorator(String value) {
-			_value = value;
-		}
-
-		private final String _value;
-
-	}
 
 	private static String _escape(Object object) {
 		return StringUtil.replace(
@@ -400,4 +345,4 @@ public class GeneralConfig implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:709702621
+// LIFERAY-REST-BUILDER-HASH:1033317385

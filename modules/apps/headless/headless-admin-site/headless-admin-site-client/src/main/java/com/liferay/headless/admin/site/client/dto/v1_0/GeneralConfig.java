@@ -26,27 +26,16 @@ public class GeneralConfig implements Cloneable, Serializable {
 		return GeneralConfigSerDes.toDTO(json);
 	}
 
-	public ApplicationDecorator getApplicationDecorator() {
+	public String getApplicationDecorator() {
 		return applicationDecorator;
 	}
 
-	public String getApplicationDecoratorAsString() {
-		if (applicationDecorator == null) {
-			return null;
-		}
-
-		return applicationDecorator.toString();
-	}
-
-	public void setApplicationDecorator(
-		ApplicationDecorator applicationDecorator) {
-
+	public void setApplicationDecorator(String applicationDecorator) {
 		this.applicationDecorator = applicationDecorator;
 	}
 
 	public void setApplicationDecorator(
-		UnsafeSupplier<ApplicationDecorator, Exception>
-			applicationDecoratorUnsafeSupplier) {
+		UnsafeSupplier<String, Exception> applicationDecoratorUnsafeSupplier) {
 
 		try {
 			applicationDecorator = applicationDecoratorUnsafeSupplier.get();
@@ -56,7 +45,7 @@ public class GeneralConfig implements Cloneable, Serializable {
 		}
 	}
 
-	protected ApplicationDecorator applicationDecorator;
+	protected String applicationDecorator;
 
 	public Map<String, String> getCustomTitle_i18n() {
 		return customTitle_i18n;
@@ -132,38 +121,5 @@ public class GeneralConfig implements Cloneable, Serializable {
 		return GeneralConfigSerDes.toJSON(this);
 	}
 
-	public static enum ApplicationDecorator {
-
-		BAREBONE("Barebone"), BORDERLESS("Borderless"), DECORATE("Decorate");
-
-		public static ApplicationDecorator create(String value) {
-			for (ApplicationDecorator applicationDecorator : values()) {
-				if (Objects.equals(applicationDecorator.getValue(), value) ||
-					Objects.equals(applicationDecorator.name(), value)) {
-
-					return applicationDecorator;
-				}
-			}
-
-			return null;
-		}
-
-		public String getValue() {
-			return _value;
-		}
-
-		@Override
-		public String toString() {
-			return _value;
-		}
-
-		private ApplicationDecorator(String value) {
-			_value = value;
-		}
-
-		private final String _value;
-
-	}
-
 }
-// LIFERAY-REST-BUILDER-HASH:-351304785
+// LIFERAY-REST-BUILDER-HASH:244313465

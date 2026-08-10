@@ -54,7 +54,9 @@ public class GeneralConfigSerDes {
 			sb.append("\"applicationDecorator\": ");
 
 			sb.append("\"");
-			sb.append(generalConfig.getApplicationDecorator());
+
+			sb.append(_escape(generalConfig.getApplicationDecorator()));
+
 			sb.append("\"");
 		}
 
@@ -163,8 +165,7 @@ public class GeneralConfigSerDes {
 			if (Objects.equals(jsonParserFieldName, "applicationDecorator")) {
 				if (jsonParserFieldValue != null) {
 					generalConfig.setApplicationDecorator(
-						GeneralConfig.ApplicationDecorator.create(
-							(String)jsonParserFieldValue));
+						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "customTitle_i18n")) {
@@ -260,4 +261,4 @@ public class GeneralConfigSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1886678178
+// LIFERAY-REST-BUILDER-HASH:-277377798
