@@ -16,6 +16,7 @@ import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutUtil;
 import com.liferay.layout.exporter.PortletPermissionsExporter;
 import com.liferay.layout.exporter.PortletPreferencesPortletConfigurationExporter;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
@@ -26,7 +27,6 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -243,20 +243,8 @@ public class WidgetPageWidgetInstanceDTOConverter
 					() -> new GeneralConfig() {
 						{
 							setApplicationDecorator(
-								() -> {
-									String value = GetterUtil.getString(
-										portletPreferences.getValue(
-											"portletSetupPortletDecoratorId",
-											null),
-										null);
-
-									if (value == null) {
-										return null;
-									}
-
-									return ApplicationDecorator.create(
-										StringUtil.upperCaseFirstLetter(value));
-								});
+								() -> portletPreferences.getValue(
+									"portletSetupPortletDecoratorId", null));
 							setCustomTitle_i18n(
 								() -> _getCustomTitleMap(
 									layout.getGroupId(), portletPreferences));
@@ -281,8 +269,7 @@ public class WidgetPageWidgetInstanceDTOConverter
 		String column, DTOConverterContext dtoConverterContext, Layout layout) {
 
 		return TransformUtil.transformToArray(
-			com.liferay.petra.string.StringUtil.split(
-				layout.getTypeSettingsProperty(column)),
+			StringUtil.split(layout.getTypeSettingsProperty(column)),
 			portletId -> {
 				dtoConverterContext.setAttribute("portletId", portletId);
 

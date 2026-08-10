@@ -647,8 +647,8 @@ public class LayoutUtil {
 		if (generalConfig.getApplicationDecorator() != null) {
 			map.put(
 				"portletSetupPortletDecoratorId",
-				StringUtil.lowerCase(
-					generalConfig.getApplicationDecoratorAsString()));
+				_getPortletDecoratorId(
+					generalConfig.getApplicationDecorator()));
 		}
 
 		Map<String, String> customTitleI18n =
@@ -774,6 +774,17 @@ public class LayoutUtil {
 		}
 
 		return itemExternalReference.getExternalReferenceCode();
+	}
+
+	private static String _getPortletDecoratorId(String applicationDecorator) {
+		if (applicationDecorator.equals("Barebone") ||
+			applicationDecorator.equals("Borderless") ||
+			applicationDecorator.equals("Decorate")) {
+
+			return StringUtil.lowerCase(applicationDecorator);
+		}
+
+		return applicationDecorator;
 	}
 
 	private static StyleBookEntryReference _getStyleBookEntryReference(
