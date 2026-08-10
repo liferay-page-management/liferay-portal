@@ -9,6 +9,7 @@ import com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition;
 import com.liferay.object.admin.rest.dto.v1_0.ObjectRelationship;
 import com.liferay.object.admin.rest.resource.v1_0.ObjectDefinitionResource;
 import com.liferay.object.admin.rest.resource.v1_0.ObjectRelationshipResource;
+import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
@@ -127,24 +128,13 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 				serviceBuilderObjectRelationship :
 					_objectRelationshipLocalService.
 						getObjectRelationshipsByObjectDefinitionId2(
-							objectDefinitionId, true)) {
+							objectDefinitionId, false)) {
 
-			if (serviceBuilderObjectRelationship.isReverse()) {
+			if (serviceBuilderObjectRelationship.isReverse() ||
+				!serviceBuilderObjectRelationship.compareType(
+					ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
+
 				continue;
-			}
-
-			if (serviceBuilderObjectRelationship.isEdge()) {
-				serviceBuilderObjectRelationship =
-					_objectRelationshipLocalService.updateObjectRelationship(
-						serviceBuilderObjectRelationship.
-							getExternalReferenceCode(),
-						serviceBuilderObjectRelationship.
-							getObjectRelationshipId(),
-						serviceBuilderObjectRelationship.
-							getParameterObjectFieldId(),
-						serviceBuilderObjectRelationship.getDeletionType(),
-						false, serviceBuilderObjectRelationship.getLabelMap(),
-						null);
 			}
 
 			_objectRelationshipLocalService.deleteObjectRelationship(
