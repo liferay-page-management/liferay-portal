@@ -1126,9 +1126,7 @@ public class PageSpecificationsTestUtil {
 		return pageSpecification;
 	}
 
-	private static GeneralConfig.ApplicationDecorator
-		_getRandomApplicationDecorator() {
-
+	private static String _getRandomApplicationDecorator() {
 		int random = RandomTestUtil.randomInt(0, 3);
 
 		if (random == 0) {
@@ -1136,14 +1134,14 @@ public class PageSpecificationsTestUtil {
 		}
 
 		if (random == 1) {
-			return GeneralConfig.ApplicationDecorator.BAREBONE;
+			return "barebone";
 		}
 
 		if (random == 2) {
-			return GeneralConfig.ApplicationDecorator.BORDERLESS;
+			return "borderless";
 		}
 
-		return GeneralConfig.ApplicationDecorator.DECORATE;
+		return "decorate";
 	}
 
 	private static Map<String, Object> _getWidgetConfig(
