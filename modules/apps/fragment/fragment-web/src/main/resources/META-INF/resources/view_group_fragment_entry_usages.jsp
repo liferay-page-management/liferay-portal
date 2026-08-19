@@ -19,6 +19,8 @@ portletDisplay.setURLBackTitle(portletDisplay.getPortletDisplayName());
 renderResponse.setTitle(LanguageUtil.format(request, "usages-and-propagation-x", fragmentEntry.getName()));
 %>
 
+<liferay-ui:error exception="<%= InvalidPropagationTargetGroupException.class %>" message="there-are-no-connected-sites-to-propagate-the-fragment-changes-to" />
+
 <clay:container-fluid
 	cssClass="container-form-lg"
 	size="xxxl"

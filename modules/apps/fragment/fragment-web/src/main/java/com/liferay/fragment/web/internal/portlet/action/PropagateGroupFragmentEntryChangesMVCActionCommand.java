@@ -10,6 +10,7 @@ import com.liferay.depot.model.DepotEntryGroupRel;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.constants.FragmentPortletKeys;
+import com.liferay.fragment.exception.InvalidPropagationTargetGroupException;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -18,7 +19,9 @@ import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -54,14 +57,28 @@ public class PropagateGroupFragmentEntryChangesMVCActionCommand
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		String fragmentEntryERC = ParamUtil.getString(
-			actionRequest, "fragmentEntryERC");
 		long fragmentEntryGroupId = ParamUtil.getLong(
 			actionRequest, "fragmentEntryGroupId");
 		long[] groupIds = ParamUtil.getLongValues(actionRequest, "rowIds");
 
 		Set<Long> validGroupIds = _getValidGroupIds(
-			depotEntry, fragmentEntryGroupId, groupIds);
+			fragmentEntryGroupId, groupIds);
+
+		if (ArrayUtil.isNotEmpty(groupIds) && validGroupIds.isEmpty()) {
+			SessionErrors.add(
+				actionRequest, InvalidPropagationTargetGroupException.class);
+
+			hideDefaultErrorMessage(actionRequest);
+
+			String redirect = ParamUtil.getString(actionRequest, "redirect");
+
+			sendRedirect(actionRequest, actionResponse, redirect);
+
+			return;
+		}
+
+		String fragmentEntryERC = ParamUtil.getString(
+			actionRequest, "fragmentEntryERC");
 
 		for (long groupId : validGroupIds) {
 			String fragmentEntryScopeERC =

@@ -385,6 +385,7 @@
 		<exception>FragmentEntryTypeOptions</exception>
 		<exception>InvalidFile</exception>
 		<exception>InvalidFragmentCompositionKey</exception>
+		<exception>InvalidPropagationTargetGroup</exception>
 		<exception>RequiredFragmentEntry</exception>
 		<exception>RequiredFragmentEntryVersion</exception>
 		<exception>UnsupportedUnpublishFragmentEntryOperation</exception>
