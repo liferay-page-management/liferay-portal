@@ -6,6 +6,11 @@
 package com.liferay.fragment.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.model.DepotEntryGroupRel;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentEntry;
@@ -16,6 +21,7 @@ import com.liferay.fragment.test.util.FragmentEntryTestUtil;
 import com.liferay.fragment.test.util.FragmentTestUtil;
 import com.liferay.layout.manager.LayoutLockManager;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
@@ -36,12 +42,15 @@ import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.Sync;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.JavaConstants;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -52,6 +61,8 @@ import com.liferay.segments.service.SegmentsExperienceLocalService;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
+
+import java.util.Collections;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -101,17 +112,74 @@ public class PropagateGroupFragmentEntryChangesMVCActionCommandTest {
 	}
 
 	@Test
-	public void testPropagateChangesOfFragmentEntryToLockedContentLayout()
-		throws Exception {
-
+	public void testPropagateChanges() throws Exception {
+		_testPropagateChangesInMixedBatchSkipsInvalidGroup();
 		_testPropagateChangesOfFragmentEntryToLockedContentLayout(
 			_fragmentEntry);
 		_testPropagateChangesOfFragmentEntryToLockedContentLayout(
 			_globalFragmentEntry);
+		_testPropagateChangesToDepotOwnGroup();
+	}
+
+	private DepotEntry _addDepotEntry() throws Exception {
+		return _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			Collections.emptyMap(), DepotConstants.TYPE_DESIGN_LIBRARY,
+			ServiceContextTestUtil.getServiceContext());
+	}
+
+	private FragmentEntry _addFragmentEntry(long groupId) throws Exception {
+		FragmentCollection fragmentCollection =
+			FragmentTestUtil.addFragmentCollection(groupId);
+
+		return FragmentEntryTestUtil.addFragmentEntry(
+			fragmentCollection.getFragmentCollectionId());
+	}
+
+	private FragmentEntryLink _addFragmentEntryLink(
+			FragmentEntry fragmentEntry, Group group, Layout layout)
+		throws Exception {
+
+		return _fragmentEntryLinkLocalService.addFragmentEntryLink(
+			null, TestPropsValues.getUserId(), group.getGroupId(), null,
+			fragmentEntry.getExternalReferenceCode(),
+			ScopeUtil.getItemScopeExternalReferenceCode(
+				fragmentEntry.getGroupId(), group.getGroupId()),
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				layout.getPlid()),
+			layout.getPlid(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			"{fieldSets: []}", StringPool.BLANK, StringPool.BLANK, 0, null,
+			fragmentEntry.getType(),
+			ServiceContextTestUtil.getServiceContext(
+				group, TestPropsValues.getUserId()));
+	}
+
+	private void _assertFragmentEntryLinkContent(
+		FragmentEntryLink fragmentEntryLink, String css, String html,
+		String js) {
+
+		FragmentEntryLink persistedFragmentEntryLink =
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				fragmentEntryLink.getFragmentEntryLinkId());
+
+		Assert.assertEquals(css, persistedFragmentEntryLink.getCss());
+		Assert.assertEquals(html, persistedFragmentEntryLink.getHtml());
+		Assert.assertEquals(js, persistedFragmentEntryLink.getJs());
 	}
 
 	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(
 			FragmentEntry fragmentEntry, Layout layout)
+		throws Exception {
+
+		return _getMockLiferayPortletActionRequest(
+			fragmentEntry, layout, new long[] {_group.getGroupId()});
+	}
+
+	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(
+			FragmentEntry fragmentEntry, Layout layout, long[] rowIds)
 		throws Exception {
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
@@ -142,8 +210,11 @@ public class PropagateGroupFragmentEntryChangesMVCActionCommandTest {
 			"fragmentEntryERC", fragmentEntry.getExternalReferenceCode());
 		mockLiferayPortletActionRequest.setParameter(
 			"fragmentEntryGroupId", String.valueOf(fragmentEntry.getGroupId()));
-		mockLiferayPortletActionRequest.setParameter(
-			"rowIds", new String[] {String.valueOf(_group.getGroupId())});
+
+		String[] rowIdsParameter = TransformUtil.transform(
+			rowIds, String::valueOf, String.class);
+
+		mockLiferayPortletActionRequest.setParameter("rowIds", rowIdsParameter);
 
 		return mockLiferayPortletActionRequest;
 	}
@@ -222,6 +293,89 @@ public class PropagateGroupFragmentEntryChangesMVCActionCommandTest {
 		_layoutLocalService.deleteLayout(layout);
 	}
 
+	private void _testPropagateChangesInMixedBatchSkipsInvalidGroup()
+		throws Exception {
+
+		Group connectedGroup = GroupTestUtil.addGroup();
+		DepotEntry depotEntry = _addDepotEntry();
+		Group disconnectedGroup = GroupTestUtil.addGroup();
+
+		try {
+			FragmentEntry fragmentEntry = _addFragmentEntry(
+				depotEntry.getGroupId());
+
+			_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+				depotEntry.getDepotEntryId(), connectedGroup.getGroupId());
+
+			Layout connectedLayout = LayoutTestUtil.addTypeContentLayout(
+				connectedGroup);
+
+			FragmentEntryLink connectedFragmentEntryLink =
+				_addFragmentEntryLink(
+					fragmentEntry, connectedGroup, connectedLayout);
+
+			_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+				depotEntry.getDepotEntryId(), disconnectedGroup.getGroupId());
+
+			Layout disconnectedLayout = LayoutTestUtil.addTypeContentLayout(
+				disconnectedGroup);
+
+			FragmentEntryLink disconnectedFragmentEntryLink =
+				_addFragmentEntryLink(
+					fragmentEntry, disconnectedGroup, disconnectedLayout);
+
+			String originalDisconnectedCss =
+				disconnectedFragmentEntryLink.getCss();
+			String originalDisconnectedHtml =
+				disconnectedFragmentEntryLink.getHtml();
+			String originalDisconnectedJs =
+				disconnectedFragmentEntryLink.getJs();
+
+			fragmentEntry = _updateFragmentEntry(fragmentEntry);
+
+			// Disconnect after the propagate dialog would have opened, to
+			// mirror the exact stale tab race reported in the ticket
+
+			DepotEntryGroupRel disconnectedDepotEntryGroupRel =
+				_depotEntryGroupRelLocalService.
+					fetchDepotEntryGroupRelByDepotEntryIdToGroupId(
+						depotEntry.getDepotEntryId(),
+						disconnectedGroup.getGroupId());
+
+			_depotEntryGroupRelLocalService.deleteDepotEntryGroupRel(
+				disconnectedDepotEntryGroupRel);
+
+			boolean success = ReflectionTestUtil.invoke(
+				_mvcActionCommand, "processAction",
+				new Class<?>[] {ActionRequest.class, ActionResponse.class},
+				_getMockLiferayPortletActionRequest(
+					fragmentEntry, connectedLayout,
+					new long[] {
+						connectedGroup.getGroupId(),
+						disconnectedGroup.getGroupId()
+					}),
+				new MockLiferayPortletActionResponse());
+
+			Assert.assertTrue(success);
+
+			_assertFragmentEntryLinkContent(
+				connectedFragmentEntryLink, fragmentEntry.getCss(),
+				fragmentEntry.getHtml(), fragmentEntry.getJs());
+
+			_assertFragmentEntryLinkContent(
+				disconnectedFragmentEntryLink, originalDisconnectedCss,
+				originalDisconnectedHtml, originalDisconnectedJs);
+
+			_layoutLocalService.deleteLayout(connectedLayout);
+			_layoutLocalService.deleteLayout(disconnectedLayout);
+		}
+		finally {
+			_depotEntryLocalService.deleteDepotEntry(depotEntry);
+			_groupLocalService.deleteGroup(connectedGroup);
+			_groupLocalService.deleteGroup(disconnectedGroup);
+		}
+	}
+
 	private void _testPropagateChangesOfFragmentEntryToLockedContentLayout(
 			FragmentEntry fragmentEntry)
 		throws Exception {
@@ -278,8 +432,59 @@ public class PropagateGroupFragmentEntryChangesMVCActionCommandTest {
 		_layoutLocalService.deleteLayout(layout);
 	}
 
+	private void _testPropagateChangesToDepotOwnGroup() throws Exception {
+		DepotEntry depotEntry = _addDepotEntry();
+
+		Group depotGroup = _groupLocalService.getGroup(depotEntry.getGroupId());
+
+		try {
+			FragmentEntry fragmentEntry = _addFragmentEntry(
+				depotEntry.getGroupId());
+
+			Layout layout = LayoutTestUtil.addTypeContentLayout(depotGroup);
+
+			FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+				fragmentEntry, depotGroup, layout);
+
+			fragmentEntry = _updateFragmentEntry(fragmentEntry);
+
+			ReflectionTestUtil.invoke(
+				_mvcActionCommand, "processAction",
+				new Class<?>[] {ActionRequest.class, ActionResponse.class},
+				_getMockLiferayPortletActionRequest(
+					fragmentEntry, layout,
+					new long[] {depotGroup.getGroupId()}),
+				new MockLiferayPortletActionResponse());
+
+			_assertFragmentEntryLinkContent(
+				fragmentEntryLink, fragmentEntry.getCss(),
+				fragmentEntry.getHtml(), fragmentEntry.getJs());
+
+			_layoutLocalService.deleteLayout(layout);
+		}
+		finally {
+			_depotEntryLocalService.deleteDepotEntry(depotEntry);
+		}
+	}
+
+	private FragmentEntry _updateFragmentEntry(FragmentEntry fragmentEntry)
+		throws Exception {
+
+		fragmentEntry.setCss(RandomTestUtil.randomString());
+		fragmentEntry.setHtml(RandomTestUtil.randomString());
+		fragmentEntry.setJs(RandomTestUtil.randomString());
+
+		return _fragmentEntryLocalService.updateFragmentEntry(fragmentEntry);
+	}
+
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	@Inject
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	private FragmentEntry _fragmentEntry;
 

@@ -5,9 +5,14 @@
 
 package com.liferay.fragment.web.internal.portlet.action;
 
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.model.DepotEntryGroupRel;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
@@ -16,11 +21,14 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.ScopeUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
+
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -52,7 +60,10 @@ public class PropagateGroupFragmentEntryChangesMVCActionCommand
 			actionRequest, "fragmentEntryGroupId");
 		long[] groupIds = ParamUtil.getLongValues(actionRequest, "rowIds");
 
-		for (long groupId : groupIds) {
+		Set<Long> validGroupIds = _getValidGroupIds(
+			depotEntry, fragmentEntryGroupId, groupIds);
+
+		for (long groupId : validGroupIds) {
 			String fragmentEntryScopeERC =
 				ScopeUtil.getItemScopeExternalReferenceCode(
 					fragmentEntryGroupId, groupId);
@@ -95,6 +106,33 @@ public class PropagateGroupFragmentEntryChangesMVCActionCommand
 
 		sendRedirect(actionRequest, actionResponse, redirect);
 	}
+
+	private Set<Long> _getValidGroupIds(
+		long fragmentEntryGroupId, long[] groupIds) {
+
+		DepotEntry depotEntry = _depotEntryLocalService.fetchGroupDepotEntry(
+			fragmentEntryGroupId);
+
+		if (depotEntry == null) {
+			return SetUtil.fromArray(groupIds);
+		}
+
+		Long[] connectedGroupIds = TransformUtil.transformToArray(
+			_depotEntryGroupRelLocalService.getDepotEntryGroupRels(depotEntry),
+			DepotEntryGroupRel::getToGroupId, Long.class);
+
+		Set<Long> validGroupIds = SetUtil.fromArray(connectedGroupIds);
+
+		validGroupIds.add(fragmentEntryGroupId);
+
+		return SetUtil.intersect(SetUtil.fromArray(groupIds), validGroupIds);
+	}
+
+	@Reference
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
+
+	@Reference
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Reference
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
