@@ -230,9 +230,8 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		_testPostSiteResourceFileFileURLReferenceFileBase64AndURL();
 		_testPostSiteResourceFileFileURLReferenceFileBase64AndURLNullProblemException();
 		_testPostSiteResourceFileFileURLReferenceNullProblemException();
-		_testPostSiteResourceFileFileURLReferenceURL();
 		_testPostSiteResourceFileFileURLReferenceURLLARProblemException();
-		_testPostSiteResourceFileFileURLReferenceURLUnreachableProblemException();
+		_testPostSiteResourceFileFileURLReferenceURLLocalNetworkProblemException();
 		_testPostSiteResourceFileFileURLReferenceURLUnsupportedProtocolProblemException();
 		_testPostSiteResourceFileFragmentSetAndFragmentSetExternalReferenceCode();
 		_testPostSiteResourceFileFragmentSetAndFragmentSetExternalReferenceCodeProblemException();
@@ -256,7 +255,7 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		_testPutSiteResourceFileFileURLReferenceFileBase64();
 		_testPutSiteResourceFileFileURLReferenceFileBase64AndURLNullProblemException();
 		_testPutSiteResourceFileFileURLReferenceNullProblemException();
-		_testPutSiteResourceFileFileURLReferenceURL();
+		_testPutSiteResourceFileFileURLReferenceURLLocalNetworkProblemException();
 		_testPutSiteResourceFileName();
 		_testPutSiteResourceFileNameNullProblemException();
 		_testPutSiteResourceFilePortletFileProblemException();
@@ -1447,16 +1446,6 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		}
 	}
 
-	private void _testPostSiteResourceFileFileURLReferenceURL()
-		throws Exception {
-
-		FileURLReference fileURLReference = new FileURLReference();
-
-		fileURLReference.setUrl(_content1URL);
-
-		_postSiteResourceFileAndAssertContent(_content1Bytes, fileURLReference);
-	}
-
 	private void _testPostSiteResourceFileFileURLReferenceURLLARProblemException()
 		throws Exception {
 
@@ -1466,13 +1455,18 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 			"Unable to download file from " + url, url);
 	}
 
-	private void _testPostSiteResourceFileFileURLReferenceURLUnreachableProblemException()
+	private void _testPostSiteResourceFileFileURLReferenceURLLocalNetworkProblemException()
 		throws Exception {
 
-		String url = "http://127.0.0.1:1/" + RandomTestUtil.randomString();
+		for (String url :
+				new String[] {
+					_content1URL, "http://10.0.0.1", "http://127.0.0.1:1",
+					"http://169.254.169.254"
+				}) {
 
-		_testPostSiteResourceFileFileURLReferenceProblemException(
-			"Unable to download file from " + url, url);
+			_testPostSiteResourceFileFileURLReferenceProblemException(
+				"Denied access to local network address " + url, url);
+		}
 	}
 
 	private void _testPostSiteResourceFileFileURLReferenceURLUnsupportedProtocolProblemException()
@@ -1961,7 +1955,7 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 				updatedResourceFile));
 	}
 
-	private void _testPutSiteResourceFileFileURLReferenceURL()
+	private void _testPutSiteResourceFileFileURLReferenceURLLocalNetworkProblemException()
 		throws Exception {
 
 		FragmentCollection fragmentCollection = _addFragmentCollection(
@@ -1982,13 +1976,22 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 		updatedResourceFile.setFileURLReference(fileURLReference);
 
-		resourceFileResource.putSiteResourceFile(
-			testGroup.getExternalReferenceCode(),
-			postResourceFile.getExternalReferenceCode(), updatedResourceFile);
+		try {
+			resourceFileResource.putSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				postResourceFile.getExternalReferenceCode(),
+				updatedResourceFile);
 
-		_assertContent(
-			_content2Bytes, postResourceFile.getExternalReferenceCode(),
-			testGroup.getGroupId());
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+			Assert.assertEquals(
+				"Denied access to local network address " + _content2URL,
+				problem.getTitle());
+		}
 	}
 
 	private void _testPutSiteResourceFileName() throws Exception {

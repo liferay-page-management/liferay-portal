@@ -8,8 +8,11 @@ package com.liferay.headless.admin.site.dto.v1_0.util;
 import com.liferay.exportimport.attachment.ExportImportAttachmentManagerUtil;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpUtil;
+import com.liferay.portal.kernel.util.InetAddressUtil;
 
 import java.io.InputStream;
 
@@ -31,7 +34,17 @@ public class URLUtil {
 		if (Objects.equals(protocol, Http.HTTP) ||
 			Objects.equals(protocol, Http.HTTPS)) {
 
-			return HttpUtil.URLtoByteArray(url.toString());
+			if (_isLocalNetworkURL(url)) {
+				throw new IllegalArgumentException(
+					"Denied access to local network address " + urlString);
+			}
+
+			Http.Options options = new Http.Options();
+
+			options.setFollowRedirects(false);
+			options.setLocation(url.toString());
+
+			return HttpUtil.URLtoByteArray(options);
 		}
 
 		if (Objects.equals(protocol, "lar")) {
@@ -47,5 +60,21 @@ public class URLUtil {
 				"Unable to download file from ", urlString,
 				" because of unsupported protocol ", protocol));
 	}
+
+	private static boolean _isLocalNetworkURL(URL url) {
+		try {
+			return InetAddressUtil.isLocalInetAddress(
+				InetAddressUtil.getInetAddressByName(url.getHost()));
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+		}
+
+		return true;
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(URLUtil.class);
 
 }
