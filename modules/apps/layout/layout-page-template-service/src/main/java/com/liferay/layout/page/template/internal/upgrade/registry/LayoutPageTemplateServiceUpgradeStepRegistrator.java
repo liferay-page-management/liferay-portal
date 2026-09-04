@@ -273,6 +273,13 @@ public class LayoutPageTemplateServiceUpgradeStepRegistrator
 				LayoutPageTemplateStructureRelUpgradeProcess(
 					_layoutLocalService, _segmentsExperienceLocalService,
 					_userLocalService));
+
+		registry.register(
+			"6.2.0", "6.3.0",
+			new com.liferay.layout.page.template.internal.upgrade.v6_3_0.
+				DefaultSegmentsExperienceUpgradeProcess(
+					_portal, _segmentsExperienceLocalService,
+					_userLocalService));
 	}
 
 	@Reference

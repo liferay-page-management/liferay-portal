@@ -31,6 +31,7 @@ import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.osgi.util.ServiceTrackerFactory;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Layout;
@@ -385,11 +386,27 @@ public class FragmentLayoutStructureItemImporter
 
 		Layout layout = layoutStructureItemImporterContext.getLayout();
 
-		if ((fragmentEntryLink.getPlid() != layout.getPlid()) ||
-			(fragmentEntryLink.getSegmentsExperienceId() !=
-				layoutStructureItemImporterContext.getSegmentsExperienceId())) {
+		if (fragmentEntryLink.getPlid() != layout.getPlid()) {
+			throw new UnsupportedOperationException(
+				StringBundler.concat(
+					"Fragment entry link ",
+					fragmentEntryLink.getExternalReferenceCode(),
+					" belongs to layout ", fragmentEntryLink.getPlid(),
+					" instead of layout ", layout.getPlid()));
+		}
 
-			throw new UnsupportedOperationException();
+		if (fragmentEntryLink.getSegmentsExperienceId() !=
+				layoutStructureItemImporterContext.getSegmentsExperienceId()) {
+
+			throw new UnsupportedOperationException(
+				StringBundler.concat(
+					"Fragment entry link ",
+					fragmentEntryLink.getExternalReferenceCode(),
+					" belongs to segments experience ",
+					fragmentEntryLink.getSegmentsExperienceId(),
+					" instead of segments experience ",
+					layoutStructureItemImporterContext.
+						getSegmentsExperienceId()));
 		}
 
 		FragmentEntryReference fragmentEntryReference =
