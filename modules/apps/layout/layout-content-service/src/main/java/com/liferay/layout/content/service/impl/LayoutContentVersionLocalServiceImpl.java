@@ -26,22 +26,34 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.webserver.WebServerServletToken;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.InputStream;
 
@@ -297,6 +309,8 @@ public class LayoutContentVersionLocalServiceImpl
 			ServiceContext serviceContext =
 				ServiceContextThreadLocal.getServiceContext();
 
+			_initThemeDisplay(serviceContext.getRequest(), layout);
+
 			for (SegmentsExperience segmentsExperience :
 					_segmentsExperienceLocalService.getSegmentsExperiences(
 						layout.getGroupId(), layout.getPlid())) {
@@ -394,6 +408,64 @@ public class LayoutContentVersionLocalServiceImpl
 			});
 	}
 
+	private void _initThemeDisplay(
+			HttpServletRequest httpServletRequest, Layout layout)
+		throws Exception {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		String pathImage = _portal.getPathImage();
+		String pathMain = _portal.getPathMain();
+
+		String companyLogo = pathImage + "/company_logo";
+
+		Company company = themeDisplay.getCompany();
+
+		long companyLogoId = company.getLogoId();
+
+		if (companyLogoId > 0) {
+			companyLogo = StringBundler.concat(
+				companyLogo, "?img_id=", companyLogoId, "&t=",
+				_webServerServletToken.getToken(companyLogoId));
+		}
+
+		String layoutSetLogo = null;
+
+		LayoutSet layoutSet = layout.getLayoutSet();
+
+		if (company.isSiteLogo() && layoutSet.isLogo()) {
+			long layoutSetLogoId = layoutSet.getLogoId();
+
+			if (layoutSetLogoId > 0) {
+				layoutSetLogo = StringBundler.concat(
+					pathImage, "/layout_set_logo?img_id=", layoutSetLogoId,
+					"&t=", _webServerServletToken.getToken(layoutSetLogoId));
+
+				companyLogo = layoutSetLogo;
+			}
+		}
+
+		themeDisplay.setCompanyLogo(companyLogo);
+		themeDisplay.setLayoutSetLogo(layoutSetLogo);
+		themeDisplay.setLayouts(
+			ListUtil.filter(
+				_layoutService.getLayouts(
+					layout.getGroupId(), layout.isPrivateLayout(),
+					LayoutConstants.DEFAULT_PARENT_LAYOUT_ID),
+				curLayout -> !curLayout.isHidden() && curLayout.isPublished()));
+		themeDisplay.setPathContext(_portal.getPathContext());
+		themeDisplay.setPathImage(pathImage);
+		themeDisplay.setPathMain(pathMain);
+		themeDisplay.setRealCompanyLogo(companyLogo);
+		themeDisplay.setURLSignIn(
+			HttpComponentsUtil.addParameter(
+				StringBundler.concat(
+					themeDisplay.getPortalURL(), pathMain, "/portal/login"),
+				"p_l_id", layout.getPlid()));
+	}
+
 	private void _validateExternalReferenceCode(
 			String externalReferenceCode, long groupId)
 		throws PortalException {
@@ -466,12 +538,21 @@ public class LayoutContentVersionLocalServiceImpl
 	private LayoutPreviewRenderer _layoutPreviewRenderer;
 
 	@Reference
+	private LayoutService _layoutService;
+
+	@Reference
 	private LayoutServiceContextHelper _layoutServiceContextHelper;
+
+	@Reference
+	private Portal _portal;
 
 	@Reference
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;
+
+	@Reference
+	private WebServerServletToken _webServerServletToken;
 
 }
