@@ -127,8 +127,9 @@ public class LayoutPageTemplateDisplayContext {
 					getLayoutPageTemplateCollectionId();
 		}
 
-		long layoutPageTemplateCollectionId = ParamUtil.getLong(
-			_httpServletRequest, "layoutPageTemplateCollectionId");
+		long layoutPageTemplateCollectionId =
+			LayoutPageTemplatePortletUtil.getLayoutPageTemplateCollectionId(
+				_httpServletRequest, _themeDisplay.getScopeGroupId());
 
 		if (layoutPageTemplateCollectionId <= 0) {
 			layoutPageTemplateCollectionId =
