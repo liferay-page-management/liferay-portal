@@ -3,11 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {
-	RepeatableGroup,
-	Structure,
-	StructureChild,
-} from '../../types/Structure';
+import {Group, Structure, StructureChild} from '../../types/Structure';
+import isGroup from '../isGroup';
 import sortChildren from './sortChildren';
 
 export default function addChild({
@@ -15,18 +12,18 @@ export default function addChild({
 	root,
 }: {
 	child: StructureChild;
-	root: Structure | RepeatableGroup;
-}): Structure['children'] | RepeatableGroup['children'] {
+	root: Structure | Group;
+}): Structure['children'] | Group['children'] {
 	const children = new Map();
 
 	// Iterate over children
 
 	for (const rootChild of root.children.values()) {
 
-		// Insert the child. If it's a repeatable group, build it with recursive call
+		// Insert the child. If it's a container, build it with recursive call
 
-		if (rootChild.type === 'repeatable-group') {
-			const group: RepeatableGroup = {
+		if (isGroup(rootChild)) {
+			const container = {
 				...rootChild,
 				children: addChild({
 					child,
@@ -34,7 +31,7 @@ export default function addChild({
 				}),
 			};
 
-			children.set(group.uuid, group);
+			children.set(container.uuid, container);
 		}
 		else {
 			children.set(rootChild.uuid, rootChild);

@@ -8,11 +8,13 @@ import {
 	ObjectField,
 	ObjectRelationship,
 } from '../../../../src/main/resources/META-INF/resources/js/common/types/ObjectDefinition';
+import {config} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/config';
 import buildObjectDefinition from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/buildObjectDefinition';
 import buildObjectRelationships from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/buildObjectRelationships';
 import buildStructure from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/buildStructure';
 import {Field} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/field';
 import getUuid from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/getUuid';
+import {isRepeatableGroup} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/isGroup';
 
 const parent = getUuid();
 
@@ -235,7 +237,9 @@ function createObjectDefinition(
 }
 
 function getChildFieldNames(structure: ReturnType<typeof buildStructure>) {
-	return Array.from(structure.children.values()).map((child) => child.name);
+	return Array.from(structure.children.values()).map((child) =>
+		'name' in child ? child.name : undefined
+	);
 }
 
 describe('buildStructure', () => {
@@ -255,7 +259,7 @@ describe('buildStructure', () => {
 
 		const childrenMap = new Map(
 			Array.from(structure.children.values()).map((child) => [
-				child.erc,
+				'erc' in child ? child.erc : undefined,
 				child,
 			])
 		);
@@ -282,7 +286,7 @@ describe('buildStructure', () => {
 		});
 
 		const emailField = Array.from(structure.children.values()).find(
-			(child) => child.erc === 'email-field'
+			(child) => 'erc' in child && child.erc === 'email-field'
 		);
 
 		expect(emailField).toEqual(
@@ -479,9 +483,7 @@ describe('buildStructure', () => {
 			children.filter((child) => child.type === 'related-content')
 		).toEqual([]);
 
-		expect(
-			children.filter((child) => child.type === 'repeatable-group')
-		).toEqual([
+		expect(children.filter((child) => isRepeatableGroup(child))).toEqual([
 			expect.objectContaining({
 				erc: 'SELF_GROUP_ERC',
 				relationshipERC: 'self-group',
@@ -534,5 +536,73 @@ describe('buildStructure', () => {
 		expect(fieldNames).toContain('customField');
 		expect(fieldNames).not.toContain('content');
 		expect(fieldNames).not.toContain('videoURL');
+	});
+
+	it('rebuilds the group nesting from the object layout, and ignores it while the feature flag is off', () => {
+		config.isNonRepeatableGroupsEnabled = true;
+
+		const groupUuid = getUuid();
+
+		const sku: Field = {
+			...SAMPLE_STRUCTURE_FIELDS[0],
+			name: 'sku',
+			parent: groupUuid,
+			uuid: getUuid(),
+		};
+
+		const objectDefinition = buildObjectDefinition({
+			children: new Map([
+				[
+					groupUuid,
+					{
+						children: new Map([[sku.uuid, sku]]),
+						isRepeatable: false,
+						label: {en_US: 'Details'},
+						parent,
+						type: 'group',
+						uuid: groupUuid,
+					},
+				],
+			]),
+			erc: 'main-structure-erc',
+			includeObjectLayout: true,
+			label: {en_US: 'Main Structure'},
+			name: 'mainStructure',
+			spaces: [],
+		} as Parameters<typeof buildObjectDefinition>[0]);
+
+		expect(objectDefinition.objectLayouts).toHaveLength(1);
+
+		// With the flag on the layout puts the field back inside its group.
+
+		const grouped = buildStructure({
+			mainObjectDefinition: objectDefinition,
+			objectDefinitions: {},
+		});
+
+		const group = Array.from(grouped.children.values()).find(
+			(child) => child.type === 'group'
+		);
+
+		expect(group).toBeDefined();
+		expect(getChildFieldNames(grouped)).not.toContain('sku');
+
+		// With the flag off the fields stay flat, as they always have.
+
+		config.isNonRepeatableGroupsEnabled = false;
+
+		const flat = buildStructure({
+			mainObjectDefinition: objectDefinition,
+			objectDefinitions: {},
+		});
+
+		expect(
+			Array.from(flat.children.values()).some(
+				(child) => child.type === 'group'
+			)
+		).toBe(false);
+		expect(getChildFieldNames(flat)).toContain('sku');
+
+		config.isNonRepeatableGroupsEnabled = true;
 	});
 });

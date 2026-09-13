@@ -11,6 +11,7 @@ import {
 	ObjectField,
 	ObjectRelationship,
 } from '../../common/types/ObjectDefinition';
+import {config} from '../config';
 import {
 	ReferencedStructure,
 	RelatedContent,
@@ -18,9 +19,12 @@ import {
 	Structure,
 } from '../types/Structure';
 import {Uuid} from '../types/Uuid';
+import applyObjectLayout from './applyObjectLayout';
 import {Field, FieldType, SelectFromListField} from './field';
 import getUuid from './getUuid';
-import isCustomObjectField from './isCustomObjectField';
+import isCustomObjectField, {
+	isSystemObjectFieldName,
+} from './isCustomObjectField';
 import sortChildren from './state/sortChildren';
 
 export default function buildStructure({
@@ -34,12 +38,26 @@ export default function buildStructure({
 
 	const isPublished = mainObjectDefinition.status?.code === 0;
 
+	const type =
+		mainObjectDefinition.objectFolderExternalReferenceCode as Structure['type'];
+
+	const children = buildChildren({
+		objectDefinition: mainObjectDefinition,
+		objectDefinitions,
+		parent: uuid,
+	});
+
 	return {
-		children: buildChildren({
-			objectDefinition: mainObjectDefinition,
-			objectDefinitions,
-			parent: uuid,
-		}),
+
+		// Rebuild the group nesting from the default object layout.
+
+		children: config.isNonRepeatableGroupsEnabled
+			? applyObjectLayout({
+					children,
+					objectDefinition: mainObjectDefinition,
+					parent: uuid,
+				})
+			: children,
 		erc: mainObjectDefinition.externalReferenceCode,
 		id: mainObjectDefinition.id,
 		label: mainObjectDefinition.label,
@@ -50,7 +68,7 @@ export default function buildStructure({
 		spaces: getSpaces(mainObjectDefinition),
 		status: isPublished ? 'published' : 'draft',
 		system: mainObjectDefinition.system ?? false,
-		type: mainObjectDefinition.objectFolderExternalReferenceCode as Structure['type'],
+		type,
 		uuid,
 		workflows: getWorkflows(mainObjectDefinition),
 	};
@@ -86,7 +104,12 @@ export function buildChildren({
 			continue;
 		}
 
-		const field = buildField({objectField, parent});
+		const field = buildField({
+			objectDefinitionExternalReferenceCode:
+				objectDefinition.externalReferenceCode,
+			objectField,
+			parent,
+		});
 
 		children.set(field.uuid, field);
 	}
@@ -98,6 +121,7 @@ export function buildChildren({
 				label: objectRelationship.label,
 				multiselection: true,
 				name: objectRelationship.name,
+				objectFieldName: objectRelationship.objectField?.name,
 				parent,
 				relatedStructureERC:
 					objectRelationship.objectDefinitionExternalReferenceCode2,
@@ -151,6 +175,7 @@ export function buildChildren({
 			label: relatedContentObjectRelationship.label,
 			multiselection: false,
 			name: relatedContentObjectRelationship.name,
+			objectFieldName: relatedContentObjectRelationship.objectField?.name,
 			parent,
 			relatedStructureERC:
 				relatedContentObjectRelationship.objectDefinitionExternalReferenceCode1,
@@ -165,9 +190,11 @@ export function buildChildren({
 }
 
 export function buildField({
+	objectDefinitionExternalReferenceCode,
 	objectField,
 	parent,
 }: {
+	objectDefinitionExternalReferenceCode: string;
 	objectField: ObjectField;
 	parent: Uuid;
 }) {
@@ -191,7 +218,12 @@ export function buildField({
 		indexableConfig,
 		label: objectField.label,
 		localized: objectField.localized,
-		locked: objectField.system,
+		locked:
+			objectField.system ||
+			isSystemObjectFieldName(
+				objectDefinitionExternalReferenceCode,
+				objectField.name
+			),
 		name: objectField.name,
 		parent,
 		required: objectField.required,
@@ -294,12 +326,13 @@ export function buildRepeatableGroup({
 			parent: uuid,
 		}),
 		erc,
+		isRepeatable: true,
 		label: objectDefinition.label,
 		name: objectDefinition.name!,
 		parent,
 		relationshipERC,
 		relationshipName,
-		type: 'repeatable-group',
+		type: 'group',
 		uuid,
 	};
 }

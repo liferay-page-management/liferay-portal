@@ -3,23 +3,20 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {
-	RepeatableGroup,
-	Structure,
-	StructureChild,
-} from '../../types/Structure';
+import {Group, Structure, StructureChild} from '../../types/Structure';
 import {Uuid} from '../../types/Uuid';
+import isGroup, {isRepeatableGroup} from '../isGroup';
 import isLocked from '../isLocked';
 
 export default function deleteChildren({
 	root,
 	uuids,
 }: {
-	root: Structure | RepeatableGroup;
+	root: Structure | Group;
 	uuids: Uuid[];
 }): {
 	deletedChildrenUuids: Set<Uuid>;
-	updatedChildren: Structure['children'] | RepeatableGroup['children'];
+	updatedChildren: Structure['children'] | Group['children'];
 } {
 	const deletedChildrenUuids = new Set<Uuid>();
 	const children = new Map(root.children);
@@ -38,37 +35,37 @@ export default function deleteChildren({
 			});
 		}
 
-		// If it's a repeatable group, do recursive call with its children
+		// If it's a container, do recursive call with its children
 
-		else if (child.type === 'repeatable-group') {
+		else if (isGroup(child)) {
 			const {
-				deletedChildrenUuids: groupDeletedChildrenUuids,
-				updatedChildren: groupChildren,
+				deletedChildrenUuids: containerDeletedChildrenUuids,
+				updatedChildren: containerChildren,
 			} = deleteChildren({
 				root: child,
 				uuids,
 			});
 
-			groupDeletedChildrenUuids.forEach((uuid) => {
+			containerDeletedChildrenUuids.forEach((uuid) => {
 				deletedChildrenUuids.add(uuid);
 			});
 
-			// Delete group if it has no children now
+			// Delete an emptied repeatable group.
 
-			if (!groupChildren.size) {
+			if (isRepeatableGroup(child) && !containerChildren.size) {
 				deletedChildrenUuids.add(child.uuid);
 				children.delete(child.uuid);
 			}
 
-			// Otherwise update the group with updated children
+			// Otherwise update the container with updated children
 
 			else {
-				const group: RepeatableGroup = {
+				const container = {
 					...child,
-					children: groupChildren,
+					children: containerChildren,
 				};
 
-				children.set(group.uuid, group);
+				children.set(container.uuid, container);
 			}
 		}
 	}
@@ -84,13 +81,13 @@ function getDeletedChildrenUuids({child}: {child: StructureChild}): Set<Uuid> {
 
 	deletedChildrenUuids.add(child.uuid);
 
-	if (child.type === 'repeatable-group') {
-		for (const groupChild of child.children.values()) {
-			const groupDeletedChildrenUuids = getDeletedChildrenUuids({
-				child: groupChild,
+	if (isGroup(child)) {
+		for (const containerChild of child.children.values()) {
+			const containerDeletedChildrenUuids = getDeletedChildrenUuids({
+				child: containerChild,
 			});
 
-			groupDeletedChildrenUuids.forEach((uuid) => {
+			containerDeletedChildrenUuids.forEach((uuid) => {
 				deletedChildrenUuids.add(uuid);
 			});
 		}

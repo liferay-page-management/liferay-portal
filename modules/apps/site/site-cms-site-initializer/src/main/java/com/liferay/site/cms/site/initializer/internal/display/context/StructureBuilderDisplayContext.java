@@ -19,6 +19,7 @@ import com.liferay.object.field.business.type.ObjectFieldBusinessType;
 import com.liferay.object.field.business.type.ObjectFieldBusinessTypeRegistry;
 import com.liferay.object.service.ObjectRelationshipLocalServiceUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -47,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Eudaldo Alonso
@@ -123,6 +125,10 @@ public class StructureBuilderDisplayContext {
 					_themeDisplay.getPortalURL(), _themeDisplay.getPathMain(),
 					"/cms/edit_structure_display_page")
 			).put(
+				"isNonRepeatableGroupsEnabled",
+				FeatureFlagManagerUtil.isEnabled(
+					_themeDisplay.getCompanyId(), "LPD-96666")
+			).put(
 				"isReferenced",
 				() -> {
 					ObjectDefinition objectDefinition = _getObjectDefinition();
@@ -184,12 +190,15 @@ public class StructureBuilderDisplayContext {
 			"defaultLanguageLabels",
 			DefaultLanguageLabelsUtil.getDefaultLanguageLabelsJSONObject(
 				_themeDisplay, "boolean", "date", "date-and-time", "decimal",
-				"file", "long-text", "numeric", "repeatable-group", "rich-text",
-				"select-from-list", "select-related-content", "text", "title",
-				"upload")
+				"file", "group", "long-text", "numeric", "repeatable-group",
+				"rich-text", "select-from-list", "select-related-content",
+				"text", "title", "upload")
 		).put(
 			"state",
 			JSONUtil.put(
+				"baseObjectDefinition",
+				_getObjectDefinitionJSONObject(_getBaseObjectDefinition())
+			).put(
 				"mainObjectDefinition",
 				_getObjectDefinitionJSONObject(_getObjectDefinition())
 			).put(
@@ -198,6 +207,49 @@ public class StructureBuilderDisplayContext {
 		).put(
 			"systemObjectFieldNames", _getSystemObjectFieldNamesJSONObject()
 		).build();
+	}
+
+	private ObjectDefinition _getBaseObjectDefinition() throws Exception {
+		if (_getObjectDefinition() != null) {
+			return null;
+		}
+
+		String objectFolderExternalReferenceCode =
+			_getObjectFolderExternalReferenceCode();
+
+		if (Validator.isNull(objectFolderExternalReferenceCode)) {
+			return null;
+		}
+
+		for (CMSStructureObjectFolderContributor
+				cmsStructureObjectFolderContributor :
+					_cmsStructureObjectFolderContributors) {
+
+			if (!Objects.equals(
+					objectFolderExternalReferenceCode,
+					cmsStructureObjectFolderContributor.
+						getObjectFolderExternalReferenceCode())) {
+
+				continue;
+			}
+
+			String baseObjectDefinitionExternalReferenceCode =
+				cmsStructureObjectFolderContributor.
+					getBaseObjectDefinitionExternalReferenceCode();
+
+			if (Validator.isNull(baseObjectDefinitionExternalReferenceCode)) {
+				return null;
+			}
+
+			ObjectDefinitionResource objectDefinitionResource =
+				_getObjectDefinitionResource();
+
+			return objectDefinitionResource.
+				getObjectDefinitionByExternalReferenceCode(
+					baseObjectDefinitionExternalReferenceCode);
+		}
+
+		return null;
 	}
 
 	private List<Map<String, String>> _getCountries() {
@@ -223,12 +275,8 @@ public class StructureBuilderDisplayContext {
 			return null;
 		}
 
-		ObjectDefinitionResource.Builder builder =
-			_objectDefinitionResourceFactory.create();
-
-		ObjectDefinitionResource objectDefinitionResource = builder.user(
-			_themeDisplay.getUser()
-		).build();
+		ObjectDefinitionResource objectDefinitionResource =
+			_getObjectDefinitionResource();
 
 		_objectDefinition = objectDefinitionResource.getObjectDefinition(
 			objectDefinitionId);
@@ -250,17 +298,22 @@ public class StructureBuilderDisplayContext {
 		return _jsonFactory.createJSONObject(objectDefinition.toString());
 	}
 
+	private ObjectDefinitionResource _getObjectDefinitionResource() {
+		ObjectDefinitionResource.Builder builder =
+			_objectDefinitionResourceFactory.create();
+
+		return builder.user(
+			_themeDisplay.getUser()
+		).build();
+	}
+
 	private List<ObjectDefinition> _getObjectDefinitions() throws Exception {
 		if (_objectDefinitions != null) {
 			return _objectDefinitions;
 		}
 
-		ObjectDefinitionResource.Builder builder =
-			_objectDefinitionResourceFactory.create();
-
-		ObjectDefinitionResource objectDefinitionResource = builder.user(
-			_themeDisplay.getUser()
-		).build();
+		ObjectDefinitionResource objectDefinitionResource =
+			_getObjectDefinitionResource();
 
 		StringBundler sb = new StringBundler();
 
@@ -352,8 +405,13 @@ public class StructureBuilderDisplayContext {
 		return _objectFolderExternalReferenceCode;
 	}
 
-	private JSONObject _getSystemObjectFieldNamesJSONObject() {
+	private JSONObject _getSystemObjectFieldNamesJSONObject() throws Exception {
 		JSONObject jsonObject = _jsonFactory.createJSONObject();
+
+		ObjectDefinition objectDefinition = _getObjectDefinition();
+
+		String objectFolderExternalReferenceCode =
+			_getObjectFolderExternalReferenceCode();
 
 		for (CMSStructureObjectFolderContributor
 				cmsStructureObjectFolderContributor :
@@ -377,6 +435,30 @@ public class StructureBuilderDisplayContext {
 
 				jsonObject.put(entry.getKey(), jsonArray);
 			}
+
+			String baseObjectDefinitionExternalReferenceCode =
+				cmsStructureObjectFolderContributor.
+					getBaseObjectDefinitionExternalReferenceCode();
+
+			if ((objectDefinition == null) ||
+				Validator.isNull(baseObjectDefinitionExternalReferenceCode) ||
+				!Objects.equals(
+					objectFolderExternalReferenceCode,
+					cmsStructureObjectFolderContributor.
+						getObjectFolderExternalReferenceCode())) {
+
+				continue;
+			}
+
+			JSONArray jsonArray = jsonObject.getJSONArray(
+				baseObjectDefinitionExternalReferenceCode);
+
+			if (jsonArray == null) {
+				continue;
+			}
+
+			jsonObject.put(
+				objectDefinition.getExternalReferenceCode(), jsonArray);
 		}
 
 		return jsonObject;

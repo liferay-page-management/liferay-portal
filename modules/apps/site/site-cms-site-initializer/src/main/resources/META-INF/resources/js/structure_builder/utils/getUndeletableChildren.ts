@@ -7,6 +7,7 @@ import {Structure} from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 import findChild from './findChild';
 import isField from './isField';
+import {isRepeatableGroup} from './isGroup';
 import isLocked from './isLocked';
 import isReferenced from './isReferenced';
 
@@ -37,7 +38,7 @@ export default function getUndeletableChildren(
 			uuid: item.parent,
 		});
 
-		if (parent?.type === 'repeatable-group') {
+		if (parent && isRepeatableGroup(parent)) {
 			const groupFields = Array.from(parent.children.values()).filter(
 				(child) => isField(child)
 			);

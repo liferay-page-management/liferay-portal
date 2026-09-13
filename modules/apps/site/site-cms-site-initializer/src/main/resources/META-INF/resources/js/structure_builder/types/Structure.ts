@@ -18,6 +18,29 @@ export type StructureSettings = {
 
 type Workflows = Record<'' | Space['externalReferenceCode'], Workflow['name']>;
 
+// A repeatable group is backed by its own child object definition and a
+// relationship, so its children live off the main object definition. A group
+// that is not repeatable exists only in the object layout, so its children stay
+// put and the nesting is serialized there.
+
+type BaseGroup = {
+	children: Map<Uuid, StructureChild>;
+
+	// Kept even when the group is not repeatable, so toggling the flag back and
+	// forth does not churn identifiers.
+
+	erc?: string;
+	label: Liferay.Language.LocalizedValue<string>;
+	name?: string;
+	parent: Uuid;
+	relationshipERC?: string;
+	relationshipName?: string;
+	type: 'group';
+	uuid: Uuid;
+};
+
+export type Group = (BaseGroup & {isRepeatable: false}) | RepeatableGroup;
+
 export type ReferencedStructure = {
 	children: Map<Uuid, StructureChild>;
 	editURL: string;
@@ -38,29 +61,26 @@ export type RelatedContent = {
 	label: Liferay.Language.LocalizedValue<string>;
 	multiselection: boolean;
 	name: string;
+	objectFieldName?: string;
 	parent: Uuid;
 	relatedStructureERC: string;
 	type: 'related-content';
 	uuid: Uuid;
 };
 
-export type RepeatableGroup = {
-	children: Map<Uuid, StructureChild>;
+export type RepeatableGroup = BaseGroup & {
 	erc: string;
-	label: Liferay.Language.LocalizedValue<string>;
+	isRepeatable: true;
 	name: string;
-	parent: Uuid;
 	relationshipERC: string;
 	relationshipName: string;
-	type: 'repeatable-group';
-	uuid: Uuid;
 };
 
 export type StructureChild =
 	| Field
+	| Group
 	| ReferencedStructure
-	| RelatedContent
-	| RepeatableGroup;
+	| RelatedContent;
 
 export type Structure = {
 	children: Map<Uuid, StructureChild>;
@@ -79,6 +99,9 @@ export type Structure = {
 	workflows: Workflows;
 };
 
-export type StructureType = 'L_CMS_CONTENT_STRUCTURES' | 'L_CMS_FILE_TYPES';
+export type StructureType =
+	| 'L_CMS_CONTENT_STRUCTURES'
+	| 'L_CMS_FILE_TYPES'
+	| (string & {});
 
 export type Structures = Map<Structure['erc'], Structure>;

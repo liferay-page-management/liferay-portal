@@ -1,0 +1,209 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`buildObjectLayout gathers loose items into an implicit first general tab and serializes a root group as a tab 1`] = `
+Object {
+  "defaultObjectLayout": false,
+  "name": Object {
+    "en_US": "Product",
+  },
+  "objectDefinitionExternalReferenceCode": "product-erc",
+  "objectLayoutTabs": Array [
+    Object {
+      "name": Object {
+        "en_US": "general",
+      },
+      "objectLayoutBoxes": Array [
+        Object {
+          "collapsable": false,
+          "objectLayoutRows": Array [
+            Object {
+              "objectLayoutColumns": Array [
+                Object {
+                  "objectFieldName": "title",
+                  "priority": 0,
+                  "size": 12,
+                },
+              ],
+              "priority": 0,
+            },
+          ],
+          "priority": 0,
+          "type": "regular",
+        },
+      ],
+      "priority": 0,
+    },
+    Object {
+      "name": Object {
+        "en_US": "Details",
+      },
+      "objectLayoutBoxes": Array [
+        Object {
+          "collapsable": false,
+          "objectLayoutRows": Array [
+            Object {
+              "objectLayoutColumns": Array [
+                Object {
+                  "objectFieldName": "sku",
+                  "priority": 0,
+                  "size": 12,
+                },
+              ],
+              "priority": 0,
+            },
+          ],
+          "priority": 0,
+          "type": "regular",
+        },
+      ],
+      "priority": 1,
+    },
+  ],
+}
+`;
+
+exports[`buildObjectLayout serializes a nested group as a collapsable box inside its tab 1`] = `
+Object {
+  "defaultObjectLayout": false,
+  "name": Object {
+    "en_US": "Product",
+  },
+  "objectDefinitionExternalReferenceCode": "product-erc",
+  "objectLayoutTabs": Array [
+    Object {
+      "name": Object {
+        "en_US": "general",
+      },
+      "objectLayoutBoxes": Array [
+        Object {
+          "collapsable": false,
+          "objectLayoutRows": Array [
+            Object {
+              "objectLayoutColumns": Array [
+                Object {
+                  "objectFieldName": "title",
+                  "priority": 0,
+                  "size": 12,
+                },
+              ],
+              "priority": 0,
+            },
+          ],
+          "priority": 0,
+          "type": "regular",
+        },
+      ],
+      "priority": 0,
+    },
+    Object {
+      "name": Object {
+        "en_US": "Specs",
+      },
+      "objectLayoutBoxes": Array [
+        Object {
+          "collapsable": true,
+          "name": Object {
+            "en_US": "Dimensions",
+          },
+          "objectLayoutRows": Array [
+            Object {
+              "objectLayoutColumns": Array [
+                Object {
+                  "objectFieldName": "width",
+                  "priority": 0,
+                  "size": 12,
+                },
+              ],
+              "priority": 0,
+            },
+            Object {
+              "objectLayoutColumns": Array [
+                Object {
+                  "objectFieldName": "height",
+                  "priority": 0,
+                  "size": 12,
+                },
+              ],
+              "priority": 1,
+            },
+          ],
+          "priority": 0,
+          "type": "regular",
+        },
+        Object {
+          "collapsable": false,
+          "objectLayoutRows": Array [
+            Object {
+              "objectLayoutColumns": Array [
+                Object {
+                  "objectFieldName": "weight",
+                  "priority": 0,
+                  "size": 12,
+                },
+              ],
+              "priority": 0,
+            },
+          ],
+          "priority": 1,
+          "type": "regular",
+        },
+      ],
+      "priority": 1,
+    },
+  ],
+}
+`;
+
+exports[`buildObjectLayout serializes a repeatable group as a repeatable-group marker box 1`] = `
+Object {
+  "defaultObjectLayout": false,
+  "name": Object {
+    "en_US": "Product",
+  },
+  "objectDefinitionExternalReferenceCode": "product-erc",
+  "objectLayoutTabs": Array [
+    Object {
+      "name": Object {
+        "en_US": "general",
+      },
+      "objectLayoutBoxes": Array [
+        Object {
+          "collapsable": false,
+          "objectLayoutRows": Array [
+            Object {
+              "objectLayoutColumns": Array [
+                Object {
+                  "objectFieldName": "title",
+                  "priority": 0,
+                  "size": 12,
+                },
+              ],
+              "priority": 0,
+            },
+          ],
+          "priority": 0,
+          "type": "regular",
+        },
+      ],
+      "priority": 0,
+    },
+    Object {
+      "name": Object {
+        "en_US": "Variants",
+      },
+      "objectLayoutBoxes": Array [
+        Object {
+          "collapsable": false,
+          "name": Object {
+            "en_US": "repeatable-group-skuVariants",
+          },
+          "objectLayoutRows": Array [],
+          "priority": 0,
+          "type": "regular",
+        },
+      ],
+      "priority": 1,
+    },
+  ],
+}
+`;

@@ -40,6 +40,37 @@ public class ProductTypesCMSStructureObjectFolderContributorTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
+	public void testGetBaseObjectDefinitionExternalReferenceCode() {
+		try (MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+					FeatureFlagManagerUtil.class)) {
+
+			featureFlagManagerUtilMockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					Mockito.anyLong(), Mockito.eq("LPD-96666"))
+			).thenReturn(
+				false
+			);
+
+			Assert.assertNull(
+				_productTypesCMSStructureObjectFolderContributor.
+					getBaseObjectDefinitionExternalReferenceCode());
+
+			featureFlagManagerUtilMockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					Mockito.anyLong(), Mockito.eq("LPD-96666"))
+			).thenReturn(
+				true
+			);
+
+			Assert.assertEquals(
+				PIMObjectDefinitionConstants.EXTERNAL_REFERENCE_CODE_BASE_SKU,
+				_productTypesCMSStructureObjectFolderContributor.
+					getBaseObjectDefinitionExternalReferenceCode());
+		}
+	}
+
+	@Test
 	public void testGetLabel() {
 		Assert.assertEquals(
 			"product",

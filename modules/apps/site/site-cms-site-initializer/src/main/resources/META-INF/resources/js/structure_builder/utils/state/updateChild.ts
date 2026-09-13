@@ -3,19 +3,16 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {
-	RepeatableGroup,
-	Structure,
-	StructureChild,
-} from '../../types/Structure';
+import {Group, Structure, StructureChild} from '../../types/Structure';
+import isGroup from '../isGroup';
 
 export default function updateChild({
 	child: updatedChild,
 	root,
 }: {
 	child: StructureChild;
-	root: Structure | RepeatableGroup;
-}): Structure['children'] | RepeatableGroup['children'] {
+	root: Structure | Group;
+}): Structure['children'] | Group['children'] {
 	const children = new Map();
 
 	// Iterate over children
@@ -28,15 +25,15 @@ export default function updateChild({
 			children.set(updatedChild.uuid, updatedChild);
 		}
 
-		// If it's a repeatable group, build it with recursive call
+		// If it's a container, build it with recursive call
 
-		else if (child.type === 'repeatable-group') {
-			const group: RepeatableGroup = {
+		else if (isGroup(child)) {
+			const container = {
 				...child,
 				children: updateChild({child: updatedChild, root: child}),
 			};
 
-			children.set(group.uuid, group);
+			children.set(container.uuid, container);
 		}
 
 		// Insert the child as it is

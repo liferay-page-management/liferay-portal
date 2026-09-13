@@ -15,9 +15,11 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.site.cms.site.initializer.contributor.CMSStructureObjectFolderContributor;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -55,11 +57,36 @@ public class ViewStructuresDisplayContextTest
 		List<DropdownItem> dropdownItems = (List<DropdownItem>)creationMenu.get(
 			"primaryItems");
 
-		Assert.assertEquals(dropdownItems.toString(), 2, dropdownItems.size());
-
 		_assertDropdownItem(
 			dropdownItems.get(0), "content", "L_CMS_CONTENT_STRUCTURES");
 		_assertDropdownItem(dropdownItems.get(1), "file", "L_CMS_FILE_TYPES");
+
+		List<CMSStructureObjectFolderContributor>
+			cmsStructureObjectFolderContributors =
+				ReflectionTestUtil.getFieldValue(
+					_fragmentRenderer, "_cmsStructureObjectFolderContributors");
+		int size = 2;
+
+		for (CMSStructureObjectFolderContributor
+				cmsStructureObjectFolderContributor :
+					cmsStructureObjectFolderContributors) {
+
+			String objectFolderExternalReferenceCode =
+				cmsStructureObjectFolderContributor.
+					getObjectFolderExternalReferenceCode();
+
+			if (Validator.isNull(objectFolderExternalReferenceCode)) {
+				continue;
+			}
+
+			_assertDropdownItem(
+				dropdownItems.get(size++),
+				cmsStructureObjectFolderContributor.getLabel(),
+				objectFolderExternalReferenceCode);
+		}
+
+		Assert.assertEquals(
+			dropdownItems.toString(), size, dropdownItems.size());
 	}
 
 	@Test

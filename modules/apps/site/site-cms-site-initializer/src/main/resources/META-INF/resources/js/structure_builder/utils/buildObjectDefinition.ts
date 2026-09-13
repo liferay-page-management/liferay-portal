@@ -16,15 +16,19 @@ import {
 	RelatedContent,
 	RepeatableGroup,
 	Structure,
+	StructureChild,
 } from '../types/Structure';
+import buildObjectLayout from './buildObjectLayout';
 import {FIELD_TYPE_TO_DB_TYPE, Field, getFieldBusinessType} from './field';
 import isField from './isField';
 import {isFieldTextSearchable} from './isFieldTextSearchable';
+import isGroup, {isRepeatableGroup} from './isGroup';
 
 export default function buildObjectDefinition({
 	children = new Map(),
 	erc,
 	id,
+	includeObjectLayout = false,
 	label,
 	name,
 	settings,
@@ -36,6 +40,7 @@ export default function buildObjectDefinition({
 	children?: Structure['children'];
 	erc: Structure['erc'];
 	id?: Structure['id'];
+	includeObjectLayout?: boolean;
 	label: Structure['label'];
 	name: Structure['name'];
 	settings?: Structure['settings'];
@@ -69,6 +74,15 @@ export default function buildObjectDefinition({
 		},
 		titleObjectFieldName: 'title',
 	};
+
+	// The object definition endpoint replaces the layouts it is given, so the
+	// layout rides along with the definition rather than in a second request.
+
+	if (includeObjectLayout && config.isNonRepeatableGroupsEnabled) {
+		const objectLayout = buildObjectLayout({children, erc, label});
+
+		objectDefinition.objectLayouts = objectLayout ? [objectLayout] : [];
+	}
 
 	if (slug) {
 		objectDefinition.friendlyURLSeparator = slug;
@@ -120,14 +134,27 @@ export default function buildObjectDefinition({
 	return objectDefinition;
 }
 
+function flattenGroups(children: Structure['children']): StructureChild[] {
+	const result: StructureChild[] = [];
+
+	for (const child of children.values()) {
+		if (isGroup(child) && !child.isRepeatable) {
+			result.push(...flattenGroups(child.children));
+		}
+		else {
+			result.push(child);
+		}
+	}
+
+	return result;
+}
+
 function getFields(children: Structure['children']): Field[] {
-	return Array.from(children.values()).filter((child) =>
-		isField(child)
-	) as Field[];
+	return flattenGroups(children).filter((child) => isField(child)) as Field[];
 }
 
 function getRelatedContents(children: Structure['children']): RelatedContent[] {
-	return Array.from(children.values()).filter(
+	return flattenGroups(children).filter(
 		(child) => child.type === 'related-content'
 	) as RelatedContent[];
 }
@@ -135,7 +162,7 @@ function getRelatedContents(children: Structure['children']): RelatedContent[] {
 function getReferencedStructures(
 	children: Structure['children']
 ): ReferencedStructure[] {
-	return Array.from(children.values()).filter(
+	return flattenGroups(children).filter(
 		(child) => child.type === 'referenced-structure'
 	) as ReferencedStructure[];
 }
@@ -143,8 +170,8 @@ function getReferencedStructures(
 function getRepeatableGroups(
 	children: Structure['children']
 ): RepeatableGroup[] {
-	return Array.from(children.values()).filter(
-		(child) => child.type === 'repeatable-group'
+	return flattenGroups(children).filter((child) =>
+		isRepeatableGroup(child)
 	) as RepeatableGroup[];
 }
 

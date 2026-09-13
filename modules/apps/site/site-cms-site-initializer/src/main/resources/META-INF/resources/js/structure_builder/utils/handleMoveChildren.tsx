@@ -13,13 +13,18 @@ import {Dispatch} from 'react';
 
 import getLocalizedValue from '../../common/utils/getLocalizedValue';
 import {Action, State} from '../contexts/StateContext';
-import {RepeatableGroup, Structure, StructureChild} from '../types/Structure';
+import {Group, Structure, StructureChild} from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 import findAvailableFieldName from './findAvailableFieldName';
 import findChild from './findChild';
+import getGroupDepth, {MAXIMUM_GROUP_DEPTH} from './getGroupDepth';
+import getGroupLevels from './getGroupLevels';
 import getUndeletableChildren, {
 	UndeletableReason,
 } from './getUndeletableChildren';
+import hasName from './hasName';
+import isGroup, {isRepeatableGroup} from './isGroup';
+import isInsideRepeatableGroup from './isInsideRepeatableGroup';
 import isReferenced from './isReferenced';
 
 export default async function handleMoveChildren({
@@ -63,29 +68,83 @@ export default async function handleMoveChildren({
 	}
 
 	const undeletables = getUndeletableChildren(uuids, structure);
-	const reasons = [...undeletables.values()];
 
 	const items = uuids.map((uuid) => findChild({root: structure, uuid})!);
 
-	let movableItems = items
-		.filter(
-			({parent, uuid}) => !undeletables.has(uuid) && parent !== targetUuid
-		)
-		.map((item) => ({...item, parent: targetUuid}));
-
-	if (!movableItems.length) {
-		showWarnings(reasons);
-
-		return;
-	}
-
-	const target =
+	const targetChild =
 		targetUuid === structure.uuid
-			? structure
+			? undefined
 			: (findChild({
 					root: structure,
 					uuid: targetUuid,
-				}) as RepeatableGroup);
+				}) as Group);
+
+	const isLayoutContainer = !targetChild || !isRepeatableGroup(targetChild);
+	const target: Group | Structure = targetChild ?? structure;
+
+	const targetDepth = getGroupDepth({structure, uuid: targetUuid});
+	const targetInsideRepeatableGroup = isInsideRepeatableGroup({
+		structure,
+		uuid: targetUuid,
+	});
+
+	let blockedByNesting = false;
+
+	let movableItems = items
+		.filter(({parent, uuid}) => {
+			if (parent === targetUuid) {
+				return false;
+			}
+
+			const item = findChild({root: structure, uuid})!;
+
+			if (
+				isGroup(item) &&
+				(targetInsideRepeatableGroup ||
+					targetDepth + getGroupLevels(item) > MAXIMUM_GROUP_DEPTH)
+			) {
+				blockedByNesting = true;
+
+				return false;
+			}
+
+			if (isLayoutContainer) {
+				const reason = undeletables.get(uuid);
+
+				return (
+					reason !== 'is-referenced' &&
+					reason !== 'causes-invalid-group'
+				);
+			}
+
+			return !undeletables.has(uuid);
+		})
+		.map((item) => ({...item, parent: targetUuid}));
+
+	const movedUuids = new Set(movableItems.map(({uuid}) => uuid));
+
+	const blockedReasons: UndeletableReason[] = [];
+
+	for (const [uuid, reason] of undeletables) {
+		if (!movedUuids.has(uuid)) {
+			blockedReasons.push(reason);
+		}
+	}
+
+	if (blockedByNesting) {
+		openToast({
+			message: Liferay.Language.get(
+				'some-items-could-not-be-moved-because-a-group-cannot-be-nested-there'
+			),
+			type: 'danger',
+		});
+	}
+
+	if (!movableItems.length) {
+		showWarnings(blockedReasons);
+
+		return;
+	}
 
 	if (hasNameConflict(movableItems, target)) {
 		const onNameConflict = await openOptionsModal({
@@ -110,38 +169,43 @@ export default async function handleMoveChildren({
 		});
 
 		if (!onNameConflict) {
-			showWarnings(reasons);
+			showWarnings(blockedReasons);
 
 			return;
 		}
 
 		if (onNameConflict === 'rename') {
-			movableItems = movableItems.map((item) => ({
-				...item,
-				name: findAvailableFieldName(
-					target.children,
-					deletedChildren,
-					item.name
-				),
-			}));
+			movableItems = movableItems.map((item) =>
+				hasName(item)
+					? {
+							...item,
+							name: findAvailableFieldName(
+								target.children,
+								deletedChildren,
+								item.name
+							),
+						}
+					: item
+			);
 		}
 		else if (onNameConflict === 'do-not-move') {
 			movableItems = movableItems.filter(
 				(item) =>
+					!hasName(item) ||
 					!Array.from(target.children.values()).some(
-						(child) => child.name === item.name
+						(child) => hasName(child) && child.name === item.name
 					)
 			);
 		}
 
 		if (!movableItems.length) {
-			showWarnings(reasons);
+			showWarnings(blockedReasons);
 
 			return;
 		}
 	}
 
-	showWarnings(reasons);
+	showWarnings(blockedReasons);
 
 	dispatch({
 		items: movableItems,
@@ -152,12 +216,14 @@ export default async function handleMoveChildren({
 
 function hasNameConflict(
 	movableItems: StructureChild[],
-	target: Structure | RepeatableGroup
+	target: Group | Structure
 ): boolean {
-	return movableItems.some((item) =>
-		Array.from(target.children.values()).some(
-			(child) => child.name === item.name
-		)
+	return movableItems.some(
+		(item) =>
+			hasName(item) &&
+			Array.from(target.children.values()).some(
+				(child) => hasName(child) && child.name === item.name
+			)
 	);
 }
 

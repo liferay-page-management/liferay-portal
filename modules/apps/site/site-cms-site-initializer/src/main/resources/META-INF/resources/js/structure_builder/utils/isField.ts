@@ -3,24 +3,20 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {
-	ReferencedStructure,
-	RelatedContent,
-	RepeatableGroup,
-} from '../types/Structure';
+import {Group, ReferencedStructure, RelatedContent} from '../types/Structure';
 import {Field, FieldType} from './field';
 
 export default function isField(item: {
 	type?:
 		| FieldType
+		| Group['type']
 		| ReferencedStructure['type']
-		| RelatedContent['type']
-		| RepeatableGroup['type'];
+		| RelatedContent['type'];
 }): item is Field {
 	return Boolean(
 		item.type &&
+			item.type !== 'group' &&
 			item.type !== 'referenced-structure' &&
-			item.type !== 'related-content' &&
-			item.type !== 'repeatable-group'
+			item.type !== 'related-content'
 	);
 }
