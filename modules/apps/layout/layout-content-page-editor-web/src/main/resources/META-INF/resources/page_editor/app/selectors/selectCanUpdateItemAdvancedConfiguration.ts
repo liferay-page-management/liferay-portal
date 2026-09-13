@@ -10,5 +10,8 @@ export default function selectCanUpdateItemAdvancedConfiguration({
 }: {
 	permissions: PermissionsState;
 }) {
-	return permissions.UPDATE_LAYOUT_ADVANCED_OPTIONS || permissions.UPDATE;
+	return (
+		!permissions.READ_ONLY &&
+		(permissions.UPDATE_LAYOUT_ADVANCED_OPTIONS || permissions.UPDATE)
+	);
 }

@@ -12,5 +12,7 @@ export default function selectCanUpdateExperiences({
 }: {
 	permissions: PermissionsState;
 }) {
-	return selectHasAnyUpdatePermission({permissions});
+	return (
+		!permissions.READ_ONLY && selectHasAnyUpdatePermission({permissions})
+	);
 }

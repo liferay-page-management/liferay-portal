@@ -621,6 +621,14 @@ public class MasterLayoutsImporterTest {
 	}
 
 	@Test
+	public void testImportMasterLayoutWithReadOnly() throws Exception {
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_importLayoutPageTemplateEntry("master-page-read-only");
+
+		Assert.assertTrue(layoutPageTemplateEntry.isReadOnly());
+	}
+
+	@Test
 	@TestInfo("LPS-102207")
 	public void testImportMastersLayoutsWithInvalidValue() throws Exception {
 		List<LayoutsImporterResultEntry> layoutsImporterResultEntries =

@@ -63,6 +63,27 @@ public class MasterPage implements Cloneable, Serializable {
 
 	protected String name;
 
+	public Boolean getReadOnly() {
+		return readOnly;
+	}
+
+	public void setReadOnly(Boolean readOnly) {
+		this.readOnly = readOnly;
+	}
+
+	public void setReadOnly(
+		UnsafeSupplier<Boolean, Exception> readOnlyUnsafeSupplier) {
+
+		try {
+			readOnly = readOnlyUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean readOnly;
+
 	@Override
 	public MasterPage clone() throws CloneNotSupportedException {
 		return (MasterPage)super.clone();
@@ -95,4 +116,4 @@ public class MasterPage implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-843478598
+// LIFERAY-REST-BUILDER-HASH:-147560809

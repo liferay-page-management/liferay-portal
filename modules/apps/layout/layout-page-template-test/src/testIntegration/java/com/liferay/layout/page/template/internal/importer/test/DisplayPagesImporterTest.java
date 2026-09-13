@@ -405,6 +405,7 @@ public class DisplayPagesImporterTest {
 		Assert.assertEquals(
 			"Display Page Template One", layoutPageTemplateEntry.getName());
 		Assert.assertEquals(0, layoutPageTemplateEntry.getClassTypeId());
+		Assert.assertFalse(layoutPageTemplateEntry.isReadOnly());
 
 		_validateLayoutPageTemplateStructure(
 			_layoutPageTemplateStructureLocalService.
@@ -567,6 +568,32 @@ public class DisplayPagesImporterTest {
 			collectionJSONObject.getString("key"));
 	}
 
+	@Test
+	public void testImportDisplayPageWithReadOnly() throws Exception {
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_importLayoutPageTemplateEntry("display-page-template-read-only");
+
+		Assert.assertTrue(layoutPageTemplateEntry.isReadOnly());
+	}
+
+	@Test
+	public void testImportDisplayPageWithReadOnlyAndWithOverwriteStrategy()
+		throws Exception {
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_importLayoutPageTemplateEntry("display-page-template-one");
+
+		Assert.assertFalse(layoutPageTemplateEntry.isReadOnly());
+
+		layoutPageTemplateEntry = _getLayoutPageTemplateEntry(
+			_getLayoutsImporterResultEntries(
+				LayoutsImportStrategy.OVERWRITE,
+				"display-page-template-read-only"),
+			0);
+
+		Assert.assertTrue(layoutPageTemplateEntry.isReadOnly());
+	}
+
 	private void _assertLayoutPageTemplateCollections(
 		LayoutPageTemplateCollection layoutPageTemplateCollection) {
 
@@ -701,7 +728,7 @@ public class DisplayPagesImporterTest {
 	}
 
 	private List<LayoutsImporterResultEntry> _getLayoutsImporterResultEntries(
-			String testCaseName)
+			LayoutsImportStrategy layoutsImportStrategy, String testCaseName)
 		throws Exception {
 
 		List<LayoutsImporterResultEntry> layoutsImporterResultEntries = null;
@@ -714,7 +741,7 @@ public class DisplayPagesImporterTest {
 		try {
 			layoutsImporterResultEntries = _layoutsImporter.importFile(
 				TestPropsValues.getUserId(), _group.getGroupId(), 0, file,
-				LayoutsImportStrategy.DO_NOT_OVERWRITE, true);
+				layoutsImportStrategy, true);
 		}
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
@@ -723,6 +750,14 @@ public class DisplayPagesImporterTest {
 		Assert.assertNotNull(layoutsImporterResultEntries);
 
 		return layoutsImporterResultEntries;
+	}
+
+	private List<LayoutsImporterResultEntry> _getLayoutsImporterResultEntries(
+			String testCaseName)
+		throws Exception {
+
+		return _getLayoutsImporterResultEntries(
+			LayoutsImportStrategy.DO_NOT_OVERWRITE, testCaseName);
 	}
 
 	private LayoutPageTemplateEntry _importLayoutPageTemplateEntry(

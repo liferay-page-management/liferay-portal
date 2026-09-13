@@ -121,30 +121,39 @@ public class DisplayPageActionDropdownItemsProvider {
 						() ->
 							(_allowedMappedContentType ||
 							 !_existsMappedContentType) &&
-							hasUpdatePermission,
+							hasUpdatePermission &&
+							!_layoutPageTemplateEntry.isReadOnly(),
 						_getChangeContentTypeActionUnsafeConsumer(count)
 					).add(
-						() -> hasUpdatePermission,
+						() ->
+							hasUpdatePermission &&
+							!_layoutPageTemplateEntry.isReadOnly(),
 						_getUpdateLayoutPageTemplateEntryPreviewActionUnsafeConsumer()
 					).add(
 						() ->
 							hasUpdatePermission &&
+							!_layoutPageTemplateEntry.isReadOnly() &&
 							(_layoutPageTemplateEntry.getPreviewFileEntryId() >
 								0),
 						_getDeleteLayoutPageTemplateEntryPreviewActionUnsafeConsumer()
 					).add(
 						() ->
-							hasUpdatePermission && _isShowDiscardDraftAction(),
+							hasUpdatePermission &&
+							!_layoutPageTemplateEntry.isReadOnly() &&
+							_isShowDiscardDraftAction(),
 						_getDiscardDraftActionUnsafeConsumer()
 					).add(
 						() ->
 							_layoutPageTemplateEntry.isApproved() &&
 							Validator.isNotNull(
 								_layoutPageTemplateEntry.getClassName()) &&
-							hasUpdatePermission,
+							hasUpdatePermission &&
+							!_layoutPageTemplateEntry.isReadOnly(),
 						_getMarkAsDefaultDisplayPageActionUnsafeConsumer()
 					).add(
-						() -> hasUpdatePermission,
+						() ->
+							hasUpdatePermission &&
+							!_layoutPageTemplateEntry.isReadOnly(),
 						_getRenameDisplayPageActionUnsafeConsumer()
 					).add(
 						_getViewUsagesDisplayPageActionUnsafeConsumer(count)
@@ -163,7 +172,9 @@ public class DisplayPageActionDropdownItemsProvider {
 								0,
 						_getExportDisplayPageActionUnsafeConsumer()
 					).add(
-						() -> hasUpdatePermission,
+						() ->
+							hasUpdatePermission &&
+							!_layoutPageTemplateEntry.isReadOnly(),
 						_getMoveDisplayPageActionUnsafeConsumer()
 					).build());
 				dropdownGroupItem.setSeparator(true);
@@ -172,7 +183,9 @@ public class DisplayPageActionDropdownItemsProvider {
 			dropdownGroupItem -> {
 				dropdownGroupItem.setDropdownItems(
 					DropdownItemListBuilder.add(
-						() -> hasUpdatePermission,
+						() ->
+							hasUpdatePermission &&
+							!_layoutPageTemplateEntry.isReadOnly(),
 						_getConfigureDisplayPageActionUnsafeConsumer()
 					).add(
 						() -> LayoutPageTemplateEntryPermission.contains(
@@ -186,9 +199,11 @@ public class DisplayPageActionDropdownItemsProvider {
 			dropdownGroupItem -> {
 				dropdownGroupItem.setDropdownItems(
 					DropdownItemListBuilder.add(
-						() -> LayoutPageTemplateEntryPermission.contains(
-							_themeDisplay.getPermissionChecker(),
-							_layoutPageTemplateEntry, ActionKeys.DELETE),
+						() ->
+							!_layoutPageTemplateEntry.isReadOnly() &&
+							LayoutPageTemplateEntryPermission.contains(
+								_themeDisplay.getPermissionChecker(),
+								_layoutPageTemplateEntry, ActionKeys.DELETE),
 						_getDeleteDisplayPageActionUnsafeConsumer()
 					).build());
 				dropdownGroupItem.setSeparator(true);

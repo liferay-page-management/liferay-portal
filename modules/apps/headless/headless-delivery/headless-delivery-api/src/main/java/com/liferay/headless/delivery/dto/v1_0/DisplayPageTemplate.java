@@ -274,6 +274,51 @@ public class DisplayPageTemplate implements Serializable {
 	@JsonIgnore
 	private Supplier<String> _nameSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "A flag that indicates whether the display page template is read-only."
+	)
+	public Boolean getReadOnly() {
+		if (_readOnlySupplier != null) {
+			readOnly = _readOnlySupplier.get();
+
+			_readOnlySupplier = null;
+		}
+
+		return readOnly;
+	}
+
+	public void setReadOnly(Boolean readOnly) {
+		this.readOnly = readOnly;
+
+		_readOnlySupplier = null;
+	}
+
+	@JsonIgnore
+	public void setReadOnly(
+		UnsafeSupplier<Boolean, Exception> readOnlyUnsafeSupplier) {
+
+		_readOnlySupplier = () -> {
+			try {
+				return readOnlyUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "A flag that indicates whether the display page template is read-only."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Boolean readOnly;
+
+	@JsonIgnore
+	private Supplier<Boolean> _readOnlySupplier;
+
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -367,6 +412,18 @@ public class DisplayPageTemplate implements Serializable {
 			sb.append(_escape(name));
 
 			sb.append("\"");
+		}
+
+		Boolean readOnly = getReadOnly();
+
+		if (readOnly != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"readOnly\": ");
+
+			sb.append(readOnly);
 		}
 
 		sb.append("}");
@@ -491,4 +548,4 @@ public class DisplayPageTemplate implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:213429308
+// LIFERAY-REST-BUILDER-HASH:188684142

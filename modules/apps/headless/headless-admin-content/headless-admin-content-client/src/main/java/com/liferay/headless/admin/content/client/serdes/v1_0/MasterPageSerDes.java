@@ -73,6 +73,16 @@ public class MasterPageSerDes {
 			sb.append("\"");
 		}
 
+		if (masterPage.getReadOnly() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"readOnly\": ");
+
+			sb.append(masterPage.getReadOnly());
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -105,6 +115,13 @@ public class MasterPageSerDes {
 			map.put("name", String.valueOf(masterPage.getName()));
 		}
 
+		if (masterPage.getReadOnly() == null) {
+			map.put("readOnly", null);
+		}
+		else {
+			map.put("readOnly", String.valueOf(masterPage.getReadOnly()));
+		}
+
 		return map;
 	}
 
@@ -129,6 +146,9 @@ public class MasterPageSerDes {
 			else if (Objects.equals(jsonParserFieldName, "name")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "readOnly")) {
+				return false;
+			}
 
 			return false;
 		}
@@ -146,6 +166,11 @@ public class MasterPageSerDes {
 			else if (Objects.equals(jsonParserFieldName, "name")) {
 				if (jsonParserFieldValue != null) {
 					masterPage.setName((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "readOnly")) {
+				if (jsonParserFieldValue != null) {
+					masterPage.setReadOnly((Boolean)jsonParserFieldValue);
 				}
 			}
 		}
@@ -235,4 +260,4 @@ public class MasterPageSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1545368390
+// LIFERAY-REST-BUILDER-HASH:-149988762

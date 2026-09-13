@@ -12,6 +12,7 @@ export default function selectCanHideFragments({
 }) {
 	return (
 		!permissions.LOCKED_SEGMENTS_EXPERIMENT &&
+		!permissions.READ_ONLY &&
 		(permissions.UPDATE ||
 			permissions.UPDATE_LAYOUT_BASIC ||
 			permissions.UPDATE_LAYOUT_LIMITED)

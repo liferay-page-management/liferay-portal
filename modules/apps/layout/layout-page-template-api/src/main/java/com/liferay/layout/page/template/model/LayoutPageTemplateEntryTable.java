@@ -87,6 +87,9 @@ public class LayoutPageTemplateEntryTable
 		createColumn(
 			"defaultTemplate", Boolean.class, Types.BOOLEAN,
 			Column.FLAG_DEFAULT);
+	public final Column<LayoutPageTemplateEntryTable, Boolean> readOnly =
+		createColumn(
+			"readOnly", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);
 	public final Column<LayoutPageTemplateEntryTable, Long> layoutPrototypeId =
 		createColumn(
 			"layoutPrototypeId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
@@ -115,4 +118,4 @@ public class LayoutPageTemplateEntryTable
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:986376417
+// LIFERAY-SERVICE-BUILDER-HASH:1805582997

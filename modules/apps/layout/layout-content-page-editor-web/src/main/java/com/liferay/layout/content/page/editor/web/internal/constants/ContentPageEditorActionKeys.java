@@ -23,6 +23,8 @@ public class ContentPageEditorActionKeys extends ActionKeys {
 	public static final String PURCHASE_AND_INSTALL_PAID_APPS_MARKETPLACE =
 		"PURCHASE_AND_INSTALL_PAID_APPS_MARKETPLACE";
 
+	public static final String READ_ONLY = "READ_ONLY";
+
 	public static final String VIEW_MARKETPLACE = "VIEW_MARKETPLACE";
 
 }

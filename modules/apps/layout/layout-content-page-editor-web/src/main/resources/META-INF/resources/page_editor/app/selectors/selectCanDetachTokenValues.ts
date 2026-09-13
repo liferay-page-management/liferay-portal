@@ -10,5 +10,5 @@ export default function selectCanDetachTokenValues({
 }: {
 	permissions: PermissionsState;
 }) {
-	return permissions.UPDATE;
+	return !permissions.READ_ONLY && permissions.UPDATE;
 }

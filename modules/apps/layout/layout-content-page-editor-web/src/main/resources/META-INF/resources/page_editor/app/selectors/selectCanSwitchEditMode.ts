@@ -11,6 +11,8 @@ export default function selectCanSwitchEditMode({
 	permissions: PermissionsState;
 }) {
 	return (
-		!permissions.LOCKED_SEGMENTS_EXPERIMENT && permissions.SWITCH_EDIT_MODE
+		!permissions.LOCKED_SEGMENTS_EXPERIMENT &&
+		!permissions.READ_ONLY &&
+		permissions.SWITCH_EDIT_MODE
 	);
 }
