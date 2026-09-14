@@ -194,6 +194,27 @@ public class PageTemplate implements Cloneable, Serializable {
 
 	protected PageTemplateCollection pageTemplateCollection;
 
+	public Boolean getReadOnly() {
+		return readOnly;
+	}
+
+	public void setReadOnly(Boolean readOnly) {
+		this.readOnly = readOnly;
+	}
+
+	public void setReadOnly(
+		UnsafeSupplier<Boolean, Exception> readOnlyUnsafeSupplier) {
+
+		try {
+			readOnly = readOnlyUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean readOnly;
+
 	public TaxonomyCategoryBrief[] getTaxonomyCategoryBriefs() {
 		return taxonomyCategoryBriefs;
 	}
@@ -290,4 +311,4 @@ public class PageTemplate implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1673272305
+// LIFERAY-REST-BUILDER-HASH:-507494126

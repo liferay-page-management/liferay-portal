@@ -27,6 +27,7 @@ import com.liferay.item.selector.criteria.InfoItemItemSelectorReturnType;
 import com.liferay.item.selector.criteria.info.item.criterion.InfoItemItemSelectorCriterion;
 import com.liferay.layout.content.page.editor.sidebar.panel.ContentPageEditorSidebarPanel;
 import com.liferay.layout.content.page.editor.web.internal.configuration.PageEditorConfiguration;
+import com.liferay.layout.content.page.editor.web.internal.constants.ContentPageEditorActionKeys;
 import com.liferay.layout.content.page.editor.web.internal.manager.FragmentCollectionManager;
 import com.liferay.layout.content.page.editor.web.internal.manager.FragmentEntryLinkManager;
 import com.liferay.layout.content.page.editor.web.internal.util.MappingContentUtil;
@@ -133,6 +134,21 @@ public class ContentPageEditorLayoutPageTemplateDisplayContext
 	@Override
 	public Map<String, Object> getEditorContext() throws Exception {
 		Map<String, Object> editorContext = super.getEditorContext();
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_getLayoutPageTemplateEntry();
+
+		if (layoutPageTemplateEntry != null) {
+			Map<String, Object> stateContext =
+				(Map<String, Object>)editorContext.get("state");
+
+			Map<String, Object> permissionsContext =
+				(Map<String, Object>)stateContext.get("permissions");
+
+			permissionsContext.put(
+				ContentPageEditorActionKeys.READ_ONLY,
+				layoutPageTemplateEntry.isReadOnly());
+		}
 
 		if (!_pageIsDisplayPage) {
 			return editorContext;

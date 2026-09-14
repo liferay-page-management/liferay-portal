@@ -628,7 +628,7 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 		return new String[] {
 			"active", "description_i18n", "externalReferenceCode", "keywords",
 			"name", "name_i18n", "pageTemplateSet", "pageTemplateSettings",
-			"taxonomyCategoryBriefs"
+			"readOnly", "taxonomyCategoryBriefs"
 		};
 	}
 
@@ -931,6 +931,7 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 						setType(Type.CONTENT_PAGE_TEMPLATE_SETTINGS);
 					}
 				};
+				readOnly = true;
 				taxonomyCategoryBriefs =
 					AssetTestUtil.randomTaxonomyCategoryBriefs(
 						testCompany.getGroupId(), serviceContext);
@@ -1113,6 +1114,7 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 				).build();
 				pageTemplateSet = _getPageTemplateSet(group);
 				pageTemplateSettings = _getWidgetPageTemplateSettings();
+				readOnly = true;
 				taxonomyCategoryBriefs =
 					AssetTestUtil.randomTaxonomyCategoryBriefs(
 						testCompany.getGroupId(), serviceContext);

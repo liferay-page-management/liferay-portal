@@ -6254,6 +6254,7 @@ public class LayoutPageTemplateEntryPersistenceImpl
 		ctMergeColumnNames.add("type_");
 		ctMergeColumnNames.add("previewFileEntryId");
 		ctMergeColumnNames.add("defaultTemplate");
+		ctMergeColumnNames.add("readOnly");
 		ctMergeColumnNames.add("layoutPrototypeId");
 		ctMergeColumnNames.add("plid");
 		ctMergeColumnNames.add("lastPublishDate");
@@ -7561,4 +7562,4 @@ public class LayoutPageTemplateEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:524244426
+// LIFERAY-SERVICE-BUILDER-HASH:-176822173

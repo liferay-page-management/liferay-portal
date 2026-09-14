@@ -294,6 +294,16 @@ public class WidgetPageTemplateSerDes {
 			sb.append("]");
 		}
 
+		if (widgetPageTemplate.getReadOnly() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"readOnly\": ");
+
+			sb.append(widgetPageTemplate.getReadOnly());
+		}
+
 		if (widgetPageTemplate.getTaxonomyCategoryBriefs() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -528,6 +538,14 @@ public class WidgetPageTemplateSerDes {
 				String.valueOf(widgetPageTemplate.getPermissions()));
 		}
 
+		if (widgetPageTemplate.getReadOnly() == null) {
+			map.put("readOnly", null);
+		}
+		else {
+			map.put(
+				"readOnly", String.valueOf(widgetPageTemplate.getReadOnly()));
+		}
+
 		if (widgetPageTemplate.getTaxonomyCategoryBriefs() == null) {
 			map.put("taxonomyCategoryBriefs", null);
 		}
@@ -637,6 +655,9 @@ public class WidgetPageTemplateSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "permissions")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "readOnly")) {
 				return false;
 			}
 			else if (Objects.equals(
@@ -801,6 +822,12 @@ public class WidgetPageTemplateSerDes {
 					widgetPageTemplate.setPermissions(permissionsArray);
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "readOnly")) {
+				if (jsonParserFieldValue != null) {
+					widgetPageTemplate.setReadOnly(
+						(Boolean)jsonParserFieldValue);
+				}
+			}
 			else if (Objects.equals(
 						jsonParserFieldName, "taxonomyCategoryBriefs")) {
 
@@ -931,4 +958,4 @@ public class WidgetPageTemplateSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:736484212
+// LIFERAY-REST-BUILDER-HASH:-1412525322

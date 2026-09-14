@@ -62,6 +62,7 @@ public class LayoutPageTemplateEntryWrapper
 		attributes.put("type", getType());
 		attributes.put("previewFileEntryId", getPreviewFileEntryId());
 		attributes.put("defaultTemplate", isDefaultTemplate());
+		attributes.put("readOnly", isReadOnly());
 		attributes.put("layoutPrototypeId", getLayoutPrototypeId());
 		attributes.put("plid", getPlid());
 		attributes.put("lastPublishDate", getLastPublishDate());
@@ -197,6 +198,12 @@ public class LayoutPageTemplateEntryWrapper
 
 		if (defaultTemplate != null) {
 			setDefaultTemplate(defaultTemplate);
+		}
+
+		Boolean readOnly = (Boolean)attributes.get("readOnly");
+
+		if (readOnly != null) {
+			setReadOnly(readOnly);
 		}
 
 		Long layoutPrototypeId = (Long)attributes.get("layoutPrototypeId");
@@ -465,6 +472,16 @@ public class LayoutPageTemplateEntryWrapper
 	}
 
 	/**
+	 * Returns the read only of this layout page template entry.
+	 *
+	 * @return the read only of this layout page template entry
+	 */
+	@Override
+	public boolean getReadOnly() {
+		return model.getReadOnly();
+	}
+
+	/**
 	 * Returns the status of this layout page template entry.
 	 *
 	 * @return the status of this layout page template entry
@@ -642,6 +659,16 @@ public class LayoutPageTemplateEntryWrapper
 	@Override
 	public boolean isPending() {
 		return model.isPending();
+	}
+
+	/**
+	 * Returns <code>true</code> if this layout page template entry is read only.
+	 *
+	 * @return <code>true</code> if this layout page template entry is read only; <code>false</code> otherwise
+	 */
+	@Override
+	public boolean isReadOnly() {
+		return model.isReadOnly();
 	}
 
 	/**
@@ -869,6 +896,16 @@ public class LayoutPageTemplateEntryWrapper
 	}
 
 	/**
+	 * Sets whether this layout page template entry is read only.
+	 *
+	 * @param readOnly the read only of this layout page template entry
+	 */
+	@Override
+	public void setReadOnly(boolean readOnly) {
+		model.setReadOnly(readOnly);
+	}
+
+	/**
 	 * Sets the status of this layout page template entry.
 	 *
 	 * @param status the status of this layout page template entry
@@ -1000,4 +1037,4 @@ public class LayoutPageTemplateEntryWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-953971290
+// LIFERAY-SERVICE-BUILDER-HASH:2048922543

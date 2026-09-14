@@ -14,6 +14,7 @@ export default function selectCanConfigureWidgets({
 }) {
 	return (
 		!permissions.LOCKED_SEGMENTS_EXPERIMENT &&
+		!permissions.READ_ONLY &&
 		selectHasAnyUpdatePermission({permissions})
 	);
 }

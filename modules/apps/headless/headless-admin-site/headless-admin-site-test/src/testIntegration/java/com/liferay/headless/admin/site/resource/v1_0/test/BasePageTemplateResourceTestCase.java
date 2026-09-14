@@ -957,6 +957,7 @@ public abstract class BasePageTemplateResourceTestCase {
 					RandomTestUtil.randomString());
 				key = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				readOnly = RandomTestUtil.randomBoolean();
 				uuid = StringUtil.toLowerCase(RandomTestUtil.randomString());
 
 				type = Type.create("ContentPageTemplate");
@@ -976,6 +977,7 @@ public abstract class BasePageTemplateResourceTestCase {
 					RandomTestUtil.randomString());
 				key = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				readOnly = RandomTestUtil.randomBoolean();
 				uuid = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				active = RandomTestUtil.randomBoolean();
 				hiddenFromNavigation = RandomTestUtil.randomBoolean();
@@ -1026,6 +1028,7 @@ public abstract class BasePageTemplateResourceTestCase {
 					RandomTestUtil.randomString());
 				key = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				readOnly = RandomTestUtil.randomBoolean();
 				uuid = StringUtil.toLowerCase(RandomTestUtil.randomString());
 
 				type = Type.create("ContentPageTemplate");
@@ -1046,6 +1049,7 @@ public abstract class BasePageTemplateResourceTestCase {
 					RandomTestUtil.randomString());
 				key = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				readOnly = RandomTestUtil.randomBoolean();
 				uuid = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				active = RandomTestUtil.randomBoolean();
 				hiddenFromNavigation = RandomTestUtil.randomBoolean();
@@ -1415,6 +1419,14 @@ public abstract class BasePageTemplateResourceTestCase {
 
 			if (Objects.equals("permissions", additionalAssertFieldName)) {
 				if (pageTemplate.getPermissions() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("readOnly", additionalAssertFieldName)) {
+				if (pageTemplate.getReadOnly() == null) {
 					valid = false;
 				}
 
@@ -1827,6 +1839,17 @@ public abstract class BasePageTemplateResourceTestCase {
 				if (!Objects.deepEquals(
 						pageTemplate1.getPermissions(),
 						pageTemplate2.getPermissions())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("readOnly", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						pageTemplate1.getReadOnly(),
+						pageTemplate2.getReadOnly())) {
 
 					return false;
 				}
@@ -2394,6 +2417,11 @@ public abstract class BasePageTemplateResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("readOnly")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("taxonomyCategoryBriefs")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -2513,6 +2541,7 @@ public abstract class BasePageTemplateResourceTestCase {
 					StringUtil.toLowerCase(RandomTestUtil.randomString()));
 				pageTemplate.setName(
 					StringUtil.toLowerCase(RandomTestUtil.randomString()));
+				pageTemplate.setReadOnly(RandomTestUtil.randomBoolean());
 				pageTemplate.setUuid(
 					StringUtil.toLowerCase(RandomTestUtil.randomString()));
 
@@ -2533,6 +2562,7 @@ public abstract class BasePageTemplateResourceTestCase {
 					StringUtil.toLowerCase(RandomTestUtil.randomString()));
 				pageTemplate.setName(
 					StringUtil.toLowerCase(RandomTestUtil.randomString()));
+				pageTemplate.setReadOnly(RandomTestUtil.randomBoolean());
 				pageTemplate.setUuid(
 					StringUtil.toLowerCase(RandomTestUtil.randomString()));
 
@@ -2826,4 +2856,4 @@ public abstract class BasePageTemplateResourceTestCase {
 		_pageTemplateResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-518989674
+// LIFERAY-REST-BUILDER-HASH:-492107753

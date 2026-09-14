@@ -568,7 +568,7 @@ public class DisplayPageTemplateResourceTest
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {
 			"displayPageTemplateSettings", "externalReferenceCode",
-			"friendlyUrlPath_i18n", "name"
+			"friendlyUrlPath_i18n", "name", "readOnly"
 		};
 	}
 
@@ -1192,6 +1192,7 @@ public class DisplayPageTemplateResourceTest
 					StringUtil.toLowerCase(RandomTestUtil.randomString())
 			).build());
 		displayPageTemplate.setMarkedAsDefault(() -> markedAsDefault);
+		displayPageTemplate.setReadOnly(Boolean.TRUE);
 
 		return displayPageTemplate;
 	}

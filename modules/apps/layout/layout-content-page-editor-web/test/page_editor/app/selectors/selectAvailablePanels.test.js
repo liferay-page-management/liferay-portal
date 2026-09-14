@@ -58,6 +58,15 @@ describe('selectAvailablePanels', () => {
 		expect(panels).toEqual(EXPECTED_SIDEBAR_PANELS);
 	});
 
+	it('reduce the number of panels in a read only page template', () => {
+		const panels = selectAvailablePanels(SIDEBAR_PANELS)({
+			permissions: {READ_ONLY: true, UPDATE: true},
+			selectedViewportSize: VIEWPORT_SIZES.desktop,
+		});
+
+		expect(panels).toEqual(EXPECTED_SIDEBAR_PANELS);
+	});
+
 	it('reduce the number of panels when user has limited permission', () => {
 		const panels = selectAvailablePanels(SIDEBAR_PANELS)({
 			permissions: {UPDATE_LAYOUT_CONTENT: true},

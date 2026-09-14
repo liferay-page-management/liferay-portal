@@ -110,25 +110,30 @@ public class MasterLayoutActionDropdownItemsProvider {
 					DropdownItemListBuilder.add(
 						() ->
 							(layoutPageTemplateEntryId > 0) &&
-							hasUpdatePermission,
+							hasUpdatePermission &&
+							!_layoutPageTemplateEntry.isReadOnly(),
 						_getUpdateMasterLayoutPreviewActionUnsafeConsumer()
 					).add(
 						() ->
 							(layoutPageTemplateEntryId > 0) &&
 							hasUpdatePermission &&
+							!_layoutPageTemplateEntry.isReadOnly() &&
 							(_layoutPageTemplateEntry.getPreviewFileEntryId() >
 								0),
 						_getDeleteMasterLayoutPreviewActionUnsafeConsumer()
 					).add(
 						() ->
 							(layoutPageTemplateEntryId > 0) &&
-							hasUpdatePermission && _isShowDiscardDraftAction(),
+							hasUpdatePermission &&
+							!_layoutPageTemplateEntry.isReadOnly() &&
+							_isShowDiscardDraftAction(),
 						_getDiscardDraftActionUnsafeConsumer()
 					).add(
 						() ->
 							(layoutPageTemplateEntryId > 0) &&
 							!_layoutPageTemplateEntry.isDefaultTemplate() &&
-							hasUpdatePermission,
+							hasUpdatePermission &&
+							!_layoutPageTemplateEntry.isReadOnly(),
 						_getMarkAsDefaultMasterLayoutActionUnsafeConsumer()
 					).add(
 						() ->
@@ -139,7 +144,8 @@ public class MasterLayoutActionDropdownItemsProvider {
 					).add(
 						() ->
 							(layoutPageTemplateEntryId > 0) &&
-							hasUpdatePermission,
+							hasUpdatePermission &&
+							!_layoutPageTemplateEntry.isReadOnly(),
 						_getRenameMasterLayoutActionUnsafeConsumer()
 					).build());
 				dropdownGroupItem.setSeparator(true);
@@ -187,6 +193,7 @@ public class MasterLayoutActionDropdownItemsProvider {
 					DropdownItemListBuilder.add(
 						() ->
 							(layoutPageTemplateEntryId > 0) &&
+							!_layoutPageTemplateEntry.isReadOnly() &&
 							LayoutPageTemplateEntryPermission.contains(
 								_themeDisplay.getPermissionChecker(),
 								_layoutPageTemplateEntry, ActionKeys.DELETE),

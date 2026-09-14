@@ -116,6 +116,7 @@ public class DisplayPageTemplateDTOConverter
 						return _displayPageTemplateFolderDTOConverter.toDTO(
 							dtoConverterContext, layoutPageTemplateCollection);
 					});
+				setReadOnly(layoutPageTemplateEntry::isReadOnly);
 				setThumbnailURLReference(
 					() -> NestedFieldsSupplier.supply(
 						"thumbnailURLReference",

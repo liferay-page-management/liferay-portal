@@ -105,6 +105,16 @@ public class DisplayPageTemplateSerDes {
 			sb.append("\"");
 		}
 
+		if (displayPageTemplate.getReadOnly() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"readOnly\": ");
+
+			sb.append(displayPageTemplate.getReadOnly());
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -167,6 +177,14 @@ public class DisplayPageTemplateSerDes {
 			map.put("name", String.valueOf(displayPageTemplate.getName()));
 		}
 
+		if (displayPageTemplate.getReadOnly() == null) {
+			map.put("readOnly", null);
+		}
+		else {
+			map.put(
+				"readOnly", String.valueOf(displayPageTemplate.getReadOnly()));
+		}
+
 		return map;
 	}
 
@@ -198,6 +216,9 @@ public class DisplayPageTemplateSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "name")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "readOnly")) {
 				return false;
 			}
 
@@ -236,6 +257,12 @@ public class DisplayPageTemplateSerDes {
 			else if (Objects.equals(jsonParserFieldName, "name")) {
 				if (jsonParserFieldValue != null) {
 					displayPageTemplate.setName((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "readOnly")) {
+				if (jsonParserFieldValue != null) {
+					displayPageTemplate.setReadOnly(
+						(Boolean)jsonParserFieldValue);
 				}
 			}
 		}
@@ -325,4 +352,4 @@ public class DisplayPageTemplateSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1894903616
+// LIFERAY-REST-BUILDER-HASH:-1011604992

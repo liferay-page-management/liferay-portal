@@ -58,6 +58,7 @@ public class MasterPageDTOConverter
 						layoutPageTemplateEntry.getPlid()));
 				setMarkedAsDefault(layoutPageTemplateEntry::isDefaultTemplate);
 				setName(layoutPageTemplateEntry::getName);
+				setReadOnly(layoutPageTemplateEntry::isReadOnly);
 				setTaxonomyCategoryBriefs(
 					() -> AssetUtil.getTaxonomyCategoryBriefs(
 						Layout.class.getName(),

@@ -160,11 +160,25 @@ public class LayoutPageTemplateEntryVerticalCard extends BaseVerticalCard {
 
 			return LabelItemListBuilder.add(
 				labelItem -> labelItem.setStatus(WorkflowConstants.STATUS_DRAFT)
+			).add(
+				_layoutPageTemplateEntry::isReadOnly,
+				labelItem -> {
+					labelItem.setDisplayType("info");
+					labelItem.setLabel(
+						LanguageUtil.get(_httpServletRequest, "read-only"));
+				}
 			).build();
 		}
 
 		return LabelItemListBuilder.add(
 			labelItem -> labelItem.setStatus(draftLayout.getStatus())
+		).add(
+			_layoutPageTemplateEntry::isReadOnly,
+			labelItem -> {
+				labelItem.setDisplayType("info");
+				labelItem.setLabel(
+					LanguageUtil.get(_httpServletRequest, "read-only"));
+			}
 		).build();
 	}
 

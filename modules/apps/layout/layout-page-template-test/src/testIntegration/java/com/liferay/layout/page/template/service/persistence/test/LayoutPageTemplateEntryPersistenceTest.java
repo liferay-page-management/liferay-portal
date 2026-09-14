@@ -166,6 +166,8 @@ public class LayoutPageTemplateEntryPersistenceTest {
 		newLayoutPageTemplateEntry.setDefaultTemplate(
 			RandomTestUtil.randomBoolean());
 
+		newLayoutPageTemplateEntry.setReadOnly(RandomTestUtil.randomBoolean());
+
 		newLayoutPageTemplateEntry.setLayoutPrototypeId(
 			RandomTestUtil.nextLong());
 
@@ -255,6 +257,9 @@ public class LayoutPageTemplateEntryPersistenceTest {
 		Assert.assertEquals(
 			existingLayoutPageTemplateEntry.isDefaultTemplate(),
 			newLayoutPageTemplateEntry.isDefaultTemplate());
+		Assert.assertEquals(
+			existingLayoutPageTemplateEntry.isReadOnly(),
+			newLayoutPageTemplateEntry.isReadOnly());
 		Assert.assertEquals(
 			existingLayoutPageTemplateEntry.getLayoutPrototypeId(),
 			newLayoutPageTemplateEntry.getLayoutPrototypeId());
@@ -708,9 +713,9 @@ public class LayoutPageTemplateEntryPersistenceTest {
 			"layoutPageTemplateEntryKey", true, "classNameId", true,
 			"classTypeId", true, "classTypeKey", true, "name", true, "type",
 			true, "previewFileEntryId", true, "defaultTemplate", true,
-			"layoutPrototypeId", true, "plid", true, "lastPublishDate", true,
-			"status", true, "statusByUserId", true, "statusByUserName", true,
-			"statusDate", true);
+			"readOnly", true, "layoutPrototypeId", true, "plid", true,
+			"lastPublishDate", true, "status", true, "statusByUserId", true,
+			"statusByUserName", true, "statusDate", true);
 	}
 
 	@Test
@@ -1118,6 +1123,8 @@ public class LayoutPageTemplateEntryPersistenceTest {
 		layoutPageTemplateEntry.setDefaultTemplate(
 			RandomTestUtil.randomBoolean());
 
+		layoutPageTemplateEntry.setReadOnly(RandomTestUtil.randomBoolean());
+
 		layoutPageTemplateEntry.setLayoutPrototypeId(RandomTestUtil.nextLong());
 
 		layoutPageTemplateEntry.setPlid(RandomTestUtil.nextLong());
@@ -1145,4 +1152,4 @@ public class LayoutPageTemplateEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1613404101
+// LIFERAY-SERVICE-BUILDER-HASH:864494644

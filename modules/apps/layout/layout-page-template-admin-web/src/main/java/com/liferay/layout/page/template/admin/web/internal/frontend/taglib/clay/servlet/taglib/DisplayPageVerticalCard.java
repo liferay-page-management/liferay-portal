@@ -20,6 +20,7 @@ import com.liferay.layout.page.template.admin.web.internal.servlet.taglib.util.D
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.RowChecker;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
@@ -138,11 +139,26 @@ public class DisplayPageVerticalCard
 
 			return LabelItemListBuilder.add(
 				labelItem -> labelItem.setStatus(WorkflowConstants.STATUS_DRAFT)
+			).add(
+				_layoutPageTemplateEntry::isReadOnly,
+				labelItem -> {
+					labelItem.setDisplayType("info");
+					labelItem.setLabel(
+						LanguageUtil.get(
+							_themeDisplay.getLocale(), "read-only"));
+				}
 			).build();
 		}
 
 		return LabelItemListBuilder.add(
 			labelItem -> labelItem.setStatus(_draftLayout.getStatus())
+		).add(
+			_layoutPageTemplateEntry::isReadOnly,
+			labelItem -> {
+				labelItem.setDisplayType("info");
+				labelItem.setLabel(
+					LanguageUtil.get(_themeDisplay.getLocale(), "read-only"));
+			}
 		).build();
 	}
 

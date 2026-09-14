@@ -127,6 +127,27 @@ public class DisplayPageTemplate implements Cloneable, Serializable {
 
 	protected String name;
 
+	public Boolean getReadOnly() {
+		return readOnly;
+	}
+
+	public void setReadOnly(Boolean readOnly) {
+		this.readOnly = readOnly;
+	}
+
+	public void setReadOnly(
+		UnsafeSupplier<Boolean, Exception> readOnlyUnsafeSupplier) {
+
+		try {
+			readOnly = readOnlyUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean readOnly;
+
 	@Override
 	public DisplayPageTemplate clone() throws CloneNotSupportedException {
 		return (DisplayPageTemplate)super.clone();
@@ -159,4 +180,4 @@ public class DisplayPageTemplate implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1820336144
+// LIFERAY-REST-BUILDER-HASH:1039480781

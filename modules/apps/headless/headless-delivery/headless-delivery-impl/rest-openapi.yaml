@@ -1310,6 +1310,11 @@ components:
                     description:
                         The display page template's name.
                     type: string
+                readOnly:
+                    # @review
+                    description:
+                        A flag that indicates whether the display page template is read-only.
+                    type: boolean
             type: object
         Document:
             description:
@@ -3029,6 +3034,11 @@ components:
                     description:
                         The master page's name.
                     type: string
+                readOnly:
+                    # @review
+                    description:
+                        A flag that indicates whether the master page is read-only.
+                    type: boolean
             type: object
         MessageBoardAttachment:
             description:
@@ -4830,6 +4840,11 @@ components:
                     description:
                         The page template's collection.
                     readOnly: true
+                readOnly:
+                    # @review
+                    description:
+                        A flag that indicates whether the page template is read-only.
+                    type: boolean
                 taxonomyCategoryBriefs:
                     description:
                         The categories associated with this page template.

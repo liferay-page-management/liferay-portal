@@ -287,6 +287,27 @@ public abstract class PageTemplate implements Cloneable, Serializable {
 	protected com.liferay.headless.admin.site.client.permission.Permission[]
 		permissions;
 
+	public Boolean getReadOnly() {
+		return readOnly;
+	}
+
+	public void setReadOnly(Boolean readOnly) {
+		this.readOnly = readOnly;
+	}
+
+	public void setReadOnly(
+		UnsafeSupplier<Boolean, Exception> readOnlyUnsafeSupplier) {
+
+		try {
+			readOnly = readOnlyUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean readOnly;
+
 	public TaxonomyCategoryBrief[] getTaxonomyCategoryBriefs() {
 		return taxonomyCategoryBriefs;
 	}
@@ -447,4 +468,4 @@ public abstract class PageTemplate implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1225115324
+// LIFERAY-REST-BUILDER-HASH:739140385

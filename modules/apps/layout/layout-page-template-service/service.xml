@@ -105,6 +105,7 @@
 		<column name="type" type="int" />
 		<column name="previewFileEntryId" type="long" />
 		<column name="defaultTemplate" type="boolean" />
+		<column name="readOnly" type="boolean" />
 		<column name="layoutPrototypeId" type="long" />
 		<column name="plid" type="long" />
 		<column name="lastPublishDate" type="Date" />

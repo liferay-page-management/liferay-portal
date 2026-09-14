@@ -359,6 +359,27 @@ public class DisplayPageTemplate implements Cloneable, Serializable {
 	protected com.liferay.headless.admin.site.client.permission.Permission[]
 		permissions;
 
+	public Boolean getReadOnly() {
+		return readOnly;
+	}
+
+	public void setReadOnly(Boolean readOnly) {
+		this.readOnly = readOnly;
+	}
+
+	public void setReadOnly(
+		UnsafeSupplier<Boolean, Exception> readOnlyUnsafeSupplier) {
+
+		try {
+			readOnly = readOnlyUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean readOnly;
+
 	public ThumbnailURLReference getThumbnailURLReference() {
 		return thumbnailURLReference;
 	}
@@ -434,4 +455,4 @@ public class DisplayPageTemplate implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1285173238
+// LIFERAY-REST-BUILDER-HASH:715632633

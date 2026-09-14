@@ -223,6 +223,16 @@ public class MasterPageSerDes {
 			sb.append("]");
 		}
 
+		if (masterPage.getReadOnly() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"readOnly\": ");
+
+			sb.append(masterPage.getReadOnly());
+		}
+
 		if (masterPage.getTaxonomyCategoryBriefs() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -380,6 +390,13 @@ public class MasterPageSerDes {
 			map.put("permissions", String.valueOf(masterPage.getPermissions()));
 		}
 
+		if (masterPage.getReadOnly() == null) {
+			map.put("readOnly", null);
+		}
+		else {
+			map.put("readOnly", String.valueOf(masterPage.getReadOnly()));
+		}
+
 		if (masterPage.getTaxonomyCategoryBriefs() == null) {
 			map.put("taxonomyCategoryBriefs", null);
 		}
@@ -458,6 +475,9 @@ public class MasterPageSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "permissions")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "readOnly")) {
 				return false;
 			}
 			else if (Objects.equals(
@@ -573,6 +593,11 @@ public class MasterPageSerDes {
 					}
 
 					masterPage.setPermissions(permissionsArray);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "readOnly")) {
+				if (jsonParserFieldValue != null) {
+					masterPage.setReadOnly((Boolean)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(
@@ -698,4 +723,4 @@ public class MasterPageSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-859129066
+// LIFERAY-REST-BUILDER-HASH:-2064706776

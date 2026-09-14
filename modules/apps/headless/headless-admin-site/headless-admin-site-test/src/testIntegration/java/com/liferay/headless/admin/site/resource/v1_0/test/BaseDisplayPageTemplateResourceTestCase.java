@@ -1481,6 +1481,14 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("readOnly", additionalAssertFieldName)) {
+				if (displayPageTemplate.getReadOnly() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals(
 					"thumbnailURLReference", additionalAssertFieldName)) {
 
@@ -1843,6 +1851,17 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 				if (!Objects.deepEquals(
 						displayPageTemplate1.getPermissions(),
 						displayPageTemplate2.getPermissions())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("readOnly", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						displayPageTemplate1.getReadOnly(),
+						displayPageTemplate2.getReadOnly())) {
 
 					return false;
 				}
@@ -2311,6 +2330,11 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("readOnly")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("thumbnailURLReference")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -2417,6 +2441,7 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 				key = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				markedAsDefault = RandomTestUtil.randomBoolean();
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				readOnly = RandomTestUtil.randomBoolean();
 				uuid = StringUtil.toLowerCase(RandomTestUtil.randomString());
 			}
 		};
@@ -2705,4 +2730,4 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 			DisplayPageTemplateResource _displayPageTemplateResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:813250976
+// LIFERAY-REST-BUILDER-HASH:-65887402

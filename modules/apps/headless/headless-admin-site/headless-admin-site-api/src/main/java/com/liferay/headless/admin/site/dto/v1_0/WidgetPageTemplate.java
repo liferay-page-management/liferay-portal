@@ -587,6 +587,18 @@ public class WidgetPageTemplate extends PageTemplate implements Serializable {
 			sb.append("]");
 		}
 
+		Boolean readOnly = getReadOnly();
+
+		if (readOnly != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"readOnly\": ");
+
+			sb.append(readOnly);
+		}
+
 		TaxonomyCategoryBrief[] taxonomyCategoryBriefs =
 			getTaxonomyCategoryBriefs();
 
@@ -775,4 +787,4 @@ public class WidgetPageTemplate extends PageTemplate implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-47735198
+// LIFERAY-REST-BUILDER-HASH:-829910069

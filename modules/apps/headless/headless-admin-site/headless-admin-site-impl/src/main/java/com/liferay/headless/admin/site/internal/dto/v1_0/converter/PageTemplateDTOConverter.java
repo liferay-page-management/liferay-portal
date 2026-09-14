@@ -99,6 +99,7 @@ public class PageTemplateDTOConverter
 							setType(Type.CONTENT_PAGE_TEMPLATE_SETTINGS);
 						}
 					});
+				setReadOnly(layoutPageTemplateEntry::isReadOnly);
 				setTaxonomyCategoryBriefs(
 					() -> AssetUtil.getTaxonomyCategoryBriefs(
 						Layout.class.getName(),
@@ -188,6 +189,7 @@ public class PageTemplateDTOConverter
 						dtoConverterContext, layoutPageTemplateEntry));
 				setPageTemplateSettings(
 					() -> _getWidgetPageTemplateSettings(layout));
+				setReadOnly(layoutPageTemplateEntry::isReadOnly);
 				setTaxonomyCategoryBriefs(
 					() -> AssetUtil.getTaxonomyCategoryBriefs(
 						Layout.class.getName(),

@@ -283,6 +283,11 @@ public class LayoutPageTemplateServiceUpgradeStepRegistrator
 		registry.register(
 			"6.2.0", "6.2.1",
 			new LayoutPageTemplateEntryClassTypeKeyUpgradeProcess());
+
+		registry.register(
+			"6.2.1", "6.3.0",
+			UpgradeProcessFactory.addColumns(
+				"LayoutPageTemplateEntry", "readOnly BOOLEAN"));
 	}
 
 	@Reference

@@ -403,6 +403,27 @@ public interface LayoutPageTemplateEntryModel
 	public void setDefaultTemplate(boolean defaultTemplate);
 
 	/**
+	 * Returns the read only of this layout page template entry.
+	 *
+	 * @return the read only of this layout page template entry
+	 */
+	public boolean getReadOnly();
+
+	/**
+	 * Returns <code>true</code> if this layout page template entry is read only.
+	 *
+	 * @return <code>true</code> if this layout page template entry is read only; <code>false</code> otherwise
+	 */
+	public boolean isReadOnly();
+
+	/**
+	 * Sets whether this layout page template entry is read only.
+	 *
+	 * @param readOnly the read only of this layout page template entry
+	 */
+	public void setReadOnly(boolean readOnly);
+
+	/**
 	 * Returns the layout prototype ID of this layout page template entry.
 	 *
 	 * @return the layout prototype ID of this layout page template entry
@@ -599,4 +620,4 @@ public interface LayoutPageTemplateEntryModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1984578721
+// LIFERAY-SERVICE-BUILDER-HASH:533896980

@@ -41,6 +41,10 @@
 		"name": {
 			"title": "The name Schema",
 			"type": "string"
+		},
+		"readOnly": {
+			"title": "The readOnly Schema",
+			"type": "boolean"
 		}
 	},
 	"required": [

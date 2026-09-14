@@ -117,23 +117,32 @@ public class LayoutPageTemplateEntryActionDropdownItemsProvider {
 			dropdownGroupItem -> {
 				dropdownGroupItem.setDropdownItems(
 					DropdownItemListBuilder.add(
-						() -> hasUpdatePermission,
+						() ->
+							hasUpdatePermission &&
+							!_layoutPageTemplateEntry.isReadOnly(),
 						_getMoveLayoutPageTemplateEntryPreviewActionUnsafeConsumer()
 					).add(
-						() -> hasUpdatePermission,
+						() ->
+							hasUpdatePermission &&
+							!_layoutPageTemplateEntry.isReadOnly(),
 						_getUpdateLayoutPageTemplateEntryPreviewActionUnsafeConsumer()
 					).add(
 						() ->
 							hasUpdatePermission &&
+							!_layoutPageTemplateEntry.isReadOnly() &&
 							(_layoutPageTemplateEntry.getPreviewFileEntryId() >
 								0),
 						_getDeleteLayoutPageTemplateEntryPreviewActionUnsafeConsumer()
 					).add(
 						() ->
-							hasUpdatePermission && _isShowDiscardDraftAction(),
+							hasUpdatePermission &&
+							!_layoutPageTemplateEntry.isReadOnly() &&
+							_isShowDiscardDraftAction(),
 						_getDiscardDraftActionUnsafeConsumer()
 					).add(
-						() -> hasUpdatePermission,
+						() ->
+							hasUpdatePermission &&
+							!_layoutPageTemplateEntry.isReadOnly(),
 						_getRenameLayoutPageTemplateEntryActionUnsafeConsumer()
 					).build());
 				dropdownGroupItem.setSeparator(true);
@@ -155,12 +164,14 @@ public class LayoutPageTemplateEntryActionDropdownItemsProvider {
 					DropdownItemListBuilder.add(
 						() ->
 							hasUpdatePermission &&
+							!_layoutPageTemplateEntry.isReadOnly() &&
 							(_layoutPageTemplateEntry.getLayoutPrototypeId() >
 								0),
 						_getConfigureLayoutPrototypeActionUnsafeConsumer()
 					).add(
 						() ->
 							hasUpdatePermission &&
+							!_layoutPageTemplateEntry.isReadOnly() &&
 							(_layoutPageTemplateEntry.getLayoutPrototypeId() <=
 								0),
 						_getConfigureLayoutPageTemplateEntryActionUnsafeConsumer()
@@ -176,9 +187,11 @@ public class LayoutPageTemplateEntryActionDropdownItemsProvider {
 			dropdownGroupItem -> {
 				dropdownGroupItem.setDropdownItems(
 					DropdownItemListBuilder.add(
-						() -> LayoutPageTemplateEntryPermission.contains(
-							_themeDisplay.getPermissionChecker(),
-							_layoutPageTemplateEntry, ActionKeys.DELETE),
+						() ->
+							!_layoutPageTemplateEntry.isReadOnly() &&
+							LayoutPageTemplateEntryPermission.contains(
+								_themeDisplay.getPermissionChecker(),
+								_layoutPageTemplateEntry, ActionKeys.DELETE),
 						_getDeleteLayoutPageTemplateEntryActionUnsafeConsumer()
 					).build());
 				dropdownGroupItem.setSeparator(true);

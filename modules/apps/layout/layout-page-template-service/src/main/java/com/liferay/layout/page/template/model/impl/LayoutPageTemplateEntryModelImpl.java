@@ -78,10 +78,11 @@ public class LayoutPageTemplateEntryModelImpl
 		{"classNameId", Types.BIGINT}, {"classTypeId", Types.BIGINT},
 		{"classTypeKey", Types.VARCHAR}, {"name", Types.VARCHAR},
 		{"type_", Types.INTEGER}, {"previewFileEntryId", Types.BIGINT},
-		{"defaultTemplate", Types.BOOLEAN}, {"layoutPrototypeId", Types.BIGINT},
-		{"plid", Types.BIGINT}, {"lastPublishDate", Types.TIMESTAMP},
-		{"status", Types.INTEGER}, {"statusByUserId", Types.BIGINT},
-		{"statusByUserName", Types.VARCHAR}, {"statusDate", Types.TIMESTAMP}
+		{"defaultTemplate", Types.BOOLEAN}, {"readOnly", Types.BOOLEAN},
+		{"layoutPrototypeId", Types.BIGINT}, {"plid", Types.BIGINT},
+		{"lastPublishDate", Types.TIMESTAMP}, {"status", Types.INTEGER},
+		{"statusByUserId", Types.BIGINT}, {"statusByUserName", Types.VARCHAR},
+		{"statusDate", Types.TIMESTAMP}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -108,6 +109,7 @@ public class LayoutPageTemplateEntryModelImpl
 		TABLE_COLUMNS_MAP.put("type_", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("previewFileEntryId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("defaultTemplate", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("readOnly", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("layoutPrototypeId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("plid", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("lastPublishDate", Types.TIMESTAMP);
@@ -118,7 +120,7 @@ public class LayoutPageTemplateEntryModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table LayoutPageTemplateEntry (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,layoutPageTemplateEntryId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,layoutPageTemplateCollectionId LONG,layoutPageTemplateEntryKey VARCHAR(75) null,classNameId LONG,classTypeId LONG,classTypeKey VARCHAR(75) null,name VARCHAR(75) null,type_ INTEGER,previewFileEntryId LONG,defaultTemplate BOOLEAN,layoutPrototypeId LONG,plid LONG,lastPublishDate DATE null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null,primary key (layoutPageTemplateEntryId, ctCollectionId))";
+		"create table LayoutPageTemplateEntry (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,layoutPageTemplateEntryId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,layoutPageTemplateCollectionId LONG,layoutPageTemplateEntryKey VARCHAR(75) null,classNameId LONG,classTypeId LONG,classTypeKey VARCHAR(75) null,name VARCHAR(75) null,type_ INTEGER,previewFileEntryId LONG,defaultTemplate BOOLEAN,readOnly BOOLEAN,layoutPrototypeId LONG,plid LONG,lastPublishDate DATE null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null,primary key (layoutPageTemplateEntryId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table LayoutPageTemplateEntry";
@@ -386,6 +388,8 @@ public class LayoutPageTemplateEntryModelImpl
 			attributeGetterFunctions.put(
 				"defaultTemplate", LayoutPageTemplateEntry::getDefaultTemplate);
 			attributeGetterFunctions.put(
+				"readOnly", LayoutPageTemplateEntry::getReadOnly);
+			attributeGetterFunctions.put(
 				"layoutPrototypeId",
 				LayoutPageTemplateEntry::getLayoutPrototypeId);
 			attributeGetterFunctions.put(
@@ -500,6 +504,10 @@ public class LayoutPageTemplateEntryModelImpl
 				"defaultTemplate",
 				(BiConsumer<LayoutPageTemplateEntry, Boolean>)
 					LayoutPageTemplateEntry::setDefaultTemplate);
+			attributeSetterBiConsumers.put(
+				"readOnly",
+				(BiConsumer<LayoutPageTemplateEntry, Boolean>)
+					LayoutPageTemplateEntry::setReadOnly);
 			attributeSetterBiConsumers.put(
 				"layoutPrototypeId",
 				(BiConsumer<LayoutPageTemplateEntry, Long>)
@@ -1024,6 +1032,27 @@ public class LayoutPageTemplateEntryModelImpl
 
 	@JSON
 	@Override
+	public boolean getReadOnly() {
+		return _readOnly;
+	}
+
+	@JSON
+	@Override
+	public boolean isReadOnly() {
+		return _readOnly;
+	}
+
+	@Override
+	public void setReadOnly(boolean readOnly) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_readOnly = readOnly;
+	}
+
+	@JSON
+	@Override
 	public long getLayoutPrototypeId() {
 		return _layoutPrototypeId;
 	}
@@ -1347,6 +1376,7 @@ public class LayoutPageTemplateEntryModelImpl
 		layoutPageTemplateEntryImpl.setPreviewFileEntryId(
 			getPreviewFileEntryId());
 		layoutPageTemplateEntryImpl.setDefaultTemplate(isDefaultTemplate());
+		layoutPageTemplateEntryImpl.setReadOnly(isReadOnly());
 		layoutPageTemplateEntryImpl.setLayoutPrototypeId(
 			getLayoutPrototypeId());
 		layoutPageTemplateEntryImpl.setPlid(getPlid());
@@ -1407,6 +1437,8 @@ public class LayoutPageTemplateEntryModelImpl
 			this.<Long>getColumnOriginalValue("previewFileEntryId"));
 		layoutPageTemplateEntryImpl.setDefaultTemplate(
 			this.<Boolean>getColumnOriginalValue("defaultTemplate"));
+		layoutPageTemplateEntryImpl.setReadOnly(
+			this.<Boolean>getColumnOriginalValue("readOnly"));
 		layoutPageTemplateEntryImpl.setLayoutPrototypeId(
 			this.<Long>getColumnOriginalValue("layoutPrototypeId"));
 		layoutPageTemplateEntryImpl.setPlid(
@@ -1600,6 +1632,8 @@ public class LayoutPageTemplateEntryModelImpl
 
 		layoutPageTemplateEntryCacheModel.defaultTemplate = isDefaultTemplate();
 
+		layoutPageTemplateEntryCacheModel.readOnly = isReadOnly();
+
 		layoutPageTemplateEntryCacheModel.layoutPrototypeId =
 			getLayoutPrototypeId();
 
@@ -1722,6 +1756,7 @@ public class LayoutPageTemplateEntryModelImpl
 	private int _type;
 	private long _previewFileEntryId;
 	private boolean _defaultTemplate;
+	private boolean _readOnly;
 	private long _layoutPrototypeId;
 	private long _plid;
 	private Date _lastPublishDate;
@@ -1784,6 +1819,7 @@ public class LayoutPageTemplateEntryModelImpl
 		_columnOriginalValues.put("type_", _type);
 		_columnOriginalValues.put("previewFileEntryId", _previewFileEntryId);
 		_columnOriginalValues.put("defaultTemplate", _defaultTemplate);
+		_columnOriginalValues.put("readOnly", _readOnly);
 		_columnOriginalValues.put("layoutPrototypeId", _layoutPrototypeId);
 		_columnOriginalValues.put("plid", _plid);
 		_columnOriginalValues.put("lastPublishDate", _lastPublishDate);
@@ -1855,19 +1891,21 @@ public class LayoutPageTemplateEntryModelImpl
 
 		columnBitmasks.put("defaultTemplate", 524288L);
 
-		columnBitmasks.put("layoutPrototypeId", 1048576L);
+		columnBitmasks.put("readOnly", 1048576L);
 
-		columnBitmasks.put("plid", 2097152L);
+		columnBitmasks.put("layoutPrototypeId", 2097152L);
 
-		columnBitmasks.put("lastPublishDate", 4194304L);
+		columnBitmasks.put("plid", 4194304L);
 
-		columnBitmasks.put("status", 8388608L);
+		columnBitmasks.put("lastPublishDate", 8388608L);
 
-		columnBitmasks.put("statusByUserId", 16777216L);
+		columnBitmasks.put("status", 16777216L);
 
-		columnBitmasks.put("statusByUserName", 33554432L);
+		columnBitmasks.put("statusByUserId", 33554432L);
 
-		columnBitmasks.put("statusDate", 67108864L);
+		columnBitmasks.put("statusByUserName", 67108864L);
+
+		columnBitmasks.put("statusDate", 134217728L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -1876,4 +1914,4 @@ public class LayoutPageTemplateEntryModelImpl
 	private LayoutPageTemplateEntry _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1160934109
+// LIFERAY-SERVICE-BUILDER-HASH:643875364

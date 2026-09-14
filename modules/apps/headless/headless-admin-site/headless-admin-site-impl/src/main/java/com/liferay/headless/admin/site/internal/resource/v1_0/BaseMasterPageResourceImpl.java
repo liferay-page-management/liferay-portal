@@ -395,7 +395,7 @@ public abstract class BaseMasterPageResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/master-pages/{masterPageExternalReferenceCode}' -d $'{"dateCreated": ___, "dateModified": ___, "datePublished": ___, "externalReferenceCode": ___, "key": ___, "keywords": ___, "markedAsDefault": ___, "name": ___, "pageSpecifications": ___, "permissions": ___, "taxonomyCategoryBriefs": ___, "thumbnailURLReference": ___, "uuid": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/master-pages/{masterPageExternalReferenceCode}' -d $'{"dateCreated": ___, "dateModified": ___, "datePublished": ___, "externalReferenceCode": ___, "key": ___, "keywords": ___, "markedAsDefault": ___, "name": ___, "pageSpecifications": ___, "permissions": ___, "readOnly": ___, "taxonomyCategoryBriefs": ___, "thumbnailURLReference": ___, "uuid": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Updates only the fields received in the request body, leaving any other fields untouched."
@@ -487,6 +487,10 @@ public abstract class BaseMasterPageResourceImpl
 			existingMasterPage.setPermissions(masterPage.getPermissions());
 		}
 
+		if (masterPage.getReadOnly() != null) {
+			existingMasterPage.setReadOnly(masterPage.getReadOnly());
+		}
+
 		if (masterPage.getUuid() != null) {
 			existingMasterPage.setUuid(masterPage.getUuid());
 		}
@@ -505,7 +509,7 @@ public abstract class BaseMasterPageResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/master-pages' -d $'{"dateCreated": ___, "dateModified": ___, "datePublished": ___, "externalReferenceCode": ___, "key": ___, "keywords": ___, "markedAsDefault": ___, "name": ___, "pageSpecifications": ___, "permissions": ___, "taxonomyCategoryBriefs": ___, "thumbnailURLReference": ___, "uuid": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/master-pages' -d $'{"dateCreated": ___, "dateModified": ___, "datePublished": ___, "externalReferenceCode": ___, "key": ___, "keywords": ___, "markedAsDefault": ___, "name": ___, "pageSpecifications": ___, "permissions": ___, "readOnly": ___, "taxonomyCategoryBriefs": ___, "thumbnailURLReference": ___, "uuid": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Adds a new master page."
@@ -766,7 +770,7 @@ public abstract class BaseMasterPageResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/master-pages/{masterPageExternalReferenceCode}' -d $'{"dateCreated": ___, "dateModified": ___, "datePublished": ___, "externalReferenceCode": ___, "key": ___, "keywords": ___, "markedAsDefault": ___, "name": ___, "pageSpecifications": ___, "permissions": ___, "taxonomyCategoryBriefs": ___, "thumbnailURLReference": ___, "uuid": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-site/v1.0/sites/{siteExternalReferenceCode}/master-pages/{masterPageExternalReferenceCode}' -d $'{"dateCreated": ___, "dateModified": ___, "datePublished": ___, "externalReferenceCode": ___, "key": ___, "keywords": ___, "markedAsDefault": ___, "name": ___, "pageSpecifications": ___, "permissions": ___, "readOnly": ___, "taxonomyCategoryBriefs": ___, "thumbnailURLReference": ___, "uuid": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Updates the master page with the given external reference code, or creates it if it does not exist."
@@ -1865,4 +1869,4 @@ public abstract class BaseMasterPageResourceImpl
 		LogFactoryUtil.getLog(BaseMasterPageResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-230666204
+// LIFERAY-REST-BUILDER-HASH:-1899359356

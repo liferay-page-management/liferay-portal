@@ -27,6 +27,7 @@ import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminP
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
@@ -347,15 +348,22 @@ public class MasterPageResourceImpl
 		ServiceContextThreadLocal.pushServiceContext(serviceContext);
 
 		try {
+			layoutPageTemplateEntry =
+				_layoutPageTemplateEntryService.updateLayoutPageTemplateEntry(
+					layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
+					masterPage.getName());
+
+			layoutPageTemplateEntry = _updateReadOnly(
+				layoutPageTemplateEntry,
+				GetterUtil.getBoolean(masterPage.getReadOnly()));
+
 			return _masterPageDTOConverter.toDTO(
 				DTOConverterContextUtil.getDTOConverterContext(
 					contextAcceptLanguage, _dtoConverterRegistry,
 					contextHttpServletRequest,
 					layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
 					contextUriInfo, contextUser),
-				_layoutPageTemplateEntryService.updateLayoutPageTemplateEntry(
-					layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
-					masterPage.getName()));
+				layoutPageTemplateEntry);
 		}
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
@@ -436,6 +444,10 @@ public class MasterPageResourceImpl
 					masterPage.getPageSpecifications()),
 				serviceContext);
 
+		layoutPageTemplateEntry = _updateReadOnly(
+			layoutPageTemplateEntry,
+			GetterUtil.getBoolean(masterPage.getReadOnly()));
+
 		return _masterPageDTOConverter.toDTO(
 			DTOConverterContextUtil.getDTOConverterContext(
 				contextAcceptLanguage, _dtoConverterRegistry,
@@ -481,6 +493,19 @@ public class MasterPageResourceImpl
 			masterPage.getUuid());
 	}
 
+	private LayoutPageTemplateEntry _updateReadOnly(
+		LayoutPageTemplateEntry layoutPageTemplateEntry, boolean readOnly) {
+
+		if (readOnly == layoutPageTemplateEntry.isReadOnly()) {
+			return layoutPageTemplateEntry;
+		}
+
+		layoutPageTemplateEntry.setReadOnly(readOnly);
+
+		return _layoutPageTemplateEntryLocalService.
+			updateLayoutPageTemplateEntry(layoutPageTemplateEntry);
+	}
+
 	private static final EntityModel _entityModel = new MasterPageEntityModel();
 
 	@Reference
@@ -497,6 +522,10 @@ public class MasterPageResourceImpl
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
+
+	@Reference
+	private LayoutPageTemplateEntryLocalService
+		_layoutPageTemplateEntryLocalService;
 
 	@Reference
 	private LayoutPageTemplateEntryService _layoutPageTemplateEntryService;

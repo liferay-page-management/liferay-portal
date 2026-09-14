@@ -1157,6 +1157,22 @@ public class PageTemplatesImporterTest {
 	}
 
 	@Test
+	public void testImportLayoutPageTemplateWithReadOnly() throws Exception {
+		List<LayoutsImporterResultEntry> layoutsImporterResultEntries =
+			_getLayoutsImporterResultEntries(
+				"page-template-read-only", new HashMap<>());
+
+		Assert.assertEquals(
+			layoutsImporterResultEntries.toString(), 1,
+			layoutsImporterResultEntries.size());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_getLayoutPageTemplateEntry(layoutsImporterResultEntries, 0);
+
+		Assert.assertTrue(layoutPageTemplateEntry.isReadOnly());
+	}
+
+	@Test
 	public void testImportLayoutPageTemplateWithThumbnail() throws Exception {
 		List<LayoutsImporterResultEntry> layoutsImporterResultEntries =
 			_getLayoutsImporterResultEntries(
