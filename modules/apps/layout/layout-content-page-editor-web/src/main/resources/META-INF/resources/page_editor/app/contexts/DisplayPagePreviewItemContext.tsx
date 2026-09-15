@@ -7,7 +7,7 @@ import React, {useCallback, useContext, useState} from 'react';
 
 import {deepEqual} from '../utils/checkDeepEqual';
 
-type PreviewItem = {
+export type PreviewItem = {
 	data: {
 		className?: string;
 		classNameId?: string;

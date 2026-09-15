@@ -9,6 +9,7 @@ import {
 } from '../actions/addFragmentEntryLinks';
 import {FREEMARKER_FRAGMENT_ENTRY_PROCESSOR} from '../config/constants/freemarkerFragmentEntryProcessor';
 import {config} from '../config/index';
+import {PreviewItem} from '../contexts/DisplayPagePreviewItemContext';
 import {Dispatch} from '../contexts/StoreContext';
 import updateFragmentConfiguration from '../thunks/updateFragmentConfiguration';
 
@@ -21,6 +22,7 @@ type FragmentConfiguration = {
 export default function updateConfigurationValue({
 	configuration,
 	dispatch,
+	displayPagePreviewItem,
 	fragmentEntryLink,
 	languageId,
 	name,
@@ -28,6 +30,7 @@ export default function updateConfigurationValue({
 }: {
 	configuration?: FragmentConfiguration;
 	dispatch: Dispatch;
+	displayPagePreviewItem?: PreviewItem | null;
 	fragmentEntryLink: FragmentEntryLink;
 	languageId: Liferay.Language.Locale;
 	name: string;
@@ -62,6 +65,7 @@ export default function updateConfigurationValue({
 	dispatch(
 		updateFragmentConfiguration({
 			configurationValues: nextConfigurationValues,
+			displayPagePreviewItem,
 			fragmentEntryLink,
 		})
 	);
