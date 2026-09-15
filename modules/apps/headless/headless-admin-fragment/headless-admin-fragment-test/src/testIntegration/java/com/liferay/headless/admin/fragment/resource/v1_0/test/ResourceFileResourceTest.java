@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.PortalRunModeClassTestRule;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -51,6 +52,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -95,7 +97,8 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 	public static final AggregateTestRule aggregateTestRule =
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
-			PermissionCheckerMethodTestRule.INSTANCE);
+			PermissionCheckerMethodTestRule.INSTANCE,
+			PortalRunModeClassTestRule.INSTANCE);
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
@@ -225,7 +228,7 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo("LPD-88395")
+	@TestInfo({"LPD-88395", "LPD-102063"})
 	public void testPostSiteResourceFile() throws Exception {
 		super.testPostSiteResourceFile();
 
@@ -238,6 +241,7 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		_testPostSiteResourceFileFileURLReferenceNullProblemException();
 		_testPostSiteResourceFileFileURLReferenceURL();
 		_testPostSiteResourceFileFileURLReferenceURLLARProblemException();
+		_testPostSiteResourceFileFileURLReferenceURLLocalNetworkProblemException();
 		_testPostSiteResourceFileFileURLReferenceURLUnreachableProblemException();
 		_testPostSiteResourceFileFileURLReferenceURLUnsupportedProtocolProblemException();
 		_testPostSiteResourceFileFragmentSetAndFragmentSetExternalReferenceCode();
@@ -255,7 +259,7 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-88395", "LPD-102182"})
+	@TestInfo({"LPD-88395", "LPD-102063", "LPD-102182"})
 	public void testPutSiteResourceFile() throws Exception {
 		_testPutSiteResourceFile();
 		_testPutSiteResourceFileBatch();
@@ -264,6 +268,7 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		_testPutSiteResourceFileFileURLReferenceFileBase64AndURLNullProblemException();
 		_testPutSiteResourceFileFileURLReferenceNullProblemException();
 		_testPutSiteResourceFileFileURLReferenceURL();
+		_testPutSiteResourceFileFileURLReferenceURLLocalNetworkProblemException();
 		_testPutSiteResourceFileName();
 		_testPutSiteResourceFileNameNullProblemException();
 		_testPutSiteResourceFilePortletFileProblemException();
@@ -810,6 +815,27 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		resourceFolder.setName(RandomTestUtil.randomString());
 
 		return resourceFolder;
+	}
+
+	private void _runWithTestModeDisabled(
+			UnsafeRunnable<Exception> unsafeRunnable)
+		throws Exception {
+
+		String liferayMode = SystemProperties.get("liferay.mode");
+
+		SystemProperties.clear("liferay.mode");
+
+		try {
+			unsafeRunnable.run();
+		}
+		finally {
+			if (liferayMode == null) {
+				SystemProperties.clear("liferay.mode");
+			}
+			else {
+				SystemProperties.set("liferay.mode", liferayMode);
+			}
+		}
 	}
 
 	private void _testDeleteSiteResourceFileDocumentLibraryFileProblemException()
@@ -1605,6 +1631,23 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 			"Unable to download file from " + url, url);
 	}
 
+	private void _testPostSiteResourceFileFileURLReferenceURLLocalNetworkProblemException()
+		throws Exception {
+
+		_runWithTestModeDisabled(
+			() -> {
+				for (String url :
+						new String[] {
+							_content1URL, "http://10.0.0.1",
+							"http://169.254.169.254"
+						}) {
+
+					_testPostSiteResourceFileFileURLReferenceProblemException(
+						"Denied access to local network address " + url, url);
+				}
+			});
+	}
+
 	private void _testPostSiteResourceFileFileURLReferenceURLUnreachableProblemException()
 		throws Exception {
 
@@ -2150,6 +2193,49 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		_assertContent(
 			_content2Bytes, postResourceFile.getExternalReferenceCode(),
 			testGroup.getGroupId());
+	}
+
+	private void _testPutSiteResourceFileFileURLReferenceURLLocalNetworkProblemException()
+		throws Exception {
+
+		FragmentCollection fragmentCollection = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		ResourceFile postResourceFile =
+			resourceFileResource.postSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				_randomResourceFile(
+					fragmentCollection.getExternalReferenceCode()));
+
+		ResourceFile updatedResourceFile = _randomResourceFile(
+			fragmentCollection.getExternalReferenceCode());
+
+		FileURLReference fileURLReference = new FileURLReference();
+
+		fileURLReference.setUrl(_content2URL);
+
+		updatedResourceFile.setFileURLReference(fileURLReference);
+
+		_runWithTestModeDisabled(
+			() -> {
+				try {
+					resourceFileResource.putSiteResourceFile(
+						testGroup.getExternalReferenceCode(),
+						postResourceFile.getExternalReferenceCode(),
+						updatedResourceFile);
+
+					Assert.fail();
+				}
+				catch (Problem.ProblemException problemException) {
+					Problem problem = problemException.getProblem();
+
+					Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+					Assert.assertEquals(
+						"Denied access to local network address " +
+							_content2URL,
+						problem.getTitle());
+				}
+			});
 	}
 
 	private void _testPutSiteResourceFileName() throws Exception {
