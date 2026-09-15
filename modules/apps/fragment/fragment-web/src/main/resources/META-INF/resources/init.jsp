@@ -52,6 +52,7 @@ page import="com.liferay.fragment.web.internal.display.context.GroupFragmentEntr
 page import="com.liferay.fragment.web.internal.display.context.GroupFragmentEntryUsageManagementToolbarDisplayContext" %><%@
 page import="com.liferay.fragment.web.internal.display.context.ImportDisplayContext" %><%@
 page import="com.liferay.fragment.web.internal.display.context.RenderFragmentEntryDisplayContext" %><%@
+page import="com.liferay.fragment.web.internal.exception.InvalidPropagationTargetGroupException" %><%@
 page import="com.liferay.fragment.web.internal.frontend.taglib.clay.servlet.taglib.ContributedFragmentCompositionVerticalCard" %><%@
 page import="com.liferay.fragment.web.internal.frontend.taglib.clay.servlet.taglib.ContributedFragmentEntryVerticalCard" %><%@
 page import="com.liferay.fragment.web.internal.frontend.taglib.clay.servlet.taglib.FragmentEntryVerticalCardFactory" %><%@
