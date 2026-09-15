@@ -8,6 +8,7 @@ import {Action} from '../contexts/StateContext';
 export default function actionGeneratesChanges(actionType: Action['type']) {
 	switch (actionType) {
 		case 'add-field':
+		case 'add-group':
 		case 'add-referenced-structures':
 		case 'add-related-content':
 		case 'add-repeatable-group':
@@ -16,10 +17,11 @@ export default function actionGeneratesChanges(actionType: Action['type']) {
 		case 'move-children':
 		case 'paste':
 		case 'rename-item':
+		case 'set-group-repeatable':
 		case 'set-workflow':
 		case 'ungroup':
 		case 'update-field':
-		case 'update-repeatable-group':
+		case 'update-group':
 		case 'update-related-content':
 		case 'update-structure':
 			return true;

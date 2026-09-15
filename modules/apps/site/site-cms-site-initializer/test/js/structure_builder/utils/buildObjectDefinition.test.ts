@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {config} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/config';
 import {
+	Group,
 	ReferencedStructure,
 	RelatedContent,
 	RepeatableGroup,
@@ -20,6 +22,7 @@ jest.mock(
 		config: {
 			acceptedGroupExternalReferenceCodes:
 				'acceptedGroupExternalReferenceCodesConfig',
+			isNonRepeatableGroupsEnabled: true,
 		},
 	})
 );
@@ -467,12 +470,13 @@ describe('buildObjectDefinition', () => {
 		const repeatableGroup: RepeatableGroup = {
 			children: new Map(),
 			erc: 'group-erc',
+			isRepeatable: true,
 			label: {en_US: 'Repeatable Group'},
 			name: 'repeatableGroup',
 			parent: getUuid(),
 			relationshipERC: 'group-rel-erc',
 			relationshipName: 'groupRelationship',
-			type: 'repeatable-group',
+			type: 'group',
 			uuid: groupUuid,
 		};
 
@@ -505,5 +509,142 @@ describe('buildObjectDefinition', () => {
 				type: 'oneToMany',
 			},
 		]);
+	});
+
+	it('keeps a repeatable group nested in a group as a relationship, not a field', () => {
+		const repeatableGroup: RepeatableGroup = {
+			children: new Map(),
+			erc: 'group-erc',
+			isRepeatable: true,
+			label: {en_US: 'Repeatable Group'},
+			name: 'repeatableGroup',
+			parent: getUuid(),
+			relationshipERC: 'group-rel-erc',
+			relationshipName: 'groupRelationship',
+			type: 'group',
+			uuid: getUuid(),
+		};
+
+		const rootGroup: Group = {
+			children: new Map<Uuid, StructureChild>([
+				[repeatableGroup.uuid, repeatableGroup],
+				[TEXT_FIELD.uuid, TEXT_FIELD],
+			]),
+			isRepeatable: false,
+			label: {en_US: 'Variants'},
+			parent: getUuid(),
+			type: 'group',
+			uuid: getUuid(),
+		};
+
+		const result = buildObjectDefinition({
+			children: new Map<Uuid, StructureChild>([
+				[TITLE_FIELD.uuid, TITLE_FIELD],
+				[rootGroup.uuid, rootGroup],
+			]),
+			erc: 'structureERC',
+			label: {en_US: 'Structure'},
+			name: 'myStructure',
+			spaces: [],
+			status: 'draft',
+		});
+
+		expect(
+			result.objectFields?.map((objectField) => objectField.name)
+		).toEqual(['titleField', 'textField']);
+
+		expect(result.objectRelationships).toEqual([
+			{
+				deletionType: 'cascade',
+				edge: true,
+				externalReferenceCode: 'group-rel-erc',
+				label: {en_US: 'Repeatable Group'},
+				name: 'groupRelationship',
+				objectDefinitionExternalReferenceCode1: 'structureERC',
+				objectDefinitionExternalReferenceCode2: 'group-erc',
+				type: 'oneToMany',
+			},
+		]);
+	});
+
+	it('carries the object layout, so one request saves the structure and its layout', () => {
+		const groupUuid = getUuid();
+		const structureUuid = getUuid();
+
+		const sku: Field = {
+			...DATE_TIME_FIELD,
+			name: 'sku',
+			parent: groupUuid,
+			type: 'text',
+			uuid: getUuid(),
+		};
+
+		const objectDefinition = buildObjectDefinition({
+			children: new Map([
+				[
+					groupUuid,
+					{
+						children: new Map([[sku.uuid, sku]]),
+						isRepeatable: false,
+						label: {en_US: 'Details'},
+						parent: structureUuid,
+						type: 'group',
+						uuid: groupUuid,
+					},
+				],
+			]),
+			erc: 'erc',
+			includeObjectLayout: true,
+			label: {en_US: 'Label'},
+			name: 'name',
+			spaces: 'all',
+		} as Parameters<typeof buildObjectDefinition>[0]);
+
+		expect(objectDefinition.objectLayouts).toHaveLength(1);
+		expect(
+			objectDefinition.objectLayouts?.[0].objectLayoutTabs
+		).toHaveLength(1);
+	});
+
+	it('omits the object layout unless asked, so a repeatable group definition keeps its own', () => {
+		const objectDefinition = buildObjectDefinition({
+			erc: 'erc',
+			label: {en_US: 'Label'},
+			name: 'name',
+			spaces: 'all',
+		});
+
+		expect(objectDefinition.objectLayouts).toBeUndefined();
+	});
+
+	it('writes no object layout while the feature flag is off, leaving existing layouts untouched', () => {
+		config.isNonRepeatableGroupsEnabled = false;
+
+		const groupUuid = getUuid();
+
+		const objectDefinition = buildObjectDefinition({
+			children: new Map([
+				[
+					groupUuid,
+					{
+						children: new Map(),
+						isRepeatable: false,
+						label: {en_US: 'Details'},
+						parent: getUuid(),
+						type: 'group',
+						uuid: groupUuid,
+					},
+				],
+			]),
+			erc: 'erc',
+			includeObjectLayout: true,
+			label: {en_US: 'Label'},
+			name: 'name',
+			spaces: 'all',
+		} as Parameters<typeof buildObjectDefinition>[0]);
+
+		expect(objectDefinition.objectLayouts).toBeUndefined();
+
+		config.isNonRepeatableGroupsEnabled = true;
 	});
 });

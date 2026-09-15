@@ -7,18 +7,23 @@ import {openToast} from 'frontend-js-components-web';
 import {Dispatch} from 'react';
 
 import {Action, State} from '../contexts/StateContext';
-import {Uuid} from '../types/Uuid';
+import {Group} from '../types/Structure';
 
-export default async function handleUngroupRepeatableGroup({
+export default function handleUngroup({
 	dispatch,
+	group,
 	publishedChildren,
-	uuid,
 }: {
 	dispatch: Dispatch<Action>;
+	group: Group;
 	publishedChildren: State['publishedChildren'];
-	uuid: Uuid;
 }) {
-	if (publishedChildren.has(uuid)) {
+
+	// Ungrouping a repeatable group drops the object definition its children
+	// live on, so a published one keeps it. A group that is not repeatable only
+	// describes the layout, so there is nothing to lose.
+
+	if (group.isRepeatable && publishedChildren.has(group.uuid)) {
 		openToast({
 			message: Liferay.Language.get(
 				'the-ungroup-action-cannot-be-done-because-this-repeatable-group-is-already-published'
@@ -29,5 +34,5 @@ export default async function handleUngroupRepeatableGroup({
 		return;
 	}
 
-	dispatch({type: 'ungroup', uuid});
+	dispatch({type: 'ungroup', uuid: group.uuid});
 }

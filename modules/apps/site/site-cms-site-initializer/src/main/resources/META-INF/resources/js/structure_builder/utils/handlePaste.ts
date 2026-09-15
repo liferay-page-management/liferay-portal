@@ -10,6 +10,10 @@ import {Action, Clipboard} from '../contexts/StateContext';
 import {Structure} from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 import findChild from './findChild';
+import getGroupDepth, {MAXIMUM_GROUP_DEPTH} from './getGroupDepth';
+import getGroupLevels from './getGroupLevels';
+import isGroup, {isRepeatableGroup} from './isGroup';
+import isInsideRepeatableGroup from './isInsideRepeatableGroup';
 import isReferenced from './isReferenced';
 
 export default function handlePaste({
@@ -38,6 +42,26 @@ export default function handlePaste({
 		return;
 	}
 
+	const targetDepth = getGroupDepth({structure, uuid: targetUuid});
+
+	const nestable = clipboard.items.every(
+		(item) =>
+			!isGroup(item) ||
+			(!isInsideRepeatableGroup({structure, uuid: targetUuid}) &&
+				targetDepth + getGroupLevels(item) <= MAXIMUM_GROUP_DEPTH)
+	);
+
+	if (!nestable) {
+		openToast({
+			message: Liferay.Language.get(
+				'items-could-not-be-pasted-because-a-group-cannot-be-nested-there'
+			),
+			type: 'danger',
+		});
+
+		return;
+	}
+
 	dispatch({targetUuid, type: 'paste'});
 }
 
@@ -54,7 +78,7 @@ function isValidTarget({
 
 	const target = findChild({root: structure, uuid: targetUuid});
 
-	if (!target || target.type !== 'repeatable-group') {
+	if (!target || !isRepeatableGroup(target)) {
 		return false;
 	}
 

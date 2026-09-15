@@ -5,14 +5,15 @@
 
 import {State} from '../../../../../src/main/resources/META-INF/resources/js/structure_builder/contexts/StateContext';
 import {
+	Group,
 	RelatedContent,
 	Structure,
 } from '../../../../../src/main/resources/META-INF/resources/js/structure_builder/types/Structure';
 import getUuid from '../../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/getUuid';
 import updateHistory from '../../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/state/updateHistory';
 
-const ROOT_UUID = getUuid();
 const RELATED_CONTENT_UUID = getUuid();
+const ROOT_UUID = getUuid();
 
 const INITIAL_HISTORY: State['history'] = {
 	deletedChildren: [],
@@ -65,6 +66,52 @@ describe('updateHistory', () => {
 			},
 		]);
 		expect(history.deletedChildren).toEqual([RELATED_CONTENT]);
+	});
+
+	it('Records the relationship of a repeatable group nested in a non-repeatable group against the structure, which is the object definition that owns it', () => {
+		const groupUuid = getUuid();
+		const repeatableUuid = getUuid();
+
+		const repeatable = {
+			children: new Map(),
+			erc: 'repeatable-erc',
+			isRepeatable: true,
+			label: {},
+			name: 'repeatable',
+			parent: groupUuid,
+			relationshipERC: 'repeatable-rel-erc',
+			relationshipName: 'repeatable',
+			type: 'group',
+			uuid: repeatableUuid,
+		} as Group;
+
+		const group = {
+			children: new Map([[repeatableUuid, repeatable]]),
+			erc: 'group-erc',
+			isRepeatable: false,
+			label: {},
+			parent: ROOT_UUID,
+			type: 'group',
+			uuid: groupUuid,
+		} as Group;
+
+		const history = updateHistory({
+			deletedChildrenUuids: new Set([repeatableUuid]),
+			initialHistory: INITIAL_HISTORY,
+			savedChildren: new Set([repeatableUuid]),
+			structure: {
+				...STRUCTURE,
+				children: new Map([[groupUuid, group]]),
+			},
+		});
+
+		expect(history.deletedGroupERCs).toEqual(['repeatable-erc']);
+		expect(history.deletedRelationships).toEqual([
+			{
+				relationshipERC: 'repeatable-rel-erc',
+				structureERC: 'root-erc',
+			},
+		]);
 	});
 
 	it('Records nothing for a child that was never saved', () => {

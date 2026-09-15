@@ -8,6 +8,7 @@ import {ClayDropDownWithItems} from '@clayui/drop-down';
 import React from 'react';
 
 import buildLocalizedValue from '../../common/utils/buildLocalizedValue';
+import {config} from '../config';
 import {useCache} from '../contexts/CacheContext';
 import {useSelector, useStateDispatch} from '../contexts/StateContext';
 import selectStructure from '../selectors/selectStructure';
@@ -19,9 +20,13 @@ import {
 	Field,
 	getDefaultField,
 } from '../utils/field';
+import findChild from '../utils/findChild';
+import getGroupDepth, {MAXIMUM_GROUP_DEPTH} from '../utils/getGroupDepth';
 import getRandomId from '../utils/getRandomId';
 import getRandomName from '../utils/getRandomName';
 import getUuid from '../utils/getUuid';
+import {isRepeatableGroup} from '../utils/isGroup';
+import isInsideRepeatableGroup from '../utils/isInsideRepeatableGroup';
 import openReferencedStructureModal from '../utils/openReferencedStructureModal';
 
 type Item = {
@@ -29,6 +34,7 @@ type Item = {
 	label: string;
 	onClick: () => void;
 	symbolLeft: string;
+	type?: 'divider';
 };
 
 export default function AddChildDropdown({
@@ -49,6 +55,24 @@ export default function AddChildDropdown({
 
 	const {data: objectDefinitions, status} = useCache('object-definitions');
 
+	const parent = parentUuid
+		? findChild({root: structure, uuid: parentUuid})
+		: null;
+
+	const insideNestedGroup = Boolean(
+		parent &&
+			!isRepeatableGroup(parent) &&
+			getGroupDepth({structure, uuid: parent.uuid}) > 1
+	);
+
+	const groupParentUuid = parentUuid ?? structure.uuid;
+
+	const canAddGroup =
+		config.isNonRepeatableGroupsEnabled &&
+		!isInsideRepeatableGroup({structure, uuid: groupParentUuid}) &&
+		getGroupDepth({structure, uuid: groupParentUuid}) + 1 <=
+			MAXIMUM_GROUP_DEPTH;
+
 	const addField = (type: Field['type']) =>
 		dispatch({
 			field: getDefaultField({
@@ -56,6 +80,13 @@ export default function AddChildDropdown({
 				type,
 			}),
 			type: 'add-field',
+		});
+
+	const addGroup = () =>
+		dispatch({
+			parent: groupParentUuid,
+			type: 'add-repeatable-group',
+			uuids: [],
 		});
 
 	const addRelatedContent = () =>
@@ -84,28 +115,43 @@ export default function AddChildDropdown({
 							symbolLeft: FIELD_TYPE_ICON[type],
 						})
 					),
-					{type: 'divider'},
+					{type: 'divider'} as Item,
+					...(canAddGroup
+						? [
+								{
+									label: Liferay.Language.get('create-group'),
+									onClick: () => addGroup(),
+									symbolLeft: 'fieldset',
+								},
+							]
+						: []),
 					{
 						className: 'dropdown-item-cms-warning',
 						label: Liferay.Language.get('select-related-content'),
 						onClick: () => addRelatedContent(),
 						symbolLeft: 'select-from-list',
 					},
-					{
-						className: 'dropdown-item-cms-warning',
-						label: Liferay.Language.get(
-							'referenced-content-structure'
-						),
-						onClick: () =>
-							openReferencedStructureModal({
-								dispatch,
-								objectDefinitions,
-								parentUuid: parentUuid ?? structure.uuid,
-								status,
-								structure,
-							}),
-						symbolLeft: 'edit-layout',
-					},
+
+					...(insideNestedGroup
+						? []
+						: [
+								{
+									className: 'dropdown-item-cms-warning',
+									label: Liferay.Language.get(
+										'referenced-content-structure'
+									),
+									onClick: () =>
+										openReferencedStructureModal({
+											dispatch,
+											objectDefinitions,
+											parentUuid:
+												parentUuid ?? structure.uuid,
+											status,
+											structure,
+										}),
+									symbolLeft: 'edit-layout',
+								},
+							]),
 				]}
 				menuElementAttrs={{className: 'dropdown-menu-cms'}}
 				menuHeight="auto"

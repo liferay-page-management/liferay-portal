@@ -8,18 +8,18 @@ export type ObjectField = {
 	businessType:
 		| 'Attachment'
 		| 'Boolean'
-		| 'Decimal'
 		| 'Date'
 		| 'DateTime'
+		| 'Decimal'
 		| 'EmailAddress'
 		| 'Integer'
-		| 'MultiselectPicklist'
 		| 'Long'
 		| 'LongText'
+		| 'MultiselectPicklist'
 		| 'PhoneNumber'
 		| 'Picklist'
-		| 'RichText'
 		| 'Relationship'
+		| 'RichText'
 		| 'String'
 		| 'Text';
 	externalReferenceCode: string;
@@ -38,6 +38,38 @@ export type ObjectField = {
 	system: boolean;
 };
 
+export type ObjectLayout = {
+	defaultObjectLayout: boolean;
+	name: Liferay.Language.LocalizedValue<string>;
+	objectDefinitionExternalReferenceCode?: string;
+	objectLayoutTabs: ObjectLayoutTab[];
+};
+
+export type ObjectLayoutBox = {
+	collapsable: boolean;
+	name?: Liferay.Language.LocalizedValue<string>;
+	objectLayoutRows: ObjectLayoutRow[];
+	priority?: number;
+	type: 'categorization' | 'regular' | 'seo';
+};
+
+export type ObjectLayoutColumn = {
+	objectFieldName: string;
+	priority?: number;
+	size?: number;
+};
+
+export type ObjectLayoutRow = {
+	objectLayoutColumns: ObjectLayoutColumn[];
+	priority?: number;
+};
+
+export type ObjectLayoutTab = {
+	name: Liferay.Language.LocalizedValue<string>;
+	objectLayoutBoxes: ObjectLayoutBox[];
+	priority?: number;
+};
+
 export type ObjectRelationship = {
 	deletionType: string;
 	edge?: boolean;
@@ -47,8 +79,20 @@ export type ObjectRelationship = {
 	objectDefinitionExternalReferenceCode1: string;
 	objectDefinitionExternalReferenceCode2: string;
 	objectDefinitionName2?: string;
+	objectField?: ObjectField;
 	reverse?: boolean;
 	type: 'manyToMany' | 'oneToMany' | 'oneToOne';
+};
+
+export type StateFlowValue = {
+	id: number;
+	objectStates: {
+		id: number;
+		key: string;
+		objectStateTransitions: {
+			key: string;
+		}[];
+	}[];
 };
 
 export type ObjectDefinition = {
@@ -77,6 +121,7 @@ export type ObjectDefinition = {
 		| 'L_CMS_CONTENT_STRUCTURES'
 		| 'L_CMS_FILE_TYPES'
 		| 'L_CMS_STRUCTURE_REPEATABLE_GROUPS';
+	objectLayouts?: ObjectLayout[];
 	objectRelationships?: ObjectRelationship[];
 	pluralLabel: Liferay.Language.LocalizedValue<string>;
 	restContextPath?: string;
@@ -96,14 +141,3 @@ export type ObjectDefinitions = Record<
 	ObjectDefinition['externalReferenceCode'],
 	ObjectDefinition
 >;
-
-export type StateFlowValue = {
-	id: number;
-	objectStates: {
-		id: number;
-		key: string;
-		objectStateTransitions: {
-			key: string;
-		}[];
-	}[];
-};

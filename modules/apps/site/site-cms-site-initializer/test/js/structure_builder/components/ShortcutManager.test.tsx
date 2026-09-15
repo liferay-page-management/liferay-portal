@@ -89,9 +89,10 @@ const FIELD = {
 const REPEATABLE_GROUP_UUID = getUuid();
 const REPEATABLE_GROUP = {
 	children: new Map(),
-	type: 'repeatable-group',
+	isRepeatable: true,
+	type: 'group',
 	uuid: REPEATABLE_GROUP_UUID,
-} as RepeatableGroup;
+} as unknown as RepeatableGroup;
 
 const STRUCTURE: Partial<Structure> = {
 	children: new Map<Uuid, StructureChild>([

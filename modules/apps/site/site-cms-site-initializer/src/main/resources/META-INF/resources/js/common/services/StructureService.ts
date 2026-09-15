@@ -77,6 +77,7 @@ async function createStructure({
 	const mainObjectDefinition = buildObjectDefinition({
 		children,
 		erc,
+		includeObjectLayout: true,
 		label,
 		name,
 		settings,
@@ -153,6 +154,7 @@ async function updateStructure({
 		children,
 		erc,
 		id,
+		includeObjectLayout: true,
 		label,
 		name,
 		settings,
@@ -181,10 +183,7 @@ async function updateStructure({
 		)
 	);
 
-	formData.append(
-		'deletedRepeatableGroupsERCs',
-		history.deletedGroupERCs.join(',')
-	);
+	formData.append('deletedGroupERCs', history.deletedGroupERCs.join(','));
 
 	formData.append('objectDefinition', JSON.stringify(mainObjectDefinition));
 

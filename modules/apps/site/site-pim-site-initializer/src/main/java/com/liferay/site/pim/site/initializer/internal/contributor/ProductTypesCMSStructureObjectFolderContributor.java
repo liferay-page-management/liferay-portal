@@ -33,6 +33,17 @@ public class ProductTypesCMSStructureObjectFolderContributor
 	implements CMSStructureObjectFolderContributor {
 
 	@Override
+	public String getBaseObjectDefinitionExternalReferenceCode() {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-96666")) {
+
+			return null;
+		}
+
+		return PIMObjectDefinitionConstants.EXTERNAL_REFERENCE_CODE_BASE_SKU;
+	}
+
+	@Override
 	public String getLabel() {
 		return "product";
 	}

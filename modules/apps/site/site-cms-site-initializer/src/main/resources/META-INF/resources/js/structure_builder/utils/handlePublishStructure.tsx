@@ -45,7 +45,7 @@ type Props = {
 	spaces: Space[];
 	staleCache: (key: CacheKey) => void;
 	state: State;
-	validate: () => boolean;
+	validate: (isPublishing?: boolean) => boolean;
 };
 
 export default async function handlePublishStructure({
@@ -58,7 +58,7 @@ export default async function handlePublishStructure({
 	state,
 	validate,
 }: Props) {
-	const valid = validate();
+	const valid = validate(true);
 
 	if (!valid) {
 		return;
@@ -291,7 +291,8 @@ export default async function handlePublishStructure({
 
 			return;
 		}
-		else if (data) {
+
+		if (data) {
 			structureId = data.id;
 
 			dispatch({id: data.id, type: 'publish-structure'});
@@ -320,9 +321,8 @@ export default async function handlePublishStructure({
 
 			return;
 		}
-		else {
-			dispatch({type: 'publish-structure'});
-		}
+
+		dispatch({type: 'publish-structure'});
 	}
 
 	if (status === 'published') {

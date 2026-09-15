@@ -63,6 +63,8 @@ export default async function handleSaveStructure({
 
 	dispatch({operation: 'saving', type: 'start-operation'});
 
+	let structureId: number | undefined;
+
 	if (status === 'new') {
 		const {data, error} = await StructureService.createStructure({
 			children,
@@ -84,9 +86,8 @@ export default async function handleSaveStructure({
 
 			return;
 		}
-		else if (data) {
-			dispatch({id: data.id, type: 'create-structure'});
-		}
+
+		structureId = data?.id;
 	}
 	else {
 		const {error} = await StructureService.updateStructure({
@@ -111,10 +112,16 @@ export default async function handleSaveStructure({
 
 			return;
 		}
-		else {
-			dispatch({type: 'save-structure'});
-			dispatch({type: 'clear-errors'});
+	}
+
+	if (status === 'new') {
+		if (structureId !== undefined) {
+			dispatch({id: structureId, type: 'create-structure'});
 		}
+	}
+	else {
+		dispatch({type: 'save-structure'});
+		dispatch({type: 'clear-errors'});
 	}
 
 	openToast({

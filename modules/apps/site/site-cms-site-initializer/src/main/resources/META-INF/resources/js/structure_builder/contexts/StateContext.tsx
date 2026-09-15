@@ -17,6 +17,7 @@ import {Space} from '../../common/types/Space';
 import {Workflow} from '../../common/types/Workflow';
 import getLocalizedValue from '../../common/utils/getLocalizedValue';
 import {
+	Group,
 	ReferencedStructure,
 	RelatedContent,
 	RepeatableGroup,
@@ -26,22 +27,33 @@ import {
 } from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 import actionGeneratesChanges from '../utils/actionGeneratesChanges';
+import applyObjectLayout from '../utils/applyObjectLayout';
+import {
+	getBaseObjectDefinition,
+	getBaseObjectDefinitions,
+} from '../utils/baseObjectDefinition';
+import {buildChildren} from '../utils/buildStructure';
 import {Field, SelectFromListField, getDefaultField} from '../utils/field';
 import findAvailableFieldName from '../utils/findAvailableFieldName';
 import findChild from '../utils/findChild';
 import {getChildrenUuids} from '../utils/getChildrenUuids';
 import getRandomId from '../utils/getRandomId';
+import getRandomName from '../utils/getRandomName';
+import getRelationshipStructureERC from '../utils/getRelationshipStructureERC';
 import getUuid from '../utils/getUuid';
+import isGroup, {isRepeatableGroup} from '../utils/isGroup';
 import normalizeString from '../utils/normalizeString';
 import addChild from '../utils/state/addChild';
+import addGroup from '../utils/state/addGroup';
 import addRepeatableGroup from '../utils/state/addRepeatableGroup';
 import cloneChild from '../utils/state/cloneChild';
 import deleteChildren from '../utils/state/deleteChildren';
 import moveChildren from '../utils/state/moveChildren';
 import refreshReferencedStructures from '../utils/state/refreshReferencedStructures';
 import sortChildren from '../utils/state/sortChildren';
-import ungroup from '../utils/state/ungroupRepeatableGroup';
+import ungroup from '../utils/state/ungroup';
 import updateChild from '../utils/state/updateChild';
+import updateGroup from '../utils/state/updateGroup';
 import updateHistory from '../utils/state/updateHistory';
 import {
 	ErrorMap,
@@ -49,13 +61,12 @@ import {
 	ValidationProperty,
 	validateField,
 	validateRelatedContent,
-	validateRepeatableGroup,
 	validateStructure,
 } from '../utils/validation';
 
 type History = {
 	deletedChildren: Array<StructureChild>;
-	deletedGroupERCs: Array<RepeatableGroup['erc']>;
+	deletedGroupERCs: string[];
 	deletedRelationships: Array<{
 		relationshipERC: string;
 		structureERC: string;
@@ -82,6 +93,36 @@ export type State = {
 	structure: Structure;
 	unsavedChanges: boolean;
 };
+
+function _clearGroupWithoutFieldsError(
+	invalids: State['invalids'],
+	parent: Group | Structure
+): State['invalids'] {
+	if (parent.type !== 'group') {
+		return invalids;
+	}
+
+	const errors = invalids.get(parent.uuid);
+
+	if (!errors?.has('global')) {
+		return invalids;
+	}
+
+	const nextErrors = new Map(errors);
+
+	nextErrors.delete('global');
+
+	const nextInvalids = new Map(invalids);
+
+	if (nextErrors.size) {
+		nextInvalids.set(parent.uuid, nextErrors);
+	}
+	else {
+		nextInvalids.delete(parent.uuid);
+	}
+
+	return nextInvalids;
+}
 
 const INITIAL_STATE: State = {
 	clipboard: null,
@@ -118,6 +159,12 @@ const INITIAL_STATE: State = {
 
 type AddFieldAction = {field: Field; type: 'add-field'};
 
+type AddGroupAction = {
+	parent: Uuid;
+	type: 'add-group';
+	uuids: Uuid[];
+};
+
 type AddReferencedStructuresAction = {
 	referencedStructures: ReferencedStructure[];
 	type: 'add-referenced-structures';
@@ -129,6 +176,7 @@ type AddRelatedContentAction = {
 };
 
 type AddRepeatableGroupAction = {
+	parent?: Uuid;
 	type: 'add-repeatable-group';
 	uuids: Uuid[];
 };
@@ -180,6 +228,12 @@ type RenameItemAction = {
 
 type SaveStructureAction = {type: 'save-structure'};
 
+type SetGroupRepeatableAction = {
+	isRepeatable: boolean;
+	type: 'set-group-repeatable';
+	uuid: Uuid;
+};
+
 type SetRenamingItemUuidAction = {
 	type: 'set-renaming-item-uuid';
 	uuid: Uuid;
@@ -221,18 +275,18 @@ type UpdateFieldAction = {
 	uuid: Uuid;
 };
 
+type UpdateGroupAction = {
+	label: Liferay.Language.LocalizedValue<string>;
+	type: 'update-group';
+	uuid: Uuid;
+};
+
 type UpdateRelatedContentAction = {
 	erc?: string;
 	label?: Liferay.Language.LocalizedValue<string>;
 	multiselection?: boolean;
 	relatedStructureERC?: string;
 	type: 'update-related-content';
-	uuid: Uuid;
-};
-
-type UpdateRepeatableGroupAction = {
-	label: Liferay.Language.LocalizedValue<string>;
-	type: 'update-repeatable-group';
 	uuid: Uuid;
 };
 
@@ -253,6 +307,7 @@ type ValidateAction = {
 
 export type Action =
 	| AddFieldAction
+	| AddGroupAction
 	| AddReferencedStructuresAction
 	| AddRelatedContentAction
 	| AddRepeatableGroupAction
@@ -269,14 +324,15 @@ export type Action =
 	| RefreshReferencedStructuresAction
 	| RenameItemAction
 	| SaveStructureAction
+	| SetGroupRepeatableAction
 	| SetRenamingItemUuidAction
 	| SetSelectionAction
 	| SetWorkflowAction
 	| StartOperationAction
 	| UngroupAction
 	| UpdateFieldAction
+	| UpdateGroupAction
 	| UpdateRelatedContentAction
-	| UpdateRepeatableGroupAction
 	| UpdateStructureAction
 	| ValidateAction;
 
@@ -291,12 +347,12 @@ function reducer(state: State, action: Action): State {
 
 			const {structure} = state;
 
-			let parent: Structure | RepeatableGroup = structure;
+			let parent: Group | Structure = structure;
 
 			if (field.parent !== structure.uuid) {
 				const item = findChild({root: structure, uuid: field.parent});
 
-				if (item?.type === 'repeatable-group') {
+				if (item && isGroup(item)) {
 					parent = item;
 				}
 			}
@@ -317,11 +373,34 @@ function reducer(state: State, action: Action): State {
 
 			return {
 				...state,
+				invalids: _clearGroupWithoutFieldsError(state.invalids, parent),
 				selection: [field.uuid],
 				structure: {
 					...structure,
 					children,
 				},
+			};
+		}
+		case 'add-group': {
+			const {parent, uuids} = action;
+
+			const {structure} = state;
+
+			const groupUuid = getUuid();
+
+			const children = addGroup({
+				groupChildren: uuids.map(
+					(uuid) => findChild({root: structure, uuid})!
+				),
+				groupParent: parent,
+				groupUuid,
+				root: structure,
+			});
+
+			return {
+				...state,
+				selection: [groupUuid],
+				structure: {...structure, children},
 			};
 		}
 		case 'add-referenced-structures': {
@@ -394,7 +473,7 @@ function reducer(state: State, action: Action): State {
 		case 'add-repeatable-group': {
 			const {history, savedChildren, structure} = state;
 
-			const {uuids} = action;
+			const {parent, uuids} = action;
 
 			const items = uuids.map(
 				(uuid) => findChild({root: structure, uuid})!
@@ -404,7 +483,7 @@ function reducer(state: State, action: Action): State {
 
 			const children = addRepeatableGroup({
 				groupChildren: items,
-				groupParent: items[0].parent,
+				groupParent: items.length ? items[0].parent : parent!,
 				groupUuid,
 				root: structure,
 			});
@@ -723,6 +802,82 @@ function reducer(state: State, action: Action): State {
 				},
 			};
 		}
+		case 'set-group-repeatable': {
+			const {isRepeatable, uuid} = action;
+
+			const {structure} = state;
+
+			const group = findChild({root: structure, uuid});
+
+			if (
+				!group ||
+				!isGroup(group) ||
+				group.isRepeatable === isRepeatable
+			) {
+				return state;
+			}
+
+			const nextGroup: Group = isRepeatable
+				? {
+						...group,
+						erc: group.erc ?? getRandomId(),
+						isRepeatable: true,
+						name: group.name ?? getRandomName({capitalize: true}),
+						relationshipERC: group.relationshipERC ?? getRandomId(),
+						relationshipName:
+							group.relationshipName ?? getRandomName(),
+					}
+				: {...group, isRepeatable: false};
+
+			let history = state.history;
+
+			// A group that was already saved as repeatable leaves an object
+			// definition and a relationship behind, so record them for cleanup.
+			// Becoming repeatable again withdraws those records, otherwise the
+			// save deletes an object definition the payload still references.
+
+			if (isRepeatable) {
+				if (group.erc && history.deletedGroupERCs.includes(group.erc)) {
+					history = {
+						...history,
+						deletedGroupERCs: history.deletedGroupERCs.filter(
+							(deletedGroupERC) => deletedGroupERC !== group.erc
+						),
+						deletedRelationships:
+							history.deletedRelationships.filter(
+								({relationshipERC}) =>
+									relationshipERC !== group.relationshipERC
+							),
+					};
+				}
+			}
+			else if (state.savedChildren.has(uuid) && group.erc) {
+				history = {
+					...history,
+					deletedGroupERCs: [...history.deletedGroupERCs, group.erc],
+					deletedRelationships: [
+						...history.deletedRelationships,
+						{
+							relationshipERC: group.relationshipERC!,
+							structureERC: getRelationshipStructureERC({
+								structure,
+								uuid: group.parent,
+							}),
+						},
+					],
+				};
+			}
+
+			return {
+				...state,
+				history,
+				structure: {
+					...structure,
+					children: updateChild({child: nextGroup, root: structure}),
+				},
+				unsavedChanges: true,
+			};
+		}
 		case 'set-renaming-item-uuid': {
 			const {uuid} = action;
 
@@ -754,14 +909,28 @@ function reducer(state: State, action: Action): State {
 			return {...state, operation};
 		}
 		case 'ungroup': {
-			const {structure} = state;
+			const {history, savedChildren, structure} = state;
 
 			const {uuid} = action;
 
+			const group = findChild({root: structure, uuid});
+
 			const nextChildren = ungroup({root: structure, uuid});
+
+			// A repeatable group owns an object definition and a relationship,
+			// so ungrouping it has to delete them.
 
 			return {
 				...state,
+				history:
+					group && isRepeatableGroup(group)
+						? updateHistory({
+								deletedChildrenUuids: new Set([uuid]),
+								initialHistory: history,
+								savedChildren,
+								structure,
+							})
+						: history,
 				structure: {
 					...structure,
 					children: nextChildren,
@@ -873,6 +1042,26 @@ function reducer(state: State, action: Action): State {
 				},
 			};
 		}
+		case 'update-group': {
+			const {label, uuid} = action;
+
+			const result = updateGroup({
+				invalids: state.invalids,
+				label,
+				structure: state.structure,
+				uuid,
+			});
+
+			if (!result) {
+				return state;
+			}
+
+			return {
+				...state,
+				invalids: result.invalids,
+				structure: {...state.structure, children: result.children},
+			};
+		}
 		case 'update-related-content': {
 			const {erc, label, multiselection, relatedStructureERC, uuid} =
 				action;
@@ -934,58 +1123,6 @@ function reducer(state: State, action: Action): State {
 					...structure,
 					children: nextChildren,
 				},
-			};
-		}
-		case 'update-repeatable-group': {
-			const {label, uuid} = action;
-
-			const {structure} = state;
-
-			const group = findChild({root: structure, uuid}) as RepeatableGroup;
-
-			if (!group) {
-				return state;
-			}
-
-			const nextGroup = {
-				...group,
-				label,
-			};
-
-			const nextChildren = updateChild({
-				child: nextGroup,
-				root: structure,
-			});
-
-			const nextState: State = {
-				...state,
-				structure: {
-					...structure,
-					children: nextChildren,
-				},
-			};
-
-			// Validate the data sent in the action
-
-			const invalids = new Map(state.invalids);
-
-			const errors = validateRepeatableGroup({
-				currentErrors: invalids.get(structure.uuid),
-				data: {label},
-			});
-
-			if (errors.size) {
-				invalids.set(group.uuid, errors);
-			}
-			else {
-				invalids.delete(group.uuid);
-			}
-
-			// Return new state
-
-			return {
-				...nextState,
-				invalids,
 			};
 		}
 		case 'update-structure': {
@@ -1162,6 +1299,20 @@ function useStateDispatch() {
 function getDefaultChildren(structureUuid: Uuid) {
 	const type = getType();
 
+	const baseObjectDefinition = getBaseObjectDefinition();
+
+	if (baseObjectDefinition) {
+		return applyObjectLayout({
+			children: buildChildren({
+				objectDefinition: baseObjectDefinition,
+				objectDefinitions: getBaseObjectDefinitions(),
+				parent: structureUuid,
+			}),
+			objectDefinition: baseObjectDefinition,
+			parent: structureUuid,
+		});
+	}
+
 	const children = new Map();
 
 	const title = getDefaultField({
@@ -1254,11 +1405,7 @@ function getTargetChildren({
 
 	const target = findChild({root: structure, uuid: targetUuid});
 
-	if (
-		target &&
-		(target.type === 'repeatable-group' ||
-			target.type === 'referenced-structure')
-	) {
+	if (target && (isGroup(target) || target.type === 'referenced-structure')) {
 		return target.children;
 	}
 

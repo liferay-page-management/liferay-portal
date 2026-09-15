@@ -4,6 +4,7 @@
  */
 
 import {setDefaultLanguageLabels} from '../../../../../src/main/resources/META-INF/resources/js/common/utils/defaultLanguageLabels';
+import {config} from '../../../../../src/main/resources/META-INF/resources/js/structure_builder/config';
 import {
 	RepeatableGroup,
 	Structure,
@@ -11,8 +12,8 @@ import {
 import getUuid from '../../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/getUuid';
 import addRepeatableGroup from '../../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/state/addRepeatableGroup';
 
-const ROOT_UUID = getUuid();
 const GROUP_UUID = getUuid();
+const ROOT_UUID = getUuid();
 
 const ROOT: Structure = {
 	children: new Map(),
@@ -60,11 +61,31 @@ describe('addRepeatableGroup', () => {
 		const group = children.get(GROUP_UUID) as RepeatableGroup;
 
 		expect(group).toBeDefined();
-		expect(group.type).toBe('repeatable-group');
+		expect(group.isRepeatable).toBe(true);
 		expect(group.label).toEqual({
 			en_US: 'repeatable-group',
 			es_ES: 'repeatable-group',
 		});
+	});
+
+	it('labels a new group "group" once the feature flag is on, where repeatable is only a flag', () => {
+		config.isNonRepeatableGroupsEnabled = true;
+
+		getDefaultLanguageIdSpy.mockReturnValue('en_US');
+		getLanguageIdSpy.mockReturnValue('en_US');
+
+		const children = addRepeatableGroup({
+			groupChildren: [],
+			groupParent: ROOT_UUID,
+			groupUuid: GROUP_UUID,
+			root: ROOT,
+		});
+
+		const group = children.get(GROUP_UUID) as RepeatableGroup;
+
+		expect(group.label.en_US).toBe('group');
+
+		config.isNonRepeatableGroupsEnabled = false;
 	});
 
 	it('produces a single label key when current and default language match', () => {

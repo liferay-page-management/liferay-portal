@@ -13,12 +13,14 @@ import {State, useSelector, useStateDispatch} from '../contexts/StateContext';
 import selectState from '../selectors/selectState';
 import selectStructureChildren from '../selectors/selectStructureChildren';
 import {
+	Group,
 	RelatedContent,
-	RepeatableGroup,
 	Structure,
 	StructureChild,
 } from '../types/Structure';
 import {Field, SelectFromListField} from './field';
+import isField from './isField';
+import isGroup from './isGroup';
 
 const NAME_MAX_LENGTH = 41;
 const ERC_MAX_LENGTH = 75;
@@ -36,6 +38,7 @@ export type ValidationProperty =
 
 export type ValidationError =
 	| 'empty'
+	| 'group-without-fields'
 	| 'invalid-character'
 	| 'in-use'
 	| 'lowercase'
@@ -175,15 +178,47 @@ export function validateRelatedContent({
 	return errors;
 }
 
-export function validateRepeatableGroup({
+export function validateGroup({
 	currentErrors,
 	data,
+	isPublishing = false,
 }: {
 	currentErrors?: ErrorMap;
-	data: Partial<RepeatableGroup>;
+	data: Partial<Group>;
+	isPublishing?: boolean;
 }): ErrorMap {
-	const {label} = data;
+	const errors = validateLabel({currentErrors, label: data.label});
 
+	if (isPublishing && data.children) {
+		_hasField(data.children)
+			? errors.delete('global')
+			: errors.set('global', 'group-without-fields');
+	}
+
+	return errors;
+}
+
+function _hasField(children: Group['children']): boolean {
+	for (const child of children.values()) {
+		if (isField(child)) {
+			return true;
+		}
+
+		if (isGroup(child) && _hasField(child.children)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function validateLabel({
+	currentErrors,
+	label,
+}: {
+	currentErrors?: ErrorMap;
+	label?: Liferay.Language.LocalizedValue<string>;
+}): ErrorMap {
 	const errors = new Map(currentErrors);
 
 	if (!isNullOrUndefined(label)) {
@@ -280,13 +315,19 @@ export function getErrorMessage(
 	property: ValidationProperty,
 	error: ValidationError,
 	values: {
-		erc: string;
-		name: string;
+		erc?: string;
+		name?: string;
 	}
 ) {
 	const {erc, name} = values;
 
 	if (property === 'global') {
+		if (error === 'group-without-fields') {
+			return Liferay.Language.get(
+				'this-group-needs-at-least-one-field-that-isnt-a-referenced-structure-or-select-related-content-to-be-published'
+			);
+		}
+
 		if (error === 'unexpected') {
 			return Liferay.Language.get(
 				'an-unexpected-error-occurred-while-saving-or-publishing-the-content-structure'
@@ -372,18 +413,16 @@ function getSiblingFieldNames(
 
 	const deletedFields =
 		deletedChildren?.filter(
-			(child) =>
-				child.type !== 'referenced-structure' &&
-				child.type !== 'repeatable-group'
+			(child) => child.type !== 'referenced-structure' && !isGroup(child)
 		) || [];
 
 	const fields = [...deletedFields, ...children.values()];
 
 	return fields
 		.filter(
-			(child) =>
+			(child): child is Field | RelatedContent =>
 				child.type !== 'referenced-structure' &&
-				child.type !== 'repeatable-group' &&
+				!isGroup(child) &&
 				child.uuid !== uuid
 		)
 		.map((child) => child.name);
@@ -410,7 +449,8 @@ export function useValidate() {
 		(
 			child: StructureChild,
 			invalids: State['invalids'],
-			deletedChildren: State['history']['deletedChildren']
+			deletedChildren: State['history']['deletedChildren'],
+			isPublishing: boolean
 		) => {
 			let errors: ErrorMap = new Map();
 
@@ -421,11 +461,18 @@ export function useValidate() {
 					invalids.set(child.uuid, errors);
 				}
 			}
-			else if (child.type === 'repeatable-group') {
-				errors = validateRepeatableGroup({data: child});
+			else if (isGroup(child)) {
+				errors = validateGroup({data: child, isPublishing});
 
 				if (errors.size) {
 					invalids.set(child.uuid, errors);
+				}
+				else {
+
+					// The group may have been reported before it held a field,
+					// so drop the stale error rather than blocking publishing.
+
+					invalids.delete(child.uuid);
 				}
 
 				for (const grandChild of child.children.values()) {
@@ -433,7 +480,12 @@ export function useValidate() {
 						continue;
 					}
 
-					validateChild(grandChild, invalids, deletedChildren);
+					validateChild(
+						grandChild,
+						invalids,
+						deletedChildren,
+						isPublishing
+					);
 				}
 			}
 			else if (child.type !== 'referenced-structure') {
@@ -450,48 +502,59 @@ export function useValidate() {
 		[]
 	);
 
-	return useCallback(() => {
+	return useCallback(
+		(isPublishing = false) => {
 
-		// Validate structure
+			// Validate structure
 
-		let errors: ErrorMap = new Map();
+			let errors: ErrorMap = new Map();
 
-		const invalids = new Map(state.invalids);
+			const invalids = new Map(state.invalids);
 
-		errors = validateStructure({data: structure, isGlobalValidation: true});
-
-		if (errors.size) {
-			invalids.set(structure.uuid, errors);
-		}
-
-		// Validate children
-
-		for (const child of children.values()) {
-			validateChild(child, invalids, state.history.deletedChildren);
-		}
-
-		// If there's some invalid, dispatch validate action
-
-		if (invalids.size) {
-			dispatch({
-				invalids,
-				type: 'validate',
+			errors = validateStructure({
+				data: structure,
+				isGlobalValidation: true,
 			});
 
-			focusInvalidElement();
+			if (errors.size) {
+				invalids.set(structure.uuid, errors);
+			}
 
-			return false;
-		}
+			// Validate children
 
-		// It's valid
+			for (const child of children.values()) {
+				validateChild(
+					child,
+					invalids,
+					state.history.deletedChildren,
+					isPublishing
+				);
+			}
 
-		return true;
-	}, [
-		children,
-		dispatch,
-		state.history.deletedChildren,
-		state.invalids,
-		structure,
-		validateChild,
-	]);
+			// If there's some invalid, dispatch validate action
+
+			if (invalids.size) {
+				dispatch({
+					invalids,
+					type: 'validate',
+				});
+
+				focusInvalidElement();
+
+				return false;
+			}
+
+			// It's valid
+
+			return true;
+		},
+		[
+			children,
+			dispatch,
+			state.history.deletedChildren,
+			state.invalids,
+			structure,
+			validateChild,
+		]
+	);
 }

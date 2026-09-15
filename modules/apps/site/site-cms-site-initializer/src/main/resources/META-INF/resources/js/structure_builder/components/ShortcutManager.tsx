@@ -9,14 +9,16 @@ import {useEffect, useMemo} from 'react';
 import {useCache, useStaleCache} from '../contexts/CacheContext';
 import {useSelector, useStateDispatch} from '../contexts/StateContext';
 import selectState from '../selectors/selectState';
+import {Group} from '../types/Structure';
 import findChild from '../utils/findChild';
-import handleAddRepeatableGroup from '../utils/handleAddRepeatableGroup';
+import handleAddGroup from '../utils/handleAddGroup';
 import handleDeleteChildren from '../utils/handleDeleteChildren';
 import handlePaste from '../utils/handlePaste';
 import handlePublishStructure from '../utils/handlePublishStructure';
 import handleSaveStructure from '../utils/handleSaveStructure';
-import handleUngroupRepeatableGroup from '../utils/handleUngroupRepeatableGroup';
+import handleUngroup from '../utils/handleUngroup';
 import isCopyable from '../utils/isCopyable';
+import isGroup from '../utils/isGroup';
 import isLocked from '../utils/isLocked';
 import isReferenced from '../utils/isReferenced';
 import isRenamable from '../utils/isRenamable';
@@ -151,12 +153,12 @@ export default function ShortcutManager() {
 				}),
 		});
 
-		// Create repeatable group
+		// Create group
 
 		map.set('Ctrl+G', {
 			enabled: () => Boolean(selection.length),
 			handler: () =>
-				handleAddRepeatableGroup({
+				handleAddGroup({
 					dispatch,
 					publishedChildren,
 					structure,
@@ -164,7 +166,7 @@ export default function ShortcutManager() {
 				}),
 		});
 
-		// Ungroup repeatable group
+		// Ungroup
 
 		map.set('Ctrl+Shift+G', {
 			enabled: () => {
@@ -176,20 +178,20 @@ export default function ShortcutManager() {
 
 				const item = findChild({root: structure, uuid})!;
 
-				if (
-					isReferenced({root: structure, uuid}) ||
-					item.type !== 'repeatable-group'
-				) {
+				if (isReferenced({root: structure, uuid}) || !isGroup(item)) {
 					return false;
 				}
 
 				return true;
 			},
 			handler: () =>
-				handleUngroupRepeatableGroup({
+				handleUngroup({
 					dispatch,
+					group: findChild({
+						root: structure,
+						uuid: selection[0],
+					}) as Group,
 					publishedChildren,
-					uuid: selection[0],
 				}),
 		});
 

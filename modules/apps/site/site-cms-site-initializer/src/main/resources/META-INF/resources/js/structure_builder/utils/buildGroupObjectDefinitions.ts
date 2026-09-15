@@ -7,6 +7,7 @@ import {ObjectDefinition} from '../../common/types/ObjectDefinition';
 import {State} from '../contexts/StateContext';
 import {RepeatableGroup, Structure} from '../types/Structure';
 import buildObjectDefinition from './buildObjectDefinition';
+import isGroup from './isGroup';
 
 export default function buildGroupObjectDefinitions({
 	children,
@@ -20,7 +21,22 @@ export default function buildGroupObjectDefinitions({
 	let definitions: ObjectDefinition[] = [...objectDefinitions];
 
 	for (const child of children.values()) {
-		if (child.type !== 'repeatable-group') {
+		if (!isGroup(child)) {
+			continue;
+		}
+
+		// A non-repeatable group is presentation only, but it can still hold
+		// repeatable groups that need their own object definition.
+
+		if (!child.isRepeatable) {
+			definitions = [
+				...buildGroupObjectDefinitions({
+					children: child.children,
+					publishedChildren,
+				}),
+				...definitions,
+			];
+
 			continue;
 		}
 

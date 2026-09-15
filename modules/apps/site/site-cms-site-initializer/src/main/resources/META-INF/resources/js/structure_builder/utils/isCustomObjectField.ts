@@ -22,6 +22,17 @@ export function setSystemObjectFieldNames(
 	CONTRIBUTED_SYSTEM_OBJECT_FIELD_NAMES = systemObjectFieldNames ?? {};
 }
 
+export function isSystemObjectFieldName(
+	objectDefinitionERC: string,
+	name: string
+): boolean {
+	return Boolean(
+		CONTRIBUTED_SYSTEM_OBJECT_FIELD_NAMES[objectDefinitionERC]?.includes(
+			name
+		)
+	);
+}
+
 export default function isCustomObjectField(
 	objectField: ObjectField,
 	objectDefinitionERC: string

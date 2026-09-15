@@ -7,23 +7,25 @@ import {useSelector} from '../contexts/StateContext';
 import selectSelection from '../selectors/selectSelection';
 import selectStructureChildren from '../selectors/selectStructureChildren';
 import {
+	Group,
 	ReferencedStructure,
 	RelatedContent,
-	RepeatableGroup,
 	Structure,
 } from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 import {Field} from '../utils/field';
+import isField from '../utils/isField';
+import isGroup from '../utils/isGroup';
 
 type SelectedChild =
 	| {field: Field; referenced: boolean; type: 'field'}
+	| {group: Group; referenced: boolean; type: 'group'}
 	| {referencedStructure: ReferencedStructure; type: 'referenced-structure'}
 	| {
 			referenced: boolean;
 			relatedContent: RelatedContent;
 			type: 'related-content';
-	  }
-	| {group: RepeatableGroup; referenced: boolean; type: 'repeatable-group'};
+	  };
 
 type SelectedItem =
 	| {type: 'main-structure'}
@@ -55,7 +57,7 @@ export default function useSelectedItem(): SelectedItem {
 
 function findSelectedChild(
 	uuid: Uuid,
-	children: (ReferencedStructure | RepeatableGroup | Structure)['children'],
+	children: (Group | ReferencedStructure | Structure)['children'],
 	isReferenced: boolean = false
 ): SelectedChild | null {
 	for (const child of children.values()) {
@@ -73,14 +75,14 @@ function findSelectedChild(
 					type: 'related-content',
 				};
 			}
-			else if (child.type === 'repeatable-group') {
+			else if (isGroup(child)) {
 				return {
 					group: child,
 					referenced: isReferenced,
-					type: 'repeatable-group',
+					type: 'group',
 				};
 			}
-			else {
+			else if (isField(child)) {
 				return {
 					field: child,
 					referenced: isReferenced,
@@ -88,10 +90,7 @@ function findSelectedChild(
 				};
 			}
 		}
-		else if (
-			child.type === 'referenced-structure' ||
-			child.type === 'repeatable-group'
-		) {
+		else if (child.type === 'referenced-structure' || isGroup(child)) {
 			const group = findSelectedChild(
 				uuid,
 				child.children,

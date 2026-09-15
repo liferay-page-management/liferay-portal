@@ -6,6 +6,7 @@
 import {State} from '../contexts/StateContext';
 import {Uuid} from '../types/Uuid';
 import findChild from '../utils/findChild';
+import hasName from '../utils/hasName';
 import {ValidationProperty, getErrorMessage} from '../utils/validation';
 
 export default function selectErrors(uuid: Uuid) {
@@ -31,7 +32,8 @@ export default function selectErrors(uuid: Uuid) {
 			return messages;
 		}
 
-		const {erc, name} = item;
+		const erc = 'erc' in item ? item.erc : undefined;
+		const name = hasName(item) ? item.name : undefined;
 
 		for (const [property, error] of errors.entries()) {
 			const message = getErrorMessage(property, error, {erc, name});

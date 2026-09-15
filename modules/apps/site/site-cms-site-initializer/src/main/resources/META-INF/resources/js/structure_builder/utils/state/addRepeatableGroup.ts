@@ -4,7 +4,9 @@
  */
 
 import buildLocalizedValue from '../../../common/utils/buildLocalizedValue';
+import {config} from '../../config';
 import {
+	Group,
 	RepeatableGroup,
 	Structure,
 	StructureChild,
@@ -12,6 +14,7 @@ import {
 import {Uuid} from '../../types/Uuid';
 import getRandomId from '../getRandomId';
 import getRandomName from '../getRandomName';
+import isGroup from '../isGroup';
 import sortChildren from './sortChildren';
 
 export default function addRepeatableGroup({
@@ -23,8 +26,8 @@ export default function addRepeatableGroup({
 	groupChildren: StructureChild[];
 	groupParent: Uuid;
 	groupUuid: Uuid;
-	root: Structure | RepeatableGroup;
-}): Structure['children'] | RepeatableGroup['children'] {
+	root: Structure | Group;
+}): Structure['children'] | Group['children'] {
 	const children = new Map();
 
 	// Iterate over children
@@ -37,10 +40,10 @@ export default function addRepeatableGroup({
 			continue;
 		}
 
-		// Insert the child. If it's a repeatable group, build it with recursive call
+		// Insert the child. If it's a container, build it with recursive call
 
-		if (child.type === 'repeatable-group') {
-			const group: RepeatableGroup = {
+		if (isGroup(child)) {
+			const container = {
 				...child,
 				children: addRepeatableGroup({
 					groupChildren,
@@ -50,7 +53,7 @@ export default function addRepeatableGroup({
 				}),
 			};
 
-			children.set(group.uuid, group);
+			children.set(container.uuid, container);
 		}
 		else {
 			children.set(child.uuid, child);
@@ -68,12 +71,15 @@ export default function addRepeatableGroup({
 				])
 			),
 			erc: getRandomId(),
-			label: buildLocalizedValue('repeatable-group'),
+			isRepeatable: true,
+			label: config.isNonRepeatableGroupsEnabled
+				? buildLocalizedValue('group')
+				: buildLocalizedValue('repeatable-group'),
 			name: getRandomName({capitalize: true}),
 			parent: groupParent,
 			relationshipERC: getRandomId(),
 			relationshipName: getRandomName(),
-			type: 'repeatable-group',
+			type: 'group',
 			uuid: groupUuid,
 		};
 

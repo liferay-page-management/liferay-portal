@@ -7,6 +7,8 @@ import {ClayVerticalNav} from '@clayui/nav';
 import {openModal} from 'frontend-js-components-web';
 import React, {useState} from 'react';
 
+import {config} from '../config';
+
 type Shortcut = {
 	keys: string[];
 	label: string;
@@ -46,7 +48,9 @@ const SECTIONS: Section[] = [
 			},
 			{
 				keys: [META, 'G'],
-				label: Liferay.Language.get('create-repeatable-group'),
+				label: config.isNonRepeatableGroupsEnabled
+					? Liferay.Language.get('create-group')
+					: Liferay.Language.get('create-repeatable-group'),
 			},
 			{
 				keys: [SHIFT, META, 'G'],

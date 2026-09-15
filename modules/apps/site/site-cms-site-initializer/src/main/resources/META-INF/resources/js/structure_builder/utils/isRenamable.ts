@@ -6,6 +6,7 @@
 import {Structure} from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 import findChild from './findChild';
+import isGroup from './isGroup';
 
 export default function isRenamable({
 	structure,
@@ -26,7 +27,7 @@ export default function isRenamable({
 	else if (child.type === 'related-content') {
 		return false;
 	}
-	else if (child.type === 'repeatable-group') {
+	else if (isGroup(child)) {
 		return true;
 	}
 	else if (child.locked) {

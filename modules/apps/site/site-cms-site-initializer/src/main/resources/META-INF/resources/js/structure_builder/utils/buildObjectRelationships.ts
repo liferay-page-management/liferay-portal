@@ -5,6 +5,7 @@
 
 import {ObjectRelationship} from '../../common/types/ObjectDefinition';
 import {RelatedContent, RepeatableGroup, Structure} from '../types/Structure';
+import isGroup from './isGroup';
 
 export default function buildObjectRelationships({
 	children,
@@ -39,9 +40,16 @@ function getRelatedContents(
 	const relatedContents = [];
 
 	for (const child of children.values()) {
-		if (child.type === 'repeatable-group') {
+
+		// A non-repeatable group has no object definition of its own, so its
+		// related content belongs to the definition that holds the group.
+
+		if (isGroup(child)) {
 			relatedContents.push(
-				...getRelatedContents(child.children, child.erc)
+				...getRelatedContents(
+					child.children,
+					child.isRepeatable ? child.erc : parentERC
+				)
 			);
 		}
 		else if (child.type === 'related-content') {
