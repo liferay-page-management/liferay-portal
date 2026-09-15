@@ -8,12 +8,14 @@ import FragmentService from '../../services/FragmentService';
 import {clearPageContents} from '../../utils/usePageContents';
 
 function undoAction({action}) {
-	const {editableValues, fragmentEntryLinkId} = action;
+	const {displayPagePreviewItem, editableValues, fragmentEntryLinkId} =
+		action;
 
 	return (dispatch, getState) => {
 		const {languageId, segmentsExperienceId} = getState();
 
 		return FragmentService.updateConfigurationValues({
+			displayPagePreviewItem,
 			editableValues,
 			fragmentEntryLinkId,
 			languageId,
@@ -22,6 +24,7 @@ function undoAction({action}) {
 		}).then(({fragmentEntryLink, layoutData}) => {
 			dispatch(
 				updateFragmentEntryLinkConfiguration({
+					displayPagePreviewItem,
 					fragmentEntryLink,
 					fragmentEntryLinkId,
 					layoutData,
@@ -34,12 +37,13 @@ function undoAction({action}) {
 }
 
 function getDerivedStateForUndo({action, state}) {
-	const {fragmentEntryLink} = action;
+	const {displayPagePreviewItem, fragmentEntryLink} = action;
 
 	const previousFragmentEntryLink =
 		state.fragmentEntryLinks[fragmentEntryLink.fragmentEntryLinkId];
 
 	return {
+		displayPagePreviewItem,
 		editableValues: previousFragmentEntryLink.editableValues,
 		fragmentEntryLinkId: fragmentEntryLink.fragmentEntryLinkId,
 	};
