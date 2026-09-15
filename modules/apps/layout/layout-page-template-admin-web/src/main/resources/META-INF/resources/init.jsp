@@ -48,6 +48,7 @@ page import="com.liferay.layout.page.template.admin.web.internal.frontend.taglib
 page import="com.liferay.layout.page.template.admin.web.internal.frontend.taglib.clay.servlet.taglib.SelectDisplayPageMasterLayoutVerticalCard" %><%@
 page import="com.liferay.layout.page.template.admin.web.internal.frontend.taglib.clay.servlet.taglib.SelectLayoutPageTemplateEntryMasterLayoutVerticalCard" %><%@
 page import="com.liferay.layout.page.template.admin.web.internal.servlet.taglib.util.LayoutPageTemplateCollectionActionDropdownItem" %><%@
+page import="com.liferay.layout.page.template.admin.web.internal.util.LayoutPageTemplatePortletUtil" %><%@
 page import="com.liferay.layout.page.template.constants.LayoutPageTemplateActionKeys" %><%@
 page import="com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants" %><%@
 page import="com.liferay.layout.page.template.exception.DuplicateLayoutPageTemplateCollectionException" %><%@

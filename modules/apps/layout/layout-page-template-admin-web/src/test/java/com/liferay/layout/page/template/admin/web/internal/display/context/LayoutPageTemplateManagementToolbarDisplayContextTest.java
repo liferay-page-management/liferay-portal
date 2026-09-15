@@ -5,6 +5,7 @@
 
 package com.liferay.layout.page.template.admin.web.internal.display.context;
 
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.layout.page.template.admin.web.internal.security.permission.resource.LayoutPageTemplateEntryPermission;
@@ -29,6 +30,7 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -60,6 +62,7 @@ public class LayoutPageTemplateManagementToolbarDisplayContextTest {
 
 	@After
 	public void tearDown() {
+		_designLibraryUtilMockedStatic.close();
 		_layoutPageTemplateEntryPermissionMockedStatic.close();
 	}
 
@@ -162,6 +165,43 @@ public class LayoutPageTemplateManagementToolbarDisplayContextTest {
 		}
 	}
 
+	@Test
+	@TestInfo("LPD-104842")
+	public void testGetCreationMenuInDesignLibraryGroup() throws Exception {
+		_designLibraryUtilMockedStatic.when(
+			() -> DesignLibraryUtil.isDesignLibraryScope(_group)
+		).thenReturn(
+			true
+		);
+
+		LayoutPageTemplateManagementToolbarDisplayContext
+			layoutPageTemplateManagementToolbarDisplayContext =
+				new LayoutPageTemplateManagementToolbarDisplayContext(
+					_httpServletRequest, _getMockLiferayPortletActionRequest(),
+					new MockLiferayPortletRenderResponse(),
+					Mockito.mock(LayoutPageTemplateDisplayContext.class));
+
+		CreationMenu creationMenu =
+			layoutPageTemplateManagementToolbarDisplayContext.getCreationMenu();
+
+		List<DropdownItem> primaryDropdownItems =
+			(List<DropdownItem>)creationMenu.get("primaryItems");
+
+		Assert.assertEquals(
+			primaryDropdownItems.toString(), 1, primaryDropdownItems.size());
+
+		DropdownItem primaryDropdownItem = primaryDropdownItems.get(0);
+
+		Map<String, Object> data = (Map<String, Object>)primaryDropdownItem.get(
+			"data");
+
+		Assert.assertEquals("addLayoutPageTemplateEntry", data.get("action"));
+
+		Assert.assertTrue(data.containsKey("addPageTemplateURL"));
+
+		Assert.assertNull(primaryDropdownItem.get("href"));
+	}
+
 	private MockLiferayPortletActionRequest
 		_getMockLiferayPortletActionRequest() {
 
@@ -219,10 +259,14 @@ public class LayoutPageTemplateManagementToolbarDisplayContextTest {
 		Mockito.when(
 			_themeDisplay.getScopeGroup()
 		).thenReturn(
-			Mockito.mock(Group.class)
+			_group
 		);
 	}
 
+	private final MockedStatic<DesignLibraryUtil>
+		_designLibraryUtilMockedStatic = Mockito.mockStatic(
+			DesignLibraryUtil.class);
+	private final Group _group = Mockito.mock(Group.class);
 	private final HttpServletRequest _httpServletRequest = Mockito.mock(
 		HttpServletRequest.class);
 	private final LayoutPageTemplateEntry _layoutPageTemplateEntry =
