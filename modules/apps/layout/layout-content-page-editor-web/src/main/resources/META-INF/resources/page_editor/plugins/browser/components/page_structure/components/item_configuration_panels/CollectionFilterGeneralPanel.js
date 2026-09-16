@@ -14,6 +14,7 @@ import {
 	selectConfiguredCollectionDisplays,
 } from '../../../../../../app/components/fragment_configuration_fields/TargetCollectionDisplayField';
 import {COMMON_STYLES_ROLES} from '../../../../../../app/config/constants/commonStylesRoles';
+import {useDisplayPagePreviewItem} from '../../../../../../app/contexts/DisplayPagePreviewItemContext';
 import {
 	useDispatch,
 	useSelector,
@@ -33,6 +34,7 @@ import {FieldSet} from './FieldSet';
 
 export function CollectionFilterGeneralPanel({item}) {
 	const dispatch = useDispatch();
+	const displayPagePreviewItem = useDisplayPagePreviewItem();
 
 	const fragmentEntryLink = useSelectorCallback(
 		(state) => state.fragmentEntryLinks[item.config.fragmentEntryLinkId],
@@ -115,13 +117,14 @@ export function CollectionFilterGeneralPanel({item}) {
 		(name, value) => {
 			updateConfigurationValue({
 				dispatch,
+				displayPagePreviewItem,
 				fragmentEntryLink,
 				languageId,
 				name,
 				value,
 			});
 		},
-		[dispatch, fragmentEntryLink, languageId]
+		[dispatch, displayPagePreviewItem, fragmentEntryLink, languageId]
 	);
 
 	const onFilterValueSelect = useCallback(
@@ -129,13 +132,20 @@ export function CollectionFilterGeneralPanel({item}) {
 			updateConfigurationValue({
 				configuration: selectedFilter?.configuration,
 				dispatch,
+				displayPagePreviewItem,
 				fragmentEntryLink,
 				languageId,
 				name,
 				value,
 			});
 		},
-		[dispatch, selectedFilter, fragmentEntryLink, languageId]
+		[
+			dispatch,
+			displayPagePreviewItem,
+			selectedFilter,
+			fragmentEntryLink,
+			languageId,
+		]
 	);
 
 	if (loading || filterableCollections === null) {
