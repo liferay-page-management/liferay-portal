@@ -1617,17 +1617,15 @@ public class ActionUtil {
 					infoFieldSet.getLabelInfoLocalizedValue()),
 				serviceContext);
 
-			LayoutStructureItem accordionLayoutStructureItem =
-				layoutStructure.getLayoutStructureItem(accordionItemId);
-
 			FormRelationshipStyledLayoutStructureItem
 				formRelationshipStyledLayoutStructureItem =
 					(FormRelationshipStyledLayoutStructureItem)
 						layoutStructure.
 							addFormRelationshipStyledLayoutStructureItem(
 								PortalUUIDUtil.generate(),
-								accordionLayoutStructureItem.getChildrenItemId(
-									0),
+								_getChildrenItemId(
+									layoutStructureItem.getItemId(), 0,
+									accordionItemId, layoutStructure),
 								-1);
 
 			formRelationshipStyledLayoutStructureItem.setContentType(
@@ -1715,14 +1713,8 @@ public class ActionUtil {
 				objectLayoutTabs, ObjectLayoutTab::getNameMap));
 
 		for (int i = 0; i < objectLayoutTabs.size(); i++) {
-			LayoutStructureItem tabsLayoutStructureItem =
-				layoutStructure.getLayoutStructureItem(tabsItemId);
-
-			if (tabsLayoutStructureItem == null) {
-				break;
-			}
-
-			String tabItemId = tabsLayoutStructureItem.getChildrenItemId(i);
+			String tabItemId = _getChildrenItemId(
+				null, i, tabsItemId, layoutStructure);
 
 			if (Validator.isNull(tabItemId)) {
 				continue;
@@ -1744,11 +1736,8 @@ public class ActionUtil {
 				_getLocalizedNameJSONObject(objectLayoutTab.getNameMap()),
 				serviceContext);
 
-			LayoutStructureItem tabAccordionLayoutStructureItem =
-				layoutStructure.getLayoutStructureItem(tabAccordionItemId);
-
-			String tabContentItemId =
-				tabAccordionLayoutStructureItem.getChildrenItemId(0);
+			String tabContentItemId = _getChildrenItemId(
+				tabItemId, 0, tabAccordionItemId, layoutStructure);
 
 			for (ObjectLayoutBox objectLayoutBox :
 					objectLayoutTab.getObjectLayoutBoxes()) {
@@ -1796,12 +1785,9 @@ public class ActionUtil {
 							objectLayoutBox.getNameMap()),
 						serviceContext);
 
-					LayoutStructureItem boxAccordionLayoutStructureItem =
-						layoutStructure.getLayoutStructureItem(
-							boxAccordionItemId);
-
-					boxContentItemId =
-						boxAccordionLayoutStructureItem.getChildrenItemId(0);
+					boxContentItemId = _getChildrenItemId(
+						tabContentItemId, 0, boxAccordionItemId,
+						layoutStructure);
 				}
 
 				LayoutStructureItem boxLayoutStructureItem =
@@ -2076,6 +2062,26 @@ public class ActionUtil {
 					addedFragmentEntryLink);
 			}
 		}
+	}
+
+	private static String _getChildrenItemId(
+		String defaultItemId, int index, String itemId,
+		LayoutStructure layoutStructure) {
+
+		LayoutStructureItem layoutStructureItem =
+			layoutStructure.getLayoutStructureItem(itemId);
+
+		if (layoutStructureItem == null) {
+			return defaultItemId;
+		}
+
+		List<String> childrenItemIds = layoutStructureItem.getChildrenItemIds();
+
+		if (index >= childrenItemIds.size()) {
+			return defaultItemId;
+		}
+
+		return childrenItemIds.get(index);
 	}
 
 	private static Layout _getCompareContentLayout(
