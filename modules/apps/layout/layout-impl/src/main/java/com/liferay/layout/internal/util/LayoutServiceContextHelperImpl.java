@@ -377,21 +377,13 @@ public class LayoutServiceContextHelperImpl
 		}
 
 		private ThemeDisplay _getThemeDisplay(
-				Company company, PermissionChecker permissionChecker, User user)
+				Company company, ThemeDisplay originalThemeDisplay,
+				PermissionChecker permissionChecker, User user)
 			throws PortalException {
 
 			ThemeDisplay themeDisplay = ThemeDisplayFactory.create();
 
 			themeDisplay.setCompany(company);
-			themeDisplay.setPortalDomain(company.getVirtualHostname());
-
-			boolean secure = _isSecure();
-
-			int portalServerPort = _portal.getPortalServerPort(secure);
-
-			themeDisplay.setPortalURL(
-				_portal.getPortalURL(
-					company.getVirtualHostname(), portalServerPort, secure));
 
 			themeDisplay.setPathContext(_portal.getPathContext());
 			themeDisplay.setPathFriendlyURLPrivateGroup(
@@ -405,19 +397,15 @@ public class LayoutServiceContextHelperImpl
 			themeDisplay.setPermissionChecker(permissionChecker);
 			themeDisplay.setRealUser(user);
 			themeDisplay.setScopeGroupId(_group.getGroupId());
-			themeDisplay.setSecure(secure);
-			themeDisplay.setServerName(company.getVirtualHostname());
-			themeDisplay.setServerPort(portalServerPort);
 			themeDisplay.setSignedIn(!user.isGuestUser());
 			themeDisplay.setSiteGroupId(_group.getGroupId());
 			themeDisplay.setThemeCssFastLoad(PropsValues.THEME_CSS_FAST_LOAD);
 			themeDisplay.setThemeJsFastLoad(PropsValues.JAVASCRIPT_FAST_LOAD);
 			themeDisplay.setTimeZone(user.getTimeZone());
-			themeDisplay.setURLPortal(
-				themeDisplay.getPortalURL() + _portal.getPathContext());
 			themeDisplay.setUser(user);
 
 			_setCompanyLogo(themeDisplay, company);
+			_setPortalURL(company, originalThemeDisplay, themeDisplay);
 
 			if (_layout != null) {
 				themeDisplay.setLanguageId(_layout.getDefaultLanguageId());
@@ -542,6 +530,10 @@ public class LayoutServiceContextHelperImpl
 				PermissionChecker permissionChecker, User user)
 			throws PortalException {
 
+			ThemeDisplay originalThemeDisplay =
+				(ThemeDisplay)_httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
 			Map<String, Object> attributes = HashMapBuilder.<String, Object>put(
 				WebKeys.COMPANY_ID,
 				_httpServletRequest.getAttribute(WebKeys.COMPANY_ID)
@@ -552,8 +544,7 @@ public class LayoutServiceContextHelperImpl
 			).put(
 				WebKeys.LOCALE, _httpServletRequest.getAttribute(WebKeys.LOCALE)
 			).put(
-				WebKeys.THEME_DISPLAY,
-				_httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
+				WebKeys.THEME_DISPLAY, originalThemeDisplay
 			).put(
 				WebKeys.USER, _httpServletRequest.getAttribute(WebKeys.USER)
 			).put(
@@ -568,7 +559,7 @@ public class LayoutServiceContextHelperImpl
 				ServletContextPool.get(_portal.getServletContextName()));
 
 			ThemeDisplay themeDisplay = _getThemeDisplay(
-				_company, permissionChecker, user);
+				_company, originalThemeDisplay, permissionChecker, user);
 
 			_httpServletRequest.setAttribute(
 				WebKeys.LAYOUT, themeDisplay.getLayout());
@@ -586,6 +577,39 @@ public class LayoutServiceContextHelperImpl
 			themeDisplay.setResponse(_httpServletResponse);
 
 			return attributes;
+		}
+
+		private void _setPortalURL(
+			Company company, ThemeDisplay originalThemeDisplay,
+			ThemeDisplay themeDisplay) {
+
+			if (originalThemeDisplay != null) {
+				themeDisplay.setPortalDomain(
+					originalThemeDisplay.getPortalDomain());
+				themeDisplay.setPortalURL(originalThemeDisplay.getPortalURL());
+				themeDisplay.setSecure(originalThemeDisplay.isSecure());
+				themeDisplay.setServerName(
+					originalThemeDisplay.getServerName());
+				themeDisplay.setServerPort(
+					originalThemeDisplay.getServerPort());
+			}
+			else {
+				boolean secure = _isSecure();
+
+				int portalServerPort = _portal.getPortalServerPort(secure);
+
+				themeDisplay.setPortalDomain(company.getVirtualHostname());
+				themeDisplay.setPortalURL(
+					_portal.getPortalURL(
+						company.getVirtualHostname(), portalServerPort,
+						secure));
+				themeDisplay.setSecure(secure);
+				themeDisplay.setServerName(company.getVirtualHostname());
+				themeDisplay.setServerPort(portalServerPort);
+			}
+
+			themeDisplay.setURLPortal(
+				themeDisplay.getPortalURL() + _portal.getPathContext());
 		}
 
 		private final Map<String, Object> _attributes;

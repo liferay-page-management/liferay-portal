@@ -8,18 +8,23 @@ package com.liferay.layout.util.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.util.LayoutServiceContextHelper;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -137,6 +142,13 @@ public class LayoutServiceContextHelperTest {
 	}
 
 	@Test
+	@TestInfo("LPD-105674")
+	public void testGetServiceContextAutoCloseablePortalURL() throws Exception {
+		_testGetServiceContextAutoCloseablePortalURL();
+		_testGetServiceContextAutoCloseablePortalURLThemeDisplay();
+	}
+
+	@Test
 	@TestInfo("LPD-103697")
 	public void testGetServiceContextAutoCloseableThemeDisplay()
 		throws Exception {
@@ -172,6 +184,93 @@ public class LayoutServiceContextHelperTest {
 			Assert.assertTrue(themeDisplay.isSignedIn());
 		}
 	}
+
+	private void _testGetServiceContextAutoCloseablePortalURL()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(
+			GroupTestUtil.addGroup());
+
+		try (AutoCloseable autoCloseable =
+				_layoutServiceContextHelper.getServiceContextAutoCloseable(
+					layout)) {
+
+			Company company = _companyLocalService.getCompany(
+				layout.getCompanyId());
+
+			ServiceContext serviceContext =
+				ServiceContextThreadLocal.getServiceContext();
+
+			ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
+
+			Assert.assertEquals(
+				company.getVirtualHostname(), themeDisplay.getServerName());
+		}
+	}
+
+	private void _testGetServiceContextAutoCloseablePortalURLThemeDisplay()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(
+			GroupTestUtil.addGroup());
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
+
+		ThemeDisplay originalThemeDisplay = new ThemeDisplay();
+
+		String serverName = RandomTestUtil.randomString();
+
+		originalThemeDisplay.setPortalDomain(serverName);
+
+		int serverPort = RandomTestUtil.randomInt();
+
+		String portalURL = StringBundler.concat(
+			Http.HTTPS_WITH_SLASH, serverName, StringPool.COLON, serverPort);
+
+		originalThemeDisplay.setPortalURL(portalURL);
+
+		originalThemeDisplay.setSecure(true);
+		originalThemeDisplay.setServerName(serverName);
+		originalThemeDisplay.setServerPort(serverPort);
+
+		httpServletRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, originalThemeDisplay);
+
+		serviceContext.setRequest(httpServletRequest);
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		try (AutoCloseable autoCloseable =
+				_layoutServiceContextHelper.getServiceContextAutoCloseable(
+					layout)) {
+
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
+			Assert.assertEquals(serverName, themeDisplay.getPortalDomain());
+			Assert.assertEquals(portalURL, themeDisplay.getPortalURL());
+			Assert.assertEquals(serverName, themeDisplay.getServerName());
+			Assert.assertEquals(serverPort, themeDisplay.getServerPort());
+			Assert.assertEquals(
+				portalURL + _portal.getPathContext(),
+				themeDisplay.getURLPortal());
+			Assert.assertNotSame(originalThemeDisplay, themeDisplay);
+			Assert.assertTrue(themeDisplay.isSecure());
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
+
+		Assert.assertSame(
+			originalThemeDisplay,
+			httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY));
+	}
+
+	@Inject
+	private CompanyLocalService _companyLocalService;
 
 	@Inject
 	private LayoutServiceContextHelper _layoutServiceContextHelper;
