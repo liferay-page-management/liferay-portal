@@ -9,6 +9,7 @@ import com.liferay.layout.util.LayoutServiceContextHelper;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ColorScheme;
@@ -124,6 +125,9 @@ public class LayoutServiceContextHelperImpl
 
 	@Reference
 	private ImageLocalService _imageLocalService;
+
+	@Reference
+	private Language _language;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
@@ -420,7 +424,24 @@ public class LayoutServiceContextHelperImpl
 			_setCompanyLogo(themeDisplay, company);
 
 			if (_layout != null) {
-				themeDisplay.setLanguageId(_layout.getDefaultLanguageId());
+				Locale locale = LocaleUtil.fromLanguageId(
+					(String)_httpServletRequest.getAttribute(
+						WebKeys.I18N_LANGUAGE_ID),
+					false, false);
+
+				if ((locale != null) &&
+					_language.isAvailableLocale(_group.getGroupId(), locale)) {
+
+					themeDisplay.setLanguageId(LocaleUtil.toLanguageId(locale));
+				}
+				else {
+					String defaultLanguageId = _layout.getDefaultLanguageId();
+
+					locale = LocaleUtil.fromLanguageId(defaultLanguageId);
+
+					themeDisplay.setLanguageId(defaultLanguageId);
+				}
+
 				themeDisplay.setLayout(_layout);
 
 				LayoutSet layoutSet = _layout.getLayoutSet();
@@ -429,8 +450,7 @@ public class LayoutServiceContextHelperImpl
 
 				themeDisplay.setLayoutTypePortlet(
 					(LayoutTypePortlet)_layout.getLayoutType());
-				themeDisplay.setLocale(
-					LocaleUtil.fromLanguageId(_layout.getDefaultLanguageId()));
+				themeDisplay.setLocale(locale);
 
 				ColorScheme colorScheme = _layout.getColorScheme();
 

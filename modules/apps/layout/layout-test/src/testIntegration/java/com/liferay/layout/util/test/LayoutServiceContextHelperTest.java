@@ -9,9 +9,11 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.util.LayoutServiceContextHelper;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.servlet.HttpMethods;
@@ -22,6 +24,8 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -103,6 +107,49 @@ public class LayoutServiceContextHelperTest {
 	}
 
 	@Test
+	@TestInfo("LPD-106119")
+	public void testGetServiceContextAutoCloseableI18nLanguageId()
+		throws Exception {
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
+
+		Locale locale = LocaleUtil.GERMANY;
+
+		httpServletRequest.setAttribute(
+			WebKeys.I18N_LANGUAGE_ID, LocaleUtil.toLanguageId(locale));
+
+		serviceContext.setRequest(httpServletRequest);
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(
+			GroupTestUtil.addGroup());
+
+		Assert.assertNotEquals(
+			locale, LocaleUtil.fromLanguageId(layout.getDefaultLanguageId()));
+
+		try (AutoCloseable autoCloseable =
+				_layoutServiceContextHelper.getServiceContextAutoCloseable(
+					layout)) {
+
+			Assert.assertEquals(
+				locale, httpServletRequest.getAttribute(WebKeys.LOCALE));
+
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
+			Assert.assertEquals(
+				LocaleUtil.toLanguageId(locale), themeDisplay.getLanguageId());
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
+	}
+
+	@Test
 	@TestInfo("LPD-102690")
 	public void testGetServiceContextAutoCloseableLocale() throws Exception {
 		ServiceContext serviceContext = new ServiceContext();
@@ -172,6 +219,62 @@ public class LayoutServiceContextHelperTest {
 			Assert.assertTrue(themeDisplay.isSignedIn());
 		}
 	}
+
+	@Test
+	@TestInfo("LPD-106119")
+	public void testGetServiceContextAutoCloseableUnavailableI18nLanguageId()
+		throws Exception {
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
+
+		Locale locale = LocaleUtil.GERMANY;
+
+		httpServletRequest.setAttribute(
+			WebKeys.I18N_LANGUAGE_ID, LocaleUtil.toLanguageId(locale));
+
+		serviceContext.setRequest(httpServletRequest);
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		Group group = GroupTestUtil.addGroup();
+
+		_groupLocalService.updateGroup(
+			group.getGroupId(),
+			UnicodePropertiesBuilder.create(
+				true
+			).fastLoad(
+				group.getTypeSettings()
+			).put(
+				PropsKeys.LOCALES, LocaleUtil.toLanguageId(LocaleUtil.US)
+			).put(
+				"inheritLocales", Boolean.FALSE.toString()
+			).buildString());
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(group);
+
+		Assert.assertFalse(
+			LanguageUtil.isAvailableLocale(group.getGroupId(), locale));
+
+		try (AutoCloseable autoCloseable =
+				_layoutServiceContextHelper.getServiceContextAutoCloseable(
+					layout)) {
+
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
+			Assert.assertEquals(
+				layout.getDefaultLanguageId(), themeDisplay.getLanguageId());
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
+	}
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private LayoutServiceContextHelper _layoutServiceContextHelper;
