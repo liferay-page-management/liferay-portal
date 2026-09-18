@@ -7,6 +7,7 @@ package com.liferay.site.navigation.admin.web.internal.portlet.action;
 
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.jsoup.JsoupDocumentFactory;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
@@ -28,7 +29,6 @@ import jakarta.portlet.ResourceResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -90,7 +90,7 @@ public class GetSiteNavigationMenuPreviewMVCResourceCommand
 
 		httpServletRequest.setAttribute(WebKeys.THEME_DISPLAY, themeDisplay);
 
-		Document document = Jsoup.parse(
+		Document document = _jsoupDocumentFactory.parse(
 			ThemeUtil.include(
 				ServletContextPool.get(StringPool.BLANK), httpServletRequest,
 				httpServletResponse, "portal_normal.ftl", layoutSet.getTheme(),
@@ -105,6 +105,9 @@ public class GetSiteNavigationMenuPreviewMVCResourceCommand
 		ServletResponseUtil.write(
 			httpServletResponse, unsyncStringWriter.toString());
 	}
+
+	@Reference
+	private JsoupDocumentFactory _jsoupDocumentFactory;
 
 	@Reference
 	private LayoutSetLocalService _layoutSetLocalService;

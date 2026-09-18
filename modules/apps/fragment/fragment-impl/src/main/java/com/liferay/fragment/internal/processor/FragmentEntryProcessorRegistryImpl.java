@@ -24,6 +24,7 @@ import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReference
 import com.liferay.petra.lang.CentralizedThreadLocal;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.jsoup.JsoupDocumentFactory;
 import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
 import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
@@ -47,7 +48,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -55,12 +55,16 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Pavel Savinov
  */
-@Component(service = FragmentEntryProcessorRegistry.class)
+@Component(
+	configurationPid = "com.liferay.portal.jsoup.configuration.JsoupConfiguration",
+	service = FragmentEntryProcessorRegistry.class
+)
 public class FragmentEntryProcessorRegistryImpl
 	implements FragmentEntryProcessorRegistry {
 
@@ -382,18 +386,16 @@ public class FragmentEntryProcessorRegistryImpl
 		_fragmentEntryValidators.close();
 	}
 
+	@Modified
+	protected void modified() {
+		_documentPortalCache.removeAll();
+	}
+
 	private Document _getDocument(String html) {
 		Document document = _documentPortalCache.get(html);
 
 		if (document == null) {
-			document = Jsoup.parseBodyFragment(html);
-
-			Document.OutputSettings outputSettings =
-				new Document.OutputSettings();
-
-			outputSettings.prettyPrint(false);
-
-			document.outputSettings(outputSettings);
+			document = _jsoupDocumentFactory.parseBodyFragment(html);
 
 			_documentPortalCache.put(html, document);
 		}
@@ -474,5 +476,8 @@ public class FragmentEntryProcessorRegistryImpl
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference
+	private JsoupDocumentFactory _jsoupDocumentFactory;
 
 }

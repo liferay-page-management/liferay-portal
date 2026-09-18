@@ -14,6 +14,7 @@ import com.liferay.exportimport.kernel.lar.ExportImportPathUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.jsoup.JsoupDocumentFactory;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -23,7 +24,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.util.Objects;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -101,14 +101,11 @@ public class AMImageHTMLExportImportContentProcessor
 	}
 
 	private Document _parseDocument(String html) {
-		Document document = Jsoup.parseBodyFragment(html);
+		Document document = _jsoupDocumentFactory.parseBodyFragment(html);
 
-		Document.OutputSettings outputSettings = new Document.OutputSettings();
+		Document.OutputSettings outputSettings = document.outputSettings();
 
-		outputSettings.prettyPrint(false);
 		outputSettings.syntax(Document.OutputSettings.Syntax.xml);
-
-		document.outputSettings(outputSettings);
 
 		return document;
 	}
@@ -228,5 +225,8 @@ public class AMImageHTMLExportImportContentProcessor
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
+
+	@Reference
+	private JsoupDocumentFactory _jsoupDocumentFactory;
 
 }

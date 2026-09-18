@@ -1,0 +1,6 @@
+Bundle-Name: Liferay Portal Jsoup API
+Bundle-SymbolicName: com.liferay.portal.jsoup.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	com.liferay.portal.jsoup,\
+	com.liferay.portal.jsoup.configuration

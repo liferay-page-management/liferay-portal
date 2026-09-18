@@ -18,6 +18,7 @@ import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.jsoup.internal.JsoupDocumentFactoryImpl;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -510,6 +511,10 @@ public class DropZoneFragmentEntryLinkListenerTest {
 	private void _setUpDropZoneFragmentEntryLinkListener() {
 		_dropZoneFragmentEntryLinkListener =
 			new DropZoneFragmentEntryLinkListener();
+
+		ReflectionTestUtil.setFieldValue(
+			_dropZoneFragmentEntryLinkListener, "_jsoupDocumentFactory",
+			new JsoupDocumentFactoryImpl());
 
 		_layoutPageTemplateStructureLocalService = Mockito.mock(
 			LayoutPageTemplateStructureLocalService.class);

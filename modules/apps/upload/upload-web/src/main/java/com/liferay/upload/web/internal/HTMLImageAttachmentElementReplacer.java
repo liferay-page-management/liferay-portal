@@ -6,12 +6,12 @@
 package com.liferay.upload.web.internal;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.jsoup.JsoupDocumentFactory;
 import com.liferay.portal.kernel.editor.constants.EditorConstants;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.upload.AttachmentElementReplacer;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -44,19 +44,20 @@ public class HTMLImageAttachmentElementReplacer
 	}
 
 	private Element _toElement(String originalImgTag) {
-		Document document = Jsoup.parseBodyFragment(originalImgTag);
+		Document document = _jsoupDocumentFactory.parseBodyFragment(
+			originalImgTag);
 
-		Document.OutputSettings outputSettings = new Document.OutputSettings();
+		Document.OutputSettings outputSettings = document.outputSettings();
 
-		outputSettings.prettyPrint(false);
 		outputSettings.syntax(Document.OutputSettings.Syntax.xml);
-
-		document.outputSettings(outputSettings);
 
 		Element bodyElement = document.body();
 
 		return bodyElement.child(0);
 	}
+
+	@Reference
+	private JsoupDocumentFactory _jsoupDocumentFactory;
 
 	@Reference
 	private PortletFileRepository _portletFileRepository;

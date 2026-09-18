@@ -7,6 +7,7 @@ package com.liferay.portal.security.iframe.sanitizer.internal;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.jsoup.JsoupDocumentFactory;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -17,7 +18,6 @@ import com.liferay.portal.security.iframe.sanitizer.internal.configuration.helpe
 import java.util.Map;
 import java.util.Set;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
@@ -54,7 +54,7 @@ public class IFrameSanitizerImpl implements Sanitizer {
 			return content;
 		}
 
-		Document document = _getDocument(content);
+		Document document = _jsoupDocumentFactory.parseBodyFragment(content);
 
 		for (Element iFrameElement : document.getElementsByTag("iframe")) {
 			if (companyIFrameConfiguration.removeIFrameTags()) {
@@ -78,19 +78,6 @@ public class IFrameSanitizerImpl implements Sanitizer {
 		}
 
 		return sb.toString();
-	}
-
-	private Document _getDocument(String content) {
-		Document document = Jsoup.parseBodyFragment(content);
-
-		document.outputSettings(
-			new Document.OutputSettings() {
-				{
-					prettyPrint(false);
-				}
-			});
-
-		return document;
 	}
 
 	private boolean _isWhitelisted(
@@ -120,5 +107,8 @@ public class IFrameSanitizerImpl implements Sanitizer {
 
 	@Reference
 	private IFrameConfigurationHelper _iFrameConfigurationHelper;
+
+	@Reference
+	private JsoupDocumentFactory _jsoupDocumentFactory;
 
 }

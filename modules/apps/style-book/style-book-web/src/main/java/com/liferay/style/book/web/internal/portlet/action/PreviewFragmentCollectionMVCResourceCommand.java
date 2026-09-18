@@ -13,6 +13,7 @@ import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.frontend.token.definition.constants.FrontendTokenDefinitionConstants;
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.jsoup.JsoupDocumentFactory;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
@@ -40,7 +41,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Objects;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -82,7 +82,7 @@ public class PreviewFragmentCollectionMVCResourceCommand
 		String renderedPortalNormal = _renderPortalNormal(
 			httpServletRequest, httpServletResponse);
 
-		Document document = Jsoup.parse(renderedPortalNormal);
+		Document document = _jsoupDocumentFactory.parse(renderedPortalNormal);
 
 		Element element = document.body();
 
@@ -176,6 +176,9 @@ public class PreviewFragmentCollectionMVCResourceCommand
 
 	@Reference
 	private FrontendTokenDefinitionRegistry _frontendTokenDefinitionRegistry;
+
+	@Reference
+	private JsoupDocumentFactory _jsoupDocumentFactory;
 
 	@Reference
 	private LayoutSetLocalService _layoutSetLocalService;

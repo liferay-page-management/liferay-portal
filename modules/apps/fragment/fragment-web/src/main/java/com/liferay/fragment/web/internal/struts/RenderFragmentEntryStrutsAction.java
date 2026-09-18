@@ -11,6 +11,7 @@ import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
 import com.liferay.fragment.renderer.FragmentRendererController;
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
+import com.liferay.portal.jsoup.JsoupDocumentFactory;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
@@ -30,7 +31,6 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -100,7 +100,7 @@ public class RenderFragmentEntryStrutsAction implements StrutsAction {
 			return null;
 		}
 
-		Document document = Jsoup.parse(content);
+		Document document = _jsoupDocumentFactory.parse(content);
 
 		Element bodyElement = document.body();
 
@@ -124,6 +124,9 @@ public class RenderFragmentEntryStrutsAction implements StrutsAction {
 
 	@Reference
 	private FragmentRendererController _fragmentRendererController;
+
+	@Reference
+	private JsoupDocumentFactory _jsoupDocumentFactory;
 
 	@Reference
 	private LayoutSetLocalService _layoutSetLocalService;

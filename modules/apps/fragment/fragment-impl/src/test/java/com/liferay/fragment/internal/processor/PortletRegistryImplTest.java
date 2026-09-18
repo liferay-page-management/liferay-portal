@@ -9,6 +9,7 @@ import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.processor.PortletRegistry;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.jsoup.internal.JsoupDocumentFactoryImpl;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
@@ -45,6 +46,10 @@ public class PortletRegistryImplTest {
 	@Before
 	public void setUp() throws Exception {
 		_portletRegistry = new PortletRegistryImpl();
+
+		ReflectionTestUtil.setFieldValue(
+			_portletRegistry, "_jsoupDocumentFactory",
+			new JsoupDocumentFactoryImpl());
 
 		_portletLocalService = Mockito.mock(PortletLocalService.class);
 

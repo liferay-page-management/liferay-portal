@@ -255,7 +255,12 @@ public class IllegalImportsCheck extends BaseFileCheck {
 				}
 			}
 
-			if (line.contains("org.jsoup.")) {
+			if (line.contains("org.jsoup.") &&
+				!_isAllowedFileName(
+					absolutePath,
+					getAttributeValues(
+						_ALLOWED_JSOUP_FILE_NAMES_KEY, absolutePath))) {
+
 				addMessage(fileName, "Do not use org.jsoup, see LPD-42623");
 			}
 		}
@@ -289,6 +294,9 @@ public class IllegalImportsCheck extends BaseFileCheck {
 
 	private static final String _ALLOWED_COMPLETABLE_FUTURE_FILE_NAMES_KEY =
 		"allowedCompletableFutureFileNames";
+
+	private static final String _ALLOWED_JSOUP_FILE_NAMES_KEY =
+		"allowedJsoupFileNames";
 
 	private static final String _ALLOWED_OPTIONAL_FILE_NAMES_KEY =
 		"allowedOptionalFileNames";

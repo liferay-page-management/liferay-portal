@@ -14,6 +14,7 @@ import com.liferay.layout.util.template.LayoutRow;
 import com.liferay.layout.util.template.LayoutTypeSettingsInspectorUtil;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.jsoup.JsoupDocumentFactory;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutTemplate;
@@ -29,7 +30,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -189,15 +189,7 @@ public class DefaultLayoutConverter implements LayoutConverter {
 			return null;
 		}
 
-		Document document = Jsoup.parseBodyFragment(content);
-
-		Document.OutputSettings outputSettings = new Document.OutputSettings();
-
-		outputSettings.prettyPrint(false);
-
-		document.outputSettings(outputSettings);
-
-		return document;
+		return _jsoupDocumentFactory.parseBodyFragment(content);
 	}
 
 	private boolean _isLayoutTemplateParseable(Layout layout) {
@@ -245,6 +237,9 @@ public class DefaultLayoutConverter implements LayoutConverter {
 	}
 
 	private static final String _CSS_CLASS_COLUMN_PREFIX = "col-md-";
+
+	@Reference
+	private JsoupDocumentFactory _jsoupDocumentFactory;
 
 	@Reference
 	private Language _language;

@@ -6,6 +6,7 @@
 package com.liferay.upload.web.internal;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.jsoup.internal.JsoupDocumentFactoryImpl;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileEntryWrapper;
@@ -56,6 +57,10 @@ public class HTMLImageAttachmentElementReplacerTest {
 
 		_htmlImageAttachmentElementReplacer =
 			new HTMLImageAttachmentElementReplacer();
+
+		ReflectionTestUtil.setFieldValue(
+			_htmlImageAttachmentElementReplacer, "_jsoupDocumentFactory",
+			new JsoupDocumentFactoryImpl());
 
 		ReflectionTestUtil.setFieldValue(
 			_htmlImageAttachmentElementReplacer, "_portletFileRepository",

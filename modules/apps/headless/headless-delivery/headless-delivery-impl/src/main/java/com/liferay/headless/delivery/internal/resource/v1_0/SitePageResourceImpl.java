@@ -41,6 +41,7 @@ import com.liferay.layout.util.LayoutServiceContextHelper;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.jsoup.JsoupDocumentFactory;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -116,7 +117,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -802,7 +802,7 @@ public class SitePageResourceImpl
 
 			LayoutSet layoutSet = layout.getLayoutSet();
 
-			Document document = Jsoup.parse(
+			Document document = _jsoupDocumentFactory.parse(
 				ThemeUtil.include(
 					ServletContextPool.get(StringPool.BLANK),
 					httpServletRequest, contextHttpServletResponse,
@@ -1078,6 +1078,9 @@ public class SitePageResourceImpl
 
 	@Reference
 	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private JsoupDocumentFactory _jsoupDocumentFactory;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;

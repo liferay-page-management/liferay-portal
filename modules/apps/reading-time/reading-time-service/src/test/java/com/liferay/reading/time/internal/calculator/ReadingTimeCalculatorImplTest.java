@@ -7,6 +7,8 @@ package com.liferay.reading.time.internal.calculator;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.jsoup.internal.JsoupDocumentFactoryImpl;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -38,6 +40,10 @@ public class ReadingTimeCalculatorImplTest {
 	public void testAcceptsHTMLAndText() {
 		ReadingTimeCalculator readingTimeCalculator =
 			new ReadingTimeCalculatorImpl();
+
+		ReflectionTestUtil.setFieldValue(
+			readingTimeCalculator, "_jsoupDocumentFactory",
+			new JsoupDocumentFactoryImpl());
 
 		for (String contentType : _supportedContentTypes) {
 			Duration readingTimeDuration = readingTimeCalculator.calculate(
@@ -115,6 +121,10 @@ public class ReadingTimeCalculatorImplTest {
 		ReadingTimeCalculator readingTimeCalculator =
 			new ReadingTimeCalculatorImpl();
 
+		ReflectionTestUtil.setFieldValue(
+			readingTimeCalculator, "_jsoupDocumentFactory",
+			new JsoupDocumentFactoryImpl());
+
 		Duration readingTimeDuration = readingTimeCalculator.calculate(
 			StringUtil.randomString(), ContentTypes.APPLICATION_PDF,
 			LocaleUtil.getDefault());
@@ -127,6 +137,10 @@ public class ReadingTimeCalculatorImplTest {
 
 		ReadingTimeCalculator readingTimeCalculator =
 			new ReadingTimeCalculatorImpl();
+
+		ReflectionTestUtil.setFieldValue(
+			readingTimeCalculator, "_jsoupDocumentFactory",
+			new JsoupDocumentFactoryImpl());
 
 		return readingTimeCalculator.calculate(content, contentType, locale);
 	}

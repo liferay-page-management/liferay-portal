@@ -7,6 +7,7 @@ package com.liferay.reading.time.internal.calculator;
 
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.portal.jsoup.JsoupDocumentFactory;
 import com.liferay.portal.kernel.model.GroupedModel;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Validator;
@@ -19,7 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -27,6 +27,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Alejandro Tardín
@@ -62,7 +63,7 @@ public class ReadingTimeCalculatorImpl implements ReadingTimeCalculator {
 			return Duration.ZERO;
 		}
 
-		Document document = Jsoup.parseBodyFragment(content);
+		Document document = _jsoupDocumentFactory.parseBodyFragment(content);
 
 		String text = document.text();
 
@@ -93,6 +94,9 @@ public class ReadingTimeCalculatorImpl implements ReadingTimeCalculator {
 	private static final List<String> _supportedContentTypes = Arrays.asList(
 		ContentTypes.TEXT_HTML, ContentTypes.TEXT_HTML_UTF8, ContentTypes.TEXT,
 		ContentTypes.TEXT_PLAIN, ContentTypes.TEXT_PLAIN_UTF8);
+
+	@Reference
+	private JsoupDocumentFactory _jsoupDocumentFactory;
 
 	private ServiceTrackerMap<String, ReadingTimeModelInfo<?>>
 		_serviceTrackerMap;

@@ -24,6 +24,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.events.ServicePreAction;
 import com.liferay.portal.events.ThemeServicePreAction;
+import com.liferay.portal.jsoup.JsoupDocumentFactory;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
@@ -60,7 +61,6 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -185,7 +185,7 @@ public class PageDefinitionResourceImpl extends BasePageDefinitionResourceImpl {
 
 		LayoutSet layoutSet = layout.getLayoutSet();
 
-		Document document = Jsoup.parse(
+		Document document = _jsoupDocumentFactory.parse(
 			ThemeUtil.include(
 				ServletContextPool.get(StringPool.BLANK),
 				contextHttpServletRequest, contextHttpServletResponse,
@@ -238,6 +238,9 @@ public class PageDefinitionResourceImpl extends BasePageDefinitionResourceImpl {
 		target = "(resource.name=" + FragmentConstants.RESOURCE_NAME + ")"
 	)
 	private PortletResourcePermission _fragmentPortletResourcePermission;
+
+	@Reference
+	private JsoupDocumentFactory _jsoupDocumentFactory;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;

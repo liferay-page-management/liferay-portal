@@ -6,6 +6,7 @@
 package com.liferay.layout.utility.page.terms.of.use.internal.struts;
 
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
+import com.liferay.portal.jsoup.JsoupDocumentFactory;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.LayoutSet;
@@ -23,7 +24,6 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -69,7 +69,7 @@ public class TermsOfUseStrutsAction implements StrutsAction {
 
 		requestDispatcher.include(httpServletRequest, pipingServletResponse);
 
-		Document document = Jsoup.parse(
+		Document document = _jsoupDocumentFactory.parse(
 			ThemeUtil.include(
 				httpServletRequest.getServletContext(), httpServletRequest,
 				httpServletResponse, "portal_normal.ftl", layoutSet.getTheme(),
@@ -97,6 +97,9 @@ public class TermsOfUseStrutsAction implements StrutsAction {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		TermsOfUseStrutsAction.class);
+
+	@Reference
+	private JsoupDocumentFactory _jsoupDocumentFactory;
 
 	@Reference
 	private LayoutSetLocalService _layoutSetLocalService;

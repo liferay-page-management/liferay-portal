@@ -9,6 +9,7 @@ import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.processor.PortletRegistry;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.jsoup.JsoupDocumentFactory;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -34,7 +35,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -220,7 +220,7 @@ public class PortletRegistryImpl implements PortletRegistry {
 		}
 
 		if (document == null) {
-			document = _getDocument(html);
+			document = _jsoupDocumentFactory.parseBodyFragment(html);
 		}
 
 		for (Element element : document.select("*")) {
@@ -324,18 +324,6 @@ public class PortletRegistryImpl implements PortletRegistry {
 		return null;
 	}
 
-	private Document _getDocument(String html) {
-		Document document = Jsoup.parseBodyFragment(html);
-
-		Document.OutputSettings outputSettings = new Document.OutputSettings();
-
-		outputSettings.prettyPrint(false);
-
-		document.outputSettings(outputSettings);
-
-		return document;
-	}
-
 	private int _getMacroEndIndex(String html, int index) {
 		int openBracketCount = 0;
 
@@ -393,6 +381,9 @@ public class PortletRegistryImpl implements PortletRegistry {
 
 	private final Map<String, String> _aliasPortletNames =
 		new ConcurrentHashMap<>();
+
+	@Reference
+	private JsoupDocumentFactory _jsoupDocumentFactory;
 
 	@Reference
 	private Portal _portal;

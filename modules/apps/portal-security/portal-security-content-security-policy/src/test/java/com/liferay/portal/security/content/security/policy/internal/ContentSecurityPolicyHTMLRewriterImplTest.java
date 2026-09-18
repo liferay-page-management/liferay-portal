@@ -6,6 +6,7 @@
 package com.liferay.portal.security.content.security.policy.internal;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.jsoup.internal.JsoupDocumentFactoryImpl;
 import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNonceProvider;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -206,6 +207,10 @@ public class ContentSecurityPolicyHTMLRewriterImplTest {
 			contentSecurityPolicyHTMLRewriterImpl,
 			"_contentSecurityPolicyNonceProvider",
 			contentSecurityPolicyNonceProvider);
+
+		ReflectionTestUtil.setFieldValue(
+			contentSecurityPolicyHTMLRewriterImpl, "_jsoupDocumentFactory",
+			new JsoupDocumentFactoryImpl());
 
 		return contentSecurityPolicyHTMLRewriterImpl.rewriteInlineAttributes(
 			html, null, recursive);

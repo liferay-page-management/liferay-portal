@@ -6,10 +6,10 @@
 package com.liferay.adaptive.media.upload.internal.web.attachment;
 
 import com.liferay.adaptive.media.image.html.constants.AMImageHTMLConstants;
+import com.liferay.portal.jsoup.JsoupDocumentFactory;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.upload.AttachmentElementReplacer;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -51,14 +51,12 @@ public class AMHTMLImageAttachmentElementReplacer
 	}
 
 	private Element _parseImgTag(String originalImgTag) {
-		Document document = Jsoup.parseBodyFragment(originalImgTag);
+		Document document = _jsoupDocumentFactory.parseBodyFragment(
+			originalImgTag);
 
-		Document.OutputSettings outputSettings = new Document.OutputSettings();
+		Document.OutputSettings outputSettings = document.outputSettings();
 
-		outputSettings.prettyPrint(false);
 		outputSettings.syntax(Document.OutputSettings.Syntax.xml);
-
-		document.outputSettings(outputSettings);
 
 		Element element = document.body();
 
@@ -69,5 +67,8 @@ public class AMHTMLImageAttachmentElementReplacer
 		target = "(&(format=html)(html.tag.name=img)(!(component.name=com.liferay.adaptive.media.upload.internal.web.attachment.AMHTMLImageAttachmentElementReplacer)))"
 	)
 	private AttachmentElementReplacer _defaultAttachmentElementReplacer;
+
+	@Reference
+	private JsoupDocumentFactory _jsoupDocumentFactory;
 
 }

@@ -6,6 +6,7 @@
 package com.liferay.layout.utility.page.status.internal.struts;
 
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.jsoup.internal.JsoupDocumentFactoryImpl;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.Theme;
@@ -78,8 +79,8 @@ public class StatusStrutsActionTest {
 			RandomTestUtil.randomString(), "\n ", _HTML_END);
 
 		String expected = StringBundler.concat(
-			htmlStart, "\n  <div id=\"content\">", _STATUS_PAGE_CONTENT,
-			"</div>\n  ", htmlEnd);
+			htmlStart, "<div id=\"content\">", _STATUS_PAGE_CONTENT, "</div>",
+			htmlEnd);
 		String html = StringBundler.concat(
 			htmlStart, "<div id=\"content\">", RandomTestUtil.randomString(),
 			"</div>", htmlEnd);
@@ -125,8 +126,8 @@ public class StatusStrutsActionTest {
 
 		_testExecute(
 			StringBundler.concat(
-				htmlStart, "\n  <div id=\"content\">", _STATUS_PAGE_CONTENT,
-				"</div>\n  ", htmlEnd),
+				htmlStart, "<div id=\"content\">", _STATUS_PAGE_CONTENT,
+				"</div>", htmlEnd),
 			StringBundler.concat(
 				htmlStart, "<div id=\"content\">",
 				RandomTestUtil.randomString(), "</div>", htmlEnd));
@@ -217,7 +218,7 @@ public class StatusStrutsActionTest {
 
 				PrintWriter printWriter = pipingServletResponse.getWriter();
 
-				printWriter.println(_STATUS_PAGE_CONTENT);
+				printWriter.print(_STATUS_PAGE_CONTENT);
 
 				return null;
 			}
@@ -240,6 +241,10 @@ public class StatusStrutsActionTest {
 			_statusStrutsAction, "_layoutSetLocalService",
 			_layoutSetLocalService);
 		ReflectionTestUtil.setFieldValue(_statusStrutsAction, "_log", _log);
+
+		ReflectionTestUtil.setFieldValue(
+			_statusStrutsAction, "_jsoupDocumentFactory",
+			new JsoupDocumentFactoryImpl());
 		ReflectionTestUtil.setFieldValue(
 			_statusStrutsAction, "_servletContext", _servletContext);
 	}

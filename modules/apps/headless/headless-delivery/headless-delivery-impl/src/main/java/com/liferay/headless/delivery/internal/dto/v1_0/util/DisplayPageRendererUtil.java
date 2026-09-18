@@ -24,6 +24,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.events.ServicePreAction;
 import com.liferay.portal.events.ThemeServicePreAction;
+import com.liferay.portal.jsoup.JsoupDocumentFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.service.LayoutService;
@@ -42,7 +43,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import jakarta.ws.rs.core.UriInfo;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -168,7 +168,7 @@ public class DisplayPageRendererUtil {
 
 		LayoutSet layoutSet = layout.getLayoutSet();
 
-		Document document = Jsoup.parse(
+		Document document = JsoupDocumentFactoryUtil.parse(
 			ThemeUtil.include(
 				ServletContextPool.get(StringPool.BLANK), httpServletRequest,
 				httpServletResponse, "portal_normal.ftl", layoutSet.getTheme(),

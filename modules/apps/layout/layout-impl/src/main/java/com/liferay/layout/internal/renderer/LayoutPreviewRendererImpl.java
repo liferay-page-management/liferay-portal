@@ -10,6 +10,7 @@ import com.liferay.layout.renderer.LayoutPreviewRenderer;
 import com.liferay.layout.util.LayoutServiceContextHelper;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.jsoup.JsoupDocumentFactory;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
@@ -34,7 +35,6 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Locale;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -151,7 +151,7 @@ public class LayoutPreviewRendererImpl implements LayoutPreviewRenderer {
 			layout.includeLayoutContent(
 				httpServletRequest, themeDisplay.getResponse());
 
-			Document document = Jsoup.parse(
+			Document document = _jsoupDocumentFactory.parse(
 				ThemeUtil.include(
 					ServletContextPool.get(_portal.getServletContextName()),
 					httpServletRequest, themeDisplay.getResponse(),
@@ -201,6 +201,9 @@ public class LayoutPreviewRendererImpl implements LayoutPreviewRenderer {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		LayoutPreviewRendererImpl.class);
+
+	@Reference
+	private JsoupDocumentFactory _jsoupDocumentFactory;
 
 	@Reference
 	private LayoutServiceContextHelper _layoutServiceContextHelper;

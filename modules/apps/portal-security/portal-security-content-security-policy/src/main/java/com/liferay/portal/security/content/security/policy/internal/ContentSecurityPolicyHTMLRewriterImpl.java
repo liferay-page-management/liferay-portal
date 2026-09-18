@@ -6,6 +6,7 @@
 package com.liferay.portal.security.content.security.policy.internal;
 
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.jsoup.JsoupDocumentFactory;
 import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyHTMLRewriter;
 import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNonceProvider;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -17,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -46,7 +46,7 @@ public class ContentSecurityPolicyHTMLRewriterImpl
 		StringBundler scriptSB = new StringBundler();
 		StringBundler styleSB = new StringBundler();
 
-		Document document = Jsoup.parse(html);
+		Document document = _jsoupDocumentFactory.parse(html);
 
 		Element bodyElement = document.body();
 
@@ -200,5 +200,8 @@ public class ContentSecurityPolicyHTMLRewriterImpl
 	@Reference
 	private ContentSecurityPolicyNonceProvider
 		_contentSecurityPolicyNonceProvider;
+
+	@Reference
+	private JsoupDocumentFactory _jsoupDocumentFactory;
 
 }

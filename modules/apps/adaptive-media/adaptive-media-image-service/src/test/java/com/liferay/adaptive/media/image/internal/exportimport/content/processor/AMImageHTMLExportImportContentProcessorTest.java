@@ -12,6 +12,7 @@ import com.liferay.exportimport.kernel.lar.ExportImportPathUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.jsoup.internal.JsoupDocumentFactoryImpl;
 import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -49,6 +50,10 @@ public class AMImageHTMLExportImportContentProcessorTest {
 		ReflectionTestUtil.setFieldValue(
 			_amImageHTMLExportImportContentProcessor, "_dlAppLocalService",
 			_dlAppLocalService);
+
+		ReflectionTestUtil.setFieldValue(
+			_amImageHTMLExportImportContentProcessor, "_jsoupDocumentFactory",
+			new JsoupDocumentFactoryImpl());
 
 		Mockito.doReturn(
 			_amEmbeddedReferenceSet

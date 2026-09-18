@@ -12,6 +12,7 @@ import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.jsoup.JsoupDocumentFactoryUtil;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
@@ -37,7 +38,6 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -254,14 +254,11 @@ public class DDMFieldAttributeUpgradeProcess extends UpgradeProcess {
 	}
 
 	private Document _parseDocument(String html) {
-		Document document = Jsoup.parseBodyFragment(html);
+		Document document = JsoupDocumentFactoryUtil.parseBodyFragment(html);
 
-		Document.OutputSettings outputSettings = new Document.OutputSettings();
+		Document.OutputSettings outputSettings = document.outputSettings();
 
-		outputSettings.prettyPrint(false);
 		outputSettings.syntax(Document.OutputSettings.Syntax.xml);
-
-		document.outputSettings(outputSettings);
 
 		return document;
 	}

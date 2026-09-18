@@ -18,6 +18,7 @@ import com.liferay.layout.adaptive.media.LayoutAdaptiveMediaProcessor;
 import com.liferay.layout.responsive.ViewportSize;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.jsoup.JsoupDocumentFactory;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -34,7 +35,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -57,7 +57,7 @@ public class LayoutAdaptiveMediaProcessorImpl
 			return processedContent;
 		}
 
-		Document document = Jsoup.parse(processedContent);
+		Document document = _jsoupDocumentFactory.parse(processedContent);
 
 		try {
 			for (Map.Entry<ViewportSize, String> entry :
@@ -270,6 +270,9 @@ public class LayoutAdaptiveMediaProcessorImpl
 
 	@Reference
 	private DLAppService _dlAppService;
+
+	@Reference
+	private JsoupDocumentFactory _jsoupDocumentFactory;
 
 	@Reference
 	private MediaQueryProvider _mediaQueryProvider;

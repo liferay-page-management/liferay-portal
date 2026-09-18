@@ -5,7 +5,9 @@
 
 package com.liferay.adaptive.media.upload.internal.web.attachment;
 
+import com.liferay.portal.jsoup.internal.JsoupDocumentFactoryImpl;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.upload.AttachmentElementReplacer;
@@ -51,6 +53,10 @@ public class AMHTMLImageAttachmentElementHandlerTest {
 		_amHTMLImageAttachmentElementReplacer =
 			new AMHTMLImageAttachmentElementReplacer(
 				_defaultAttachmentElementReplacer);
+
+		ReflectionTestUtil.setFieldValue(
+			_amHTMLImageAttachmentElementReplacer, "_jsoupDocumentFactory",
+			new JsoupDocumentFactoryImpl());
 	}
 
 	@Test
