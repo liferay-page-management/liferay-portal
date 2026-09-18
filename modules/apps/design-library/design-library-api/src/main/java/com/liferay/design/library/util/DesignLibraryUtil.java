@@ -9,8 +9,13 @@ import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.design.library.constants.DesignLibraryAdminPortletKeys;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 
 import jakarta.portlet.PortletRequest;
@@ -19,8 +24,24 @@ import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Lourdes Fernández Besada
+ * @author Georgel Pop
  */
 public class DesignLibraryUtil {
+
+	public static long[] getConnectedDesignLibraryGroupIds(
+			long companyId, long groupId)
+		throws PortalException {
+
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-57283")) {
+			return new long[0];
+		}
+
+		return ListUtil.toLongArray(
+			DepotEntryLocalServiceUtil.getGroupConnectedDepotEntries(
+				groupId, DepotConstants.TYPE_DESIGN_LIBRARY, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS),
+			DepotEntry::getGroupId);
+	}
 
 	public static String getDesignLibraryResourcesURL(
 		Group depotGroup, HttpServletRequest httpServletRequest) {
@@ -42,6 +63,15 @@ public class DesignLibraryUtil {
 		).setParameter(
 			"designLibraryEntryId", depotEntry.getDepotEntryId()
 		).buildString();
+	}
+
+	public static boolean isConnectedDesignLibraryGroupId(
+			long companyId, long designLibraryGroupId, long groupId)
+		throws PortalException {
+
+		return ArrayUtil.contains(
+			getConnectedDesignLibraryGroupIds(companyId, groupId),
+			designLibraryGroupId);
 	}
 
 	public static boolean isDesignLibraryScope(Group group) {
