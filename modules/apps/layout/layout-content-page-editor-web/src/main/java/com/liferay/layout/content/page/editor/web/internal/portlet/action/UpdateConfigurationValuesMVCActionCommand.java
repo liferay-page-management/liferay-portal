@@ -16,6 +16,7 @@ import com.liferay.fragment.service.FragmentEntryLinkService;
 import com.liferay.fragment.util.configuration.FragmentConfigurationField;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
+import com.liferay.layout.content.page.editor.web.internal.helper.FragmentEntryLinkInfoItemRenderHelper;
 import com.liferay.layout.content.page.editor.web.internal.manager.FragmentEntryLinkManager;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
 import com.liferay.layout.util.structure.LayoutStructure;
@@ -213,9 +214,16 @@ public class UpdateConfigurationValuesMVCActionCommand
 
 		return JSONUtil.put(
 			"fragmentEntryLink",
-			_fragmentEntryLinkManager.getFragmentEntryLinkJSONObject(
-				fragmentEntryLink, _portal.getHttpServletRequest(actionRequest),
-				_portal.getHttpServletResponse(actionResponse), layoutStructure)
+			_fragmentEntryLinkInfoItemRenderHelper.
+				getFragmentEntryLinkJSONObject(
+					fragmentEntryLink,
+					_portal.getHttpServletRequest(actionRequest),
+					_portal.getHttpServletResponse(actionResponse),
+					ParamUtil.getString(actionRequest, "itemClassName"),
+					ParamUtil.getLong(actionRequest, "itemClassPK"),
+					ParamUtil.getString(
+						actionRequest, "itemExternalReferenceCode"),
+					layoutStructure)
 		).put(
 			"layoutData", layoutStructure.toJSONObject()
 		);
@@ -223,6 +231,10 @@ public class UpdateConfigurationValuesMVCActionCommand
 
 	@Reference
 	private FragmentEntryConfigurationParser _fragmentEntryConfigurationParser;
+
+	@Reference
+	private FragmentEntryLinkInfoItemRenderHelper
+		_fragmentEntryLinkInfoItemRenderHelper;
 
 	@Reference
 	private FragmentEntryLinkListenerRegistry

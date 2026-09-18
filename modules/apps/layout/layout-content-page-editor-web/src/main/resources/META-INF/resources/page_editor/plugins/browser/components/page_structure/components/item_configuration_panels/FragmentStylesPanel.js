@@ -9,6 +9,7 @@ import React, {useCallback} from 'react';
 import {FRAGMENT_CONFIGURATION_ROLES} from '../../../../../../app/config/constants/fragmentConfigurationRoles';
 import {VIEWPORT_SIZES} from '../../../../../../app/config/constants/viewportSizes';
 import {config} from '../../../../../../app/config/index';
+import {useDisplayPagePreviewItem} from '../../../../../../app/contexts/DisplayPagePreviewItemContext';
 import {
 	useDispatch,
 	useSelector,
@@ -25,6 +26,7 @@ import {FieldSet} from './FieldSet';
 
 export function FragmentStylesPanel({item}) {
 	const dispatch = useDispatch();
+	const displayPagePreviewItem = useDisplayPagePreviewItem();
 
 	const fragmentEntryLink = useSelectorCallback(
 		(state) => state.fragmentEntryLinks[item.config.fragmentEntryLinkId],
@@ -50,13 +52,14 @@ export function FragmentStylesPanel({item}) {
 			updateConfigurationValue({
 				configuration: fragmentEntryLink.configuration,
 				dispatch,
+				displayPagePreviewItem,
 				fragmentEntryLink,
 				languageId,
 				name,
 				value,
 			});
 		},
-		[dispatch, fragmentEntryLink, languageId]
+		[dispatch, displayPagePreviewItem, fragmentEntryLink, languageId]
 	);
 
 	return (

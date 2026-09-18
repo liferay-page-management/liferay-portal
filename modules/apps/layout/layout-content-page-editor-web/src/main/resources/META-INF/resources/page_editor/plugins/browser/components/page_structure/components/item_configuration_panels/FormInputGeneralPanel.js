@@ -16,6 +16,7 @@ import {FRAGMENT_ENTRY_TYPES} from '../../../../../../app/config/constants/fragm
 import {FREEMARKER_FRAGMENT_ENTRY_PROCESSOR} from '../../../../../../app/config/constants/freemarkerFragmentEntryProcessor';
 import {LAYOUT_DATA_ITEM_TYPES} from '../../../../../../app/config/constants/layoutDataItemTypes';
 import {config} from '../../../../../../app/config/index';
+import {useDisplayPagePreviewItem} from '../../../../../../app/contexts/DisplayPagePreviewItemContext';
 import {
 	useFormMappingFields,
 	useFormMappingFieldsLabel,
@@ -153,6 +154,7 @@ function getTypeLabels(classNameId, classTypeId) {
 
 export function FormInputGeneralPanel({item}) {
 	const dispatch = useDispatch();
+	const displayPagePreviewItem = useDisplayPagePreviewItem();
 	const languageId = useSelector(selectLanguageId);
 
 	const fragmentEntryLinkRef = useSelectorRef((state) =>
@@ -412,6 +414,7 @@ export function FormInputGeneralPanel({item}) {
 		return dispatch(
 			updateFragmentConfiguration({
 				configurationValues,
+				displayPagePreviewItem,
 				fragmentEntryLink: fragmentEntryLinkRef.current,
 			})
 		);
