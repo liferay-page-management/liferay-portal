@@ -5,4 +5,3 @@
 
 export {default as ViewUsages} from './layout_classed_model_usages_view/ViewUsages';
 export {default as SelectLayout} from './select_layout/SelectLayout';
-export {default as SelectLayoutTree} from './select_layout/SelectLayoutTree';

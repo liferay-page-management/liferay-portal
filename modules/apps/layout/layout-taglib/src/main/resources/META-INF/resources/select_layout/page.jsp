@@ -7,10 +7,6 @@
 
 <%@ include file="/select_layout/init.jsp" %>
 
-<liferay-util:html-top>
-	<aui:link hashedFile="<%= true %>" href="layout-taglib/select_layout/css/tree.css" rel="stylesheet" type="text/css" />
-</liferay-util:html-top>
-
 <div>
 	<react:component
 		module="{SelectLayout} from layout-taglib"

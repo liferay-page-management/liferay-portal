@@ -4,22 +4,31 @@
  */
 
 import ClayEmptyState from '@clayui/empty-state';
-import ClayForm, {ClayInput} from '@clayui/form';
-import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
+import {PageTreePickerPanel} from '@liferay/layout-js-components-web';
+import {getOpener} from 'frontend-js-web';
 import PropTypes from 'prop-types';
-import React, {useState} from 'react';
+import React, {useMemo, useRef} from 'react';
 
-import SelectLayoutTree from './SelectLayoutTree';
+import LayoutTreeDataSource from './LayoutTreeDataSource';
 
-/**
- * SelectLayout
- *
- * This component shows a list of available layouts to select in expanded tree
- * and allows to filter them by searching.
- *
- * @review
- */
+const ROOT_ID = '0';
+
+function toItemSelectorData(item) {
+	const node = item.page;
+
+	return {
+		externalReferenceCode: node.externalReferenceCode,
+		groupId: node.groupId,
+		id: node.id,
+		layoutId: node.layoutId,
+		name: node.value,
+		privateLayout: node.privateLayout,
+		returnType: node.returnType,
+		title: node.name,
+		value: node.payload,
+	};
+}
 
 const SelectLayout = ({
 	checkDisplayPage,
@@ -28,100 +37,113 @@ const SelectLayout = ({
 	itemSelectorReturnType,
 	itemSelectorSaveEvent,
 	multiSelection,
-	namespace,
 	nodes,
 	privateLayout,
-	selectedLayoutIds,
+	selectedLayoutIds = [],
 }) => {
-	const [filter, setFilter] = useState();
-	const [selectedItemsCount, setSelectedItemsCount] = useState(0);
+	const dataSource = useMemo(
+		() =>
+			new LayoutTreeDataSource({
+				checkDisplayPage,
+				findLayoutsURL: config.findLayoutsURL,
+				groupId,
+				itemSelectorReturnType,
+				loadMoreItemsURL: config.loadMoreItemsURL,
+				maxPageSize: config.maxPageSize,
+				nodes,
+				privateLayout,
+			}),
+		[
+			checkDisplayPage,
+			config.findLayoutsURL,
+			config.loadMoreItemsURL,
+			config.maxPageSize,
+			groupId,
+			itemSelectorReturnType,
+			nodes,
+			privateLayout,
+		]
+	);
 
-	const empty = !nodes.length;
+	const interactedRef = useRef(false);
+
+	const fireItemSelectorSaveEvent = (data) => {
+		Liferay.fire(itemSelectorSaveEvent, {data});
+
+		getOpener().Liferay.fire(itemSelectorSaveEvent, {data});
+	};
+
+	if (!nodes.length) {
+		return (
+			<ClayLayout.Sheet>
+				<ClayEmptyState
+					className="mt-0"
+					description={Liferay.Language.get('there-are-no-pages')}
+					imgSrc={`${themeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+					title={Liferay.Language.get('no-results-found')}
+				/>
+			</ClayLayout.Sheet>
+		);
+	}
 
 	return (
-		<ClayLayout.ContainerFluid className="p-0 select-layout">
-			<ClayForm.Group className="m-0 p-3 select-layout-filter">
-				<ClayInput.Group>
-					<ClayInput.GroupItem prepend>
-						<ClayInput
-							aria-label={Liferay.Language.get('search')}
-							className="input-group-inset input-group-inset-after"
-							disabled={empty}
-							onChange={(event) => setFilter(event.target.value)}
-							placeholder={`${Liferay.Language.get('search')}`}
-							type="text"
-						/>
+		<ClayLayout.ContainerFluid
+			className="cadmin p-0 page-tree-picker"
+			onClickCapture={() => {
+				interactedRef.current = true;
+			}}
+			onKeyDownCapture={() => {
+				interactedRef.current = true;
+			}}
+		>
+			<PageTreePickerPanel
+				dataSource={dataSource}
+				defaultExpandedIds={[ROOT_ID]}
+				defaultSelectedEntries={selectedLayoutIds.map(
+					(selectedLayoutId) => ({
+						excluded: false,
+						includeDescendants: false,
+						item: {
+							hasChildren: false,
+							id: selectedLayoutId,
+							label: selectedLayoutId,
+							page: null,
+							parentId: ROOT_ID,
+						},
+					})
+				)}
+				onItemSelect={(item) =>
+					fireItemSelectorSaveEvent(toItemSelectorData(item))
+				}
+				onSelectionChange={(entries, selectedItems) => {
+					if (!interactedRef.current) {
+						return;
+					}
 
-						<ClayInput.GroupInsetItem after>
-							<div className="link-monospaced">
-								<ClayIcon symbol="search" />
-							</div>
-						</ClayInput.GroupInsetItem>
-					</ClayInput.GroupItem>
-				</ClayInput.Group>
-			</ClayForm.Group>
+					const data = selectedItems
+						.filter((item) => item.page && item.id !== ROOT_ID)
+						.map(toItemSelectorData);
 
-			{empty ? (
-				<EmptyState />
-			) : (
-				<>
-					{Boolean(selectedItemsCount) && multiSelection && (
-						<ClayLayout.Container
-							className="align-items-center d-flex layout-tree-count-feedback px-3"
-							containerElement="section"
-							fluid
-						>
-							<div className="container p-0">
-								<p className="m-0 text-2">
-									{selectedItemsCount > 1
-										? `${selectedItemsCount} ${Liferay.Language.get(
-												'items-selected'
-											)}`
-										: `${selectedItemsCount} ${Liferay.Language.get(
-												'item-selected'
-											)}`}
-								</p>
-							</div>
-						</ClayLayout.Container>
-					)}
-
-					<SelectLayoutTree
-						checkDisplayPage={checkDisplayPage}
-						config={{...config, namespace}}
-						filter={filter}
-						groupId={groupId}
-						itemSelectorReturnType={itemSelectorReturnType}
-						itemSelectorSaveEvent={itemSelectorSaveEvent}
-						items={nodes}
-						multiSelection={multiSelection}
-						onItemsCountChange={setSelectedItemsCount}
-						privateLayout={privateLayout}
-						selectedLayoutIds={selectedLayoutIds}
-					/>
-				</>
-			)}
+					if (multiSelection && !!data.length) {
+						fireItemSelectorSaveEvent(data);
+					}
+				}}
+				selectionMode={multiSelection ? 'multiple' : 'single'}
+			/>
 		</ClayLayout.ContainerFluid>
 	);
 };
 
-const EmptyState = () => {
-	return (
-		<ClayLayout.Sheet>
-			<ClayEmptyState
-				className="mt-0"
-				description={Liferay.Language.get('there-are-no-pages')}
-				imgSrc={`${themeDisplay.getPathThemeImages()}/states/empty_state.svg`}
-				title={Liferay.Language.get('no-results-found')}
-			/>
-		</ClayLayout.Sheet>
-	);
-};
-
 SelectLayout.propTypes = {
+	checkDisplayPage: PropTypes.bool,
+	config: PropTypes.object,
+	groupId: PropTypes.number,
+	itemSelectorReturnType: PropTypes.string,
 	itemSelectorSaveEvent: PropTypes.string,
 	multiSelection: PropTypes.bool,
-	namespace: PropTypes.string,
 	nodes: PropTypes.array.isRequired,
+	privateLayout: PropTypes.bool,
+	selectedLayoutIds: PropTypes.array,
 };
 
 export default SelectLayout;

@@ -173,8 +173,6 @@ public class SelectLayoutTag extends IncludeTag {
 		).put(
 			"multiSelection", _multiSelection
 		).put(
-			"namespace", _namespace
-		).put(
 			"nodes",
 			_getLayoutsJSONArray(selectedLayoutIds, selPlid, themeDisplay)
 		).put(
