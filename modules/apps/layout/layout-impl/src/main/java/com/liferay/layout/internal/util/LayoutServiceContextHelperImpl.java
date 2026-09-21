@@ -364,21 +364,13 @@ public class LayoutServiceContextHelperImpl
 		}
 
 		private ThemeDisplay _getThemeDisplay(
-				Company company, PermissionChecker permissionChecker, User user)
+				Company company, ThemeDisplay originalThemeDisplay,
+				PermissionChecker permissionChecker, User user)
 			throws PortalException {
 
 			ThemeDisplay themeDisplay = ThemeDisplayFactory.create();
 
 			themeDisplay.setCompany(company);
-			themeDisplay.setPortalDomain(company.getVirtualHostname());
-
-			boolean secure = _isSecure();
-
-			int portalServerPort = _portal.getPortalServerPort(secure);
-
-			themeDisplay.setPortalURL(
-				_portal.getPortalURL(
-					company.getVirtualHostname(), portalServerPort, secure));
 
 			themeDisplay.setPathContext(_portal.getPathContext());
 			themeDisplay.setPathFriendlyURLPrivateGroup(
@@ -392,19 +384,15 @@ public class LayoutServiceContextHelperImpl
 			themeDisplay.setPermissionChecker(permissionChecker);
 			themeDisplay.setRealUser(user);
 			themeDisplay.setScopeGroupId(_group.getGroupId());
-			themeDisplay.setSecure(secure);
-			themeDisplay.setServerName(company.getVirtualHostname());
-			themeDisplay.setServerPort(portalServerPort);
 			themeDisplay.setSignedIn(!user.isGuestUser());
 			themeDisplay.setSiteGroupId(_group.getGroupId());
 			themeDisplay.setThemeCssFastLoad(PropsValues.THEME_CSS_FAST_LOAD);
 			themeDisplay.setThemeJsFastLoad(PropsValues.JAVASCRIPT_FAST_LOAD);
 			themeDisplay.setTimeZone(user.getTimeZone());
-			themeDisplay.setURLPortal(
-				themeDisplay.getPortalURL() + _portal.getPathContext());
 			themeDisplay.setUser(user);
 
 			_setCompanyLogo(themeDisplay, company);
+			_setPortalURL(company, originalThemeDisplay, themeDisplay);
 
 			if (_layout != null) {
 				themeDisplay.setLanguageId(_layout.getDefaultLanguageId());
@@ -535,8 +523,12 @@ public class LayoutServiceContextHelperImpl
 				WebKeys.CTX,
 				ServletContextPool.get(_portal.getServletContextName()));
 
+			ThemeDisplay originalThemeDisplay =
+				(ThemeDisplay)_httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
 			ThemeDisplay themeDisplay = _getThemeDisplay(
-				_company, permissionChecker, user);
+				_company, originalThemeDisplay, permissionChecker, user);
 
 			_httpServletRequest.setAttribute(
 				WebKeys.LAYOUT, themeDisplay.getLayout());
@@ -552,6 +544,39 @@ public class LayoutServiceContextHelperImpl
 			themeDisplay.setRequest(_httpServletRequest);
 
 			themeDisplay.setResponse(_httpServletResponse);
+		}
+
+		private void _setPortalURL(
+			Company company, ThemeDisplay originalThemeDisplay,
+			ThemeDisplay themeDisplay) {
+
+			if (originalThemeDisplay != null) {
+				themeDisplay.setPortalDomain(
+					originalThemeDisplay.getPortalDomain());
+				themeDisplay.setPortalURL(originalThemeDisplay.getPortalURL());
+				themeDisplay.setSecure(originalThemeDisplay.isSecure());
+				themeDisplay.setServerName(
+					originalThemeDisplay.getServerName());
+				themeDisplay.setServerPort(
+					originalThemeDisplay.getServerPort());
+			}
+			else {
+				boolean secure = _isSecure();
+
+				int portalServerPort = _portal.getPortalServerPort(secure);
+
+				themeDisplay.setPortalDomain(company.getVirtualHostname());
+				themeDisplay.setPortalURL(
+					_portal.getPortalURL(
+						company.getVirtualHostname(), portalServerPort,
+						secure));
+				themeDisplay.setSecure(secure);
+				themeDisplay.setServerName(company.getVirtualHostname());
+				themeDisplay.setServerPort(portalServerPort);
+			}
+
+			themeDisplay.setURLPortal(
+				themeDisplay.getPortalURL() + _portal.getPathContext());
 		}
 
 		private final Map<String, Object> _attributes;
