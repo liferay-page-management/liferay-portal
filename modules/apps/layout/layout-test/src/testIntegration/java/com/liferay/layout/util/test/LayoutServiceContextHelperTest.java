@@ -63,11 +63,15 @@ public class LayoutServiceContextHelperTest {
 
 	@Test
 	@TestInfo(
-		{"LPD-79722", "LPD-99386", "LPD-102690", "LPD-103697", "LPD-105885"}
+		{
+			"LPD-79722", "LPD-99386", "LPD-102690", "LPD-103697", "LPD-105885",
+			"LPD-106119"
+		}
 	)
 	public void testGetServiceContextAutoCloseable() throws Exception {
 		_testGetServiceContextAutoCloseable();
 		_testGetServiceContextAutoCloseableWithConcurrentSwaps();
+		_testGetServiceContextAutoCloseableWithI18nLanguageId();
 		_testGetServiceContextAutoCloseableWithLocale();
 		_testGetServiceContextAutoCloseableWithRequestAttributes();
 		_testGetServiceContextAutoCloseableWithThemeDisplay();
@@ -185,6 +189,52 @@ public class LayoutServiceContextHelperTest {
 
 		futureTask1.get();
 		futureTask2.get();
+	}
+
+	private void _testGetServiceContextAutoCloseableWithI18nLanguageId()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(
+			GroupTestUtil.addGroup());
+
+		Locale locale = LocaleUtil.GERMANY;
+
+		Assert.assertNotEquals(
+			locale, LocaleUtil.fromLanguageId(layout.getDefaultLanguageId()));
+
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
+
+		httpServletRequest.setAttribute(
+			WebKeys.I18N_LANGUAGE_ID, LocaleUtil.toLanguageId(locale));
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setRequest(httpServletRequest);
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		try (AutoCloseable autoCloseable =
+				_layoutServiceContextHelper.getServiceContextAutoCloseable(
+					layout)) {
+
+			ServiceContext currentServiceContext =
+				ServiceContextThreadLocal.getServiceContext();
+
+			ThemeDisplay themeDisplay = currentServiceContext.getThemeDisplay();
+
+			Assert.assertEquals(
+				LocaleUtil.toLanguageId(locale), themeDisplay.getLanguageId());
+			Assert.assertEquals(locale, themeDisplay.getLocale());
+
+			HttpServletRequest currentHttpServletRequest =
+				currentServiceContext.getRequest();
+
+			Assert.assertEquals(
+				locale, currentHttpServletRequest.getAttribute(WebKeys.LOCALE));
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
 	}
 
 	private void _testGetServiceContextAutoCloseableWithLocale()
