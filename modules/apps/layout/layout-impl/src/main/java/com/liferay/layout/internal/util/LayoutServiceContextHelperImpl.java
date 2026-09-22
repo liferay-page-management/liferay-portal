@@ -10,7 +10,7 @@ import com.liferay.layout.util.LayoutServiceContextHelper;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ColorScheme;
@@ -125,6 +125,9 @@ public class LayoutServiceContextHelperImpl
 
 	@Reference
 	private ImageLocalService _imageLocalService;
+
+	@Reference
+	private Language _language;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
@@ -411,11 +414,10 @@ public class LayoutServiceContextHelperImpl
 				Locale locale = LocaleUtil.fromLanguageId(
 					(String)_httpServletRequest.getAttribute(
 						WebKeys.I18N_LANGUAGE_ID),
-					true, false);
+					false, false);
 
 				if ((locale == null) ||
-					!LanguageUtil.isAvailableLocale(
-						_group.getGroupId(), locale)) {
+					!_language.isAvailableLocale(_group.getGroupId(), locale)) {
 
 					locale = LocaleUtil.fromLanguageId(
 						_layout.getDefaultLanguageId());
