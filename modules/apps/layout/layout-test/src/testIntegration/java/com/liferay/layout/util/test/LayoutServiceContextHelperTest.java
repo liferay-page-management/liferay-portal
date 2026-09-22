@@ -75,6 +75,7 @@ public class LayoutServiceContextHelperTest {
 		_testGetServiceContextAutoCloseableWithLocale();
 		_testGetServiceContextAutoCloseableWithRequestAttributes();
 		_testGetServiceContextAutoCloseableWithThemeDisplay();
+		_testGetServiceContextAutoCloseableWithUnavailableI18nLanguageId();
 	}
 
 	private FutureTask<Void> _getFutureTask(
@@ -355,6 +356,49 @@ public class LayoutServiceContextHelperTest {
 			Assert.assertEquals(
 				_portal.getPathMain(), themeDisplay.getPathMain());
 			Assert.assertTrue(themeDisplay.isSignedIn());
+		}
+	}
+
+	private void _testGetServiceContextAutoCloseableWithUnavailableI18nLanguageId()
+		throws Exception {
+
+		Group group = GroupTestUtil.addGroup();
+
+		GroupTestUtil.updateDisplaySettings(
+			group.getGroupId(), Arrays.asList(LocaleUtil.US), null);
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(group);
+
+		Locale locale = LocaleUtil.GERMANY;
+
+		Assert.assertNotEquals(
+			locale, LocaleUtil.fromLanguageId(layout.getDefaultLanguageId()));
+
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
+
+		httpServletRequest.setAttribute(
+			WebKeys.I18N_LANGUAGE_ID, LocaleUtil.toLanguageId(locale));
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setRequest(httpServletRequest);
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		try (AutoCloseable autoCloseable =
+				_layoutServiceContextHelper.getServiceContextAutoCloseable(
+					layout)) {
+
+			ServiceContext currentServiceContext =
+				ServiceContextThreadLocal.getServiceContext();
+
+			ThemeDisplay themeDisplay = currentServiceContext.getThemeDisplay();
+
+			Assert.assertEquals(
+				layout.getDefaultLanguageId(), themeDisplay.getLanguageId());
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
 		}
 	}
 
