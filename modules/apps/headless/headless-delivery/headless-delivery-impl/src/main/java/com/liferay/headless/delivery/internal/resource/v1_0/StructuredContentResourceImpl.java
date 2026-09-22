@@ -89,6 +89,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
@@ -469,13 +470,16 @@ public class StructuredContentResourceImpl
 				_layoutServiceContextHelper.getServiceContextAutoCloseable(
 					contextCompany, contextUser)) {
 
+			ServiceContext serviceContext =
+				ServiceContextThreadLocal.getServiceContext();
+
 			return DisplayPageRendererUtil.toHTML(
 				JournalArticle.class.getName(), ddmStructure.getStructureId(),
 				displayPageKey, journalArticle.getGroupId(),
-				contextHttpServletRequest, contextHttpServletResponse,
-				journalArticle, _infoItemServiceRegistry,
-				_layoutDisplayPageProviderRegistry, _layoutService,
-				_layoutPageTemplateEntryService);
+				_portal.getOriginalServletRequest(serviceContext.getRequest()),
+				contextHttpServletResponse, journalArticle,
+				_infoItemServiceRegistry, _layoutDisplayPageProviderRegistry,
+				_layoutService, _layoutPageTemplateEntryService);
 		}
 	}
 
