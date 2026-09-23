@@ -9,7 +9,6 @@ import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
 import com.liferay.headless.admin.site.dto.v1_0.PageElement;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.DTOConverterContextUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.InfoFormUtil;
-import com.liferay.headless.admin.site.internal.exception.DuplicatePageElementException;
 import com.liferay.headless.admin.site.internal.exception.NoSuchEntityException;
 import com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.context.LayoutStructureItemImporterContext;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutStructureUtil;
@@ -24,6 +23,7 @@ import com.liferay.layout.util.structure.CollectionStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructureItemUtil;
+import com.liferay.portal.kernel.exception.DuplicateExternalReferenceCodeException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -297,8 +297,10 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 				pageElement.getExternalReferenceCode());
 
 		if (layoutStructureItem != null) {
-			throw new DuplicatePageElementException(
-				pageElement.getExternalReferenceCode());
+			throw new DuplicateExternalReferenceCodeException(
+				"A page element with the external reference code \"" +
+					pageElement.getExternalReferenceCode() +
+						"\" already exists");
 		}
 
 		return _addOrUpdatePageElement(
