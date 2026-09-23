@@ -66,112 +66,22 @@ public class PageExperienceResourceTest
 	@Test
 	@TestInfo("LPD-90839")
 	public void testDeleteSitePageExperience() throws Exception {
-		PageExperience postPageExperience =
-			testPostSitePageSpecificationPageExperience_addPageExperience(
-				randomPageExperience());
-
-		Assert.assertNotNull(
-			_segmentsExperienceLocalService.
-				fetchSegmentsExperienceByExternalReferenceCode(
-					postPageExperience.getExternalReferenceCode(),
-					testGroup.getGroupId()));
-
-		pageExperienceResource.deleteSitePageExperience(
-			testGroup.getExternalReferenceCode(),
-			postPageExperience.getExternalReferenceCode());
-
-		Assert.assertNull(
-			_segmentsExperienceLocalService.
-				fetchSegmentsExperienceByExternalReferenceCode(
-					postPageExperience.getExternalReferenceCode(),
-					testGroup.getGroupId()));
-
+		_testDeleteSitePageExperience();
 		_testDeleteSitePageExperienceWithPriority();
-
-		try {
-			pageExperienceResource.deleteSitePageExperience(
-				testGroup.getExternalReferenceCode(),
-				postPageExperience.getExternalReferenceCode());
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-			Assert.assertNull(problem.getTitle());
-		}
 	}
 
 	@Override
 	@Test
 	public void testGetSitePageExperience() throws Exception {
-		PageExperience postPageExperience =
-			testPostSitePageSpecificationPageExperience_addPageExperience(
-				randomPageExperience());
-
-		PageExperience getPageExperience =
-			pageExperienceResource.getSitePageExperience(
-				testGroup.getExternalReferenceCode(),
-				postPageExperience.getExternalReferenceCode());
-
-		assertEquals(postPageExperience, getPageExperience);
-		assertValid(getPageExperience);
-
-		try {
-			pageExperienceResource.getSitePageExperience(
-				testGroup.getExternalReferenceCode(),
-				RandomTestUtil.randomString());
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-			Assert.assertNull(problem.getTitle());
-		}
+		_testGetSitePageExperience();
 	}
 
 	@Override
 	@Test
 	@TestInfo("LPD-90839")
 	public void testPatchSitePageExperience() throws Exception {
-		PageExperience postPageExperience =
-			testPostSitePageSpecificationPageExperience_addPageExperience(
-				randomPageExperience());
-
-		postPageExperience.setName_i18n(
-			Collections.singletonMap("en-US", RandomTestUtil.randomString()));
-
-		PageExperience patchSitePageExperience =
-			pageExperienceResource.patchSitePageExperience(
-				testGroup.getExternalReferenceCode(),
-				postPageExperience.getExternalReferenceCode(),
-				new PageExperience() {
-					{
-						setName_i18n(postPageExperience::getName_i18n);
-					}
-				});
-
-		assertEquals(postPageExperience, patchSitePageExperience);
-		assertValid(patchSitePageExperience);
-
+		_testPatchSitePageExperience();
 		_testPatchSitePageExperienceWithPriority();
-
-		try {
-			pageExperienceResource.patchSitePageExperience(
-				testGroup.getExternalReferenceCode(),
-				RandomTestUtil.randomString(), randomPageExperience());
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-			Assert.assertNull(problem.getTitle());
-		}
 	}
 
 	@Override
@@ -180,40 +90,8 @@ public class PageExperienceResourceTest
 	public void testPostSitePageSpecificationPageExperience() throws Exception {
 		super.testPostSitePageSpecificationPageExperience();
 
-		_testPostSitePageSpecificationPageExperience(
-			PageExperiencesTestUtil.getPageExperience(
-				_draftLayout.getExternalReferenceCode(), 1,
-				testGroup.getGroupId(), null));
-		_testPostSitePageSpecificationPageExperience(
-			PageExperiencesTestUtil.getPageExperience(
-				_draftLayout.getExternalReferenceCode(), 2,
-				testGroup.getGroupId(),
-				SegmentsTestUtil.addSegmentsEntry(testGroup.getGroupId())));
-		_testPostSitePageSpecificationPageExperience(
-			PageExperiencesTestUtil.getPageExperience(
-				_draftLayout.getExternalReferenceCode(), 3,
-				testGroup.getGroupId(),
-				SegmentsTestUtil.addSegmentsEntry(testCompany.getGroupId())));
-
-		Group companyGroup = _groupLocalService.getGroup(
-			testCompany.getGroupId());
-
-		_testPostSitePageSpecificationPageExperienceWithMissingOptionalReference(
-			1,
-			() -> _testPostSitePageSpecificationPageExperience(
-				PageExperiencesTestUtil.getPageExperience(
-					_draftLayout.getExternalReferenceCode(), 4,
-					testGroup.getGroupId(), RandomTestUtil.randomString(),
-					companyGroup.getExternalReferenceCode())));
-
-		_testPostSitePageSpecificationPageExperienceWithMissingOptionalReference(
-			1,
-			() -> _testPostSitePageSpecificationPageExperience(
-				PageExperiencesTestUtil.getPageExperience(
-					_draftLayout.getExternalReferenceCode(), 5,
-					testGroup.getGroupId(), RandomTestUtil.randomString(),
-					null)));
-
+		_testPostSitePageSpecificationPageExperience();
+		_testPostSitePageSpecificationPageExperienceWithMissingOptionalReference();
 		_testPostSitePageSpecificationPageExperienceWithPriority();
 	}
 
@@ -221,31 +99,7 @@ public class PageExperienceResourceTest
 	@Test
 	@TestInfo("LPD-90839")
 	public void testPutSitePageExperience() throws Exception {
-		PageExperience pageExperience =
-			PageExperiencesTestUtil.getPageExperience(
-				_draftLayout.getExternalReferenceCode(), 1,
-				testGroup.getGroupId(), null);
-
-		pageExperience = _testPutSitePageExperience(pageExperience);
-
-		pageExperience.setSegmentItemExternalReference(
-			() -> ReferencesTestUtil.getItemExternalReference(
-				SegmentsTestUtil.addSegmentsEntry(testGroup.getGroupId()),
-				testGroup.getGroupId()));
-
-		pageExperience = _testPutSitePageExperience(pageExperience);
-
-		pageExperience.setSegmentItemExternalReference(
-			() -> ReferencesTestUtil.getItemExternalReference(
-				SegmentsTestUtil.addSegmentsEntry(testCompany.getGroupId()),
-				testGroup.getGroupId()));
-
-		_testPutSitePageExperience(pageExperience);
-
-		pageExperienceResource.deleteSitePageExperience(
-			testGroup.getExternalReferenceCode(),
-			pageExperience.getExternalReferenceCode());
-
+		_testPutSitePageExperience();
 		_testPutSitePageExperienceWithPriority();
 	}
 
@@ -435,6 +289,42 @@ public class PageExperienceResourceTest
 		return pageExperience;
 	}
 
+	private void _testDeleteSitePageExperience() throws Exception {
+		PageExperience postPageExperience =
+			testPostSitePageSpecificationPageExperience_addPageExperience(
+				randomPageExperience());
+
+		Assert.assertNotNull(
+			_segmentsExperienceLocalService.
+				fetchSegmentsExperienceByExternalReferenceCode(
+					postPageExperience.getExternalReferenceCode(),
+					testGroup.getGroupId()));
+
+		pageExperienceResource.deleteSitePageExperience(
+			testGroup.getExternalReferenceCode(),
+			postPageExperience.getExternalReferenceCode());
+
+		Assert.assertNull(
+			_segmentsExperienceLocalService.
+				fetchSegmentsExperienceByExternalReferenceCode(
+					postPageExperience.getExternalReferenceCode(),
+					testGroup.getGroupId()));
+
+		try {
+			pageExperienceResource.deleteSitePageExperience(
+				testGroup.getExternalReferenceCode(),
+				postPageExperience.getExternalReferenceCode());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+			Assert.assertNull(problem.getTitle());
+		}
+	}
+
 	private void _testDeleteSitePageExperienceWithPriority() throws Exception {
 		PageExperience pageExperience1 = _addPageExperience(1);
 		PageExperience pageExperience2 = _addPageExperience(2);
@@ -448,6 +338,70 @@ public class PageExperienceResourceTest
 			1, pageExperience1.getExternalReferenceCode());
 		_assertPageExperiencePriority(
 			2, pageExperience3.getExternalReferenceCode());
+	}
+
+	private void _testGetSitePageExperience() throws Exception {
+		PageExperience postPageExperience =
+			testPostSitePageSpecificationPageExperience_addPageExperience(
+				randomPageExperience());
+
+		PageExperience getPageExperience =
+			pageExperienceResource.getSitePageExperience(
+				testGroup.getExternalReferenceCode(),
+				postPageExperience.getExternalReferenceCode());
+
+		assertEquals(postPageExperience, getPageExperience);
+		assertValid(getPageExperience);
+
+		try {
+			pageExperienceResource.getSitePageExperience(
+				testGroup.getExternalReferenceCode(),
+				RandomTestUtil.randomString());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+			Assert.assertNull(problem.getTitle());
+		}
+	}
+
+	private void _testPatchSitePageExperience() throws Exception {
+		PageExperience postPageExperience =
+			testPostSitePageSpecificationPageExperience_addPageExperience(
+				randomPageExperience());
+
+		postPageExperience.setName_i18n(
+			Collections.singletonMap("en-US", RandomTestUtil.randomString()));
+
+		PageExperience patchSitePageExperience =
+			pageExperienceResource.patchSitePageExperience(
+				testGroup.getExternalReferenceCode(),
+				postPageExperience.getExternalReferenceCode(),
+				new PageExperience() {
+					{
+						setName_i18n(postPageExperience::getName_i18n);
+					}
+				});
+
+		assertEquals(postPageExperience, patchSitePageExperience);
+		assertValid(patchSitePageExperience);
+
+		try {
+			pageExperienceResource.patchSitePageExperience(
+				testGroup.getExternalReferenceCode(),
+				RandomTestUtil.randomString(), randomPageExperience());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+			Assert.assertNull(problem.getTitle());
+		}
 	}
 
 	private void _testPatchSitePageExperienceWithPriority() throws Exception {
@@ -496,6 +450,25 @@ public class PageExperienceResourceTest
 			3, pageExperience1.getExternalReferenceCode());
 	}
 
+	private void _testPostSitePageSpecificationPageExperience()
+		throws Exception {
+
+		_testPostSitePageSpecificationPageExperience(
+			PageExperiencesTestUtil.getPageExperience(
+				_draftLayout.getExternalReferenceCode(), 1,
+				testGroup.getGroupId(), null));
+		_testPostSitePageSpecificationPageExperience(
+			PageExperiencesTestUtil.getPageExperience(
+				_draftLayout.getExternalReferenceCode(), 2,
+				testGroup.getGroupId(),
+				SegmentsTestUtil.addSegmentsEntry(testGroup.getGroupId())));
+		_testPostSitePageSpecificationPageExperience(
+			PageExperiencesTestUtil.getPageExperience(
+				_draftLayout.getExternalReferenceCode(), 3,
+				testGroup.getGroupId(),
+				SegmentsTestUtil.addSegmentsEntry(testCompany.getGroupId())));
+	}
+
 	private void _testPostSitePageSpecificationPageExperience(
 			PageExperience pageExperience)
 		throws Exception {
@@ -508,6 +481,29 @@ public class PageExperienceResourceTest
 
 		assertEquals(pageExperience, postPageExperience);
 		assertValid(postPageExperience);
+	}
+
+	private void _testPostSitePageSpecificationPageExperienceWithMissingOptionalReference()
+		throws Exception {
+
+		Group companyGroup = _groupLocalService.getGroup(
+			testCompany.getGroupId());
+
+		_testPostSitePageSpecificationPageExperienceWithMissingOptionalReference(
+			1,
+			() -> _testPostSitePageSpecificationPageExperience(
+				PageExperiencesTestUtil.getPageExperience(
+					_draftLayout.getExternalReferenceCode(), 4,
+					testGroup.getGroupId(), RandomTestUtil.randomString(),
+					companyGroup.getExternalReferenceCode())));
+
+		_testPostSitePageSpecificationPageExperienceWithMissingOptionalReference(
+			1,
+			() -> _testPostSitePageSpecificationPageExperience(
+				PageExperiencesTestUtil.getPageExperience(
+					_draftLayout.getExternalReferenceCode(), 5,
+					testGroup.getGroupId(), RandomTestUtil.randomString(),
+					null)));
 	}
 
 	private void
@@ -573,6 +569,33 @@ public class PageExperienceResourceTest
 
 		Assert.assertEquals(
 			Integer.valueOf(-1), inactivePageExperience.getPriority());
+	}
+
+	private void _testPutSitePageExperience() throws Exception {
+		PageExperience pageExperience =
+			PageExperiencesTestUtil.getPageExperience(
+				_draftLayout.getExternalReferenceCode(), 1,
+				testGroup.getGroupId(), null);
+
+		pageExperience = _testPutSitePageExperience(pageExperience);
+
+		pageExperience.setSegmentItemExternalReference(
+			() -> ReferencesTestUtil.getItemExternalReference(
+				SegmentsTestUtil.addSegmentsEntry(testGroup.getGroupId()),
+				testGroup.getGroupId()));
+
+		pageExperience = _testPutSitePageExperience(pageExperience);
+
+		pageExperience.setSegmentItemExternalReference(
+			() -> ReferencesTestUtil.getItemExternalReference(
+				SegmentsTestUtil.addSegmentsEntry(testCompany.getGroupId()),
+				testGroup.getGroupId()));
+
+		_testPutSitePageExperience(pageExperience);
+
+		pageExperienceResource.deleteSitePageExperience(
+			testGroup.getExternalReferenceCode(),
+			pageExperience.getExternalReferenceCode());
 	}
 
 	private PageExperience _testPutSitePageExperience(
