@@ -7,9 +7,9 @@ package com.liferay.headless.admin.site.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageExperience;
-import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.PageElementsTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.PageExperiencesTestUtil;
+import com.liferay.headless.admin.site.resource.v1_0.test.util.ProblemExceptionTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.ReferencesTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.function.UnsafeRunnable;
@@ -310,19 +310,11 @@ public class PageExperienceResourceTest
 					postPageExperience.getExternalReferenceCode(),
 					testGroup.getGroupId()));
 
-		try {
-			pageExperienceResource.deleteSitePageExperience(
+		ProblemExceptionTestUtil.assertProblemException(
+			"NOT_FOUND", null,
+			() -> pageExperienceResource.deleteSitePageExperience(
 				testGroup.getExternalReferenceCode(),
-				postPageExperience.getExternalReferenceCode());
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-			Assert.assertNull(problem.getTitle());
-		}
+				postPageExperience.getExternalReferenceCode()));
 	}
 
 	private void _testDeleteSitePageExperienceWithPriority() throws Exception {
@@ -353,19 +345,11 @@ public class PageExperienceResourceTest
 		assertEquals(postPageExperience, getPageExperience);
 		assertValid(getPageExperience);
 
-		try {
-			pageExperienceResource.getSitePageExperience(
+		ProblemExceptionTestUtil.assertProblemException(
+			"NOT_FOUND", null,
+			() -> pageExperienceResource.getSitePageExperience(
 				testGroup.getExternalReferenceCode(),
-				RandomTestUtil.randomString());
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-			Assert.assertNull(problem.getTitle());
-		}
+				RandomTestUtil.randomString()));
 	}
 
 	private void _testPatchSitePageExperience() throws Exception {
@@ -389,19 +373,11 @@ public class PageExperienceResourceTest
 		assertEquals(postPageExperience, patchSitePageExperience);
 		assertValid(patchSitePageExperience);
 
-		try {
-			pageExperienceResource.patchSitePageExperience(
+		ProblemExceptionTestUtil.assertProblemException(
+			"NOT_FOUND", null,
+			() -> pageExperienceResource.patchSitePageExperience(
 				testGroup.getExternalReferenceCode(),
-				RandomTestUtil.randomString(), randomPageExperience());
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-			Assert.assertNull(problem.getTitle());
-		}
+				RandomTestUtil.randomString(), randomPageExperience()));
 	}
 
 	private void _testPatchSitePageExperienceWithPriority() throws Exception {
