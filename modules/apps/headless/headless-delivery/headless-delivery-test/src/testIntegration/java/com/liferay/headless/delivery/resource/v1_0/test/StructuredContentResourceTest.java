@@ -48,6 +48,8 @@ import com.liferay.expando.kernel.model.ExpandoColumnConstants;
 import com.liferay.expando.kernel.model.ExpandoTable;
 import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
 import com.liferay.expando.test.util.ExpandoTestUtil;
+import com.liferay.fragment.constants.FragmentConstants;
+import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
 import com.liferay.headless.delivery.client.custom.field.CustomField;
 import com.liferay.headless.delivery.client.custom.field.CustomValue;
 import com.liferay.headless.delivery.client.dto.v1_0.ContentDocument;
@@ -71,8 +73,10 @@ import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.service.JournalArticleService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.journal.util.JournalConverter;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
+import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -96,6 +100,7 @@ import com.liferay.portal.kernel.service.UserGroupRoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.template.TemplateConstants;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -121,6 +126,7 @@ import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.SynchronousMailTestRule;
+import com.liferay.segments.service.SegmentsExperienceLocalServiceUtil;
 
 import java.io.InputStream;
 
@@ -487,8 +493,72 @@ public class StructuredContentResourceTest
 
 	@Override
 	@Test
+	@TestInfo("LPD-106119")
 	public void testGetStructuredContentRenderedContentByDisplayPageDisplayPageKey()
 		throws Exception {
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			testGroup.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
+			HashMapBuilder.put(
+				LocaleUtil.GERMANY, "Deutscher Titel"
+			).put(
+				LocaleUtil.US, "English Title"
+			).build(),
+			null,
+			HashMapBuilder.put(
+				LocaleUtil.US, RandomTestUtil.randomString()
+			).build(),
+			LocaleUtil.US, false, true,
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+				testGroup.getGroupId(),
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				journalArticle.getDDMStructureKey());
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+			JSONUtil.put(
+				FragmentEntryProcessorConstants.
+					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
+				JSONUtil.put("title", JSONUtil.put("mappedField", "title"))
+			).toString(),
+			StringPool.BLANK, StringPool.BLANK, null, null,
+			"<div data-lfr-editable-id=\"title\" " +
+				"data-lfr-editable-type=\"text\">Placeholder</div>",
+			StringPool.BLANK, layout, null,
+			SegmentsExperienceLocalServiceUtil.fetchDefaultSegmentsExperienceId(
+				layout.getPlid()),
+			FragmentConstants.TYPE_COMPONENT);
+
+		StructuredContentResource structuredContentResource =
+			_buildStructureContentResource(LocaleUtil.GERMANY);
+
+		String html =
+			structuredContentResource.
+				getStructuredContentRenderedContentByDisplayPageDisplayPageKey(
+					journalArticle.getResourcePrimKey(),
+					layoutPageTemplateEntry.getLayoutPageTemplateEntryKey());
+
+		Assert.assertTrue(html, html.contains("Deutscher Titel"));
+		Assert.assertTrue(html, html.contains("lang=\"de-DE\""));
+
+		structuredContentResource = _buildStructureContentResource(
+			LocaleUtil.US);
+
+		html =
+			structuredContentResource.
+				getStructuredContentRenderedContentByDisplayPageDisplayPageKey(
+					journalArticle.getResourcePrimKey(),
+					layoutPageTemplateEntry.getLayoutPageTemplateEntryKey());
+
+		Assert.assertTrue(html, html.contains("English Title"));
+		Assert.assertTrue(html, html.contains("lang=\"en-US\""));
 	}
 
 	@Override

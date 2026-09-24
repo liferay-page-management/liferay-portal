@@ -17,8 +17,12 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -46,12 +50,22 @@ public class StructuredContentResourceImplTest {
 	}
 
 	@Test
-	@TestInfo("LPD-92750")
+	@TestInfo({"LPD-92750", "LPD-106119"})
 	public void testGetStructuredContentRenderedContentByDisplayPageDisplayPageKey()
 		throws Exception {
 
 		StructuredContentResourceImpl structuredContentResourceImpl =
 			new StructuredContentResourceImpl();
+
+		AcceptLanguage acceptLanguage = Mockito.mock(AcceptLanguage.class);
+
+		Mockito.when(
+			acceptLanguage.getPreferredLocale()
+		).thenReturn(
+			LocaleUtil.GERMANY
+		);
+
+		structuredContentResourceImpl.setContextAcceptLanguage(acceptLanguage);
 
 		structuredContentResourceImpl.setContextHttpServletRequest(
 			Mockito.mock(HttpServletRequest.class));
@@ -95,6 +109,14 @@ public class StructuredContentResourceImplTest {
 		HttpServletRequest swappedHttpServletRequest = Mockito.mock(
 			HttpServletRequest.class);
 
+		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
+
+		Mockito.when(
+			swappedHttpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
+		).thenReturn(
+			themeDisplay
+		);
+
 		Portal portal = Mockito.mock(Portal.class);
 
 		Mockito.when(
@@ -123,6 +145,24 @@ public class StructuredContentResourceImplTest {
 					Mockito.anyLong(), Mockito.same(swappedHttpServletRequest),
 					Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
 					Mockito.any(), Mockito.any()));
+
+			Mockito.verify(
+				themeDisplay
+			).setLanguageId(
+				"de_DE"
+			);
+
+			Mockito.verify(
+				themeDisplay
+			).setLocale(
+				LocaleUtil.GERMANY
+			);
+
+			Mockito.verify(
+				swappedHttpServletRequest
+			).setAttribute(
+				WebKeys.LOCALE, LocaleUtil.GERMANY
+			);
 		}
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
