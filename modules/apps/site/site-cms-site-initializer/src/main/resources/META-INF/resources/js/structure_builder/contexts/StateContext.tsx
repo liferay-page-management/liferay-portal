@@ -1140,6 +1140,7 @@ function reducer(state: State, action: Action): State {
 				currentErrors: invalids.get(structure.uuid),
 				data: {
 					erc,
+					id: structure.id,
 					label,
 					spaces,
 					...(!isPublished &&
