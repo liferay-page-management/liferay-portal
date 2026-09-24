@@ -91,6 +91,7 @@ import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -101,6 +102,7 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
@@ -121,6 +123,8 @@ import com.liferay.portal.vulcan.util.LocalDateTimeUtil;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.portal.vulcan.util.SearchUtil;
 import com.liferay.ratings.kernel.service.RatingsEntryLocalService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -473,10 +477,21 @@ public class StructuredContentResourceImpl
 			ServiceContext serviceContext =
 				ServiceContextThreadLocal.getServiceContext();
 
+			ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
+
+			Locale locale = contextAcceptLanguage.getPreferredLocale();
+
+			themeDisplay.setLanguageId(LocaleUtil.toLanguageId(locale));
+			themeDisplay.setLocale(locale);
+
+			HttpServletRequest httpServletRequest =
+				_portal.getOriginalServletRequest(serviceContext.getRequest());
+
+			httpServletRequest.setAttribute(WebKeys.LOCALE, locale);
+
 			return DisplayPageRendererUtil.toHTML(
 				JournalArticle.class.getName(), ddmStructure.getStructureId(),
-				displayPageKey, journalArticle.getGroupId(),
-				_portal.getOriginalServletRequest(serviceContext.getRequest()),
+				displayPageKey, journalArticle.getGroupId(), httpServletRequest,
 				contextHttpServletResponse, journalArticle,
 				_infoItemServiceRegistry, _layoutDisplayPageProviderRegistry,
 				_layoutService, _layoutPageTemplateEntryService);
