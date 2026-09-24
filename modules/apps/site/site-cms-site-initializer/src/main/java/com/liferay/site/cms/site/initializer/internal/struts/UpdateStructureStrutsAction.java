@@ -122,6 +122,62 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 		return null;
 	}
 
+	private void _deleteObjectDefinition(
+			long companyId, String externalReferenceCode)
+		throws Exception {
+
+		com.liferay.object.model.ObjectDefinition
+			serviceBuilderObjectDefinition =
+				_objectDefinitionLocalService.
+					fetchObjectDefinitionByExternalReferenceCode(
+						externalReferenceCode, companyId);
+
+		if (serviceBuilderObjectDefinition == null) {
+			return;
+		}
+
+		for (com.liferay.object.model.ObjectRelationship
+				serviceBuilderObjectRelationship :
+					_objectRelationshipLocalService.
+						getObjectRelationshipsByObjectDefinitionId2(
+							serviceBuilderObjectDefinition.
+								getObjectDefinitionId(),
+							true)) {
+
+			_objectRelationshipLocalService.updateObjectRelationship(
+				serviceBuilderObjectRelationship.getExternalReferenceCode(),
+				serviceBuilderObjectRelationship.getObjectRelationshipId(),
+				serviceBuilderObjectRelationship.getParameterObjectFieldId(),
+				serviceBuilderObjectRelationship.getDeletionType(), false,
+				serviceBuilderObjectRelationship.getLabelMap(), null);
+		}
+
+		_objectDefinitionLocalService.deleteObjectDefinition(
+			serviceBuilderObjectDefinition.getObjectDefinitionId());
+	}
+
+	private void _deleteObjectDefinitions(
+		long companyId, List<String> externalReferenceCodes) {
+
+		for (String externalReferenceCode : externalReferenceCodes) {
+			try {
+				TransactionInvokerUtil.invoke(
+					_transactionConfig,
+					() -> {
+						_deleteObjectDefinition(
+							companyId, externalReferenceCode);
+
+						return null;
+					});
+			}
+			catch (Throwable throwable) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(throwable);
+				}
+			}
+		}
+	}
+
 	private void _deleteObjectRelationships(
 			long companyId, String externalReferenceCode)
 		throws Exception {
@@ -265,19 +321,26 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 		JSONObject objectDefinitionJSONObject = _jsonFactory.createJSONObject(
 			objectDefinitionJSON);
 
-		Callable<Void> callable = new UpdateStructureCallable(
-			themeDisplay.getCompanyId(), deletedGroupERCs,
-			deletedObjectRelationshipsJSONArray,
-			ObjectDefinition.toDTO(objectDefinitionJSON),
-			objectDefinitionJSONObject.getLong("id"),
-			_getObjectRelationships(objectRelationshipsJSONArray),
-			_getObjectDefinitions(repeatableGroupObjectDefinitionsJSONArray),
-			themeDisplay.getUser());
+		UpdateStructureCallable updateStructureCallable =
+			new UpdateStructureCallable(
+				themeDisplay.getCompanyId(), deletedGroupERCs,
+				deletedObjectRelationshipsJSONArray,
+				ObjectDefinition.toDTO(objectDefinitionJSON),
+				objectDefinitionJSONObject.getLong("id"),
+				_getObjectRelationships(objectRelationshipsJSONArray),
+				_getObjectDefinitions(
+					repeatableGroupObjectDefinitionsJSONArray),
+				themeDisplay.getUser());
 
 		try {
-			TransactionInvokerUtil.invoke(_transactionConfig, callable);
+			TransactionInvokerUtil.invoke(
+				_transactionConfig, updateStructureCallable);
 		}
 		catch (Throwable throwable) {
+			_deleteObjectDefinitions(
+				themeDisplay.getCompanyId(),
+				updateStructureCallable._addedGroupERCs);
+
 			if (throwable instanceof Exception) {
 				throw (Exception)throwable;
 			}
@@ -397,6 +460,18 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 				for (ObjectDefinition objectDefinition :
 						_repeatableGroupObjectDefinitions) {
 
+					com.liferay.object.model.ObjectDefinition
+						serviceBuilderObjectDefinition =
+							_objectDefinitionLocalService.
+								fetchObjectDefinitionByExternalReferenceCode(
+									objectDefinition.getExternalReferenceCode(),
+									_companyId);
+
+					if (serviceBuilderObjectDefinition == null) {
+						_addedGroupERCs.add(
+							objectDefinition.getExternalReferenceCode());
+					}
+
 					objectDefinitionResource.
 						putObjectDefinitionByExternalReferenceCode(
 							objectDefinition.getExternalReferenceCode(),
@@ -456,6 +531,7 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 			_user = user;
 		}
 
+		private final List<String> _addedGroupERCs = new ArrayList<>();
 		private final long _companyId;
 		private final String[] _deletedGroupERCs;
 		private final JSONArray _deletedObjectRelationshipsJSONArray;
