@@ -1144,6 +1144,7 @@ function reducer(state: State, action: Action): State {
 					spaces,
 					...(!isPublished &&
 						nextName !== structure.name && {name: nextName}),
+					...(nextSlug !== structure.slug && {slug: nextSlug}),
 				},
 				objectDefinitions,
 			});
