@@ -32,6 +32,7 @@ import selectStructureSettings from '../selectors/selectStructureSettings';
 import selectStructureSlug from '../selectors/selectStructureSlug';
 import selectStructureSpaces from '../selectors/selectStructureSpaces';
 import selectStructureStatus from '../selectors/selectStructureStatus';
+import selectStructureTitleFieldName from '../selectors/selectStructureTitleFieldName';
 import selectStructureUuid from '../selectors/selectStructureUuid';
 import selectStructureWorkflows from '../selectors/selectStructureWorkflows';
 import DisplayPageService from '../services/DisplayPageService';
@@ -134,6 +135,7 @@ export default async function handlePublishStructure({
 	const settings = selectStructureSettings(state);
 	const structureSpaces = selectStructureSpaces(state);
 	const status = selectStructureStatus(state);
+	const titleFieldName = selectStructureTitleFieldName(state);
 	let structureId = selectStructureId(state);
 	const workflows = selectStructureWorkflows(state);
 	const uuid = selectStructureUuid(state);
@@ -281,6 +283,7 @@ export default async function handlePublishStructure({
 			slug,
 			spaces,
 			status: 'published',
+			titleFieldName,
 			workflows,
 		});
 
@@ -310,6 +313,7 @@ export default async function handlePublishStructure({
 			slug,
 			spaces,
 			status: 'published',
+			titleFieldName,
 			workflows,
 		});
 

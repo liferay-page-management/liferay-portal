@@ -10,8 +10,10 @@ import React, {useRef, useState} from 'react';
 import buildLocalizedValue from '../../common/utils/buildLocalizedValue';
 import {useCache} from '../contexts/CacheContext';
 import {useSelector, useStateDispatch} from '../contexts/StateContext';
+import selectDefaultLanguageLabels from '../selectors/selectDefaultLanguageLabels';
 import selectPublishedChildren from '../selectors/selectPublishedChildren';
 import selectStructure from '../selectors/selectStructure';
+import selectSystemFieldNames from '../selectors/selectSystemFieldNames';
 import {Group} from '../types/Structure';
 import {
 	FIELD_TYPES,
@@ -50,7 +52,9 @@ export default function AddChildDropdown({
 }) {
 	const dispatch = useStateDispatch();
 	const publishedChildren = useSelector(selectPublishedChildren);
+	const defaultLanguageLabels = useSelector(selectDefaultLanguageLabels);
 	const structure = useSelector(selectStructure);
+	const systemFieldNames = useSelector(selectSystemFieldNames);
 
 	const {data: objectDefinitions, status} = useCache('object-definitions');
 
@@ -67,6 +71,7 @@ export default function AddChildDropdown({
 	const addField = (type: Field['type']) =>
 		dispatch({
 			field: getDefaultField({
+				defaultLanguageLabels,
 				parent: parentUuid ?? structure.uuid,
 				type,
 			}),
@@ -77,7 +82,10 @@ export default function AddChildDropdown({
 		dispatch({
 			relatedContent: {
 				erc: getRandomId(),
-				label: buildLocalizedValue('select-related-content'),
+				label: buildLocalizedValue({
+					defaultLanguageLabels,
+					key: 'select-related-content',
+				}),
 				multiselection: false,
 				name: getRandomName(),
 				parent: parentUuid ?? structure.uuid,
@@ -139,6 +147,7 @@ export default function AddChildDropdown({
 											parentUuid ?? structure.uuid,
 										status,
 										structure,
+										systemFieldNames,
 									}),
 								symbolLeft: 'edit-layout',
 							},

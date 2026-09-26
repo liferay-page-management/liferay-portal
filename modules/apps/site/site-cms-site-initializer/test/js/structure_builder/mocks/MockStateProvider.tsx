@@ -25,6 +25,7 @@ export const DEFAULT_STRUCTURE: Structure = {
 	spaces: [],
 	status: 'new',
 	system: false,
+	titleFieldName: 'title',
 	type: 'L_CMS_CONTENT_STRUCTURES',
 	uuid: getUuid(),
 	workflows: {},
@@ -32,6 +33,7 @@ export const DEFAULT_STRUCTURE: Structure = {
 
 const DEFAULT_STATE: State = {
 	clipboard: null,
+	defaultLanguageLabels: {labels: {}, locale: 'en_US'},
 	history: {
 		deletedChildren: [],
 		deletedGroupERCs: [],
@@ -46,6 +48,7 @@ const DEFAULT_STATE: State = {
 	savedChildren: new Set(),
 	selection: [],
 	structure: DEFAULT_STRUCTURE,
+	systemFieldNames: {},
 	unsavedChanges: false,
 };
 

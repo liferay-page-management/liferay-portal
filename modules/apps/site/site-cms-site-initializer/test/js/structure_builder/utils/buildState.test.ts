@@ -100,6 +100,7 @@ describe('buildState', () => {
 			spaces: [],
 			status: 'draft',
 			system: false,
+			titleFieldName: 'title',
 			type: 'L_CMS_CONTENT_STRUCTURES',
 			uuid: getUuid(),
 			workflows: {},
@@ -107,6 +108,7 @@ describe('buildState', () => {
 
 		const initialState: State = {
 			clipboard: null,
+			defaultLanguageLabels: {labels: {}, locale: 'en_US'},
 			history: {
 				deletedChildren: [],
 				deletedGroupERCs: [],
@@ -121,6 +123,7 @@ describe('buildState', () => {
 			savedChildren: new Set(),
 			selection: [],
 			structure,
+			systemFieldNames: {},
 			unsavedChanges: false,
 		};
 
@@ -133,8 +136,10 @@ describe('buildState', () => {
 		});
 
 		const result = buildState({
+			defaultLanguageLabels: {labels: {}, locale: 'en_US'},
 			mainObjectDefinition: objectDefinition,
 			objectDefinitions: {},
+			systemFieldNames: {},
 		});
 
 		const {children, uuid} = result!.structure;
@@ -164,6 +169,7 @@ describe('buildState', () => {
 			spaces: [],
 			status: 'published',
 			system: false,
+			titleFieldName: 'title',
 			type: 'L_CMS_CONTENT_STRUCTURES',
 			uuid: getUuid(),
 			workflows: {},
@@ -171,6 +177,7 @@ describe('buildState', () => {
 
 		const initialState: State = {
 			clipboard: null,
+			defaultLanguageLabels: {labels: {}, locale: 'en_US'},
 			history: {
 				deletedChildren: [],
 				deletedGroupERCs: [],
@@ -185,6 +192,7 @@ describe('buildState', () => {
 			savedChildren: new Set(),
 			selection: [],
 			structure,
+			systemFieldNames: {},
 			unsavedChanges: false,
 		};
 
@@ -197,6 +205,7 @@ describe('buildState', () => {
 		});
 
 		const result = buildState({
+			defaultLanguageLabels: {labels: {}, locale: 'en_US'},
 			mainObjectDefinition: {
 				...objectDefinition,
 				status: {
@@ -204,6 +213,7 @@ describe('buildState', () => {
 				},
 			},
 			objectDefinitions: {},
+			systemFieldNames: {},
 		});
 
 		const {children, uuid} = result!.structure;
@@ -237,6 +247,7 @@ describe('buildState', () => {
 			spaces: ['space-1-erc', 'space-2-erc'],
 			status: 'published',
 			system: false,
+			titleFieldName: 'title',
 			type: 'L_CMS_CONTENT_STRUCTURES',
 			uuid: getUuid(),
 			workflows: {
@@ -247,6 +258,7 @@ describe('buildState', () => {
 
 		const initialState: State = {
 			clipboard: null,
+			defaultLanguageLabels: {labels: {}, locale: 'en_US'},
 			history: {
 				deletedChildren: [],
 				deletedGroupERCs: [],
@@ -261,6 +273,7 @@ describe('buildState', () => {
 			savedChildren: new Set(),
 			selection: [],
 			structure,
+			systemFieldNames: {},
 			unsavedChanges: false,
 		};
 
@@ -274,6 +287,7 @@ describe('buildState', () => {
 		});
 
 		const result = buildState({
+			defaultLanguageLabels: {labels: {}, locale: 'en_US'},
 			mainObjectDefinition: {
 				...objectDefinition,
 				status: {
@@ -281,6 +295,7 @@ describe('buildState', () => {
 				},
 			},
 			objectDefinitions: {},
+			systemFieldNames: {},
 		});
 
 		const {children, uuid} = result!.structure;
@@ -339,8 +354,10 @@ describe('buildState', () => {
 		};
 
 		const state = buildState({
+			defaultLanguageLabels: {labels: {}, locale: 'en_US'},
 			mainObjectDefinition: objectDefinition,
 			objectDefinitions: {},
+			systemFieldNames: {},
 		});
 
 		const [, field] = [...state!.structure.children][0];
@@ -392,11 +409,13 @@ describe('buildState', () => {
 		};
 
 		const state = buildState({
+			defaultLanguageLabels: {labels: {}, locale: 'en_US'},
 			mainObjectDefinition: objectDefinition,
 			objectDefinitions: {
 				[relatedObjectDefinition.externalReferenceCode]:
 					relatedObjectDefinition,
 			},
+			systemFieldNames: {},
 		});
 
 		const children = Array.from(state!.structure.children.values());

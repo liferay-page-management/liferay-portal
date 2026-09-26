@@ -53,6 +53,7 @@ const OBJECT_DEFINITIONS: ObjectDefinitions = {
 
 const DEFAULT_STATE: State = {
 	clipboard: null,
+	defaultLanguageLabels: {labels: {}, locale: 'en_US'},
 	history: {
 		deletedChildren: [],
 		deletedGroupERCs: [],
@@ -76,10 +77,12 @@ const DEFAULT_STATE: State = {
 		spaces: [],
 		status: 'draft',
 		system: false,
+		titleFieldName: 'title',
 		type: 'L_CMS_CONTENT_STRUCTURES',
 		uuid: getUuid(),
 		workflows: {},
 	},
+	systemFieldNames: {},
 	unsavedChanges: false,
 };
 

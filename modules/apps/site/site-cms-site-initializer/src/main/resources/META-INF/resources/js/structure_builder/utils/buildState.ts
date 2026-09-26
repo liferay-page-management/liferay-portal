@@ -7,16 +7,22 @@ import {
 	ObjectDefinition,
 	ObjectDefinitions,
 } from '../../common/types/ObjectDefinition';
+import {DefaultLanguageLabels} from '../../common/utils/defaultLanguageLabels';
 import {State} from '../contexts/StateContext';
+import {SystemFieldNames} from '../types/SystemFieldNames';
 import buildStructure from './buildStructure';
 import {getChildrenUuids} from './getChildrenUuids';
 
 export default function buildState({
+	defaultLanguageLabels,
 	mainObjectDefinition,
 	objectDefinitions,
+	systemFieldNames,
 }: {
+	defaultLanguageLabels: DefaultLanguageLabels;
 	mainObjectDefinition: ObjectDefinition;
 	objectDefinitions: ObjectDefinitions;
+	systemFieldNames: SystemFieldNames;
 }): State | null {
 	if (!mainObjectDefinition) {
 		return null;
@@ -25,10 +31,12 @@ export default function buildState({
 	const structure = buildStructure({
 		mainObjectDefinition,
 		objectDefinitions,
+		systemFieldNames,
 	});
 
 	return {
 		clipboard: null,
+		defaultLanguageLabels,
 		history: {
 			deletedChildren: [],
 			deletedGroupERCs: [],
@@ -46,6 +54,7 @@ export default function buildState({
 		savedChildren: getChildrenUuids({root: structure}),
 		selection: [],
 		structure,
+		systemFieldNames,
 		unsavedChanges: false,
 	};
 }

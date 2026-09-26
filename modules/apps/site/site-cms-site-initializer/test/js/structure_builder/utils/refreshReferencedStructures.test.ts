@@ -71,6 +71,7 @@ describe('refreshReferencedStructures', () => {
 			spaces: [],
 			status: 'published',
 			system: false,
+			titleFieldName: 'title',
 			type: 'L_CMS_CONTENT_STRUCTURES',
 			uuid: structureUuid,
 			workflows: {},
@@ -137,6 +138,7 @@ describe('refreshReferencedStructures', () => {
 		const result = refreshReferencedStructures({
 			objectDefinitions,
 			root,
+			systemFieldNames: {},
 		});
 
 		const updatedReferencedStructure = result.get(
@@ -226,6 +228,7 @@ describe('refreshReferencedStructures with groups', () => {
 			spaces: [],
 			status: 'published',
 			system: false,
+			titleFieldName: 'title',
 			type: 'L_CMS_CONTENT_STRUCTURES',
 			uuid: structureUuid,
 			workflows: {},
@@ -268,6 +271,7 @@ describe('refreshReferencedStructures with groups', () => {
 				[objectDefinition.externalReferenceCode]: objectDefinition,
 			},
 			root,
+			systemFieldNames: {},
 		});
 
 		const repeatable = children.get(repeatableUuid) as RepeatableGroup;

@@ -12,9 +12,13 @@ import React, {
 	useReducer,
 } from 'react';
 
-import {ObjectDefinitions} from '../../common/types/ObjectDefinition';
+import {
+	ObjectDefinition,
+	ObjectDefinitions,
+} from '../../common/types/ObjectDefinition';
 import {Space} from '../../common/types/Space';
 import {Workflow} from '../../common/types/Workflow';
+import {DefaultLanguageLabels} from '../../common/utils/defaultLanguageLabels';
 import getLocalizedValue from '../../common/utils/getLocalizedValue';
 import {
 	Group,
@@ -25,8 +29,10 @@ import {
 	StructureChild,
 	StructureType,
 } from '../types/Structure';
+import {SystemFieldNames} from '../types/SystemFieldNames';
 import {Uuid} from '../types/Uuid';
 import actionGeneratesChanges from '../utils/actionGeneratesChanges';
+import {buildChildren} from '../utils/buildStructure';
 import {Field, SelectFromListField, getDefaultField} from '../utils/field';
 import findAvailableFieldName from '../utils/findAvailableFieldName';
 import findChild from '../utils/findChild';
@@ -76,6 +82,7 @@ export type Operation = 'publishing' | 'saving';
 
 export type State = {
 	clipboard: Clipboard | null;
+	defaultLanguageLabels: DefaultLanguageLabels;
 	history: History;
 	invalids: Map<Uuid, ErrorMap>;
 	operation: Operation | null;
@@ -84,11 +91,13 @@ export type State = {
 	savedChildren: Set<Uuid>;
 	selection: Uuid[];
 	structure: Structure;
+	systemFieldNames: SystemFieldNames;
 	unsavedChanges: boolean;
 };
 
 const INITIAL_STATE: State = {
 	clipboard: null,
+	defaultLanguageLabels: {labels: {}, locale: ''},
 	history: {
 		deletedChildren: [],
 		deletedGroupERCs: [],
@@ -113,10 +122,12 @@ const INITIAL_STATE: State = {
 		spaces: 'all',
 		status: 'new',
 		system: false,
+		titleFieldName: 'title',
 		type: 'L_CMS_CONTENT_STRUCTURES',
 		uuid: getUuid(),
 		workflows: {},
 	},
+	systemFieldNames: {},
 	unsavedChanges: false,
 };
 
@@ -428,6 +439,7 @@ function reducer(state: State, action: Action): State {
 			const groupUuid = getUuid();
 
 			const children = addGroup({
+				defaultLanguageLabels: state.defaultLanguageLabels,
 				groupChildren: items,
 				groupParent: parent,
 				groupUuid,
@@ -452,6 +464,7 @@ function reducer(state: State, action: Action): State {
 			const groupUuid = getUuid();
 
 			const children = addRepeatableGroup({
+				defaultLanguageLabels: state.defaultLanguageLabels,
 				groupChildren: items,
 				groupParent: items[0].parent,
 				groupUuid,
@@ -723,6 +736,7 @@ function reducer(state: State, action: Action): State {
 			const nextChildren = refreshReferencedStructures({
 				objectDefinitions,
 				root: structure,
+				systemFieldNames: state.systemFieldNames,
 			});
 
 			const nextStructure = {
@@ -1157,7 +1171,19 @@ function reducer(state: State, action: Action): State {
 	}
 }
 
-function initState(state: State): State {
+function initState({
+	baseObjectDefinition,
+	defaultLanguageLabels,
+	objectDefinitions,
+	state,
+	systemFieldNames,
+}: {
+	baseObjectDefinition: ObjectDefinition | null;
+	defaultLanguageLabels: DefaultLanguageLabels;
+	objectDefinitions: ObjectDefinitions;
+	state: State;
+	systemFieldNames: SystemFieldNames;
+}): State {
 	const {structure} = state;
 
 	if (structure.erc) {
@@ -1168,10 +1194,19 @@ function initState(state: State): State {
 		...state,
 		structure: {
 			...structure,
-			children: getDefaultChildren(structure.uuid),
+			children: getDefaultChildren({
+				baseObjectDefinition,
+				defaultLanguageLabels,
+				objectDefinitions,
+				parent: structure.uuid,
+				systemFieldNames,
+			}),
 			erc: getRandomId(),
+			titleFieldName:
+				baseObjectDefinition?.titleObjectFieldName ?? 'title',
 			type: getType(),
 		},
+		systemFieldNames,
 	};
 }
 
@@ -1184,16 +1219,31 @@ const StateContext = createContext<{
 });
 
 export default function StateContextProvider({
+	baseObjectDefinition = null,
 	children,
+	defaultLanguageLabels = {labels: {}, locale: ''},
 	initialState,
+	objectDefinitions = {},
+	systemFieldNames = {},
 }: {
+	baseObjectDefinition?: ObjectDefinition | null;
 	children: ReactNode;
+	defaultLanguageLabels?: DefaultLanguageLabels;
 	initialState: State | null;
+	objectDefinitions?: ObjectDefinitions;
+	systemFieldNames?: SystemFieldNames;
 }) {
 	const [state, dispatch] = useReducer<React.Reducer<State, Action>, State>(
 		reducer,
 		initialState ?? INITIAL_STATE,
-		initState
+		(state) =>
+			initState({
+				baseObjectDefinition,
+				defaultLanguageLabels,
+				objectDefinitions,
+				state,
+				systemFieldNames,
+			})
 	);
 
 	return (
@@ -1213,28 +1263,49 @@ function useStateDispatch() {
 	return useContext(StateContext).dispatch;
 }
 
-function getDefaultChildren(structureUuid: Uuid) {
-	const type = getType();
+function getDefaultChildren({
+	baseObjectDefinition,
+	defaultLanguageLabels,
+	objectDefinitions,
+	parent,
+	systemFieldNames,
+}: {
+	baseObjectDefinition: ObjectDefinition | null;
+	defaultLanguageLabels: DefaultLanguageLabels;
+	objectDefinitions: ObjectDefinitions;
+	parent: Uuid;
+	systemFieldNames: SystemFieldNames;
+}) {
+	if (baseObjectDefinition) {
+		return buildChildren({
+			objectDefinition: baseObjectDefinition,
+			objectDefinitions,
+			parent,
+			systemFieldNames,
+		});
+	}
 
 	const children = new Map();
 
 	const title = getDefaultField({
+		defaultLanguageLabels,
 		languageKey: 'title',
 		locked: true,
 		name: 'title',
-		parent: structureUuid,
+		parent,
 		required: true,
 		type: 'text',
 	});
 
 	children.set(title.uuid, title);
 
-	if (type === 'L_CMS_FILE_TYPES') {
+	if (getType() === 'L_CMS_FILE_TYPES') {
 		const file = getDefaultField({
+			defaultLanguageLabels,
 			languageKey: 'file',
 			locked: true,
 			name: 'file',
-			parent: structureUuid,
+			parent,
 			required: true,
 			type: 'upload',
 		});
