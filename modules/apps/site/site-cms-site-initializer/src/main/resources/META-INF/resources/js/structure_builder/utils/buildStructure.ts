@@ -20,19 +20,23 @@ import {
 	Structure,
 	StructureChild,
 } from '../types/Structure';
+import {SystemFieldNames} from '../types/SystemFieldNames';
 import {Uuid} from '../types/Uuid';
 import {Field, FieldType, SelectFromListField} from './field';
 import getUuid from './getUuid';
 import isCustomObjectField from './isCustomObjectField';
 import isField from './isField';
+import isSystemFieldName from './isSystemFieldName';
 import sortChildren from './state/sortChildren';
 
 export default function buildStructure({
 	mainObjectDefinition,
 	objectDefinitions,
+	systemFieldNames,
 }: {
 	mainObjectDefinition: ObjectDefinition;
 	objectDefinitions: ObjectDefinitions;
+	systemFieldNames: SystemFieldNames;
 }): Structure {
 	const uuid = getUuid();
 
@@ -43,6 +47,7 @@ export default function buildStructure({
 			objectDefinition: mainObjectDefinition,
 			objectDefinitions,
 			parent: uuid,
+			systemFieldNames,
 		}),
 		erc: mainObjectDefinition.externalReferenceCode,
 		id: mainObjectDefinition.id,
@@ -65,11 +70,13 @@ export function buildChildren({
 	objectDefinition,
 	objectDefinitions,
 	parent,
+	systemFieldNames,
 }: {
 	ancestors?: Array<ObjectDefinition['externalReferenceCode']>;
 	objectDefinition: ObjectDefinition;
 	objectDefinitions: ObjectDefinitions;
 	parent: Uuid;
+	systemFieldNames: SystemFieldNames;
 }) {
 	const objectFields = objectDefinition.objectFields || [];
 	const objectRelationships = objectDefinition.objectRelationships || [];
@@ -82,15 +89,21 @@ export function buildChildren({
 
 	for (const objectField of objectFields) {
 		if (
-			!isCustomObjectField(
+			!isCustomObjectField({
+				objectDefinitionERC: objectDefinition.externalReferenceCode,
 				objectField,
-				objectDefinition.externalReferenceCode
-			)
+				systemFieldNames,
+			})
 		) {
 			continue;
 		}
 
-		const field = buildField({objectField, parent});
+		const field = buildField({
+			objectDefinitionERC: objectDefinition.externalReferenceCode,
+			objectField,
+			parent,
+			systemFieldNames,
+		});
 
 		children.set(field.uuid, field);
 	}
@@ -122,6 +135,7 @@ export function buildChildren({
 				parent,
 				relationshipERC: objectRelationship.externalReferenceCode,
 				relationshipName: objectRelationship.name,
+				systemFieldNames,
 			});
 
 			children.set(repeatableGroup.uuid, repeatableGroup);
@@ -137,6 +151,7 @@ export function buildChildren({
 				parent,
 				relationshipERC: objectRelationship.externalReferenceCode,
 				relationshipName: objectRelationship.name,
+				systemFieldNames,
 			});
 
 			children.set(referencedStructure.uuid, referencedStructure);
@@ -277,11 +292,15 @@ function buildGroup({
 }
 
 export function buildField({
+	objectDefinitionERC,
 	objectField,
 	parent,
+	systemFieldNames,
 }: {
+	objectDefinitionERC: string;
 	objectField: ObjectField;
 	parent: Uuid;
+	systemFieldNames: SystemFieldNames;
 }) {
 	const indexableConfig = {
 		indexed: objectField.indexed,
@@ -303,7 +322,13 @@ export function buildField({
 		indexableConfig,
 		label: objectField.label,
 		localized: objectField.localized,
-		locked: objectField.system,
+		locked:
+			objectField.system ||
+			isSystemFieldName({
+				name: objectField.name,
+				objectDefinitionERC,
+				systemFieldNames,
+			}),
 		name: objectField.name,
 		parent,
 		required: objectField.required,
@@ -338,6 +363,7 @@ export function buildReferencedStructure({
 	parent,
 	relationshipERC,
 	relationshipName,
+	systemFieldNames,
 }: {
 	ancestors: Array<ObjectDefinition['externalReferenceCode']>;
 	erc: ReferencedStructure['erc'];
@@ -345,6 +371,7 @@ export function buildReferencedStructure({
 	parent: Uuid;
 	relationshipERC: string;
 	relationshipName: ObjectRelationship['name'];
+	systemFieldNames: SystemFieldNames;
 }): ReferencedStructure {
 	const uuid = getUuid();
 
@@ -364,6 +391,7 @@ export function buildReferencedStructure({
 			objectDefinition,
 			objectDefinitions,
 			parent: uuid,
+			systemFieldNames,
 		}),
 		editURL: url.href,
 		erc,
@@ -386,6 +414,7 @@ export function buildRepeatableGroup({
 	parent,
 	relationshipERC,
 	relationshipName,
+	systemFieldNames,
 }: {
 	ancestors: Array<ObjectDefinition['externalReferenceCode']>;
 	erc: RepeatableGroup['erc'];
@@ -393,6 +422,7 @@ export function buildRepeatableGroup({
 	parent: Uuid;
 	relationshipERC: string;
 	relationshipName: ObjectRelationship['name'];
+	systemFieldNames: SystemFieldNames;
 }): RepeatableGroup {
 	const uuid = getUuid();
 
@@ -404,6 +434,7 @@ export function buildRepeatableGroup({
 			objectDefinition,
 			objectDefinitions,
 			parent: uuid,
+			systemFieldNames,
 		}),
 		erc,
 		isRepeatable: true,

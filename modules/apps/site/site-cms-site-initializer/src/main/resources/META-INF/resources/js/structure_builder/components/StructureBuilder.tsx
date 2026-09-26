@@ -12,17 +12,14 @@ import {
 	ObjectDefinitions,
 	ObjectRelationship,
 } from '../../common/types/ObjectDefinition';
-import {
-	DefaultLanguageLabels,
-	setDefaultLanguageLabels,
-} from '../../common/utils/defaultLanguageLabels';
+import {DefaultLanguageLabels} from '../../common/utils/defaultLanguageLabels';
 import {Config, initializeConfig} from '../config';
 import CacheContextProvider from '../contexts/CacheContext';
 import StateContextProvider, {useSelector} from '../contexts/StateContext';
 import selectStructureId from '../selectors/selectStructureId';
 import selectStructureStatus from '../selectors/selectStructureStatus';
+import {SystemFieldNames} from '../types/SystemFieldNames';
 import buildState from '../utils/buildState';
-import {setSystemObjectFieldNames} from '../utils/isCustomObjectField';
 import HelpButton from './HelpButton';
 import ShortcutManager from './ShortcutManager';
 import Sidebar from './Sidebar';
@@ -33,23 +30,32 @@ export default function StructureBuilder({
 	config,
 	defaultLanguageLabels,
 	state,
-	systemObjectFieldNames,
+	systemObjectFieldNames: systemFieldNames,
 }: {
 	config: Config;
 	defaultLanguageLabels: DefaultLanguageLabels;
 	state: {
+		baseObjectDefinition?: ObjectDefinition | null;
 		mainObjectDefinition: ObjectDefinition;
 		objectDefinitions: ObjectDefinitions;
 		relatedContentObjectRelationships: ObjectRelationship[];
 	};
-	systemObjectFieldNames: Record<string, string[]>;
+	systemObjectFieldNames: SystemFieldNames;
 }) {
 	initializeConfig(config);
-	setDefaultLanguageLabels(defaultLanguageLabels);
-	setSystemObjectFieldNames(systemObjectFieldNames);
 
 	return (
-		<StateContextProvider initialState={buildState(state)}>
+		<StateContextProvider
+			baseObjectDefinition={state.baseObjectDefinition}
+			defaultLanguageLabels={defaultLanguageLabels}
+			initialState={buildState({
+				...state,
+				defaultLanguageLabels,
+				systemFieldNames,
+			})}
+			objectDefinitions={state.objectDefinitions}
+			systemFieldNames={systemFieldNames}
+		>
 			<CacheContextProvider
 				initialData={{
 					'object-definitions': state.objectDefinitions,
