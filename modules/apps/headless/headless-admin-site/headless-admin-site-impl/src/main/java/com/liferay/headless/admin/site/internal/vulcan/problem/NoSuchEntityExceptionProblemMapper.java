@@ -5,9 +5,9 @@
 
 package com.liferay.headless.admin.site.internal.vulcan.problem;
 
+import com.liferay.headless.admin.site.internal.exception.NoSuchEntityException;
 import com.liferay.portal.vulcan.problem.Problem;
 import com.liferay.portal.vulcan.problem.ProblemMapper;
-import com.liferay.segments.exception.DefaultSegmentsExperienceException;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -15,16 +15,13 @@ import org.osgi.service.component.annotations.Component;
  * @author Javier Moral
  */
 @Component(service = ProblemMapper.class)
-public class DefaultSegmentsExperienceExceptionProblemMapper
-	implements ProblemMapper<DefaultSegmentsExperienceException> {
+public class NoSuchEntityExceptionProblemMapper
+	implements ProblemMapper<NoSuchEntityException> {
 
 	@Override
-	public Problem getProblem(
-		DefaultSegmentsExperienceException defaultSegmentsExperienceException) {
-
+	public Problem getProblem(NoSuchEntityException noSuchEntityException) {
 		return ProblemUtil.getProblem(
-			"The default page experience cannot reference a segment",
-			Problem.Status.BAD_REQUEST, defaultSegmentsExperienceException);
+			Problem.Status.NOT_FOUND, noSuchEntityException);
 	}
 
 }
