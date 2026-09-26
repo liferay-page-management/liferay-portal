@@ -6,18 +6,22 @@
 import {UPDATE_FRAGMENT_ENTRY_LINK_CONFIGURATION} from './types';
 
 import type {LayoutData} from '../../types/layout_data/LayoutData';
+import type {PreviewItem} from '../contexts/DisplayPagePreviewItemContext';
 import type {FragmentEntryLink} from './addFragmentEntryLinks';
 
 export default function updateFragmentEntryLinkConfiguration({
+	displayPagePreviewItem,
 	fragmentEntryLink,
 	fragmentEntryLinkId,
 	layoutData,
 }: {
+	displayPagePreviewItem: PreviewItem | null;
 	fragmentEntryLink: FragmentEntryLink;
 	fragmentEntryLinkId: string;
 	layoutData: LayoutData;
 }) {
 	return {
+		displayPagePreviewItem,
 		fragmentEntryLink,
 		fragmentEntryLinkId,
 		layoutData,

@@ -11,14 +11,17 @@ import {
 } from '../actions/addFragmentEntryLinks';
 import updateFragmentEntryLinkConfiguration from '../actions/updateFragmentEntryLinkConfiguration';
 import {FREEMARKER_FRAGMENT_ENTRY_PROCESSOR} from '../config/constants/freemarkerFragmentEntryProcessor';
+import {PreviewItem} from '../contexts/DisplayPagePreviewItemContext';
 import FragmentService from '../services/FragmentService';
 import {clearPageContents} from '../utils/usePageContents';
 
 export default function updateFragmentConfiguration({
 	configurationValues,
+	displayPagePreviewItem,
 	fragmentEntryLink,
 }: {
 	configurationValues: Record<string, ConfigurationValue>;
+	displayPagePreviewItem: PreviewItem | null;
 	fragmentEntryLink: FragmentEntryLink;
 }) {
 	const {editableValues, fragmentEntryLinkId} = fragmentEntryLink;
@@ -40,6 +43,7 @@ export default function updateFragmentConfiguration({
 		const {languageId, segmentsExperienceId} = getState();
 
 		return FragmentService.updateConfigurationValues({
+			displayPagePreviewItem,
 			editableValues:
 				nextEditableValues as FragmentEntryLink['editableValues'],
 			fragmentEntryLinkId,
@@ -49,6 +53,7 @@ export default function updateFragmentConfiguration({
 		}).then(({fragmentEntryLink, layoutData}) => {
 			dispatch(
 				updateFragmentEntryLinkConfiguration({
+					displayPagePreviewItem,
 					fragmentEntryLink,
 					fragmentEntryLinkId,
 					layoutData,

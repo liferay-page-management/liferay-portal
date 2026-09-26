@@ -12,6 +12,7 @@ import {
 } from '../actions/addFragmentEntryLinks';
 import {FragmentEntry} from '../actions/updateFragments';
 import {config} from '../config/index';
+import {PreviewItem} from '../contexts/DisplayPagePreviewItemContext';
 import {PageContent} from '../utils/usePageContents';
 import draftServiceFetch, {OnNetworkStatus} from './draftServiceFetch';
 import serviceFetch from './serviceFetch';
@@ -394,18 +395,23 @@ export default {
 	},
 
 	updateConfigurationValues({
+		displayPagePreviewItem,
 		editableValues,
 		fragmentEntryLinkId,
 		languageId,
 		onNetworkStatus,
 		segmentsExperienceId,
 	}: {
+		displayPagePreviewItem: PreviewItem | null;
 		editableValues: FragmentEntryLink['editableValues'];
 		fragmentEntryLinkId: string;
 		languageId: Liferay.Language.Locale;
 		onNetworkStatus: OnNetworkStatus;
 		segmentsExperienceId: string;
 	}) {
+		const {className, classPK, externalReferenceCode} =
+			displayPagePreviewItem?.data ?? {};
+
 		return draftServiceFetch<{
 			fragmentEntryLink: FragmentEntryLink;
 			layoutData: LayoutData;
@@ -418,6 +424,11 @@ export default {
 					fragmentEntryLinkId,
 					languageId,
 					segmentsExperienceId,
+					...(className && {itemClassName: className}),
+					...(classPK && {itemClassPK: classPK}),
+					...(externalReferenceCode && {
+						itemExternalReferenceCode: externalReferenceCode,
+					}),
 				},
 			},
 			onNetworkStatus
