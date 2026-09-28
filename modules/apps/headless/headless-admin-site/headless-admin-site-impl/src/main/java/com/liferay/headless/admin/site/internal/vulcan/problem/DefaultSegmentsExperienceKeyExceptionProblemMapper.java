@@ -5,25 +5,28 @@
 
 package com.liferay.headless.admin.site.internal.vulcan.problem;
 
-import com.liferay.layout.util.structure.exception.NoSuchLayoutStructureItemException;
 import com.liferay.portal.vulcan.problem.Problem;
 import com.liferay.portal.vulcan.problem.ProblemMapper;
+import com.liferay.segments.exception.DefaultSegmentsExperienceKeyException;
 
 import org.osgi.service.component.annotations.Component;
 
 /**
- * @author Rubén Pulido
+ * @author Javier Moral
  */
 @Component(service = ProblemMapper.class)
-public class NoSuchPageElementExceptionProblemMapper
-	implements ProblemMapper<NoSuchLayoutStructureItemException> {
+public class DefaultSegmentsExperienceKeyExceptionProblemMapper
+	implements ProblemMapper<DefaultSegmentsExperienceKeyException> {
 
 	@Override
 	public Problem getProblem(
-		NoSuchLayoutStructureItemException noSuchLayoutStructureItemException) {
+		DefaultSegmentsExperienceKeyException
+			defaultSegmentsExperienceKeyException) {
 
 		return ProblemUtil.getProblem(
-			Problem.Status.NOT_FOUND, noSuchLayoutStructureItemException);
+			"Only the default page experience can use the segments " +
+				"experience key \"Default\"",
+			Problem.Status.BAD_REQUEST, defaultSegmentsExperienceKeyException);
 	}
 
 }

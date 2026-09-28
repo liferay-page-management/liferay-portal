@@ -943,7 +943,10 @@ public class FragmentEditableElementUtil {
 						if (Objects.equals(
 								ActionInteraction.Type.DISPLAY_PAGE, type)) {
 
-							throw new UnsupportedOperationException();
+							throw new IllegalArgumentException(
+								"The error action interaction does not " +
+									"support the type " +
+										ActionInteraction.Type.DISPLAY_PAGE);
 						}
 
 						return ActionInteractionTypeUtil.toInternalType(type);
