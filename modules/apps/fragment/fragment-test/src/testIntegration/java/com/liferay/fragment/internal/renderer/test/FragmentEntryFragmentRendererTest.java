@@ -64,7 +64,6 @@ import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -700,8 +699,8 @@ public class FragmentEntryFragmentRendererTest {
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 			_group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			RandomTestUtil.randomString() + "." + ContentTypes.IMAGE_JPEG,
-			MimeTypesUtil.getExtensionContentType(ContentTypes.IMAGE_JPEG),
-			new byte[0], null, null, null, _serviceContext);
+			ContentTypes.IMAGE_JPEG, new byte[0], null, null, null,
+			_serviceContext);
 	}
 
 	private FragmentEntryLink _addHTMLFragmentEntryLink(JSONObject jsonObject)
