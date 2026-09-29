@@ -210,7 +210,7 @@ public class FragmentEntryFragmentRendererTest {
 		_renderFragmentEntryLink(fragmentEntryLink);
 
 		String content = _fragmentEntryLinkCache.getFragmentEntryLinkContent(
-			fragmentEntryLink, _locale);
+			fragmentEntryLink, _locale, null);
 
 		Assert.assertTrue(content.contains(fragmentEntry.getHtml()));
 
@@ -253,7 +253,7 @@ public class FragmentEntryFragmentRendererTest {
 		_testRenderWithNonce(fragmentEntryLink, nonce);
 
 		String content = _fragmentEntryLinkCache.getFragmentEntryLinkContent(
-			fragmentEntryLink, _locale);
+			fragmentEntryLink, _locale, null);
 
 		Assert.assertFalse(content, content.contains(nonce));
 		Assert.assertEquals(
@@ -301,7 +301,7 @@ public class FragmentEntryFragmentRendererTest {
 		_renderFragmentEntryLink(fragmentEntryLink);
 
 		String content = _fragmentEntryLinkCache.getFragmentEntryLinkContent(
-			fragmentEntryLink, _locale);
+			fragmentEntryLink, _locale, null);
 
 		Assert.assertTrue(
 			content.contains(
@@ -492,7 +492,7 @@ public class FragmentEntryFragmentRendererTest {
 
 		Assert.assertNull(
 			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
-				fragmentEntryLink, _locale));
+				fragmentEntryLink, _locale, null));
 	}
 
 	@Test
@@ -580,7 +580,7 @@ public class FragmentEntryFragmentRendererTest {
 		_renderFragmentEntryLink(fragmentEntryLink);
 
 		String content = _fragmentEntryLinkCache.getFragmentEntryLinkContent(
-			fragmentEntryLink, _locale);
+			fragmentEntryLink, _locale, null);
 
 		Assert.assertTrue(content.contains(originalText));
 
@@ -609,7 +609,7 @@ public class FragmentEntryFragmentRendererTest {
 
 			String curContent =
 				_fragmentEntryLinkCache.getFragmentEntryLinkContent(
-					fragmentEntryLink, _locale);
+					fragmentEntryLink, _locale, null);
 
 			Assert.assertFalse(curContent.contains(updatedText));
 			Assert.assertEquals(content, curContent);
@@ -620,20 +620,20 @@ public class FragmentEntryFragmentRendererTest {
 			Assert.assertEquals(
 				content,
 				_fragmentEntryLinkCache.getFragmentEntryLinkContent(
-					fragmentEntryLink, _locale));
+					fragmentEntryLink, _locale, null));
 		}
 
 		Assert.assertEquals(
 			content,
 			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
-				fragmentEntryLink, _locale));
+				fragmentEntryLink, _locale, null));
 
 		_ctCollectionService.publishCTCollection(
 			TestPropsValues.getUserId(), ctCollection.getCtCollectionId());
 
 		Assert.assertNull(
 			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
-				fragmentEntryLink, _locale));
+				fragmentEntryLink, _locale, null));
 
 		_renderFragmentEntryLink(
 			_fragmentEntryLinkLocalService.getFragmentEntryLink(
@@ -641,7 +641,7 @@ public class FragmentEntryFragmentRendererTest {
 
 		String updatedContent =
 			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
-				fragmentEntryLink, _locale);
+				fragmentEntryLink, _locale, null);
 
 		Assert.assertTrue(updatedContent.contains(updatedText));
 		Assert.assertNotEquals(content, updatedContent);
@@ -681,7 +681,7 @@ public class FragmentEntryFragmentRendererTest {
 				fragmentEntryLink.getFragmentEntryLinkId()));
 
 		String content = _fragmentEntryLinkCache.getFragmentEntryLinkContent(
-			fragmentEntryLink, _locale);
+			fragmentEntryLink, _locale, null);
 
 		Assert.assertTrue(content.contains(fragmentEntry.getHtml()));
 	}

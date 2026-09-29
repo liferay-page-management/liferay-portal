@@ -105,38 +105,38 @@ public class FragmentEntryLinkCacheTest {
 
 		Assert.assertNull(
 			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
-				fragmentEntryLink, locale));
+				fragmentEntryLink, locale, null));
 
 		String content = RandomTestUtil.randomString();
 
 		_fragmentEntryLinkCache.putFragmentEntryLinkContent(
-			content, fragmentEntryLink, locale);
+			content, fragmentEntryLink, locale, null);
 
 		Assert.assertEquals(
 			content,
 			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
-				fragmentEntryLink, locale));
+				fragmentEntryLink, locale, null));
 
 		_fragmentEntryLinkCache.removeFragmentEntryLinkCache(fragmentEntryLink);
 
 		Assert.assertNull(
 			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
-				fragmentEntryLink, locale));
+				fragmentEntryLink, locale, null));
 
 		_fragmentEntryLinkCache.putFragmentEntryLinkContent(
-			content, fragmentEntryLink, locale);
+			content, fragmentEntryLink, locale, null);
 
 		Assert.assertEquals(
 			content,
 			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
-				fragmentEntryLink, locale));
+				fragmentEntryLink, locale, null));
 
 		_fragmentEntryLinkCache.removeFragmentEntryLinkCache(
 			fragmentEntryLink.getFragmentEntryLinkId());
 
 		Assert.assertNull(
 			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
-				fragmentEntryLink, locale));
+				fragmentEntryLink, locale, null));
 
 		long randomLong = RandomTestUtil.randomLong();
 
