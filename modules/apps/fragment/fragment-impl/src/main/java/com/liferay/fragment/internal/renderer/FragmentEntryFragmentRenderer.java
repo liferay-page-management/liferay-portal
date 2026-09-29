@@ -375,9 +375,14 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 		boolean cacheable = _isCacheable(
 			fragmentEntryLink, fragmentRendererContext);
 
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
 		if (cacheable) {
 			content = _fragmentEntryLinkCache.getFragmentEntryLinkContent(
-				fragmentEntryLink, fragmentRendererContext.getLocale());
+				fragmentEntryLink, fragmentRendererContext.getLocale(),
+				themeDisplay);
 
 			if (Validator.isNotNull(content)) {
 				return StringUtil.replace(
@@ -486,7 +491,8 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 		}
 
 		_fragmentEntryLinkCache.putFragmentEntryLinkContent(
-			content, fragmentEntryLink, fragmentRendererContext.getLocale());
+			content, fragmentEntryLink, fragmentRendererContext.getLocale(),
+			themeDisplay);
 
 		return StringUtil.replace(
 			content, _NONCE,

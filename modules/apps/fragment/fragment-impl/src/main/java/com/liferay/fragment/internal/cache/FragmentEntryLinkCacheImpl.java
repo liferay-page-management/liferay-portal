@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.cluster.ClusterInvokeThreadLocal;
 import com.liferay.portal.kernel.cluster.ClusterRequest;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.MethodHandler;
 import com.liferay.portal.kernel.util.MethodKey;
 
@@ -39,17 +40,21 @@ public class FragmentEntryLinkCacheImpl implements FragmentEntryLinkCache {
 
 	@Override
 	public String getFragmentEntryLinkContent(
-		FragmentEntryLink fragmentEntryLink, Locale locale) {
+		FragmentEntryLink fragmentEntryLink, Locale locale,
+		ThemeDisplay themeDisplay) {
 
-		return _portalCache.get(_getPortalCacheKey(fragmentEntryLink, locale));
+		return _portalCache.get(
+			_getPortalCacheKey(fragmentEntryLink, locale, themeDisplay));
 	}
 
 	@Override
 	public void putFragmentEntryLinkContent(
-		String content, FragmentEntryLink fragmentEntryLink, Locale locale) {
+		String content, FragmentEntryLink fragmentEntryLink, Locale locale,
+		ThemeDisplay themeDisplay) {
 
 		_portalCache.put(
-			_getPortalCacheKey(fragmentEntryLink, locale), content);
+			_getPortalCacheKey(fragmentEntryLink, locale, themeDisplay),
+			content);
 	}
 
 	@Override
@@ -118,15 +123,21 @@ public class FragmentEntryLinkCacheImpl implements FragmentEntryLinkCache {
 	}
 
 	private String _getPortalCacheKey(
-		FragmentEntryLink fragmentEntryLink, Locale locale) {
+		FragmentEntryLink fragmentEntryLink, Locale locale,
+		ThemeDisplay themeDisplay) {
 
-		StringBundler sb = new StringBundler(5);
+		StringBundler sb = new StringBundler(7);
 
 		sb.append(fragmentEntryLink.getFragmentEntryLinkId());
 		sb.append(StringPool.DASH);
 		sb.append(locale);
 		sb.append(StringPool.DASH);
 		sb.append(fragmentEntryLink.getSegmentsExperienceId());
+		sb.append(StringPool.DASH);
+
+		if (themeDisplay != null) {
+			sb.append(themeDisplay.getPortalURL());
+		}
 
 		return sb.toString();
 	}

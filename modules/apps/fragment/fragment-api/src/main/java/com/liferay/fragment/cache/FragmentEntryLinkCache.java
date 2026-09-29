@@ -6,6 +6,7 @@
 package com.liferay.fragment.cache;
 
 import com.liferay.fragment.model.FragmentEntryLink;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 import java.util.Locale;
 
@@ -15,10 +16,12 @@ import java.util.Locale;
 public interface FragmentEntryLinkCache {
 
 	public String getFragmentEntryLinkContent(
-		FragmentEntryLink fragmentEntryLink, Locale locale);
+		FragmentEntryLink fragmentEntryLink, Locale locale,
+		ThemeDisplay themeDisplay);
 
 	public void putFragmentEntryLinkContent(
-		String content, FragmentEntryLink fragmentEntryLink, Locale locale);
+		String content, FragmentEntryLink fragmentEntryLink, Locale locale,
+		ThemeDisplay themeDisplay);
 
 	public void removeFragmentEntryLinkCache(
 		FragmentEntryLink fragmentEntryLink);
