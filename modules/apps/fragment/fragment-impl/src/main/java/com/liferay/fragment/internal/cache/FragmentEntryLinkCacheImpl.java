@@ -8,17 +8,18 @@ package com.liferay.fragment.internal.cache;
 import com.liferay.fragment.cache.FragmentEntryLinkCache;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.cache.PortalCache;
+import com.liferay.portal.kernel.cache.index.IndexEncoder;
+import com.liferay.portal.kernel.cache.index.PortalCacheIndexer;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
-import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import java.util.Locale;
-import java.util.Set;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -54,12 +55,8 @@ public class FragmentEntryLinkCacheImpl implements FragmentEntryLinkCache {
 			return;
 		}
 
-		Set<Locale> availableLocales = _language.getAvailableLocales(
-			fragmentEntryLink.getGroupId());
-
-		for (Locale locale : availableLocales) {
-			_portalCache.remove(_getPortalCacheKey(fragmentEntryLink, locale));
-		}
+		_fragmentEntryLinkPortalCacheIndexer.removeKeys(
+			String.valueOf(fragmentEntryLink.getFragmentEntryLinkId()));
 	}
 
 	@Override
@@ -85,6 +82,9 @@ public class FragmentEntryLinkCacheImpl implements FragmentEntryLinkCache {
 	protected void activate() {
 		_portalCache = (PortalCache<String, String>)_multiVMPool.getPortalCache(
 			FragmentEntryLink.class.getName());
+
+		_fragmentEntryLinkPortalCacheIndexer = new PortalCacheIndexer<>(
+			new FragmentEntryLinkIdIndexEncoder(), _portalCache);
 	}
 
 	@Deactivate
@@ -112,12 +112,22 @@ public class FragmentEntryLinkCacheImpl implements FragmentEntryLinkCache {
 	@Reference
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
 
-	@Reference
-	private Language _language;
+	private PortalCacheIndexer<String, String, String>
+		_fragmentEntryLinkPortalCacheIndexer;
 
 	@Reference
 	private MultiVMPool _multiVMPool;
 
 	private PortalCache<String, String> _portalCache;
+
+	private static class FragmentEntryLinkIdIndexEncoder
+		implements IndexEncoder<String, String> {
+
+		@Override
+		public String encode(String key) {
+			return key.substring(0, key.indexOf(CharPool.DASH));
+		}
+
+	}
 
 }
