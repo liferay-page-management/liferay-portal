@@ -50,6 +50,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -260,11 +261,60 @@ public class FragmentEntryFragmentRendererTest {
 	}
 
 	@Test
+	@TestInfo("LPD-107399")
+	public void testCacheableFragmentEntryLinkWithDifferentPortalURLs()
+		throws Exception {
+
+		FileEntry fileEntry = _addFileEntry();
+
+		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+			"BASIC_COMPONENT-image",
+			JSONUtil.put(
+				"image-square",
+				JSONUtil.put(
+					LocaleUtil.toLanguageId(_locale),
+					JSONUtil.put(
+						"fileEntryId",
+						String.valueOf(fileEntry.getFileEntryId())
+					).put(
+						"url", RandomTestUtil.randomString()
+					))));
+
+		String portalURL1 = "http://" + RandomTestUtil.randomString();
+
+		MockHttpServletResponse mockHttpServletResponse =
+			_renderFragmentEntryLink(fragmentEntryLink, portalURL1);
+
+		String content1 = mockHttpServletResponse.getContentAsString();
+
+		Assert.assertTrue(content1, content1.contains("src=\"" + portalURL1));
+
+		String portalURL2 = "http://" + RandomTestUtil.randomString();
+
+		mockHttpServletResponse = _renderFragmentEntryLink(
+			fragmentEntryLink, portalURL2);
+
+		String content2 = mockHttpServletResponse.getContentAsString();
+
+		Assert.assertFalse(content2, content2.contains(portalURL1));
+		Assert.assertTrue(content2, content2.contains("src=\"" + portalURL2));
+
+		mockHttpServletResponse = _renderFragmentEntryLink(
+			fragmentEntryLink, portalURL1);
+
+		content1 = mockHttpServletResponse.getContentAsString();
+
+		Assert.assertFalse(content1, content1.contains(portalURL2));
+		Assert.assertTrue(content1, content1.contains("src=\"" + portalURL1));
+	}
+
+	@Test
 	@TestInfo("LPS-101333")
 	public void testCannotExecuteFreeMarkerCodeInHTMLFragment()
 		throws Exception {
 
-		FragmentEntryLink fragmentEntryLink = _addHTMLFragmentEntryLink(
+		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+			"BASIC_COMPONENT-html",
 			JSONUtil.put(
 				"element-html",
 				JSONUtil.put(
@@ -703,12 +753,13 @@ public class FragmentEntryFragmentRendererTest {
 			_serviceContext);
 	}
 
-	private FragmentEntryLink _addHTMLFragmentEntryLink(JSONObject jsonObject)
+	private FragmentEntryLink _addFragmentEntryLink(
+			String fragmentEntryKey, JSONObject jsonObject)
 		throws Exception {
 
 		FragmentEntry fragmentEntry =
 			_fragmentCollectionContributorRegistry.getFragmentEntry(
-				"BASIC_COMPONENT-html");
+				fragmentEntryKey);
 
 		return _fragmentEntryLinkLocalService.addFragmentEntryLink(
 			null, TestPropsValues.getUserId(), _group.getGroupId(), null,
@@ -729,23 +780,7 @@ public class FragmentEntryFragmentRendererTest {
 			JSONObject jsonObject)
 		throws Exception {
 
-		FragmentEntry fragmentEntry =
-			_fragmentCollectionContributorRegistry.getFragmentEntry(
-				"BASIC_COMPONENT-heading");
-
-		return _fragmentEntryLinkLocalService.addFragmentEntryLink(
-			null, TestPropsValues.getUserId(), _group.getGroupId(), null,
-			fragmentEntry.getExternalReferenceCode(), null,
-			_defaultSegmentsExperienceId, _layout.getPlid(),
-			fragmentEntry.getCss(), fragmentEntry.getHtml(),
-			fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
-			JSONUtil.put(
-				FragmentEntryProcessorConstants.
-					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
-				jsonObject
-			).toString(),
-			StringPool.BLANK, 0, fragmentEntry.getFragmentEntryKey(),
-			fragmentEntry.getType(), _serviceContext);
+		return _addFragmentEntryLink("BASIC_COMPONENT-heading", jsonObject);
 	}
 
 	private JournalArticle _addJournalArticle() throws Exception {
@@ -843,6 +878,15 @@ public class FragmentEntryFragmentRendererTest {
 			FragmentEntryLink fragmentEntryLink)
 		throws Exception {
 
+		return _renderFragmentEntryLink(
+			fragmentEntryLink, _getHttpServletRequest());
+	}
+
+	private MockHttpServletResponse _renderFragmentEntryLink(
+			FragmentEntryLink fragmentEntryLink,
+			HttpServletRequest httpServletRequest)
+		throws Exception {
+
 		DefaultFragmentRendererContext defaultFragmentRendererContext =
 			new DefaultFragmentRendererContext(fragmentEntryLink);
 
@@ -852,10 +896,38 @@ public class FragmentEntryFragmentRendererTest {
 			new MockHttpServletResponse();
 
 		_fragmentRenderer.render(
-			defaultFragmentRendererContext, _getHttpServletRequest(),
+			defaultFragmentRendererContext, httpServletRequest,
 			mockHttpServletResponse);
 
 		return mockHttpServletResponse;
+	}
+
+	private MockHttpServletResponse _renderFragmentEntryLink(
+			FragmentEntryLink fragmentEntryLink, String portalURL)
+		throws Exception {
+
+		HttpServletRequest httpServletRequest = _getHttpServletRequest();
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		themeDisplay.setPortalURL(portalURL);
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+
+		serviceContext.setRequest(httpServletRequest);
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		try {
+			return _renderFragmentEntryLink(
+				fragmentEntryLink, httpServletRequest);
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
 	}
 
 	private void _testRenderWithNonce(

@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -66,40 +67,7 @@ public class FragmentEntryLinkCacheTest {
 	@Test
 	@TestInfo("LPD-53565")
 	public void test() throws Exception {
-		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
-
-		Layout draftLayout = layout.fetchDraftLayout();
-
-		FragmentEntry fragmentEntry =
-			_fragmentEntryLocalService.addFragmentEntry(
-				null, TestPropsValues.getUserId(), draftLayout.getGroupId(), 0,
-				StringUtil.randomString(), StringUtil.randomString(),
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				RandomTestUtil.randomString(), true, "{fieldSets: []}", null, 0,
-				false, false, FragmentConstants.TYPE_COMPONENT, null,
-				WorkflowConstants.STATUS_APPROVED,
-				ServiceContextTestUtil.getServiceContext(
-					draftLayout.getGroupId(), TestPropsValues.getUserId()));
-
-		FragmentEntryLink draftLayoutFragmentEntryLink =
-			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
-				"{}", fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
-				fragmentEntry.getExternalReferenceCode(),
-				ScopeUtil.getItemScopeExternalReferenceCode(
-					fragmentEntry.getGroupId(), draftLayout.getGroupId()),
-				fragmentEntry.getHtml(), fragmentEntry.getJs(), draftLayout,
-				fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(),
-				null, 0,
-				_segmentsExperienceLocalService.
-					fetchDefaultSegmentsExperienceId(draftLayout.getPlid()));
-
-		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
-
-		FragmentEntryLink fragmentEntryLink =
-			_fragmentEntryLinkLocalService.getFragmentEntryLink(
-				layout.getGroupId(),
-				draftLayoutFragmentEntryLink.getExternalReferenceCode(),
-				layout.getPlid());
+		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink();
 
 		Locale locale = _portal.getSiteDefaultLocale(_group);
 
@@ -158,6 +126,93 @@ public class FragmentEntryLinkCacheTest {
 					"ID " + randomLong,
 				logEntry.getMessage());
 		}
+	}
+
+	@Test
+	@TestInfo("LPD-107399")
+	public void testGetFragmentEntryLinkContentWithDifferentPortalURLs()
+		throws Exception {
+
+		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink();
+
+		Locale locale = _portal.getSiteDefaultLocale(_group);
+
+		String content1 = RandomTestUtil.randomString();
+		String portalURL1 = RandomTestUtil.randomString();
+
+		_fragmentEntryLinkCache.putFragmentEntryLinkContent(
+			content1, fragmentEntryLink, locale, _getThemeDisplay(portalURL1));
+
+		String content2 = RandomTestUtil.randomString();
+		String portalURL2 = RandomTestUtil.randomString();
+
+		_fragmentEntryLinkCache.putFragmentEntryLinkContent(
+			content2, fragmentEntryLink, locale, _getThemeDisplay(portalURL2));
+
+		Assert.assertEquals(
+			content1,
+			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
+				fragmentEntryLink, locale, _getThemeDisplay(portalURL1)));
+		Assert.assertEquals(
+			content2,
+			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
+				fragmentEntryLink, locale, _getThemeDisplay(portalURL2)));
+		Assert.assertNull(
+			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
+				fragmentEntryLink, locale, null));
+
+		_fragmentEntryLinkCache.removeFragmentEntryLinkCache(fragmentEntryLink);
+
+		Assert.assertNull(
+			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
+				fragmentEntryLink, locale, _getThemeDisplay(portalURL1)));
+		Assert.assertNull(
+			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
+				fragmentEntryLink, locale, _getThemeDisplay(portalURL2)));
+	}
+
+	private FragmentEntryLink _addFragmentEntryLink() throws Exception {
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		FragmentEntry fragmentEntry =
+			_fragmentEntryLocalService.addFragmentEntry(
+				null, TestPropsValues.getUserId(), draftLayout.getGroupId(), 0,
+				StringUtil.randomString(), StringUtil.randomString(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), true, "{fieldSets: []}", null, 0,
+				false, false, FragmentConstants.TYPE_COMPONENT, null,
+				WorkflowConstants.STATUS_APPROVED,
+				ServiceContextTestUtil.getServiceContext(
+					draftLayout.getGroupId(), TestPropsValues.getUserId()));
+
+		FragmentEntryLink draftLayoutFragmentEntryLink =
+			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+				"{}", fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
+				fragmentEntry.getExternalReferenceCode(),
+				ScopeUtil.getItemScopeExternalReferenceCode(
+					fragmentEntry.getGroupId(), draftLayout.getGroupId()),
+				fragmentEntry.getHtml(), fragmentEntry.getJs(), draftLayout,
+				fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(),
+				null, 0,
+				_segmentsExperienceLocalService.
+					fetchDefaultSegmentsExperienceId(draftLayout.getPlid()));
+
+		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
+
+		return _fragmentEntryLinkLocalService.getFragmentEntryLink(
+			layout.getGroupId(),
+			draftLayoutFragmentEntryLink.getExternalReferenceCode(),
+			layout.getPlid());
+	}
+
+	private ThemeDisplay _getThemeDisplay(String portalURL) {
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		themeDisplay.setPortalURL(portalURL);
+
+		return themeDisplay;
 	}
 
 	@Inject
