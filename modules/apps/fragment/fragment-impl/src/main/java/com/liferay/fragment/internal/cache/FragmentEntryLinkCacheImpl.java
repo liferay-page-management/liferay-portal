@@ -16,8 +16,13 @@ import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.cache.index.IndexEncoder;
 import com.liferay.portal.kernel.cache.index.PortalCacheIndexer;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
+import com.liferay.portal.kernel.cluster.ClusterExecutorUtil;
+import com.liferay.portal.kernel.cluster.ClusterInvokeThreadLocal;
+import com.liferay.portal.kernel.cluster.ClusterRequest;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.MethodHandler;
+import com.liferay.portal.kernel.util.MethodKey;
 
 import java.util.Locale;
 
@@ -55,8 +60,21 @@ public class FragmentEntryLinkCacheImpl implements FragmentEntryLinkCache {
 			return;
 		}
 
-		_fragmentEntryLinkPortalCacheIndexer.removeKeys(
-			String.valueOf(fragmentEntryLink.getFragmentEntryLinkId()));
+		_removeFragmentEntryLinkCache(
+			fragmentEntryLink.getFragmentEntryLinkId());
+
+		if (ClusterInvokeThreadLocal.isEnabled()) {
+			ClusterRequest clusterRequest =
+				ClusterRequest.createMulticastRequest(
+					new MethodHandler(
+						_removeFragmentEntryLinkCacheMethodKey,
+						fragmentEntryLink.getFragmentEntryLinkId()),
+					true);
+
+			clusterRequest.setFireAndForget(true);
+
+			ClusterExecutorUtil.execute(clusterRequest);
+		}
 	}
 
 	@Override
@@ -92,6 +110,13 @@ public class FragmentEntryLinkCacheImpl implements FragmentEntryLinkCache {
 		_multiVMPool.removePortalCache(FragmentEntryLink.class.getName());
 	}
 
+	private static void _removeFragmentEntryLinkCache(
+		long fragmentEntryLinkId) {
+
+		_fragmentEntryLinkPortalCacheIndexer.removeKeys(
+			String.valueOf(fragmentEntryLinkId));
+	}
+
 	private String _getPortalCacheKey(
 		FragmentEntryLink fragmentEntryLink, Locale locale) {
 
@@ -109,11 +134,15 @@ public class FragmentEntryLinkCacheImpl implements FragmentEntryLinkCache {
 	private static final Log _log = LogFactoryUtil.getLog(
 		FragmentEntryLinkCacheImpl.class);
 
+	private static PortalCacheIndexer<String, String, String>
+		_fragmentEntryLinkPortalCacheIndexer;
+	private static final MethodKey _removeFragmentEntryLinkCacheMethodKey =
+		new MethodKey(
+			FragmentEntryLinkCacheImpl.class, "_removeFragmentEntryLinkCache",
+			long.class);
+
 	@Reference
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
-
-	private PortalCacheIndexer<String, String, String>
-		_fragmentEntryLinkPortalCacheIndexer;
 
 	@Reference
 	private MultiVMPool _multiVMPool;
