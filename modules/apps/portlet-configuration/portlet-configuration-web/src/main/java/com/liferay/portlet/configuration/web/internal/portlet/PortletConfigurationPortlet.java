@@ -97,6 +97,7 @@ import jakarta.portlet.ResourceResponse;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
@@ -473,6 +474,22 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 		resourceRequest.setAttribute(
 			JavaConstants.JAKARTA_PORTLET_CONFIG, getPortletConfig());
 
+		try {
+			checkPermissions(resourceRequest);
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
+			HttpServletResponse httpServletResponse =
+				_portal.getHttpServletResponse(resourceResponse);
+
+			httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+
+			return;
+		}
+
 		super.serveResource(resourceRequest, resourceResponse);
 	}
 
@@ -637,6 +654,21 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 			});
 	}
 
+	@Override
+	protected void checkPermissions(PortletRequest portletRequest)
+		throws Exception {
+
+		String mvcPath = ParamUtil.getString(portletRequest, "mvcPath");
+
+		if (mvcPath.equals("/edit_permissions.jsp")) {
+			_checkEditPermissionsJSP(portletRequest);
+
+			return;
+		}
+
+		ActionUtil.checkPortlet(portletRequest);
+	}
+
 	@Deactivate
 	protected void deactivate() {
 		_serviceTrackerMap.close();
@@ -648,11 +680,11 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 		throws IOException, PortletException {
 
 		try {
+			checkPermissions(renderRequest);
+
 			String mvcPath = renderRequest.getParameter("mvcPath");
 
 			if (mvcPath.equals("/edit_permissions.jsp")) {
-				_checkEditPermissionsJSP(renderRequest);
-
 				renderRequest.setAttribute(
 					RolesAdminWebKeys.ROLE_TYPE_CONTRIBUTOR_PROVIDER,
 					_roleTypeContributorProvider);
@@ -752,7 +784,7 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 	}
 
 	private void _checkEditPermissionsJSP(PortletRequest request)
-		throws PortalException {
+		throws Exception {
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
 			WebKeys.THEME_DISPLAY);
