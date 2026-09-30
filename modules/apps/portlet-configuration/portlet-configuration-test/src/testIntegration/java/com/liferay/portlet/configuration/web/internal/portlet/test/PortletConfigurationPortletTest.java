@@ -16,8 +16,10 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
@@ -25,14 +27,17 @@ import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.servlet.PortletServlet;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.portlet.MockActionResponse;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
+import com.liferay.portal.kernel.test.portlet.MockLiferayResourceRequest;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -52,6 +57,7 @@ import jakarta.portlet.ActionResponse;
 import jakarta.portlet.MutableActionParameters;
 import jakarta.portlet.Portlet;
 import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.PortletRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,6 +129,42 @@ public class PortletConfigurationPortletTest {
 		_group = GroupTestUtil.addGroup();
 
 		_locale = _portal.getSiteDefaultLocale(_group);
+	}
+
+	@Test
+	@TestInfo("LPD-106855")
+	public void testCheckPermissionsWithConfigurationPermission()
+		throws Exception {
+
+		ReflectionTestUtil.invoke(
+			_portlet, "checkPermissions", new Class<?>[] {PortletRequest.class},
+			_getMockResourceRequest(
+				"/edit_scope.jsp",
+				_getThemeDisplay(TestPropsValues.getUser())));
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	@TestInfo("LPD-106855")
+	public void testCheckPermissionsWithoutConfigurationPermission()
+		throws Exception {
+
+		ReflectionTestUtil.invoke(
+			_portlet, "checkPermissions", new Class<?>[] {PortletRequest.class},
+			_getMockResourceRequest(
+				"/edit_scope.jsp",
+				_getThemeDisplay(UserTestUtil.addUser(_group.getGroupId()))));
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	@TestInfo("LPD-106855")
+	public void testCheckPermissionsWithoutPermissionsPermission()
+		throws Exception {
+
+		ReflectionTestUtil.invoke(
+			_portlet, "checkPermissions", new Class<?>[] {PortletRequest.class},
+			_getMockResourceRequest(
+				"/edit_permissions.jsp",
+				_getThemeDisplay(UserTestUtil.addUser(_group.getGroupId()))));
 	}
 
 	@Test
@@ -334,11 +376,32 @@ public class PortletConfigurationPortletTest {
 		return mockActionRequest;
 	}
 
+	private MockLiferayResourceRequest _getMockResourceRequest(
+		String mvcPath, ThemeDisplay themeDisplay) {
+
+		MockLiferayResourceRequest mockLiferayResourceRequest =
+			new MockLiferayResourceRequest();
+
+		mockLiferayResourceRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, themeDisplay);
+		mockLiferayResourceRequest.setParameter("mvcPath", mvcPath);
+		mockLiferayResourceRequest.setParameter(
+			"portletResource", _serviceBuilderPortlet.getPortletId());
+
+		return mockLiferayResourceRequest;
+	}
+
 	private ThemeDisplay _getThemeDisplay() throws Exception {
 		return _getThemeDisplay(LayoutTestUtil.addTypeContentLayout(_group));
 	}
 
 	private ThemeDisplay _getThemeDisplay(Layout layout) throws Exception {
+		return _getThemeDisplay(layout, TestPropsValues.getUser());
+	}
+
+	private ThemeDisplay _getThemeDisplay(Layout layout, User user)
+		throws Exception {
+
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
 		themeDisplay.setCompany(_company);
@@ -349,12 +412,17 @@ public class PortletConfigurationPortletTest {
 			(LayoutTypePortlet)layout.getLayoutType());
 		themeDisplay.setLocale(_locale);
 		themeDisplay.setPermissionChecker(
-			PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
+			PermissionCheckerFactoryUtil.create(user));
 		themeDisplay.setScopeGroupId(_group.getGroupId());
 		themeDisplay.setSiteGroupId(_group.getGroupId());
-		themeDisplay.setUser(TestPropsValues.getUser());
+		themeDisplay.setUser(user);
 
 		return themeDisplay;
+	}
+
+	private ThemeDisplay _getThemeDisplay(User user) throws Exception {
+		return _getThemeDisplay(
+			LayoutTestUtil.addTypeContentLayout(_group), user);
 	}
 
 	@Inject
