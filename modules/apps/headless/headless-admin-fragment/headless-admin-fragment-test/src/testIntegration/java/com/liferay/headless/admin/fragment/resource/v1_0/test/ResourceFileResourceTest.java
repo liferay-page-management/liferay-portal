@@ -225,7 +225,7 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo("LPD-88395")
+	@TestInfo({"LPD-88395", "LPD-107755"})
 	public void testPostSiteResourceFile() throws Exception {
 		super.testPostSiteResourceFile();
 
@@ -245,6 +245,7 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		_testPostSiteResourceFileFragmentSetExternalReferenceCode();
 		_testPostSiteResourceFileFragmentSetExternalReferenceCodeNullProblemException();
 		_testPostSiteResourceFileFragmentSetNonexistentProblemException();
+		_testPostSiteResourceFileNameDuplicateProblemException();
 		_testPostSiteResourceFileNameNullProblemException();
 		_testPostSiteResourceFileResourceFolderAndResourceFolderExternalReferenceCode();
 		_testPostSiteResourceFileResourceFolderExternalReferenceCode();
@@ -255,7 +256,7 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-88395", "LPD-102182"})
+	@TestInfo({"LPD-88395", "LPD-102182", "LPD-107755"})
 	public void testPutSiteResourceFile() throws Exception {
 		_testPutSiteResourceFile();
 		_testPutSiteResourceFileBatch();
@@ -265,6 +266,7 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		_testPutSiteResourceFileFileURLReferenceNullProblemException();
 		_testPutSiteResourceFileFileURLReferenceURL();
 		_testPutSiteResourceFileName();
+		_testPutSiteResourceFileNameDuplicateProblemException();
 		_testPutSiteResourceFileNameNullProblemException();
 		_testPutSiteResourceFilePortletFileProblemException();
 		_testPutSiteResourceFileResourceFolderExternalReferenceCode();
@@ -1732,6 +1734,25 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 			fragmentSetExternalReferenceCode);
 	}
 
+	private void _testPostSiteResourceFileNameDuplicateProblemException()
+		throws Exception {
+
+		ResourceFile postResourceFile =
+			resourceFileResource.postSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				_randomResourceFile(_getFragmentSetExternalReferenceCode()));
+
+		ResourceFile resourceFile = _randomResourceFile(
+			_getFragmentSetExternalReferenceCode());
+
+		resourceFile.setName(postResourceFile.getName());
+
+		_assertProblemException(
+			"CONFLICT", "a-resource-file-with-that-name-already-exists",
+			() -> resourceFileResource.postSiteResourceFile(
+				testGroup.getExternalReferenceCode(), resourceFile));
+	}
+
 	private void _testPostSiteResourceFileNameNullProblemException()
 		throws Exception {
 
@@ -2205,6 +2226,31 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		_assertContent(
 			bytes, postResourceFile.getExternalReferenceCode(),
 			testGroup.getGroupId());
+	}
+
+	private void _testPutSiteResourceFileNameDuplicateProblemException()
+		throws Exception {
+
+		ResourceFile postResourceFile1 =
+			resourceFileResource.postSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				_randomResourceFile(_getFragmentSetExternalReferenceCode()));
+
+		ResourceFile postResourceFile2 =
+			resourceFileResource.postSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				_randomResourceFile(_getFragmentSetExternalReferenceCode()));
+
+		ResourceFile resourceFile = _randomResourceFile(
+			_getFragmentSetExternalReferenceCode());
+
+		resourceFile.setName(postResourceFile1.getName());
+
+		_assertProblemException(
+			"CONFLICT", "a-resource-file-with-that-name-already-exists",
+			() -> resourceFileResource.putSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				postResourceFile2.getExternalReferenceCode(), resourceFile));
 	}
 
 	private void _testPutSiteResourceFileNameNullProblemException()
