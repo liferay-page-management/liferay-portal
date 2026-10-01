@@ -6,6 +6,7 @@
 package com.liferay.fragment.entry.processor.freemarker;
 
 import com.liferay.fragment.entry.processor.freemarker.internal.configuration.FreeMarkerFragmentEntryProcessorConfiguration;
+import com.liferay.fragment.entry.processor.freemarker.internal.template.DummyRESTClient;
 import com.liferay.fragment.exception.FragmentEntryContentException;
 import com.liferay.fragment.helper.FragmentEntryLinkHelper;
 import com.liferay.fragment.input.template.parser.FragmentEntryInputTemplateNodeContextHelper;
@@ -122,9 +123,15 @@ public class FreeMarkerFragmentEntryProcessor
 
 		UnsyncStringWriter unsyncStringWriter = new UnsyncStringWriter();
 
+		String content = "[#ftl] " + html;
+
+		if (fragmentEntryProcessorContext.isDisablePortletRender()) {
+			content = "[#ftl] " + _DISABLE_RUNTIME_PORTLET_FTL + html;
+		}
+
 		Template template = TemplateManagerUtil.getTemplate(
 			TemplateConstants.LANG_TYPE_FTL,
-			new StringTemplateResource("template_id", "[#ftl] " + html), true);
+			new StringTemplateResource("template_id", content), true);
 
 		template.put(TemplateConstants.WRITER, unsyncStringWriter);
 
@@ -187,6 +194,10 @@ public class FreeMarkerFragmentEntryProcessor
 			fragmentEntryProcessorContext.getHttpServletResponse());
 
 		template.prepare(fragmentEntryProcessorContext.getHttpServletRequest());
+
+		if (fragmentEntryProcessorContext.isDisablePortletRender()) {
+			template.put("restClient", new DummyRESTClient());
+		}
 
 		try {
 			template.processTemplate(unsyncStringWriter);
@@ -261,6 +272,10 @@ public class FreeMarkerFragmentEntryProcessor
 
 		return message;
 	}
+
+	private static final String _DISABLE_RUNTIME_PORTLET_FTL =
+		"[#macro __noop args...][/#macro][#global liferay_portlet = " +
+			"liferay_portlet + {\"runtime\": __noop}]";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		FreeMarkerFragmentEntryProcessor.class);
