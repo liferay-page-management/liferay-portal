@@ -7,6 +7,7 @@ package com.liferay.fragment.entry.processor.freemarker;
 
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.fragment.entry.processor.freemarker.internal.configuration.FreeMarkerFragmentEntryProcessorConfiguration;
+import com.liferay.fragment.entry.processor.freemarker.internal.template.DummyRESTClient;
 import com.liferay.fragment.exception.FragmentEntryContentException;
 import com.liferay.fragment.input.template.parser.InputTemplateNode;
 import com.liferay.fragment.processor.FragmentEntryValidator;
@@ -147,14 +148,6 @@ public class FreeMarkerFragmentEntryValidator
 			httpServletRequest.setAttribute(
 				WebKeys.AUI_SCRIPT_DATA, scriptData);
 		}
-	}
-
-	public class DummyRESTClient {
-
-		public Object get(String path) {
-			return Collections.emptyMap();
-		}
-
 	}
 
 	private String _getMessage(
