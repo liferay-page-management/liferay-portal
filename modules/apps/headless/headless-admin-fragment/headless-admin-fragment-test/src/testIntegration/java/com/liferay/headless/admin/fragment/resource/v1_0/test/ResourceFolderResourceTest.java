@@ -167,7 +167,7 @@ public class ResourceFolderResourceTest
 
 	@Override
 	@Test
-	@TestInfo({"LPD-88395", "LPD-88489"})
+	@TestInfo({"LPD-88395", "LPD-88489", "LPD-107754"})
 	public void testPostSiteResourceFolder() throws Exception {
 		super.testPostSiteResourceFolder();
 
@@ -180,6 +180,8 @@ public class ResourceFolderResourceTest
 		_testPostSiteResourceFolderFragmentSetExternalReferenceCode();
 		_testPostSiteResourceFolderFragmentSetExternalReferenceCodeNullProblemException();
 		_testPostSiteResourceFolderFragmentSetNonexistentProblemException();
+		_testPostSiteResourceFolderNameDuplicateProblemException();
+		_testPostSiteResourceFolderNameInvalidProblemException();
 		_testPostSiteResourceFolderParentResourceFolderAndParentResourceFolderExternalReferenceCode();
 		_testPostSiteResourceFolderParentResourceFolderAndParentResourceFolderExternalReferenceCodeProblemException();
 		_testPostSiteResourceFolderParentResourceFolderExternalReferenceCode();
@@ -192,10 +194,12 @@ public class ResourceFolderResourceTest
 
 	@Override
 	@Test
-	@TestInfo({"LPD-88395", "LPD-88489", "LPD-102182"})
+	@TestInfo({"LPD-88395", "LPD-88489", "LPD-102182", "LPD-107754"})
 	public void testPutSiteResourceFolder() throws Exception {
 		_testPutSiteResourceFolder();
 		_testPutSiteResourceFolderDocumentLibraryFolderProblemException();
+		_testPutSiteResourceFolderNameDuplicateProblemException();
+		_testPutSiteResourceFolderNameInvalidProblemException();
 		_testPutSiteResourceFolderParentResourceFolderExternalReferenceCode();
 		_testPutSiteResourceFolderPortletFolderProblemException();
 		_testPutSiteResourceFolderWithoutPermissionsProblemException();
@@ -1375,6 +1379,40 @@ public class ResourceFolderResourceTest
 			fragmentSetExternalReferenceCode);
 	}
 
+	private void _testPostSiteResourceFolderNameDuplicateProblemException()
+		throws Exception {
+
+		ResourceFolder postResourceFolder = _postSiteResourceFolder(
+			_getFragmentSetExternalReferenceCode());
+
+		ResourceFolder resourceFolder = _randomResourceFolder(
+			_getFragmentSetExternalReferenceCode());
+
+		resourceFolder.setName(postResourceFolder.getName());
+
+		_assertProblemException(
+			"CONFLICT", "a-resource-folder-with-that-name-already-exists",
+			() -> resourceFolderResource.postSiteResourceFolder(
+				testGroup.getExternalReferenceCode(), resourceFolder));
+	}
+
+	private void _testPostSiteResourceFolderNameInvalidProblemException()
+		throws Exception {
+
+		ResourceFolder resourceFolder = _randomResourceFolder(
+			_getFragmentSetExternalReferenceCode());
+
+		resourceFolder.setName(
+			StringBundler.concat(
+				RandomTestUtil.randomString(), StringPool.SLASH,
+				RandomTestUtil.randomString()));
+
+		_assertProblemException(
+			"resource-folder-name-is-invalid",
+			() -> resourceFolderResource.postSiteResourceFolder(
+				testGroup.getExternalReferenceCode(), resourceFolder));
+	}
+
 	private void _testPostSiteResourceFolderParentResourceFolderAndParentResourceFolderExternalReferenceCode()
 		throws Exception {
 
@@ -1693,6 +1731,49 @@ public class ResourceFolderResourceTest
 			() -> resourceFolderResource.putSiteResourceFolder(
 				testGroup.getExternalReferenceCode(),
 				folder.getExternalReferenceCode(), resourceFolder));
+	}
+
+	private void _testPutSiteResourceFolderNameDuplicateProblemException()
+		throws Exception {
+
+		ResourceFolder postResourceFolder1 = _postSiteResourceFolder(
+			_getFragmentSetExternalReferenceCode());
+
+		ResourceFolder postResourceFolder2 = _postSiteResourceFolder(
+			_getFragmentSetExternalReferenceCode());
+
+		ResourceFolder resourceFolder = _randomResourceFolder(
+			_getFragmentSetExternalReferenceCode());
+
+		resourceFolder.setName(postResourceFolder1.getName());
+
+		_assertProblemException(
+			"CONFLICT", "a-resource-folder-with-that-name-already-exists",
+			() -> resourceFolderResource.putSiteResourceFolder(
+				testGroup.getExternalReferenceCode(),
+				postResourceFolder2.getExternalReferenceCode(),
+				resourceFolder));
+	}
+
+	private void _testPutSiteResourceFolderNameInvalidProblemException()
+		throws Exception {
+
+		ResourceFolder postResourceFolder = _postSiteResourceFolder(
+			_getFragmentSetExternalReferenceCode());
+
+		ResourceFolder resourceFolder = _randomResourceFolder(
+			_getFragmentSetExternalReferenceCode());
+
+		resourceFolder.setName(
+			StringBundler.concat(
+				RandomTestUtil.randomString(), StringPool.SLASH,
+				RandomTestUtil.randomString()));
+
+		_assertProblemException(
+			"resource-folder-name-is-invalid",
+			() -> resourceFolderResource.putSiteResourceFolder(
+				testGroup.getExternalReferenceCode(),
+				postResourceFolder.getExternalReferenceCode(), resourceFolder));
 	}
 
 	private void _testPutSiteResourceFolderParentResourceFolderExternalReferenceCode()
