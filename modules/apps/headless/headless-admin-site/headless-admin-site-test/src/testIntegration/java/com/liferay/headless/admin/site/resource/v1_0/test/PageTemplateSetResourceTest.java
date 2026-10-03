@@ -7,7 +7,6 @@ package com.liferay.headless.admin.site.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
-import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.exportimport.kernel.service.StagingLocalService;
@@ -34,8 +33,6 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
-import com.liferay.portal.kernel.service.RoleLocalService;
-import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -46,6 +43,7 @@ import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -63,6 +61,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -150,11 +149,12 @@ public class PageTemplateSetResourceTest
 
 	@Override
 	@Test
-	@TestInfo("LPD-104838")
+	@TestInfo({"LPD-104838", "LPD-105724"})
 	public void testGetDesignLibraryPageTemplateSet() throws Exception {
 		super.testGetDesignLibraryPageTemplateSet();
 
 		_testGetDesignLibraryPageTemplateSetActions();
+		_testGetDesignLibraryPageTemplateSetWithoutPermissions();
 	}
 
 	@Override
@@ -186,11 +186,10 @@ public class PageTemplateSetResourceTest
 
 	@Override
 	@Test
-	@TestInfo("LPD-104838")
+	@TestInfo({"LPD-104838", "LPD-105724"})
 	public void testGetDesignLibraryPageTemplateSetsPage() throws Exception {
 		super.testGetDesignLibraryPageTemplateSetsPage();
 
-		_testGetDesignLibraryPageTemplateSetsPageAsDesignLibraryOwner();
 		_testGetDesignLibraryPageTemplateSetsPageWithoutPermissions();
 	}
 
@@ -664,43 +663,6 @@ public class PageTemplateSetResourceTest
 	}
 
 	private PageTemplateSetResource
-			_getDesignLibraryOwnerPageTemplateSetResource()
-		throws Exception {
-
-		String password = RandomTestUtil.randomString();
-
-		User user = UserTestUtil.addUser(testCompany, password);
-
-		Group group = _depotEntry.getGroup();
-
-		_userLocalService.addGroupUser(group.getGroupId(), user.getUserId());
-
-		Role role = _roleLocalService.getRole(
-			testCompany.getCompanyId(),
-			DepotRolesConstants.DESIGN_LIBRARY_OWNER);
-
-		_userGroupRoleLocalService.addUserGroupRoles(
-			user.getUserId(), group.getGroupId(),
-			new long[] {role.getRoleId()});
-
-		return _getPageTemplateSetResource(password, user);
-	}
-
-	private PageTemplateSetResource _getPageTemplateSetResource(
-		String password, User user) {
-
-		return PageTemplateSetResource.builder(
-		).authentication(
-			user.getEmailAddress(), password
-		).endpoint(
-			testCompany.getVirtualHostname(),
-			PortalUtil.getPortalServerPort(false), "http"
-		).locale(
-			LocaleUtil.getDefault()
-		).build();
-	}
-
-	private PageTemplateSetResource
 			_getUserWithoutPermissionsPageTemplateSetResource()
 		throws Exception {
 
@@ -711,7 +673,15 @@ public class PageTemplateSetResourceTest
 		_userLocalService.addGroupUser(
 			testGroup.getGroupId(), user.getUserId());
 
-		return _getPageTemplateSetResource(password, user);
+		return PageTemplateSetResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
 	}
 
 	private void _postSitePageTemplateSetWithInvalidKey(
@@ -801,7 +771,7 @@ public class PageTemplateSetResourceTest
 			"delete", "get", "permissions");
 	}
 
-	private void _testGetDesignLibraryPageTemplateSetsPageAsDesignLibraryOwner()
+	private void _testGetDesignLibraryPageTemplateSetWithoutPermissions()
 		throws Exception {
 
 		Group group = _depotEntry.getGroup();
@@ -809,16 +779,15 @@ public class PageTemplateSetResourceTest
 		PageTemplateSet pageTemplateSet = _addDesignLibraryPageTemplateSet(
 			group, randomPageTemplateSet());
 
-		PageTemplateSetResource designLibraryOwnerPageTemplateSetResource =
-			_getDesignLibraryOwnerPageTemplateSetResource();
+		PageTemplateSetResource userWithoutPermissionsPageTemplateSetResource =
+			_getUserWithoutPermissionsPageTemplateSetResource();
 
-		Page<PageTemplateSet> page =
-			designLibraryOwnerPageTemplateSetResource.
-				getDesignLibraryPageTemplateSetsPage(
-					group.getExternalReferenceCode(), null, null, null,
-					Pagination.of(1, 10), null);
-
-		assertContains(pageTemplateSet, (List<PageTemplateSet>)page.getItems());
+		assertEquals(
+			pageTemplateSet,
+			userWithoutPermissionsPageTemplateSetResource.
+				getDesignLibraryPageTemplateSet(
+					group.getExternalReferenceCode(),
+					pageTemplateSet.getExternalReferenceCode()));
 	}
 
 	private void _testGetDesignLibraryPageTemplateSetsPageWithoutPermissions()
@@ -826,7 +795,8 @@ public class PageTemplateSetResourceTest
 
 		Group group = _depotEntry.getGroup();
 
-		_addDesignLibraryPageTemplateSet(group, randomPageTemplateSet());
+		PageTemplateSet pageTemplateSet = _addDesignLibraryPageTemplateSet(
+			group, randomPageTemplateSet());
 
 		PageTemplateSetResource userWithoutPermissionsPageTemplateSetResource =
 			_getUserWithoutPermissionsPageTemplateSetResource();
@@ -837,7 +807,42 @@ public class PageTemplateSetResourceTest
 					group.getExternalReferenceCode(), null, null, null,
 					Pagination.of(1, 10), null);
 
-		Assert.assertEquals(0, page.getTotalCount());
+		assertContains(pageTemplateSet, (List<PageTemplateSet>)page.getItems());
+
+		LayoutPageTemplateCollection layoutPageTemplateCollection =
+			_layoutPageTemplateCollectionLocalService.
+				getLayoutPageTemplateCollectionByExternalReferenceCode(
+					pageTemplateSet.getExternalReferenceCode(),
+					group.getGroupId());
+
+		RoleTestUtil.removeResourcePermission(
+			RoleConstants.GUEST, LayoutPageTemplateCollection.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(
+				layoutPageTemplateCollection.
+					getLayoutPageTemplateCollectionId()),
+			ActionKeys.VIEW);
+		RoleTestUtil.removeResourcePermission(
+			RoleConstants.USER, LayoutPageTemplateCollection.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(
+				layoutPageTemplateCollection.
+					getLayoutPageTemplateCollectionId()),
+			ActionKeys.VIEW);
+
+		page =
+			userWithoutPermissionsPageTemplateSetResource.
+				getDesignLibraryPageTemplateSetsPage(
+					group.getExternalReferenceCode(), null, null, null,
+					Pagination.of(1, 10), null);
+
+		Assert.assertFalse(
+			page.toString(),
+			ListUtil.exists(
+				(List<PageTemplateSet>)page.getItems(),
+				curPageTemplateSet -> Objects.equals(
+					curPageTemplateSet.getExternalReferenceCode(),
+					pageTemplateSet.getExternalReferenceCode())));
 	}
 
 	private void _testGetSitePageTemplateSet(PageTemplateSet pageTemplateSet)
@@ -924,13 +929,7 @@ public class PageTemplateSetResourceTest
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 	@Inject
-	private RoleLocalService _roleLocalService;
-
-	@Inject
 	private StagingLocalService _stagingLocalService;
-
-	@Inject
-	private UserGroupRoleLocalService _userGroupRoleLocalService;
 
 	@Inject
 	private UserLocalService _userLocalService;

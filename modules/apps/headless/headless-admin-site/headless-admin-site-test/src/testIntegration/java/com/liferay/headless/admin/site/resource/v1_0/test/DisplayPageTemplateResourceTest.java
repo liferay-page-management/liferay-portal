@@ -30,6 +30,7 @@ import com.liferay.headless.admin.site.client.dto.v1_0.PageSpecification;
 import com.liferay.headless.admin.site.client.dto.v1_0.SitemapSettings;
 import com.liferay.headless.admin.site.client.dto.v1_0.ThumbnailURLReference;
 import com.liferay.headless.admin.site.client.pagination.Page;
+import com.liferay.headless.admin.site.client.pagination.Pagination;
 import com.liferay.headless.admin.site.client.permission.Permission;
 import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.headless.admin.site.client.resource.v1_0.DisplayPageTemplateResource;
@@ -79,6 +80,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.model.User;
@@ -86,6 +88,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -235,22 +238,12 @@ public class DisplayPageTemplateResourceTest
 
 	@Override
 	@Test
-	@TestInfo({"LPD-106070", "LPD-107020"})
+	@TestInfo({"LPD-105724", "LPD-106070", "LPD-107020"})
 	public void testGetDesignLibraryDisplayPageTemplate() throws Exception {
 		super.testGetDesignLibraryDisplayPageTemplate();
 
-		DisplayPageTemplate displayPageTemplate =
-			_addDesignLibraryDisplayPageTemplate(
-				_getDesignLibraryExternalReferenceCode());
-
-		Map<String, Map<String, String>> actions =
-			displayPageTemplate.getActions();
-
-		Assert.assertFalse(actions.containsKey("copy"));
-		Assert.assertFalse(actions.containsKey("copyWithPermission"));
-		Assert.assertTrue(actions.containsKey("delete"));
-		Assert.assertTrue(actions.containsKey("get"));
-		Assert.assertTrue(actions.containsKey("permissions"));
+		_testGetDesignLibraryDisplayPageTemplateActions();
+		_testGetDesignLibraryDisplayPageTemplateWithoutPermissions();
 	}
 
 	@Override
@@ -270,6 +263,17 @@ public class DisplayPageTemplateResourceTest
 					RoleConstants.GUEST);
 
 		_assertDesignLibraryPermissionActionHrefs(page.getActions());
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-105724")
+	public void testGetDesignLibraryDisplayPageTemplatesPage()
+		throws Exception {
+
+		super.testGetDesignLibraryDisplayPageTemplatesPage();
+
+		_testGetDesignLibraryDisplayPageTemplatesPageWithoutPermissions();
 	}
 
 	@Override
@@ -1647,6 +1651,25 @@ public class DisplayPageTemplateResourceTest
 				layout.getPlid()));
 	}
 
+	private DisplayPageTemplateResource
+			_getUserWithoutPermissionsDisplayPageTemplateResource()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		return DisplayPageTemplateResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
 	private boolean _hasViewPermission(
 			String designLibraryExternalReferenceCode,
 			String displayPageTemplateExternalReferenceCode, String roleName)
@@ -1907,6 +1930,96 @@ public class DisplayPageTemplateResourceTest
 							getExternalReferenceCode(),
 						testGroup.getGroupId()));
 		}
+	}
+
+	private void _testGetDesignLibraryDisplayPageTemplateActions()
+		throws Exception {
+
+		DisplayPageTemplate displayPageTemplate =
+			_addDesignLibraryDisplayPageTemplate(
+				_getDesignLibraryExternalReferenceCode());
+
+		Map<String, Map<String, String>> actions =
+			displayPageTemplate.getActions();
+
+		Assert.assertFalse(actions.containsKey("copy"));
+		Assert.assertFalse(actions.containsKey("copyWithPermission"));
+		Assert.assertTrue(actions.containsKey("delete"));
+		Assert.assertTrue(actions.containsKey("get"));
+		Assert.assertTrue(actions.containsKey("permissions"));
+	}
+
+	private void _testGetDesignLibraryDisplayPageTemplateWithoutPermissions()
+		throws Exception {
+
+		String externalReferenceCode = _getDesignLibraryExternalReferenceCode();
+
+		DisplayPageTemplate displayPageTemplate =
+			_addDesignLibraryDisplayPageTemplate(externalReferenceCode);
+
+		DisplayPageTemplateResource
+			userWithoutPermissionsDisplayPageTemplateResource =
+				_getUserWithoutPermissionsDisplayPageTemplateResource();
+
+		assertEquals(
+			displayPageTemplate,
+			userWithoutPermissionsDisplayPageTemplateResource.
+				getDesignLibraryDisplayPageTemplate(
+					externalReferenceCode,
+					displayPageTemplate.getExternalReferenceCode()));
+	}
+
+	private void _testGetDesignLibraryDisplayPageTemplatesPageWithoutPermissions()
+		throws Exception {
+
+		String externalReferenceCode = _getDesignLibraryExternalReferenceCode();
+
+		DisplayPageTemplate displayPageTemplate =
+			_addDesignLibraryDisplayPageTemplate(externalReferenceCode);
+
+		DisplayPageTemplateResource
+			userWithoutPermissionsDisplayPageTemplateResource =
+				_getUserWithoutPermissionsDisplayPageTemplateResource();
+
+		Page<DisplayPageTemplate> page =
+			userWithoutPermissionsDisplayPageTemplateResource.
+				getDesignLibraryDisplayPageTemplatesPage(
+					externalReferenceCode, null, null, null,
+					Pagination.of(1, 10), null);
+
+		assertContains(
+			displayPageTemplate, (List<DisplayPageTemplate>)page.getItems());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.
+				getLayoutPageTemplateEntryByExternalReferenceCode(
+					displayPageTemplate.getExternalReferenceCode(),
+					_designLibraryGroup.getGroupId());
+
+		RoleTestUtil.removeResourcePermission(
+			RoleConstants.GUEST, LayoutPageTemplateEntry.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId()),
+			ActionKeys.VIEW);
+		RoleTestUtil.removeResourcePermission(
+			RoleConstants.USER, LayoutPageTemplateEntry.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId()),
+			ActionKeys.VIEW);
+
+		page =
+			userWithoutPermissionsDisplayPageTemplateResource.
+				getDesignLibraryDisplayPageTemplatesPage(
+					externalReferenceCode, null, null, null,
+					Pagination.of(1, 10), null);
+
+		Assert.assertNull(
+			page.toString(),
+			_getDisplayPageTemplate(
+				(List<DisplayPageTemplate>)page.getItems(),
+				displayPageTemplate.getExternalReferenceCode()));
 	}
 
 	private void _testGetSiteDisplayPageTemplate(
