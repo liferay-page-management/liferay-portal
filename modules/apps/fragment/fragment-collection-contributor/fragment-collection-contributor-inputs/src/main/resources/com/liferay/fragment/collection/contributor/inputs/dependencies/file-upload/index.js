@@ -51,11 +51,33 @@ if (
 	fileInput.required = false;
 }
 
+let fileNameBeforeFileSizeError = null;
 let previousFiles = null;
 let showInputError = null;
 
 function mbToBytes(mb) {
 	return mb * 1024 * 1024;
+}
+
+function hideFileSizeError() {
+	fileNameBeforeFileSizeError = null;
+
+	delete formGroup.dataset.fileSizeError;
+
+	fileSizeError.classList.add('sr-only');
+	formGroup.classList.remove('has-error');
+}
+
+function restorePreviousFiles() {
+	const dataTransfer = new DataTransfer();
+
+	dataTransfer.items.add(previousFiles);
+
+	fileInput.files = dataTransfer.files;
+
+	if (input.required) {
+		fileInput.required = true;
+	}
 }
 
 function onInputChange() {
@@ -73,26 +95,34 @@ function onInputChange() {
 			),
 		});
 
+		if (fileNameBeforeFileSizeError === null) {
+			fileNameBeforeFileSizeError = fileName.innerText;
+		}
+
+		formGroup.dataset.fileSizeError = true;
+
+		fileName.innerText = fileInput.files[0].name;
+
 		fileInput.value = '';
+
+		if (previousFiles) {
+			restorePreviousFiles();
+		}
+
+		removeButton.classList.remove('d-none');
 
 		return;
 	}
-	else {
-		fileSizeError.classList.add('sr-only');
-		formGroup.classList.remove('has-error');
-	}
 
 	if (!fileInput.files.length && previousFiles) {
-		const dataTransfer = new DataTransfer();
-
-		dataTransfer.items.add(previousFiles);
-
-		fileInput.files = dataTransfer.files;
-
-		if (input.required) {
-			fileInput.required = true;
-		}
+		restorePreviousFiles();
 	}
+
+	if (!fileInput.files.length) {
+		return;
+	}
+
+	hideFileSizeError();
 
 	fileName.innerText = fileInput.files[0].name;
 
@@ -104,6 +134,25 @@ function onInputChange() {
 	hiddenFileInput.value = '';
 
 	showRemoveButton();
+}
+
+function onRemoveRejectedFile(event) {
+	if (
+		fileNameBeforeFileSizeError === null ||
+		!removeButton.contains(event.target)
+	) {
+		return;
+	}
+
+	event.stopPropagation();
+
+	fileName.innerText = fileNameBeforeFileSizeError;
+
+	if (!fileName.innerText) {
+		removeButton.classList.add('d-none');
+	}
+
+	hideFileSizeError();
 }
 
 function onRemoveFile() {
@@ -230,6 +279,8 @@ else {
 	}
 
 	fileInput.addEventListener('change', onInputChange);
+
+	wrapper.addEventListener('click', onRemoveRejectedFile, true);
 
 	if (fileName.innerText !== '') {
 		showRemoveButton();

@@ -4,7 +4,7 @@
  */
 
 import '@testing-library/jest-dom';
-import {render, screen} from '@testing-library/react';
+import {act, fireEvent, render, screen} from '@testing-library/react';
 import {sessionStorage} from 'frontend-js-web';
 import React from 'react';
 
@@ -35,7 +35,29 @@ jest.mock('frontend-js-web', () => {
 	};
 });
 
-const renderComponent = ({hasWorkflow = false, isNew = false} = {}) => {
+const blockFormValidation = () => {
+	(Liferay.fire as jest.Mock).mockImplementation(
+		(eventName: string, {event}: {event: Event}) => {
+			if (eventName === 'contentEditor:validateForm') {
+				event.preventDefault();
+			}
+		}
+	);
+};
+
+const getValidateFormListener = () => {
+	const [, listener] = (Liferay.on as jest.Mock).mock.calls.find(
+		([eventName]) => eventName === 'contentEditor:validateForm'
+	);
+
+	return listener;
+};
+
+const renderComponent = ({
+	fileSizeError = false,
+	hasWorkflow = false,
+	isNew = false,
+} = {}) => {
 	return render(
 		<>
 			<ContentEditorToolbar
@@ -62,6 +84,15 @@ const renderComponent = ({hasWorkflow = false, isNew = false} = {}) => {
 					type="text"
 					value="My Test Content"
 				/>
+
+				{fileSizeError ? (
+					<div
+						className="form-group has-error"
+						data-file-size-error="true"
+					>
+						<button type="button">Select File</button>
+					</div>
+				) : null}
 			</form>
 		</>
 	);
@@ -204,5 +235,99 @@ describe('ContentEditorToolbar', () => {
 			'<strong>My Test Content</strong> has been submitted for workflow.',
 			'NECESSARY'
 		);
+	});
+
+	it('does not publish the content pressing ctrl + alt + Enter when the form validation fails', () => {
+		renderComponent();
+
+		blockFormValidation();
+
+		const form = screen.getByTestId('form') as HTMLFormElement;
+
+		form.checkValidity = jest.fn(() => true);
+
+		const submitSpy = jest.fn((event: Event) => event.preventDefault());
+
+		form.addEventListener('submit', submitSpy);
+
+		document.body.dispatchEvent(
+			new KeyboardEvent('keydown', {
+				altKey: true,
+				bubbles: true,
+				cancelable: true,
+				ctrlKey: true,
+				key: 'Enter',
+			})
+		);
+
+		expect(submitSpy).not.toHaveBeenCalled();
+		expect(sessionStorage.setItem).not.toHaveBeenCalledWith(
+			'com.liferay.site.cms.site.initializer.successMessage',
+			expect.anything(),
+			expect.anything()
+		);
+	});
+
+	it('stores the success message when clicking the publish button', () => {
+		renderComponent();
+
+		const form = screen.getByTestId('form') as HTMLFormElement;
+
+		form.checkValidity = jest.fn(() => true);
+
+		form.addEventListener('submit', (event: Event) =>
+			event.preventDefault()
+		);
+
+		fireEvent.click(screen.getByText('publish'));
+
+		expect(sessionStorage.setItem).toHaveBeenCalledWith(
+			'com.liferay.site.cms.site.initializer.successMessage',
+			'<strong>My Test Content</strong> was updated successfully',
+			'NECESSARY'
+		);
+	});
+
+	it('does not store the success message when the form validation blocks the publish button', () => {
+		renderComponent();
+
+		blockFormValidation();
+
+		const form = screen.getByTestId('form') as HTMLFormElement;
+
+		form.checkValidity = jest.fn(() => true);
+
+		fireEvent.click(screen.getByText('publish'));
+
+		expect(sessionStorage.setItem).not.toHaveBeenCalledWith(
+			'com.liferay.site.cms.site.initializer.successMessage',
+			expect.anything(),
+			expect.anything()
+		);
+	});
+
+	it('blocks publishing and focuses the upload field when it has a file size error', () => {
+		renderComponent({fileSizeError: true});
+
+		const event = new Event('click', {cancelable: true});
+
+		act(() => {
+			getValidateFormListener()({event});
+		});
+
+		expect(event.defaultPrevented).toBe(true);
+		expect(screen.getByText('Select File')).toHaveFocus();
+	});
+
+	it('does not block publishing when no upload field has a file size error', () => {
+		renderComponent();
+
+		const event = new Event('click', {cancelable: true});
+
+		act(() => {
+			getValidateFormListener()({event});
+		});
+
+		expect(event.defaultPrevented).toBe(false);
 	});
 });

@@ -148,7 +148,11 @@ test(
 					.first()
 			).toBeVisible();
 
-			await expect(page.getByText(`${title}.png`)).toBeHidden();
+			for (const fileInput of await page
+				.locator('input[type="file"]')
+				.all()) {
+				await expect(fileInput).toHaveValue('');
+			}
 		});
 
 		await test.step('The file entry cannot be published', async () => {

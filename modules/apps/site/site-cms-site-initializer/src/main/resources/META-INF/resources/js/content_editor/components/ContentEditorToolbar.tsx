@@ -20,6 +20,7 @@ import {flushSync} from 'react-dom';
 
 import Toolbar from '../../common/components/Toolbar';
 import {AI_ASSISTANT_TOOLBAR_TRIGGER_ID} from '../../common/utils/constants';
+import focusInvalidElement from '../../common/utils/focusInvalidElement';
 import applyFieldValues from '../utils/applyFieldValues';
 import getFieldValues from '../utils/getFieldValues';
 import {toMomentDate} from './ScheduleField';
@@ -76,6 +77,7 @@ export default function ContentEditorToolbar({
 }) {
 	const [displayDate, setDisplayDate] = useState<string>('');
 	const [formId, setFormId] = useState<string | undefined>();
+	const [hasFileSizeError, setHasFileSizeError] = useState<boolean>(false);
 	const [redirect, setRedirect] = useState<string>(backURL);
 	const [showModal, setShowModal] = useState<boolean>(false);
 	const [showPreview, setShowPreview] = useSessionState<boolean>(
@@ -182,6 +184,12 @@ export default function ContentEditorToolbar({
 					event.key === 'Enter' &&
 					isCtrlOrMeta(event)
 				) {
+					Liferay.fire(EVENT_VALIDATE_FORM, {event});
+
+					if (event.defaultPrevented) {
+						return;
+					}
+
 					handlePublishClick();
 
 					form.submit();
@@ -194,6 +202,29 @@ export default function ContentEditorToolbar({
 				window.removeEventListener('keydown', handlePublishShortcut);
 		}
 	}, [getForm, handlePublishClick]);
+
+	useEffect(() => {
+		const validateFileUploadFields = ({event}: {event: Event}) => {
+			if (getForm()?.querySelector('.form-group[data-file-size-error]')) {
+				event.preventDefault();
+
+				setHasFileSizeError(true);
+			}
+		};
+
+		Liferay.on(EVENT_VALIDATE_FORM, validateFileUploadFields);
+
+		return () =>
+			Liferay.detach(EVENT_VALIDATE_FORM, validateFileUploadFields);
+	}, [getForm]);
+
+	useEffect(() => {
+		if (hasFileSizeError && !showModal) {
+			focusInvalidElement();
+
+			setHasFileSizeError(false);
+		}
+	}, [hasFileSizeError, showModal]);
 
 	useEffect(() => {
 		const closePreview = () => {
@@ -365,9 +396,11 @@ export default function ContentEditorToolbar({
 						data-title-set-as-html
 						form={formId}
 						onClick={(event) => {
-							handlePublishClick();
-
 							Liferay.fire(EVENT_VALIDATE_FORM, {event});
+
+							if (!event.isDefaultPrevented()) {
+								handlePublishClick();
+							}
 						}}
 						size="sm"
 						type="submit"

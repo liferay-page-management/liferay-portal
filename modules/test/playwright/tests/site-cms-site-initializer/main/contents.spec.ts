@@ -81,9 +81,7 @@ test(
 			)
 		).toBeVisible();
 
-		await expect(
-			page.locator('.file-upload').getByText('oversized-file')
-		).not.toBeVisible();
+		await expect(page.locator('.file-upload-input')).toHaveValue('');
 	}
 );
 
