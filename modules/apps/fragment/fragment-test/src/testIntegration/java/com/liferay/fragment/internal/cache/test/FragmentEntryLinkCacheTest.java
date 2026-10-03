@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -66,6 +67,111 @@ public class FragmentEntryLinkCacheTest {
 	@Test
 	@TestInfo("LPD-53565")
 	public void test() throws Exception {
+		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink();
+
+		Locale locale = _portal.getSiteDefaultLocale(_group);
+
+		Assert.assertNull(
+			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
+				fragmentEntryLink, locale, null));
+
+		String content = RandomTestUtil.randomString();
+
+		_fragmentEntryLinkCache.putFragmentEntryLinkContent(
+			content, fragmentEntryLink, locale, null);
+
+		Assert.assertEquals(
+			content,
+			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
+				fragmentEntryLink, locale, null));
+
+		_fragmentEntryLinkCache.removeFragmentEntryLinkCache(fragmentEntryLink);
+
+		Assert.assertNull(
+			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
+				fragmentEntryLink, locale, null));
+
+		_fragmentEntryLinkCache.putFragmentEntryLinkContent(
+			content, fragmentEntryLink, locale, null);
+
+		Assert.assertEquals(
+			content,
+			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
+				fragmentEntryLink, locale, null));
+
+		_fragmentEntryLinkCache.removeFragmentEntryLinkCache(
+			fragmentEntryLink.getFragmentEntryLinkId());
+
+		Assert.assertNull(
+			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
+				fragmentEntryLink, locale, null));
+
+		long randomLong = RandomTestUtil.randomLong();
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.fragment.internal.cache." +
+					"FragmentEntryLinkCacheImpl",
+				LoggerTestUtil.DEBUG)) {
+
+			_fragmentEntryLinkCache.removeFragmentEntryLinkCache(randomLong);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				"No fragment entry link exists with the fragment entry link " +
+					"ID " + randomLong,
+				logEntry.getMessage());
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-107399")
+	public void testGetFragmentEntryLinkContentWithDifferentPortalURLs()
+		throws Exception {
+
+		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink();
+
+		Locale locale = _portal.getSiteDefaultLocale(_group);
+
+		String content1 = RandomTestUtil.randomString();
+		String portalURL1 = RandomTestUtil.randomString();
+
+		_fragmentEntryLinkCache.putFragmentEntryLinkContent(
+			content1, fragmentEntryLink, locale, _getThemeDisplay(portalURL1));
+
+		String content2 = RandomTestUtil.randomString();
+		String portalURL2 = RandomTestUtil.randomString();
+
+		_fragmentEntryLinkCache.putFragmentEntryLinkContent(
+			content2, fragmentEntryLink, locale, _getThemeDisplay(portalURL2));
+
+		Assert.assertEquals(
+			content1,
+			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
+				fragmentEntryLink, locale, _getThemeDisplay(portalURL1)));
+		Assert.assertEquals(
+			content2,
+			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
+				fragmentEntryLink, locale, _getThemeDisplay(portalURL2)));
+		Assert.assertNull(
+			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
+				fragmentEntryLink, locale, null));
+
+		_fragmentEntryLinkCache.removeFragmentEntryLinkCache(fragmentEntryLink);
+
+		Assert.assertNull(
+			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
+				fragmentEntryLink, locale, _getThemeDisplay(portalURL1)));
+		Assert.assertNull(
+			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
+				fragmentEntryLink, locale, _getThemeDisplay(portalURL2)));
+	}
+
+	private FragmentEntryLink _addFragmentEntryLink() throws Exception {
 		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
 
 		Layout draftLayout = layout.fetchDraftLayout();
@@ -95,69 +201,18 @@ public class FragmentEntryLinkCacheTest {
 
 		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
 
-		FragmentEntryLink fragmentEntryLink =
-			_fragmentEntryLinkLocalService.getFragmentEntryLink(
-				layout.getGroupId(),
-				draftLayoutFragmentEntryLink.getExternalReferenceCode(),
-				layout.getPlid());
+		return _fragmentEntryLinkLocalService.getFragmentEntryLink(
+			layout.getGroupId(),
+			draftLayoutFragmentEntryLink.getExternalReferenceCode(),
+			layout.getPlid());
+	}
 
-		Locale locale = _portal.getSiteDefaultLocale(_group);
+	private ThemeDisplay _getThemeDisplay(String portalURL) {
+		ThemeDisplay themeDisplay = new ThemeDisplay();
 
-		Assert.assertNull(
-			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
-				fragmentEntryLink, locale));
+		themeDisplay.setPortalURL(portalURL);
 
-		String content = RandomTestUtil.randomString();
-
-		_fragmentEntryLinkCache.putFragmentEntryLinkContent(
-			content, fragmentEntryLink, locale);
-
-		Assert.assertEquals(
-			content,
-			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
-				fragmentEntryLink, locale));
-
-		_fragmentEntryLinkCache.removeFragmentEntryLinkCache(fragmentEntryLink);
-
-		Assert.assertNull(
-			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
-				fragmentEntryLink, locale));
-
-		_fragmentEntryLinkCache.putFragmentEntryLinkContent(
-			content, fragmentEntryLink, locale);
-
-		Assert.assertEquals(
-			content,
-			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
-				fragmentEntryLink, locale));
-
-		_fragmentEntryLinkCache.removeFragmentEntryLinkCache(
-			fragmentEntryLink.getFragmentEntryLinkId());
-
-		Assert.assertNull(
-			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
-				fragmentEntryLink, locale));
-
-		long randomLong = RandomTestUtil.randomLong();
-
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.fragment.internal.cache." +
-					"FragmentEntryLinkCacheImpl",
-				LoggerTestUtil.DEBUG)) {
-
-			_fragmentEntryLinkCache.removeFragmentEntryLinkCache(randomLong);
-
-			List<LogEntry> logEntries = logCapture.getLogEntries();
-
-			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
-
-			LogEntry logEntry = logEntries.get(0);
-
-			Assert.assertEquals(
-				"No fragment entry link exists with the fragment entry link " +
-					"ID " + randomLong,
-				logEntry.getMessage());
-		}
+		return themeDisplay;
 	}
 
 	@Inject
