@@ -1844,7 +1844,8 @@ public class EditableFragmentEntryProcessorTest {
 		Assert.assertEquals(
 			_dlURLHelper.getPreviewURL(
 				fileEntry, fileEntry.getFileVersion(),
-				_serviceContext.getThemeDisplay(), StringPool.BLANK),
+				_serviceContext.getThemeDisplay(), StringPool.BLANK, true,
+				false),
 			src);
 	}
 
@@ -1912,6 +1913,35 @@ public class EditableFragmentEntryProcessorTest {
 
 		Assert.assertTrue(
 			href.contains("doAsUserId=" + themeDisplay.getDoAsUserId()));
+	}
+
+	@Test
+	@TestInfo("LPD-107399")
+	public void testFragmentEntryProcessorEditableMappedDLImageRelativePreviewURL()
+		throws Exception {
+
+		FileEntry fileEntry = _addImageFileEntry(RandomTestUtil.randomString());
+
+		String editableValues = _getEditableFieldValues(
+			_portal.getClassNameId(FileEntry.class), fileEntry.getFileEntryId(),
+			"fileURL", "fragment_entry_link_mapped_asset_field_image.json");
+
+		ThemeDisplay themeDisplay = _serviceContext.getThemeDisplay();
+
+		String portalURL = "http://" + RandomTestUtil.randomString();
+
+		themeDisplay.setPortalURL(portalURL);
+
+		Element element = _getElement(
+			"data-lfr-editable-id", "image-square", editableValues,
+			"fragment_entry_image.html", LocaleUtil.getSiteDefault(),
+			FragmentEntryLinkConstants.VIEW);
+
+		String src = element.attr("src");
+
+		Assert.assertFalse(src.startsWith(portalURL));
+		Assert.assertTrue(
+			src.startsWith(_portal.getPathContext() + "/documents/"));
 	}
 
 	@Test
