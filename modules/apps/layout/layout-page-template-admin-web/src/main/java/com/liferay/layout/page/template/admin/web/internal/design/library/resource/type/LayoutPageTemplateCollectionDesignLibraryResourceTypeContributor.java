@@ -9,6 +9,7 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.design.library.resource.type.DesignLibraryResourceCreationItem;
 import com.liferay.design.library.resource.type.DesignLibraryResourceTypeContributor;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
+import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminConstants;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateActionKeys;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTypeConstants;
@@ -103,7 +104,7 @@ public class LayoutPageTemplateCollectionDesignLibraryResourceTypeContributor
 				).setBackURL(
 					backURL
 				).setTabs1(
-					"page-templates"
+					LayoutPageTemplateAdminConstants.TABS1_PAGE_TEMPLATES
 				).setParameter(
 					"layoutPageTemplateCollectionExternalReferenceCode",
 					"{embedded.externalReferenceCode}"

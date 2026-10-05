@@ -5,6 +5,7 @@
 
 package com.liferay.layout.page.template.admin.web.internal.portlet.action;
 
+import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminConstants;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -109,7 +110,11 @@ public class DeleteLayoutPageTemplateEntryMVCActionCommand
 
 		String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
 
-		if (!Objects.equals(tabs1, "display-page-templates")) {
+		if (!Objects.equals(
+				tabs1,
+				LayoutPageTemplateAdminConstants.
+					TABS1_DISPLAY_PAGE_TEMPLATES)) {
+
 			sendRedirect(actionRequest, actionResponse);
 
 			return;

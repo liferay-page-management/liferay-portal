@@ -10,6 +10,7 @@ import com.liferay.info.item.InfoItemClassDetails;
 import com.liferay.info.item.InfoItemFormVariation;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemFormVariationsProvider;
+import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminConstants;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
 import com.liferay.layout.page.template.admin.web.internal.util.LayoutPageTemplatePortletUtil;
 import com.liferay.layout.page.template.admin.web.internal.util.MappingTypesUtil;
@@ -189,7 +190,8 @@ public class DisplayPageDisplayContext {
 					PortletURLBuilder.createRenderURL(
 						_liferayPortletResponse
 					).setTabs1(
-						"display-page-templates"
+						LayoutPageTemplateAdminConstants.
+							TABS1_DISPLAY_PAGE_TEMPLATES
 					).setParameter(
 						"layoutPageTemplateCollectionId",
 						LayoutPageTemplateConstants.
@@ -214,7 +216,8 @@ public class DisplayPageDisplayContext {
 							PortletURLBuilder.createRenderURL(
 								_liferayPortletResponse
 							).setTabs1(
-								"display-page-templates"
+								LayoutPageTemplateAdminConstants.
+									TABS1_DISPLAY_PAGE_TEMPLATES
 							).setParameter(
 								"layoutPageTemplateCollectionId",
 								curLayoutPageTemplateCollection.
@@ -316,7 +319,7 @@ public class DisplayPageDisplayContext {
 				return null;
 			}
 		).setTabs1(
-			"display-page-templates"
+			LayoutPageTemplateAdminConstants.TABS1_DISPLAY_PAGE_TEMPLATES
 		).setParameter(
 			"orderByCol",
 			() -> {

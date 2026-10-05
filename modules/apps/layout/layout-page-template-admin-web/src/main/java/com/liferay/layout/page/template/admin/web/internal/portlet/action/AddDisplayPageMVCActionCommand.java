@@ -7,6 +7,7 @@ package com.liferay.layout.page.template.admin.web.internal.portlet.action;
 
 import com.liferay.asset.kernel.NoSuchClassTypeException;
 import com.liferay.design.library.util.DesignLibraryUtil;
+import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminConstants;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
 import com.liferay.layout.page.template.admin.web.internal.handler.LayoutPageTemplateEntryExceptionRequestHandlerUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
@@ -112,7 +113,7 @@ public class AddDisplayPageMVCActionCommand extends BaseMVCActionCommand {
 					LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES,
 					PortletRequest.RENDER_PHASE)
 			).setTabs1(
-				"display-page-templates"
+				LayoutPageTemplateAdminConstants.TABS1_DISPLAY_PAGE_TEMPLATES
 			).setParameter(
 				"layoutPageTemplateCollectionId",
 				ParamUtil.getLong(

@@ -5,6 +5,7 @@
 
 package com.liferay.layout.page.template.admin.web.internal.portlet.configuration.icon;
 
+import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminConstants;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateActionKeys;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
@@ -70,7 +71,9 @@ public class ImportPortletConfigurationIcon
 					LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES,
 					PortletRequest.RENDER_PHASE)
 			).setTabs1(
-				ParamUtil.getString(portletRequest, "tabs1", "master-layouts")
+				ParamUtil.getString(
+					portletRequest, "tabs1",
+					LayoutPageTemplateAdminConstants.TABS1_MASTER_LAYOUTS)
 			).setParameter(
 				"layoutPageTemplateCollectionId",
 				ParamUtil.getString(

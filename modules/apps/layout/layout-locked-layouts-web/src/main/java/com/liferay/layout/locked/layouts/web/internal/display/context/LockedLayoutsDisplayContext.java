@@ -10,6 +10,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuil
 import com.liferay.layout.manager.LayoutLockManager;
 import com.liferay.layout.model.LockedLayout;
 import com.liferay.layout.model.LockedLayoutType;
+import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminConstants;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
@@ -92,7 +93,7 @@ public class LockedLayoutsDisplayContext {
 			return PortletURLBuilder.create(
 				_getLayoutPageTemplatesPortletURL()
 			).setTabs1(
-				"page-templates"
+				LayoutPageTemplateAdminConstants.TABS1_PAGE_TEMPLATES
 			).buildString();
 		}
 
@@ -102,7 +103,7 @@ public class LockedLayoutsDisplayContext {
 			return PortletURLBuilder.create(
 				_getLayoutPageTemplatesPortletURL()
 			).setTabs1(
-				"display-page-templates"
+				LayoutPageTemplateAdminConstants.TABS1_DISPLAY_PAGE_TEMPLATES
 			).buildString();
 		}
 
@@ -112,7 +113,7 @@ public class LockedLayoutsDisplayContext {
 			return PortletURLBuilder.create(
 				_getLayoutPageTemplatesPortletURL()
 			).setTabs1(
-				"master-layouts"
+				LayoutPageTemplateAdminConstants.TABS1_MASTER_LAYOUTS
 			).buildString();
 		}
 

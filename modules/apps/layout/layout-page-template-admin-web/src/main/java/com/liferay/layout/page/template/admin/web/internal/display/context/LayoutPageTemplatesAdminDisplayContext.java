@@ -8,6 +8,7 @@ package com.liferay.layout.page.template.admin.web.internal.display.context;
 import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemListBuilder;
+import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUtil;
@@ -73,9 +74,12 @@ public class LayoutPageTemplatesAdminDisplayContext {
 			() -> !(localLiveGroup || removeLiveGroup),
 			navigationItem -> {
 				navigationItem.setActive(
-					Objects.equals(getTabs1(), "master-layouts"));
+					Objects.equals(
+						getTabs1(),
+						LayoutPageTemplateAdminConstants.TABS1_MASTER_LAYOUTS));
 				navigationItem.setHref(
-					getPortletURL(), "tabs1", "master-layouts");
+					getPortletURL(), "tabs1",
+					LayoutPageTemplateAdminConstants.TABS1_MASTER_LAYOUTS);
 				navigationItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "masters"));
 			}
@@ -83,9 +87,12 @@ public class LayoutPageTemplatesAdminDisplayContext {
 			() -> !(localLiveGroup || removeLiveGroup),
 			navigationItem -> {
 				navigationItem.setActive(
-					Objects.equals(getTabs1(), "page-templates"));
+					Objects.equals(
+						getTabs1(),
+						LayoutPageTemplateAdminConstants.TABS1_PAGE_TEMPLATES));
 				navigationItem.setHref(
-					getPortletURL(), "tabs1", "page-templates");
+					getPortletURL(), "tabs1",
+					LayoutPageTemplateAdminConstants.TABS1_PAGE_TEMPLATES);
 				navigationItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "page-templates"));
 			}
@@ -93,9 +100,14 @@ public class LayoutPageTemplatesAdminDisplayContext {
 			() -> !(localLiveGroup || removeLiveGroup),
 			navigationItem -> {
 				navigationItem.setActive(
-					Objects.equals(getTabs1(), "display-page-templates"));
+					Objects.equals(
+						getTabs1(),
+						LayoutPageTemplateAdminConstants.
+							TABS1_DISPLAY_PAGE_TEMPLATES));
 				navigationItem.setHref(
-					getPortletURL(), "tabs1", "display-page-templates",
+					getPortletURL(), "tabs1",
+					LayoutPageTemplateAdminConstants.
+						TABS1_DISPLAY_PAGE_TEMPLATES,
 					"layoutPageTemplateCollectionId",
 					LayoutPageTemplateConstants.
 						PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT);
@@ -122,24 +134,30 @@ public class LayoutPageTemplatesAdminDisplayContext {
 		Group group = _themeDisplay.getScopeGroup();
 
 		if (group.isCompany()) {
-			_tabs1 = "page-templates";
+			_tabs1 = LayoutPageTemplateAdminConstants.TABS1_PAGE_TEMPLATES;
 
 			return _tabs1;
 		}
 
 		if (DesignLibraryUtil.isDesignLibraryScope(group)) {
 			_tabs1 = ParamUtil.getString(
-				_liferayPortletRequest, "tabs1", "page-templates");
+				_liferayPortletRequest, "tabs1",
+				LayoutPageTemplateAdminConstants.TABS1_PAGE_TEMPLATES);
 
-			if (!Objects.equals(_tabs1, "display-page-templates")) {
-				_tabs1 = "page-templates";
+			if (!Objects.equals(
+					_tabs1,
+					LayoutPageTemplateAdminConstants.
+						TABS1_DISPLAY_PAGE_TEMPLATES)) {
+
+				_tabs1 = LayoutPageTemplateAdminConstants.TABS1_PAGE_TEMPLATES;
 			}
 
 			return _tabs1;
 		}
 
 		_tabs1 = ParamUtil.getString(
-			_liferayPortletRequest, "tabs1", "master-layouts");
+			_liferayPortletRequest, "tabs1",
+			LayoutPageTemplateAdminConstants.TABS1_MASTER_LAYOUTS);
 
 		return _tabs1;
 	}
