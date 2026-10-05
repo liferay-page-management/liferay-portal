@@ -140,28 +140,12 @@ public class EditLayoutDesignMVCActionCommandTest {
 
 		Assert.assertTrue(Validator.isNull(layout.getThemeId()));
 
-		MockMultipartHttpServletRequest mockMultipartHttpServletRequest =
-			new MockMultipartHttpServletRequest();
-
-		mockMultipartHttpServletRequest.setContentType(
-			"multipart/form-data;boundary=" + System.currentTimeMillis());
-
 		MockActionRequest mockActionRequest = _getMockActionRequest(
 			draftLayout);
 
 		mockActionRequest.setParameter("regularThemeId", "cms_WAR_cmstheme");
 
-		ReflectionTestUtil.invoke(
-			_mvcActionCommand, "_updateLayout",
-			new Class<?>[] {
-				ActionRequest.class, ActionResponse.class,
-				UploadPortletRequest.class
-			},
-			mockActionRequest, new MockActionResponse(),
-			UploadTestUtil.createUploadPortletRequest(
-				UploadTestUtil.createUploadServletRequest(
-					mockMultipartHttpServletRequest, null, null),
-				null, RandomTestUtil.randomString()));
+		_updateLayout(mockActionRequest, new MockMultipartHttpServletRequest());
 
 		Assert.assertTrue(SessionErrors.isEmpty(mockActionRequest));
 
@@ -230,12 +214,6 @@ public class EditLayoutDesignMVCActionCommandTest {
 			MapUtil.toString(draftLayout.getNameMap()),
 			MapUtil.isEmpty(draftLayout.getNameMap()));
 
-		MockMultipartHttpServletRequest mockMultipartHttpServletRequest =
-			new MockMultipartHttpServletRequest();
-
-		mockMultipartHttpServletRequest.setContentType(
-			"multipart/form-data;boundary=" + System.currentTimeMillis());
-
 		MockActionRequest mockActionRequest = _getMockActionRequest(
 			draftLayout);
 
@@ -244,17 +222,8 @@ public class EditLayoutDesignMVCActionCommandTest {
 					"EditLayoutDesignMVCActionCommand",
 				LoggerTestUtil.DEBUG)) {
 
-			ReflectionTestUtil.invoke(
-				_mvcActionCommand, "_updateLayout",
-				new Class<?>[] {
-					ActionRequest.class, ActionResponse.class,
-					UploadPortletRequest.class
-				},
-				mockActionRequest, new MockActionResponse(),
-				UploadTestUtil.createUploadPortletRequest(
-					UploadTestUtil.createUploadServletRequest(
-						mockMultipartHttpServletRequest, null, null),
-					null, RandomTestUtil.randomString()));
+			_updateLayout(
+				mockActionRequest, new MockMultipartHttpServletRequest());
 
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
@@ -304,26 +273,10 @@ public class EditLayoutDesignMVCActionCommandTest {
 			MapUtil.toString(draftLayout.getNameMap()),
 			MapUtil.isEmpty(draftLayout.getNameMap()));
 
-		MockMultipartHttpServletRequest mockMultipartHttpServletRequest =
-			new MockMultipartHttpServletRequest();
-
-		mockMultipartHttpServletRequest.setContentType(
-			"multipart/form-data;boundary=" + System.currentTimeMillis());
-
 		MockActionRequest mockActionRequest = _getMockActionRequest(
 			draftLayout);
 
-		ReflectionTestUtil.invoke(
-			_mvcActionCommand, "_updateLayout",
-			new Class<?>[] {
-				ActionRequest.class, ActionResponse.class,
-				UploadPortletRequest.class
-			},
-			mockActionRequest, new MockActionResponse(),
-			UploadTestUtil.createUploadPortletRequest(
-				UploadTestUtil.createUploadServletRequest(
-					mockMultipartHttpServletRequest, null, null),
-				null, RandomTestUtil.randomString()));
+		_updateLayout(mockActionRequest, new MockMultipartHttpServletRequest());
 
 		Assert.assertTrue(SessionErrors.isEmpty(mockActionRequest));
 
@@ -376,9 +329,7 @@ public class EditLayoutDesignMVCActionCommandTest {
 			designLibraryGroup.getExternalReferenceCode(),
 			draftLayout.getPlid());
 
-		_updateLayout(
-			_getMockActionRequest(draftLayout),
-			new MockMultipartHttpServletRequest());
+		_updateLayout(draftLayout, new MockMultipartHttpServletRequest());
 
 		_assertMasterLayout(
 			masterLayoutPageTemplateEntry,
@@ -456,8 +407,6 @@ public class EditLayoutDesignMVCActionCommandTest {
 
 		mockMultipartHttpServletRequest.addParameter(
 			"fileEntryId", String.valueOf(fileEntry.getFileEntryId()));
-		mockMultipartHttpServletRequest.setContentType(
-			"multipart/form-data;boundary=" + System.currentTimeMillis());
 
 		User user = UserTestUtil.addGroupAdminUser(_group);
 
@@ -466,18 +415,8 @@ public class EditLayoutDesignMVCActionCommandTest {
 
 			Assert.assertThrows(
 				PrincipalException.class,
-				() -> ReflectionTestUtil.invoke(
-					_mvcActionCommand, "_updateLayout",
-					new Class<?>[] {
-						ActionRequest.class, ActionResponse.class,
-						UploadPortletRequest.class
-					},
-					_getMockActionRequest(draftLayout),
-					new MockActionResponse(),
-					UploadTestUtil.createUploadPortletRequest(
-						UploadTestUtil.createUploadServletRequest(
-							mockMultipartHttpServletRequest, null, null),
-						null, RandomTestUtil.randomString())));
+				() -> _updateLayout(
+					draftLayout, mockMultipartHttpServletRequest));
 		}
 	}
 
@@ -562,23 +501,7 @@ public class EditLayoutDesignMVCActionCommandTest {
 			masterLayoutPageTemplateEntry.getExternalReferenceCode(),
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
-		MockMultipartHttpServletRequest mockMultipartHttpServletRequest =
-			new MockMultipartHttpServletRequest();
-
-		mockMultipartHttpServletRequest.setContentType(
-			"multipart/form-data;boundary=" + System.currentTimeMillis());
-
-		ReflectionTestUtil.invoke(
-			_mvcActionCommand, "_updateLayout",
-			new Class<?>[] {
-				ActionRequest.class, ActionResponse.class,
-				UploadPortletRequest.class
-			},
-			_getMockActionRequest(draftLayout), new MockActionResponse(),
-			UploadTestUtil.createUploadPortletRequest(
-				UploadTestUtil.createUploadServletRequest(
-					mockMultipartHttpServletRequest, null, null),
-				null, RandomTestUtil.randomString()));
+		_updateLayout(draftLayout, new MockMultipartHttpServletRequest());
 
 		Layout updatedDraftLayout = _layoutLocalService.fetchLayout(
 			draftLayout.getPlid());
@@ -605,6 +528,15 @@ public class EditLayoutDesignMVCActionCommandTest {
 		Assert.assertEquals(
 			draftLayout.getStyleBookEntryERC(),
 			updatedDraftLayout.getStyleBookEntryERC());
+	}
+
+	private void _updateLayout(
+			Layout layout,
+			MockMultipartHttpServletRequest mockMultipartHttpServletRequest)
+		throws Exception {
+
+		_updateLayout(
+			_getMockActionRequest(layout), mockMultipartHttpServletRequest);
 	}
 
 	private void _updateLayout(
