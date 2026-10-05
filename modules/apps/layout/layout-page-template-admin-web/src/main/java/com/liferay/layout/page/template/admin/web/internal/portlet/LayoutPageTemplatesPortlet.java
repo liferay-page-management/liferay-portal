@@ -10,6 +10,7 @@ import com.liferay.asset.kernel.service.AssetEntryService;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.search.InfoSearchClassMapperRegistry;
 import com.liferay.item.selector.ItemSelector;
+import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminConstants;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
 import com.liferay.layout.page.template.admin.web.internal.configuration.LayoutPageTemplateAdminWebConfiguration;
 import com.liferay.layout.page.template.admin.web.internal.constants.LayoutPageTemplateAdminWebKeys;
@@ -94,14 +95,16 @@ public class LayoutPageTemplatesPortlet extends MVCPortlet {
 		throws IOException, PortletException {
 
 		String tabs = ParamUtil.getString(
-			renderRequest, "tabs1", "master-layouts");
+			renderRequest, "tabs1",
+			LayoutPageTemplateAdminConstants.TABS1_MASTER_LAYOUTS);
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
 		Group scopeGroup = themeDisplay.getScopeGroup();
 
-		if (!Objects.equals(tabs, "master-layouts") &&
+		if (!Objects.equals(
+				tabs, LayoutPageTemplateAdminConstants.TABS1_MASTER_LAYOUTS) &&
 			(_stagingGroupHelper.isLocalLiveGroup(scopeGroup) ||
 			 _stagingGroupHelper.isRemoteLiveGroup(scopeGroup))) {
 
