@@ -754,7 +754,8 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 		layoutPageTemplateEntry.setLayoutPageTemplateCollectionId(
 			targetLayoutPageTemplateCollectionId);
 
-		return updateLayoutPageTemplateEntry(layoutPageTemplateEntry);
+		return layoutPageTemplateEntryLocalService.
+			updateLayoutPageTemplateEntry(layoutPageTemplateEntry);
 	}
 
 	@Override
