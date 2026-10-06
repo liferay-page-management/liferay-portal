@@ -21,6 +21,7 @@ import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemFormProvider;
 import com.liferay.info.search.InfoSearchClassMapperRegistry;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
+import com.liferay.layout.helper.DropZoneAllowedFragmentEntriesHelper;
 import com.liferay.layout.manager.FormManager;
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
 import com.liferay.layout.util.structure.FormStyledLayoutStructureItem;
@@ -39,7 +40,6 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -150,9 +150,12 @@ public class FormManagerImpl implements FormManager {
 				infoFieldType.getName());
 
 			if ((fragmentEntry == null) ||
-				!_isAllowedFragmentEntryKey(
-					fragmentEntry.getFragmentEntryKey(),
-					masterDropZoneLayoutStructureItem)) {
+				!_dropZoneAllowedFragmentEntriesHelper.
+					isAllowedFragmentEntryKey(
+						layout.getCompanyId(),
+						masterDropZoneLayoutStructureItem,
+						fragmentEntry.getFragmentEntryKey(),
+						layout.getGroupId())) {
 
 				missingInputTypes.add(infoFieldType.getLabel(locale));
 
@@ -173,9 +176,12 @@ public class FormManagerImpl implements FormManager {
 					FORM_INPUT_SUBMIT_BUTTON);
 
 			if ((fragmentEntry == null) ||
-				!_isAllowedFragmentEntryKey(
-					fragmentEntry.getFragmentEntryKey(),
-					masterDropZoneLayoutStructureItem)) {
+				!_dropZoneAllowedFragmentEntriesHelper.
+					isAllowedFragmentEntryKey(
+						layout.getCompanyId(),
+						masterDropZoneLayoutStructureItem,
+						fragmentEntry.getFragmentEntryKey(),
+						layout.getGroupId())) {
 
 				missingInputTypes.add(_language.get(locale, "submit-button"));
 			}
@@ -409,42 +415,16 @@ public class FormManagerImpl implements FormManager {
 		return null;
 	}
 
-	private boolean _isAllowedFragmentEntryKey(
-		String fragmentEntryKey,
-		DropZoneLayoutStructureItem masterDropZoneLayoutStructureItem) {
-
-		if (masterDropZoneLayoutStructureItem == null) {
-			return true;
-		}
-
-		List<String> fragmentEntryKeys =
-			masterDropZoneLayoutStructureItem.getFragmentEntryKeys();
-
-		if (masterDropZoneLayoutStructureItem.isAllowNewFragmentEntries()) {
-			if (ListUtil.isEmpty(fragmentEntryKeys) ||
-				!fragmentEntryKeys.contains(fragmentEntryKey)) {
-
-				return true;
-			}
-
-			return false;
-		}
-
-		if (ListUtil.isNotEmpty(fragmentEntryKeys) &&
-			fragmentEntryKeys.contains(fragmentEntryKey)) {
-
-			return true;
-		}
-
-		return false;
-	}
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		FormManagerImpl.class);
 
 	@Reference
 	private DefaultInputFragmentEntryConfigurationProvider
 		_defaultInputFragmentEntryConfigurationProvider;
+
+	@Reference
+	private DropZoneAllowedFragmentEntriesHelper
+		_dropZoneAllowedFragmentEntriesHelper;
 
 	@Reference
 	private FormItemManager _formItemManager;

@@ -23,6 +23,7 @@ import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
 import com.liferay.layout.content.page.editor.web.internal.exception.FormContainerParentItemRequiredException;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
+import com.liferay.layout.helper.DropZoneAllowedFragmentEntriesHelper;
 import com.liferay.layout.util.constants.LayoutDataItemTypeConstants;
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
 import com.liferay.layout.util.structure.FormStepContainerStyledLayoutStructureItem;
@@ -818,9 +819,10 @@ public class FormItemManager {
 				FORM_INPUT_SUBMIT_BUTTON);
 
 		if ((fragmentEntry == null) ||
-			!_isAllowedFragmentEntryKey(
-				fragmentEntry.getFragmentEntryKey(),
-				_getMasterDropZoneLayoutStructureItem(layout))) {
+			!_dropZoneAllowedFragmentEntriesHelper.isAllowedFragmentEntryKey(
+				layout.getCompanyId(),
+				_getMasterDropZoneLayoutStructureItem(layout),
+				fragmentEntry.getFragmentEntryKey(), layout.getGroupId())) {
 
 			return null;
 		}
@@ -1083,42 +1085,16 @@ public class FormItemManager {
 		return false;
 	}
 
-	private boolean _isAllowedFragmentEntryKey(
-		String fragmentEntryKey,
-		DropZoneLayoutStructureItem masterDropZoneLayoutStructureItem) {
-
-		if (masterDropZoneLayoutStructureItem == null) {
-			return true;
-		}
-
-		List<String> fragmentEntryKeys =
-			masterDropZoneLayoutStructureItem.getFragmentEntryKeys();
-
-		if (masterDropZoneLayoutStructureItem.isAllowNewFragmentEntries()) {
-			if (ListUtil.isEmpty(fragmentEntryKeys) ||
-				!fragmentEntryKeys.contains(fragmentEntryKey)) {
-
-				return true;
-			}
-
-			return false;
-		}
-
-		if (ListUtil.isNotEmpty(fragmentEntryKeys) &&
-			fragmentEntryKeys.contains(fragmentEntryKey)) {
-
-			return true;
-		}
-
-		return false;
-	}
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		FormItemManager.class);
 
 	@Reference
 	private DefaultInputFragmentEntryConfigurationProvider
 		_defaultInputFragmentEntryConfigurationProvider;
+
+	@Reference
+	private DropZoneAllowedFragmentEntriesHelper
+		_dropZoneAllowedFragmentEntriesHelper;
 
 	@Reference
 	private FragmentCollectionContributorRegistry

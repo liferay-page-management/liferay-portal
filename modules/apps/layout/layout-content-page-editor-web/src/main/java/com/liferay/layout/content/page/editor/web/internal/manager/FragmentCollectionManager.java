@@ -25,6 +25,7 @@ import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.permission.provider.InfoPermissionProvider;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.layout.content.page.editor.web.internal.constants.ContentPageEditorConstants;
+import com.liferay.layout.helper.DropZoneAllowedFragmentEntriesHelper;
 import com.liferay.layout.page.template.info.item.capability.EditPageInfoItemCapability;
 import com.liferay.layout.util.PortalPreferencesUtil;
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
@@ -289,9 +290,12 @@ public class FragmentCollectionManager {
 				_fragmentRendererRegistry.getFragmentRenderers()) {
 
 			if (!fragmentRenderer.isSelectable(httpServletRequest) ||
-				!_isAllowedFragmentEntryKey(
-					fragmentRenderer.getKey(),
-					masterDropZoneLayoutStructureItem)) {
+				!_dropZoneAllowedFragmentEntriesHelper.
+					isAllowedFragmentEntryKey(
+						themeDisplay.getCompanyId(),
+						masterDropZoneLayoutStructureItem,
+						fragmentRenderer.getKey(),
+						themeDisplay.getScopeGroupId())) {
 
 				continue;
 			}
@@ -442,9 +446,12 @@ public class FragmentCollectionManager {
 		return TransformUtil.transform(
 			fragmentCompositions,
 			fragmentComposition -> {
-				if (!_isAllowedFragmentEntryKey(
-						fragmentComposition.getFragmentCompositionKey(),
-						masterDropZoneLayoutStructureItem)) {
+				if (!_dropZoneAllowedFragmentEntriesHelper.
+						isAllowedFragmentEntryKey(
+							themeDisplay.getCompanyId(),
+							masterDropZoneLayoutStructureItem,
+							fragmentComposition.getFragmentCompositionKey(),
+							themeDisplay.getScopeGroupId())) {
 
 					return null;
 				}
@@ -484,9 +491,12 @@ public class FragmentCollectionManager {
 		return TransformUtil.transform(
 			fragmentEntries,
 			fragmentEntry -> {
-				if (!_isAllowedFragmentEntryKey(
-						fragmentEntry.getFragmentEntryKey(),
-						masterDropZoneLayoutStructureItem) ||
+				if (!_dropZoneAllowedFragmentEntriesHelper.
+						isAllowedFragmentEntryKey(
+							themeDisplay.getCompanyId(),
+							masterDropZoneLayoutStructureItem,
+							fragmentEntry.getFragmentEntryKey(),
+							themeDisplay.getScopeGroupId()) ||
 					((fragmentEntry.isTypeInput() ||
 					  Objects.equals(
 						  fragmentEntry.getFragmentEntryKey(),
@@ -647,8 +657,11 @@ public class FragmentCollectionManager {
 				String fragmentEntryKey = (String)layoutElementMap.get(
 					"fragmentEntryKey");
 
-				if (!_isAllowedFragmentEntryKey(
-						fragmentEntryKey, masterDropZoneLayoutStructureItem)) {
+				if (!_dropZoneAllowedFragmentEntriesHelper.
+						isAllowedFragmentEntryKey(
+							themeDisplay.getCompanyId(),
+							masterDropZoneLayoutStructureItem, fragmentEntryKey,
+							themeDisplay.getScopeGroupId())) {
 
 					continue;
 				}
@@ -719,39 +732,6 @@ public class FragmentCollectionManager {
 		return true;
 	}
 
-	private boolean _isAllowedFragmentEntryKey(
-		String fragmentEntryKey,
-		DropZoneLayoutStructureItem masterDropZoneLayoutStructureItem) {
-
-		List<String> fragmentEntryKeys = Collections.emptyList();
-		boolean allowNewFragmentEntries = true;
-
-		if (masterDropZoneLayoutStructureItem != null) {
-			fragmentEntryKeys =
-				masterDropZoneLayoutStructureItem.getFragmentEntryKeys();
-			allowNewFragmentEntries =
-				masterDropZoneLayoutStructureItem.isAllowNewFragmentEntries();
-		}
-
-		if (allowNewFragmentEntries) {
-			if (ListUtil.isEmpty(fragmentEntryKeys) ||
-				!fragmentEntryKeys.contains(fragmentEntryKey)) {
-
-				return true;
-			}
-
-			return false;
-		}
-
-		if (ListUtil.isNotEmpty(fragmentEntryKeys) &&
-			fragmentEntryKeys.contains(fragmentEntryKey)) {
-
-			return true;
-		}
-
-		return false;
-	}
-
 	private static final String[] _SORTED_FRAGMENT_COLLECTION_KEYS = {
 		"layout-elements", "BASIC_COMPONENT", "INPUTS", "content-display"
 	};
@@ -761,6 +741,10 @@ public class FragmentCollectionManager {
 
 	@Reference
 	private DepotEntryLocalService _depotEntryLocalService;
+
+	@Reference
+	private DropZoneAllowedFragmentEntriesHelper
+		_dropZoneAllowedFragmentEntriesHelper;
 
 	@Reference
 	private FragmentCollectionContributorRegistry

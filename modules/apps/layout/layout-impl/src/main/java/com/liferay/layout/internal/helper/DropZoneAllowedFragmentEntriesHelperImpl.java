@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -30,10 +31,12 @@ public class DropZoneAllowedFragmentEntriesHelperImpl
 
 	@Override
 	public List<String> getFragmentEntryKeys(
-			long companyId,
-			DropZoneLayoutStructureItem dropZoneLayoutStructureItem,
-			long scopeGroupId)
-		throws Exception {
+		long companyId, DropZoneLayoutStructureItem dropZoneLayoutStructureItem,
+		long scopeGroupId) {
+
+		if (dropZoneLayoutStructureItem == null) {
+			return Collections.emptyList();
+		}
 
 		List<String> fragmentEntryKeys =
 			dropZoneLayoutStructureItem.getFragmentEntryKeys();
@@ -97,10 +100,12 @@ public class DropZoneAllowedFragmentEntriesHelperImpl
 
 	@Override
 	public boolean isAllowedFragmentEntryKey(
-			long companyId,
-			DropZoneLayoutStructureItem dropZoneLayoutStructureItem,
-			String fragmentEntryKey, long scopeGroupId)
-		throws Exception {
+		long companyId, DropZoneLayoutStructureItem dropZoneLayoutStructureItem,
+		String fragmentEntryKey, long scopeGroupId) {
+
+		if (dropZoneLayoutStructureItem == null) {
+			return true;
+		}
 
 		List<String> fragmentEntryKeys = getFragmentEntryKeys(
 			companyId, dropZoneLayoutStructureItem, scopeGroupId);
