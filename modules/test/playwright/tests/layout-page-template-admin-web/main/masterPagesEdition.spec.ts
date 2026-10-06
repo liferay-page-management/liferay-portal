@@ -171,6 +171,10 @@ test('Items containing the drop zone cannot be duplicated or copied', async ({
 		target: {label: 'Container'},
 	});
 
+	await expect(
+		page.locator('.page-editor__page-structure__tree-node').nth(0)
+	).toContainText('Container');
+
 	// Check the container only have Rename action and not Duplicate or Copy
 
 	await page.getByLabel('Select Container').click();
