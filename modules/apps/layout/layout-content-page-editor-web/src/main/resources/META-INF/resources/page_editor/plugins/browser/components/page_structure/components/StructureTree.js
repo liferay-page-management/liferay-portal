@@ -4,7 +4,7 @@
  */
 
 import {usePrevious} from '@liferay/frontend-js-react-web';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 
 import {useActiveItemIds} from '../../../../../app/contexts/ControlsContext';
 import {useMovementTarget} from '../../../../../app/contexts/KeyboardMovementContext';
@@ -89,6 +89,51 @@ export default function StructureTree() {
 			return [...new Set([...previousExpandedKeys, ...expandedKeys])];
 		});
 	}, [activeItemIds, getAncestorsIds, layoutData, previousActiveItemIds]);
+
+	const activeItemParentIds = useMemo(
+		() => activeItemIds.map((itemId) => layoutData.items[itemId]?.parentId),
+		[activeItemIds, layoutData]
+	);
+
+	const previousActiveItemParentIds = usePrevious(activeItemParentIds);
+
+	useEffect(() => {
+
+		// Expand the new ancestors of the active items when they stay active
+		// but their parents change, for example, when a selected item is
+		// dropped into another one
+
+		if (
+			!previousActiveItemParentIds ||
+			!deepEqual(previousActiveItemIds || [], activeItemIds) ||
+			deepEqual(previousActiveItemParentIds, activeItemParentIds)
+		) {
+			return;
+		}
+
+		const expandedKeys = [];
+
+		activeItemIds.forEach((itemId) => {
+			const layoutDataActiveItem = layoutData.items[itemId];
+
+			if (layoutDataActiveItem) {
+				expandedKeys.push(
+					...getAncestorsIds(layoutDataActiveItem, layoutData)
+				);
+			}
+		});
+
+		setExpandedKeys((previousExpandedKeys) => [
+			...new Set([...previousExpandedKeys, ...expandedKeys]),
+		]);
+	}, [
+		activeItemIds,
+		activeItemParentIds,
+		getAncestorsIds,
+		layoutData,
+		previousActiveItemIds,
+		previousActiveItemParentIds,
+	]);
 
 	useEffect(() => {
 		if (keyboardMovementTargetId) {
