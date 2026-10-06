@@ -18,6 +18,7 @@ import com.liferay.layout.content.page.editor.web.internal.constants.ContentPage
 import com.liferay.layout.content.page.editor.web.internal.manager.FragmentCollectionManager;
 import com.liferay.layout.content.page.editor.web.internal.manager.FragmentEntryLinkManager;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
+import com.liferay.layout.helper.DropZoneAllowedFragmentEntriesHelper;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
@@ -40,7 +41,6 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -191,8 +191,11 @@ public class UpdateFragmentsHighlightedConfigurationMVCActionCommand
 				key = key.substring(0, pos);
 			}
 
-			if (!_isAllowedFragmentEntryKey(
-					key, masterDropZoneLayoutStructureItem)) {
+			if (!_dropZoneAllowedFragmentEntriesHelper.
+					isAllowedFragmentEntryKey(
+						themeDisplay.getCompanyId(),
+						masterDropZoneLayoutStructureItem, key,
+						themeDisplay.getScopeGroupId())) {
 
 				continue;
 			}
@@ -384,36 +387,6 @@ public class UpdateFragmentsHighlightedConfigurationMVCActionCommand
 		return null;
 	}
 
-	private boolean _isAllowedFragmentEntryKey(
-		String fragmentEntryKey,
-		DropZoneLayoutStructureItem masterDropZoneLayoutStructureItem) {
-
-		if (masterDropZoneLayoutStructureItem == null) {
-			return true;
-		}
-
-		List<String> fragmentEntryKeys =
-			masterDropZoneLayoutStructureItem.getFragmentEntryKeys();
-
-		if (masterDropZoneLayoutStructureItem.isAllowNewFragmentEntries()) {
-			if (ListUtil.isEmpty(fragmentEntryKeys) ||
-				!fragmentEntryKeys.contains(fragmentEntryKey)) {
-
-				return true;
-			}
-
-			return false;
-		}
-
-		if (ListUtil.isNotEmpty(fragmentEntryKeys) &&
-			fragmentEntryKeys.contains(fragmentEntryKey)) {
-
-			return true;
-		}
-
-		return false;
-	}
-
 	private JSONObject _updateFragmentsHighlightedConfiguration(
 			ActionRequest actionRequest)
 		throws Exception {
@@ -463,6 +436,10 @@ public class UpdateFragmentsHighlightedConfigurationMVCActionCommand
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		UpdateFragmentsHighlightedConfigurationMVCActionCommand.class);
+
+	@Reference
+	private DropZoneAllowedFragmentEntriesHelper
+		_dropZoneAllowedFragmentEntriesHelper;
 
 	@Reference
 	private FragmentCollectionContributorRegistry

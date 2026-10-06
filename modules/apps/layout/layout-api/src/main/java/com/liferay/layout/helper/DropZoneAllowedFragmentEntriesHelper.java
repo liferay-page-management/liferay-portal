@@ -18,15 +18,11 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface DropZoneAllowedFragmentEntriesHelper {
 
 	public List<String> getFragmentEntryKeys(
-			long companyId,
-			DropZoneLayoutStructureItem dropZoneLayoutStructureItem,
-			long scopeGroupId)
-		throws Exception;
+		long companyId, DropZoneLayoutStructureItem dropZoneLayoutStructureItem,
+		long scopeGroupId);
 
 	public boolean isAllowedFragmentEntryKey(
-			long companyId,
-			DropZoneLayoutStructureItem dropZoneLayoutStructureItem,
-			String fragmentEntryKey, long scopeGroupId)
-		throws Exception;
+		long companyId, DropZoneLayoutStructureItem dropZoneLayoutStructureItem,
+		String fragmentEntryKey, long scopeGroupId);
 
 }
