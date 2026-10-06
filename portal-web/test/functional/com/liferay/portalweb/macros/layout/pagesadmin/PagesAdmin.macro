@@ -849,7 +849,7 @@ definition {
 			Search.searchCP(searchTerm = ${featureFlagName});
 		}
 
-		if (IsElementNotPresent(locator1 = "FeatureFlag#TOGGLE_ROW", title_row = ${featureFlagName}, toggle_state = "Enabled")) {
+		while ((IsElementNotPresent(locator1 = "FeatureFlag#TOGGLE_ROW", title_row = ${featureFlagName}, toggle_state = "Enabled")) && (maxIterations = "2")) {
 			Check.checkToggleSwitch(
 				locator1 = "FeatureFlag#TOGGLE_ROW",
 				title_row = ${featureFlagName},
@@ -859,6 +859,19 @@ definition {
 				locator1 = "FeatureFlag#TOGGLE_ROW",
 				title_row = ${featureFlagName},
 				toggle_state = "Enabled");
+
+			// LPD-108540 The wait above is soft, so a slow or failed save would
+			// go unnoticed. Reload to read the saved state before moving on.
+
+			Refresh();
+
+			if (IsElementNotPresent(locator1 = "FeatureFlag#TOGGLE_ROW", title_row = ${featureFlagName}, toggle_state = "")) {
+				Search.searchCP(searchTerm = ${featureFlagName});
+			}
+		}
+
+		if (IsElementNotPresent(locator1 = "FeatureFlag#TOGGLE_ROW", title_row = ${featureFlagName}, toggle_state = "Enabled")) {
+			fail("The ${featureFlagName} deprecation feature flag was not saved.");
 		}
 
 		Navigator.openURL();
