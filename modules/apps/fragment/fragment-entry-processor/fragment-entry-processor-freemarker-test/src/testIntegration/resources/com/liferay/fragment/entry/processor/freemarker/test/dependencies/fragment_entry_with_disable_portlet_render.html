@@ -1,0 +1,17 @@
+[#assign response = restClient.get("/headless-admin-user/v1.0/my-user-account") /]
+
+<div class="fragment-entry">
+	<h1 data-lfr-editable-id="title" data-lfr-editable-type="text">Title</h1>
+
+	<div id="rest-client">${response?size}</div>
+
+	<div id="runtime-portlet">[#if liferay_portlet["runtime"]?is_macro]disabled[/#if][@liferay_portlet["runtime"] portletName="com_liferay_login_web_portlet_LoginPortlet" /]</div>
+
+	<div id="action-url">[#if liferay_portlet["actionURL"]??]defined[/#if]</div>
+
+	<lfr-drop-zone data-lfr-drop-zone-id="static"></lfr-drop-zone>
+
+	[#list 1..2 as i]
+		<lfr-drop-zone data-lfr-drop-zone-id="loop-${i}"></lfr-drop-zone>
+	[/#list]
+</div>
