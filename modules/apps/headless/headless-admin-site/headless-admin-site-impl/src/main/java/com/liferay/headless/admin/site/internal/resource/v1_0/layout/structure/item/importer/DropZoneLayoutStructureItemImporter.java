@@ -79,22 +79,10 @@ public class DropZoneLayoutStructureItemImporter
 
 		dropZoneLayoutStructureItem.setAllowNewFragmentEntries(
 			dropZonePageElementDefinition.getAddNewFragmentEntries());
-
-		List<FragmentEntryReference> fragmentEntryReferences =
-			_getFragmentEntryReference(
+		dropZoneLayoutStructureItem.setFragmentEntriesJSONArray(
+			_toFragmentEntriesJSONArray(
 				dropZonePageElementDefinition,
-				layoutStructureItemImporterContext);
-
-		if (fragmentEntryReferences != null) {
-			dropZoneLayoutStructureItem.setFragmentEntriesJSONArray(
-				_toFragmentEntriesJSONArray(fragmentEntryReferences));
-			dropZoneLayoutStructureItem.setFragmentEntryKeys(
-				_toFragmentEntryKeys(fragmentEntryReferences));
-		}
-		else {
-			dropZoneLayoutStructureItem.setFragmentEntriesJSONArray(null);
-			dropZoneLayoutStructureItem.setFragmentEntryKeys(null);
-		}
+				layoutStructureItemImporterContext));
 
 		return dropZoneLayoutStructureItem;
 	}
@@ -128,7 +116,19 @@ public class DropZoneLayoutStructureItemImporter
 	}
 
 	private JSONArray _toFragmentEntriesJSONArray(
-		List<FragmentEntryReference> fragmentEntryReferences) {
+			DropZonePageElementDefinition dropZonePageElementDefinition,
+			LayoutStructureItemImporterContext
+				layoutStructureItemImporterContext)
+		throws Exception {
+
+		List<FragmentEntryReference> fragmentEntryReferences =
+			_getFragmentEntryReference(
+				dropZonePageElementDefinition,
+				layoutStructureItemImporterContext);
+
+		if (fragmentEntryReferences == null) {
+			return null;
+		}
 
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
@@ -136,55 +136,31 @@ public class DropZoneLayoutStructureItemImporter
 				fragmentEntryReferences) {
 
 			if (Validator.isNotNull(
-					fragmentEntryReference.getFragmentEntryKey())) {
+					fragmentEntryReference.getFragmentEntryERC())) {
 
 				jsonArray.put(
 					JSONUtil.put(
 						"fragmentEntryERC",
 						fragmentEntryReference.getFragmentEntryERC()
 					).put(
-						"fragmentEntryKey",
-						fragmentEntryReference.getFragmentEntryKey()
-					).put(
 						"fragmentEntryScopeERC",
 						fragmentEntryReference.getFragmentEntryScopeERC()
 					));
-			}
-			else if (Validator.isNotNull(
-						fragmentEntryReference.getRendererKey())) {
 
-				jsonArray.put(
-					JSONUtil.put(
-						"fragmentEntryRendererKey",
-						fragmentEntryReference.getRendererKey()));
+				continue;
 			}
+
+			if (Validator.isNull(fragmentEntryReference.getRendererKey())) {
+				continue;
+			}
+
+			jsonArray.put(
+				JSONUtil.put(
+					"fragmentEntryRendererKey",
+					fragmentEntryReference.getRendererKey()));
 		}
 
 		return jsonArray;
-	}
-
-	private List<String> _toFragmentEntryKeys(
-		List<FragmentEntryReference> fragmentEntryReferences) {
-
-		List<String> fragmentEntryKeys = new ArrayList<>();
-
-		for (FragmentEntryReference fragmentEntryReference :
-				fragmentEntryReferences) {
-
-			if (Validator.isNotNull(
-					fragmentEntryReference.getFragmentEntryKey())) {
-
-				fragmentEntryKeys.add(
-					fragmentEntryReference.getFragmentEntryKey());
-			}
-			else if (Validator.isNotNull(
-						fragmentEntryReference.getRendererKey())) {
-
-				fragmentEntryKeys.add(fragmentEntryReference.getRendererKey());
-			}
-		}
-
-		return fragmentEntryKeys;
 	}
 
 }
