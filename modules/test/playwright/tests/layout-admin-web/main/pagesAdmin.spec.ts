@@ -1151,7 +1151,13 @@ test(
 			layoutTitle
 		);
 
-		await page.getByRole('button', {name: 'Save'}).click();
+		const dialog = page.getByRole('dialog');
+
+		await dialog
+			.getByRole('heading', {name: 'Add Page Template Set'})
+			.waitFor();
+
+		await dialog.getByRole('button', {exact: true, name: 'Save'}).click();
 
 		await waitForAlert(
 			page,
