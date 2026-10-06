@@ -35,16 +35,23 @@ public class DropZoneAllowedFragmentEntriesHelperImpl
 			long scopeGroupId)
 		throws Exception {
 
+		List<String> fragmentEntryKeys =
+			dropZoneLayoutStructureItem.getFragmentEntryKeys();
+
+		if (ListUtil.isNotEmpty(fragmentEntryKeys)) {
+			return fragmentEntryKeys;
+		}
+
 		JSONArray fragmentEntriesJSONArray =
 			dropZoneLayoutStructureItem.getFragmentEntriesJSONArray();
 
 		if ((fragmentEntriesJSONArray == null) ||
 			(fragmentEntriesJSONArray.length() == 0)) {
 
-			return dropZoneLayoutStructureItem.getFragmentEntryKeys();
+			return Collections.emptyList();
 		}
 
-		List<String> fragmentEntryKeys = new ArrayList<>();
+		fragmentEntryKeys = new ArrayList<>();
 
 		for (int i = 0; i < fragmentEntriesJSONArray.length(); i++) {
 			JSONObject fragmentEntryJSONObject =

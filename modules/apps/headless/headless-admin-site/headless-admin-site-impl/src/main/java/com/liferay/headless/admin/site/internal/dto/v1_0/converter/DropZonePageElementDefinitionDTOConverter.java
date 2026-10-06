@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.scope.Scope;
@@ -89,18 +90,22 @@ public class DropZonePageElementDefinitionDTOConverter
 			long scopeGroupId)
 		throws Exception {
 
-		if (dropZoneLayoutStructureItem.getFragmentEntryKeys() != null) {
+		List<String> fragmentEntryKeys =
+			dropZoneLayoutStructureItem.getFragmentEntryKeys();
+
+		if (ListUtil.isNotEmpty(fragmentEntryKeys)) {
 			return _getFragmentReferences(
-				companyId, dropZoneLayoutStructureItem.getFragmentEntryKeys(),
-				scopeGroupId);
+				companyId, fragmentEntryKeys, scopeGroupId);
 		}
-		else if (dropZoneLayoutStructureItem.getFragmentEntriesJSONArray() !=
-					null) {
+
+		JSONArray fragmentEntriesJSONArray =
+			dropZoneLayoutStructureItem.getFragmentEntriesJSONArray();
+
+		if ((fragmentEntriesJSONArray != null) &&
+			(fragmentEntriesJSONArray.length() > 0)) {
 
 			return _getFragmentReferences(
-				companyId,
-				dropZoneLayoutStructureItem.getFragmentEntriesJSONArray(),
-				scopeGroupId);
+				companyId, fragmentEntriesJSONArray, scopeGroupId);
 		}
 
 		return null;
