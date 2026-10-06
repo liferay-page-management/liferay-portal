@@ -1105,6 +1105,15 @@ export class PageEditorPage {
 
 		await this.goToSidebarTab('Browser');
 
+		// Wait for the tree to finish expanding, since its animation shifts
+		// the nodes below the expanding one
+
+		const collapsingNodes = this.page.locator(
+			'.page-editor__page-structure__structure-tree .collapsing'
+		);
+
+		await expect(collapsingNodes).toHaveCount(0);
+
 		const sourceNode = this.page
 			.locator('.page-editor__page-structure__tree-node', {
 				hasText: source.label,
@@ -1142,11 +1151,14 @@ export class PageEditorPage {
 					: /drag-over-top/;
 
 		// Move over the target until the drop indicator appears. The target
-		// box is recomputed on every pass because starting the drag can shift
-		// the tree. Each pass also approaches from a nearby point so the
-		// pointer keeps moving and Chromium keeps firing dragover events.
+		// box is recomputed on every pass, once the tree has finished
+		// expanding, because starting the drag can shift the tree. Each pass
+		// also approaches from a nearby point so the pointer keeps moving and
+		// Chromium keeps firing dragover events.
 
 		await expect(async () => {
+			await expect(collapsingNodes).toHaveCount(0, {timeout: 1000});
+
 			const targetBox = await targetNode.boundingBox();
 
 			const y =
