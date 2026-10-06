@@ -57,6 +57,9 @@ public class ImportPortletConfigurationIcon
 	public String getURL(
 		PortletRequest portletRequest, PortletResponse portletResponse) {
 
+		String layoutPageTemplateCollectionId = ParamUtil.getString(
+			portletRequest, "layoutPageTemplateCollectionId");
+
 		return PortletURLBuilder.create(
 			_portal.getControlPanelPortletURL(
 				portletRequest,
@@ -75,14 +78,10 @@ public class ImportPortletConfigurationIcon
 					portletRequest, "tabs1",
 					LayoutPageTemplateAdminConstants.TABS1_MASTER_LAYOUTS)
 			).setParameter(
-				"layoutPageTemplateCollectionId",
-				ParamUtil.getString(
-					portletRequest, "layoutPageTemplateCollectionId")
+				"layoutPageTemplateCollectionId", layoutPageTemplateCollectionId
 			).buildString()
 		).setParameter(
-			"layoutPageTemplateCollectionId",
-			ParamUtil.getString(
-				portletRequest, "layoutPageTemplateCollectionId")
+			"layoutPageTemplateCollectionId", layoutPageTemplateCollectionId
 		).buildString();
 	}
 
