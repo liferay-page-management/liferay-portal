@@ -106,17 +106,7 @@ public class PageExperienceResourceTest
 	@Override
 	@Test
 	public void testGetSitePageExperience() throws Exception {
-		PageExperience postPageExperience =
-			testPostSitePageSpecificationPageExperience_addPageExperience(
-				randomPageExperience());
-
-		PageExperience getPageExperience =
-			pageExperienceResource.getSitePageExperience(
-				testGroup.getExternalReferenceCode(),
-				postPageExperience.getExternalReferenceCode());
-
-		assertEquals(postPageExperience, getPageExperience);
-		assertValid(getPageExperience);
+		super.testGetSitePageExperience();
 
 		try {
 			pageExperienceResource.getSitePageExperience(
@@ -354,6 +344,14 @@ public class PageExperienceResourceTest
 				testGroup.getGroupId()));
 
 		return pageExperience;
+	}
+
+	@Override
+	protected PageExperience testGetSitePageExperience_addPageExperience()
+		throws Exception {
+
+		return testPostSitePageSpecificationPageExperience_addPageExperience(
+			randomPageExperience());
 	}
 
 	@Override
