@@ -65,10 +65,6 @@ export function getTranslationInput({
 		translationInput.dataset.languageId = languageId;
 
 		localizationInputsContainer.appendChild(translationInput);
-
-		if (translationInput.type !== 'hidden') {
-			translationInput.className = 'd-none';
-		}
 	}
 
 	// When a file upload input (files from computer) has initial values and
@@ -78,6 +74,10 @@ export function getTranslationInput({
 	else if (translationInput.type === 'hidden' && type === 'file') {
 		translationInput.value = '';
 		translationInput.type = 'file';
+	}
+
+	if (translationInput.type !== 'hidden') {
+		translationInput.classList.add('d-none');
 	}
 
 	return translationInput;
