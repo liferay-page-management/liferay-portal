@@ -40,9 +40,11 @@ import com.liferay.portal.kernel.exception.LockedLayoutException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -90,6 +92,9 @@ public class PageSpecificationResourceImpl
 			GroupUtil.getGroupId(
 				true, contextCompany.getCompanyId(), siteExternalReferenceCode),
 			pageSpecificationExternalReferenceCode);
+
+		LayoutPermissionUtil.checkLayoutUpdatePermission(
+			PermissionThreadLocal.getPermissionChecker(), layout);
 
 		if (!layout.isDraftLayout() ||
 			(layout.isApproved() &&
