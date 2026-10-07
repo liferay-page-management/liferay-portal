@@ -48,6 +48,7 @@ import cloneChild from '../utils/state/cloneChild';
 import deleteChildren from '../utils/state/deleteChildren';
 import moveChildren from '../utils/state/moveChildren';
 import refreshReferencedStructures from '../utils/state/refreshReferencedStructures';
+import removeServerErrors from '../utils/state/removeServerErrors';
 import sortChildren from '../utils/state/sortChildren';
 import ungroup from '../utils/state/ungroup';
 import updateChild from '../utils/state/updateChild';
@@ -814,7 +815,14 @@ function reducer(state: State, action: Action): State {
 		case 'start-operation': {
 			const {operation} = action;
 
-			return {...state, operation};
+			return {
+				...state,
+				invalids: removeServerErrors({
+					invalids: state.invalids,
+					uuid: state.structure.uuid,
+				}),
+				operation,
+			};
 		}
 		case 'ungroup': {
 			const {structure} = state;
@@ -1133,10 +1141,12 @@ function reducer(state: State, action: Action): State {
 				currentErrors: invalids.get(structure.uuid),
 				data: {
 					erc,
+					id: structure.id,
 					label,
 					spaces,
 					...(!isPublished &&
 						nextName !== structure.name && {name: nextName}),
+					...(nextSlug !== structure.slug && {slug: nextSlug}),
 				},
 				objectDefinitions,
 			});
