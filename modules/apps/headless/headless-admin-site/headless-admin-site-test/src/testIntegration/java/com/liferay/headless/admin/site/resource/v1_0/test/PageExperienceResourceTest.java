@@ -8,7 +8,6 @@ package com.liferay.headless.admin.site.resource.v1_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageExperience;
 import com.liferay.headless.admin.site.client.pagination.Page;
-import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.headless.admin.site.client.resource.v1_0.PageExperienceResource;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.PageElementsTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.PageExperiencesTestUtil;
@@ -77,7 +76,7 @@ public class PageExperienceResourceTest
 
 	@Override
 	@Test
-	@TestInfo("LPD-90839")
+	@TestInfo({"LPD-90839", "LPD-107120"})
 	public void testDeleteSitePageExperience() throws Exception {
 		PageExperience postPageExperience =
 			testPostSitePageSpecificationPageExperience_addPageExperience(
@@ -101,19 +100,11 @@ public class PageExperienceResourceTest
 
 		_testDeleteSitePageExperienceWithPriority();
 
-		try {
-			pageExperienceResource.deleteSitePageExperience(
+		ProblemExceptionTestUtil.assertProblemException(
+			"NOT_FOUND", null,
+			() -> pageExperienceResource.deleteSitePageExperience(
 				testGroup.getExternalReferenceCode(),
-				postPageExperience.getExternalReferenceCode());
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-			Assert.assertNull(problem.getTitle());
-		}
+				postPageExperience.getExternalReferenceCode()));
 	}
 
 	@Override
@@ -122,19 +113,11 @@ public class PageExperienceResourceTest
 	public void testGetSitePageExperience() throws Exception {
 		super.testGetSitePageExperience();
 
-		try {
-			pageExperienceResource.getSitePageExperience(
+		ProblemExceptionTestUtil.assertProblemException(
+			"NOT_FOUND", null,
+			() -> pageExperienceResource.getSitePageExperience(
 				testGroup.getExternalReferenceCode(),
-				RandomTestUtil.randomString());
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-			Assert.assertNull(problem.getTitle());
-		}
+				RandomTestUtil.randomString()));
 
 		_testGetSitePageExperienceWithoutViewPermission();
 	}
@@ -152,7 +135,7 @@ public class PageExperienceResourceTest
 
 	@Override
 	@Test
-	@TestInfo("LPD-90839")
+	@TestInfo({"LPD-90839", "LPD-107120"})
 	public void testPatchSitePageExperience() throws Exception {
 		PageExperience postPageExperience =
 			testPostSitePageSpecificationPageExperience_addPageExperience(
@@ -176,19 +159,11 @@ public class PageExperienceResourceTest
 
 		_testPatchSitePageExperienceWithPriority();
 
-		try {
-			pageExperienceResource.patchSitePageExperience(
+		ProblemExceptionTestUtil.assertProblemException(
+			"NOT_FOUND", null,
+			() -> pageExperienceResource.patchSitePageExperience(
 				testGroup.getExternalReferenceCode(),
-				RandomTestUtil.randomString(), randomPageExperience());
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-			Assert.assertNull(problem.getTitle());
-		}
+				RandomTestUtil.randomString(), randomPageExperience()));
 	}
 
 	@Override
