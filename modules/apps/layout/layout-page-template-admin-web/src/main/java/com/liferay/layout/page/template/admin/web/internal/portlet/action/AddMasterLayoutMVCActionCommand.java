@@ -5,6 +5,7 @@
 
 package com.liferay.layout.page.template.admin.web.internal.portlet.action;
 
+import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminConstants;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
 import com.liferay.layout.page.template.admin.web.internal.handler.LayoutPageTemplateEntryExceptionRequestHandlerUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
@@ -115,7 +116,7 @@ public class AddMasterLayoutMVCActionCommand extends BaseMVCActionCommand {
 					LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES,
 					PortletRequest.RENDER_PHASE)
 			).setTabs1(
-				"master-layouts"
+				LayoutPageTemplateAdminConstants.TABS1_MASTER_LAYOUTS
 			).buildString(),
 			"p_l_back_url_title",
 			_language.get(themeDisplay.getLocale(), "page-templates"),

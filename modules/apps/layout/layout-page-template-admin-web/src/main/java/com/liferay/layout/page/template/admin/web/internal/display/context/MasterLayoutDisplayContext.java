@@ -5,6 +5,7 @@
 
 package com.liferay.layout.page.template.admin.web.internal.display.context;
 
+import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminConstants;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
 import com.liferay.layout.page.template.admin.web.internal.util.LayoutPageTemplatePortletUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
@@ -188,7 +189,7 @@ public class MasterLayoutDisplayContext {
 				return null;
 			}
 		).setTabs1(
-			"master-layouts"
+			LayoutPageTemplateAdminConstants.TABS1_MASTER_LAYOUTS
 		).setParameter(
 			"orderByCol",
 			() -> {
