@@ -8,8 +8,10 @@ package com.liferay.headless.admin.site.resource.v1_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.admin.site.client.dto.v1_0.FriendlyUrlHistory;
 import com.liferay.headless.admin.site.client.problem.Problem;
+import com.liferay.headless.admin.site.client.resource.v1_0.FriendlyUrlHistoryResource;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutPageTemplateEntryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutUtilityPageEntryTestUtil;
+import com.liferay.headless.admin.site.resource.v1_0.test.util.ProblemExceptionTestUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
@@ -19,14 +21,22 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -114,11 +124,13 @@ public class FriendlyUrlHistoryResourceTest
 
 	@Override
 	@Test
+	@TestInfo("LPD-107120")
 	public void testGetSiteSitePageFriendlyUrlHistory() throws Exception {
 		Layout layout = LayoutTestUtil.addTypePortletLayout(
 			testGroup.getGroupId());
 
 		_testGetSiteSitePageFriendlyUrlHistory(layout);
+		_testGetSiteSitePageFriendlyUrlHistoryWithoutViewPermission(layout);
 
 		layout = LayoutTestUtil.addTypeContentLayout(testGroup);
 
@@ -280,6 +292,37 @@ public class FriendlyUrlHistoryResourceTest
 				GetterUtil.getString(
 					friendlyUrlHistory.getFriendlyUrlPath_i18n())),
 			friendlyURLs);
+	}
+
+	private void _testGetSiteSitePageFriendlyUrlHistoryWithoutViewPermission(
+			Layout layout)
+		throws Exception {
+
+		RoleTestUtil.removeResourcePermission(
+			RoleConstants.GUEST, Layout.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(layout.getPlid()), ActionKeys.VIEW);
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		FriendlyUrlHistoryResource friendlyUrlHistoryResource =
+			FriendlyUrlHistoryResource.builder(
+			).authentication(
+				user.getEmailAddress(), password
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"NOT_FOUND", null,
+			() -> friendlyUrlHistoryResource.getSiteSitePageFriendlyUrlHistory(
+				testGroup.getExternalReferenceCode(),
+				layout.getExternalReferenceCode()));
 	}
 
 	private List<String> _updateLayout(Layout layout) throws Exception {
