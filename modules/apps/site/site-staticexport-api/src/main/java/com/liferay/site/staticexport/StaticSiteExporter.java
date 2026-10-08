@@ -21,4 +21,8 @@ public interface StaticSiteExporter {
 	public StaticSiteExport export(long groupId, Set<Locale> locales)
 		throws PortalException;
 
+	public StaticSiteExport export(
+			long groupId, Set<Long> layoutIds, Set<Locale> locales)
+		throws PortalException;
+
 }

@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.servlet.DummyHttpServletResponse;
@@ -75,6 +76,33 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 	public StaticSiteExport export(long groupId, Set<Locale> locales)
 		throws PortalException {
 
+		return _export(
+			groupId, _layoutService.getLayouts(groupId, false), locales);
+	}
+
+	@Override
+	public StaticSiteExport export(
+			long groupId, Set<Long> layoutIds, Set<Locale> locales)
+		throws PortalException {
+
+		List<Layout> layouts = new ArrayList<>();
+
+		for (long layoutId : layoutIds) {
+			layouts.add(_layoutService.getLayout(groupId, false, layoutId));
+		}
+
+		return _export(groupId, layouts, locales);
+	}
+
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		_bundleContext = bundleContext;
+	}
+
+	private StaticSiteExport _export(
+			long groupId, List<Layout> layouts, Set<Locale> locales)
+		throws PortalException {
+
 		Group group = _groupLocalService.getGroup(groupId);
 
 		Company company = _companyLocalService.getCompany(group.getCompanyId());
@@ -88,7 +116,7 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 
 			List<StaticSiteExportLayout> staticSiteExportLayouts =
 				_exportStaticSiteExportLayouts(
-					groupId, layoutFailures, locales);
+					groupId, layoutFailures, layouts, locales);
 
 			Map<StaticSiteExportLayout, StaticSiteExportDocument>
 				staticSiteExportDocuments = new LinkedHashMap<>();
@@ -136,14 +164,9 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 		}
 	}
 
-	@Activate
-	protected void activate(BundleContext bundleContext) {
-		_bundleContext = bundleContext;
-	}
-
 	private List<StaticSiteExportLayout> _exportStaticSiteExportLayouts(
 			long groupId, List<StaticSiteExportReport.Failure> layoutFailures,
-			Set<Locale> locales)
+			List<Layout> layouts, Set<Locale> locales)
 		throws PortalException {
 
 		List<StaticSiteExportLayout> staticSiteExportLayouts =
@@ -151,7 +174,7 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 
 		Locale siteDefaultLocale = _portal.getSiteDefaultLocale(groupId);
 
-		for (Layout layout : _getExportableLayouts(groupId)) {
+		for (Layout layout : _getExportableLayouts(layouts)) {
 			long segmentsExperienceId =
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(layout.getPlid());
@@ -294,10 +317,10 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 		}
 	}
 
-	private List<Layout> _getExportableLayouts(long groupId) {
-		List<Layout> layouts = new ArrayList<>();
+	private List<Layout> _getExportableLayouts(List<Layout> layouts) {
+		List<Layout> exportableLayouts = new ArrayList<>();
 
-		for (Layout layout : _layoutLocalService.getLayouts(groupId, false)) {
+		for (Layout layout : layouts) {
 			if (layout.isHidden() || !layout.isPublished() ||
 				layout.isSystem() ||
 				(layout.getStatus() != WorkflowConstants.STATUS_APPROVED) ||
@@ -307,10 +330,10 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 				continue;
 			}
 
-			layouts.add(layout);
+			exportableLayouts.add(layout);
 		}
 
-		return layouts;
+		return exportableLayouts;
 	}
 
 	private Set<String> _getModuleURLs(
@@ -677,6 +700,9 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 
 	@Reference
 	private LayoutPreviewRenderer _layoutPreviewRenderer;
+
+	@Reference
+	private LayoutService _layoutService;
 
 	@Reference
 	private LayoutServiceContextHelper _layoutServiceContextHelper;
