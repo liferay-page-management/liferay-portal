@@ -13,6 +13,7 @@ import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeCon
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
+import com.liferay.layout.test.util.DesignLibraryTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.LayoutTypeException;
@@ -40,6 +41,7 @@ import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -48,6 +50,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -105,30 +108,14 @@ public class ConvertEmptyLayoutMVCActionCommandTest {
 		_testCannotConvertEmptyLayout(LayoutConstants.TYPE_URL);
 	}
 
+	@FeatureFlag("LPD-57283")
 	@Test
-	@TestInfo("LPD-72013")
+	@TestInfo({"LPD-72013", "LPD-108823"})
 	public void testConvertEmptyLayoutToContentLayoutWithMasterLayoutPlid()
 		throws Exception {
 
-		Layout emptyLayout = LayoutTestUtil.addTypeEmptyLayout(_group);
-		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
-			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
-				_group.getGroupId(),
-				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
-				WorkflowConstants.STATUS_APPROVED);
-
-		_mvcActionCommand.processAction(
-			_getMockLiferayPortletActionRequest(
-				emptyLayout, 0, masterLayoutPageTemplateEntry.getPlid(),
-				LayoutConstants.TYPE_CONTENT, TestPropsValues.getUser()),
-			new MockLiferayPortletActionResponse());
-
-		Layout layout = _layoutLocalService.getLayout(emptyLayout.getPlid());
-
-		Assert.assertTrue(layout.isTypeContent());
-		Assert.assertEquals(
-			masterLayoutPageTemplateEntry.getExternalReferenceCode(),
-			layout.getMasterLayoutPageTemplateEntryERC());
+		_testConvertEmptyLayoutToContentLayoutWithMasterLayoutPlid();
+		_testConvertEmptyLayoutToContentLayoutWithDesignLibraryMasterLayoutPlid();
 	}
 
 	@Test
@@ -350,6 +337,67 @@ public class ConvertEmptyLayoutMVCActionCommandTest {
 		Layout layout = _layoutLocalService.getLayout(emptyLayout.getPlid());
 
 		Assert.assertTrue(layout.isTypeEmpty());
+	}
+
+	private void _testConvertEmptyLayoutToContentLayoutWithDesignLibraryMasterLayoutPlid()
+		throws Exception {
+
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			_group.getCompanyId(), true, "LPD-57283");
+
+		Layout emptyLayout = LayoutTestUtil.addTypeEmptyLayout(_group);
+
+		Group designLibraryGroup = DesignLibraryTestUtil.addDesignLibraryGroup(
+			_group.getGroupId(), true);
+
+		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				designLibraryGroup.getGroupId(),
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+				WorkflowConstants.STATUS_APPROVED);
+
+		_mvcActionCommand.processAction(
+			_getMockLiferayPortletActionRequest(
+				emptyLayout, 0, masterLayoutPageTemplateEntry.getPlid(),
+				LayoutConstants.TYPE_CONTENT, TestPropsValues.getUser()),
+			new MockLiferayPortletActionResponse());
+
+		Layout layout = _layoutLocalService.getLayout(emptyLayout.getPlid());
+
+		Assert.assertTrue(layout.isTypeContent());
+		Assert.assertEquals(
+			masterLayoutPageTemplateEntry.getExternalReferenceCode(),
+			layout.getMasterLayoutPageTemplateEntryERC());
+		Assert.assertEquals(
+			designLibraryGroup.getExternalReferenceCode(),
+			layout.getMasterLayoutPageTemplateEntryScopeERC());
+		Assert.assertEquals(
+			masterLayoutPageTemplateEntry.getPlid(),
+			layout.getMasterLayoutPlid());
+	}
+
+	private void _testConvertEmptyLayoutToContentLayoutWithMasterLayoutPlid()
+		throws Exception {
+
+		Layout emptyLayout = LayoutTestUtil.addTypeEmptyLayout(_group);
+		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				_group.getGroupId(),
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+				WorkflowConstants.STATUS_APPROVED);
+
+		_mvcActionCommand.processAction(
+			_getMockLiferayPortletActionRequest(
+				emptyLayout, 0, masterLayoutPageTemplateEntry.getPlid(),
+				LayoutConstants.TYPE_CONTENT, TestPropsValues.getUser()),
+			new MockLiferayPortletActionResponse());
+
+		Layout layout = _layoutLocalService.getLayout(emptyLayout.getPlid());
+
+		Assert.assertTrue(layout.isTypeContent());
+		Assert.assertEquals(
+			masterLayoutPageTemplateEntry.getExternalReferenceCode(),
+			layout.getMasterLayoutPageTemplateEntryERC());
 	}
 
 	@Inject

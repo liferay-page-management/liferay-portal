@@ -13,6 +13,7 @@ import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
+import com.liferay.layout.test.util.DesignLibraryTestUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -75,7 +76,7 @@ public class AddContentLayoutMVCActionCommandTest {
 
 	@FeatureFlag("LPD-57283")
 	@Test
-	@TestInfo("LPD-105567")
+	@TestInfo({"LPD-105567", "LPD-108823"})
 	public void testAddContentLayoutFromDesignLibrary() throws Exception {
 		FeatureFlagTestUtil.invokeFeatureFlagListeners(
 			_group.getCompanyId(), true, "LPD-57283");
@@ -98,8 +99,26 @@ public class AddContentLayoutMVCActionCommandTest {
 				_group.getGroupId(), false,
 				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID));
 
+		Group designLibraryGroup = DesignLibraryTestUtil.addDesignLibraryGroup(
+			_group.getGroupId(), true);
+
 		LayoutPageTemplateEntry connectedLayoutPageTemplateEntry =
-			_addLayoutPageTemplateEntry(_addDesignLibraryGroup(true));
+			_addLayoutPageTemplateEntry(designLibraryGroup);
+
+		Layout layoutPageTemplateEntryLayout = _layoutLocalService.getLayout(
+			connectedLayoutPageTemplateEntry.getPlid());
+
+		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				designLibraryGroup.getGroupId(),
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+				WorkflowConstants.STATUS_APPROVED);
+
+		_layoutLocalService.updateMasterLayoutPageTemplateEntryERC(
+			layoutPageTemplateEntryLayout.getGroupId(),
+			layoutPageTemplateEntryLayout.isPrivateLayout(),
+			layoutPageTemplateEntryLayout.getLayoutId(),
+			masterLayoutPageTemplateEntry.getExternalReferenceCode());
 
 		_mvcActionCommand.processAction(
 			_getMockLiferayPortletActionRequest(
@@ -113,6 +132,24 @@ public class AddContentLayoutMVCActionCommandTest {
 		Assert.assertEquals(
 			connectedLayoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
 			layout.getClassPK());
+		Assert.assertEquals(
+			masterLayoutPageTemplateEntry.getExternalReferenceCode(),
+			layout.getMasterLayoutPageTemplateEntryERC());
+		Assert.assertEquals(
+			designLibraryGroup.getExternalReferenceCode(),
+			layout.getMasterLayoutPageTemplateEntryScopeERC());
+		Assert.assertEquals(
+			masterLayoutPageTemplateEntry.getPlid(),
+			layout.getMasterLayoutPlid());
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		Assert.assertEquals(
+			designLibraryGroup.getExternalReferenceCode(),
+			draftLayout.getMasterLayoutPageTemplateEntryScopeERC());
+		Assert.assertEquals(
+			masterLayoutPageTemplateEntry.getPlid(),
+			draftLayout.getMasterLayoutPlid());
 	}
 
 	private Group _addDesignLibraryGroup(boolean connected) throws Exception {

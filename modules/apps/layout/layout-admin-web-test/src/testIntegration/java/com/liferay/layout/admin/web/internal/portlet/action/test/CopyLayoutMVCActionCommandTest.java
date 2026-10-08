@@ -6,6 +6,7 @@
 package com.liferay.layout.admin.web.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
 import com.liferay.fragment.model.FragmentCollection;
@@ -20,11 +21,12 @@ import com.liferay.layout.model.LayoutClassedModelUsage;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
-import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
+import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
 import com.liferay.layout.provider.LayoutStructureProvider;
 import com.liferay.layout.service.LayoutClassedModelUsageLocalService;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
+import com.liferay.layout.test.util.DesignLibraryTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.util.constants.LayoutDataItemTypeConstants;
 import com.liferay.petra.string.StringPool;
@@ -60,6 +62,7 @@ import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.Sync;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
@@ -73,6 +76,7 @@ import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -219,30 +223,12 @@ public class CopyLayoutMVCActionCommandTest {
 			2, journalArticle.getResourcePrimKey(), layout.getPlid());
 	}
 
+	@FeatureFlag("LPD-57283")
 	@Test
-	@TestInfo("LPS-131982")
+	@TestInfo({"LPD-108823", "LPS-131982"})
 	public void testCopyLayoutWithMasterLayout() throws Exception {
-		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
-			_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
-				null, TestPropsValues.getUserId(), _group.getGroupId(), 0, null,
-				RandomTestUtil.randomString(),
-				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT, 0,
-				WorkflowConstants.STATUS_APPROVED,
-				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-
-		_layout = _layoutLocalService.updateMasterLayoutPageTemplateEntryERC(
-			_group.getGroupId(), _layout.isPrivateLayout(),
-			_layout.getLayoutId(),
-			masterLayoutPageTemplateEntry.getExternalReferenceCode());
-
-		_processAction(false, Collections.emptyMap());
-
-		Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
-			_layout.getGroupId(), _layout.isPrivateLayout(), "/" + _NAME);
-
-		Assert.assertEquals(
-			masterLayoutPageTemplateEntry.getPlid(),
-			layout.getMasterLayoutPlid());
+		_testCopyLayoutWithMasterLayout();
+		_testCopyLayoutWithDesignLibraryMasterLayout();
 	}
 
 	@Test
@@ -450,6 +436,20 @@ public class CopyLayoutMVCActionCommandTest {
 
 			Assert.assertEquals(plid, layoutPageTemplateStructure.getPlid());
 		}
+	}
+
+	private void _assertMasterLayout(
+		Group group, Layout layout,
+		LayoutPageTemplateEntry masterLayoutPageTemplateEntry,
+		long masterLayoutPlid) {
+
+		Assert.assertEquals(
+			masterLayoutPageTemplateEntry.getExternalReferenceCode(),
+			layout.getMasterLayoutPageTemplateEntryERC());
+		Assert.assertEquals(
+			group.getExternalReferenceCode(),
+			layout.getMasterLayoutPageTemplateEntryScopeERC());
+		Assert.assertEquals(masterLayoutPlid, layout.getMasterLayoutPlid());
 	}
 
 	private void _assertViewResourcePermission(
@@ -677,11 +677,90 @@ public class CopyLayoutMVCActionCommandTest {
 		return layout;
 	}
 
+	private void _testCopyLayoutWithDesignLibraryMasterLayout()
+		throws Exception {
+
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			_group.getCompanyId(), true, "LPD-57283");
+
+		Group designLibraryGroup = DesignLibraryTestUtil.addDesignLibraryGroup(
+			_group.getGroupId(), true);
+
+		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				designLibraryGroup.getGroupId(),
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+				WorkflowConstants.STATUS_APPROVED);
+
+		_layout = _layoutLocalService.updateMasterLayoutPageTemplateEntry(
+			_group.getGroupId(), _layout.isPrivateLayout(),
+			_layout.getLayoutId(),
+			masterLayoutPageTemplateEntry.getExternalReferenceCode(),
+			designLibraryGroup.getExternalReferenceCode());
+
+		_processAction(false, Collections.emptyMap());
+
+		Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
+			_layout.getGroupId(), _layout.isPrivateLayout(), "/" + _NAME);
+
+		_assertMasterLayout(
+			designLibraryGroup, layout, masterLayoutPageTemplateEntry,
+			masterLayoutPageTemplateEntry.getPlid());
+
+		_layoutLocalService.deleteLayout(layout);
+
+		_depotEntryGroupRelLocalService.deleteDepotEntryGroupRel(
+			_depotEntryGroupRelLocalService.
+				fetchDepotEntryGroupRelByDepotEntryIdToGroupId(
+					designLibraryGroup.getClassPK(), _group.getGroupId()));
+
+		_processAction(false, Collections.emptyMap());
+
+		layout = _layoutLocalService.fetchLayoutByFriendlyURL(
+			_layout.getGroupId(), _layout.isPrivateLayout(), "/" + _NAME);
+
+		_assertMasterLayout(
+			designLibraryGroup, layout, masterLayoutPageTemplateEntry, 0);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		Assert.assertEquals(
+			designLibraryGroup.getExternalReferenceCode(),
+			draftLayout.getMasterLayoutPageTemplateEntryScopeERC());
+	}
+
+	private void _testCopyLayoutWithMasterLayout() throws Exception {
+		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				_group.getGroupId(),
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+				WorkflowConstants.STATUS_APPROVED);
+
+		_layout = _layoutLocalService.updateMasterLayoutPageTemplateEntryERC(
+			_group.getGroupId(), _layout.isPrivateLayout(),
+			_layout.getLayoutId(),
+			masterLayoutPageTemplateEntry.getExternalReferenceCode());
+
+		_processAction(false, Collections.emptyMap());
+
+		Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
+			_layout.getGroupId(), _layout.isPrivateLayout(), "/" + _NAME);
+
+		Assert.assertEquals(
+			masterLayoutPageTemplateEntry.getPlid(),
+			layout.getMasterLayoutPlid());
+
+		_layoutLocalService.deleteLayout(layout);
+	}
+
 	private static final String _NAME = StringUtil.toLowerCase(
 		RandomTestUtil.randomString());
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	@Inject
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
 
 	private Layout _draftLayout;
 
@@ -707,10 +786,6 @@ public class CopyLayoutMVCActionCommandTest {
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;
-
-	@Inject
-	private LayoutPageTemplateEntryLocalService
-		_layoutPageTemplateEntryLocalService;
 
 	@Inject
 	private LayoutPageTemplateStructureLocalService
