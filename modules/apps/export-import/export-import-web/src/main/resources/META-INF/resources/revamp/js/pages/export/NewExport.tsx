@@ -48,7 +48,6 @@ export function NewExport({
 	lookAndFeelEnabled = false,
 	pageTreeModalConfiguration,
 	siteSelectionEnabled = false,
-	staticSite = false,
 	timeZoneId,
 }: {
 	backURL: string;
@@ -60,7 +59,6 @@ export function NewExport({
 	lookAndFeelEnabled?: boolean;
 	pageTreeModalConfiguration: PageTreeModalConfiguration;
 	siteSelectionEnabled?: boolean;
-	staticSite?: boolean;
 	timeZoneId: string;
 }) {
 	const {appliedDateFilterRef, error, handleApplyFilter, loading, preview} =
@@ -115,17 +113,9 @@ export function NewExport({
 
 				Liferay.Util.navigate(backURL);
 			}}
-			validate={(values) => {
-				if (!staticSite) {
-					return getProcessFormErrors(values, siteSelectionEnabled);
-				}
-
-				if (values.name) {
-					return {};
-				}
-
-				return {name: Liferay.Language.get('this-field-is-required')};
-			}}
+			validate={(values) =>
+				getProcessFormErrors(values, siteSelectionEnabled)
+			}
 			validateOnMount
 		>
 			{(formik) => {
@@ -146,65 +136,61 @@ export function NewExport({
 							)}
 							title={sub(
 								Liferay.Language.get('x-details'),
-								staticSite
-									? Liferay.Language.get('static-site')
-									: Liferay.Language.get('export')
+								Liferay.Language.get('export')
 							)}
 						/>
 
-						{!staticSite && (
-							<DataSelection
-								commentsAndRatingsEnabled={
-									commentsAndRatingsEnabled
-								}
-								deletionCount={getSelectedDeletionCount(
-									preview?.deletionCount,
-									previewPortletDataHandlerSections,
-									contentSelection
-								)}
-								deletionsDescription={Liferay.Language.get(
-									'deletions-help-export'
-								)}
-								deletionsLabel={Liferay.Language.get(
-									'export-individual-deletions'
-								)}
-								itemsCount={getSelectedItemsCount(
-									preview?.additionCount,
-									previewPortletDataHandlerSections,
-									contentSelection
-								)}
-								loading={loading}
-								lookAndFeelEnabled={lookAndFeelEnabled}
-								onApplyFilter={handleApplyFilter}
-								pageTreeModalConfiguration={
-									pageTreeModalConfiguration
-								}
-								permissionsDescription={Liferay.Language.get(
-									'export-import-permissions-help'
-								)}
-								permissionsLabel={Liferay.Language.get(
-									'export-permissions'
-								)}
-								previewPortletDataHandlerSections={withSelectedLayoutSetCount(
-									previewPortletDataHandlerSections,
-									contentSelection
-								)}
-								sitesSelection={
-									siteSelectionEnabled &&
-									exportPreviewSitesAPIURL && (
-										<SiteSelection
-											exportPreviewSitesAPIURL={
-												exportPreviewSitesAPIURL
-											}
-										/>
-									)
-								}
-								subtitle={Liferay.Language.get(
-									'select-and-filter-the-data-you-want-to-include-in-your-export'
-								)}
-								timeZoneId={timeZoneId}
-							/>
-						)}
+						<DataSelection
+							commentsAndRatingsEnabled={
+								commentsAndRatingsEnabled
+							}
+							deletionCount={getSelectedDeletionCount(
+								preview?.deletionCount,
+								previewPortletDataHandlerSections,
+								contentSelection
+							)}
+							deletionsDescription={Liferay.Language.get(
+								'deletions-help-export'
+							)}
+							deletionsLabel={Liferay.Language.get(
+								'export-individual-deletions'
+							)}
+							itemsCount={getSelectedItemsCount(
+								preview?.additionCount,
+								previewPortletDataHandlerSections,
+								contentSelection
+							)}
+							loading={loading}
+							lookAndFeelEnabled={lookAndFeelEnabled}
+							onApplyFilter={handleApplyFilter}
+							pageTreeModalConfiguration={
+								pageTreeModalConfiguration
+							}
+							permissionsDescription={Liferay.Language.get(
+								'export-import-permissions-help'
+							)}
+							permissionsLabel={Liferay.Language.get(
+								'export-permissions'
+							)}
+							previewPortletDataHandlerSections={withSelectedLayoutSetCount(
+								previewPortletDataHandlerSections,
+								contentSelection
+							)}
+							sitesSelection={
+								siteSelectionEnabled &&
+								exportPreviewSitesAPIURL && (
+									<SiteSelection
+										exportPreviewSitesAPIURL={
+											exportPreviewSitesAPIURL
+										}
+									/>
+								)
+							}
+							subtitle={Liferay.Language.get(
+								'select-and-filter-the-data-you-want-to-include-in-your-export'
+							)}
+							timeZoneId={timeZoneId}
+						/>
 
 						{(formik.touched.contentSelection ||
 							formik.touched.siteExternalReferenceCodes) &&

@@ -30,39 +30,62 @@ renderResponse.setTitle(exportImportProcessDisplayContext.getExportTitle());
 		<span aria-hidden="true" class="loading-animation mb-9 mt-8"></span>
 	</div>
 
-	<react:component
-		module="{NewExport} from exportimport-web"
-		props='<%=
-			HashMapBuilder.<String, Object>put(
-				"backURL", exportImportProcessDisplayContext.getBackURL()
-			).put(
-				"commentsAndRatingsEnabled", exportImportProcessDisplayContext.isCommentsAndRatingsEnabled()
-			).put(
-				"exportPreview", exportImportProcessDisplayContext.getExportPreviewJSONObject()
-			).put(
-				"exportPreviewAPIURL", exportImportProcessDisplayContext.getExportPreviewAPIURL()
-			).put(
-				"exportPreviewSitesAPIURL", exportImportProcessDisplayContext::getExportPreviewSitesAPIURL
-			).put(
-				"exportProcessAPIURL", exportImportProcessDisplayContext.getExportProcessAPIURL()
-			).put(
-				"lookAndFeelEnabled", exportImportProcessDisplayContext.isLookAndFeelEnabled()
-			).put(
-				"pageTreeModalConfiguration",
-				HashMapBuilder.<String, Object>put(
-					"groupId", liveGroupId
-				).put(
-					"pageSize", PropsValues.LAYOUT_MANAGE_PAGES_INITIAL_CHILDREN
-				).put(
-					"privateLayoutsAvailable", liveGroup.isPrivateLayoutsEnabled() && liveGroup.hasPrivateLayouts()
-				).build()
-			).put(
-				"siteSelectionEnabled", exportImportProcessDisplayContext.isSiteSelectionEnabled()
-			).put(
-				"staticSite", exportImportProcessDisplayContext.isStaticSite()
-			).put(
-				"timeZoneId", timeZone.getID()
-			).build()
-		%>'
-	/>
+	<c:choose>
+		<c:when test="<%= exportImportProcessDisplayContext.isStaticSite() %>">
+			<react:component
+				module="{NewStaticSiteExport} from exportimport-web"
+				props='<%=
+					HashMapBuilder.<String, Object>put(
+						"backURL", exportImportProcessDisplayContext.getBackURL()
+					).put(
+						"exportProcessAPIURL", exportImportProcessDisplayContext.getExportProcessAPIURL()
+					).put(
+						"pageTreeModalConfiguration",
+						HashMapBuilder.<String, Object>put(
+							"groupId", liveGroupId
+						).put(
+							"pageSize", PropsValues.LAYOUT_MANAGE_PAGES_INITIAL_CHILDREN
+						).put(
+							"privateLayoutsAvailable", false
+						).build()
+					).build()
+				%>'
+			/>
+		</c:when>
+		<c:otherwise>
+			<react:component
+				module="{NewExport} from exportimport-web"
+				props='<%=
+					HashMapBuilder.<String, Object>put(
+						"backURL", exportImportProcessDisplayContext.getBackURL()
+					).put(
+						"commentsAndRatingsEnabled", exportImportProcessDisplayContext.isCommentsAndRatingsEnabled()
+					).put(
+						"exportPreview", exportImportProcessDisplayContext.getExportPreviewJSONObject()
+					).put(
+						"exportPreviewAPIURL", exportImportProcessDisplayContext.getExportPreviewAPIURL()
+					).put(
+						"exportPreviewSitesAPIURL", exportImportProcessDisplayContext::getExportPreviewSitesAPIURL
+					).put(
+						"exportProcessAPIURL", exportImportProcessDisplayContext.getExportProcessAPIURL()
+					).put(
+						"lookAndFeelEnabled", exportImportProcessDisplayContext.isLookAndFeelEnabled()
+					).put(
+						"pageTreeModalConfiguration",
+						HashMapBuilder.<String, Object>put(
+							"groupId", liveGroupId
+						).put(
+							"pageSize", PropsValues.LAYOUT_MANAGE_PAGES_INITIAL_CHILDREN
+						).put(
+							"privateLayoutsAvailable", liveGroup.isPrivateLayoutsEnabled() && liveGroup.hasPrivateLayouts()
+						).build()
+					).put(
+						"siteSelectionEnabled", exportImportProcessDisplayContext.isSiteSelectionEnabled()
+					).put(
+						"timeZoneId", timeZone.getID()
+					).build()
+				%>'
+			/>
+		</c:otherwise>
+	</c:choose>
 </clay:container-fluid>
