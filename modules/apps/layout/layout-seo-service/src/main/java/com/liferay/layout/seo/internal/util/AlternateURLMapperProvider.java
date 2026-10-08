@@ -6,7 +6,6 @@
 package com.liferay.layout.seo.internal.util;
 
 import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
-import com.liferay.asset.display.page.util.AssetDisplayPageUtil;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
@@ -14,7 +13,6 @@ import com.liferay.layout.display.page.constants.LayoutDisplayPageWebKeys;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.Portal;
@@ -34,33 +32,30 @@ public class AlternateURLMapperProvider {
 
 	public AlternateURLMapperProvider(
 		AssetDisplayPageFriendlyURLProvider assetDisplayPageFriendlyURLProvider,
-		ClassNameLocalService classNameLocalService, Portal portal) {
+		Portal portal) {
 
 		_assetDisplayPageFriendlyURLProvider =
 			assetDisplayPageFriendlyURLProvider;
-		_classNameLocalService = classNameLocalService;
 		_portal = portal;
 	}
 
 	public AlternateURLMapperProvider.AlternateURLMapper getAlternateURLMapper(
 		HttpServletRequest httpServletRequest) {
 
+		if (httpServletRequest == null) {
+			return new AlternateURLMapperProvider.DefaultPageAlternateURLMapper(
+				_portal);
+		}
+
 		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider =
 			(LayoutDisplayPageObjectProvider<?>)httpServletRequest.getAttribute(
 				LayoutDisplayPageWebKeys.LAYOUT_DISPLAY_PAGE_OBJECT_PROVIDER);
 
-		if ((layoutDisplayPageObjectProvider != null) &&
-			AssetDisplayPageUtil.hasAssetDisplayPage(
-				layoutDisplayPageObjectProvider.getGroupId(),
-				layoutDisplayPageObjectProvider.getClassNameId(),
-				layoutDisplayPageObjectProvider.getClassPK(),
-				layoutDisplayPageObjectProvider.getClassTypeId())) {
-
+		if (layoutDisplayPageObjectProvider != null) {
 			return new AlternateURLMapperProvider.
 				AssetDisplayPageAlternateURLMapper(
 					_assetDisplayPageFriendlyURLProvider,
-					_classNameLocalService, layoutDisplayPageObjectProvider,
-					_portal);
+					layoutDisplayPageObjectProvider, _portal);
 		}
 
 		return new AlternateURLMapperProvider.DefaultPageAlternateURLMapper(
@@ -104,13 +99,11 @@ public class AlternateURLMapperProvider {
 		protected AssetDisplayPageAlternateURLMapper(
 			AssetDisplayPageFriendlyURLProvider
 				assetDisplayPageFriendlyURLProvider,
-			ClassNameLocalService classNameLocalService,
 			LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider,
 			Portal portal) {
 
 			_assetDisplayPageFriendlyURLProvider =
 				assetDisplayPageFriendlyURLProvider;
-			_classNameLocalService = classNameLocalService;
 			_layoutDisplayPageObjectProvider = layoutDisplayPageObjectProvider;
 			_portal = portal;
 		}
@@ -145,16 +138,19 @@ public class AlternateURLMapperProvider {
 				String url, Locale locale, ThemeDisplay themeDisplay)
 			throws PortalException {
 
-			if (_layoutDisplayPageObjectProvider == null) {
+			String friendlyURL =
+				_assetDisplayPageFriendlyURLProvider.getFriendlyURL(
+					new InfoItemReference(
+						_layoutDisplayPageObjectProvider.getClassName(),
+						new ClassPKInfoItemIdentifier(
+							_layoutDisplayPageObjectProvider.getClassPK())),
+					locale, themeDisplay);
+
+			if (Validator.isNull(friendlyURL)) {
 				return url;
 			}
 
-			return _assetDisplayPageFriendlyURLProvider.getFriendlyURL(
-				new InfoItemReference(
-					_layoutDisplayPageObjectProvider.getClassName(),
-					new ClassPKInfoItemIdentifier(
-						_layoutDisplayPageObjectProvider.getClassPK())),
-				locale, themeDisplay);
+			return friendlyURL;
 		}
 
 		private String _getPortalURL(ThemeDisplay themeDisplay) {
@@ -180,7 +176,6 @@ public class AlternateURLMapperProvider {
 
 		private final AssetDisplayPageFriendlyURLProvider
 			_assetDisplayPageFriendlyURLProvider;
-		private final ClassNameLocalService _classNameLocalService;
 		private final LayoutDisplayPageObjectProvider<?>
 			_layoutDisplayPageObjectProvider;
 		private final Portal _portal;
@@ -236,7 +231,6 @@ public class AlternateURLMapperProvider {
 
 	private AssetDisplayPageFriendlyURLProvider
 		_assetDisplayPageFriendlyURLProvider;
-	private ClassNameLocalService _classNameLocalService;
 	private final Portal _portal;
 
 }
