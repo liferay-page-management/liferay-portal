@@ -79,6 +79,33 @@ public class StaticSiteExporterTest {
 	}
 
 	@Test
+	public void testExportWithLayoutIds() throws Exception {
+		Layout layout1 = LayoutTestUtil.addTypeContentLayout(_group);
+
+		ContentLayoutTestUtil.publishLayout(
+			layout1.fetchDraftLayout(), layout1);
+
+		Layout layout2 = LayoutTestUtil.addTypeContentLayout(_group);
+
+		ContentLayoutTestUtil.publishLayout(
+			layout2.fetchDraftLayout(), layout2);
+
+		try (StaticSiteExport staticSiteExport = _staticSiteExporter.export(
+				_group.getGroupId(), Set.of(layout2.getLayoutId()),
+				Set.of(LocaleUtil.US))) {
+
+			_assertStaticSiteExport(layout2, staticSiteExport);
+
+			for (StaticSiteExportLayout staticSiteExportLayout :
+					staticSiteExport.getStaticSiteExportLayouts()) {
+
+				Assert.assertNotEquals(
+					layout1.getPlid(), staticSiteExportLayout.getPlid());
+			}
+		}
+	}
+
+	@Test
 	public void testExportWithSiteInitializer() throws Exception {
 		ServiceContextThreadLocal.pushServiceContext(
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
