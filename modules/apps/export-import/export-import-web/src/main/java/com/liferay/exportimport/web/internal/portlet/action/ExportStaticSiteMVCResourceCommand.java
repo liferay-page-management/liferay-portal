@@ -8,8 +8,7 @@ package com.liferay.exportimport.web.internal.portlet.action;
 import com.liferay.exportimport.constants.ExportImportPortletKeys;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManager;
-import com.liferay.portal.kernel.json.JSONFactory;
-import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
@@ -24,9 +23,7 @@ import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortletKeys;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.staticexport.background.task.StaticSiteExportBackgroundTaskExecutorNames;
@@ -34,8 +31,6 @@ import com.liferay.site.staticexport.background.task.StaticSiteExportBackgroundT
 import jakarta.portlet.PortletException;
 import jakarta.portlet.ResourceRequest;
 import jakarta.portlet.ResourceResponse;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.Serializable;
 
@@ -90,6 +85,10 @@ public class ExportStaticSiteMVCResourceCommand implements MVCResourceCommand {
 						STATIC_SITE_EXPORT_BACKGROUND_TASK_EXECUTOR,
 					HashMapBuilder.<String, Serializable>put(
 						"groupId", groupId
+					).put(
+						"layoutIds",
+						() -> ParamUtil.getLongValues(
+							resourceRequest, "layoutIds", null)
 					).build(),
 					new ServiceContext());
 
@@ -105,15 +104,9 @@ public class ExportStaticSiteMVCResourceCommand implements MVCResourceCommand {
 	}
 
 	private String _getName(Group group, ResourceRequest resourceRequest)
-		throws Exception {
+		throws PortalException {
 
-		HttpServletRequest httpServletRequest = _portal.getHttpServletRequest(
-			resourceRequest);
-
-		JSONObject jsonObject = _jsonFactory.createJSONObject(
-			StringUtil.read(httpServletRequest.getInputStream()));
-
-		String name = jsonObject.getString("name");
+		String name = ParamUtil.getString(resourceRequest, "name");
 
 		if (Validator.isNull(name)) {
 			return group.getDescriptiveName();
@@ -127,11 +120,5 @@ public class ExportStaticSiteMVCResourceCommand implements MVCResourceCommand {
 
 	@Reference
 	private GroupService _groupService;
-
-	@Reference
-	private JSONFactory _jsonFactory;
-
-	@Reference
-	private Portal _portal;
 
 }

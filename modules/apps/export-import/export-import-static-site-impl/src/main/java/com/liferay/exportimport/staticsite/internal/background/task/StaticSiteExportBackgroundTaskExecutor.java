@@ -14,8 +14,11 @@ import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManager;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskResult;
 import com.liferay.portal.kernel.backgroundtask.BaseBackgroundTaskExecutor;
 import com.liferay.portal.kernel.backgroundtask.display.BackgroundTaskDisplay;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.zip.ZipWriter;
@@ -28,9 +31,13 @@ import com.liferay.site.staticexport.background.task.StaticSiteExportBackgroundT
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.Serializable;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -54,14 +61,10 @@ public class StaticSiteExportBackgroundTaskExecutor
 	public BackgroundTaskResult execute(BackgroundTask backgroundTask)
 		throws Exception {
 
-		long groupId = MapUtil.getLong(
-			backgroundTask.getTaskContextMap(), "groupId");
-
 		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
 
-		try (StaticSiteExport staticSiteExport = _staticSiteExporter.export(
-				groupId,
-				Collections.singleton(_portal.getSiteDefaultLocale(groupId)))) {
+		try (StaticSiteExport staticSiteExport = _getStaticSiteExport(
+				backgroundTask.getTaskContextMap())) {
 
 			List<StaticSiteExportLayout> staticSiteExportLayouts =
 				staticSiteExport.getStaticSiteExportLayouts();
@@ -106,6 +109,26 @@ public class StaticSiteExportBackgroundTaskExecutor
 		BackgroundTask backgroundTask) {
 
 		return null;
+	}
+
+	private StaticSiteExport _getStaticSiteExport(
+			Map<String, Serializable> taskContextMap)
+		throws PortalException {
+
+		long groupId = MapUtil.getLong(taskContextMap, "groupId");
+
+		Set<Locale> locales = Collections.singleton(
+			_portal.getSiteDefaultLocale(groupId));
+
+		Serializable layoutIds = taskContextMap.get("layoutIds");
+
+		if (layoutIds == null) {
+			return _staticSiteExporter.export(groupId, locales);
+		}
+
+		return _staticSiteExporter.export(
+			groupId, SetUtil.fromArray(GetterUtil.getLongValues(layoutIds)),
+			locales);
 	}
 
 	@Reference
