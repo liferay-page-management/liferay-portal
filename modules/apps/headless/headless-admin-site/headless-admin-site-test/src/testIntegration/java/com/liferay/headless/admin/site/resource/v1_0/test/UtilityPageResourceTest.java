@@ -20,7 +20,9 @@ import com.liferay.headless.admin.site.resource.v1_0.test.util.FileEntryTestUtil
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutUtilityPageEntryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.PageSpecificationsTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.ThumbnailHttpServer;
+import com.liferay.headless.admin.site.resource.v1_0.test.util.ThumbnailURLReferenceTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.ThumbnailURLReferenceUtil;
+import com.liferay.headless.admin.site.resource.v1_0.test.util.URLFetchSecurityCompanyConfigurationUtil;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
@@ -327,7 +329,7 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-48984", "LPD-92443"})
+	@TestInfo({"LPD-48984", "LPD-92443", "LPD-107149"})
 	public void testPostSiteUtilityPage() throws Exception {
 		super.testPostSiteUtilityPage();
 
@@ -340,6 +342,7 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 		_testPostSiteUtilityPageWithThumbnailURLReferenceFileBase64AndURL();
 		_testPostSiteUtilityPageWithThumbnailURLReferenceNonexistingProblemException();
 		_testPostSiteUtilityPageWithThumbnailURLReferenceURL();
+		_testPostSiteUtilityPageWithThumbnailURLReferenceURLFetchSecurity();
 		_testPostSiteUtilityPageWithThumbnailURLReferenceURLUnreachableProblemException();
 		_testPostSiteUtilityPageWithThumbnailURLReferenceURLUnsupportedProtocolProblemException();
 	}
@@ -734,8 +737,12 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 
 		UtilityPageResource utilityPageResource = _getUtilityPageResource();
 
-		UtilityPage postUtilityPage = utilityPageResource.postSiteUtilityPage(
-			testGroup.getExternalReferenceCode(), utilityPage);
+		UtilityPage postUtilityPage =
+			URLFetchSecurityCompanyConfigurationUtil.
+				swapURLLocalNetworkAccessEnabled(
+					true,
+					() -> utilityPageResource.postSiteUtilityPage(
+						testGroup.getExternalReferenceCode(), utilityPage));
 
 		if (expectedExternalReferenceCode == null) {
 			ThumbnailURLReference postThumbnailURLReference =
@@ -761,9 +768,13 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 
 		UtilityPageResource utilityPageResource = _getUtilityPageResource();
 
-		UtilityPage putUtilityPage = utilityPageResource.putSiteUtilityPage(
-			testGroup.getExternalReferenceCode(),
-			utilityPage.getExternalReferenceCode(), utilityPage);
+		UtilityPage putUtilityPage =
+			URLFetchSecurityCompanyConfigurationUtil.
+				swapURLLocalNetworkAccessEnabled(
+					true,
+					() -> utilityPageResource.putSiteUtilityPage(
+						testGroup.getExternalReferenceCode(),
+						utilityPage.getExternalReferenceCode(), utilityPage));
 
 		if (expectedExternalReferenceCode == null) {
 			ThumbnailURLReference putThumbnailURLReference =
@@ -777,6 +788,17 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 			expectedBytes, expectedExternalReferenceCode, putUtilityPage);
 
 		return putUtilityPage;
+	}
+
+	private UtilityPage _randomUtilityPage(
+			ThumbnailURLReference thumbnailURLReference)
+		throws Exception {
+
+		UtilityPage utilityPage = randomUtilityPage();
+
+		utilityPage.setThumbnailURLReference(thumbnailURLReference);
+
+		return utilityPage;
 	}
 
 	private void _testGetSiteUtilityPagesPageWithPageSpecificationsAsNestedFields()
@@ -1067,7 +1089,8 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
 			Assert.assertEquals(
 				"Unable to download file from " +
-					thumbnailURLReference.getUrl(),
+					thumbnailURLReference.getUrl() +
+						" because of restricted host invalid.example.test",
 				problem.getTitle());
 		}
 	}
@@ -1242,6 +1265,29 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 			_thumbnail1Bytes, externalReferenceCode, thumbnailURLReference);
 	}
 
+	private void _testPostSiteUtilityPageWithThumbnailURLReferenceURLFetchSecurity()
+		throws Exception {
+
+		UtilityPageResource utilityPageResource = _getUtilityPageResource();
+
+		ThumbnailURLReferenceTestUtil.testThumbnailURLReferenceURLFetchSecurity(
+			(thumbnailURLReference, utilityPage) ->
+				_assertThumbnailURLReference(
+					_thumbnail1URL.equals(thumbnailURLReference.getUrl()) ?
+						_thumbnail1Bytes : _thumbnail2Bytes,
+					thumbnailURLReference.getExternalReferenceCode(),
+					utilityPage),
+			_randomUtilityPage(
+				ThumbnailURLReferenceTestUtil.getThumbnailURLReference(
+					_thumbnail1URL)),
+			_randomUtilityPage(
+				ThumbnailURLReferenceTestUtil.getThumbnailURLReference(
+					_thumbnail2URL)),
+			UtilityPage::getThumbnailURLReference,
+			utilityPage -> utilityPageResource.postSiteUtilityPage(
+				testGroup.getExternalReferenceCode(), utilityPage));
+	}
+
 	private void _testPostSiteUtilityPageWithThumbnailURLReferenceURLUnreachableProblemException()
 		throws Exception {
 
@@ -1249,7 +1295,8 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 			"http://invalid.example.test/" + RandomTestUtil.randomString();
 
 		_testPostUtilityPageThumbnailURLReferenceProblemException(
-			"Unable to download file from " + url,
+			"Unable to download file from " + url +
+				" because of restricted host invalid.example.test",
 			RandomTestUtil.randomString(), url);
 	}
 
@@ -1499,7 +1546,8 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
 			Assert.assertEquals(
 				"Unable to download file from " +
-					thumbnailURLReference.getUrl(),
+					thumbnailURLReference.getUrl() +
+						" because of restricted host invalid.example.test",
 				problem.getTitle());
 		}
 	}

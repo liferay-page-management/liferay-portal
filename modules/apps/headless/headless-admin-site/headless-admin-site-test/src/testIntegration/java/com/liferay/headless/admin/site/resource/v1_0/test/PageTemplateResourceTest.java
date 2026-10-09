@@ -34,7 +34,9 @@ import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutPageTemplat
 import com.liferay.headless.admin.site.resource.v1_0.test.util.PageSpecificationsTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.SettingsTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.ThumbnailHttpServer;
+import com.liferay.headless.admin.site.resource.v1_0.test.util.ThumbnailURLReferenceTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.ThumbnailURLReferenceUtil;
+import com.liferay.headless.admin.site.resource.v1_0.test.util.URLFetchSecurityCompanyConfigurationUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTypeConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
@@ -361,7 +363,7 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo("LPD-92443")
+	@TestInfo({"LPD-92443", "LPD-107149"})
 	public void testPostSitePageTemplate() throws Exception {
 		PageTemplate randomPageTemplate = randomPageTemplate();
 
@@ -403,6 +405,7 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 		_testPostSitePageTemplateWithThumbnailURLReferenceFileBase64AndURL();
 		_testPostSitePageTemplateWithThumbnailURLReferenceNonexistingProblemException();
 		_testPostSitePageTemplateWithThumbnailURLReferenceURL();
+		_testPostSitePageTemplateWithThumbnailURLReferenceURLFetchSecurity();
 		_testPostSitePageTemplateWithThumbnailURLReferenceURLUnsupportedProtocolProblemException();
 		_testPostSitePageTemplateWithWidgetPageTypeIsDeprecated();
 
@@ -1163,15 +1166,16 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 			ThumbnailURLReference thumbnailURLReference)
 		throws Exception {
 
-		PageTemplate pageTemplate = randomPageTemplate();
-
-		pageTemplate.setThumbnailURLReference(thumbnailURLReference);
+		PageTemplate pageTemplate = _randomPageTemplate(thumbnailURLReference);
 
 		PageTemplateResource pageTemplateResource = _getPageTemplateResource();
 
 		PageTemplate postPageTemplate =
-			pageTemplateResource.postSitePageTemplate(
-				testGroup.getExternalReferenceCode(), pageTemplate);
+			URLFetchSecurityCompanyConfigurationUtil.
+				swapURLLocalNetworkAccessEnabled(
+					true,
+					() -> pageTemplateResource.postSitePageTemplate(
+						testGroup.getExternalReferenceCode(), pageTemplate));
 
 		if (expectedExternalReferenceCode == null) {
 			ThumbnailURLReference postThumbnailURLReference =
@@ -1210,9 +1214,13 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 
 		PageTemplateResource pageTemplateResource = _getPageTemplateResource();
 
-		PageTemplate putPageTemplate = pageTemplateResource.putSitePageTemplate(
-			testGroup.getExternalReferenceCode(),
-			pageTemplate.getExternalReferenceCode(), pageTemplate);
+		PageTemplate putPageTemplate =
+			URLFetchSecurityCompanyConfigurationUtil.
+				swapURLLocalNetworkAccessEnabled(
+					true,
+					() -> pageTemplateResource.putSitePageTemplate(
+						testGroup.getExternalReferenceCode(),
+						pageTemplate.getExternalReferenceCode(), pageTemplate));
 
 		if (expectedExternalReferenceCode == null) {
 			ThumbnailURLReference putThumbnailURLReference =
@@ -1226,6 +1234,17 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 			expectedBytes, expectedExternalReferenceCode, putPageTemplate);
 
 		return putPageTemplate;
+	}
+
+	private PageTemplate _randomPageTemplate(
+			ThumbnailURLReference thumbnailURLReference)
+		throws Exception {
+
+		PageTemplate pageTemplate = randomPageTemplate();
+
+		pageTemplate.setThumbnailURLReference(thumbnailURLReference);
+
+		return pageTemplate;
 	}
 
 	private void _testCreatingPageTemplateSetWithLazyReferencingEnabled(
@@ -1695,7 +1714,8 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
 			Assert.assertEquals(
 				"Unable to download file from " +
-					thumbnailURLReference.getUrl(),
+					thumbnailURLReference.getUrl() +
+						" because of restricted host invalid.example.test",
 				problem.getTitle());
 		}
 	}
@@ -1704,15 +1724,13 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 			String expectedTitle, String externalReferenceCode, String url)
 		throws Exception {
 
-		PageTemplate pageTemplate = randomPageTemplate();
-
 		ThumbnailURLReference thumbnailURLReference =
 			new ThumbnailURLReference();
 
 		thumbnailURLReference.setExternalReferenceCode(externalReferenceCode);
 		thumbnailURLReference.setUrl(url);
 
-		pageTemplate.setThumbnailURLReference(thumbnailURLReference);
+		PageTemplate pageTemplate = _randomPageTemplate(thumbnailURLReference);
 
 		PageTemplateResource pageTemplateResource = _getPageTemplateResource();
 
@@ -1930,12 +1948,10 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 			_thumbnail1Bytes, fileEntry.getExternalReferenceCode(),
 			postPageTemplate);
 
-		pageTemplate = randomPageTemplate();
-
 		ThumbnailURLReference thumbnailURLReference =
 			ThumbnailURLReferenceUtil.getRandomThumbnailURLReference();
 
-		pageTemplate.setThumbnailURLReference(thumbnailURLReference);
+		pageTemplate = _randomPageTemplate(thumbnailURLReference);
 
 		try {
 			testPostSitePageTemplateSetPageTemplate_addPageTemplate(
@@ -1947,7 +1963,8 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
 			Assert.assertEquals(
 				"Unable to download file from " +
-					thumbnailURLReference.getUrl(),
+					thumbnailURLReference.getUrl() +
+						" because of restricted host invalid.example.test",
 				problem.getTitle());
 		}
 	}
@@ -2048,16 +2065,36 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 	private void _testPostSitePageTemplateWithThumbnailURLReferenceURL()
 		throws Exception {
 
-		String externalReferenceCode = RandomTestUtil.randomString();
-
 		ThumbnailURLReference thumbnailURLReference =
-			new ThumbnailURLReference();
-
-		thumbnailURLReference.setExternalReferenceCode(externalReferenceCode);
-		thumbnailURLReference.setUrl(_thumbnail1URL);
+			ThumbnailURLReferenceTestUtil.getThumbnailURLReference(
+				_thumbnail1URL);
 
 		_postSitePageTemplateAndAssertThumbnailURLReference(
-			_thumbnail1Bytes, externalReferenceCode, thumbnailURLReference);
+			_thumbnail1Bytes, thumbnailURLReference.getExternalReferenceCode(),
+			thumbnailURLReference);
+	}
+
+	private void _testPostSitePageTemplateWithThumbnailURLReferenceURLFetchSecurity()
+		throws Exception {
+
+		PageTemplateResource pageTemplateResource = _getPageTemplateResource();
+
+		ThumbnailURLReferenceTestUtil.testThumbnailURLReferenceURLFetchSecurity(
+			(thumbnailURLReference, pageTemplate) ->
+				_assertThumbnailURLReference(
+					_thumbnail1URL.equals(thumbnailURLReference.getUrl()) ?
+						_thumbnail1Bytes : _thumbnail2Bytes,
+					thumbnailURLReference.getExternalReferenceCode(),
+					pageTemplate),
+			_randomPageTemplate(
+				ThumbnailURLReferenceTestUtil.getThumbnailURLReference(
+					_thumbnail1URL)),
+			_randomPageTemplate(
+				ThumbnailURLReferenceTestUtil.getThumbnailURLReference(
+					_thumbnail2URL)),
+			PageTemplate::getThumbnailURLReference,
+			pageTemplate -> pageTemplateResource.postSitePageTemplate(
+				testGroup.getExternalReferenceCode(), pageTemplate));
 	}
 
 	private void _testPostSitePageTemplateWithThumbnailURLReferenceURLUnsupportedProtocolProblemException()
@@ -2346,7 +2383,8 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
 			Assert.assertEquals(
 				"Unable to download file from " +
-					thumbnailURLReference.getUrl(),
+					thumbnailURLReference.getUrl() +
+						" because of restricted host invalid.example.test",
 				problem.getTitle());
 		}
 	}
