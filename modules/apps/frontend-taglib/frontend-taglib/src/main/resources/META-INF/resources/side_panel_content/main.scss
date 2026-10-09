@@ -1,4 +1,4 @@
-@import 'atlas-variables';
+@import '_atlas-custom-properties-variables';
 
 $dialog-footer-height: 70px;
 $header-height: 65px;
@@ -22,7 +22,7 @@ $header-height: 65px;
 
 	.side-panel-iframe-header {
 		align-items: center;
-		background: #f7f7f7;
+		background: $gray-100;
 		border-bottom: 1px solid $border-color;
 		display: flex;
 		height: $header-height;

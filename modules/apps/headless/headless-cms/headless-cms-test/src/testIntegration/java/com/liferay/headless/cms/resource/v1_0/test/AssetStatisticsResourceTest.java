@@ -517,6 +517,20 @@ public class AssetStatisticsResourceTest
 				serviceContext);
 
 			_assertBrokenLinksCount(depotEntry.getGroupId(), 3);
+
+			ObjectEntry deletedObjectEntry = _addObjectEntry(
+				depotEntry, objectDefinition);
+
+			_addObjectEntry(
+				CMSOutboundLinkTestUtil.getImageHTML(
+					deletedObjectEntry.getExternalReferenceCode()),
+				depotEntry, objectDefinition);
+
+			_assertBrokenLinksCount(depotEntry.getGroupId(), 3);
+
+			_objectEntryLocalService.deleteObjectEntry(deletedObjectEntry);
+
+			_assertBrokenLinksCount(depotEntry.getGroupId(), 4);
 		}
 		finally {
 			_depotEntryLocalService.deleteDepotEntry(

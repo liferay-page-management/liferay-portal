@@ -7,6 +7,8 @@ package com.liferay.portal.instances.web.internal.taglib.util;
 
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
+import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -35,6 +37,8 @@ public class CompanyActionDropdownItems {
 	}
 
 	public DropdownItemList getActionDropdownItems() {
+		DB db = DBManagerUtil.getDB();
+
 		return DropdownItemListBuilder.addGroup(
 			dropdownGroupItem -> {
 				dropdownGroupItem.setDropdownItems(
@@ -84,6 +88,7 @@ public class CompanyActionDropdownItems {
 								LanguageUtil.get(_httpServletRequest, "copy"));
 						}
 					).add(
+						db::isSupportsDBPartition,
 						dropdownItem -> {
 							dropdownItem.putData("action", "exportInstance");
 							dropdownItem.putData(

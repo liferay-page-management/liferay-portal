@@ -32,8 +32,6 @@ export const PAGINATION_BAR_LABELS = {
 	selectPerPageItems: Liferay.Language.get('x-items'),
 };
 
-export const UPCOMING_REVIEWS_THRESHOLD_MONTHS = 1;
-
 export const ASSET_STATUS = {
 	APPROVED: 'approved',
 	DENIED: 'denied',
@@ -110,6 +108,7 @@ export type WorkflowStatus =
 
 export const FDS_FILTER_ID = {
 	DATE_EXPIRATION: 'dateExpiration',
+	DATE_MODIFIED: 'dateModified',
 	DATE_REVIEW: 'dateReview',
 	SCOPE_GROUP_ID: 'scopeGroupId',
 	STATUS: 'status',

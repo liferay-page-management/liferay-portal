@@ -473,6 +473,19 @@ public class TestrayFactory {
 		return new TestrayComponent(testrayProject, jsonObject);
 	}
 
+	public static TestrayContext newTestrayContext(
+		BuildDatabase buildDatabase, TopLevelBuild topLevelBuild) {
+
+		return new BuildTestrayContext(buildDatabase, topLevelBuild);
+	}
+
+	public static TestrayContext newTestrayContext(
+		BuildDatabase buildDatabase, TopLevelBuildReport topLevelBuildReport) {
+
+		return new BuildReportTestrayContext(
+			buildDatabase, topLevelBuildReport);
+	}
+
 	public static TestrayFactor.Category newTestrayFactorCategory(
 		JSONObject jsonObject, TestrayServer testrayServer) {
 
@@ -772,19 +785,6 @@ public class TestrayFactory {
 		TestrayProject testrayProject, JSONObject jsonObject) {
 
 		return new TestrayTeam(testrayProject, jsonObject);
-	}
-
-	public static TestrayTextReplacer newTestrayTextReplacer(
-		BuildDatabase buildDatabase, TopLevelBuild topLevelBuild) {
-
-		return new BuildTestrayTextReplacer(buildDatabase, topLevelBuild);
-	}
-
-	public static TestrayTextReplacer newTestrayTextReplacer(
-		BuildDatabase buildDatabase, TopLevelBuildReport topLevelBuildReport) {
-
-		return new BuildReportTestrayTextReplacer(
-			buildDatabase, topLevelBuildReport);
 	}
 
 	public static synchronized TopLevelStandaloneBuildTestrayCaseResult

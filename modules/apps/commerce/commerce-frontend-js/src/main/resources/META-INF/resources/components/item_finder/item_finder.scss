@@ -53,7 +53,7 @@
 	}
 
 	&__backdrop {
-		background-color: #e5e5e5;
+		background-color: var(--gray-300);
 		bottom: 0;
 		content: '';
 		display: block;

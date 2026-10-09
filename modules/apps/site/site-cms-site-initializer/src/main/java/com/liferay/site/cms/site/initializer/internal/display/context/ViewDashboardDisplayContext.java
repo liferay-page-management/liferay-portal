@@ -212,17 +212,9 @@ public class ViewDashboardDisplayContext {
 			PermissionUtil.getDefaultPermissionAdditionalProps(
 				_httpServletRequest, _themeDisplay)
 		).put(
-			"expiringSoonFDSName",
-			CMSSiteInitializerFDSNames.EXPIRING_SOON_SECTION
-		).put(
-			"expiringSoonFilterString",
-			SectionDisplayContextUtil.getExpiringSoonFilterString(
-				_httpServletRequest)
-		).put(
 			"fdsActionDropdownItems",
-			() ->
-				SectionDisplayContextUtil.getNeedsReviewFDSActionDropdownItems(
-					_httpServletRequest)
+			() -> SectionDisplayContextUtil.getFDSActionDropdownItems(
+				_httpServletRequest)
 		).put(
 			"fileMimeTypeCssClasses",
 			() -> {
@@ -254,13 +246,6 @@ public class ViewDashboardDisplayContext {
 			ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS
 		).put(
 			"redirect", _themeDisplay.getURLCurrent()
-		).put(
-			"upcomingReviewsFDSName",
-			CMSSiteInitializerFDSNames.UPCOMING_REVIEWS_SECTION
-		).put(
-			"upcomingReviewsFilterString",
-			SectionDisplayContextUtil.getUpcomingReviewsFilterString(
-				_httpServletRequest)
 		).build();
 	}
 

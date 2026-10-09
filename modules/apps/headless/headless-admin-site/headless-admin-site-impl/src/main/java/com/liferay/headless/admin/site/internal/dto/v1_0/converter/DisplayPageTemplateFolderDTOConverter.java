@@ -45,7 +45,14 @@ public class DisplayPageTemplateFolderDTOConverter
 		DisplayPageTemplateFolder displayPageTemplateFolder =
 			_getDisplayPageTemplateFolder(layoutPageTemplateCollection);
 
-		displayPageTemplateFolder.setActions(dtoConverterContext::getActions);
+		displayPageTemplateFolder.setActions(
+			() -> {
+				if (dtoConverterContext == null) {
+					return null;
+				}
+
+				return dtoConverterContext.getActions();
+			});
 
 		return displayPageTemplateFolder;
 	}

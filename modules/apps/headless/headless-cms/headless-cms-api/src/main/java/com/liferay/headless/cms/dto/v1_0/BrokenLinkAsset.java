@@ -177,6 +177,47 @@ public class BrokenLinkAsset implements Serializable {
 	private Supplier<Long> _brokenLinksCountSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
+	public Long getDeletedBrokenLinksCount() {
+		if (_deletedBrokenLinksCountSupplier != null) {
+			deletedBrokenLinksCount = _deletedBrokenLinksCountSupplier.get();
+
+			_deletedBrokenLinksCountSupplier = null;
+		}
+
+		return deletedBrokenLinksCount;
+	}
+
+	public void setDeletedBrokenLinksCount(Long deletedBrokenLinksCount) {
+		this.deletedBrokenLinksCount = deletedBrokenLinksCount;
+
+		_deletedBrokenLinksCountSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setDeletedBrokenLinksCount(
+		UnsafeSupplier<Long, Exception> deletedBrokenLinksCountUnsafeSupplier) {
+
+		_deletedBrokenLinksCountSupplier = () -> {
+			try {
+				return deletedBrokenLinksCountUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Long deletedBrokenLinksCount;
+
+	@JsonIgnore
+	private Supplier<Long> _deletedBrokenLinksCountSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
 	public Long getDraftBrokenLinksCount() {
 		if (_draftBrokenLinksCountSupplier != null) {
 			draftBrokenLinksCount = _draftBrokenLinksCountSupplier.get();
@@ -532,6 +573,18 @@ public class BrokenLinkAsset implements Serializable {
 			sb.append(brokenLinksCount);
 		}
 
+		Long deletedBrokenLinksCount = getDeletedBrokenLinksCount();
+
+		if (deletedBrokenLinksCount != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"deletedBrokenLinksCount\": ");
+
+			sb.append(deletedBrokenLinksCount);
+		}
+
 		Long draftBrokenLinksCount = getDraftBrokenLinksCount();
 
 		if (draftBrokenLinksCount != null) {
@@ -751,4 +804,4 @@ public class BrokenLinkAsset implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:516525534
+// LIFERAY-REST-BUILDER-HASH:-1157866593

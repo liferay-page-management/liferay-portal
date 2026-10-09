@@ -11,8 +11,7 @@ import com.liferay.exportimport.kernel.lar.PortletDataHandler;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerBoolean;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerControl;
 import com.liferay.exportimport.portlet.data.handler.provider.PortletDataHandlerProvider;
-import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
-import com.liferay.petra.function.UnsafeBiConsumer;
+import com.liferay.exportimport.test.util.vulcan.batch.engine.TestExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
@@ -21,14 +20,6 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.CacheModel;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.filter.Filter;
-import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.service.ResourceActionLocalService;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
-import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.systemevent.SystemEventExtraDataContributor;
 import com.liferay.portal.kernel.test.TestInfo;
@@ -39,20 +30,15 @@ import com.liferay.portal.kernel.util.ClassUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
-import com.liferay.portal.vulcan.pagination.Page;
-import com.liferay.portal.vulcan.pagination.Pagination;
 
 import jakarta.portlet.GenericPortlet;
 import jakarta.portlet.Portlet;
-
-import jakarta.ws.rs.core.UriInfo;
 
 import java.io.Serializable;
 
@@ -63,7 +49,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Function;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -729,144 +714,6 @@ public class BatchEnginePortletDataHandlerRegistrarTest {
 
 		private final String _key;
 		private final String _modelClassName;
-
-	}
-
-	private static class TestExportImportVulcanBatchEngineTaskItemDelegate
-		implements ExportImportVulcanBatchEngineTaskItemDelegate<Object>,
-				   VulcanBatchEngineTaskItemDelegate<Object> {
-
-		public TestExportImportVulcanBatchEngineTaskItemDelegate(
-			String className, Function<BaseModel<?>, Boolean> function,
-			String key, String languageKey, String portletId) {
-
-			_className = className;
-			_function = function;
-			_key = key;
-			_languageKey = languageKey;
-			_portletId = portletId;
-		}
-
-		@Override
-		public void create(
-			Collection<Object> items, Map<String, Serializable> parameters) {
-		}
-
-		@Override
-		public void delete(
-			Collection<Object> items, Map<String, Serializable> parameters) {
-		}
-
-		@Override
-		public EntityModel getEntityModel(
-			Map<String, List<String>> multivaluedMap) {
-
-			return null;
-		}
-
-		@Override
-		public ExportImportDescriptor getExportImportDescriptor() {
-			return new ExportImportDescriptor() {
-
-				@Override
-				public Function<BaseModel<?>, Boolean>
-					getApplicableModelFunction() {
-
-					return _function;
-				}
-
-				@Override
-				public String getKey() {
-					return _key;
-				}
-
-				@Override
-				public String getLabelLanguageKey() {
-					return _languageKey;
-				}
-
-				@Override
-				public Class getModelClass() {
-					return null;
-				}
-
-				@Override
-				public String getModelClassName() {
-					return _className;
-				}
-
-				@Override
-				public String getPortletId() {
-					return _portletId;
-				}
-
-				@Override
-				public Scope getScope() {
-					return Scope.COMPANY;
-				}
-
-			};
-		}
-
-		@Override
-		public Page<Object> read(
-			Filter filter, Pagination pagination, Sort[] sorts,
-			Map<String, Serializable> parameters, String search) {
-
-			return null;
-		}
-
-		@Override
-		public void setContextBatchUnsafeBiConsumer(
-			UnsafeBiConsumer
-				<Collection<Object>, UnsafeFunction<Object, Object, Exception>,
-				 Exception> contextBatchUnsafeBiConsumer) {
-		}
-
-		@Override
-		public void setContextCompany(Company contextCompany) {
-		}
-
-		@Override
-		public void setContextUriInfo(UriInfo uriInfo) {
-		}
-
-		@Override
-		public void setContextUser(User contextUser) {
-		}
-
-		@Override
-		public void setGroupLocalService(GroupLocalService groupLocalService) {
-		}
-
-		@Override
-		public void setLanguageId(String languageId) {
-		}
-
-		@Override
-		public void setResourceActionLocalService(
-			ResourceActionLocalService resourceActionLocalService) {
-		}
-
-		@Override
-		public void setResourcePermissionLocalService(
-			ResourcePermissionLocalService resourcePermissionLocalService) {
-		}
-
-		@Override
-		public void setRoleLocalService(RoleLocalService roleLocalService) {
-		}
-
-		@Override
-		public void update(
-			Collection<Object> items, Map<String, Serializable> parameters) {
-		}
-
-		private final String _className;
-		private final Function<BaseModel<?>, Boolean> _function;
-		private final String _key;
-		private final String _languageKey;
-		private final String _portletId;
 
 	}
 

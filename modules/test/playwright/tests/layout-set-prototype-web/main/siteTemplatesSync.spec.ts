@@ -255,6 +255,55 @@ test(
 	}
 );
 
+test(
+	'Execute Site Template Sync escapes the Site Template name in its messages',
+	{tag: '@LPD-109105'},
+	async ({apiHelpers, globalMenuPage, layoutSetPrototypePage, page}) => {
+
+		// Create a Site Template whose name contains markup
+
+		const rowText = 'SiteTemplate-' + getRandomString();
+
+		const siteTemplateName = `<b>${rowText}</b>`;
+
+		const layoutSetPrototype =
+			await apiHelpers.jsonWebServicesLayoutSetPrototype.addLayoutSetPrototypes(
+				{name: siteTemplateName}
+			);
+
+		apiHelpers.data.push({
+			id: layoutSetPrototype.layoutSetPrototypeId,
+			type: 'layoutSetPrototype',
+		});
+
+		// Trigger the manual sync from the Site Templates list
+
+		await globalMenuPage.goToControlPanel('Site Templates');
+
+		await clickAndExpectToBeVisible({
+			target: layoutSetPrototypePage.executeSyncMenuItem,
+			trigger: layoutSetPrototypePage.rowActions(rowText),
+		});
+
+		page.once('dialog', (dialog) => dialog.accept());
+
+		await layoutSetPrototypePage.executeSyncMenuItem.click();
+
+		// The start toast and the completion notification show the name as
+		// literal text
+
+		await expect(
+			page.getByText(
+				`The sync of the site template ${siteTemplateName} started. You will receive a notification when the process is complete.`
+			)
+		).toBeVisible();
+
+		await layoutSetPrototypePage.waitForSyncSuccessNotification(
+			siteTemplateName
+		);
+	}
+);
+
 testWithPublications(
 	'Execute Site Template Sync applies changes to the active Publication and publishes them to production',
 	{tag: '@LPD-105505'},

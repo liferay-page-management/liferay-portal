@@ -9,10 +9,14 @@ import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
+import {ServerAdministrationPage} from '../../../pages/server-admin-web/ServerAdministrationPage';
 import {addCMSAdministrator} from '../../../utils/addCMSAdministrator';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
-import {performUserSwitchViaApi} from '../../../utils/performLogin';
+import {
+	performLoginViaApi,
+	performUserSwitchViaApi,
+} from '../../../utils/performLogin';
 import {cmsPagesTest} from './fixtures/cmsPagesTest';
 
 const test = mergeTests(
@@ -29,6 +33,7 @@ const DATE_DISPLAYED = '12/31/2099, 10:00 AM';
 const DATE_INPUT = '12/31/2099 10:00 AM';
 const DUE_DATE_INPUT = '2099-12-31';
 const DUE_TIME_INPUT = '10:00';
+const LONG_STANDING_DRAFT_AGE_DAYS = 45;
 const PAST_DATE = '2020-01-01T00:00:00Z';
 const TIME_ZONE_BROWSER = 'America/Los_Angeles';
 const TIME_ZONE_USER = 'UTC';
@@ -45,36 +50,22 @@ async function fillScheduleDateModal(page: Page, date: string) {
 	await page.locator('.modal').getByRole('button', {name: 'Save'}).click();
 }
 
-async function postDatedContent(
-	apiHelpers: DataApiHelpers,
-	{
-		dateField,
-		hour,
-		spaceName,
-		title,
-	}: {
-		dateField: 'expirationDate' | 'reviewDate';
-		hour: number;
-		spaceName: string;
-		title: string;
-	}
-) {
-	const content = await apiHelpers.objectEntry.postObjectEntry(
-		{
-			[dateField]: getUpcomingDate(hour),
-			displayDate: PAST_DATE,
-			objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-			title,
-		},
-		APPLICATION_NAME,
-		spaceName
-	);
+function getLongStandingDraftScript(objectEntryId: number) {
+	return `
+		import com.liferay.object.service.ObjectDefinitionLocalServiceUtil
+		import com.liferay.object.service.ObjectEntryLocalServiceUtil
+		import com.liferay.portal.kernel.search.IndexerRegistryUtil
 
-	apiHelpers.data.push({id: content.id, type: 'document'});
+		def objectEntry = ObjectEntryLocalServiceUtil.getObjectEntry(${objectEntryId})
 
-	expect(content.id).toBeTruthy();
+		objectEntry.setModifiedDate(new Date(System.currentTimeMillis() - ${LONG_STANDING_DRAFT_AGE_DAYS} * 86400000L))
 
-	return content;
+		objectEntry = ObjectEntryLocalServiceUtil.updateObjectEntry(objectEntry)
+
+		def objectDefinition = ObjectDefinitionLocalServiceUtil.getObjectDefinition(objectEntry.getObjectDefinitionId())
+
+		IndexerRegistryUtil.nullSafeGetIndexer(objectDefinition.getClassName()).reindex(objectEntry)
+	`;
 }
 
 function getUpcomingDate(hour: number) {
@@ -818,319 +809,6 @@ test.describe('Attention Required section', () => {
 	);
 });
 
-test.describe('Needs Review section', () => {
-	test(
-		'Scopes the upcoming reviews to the selected space and updates review dates from the All section',
-		{tag: '@LPD-97420'},
-		async ({apiHelpers, page}) => {
-			const firstSpaceName = `space ${getRandomString()}`;
-			const secondSpaceName = `space ${getRandomString()}`;
-			const firstSpaceTitles = [
-				`upcoming ${getRandomString()}`,
-				`upcoming ${getRandomString()}`,
-			];
-			const secondSpaceTitles = [
-				`upcoming ${getRandomString()}`,
-				`upcoming ${getRandomString()}`,
-				`upcoming ${getRandomString()}`,
-			];
-
-			let secondSpaceContents: Awaited<
-				ReturnType<typeof apiHelpers.objectEntry.postObjectEntry>
-			>[];
-
-			await test.step('Create upcoming reviews in both spaces', async () => {
-				for (const name of [firstSpaceName, secondSpaceName]) {
-					await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-						name,
-						type: 'Space',
-					});
-				}
-
-				for (const [index, title] of firstSpaceTitles.entries()) {
-					await postDatedContent(apiHelpers, {
-						dateField: 'reviewDate',
-						hour: index + 1,
-						spaceName: firstSpaceName,
-						title,
-					});
-				}
-
-				secondSpaceContents = [];
-
-				for (const [index, title] of secondSpaceTitles.entries()) {
-					secondSpaceContents.push(
-						await postDatedContent(apiHelpers, {
-							dateField: 'reviewDate',
-							hour: index + 3,
-							spaceName: secondSpaceName,
-							title,
-						})
-					);
-				}
-			});
-
-			const upcomingReviews = page.getByRole('region', {
-				name: 'Upcoming Reviews',
-			});
-
-			await test.step('Show the upcoming reviews card on the dashboard', async () => {
-				await page.goto('/web/cms/dashboard');
-
-				await expect(upcomingReviews).toBeVisible();
-			});
-
-			await test.step('List only the upcoming reviews of the selected space', async () => {
-				await selectSpace(page, firstSpaceName);
-
-				for (const title of firstSpaceTitles) {
-					await expect(
-						upcomingReviews.getByText(title, {exact: true})
-					).toBeVisible();
-				}
-
-				for (const title of secondSpaceTitles) {
-					await expect(
-						upcomingReviews.getByText(title, {exact: true})
-					).toBeHidden();
-				}
-
-				await selectSpace(page, secondSpaceName);
-
-				for (const title of secondSpaceTitles) {
-					await expect(
-						upcomingReviews.getByText(title, {exact: true})
-					).toBeVisible();
-				}
-
-				for (const title of firstSpaceTitles) {
-					await expect(
-						upcomingReviews.getByText(title, {exact: true})
-					).toBeHidden();
-				}
-			});
-
-			await test.step('Offer both date actions on a list row', async () => {
-				await upcomingReviews
-					.getByRole('button', {
-						name: `${secondSpaceTitles[0]} Actions`,
-					})
-					.click();
-
-				for (const name of [
-					'Update Expiration Date',
-					'Update Review Date',
-				]) {
-					await expect(
-						page.getByRole('menuitem', {name})
-					).toBeVisible();
-				}
-
-				await page.keyboard.press('Escape');
-			});
-
-			await test.step('Open the All section sorted by review date', async () => {
-				await upcomingReviews
-					.getByRole('link', {name: 'View Upcoming Reviews'})
-					.click();
-
-				await expect(page).toHaveURL(
-					/allSection_fdsConfig=.*sorts.*dateReview/
-				);
-
-				for (const title of secondSpaceTitles) {
-					await expect(
-						page.getByText(title, {exact: true})
-					).toBeVisible();
-				}
-			});
-
-			await test.step('Update a review date from its row action', async () => {
-				await updateReviewDate(page, secondSpaceTitles[0], DATE_INPUT);
-
-				await pollDate(
-					apiHelpers,
-					secondSpaceContents[0].id,
-					'reviewDate'
-				);
-			});
-
-			await test.step('Update the remaining review dates in bulk', async () => {
-				for (const title of secondSpaceTitles.slice(1)) {
-					await page
-						.getByLabel(`Select ${title}`, {exact: true})
-						.check();
-				}
-
-				await page
-					.locator('[data-qa-id="selectionToolbar"]')
-					.getByRole('button', {name: 'Actions'})
-					.click();
-
-				await page
-					.getByRole('menuitem', {name: 'Update Review Date'})
-					.click();
-
-				await fillScheduleDateModal(page, DATE_INPUT);
-
-				for (const content of secondSpaceContents.slice(1)) {
-					await pollDate(apiHelpers, content.id, 'reviewDate');
-				}
-			});
-		}
-	);
-
-	test(
-		'Scopes the expiring soon assets to the selected space and updates expiration dates from the All section',
-		{tag: '@LPD-97420'},
-		async ({apiHelpers, page}) => {
-			const firstSpaceName = `space ${getRandomString()}`;
-			const secondSpaceName = `space ${getRandomString()}`;
-			const firstSpaceTitles = [
-				`expiring ${getRandomString()}`,
-				`expiring ${getRandomString()}`,
-			];
-			const secondSpaceTitles = [
-				`expiring ${getRandomString()}`,
-				`expiring ${getRandomString()}`,
-				`expiring ${getRandomString()}`,
-			];
-
-			let secondSpaceContents: Awaited<
-				ReturnType<typeof apiHelpers.objectEntry.postObjectEntry>
-			>[];
-
-			await test.step('Create expiring soon assets in both spaces', async () => {
-				for (const name of [firstSpaceName, secondSpaceName]) {
-					await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-						name,
-						type: 'Space',
-					});
-				}
-
-				for (const [index, title] of firstSpaceTitles.entries()) {
-					await postDatedContent(apiHelpers, {
-						dateField: 'expirationDate',
-						hour: index + 1,
-						spaceName: firstSpaceName,
-						title,
-					});
-				}
-
-				secondSpaceContents = [];
-
-				for (const [index, title] of secondSpaceTitles.entries()) {
-					secondSpaceContents.push(
-						await postDatedContent(apiHelpers, {
-							dateField: 'expirationDate',
-							hour: index + 3,
-							spaceName: secondSpaceName,
-							title,
-						})
-					);
-				}
-			});
-
-			const expiringSoon = page.getByRole('region', {
-				name: 'Expiring Soon',
-			});
-
-			await test.step('Show the expiring soon card on the dashboard', async () => {
-				await page.goto('/web/cms/dashboard');
-
-				await expect(expiringSoon).toBeVisible();
-			});
-
-			await test.step('List only the expiring soon assets of the selected space', async () => {
-				await selectSpace(page, firstSpaceName);
-
-				for (const title of firstSpaceTitles) {
-					await expect(
-						expiringSoon.getByText(title, {exact: true})
-					).toBeVisible();
-				}
-
-				for (const title of secondSpaceTitles) {
-					await expect(
-						expiringSoon.getByText(title, {exact: true})
-					).toBeHidden();
-				}
-
-				await selectSpace(page, secondSpaceName);
-
-				for (const title of secondSpaceTitles) {
-					await expect(
-						expiringSoon.getByText(title, {exact: true})
-					).toBeVisible();
-				}
-
-				for (const title of firstSpaceTitles) {
-					await expect(
-						expiringSoon.getByText(title, {exact: true})
-					).toBeHidden();
-				}
-			});
-
-			await test.step('Open the All section filtered by expiration date', async () => {
-				await expiringSoon
-					.getByRole('link', {name: 'View Expiring Soon'})
-					.click();
-
-				await expect(page).toHaveURL(
-					/allSection_fdsConfig=.*filters.*dateExpiration/
-				);
-
-				await expect(
-					page.getByRole('button', {name: /Expiring Soon/})
-				).toHaveAttribute('aria-pressed', 'true');
-
-				for (const title of secondSpaceTitles) {
-					await expect(
-						page.getByText(title, {exact: true})
-					).toBeVisible();
-				}
-			});
-
-			await test.step('Update an expiration date from its row action', async () => {
-				await updateExpirationDate(
-					page,
-					secondSpaceTitles[0],
-					DATE_INPUT
-				);
-
-				await pollDate(
-					apiHelpers,
-					secondSpaceContents[0].id,
-					'expirationDate'
-				);
-			});
-
-			await test.step('Update the remaining expiration dates in bulk', async () => {
-				for (const title of secondSpaceTitles.slice(1)) {
-					await page
-						.getByLabel(`Select ${title}`, {exact: true})
-						.check();
-				}
-
-				await page
-					.locator('[data-qa-id="selectionToolbar"]')
-					.getByRole('button', {name: 'Actions'})
-					.click();
-
-				await page
-					.getByRole('menuitem', {name: 'Update Expiration Date'})
-					.click();
-
-				await fillScheduleDateModal(page, DATE_INPUT);
-
-				for (const content of secondSpaceContents.slice(1)) {
-					await pollDate(apiHelpers, content.id, 'expirationDate');
-				}
-			});
-		}
-	);
-});
-
 test.describe('Duplication and Similarity section', () => {
 	test(
 		'Groups the duplicated topics of the selected space by the title they repeat',
@@ -1363,6 +1041,138 @@ test.describe('Operations section', () => {
 
 				await expect(
 					page.getByText(approvedTitle, {exact: true})
+				).toBeHidden();
+			});
+		}
+	);
+
+	test(
+		'Lists the drafts of the selected space not modified for more than 30 days',
+		{tag: '@LPD-101600'},
+		async ({apiHelpers, browser, page}) => {
+			const spaceName = `space ${getRandomString()}`;
+			const longStandingDraftTitle = `draft ${getRandomString()}`;
+			const recentDraftTitle = `draft ${getRandomString()}`;
+
+			await test.step('Create a long-standing draft and a recent one', async () => {
+				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+					name: spaceName,
+					type: 'Space',
+				});
+
+				const drafts = [];
+
+				for (const title of [
+					longStandingDraftTitle,
+					recentDraftTitle,
+				]) {
+					const draft = await apiHelpers.objectEntry.postObjectEntry(
+						{
+							objectEntryFolderExternalReferenceCode:
+								'L_CONTENTS',
+							status: {code: 2},
+							title,
+						},
+						APPLICATION_NAME,
+						spaceName
+					);
+
+					apiHelpers.data.push({id: draft.id, type: 'document'});
+
+					expect(draft.id).toBeTruthy();
+
+					drafts.push(draft);
+				}
+
+				const adminContext = await browser.newContext();
+
+				try {
+					const adminPage = await adminContext.newPage();
+
+					await performLoginViaApi({
+						page: adminPage,
+						screenName: 'test',
+					});
+
+					const serverAdministrationPage =
+						new ServerAdministrationPage(adminPage);
+
+					await serverAdministrationPage.goto();
+
+					await serverAdministrationPage.executeScript(
+						getLongStandingDraftScript(drafts[0].id)
+					);
+				}
+				finally {
+					await adminContext.close();
+				}
+			});
+
+			const card = page.getByRole('button', {
+				name: /^Long-Standing Drafts/,
+			});
+
+			await test.step('Count the long-standing draft in the card', async () => {
+				await expect(async () => {
+					await page.goto('/web/cms/dashboard');
+
+					await selectSpace(page, spaceName);
+
+					await expect(card).toContainText('50% of 2 Assets', {
+						timeout: 5000,
+					});
+				}).toPass();
+			});
+
+			const list = page.getByRole('region', {
+				name: 'Long-Standing Drafts',
+			});
+
+			await test.step('Expand the list of long-standing drafts', async () => {
+				await card.click();
+
+				await expect(card).toHaveAttribute('aria-expanded', 'true');
+
+				await expect(
+					list.getByRole('link', {name: longStandingDraftTitle})
+				).toBeVisible();
+
+				await expect(
+					list.getByText(
+						`${LONG_STANDING_DRAFT_AGE_DAYS} days in draft`
+					)
+				).toBeVisible();
+
+				await expect(
+					list.getByText(recentDraftTitle, {exact: true})
+				).toBeHidden();
+			});
+
+			await test.step('Collapse the list', async () => {
+				await card.click();
+
+				await expect(card).toHaveAttribute('aria-expanded', 'false');
+
+				await expect(list).toBeHidden();
+
+				await card.click();
+			});
+
+			await test.step('Open the All section filtered by draft and modified date', async () => {
+				await list
+					.getByRole('link', {name: 'View All Long-Standing Drafts'})
+					.click();
+
+				await expect(page).toHaveURL(
+					/allSection_fdsConfig=.*status.*dateModified/
+				);
+
+				await expect(
+					page.getByText(longStandingDraftTitle, {exact: true})
+				).toBeVisible();
+
+				await expect(
+					page.getByText(recentDraftTitle, {exact: true})
 				).toBeHidden();
 			});
 		}

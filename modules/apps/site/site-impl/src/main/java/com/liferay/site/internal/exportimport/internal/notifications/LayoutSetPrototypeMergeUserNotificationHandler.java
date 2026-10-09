@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.notifications.BaseUserNotificationHandler;
 import com.liferay.portal.kernel.notifications.UserNotificationHandler;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
@@ -63,7 +64,7 @@ public class LayoutSetPrototypeMergeUserNotificationHandler
 
 		return _language.format(
 			locale, _getLanguageKey(jsonObject.getString("result")),
-			layoutSetPrototypeName);
+			HtmlUtil.escape(layoutSetPrototypeName), false);
 	}
 
 	private String _getLanguageKey(String result) {

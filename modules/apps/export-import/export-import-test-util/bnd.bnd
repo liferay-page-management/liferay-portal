@@ -8,4 +8,5 @@ Export-Package:\
 	com.liferay.exportimport.test.util.exportimport.data.handler,\
 	com.liferay.exportimport.test.util.lar,\
 	com.liferay.exportimport.test.util.model,\
-	com.liferay.exportimport.test.util.model.util
+	com.liferay.exportimport.test.util.model.util,\
+	com.liferay.exportimport.test.util.vulcan.batch.engine

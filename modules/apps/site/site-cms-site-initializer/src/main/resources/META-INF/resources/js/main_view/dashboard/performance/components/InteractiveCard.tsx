@@ -39,6 +39,7 @@ const STICKER_DISPLAY_TYPES: Record<
 
 type Props = {
 	active?: boolean;
+	children?: React.ReactNode;
 	color?: MetricColor;
 	description?: string;
 	icon?: string;
@@ -54,6 +55,7 @@ type Props = {
 
 export default function InteractiveCard({
 	active = false,
+	children,
 	color,
 	description,
 	icon,
@@ -115,6 +117,8 @@ export default function InteractiveCard({
 						/>
 					) : null}
 				</div>
+
+				{loading ? null : children}
 			</div>
 		</ClayButton>
 	);
