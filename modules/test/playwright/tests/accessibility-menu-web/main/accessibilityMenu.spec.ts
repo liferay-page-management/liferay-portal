@@ -68,6 +68,11 @@ const OPTIONS = [
 			assertBodyClass(page, enabled, /c-prefers-focus-ring/),
 		label: 'Focus Ring Animation',
 	},
+	{
+		assert: (page: Page, enabled: boolean) =>
+			assertBodyClass(page, enabled, /c-prefers-persistent-alerts/),
+		label: 'Persistent Notifications',
+	},
 ];
 
 test(

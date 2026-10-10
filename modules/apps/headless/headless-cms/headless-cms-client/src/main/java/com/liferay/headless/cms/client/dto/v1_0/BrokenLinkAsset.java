@@ -90,6 +90,28 @@ public class BrokenLinkAsset implements Cloneable, Serializable {
 
 	protected Long brokenLinksCount;
 
+	public Long getDeletedBrokenLinksCount() {
+		return deletedBrokenLinksCount;
+	}
+
+	public void setDeletedBrokenLinksCount(Long deletedBrokenLinksCount) {
+		this.deletedBrokenLinksCount = deletedBrokenLinksCount;
+	}
+
+	public void setDeletedBrokenLinksCount(
+		UnsafeSupplier<Long, Exception> deletedBrokenLinksCountUnsafeSupplier) {
+
+		try {
+			deletedBrokenLinksCount =
+				deletedBrokenLinksCountUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Long deletedBrokenLinksCount;
+
 	public Long getDraftBrokenLinksCount() {
 		return draftBrokenLinksCount;
 	}
@@ -272,4 +294,4 @@ public class BrokenLinkAsset implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1563250787
+// LIFERAY-REST-BUILDER-HASH:-1187331436

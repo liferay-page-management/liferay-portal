@@ -184,6 +184,18 @@ public class TaxonomyCategoryResourceImpl
 			}
 
 			@Override
+			public boolean isScopeSupported(long companyId, long groupId) {
+				Group group = _groupLocalService.fetchGroup(groupId);
+
+				if ((group != null) && group.isDepot()) {
+					return true;
+				}
+
+				return ExportImportDescriptor.super.isScopeSupported(
+					companyId, groupId);
+			}
+
+			@Override
 			public boolean isStagingSupported() {
 				return true;
 			}

@@ -447,11 +447,7 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase
 			return DataLevel.PORTAL;
 		}
 
-		if (scope == Scope.DEPOT) {
-			return DataLevel.DEPOT;
-		}
-
-		if (scope == Scope.SITE) {
+		if ((scope == Scope.DEPOT) || (scope == Scope.SITE)) {
 			return DataLevel.SITE;
 		}
 

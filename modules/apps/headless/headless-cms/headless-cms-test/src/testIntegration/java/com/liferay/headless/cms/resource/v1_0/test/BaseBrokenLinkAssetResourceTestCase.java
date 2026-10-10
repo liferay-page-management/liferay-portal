@@ -584,6 +584,16 @@ public abstract class BaseBrokenLinkAssetResourceTestCase {
 			}
 
 			if (Objects.equals(
+					"deletedBrokenLinksCount", additionalAssertFieldName)) {
+
+				if (brokenLinkAsset.getDeletedBrokenLinksCount() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"draftBrokenLinksCount", additionalAssertFieldName)) {
 
 				if (brokenLinkAsset.getDraftBrokenLinksCount() == null) {
@@ -789,6 +799,19 @@ public abstract class BaseBrokenLinkAssetResourceTestCase {
 				if (!Objects.deepEquals(
 						brokenLinkAsset1.getBrokenLinksCount(),
 						brokenLinkAsset2.getBrokenLinksCount())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"deletedBrokenLinksCount", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						brokenLinkAsset1.getDeletedBrokenLinksCount(),
+						brokenLinkAsset2.getDeletedBrokenLinksCount())) {
 
 					return false;
 				}
@@ -1047,6 +1070,11 @@ public abstract class BaseBrokenLinkAssetResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("deletedBrokenLinksCount")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("draftBrokenLinksCount")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -1256,6 +1284,7 @@ public abstract class BaseBrokenLinkAssetResourceTestCase {
 				brokenLinkTitle = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				brokenLinksCount = RandomTestUtil.randomLong();
+				deletedBrokenLinksCount = RandomTestUtil.randomLong();
 				draftBrokenLinksCount = RandomTestUtil.randomLong();
 				expiredBrokenLinksCount = RandomTestUtil.randomLong();
 				href = StringUtil.toLowerCase(RandomTestUtil.randomString());
@@ -1491,4 +1520,4 @@ public abstract class BaseBrokenLinkAssetResourceTestCase {
 		_brokenLinkAssetResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-378749548
+// LIFERAY-REST-BUILDER-HASH:-616576650

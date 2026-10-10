@@ -36,13 +36,13 @@ $border-color: #e7e7ed;
 $info-bc: #eef2fa;
 $primary-color: #0b5fff;
 
-$step-tracker-active: #6b6c7e;
-$step-tracker-completed: #287d3c;
-$step-tracker-inactive: #fff;
+$step-tracker-active: var(--secondary);
+$step-tracker-completed: var(--success);
+$step-tracker-inactive: var(--white);
 
-$step-tracker-active-color: #fff;
-$step-tracker-completed-color: #fff;
-$step-tracker-inactive-color: #6b6c7e;
+$step-tracker-active-color: var(--white);
+$step-tracker-completed-color: var(--white);
+$step-tracker-inactive-color: var(--secondary);
 
 // Animations
 

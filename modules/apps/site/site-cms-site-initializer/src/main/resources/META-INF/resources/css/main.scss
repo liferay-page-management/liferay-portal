@@ -21,8 +21,8 @@
 		border: 0;
 		margin-bottom: 0;
 
-		.cell-item-actions {
-			width: 10% !important;
+		.cell-item-actions .dropdown {
+			margin-left: auto;
 		}
 
 		thead {
@@ -203,7 +203,7 @@
 
 .custom-empty-state.cms-content-progress,
 .custom-empty-state.cms-contributor-concentration,
-.custom-empty-state.cms-needs-review,
+.custom-empty-state.cms-long-standing-drafts,
 .custom-empty-state.cms-related-assets,
 .custom-empty-state.cms-space-summary {
 	.fds.c-slideout-container {

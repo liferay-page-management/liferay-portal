@@ -4,25 +4,53 @@
  */
 
 import ClayLayout from '@clayui/layout';
-import React from 'react';
+import React, {useState} from 'react';
 
 import {SectionHeader} from '../../common/SectionHeader';
 import {GovernanceAdditionalProps} from '../types';
 import {ContentProgress} from './ContentProgress';
 import {ContributorConcentration} from './ContributorConcentration';
+import {
+	LongStandingDraftsCard,
+	LongStandingDraftsList,
+} from './LongStandingDrafts';
 
 export function Operations({
 	additionalProps,
 }: {
 	additionalProps: GovernanceAdditionalProps;
 }) {
+	const [longStandingDraftsExpanded, setLongStandingDraftsExpanded] =
+		useState(false);
+
 	const title = Liferay.Language.get('operations');
 
 	return (
-		<div className="mb-3 py-4">
+		<div aria-label={title} className="mb-3 py-4" role="group">
 			<SectionHeader icon="organizations" title={title} />
 
-			<ClayLayout.Row aria-label={title} className="mt-3" role="group">
+			<ClayLayout.Row className="mt-4">
+				<ClayLayout.Col className="mb-4" md={4}>
+					<LongStandingDraftsCard
+						expanded={longStandingDraftsExpanded}
+						onClick={() =>
+							setLongStandingDraftsExpanded(
+								(expanded) => !expanded
+							)
+						}
+					/>
+				</ClayLayout.Col>
+
+				{longStandingDraftsExpanded ? (
+					<ClayLayout.Col className="mb-4" size={12}>
+						<LongStandingDraftsList
+							additionalProps={additionalProps}
+						/>
+					</ClayLayout.Col>
+				) : null}
+			</ClayLayout.Row>
+
+			<ClayLayout.Row>
 				<ClayLayout.Col md={6}>
 					<ContentProgress additionalProps={additionalProps} />
 				</ClayLayout.Col>

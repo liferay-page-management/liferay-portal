@@ -5,14 +5,24 @@
 
 package com.liferay.headless.cms.internal.link;
 
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
+
 /**
  * @author Mikel Lorza
  */
 public class BrokenLinkTarget {
 
+	public BrokenLinkTarget() {
+		_deleted = true;
+		_objectEntryId = 0;
+		_status = WorkflowConstants.STATUS_ANY;
+	}
+
 	public BrokenLinkTarget(long objectEntryId, int status) {
 		_objectEntryId = objectEntryId;
 		_status = status;
+
+		_deleted = false;
 	}
 
 	public long getObjectEntryId() {
@@ -23,6 +33,11 @@ public class BrokenLinkTarget {
 		return _status;
 	}
 
+	public boolean isDeleted() {
+		return _deleted;
+	}
+
+	private final boolean _deleted;
 	private final long _objectEntryId;
 	private final int _status;
 

@@ -169,6 +169,11 @@ type Props = {
 function LiferayProvider({children, spritemap}: Props) {
 	const [accessibilityMenu] = useLiferayState(accessibilityMenuAtom);
 
+	const persistentAlerts =
+		accessibilityMenu[
+			CONSTANTS.ACCESSIBILITY_SETTING_PERSISTENT_NOTIFICATIONS
+		]?.value;
+
 	const reducedMotion = useMemo(() => {
 		const reducedMotion =
 			accessibilityMenu[CONSTANTS.ACCESSIBILITY_SETTING_REDUCED_MOTION];
@@ -182,7 +187,11 @@ function LiferayProvider({children, spritemap}: Props) {
 	}, [accessibilityMenu]);
 
 	return (
-		<Provider reducedMotion={reducedMotion} spritemap={spritemap}>
+		<Provider
+			persistentAlerts={persistentAlerts}
+			reducedMotion={reducedMotion}
+			spritemap={spritemap}
+		>
 			<ClayIconSpriteContext.Provider value={spritemap}>
 				{children}
 			</ClayIconSpriteContext.Provider>

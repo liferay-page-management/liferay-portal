@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.search.aggregation.Aggregations;
 import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.Searcher;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceTokenTable;
@@ -200,13 +201,13 @@ public class AssetStatisticsResourceImpl
 		try {
 			BrokenLinkAssetSearcher brokenLinkAssetSearcher =
 				new BrokenLinkAssetSearcher(
-					_objectEntryLocalService, _searcher,
+					_aggregations, _objectEntryLocalService, _searcher,
 					_searchRequestBuilderFactory);
 
 			Map<String, BrokenLinkTarget> brokenLinkTargetsMap =
 				brokenLinkAssetSearcher.getBrokenLinkTargetsMap(
 					contextCompany.getCompanyId(), objectDefinitionIds,
-					spaceGroupIds);
+					selectedSpaceGroupIds, spaceGroupIds);
 
 			if (brokenLinkTargetsMap.isEmpty()) {
 				return 0;
@@ -291,6 +292,9 @@ public class AssetStatisticsResourceImpl
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		AssetStatisticsResourceImpl.class);
+
+	@Reference
+	private Aggregations _aggregations;
 
 	@Reference
 	private DepotEntryLocalService _depotEntryLocalService;

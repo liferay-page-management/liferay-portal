@@ -62,12 +62,14 @@ export type DashboardAssetListAdditionalProps = Pick<
 export default function getDashboardAssetListFDSProps({
 	additionalProps,
 	itemsActions = [],
+	onDataChange,
 	renderSubtitle,
 	...otherProps
 }: {
 	additionalProps: DashboardAssetListAdditionalProps;
 	apiURL?: string;
 	itemsActions?: IItemsActions[];
+	onDataChange?: () => void;
 	renderSubtitle?: (itemData: ISearchAssetObjectEntry) => React.ReactNode;
 	[key: string]: any;
 }) {
@@ -165,7 +167,7 @@ export default function getDashboardAssetListFDSProps({
 			event,
 			itemData,
 			items,
-			loadData,
+			loadData: fdsLoadData,
 		}: {
 			action: any;
 			event: Event;
@@ -173,6 +175,14 @@ export default function getDashboardAssetListFDSProps({
 			items: any;
 			loadData: () => {};
 		}) {
+			const loadData = () => {
+				const result = fdsLoadData();
+
+				onDataChange?.();
+
+				return result;
+			};
+
 			if (action?.data?.id === 'copy' || action?.data?.id === 'move') {
 				openFolderItemSelectorAction(
 					action?.data?.id,

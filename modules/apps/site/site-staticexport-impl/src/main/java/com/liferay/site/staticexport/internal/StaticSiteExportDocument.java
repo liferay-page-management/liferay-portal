@@ -12,12 +12,14 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -36,24 +38,22 @@ public class StaticSiteExportDocument {
 		_document = Jsoup.parse(html);
 	}
 
-	public String getHTML() {
-		return _document.outerHtml();
-	}
-
-	public Set<String> getURLs() {
-		Set<String> urls = new LinkedHashSet<>();
+	public Set<String> getEmbeddedURLs() {
+		Set<String> embeddedURLs = new LinkedHashSet<>();
 
 		for (String attributeName : _ATTRIBUTE_NAMES) {
 			for (Element element :
 					_document.select("[" + attributeName + "]")) {
 
-				urls.add(element.attr(attributeName));
+				if (_isEmbedded(attributeName, element)) {
+					embeddedURLs.add(element.attr(attributeName));
+				}
 			}
 		}
 
 		for (Element element : _document.select("[srcset]")) {
 			for (String candidate : _getSrcsetCandidates(element)) {
-				urls.add(_getCandidateURL(candidate));
+				embeddedURLs.add(_getCandidateURL(candidate));
 			}
 		}
 
@@ -70,9 +70,23 @@ public class StaticSiteExportDocument {
 				String url = importsJSONObject.getString(iterator.next());
 
 				if (!url.endsWith(StringPool.SLASH)) {
-					urls.add(url);
+					embeddedURLs.add(url);
 				}
 			}
+		}
+
+		return embeddedURLs;
+	}
+
+	public String getHTML() {
+		return _document.outerHtml();
+	}
+
+	public Set<String> getURLs() {
+		Set<String> urls = getEmbeddedURLs();
+
+		for (Element element : _document.select("[href]")) {
+			urls.add(element.attr("href"));
 		}
 
 		return urls;
@@ -180,6 +194,29 @@ public class StaticSiteExportDocument {
 		}
 
 		return candidates;
+	}
+
+	private boolean _isEmbedded(String attributeName, Element element) {
+		if (!Objects.equals(attributeName, "href")) {
+			return true;
+		}
+
+		String tagName = element.normalName();
+
+		if (Objects.equals(tagName, "a") || Objects.equals(tagName, "area") ||
+			Objects.equals(tagName, "base")) {
+
+			return false;
+		}
+
+		if (!Objects.equals(tagName, "link")) {
+			return true;
+		}
+
+		String[] rels = StringUtil.split(
+			StringUtil.toLowerCase(element.attr("rel")), CharPool.SPACE);
+
+		return ArrayUtil.contains(rels, "stylesheet");
 	}
 
 	private static final String[] _ATTRIBUTE_NAMES = {

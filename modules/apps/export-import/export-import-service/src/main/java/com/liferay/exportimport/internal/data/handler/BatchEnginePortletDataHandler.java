@@ -324,6 +324,20 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 					ExportImportDescriptor::isMissingPortletSupported));
 	}
 
+	public boolean isScopeSupported(long companyId, long groupId) {
+		for (Registration registration : _registrations) {
+			ExportImportVulcanBatchEngineTaskItemDelegate.ExportImportDescriptor
+				exportImportDescriptor =
+					registration.getExportImportDescriptor();
+
+			if (exportImportDescriptor.isScopeSupported(companyId, groupId)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	@Override
 	public boolean isStaged() {
 		return !StringUtil.startsWith(
@@ -375,12 +389,9 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 			setDataLevel(DataLevel.PORTAL);
 		}
 		else if (ExportImportVulcanBatchEngineTaskItemDelegate.Scope.DEPOT.
-					equals(exportImportDescriptor.getScope())) {
-
-			setDataLevel(DataLevel.DEPOT);
-		}
-		else if (ExportImportVulcanBatchEngineTaskItemDelegate.Scope.SITE.
-					equals(exportImportDescriptor.getScope())) {
+					equals(exportImportDescriptor.getScope()) ||
+				 ExportImportVulcanBatchEngineTaskItemDelegate.Scope.SITE.
+					 equals(exportImportDescriptor.getScope())) {
 
 			setDataLevel(DataLevel.SITE);
 		}

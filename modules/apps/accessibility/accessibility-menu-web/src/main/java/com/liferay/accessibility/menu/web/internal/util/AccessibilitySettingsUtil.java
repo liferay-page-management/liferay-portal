@@ -86,7 +86,19 @@ public class AccessibilitySettingsUtil {
 				_getSessionClicksValue(
 					httpServletRequest,
 					AccessibilitySettingConstants.
-						ACCESSIBILITY_SETTING_FOCUS_RING)));
+						ACCESSIBILITY_SETTING_FOCUS_RING)),
+			new AccessibilitySetting(
+				"c-prefers-persistent-alerts", false,
+				LanguageUtil.get(
+					httpServletRequest, "persistent-notifications-description"),
+				AccessibilitySettingConstants.
+					ACCESSIBILITY_SETTING_PERSISTENT_NOTIFICATIONS,
+				LanguageUtil.get(
+					httpServletRequest, "persistent-notifications"),
+				_getSessionClicksValue(
+					httpServletRequest,
+					AccessibilitySettingConstants.
+						ACCESSIBILITY_SETTING_PERSISTENT_NOTIFICATIONS)));
 	}
 
 	public static boolean isAccessibilityMenuEnabled(

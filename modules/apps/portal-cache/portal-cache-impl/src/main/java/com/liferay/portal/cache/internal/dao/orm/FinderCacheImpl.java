@@ -165,7 +165,9 @@ public class FinderCacheImpl
 		LocalCacheKey localCacheKey = null;
 		PortalCache<Serializable, Serializable> portalCache = null;
 
-		if (_isLocalCacheEnabled()) {
+		boolean productionMode = CTCollectionThreadLocal.isProductionMode();
+
+		if (_isLocalCacheEnabled(productionMode)) {
 			localCache = _localCache.get();
 
 			localCacheKey = new LocalCacheKey(
@@ -190,7 +192,8 @@ public class FinderCacheImpl
 			CountKey countKey = null;
 
 			if (transactionalCount) {
-				countKey = _createCountKey(finderPath, cacheKey);
+				countKey = _createCountKey(
+					finderPath, cacheKey, productionMode);
 			}
 
 			cacheValue = _getPrivateCount(countKey);
@@ -259,6 +262,7 @@ public class FinderCacheImpl
 		}
 
 		Serializable cacheValue = (Serializable)result;
+		boolean productionMode = CTCollectionThreadLocal.isProductionMode();
 
 		if (result instanceof BaseModel<?>) {
 			BaseModel<?> model = (BaseModel<?>)result;
@@ -274,7 +278,7 @@ public class FinderCacheImpl
 			else if ((objects.size() > _valueObjectFinderCacheListThreshold) &&
 					 (_valueObjectFinderCacheListThreshold > 0)) {
 
-				_removeResult(finderPath, args, true);
+				_removeResult(finderPath, args, true, productionMode);
 
 				return;
 			}
@@ -304,7 +308,8 @@ public class FinderCacheImpl
 			_isMaintainedCountFinderPath(finderPath)) {
 
 			if (TransactionalPortalCacheUtil.isEnabled()) {
-				CountKey countKey = _createCountKey(finderPath, cacheKey);
+				CountKey countKey = _createCountKey(
+					finderPath, cacheKey, productionMode);
 
 				if (countKey != null) {
 					TransactionalPortalCacheUtil.put(
@@ -314,7 +319,8 @@ public class FinderCacheImpl
 							TransactionalPortalCacheUtil.getStartSequence()),
 						PortalCache.DEFAULT_TIME_TO_LIVE, true);
 
-					_putLocalCache(finderPath, cacheKey, cacheValue);
+					_putLocalCache(
+						finderPath, cacheKey, cacheValue, productionMode);
 
 					return;
 				}
@@ -328,7 +334,7 @@ public class FinderCacheImpl
 				_getCTPortalCache(finderPath.getCacheName()), cacheKey,
 				portalCacheValue, timeToLive)) {
 
-			if (_isLocalCacheEnabled()) {
+			if (_isLocalCacheEnabled(productionMode)) {
 				Map<LocalCacheKey, Serializable> localCache = _localCache.get();
 
 				localCache.remove(
@@ -338,7 +344,7 @@ public class FinderCacheImpl
 			return;
 		}
 
-		_putLocalCache(finderPath, cacheKey, cacheValue);
+		_putLocalCache(finderPath, cacheKey, cacheValue, productionMode);
 	}
 
 	public void removeByEntityCache(String className, BaseModel<?> baseModel) {
@@ -360,18 +366,19 @@ public class FinderCacheImpl
 
 		ArgumentsResolver argumentsResolver =
 			argumentsResolverHolder.getArgumentsResolver();
+		boolean productionMode = CTCollectionThreadLocal.isProductionMode();
 
 		for (FinderPath finderPath : _getFinderPaths(className)) {
 			_removeResult(
 				finderPath,
 				argumentsResolver.getArguments(
 					finderPath, baseModel, false, false),
-				false);
+				false, productionMode);
 			_removeResult(
 				finderPath,
 				argumentsResolver.getArguments(
 					finderPath, baseModel, true, true),
-				false);
+				false, productionMode);
 		}
 
 		if (!_countMaintenanceEnabled || !(baseModel instanceof MVCCModel)) {
@@ -387,7 +394,7 @@ public class FinderCacheImpl
 		PortalCache<Serializable, Serializable> portalCache = _portalCaches.get(
 			_getCountCacheName(className));
 
-		if (CTCollectionThreadLocal.isProductionMode() &&
+		if (productionMode &&
 			(portalCache instanceof CTAwarePortalCache ctAwarePortalCache)) {
 
 			ctAwarePortalCache.removeAllFromCTPortalCaches();
@@ -403,7 +410,7 @@ public class FinderCacheImpl
 					finderPath,
 					argumentsResolver.getArguments(
 						finderPath, baseModel, false, true),
-					-1, false);
+					-1, false, productionMode);
 
 				continue;
 			}
@@ -412,12 +419,12 @@ public class FinderCacheImpl
 				finderPath,
 				argumentsResolver.getArguments(
 					finderPath, baseModel, false, false),
-				false);
+				false, productionMode);
 			_removeResult(
 				finderPath,
 				argumentsResolver.getArguments(
 					finderPath, baseModel, true, true),
-				false);
+				false, productionMode);
 		}
 	}
 
@@ -475,7 +482,8 @@ public class FinderCacheImpl
 			return;
 		}
 
-		_removeResult(finderPath, args, true);
+		_removeResult(
+			finderPath, args, true, CTCollectionThreadLocal.isProductionMode());
 	}
 
 	public void updateByEntityCache(String className, BaseModel<?> baseModel) {
@@ -513,6 +521,8 @@ public class FinderCacheImpl
 			_markPendingFlush(className, argumentsResolver.getTableName());
 		}
 
+		boolean productionMode = CTCollectionThreadLocal.isProductionMode();
+
 		for (FinderPath finderPath : finderPaths) {
 			if (_isMaintainedCountFinderPath(finderPath) &&
 				(baseModel instanceof MVCCModel)) {
@@ -522,19 +532,19 @@ public class FinderCacheImpl
 						finderPath,
 						argumentsResolver.getArguments(
 							finderPath, baseModel, false, false),
-						1, true);
+						1, true, productionMode);
 				}
 				else {
 					_adjustResult(
 						finderPath,
 						argumentsResolver.getArguments(
 							finderPath, baseModel, true, false),
-						1, true);
+						1, true, productionMode);
 					_adjustResult(
 						finderPath,
 						argumentsResolver.getArguments(
 							finderPath, baseModel, true, true),
-						-1, true);
+						-1, true, productionMode);
 				}
 
 				continue;
@@ -545,19 +555,19 @@ public class FinderCacheImpl
 					finderPath,
 					argumentsResolver.getArguments(
 						finderPath, baseModel, false, false),
-					false);
+					false, productionMode);
 			}
 			else {
 				_removeResult(
 					finderPath,
 					argumentsResolver.getArguments(
 						finderPath, baseModel, true, false),
-					false);
+					false, productionMode);
 				_removeResult(
 					finderPath,
 					argumentsResolver.getArguments(
 						finderPath, baseModel, true, true),
-					false);
+					false, productionMode);
 			}
 		}
 	}
@@ -696,7 +706,7 @@ public class FinderCacheImpl
 
 	private void _adjustResult(
 		FinderPath finderPath, Object[] args, long delta,
-		boolean removeFromCTPortalCaches) {
+		boolean removeFromCTPortalCaches, boolean productionMode) {
 
 		if (args == null) {
 			return;
@@ -716,7 +726,7 @@ public class FinderCacheImpl
 		CountKey countKey = null;
 
 		if (TransactionalPortalCacheUtil.isEnabled()) {
-			countKey = _createCountKey(finderPath, cacheKey);
+			countKey = _createCountKey(finderPath, cacheKey, productionMode);
 		}
 
 		if (countKey == null) {
@@ -778,13 +788,13 @@ public class FinderCacheImpl
 	}
 
 	private CountKey _createCountKey(
-		FinderPath finderPath, Serializable cacheKey) {
+		FinderPath finderPath, Serializable cacheKey, boolean productionMode) {
 
 		PortalCache<Serializable, Serializable> portalCache = _getPortalCache(
 			finderPath.getCacheName());
 
 		if (portalCache instanceof CTAwarePortalCache ctAwarePortalCache) {
-			if (!CTCollectionThreadLocal.isProductionMode()) {
+			if (!productionMode) {
 				return null;
 			}
 
@@ -1144,10 +1154,8 @@ public class FinderCacheImpl
 		return basePersistence.fetchByPrimaryKey(cacheValue);
 	}
 
-	private boolean _isLocalCacheEnabled() {
-		if ((_localCache == null) ||
-			!CTCollectionThreadLocal.isProductionMode()) {
-
+	private boolean _isLocalCacheEnabled(boolean productionMode) {
+		if ((_localCache == null) || !productionMode) {
 			return false;
 		}
 
@@ -1180,9 +1188,10 @@ public class FinderCacheImpl
 	}
 
 	private void _putLocalCache(
-		FinderPath finderPath, Serializable cacheKey, Serializable cacheValue) {
+		FinderPath finderPath, Serializable cacheKey, Serializable cacheValue,
+		boolean productionMode) {
 
-		if (_isLocalCacheEnabled()) {
+		if (_isLocalCacheEnabled(productionMode)) {
 			Map<LocalCacheKey, Serializable> localCache = _localCache.get();
 
 			localCache.put(
@@ -1219,7 +1228,8 @@ public class FinderCacheImpl
 	}
 
 	private void _removeResult(
-		FinderPath finderPath, Object[] args, boolean removeFromLocalCache) {
+		FinderPath finderPath, Object[] args, boolean removeFromLocalCache,
+		boolean productionMode) {
 
 		if (args == null) {
 			return;
@@ -1227,7 +1237,7 @@ public class FinderCacheImpl
 
 		Serializable cacheKey = _encodeCacheKey(finderPath, args);
 
-		if (removeFromLocalCache && _isLocalCacheEnabled()) {
+		if (removeFromLocalCache && _isLocalCacheEnabled(productionMode)) {
 			Map<LocalCacheKey, Serializable> localCache = _localCache.get();
 
 			localCache.remove(
@@ -1242,7 +1252,8 @@ public class FinderCacheImpl
 		if (TransactionalPortalCacheUtil.isEnabled() &&
 			_isMaintainedCountFinderPath(finderPath)) {
 
-			CountKey countKey = _createCountKey(finderPath, cacheKey);
+			CountKey countKey = _createCountKey(
+				finderPath, cacheKey, productionMode);
 
 			if (countKey != null) {
 				TransactionalPortalCacheUtil.put(

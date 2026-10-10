@@ -75,6 +75,29 @@ describe('InteractiveCard', () => {
 		).toBeEmptyDOMElement();
 	});
 
+	it('renders the custom content below the value', () => {
+		renderComponent({
+			children: <span>2.6% of 350 assets</span>,
+			title: 'Long-Standing Drafts',
+			value: 9,
+		});
+
+		expect(screen.getByText('2.6% of 350 assets')).toBeInTheDocument();
+	});
+
+	it('hides the custom content while loading', () => {
+		renderComponent({
+			children: <span>2.6% of 350 assets</span>,
+			loading: true,
+			title: 'Long-Standing Drafts',
+			value: 9,
+		});
+
+		expect(
+			screen.queryByText('2.6% of 350 assets')
+		).not.toBeInTheDocument();
+	});
+
 	it('marks the card as active', () => {
 		renderComponent({
 			active: true,

@@ -1,5 +1,9 @@
-{{- if $opensearch }}
+{{- if $opensearchEnabled }}
 {{- $clusterSubnetIdsCount := len $clusterSubnetIds }}
+
+{{- if and (gt $clusterSubnetIdsCount 1) (mod (int $opensearch.instanceCount) $clusterSubnetIdsCount) }}
+{{- fail (printf "OpenSearch spreads its nodes evenly across the %d cluster zones, so search.opensearch.instanceCount must be a multiple of %d" $clusterSubnetIdsCount $clusterSubnetIdsCount) }}
+{{- end }}
 
 apiVersion: opensearch.aws.m.upbound.io/v1beta1
 kind: Domain
@@ -26,7 +30,7 @@ spec:
                     name: liferay-search-password
         clusterConfig:
             instanceCount: {{ $opensearch.instanceCount }}
-            instanceType: {{ $opensearch.instanceType }}
+            instanceType: {{ $opensearch.instanceType | default "t3.small.search" }}
             zoneAwarenessConfig:
                 availabilityZoneCount: {{ $clusterSubnetIdsCount }}
             zoneAwarenessEnabled: {{ gt $clusterSubnetIdsCount 1 }}
@@ -48,7 +52,7 @@ spec:
                     environmentId: {{ $environmentId }}
                     projectId: {{ $projectId }}
             {{- end }}
-        engineVersion: {{ $opensearch.engineVersion | quote }}
+        engineVersion: {{ printf "OpenSearch_%s" $opensearch.version | quote }}
         logPublishingOptions:
             -   cloudwatchLogGroupArn: arn:{{ $env.partition }}:logs:{{ $env.region }}:{{ $env.accountId }}:log-group:{{ $searchName }}-audit-logs
                 enabled: true
@@ -60,7 +64,7 @@ spec:
             enabled: true
         region: {{ $env.region }}
         softwareUpdateOptions:
-            autoSoftwareUpdateEnabled: {{ $opensearch.autoSoftwareUpdateEnabled }}
+            autoSoftwareUpdateEnabled: true
         tags:
             Name: {{ $searchName }}
         vpcOptions:

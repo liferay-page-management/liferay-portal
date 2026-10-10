@@ -12,6 +12,7 @@ const NO_ISSUES: AssetStatistics = {
 	expiredCount: 0,
 	expiringSoonCount: 0,
 	inDraftCount: 0,
+	longStandingDraftsCount: 0,
 	pendingCount: 0,
 	reviewDateOverdueCount: 0,
 	scheduledCount: 0,

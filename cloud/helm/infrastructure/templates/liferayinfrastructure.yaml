@@ -19,16 +19,21 @@ spec:
     database:
         {{- .Values.database | toYaml | nindent 8 }}
     environmentId: {{ .Values.environmentId | quote }}
+    {{- if hasKey .Values "forceDestroy" }}
     forceDestroy: {{ .Values.forceDestroy }}
+    {{- end }}
+    {{- if hasKey .Values "orphanOnDelete" }}
     orphanOnDelete: {{ .Values.orphanOnDelete }}
+    {{- end }}
     overlayAccess:
         {{- .Values.overlayAccess | toYaml | nindent 8 }}
     projectId: {{ .Values.projectId | quote }}
-    {{- if eq .Values.search.engine "opensearch" }}
     search:
+        engine: {{ .Values.search.engine }}
+        {{- if and (eq .Values.search.engine "opensearch") .Values.search.opensearch }}
         opensearch:
             {{- .Values.search.opensearch | toYaml | nindent 12 }}
-    {{- end }}
+        {{- end }}
     storage:
         {{- .Values.storage | toYaml | nindent 8 }}
 {{- end -}}

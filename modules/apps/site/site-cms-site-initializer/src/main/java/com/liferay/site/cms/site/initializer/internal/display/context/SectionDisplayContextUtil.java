@@ -67,10 +67,6 @@ import jakarta.portlet.ActionRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -78,7 +74,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.TimeZone;
 
 /**
  * @author Daniel Sanz
@@ -536,18 +531,6 @@ public class SectionDisplayContextUtil {
 		return depotEntryGroupIds;
 	}
 
-	public static String getExpiringSoonFilterString(
-		HttpServletRequest httpServletRequest) {
-
-		return appendGroupIds(
-			StringBundler.concat(
-				"dateExpiration gt now() and dateExpiration le ",
-				_getExpirationThresholdDateString(), " and status eq ",
-				WorkflowConstants.STATUS_APPROVED, " and ",
-				_CMS_CONTENT_FILTER_STRING),
-			httpServletRequest);
-	}
-
 	public static JSONObject getExportFileFormatJSONObject(
 		ThemeDisplay themeDisplay,
 		TranslationInfoItemFieldValuesExporter
@@ -986,19 +969,6 @@ public class SectionDisplayContextUtil {
 			_log);
 	}
 
-	public static List<FDSActionDropdownItem>
-		getNeedsReviewFDSActionDropdownItems(
-			HttpServletRequest httpServletRequest) {
-
-		List<FDSActionDropdownItem> fdsActionDropdownItems =
-			getFDSActionDropdownItems(httpServletRequest);
-
-		addScheduleDateFDSActionDropdownItems(
-			fdsActionDropdownItems, httpServletRequest);
-
-		return fdsActionDropdownItems;
-	}
-
 	public static Map<String, String> getObjectDefinitionCssClasses() {
 		return HashMapBuilder.put(
 			"default", "content-icon-custom-structure"
@@ -1071,18 +1041,6 @@ public class SectionDisplayContextUtil {
 		).build(
 			actionId
 		);
-	}
-
-	public static String getUpcomingReviewsFilterString(
-		HttpServletRequest httpServletRequest) {
-
-		return appendGroupIds(
-			appendStatus(
-				StringBundler.concat(
-					"dateReview gt now() and dateReview le ",
-					_getReviewThresholdDateString(httpServletRequest), " and ",
-					_CMS_CONTENT_FILTER_STRING)),
-			httpServletRequest);
 	}
 
 	private static void _addAddAssetsToProjectBulkAction(
@@ -1411,15 +1369,6 @@ public class SectionDisplayContextUtil {
 		return jsonArray;
 	}
 
-	private static String _getExpirationThresholdDateString() {
-		return Instant.now(
-		).plus(
-			7, ChronoUnit.DAYS
-		).truncatedTo(
-			ChronoUnit.SECONDS
-		).toString();
-	}
-
 	private static Map<String, String> _getFileMimeTypeMultimediaCssClasses(
 		String[] mimeTypes) {
 
@@ -1581,26 +1530,6 @@ public class SectionDisplayContextUtil {
 		).build(
 			"permissions-menu"
 		);
-	}
-
-	private static String _getReviewThresholdDateString(
-		HttpServletRequest httpServletRequest) {
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		TimeZone timeZone = themeDisplay.getTimeZone();
-
-		ZonedDateTime zonedDateTime = ZonedDateTime.now(timeZone.toZoneId());
-
-		ZonedDateTime thresholdZonedDateTime = zonedDateTime.plusMonths(1);
-
-		Instant instant = thresholdZonedDateTime.toInstant();
-
-		return instant.truncatedTo(
-			ChronoUnit.SECONDS
-		).toString();
 	}
 
 	private static String[] _getRootObjectEntryFolderExternalReferenceCodes(

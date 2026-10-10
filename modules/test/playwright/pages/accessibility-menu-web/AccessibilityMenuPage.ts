@@ -13,6 +13,7 @@ export class AccessibilityMenuPage {
 	readonly menuTitle: Locator;
 	readonly openAccessibilityMenuButton: Locator;
 	readonly page: Page;
+	readonly persistentNotificationsToggle: Locator;
 	readonly saveButton: Locator;
 	readonly underlinedLinksToggle: Locator;
 
@@ -30,6 +31,9 @@ export class AccessibilityMenuPage {
 			name: 'Open Accessibility Menu',
 		});
 		this.page = page;
+		this.persistentNotificationsToggle = page.getByLabel(
+			'Persistent Notifications'
+		);
 		this.saveButton = page
 			.getByRole('button', {name: 'Save'})
 			.or(page.getByRole('button', {name: 'Update'}));
@@ -82,6 +86,12 @@ export class AccessibilityMenuPage {
 		await this.closeButton.click();
 
 		await expect(this.menuTitle).toBeHidden();
+	}
+
+	async togglePersistentNotifications(check: boolean) {
+		await this.toggle(this.persistentNotificationsToggle, check);
+
+		await this.closeAccessibilityMenu();
 	}
 
 	async toggleUnderlinedLinks(check: boolean) {

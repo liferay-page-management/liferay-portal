@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -152,7 +153,8 @@ public class LayoutSetPrototypePortlet extends MVCPortlet {
 					locale,
 					"the-sync-of-the-site-template-x-started-you-will-" +
 						"receive-a-notification-when-the-process-is-complete",
-					layoutSetPrototype.getName(locale)));
+					HtmlUtil.escape(layoutSetPrototype.getName(locale)),
+					false));
 		}
 		catch (Exception exception) {
 			_log.error(

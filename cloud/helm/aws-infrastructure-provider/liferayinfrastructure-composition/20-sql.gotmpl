@@ -1,6 +1,13 @@
 {{- $database := $xr.spec.database -}}
 
 {{- $isAboveAllocatedStorageThreshold := ge (int $database.storageGB) 400 }}
+{{- $restore := $database.restore | default dict }}
+
+{{- $restoreSnapshotId := dig "snapshot" "id" "" $restore }}
+
+{{- if and (eq $restorePhase "provisioning") (not $restoreSnapshotId) }}
+{{- fail "AWS restores the database from a snapshot, so database.restore.snapshot.id is required while restoring" }}
+{{- end }}
 
 {{- range $i, $dataPlane := has $restorePhase (list "promoting" "provisioning") | ternary (list "blue" "green") (list $targetActiveDataPlane) }}
 {{- if $i }}
@@ -25,10 +32,10 @@ spec:
         allocatedStorage: {{ $database.storageGB }}
         applyImmediately: {{ and (eq $dataPlane $targetActiveDataPlane) (ne $restorePhase "none") }}
         autoGeneratePassword: true
-        autoMinorVersionUpgrade: {{ $database.autoMinorVersionUpgrade }}
+        autoMinorVersionUpgrade: true
         backupRetentionPeriod: 7
         copyTagsToSnapshot: true
-        databaseInsightsMode: {{ $database.databaseInsightsMode | quote }}
+        databaseInsightsMode: standard
         dbName: lportal
         dbSubnetGroupNameSelector:
             matchLabels:
@@ -39,25 +46,25 @@ spec:
                 projectId: {{ $projectId }}
         deletionProtection: {{ and (not $forceDestroy) (eq $dataPlane $activeDataPlane) }}
         engine: postgres
-        engineVersion: {{ $database.engineVersion | quote }}
+        engineVersion: {{ $database.version | quote }}
         iamDatabaseAuthenticationEnabled: true
         identifier: {{ $baseName }}-database-{{ $dataPlane }}
-        instanceClass: {{ $database.instanceClass }}
+        instanceClass: {{ $database.instanceType | default "db.t3.medium" }}
         {{- if $isAboveAllocatedStorageThreshold }}
-        iops: {{ int $database.iops }}
+        iops: 12000
         {{- end }}
-        multiAz: {{ $database.multiAz }}
+        multiAz: {{ $database.highAvailability }}
         passwordSecretRef:
             key: password
             name: liferay-database-{{ $dataPlane }}-password
         region: {{ $env.region }}
         skipFinalSnapshot: true
         {{- if and (eq $restorePhase "provisioning") (eq $dataPlane $targetActiveDataPlane) }}
-        snapshotIdentifier: {{ $database.snapshotIdentifier }}
+        snapshotIdentifier: {{ $restoreSnapshotId }}
         {{- end }}
         storageEncrypted: true
         {{- if $isAboveAllocatedStorageThreshold }}
-        storageThroughput: {{ int $database.storageThroughput }}
+        storageThroughput: 500
         {{- end }}
         storageType: gp3
         tags:

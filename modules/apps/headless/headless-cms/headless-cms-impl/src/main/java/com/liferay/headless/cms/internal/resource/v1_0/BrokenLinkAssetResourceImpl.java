@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.odata.entity.StringEntityField;
+import com.liferay.portal.search.aggregation.Aggregations;
 import com.liferay.portal.search.document.Document;
 import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.SearchResponse;
@@ -46,7 +47,7 @@ import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -110,13 +111,13 @@ public class BrokenLinkAssetResourceImpl
 
 		BrokenLinkAssetSearcher brokenLinkAssetSearcher =
 			new BrokenLinkAssetSearcher(
-				_objectEntryLocalService, _searcher,
+				_aggregations, _objectEntryLocalService, _searcher,
 				_searchRequestBuilderFactory);
 
 		Map<String, BrokenLinkTarget> brokenLinkTargetsMap =
 			brokenLinkAssetSearcher.getBrokenLinkTargetsMap(
 				contextCompany.getCompanyId(), objectDefinitionIds,
-				spaceGroupIds);
+				selectedSpaceGroupIds, spaceGroupIds);
 
 		if (brokenLinkTargetsMap.isEmpty()) {
 			return Page.of(Collections.emptyList());
@@ -148,12 +149,16 @@ public class BrokenLinkAssetResourceImpl
 		return _entityModel;
 	}
 
-	private String _getBrokenLinkTitle(Set<Long> brokenLinkObjectEntryIds)
+	private String _getBrokenLinkTitle(Set<BrokenLinkTarget> brokenLinkTargets)
 		throws PortalException {
 
-		for (long brokenLinkObjectEntryId : brokenLinkObjectEntryIds) {
+		for (BrokenLinkTarget brokenLinkTarget : brokenLinkTargets) {
+			if (brokenLinkTarget.isDeleted()) {
+				continue;
+			}
+
 			ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
-				brokenLinkObjectEntryId);
+				brokenLinkTarget.getObjectEntryId());
 
 			if (objectEntry == null) {
 				continue;
@@ -167,17 +172,31 @@ public class BrokenLinkAssetResourceImpl
 	}
 
 	private long _getBrokenLinksCount(
-		Map<Long, Integer> brokenLinkStatuses, int status) {
+		Set<BrokenLinkTarget> brokenLinkTargets, int status) {
 
 		long brokenLinksCount = 0;
 
-		for (int brokenLinkStatus : brokenLinkStatuses.values()) {
-			if (brokenLinkStatus == status) {
+		for (BrokenLinkTarget brokenLinkTarget : brokenLinkTargets) {
+			if (brokenLinkTarget.getStatus() == status) {
 				brokenLinksCount++;
 			}
 		}
 
 		return brokenLinksCount;
+	}
+
+	private long _getDeletedBrokenLinksCount(
+		Set<BrokenLinkTarget> brokenLinkTargets) {
+
+		long deletedBrokenLinksCount = 0;
+
+		for (BrokenLinkTarget brokenLinkTarget : brokenLinkTargets) {
+			if (brokenLinkTarget.isDeleted()) {
+				deletedBrokenLinksCount++;
+			}
+		}
+
+		return deletedBrokenLinksCount;
 	}
 
 	private String _getTitle(Document document) {
@@ -197,16 +216,14 @@ public class BrokenLinkAssetResourceImpl
 		Map<String, BrokenLinkTarget> brokenLinkTargetsMap, Document document,
 		Map<Long, String> externalReferenceCodes) {
 
-		Map<Long, Integer> brokenLinkStatuses = new LinkedHashMap<>();
+		Set<BrokenLinkTarget> brokenLinkTargets = new LinkedHashSet<>();
 
 		for (String outboundLink : document.getStrings("outboundLinks")) {
 			BrokenLinkTarget brokenLinkTarget = brokenLinkTargetsMap.get(
 				outboundLink);
 
 			if (brokenLinkTarget != null) {
-				brokenLinkStatuses.put(
-					brokenLinkTarget.getObjectEntryId(),
-					brokenLinkTarget.getStatus());
+				brokenLinkTargets.add(brokenLinkTarget);
 			}
 		}
 
@@ -227,15 +244,17 @@ public class BrokenLinkAssetResourceImpl
 							_objectEntryService.getModelResourcePermission(
 								objectDefinitionId))
 					).build());
-				setBrokenLinksCount(() -> (long)brokenLinkStatuses.size());
+				setBrokenLinksCount(() -> (long)brokenLinkTargets.size());
 				setBrokenLinkTitle(
-					() -> _getBrokenLinkTitle(brokenLinkStatuses.keySet()));
+					() -> _getBrokenLinkTitle(brokenLinkTargets));
+				setDeletedBrokenLinksCount(
+					() -> _getDeletedBrokenLinksCount(brokenLinkTargets));
 				setDraftBrokenLinksCount(
 					() -> _getBrokenLinksCount(
-						brokenLinkStatuses, WorkflowConstants.STATUS_DRAFT));
+						brokenLinkTargets, WorkflowConstants.STATUS_DRAFT));
 				setExpiredBrokenLinksCount(
 					() -> _getBrokenLinksCount(
-						brokenLinkStatuses, WorkflowConstants.STATUS_EXPIRED));
+						brokenLinkTargets, WorkflowConstants.STATUS_EXPIRED));
 				setHref(
 					() -> StringBundler.concat(
 						_portal.getPortalURL(contextHttpServletRequest),
@@ -246,7 +265,7 @@ public class BrokenLinkAssetResourceImpl
 				setId(() -> objectEntryId);
 				setInTrashBrokenLinksCount(
 					() -> _getBrokenLinksCount(
-						brokenLinkStatuses, WorkflowConstants.STATUS_IN_TRASH));
+						brokenLinkTargets, WorkflowConstants.STATUS_IN_TRASH));
 				setObjectDefinitionExternalReferenceCode(
 					() -> externalReferenceCodes.get(objectDefinitionId));
 				setTitle(() -> _getTitle(document));
@@ -260,6 +279,9 @@ public class BrokenLinkAssetResourceImpl
 				"title",
 				locale -> Field.getSortableFieldName(
 					Field.getLocalizedName(locale, "localized_title"))));
+
+	@Reference
+	private Aggregations _aggregations;
 
 	@Reference
 	private DepotEntryLocalService _depotEntryLocalService;

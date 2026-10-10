@@ -29,6 +29,14 @@
 		},
 		{
 			"expiration": "Forever (Local Storage)",
+			"externalReferenceCode": "5cd54633-e1ed-4c88-9785-15fcf4d3e5f4",
+			"host": "Liferay",
+			"name": "ACCESSIBILITY_SETTING_PERSISTENT_NOTIFICATIONS",
+			"purpose": "Stores the value (true/false) of the Persistent Notifications accessibility menu setting to remember a guest user's choice. Preferences.",
+			"type": "First Party"
+		},
+		{
+			"expiration": "Forever (Local Storage)",
 			"externalReferenceCode": "aed2afc1-81d5-4dc2-83c1-ebacdedc2e95",
 			"host": "Liferay",
 			"name": "ACCESSIBILITY_SETTING_REDUCED_MOTION",

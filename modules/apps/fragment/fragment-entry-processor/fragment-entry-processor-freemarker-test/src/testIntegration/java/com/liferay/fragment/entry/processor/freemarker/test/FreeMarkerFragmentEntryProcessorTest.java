@@ -762,6 +762,65 @@ public class FreeMarkerFragmentEntryProcessorTest {
 	}
 
 	@Test
+	@TestInfo("LPD-107496")
+	public void testProcessFragmentEntryLinkHTMLWithDisablePortletRender()
+		throws Exception {
+
+		FragmentEntryLink fragmentEntryLink =
+			_fragmentEntryLinkLocalService.createFragmentEntryLink(0);
+
+		fragmentEntryLink.setHtml(
+			_readFileToString(
+				"fragment_entry_with_disable_portlet_render.html"));
+
+		DefaultFragmentEntryProcessorContext
+			defaultFragmentEntryProcessorContext =
+				new DefaultFragmentEntryProcessorContext(
+					_serviceContext.getCompanyId(),
+					_serviceContext.getRequest(), new MockHttpServletResponse(),
+					LocaleUtil.getDefault(), null,
+					_serviceContext.getScopeGroupId());
+
+		defaultFragmentEntryProcessorContext.setDisablePortletRender(true);
+
+		String html =
+			_fragmentEntryProcessorRegistry.processFragmentEntryLinkHTML(
+				fragmentEntryLink, defaultFragmentEntryProcessorContext);
+
+		Assert.assertThat(
+			html,
+			CoreMatchers.containsString(
+				"<div id=\"action-url\">defined</div>"));
+		Assert.assertThat(
+			html,
+			CoreMatchers.containsString("<div id=\"rest-client\">0</div>"));
+		Assert.assertThat(
+			html,
+			CoreMatchers.containsString(
+				"<div id=\"runtime-portlet\">disabled</div>"));
+		Assert.assertThat(
+			html,
+			CoreMatchers.containsString(
+				"<h1 data-lfr-editable-id=\"title\" " +
+					"data-lfr-editable-type=\"text\">Title</h1>"));
+		Assert.assertThat(
+			html,
+			CoreMatchers.containsString(
+				"<lfr-drop-zone data-lfr-drop-zone-id=\"loop-1\">" +
+					"</lfr-drop-zone>"));
+		Assert.assertThat(
+			html,
+			CoreMatchers.containsString(
+				"<lfr-drop-zone data-lfr-drop-zone-id=\"loop-2\">" +
+					"</lfr-drop-zone>"));
+		Assert.assertThat(
+			html,
+			CoreMatchers.containsString(
+				"<lfr-drop-zone data-lfr-drop-zone-id=\"static\">" +
+					"</lfr-drop-zone>"));
+	}
+
+	@Test
 	public void testProcessFragmentEntryLinkHTMLWithInvalidFreeMarker()
 		throws Exception {
 
