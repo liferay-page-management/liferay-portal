@@ -549,8 +549,8 @@ public class ServicePreAction extends Action {
 			boolean ignoreHiddenLayouts)
 		throws Exception {
 
-		LayoutComposite defaultLayoutComposite =
-			_getDefaultVirtualHostLayoutComposite(httpServletRequest);
+		LayoutComposite defaultLayoutComposite = _toPublishedLayoutComposite(
+			_getDefaultVirtualHostLayoutComposite(httpServletRequest));
 
 		defaultLayoutComposite = _getViewableLayoutComposite(
 			httpServletRequest, user, permissionChecker,
@@ -570,6 +570,9 @@ public class ServicePreAction extends Action {
 					user);
 			}
 
+			defaultLayoutComposite = _toPublishedLayoutComposite(
+				defaultLayoutComposite);
+
 			defaultLayoutComposite = _getViewableLayoutComposite(
 				httpServletRequest, user, permissionChecker,
 				defaultLayoutComposite.getLayout(),
@@ -580,7 +583,8 @@ public class ServicePreAction extends Action {
 			}
 		}
 
-		defaultLayoutComposite = _getGuestSiteLayoutComposite(user);
+		defaultLayoutComposite = _toPublishedLayoutComposite(
+			_getGuestSiteLayoutComposite(user));
 
 		return _getViewableLayoutComposite(
 			httpServletRequest, user, permissionChecker,
@@ -693,9 +697,7 @@ public class ServicePreAction extends Action {
 
 		boolean hasViewLayoutPermission = false;
 
-		if (layout.isPublished() &&
-			_hasAccessPermission(permissionChecker, layout, false)) {
-
+		if (_hasAccessPermission(permissionChecker, layout, false)) {
 			hasViewLayoutPermission = true;
 		}
 
@@ -703,7 +705,6 @@ public class ServicePreAction extends Action {
 
 		for (Layout curLayout : layouts) {
 			if ((ignoreHiddenLayouts || !curLayout.isHidden()) &&
-				curLayout.isPublished() &&
 				_hasAccessPermission(permissionChecker, curLayout, false)) {
 
 				if (accessibleLayouts.isEmpty() && !hasViewLayoutPermission) {
@@ -1998,6 +1999,32 @@ public class ServicePreAction extends Action {
 			_log.debug("Recent group id " + recentGroupId);
 			_log.debug("Previous group id " + previousGroupId);
 		}
+	}
+
+	private LayoutComposite _toPublishedLayoutComposite(
+		LayoutComposite layoutComposite) {
+
+		List<Layout> layouts = layoutComposite.getLayouts();
+
+		if (ListUtil.isEmpty(layouts)) {
+			return layoutComposite;
+		}
+
+		List<Layout> publishedLayouts = new ArrayList<>(layouts.size());
+
+		for (Layout curLayout : layouts) {
+			if (curLayout.isPublished()) {
+				publishedLayouts.add(curLayout);
+			}
+		}
+
+		Layout layout = null;
+
+		if (!ListUtil.isEmpty(publishedLayouts)) {
+			layout = publishedLayouts.get(0);
+		}
+
+		return new LayoutComposite(layout, publishedLayouts);
 	}
 
 	private void _trackThemeDisplay(
