@@ -2020,7 +2020,7 @@ public class ServicePreAction extends Action {
 
 		Layout layout = null;
 
-		if (!ListUtil.isEmpty(publishedLayouts)) {
+		if (ListUtil.isNotEmpty(publishedLayouts)) {
 			layout = publishedLayouts.get(0);
 		}
 

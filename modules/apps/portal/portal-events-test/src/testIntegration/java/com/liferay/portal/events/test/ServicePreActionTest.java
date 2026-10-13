@@ -290,8 +290,7 @@ public class ServicePreActionTest {
 
 		_addResources(contentPageLayout);
 
-		plid = _getThemeDisplayPlid(
-			true, contentPageLayout.getPlid(), false);
+		plid = _getThemeDisplayPlid(true, contentPageLayout.getPlid(), false);
 
 		Assert.assertEquals(contentPageLayout.getPlid(), plid);
 
