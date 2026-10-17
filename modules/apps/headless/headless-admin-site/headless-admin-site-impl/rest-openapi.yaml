@@ -10545,6 +10545,9 @@ paths:
                                 items:
                                     $ref: "#/components/schemas/UtilityPage"
                                 type: array
+                404:
+                    description:
+                        "The requested site could not be found."
             tags: ["UtilityPage"]
         post:
             # @review
@@ -10574,6 +10577,15 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/UtilityPage"
+                400:
+                    description:
+                        "The request is invalid. For example, the utility page type is missing, the name is missing, too long, or contains an invalid character, the external reference code is already in use, or the page specifications are invalid."
+                404:
+                    description:
+                        "The requested site could not be found."
+                409:
+                    description:
+                        "A utility page of the same type with the same name already exists."
             # @review
             tags: ["UtilityPage"]
     "/sites/{siteExternalReferenceCode}/utility-pages/{utilityPageExternalReferenceCode}":
@@ -10598,6 +10610,9 @@ paths:
                     content:
                         application/json: {}
                         application/xml: {}
+                404:
+                    description:
+                        "The requested site or utility page could not be found."
             tags: ["UtilityPage"]
         get:
             # @review
@@ -10636,6 +10651,9 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/UtilityPage"
+                404:
+                    description:
+                        "The requested site or utility page could not be found."
             tags: ["UtilityPage"]
         patch:
             # @review
@@ -10682,6 +10700,15 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/UtilityPage"
+                400:
+                    description:
+                        "The request is invalid. For example, the name is missing, too long, or contains an invalid character, the page specifications are invalid, or the utility page is marked as the default before it is published."
+                404:
+                    description:
+                        "The requested site or utility page could not be found."
+                409:
+                    description:
+                        "A utility page of the same type with the same name already exists."
             tags: ["UtilityPage"]
         put:
             # @review
@@ -10728,6 +10755,15 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/UtilityPage"
+                400:
+                    description:
+                        "The request is invalid. For example, the utility page type is missing, the name is missing, too long, or contains an invalid character, the page specifications are invalid, or the utility page is marked as the default before it is published."
+                404:
+                    description:
+                        "The requested site could not be found."
+                409:
+                    description:
+                        "A utility page of the same type with the same name already exists."
             tags: ["UtilityPage"]
     "/sites/{siteExternalReferenceCode}/utility-pages/{utilityPageExternalReferenceCode}/friendly-url-history":
         get:
@@ -10766,6 +10802,9 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/FriendlyUrlHistory"
+                404:
+                    description:
+                        "The requested site or utility page could not be found."
             tags: ["FriendlyUrlHistory"]
     "/sites/{siteExternalReferenceCode}/utility-pages/{utilityPageExternalReferenceCode}/page-specifications":
         get:
@@ -10808,6 +10847,9 @@ paths:
                                 items:
                                     $ref: "#/components/schemas/PageSpecification"
                                 type: array
+                404:
+                    description:
+                        "The requested site or utility page could not be found."
             # @review
             tags: ["PageSpecification"]
         post:
@@ -10854,6 +10896,12 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/ContentPageSpecification"
+                400:
+                    description:
+                        "The request is invalid. For example, the page specification is invalid."
+                404:
+                    description:
+                        "The requested site or utility page could not be found."
             # @review
             tags: ["UtilityPage"]
     "/sites/{siteExternalReferenceCode}/utility-pages/{utilityPageExternalReferenceCode}/permissions":
