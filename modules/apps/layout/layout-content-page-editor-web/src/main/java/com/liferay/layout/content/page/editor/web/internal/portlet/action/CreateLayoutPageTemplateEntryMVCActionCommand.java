@@ -7,6 +7,7 @@ package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
+import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminConstants;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTypeConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
@@ -132,7 +133,7 @@ public class CreateLayoutPageTemplateEntryMVCActionCommand
 					LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES, 0,
 					0, PortletRequest.RENDER_PHASE)
 			).setTabs1(
-				"page-templates"
+				LayoutPageTemplateAdminConstants.TABS1_PAGE_TEMPLATES
 			).setParameter(
 				"layoutPageTemplateCollectionId",
 				layoutPageTemplateEntry.getLayoutPageTemplateCollectionId()
