@@ -7,6 +7,8 @@ package com.liferay.headless.admin.site.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageExperience;
+import com.liferay.headless.admin.site.client.pagination.Page;
+import com.liferay.headless.admin.site.client.resource.v1_0.PageExperienceResource;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutPageTemplateEntryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.PageElementsTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.PageExperiencesTestUtil;
@@ -17,11 +19,19 @@ import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -78,9 +88,22 @@ public class PageExperienceResourceTest
 
 	@Override
 	@Test
+	@TestInfo("LPD-107120")
 	public void testGetSitePageExperience() throws Exception {
 		_testGetSitePageExperience();
 		_testGetSitePageExperienceWithMissingLayoutStructureRel();
+		_testGetSitePageExperienceWithoutViewPermission();
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-107120")
+	public void testGetSitePageSpecificationPageExperiencesPage()
+		throws Exception {
+
+		super.testGetSitePageSpecificationPageExperiencesPage();
+
+		_testGetSitePageSpecificationPageExperiencesPageWithoutViewPermission();
 	}
 
 	@Override
@@ -307,6 +330,24 @@ public class PageExperienceResourceTest
 		return pageExperience;
 	}
 
+	private PageExperienceResource _getPageExperienceResource()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		return PageExperienceResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
 	private void _testDeleteSitePageExperience() throws Exception {
 		PageExperience postPageExperience =
 			testPostSitePageSpecificationPageExperience_addPageExperience(
@@ -400,6 +441,64 @@ public class PageExperienceResourceTest
 			() -> pageExperienceResource.getSitePageExperience(
 				testGroup.getExternalReferenceCode(),
 				segmentsExperience.getExternalReferenceCode()));
+	}
+
+	private void _testGetSitePageExperienceWithoutViewPermission()
+		throws Exception {
+
+		PageExperienceResource pageExperienceResource =
+			_getPageExperienceResource();
+		SegmentsExperience segmentsExperience =
+			_segmentsExperienceLocalService.fetchSegmentsExperience(
+				testGroup.getGroupId(), SegmentsExperienceConstants.KEY_DEFAULT,
+				_layout.getPlid());
+
+		PageExperience pageExperience =
+			pageExperienceResource.getSitePageExperience(
+				testGroup.getExternalReferenceCode(),
+				segmentsExperience.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			segmentsExperience.getExternalReferenceCode(),
+			pageExperience.getExternalReferenceCode());
+
+		RoleTestUtil.removeResourcePermission(
+			RoleConstants.GUEST, Layout.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(_layout.getPlid()), ActionKeys.VIEW);
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"NOT_FOUND", null,
+			() -> pageExperienceResource.getSitePageExperience(
+				testGroup.getExternalReferenceCode(),
+				segmentsExperience.getExternalReferenceCode()));
+	}
+
+	private void _testGetSitePageSpecificationPageExperiencesPageWithoutViewPermission()
+		throws Exception {
+
+		PageExperienceResource pageExperienceResource =
+			_getPageExperienceResource();
+
+		Page<PageExperience> page =
+			pageExperienceResource.getSitePageSpecificationPageExperiencesPage(
+				testGroup.getExternalReferenceCode(),
+				_layout.getExternalReferenceCode());
+
+		Assert.assertEquals(1, page.getTotalCount());
+
+		RoleTestUtil.removeResourcePermission(
+			RoleConstants.GUEST, Layout.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(_layout.getPlid()), ActionKeys.VIEW);
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"NOT_FOUND", null,
+			() ->
+				pageExperienceResource.
+					getSitePageSpecificationPageExperiencesPage(
+						testGroup.getExternalReferenceCode(),
+						_layout.getExternalReferenceCode()));
 	}
 
 	private void _testPatchSitePageExperience() throws Exception {
