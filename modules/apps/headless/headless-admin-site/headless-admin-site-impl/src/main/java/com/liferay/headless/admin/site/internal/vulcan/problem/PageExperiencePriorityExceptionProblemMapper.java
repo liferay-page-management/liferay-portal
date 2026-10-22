@@ -15,7 +15,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Alberto Chaparro
  */
 @Component(service = ProblemMapper.class)
-public class SegmentsExperiencePriorityExceptionProblemMapper
+public class PageExperiencePriorityExceptionProblemMapper
 	implements ProblemMapper<SegmentsExperiencePriorityException> {
 
 	@Override

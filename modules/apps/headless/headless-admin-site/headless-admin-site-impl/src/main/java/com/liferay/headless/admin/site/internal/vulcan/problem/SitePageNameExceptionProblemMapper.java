@@ -5,9 +5,9 @@
 
 package com.liferay.headless.admin.site.internal.vulcan.problem;
 
+import com.liferay.portal.kernel.exception.LayoutNameException;
 import com.liferay.portal.vulcan.problem.Problem;
 import com.liferay.portal.vulcan.problem.ProblemMapper;
-import com.liferay.segments.exception.DefaultSegmentsExperienceException;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -15,16 +15,19 @@ import org.osgi.service.component.annotations.Component;
  * @author Javier Moral
  */
 @Component(service = ProblemMapper.class)
-public class DefaultSegmentsExperienceExceptionProblemMapper
-	implements ProblemMapper<DefaultSegmentsExperienceException> {
+public class SitePageNameExceptionProblemMapper
+	implements ProblemMapper<LayoutNameException> {
 
 	@Override
-	public Problem getProblem(
-		DefaultSegmentsExperienceException defaultSegmentsExperienceException) {
+	public Problem getProblem(LayoutNameException layoutNameException) {
+		String message = "A name is required";
+
+		if (layoutNameException.getType() == LayoutNameException.TOO_LONG) {
+			message = "The name is too long";
+		}
 
 		return ProblemUtil.getProblem(
-			"The default page experience cannot reference a segment",
-			Problem.Status.BAD_REQUEST, defaultSegmentsExperienceException);
+			message, Problem.Status.BAD_REQUEST, layoutNameException);
 	}
 
 }
