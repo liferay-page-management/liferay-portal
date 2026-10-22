@@ -20,9 +20,11 @@ import {
 } from '../types/Structure';
 import {Field, SelectFromListField} from './field';
 import getOwnFields from './getOwnFields';
+import removeServerErrors from './state/removeServerErrors';
 
 const NAME_MAX_LENGTH = 41;
 const ERC_MAX_LENGTH = 75;
+const SLUG_MAX_LENGTH = 253;
 
 export type ValidationProperty =
 	| 'erc'
@@ -44,11 +46,31 @@ export type ValidationError =
 	| 'default-language-label'
 	| 'no-children'
 	| 'no-fields'
+	| 'number'
+	| 'permission'
 	| 'prefix-reserved'
 	| 'unexpected'
 	| 'uppercase';
 
 export type ErrorMap = Map<ValidationProperty, ValidationError>;
+
+export type ServerError =
+	| 'erc-in-use'
+	| 'name-in-use'
+	| 'permission'
+	| 'slug-in-use'
+	| 'unexpected';
+
+export const SERVER_ERRORS: Record<
+	ServerError,
+	{error: ValidationError; property: ValidationProperty}
+> = {
+	'erc-in-use': {error: 'in-use', property: 'erc'},
+	'name-in-use': {error: 'in-use', property: 'name'},
+	'permission': {error: 'permission', property: 'global'},
+	'slug-in-use': {error: 'in-use', property: 'slug'},
+	'unexpected': {error: 'unexpected', property: 'global'},
+};
 
 export function validateField({
 	children,
@@ -222,7 +244,7 @@ export function validateStructure({
 	isGlobalValidation?: boolean;
 	objectDefinitions?: ObjectDefinitions;
 }): ErrorMap {
-	const {erc, label, name, spaces} = data;
+	const {erc, id, label, name, slug, spaces} = data;
 
 	const errors = new Map(currentErrors);
 
@@ -235,6 +257,12 @@ export function validateStructure({
 		}
 		else if (erc.startsWith('L_')) {
 			errors.set('erc', 'prefix-reserved');
+		}
+		else if (
+			objectDefinitions?.[erc] &&
+			objectDefinitions[erc].id !== id
+		) {
+			errors.set('erc', 'in-use');
 		}
 		else {
 			errors.delete('erc');
@@ -285,6 +313,21 @@ export function validateStructure({
 		}
 	}
 
+	if (!isNullOrUndefined(slug)) {
+		if (slug.length > SLUG_MAX_LENGTH) {
+			errors.set('slug', 'max-length');
+		}
+		else if (`/${slug}/`.includes('/-/')) {
+			errors.set('slug', 'invalid-character');
+		}
+		else if (/^\d+$/.test(slug)) {
+			errors.set('slug', 'number');
+		}
+		else {
+			errors.delete('slug');
+		}
+	}
+
 	if (!isNullOrUndefined(spaces)) {
 		spaces.length ? errors.delete('spaces') : errors.set('spaces', 'empty');
 	}
@@ -298,14 +341,21 @@ export function getErrorMessage(
 	values: {
 		erc?: string;
 		name?: string;
+		slug?: string;
 	}
 ) {
-	const {erc, name} = values;
+	const {erc, name, slug} = values;
 
 	if (property === 'global') {
 		if (error === 'unexpected') {
 			return Liferay.Language.get(
 				'an-unexpected-error-occurred-while-saving-or-publishing-the-content-structure'
+			);
+		}
+
+		if (error === 'permission') {
+			return Liferay.Language.get(
+				'you-do-not-have-permission-to-access-the-requested-resource'
 			);
 		}
 
@@ -340,12 +390,32 @@ export function getErrorMessage(
 		else if (error === 'prefix-reserved') {
 			return sub(Liferay.Language.get('the-prefix-x-is-reserved'), 'L_');
 		}
+		else if (error === 'in-use') {
+			return Liferay.Language.get(
+				'this-external-reference-code-is-already-in-use'
+			);
+		}
 	}
 
 	if (property === 'slug') {
 		if (error === 'in-use') {
 			return Liferay.Language.get(
 				'the-friendly-url-is-already-in-use.-please-enter-a-unique-friendly-url'
+			);
+		}
+		else if (error === 'invalid-character') {
+			return Liferay.Language.get(
+				'friendly-url-separator-error-invalid-characters'
+			);
+		}
+		else if (error === 'max-length' && slug) {
+			return `${Liferay.Language.get(
+				'maximum-number-of-characters-exceeded'
+			)}: ${slug.length}/${SLUG_MAX_LENGTH}`;
+		}
+		else if (error === 'number') {
+			return Liferay.Language.get(
+				'friendly-url-separator-error-cannot-be-a-number'
 			);
 		}
 	}
@@ -492,7 +562,10 @@ export function useValidate() {
 
 		let errors: ErrorMap = new Map();
 
-		const invalids = new Map(state.invalids);
+		const invalids = removeServerErrors({
+			invalids: state.invalids,
+			uuid: structure.uuid,
+		});
 
 		errors = validateStructure({data: structure, isGlobalValidation: true});
 
