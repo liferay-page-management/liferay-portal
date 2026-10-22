@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
@@ -84,6 +85,9 @@ public class FindLayoutsStrutsAction implements StrutsAction {
 		boolean hasMoreElements = false;
 
 		if (layoutsCount > 0) {
+			int[] statuses = ParamUtil.getIntegerValues(
+				httpServletRequest, "statuses");
+
 			int start = ParamUtil.getInteger(
 				httpServletRequest, "start", QueryUtil.ALL_POS);
 
@@ -111,7 +115,8 @@ public class FindLayoutsStrutsAction implements StrutsAction {
 			}
 
 			List<Layout> layouts = _layoutLocalService.search(
-				groupId, privateLayout, keywords, searchOnlyByTitle,
+				groupId, UserConstants.USER_ID_DEFAULT, privateLayout, keywords,
+				searchOnlyByTitle,
 				new String[] {
 					LayoutConstants.TYPE_CONTENT, LayoutConstants.TYPE_EMBEDDED,
 					LayoutConstants.TYPE_FULL_PAGE_APPLICATION,
@@ -119,7 +124,7 @@ public class FindLayoutsStrutsAction implements StrutsAction {
 					LayoutConstants.TYPE_PANEL, LayoutConstants.TYPE_PORTLET,
 					LayoutConstants.TYPE_URL
 				},
-				start, end, null);
+				statuses, start, end, null);
 
 			boolean checkDisplayPage = ParamUtil.getBoolean(
 				httpServletRequest, "checkDisplayPage");

@@ -48,6 +48,8 @@ public class GetLayoutsStrutsAction implements StrutsAction {
 			httpServletRequest, "layoutUuid");
 		long selPlid = ParamUtil.getLong(
 			httpServletRequest, "selPlid", LayoutConstants.DEFAULT_PLID);
+		int[] statuses = ParamUtil.getIntegerValues(
+			httpServletRequest, "statuses");
 
 		int start = ParamUtil.getInteger(httpServletRequest, "start");
 
@@ -69,7 +71,7 @@ public class GetLayoutsStrutsAction implements StrutsAction {
 		JSONObject layoutsJSONObject = LayoutUtil.getLayoutsJSONObject(
 			checkDisplayPage, enableCurrentPage, groupId, httpServletRequest,
 			itemSelectorReturnType, privateLayout, parentLayoutId,
-			selectedLayoutUuids, selPlid, start, end);
+			selectedLayoutUuids, selPlid, start, end, statuses);
 
 		ServletResponseUtil.write(
 			httpServletResponse,
