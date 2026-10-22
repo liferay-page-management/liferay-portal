@@ -27,4 +27,5 @@ LayoutItemSelectorViewDisplayContext layoutItemSelectorViewDisplayContext = (Lay
 	multiSelection="<%= layoutItemSelectorViewDisplayContext.isMultiSelection() %>"
 	namespace="<%= liferayPortletResponse.getNamespace() %>"
 	privateLayout="<%= layoutItemSelectorViewDisplayContext.isPrivateLayout() %>"
+	statuses="<%= layoutItemSelectorViewDisplayContext.getStatuses() %>"
 />

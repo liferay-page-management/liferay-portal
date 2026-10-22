@@ -225,5 +225,12 @@
 			<rtexprvalue>true</rtexprvalue>
 			<type>boolean</type>
 		</attribute>
+		<attribute>
+			<description></description>
+			<name>statuses</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>int[]</type>
+		</attribute>
 	</tag>
 </taglib>
