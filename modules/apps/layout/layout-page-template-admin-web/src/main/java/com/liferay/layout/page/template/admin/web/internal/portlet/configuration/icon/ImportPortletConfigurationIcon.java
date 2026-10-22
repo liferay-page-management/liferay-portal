@@ -5,6 +5,7 @@
 
 package com.liferay.layout.page.template.admin.web.internal.portlet.configuration.icon;
 
+import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminConstants;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateActionKeys;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
@@ -56,6 +57,9 @@ public class ImportPortletConfigurationIcon
 	public String getURL(
 		PortletRequest portletRequest, PortletResponse portletResponse) {
 
+		String layoutPageTemplateCollectionId = ParamUtil.getString(
+			portletRequest, "layoutPageTemplateCollectionId");
+
 		return PortletURLBuilder.create(
 			_portal.getControlPanelPortletURL(
 				portletRequest,
@@ -70,16 +74,14 @@ public class ImportPortletConfigurationIcon
 					LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES,
 					PortletRequest.RENDER_PHASE)
 			).setTabs1(
-				ParamUtil.getString(portletRequest, "tabs1", "master-layouts")
-			).setParameter(
-				"layoutPageTemplateCollectionId",
 				ParamUtil.getString(
-					portletRequest, "layoutPageTemplateCollectionId")
+					portletRequest, "tabs1",
+					LayoutPageTemplateAdminConstants.TABS1_MASTER_LAYOUTS)
+			).setParameter(
+				"layoutPageTemplateCollectionId", layoutPageTemplateCollectionId
 			).buildString()
 		).setParameter(
-			"layoutPageTemplateCollectionId",
-			ParamUtil.getString(
-				portletRequest, "layoutPageTemplateCollectionId")
+			"layoutPageTemplateCollectionId", layoutPageTemplateCollectionId
 		).buildString();
 	}
 
