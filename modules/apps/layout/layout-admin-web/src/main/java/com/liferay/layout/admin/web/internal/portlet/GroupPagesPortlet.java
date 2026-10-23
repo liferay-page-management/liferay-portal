@@ -9,6 +9,7 @@ import com.liferay.application.list.GroupProvider;
 import com.liferay.asset.kernel.exception.AssetCategoryException;
 import com.liferay.asset.kernel.exception.AssetTagException;
 import com.liferay.client.extension.type.manager.CETManager;
+import com.liferay.depot.group.provider.SiteConnectedGroupGroupProvider;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValuesValidationException;
 import com.liferay.friendly.url.exception.DuplicateFriendlyURLEntryException;
 import com.liferay.item.selector.ItemSelector;
@@ -215,7 +216,8 @@ public class GroupPagesPortlet extends MVCPortlet {
 					_itemSelector, layoutActionsHelper, _layoutService,
 					_layoutSetPrototypeHelper, _layoutSetSEORobotsProvider,
 					_portal.getLiferayPortletRequest(renderRequest),
-					_portal.getLiferayPortletResponse(renderResponse));
+					_portal.getLiferayPortletResponse(renderResponse),
+					_siteConnectedGroupGroupProvider);
 
 			LayoutActionDropdownItemsProvider
 				layoutActionDropdownItemsProvider =
@@ -325,6 +327,9 @@ public class GroupPagesPortlet extends MVCPortlet {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private SiteConnectedGroupGroupProvider _siteConnectedGroupGroupProvider;
 
 	@Reference
 	private TranslationPermission _translationPermission;

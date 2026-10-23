@@ -5,6 +5,7 @@
 
 package com.liferay.layout.admin.web.internal.portlet.action;
 
+import com.liferay.depot.group.provider.SiteConnectedGroupGroupProvider;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.admin.web.internal.display.context.LayoutsAdminDisplayContext;
@@ -97,7 +98,8 @@ public class MoveLayoutMVCActionCommand extends BaseAddLayoutMVCActionCommand {
 				new LayoutsAdminDisplayContext(
 					_itemSelector, layoutActionsHelper, _layoutService,
 					_layoutSetPrototypeHelper, _layoutSetSEORobotsProvider,
-					liferayPortletRequest, liferayPortletResponse);
+					liferayPortletRequest, liferayPortletResponse,
+					_siteConnectedGroupGroupProvider);
 
 			JSONPortletResponseUtil.writeJSON(
 				liferayPortletRequest, liferayPortletResponse,
@@ -146,6 +148,9 @@ public class MoveLayoutMVCActionCommand extends BaseAddLayoutMVCActionCommand {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private SiteConnectedGroupGroupProvider _siteConnectedGroupGroupProvider;
 
 	@Reference
 	private TranslationPermission _translationPermission;
