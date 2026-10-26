@@ -2855,13 +2855,35 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		return searchCount(
 			group.getGroupId(), 0, privateLayout, keywords, searchOnlyByTitle,
-			types);
+			types, new int[0]);
+	}
+
+	@Override
+	public int searchCount(
+			Group group, boolean privateLayout, String keywords,
+			boolean searchOnlyByTitle, String[] types, int[] statuses)
+		throws PortalException {
+
+		return searchCount(
+			group.getGroupId(), 0, privateLayout, keywords, searchOnlyByTitle,
+			types, statuses);
 	}
 
 	@Override
 	public int searchCount(
 			long groupId, long userId, boolean privateLayout, String keywords,
 			boolean searchOnlyByTitle, String[] types)
+		throws PortalException {
+
+		return searchCount(
+			groupId, userId, privateLayout, keywords, searchOnlyByTitle, types,
+			new int[0]);
+	}
+
+	@Override
+	public int searchCount(
+			long groupId, long userId, boolean privateLayout, String keywords,
+			boolean searchOnlyByTitle, String[] types, int[] statuses)
 		throws PortalException {
 
 		if (Validator.isNull(keywords)) {
@@ -2874,7 +2896,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		Hits hits = indexer.search(
 			_buildSearchContext(
 				groupId, userId, privateLayout, keywords, searchOnlyByTitle,
-				types, new int[0], QueryUtil.ALL_POS, QueryUtil.ALL_POS, null));
+				types, statuses, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null));
 
 		return hits.getLength();
 	}
