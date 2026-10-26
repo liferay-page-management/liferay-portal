@@ -72,6 +72,8 @@ public class FindLayoutsStrutsAction implements StrutsAction {
 			httpServletRequest, "privateLayout");
 		boolean searchOnlyByTitle = ParamUtil.getBoolean(
 			httpServletRequest, "searchOnlyByTitle");
+		int[] statuses = ParamUtil.getIntegerValues(
+			httpServletRequest, "statuses");
 
 		int layoutsCount = _layoutLocalService.searchCount(
 			group, privateLayout, keywords, searchOnlyByTitle,
@@ -80,14 +82,12 @@ public class FindLayoutsStrutsAction implements StrutsAction {
 				LayoutConstants.TYPE_FULL_PAGE_APPLICATION,
 				LayoutConstants.TYPE_LINK_TO_LAYOUT, LayoutConstants.TYPE_PANEL,
 				LayoutConstants.TYPE_PORTLET, LayoutConstants.TYPE_URL
-			});
+			},
+			statuses);
 
 		boolean hasMoreElements = false;
 
 		if (layoutsCount > 0) {
-			int[] statuses = ParamUtil.getIntegerValues(
-				httpServletRequest, "statuses");
-
 			int start = ParamUtil.getInteger(
 				httpServletRequest, "start", QueryUtil.ALL_POS);
 
