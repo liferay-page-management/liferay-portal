@@ -2336,7 +2336,12 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		throws PortalException {
 
 		if (Validator.isNull(keywords)) {
-			return getLayoutsCount(groupId, privateLayout);
+			if (ArrayUtil.isEmpty(statuses)) {
+				return getLayoutsCount(groupId, privateLayout);
+			}
+
+			return layoutPersistence.countByG_P_ST(
+				groupId, privateLayout, statuses);
 		}
 
 		Indexer<Layout> indexer = IndexerRegistryUtil.getIndexer(
@@ -2870,7 +2875,18 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		return searchCount(
 			group.getGroupId(), 0, privateLayout, keywords, searchOnlyByTitle,
-			types);
+			types, new int[0]);
+	}
+
+	@Override
+	public int searchCount(
+			Group group, boolean privateLayout, String keywords,
+			boolean searchOnlyByTitle, String[] types, int[] statuses)
+		throws PortalException {
+
+		return searchCount(
+			group.getGroupId(), 0, privateLayout, keywords, searchOnlyByTitle,
+			types, statuses);
 	}
 
 	@Override
@@ -2879,8 +2895,20 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 			boolean searchOnlyByTitle, String[] types)
 		throws PortalException {
 
+		return searchCount(
+			groupId, userId, privateLayout, keywords, searchOnlyByTitle, types,
+			new int[0]);
+	}
+
+	@Override
+	public int searchCount(
+			long groupId, long userId, boolean privateLayout, String keywords,
+			boolean searchOnlyByTitle, String[] types, int[] statuses)
+		throws PortalException {
+
 		if (Validator.isNull(keywords)) {
-			return getLayoutsCount(groupId, privateLayout);
+			return getLayoutsCount(
+				groupId, userId, privateLayout, keywords, types, statuses);
 		}
 
 		Indexer<Layout> indexer = IndexerRegistryUtil.getIndexer(
@@ -2889,7 +2917,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		Hits hits = indexer.search(
 			_buildSearchContext(
 				groupId, userId, privateLayout, keywords, searchOnlyByTitle,
-				types, new int[0], QueryUtil.ALL_POS, QueryUtil.ALL_POS, null));
+				types, statuses, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null));
 
 		return hits.getLength();
 	}
