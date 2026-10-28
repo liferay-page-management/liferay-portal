@@ -25,11 +25,9 @@ public class PageTemplateSetNameExceptionProblemMapper
 
 		String message = "A name is required for each template folder or set";
 
-		String exceptionMessage =
-			layoutPageTemplateCollectionNameException.getMessage();
-
-		if ((exceptionMessage != null) &&
-			exceptionMessage.startsWith("Maximum length")) {
+		if (layoutPageTemplateCollectionNameException instanceof
+				LayoutPageTemplateCollectionNameException.
+					MustNotExceedMaximumSize) {
 
 			message = "The name for the template folder or set is too long";
 		}
