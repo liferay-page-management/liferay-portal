@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -165,6 +166,41 @@ public class GetLayoutsStrutsActionTest {
 		}
 	}
 
+	@Test
+	@TestInfo("LPD-112154")
+	public void testGetLayoutsStrutsActionWithStatuses() throws Exception {
+		Layout approvedLayout = _layoutLocalService.addLayout(
+			null, TestPropsValues.getUserId(), _group.getGroupId(), false,
+			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
+			RandomTestUtil.randomString(), StringPool.BLANK, StringPool.BLANK,
+			LayoutConstants.TYPE_CONTENT, false, StringPool.BLANK,
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
+
+		ContentLayoutTestUtil.publishLayout(
+			approvedLayout.fetchDraftLayout(), approvedLayout);
+
+		Layout draftLayout = _layoutLocalService.addLayout(
+			null, TestPropsValues.getUserId(), _group.getGroupId(), false,
+			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
+			RandomTestUtil.randomString(), StringPool.BLANK, StringPool.BLANK,
+			LayoutConstants.TYPE_CONTENT, false, StringPool.BLANK,
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
+
+		_assertLayoutInTree(
+			true, approvedLayout, WorkflowConstants.STATUS_APPROVED);
+		_assertLayoutInTree(
+			false, draftLayout, WorkflowConstants.STATUS_APPROVED);
+
+		_assertLayoutInTree(
+			true, approvedLayout, WorkflowConstants.STATUS_APPROVED,
+			WorkflowConstants.STATUS_DRAFT);
+		_assertLayoutInTree(
+			true, draftLayout, WorkflowConstants.STATUS_APPROVED,
+			WorkflowConstants.STATUS_DRAFT);
+	}
+
 	private Layout _addLaunchDraftLayout(long launchSetId, Layout layout)
 		throws Exception {
 
@@ -224,11 +260,12 @@ public class GetLayoutsStrutsActionTest {
 		}
 	}
 
-	private void _assertLayoutInTree(boolean expected, Layout layout)
+	private void _assertLayoutInTree(
+			boolean expected, Layout layout, int... statuses)
 		throws Exception {
 
 		JSONObject jsonObject = _getLayoutsStrutsActionResponseJSONObject(
-			0, _PAGE_SIZE);
+			0, _PAGE_SIZE, statuses);
 
 		JSONArray jsonArray = jsonObject.getJSONArray("items");
 
@@ -300,11 +337,11 @@ public class GetLayoutsStrutsActionTest {
 	}
 
 	private JSONObject _getLayoutsStrutsActionResponseJSONObject(
-			int start, int end)
+			int start, int end, int... statuses)
 		throws Exception {
 
 		MockHttpServletRequest mockHttpServletRequest =
-			_getMockHttpServletRequest(start, end);
+			_getMockHttpServletRequest(start, end, statuses);
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
 
@@ -328,7 +365,7 @@ public class GetLayoutsStrutsActionTest {
 	}
 
 	private MockHttpServletRequest _getMockHttpServletRequest(
-		int start, int end) {
+		int start, int end, int... statuses) {
 
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
@@ -337,6 +374,12 @@ public class GetLayoutsStrutsActionTest {
 			"groupId", String.valueOf(_group.getGroupId()));
 		mockHttpServletRequest.addParameter("start", String.valueOf(start));
 		mockHttpServletRequest.addParameter("end", String.valueOf(end));
+
+		for (int status : statuses) {
+			mockHttpServletRequest.addParameter(
+				"statuses", String.valueOf(status));
+		}
+
 		mockHttpServletRequest.setAttribute(
 			WebKeys.LAYOUT, _themeDisplay.getLayout());
 		mockHttpServletRequest.setAttribute(
