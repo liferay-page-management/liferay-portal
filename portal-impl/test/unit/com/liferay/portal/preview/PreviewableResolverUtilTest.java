@@ -84,12 +84,12 @@ public class PreviewableResolverUtilTest {
 
 	@Test
 	public void testGetPreviewableMap() {
-		Map<Serializable, Object> pkMap =
+		Map<Serializable, Object> previewValueMap =
 			Collections.<Serializable, Object>singletonMap(1L, 2L);
 
 		Long previewId = PreviewableResolverUtil.addPreviewableMap(
 			Collections.<Class<?>, Map<Serializable, Object>>singletonMap(
-				TestModel.class, pkMap));
+				TestModel.class, previewValueMap));
 
 		try {
 			Assert.assertNull(
@@ -100,7 +100,7 @@ public class PreviewableResolverUtilTest {
 						previewId)) {
 
 				Assert.assertSame(
-					pkMap,
+					previewValueMap,
 					PreviewableResolverUtil.getPreviewableMap(TestModel.class));
 				Assert.assertNull(
 					PreviewableResolverUtil.getPreviewableMap(String.class));
@@ -288,7 +288,6 @@ public class PreviewableResolverUtilTest {
 		TestModel fromTestModel2 = new TestModel(3L);
 
 		TestModel toTestModel1 = new TestModel(2L);
-
 		TestModel toTestModel2 = new TestModel(4L);
 
 		_testModels.put(4L, toTestModel2);
