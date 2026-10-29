@@ -115,6 +115,7 @@ public class LayoutModelPreFilterContributor
 
 		BooleanFilter booleanFilter = new BooleanFilter();
 		BooleanFilter launchDraftFilter = new BooleanFilter();
+
 		TermsFilter classPKsTermsFilter = new TermsFilter(Field.ENTRY_CLASS_PK);
 
 		classPKsTermsFilter.addValues(ArrayUtil.toStringArray(classPKs));

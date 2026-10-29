@@ -189,6 +189,7 @@ public class GetLayoutsStrutsActionTest {
 
 		_assertLayoutInTree(
 			false, draftLayout, WorkflowConstants.STATUS_APPROVED);
+
 		_assertLayoutInTree(
 			true, approvedLayout, WorkflowConstants.STATUS_APPROVED);
 		_assertLayoutInTree(
@@ -203,11 +204,10 @@ public class GetLayoutsStrutsActionTest {
 		throws Exception {
 
 		Layout launchDraftLayout = _layoutLocalService.addLayout(
-			RandomTestUtil.randomString(),
-			TestPropsValues.getUserId(), layout.getGroupId(),
-			layout.isPrivateLayout(), layout.getParentLayoutId(),
-			_portal.getClassNameId(Layout.class), layout.getPlid(),
-			layout.getNameMap(), layout.getTitleMap(),
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			layout.getGroupId(), layout.isPrivateLayout(),
+			layout.getParentLayoutId(), _portal.getClassNameId(Layout.class),
+			layout.getPlid(), layout.getNameMap(), layout.getTitleMap(),
 			layout.getDescriptionMap(), layout.getKeywordsMap(),
 			layout.getRobotsMap(), layout.getType(), layout.getTypeSettings(),
 			true, true, Collections.emptyMap(),
