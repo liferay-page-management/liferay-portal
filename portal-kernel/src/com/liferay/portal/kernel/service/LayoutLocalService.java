@@ -656,6 +656,9 @@ public interface LayoutLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Layout getBrowsableLayout(Layout layout);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public long[] getClassPKsByLaunchSetId(long groupId, long launchSetId);
+
 	/**
 	 * Returns the primary key of the default layout for the group.
 	 *
