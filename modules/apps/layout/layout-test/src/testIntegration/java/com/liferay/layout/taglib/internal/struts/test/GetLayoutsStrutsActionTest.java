@@ -7,6 +7,8 @@ package com.liferay.layout.taglib.internal.struts.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
@@ -14,6 +16,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.launch.LaunchPreviewThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
@@ -47,6 +50,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,6 +107,33 @@ public class GetLayoutsStrutsActionTest {
 	}
 
 	@Test
+	@TestInfo("LPD-112154")
+	public void testGetLayoutsStrutsActionWithLaunchDraft() throws Exception {
+		Layout layout = _layoutLocalService.addLayout(
+			null, TestPropsValues.getUserId(), _group.getGroupId(), false,
+			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
+			RandomTestUtil.randomString(), StringPool.BLANK, StringPool.BLANK,
+			LayoutConstants.TYPE_CONTENT, false, StringPool.BLANK,
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
+
+		_assertLayoutInTree(false, layout);
+
+		long launchSetId = RandomTestUtil.randomLong();
+
+		_addLaunchDraftLayout(launchSetId, layout);
+
+		_assertLayoutInTree(false, layout);
+
+		try (SafeCloseable safeCloseable =
+				LaunchPreviewThreadLocal.setLaunchSetIdWithSafeCloseable(
+					launchSetId)) {
+
+			_assertLayoutInTree(true, layout);
+		}
+	}
+
+	@Test
 	@TestInfo("LPS-106110")
 	public void testGetLayoutsStrutsActionWithPagination() throws Exception {
 		Map<Long, List<Long>> layoutIdsMap = _getLayoutIdsMap(
@@ -132,6 +163,28 @@ public class GetLayoutsStrutsActionTest {
 				remainingItemsCount, false, layoutIdsMap,
 				pagesCount * _PAGE_SIZE, count);
 		}
+	}
+
+	private Layout _addLaunchDraftLayout(long launchSetId, Layout layout)
+		throws Exception {
+
+		Layout launchDraftLayout = _layoutLocalService.addLayout(
+			StringBundler.concat(
+				layout.getExternalReferenceCode(), "-launch-", launchSetId),
+			TestPropsValues.getUserId(), layout.getGroupId(),
+			layout.isPrivateLayout(), layout.getParentLayoutId(),
+			_portal.getClassNameId(Layout.class), layout.getPlid(),
+			layout.getNameMap(), layout.getTitleMap(),
+			layout.getDescriptionMap(), layout.getKeywordsMap(),
+			layout.getRobotsMap(), layout.getType(), layout.getTypeSettings(),
+			true, true, Collections.emptyMap(),
+			layout.getMasterLayoutPageTemplateEntryERC(),
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
+
+		launchDraftLayout.setLaunchSetId(launchSetId);
+
+		return _layoutLocalService.updateLayout(launchDraftLayout);
 	}
 
 	private void _assertGetLayoutsStrutsAction(
@@ -169,6 +222,29 @@ public class GetLayoutsStrutsActionTest {
 					PropsValues.LAYOUT_MANAGE_PAGES_INITIAL_CHILDREN),
 				layoutJSONObject.getBoolean("paginated"));
 		}
+	}
+
+	private void _assertLayoutInTree(boolean expected, Layout layout)
+		throws Exception {
+
+		JSONObject jsonObject = _getLayoutsStrutsActionResponseJSONObject(
+			0, _PAGE_SIZE);
+
+		JSONArray jsonArray = jsonObject.getJSONArray("items");
+
+		boolean present = false;
+
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONObject layoutJSONObject = jsonArray.getJSONObject(i);
+
+			if (layoutJSONObject.getLong("layoutId") == layout.getLayoutId()) {
+				present = true;
+
+				break;
+			}
+		}
+
+		Assert.assertEquals(expected, present);
 	}
 
 	private Map<Long, List<Long>> _getLayoutIdsMap(
