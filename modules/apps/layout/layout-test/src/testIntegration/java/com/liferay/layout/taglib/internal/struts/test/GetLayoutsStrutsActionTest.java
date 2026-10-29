@@ -8,7 +8,6 @@ package com.liferay.layout.taglib.internal.struts.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
@@ -189,10 +188,9 @@ public class GetLayoutsStrutsActionTest {
 				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
 
 		_assertLayoutInTree(
-			true, approvedLayout, WorkflowConstants.STATUS_APPROVED);
-		_assertLayoutInTree(
 			false, draftLayout, WorkflowConstants.STATUS_APPROVED);
-
+		_assertLayoutInTree(
+			true, approvedLayout, WorkflowConstants.STATUS_APPROVED);
 		_assertLayoutInTree(
 			true, approvedLayout, WorkflowConstants.STATUS_APPROVED,
 			WorkflowConstants.STATUS_DRAFT);
@@ -205,8 +203,7 @@ public class GetLayoutsStrutsActionTest {
 		throws Exception {
 
 		Layout launchDraftLayout = _layoutLocalService.addLayout(
-			StringBundler.concat(
-				layout.getExternalReferenceCode(), "-launch-", launchSetId),
+			RandomTestUtil.randomString(),
 			TestPropsValues.getUserId(), layout.getGroupId(),
 			layout.isPrivateLayout(), layout.getParentLayoutId(),
 			_portal.getClassNameId(Layout.class), layout.getPlid(),
