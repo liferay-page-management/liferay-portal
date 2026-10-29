@@ -573,20 +573,16 @@ public class LayoutLocalServiceTest {
 	@Test
 	@TestInfo("LPD-112154")
 	public void testGetClassPKsByLaunchSetId() throws Exception {
-		Layout layout1 = LayoutTestUtil.addTypeContentPublishedLayout(
-			_group, RandomTestUtil.randomString(),
-			WorkflowConstants.STATUS_APPROVED);
-		Layout layout2 = LayoutTestUtil.addTypeContentPublishedLayout(
-			_group, RandomTestUtil.randomString(),
-			WorkflowConstants.STATUS_APPROVED);
-
 		long launchSetId1 = RandomTestUtil.randomLong();
-		long launchSetId2 = RandomTestUtil.randomLong();
 
 		long[] classPKs = _layoutLocalService.getClassPKsByLaunchSetId(
 			_group.getGroupId(), launchSetId1);
 
 		Assert.assertEquals(Arrays.toString(classPKs), 0, classPKs.length);
+
+		Layout layout1 = LayoutTestUtil.addTypeContentPublishedLayout(
+			_group, RandomTestUtil.randomString(),
+			WorkflowConstants.STATUS_APPROVED);
 
 		_addLaunchDraftLayout(launchSetId1, layout1);
 
@@ -595,6 +591,10 @@ public class LayoutLocalServiceTest {
 
 		Assert.assertEquals(layout1.getPlid(), classPKs[0]);
 		Assert.assertEquals(Arrays.toString(classPKs), 1, classPKs.length);
+
+		Layout layout2 = LayoutTestUtil.addTypeContentPublishedLayout(
+			_group, RandomTestUtil.randomString(),
+			WorkflowConstants.STATUS_APPROVED);
 
 		_addLaunchDraftLayout(launchSetId1, layout2);
 
@@ -605,6 +605,8 @@ public class LayoutLocalServiceTest {
 			ArrayUtil.containsAll(
 				classPKs, new long[] {layout1.getPlid(), layout2.getPlid()}));
 		Assert.assertEquals(Arrays.toString(classPKs), 2, classPKs.length);
+
+		long launchSetId2 = RandomTestUtil.randomLong();
 
 		classPKs = _layoutLocalService.getClassPKsByLaunchSetId(
 			_group.getGroupId(), launchSetId2);
