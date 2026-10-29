@@ -283,7 +283,7 @@ public class UpdateStructureStrutsActionTest {
 		JSONObject jsonObject = _jsonFactory.createJSONObject(
 			mockHttpServletResponse.getContentAsString());
 
-		Assert.assertTrue(jsonObject.toString(), jsonObject.has("error"));
+		Assert.assertTrue(jsonObject.has("error"));
 
 		Assert.assertNull(
 			_objectDefinitionLocalService.
