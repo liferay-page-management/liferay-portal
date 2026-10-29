@@ -797,6 +797,12 @@ public class LayoutLocalServiceWrapper
 		return _layoutLocalService.getBrowsableLayout(layout);
 	}
 
+	@Override
+	public long[] getClassPKsByLaunchSetId(long groupId, long launchSetId) {
+		return _layoutLocalService.getClassPKsByLaunchSetId(
+			groupId, launchSetId);
+	}
+
 	/**
 	 * Returns the primary key of the default layout for the group.
 	 *
