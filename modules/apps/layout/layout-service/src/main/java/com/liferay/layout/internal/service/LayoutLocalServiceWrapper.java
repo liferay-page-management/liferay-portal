@@ -149,7 +149,9 @@ public class LayoutLocalServiceWrapper
 			false, sourceLayout, sourceSegmentsExperiencesIds, targetLayout,
 			targetSegmentsExperiencesIds);
 
-		if (sourceLayout.getClassPK() == targetLayout.getPlid()) {
+		if ((sourceLayout.getClassPK() == targetLayout.getPlid()) &&
+			(sourceLayout.getLaunchSetId() == 0)) {
+
 			_createLayoutContentVersion(sourceLayout);
 		}
 
@@ -946,6 +948,33 @@ public class LayoutLocalServiceWrapper
 		return null;
 	}
 
+	private FragmentEntryLink _fetchTargetLayoutFragmentEntryLink(
+		Layout sourceLayout, FragmentEntryLink sourceLayoutFragmentEntryLink,
+		Layout targetLayout) {
+
+		if ((targetLayout.getLaunchSetId() == 0) &&
+			((sourceLayout.getPlid() == targetLayout.getClassPK()) ||
+			 ((sourceLayout.getClassPK() == targetLayout.getClassPK()) &&
+			  (sourceLayout.getLaunchSetId() > 0)))) {
+
+			String originalFragmentEntryLinkERC =
+				sourceLayoutFragmentEntryLink.getOriginalFragmentEntryLinkERC();
+
+			if (Validator.isNull(originalFragmentEntryLinkERC)) {
+				return null;
+			}
+
+			return _fragmentEntryLinkLocalService.
+				fetchFragmentEntryLinkByExternalReferenceCode(
+					originalFragmentEntryLinkERC, targetLayout.getGroupId());
+		}
+
+		return _fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+			targetLayout.getGroupId(),
+			sourceLayoutFragmentEntryLink.getExternalReferenceCode(),
+			targetLayout.getPlid());
+	}
+
 	private Set<Long> _getFragmentEntryLinkIds(String data) {
 		if (Validator.isNull(data)) {
 			return Collections.emptySet();
@@ -1010,6 +1039,30 @@ public class LayoutLocalServiceWrapper
 		}
 
 		return layoutPortletIds;
+	}
+
+	private String _getOriginalFragmentEntryLinkERC(
+		Layout sourceLayout, FragmentEntryLink sourceLayoutFragmentEntryLink,
+		Layout targetLayout) {
+
+		if (sourceLayout.getClassPK() == targetLayout.getPlid()) {
+			return sourceLayoutFragmentEntryLink.getExternalReferenceCode();
+		}
+
+		if (targetLayout.getLaunchSetId() == 0) {
+			return null;
+		}
+
+		if (sourceLayout.getClassPK() == targetLayout.getClassPK()) {
+			return sourceLayoutFragmentEntryLink.getExternalReferenceCode();
+		}
+
+		if (sourceLayout.getPlid() == targetLayout.getClassPK()) {
+			return sourceLayoutFragmentEntryLink.
+				getOriginalFragmentEntryLinkERC();
+		}
+
+		return null;
 	}
 
 	private String _getScopeExternalReferenceCode(
@@ -1358,10 +1411,8 @@ public class LayoutLocalServiceWrapper
 					fragmentStyledLayoutStructureItem.getFragmentEntryLinkId());
 
 			FragmentEntryLink targetLayoutFragmentEntryLink =
-				_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
-					targetLayout.getGroupId(),
-					originalFragmentEntryLink.getExternalReferenceCode(),
-					targetLayout.getPlid());
+				_fetchTargetLayoutFragmentEntryLink(
+					sourceLayout, originalFragmentEntryLink, targetLayout);
 
 			if (targetLayoutFragmentEntryLink == null) {
 				newFragmentEntryLink =
@@ -1379,14 +1430,10 @@ public class LayoutLocalServiceWrapper
 				newFragmentEntryLink.setModifiedDate(
 					serviceContext.getModifiedDate(new Date()));
 
-				if (sourceLayout.getClassPK() == targetLayout.getPlid()) {
-					newFragmentEntryLink.setOriginalFragmentEntryLinkERC(
-						sourceLayoutFragmentEntryLink.
-							getExternalReferenceCode());
-				}
-				else {
-					newFragmentEntryLink.setOriginalFragmentEntryLinkERC(null);
-				}
+				newFragmentEntryLink.setOriginalFragmentEntryLinkERC(
+					_getOriginalFragmentEntryLinkERC(
+						sourceLayout, sourceLayoutFragmentEntryLink,
+						targetLayout));
 
 				newFragmentEntryLink.setFragmentEntryScopeERC(
 					_getScopeExternalReferenceCode(
@@ -1429,16 +1476,10 @@ public class LayoutLocalServiceWrapper
 				targetLayoutFragmentEntryLink.setModifiedDate(
 					serviceContext.getModifiedDate(new Date()));
 
-				if (sourceLayout.getClassPK() == targetLayout.getPlid()) {
-					targetLayoutFragmentEntryLink.
-						setOriginalFragmentEntryLinkERC(
-							sourceLayoutFragmentEntryLink.
-								getExternalReferenceCode());
-				}
-				else {
-					targetLayoutFragmentEntryLink.
-						setOriginalFragmentEntryLinkERC(null);
-				}
+				targetLayoutFragmentEntryLink.setOriginalFragmentEntryLinkERC(
+					_getOriginalFragmentEntryLinkERC(
+						sourceLayout, sourceLayoutFragmentEntryLink,
+						targetLayout));
 
 				targetLayoutFragmentEntryLink.setSegmentsExperienceId(
 					targetSegmentsExperienceId);
