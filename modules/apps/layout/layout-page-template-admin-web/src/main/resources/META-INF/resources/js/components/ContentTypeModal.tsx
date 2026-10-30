@@ -5,6 +5,7 @@
 
 import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
+import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal, {useModal} from '@clayui/modal';
 import {openModal} from 'frontend-js-components-web';
 import {fetch, navigate} from 'frontend-js-web';
@@ -102,7 +103,7 @@ export default function ContentTypeModal({
 	const formRef = useRef<HTMLFormElement>(null);
 
 	const handleSubmit = useCallback(
-		(event: any) => {
+		(event: React.SyntheticEvent) => {
 			event.preventDefault();
 
 			const form = formRef.current;
@@ -226,10 +227,10 @@ export default function ContentTypeModal({
 						>
 							{loading && (
 								<span className="inline-item inline-item-before">
-									<span
-										aria-hidden="true"
-										className="loading-animation"
-									></span>
+									<ClayLoadingIndicator
+										displayType="secondary"
+										size="sm"
+									/>
 								</span>
 							)}
 

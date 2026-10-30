@@ -4,17 +4,14 @@
  */
 
 import ClayButton from '@clayui/button';
+import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal from '@clayui/modal';
-import {openToast} from 'frontend-js-components-web';
-import {fetch, navigate} from 'frontend-js-web';
-import React, {useCallback, useRef, useState} from 'react';
+import React from 'react';
 
-import ContentTypeModalForm, {
-	validateForm,
-} from './components/ContentTypeModalForm';
+import ContentTypeModalForm from './components/ContentTypeModalForm';
 import {MODAL_TYPES} from './constants/modalTypes';
+import useAddDesignLibraryResource from './hooks/useAddDesignLibraryResource';
 import {MappingType} from './types/MappingTypes';
-import {ValidationError} from './types/ValidationError';
 
 interface Props {
 	addDisplayPageURL: string;
@@ -29,53 +26,12 @@ export default function AddDisplayPageTemplateDesignLibraryModalContent({
 	mappingTypes,
 	namespace,
 }: Props) {
-	const [error, setError] = useState<ValidationError>({});
-	const [loading, setLoading] = useState(false);
-
-	const formRef = useRef<HTMLFormElement>(null);
-
-	const handleSubmit = useCallback(
-		(event: any) => {
-			event.preventDefault();
-
-			const form = formRef.current;
-
-			const error = validateForm(form, namespace);
-
-			if (Object.keys(error).length !== 0) {
-				setError(error);
-
-				return;
-			}
-
-			setLoading(true);
-
-			fetch(addDisplayPageURL, {
-				body: new FormData(form!),
-				method: 'POST',
-			})
-				.then((response) => response.json())
-				.then(({error, redirectURL}) => {
-					if (error) {
-						setError(error);
-						setLoading(false);
-					}
-					else if (redirectURL) {
-						navigate(redirectURL, {beforeScreenFlip: closeModal});
-					}
-				})
-				.catch(() => {
-					setLoading(false);
-
-					openToast({
-						message: Liferay.Language.get(
-							'an-unexpected-error-occurred'
-						),
-						type: 'danger',
-					});
-				});
-		},
-		[addDisplayPageURL, closeModal, namespace]
+	const {error, formRef, handleSubmit, loading} = useAddDesignLibraryResource(
+		{
+			closeModal,
+			formSubmitURL: addDisplayPageURL,
+			namespace,
+		}
 	);
 
 	return (
@@ -107,15 +63,16 @@ export default function AddDisplayPageTemplateDesignLibraryModalContent({
 						</ClayButton>
 
 						<ClayButton
+							disabled={loading}
 							displayType="primary"
 							onClick={handleSubmit}
 						>
 							{loading && (
 								<span className="inline-item inline-item-before">
-									<span
-										aria-hidden="true"
-										className="loading-animation"
-									></span>
+									<ClayLoadingIndicator
+										displayType="secondary"
+										size="sm"
+									/>
 								</span>
 							)}
 
