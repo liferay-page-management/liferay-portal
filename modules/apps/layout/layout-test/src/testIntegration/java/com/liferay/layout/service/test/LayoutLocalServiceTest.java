@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.exception.LayoutJavaScriptException;
 import com.liferay.portal.kernel.exception.LayoutTypeException;
 import com.liferay.portal.kernel.exception.MasterLayoutException;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
+import com.liferay.portal.kernel.launch.LaunchPreviewThreadLocal;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -58,6 +59,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -77,6 +79,7 @@ import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.sites.kernel.util.Sites;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -542,6 +545,50 @@ public class LayoutLocalServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-112154")
+	public void testGetClassPKsByLaunchSetId() throws Exception {
+		long launchSetId1 = RandomTestUtil.randomLong();
+
+		long[] classPKs = _layoutLocalService.getClassPKsByLaunchSetId(
+			_group.getGroupId(), launchSetId1);
+
+		Assert.assertEquals(Arrays.toString(classPKs), 0, classPKs.length);
+
+		Layout layout1 = LayoutTestUtil.addTypeContentPublishedLayout(
+			_group, RandomTestUtil.randomString(),
+			WorkflowConstants.STATUS_APPROVED);
+
+		_addLaunchDraftLayout(launchSetId1, layout1);
+
+		classPKs = _layoutLocalService.getClassPKsByLaunchSetId(
+			_group.getGroupId(), launchSetId1);
+
+		Assert.assertEquals(layout1.getPlid(), classPKs[0]);
+		Assert.assertEquals(Arrays.toString(classPKs), 1, classPKs.length);
+
+		Layout layout2 = LayoutTestUtil.addTypeContentPublishedLayout(
+			_group, RandomTestUtil.randomString(),
+			WorkflowConstants.STATUS_APPROVED);
+
+		_addLaunchDraftLayout(launchSetId1, layout2);
+
+		classPKs = _layoutLocalService.getClassPKsByLaunchSetId(
+			_group.getGroupId(), launchSetId1);
+
+		Assert.assertTrue(
+			ArrayUtil.containsAll(
+				classPKs, new long[] {layout1.getPlid(), layout2.getPlid()}));
+		Assert.assertEquals(Arrays.toString(classPKs), 2, classPKs.length);
+
+		long launchSetId2 = RandomTestUtil.randomLong();
+
+		classPKs = _layoutLocalService.getClassPKsByLaunchSetId(
+			_group.getGroupId(), launchSetId2);
+
+		Assert.assertEquals(Arrays.toString(classPKs), 0, classPKs.length);
+	}
+
+	@Test
 	public void testGetLayoutWithOldFriendlyURLWhenNewLayoutWithSameNameIsCreated()
 		throws Exception {
 
@@ -865,6 +912,74 @@ public class LayoutLocalServiceTest {
 		_assertSearch(keyword, name, false, 1);
 		_assertSearch(name, name, true, 1);
 		_assertSearch(name, name, false, 1);
+	}
+
+	@Test
+	@TestInfo("LPD-112154")
+	public void testSearchCountWithLaunchPreviewThreadLocal() throws Exception {
+		String keyword = RandomTestUtil.randomString();
+
+		Layout layout = LayoutTestUtil.addTypeContentPublishedLayout(
+			_group, keyword + RandomTestUtil.randomString(),
+			WorkflowConstants.STATUS_DRAFT);
+
+		long launchSetId = RandomTestUtil.randomLong();
+
+		_addLaunchDraftLayout(launchSetId, layout);
+
+		Assert.assertEquals(
+			0,
+			_layoutLocalService.searchCount(
+				_group, false, keyword, true,
+				new String[] {LayoutConstants.TYPE_CONTENT},
+				new int[] {WorkflowConstants.STATUS_APPROVED}));
+
+		try (SafeCloseable safeCloseable =
+				LaunchPreviewThreadLocal.setLaunchSetIdWithSafeCloseable(
+					launchSetId)) {
+
+			Assert.assertEquals(
+				1,
+				_layoutLocalService.searchCount(
+					_group, false, keyword, true,
+					new String[] {LayoutConstants.TYPE_CONTENT},
+					new int[] {WorkflowConstants.STATUS_APPROVED}));
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-112154")
+	public void testSearchCountWithStatuses() throws Exception {
+		String keyword = RandomTestUtil.randomString();
+
+		LayoutTestUtil.addTypeContentPublishedLayout(
+			_group, keyword + RandomTestUtil.randomString(),
+			WorkflowConstants.STATUS_APPROVED);
+		LayoutTestUtil.addTypeContentPublishedLayout(
+			_group, keyword + RandomTestUtil.randomString(),
+			WorkflowConstants.STATUS_DRAFT);
+
+		Assert.assertEquals(
+			1,
+			_layoutLocalService.searchCount(
+				_group, false, keyword, true,
+				new String[] {LayoutConstants.TYPE_CONTENT},
+				new int[] {WorkflowConstants.STATUS_APPROVED}));
+		Assert.assertEquals(
+			1,
+			_layoutLocalService.searchCount(
+				_group, false, keyword, true,
+				new String[] {LayoutConstants.TYPE_CONTENT},
+				new int[] {WorkflowConstants.STATUS_DRAFT}));
+		Assert.assertEquals(
+			2,
+			_layoutLocalService.searchCount(
+				_group, false, keyword, true,
+				new String[] {LayoutConstants.TYPE_CONTENT},
+				new int[] {
+					WorkflowConstants.STATUS_APPROVED,
+					WorkflowConstants.STATUS_DRAFT
+				}));
 	}
 
 	@Test
