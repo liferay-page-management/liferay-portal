@@ -5,6 +5,7 @@
 
 package com.liferay.layout.page.template.admin.web.internal.portlet.action;
 
+import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminConstants;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
@@ -60,7 +61,7 @@ public class MoveLayoutPageTemplateEntryMVCActionCommand
 			redirect = PortletURLBuilder.createRenderURL(
 				_portal.getLiferayPortletResponse(actionResponse)
 			).setTabs1(
-				"page-templates"
+				LayoutPageTemplateAdminConstants.TABS1_PAGE_TEMPLATES
 			).setParameter(
 				"layoutPageTemplateCollectionId",
 				layoutPageTemplateEntry.getLayoutPageTemplateCollectionId()

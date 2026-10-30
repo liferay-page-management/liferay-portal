@@ -6,6 +6,7 @@
 package com.liferay.layout.page.template.admin.web.internal.portlet.action;
 
 import com.liferay.design.library.util.DesignLibraryUtil;
+import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminConstants;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
 import com.liferay.layout.page.template.admin.web.internal.handler.LayoutPageTemplateEntryExceptionRequestHandlerUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
@@ -138,7 +139,7 @@ public class AddLayoutPageTemplateEntryMVCActionCommand
 			PortletURLBuilder.create(
 				portletURL
 			).setTabs1(
-				"page-templates"
+				LayoutPageTemplateAdminConstants.TABS1_PAGE_TEMPLATES
 			).setParameter(
 				"layoutPageTemplateCollectionId",
 				layoutPageTemplateEntry.getLayoutPageTemplateCollectionId()

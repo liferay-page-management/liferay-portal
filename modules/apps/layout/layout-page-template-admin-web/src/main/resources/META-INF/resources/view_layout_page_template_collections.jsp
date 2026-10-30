@@ -142,7 +142,7 @@ List<LayoutPageTemplateCollection> layoutPageTemplateCollections = layoutPageTem
 								>
 
 									<%
-									LayoutPageTemplateCollectionActionDropdownItem layoutPageTemplateCollectionActionDropdownItem = new LayoutPageTemplateCollectionActionDropdownItem(request, layoutPageTemplateCollection, renderResponse, "page-templates");
+									LayoutPageTemplateCollectionActionDropdownItem layoutPageTemplateCollectionActionDropdownItem = new LayoutPageTemplateCollectionActionDropdownItem(request, layoutPageTemplateCollection, renderResponse, LayoutPageTemplateAdminConstants.TABS1_PAGE_TEMPLATES);
 									%>
 
 									<clay:dropdown-actions

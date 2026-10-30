@@ -12,16 +12,16 @@ Group scopeGroup = themeDisplay.getScopeGroup();
 %>
 
 <c:choose>
-	<c:when test='<%= Objects.equals(layoutPageTemplatesAdminDisplayContext.getTabs1(), "display-page-templates") %>'>
+	<c:when test="<%= Objects.equals(layoutPageTemplatesAdminDisplayContext.getTabs1(), LayoutPageTemplateAdminConstants.TABS1_DISPLAY_PAGE_TEMPLATES) %>">
 		<liferay-util:include page="/view_display_pages.jsp" servletContext="<%= application %>" />
 	</c:when>
-	<c:when test='<%= Objects.equals(layoutPageTemplatesAdminDisplayContext.getTabs1(), "master-layouts") %>'>
+	<c:when test="<%= Objects.equals(layoutPageTemplatesAdminDisplayContext.getTabs1(), LayoutPageTemplateAdminConstants.TABS1_MASTER_LAYOUTS) %>">
 		<liferay-util:include page="/view_master_layouts.jsp" servletContext="<%= application %>" />
 	</c:when>
-	<c:when test='<%= Objects.equals(layoutPageTemplatesAdminDisplayContext.getTabs1(), "page-templates") && scopeGroup.isCompany() && layoutPageTemplatesAdminDisplayContext.isShowPageTemplates() %>'>
+	<c:when test="<%= Objects.equals(layoutPageTemplatesAdminDisplayContext.getTabs1(), LayoutPageTemplateAdminConstants.TABS1_PAGE_TEMPLATES) && scopeGroup.isCompany() && layoutPageTemplatesAdminDisplayContext.isShowPageTemplates() %>">
 		<liferay-util:include page="/view_layout_prototypes.jsp" servletContext="<%= application %>" />
 	</c:when>
-	<c:when test='<%= Objects.equals(layoutPageTemplatesAdminDisplayContext.getTabs1(), "page-templates") && !scopeGroup.isCompany() %>'>
+	<c:when test="<%= Objects.equals(layoutPageTemplatesAdminDisplayContext.getTabs1(), LayoutPageTemplateAdminConstants.TABS1_PAGE_TEMPLATES) && !scopeGroup.isCompany() %>">
 		<liferay-util:include page="/view_layout_page_template_collections.jsp" servletContext="<%= application %>" />
 	</c:when>
 </c:choose>

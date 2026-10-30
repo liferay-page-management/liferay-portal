@@ -9,6 +9,7 @@ import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItemList;
+import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminConstants;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
 import com.liferay.layout.page.template.admin.web.internal.constants.LayoutPageTemplateAdminWebKeys;
 import com.liferay.layout.page.template.admin.web.internal.security.permission.resource.LayoutPageTemplateCollectionPermission;
@@ -288,7 +289,7 @@ public class LayoutPageTemplateDisplayContext {
 				return null;
 			}
 		).setTabs1(
-			"page-templates"
+			LayoutPageTemplateAdminConstants.TABS1_PAGE_TEMPLATES
 		).setParameter(
 			"layoutPageTemplateCollectionId",
 			() -> {
@@ -348,7 +349,8 @@ public class LayoutPageTemplateDisplayContext {
 						PortletURLBuilder.createRenderURL(
 							_renderResponse
 						).setTabs1(
-							"page-templates"
+							LayoutPageTemplateAdminConstants.
+								TABS1_PAGE_TEMPLATES
 						).setParameter(
 							"layoutPageTemplateCollectionId",
 							layoutPageTemplateCollection.
