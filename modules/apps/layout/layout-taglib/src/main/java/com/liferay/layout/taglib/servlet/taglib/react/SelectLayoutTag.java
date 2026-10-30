@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
@@ -46,6 +47,10 @@ public class SelectLayoutTag extends IncludeTag {
 
 	public String getNamespace() {
 		return _namespace;
+	}
+
+	public int[] getStatuses() {
+		return _statuses;
 	}
 
 	public boolean isCheckDisplayPage() {
@@ -99,6 +104,10 @@ public class SelectLayoutTag extends IncludeTag {
 		_privateLayout = privateLayout;
 	}
 
+	public void setStatuses(int[] statuses) {
+		_statuses = statuses;
+	}
+
 	@Override
 	protected void cleanUp() {
 		super.cleanUp();
@@ -110,6 +119,7 @@ public class SelectLayoutTag extends IncludeTag {
 		_multiSelection = false;
 		_namespace = null;
 		_privateLayout = false;
+		_statuses = null;
 	}
 
 	@Override
@@ -145,6 +155,19 @@ public class SelectLayoutTag extends IncludeTag {
 		findLayoutsURL = HttpComponentsUtil.addParameter(
 			findLayoutsURL, "privateLayout", _privateLayout);
 
+		String loadMoreItemsURL = HttpComponentsUtil.addParameter(
+			themeDisplay.getPathMain() + "/portal/get_layouts", "selPlid",
+			selPlid);
+
+		if (ArrayUtil.isNotEmpty(_statuses)) {
+			for (int status : _statuses) {
+				findLayoutsURL = HttpComponentsUtil.addParameter(
+					findLayoutsURL, "statuses", status);
+				loadMoreItemsURL = HttpComponentsUtil.addParameter(
+					loadMoreItemsURL, "statuses", status);
+			}
+		}
+
 		String[] selectedLayoutIds = ParamUtil.getStringValues(
 			httpServletRequest, "layoutUuid");
 
@@ -155,10 +178,7 @@ public class SelectLayoutTag extends IncludeTag {
 			HashMapBuilder.<String, Object>put(
 				"findLayoutsURL", findLayoutsURL
 			).put(
-				"loadMoreItemsURL",
-				HttpComponentsUtil.addParameter(
-					themeDisplay.getPathMain() + "/portal/get_layouts",
-					"selPlid", selPlid)
+				"loadMoreItemsURL", loadMoreItemsURL
 			).put(
 				"maxPageSize",
 				GetterUtil.getInteger(
@@ -207,7 +227,7 @@ public class SelectLayoutTag extends IncludeTag {
 			themeDisplay.getScopeGroupId(), getRequest(),
 			_itemSelectorReturnType, _privateLayout,
 			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, selectedLayoutIds,
-			selPlid, QueryUtil.ALL_POS, end);
+			selPlid, QueryUtil.ALL_POS, end, _statuses);
 
 		return JSONUtil.put(
 			JSONUtil.put(
@@ -254,5 +274,6 @@ public class SelectLayoutTag extends IncludeTag {
 	private boolean _multiSelection;
 	private String _namespace;
 	private boolean _privateLayout;
+	private int[] _statuses;
 
 }

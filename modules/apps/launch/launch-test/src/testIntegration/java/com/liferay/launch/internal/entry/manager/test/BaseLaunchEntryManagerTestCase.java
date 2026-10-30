@@ -9,9 +9,12 @@ import com.liferay.launch.entry.manager.LaunchEntryManager;
 import com.liferay.launch.entry.manager.LaunchEntryManagerRegistry;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.function.UnsafeSupplier;
+import com.liferay.petra.function.UnsafeSupplierValue;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -49,7 +52,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 /**
  * @author Alejandro Tardín
  */
-public abstract class BaseLaunchEntryManagerTestCase {
+public abstract class BaseLaunchEntryManagerTestCase<T> {
 
 	@ClassRule
 	@Rule
@@ -77,63 +80,51 @@ public abstract class BaseLaunchEntryManagerTestCase {
 	public void testAddDraft() throws Exception {
 		long classPK = addEntry();
 
-		String entryTitle = getEntryTitle(classPK);
+		T entryValue = getEntryValue(classPK);
 
 		LaunchEntryManager.Draft draft1 = addDraft(classPK);
 		LaunchEntryManager.Draft draft2 = addDraft(classPK);
 
 		Assert.assertNotEquals(draft1.getDraftId(), draft2.getDraftId());
 
-		String title1 = RandomTestUtil.randomString();
+		T value1 = createValue();
 
-		updateDraft(title1, draft1);
+		updateDraft(draft1, value1);
 
-		String title2 = RandomTestUtil.randomString();
+		T value2 = createValue();
 
-		updateDraft(title2, draft2);
+		updateDraft(draft2, value2);
 
-		Assert.assertEquals(title1, _getDraftTitle(classPK, draft1));
-		Assert.assertEquals(title2, _getDraftTitle(classPK, draft2));
+		Assert.assertEquals(value1, _getDraftValue(classPK, draft1));
+		Assert.assertEquals(value2, _getDraftValue(classPK, draft2));
 
-		Assert.assertEquals(entryTitle, getEntryTitle(classPK));
+		Assert.assertEquals(entryValue, getEntryValue(classPK));
 
-		LaunchEntryManager.Version publishedVersion = getPublishedVersion(
-			classPK);
+		T value3 = createValue();
 
-		String title3 = RandomTestUtil.randomString();
+		updateLiveEntry(classPK, value3);
 
-		updateLiveEntry(title3, classPK);
+		Assert.assertEquals(value3, getEntryValue(classPK));
 
-		Assert.assertEquals(title3, getEntryTitle(classPK));
+		Assert.assertEquals(value1, _getDraftValue(classPK, draft1));
+		Assert.assertEquals(value2, _getDraftValue(classPK, draft2));
 
-		Assert.assertEquals(title1, _getDraftTitle(classPK, draft1));
-		Assert.assertEquals(title2, _getDraftTitle(classPK, draft2));
+		Assert.assertEquals(value3, getDraftValue(addDraft(classPK)));
 
 		LaunchEntryManager launchEntryManager = getLaunchEntryManager();
 
-		Assert.assertEquals(
-			entryTitle,
-			getDraftTitle(
-				launchEntryManager.addDraft(
-					classPK, publishedVersion.getVersionKey())));
-
-		Assert.assertEquals(title3, getDraftTitle(addDraft(classPK)));
-
-		try {
-			launchEntryManager.addDraft(
-				classPK, String.valueOf(draft1.getDraftId()));
-
-			Assert.fail();
-		}
-		catch (PortalException portalException) {
-		}
+		Assert.assertThrows(
+			PortalException.class,
+			() -> launchEntryManager.addDraft(
+				classPK, RandomTestUtil.randomLong(),
+				String.valueOf(draft1.getDraftId())));
 	}
 
 	@Test
 	public void testDeleteDraft() throws Exception {
 		long classPK = addEntry();
 
-		String entryTitle = getEntryTitle(classPK);
+		T entryValue = getEntryValue(classPK);
 		LaunchEntryManager.Version publishedVersion = getPublishedVersion(
 			classPK);
 
@@ -148,7 +139,7 @@ public abstract class BaseLaunchEntryManagerTestCase {
 
 		launchEntryManager.deleteDraft(classPK, draft.getDraftId());
 
-		Assert.assertEquals(entryTitle, getEntryTitle(classPK));
+		Assert.assertEquals(entryValue, getEntryValue(classPK));
 
 		LaunchEntryManager.Version currentPublishedVersion =
 			getPublishedVersion(classPK);
@@ -162,17 +153,17 @@ public abstract class BaseLaunchEntryManagerTestCase {
 	public void testFetchDraft() throws Exception {
 		long classPK = addEntry();
 
-		String title = RandomTestUtil.randomString();
+		T value = createValue();
 
 		LaunchEntryManager.Draft draft = addDraft(classPK);
 
-		updateDraft(title, draft);
+		updateDraft(draft, value);
 
 		LaunchEntryManager.Draft fetchedDraft = getDraft(
 			classPK, draft.getDraftId());
 
 		Assert.assertEquals(draft.getDraftId(), fetchedDraft.getDraftId());
-		Assert.assertEquals(title, getDraftTitle(fetchedDraft));
+		Assert.assertEquals(value, getDraftValue(fetchedDraft));
 
 		LaunchEntryManager launchEntryManager = getLaunchEntryManager();
 
@@ -185,13 +176,10 @@ public abstract class BaseLaunchEntryManagerTestCase {
 	public void testFetchItem() throws Exception {
 		long classPK = addEntry();
 
-		String entryTitle = getEntryTitle(classPK);
-
 		LaunchEntryManager.Item item = getItem(classPK);
 
 		Assert.assertEquals(group.getGroupId(), item.getGroupId());
-		Assert.assertEquals(
-			entryTitle, item.getTitle(LocaleUtil.getSiteDefault()));
+		Assert.assertNotNull(item.getTitle(LocaleUtil.getSiteDefault()));
 		Assert.assertNotNull(item.getTypeName(LocaleUtil.getSiteDefault()));
 
 		List<Serializable> listedPrimaryKeys = getListedPrimaryKeys(classPK);
@@ -199,13 +187,6 @@ public abstract class BaseLaunchEntryManagerTestCase {
 		Assert.assertTrue(
 			listedPrimaryKeys.toString(),
 			listedPrimaryKeys.contains(item.getPrimaryKey()));
-
-		updateDraft(RandomTestUtil.randomString(), addDraft(classPK));
-
-		item = getItem(classPK);
-
-		Assert.assertEquals(
-			entryTitle, item.getTitle(LocaleUtil.getSiteDefault()));
 
 		LaunchEntryManager launchEntryManager = getLaunchEntryManager();
 
@@ -280,55 +261,37 @@ public abstract class BaseLaunchEntryManagerTestCase {
 	public void testGetPreviewBaseModel() throws Exception {
 		long classPK = addEntry();
 
-		String entryTitle = getEntryTitle(classPK);
+		T entryValue = getEntryValue(classPK);
 
-		String title1 = RandomTestUtil.randomString();
+		T value1 = createValue();
 
 		LaunchEntryManager.Draft draft1 = addDraft(classPK);
 
-		updateDraft(title1, draft1);
+		updateDraft(draft1, value1);
 
-		String title2 = RandomTestUtil.randomString();
+		T value2 = createValue();
 
 		LaunchEntryManager.Draft draft2 = addDraft(classPK);
 
-		updateDraft(title2, draft2);
+		updateDraft(draft2, value2);
 
 		draft1 = getDraft(classPK, draft1.getDraftId());
 
-		try (SafeCloseable safeCloseable = _setPreviewIdWithSafeCloseable(
-				classPK, draft1.getPreviewPrimaryKey())) {
+		try (SafeCloseable safeCloseable = setPreviewIdWithSafeCloseable(
+				classPK, draft1::getPreviewBaseModel)) {
 
-			Assert.assertEquals(title1, getEntryTitle(classPK));
+			Assert.assertEquals(value1, getEntryValue(classPK));
 		}
 
 		draft2 = getDraft(classPK, draft2.getDraftId());
 
-		try (SafeCloseable safeCloseable = _setPreviewIdWithSafeCloseable(
-				classPK, draft2.getPreviewPrimaryKey())) {
+		try (SafeCloseable safeCloseable = setPreviewIdWithSafeCloseable(
+				classPK, draft2::getPreviewBaseModel)) {
 
-			Assert.assertEquals(title2, getEntryTitle(classPK));
+			Assert.assertEquals(value2, getEntryValue(classPK));
 		}
 
-		Assert.assertEquals(entryTitle, getEntryTitle(classPK));
-
-		LaunchEntryManager launchEntryManager = getLaunchEntryManager();
-
-		LaunchEntryManager.Version publishedVersion1 =
-			launchEntryManager.publishDraft(classPK, draft1.getDraftId());
-
-		launchEntryManager.publishDraft(classPK, draft2.getDraftId());
-
-		LaunchEntryManager.Version version1 = getVersion(
-			classPK, publishedVersion1.getVersionKey());
-
-		try (SafeCloseable safeCloseable = _setPreviewIdWithSafeCloseable(
-				classPK, version1.getPreviewPrimaryKey())) {
-
-			Assert.assertEquals(title1, getEntryTitle(classPK));
-		}
-
-		Assert.assertEquals(title2, getEntryTitle(classPK));
+		Assert.assertEquals(entryValue, getEntryValue(classPK));
 	}
 
 	@Test
@@ -355,8 +318,8 @@ public abstract class BaseLaunchEntryManagerTestCase {
 			versionKeys.toString(),
 			versionKeys.contains(String.valueOf(draft.getDraftId())));
 
-		updateDraft(RandomTestUtil.randomString(), draft);
-		updateDraft(RandomTestUtil.randomString(), draft);
+		updateDraft(draft, createValue());
+		updateDraft(draft, createValue());
 
 		Assert.assertEquals(
 			versionKeys,
@@ -371,7 +334,9 @@ public abstract class BaseLaunchEntryManagerTestCase {
 			Assert.assertEquals(versionKey, version.getVersionKey());
 
 			Assert.assertNotNull(
-				versionKey, launchEntryManager.addDraft(classPK, versionKey));
+				versionKey,
+				launchEntryManager.addDraft(
+					classPK, RandomTestUtil.randomLong(), versionKey));
 		}
 	}
 
@@ -379,43 +344,36 @@ public abstract class BaseLaunchEntryManagerTestCase {
 	public void testPublishDraft() throws Exception {
 		long classPK = addEntry();
 
-		String title1 = RandomTestUtil.randomString();
+		T value1 = createValue();
 
 		LaunchEntryManager.Draft draft1 = addDraft(classPK);
 
-		updateDraft(title1, draft1);
+		updateDraft(draft1, value1);
 
-		String title2 = RandomTestUtil.randomString();
+		T value2 = createValue();
 
 		LaunchEntryManager.Draft draft2 = addDraft(classPK);
 
-		updateDraft(title2, draft2);
-
-		LaunchEntryManager.Version baseVersion = getPublishedVersion(classPK);
+		updateDraft(draft2, value2);
 
 		LaunchEntryManager launchEntryManager = getLaunchEntryManager();
 
 		LaunchEntryManager.Version publishedVersion2 =
 			launchEntryManager.publishDraft(classPK, draft2.getDraftId());
 
-		_assertPublishedVersion(
-			classPK, draft2, publishedVersion2, title2, baseVersion);
+		_assertPublishedVersion(classPK, draft2, value2, publishedVersion2);
 
-		Assert.assertEquals(title1, _getDraftTitle(classPK, draft1));
+		Assert.assertEquals(value1, _getDraftValue(classPK, draft1));
 
 		LaunchEntryManager.Version publishedVersion1 =
 			launchEntryManager.publishDraft(classPK, draft1.getDraftId());
 
-		_assertPublishedVersion(
-			classPK, draft1, publishedVersion1, title1, publishedVersion2);
+		_assertPublishedVersion(classPK, draft1, value1, publishedVersion1);
 
-		try {
-			launchEntryManager.publishDraft(classPK, draft1.getDraftId());
-
-			Assert.fail();
-		}
-		catch (PortalException portalException) {
-		}
+		Assert.assertThrows(
+			PortalException.class,
+			() -> launchEntryManager.publishDraft(
+				classPK, draft1.getDraftId()));
 	}
 
 	protected LaunchEntryManager.Draft addDraft(long classPK) throws Exception {
@@ -425,10 +383,13 @@ public abstract class BaseLaunchEntryManagerTestCase {
 			classPK);
 
 		return launchEntryManager.addDraft(
-			classPK, publishedVersion.getVersionKey());
+			classPK, RandomTestUtil.randomLong(),
+			publishedVersion.getVersionKey());
 	}
 
 	protected abstract long addEntry() throws Exception;
+
+	protected abstract T createValue();
 
 	protected abstract String getBackURLParameterName();
 
@@ -443,10 +404,10 @@ public abstract class BaseLaunchEntryManagerTestCase {
 		return draft;
 	}
 
-	protected abstract String getDraftTitle(LaunchEntryManager.Draft draft)
+	protected abstract T getDraftValue(LaunchEntryManager.Draft draft)
 		throws Exception;
 
-	protected abstract String getEntryTitle(long classPK) throws Exception;
+	protected abstract T getEntryValue(long classPK) throws Exception;
 
 	protected LaunchEntryManager.Item getItem(long classPK) {
 		LaunchEntryManager launchEntryManager = getLaunchEntryManager();
@@ -497,26 +458,48 @@ public abstract class BaseLaunchEntryManagerTestCase {
 		return version;
 	}
 
-	protected abstract void updateDraft(
-			String title, LaunchEntryManager.Draft draft)
+	protected SafeCloseable setPreviewIdWithSafeCloseable(
+		long classPK,
+		UnsafeSupplier<BaseModel<?>, PortalException> unsafeSupplier) {
+
+		Long previewId = PreviewableResolverUtil.addPreviewableMap(
+			HashMapBuilder.<Class<?>, Map<Serializable, Object>>put(
+				getModelClass(),
+				HashMapBuilder.<Serializable, Object>put(
+					() -> {
+						LaunchEntryManager.Item item = getItem(classPK);
+
+						return item.getPrimaryKey();
+					},
+					new UnsafeSupplierValue<>(unsafeSupplier)
+				).build()
+			).build());
+
+		SafeCloseable safeCloseable =
+			PreviewableResolverUtil.setPreviewIdWithSafeCloseable(previewId);
+
+		return () -> {
+			safeCloseable.close();
+
+			PreviewableResolverUtil.removePreviewableMap(previewId);
+		};
+	}
+
+	protected abstract void updateDraft(LaunchEntryManager.Draft draft, T value)
 		throws Exception;
 
-	protected abstract void updateLiveEntry(String title, long classPK)
+	protected abstract void updateLiveEntry(long classPK, T value)
 		throws Exception;
 
 	protected Group group;
 	protected ServiceContext serviceContext;
 
 	private void _assertPublishedVersion(
-			long classPK, LaunchEntryManager.Draft draft,
-			LaunchEntryManager.Version publishedVersion, String title,
-			LaunchEntryManager.Version previousPublishedVersion)
+			long classPK, LaunchEntryManager.Draft draft, T expectedValue,
+			LaunchEntryManager.Version publishedVersion)
 		throws Exception {
 
-		Assert.assertEquals(title, getEntryTitle(classPK));
-		Assert.assertNotEquals(
-			previousPublishedVersion.getVersionKey(),
-			publishedVersion.getVersionKey());
+		Assert.assertEquals(expectedValue, getEntryValue(classPK));
 
 		LaunchEntryManager.Version currentPublishedVersion =
 			getPublishedVersion(classPK);
@@ -537,10 +520,10 @@ public abstract class BaseLaunchEntryManagerTestCase {
 			launchEntryManager.fetchDraft(classPK, draft.getDraftId()));
 	}
 
-	private String _getDraftTitle(long classPK, LaunchEntryManager.Draft draft)
+	private T _getDraftValue(long classPK, LaunchEntryManager.Draft draft)
 		throws Exception {
 
-		return getDraftTitle(getDraft(classPK, draft.getDraftId()));
+		return getDraftValue(getDraft(classPK, draft.getDraftId()));
 	}
 
 	private String _getEditURL(LaunchEntryManager.Draft draft)
@@ -560,32 +543,6 @@ public abstract class BaseLaunchEntryManagerTestCase {
 		return draft.getEditURL(
 			_REDIRECT,
 			RequestBackedPortletURLFactoryUtil.create(mockHttpServletRequest));
-	}
-
-	private SafeCloseable _setPreviewIdWithSafeCloseable(
-		long classPK, Serializable previewPrimaryKey) {
-
-		Long previewId = PreviewableResolverUtil.addPreviewableMap(
-			HashMapBuilder.<Class<?>, Map<Serializable, Serializable>>put(
-				getModelClass(),
-				HashMapBuilder.<Serializable, Serializable>put(
-					() -> {
-						LaunchEntryManager.Item item = getItem(classPK);
-
-						return item.getPrimaryKey();
-					},
-					previewPrimaryKey
-				).build()
-			).build());
-
-		SafeCloseable safeCloseable =
-			PreviewableResolverUtil.setPreviewIdWithSafeCloseable(previewId);
-
-		return () -> {
-			safeCloseable.close();
-
-			PreviewableResolverUtil.removePreviewableMap(previewId);
-		};
 	}
 
 	private static final String _REDIRECT =

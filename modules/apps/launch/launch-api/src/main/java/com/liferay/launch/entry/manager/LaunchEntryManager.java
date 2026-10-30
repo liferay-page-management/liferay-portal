@@ -7,6 +7,7 @@ package com.liferay.launch.entry.manager;
 
 import com.liferay.item.selector.ItemSelectorCriterion;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 
 import java.io.Serializable;
@@ -25,7 +26,7 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface LaunchEntryManager {
 
-	public Draft addDraft(long classPK, String versionKey)
+	public Draft addDraft(long classPK, long launchSetId, String versionKey)
 		throws PortalException;
 
 	public void deleteDraft(long classPK, long draftId) throws PortalException;
@@ -61,7 +62,7 @@ public interface LaunchEntryManager {
 
 		public Date getModifiedDate();
 
-		public Serializable getPreviewPrimaryKey();
+		public BaseModel<?> getPreviewBaseModel();
 
 		public int getStatus();
 
@@ -87,7 +88,7 @@ public interface LaunchEntryManager {
 
 		public Date getModifiedDate();
 
-		public Serializable getPreviewPrimaryKey();
+		public BaseModel<?> getPreviewBaseModel();
 
 		public int getStatus();
 
