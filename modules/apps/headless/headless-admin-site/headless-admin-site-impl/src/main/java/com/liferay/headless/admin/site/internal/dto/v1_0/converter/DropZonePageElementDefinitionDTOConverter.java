@@ -17,6 +17,8 @@ import com.liferay.headless.admin.site.internal.dto.v1_0.util.ItemScopeUtil;
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.scope.Scope;
@@ -75,38 +77,6 @@ public class DropZonePageElementDefinitionDTOConverter
 	}
 
 	private FragmentReference[] _getFragmentReferences(
-			List<String> fragmentEntryKeys, long scopeGroupId)
-		throws Exception {
-
-		List<FragmentReference> fragmentReferences = new ArrayList<>();
-
-		for (String fragmentEntryKey : fragmentEntryKeys) {
-			FragmentEntry fragmentEntry =
-				FragmentCollectionContributorRegistryUtil.getFragmentEntry(
-					fragmentEntryKey);
-
-			if (fragmentEntry != null) {
-				fragmentReferences.add(
-					_toDefaultFragmentReference(fragmentEntryKey));
-			}
-			else {
-				fragmentEntry = _fragmentEntryLocalService.fetchFragmentEntry(
-					scopeGroupId, fragmentEntryKey);
-
-				if (fragmentEntry != null) {
-					fragmentReferences.add(
-						_toFragmentItemExternalReference(
-							fragmentEntry.getExternalReferenceCode(),
-							ItemScopeUtil.getItemScope(
-								fragmentEntry.getGroupId(), scopeGroupId)));
-				}
-			}
-		}
-
-		return fragmentReferences.toArray(new FragmentReference[0]);
-	}
-
-	private FragmentReference[] _getFragmentReferences(
 			long companyId,
 			DropZoneLayoutStructureItem dropZoneLayoutStructureItem,
 			long scopeGroupId)
@@ -114,7 +84,7 @@ public class DropZonePageElementDefinitionDTOConverter
 
 		if (dropZoneLayoutStructureItem.getFragmentEntryKeys() != null) {
 			return _getFragmentReferences(
-				dropZoneLayoutStructureItem.getFragmentEntryKeys(),
+				companyId, dropZoneLayoutStructureItem.getFragmentEntryKeys(),
 				scopeGroupId);
 		}
 		else if (dropZoneLayoutStructureItem.getFragmentEntriesJSONArray() !=
@@ -156,6 +126,51 @@ public class DropZonePageElementDefinitionDTOConverter
 		return fragmentReferences.toArray(new FragmentReference[0]);
 	}
 
+	private FragmentReference[] _getFragmentReferences(
+			long companyId, List<String> fragmentEntryKeys, long scopeGroupId)
+		throws Exception {
+
+		long[] groupIds = _getGroupIds(companyId, scopeGroupId);
+
+		List<FragmentReference> fragmentReferences = new ArrayList<>();
+
+		for (String fragmentEntryKey : fragmentEntryKeys) {
+			FragmentEntry fragmentEntry =
+				FragmentCollectionContributorRegistryUtil.getFragmentEntry(
+					fragmentEntryKey);
+
+			if (fragmentEntry != null) {
+				fragmentReferences.add(
+					_toDefaultFragmentReference(fragmentEntryKey));
+
+				continue;
+			}
+
+			for (long groupId : groupIds) {
+				fragmentEntry = _fragmentEntryLocalService.fetchFragmentEntry(
+					groupId, fragmentEntryKey);
+
+				if (fragmentEntry == null) {
+					continue;
+				}
+
+				fragmentReferences.add(
+					_toFragmentItemExternalReference(
+						fragmentEntry.getExternalReferenceCode(),
+						ItemScopeUtil.getItemScope(
+							fragmentEntry.getGroupId(), scopeGroupId)));
+			}
+		}
+
+		return fragmentReferences.toArray(new FragmentReference[0]);
+	}
+
+	private long[] _getGroupIds(long companyId, long groupId) throws Exception {
+		Group companyGroup = _groupLocalService.getCompanyGroup(companyId);
+
+		return new long[] {groupId, companyGroup.getGroupId()};
+	}
+
 	private DefaultFragmentReference _toDefaultFragmentReference(
 		String defaultFragmentKey) {
 
@@ -192,5 +207,8 @@ public class DropZonePageElementDefinitionDTOConverter
 
 	@Reference
 	private FragmentEntryLocalService _fragmentEntryLocalService;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 }
