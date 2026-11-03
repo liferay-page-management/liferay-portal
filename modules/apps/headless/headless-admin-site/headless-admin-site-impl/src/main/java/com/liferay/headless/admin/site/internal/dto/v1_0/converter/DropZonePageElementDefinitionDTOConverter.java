@@ -5,6 +5,9 @@
 
 package com.liferay.headless.admin.site.internal.dto.v1_0.converter;
 
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.contributor.util.FragmentCollectionContributorRegistryUtil;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.service.FragmentEntryLocalService;
@@ -15,10 +18,14 @@ import com.liferay.headless.admin.site.dto.v1_0.FragmentReference;
 import com.liferay.headless.admin.site.dto.v1_0.PageElementDefinition;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.ItemScopeUtil;
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.scope.Scope;
@@ -168,7 +175,19 @@ public class DropZonePageElementDefinitionDTOConverter
 	private long[] _getGroupIds(long companyId, long groupId) throws Exception {
 		Group companyGroup = _groupLocalService.getCompanyGroup(companyId);
 
-		return new long[] {groupId, companyGroup.getGroupId()};
+		long[] groupIds = {groupId, companyGroup.getGroupId()};
+
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-57283")) {
+			return groupIds;
+		}
+
+		return ArrayUtil.append(
+			groupIds,
+			TransformUtil.transformToLongArray(
+				_depotEntryLocalService.getGroupConnectedDepotEntries(
+					groupId, DepotConstants.TYPE_DESIGN_LIBRARY,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS),
+				DepotEntry::getGroupId));
 	}
 
 	private DefaultFragmentReference _toDefaultFragmentReference(
@@ -204,6 +223,9 @@ public class DropZonePageElementDefinitionDTOConverter
 
 		return fragmentItemExternalReference;
 	}
+
+	@Reference
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Reference
 	private FragmentEntryLocalService _fragmentEntryLocalService;
