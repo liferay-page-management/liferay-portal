@@ -10,6 +10,8 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.contributor.util.FragmentCollectionContributorRegistryUtil;
 import com.liferay.fragment.model.FragmentEntry;
+import com.liferay.fragment.renderer.FragmentRenderer;
+import com.liferay.fragment.renderer.util.FragmentRendererRegistryUtil;
 import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.headless.admin.site.dto.v1_0.DefaultFragmentReference;
 import com.liferay.headless.admin.site.dto.v1_0.DropZonePageElementDefinition;
@@ -91,14 +93,6 @@ public class DropZonePageElementDefinitionDTOConverter
 			long scopeGroupId)
 		throws Exception {
 
-		List<String> fragmentEntryKeys =
-			dropZoneLayoutStructureItem.getFragmentEntryKeys();
-
-		if (ListUtil.isNotEmpty(fragmentEntryKeys)) {
-			return _getFragmentReferences(
-				companyId, fragmentEntryKeys, scopeGroupId);
-		}
-
 		JSONArray fragmentEntriesJSONArray =
 			dropZoneLayoutStructureItem.getFragmentEntriesJSONArray();
 
@@ -107,7 +101,15 @@ public class DropZonePageElementDefinitionDTOConverter
 				companyId, fragmentEntriesJSONArray, scopeGroupId);
 		}
 
-		return null;
+		List<String> fragmentEntryKeys =
+			dropZoneLayoutStructureItem.getFragmentEntryKeys();
+
+		if (ListUtil.isEmpty(fragmentEntryKeys)) {
+			return null;
+		}
+
+		return _getFragmentReferences(
+			companyId, fragmentEntryKeys, scopeGroupId);
 	}
 
 	private FragmentReference[] _getFragmentReferences(
@@ -126,12 +128,17 @@ public class DropZonePageElementDefinitionDTOConverter
 							companyId,
 							jsonObject.getString("fragmentEntryScopeERC"),
 							scopeGroupId)));
+
+				continue;
 			}
-			else if (jsonObject.has("fragmentEntryRendererKey")) {
-				fragmentReferences.add(
-					_toDefaultFragmentReference(
-						jsonObject.getString("fragmentEntryRendererKey")));
+
+			if (!jsonObject.has("fragmentEntryRendererKey")) {
+				continue;
 			}
+
+			fragmentReferences.add(
+				_toDefaultFragmentReference(
+					jsonObject.getString("fragmentEntryRendererKey")));
 		}
 
 		return fragmentReferences.toArray(new FragmentReference[0]);
@@ -146,11 +153,14 @@ public class DropZonePageElementDefinitionDTOConverter
 		List<FragmentReference> fragmentReferences = new ArrayList<>();
 
 		for (String fragmentEntryKey : fragmentEntryKeys) {
-			FragmentEntry fragmentEntry =
+			FragmentEntry defaultFragmentEntry =
 				FragmentCollectionContributorRegistryUtil.getFragmentEntry(
 					fragmentEntryKey);
+			FragmentRenderer fragmentRenderer =
+				FragmentRendererRegistryUtil.getFragmentRenderer(
+					fragmentEntryKey);
 
-			if (fragmentEntry != null) {
+			if ((defaultFragmentEntry != null) || (fragmentRenderer != null)) {
 				fragmentReferences.add(
 					_toDefaultFragmentReference(fragmentEntryKey));
 
@@ -158,8 +168,9 @@ public class DropZonePageElementDefinitionDTOConverter
 			}
 
 			for (long groupId : groupIds) {
-				fragmentEntry = _fragmentEntryLocalService.fetchFragmentEntry(
-					groupId, fragmentEntryKey);
+				FragmentEntry fragmentEntry =
+					_fragmentEntryLocalService.fetchFragmentEntry(
+						groupId, fragmentEntryKey);
 
 				if (fragmentEntry == null) {
 					continue;
