@@ -153,6 +153,19 @@ public class PageDefinitionDTOConverterTest {
 				"ContentObjectFragmentRenderer");
 
 		_testToPageDefinitionDropZone(
+			"allowedFragments",
+			"layout_data_drop_zone_allowed_fragments_fragment_entries.json",
+			"BASIC_COMPONENT-button", "BASIC_COMPONENT-card",
+			"com.liferay.fragment.internal.renderer." +
+				"ContentObjectFragmentRenderer");
+
+		_testToPageDefinitionDropZone(
+			"allowedFragments",
+			"layout_data_drop_zone_allowed_fragments_legacy_" +
+				"fragment_entry_keys.json",
+			"BASIC_COMPONENT-button");
+
+		_testToPageDefinitionDropZone(
 			"unallowedFragments",
 			"layout_data_drop_zone_unallowed_fragments.json",
 			"BASIC_COMPONENT-button", "BASIC_COMPONENT-card",
