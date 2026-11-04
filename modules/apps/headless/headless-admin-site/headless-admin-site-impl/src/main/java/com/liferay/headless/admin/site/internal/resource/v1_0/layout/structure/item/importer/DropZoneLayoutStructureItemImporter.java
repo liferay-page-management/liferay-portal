@@ -83,6 +83,7 @@ public class DropZoneLayoutStructureItemImporter
 			_toFragmentEntriesJSONArray(
 				dropZonePageElementDefinition,
 				layoutStructureItemImporterContext));
+		dropZoneLayoutStructureItem.setFragmentEntryKeys(null);
 
 		return dropZoneLayoutStructureItem;
 	}
