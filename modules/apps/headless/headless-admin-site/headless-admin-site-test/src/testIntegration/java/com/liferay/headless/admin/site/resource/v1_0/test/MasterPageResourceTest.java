@@ -6,6 +6,9 @@
 package com.liferay.headless.admin.site.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.exportimport.kernel.service.StagingLocalService;
 import com.liferay.exportimport.kernel.staging.MergeLayoutPrototypesThreadLocal;
 import com.liferay.fragment.model.FragmentEntryLink;
@@ -520,7 +523,7 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-92443", "LPD-107149"})
+	@TestInfo({"LPD-92443", "LPD-107149", "LPP-65865"})
 	public void testPostSiteMasterPage() throws Exception {
 		super.testPostSiteMasterPage();
 
@@ -536,6 +539,8 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 		Assert.assertNull(postMasterPage.getThumbnailURLReference());
 
 		_testPostSiteMasterPageWithDropZonePageElement();
+		_testPostSiteMasterPageWithDropZonePageElementFromCompanyGroupFragment();
+		_testPostSiteMasterPageWithDropZonePageElementFromDesignLibraryDepotFragment();
 		_testPostSiteMasterPageWithPageSpecifications();
 		_testPostSiteMasterPageWithSiteTemplatePageSpecification();
 		_testPostSiteMasterPageWithThumbnail();
@@ -627,7 +632,7 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-86817", "LPD-92443"})
+	@TestInfo({"LPD-86817", "LPD-92443", "LPP-65865"})
 	public void testPutSiteMasterPage() throws Exception {
 		_testPutSiteMasterPage(randomMasterPage());
 
@@ -645,6 +650,8 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 				fileEntry.getExternalReferenceCode(), thumbnailURL));
 
 		_testPutSiteMasterPageWithDropZonePageElement();
+		_testPutSiteMasterPageWithDropZonePageElementFromCompanyGroupFragment();
+		_testPutSiteMasterPageWithDropZonePageElementFromDesignLibraryDepotFragment();
 		_testPutSiteMasterPageWithPageSpecifications();
 		_testPutSiteMasterPageWithThumbnail();
 		_testPutSiteMasterPageWithThumbnailURLReferenceExternalReferenceCodeAndFileBase64();
@@ -776,6 +783,19 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 		return testGetSiteMasterPagesPage_addMasterPage(
 			testGroup.getExternalReferenceCode(), masterPage);
+	}
+
+	private Group _addConnectedDesignLibraryGroup() throws Exception {
+		Group designLibraryGroup = DesignLibraryTestUtil.addDesignLibraryGroup(
+			testGroup.getGroupId());
+
+		DepotEntry depotEntry = _depotEntryLocalService.fetchGroupDepotEntry(
+			designLibraryGroup.getGroupId());
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			depotEntry.getDepotEntryId(), testGroup.getGroupId());
+
+		return designLibraryGroup;
 	}
 
 	private MasterPage _addDesignLibraryMasterPage(
@@ -1931,9 +1951,54 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 		MasterPageResource masterPageResource = _getMasterPageResource();
 
+		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
+
 		PageElement[] pageElements = {
 			PageElementsTestUtil.getDropZonePageElement(
-				RandomTestUtil.randomString(), testGroup.getGroupId())
+				RandomTestUtil.randomString(), testGroup.getGroupId(),
+				designLibraryGroup.getGroupId(), testGroup.getGroupId(),
+				testCompany.getGroupId())
+		};
+
+		MasterPage masterPage = _getMasterPage(pageElements);
+
+		_assertPageElements(
+			pageElements,
+			masterPageResource.postSiteMasterPage(
+				testGroup.getExternalReferenceCode(), masterPage));
+	}
+
+	private void _testPostSiteMasterPageWithDropZonePageElementFromCompanyGroupFragment()
+		throws Exception {
+
+		MasterPageResource masterPageResource = _getMasterPageResource();
+
+		Group companyGroup = _groupLocalService.getCompanyGroup(
+			testGroup.getCompanyId());
+
+		PageElement[] pageElements = {
+			PageElementsTestUtil.getDropZonePageElement(
+				RandomTestUtil.randomString(), companyGroup.getGroupId())
+		};
+
+		MasterPage masterPage = _getMasterPage(pageElements);
+
+		_assertPageElements(
+			pageElements,
+			masterPageResource.postSiteMasterPage(
+				testGroup.getExternalReferenceCode(), masterPage));
+	}
+
+	private void _testPostSiteMasterPageWithDropZonePageElementFromDesignLibraryDepotFragment()
+		throws Exception {
+
+		MasterPageResource masterPageResource = _getMasterPageResource();
+
+		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
+
+		PageElement[] pageElements = {
+			PageElementsTestUtil.getDropZonePageElement(
+				RandomTestUtil.randomString(), designLibraryGroup.getGroupId())
 		};
 
 		MasterPage masterPage = _getMasterPage(pageElements);
@@ -2271,9 +2336,81 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 		MasterPageResource masterPageResource = _getMasterPageResource();
 
+		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
+
 		PageElement[] pageElements = {
 			PageElementsTestUtil.getDropZonePageElement(
-				RandomTestUtil.randomString(), testGroup.getGroupId())
+				RandomTestUtil.randomString(), testGroup.getGroupId(),
+				designLibraryGroup.getGroupId(), testGroup.getGroupId(),
+				testCompany.getGroupId())
+		};
+
+		MasterPage masterPage = _getMasterPage(pageElements);
+
+		MasterPage postMasterPage = masterPageResource.postSiteMasterPage(
+			testGroup.getExternalReferenceCode(), masterPage);
+
+		postMasterPage.setDateModified(new Date());
+
+		MasterPage testGroupSiteMasterPage =
+			masterPageResource.putSiteMasterPage(
+				testGroup.getExternalReferenceCode(),
+				postMasterPage.getExternalReferenceCode(), masterPage);
+
+		_assertPageElements(pageElements, testGroupSiteMasterPage);
+
+		MasterPage irrelevantGroupSiteMasterPage =
+			masterPageResource.putSiteMasterPage(
+				irrelevantGroup.getExternalReferenceCode(),
+				testGroupSiteMasterPage.getExternalReferenceCode(),
+				testGroupSiteMasterPage);
+
+		_assertPageElements(pageElements, irrelevantGroupSiteMasterPage);
+		_assertPageElements(
+			pageElements,
+			masterPageResource.putSiteMasterPage(
+				testGroup.getExternalReferenceCode(),
+				irrelevantGroupSiteMasterPage.getExternalReferenceCode(),
+				irrelevantGroupSiteMasterPage));
+	}
+
+	private void _testPutSiteMasterPageWithDropZonePageElementFromCompanyGroupFragment()
+		throws Exception {
+
+		MasterPageResource masterPageResource = _getMasterPageResource();
+
+		Group companyGroup = _groupLocalService.getCompanyGroup(
+			testGroup.getCompanyId());
+
+		PageElement[] pageElements = {
+			PageElementsTestUtil.getDropZonePageElement(
+				RandomTestUtil.randomString(), companyGroup.getGroupId())
+		};
+
+		MasterPage masterPage = _getMasterPage(pageElements);
+
+		MasterPage postMasterPage = masterPageResource.postSiteMasterPage(
+			testGroup.getExternalReferenceCode(), masterPage);
+
+		postMasterPage.setDateModified(new Date());
+
+		_assertPageElements(
+			pageElements,
+			masterPageResource.putSiteMasterPage(
+				testGroup.getExternalReferenceCode(),
+				postMasterPage.getExternalReferenceCode(), masterPage));
+	}
+
+	private void _testPutSiteMasterPageWithDropZonePageElementFromDesignLibraryDepotFragment()
+		throws Exception {
+
+		MasterPageResource masterPageResource = _getMasterPageResource();
+
+		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
+
+		PageElement[] pageElements = {
+			PageElementsTestUtil.getDropZonePageElement(
+				RandomTestUtil.randomString(), designLibraryGroup.getGroupId())
 		};
 
 		MasterPage masterPage = _getMasterPage(pageElements);
@@ -2368,7 +2505,8 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 			PageElement[] pageElements = {
 				PageElementsTestUtil.getDropZonePageElement(
-					RandomTestUtil.randomString(), testGroup.getGroupId()),
+					RandomTestUtil.randomString(), testGroup.getGroupId(),
+					testGroup.getGroupId()),
 				_getContainerPageElement()
 			};
 
@@ -2576,6 +2714,12 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 	private static byte[] _thumbnail2Bytes;
 	private static String _thumbnail2URL;
 	private static ThumbnailHttpServer _thumbnailHttpServer;
+
+	@Inject
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	private Group _designLibraryGroup;
 
