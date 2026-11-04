@@ -7,6 +7,9 @@ package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
+import com.liferay.layout.helper.DropZoneAllowedFragmentEntriesHelper;
+import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
+import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -81,12 +84,34 @@ public class UpdateItemConfigMVCActionCommand
 				themeDisplay.getPlid(),
 				layoutStructure -> {
 					for (String curItemId : finalItemIds) {
+						JSONObject itemConfigJSONObject =
+							_jsonFactory.createJSONObject(itemConfig);
+
+						LayoutStructureItem layoutStructureItem =
+							layoutStructure.getLayoutStructureItem(curItemId);
+
+						if (layoutStructureItem instanceof
+								DropZoneLayoutStructureItem) {
+
+							itemConfigJSONObject =
+								_dropZoneAllowedFragmentEntriesHelper.
+									mergeFragmentEntrySettings(
+										themeDisplay.getCompanyId(),
+										(DropZoneLayoutStructureItem)
+											layoutStructureItem,
+										itemConfigJSONObject,
+										themeDisplay.getScopeGroupId());
+						}
+
 						layoutStructure.updateItemConfig(
-							_jsonFactory.createJSONObject(itemConfig),
-							curItemId);
+							itemConfigJSONObject, curItemId);
 					}
 				}));
 	}
+
+	@Reference
+	private DropZoneAllowedFragmentEntriesHelper
+		_dropZoneAllowedFragmentEntriesHelper;
 
 	@Reference
 	private JSONFactory _jsonFactory;
