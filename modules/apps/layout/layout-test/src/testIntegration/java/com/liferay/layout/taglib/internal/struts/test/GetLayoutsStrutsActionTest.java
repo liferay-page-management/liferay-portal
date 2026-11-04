@@ -189,11 +189,13 @@ public class GetLayoutsStrutsActionTest {
 
 		_assertLayoutInTree(
 			false, draftLayout, WorkflowConstants.STATUS_APPROVED);
+
 		_assertLayoutInTree(
 			true, approvedLayout, WorkflowConstants.STATUS_APPROVED);
 		_assertLayoutInTree(
 			true, approvedLayout, WorkflowConstants.STATUS_APPROVED,
 			WorkflowConstants.STATUS_DRAFT);
+
 		_assertLayoutInTree(
 			true, draftLayout, WorkflowConstants.STATUS_APPROVED,
 			WorkflowConstants.STATUS_DRAFT);
