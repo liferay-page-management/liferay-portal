@@ -19,7 +19,7 @@ const ManageAllowedFragmentModal = ({item, observer, onClose}) => {
 
 	const [allowNewFragmentEntries, setAllowNewFragmentEntries] =
 		useState(true);
-	const [resolvedDropZoneConfig, setResolvedDropZoneConfig] = useState(null);
+	const [dropZoneConfig, setDropZoneConfig] = useState(null);
 	const [selectedFragments, setSelectedFragments] = useState(new Set([]));
 	const [loading, setLoading] = useState();
 
@@ -30,13 +30,13 @@ const ManageAllowedFragmentModal = ({item, observer, onClose}) => {
 			},
 		})
 			.then(({fragmentEntryKeys}) => {
-				setResolvedDropZoneConfig({
+				setDropZoneConfig({
 					...item.config,
 					fragmentEntryKeys,
 				});
 			})
 			.catch(() => {
-				setResolvedDropZoneConfig(item.config);
+				setDropZoneConfig(item.config);
 			});
 	}, [item]);
 
@@ -85,9 +85,9 @@ const ManageAllowedFragmentModal = ({item, observer, onClose}) => {
 					)}
 				</p>
 
-				{resolvedDropZoneConfig ? (
+				{dropZoneConfig ? (
 					<AllowedFragmentSelectorTree
-						dropZoneConfig={resolvedDropZoneConfig}
+						dropZoneConfig={dropZoneConfig}
 						onSelectedFragment={onSelectedFragment}
 					/>
 				) : (
