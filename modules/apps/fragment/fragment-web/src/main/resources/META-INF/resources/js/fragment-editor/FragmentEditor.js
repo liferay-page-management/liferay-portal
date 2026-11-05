@@ -276,6 +276,9 @@ const FragmentEditor = ({
 													fragmentJS:
 														codeRef.current.js,
 												})}
+												greeting={Liferay.Language.get(
+													'hi-i-can-help-you-edit-this-fragment'
+												)}
 												hideLabel
 												instructionDefinitionScope=""
 												presentation="sidebar"

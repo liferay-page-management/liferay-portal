@@ -73,6 +73,9 @@ export default function FragmentAIAssistantTriggerButton({
 				fragmentSetExternalReferenceCode,
 				siteExternalReferenceCode,
 			}}
+			greeting={Liferay.Language.get(
+				'hi-i-can-help-you-generate-fragments'
+			)}
 			hideLabel
 			instructionDefinitionScope=""
 			presentation="sidebar"
