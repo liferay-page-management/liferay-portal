@@ -241,7 +241,7 @@ public class SegmentsExperienceUpgradeProcessTest
 	}
 
 	@Test
-	public void testUpgradeWithoutCtCollectionIdAndSegmentsExperienceIdColumns()
+	public void testUpgradeWithoutCTCollectionIdAndSegmentsExperienceIdColumns()
 		throws Exception {
 
 		_deleteSegmentsExperiences();
@@ -272,7 +272,7 @@ public class SegmentsExperienceUpgradeProcessTest
 	}
 
 	@Test
-	public void testUpgradeWithoutCtCollectionIdColumns() throws Exception {
+	public void testUpgradeWithoutCTCollectionIdColumns() throws Exception {
 		_deleteSegmentsExperiences();
 
 		try {
