@@ -250,17 +250,17 @@ public class DropZoneAllowedFragmentEntriesHelperImplTest {
 			dropZoneLayoutStructureItem, JSONUtil.putAll(),
 			Collections.emptyList(), Collections.emptyList());
 
-		String rendererKey = RandomTestUtil.randomString();
+		String fragmentEntryRendererKey = RandomTestUtil.randomString();
 
 		JSONObject rendererKeyJSONObject = JSONUtil.put(
-			"fragmentEntryRendererKey", rendererKey);
+			"fragmentEntryRendererKey", fragmentEntryRendererKey);
 
 		dropZoneLayoutStructureItem = _getDropZoneLayoutStructureItem(
 			JSONUtil.putAll(rendererKeyJSONObject), null);
 
 		_testMergeFragmentEntrySettings(
 			dropZoneLayoutStructureItem, JSONUtil.putAll(rendererKeyJSONObject),
-			Collections.emptyList(), Arrays.asList(rendererKey));
+			Collections.emptyList(), Arrays.asList(fragmentEntryRendererKey));
 
 		_testMergeFragmentEntrySettings(
 			dropZoneLayoutStructureItem, JSONUtil.putAll(),

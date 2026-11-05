@@ -149,9 +149,9 @@ public class DropZonePageElementDefinitionDTOConverter
 			long companyId, List<String> fragmentEntryKeys, long scopeGroupId)
 		throws Exception {
 
-		long[] groupIds = _getGroupIds(companyId, scopeGroupId);
-
 		List<FragmentReference> fragmentReferences = new ArrayList<>();
+
+		long[] groupIds = _getGroupIds(companyId, scopeGroupId);
 
 		for (String fragmentEntryKey : fragmentEntryKeys) {
 			FragmentEntry defaultFragmentEntry =
