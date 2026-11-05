@@ -98,53 +98,61 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 
 				Layout draftLayout = layout.fetchDraftLayout();
 
+				if (draftLayout == null) {
+					continue;
+				}
+
 				long ctCollectionId = resultSet.getLong("ctCollectionId");
 				long groupId = resultSet.getLong("groupId");
 				String segmentsExperienceKey = resultSet.getString(
 					"segmentsExperienceKey");
 
-				if ((draftLayout == null) ||
-					_existDraftLayoutSegmentsExperience(
+				long draftLayoutSegmentsExperienceId =
+					_getDraftLayoutSegmentsExperienceId(
 						ctCollectionId, groupId, segmentsExperienceKey,
-						draftLayout.getPlid())) {
+						draftLayout.getPlid());
 
-					continue;
+				if (draftLayoutSegmentsExperienceId == 0) {
+					preparedStatement2.setLong(1, 0);
+					preparedStatement2.setLong(2, ctCollectionId);
+
+					String uuid = PortalUUIDUtil.generate();
+
+					preparedStatement2.setString(3, uuid);
+					preparedStatement2.setString(4, uuid);
+
+					draftLayoutSegmentsExperienceId = increment();
+
+					preparedStatement2.setLong(
+						5, draftLayoutSegmentsExperienceId);
+
+					preparedStatement2.setLong(6, groupId);
+					preparedStatement2.setLong(
+						7, resultSet.getLong("companyId"));
+					preparedStatement2.setLong(8, resultSet.getLong("userId"));
+					preparedStatement2.setString(
+						9, resultSet.getString("userName"));
+					preparedStatement2.setDate(
+						10, resultSet.getDate("createDate"));
+					preparedStatement2.setDate(
+						11, resultSet.getDate("modifiedDate"));
+					preparedStatement2.setLong(
+						12, resultSet.getLong("segmentsEntryId"));
+					preparedStatement2.setString(13, segmentsExperienceKey);
+					preparedStatement2.setLong(14, draftLayout.getPlid());
+					preparedStatement2.setString(
+						15, resultSet.getString("name"));
+					preparedStatement2.setLong(
+						16, resultSet.getInt("priority"));
+					preparedStatement2.setBoolean(
+						17, resultSet.getBoolean("active_"));
+					preparedStatement2.setString(
+						18, resultSet.getString("typeSettings"));
+					preparedStatement2.setDate(
+						19, resultSet.getDate("lastPublishDate"));
+
+					preparedStatement2.addBatch();
 				}
-
-				preparedStatement2.setLong(1, 0);
-				preparedStatement2.setLong(2, ctCollectionId);
-
-				String uuid = PortalUUIDUtil.generate();
-
-				preparedStatement2.setString(3, uuid);
-				preparedStatement2.setString(4, uuid);
-
-				long draftLayoutSegmentsExperienceId = increment();
-
-				preparedStatement2.setLong(5, draftLayoutSegmentsExperienceId);
-
-				preparedStatement2.setLong(6, groupId);
-				preparedStatement2.setLong(7, resultSet.getLong("companyId"));
-				preparedStatement2.setLong(8, resultSet.getLong("userId"));
-				preparedStatement2.setString(
-					9, resultSet.getString("userName"));
-				preparedStatement2.setDate(10, resultSet.getDate("createDate"));
-				preparedStatement2.setDate(
-					11, resultSet.getDate("modifiedDate"));
-				preparedStatement2.setLong(
-					12, resultSet.getLong("segmentsEntryId"));
-				preparedStatement2.setString(13, segmentsExperienceKey);
-				preparedStatement2.setLong(14, draftLayout.getPlid());
-				preparedStatement2.setString(15, resultSet.getString("name"));
-				preparedStatement2.setLong(16, resultSet.getInt("priority"));
-				preparedStatement2.setBoolean(
-					17, resultSet.getBoolean("active_"));
-				preparedStatement2.setString(
-					18, resultSet.getString("typeSettings"));
-				preparedStatement2.setDate(
-					19, resultSet.getDate("lastPublishDate"));
-
-				preparedStatement2.addBatch();
 
 				long segmentsExperienceId = resultSet.getLong(
 					"segmentsExperienceId");
@@ -208,16 +216,16 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 		}
 	}
 
-	private boolean _existDraftLayoutSegmentsExperience(
+	private long _getDraftLayoutSegmentsExperienceId(
 			long ctCollectionId, long groupId, String segmentsExperienceKey,
 			long plid)
 		throws Exception {
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				StringBundler.concat(
-					"select 1 from SegmentsExperience where ctCollectionId = ",
-					"? and groupId = ? and segmentsExperienceKey = ? and plid ",
-					"= ?"))) {
+					"select segmentsExperienceId from SegmentsExperience ",
+					"where ctCollectionId = ? and groupId = ? and ",
+					"segmentsExperienceKey = ? and plid = ?"))) {
 
 			preparedStatement.setLong(1, ctCollectionId);
 			preparedStatement.setLong(2, groupId);
@@ -225,7 +233,11 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 			preparedStatement.setLong(4, plid);
 
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				return resultSet.next();
+				if (resultSet.next()) {
+					return resultSet.getLong("segmentsExperienceId");
+				}
+
+				return 0;
 			}
 		}
 	}
