@@ -12,6 +12,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
+import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminConstants;
 import com.liferay.layout.page.template.admin.web.internal.constants.LayoutPageTemplateAdminWebKeys;
 import com.liferay.layout.page.template.admin.web.internal.security.permission.resource.LayoutPageTemplateCollectionPermission;
 import com.liferay.layout.page.template.admin.web.internal.security.permission.resource.LayoutPageTemplateEntryPermission;
@@ -333,7 +334,7 @@ public class DisplayPageManagementToolbarDisplayContext
 			"/layout_page_template_admin/delete_layout_page_template_" +
 				"entries_and_layout_page_template_collections"
 		).setTabs1(
-			"display-page-templates"
+			LayoutPageTemplateAdminConstants.TABS1_DISPLAY_PAGE_TEMPLATES
 		).setParameter(
 			"layoutPageTemplateCollectionId",
 			_displayPageDisplayContext.getLayoutPageTemplateCollectionId()

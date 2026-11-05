@@ -7,6 +7,7 @@ package com.liferay.layout.page.template.admin.web.internal.frontend.taglib.clay
 
 import com.liferay.frontend.taglib.clay.servlet.taglib.BaseHorizontalCard;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
+import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminConstants;
 import com.liferay.layout.page.template.admin.web.internal.servlet.taglib.util.LayoutPageTemplateCollectionActionDropdownItem;
 import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.portal.kernel.dao.search.RowChecker;
@@ -49,7 +50,9 @@ public class DisplayPageTemplateCollectionHorizontalCard
 			layoutPageTemplateCollectionActionDropdownItem =
 				new LayoutPageTemplateCollectionActionDropdownItem(
 					httpServletRequest, _layoutPageTemplateCollection,
-					_renderResponse, "display-page-templates");
+					_renderResponse,
+					LayoutPageTemplateAdminConstants.
+						TABS1_DISPLAY_PAGE_TEMPLATES);
 
 		try {
 			return layoutPageTemplateCollectionActionDropdownItem.
@@ -69,7 +72,7 @@ public class DisplayPageTemplateCollectionHorizontalCard
 		return PortletURLBuilder.createRenderURL(
 			_renderResponse
 		).setTabs1(
-			"display-page-templates"
+			LayoutPageTemplateAdminConstants.TABS1_DISPLAY_PAGE_TEMPLATES
 		).setParameter(
 			"groupId", _layoutPageTemplateCollection.getGroupId()
 		).setParameter(

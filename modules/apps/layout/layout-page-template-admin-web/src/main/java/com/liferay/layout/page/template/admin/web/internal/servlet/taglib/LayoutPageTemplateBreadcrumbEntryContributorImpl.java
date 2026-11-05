@@ -6,6 +6,7 @@
 package com.liferay.layout.page.template.admin.web.internal.servlet.taglib;
 
 import com.liferay.design.library.util.DesignLibraryUtil;
+import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminConstants;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
 import com.liferay.layout.page.template.admin.web.internal.security.permission.resource.LayoutPageTemplateCollectionPermission;
 import com.liferay.layout.page.template.admin.web.internal.util.LayoutPageTemplatePortletUtil;
@@ -125,10 +126,11 @@ public class LayoutPageTemplateBreadcrumbEntryContributorImpl
 		if (layoutPageTemplateCollection.getType() ==
 				LayoutPageTemplateCollectionTypeConstants.DISPLAY_PAGE) {
 
-			return "display-page-templates";
+			return LayoutPageTemplateAdminConstants.
+				TABS1_DISPLAY_PAGE_TEMPLATES;
 		}
 
-		return "page-templates";
+		return LayoutPageTemplateAdminConstants.TABS1_PAGE_TEMPLATES;
 	}
 
 	@Reference
