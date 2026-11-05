@@ -150,6 +150,11 @@ public class SegmentsServiceUpgradeStepRegistrator
 
 		registry.register(
 			"4.2.0", "4.2.1", new SegmentsEntryTypeUpgradeProcess());
+
+		registry.register(
+			"4.2.1", "4.2.2",
+			new com.liferay.segments.internal.upgrade.v4_2_2.
+				SegmentsExperienceUpgradeProcess());
 	}
 
 	@Reference
