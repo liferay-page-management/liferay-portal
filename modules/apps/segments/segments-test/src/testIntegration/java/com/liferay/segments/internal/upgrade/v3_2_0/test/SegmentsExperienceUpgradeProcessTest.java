@@ -6,6 +6,8 @@
 package com.liferay.segments.internal.upgrade.v3_2_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.change.tracking.model.CTCollection;
+import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.test.util.BaseCTUpgradeProcessTestCase;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
@@ -15,7 +17,9 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocal
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelLocalService;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.cache.MultiVMPool;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
@@ -143,6 +147,35 @@ public class SegmentsExperienceUpgradeProcessTest
 		Assert.assertNotNull(
 			_segmentsExperienceLocalService.getSegmentsExperience(
 				segmentsExperience.getSegmentsExperienceId()));
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
+	public void testUpgradeWithCTCollectionDraftLayout() throws Exception {
+		_deleteSegmentsExperiences();
+
+		CTCollection ctCollection = _ctCollectionLocalService.addCTCollection(
+			null, _group.getCompanyId(), TestPropsValues.getUserId(), 0,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_updateFragmentEntryLinks();
+			_updateLayoutPageTemplateStructureRels();
+		}
+
+		runUpgrade();
+
+		_assertSegmentsExperiences();
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_assertSegmentsExperiences();
+		}
 	}
 
 	@Test
@@ -469,6 +502,9 @@ public class SegmentsExperienceUpgradeProcessTest
 
 	private static Connection _connection;
 	private static DB _db;
+
+	@Inject
+	private CTCollectionLocalService _ctCollectionLocalService;
 
 	private Layout _draftLayout;
 
