@@ -181,6 +181,7 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 
 					preparedStatement.setLong(
 						index++, draftLayoutSegmentsExperienceId);
+					preparedStatement.setLong(index++, groupId);
 
 					if (hasFragmentEntryLinkCTCollectionId &&
 						(ctCollectionId != 0)) {
@@ -212,6 +213,7 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 				}
 
 				preparedStatement.setLong(index++, segmentsExperienceId);
+				preparedStatement.setLong(index++, groupId);
 				preparedStatement.setLong(index, draftLayout.getPlid());
 
 				preparedStatement.addBatch();
@@ -261,7 +263,7 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 		StringBundler sb = new StringBundler(11);
 
 		sb.append("update FragmentEntryLink set segmentsExperienceId = ? ");
-		sb.append("where ");
+		sb.append("where groupId = ? and ");
 
 		if (hasCTCollectionId) {
 			if (productionMode) {
@@ -310,7 +312,7 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 		sb.append("segmentsExperienceId = ? and ");
 		sb.append("layoutPageTemplateStructureId in (select ");
 		sb.append("layoutPageTemplateStructureId from ");
-		sb.append("LayoutPageTemplateStructure where ");
+		sb.append("LayoutPageTemplateStructure where groupId = ? and ");
 		sb.append(columnName);
 		sb.append(" = ?)");
 
