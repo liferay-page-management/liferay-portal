@@ -7,10 +7,14 @@ import ClayForm from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayNav from '@clayui/nav';
 import ClayTabs from '@clayui/tabs';
+import {
+	AIAssistantTriggerButton,
+	APPLY_FRAGMENT_CODE_EVENT,
+} from '@liferay/ai-hub-cell-js-components-web';
 import {useIsMounted, usePrevious} from '@liferay/frontend-js-react-web';
 import {openToast} from 'frontend-js-components-web';
 import {debounce, fetch, navigate, sub} from 'frontend-js-web';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import CodeMirrorEditor from './CodeMirrorEditor';
 import EmbeddedWidgetsModal from './EmbeddedWidgetsModal';
@@ -63,6 +67,9 @@ const FragmentEditor = ({
 		js: initialJS,
 	}));
 
+	const codeRef = useRef(code);
+
+	const [loadedCode, setLoadedCode] = useState(code);
 	const [previewData, setPreviewData] = useState(code);
 
 	const previousCode = usePrevious(code) || code;
@@ -132,6 +139,26 @@ const FragmentEditor = ({
 				});
 			});
 	};
+
+	useEffect(() => {
+		codeRef.current = code;
+	}, [code]);
+
+	useEffect(() => {
+		const applyFragmentCodeHandler = Liferay.on(
+			APPLY_FRAGMENT_CODE_EVENT,
+			({configuration, css, html, js}) => {
+				setLoadedCode({
+					configuration: JSON.stringify(configuration, null, '\t'),
+					css,
+					html,
+					js,
+				});
+			}
+		);
+
+		return () => applyFragmentCodeHandler.detach();
+	}, []);
 
 	useEffect(() => {
 		if (contentHasChanged()) {
@@ -234,6 +261,29 @@ const FragmentEditor = ({
 										</span>
 									</div>
 
+									{Liferay.FeatureFlags['LPD-94003'] && (
+										<div className="btn-group-item mr-2">
+											<AIAssistantTriggerButton
+												chatbotExternalReferenceCode="L_EDIT_FRAGMENT_CHATBOT"
+												getContext={() => ({
+													fragmentCSS:
+														codeRef.current.css,
+													fragmentConfiguration:
+														codeRef.current
+															.configuration,
+													fragmentHTML:
+														codeRef.current.html,
+													fragmentJS:
+														codeRef.current.js,
+												})}
+												hideLabel
+												instructionDefinitionScope=""
+												presentation="sidebar"
+												pushContainer="#main-content"
+											/>
+										</div>
+									)}
+
 									<div className="btn-group-item">
 										<button
 											className="btn btn-primary btn-sm"
@@ -263,7 +313,7 @@ const FragmentEditor = ({
 					<div className="fragment-editor">
 						<div className="html source-editor">
 							<CodeMirrorEditor
-								content={initialHTML}
+								content={loadedCode.html}
 								customDataAttributes={dataAttributes}
 								customEntities={htmlEditorCustomEntities}
 								customTags={autocompleteTags}
@@ -277,7 +327,7 @@ const FragmentEditor = ({
 
 						<div className="css source-editor">
 							<CodeMirrorEditor
-								content={initialCSS}
+								content={loadedCode.css}
 								mode="css"
 								onChange={(css) =>
 									setCode((current) => ({...current, css}))
@@ -300,7 +350,7 @@ const FragmentEditor = ({
 									'const fragmentElement = ...;',
 									'const configuration = ...;',
 								]}
-								content={initialJS}
+								content={loadedCode.js}
 								mode="javascript"
 								onChange={(js) =>
 									setCode((current) => ({...current, js}))
@@ -360,7 +410,7 @@ const FragmentEditor = ({
 									)}
 
 									<CodeMirrorEditor
-										content={initialConfiguration}
+										content={loadedCode.configuration}
 										mode="json"
 										onChange={(configuration) =>
 											setCode((current) => ({
