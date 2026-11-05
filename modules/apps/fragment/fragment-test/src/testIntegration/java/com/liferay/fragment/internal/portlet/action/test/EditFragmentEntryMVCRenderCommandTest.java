@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -83,6 +84,21 @@ public class EditFragmentEntryMVCRenderCommandTest {
 		Assert.assertEquals("/error.jsp", mvcPath);
 	}
 
+	@Test
+	@TestInfo("LPD-111343")
+	public void testRenderWithExternalReferenceCode() throws Exception {
+		FragmentCollection fragmentCollection =
+			FragmentTestUtil.addFragmentCollection(_group.getGroupId());
+
+		_testRenderWithExternalReferenceCode(
+			FragmentEntryTestUtil.addFragmentEntry(
+				fragmentCollection.getFragmentCollectionId()));
+		_testRenderWithExternalReferenceCode(
+			FragmentEntryTestUtil.addFragmentEntryByStatus(
+				fragmentCollection.getFragmentCollectionId(),
+				WorkflowConstants.STATUS_DRAFT));
+	}
+
 	private MockLiferayPortletRenderRequest
 			_getMockLiferayPortletRenderRequest()
 		throws Exception {
@@ -102,6 +118,23 @@ public class EditFragmentEntryMVCRenderCommandTest {
 			WebKeys.THEME_DISPLAY, themeDisplay);
 
 		return mockLiferayPortletRenderRequest;
+	}
+
+	private void _testRenderWithExternalReferenceCode(
+			FragmentEntry fragmentEntry)
+		throws Exception {
+
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_getMockLiferayPortletRenderRequest();
+
+		mockLiferayPortletRenderRequest.setParameter(
+			"externalReferenceCode", fragmentEntry.getExternalReferenceCode());
+
+		String mvcPath = _mvcRenderCommand.render(
+			mockLiferayPortletRenderRequest,
+			new MockLiferayPortletRenderResponse());
+
+		Assert.assertEquals("/edit_fragment_entry.jsp", mvcPath);
 	}
 
 	@Inject
