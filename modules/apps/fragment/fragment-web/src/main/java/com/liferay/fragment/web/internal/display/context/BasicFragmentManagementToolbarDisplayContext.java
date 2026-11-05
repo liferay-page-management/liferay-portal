@@ -256,6 +256,17 @@ public class BasicFragmentManagementToolbarDisplayContext
 			() -> generateFragmentWithAIEnabled,
 			dropdownItem -> {
 				dropdownItem.putData("action", "generateFragmentWithAI");
+				dropdownItem.putData(
+					"editFragmentURL",
+					PortletURLBuilder.createRenderURL(
+						liferayPortletResponse
+					).setMVCRenderCommandName(
+						"/fragment/edit_fragment_entry"
+					).setRedirect(
+						themeDisplay.getURLCurrent()
+					).setParameter(
+						"externalReferenceCode", "EXTERNAL_REFERENCE_CODE"
+					).buildString());
 
 				FragmentCollection fragmentCollection =
 					fragmentDisplayContext.getFragmentCollection();
