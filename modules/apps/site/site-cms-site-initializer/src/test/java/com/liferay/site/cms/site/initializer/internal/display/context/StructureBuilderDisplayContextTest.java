@@ -8,6 +8,7 @@ package com.liferay.site.cms.site.initializer.internal.display.context;
 import com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition;
 import com.liferay.object.admin.rest.resource.v1_0.ObjectDefinitionResource;
 import com.liferay.object.exception.NoSuchObjectDefinitionException;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -15,8 +16,11 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.site.cms.site.initializer.contributor.CMSStructureObjectFolderContributor;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -24,6 +28,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -143,6 +148,70 @@ public class StructureBuilderDisplayContextTest {
 			ReflectionTestUtil.invoke(
 				structureBuilderDisplayContext, "_getBaseObjectDefinition",
 				new Class<?>[0]));
+	}
+
+	@Test
+	public void testGetObjectDefinitions() throws Exception {
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setAttribute(
+			WebKeys.THEME_DISPLAY,
+			new ThemeDisplay() {
+				{
+					setUser(Mockito.mock(User.class));
+				}
+			});
+
+		Mockito.when(
+			_builder.user(Mockito.any(User.class))
+		).thenReturn(
+			_builder
+		);
+
+		Mockito.when(
+			_builder.build()
+		).thenReturn(
+			_objectDefinitionResource
+		);
+
+		Mockito.when(
+			_objectDefinitionResourceFactory.create()
+		).thenReturn(
+			_builder
+		);
+
+		Mockito.when(
+			_objectDefinitionResource.getObjectDefinitionsPage(
+				Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+				Mockito.any())
+		).thenReturn(
+			Page.of(Collections.emptyList())
+		);
+
+		StructureBuilderDisplayContext structureBuilderDisplayContext =
+			new StructureBuilderDisplayContext(
+				Collections.emptyList(), mockHttpServletRequest, null,
+				_objectDefinitionResourceFactory, null);
+
+		ReflectionTestUtil.invoke(
+			structureBuilderDisplayContext, "_getObjectDefinitions",
+			new Class<?>[0]);
+
+		ArgumentCaptor<Pagination> argumentCaptor = ArgumentCaptor.forClass(
+			Pagination.class);
+
+		Mockito.verify(
+			_objectDefinitionResource
+		).getObjectDefinitionsPage(
+			Mockito.any(), Mockito.any(), Mockito.any(),
+			argumentCaptor.capture(), Mockito.any()
+		);
+
+		Pagination pagination = argumentCaptor.getValue();
+
+		Assert.assertEquals(QueryUtil.ALL_POS, pagination.getEndPosition());
+		Assert.assertEquals(QueryUtil.ALL_POS, pagination.getStartPosition());
 	}
 
 	private final ObjectDefinitionResource.Builder _builder = Mockito.mock(
