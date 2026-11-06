@@ -109,7 +109,7 @@ public class SegmentsExperienceUpgradeProcessTest
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
-				"{}", _draftLayout,
+				JSONFactoryUtil.getNullJSON(), _draftLayout,
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_draftLayout.getPlid()));
 
@@ -118,7 +118,7 @@ public class SegmentsExperienceUpgradeProcessTest
 					_group.getGroupId(), _draftLayout.getPlid());
 
 			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
-				"{}", _draftLayout,
+				JSONFactoryUtil.getNullJSON(), _draftLayout,
 				segmentsExperience.getSegmentsExperienceId());
 
 			ContentLayoutTestUtil.publishLayout(_draftLayout, _publishedLayout);
