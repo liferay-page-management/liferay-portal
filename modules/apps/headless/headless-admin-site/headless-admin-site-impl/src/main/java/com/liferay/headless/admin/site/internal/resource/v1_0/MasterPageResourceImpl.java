@@ -33,6 +33,7 @@ import com.liferay.layout.page.template.exception.RequiredLayoutPageTemplateEntr
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
 import com.liferay.petra.function.UnsafeFunction;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
@@ -103,7 +104,7 @@ public class MasterPageResourceImpl
 			designLibraryExternalReferenceCode);
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_getLayoutPageTemplateEntry(
+			_getMasterLayoutPageTemplateEntry(
 				masterPageExternalReferenceCode, groupId);
 
 		int masterLayoutsCount = _layoutLocalService.getMasterLayoutsCount(
@@ -140,7 +141,7 @@ public class MasterPageResourceImpl
 
 		return _toDesignLibraryMasterPage(
 			designLibraryExternalReferenceCode,
-			_getLayoutPageTemplateEntry(
+			_getMasterLayoutPageTemplateEntry(
 				masterPageExternalReferenceCode,
 				_getDesignLibraryGroupId(designLibraryExternalReferenceCode)));
 	}
@@ -306,7 +307,7 @@ public class MasterPageResourceImpl
 		EnabledUtil.checkDesignLibraryMasterPagesEnabled(contextCompany);
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_getLayoutPageTemplateEntry(
+			_getMasterLayoutPageTemplateEntry(
 				masterPageExternalReferenceCode,
 				_getDesignLibraryGroupId(designLibraryExternalReferenceCode));
 
@@ -331,7 +332,7 @@ public class MasterPageResourceImpl
 		EnabledUtil.checkDesignLibraryMasterPagesEnabled(contextCompany);
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_getLayoutPageTemplateEntry(
+			_getMasterLayoutPageTemplateEntry(
 				masterPageExternalReferenceCode,
 				_getDesignLibraryGroupId(designLibraryExternalReferenceCode));
 
@@ -355,14 +356,10 @@ public class MasterPageResourceImpl
 		throws Exception {
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_layoutPageTemplateEntryService.
-				fetchLayoutPageTemplateEntryByExternalReferenceCode(
-					pageTemplateExternalReferenceCode,
-					GroupUtil.getStagingAwareGroupId(
-						contextCompany.getCompanyId(),
-						siteExternalReferenceCode));
-
-		_validateMasterPage(layoutPageTemplateEntry);
+			_getMasterLayoutPageTemplateEntry(
+				pageTemplateExternalReferenceCode,
+				GroupUtil.getStagingAwareGroupId(
+					contextCompany.getCompanyId(), siteExternalReferenceCode));
 
 		return (ContentPageSpecification)_pageSpecificationDTOConverter.toDTO(
 			DTOConverterContextUtil.getDTOConverterContext(
@@ -412,7 +409,7 @@ public class MasterPageResourceImpl
 		throws Exception {
 
 		return _toMasterPage(
-			_getLayoutPageTemplateEntry(
+			_getMasterLayoutPageTemplateEntry(
 				masterPageExternalReferenceCode,
 				GroupUtil.getGroupId(
 					true, contextCompany.getCompanyId(),
@@ -461,6 +458,9 @@ public class MasterPageResourceImpl
 		if (layoutPageTemplateEntry == null) {
 			return _addMasterPage(groupId, masterPage);
 		}
+
+		_validateMasterPage(
+			masterPageExternalReferenceCode, layoutPageTemplateEntry);
 
 		ServiceContext serviceContext = _getServiceContext(groupId, masterPage);
 
@@ -529,10 +529,9 @@ public class MasterPageResourceImpl
 		throws Exception {
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_layoutPageTemplateEntryService.
-				getLayoutPageTemplateEntryByExternalReferenceCode(
-					externalReferenceCode,
-					getPermissionCheckerGroupId(groupExternalReferenceCode));
+			_getMasterLayoutPageTemplateEntry(
+				externalReferenceCode,
+				getPermissionCheckerGroupId(groupExternalReferenceCode));
 
 		return layoutPageTemplateEntry.getPrimaryKey();
 	}
@@ -617,7 +616,7 @@ public class MasterPageResourceImpl
 			designLibraryExternalReferenceCode);
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_getLayoutPageTemplateEntry(
+			_getMasterLayoutPageTemplateEntry(
 				masterPageExternalReferenceCode, groupId);
 
 		if (layoutPageTemplateEntry.isDraft()) {
@@ -646,20 +645,6 @@ public class MasterPageResourceImpl
 			DepotConstants.TYPE_DESIGN_LIBRARY);
 	}
 
-	private LayoutPageTemplateEntry _getLayoutPageTemplateEntry(
-			String externalReferenceCode, long groupId)
-		throws Exception {
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_layoutPageTemplateEntryService.
-				getLayoutPageTemplateEntryByExternalReferenceCode(
-					externalReferenceCode, groupId);
-
-		_validateMasterPage(layoutPageTemplateEntry);
-
-		return layoutPageTemplateEntry;
-	}
-
 	private long _getLayoutPlid(
 			long groupId, MasterPage masterPage, ServiceContext serviceContext)
 		throws Exception {
@@ -682,6 +667,20 @@ public class MasterPageResourceImpl
 			serviceContext);
 
 		return layout.getPlid();
+	}
+
+	private LayoutPageTemplateEntry _getMasterLayoutPageTemplateEntry(
+			String externalReferenceCode, long groupId)
+		throws Exception {
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryService.
+				fetchLayoutPageTemplateEntryByExternalReferenceCode(
+					externalReferenceCode, groupId);
+
+		_validateMasterPage(externalReferenceCode, layoutPageTemplateEntry);
+
+		return layoutPageTemplateEntry;
 	}
 
 	private Page<MasterPage> _getMasterPagesPage(
@@ -782,7 +781,15 @@ public class MasterPageResourceImpl
 	}
 
 	private void _validateMasterPage(
+		String externalReferenceCode,
 		LayoutPageTemplateEntry layoutPageTemplateEntry) {
+
+		if (layoutPageTemplateEntry == null) {
+			throw new NotFoundException(
+				StringBundler.concat(
+					"No master page exists with the external reference code \"",
+					externalReferenceCode, "\""));
+		}
 
 		if (!Objects.equals(
 				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,

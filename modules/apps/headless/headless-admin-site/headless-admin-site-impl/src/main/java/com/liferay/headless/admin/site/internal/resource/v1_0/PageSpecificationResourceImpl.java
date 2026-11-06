@@ -36,7 +36,7 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServ
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryService;
-import com.liferay.portal.kernel.exception.LockedLayoutException;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -55,6 +56,7 @@ import com.liferay.portal.vulcan.pagination.Page;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.tags.Tags;
 
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.util.List;
@@ -87,13 +89,16 @@ public class PageSpecificationResourceImpl
 				true, contextCompany.getCompanyId(), siteExternalReferenceCode),
 			pageSpecificationExternalReferenceCode);
 
+		_validateLayoutType(layout);
+
 		if (!layout.isDraftLayout() ||
 			(layout.isApproved() &&
 			 GetterUtil.getBoolean(
 				 layout.getTypeSettingsProperty(
 					 LayoutTypeSettingsConstants.KEY_PUBLISHED)))) {
 
-			throw new IllegalArgumentException("The page status is not valid");
+			throw new IllegalArgumentException(
+				"The page specification does not have unpublished changes");
 		}
 
 		_discardDraftLayout(layout);
@@ -112,16 +117,27 @@ public class PageSpecificationResourceImpl
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.
-				getLayoutPageTemplateEntryByExternalReferenceCode(
+				fetchLayoutPageTemplateEntryByExternalReferenceCode(
 					displayPageTemplateExternalReferenceCode,
 					_getGroupId(siteExternalReferenceCode));
+
+		if (layoutPageTemplateEntry == null) {
+			throw new NotFoundException(
+				StringBundler.concat(
+					"No display page template exists with the external ",
+					"reference code \"",
+					displayPageTemplateExternalReferenceCode, "\""));
+		}
 
 		if (!Objects.equals(
 				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
 				layoutPageTemplateEntry.getType())) {
 
 			throw new IllegalArgumentException(
-				"The page must be a display page");
+				StringBundler.concat(
+					"The external reference code \"",
+					displayPageTemplateExternalReferenceCode,
+					"\" does not point to a display page template"));
 		}
 
 		return Page.of(
@@ -140,16 +156,26 @@ public class PageSpecificationResourceImpl
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.
-				getLayoutPageTemplateEntryByExternalReferenceCode(
+				fetchLayoutPageTemplateEntryByExternalReferenceCode(
 					masterPageExternalReferenceCode,
 					_getGroupId(siteExternalReferenceCode));
+
+		if (layoutPageTemplateEntry == null) {
+			throw new NotFoundException(
+				StringBundler.concat(
+					"No master page exists with the external reference code \"",
+					masterPageExternalReferenceCode, "\""));
+		}
 
 		if (!Objects.equals(
 				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
 				layoutPageTemplateEntry.getType())) {
 
 			throw new IllegalArgumentException(
-				"The page must be a master page");
+				StringBundler.concat(
+					"The external reference code \"",
+					masterPageExternalReferenceCode,
+					"\" does not point to a master page"));
 		}
 
 		return Page.of(
@@ -170,12 +196,7 @@ public class PageSpecificationResourceImpl
 				siteExternalReferenceCode),
 			pageSpecificationExternalReferenceCode);
 
-		if (!layout.isTypeAssetDisplay() && !layout.isTypeContent() &&
-			!layout.isTypePortlet()) {
-
-			throw new IllegalArgumentException(
-				"Only content, portlet, or asset display pages are supported");
-		}
+		_validateLayoutType(layout);
 
 		return _pageSpecificationDTOConverter.toDTO(
 			DTOConverterContextUtil.getDTOConverterContext(
@@ -195,11 +216,18 @@ public class PageSpecificationResourceImpl
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.
-				getLayoutPageTemplateEntryByExternalReferenceCode(
+				fetchLayoutPageTemplateEntryByExternalReferenceCode(
 					pageTemplateExternalReferenceCode,
 					GroupUtil.getGroupId(
 						true, true, contextCompany.getCompanyId(),
 						siteExternalReferenceCode));
+
+		if (layoutPageTemplateEntry == null) {
+			throw new NotFoundException(
+				StringBundler.concat(
+					"No page template exists with the external reference code ",
+					"\"", pageTemplateExternalReferenceCode, "\""));
+		}
 
 		if (!Objects.equals(
 				LayoutPageTemplateEntryTypeConstants.BASIC,
@@ -209,7 +237,10 @@ public class PageSpecificationResourceImpl
 				layoutPageTemplateEntry.getType())) {
 
 			throw new IllegalArgumentException(
-				"The page template type must be either basic or widget");
+				StringBundler.concat(
+					"The external reference code \"",
+					pageTemplateExternalReferenceCode,
+					"\" does not point to a page template"));
 		}
 
 		return Page.of(
@@ -271,11 +302,21 @@ public class PageSpecificationResourceImpl
 				true, contextCompany.getCompanyId(),
 				siteExternalReferenceCode));
 
+		if (layout == null) {
+			throw new NotFoundException(
+				StringBundler.concat(
+					"No site page exists with the external reference code \"",
+					sitePageExternalReferenceCode, "\""));
+		}
+
 		if (layout.isDraftLayout() || layout.isTypeAssetDisplay() ||
 			layout.isTypeUtility()) {
 
 			throw new IllegalArgumentException(
-				"This page type cannot be modified through this endpoint");
+				StringBundler.concat(
+					"The external reference code \"",
+					sitePageExternalReferenceCode,
+					"\" does not point to a site page"));
 		}
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
@@ -284,8 +325,10 @@ public class PageSpecificationResourceImpl
 
 		if (layoutPageTemplateEntry != null) {
 			throw new IllegalArgumentException(
-				"The provided page external reference code belongs to a page " +
-					"template and cannot be used");
+				StringBundler.concat(
+					"The external reference code \"",
+					sitePageExternalReferenceCode,
+					"\" does not point to a site page"));
 		}
 
 		return Page.of(_toPageSpecifications(layout));
@@ -301,16 +344,62 @@ public class PageSpecificationResourceImpl
 
 		LayoutUtilityPageEntry layoutUtilityPageEntry =
 			_layoutUtilityPageEntryService.
-				getLayoutUtilityPageEntryByExternalReferenceCode(
+				fetchLayoutUtilityPageEntryByExternalReferenceCode(
 					utilityPageExternalReferenceCode,
 					GroupUtil.getGroupId(
 						true, contextCompany.getCompanyId(),
 						siteExternalReferenceCode));
 
+		if (layoutUtilityPageEntry == null) {
+			throw new NotFoundException(
+				StringBundler.concat(
+					"No utility page exists with the external reference code ",
+					"\"", utilityPageExternalReferenceCode, "\""));
+		}
+
 		return Page.of(
 			_toPageSpecifications(
 				_layoutLocalService.getLayout(
 					layoutUtilityPageEntry.getPlid())));
+	}
+
+	@Override
+	public PageSpecification patchSitePageSpecification(
+			String siteExternalReferenceCode,
+			String pageSpecificationExternalReferenceCode,
+			PageSpecification pageSpecification)
+		throws Exception {
+
+		Layout layout = _getLayout(
+			GroupUtil.getGroupId(
+				true, true, contextCompany.getCompanyId(),
+				siteExternalReferenceCode),
+			pageSpecificationExternalReferenceCode);
+
+		_validateLayoutType(layout);
+
+		if ((layout.isTypeAssetDisplay() || layout.isTypeContent()) &&
+			!(pageSpecification instanceof ContentPageSpecification)) {
+
+			throw new IllegalArgumentException(
+				StringBundler.concat(
+					"The ", _getTypeName(pageSpecification),
+					" type does not match the content page specification ",
+					"type"));
+		}
+
+		if (!(layout.isTypeAssetDisplay() || layout.isTypeContent()) &&
+			!(pageSpecification instanceof WidgetPageSpecification)) {
+
+			throw new IllegalArgumentException(
+				StringBundler.concat(
+					"The ", _getTypeName(pageSpecification),
+					" type does not match the widget page specification type"));
+		}
+
+		return super.patchSitePageSpecification(
+			siteExternalReferenceCode, pageSpecificationExternalReferenceCode,
+			pageSpecification);
 	}
 
 	@Override
@@ -327,6 +416,8 @@ public class PageSpecificationResourceImpl
 		Layout layout = _getLayout(
 			groupId, pageSpecificationExternalReferenceCode);
 
+		_validateLayoutType(layout);
+
 		ServiceContext serviceContext = ServiceContextUtil.createServiceContext(
 			groupId, contextHttpServletRequest, contextUser.getUserId());
 
@@ -339,8 +430,8 @@ public class PageSpecificationResourceImpl
 					pageSpecification.getType())) {
 
 				throw new IllegalArgumentException(
-					"The page specification must be widget and be in " +
-						"approved status");
+					"The page specification must be a widget page " +
+						"specification in approved status");
 			}
 
 			return _pageSpecificationDTOConverter.toDTO(
@@ -366,8 +457,8 @@ public class PageSpecificationResourceImpl
 				PageSpecification.Status.DRAFT)) {
 
 			throw new IllegalArgumentException(
-				"The page specification must be in draft status for content " +
-					"pages");
+				"The page specification must be a content page specification " +
+					"in draft status");
 		}
 
 		return _pageSpecificationDTOConverter.toDTO(
@@ -422,32 +513,22 @@ public class PageSpecificationResourceImpl
 	private void _discardDraftLayout(Layout draftLayout) throws Exception {
 		Layout layout = _layoutLocalService.getLayout(draftLayout.getClassPK());
 
-		try {
-			boolean published = LayoutUtil.isPublished(layout);
+		boolean published = LayoutUtil.isPublished(layout);
 
-			draftLayout = _layoutLocalService.copyLayoutContent(
-				layout, draftLayout);
+		draftLayout = _layoutLocalService.copyLayoutContent(
+			layout, draftLayout);
 
-			ServiceContext serviceContext = ServiceContextBuilder.create(
-				layout.getGroupId(), contextHttpServletRequest, null
-			).build();
+		ServiceContext serviceContext = ServiceContextBuilder.create(
+			layout.getGroupId(), contextHttpServletRequest, null
+		).build();
 
-			serviceContext.setAttribute(
-				LayoutTypeSettingsConstants.KEY_PUBLISHED, published);
-			serviceContext.setUserId(contextUser.getUserId());
+		serviceContext.setAttribute(
+			LayoutTypeSettingsConstants.KEY_PUBLISHED, published);
+		serviceContext.setUserId(contextUser.getUserId());
 
-			_layoutLocalService.updateStatus(
-				contextUser.getUserId(), draftLayout.getPlid(),
-				WorkflowConstants.STATUS_APPROVED, serviceContext);
-		}
-		catch (Exception exception) {
-			if (!(exception instanceof LockedLayoutException) &&
-				!(exception.getCause() instanceof LockedLayoutException)) {
-
-				throw new IllegalArgumentException(
-					"The page status is not valid");
-			}
-		}
+		_layoutLocalService.updateStatus(
+			contextUser.getUserId(), draftLayout.getPlid(),
+			WorkflowConstants.STATUS_APPROVED, serviceContext);
 	}
 
 	private long _getGroupId(String siteExternalReferenceCode)
@@ -484,8 +565,26 @@ public class PageSpecificationResourceImpl
 				layoutPageTemplateEntry.getPlid());
 		}
 
-		return _layoutService.getLayoutByExternalReferenceCode(
+		Layout layout = _layoutService.fetchLayoutByExternalReferenceCode(
 			pageSpecificationExternalReferenceCode, groupId);
+
+		if (layout == null) {
+			throw new NotFoundException(
+				StringBundler.concat(
+					"No page specification exists with the external reference ",
+					"code \"", pageSpecificationExternalReferenceCode, "\""));
+		}
+
+		return layout;
+	}
+
+	private String _getTypeName(PageSpecification pageSpecification) {
+		Class<? extends PageSpecification> clazz = pageSpecification.getClass();
+
+		String simpleName = clazz.getSimpleName();
+
+		return StringUtil.toLowerCase(
+			simpleName.replaceAll("(?<=[a-z])(?=[A-Z])", " "));
 	}
 
 	private void _preparePatch(
@@ -538,6 +637,15 @@ public class PageSpecificationResourceImpl
 					contextHttpServletRequest, draftLayout.getPlid(),
 					contextUriInfo, contextUser),
 				draftLayout));
+	}
+
+	private void _validateLayoutType(Layout layout) {
+		if (!layout.isTypeAssetDisplay() && !layout.isTypeContent() &&
+			!layout.isTypePortlet()) {
+
+			throw new IllegalArgumentException(
+				"Only content, widget, or asset display pages are supported");
+		}
 	}
 
 	@Reference
