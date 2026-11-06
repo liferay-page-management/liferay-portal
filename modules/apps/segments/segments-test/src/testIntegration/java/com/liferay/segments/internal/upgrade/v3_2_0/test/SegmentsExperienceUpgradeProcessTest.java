@@ -6,6 +6,8 @@
 package com.liferay.segments.internal.upgrade.v3_2_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.change.tracking.model.CTCollection;
+import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.test.util.BaseCTUpgradeProcessTestCase;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
@@ -15,15 +17,19 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocal
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelLocalService;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.cache.MultiVMPool;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.change.tracking.CTModel;
 import com.liferay.portal.kernel.service.ResourceLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.change.tracking.CTService;
 import com.liferay.portal.kernel.test.TestInfo;
@@ -103,7 +109,7 @@ public class SegmentsExperienceUpgradeProcessTest
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
-				"{}", _draftLayout,
+				JSONFactoryUtil.getNullJSON(), _draftLayout,
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_draftLayout.getPlid()));
 
@@ -112,7 +118,7 @@ public class SegmentsExperienceUpgradeProcessTest
 					_group.getGroupId(), _draftLayout.getPlid());
 
 			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
-				"{}", _draftLayout,
+				JSONFactoryUtil.getNullJSON(), _draftLayout,
 				segmentsExperience.getSegmentsExperienceId());
 
 			ContentLayoutTestUtil.publishLayout(_draftLayout, _publishedLayout);
@@ -146,6 +152,53 @@ public class SegmentsExperienceUpgradeProcessTest
 	}
 
 	@Test
+	@TestInfo("LPD-111365")
+	public void testUpgradeWithCTCollection() throws Exception {
+		_deleteSegmentsExperiences();
+
+		runUpgrade();
+
+		_updateLayoutPageTemplateStructureRels();
+
+		CTCollection ctCollection = _addCTCollection();
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_addLayoutPageTemplateStructureRels();
+		}
+
+		runUpgrade();
+
+		_assertLayoutPageTemplateStructureRels(_draftLayout.getPlid());
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
+	public void testUpgradeWithCTCollectionDraftLayout() throws Exception {
+		_deleteSegmentsExperiences();
+
+		CTCollection ctCollection = _addCTCollection();
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_updateFragmentEntryLinks();
+			_updateLayoutPageTemplateStructureRels();
+		}
+
+		runUpgrade();
+
+		_assertSegmentsExperiences(ctCollection);
+
+		runUpgrade();
+
+		_assertSegmentsExperiences(ctCollection);
+	}
+
+	@Test
 	public void testUpgradeWithClassPKColumns() throws Exception {
 		_deleteSegmentsExperiences();
 
@@ -165,6 +218,23 @@ public class SegmentsExperienceUpgradeProcessTest
 			_db.alterColumnName(
 				_connection, "FragmentEntryLink", "plid2", "plid LONG");
 		}
+
+		_assertSegmentsExperiences();
+	}
+
+	@Test
+	@TestInfo("LPD-111365")
+	public void testUpgradeWithExistingDraftLayoutSegmentsExperiences()
+		throws Exception {
+
+		_deleteSegmentsExperiences();
+
+		runUpgrade();
+
+		_updateFragmentEntryLinks();
+		_updateLayoutPageTemplateStructureRels();
+
+		runUpgrade();
 
 		_assertSegmentsExperiences();
 	}
@@ -212,7 +282,7 @@ public class SegmentsExperienceUpgradeProcessTest
 	}
 
 	@Test
-	public void testUpgradeWithoutCtCollectionIdAndSegmentsExperienceIdColumns()
+	public void testUpgradeWithoutCTCollectionIdAndSegmentsExperienceIdColumns()
 		throws Exception {
 
 		_deleteSegmentsExperiences();
@@ -245,7 +315,7 @@ public class SegmentsExperienceUpgradeProcessTest
 	}
 
 	@Test
-	public void testUpgradeWithoutCtCollectionIdColumns() throws Exception {
+	public void testUpgradeWithoutCTCollectionIdColumns() throws Exception {
 		_deleteSegmentsExperiences();
 
 		try {
@@ -312,6 +382,31 @@ public class SegmentsExperienceUpgradeProcessTest
 			segmentsExperience);
 	}
 
+	private CTCollection _addCTCollection() throws Exception {
+		return _ctCollectionLocalService.addCTCollection(
+			null, _group.getCompanyId(), TestPropsValues.getUserId(), 0,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+	}
+
+	private void _addLayoutPageTemplateStructureRels() throws Exception {
+		long layoutPageTemplateStructureId =
+			_getLayoutPageTemplateStructureId();
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+
+		for (SegmentsExperience segmentsExperience :
+				_segmentsExperienceLocalService.getSegmentsExperiences(
+					_group.getGroupId(), _draftLayout.getPlid())) {
+
+			_layoutPageTemplateStructureRelLocalService.
+				addLayoutPageTemplateStructureRel(
+					TestPropsValues.getUserId(), _group.getGroupId(),
+					layoutPageTemplateStructureId,
+					segmentsExperience.getSegmentsExperienceId(),
+					JSONFactoryUtil.getNullJSON(), serviceContext);
+		}
+	}
+
 	private void _assertFragmentEntryLinks(
 		int expectedCount, List<SegmentsExperience> segmentsExperiences) {
 
@@ -330,16 +425,10 @@ public class SegmentsExperienceUpgradeProcessTest
 	}
 
 	private void _assertLayoutPageTemplateStructureRels(long expectedPlid) {
-		LayoutPageTemplateStructure layoutPageTemplateStructure =
-			_layoutPageTemplateStructureLocalService.
-				fetchLayoutPageTemplateStructure(
-					_group.getGroupId(), _draftLayout.getPlid());
-
 		for (LayoutPageTemplateStructureRel layoutPageTemplateStructureRel :
 				_layoutPageTemplateStructureRelLocalService.
 					getLayoutPageTemplateStructureRels(
-						layoutPageTemplateStructure.
-							getLayoutPageTemplateStructureId())) {
+						_getLayoutPageTemplateStructureId())) {
 
 			SegmentsExperience segmentsExperience =
 				_segmentsExperienceLocalService.fetchSegmentsExperience(
@@ -351,6 +440,17 @@ public class SegmentsExperienceUpgradeProcessTest
 
 	private void _assertSegmentsExperiences() {
 		_assertSegmentsExperiences(1);
+	}
+
+	private void _assertSegmentsExperiences(CTCollection ctCollection) {
+		_assertSegmentsExperiences();
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_assertSegmentsExperiences();
+		}
 	}
 
 	private void _assertSegmentsExperiences(
@@ -391,13 +491,11 @@ public class SegmentsExperienceUpgradeProcessTest
 			_segmentsExperienceLocalService.getSegmentsExperiences(
 				_group.getGroupId(), _draftLayout.getPlid());
 
-		DB db = DBManagerUtil.getDB();
-
 		for (SegmentsExperience segmentsExperience : segmentsExperiences) {
 			_resourceLocalService.deleteResource(
 				segmentsExperience, ResourceConstants.SCOPE_INDIVIDUAL);
 
-			db.runSQL(
+			_db.runSQL(
 				"delete from SegmentsExperience where segmentsExperienceId = " +
 					segmentsExperience.getSegmentsExperienceId());
 		}
@@ -410,9 +508,16 @@ public class SegmentsExperienceUpgradeProcessTest
 		_assertSegmentsExperiences(0, Collections.emptyList());
 	}
 
-	private long _getPublishedSegmentsExperienceId(
-		long plid, long segmentsExperienceId) {
+	private long _getLayoutPageTemplateStructureId() {
+		LayoutPageTemplateStructure layoutPageTemplateStructure =
+			_layoutPageTemplateStructureLocalService.
+				fetchLayoutPageTemplateStructure(
+					_group.getGroupId(), _draftLayout.getPlid());
 
+		return layoutPageTemplateStructure.getLayoutPageTemplateStructureId();
+	}
+
+	private long _getPublishedSegmentsExperienceId(long segmentsExperienceId) {
 		SegmentsExperience draftSegmentsExperience =
 			_segmentsExperienceLocalService.fetchSegmentsExperience(
 				segmentsExperienceId);
@@ -420,7 +525,8 @@ public class SegmentsExperienceUpgradeProcessTest
 		SegmentsExperience publishedSegmentsExperience =
 			_segmentsExperienceLocalService.fetchSegmentsExperience(
 				_group.getGroupId(),
-				draftSegmentsExperience.getSegmentsExperienceKey(), plid);
+				draftSegmentsExperience.getSegmentsExperienceKey(),
+				_publishedLayout.getPlid());
 
 		return publishedSegmentsExperience.getSegmentsExperienceId();
 	}
@@ -432,7 +538,6 @@ public class SegmentsExperienceUpgradeProcessTest
 
 			fragmentEntryLink.setSegmentsExperienceId(
 				_getPublishedSegmentsExperienceId(
-					_publishedLayout.getPlid(),
 					fragmentEntryLink.getSegmentsExperienceId()));
 
 			_fragmentEntryLinkLocalService.updateFragmentEntryLink(
@@ -441,20 +546,13 @@ public class SegmentsExperienceUpgradeProcessTest
 	}
 
 	private void _updateLayoutPageTemplateStructureRels() {
-		LayoutPageTemplateStructure layoutPageTemplateStructure =
-			_layoutPageTemplateStructureLocalService.
-				fetchLayoutPageTemplateStructure(
-					_group.getGroupId(), _draftLayout.getPlid());
-
 		for (LayoutPageTemplateStructureRel layoutPageTemplateStructureRel :
 				_layoutPageTemplateStructureRelLocalService.
 					getLayoutPageTemplateStructureRels(
-						layoutPageTemplateStructure.
-							getLayoutPageTemplateStructureId())) {
+						_getLayoutPageTemplateStructureId())) {
 
 			layoutPageTemplateStructureRel.setSegmentsExperienceId(
 				_getPublishedSegmentsExperienceId(
-					_publishedLayout.getPlid(),
 					layoutPageTemplateStructureRel.getSegmentsExperienceId()));
 
 			_layoutPageTemplateStructureRelLocalService.
@@ -469,6 +567,9 @@ public class SegmentsExperienceUpgradeProcessTest
 
 	private static Connection _connection;
 	private static DB _db;
+
+	@Inject
+	private CTCollectionLocalService _ctCollectionLocalService;
 
 	private Layout _draftLayout;
 
