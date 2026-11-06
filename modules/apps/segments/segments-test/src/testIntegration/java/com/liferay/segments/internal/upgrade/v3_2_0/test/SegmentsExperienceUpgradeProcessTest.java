@@ -110,7 +110,7 @@ public class SegmentsExperienceUpgradeProcessTest
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
-				"{}", _draftLayout,
+				JSONFactoryUtil.getNullJSON(), _draftLayout,
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_draftLayout.getPlid()));
 
@@ -119,7 +119,7 @@ public class SegmentsExperienceUpgradeProcessTest
 					_group.getGroupId(), _draftLayout.getPlid());
 
 			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
-				"{}", _draftLayout,
+				JSONFactoryUtil.getNullJSON(), _draftLayout,
 				segmentsExperience.getSegmentsExperienceId());
 
 			ContentLayoutTestUtil.publishLayout(_draftLayout, _publishedLayout);
@@ -382,10 +382,8 @@ public class SegmentsExperienceUpgradeProcessTest
 	}
 
 	private void _addLayoutPageTemplateStructureRels() throws Exception {
-		LayoutPageTemplateStructure layoutPageTemplateStructure =
-			_layoutPageTemplateStructureLocalService.
-				fetchLayoutPageTemplateStructure(
-					_group.getGroupId(), _draftLayout.getPlid());
+		long layoutPageTemplateStructureId =
+			_getLayoutPageTemplateStructureId();
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
 
@@ -396,8 +394,7 @@ public class SegmentsExperienceUpgradeProcessTest
 			_layoutPageTemplateStructureRelLocalService.
 				addLayoutPageTemplateStructureRel(
 					TestPropsValues.getUserId(), _group.getGroupId(),
-					layoutPageTemplateStructure.
-						getLayoutPageTemplateStructureId(),
+					layoutPageTemplateStructureId,
 					segmentsExperience.getSegmentsExperienceId(),
 					JSONFactoryUtil.getNullJSON(), serviceContext);
 		}
@@ -421,16 +418,10 @@ public class SegmentsExperienceUpgradeProcessTest
 	}
 
 	private void _assertLayoutPageTemplateStructureRels(long expectedPlid) {
-		LayoutPageTemplateStructure layoutPageTemplateStructure =
-			_layoutPageTemplateStructureLocalService.
-				fetchLayoutPageTemplateStructure(
-					_group.getGroupId(), _draftLayout.getPlid());
-
 		for (LayoutPageTemplateStructureRel layoutPageTemplateStructureRel :
 				_layoutPageTemplateStructureRelLocalService.
 					getLayoutPageTemplateStructureRels(
-						layoutPageTemplateStructure.
-							getLayoutPageTemplateStructureId())) {
+						_getLayoutPageTemplateStructureId())) {
 
 			SegmentsExperience segmentsExperience =
 				_segmentsExperienceLocalService.fetchSegmentsExperience(
@@ -498,13 +489,11 @@ public class SegmentsExperienceUpgradeProcessTest
 			_segmentsExperienceLocalService.getSegmentsExperiences(
 				_group.getGroupId(), _draftLayout.getPlid());
 
-		DB db = DBManagerUtil.getDB();
-
 		for (SegmentsExperience segmentsExperience : segmentsExperiences) {
 			_resourceLocalService.deleteResource(
 				segmentsExperience, ResourceConstants.SCOPE_INDIVIDUAL);
 
-			db.runSQL(
+			_db.runSQL(
 				"delete from SegmentsExperience where segmentsExperienceId = " +
 					segmentsExperience.getSegmentsExperienceId());
 		}
@@ -517,8 +506,16 @@ public class SegmentsExperienceUpgradeProcessTest
 		_assertSegmentsExperiences(0, Collections.emptyList());
 	}
 
-	private long _getPublishedSegmentsExperienceId(
-		long plid, long segmentsExperienceId) {
+	private long _getLayoutPageTemplateStructureId() {
+		LayoutPageTemplateStructure layoutPageTemplateStructure =
+			_layoutPageTemplateStructureLocalService.
+				fetchLayoutPageTemplateStructure(
+					_group.getGroupId(), _draftLayout.getPlid());
+
+		return layoutPageTemplateStructure.getLayoutPageTemplateStructureId();
+	}
+
+	private long _getPublishedSegmentsExperienceId(long segmentsExperienceId) {
 		SegmentsExperience draftSegmentsExperience =
 			_segmentsExperienceLocalService.fetchSegmentsExperience(
 				segmentsExperienceId);
@@ -526,7 +523,8 @@ public class SegmentsExperienceUpgradeProcessTest
 		SegmentsExperience publishedSegmentsExperience =
 			_segmentsExperienceLocalService.fetchSegmentsExperience(
 				_group.getGroupId(),
-				draftSegmentsExperience.getSegmentsExperienceKey(), plid);
+				draftSegmentsExperience.getSegmentsExperienceKey(),
+				_publishedLayout.getPlid());
 
 		return publishedSegmentsExperience.getSegmentsExperienceId();
 	}
@@ -538,7 +536,6 @@ public class SegmentsExperienceUpgradeProcessTest
 
 			fragmentEntryLink.setSegmentsExperienceId(
 				_getPublishedSegmentsExperienceId(
-					_publishedLayout.getPlid(),
 					fragmentEntryLink.getSegmentsExperienceId()));
 
 			_fragmentEntryLinkLocalService.updateFragmentEntryLink(
@@ -547,20 +544,13 @@ public class SegmentsExperienceUpgradeProcessTest
 	}
 
 	private void _updateLayoutPageTemplateStructureRels() {
-		LayoutPageTemplateStructure layoutPageTemplateStructure =
-			_layoutPageTemplateStructureLocalService.
-				fetchLayoutPageTemplateStructure(
-					_group.getGroupId(), _draftLayout.getPlid());
-
 		for (LayoutPageTemplateStructureRel layoutPageTemplateStructureRel :
 				_layoutPageTemplateStructureRelLocalService.
 					getLayoutPageTemplateStructureRels(
-						layoutPageTemplateStructure.
-							getLayoutPageTemplateStructureId())) {
+						_getLayoutPageTemplateStructureId())) {
 
 			layoutPageTemplateStructureRel.setSegmentsExperienceId(
 				_getPublishedSegmentsExperienceId(
-					_publishedLayout.getPlid(),
 					layoutPageTemplateStructureRel.getSegmentsExperienceId()));
 
 			_layoutPageTemplateStructureRelLocalService.
