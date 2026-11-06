@@ -656,6 +656,9 @@ public interface LayoutLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Layout getBrowsableLayout(Layout layout);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public long[] getClassPKsByLaunchSetId(long groupId, long launchSetId);
+
 	/**
 	 * Returns the primary key of the default layout for the group.
 	 *
@@ -1314,8 +1317,20 @@ public interface LayoutLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int searchCount(
+			Group group, boolean privateLayout, String keywords,
+			boolean searchOnlyByTitle, String[] types, int[] statuses)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int searchCount(
 			long groupId, long userId, boolean privateLayout, String keywords,
 			boolean searchOnlyByTitle, String[] types)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int searchCount(
+			long groupId, long userId, boolean privateLayout, String keywords,
+			boolean searchOnlyByTitle, String[] types, int[] statuses)
 		throws PortalException;
 
 	/**
@@ -1715,4 +1730,4 @@ public interface LayoutLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1165522831
+// LIFERAY-SERVICE-BUILDER-HASH:-1107124155
