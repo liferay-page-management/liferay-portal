@@ -11,12 +11,13 @@ import com.liferay.friendly.url.model.FriendlyURLEntryLocalization;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.layout.friendly.url.LayoutFriendlyURLEntryHelper;
 import com.liferay.layout.test.util.LayoutTestUtil;
-import com.liferay.portal.background.task.model.BackgroundTask;
-import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
-import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.LayoutFriendlyURLsException;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.log.LogCapture;
@@ -26,8 +27,10 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -44,122 +47,26 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 	public static final LiferayIntegrationTestRule liferayIntegrationTestRule =
 		new LiferayIntegrationTestRule();
 
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		_languageId = liveGroup.getDefaultLanguageId();
+
+		_locale = LocaleUtil.fromLanguageId(_languageId);
+	}
+
 	@Test
+	@TestInfo("LPD-113926")
 	public void testLayoutFriendlyURL() throws Exception {
-		String originalFriendlyURL = stagingLayout.getFriendlyURL();
-
-		String testFriendlyURL = "/test";
-
-		stagingLayout = LayoutTestUtil.updateFriendlyURL(
-			stagingLayout,
-			HashMapBuilder.put(
-				LocaleUtil.US, testFriendlyURL
-			).build());
-
-		Layout stagingLayout2 = LayoutTestUtil.addTypePortletLayout(
-			stagingGroup);
-
-		String originalLayout2FriendlyURL = stagingLayout2.getFriendlyURL();
-
-		publishLayouts();
-
-		stagingLayout = LayoutTestUtil.updateFriendlyURL(
-			stagingLayout,
-			HashMapBuilder.put(
-				LocaleUtil.US, originalFriendlyURL
-			).build());
-
-		long layoutClassNameId = _layoutFriendlyURLEntryHelper.getClassNameId(
-			false);
-
-		FriendlyURLEntryLocalization friendlyURLEntryLocalization =
-			_friendlyURLEntryLocalService.fetchFriendlyURLEntryLocalization(
-				stagingGroup.getGroupId(), layoutClassNameId,
-				FriendlyURLEntryConstants.
-					FRIENDLY_URL_ENTRY_PARENT_CLASS_PK_DEFAULT,
-				testFriendlyURL);
-
-		_friendlyURLEntryLocalService.deleteFriendlyURLLocalizationEntry(
-			friendlyURLEntryLocalization.getFriendlyURLEntryId(),
-			friendlyURLEntryLocalization.getLanguageId());
-
-		stagingLayout2 = LayoutTestUtil.updateFriendlyURL(
-			stagingLayout2,
-			HashMapBuilder.put(
-				LocaleUtil.US, testFriendlyURL
-			).build());
-
-		_assertPublishLayoutsWithLayoutFriendlyURLsException(stagingLayout2);
-
-		Layout liveLayout2 = _layoutLocalService.getLayoutByUuidAndGroupId(
-			stagingLayout2.getUuid(), liveGroup.getGroupId(),
-			stagingLayout2.isPrivateLayout());
-
-		Assert.assertEquals(
-			originalLayout2FriendlyURL,
-			liveLayout2.getFriendlyURL(LocaleUtil.US));
-
-		_assertPublishLayoutsWithLayoutFriendlyURLsException(stagingLayout2);
-
-		List<BackgroundTask> failedBackgroundTasks =
-			_backgroundTaskLocalService.getBackgroundTasks(
-				stagingGroup.getGroupId(),
-				"com.liferay.exportimport.internal.background.task." +
-					"LayoutStagingBackgroundTaskExecutor",
-				BackgroundTaskConstants.STATUS_FAILED);
-
-		Assert.assertTrue(
-			"There should not be a failed staging publication",
-			failedBackgroundTasks.isEmpty());
-
-		publishLayouts(new long[] {stagingLayout.getLayoutId()});
-
-		Assert.assertEquals(
-			originalFriendlyURL, liveLayout.getFriendlyURL(LocaleUtil.US));
-
-		FriendlyURLEntryLocalization liveFriendlyURLEntryLocalization1 =
-			_friendlyURLEntryLocalService.fetchFriendlyURLEntryLocalization(
-				liveGroup.getGroupId(), layoutClassNameId,
-				FriendlyURLEntryConstants.
-					FRIENDLY_URL_ENTRY_PARENT_CLASS_PK_DEFAULT,
-				testFriendlyURL);
-
-		_friendlyURLEntryLocalService.deleteFriendlyURLLocalizationEntry(
-			liveFriendlyURLEntryLocalization1.getFriendlyURLEntryId(),
-			liveFriendlyURLEntryLocalization1.getLanguageId());
-
-		publishLayouts();
-
-		Assert.assertEquals(
-			originalFriendlyURL, liveLayout.getFriendlyURL(LocaleUtil.US));
-		Assert.assertEquals(
-			testFriendlyURL, liveLayout2.getFriendlyURL(LocaleUtil.US));
-
-		FriendlyURLEntryLocalization liveFriendlyURLEntryLocalization2 =
-			_friendlyURLEntryLocalService.fetchFriendlyURLEntryLocalization(
-				liveGroup.getGroupId(), layoutClassNameId,
-				FriendlyURLEntryConstants.
-					FRIENDLY_URL_ENTRY_PARENT_CLASS_PK_DEFAULT,
-				"en_US", originalFriendlyURL);
-
-		Assert.assertEquals(
-			liveLayout.getPlid(),
-			liveFriendlyURLEntryLocalization2.getClassPK());
-
-		FriendlyURLEntryLocalization liveFriendlyURLEntryLocalization3 =
-			_friendlyURLEntryLocalService.fetchFriendlyURLEntryLocalization(
-				liveGroup.getGroupId(), layoutClassNameId,
-				FriendlyURLEntryConstants.
-					FRIENDLY_URL_ENTRY_PARENT_CLASS_PK_DEFAULT,
-				"en_US", testFriendlyURL);
-
-		Assert.assertEquals(
-			liveLayout2.getPlid(),
-			liveFriendlyURLEntryLocalization3.getClassPK());
+		_testLayoutFriendlyURLWithReusedFriendlyURLCombinedPublish();
+		_testLayoutFriendlyURLWithReusedFriendlyURLIndividualPublish();
+		_testLayoutFriendlyURLWithSwappedFriendlyURLs();
 	}
 
 	private void _assertPublishLayoutsWithLayoutFriendlyURLsException(
-			Layout layout)
+			int expectedLogEntriesCount, long... layoutIds)
 		throws Exception {
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
@@ -167,32 +74,230 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 					"BatchEngineImportTaskExecutorImpl",
 				LoggerTestUtil.ERROR)) {
 
-			publishLayouts(new long[] {layout.getLayoutId()});
+			publishLayouts(layoutIds);
 
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
-			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+			Assert.assertEquals(
+				logEntries.toString(), expectedLogEntriesCount,
+				logEntries.size());
 
-			LogEntry logEntry = logEntries.get(0);
+			for (LogEntry logEntry : logEntries) {
+				Throwable throwable = logEntry.getThrowable();
 
-			Throwable throwable = logEntry.getThrowable();
-
-			Assert.assertTrue(
-				String.valueOf(throwable),
-				throwable instanceof LayoutFriendlyURLsException);
+				Assert.assertTrue(
+					String.valueOf(throwable),
+					throwable instanceof LayoutFriendlyURLsException);
+			}
 		}
 	}
 
-	@Inject
-	private BackgroundTaskLocalService _backgroundTaskLocalService;
+	private void _deleteFriendlyURLEntryLocalization(
+			String friendlyURL, long groupId)
+		throws Exception {
+
+		FriendlyURLEntryLocalization friendlyURLEntryLocalization =
+			_friendlyURLEntryLocalService.fetchFriendlyURLEntryLocalization(
+				groupId, _layoutFriendlyURLEntryHelper.getClassNameId(false),
+				FriendlyURLEntryConstants.
+					FRIENDLY_URL_ENTRY_PARENT_CLASS_PK_DEFAULT,
+				friendlyURL);
+
+		_friendlyURLEntryLocalService.deleteFriendlyURLLocalizationEntry(
+			friendlyURLEntryLocalization.getFriendlyURLEntryId(),
+			friendlyURLEntryLocalization.getLanguageId());
+	}
+
+	private Layout _fetchLiveLayout(Layout layout) {
+		return _layoutLocalService.fetchLayoutByUuidAndGroupId(
+			layout.getUuid(), liveGroup.getGroupId(), layout.isPrivateLayout());
+	}
+
+	private String _getRandomFriendlyURL() {
+		return StringPool.SLASH +
+			_friendlyURLNormalizer.normalize(RandomTestUtil.randomString());
+	}
+
+	private void _testLayoutFriendlyURLWithReusedFriendlyURLCombinedPublish()
+		throws Exception {
+
+		Layout layout1 = LayoutTestUtil.addTypePortletLayout(stagingGroup);
+
+		String friendlyURL = layout1.getFriendlyURL(_locale);
+
+		publishLayouts(new long[] {layout1.getLayoutId()});
+
+		layout1 = _updateFriendlyURL(_getRandomFriendlyURL(), layout1);
+
+		_deleteFriendlyURLEntryLocalization(
+			friendlyURL, stagingGroup.getGroupId());
+
+		Layout layout2 = LayoutTestUtil.addTypePortletLayout(stagingGroup);
+
+		layout2 = _updateFriendlyURL(friendlyURL, layout2);
+
+		_layoutLocalService.updatePriority(
+			layout2.getPlid(), layout1.getPriority());
+
+		_assertPublishLayoutsWithLayoutFriendlyURLsException(
+			1, layout1.getLayoutId(), layout2.getLayoutId());
+
+		Assert.assertNull(_fetchLiveLayout(layout2));
+
+		publishLayouts(
+			new long[] {layout1.getLayoutId(), layout2.getLayoutId()});
+
+		Layout liveLayout2 = _fetchLiveLayout(layout2);
+
+		Assert.assertEquals(friendlyURL, liveLayout2.getFriendlyURL(_locale));
+	}
+
+	private void _testLayoutFriendlyURLWithReusedFriendlyURLIndividualPublish()
+		throws Exception {
+
+		String originalFriendlyURL1 = stagingLayout.getFriendlyURL();
+
+		String testFriendlyURL = _getRandomFriendlyURL();
+
+		stagingLayout = LayoutTestUtil.updateFriendlyURL(
+			stagingLayout,
+			HashMapBuilder.put(
+				_locale, testFriendlyURL
+			).build());
+
+		Layout stagingLayout2 = LayoutTestUtil.addTypePortletLayout(
+			stagingGroup);
+
+		String originalFriendlyURL2 = stagingLayout2.getFriendlyURL();
+
+		publishLayouts();
+
+		stagingLayout = LayoutTestUtil.updateFriendlyURL(
+			stagingLayout,
+			HashMapBuilder.put(
+				_locale, originalFriendlyURL1
+			).build());
+
+		long layoutClassNameId = _layoutFriendlyURLEntryHelper.getClassNameId(
+			false);
+
+		_deleteFriendlyURLEntryLocalization(
+			testFriendlyURL, stagingGroup.getGroupId());
+
+		stagingLayout2 = LayoutTestUtil.updateFriendlyURL(
+			stagingLayout2,
+			HashMapBuilder.put(
+				_locale, testFriendlyURL
+			).build());
+
+		_assertPublishLayoutsWithLayoutFriendlyURLsException(
+			1, stagingLayout2.getLayoutId());
+
+		Layout liveLayout2 = _layoutLocalService.getLayoutByUuidAndGroupId(
+			stagingLayout2.getUuid(), liveGroup.getGroupId(),
+			stagingLayout2.isPrivateLayout());
+
+		Assert.assertEquals(
+			originalFriendlyURL2, liveLayout2.getFriendlyURL(_locale));
+
+		_assertPublishLayoutsWithLayoutFriendlyURLsException(
+			1, stagingLayout2.getLayoutId());
+
+		publishLayouts(new long[] {stagingLayout.getLayoutId()});
+
+		Assert.assertEquals(
+			originalFriendlyURL1, liveLayout.getFriendlyURL(_locale));
+
+		publishLayouts();
+
+		Assert.assertEquals(
+			originalFriendlyURL1, liveLayout.getFriendlyURL(_locale));
+		Assert.assertEquals(
+			testFriendlyURL, liveLayout2.getFriendlyURL(_locale));
+
+		FriendlyURLEntryLocalization liveFriendlyURLEntryLocalization =
+			_friendlyURLEntryLocalService.fetchFriendlyURLEntryLocalization(
+				liveGroup.getGroupId(), layoutClassNameId,
+				FriendlyURLEntryConstants.
+					FRIENDLY_URL_ENTRY_PARENT_CLASS_PK_DEFAULT,
+				_languageId, originalFriendlyURL1);
+
+		Assert.assertEquals(
+			liveLayout.getPlid(),
+			liveFriendlyURLEntryLocalization.getClassPK());
+
+		liveFriendlyURLEntryLocalization =
+			_friendlyURLEntryLocalService.fetchFriendlyURLEntryLocalization(
+				liveGroup.getGroupId(), layoutClassNameId,
+				FriendlyURLEntryConstants.
+					FRIENDLY_URL_ENTRY_PARENT_CLASS_PK_DEFAULT,
+				_languageId, testFriendlyURL);
+
+		Assert.assertEquals(
+			liveLayout2.getPlid(),
+			liveFriendlyURLEntryLocalization.getClassPK());
+	}
+
+	private void _testLayoutFriendlyURLWithSwappedFriendlyURLs()
+		throws Exception {
+
+		Layout layout1 = LayoutTestUtil.addTypePortletLayout(stagingGroup);
+		Layout layout2 = LayoutTestUtil.addTypePortletLayout(stagingGroup);
+
+		String friendlyURL1 = layout1.getFriendlyURL(_locale);
+		String friendlyURL2 = layout2.getFriendlyURL(_locale);
+
+		publishLayouts(
+			new long[] {layout1.getLayoutId(), layout2.getLayoutId()});
+
+		layout1 = _updateFriendlyURL(_getRandomFriendlyURL(), layout1);
+
+		_deleteFriendlyURLEntryLocalization(
+			friendlyURL1, stagingGroup.getGroupId());
+
+		layout2 = _updateFriendlyURL(friendlyURL1, layout2);
+
+		_deleteFriendlyURLEntryLocalization(
+			friendlyURL2, stagingGroup.getGroupId());
+
+		layout1 = _updateFriendlyURL(friendlyURL2, layout1);
+
+		_assertPublishLayoutsWithLayoutFriendlyURLsException(
+			2, layout1.getLayoutId(), layout2.getLayoutId());
+
+		Layout liveLayout1 = _fetchLiveLayout(layout1);
+
+		Assert.assertEquals(friendlyURL1, liveLayout1.getFriendlyURL(_locale));
+
+		Layout liveLayout2 = _fetchLiveLayout(layout2);
+
+		Assert.assertEquals(friendlyURL2, liveLayout2.getFriendlyURL(_locale));
+	}
+
+	private Layout _updateFriendlyURL(String friendlyURL, Layout layout)
+		throws Exception {
+
+		return LayoutTestUtil.updateFriendlyURL(
+			layout,
+			HashMapBuilder.put(
+				_locale, friendlyURL
+			).build());
+	}
 
 	@Inject
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
+
+	@Inject
+	private FriendlyURLNormalizer _friendlyURLNormalizer;
+
+	private String _languageId;
 
 	@Inject
 	private LayoutFriendlyURLEntryHelper _layoutFriendlyURLEntryHelper;
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;
+
+	private Locale _locale;
 
 }
