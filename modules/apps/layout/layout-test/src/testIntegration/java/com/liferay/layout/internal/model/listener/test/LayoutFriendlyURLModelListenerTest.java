@@ -92,7 +92,7 @@ public class LayoutFriendlyURLModelListenerTest {
 			Collections.singletonMap(LocaleUtil.getSiteDefault(), friendlyURL));
 	}
 
-	private String _randomFriendlyURL() {
+	private String _getRandomFriendlyURL() {
 		return StringPool.SLASH +
 			_friendlyURLNormalizer.normalize(RandomTestUtil.randomString());
 	}
@@ -151,7 +151,7 @@ public class LayoutFriendlyURLModelListenerTest {
 
 			String friendlyURL = layout1.getFriendlyURL();
 
-			_updateFriendlyURL(layout1, _randomFriendlyURL());
+			_updateFriendlyURL(_getRandomFriendlyURL(), layout1);
 
 			try {
 				_addLayout(friendlyURL);
@@ -162,7 +162,6 @@ public class LayoutFriendlyURLModelListenerTest {
 				Throwable throwable = modelListenerException.getCause();
 
 				Assert.assertTrue(
-					throwable.toString(),
 					throwable instanceof DuplicateFriendlyURLEntryException);
 			}
 
@@ -200,7 +199,7 @@ public class LayoutFriendlyURLModelListenerTest {
 
 			Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
 
-			String friendlyURL = _randomFriendlyURL();
+			String friendlyURL = _getRandomFriendlyURL();
 
 			_friendlyURLEntryLocalService.addFriendlyURLEntry(
 				_group.getGroupId(), _classNameId, layout.getPlid(),
@@ -219,7 +218,6 @@ public class LayoutFriendlyURLModelListenerTest {
 				Throwable throwable = modelListenerException.getCause();
 
 				Assert.assertTrue(
-					throwable.toString(),
 					throwable instanceof DuplicateFriendlyURLEntryException);
 			}
 			finally {
@@ -279,7 +277,7 @@ public class LayoutFriendlyURLModelListenerTest {
 			_friendlyURLEntryLocalService.getFriendlyURLEntries(
 				_group.getGroupId(), _classNameId, layout.getPlid());
 
-		layout = _updateFriendlyURL(layout, _randomFriendlyURL());
+		layout = _updateFriendlyURL(_getRandomFriendlyURL(), layout);
 
 		List<FriendlyURLEntry> actualFriendlyURLEntries =
 			_friendlyURLEntryLocalService.getFriendlyURLEntries(
@@ -301,12 +299,12 @@ public class LayoutFriendlyURLModelListenerTest {
 
 			String friendlyURL = layout1.getFriendlyURL();
 
-			_updateFriendlyURL(layout1, _randomFriendlyURL());
+			_updateFriendlyURL(_getRandomFriendlyURL(), layout1);
 
 			Layout layout2 = LayoutTestUtil.addTypePortletLayout(_group);
 
 			try {
-				_updateFriendlyURL(layout2, friendlyURL);
+				_updateFriendlyURL(friendlyURL, layout2);
 
 				Assert.fail();
 			}
@@ -314,14 +312,13 @@ public class LayoutFriendlyURLModelListenerTest {
 				Throwable throwable = modelListenerException.getCause();
 
 				Assert.assertTrue(
-					throwable.toString(),
 					throwable instanceof DuplicateFriendlyURLEntryException);
 			}
 
 			ExportImportThreadLocal.setLayoutStagingInProcess(true);
 
 			try {
-				layout2 = _updateFriendlyURL(layout2, friendlyURL);
+				layout2 = _updateFriendlyURL(friendlyURL, layout2);
 			}
 			finally {
 				ExportImportThreadLocal.setLayoutStagingInProcess(false);
@@ -351,7 +348,7 @@ public class LayoutFriendlyURLModelListenerTest {
 			Layout layout1 = LayoutTestUtil.addTypePortletLayout(_group);
 			Layout layout2 = LayoutTestUtil.addTypePortletLayout(_group);
 
-			String friendlyURL = _randomFriendlyURL();
+			String friendlyURL = _getRandomFriendlyURL();
 
 			_friendlyURLEntryLocalService.addFriendlyURLEntry(
 				_group.getGroupId(), _classNameId, layout1.getPlid(),
@@ -362,7 +359,7 @@ public class LayoutFriendlyURLModelListenerTest {
 			ExportImportThreadLocal.setLayoutStagingInProcess(true);
 
 			try {
-				_updateFriendlyURL(layout2, friendlyURL);
+				_updateFriendlyURL(friendlyURL, layout2);
 
 				Assert.fail();
 			}
@@ -370,7 +367,6 @@ public class LayoutFriendlyURLModelListenerTest {
 				Throwable throwable = modelListenerException.getCause();
 
 				Assert.assertTrue(
-					throwable.toString(),
 					throwable instanceof DuplicateFriendlyURLEntryException);
 			}
 			finally {
@@ -389,7 +385,7 @@ public class LayoutFriendlyURLModelListenerTest {
 		}
 	}
 
-	private Layout _updateFriendlyURL(Layout layout, String friendlyURL)
+	private Layout _updateFriendlyURL(String friendlyURL, Layout layout)
 		throws Exception {
 
 		return _layoutLocalService.updateFriendlyURL(

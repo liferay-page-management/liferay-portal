@@ -48,6 +48,7 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 		new LiferayIntegrationTestRule();
 
 	@Before
+	@Override
 	public void setUp() throws Exception {
 		super.setUp();
 
@@ -112,7 +113,7 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 			layout.getUuid(), liveGroup.getGroupId(), layout.isPrivateLayout());
 	}
 
-	private String _randomFriendlyURL() {
+	private String _getRandomFriendlyURL() {
 		return StringPool.SLASH +
 			_friendlyURLNormalizer.normalize(RandomTestUtil.randomString());
 	}
@@ -126,7 +127,7 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 
 		publishLayouts(new long[] {layout1.getLayoutId()});
 
-		layout1 = _updateFriendlyURL(_randomFriendlyURL(), layout1);
+		layout1 = _updateFriendlyURL(_getRandomFriendlyURL(), layout1);
 
 		_deleteFriendlyURLEntryLocalization(
 			friendlyURL, stagingGroup.getGroupId());
@@ -156,7 +157,7 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 
 		String originalFriendlyURL1 = stagingLayout.getFriendlyURL();
 
-		String testFriendlyURL = _randomFriendlyURL();
+		String testFriendlyURL = _getRandomFriendlyURL();
 
 		stagingLayout = LayoutTestUtil.updateFriendlyURL(
 			stagingLayout,
@@ -249,7 +250,7 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 		publishLayouts(
 			new long[] {layout1.getLayoutId(), layout2.getLayoutId()});
 
-		layout1 = _updateFriendlyURL(_randomFriendlyURL(), layout1);
+		layout1 = _updateFriendlyURL(_getRandomFriendlyURL(), layout1);
 
 		_deleteFriendlyURLEntryLocalization(
 			friendlyURL1, stagingGroup.getGroupId());
