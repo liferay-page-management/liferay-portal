@@ -64,7 +64,7 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 	}
 
 	private void _assertPublishLayoutsWithLayoutFriendlyURLsException(
-			Layout layout)
+			int expectedLogEntriesCount, long... layoutIds)
 		throws Exception {
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
@@ -72,19 +72,21 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 					"BatchEngineImportTaskExecutorImpl",
 				LoggerTestUtil.ERROR)) {
 
-			publishLayouts(new long[] {layout.getLayoutId()});
+			publishLayouts(layoutIds);
 
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
-			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+			Assert.assertEquals(
+				logEntries.toString(), expectedLogEntriesCount,
+				logEntries.size());
 
-			LogEntry logEntry = logEntries.get(0);
+			for (LogEntry logEntry : logEntries) {
+				Throwable throwable = logEntry.getThrowable();
 
-			Throwable throwable = logEntry.getThrowable();
-
-			Assert.assertTrue(
-				String.valueOf(throwable),
-				throwable instanceof LayoutFriendlyURLsException);
+				Assert.assertTrue(
+					String.valueOf(throwable),
+					throwable instanceof LayoutFriendlyURLsException);
+			}
 		}
 	}
 
@@ -145,7 +147,8 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 				_locale, testFriendlyURL
 			).build());
 
-		_assertPublishLayoutsWithLayoutFriendlyURLsException(stagingLayout2);
+		_assertPublishLayoutsWithLayoutFriendlyURLsException(
+			1, stagingLayout2.getLayoutId());
 
 		Layout liveLayout2 = _layoutLocalService.getLayoutByUuidAndGroupId(
 			stagingLayout2.getUuid(), liveGroup.getGroupId(),
@@ -154,7 +157,8 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 		Assert.assertEquals(
 			originalFriendlyURL2, liveLayout2.getFriendlyURL(_locale));
 
-		_assertPublishLayoutsWithLayoutFriendlyURLsException(stagingLayout2);
+		_assertPublishLayoutsWithLayoutFriendlyURLsException(
+			1, stagingLayout2.getLayoutId());
 
 		List<BackgroundTask> failedBackgroundTasks =
 			_backgroundTaskLocalService.getBackgroundTasks(
