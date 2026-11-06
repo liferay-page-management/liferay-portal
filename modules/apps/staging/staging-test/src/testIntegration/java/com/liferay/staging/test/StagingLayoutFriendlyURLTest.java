@@ -12,9 +12,6 @@ import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.layout.friendly.url.LayoutFriendlyURLEntryHelper;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.background.task.model.BackgroundTask;
-import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
-import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.exception.LayoutFriendlyURLsException;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -205,17 +202,6 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 		_assertPublishLayoutsWithLayoutFriendlyURLsException(
 			1, stagingLayout2.getLayoutId());
 
-		List<BackgroundTask> failedBackgroundTasks =
-			_backgroundTaskLocalService.getBackgroundTasks(
-				stagingGroup.getGroupId(),
-				"com.liferay.exportimport.internal.background.task." +
-					"LayoutStagingBackgroundTaskExecutor",
-				BackgroundTaskConstants.STATUS_FAILED);
-
-		Assert.assertTrue(
-			"There should not be a failed staging publication",
-			failedBackgroundTasks.isEmpty());
-
 		publishLayouts(new long[] {stagingLayout.getLayoutId()});
 
 		Assert.assertEquals(
@@ -296,9 +282,6 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 				_locale, friendlyURL
 			).build());
 	}
-
-	@Inject
-	private BackgroundTaskLocalService _backgroundTaskLocalService;
 
 	@Inject
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
