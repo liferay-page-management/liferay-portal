@@ -101,6 +101,18 @@ const AllowedFragmentSelectorTree = ({dropZoneConfig, onSelectedFragment}) => {
 		[fragments]
 	);
 
+	const fragmentEntryKeysSet = useMemo(
+		() =>
+			new Set(
+				fragments.flatMap((collection) =>
+					collection.fragmentEntries.map(
+						(fragmentEntry) => fragmentEntry.fragmentEntryKey
+					)
+				)
+			),
+		[fragments]
+	);
+
 	const initialAllowNewFragmentEntries =
 		dropZoneConfig.allowNewFragmentEntries === undefined ||
 		dropZoneConfig.allowNewFragmentEntries === null
@@ -150,6 +162,8 @@ const AllowedFragmentSelectorTree = ({dropZoneConfig, onSelectedFragment}) => {
 			allowNewFragmentEntries,
 			[...selectedKeys],
 			fragmentEntryKeysArray
+		).filter((fragmentEntryKey) =>
+			fragmentEntryKeysSet.has(fragmentEntryKey)
 		);
 
 		onSelectedFragment({
@@ -160,6 +174,7 @@ const AllowedFragmentSelectorTree = ({dropZoneConfig, onSelectedFragment}) => {
 		selectedKeys,
 		allowNewFragmentEntries,
 		fragmentEntryKeysArray,
+		fragmentEntryKeysSet,
 		onSelectedFragment,
 	]);
 

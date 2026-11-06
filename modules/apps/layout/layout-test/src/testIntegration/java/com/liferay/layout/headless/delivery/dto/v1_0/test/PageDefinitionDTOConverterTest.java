@@ -145,97 +145,32 @@ public class PageDefinitionDTOConverterTest {
 	}
 
 	@Test
-	public void testToPageDefinitionDropZoneAllowedFragments()
-		throws Exception {
-
-		PageDefinition pageDefinition = _getPageDefinition(
-			_layoutLocalService.fetchLayout(_layoutPageTemplateEntry.getPlid()),
-			_getLayoutStructure(
-				"layout_data_drop_zone_allowed_fragments.json",
-				new HashMap<>()));
-
-		PageElement rootPageElement = pageDefinition.getPageElement();
-
-		Assert.assertEquals(PageElement.Type.ROOT, rootPageElement.getType());
-
-		PageElement[] pageElements = rootPageElement.getPageElements();
-
-		Assert.assertEquals(
-			Arrays.toString(pageElements), 1, pageElements.length);
-
-		PageElement dropZonePageElement = pageElements[0];
-
-		Assert.assertEquals(
-			PageElement.Type.DROP_ZONE, dropZonePageElement.getType());
-
-		PageDropZoneDefinition pageDropZoneDefinition =
-			(PageDropZoneDefinition)dropZonePageElement.getDefinition();
-
-		Map<String, Fragment[]> fragmentSettingsMap =
-			(Map<String, Fragment[]>)
-				pageDropZoneDefinition.getFragmentSettings();
-
-		Fragment[] allowedFragments = fragmentSettingsMap.get(
-			"allowedFragments");
-
-		Assert.assertEquals(
-			Arrays.toString(allowedFragments), 3, allowedFragments.length);
-
-		Assert.assertEquals(
-			"BASIC_COMPONENT-button", allowedFragments[0].getKey());
-		Assert.assertEquals(
-			"BASIC_COMPONENT-card", allowedFragments[1].getKey());
-		Assert.assertEquals(
+	public void testToPageDefinitionDropZone() throws Exception {
+		_testToPageDefinitionDropZone(
+			"allowedFragments", "layout_data_drop_zone_allowed_fragments.json",
+			"BASIC_COMPONENT-button", "BASIC_COMPONENT-card",
 			"com.liferay.fragment.internal.renderer." +
-				"ContentObjectFragmentRenderer",
-			allowedFragments[2].getKey());
-	}
+				"ContentObjectFragmentRenderer");
 
-	@Test
-	public void testToPageDefinitionDropZoneUnallowedFragments()
-		throws Exception {
-
-		PageDefinition pageDefinition = _getPageDefinition(
-			_layoutLocalService.fetchLayout(_layoutPageTemplateEntry.getPlid()),
-			_getLayoutStructure(
-				"layout_data_drop_zone_unallowed_fragments.json",
-				new HashMap<>()));
-
-		PageElement rootPageElement = pageDefinition.getPageElement();
-
-		Assert.assertEquals(PageElement.Type.ROOT, rootPageElement.getType());
-
-		PageElement[] pageElements = rootPageElement.getPageElements();
-
-		Assert.assertEquals(
-			Arrays.toString(pageElements), 1, pageElements.length);
-
-		PageElement dropZonePageElement = pageElements[0];
-
-		Assert.assertEquals(
-			PageElement.Type.DROP_ZONE, dropZonePageElement.getType());
-
-		PageDropZoneDefinition pageDropZoneDefinition =
-			(PageDropZoneDefinition)dropZonePageElement.getDefinition();
-
-		Map<String, Fragment[]> fragmentSettingsMap =
-			(Map<String, Fragment[]>)
-				pageDropZoneDefinition.getFragmentSettings();
-
-		Fragment[] unallowedFragments = fragmentSettingsMap.get(
-			"unallowedFragments");
-
-		Assert.assertEquals(
-			Arrays.toString(unallowedFragments), 3, unallowedFragments.length);
-
-		Assert.assertEquals(
-			"BASIC_COMPONENT-button", unallowedFragments[0].getKey());
-		Assert.assertEquals(
-			"BASIC_COMPONENT-card", unallowedFragments[1].getKey());
-		Assert.assertEquals(
+		_testToPageDefinitionDropZone(
+			"allowedFragments",
+			"layout_data_drop_zone_allowed_fragments_fragment_entries.json",
+			"BASIC_COMPONENT-button", "BASIC_COMPONENT-card",
 			"com.liferay.fragment.internal.renderer." +
-				"ContentObjectFragmentRenderer",
-			unallowedFragments[2].getKey());
+				"ContentObjectFragmentRenderer");
+
+		_testToPageDefinitionDropZone(
+			"allowedFragments",
+			"layout_data_drop_zone_allowed_fragments_legacy_" +
+				"fragment_entry_keys.json",
+			"BASIC_COMPONENT-button");
+
+		_testToPageDefinitionDropZone(
+			"unallowedFragments",
+			"layout_data_drop_zone_unallowed_fragments.json",
+			"BASIC_COMPONENT-button", "BASIC_COMPONENT-card",
+			"com.liferay.fragment.internal.renderer." +
+				"ContentObjectFragmentRenderer");
 	}
 
 	@Test
@@ -709,6 +644,58 @@ public class PageDefinitionDTOConverterTest {
 	private String _read(String fileName) throws Exception {
 		return new String(
 			FileUtil.getBytes(getClass(), "dependencies/" + fileName));
+	}
+
+	private void _testToPageDefinitionDropZone(
+			String fragmentsMapKey, String layoutDataFileName,
+			String... expectedFragmentKeys)
+		throws Exception {
+
+		PageDefinition pageDefinition = _getPageDefinition(
+			_layoutLocalService.fetchLayout(_layoutPageTemplateEntry.getPlid()),
+			_getLayoutStructure(layoutDataFileName, new HashMap<>()));
+
+		PageElement rootPageElement = pageDefinition.getPageElement();
+
+		Assert.assertEquals(PageElement.Type.ROOT, rootPageElement.getType());
+
+		PageElement[] pageElements = rootPageElement.getPageElements();
+
+		Assert.assertEquals(
+			Arrays.toString(pageElements), 1, pageElements.length);
+
+		PageElement dropZonePageElement = pageElements[0];
+
+		Assert.assertEquals(
+			PageElement.Type.DROP_ZONE, dropZonePageElement.getType());
+
+		PageDropZoneDefinition pageDropZoneDefinition =
+			(PageDropZoneDefinition)dropZonePageElement.getDefinition();
+
+		Map<String, Fragment[]> fragmentSettingsMap =
+			(Map<String, Fragment[]>)
+				pageDropZoneDefinition.getFragmentSettings();
+
+		Fragment[] fragments = fragmentSettingsMap.get(fragmentsMapKey);
+
+		Assert.assertEquals(
+			Arrays.toString(fragments), expectedFragmentKeys.length,
+			fragments.length);
+
+		String[] actualFragmentKeys = new String[fragments.length];
+
+		for (int i = 0; i < fragments.length; i++) {
+			actualFragmentKeys[i] = fragments[i].getKey();
+		}
+
+		Arrays.sort(actualFragmentKeys);
+
+		String[] sortedExpectedFragmentKeys = expectedFragmentKeys.clone();
+
+		Arrays.sort(sortedExpectedFragmentKeys);
+
+		Assert.assertArrayEquals(
+			sortedExpectedFragmentKeys, actualFragmentKeys);
 	}
 
 	private void _validateFragmentBackgroundImage(FragmentImage fragmentImage) {
