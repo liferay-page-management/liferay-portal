@@ -110,7 +110,7 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 	}
 
 	private void _testLayoutFriendlyURL() throws Exception {
-		String originalFriendlyURL = stagingLayout.getFriendlyURL();
+		String originalFriendlyURL1 = stagingLayout.getFriendlyURL();
 
 		String testFriendlyURL = _randomFriendlyURL();
 
@@ -123,14 +123,14 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 		Layout stagingLayout2 = LayoutTestUtil.addTypePortletLayout(
 			stagingGroup);
 
-		String originalLayout2FriendlyURL = stagingLayout2.getFriendlyURL();
+		String originalFriendlyURL2 = stagingLayout2.getFriendlyURL();
 
 		publishLayouts();
 
 		stagingLayout = LayoutTestUtil.updateFriendlyURL(
 			stagingLayout,
 			HashMapBuilder.put(
-				_locale, originalFriendlyURL
+				_locale, originalFriendlyURL1
 			).build());
 
 		long layoutClassNameId = _layoutFriendlyURLEntryHelper.getClassNameId(
@@ -152,7 +152,7 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 			stagingLayout2.isPrivateLayout());
 
 		Assert.assertEquals(
-			originalLayout2FriendlyURL, liveLayout2.getFriendlyURL(_locale));
+			originalFriendlyURL2, liveLayout2.getFriendlyURL(_locale));
 
 		_assertPublishLayoutsWithLayoutFriendlyURLsException(stagingLayout2);
 
@@ -170,7 +170,7 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 		publishLayouts(new long[] {stagingLayout.getLayoutId()});
 
 		Assert.assertEquals(
-			originalFriendlyURL, liveLayout.getFriendlyURL(_locale));
+			originalFriendlyURL1, liveLayout.getFriendlyURL(_locale));
 
 		_deleteFriendlyURLEntryLocalization(
 			testFriendlyURL, liveGroup.getGroupId());
@@ -178,7 +178,7 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 		publishLayouts();
 
 		Assert.assertEquals(
-			originalFriendlyURL, liveLayout.getFriendlyURL(_locale));
+			originalFriendlyURL1, liveLayout.getFriendlyURL(_locale));
 		Assert.assertEquals(
 			testFriendlyURL, liveLayout2.getFriendlyURL(_locale));
 
@@ -187,7 +187,7 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 				liveGroup.getGroupId(), layoutClassNameId,
 				FriendlyURLEntryConstants.
 					FRIENDLY_URL_ENTRY_PARENT_CLASS_PK_DEFAULT,
-				_languageId, originalFriendlyURL);
+				_languageId, originalFriendlyURL1);
 
 		Assert.assertEquals(
 			liveLayout.getPlid(),
