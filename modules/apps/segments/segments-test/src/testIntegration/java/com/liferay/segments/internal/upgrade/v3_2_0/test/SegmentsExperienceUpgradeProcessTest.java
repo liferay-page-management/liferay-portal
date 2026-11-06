@@ -424,13 +424,11 @@ public class SegmentsExperienceUpgradeProcessTest
 			_segmentsExperienceLocalService.getSegmentsExperiences(
 				_group.getGroupId(), _draftLayout.getPlid());
 
-		DB db = DBManagerUtil.getDB();
-
 		for (SegmentsExperience segmentsExperience : segmentsExperiences) {
 			_resourceLocalService.deleteResource(
 				segmentsExperience, ResourceConstants.SCOPE_INDIVIDUAL);
 
-			db.runSQL(
+			_db.runSQL(
 				"delete from SegmentsExperience where segmentsExperienceId = " +
 					segmentsExperience.getSegmentsExperienceId());
 		}
