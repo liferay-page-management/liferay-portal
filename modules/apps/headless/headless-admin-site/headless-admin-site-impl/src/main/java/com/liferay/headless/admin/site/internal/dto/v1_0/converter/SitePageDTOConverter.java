@@ -5,6 +5,7 @@
 
 package com.liferay.headless.admin.site.internal.dto.v1_0.converter;
 
+import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessorHelper;
 import com.liferay.headless.admin.site.dto.v1_0.ContentPageSettings;
 import com.liferay.headless.admin.site.dto.v1_0.CustomMetaTag;
 import com.liferay.headless.admin.site.dto.v1_0.EmbeddedPageSettings;
@@ -284,7 +285,9 @@ public class SitePageDTOConverter implements DTOConverter<Layout, SitePage> {
 			() -> layout.getTypeSettingsProperty(
 				LayoutTypePortletConstants.DEFAULT_ASSET_PUBLISHER_PORTLET_ID));
 		contentPageSettings.setOpenGraphSettings(
-			() -> OpenGraphSettingsUtil.getOpenGraphSettings(layoutSEOEntry));
+			() -> OpenGraphSettingsUtil.getOpenGraphSettings(
+				_exportImportPortletPreferencesProcessorHelper,
+				layoutSEOEntry));
 		contentPageSettings.setSeoSettings(
 			() -> SEOSettingsUtil.getSeoSettings(layout, layoutSEOEntry));
 
@@ -379,7 +382,9 @@ public class SitePageDTOConverter implements DTOConverter<Layout, SitePage> {
 			() -> layout.getTypeSettingsProperty(
 				LayoutTypePortletConstants.LAYOUT_TEMPLATE_ID));
 		widgetPageSettings.setOpenGraphSettings(
-			() -> OpenGraphSettingsUtil.getOpenGraphSettings(layoutSEOEntry));
+			() -> OpenGraphSettingsUtil.getOpenGraphSettings(
+				_exportImportPortletPreferencesProcessorHelper,
+				layoutSEOEntry));
 		widgetPageSettings.setSeoSettings(
 			() -> SEOSettingsUtil.getSeoSettings(layout, layoutSEOEntry));
 		widgetPageSettings.setType(
@@ -408,6 +413,10 @@ public class SitePageDTOConverter implements DTOConverter<Layout, SitePage> {
 
 		return widgetPageSettings;
 	}
+
+	@Reference
+	private ExportImportPortletPreferencesProcessorHelper
+		_exportImportPortletPreferencesProcessorHelper;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;

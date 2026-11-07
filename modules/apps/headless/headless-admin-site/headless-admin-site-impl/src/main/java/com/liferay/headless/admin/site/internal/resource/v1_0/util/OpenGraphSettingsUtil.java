@@ -5,13 +5,16 @@
 
 package com.liferay.headless.admin.site.internal.resource.v1_0.util;
 
+import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessorHelper;
 import com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.dto.v1_0.OpenGraphSettings;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.ItemScopeUtil;
 import com.liferay.layout.seo.model.LayoutSEOEntry;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.vulcan.scope.Scope;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.util.Locale;
@@ -24,6 +27,8 @@ import java.util.Map;
 public class OpenGraphSettingsUtil {
 
 	public static OpenGraphSettings getOpenGraphSettings(
+		ExportImportPortletPreferencesProcessorHelper
+			exportImportPortletPreferencesProcessorHelper,
 		LayoutSEOEntry layoutSEOEntry) {
 
 		if ((layoutSEOEntry == null) ||
@@ -65,11 +70,9 @@ public class OpenGraphSettingsUtil {
 						itemExternalReference.setExternalReferenceCode(
 							() -> openGraphImageFileEntryERC);
 						itemExternalReference.setScope(
-							() -> ItemScopeUtil.getItemScope(
-								layoutSEOEntry.getCompanyId(),
-								layoutSEOEntry.
-									getOpenGraphImageFileEntryScopeERC(),
-								layoutSEOEntry.getGroupId()));
+							() -> _getScope(
+								exportImportPortletPreferencesProcessorHelper,
+								layoutSEOEntry));
 
 						return itemExternalReference;
 					});
@@ -97,6 +100,35 @@ public class OpenGraphSettingsUtil {
 					});
 			}
 		};
+	}
+
+	private static Scope _getScope(
+		ExportImportPortletPreferencesProcessorHelper
+			exportImportPortletPreferencesProcessorHelper,
+		LayoutSEOEntry layoutSEOEntry) {
+
+		Scope scope = ItemScopeUtil.getItemScope(
+			layoutSEOEntry.getCompanyId(),
+			layoutSEOEntry.getOpenGraphImageFileEntryScopeERC(),
+			layoutSEOEntry.getGroupId());
+
+		if (scope == null) {
+			return null;
+		}
+
+		String externalReferenceCode =
+			exportImportPortletPreferencesProcessorHelper.
+				getGroupExportPortletPreferencesExternalReferenceCode(
+					layoutSEOEntry.getCompanyId(),
+					scope.getExternalReferenceCode());
+
+		if (StringUtil.equals(
+				externalReferenceCode, scope.getExternalReferenceCode())) {
+
+			return scope;
+		}
+
+		return Scope.ofReference(externalReferenceCode, scope.getType());
 	}
 
 }
