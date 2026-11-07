@@ -5,6 +5,7 @@
 
 package com.liferay.fragment.entry.processor.freemarker;
 
+import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
 import com.liferay.fragment.entry.processor.freemarker.internal.configuration.FreeMarkerFragmentEntryProcessorConfiguration;
 import com.liferay.fragment.entry.processor.freemarker.internal.template.DummyRESTClient;
 import com.liferay.fragment.exception.FragmentEntryContentException;
@@ -44,6 +45,7 @@ import com.liferay.portal.kernel.util.Validator;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Locale;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -164,11 +166,9 @@ public class FreeMarkerFragmentEntryProcessor
 				_getLayoutMode(
 					fragmentEntryProcessorContext.getHttpServletRequest())
 			).putAll(
-				_fragmentEntryConfigurationParser.getContextObjects(
-					configurationValuesJSONObject, configurationJSONObject,
-					_getInfoItem(
-						configurationJSONObject, fragmentEntryProcessorContext),
-					fragmentEntryProcessorContext.getSegmentsEntryIds())
+				_getContextObjects(
+					configurationJSONObject, configurationValuesJSONObject,
+					editableValuesJSONObject, fragmentEntryProcessorContext)
 			).build());
 
 		if (fragmentEntryLink.isTypeInput()) {
@@ -217,23 +217,71 @@ public class FreeMarkerFragmentEntryProcessor
 		return unsyncStringWriter.toString();
 	}
 
-	private Object _getInfoItem(
+	private Map<String, Object> _getContextObjects(
 		JSONObject configurationJSONObject,
+		JSONObject configurationValuesJSONObject,
+		JSONObject editableValuesJSONObject,
 		FragmentEntryProcessorContext fragmentEntryProcessorContext) {
 
-		Object infoItem = fragmentEntryProcessorContext.getContextInfoItem();
+		Map<String, Object> contextObjects =
+			_fragmentEntryConfigurationParser.getContextObjects(
+				configurationValuesJSONObject, configurationJSONObject,
+				fragmentEntryProcessorContext.getContextInfoItem(),
+				fragmentEntryProcessorContext.getSegmentsEntryIds());
 
-		if (infoItem != null) {
-			return infoItem;
+		if ((contextObjects == null) ||
+			(fragmentEntryProcessorContext.getContextInfoItem() != null)) {
+
+			return contextObjects;
 		}
+
+		JSONObject freeMarkerEditableValuesJSONObject =
+			editableValuesJSONObject.getJSONObject(
+				FragmentEntryProcessorConstants.
+					KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR);
+
+		Object infoItem = null;
+
+		for (FragmentConfigurationField fragmentConfigurationField :
+				_fragmentEntryConfigurationParser.
+					getFragmentConfigurationFields(configurationJSONObject)) {
+
+			if (!StringUtil.equalsIgnoreCase(
+					fragmentConfigurationField.getType(), "itemSelector")) {
+
+				continue;
+			}
+
+			String name = fragmentConfigurationField.getName();
+
+			if (contextObjects.containsKey(name + _CONTEXT_OBJECT_SUFFIX) &&
+				(freeMarkerEditableValuesJSONObject != null) &&
+				(freeMarkerEditableValuesJSONObject.get(name) != null)) {
+
+				continue;
+			}
+
+			if (infoItem == null) {
+				infoItem = _getInfoItem(fragmentEntryProcessorContext);
+
+				if (infoItem == null) {
+					break;
+				}
+			}
+
+			contextObjects.put(name + _CONTEXT_OBJECT_SUFFIX, infoItem);
+		}
+
+		return contextObjects;
+	}
+
+	private Object _getInfoItem(
+		FragmentEntryProcessorContext fragmentEntryProcessorContext) {
 
 		InfoItemReference infoItemReference =
 			fragmentEntryProcessorContext.getContextInfoItemReference();
 
-		if ((infoItemReference == null) ||
-			!_hasItemSelectorFragmentConfigurationField(
-				configurationJSONObject)) {
-
+		if (infoItemReference == null) {
 			return null;
 		}
 
@@ -292,22 +340,7 @@ public class FreeMarkerFragmentEntryProcessor
 			"liferay_portlet = liferay_portlet + {\"runtime\": __noop}]" + html;
 	}
 
-	private boolean _hasItemSelectorFragmentConfigurationField(
-		JSONObject configurationJSONObject) {
-
-		for (FragmentConfigurationField fragmentConfigurationField :
-				_fragmentEntryConfigurationParser.
-					getFragmentConfigurationFields(configurationJSONObject)) {
-
-			if (StringUtil.equalsIgnoreCase(
-					fragmentConfigurationField.getType(), "itemSelector")) {
-
-				return true;
-			}
-		}
-
-		return false;
-	}
+	private static final String _CONTEXT_OBJECT_SUFFIX = "Object";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		FreeMarkerFragmentEntryProcessor.class);
