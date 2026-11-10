@@ -9,15 +9,13 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.publisher.constants.AssetPublisherPortletKeys;
-import com.liferay.exportimport.changeset.Changeset;
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationParameterMapFactoryUtil;
-import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.exportimport.kernel.service.StagingLocalService;
+import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalArticleResource;
 import com.liferay.journal.service.JournalArticleResourceLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
-import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.model.LayoutClassedModelUsage;
 import com.liferay.layout.service.LayoutClassedModelUsageLocalService;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
@@ -41,8 +39,6 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutRevisionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
-import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
-import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -339,7 +335,8 @@ public class JournalArticleLayoutClassedModelUsageUpgradeProcessTest {
 
 	private void _publishToLive(Layout layout) throws Exception {
 		StagingUtil.publishLayouts(
-			_user.getUserId(), layout.getGroupId(), _liveGroup.getGroupId(), false,
+			_user.getUserId(), layout.getGroupId(), _liveGroup.getGroupId(),
+			false,
 			ExportImportConfigurationParameterMapFactoryUtil.
 				buildFullPublishParameterMap());
 	}
@@ -437,7 +434,6 @@ public class JournalArticleLayoutClassedModelUsageUpgradeProcessTest {
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
-
 
 	@Inject
 	private GroupLocalService _groupLocalService;
