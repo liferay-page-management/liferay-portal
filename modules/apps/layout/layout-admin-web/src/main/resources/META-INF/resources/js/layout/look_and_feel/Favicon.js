@@ -160,6 +160,13 @@ export default function Favicon({
 						className="c-mr-2"
 						id={`${portletNamespace}basicInputText`}
 						onClick={onChangeFaviconButtonClick}
+						onKeyDown={(event) => {
+							if (event.key === 'Enter') {
+								event.preventDefault();
+
+								onChangeFaviconButtonClick();
+							}
+						}}
 						readOnly={true}
 						value={values.title}
 					/>

@@ -8,4 +8,10 @@
 	.item-selector .entry-selector {
 		cursor: pointer;
 	}
+
+	.item-selector .entry .card-type-asset:focus-visible {
+		border-radius: $card-border-radius;
+		box-shadow: $component-focus-box-shadow;
+		outline: 0;
+	}
 }
