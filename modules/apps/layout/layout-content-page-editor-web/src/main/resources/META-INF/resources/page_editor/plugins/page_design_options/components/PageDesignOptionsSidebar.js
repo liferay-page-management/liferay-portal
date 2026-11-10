@@ -30,6 +30,9 @@ export default function PageDesignOptionsSidebar() {
 	const masterLayoutPageTemplateEntryERC = useSelector(
 		(state) => state.masterLayout?.masterLayoutPageTemplateEntryERC
 	);
+	const masterLayoutPageTemplateEntryScopeERC = useSelector(
+		(state) => state.masterLayout?.masterLayoutPageTemplateEntryScopeERC
+	);
 
 	const onSelectMasterLayout = useCallback(
 		(masterLayout) => {
@@ -37,6 +40,8 @@ export default function PageDesignOptionsSidebar() {
 				changeMasterLayout({
 					masterLayoutPageTemplateEntryERC:
 						masterLayout.masterLayoutPageTemplateEntryERC,
+					masterLayoutPageTemplateEntryScopeERC:
+						masterLayout.masterLayoutPageTemplateEntryScopeERC,
 				})
 			).then(
 				({
@@ -116,6 +121,9 @@ export default function PageDesignOptionsSidebar() {
 						masterLayoutPageTemplateEntryERC={
 							masterLayoutPageTemplateEntryERC
 						}
+						masterLayoutPageTemplateEntryScopeERC={
+							masterLayoutPageTemplateEntryScopeERC
+						}
 						masterLayouts={config.masterLayouts}
 						onSelectMasterLayout={onSelectMasterLayout}
 					/>
@@ -139,6 +147,7 @@ export default function PageDesignOptionsSidebar() {
 		return result;
 	}, [
 		masterLayoutPageTemplateEntryERC,
+		masterLayoutPageTemplateEntryScopeERC,
 		onSelectMasterLayout,
 		onSelectStyleBook,
 		selectedStyleBook,
