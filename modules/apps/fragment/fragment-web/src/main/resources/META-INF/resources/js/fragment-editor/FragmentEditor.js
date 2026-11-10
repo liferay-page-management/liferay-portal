@@ -54,55 +54,36 @@ const FragmentEditor = ({
 }) => {
 	const [activeTabKeyValue, setActiveTabKeyValue] = useState(0);
 	const [changesStatus, setChangesStatus] = useState(null);
-	const [configuration, setConfiguration] = useState(initialConfiguration);
-	const [css, setCss] = useState(initialCSS);
-	const [html, setHtml] = useState(initialHTML);
-	const [js, setJs] = useState(initialJS);
 	const [fieldTypes, setFieldTypes] = useState(initialFieldTypes);
-	const previousConfiguration =
-		usePrevious(configuration) || initialConfiguration;
-	const previousCss = usePrevious(css) || initialCSS;
-	const previousFieldTypes = usePrevious(fieldTypes) || initialFieldTypes;
-	const previousHtml = usePrevious(html) || initialHTML;
-	const previousJs = usePrevious(js) || initialJS;
 
-	const [previewData, setPreviewData] = useState({
+	const [code, setCode] = useState(() => ({
 		configuration: initialConfiguration,
 		css: initialCSS,
 		html: initialHTML,
 		js: initialJS,
-	});
+	}));
+
+	const [previewData, setPreviewData] = useState(code);
+
+	const previousCode = usePrevious(code) || code;
+	const previousFieldTypes = usePrevious(fieldTypes) || initialFieldTypes;
 
 	const isMounted = useIsMounted();
 
 	const contentHasChanged = useCallback(() => {
 		return (
-			previousConfiguration !== configuration ||
-			previousCss !== css ||
-			previousFieldTypes.length !== fieldTypes.length ||
-			previousHtml !== html ||
-			previousJs !== js
+			previousCode !== code ||
+			previousFieldTypes.length !== fieldTypes.length
 		);
-	}, [
-		configuration,
-		css,
-		fieldTypes,
-		html,
-		previousCss,
-		previousConfiguration,
-		previousFieldTypes,
-		previousHtml,
-		previousJs,
-		js,
-	]);
+	}, [code, fieldTypes, previousCode, previousFieldTypes]);
 
 	const widgetRegex = new RegExp('<lfr-widget(?:-[^>]+)?>', 'g');
 
 	const handlePublishClick = () => {
 		if (
 			!Liferay.FeatureFlags['LPD-40535'] &&
-			(widgetRegex.test(html) ||
-				html.includes('[@liferay_portlet["runtime"]'))
+			(widgetRegex.test(code.html) ||
+				code.html.includes('[@liferay_portlet["runtime"]'))
 		) {
 			EmbeddedWidgetsModal({learnMessageHTML, onPublish: publish});
 		}
@@ -156,16 +137,13 @@ const FragmentEditor = ({
 		if (contentHasChanged()) {
 			setChangesStatus(CHANGES_STATUS.unsaved);
 			debouncedSaveDraft({
+				...code,
 				allowedStatusDraft: allowedStatus.draft,
-				configuration,
-				css,
 				editUrl: urls.edit,
 				fieldTypes,
 				fragmentCollectionId,
 				fragmentEntryId,
-				html,
 				isMounted,
-				js,
 				name,
 				namespace,
 				setChangesStatus,
@@ -174,15 +152,12 @@ const FragmentEditor = ({
 		}
 	}, [
 		allowedStatus.draft,
-		configuration,
+		code,
 		contentHasChanged,
-		css,
 		fieldTypes,
 		fragmentCollectionId,
 		fragmentEntryId,
-		html,
 		isMounted,
-		js,
 		name,
 		namespace,
 		urls.edit,
@@ -293,7 +268,9 @@ const FragmentEditor = ({
 								customEntities={htmlEditorCustomEntities}
 								customTags={autocompleteTags}
 								mode="html"
-								onChange={setHtml}
+								onChange={(html) =>
+									setCode((current) => ({...current, html}))
+								}
 								readOnly={readOnly}
 							/>
 						</div>
@@ -302,7 +279,9 @@ const FragmentEditor = ({
 							<CodeMirrorEditor
 								content={initialCSS}
 								mode="css"
-								onChange={setCss}
+								onChange={(css) =>
+									setCode((current) => ({...current, css}))
+								}
 								readOnly={readOnly}
 							/>
 						</div>
@@ -323,7 +302,9 @@ const FragmentEditor = ({
 								]}
 								content={initialJS}
 								mode="javascript"
-								onChange={setJs}
+								onChange={(js) =>
+									setCode((current) => ({...current, js}))
+								}
 								readOnly={readOnly}
 							/>
 						</div>
@@ -381,7 +362,12 @@ const FragmentEditor = ({
 									<CodeMirrorEditor
 										content={initialConfiguration}
 										mode="json"
-										onChange={setConfiguration}
+										onChange={(configuration) =>
+											setCode((current) => ({
+												...current,
+												configuration,
+											}))
+										}
 										readOnly={readOnly}
 										showHeader={false}
 									/>
