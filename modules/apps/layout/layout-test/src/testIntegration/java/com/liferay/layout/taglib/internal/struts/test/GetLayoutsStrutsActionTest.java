@@ -7,6 +7,7 @@ package com.liferay.layout.taglib.internal.struts.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
+import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.MultiVMPool;
@@ -50,7 +51,6 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -121,7 +121,7 @@ public class GetLayoutsStrutsActionTest {
 
 		long launchSetId = RandomTestUtil.randomLong();
 
-		_addLaunchDraftLayout(launchSetId, layout);
+		LayoutTestUtil.addLaunchDraftLayout(launchSetId, layout);
 
 		_assertLayoutInTree(false, layout);
 
@@ -198,26 +198,6 @@ public class GetLayoutsStrutsActionTest {
 		_assertLayoutInTree(
 			true, draftLayout, WorkflowConstants.STATUS_APPROVED,
 			WorkflowConstants.STATUS_DRAFT);
-	}
-
-	private Layout _addLaunchDraftLayout(long launchSetId, Layout layout)
-		throws Exception {
-
-		Layout launchDraftLayout = _layoutLocalService.addLayout(
-			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-			layout.getGroupId(), layout.isPrivateLayout(),
-			layout.getParentLayoutId(), _portal.getClassNameId(Layout.class),
-			layout.getPlid(), layout.getNameMap(), layout.getTitleMap(),
-			layout.getDescriptionMap(), layout.getKeywordsMap(),
-			layout.getRobotsMap(), layout.getType(), layout.getTypeSettings(),
-			true, true, Collections.emptyMap(),
-			layout.getMasterLayoutPageTemplateEntryERC(),
-			ServiceContextTestUtil.getServiceContext(
-				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
-
-		launchDraftLayout.setLaunchSetId(launchSetId);
-
-		return _layoutLocalService.updateLayout(launchDraftLayout);
 	}
 
 	private void _assertGetLayoutsStrutsAction(

@@ -552,7 +552,8 @@ public class LayoutLocalServiceTest {
 			_layoutLocalService.fetchDraftLayout(
 				layout.getPlid(), launchSetId));
 
-		Layout launchDraftLayout = _addLaunchDraftLayout(launchSetId, layout);
+		Layout launchDraftLayout = LayoutTestUtil.addLaunchDraftLayout(
+			launchSetId, layout);
 
 		Assert.assertEquals(
 			launchDraftLayout,
@@ -584,7 +585,7 @@ public class LayoutLocalServiceTest {
 			_group, RandomTestUtil.randomString(),
 			WorkflowConstants.STATUS_APPROVED);
 
-		_addLaunchDraftLayout(launchSetId1, layout1);
+		LayoutTestUtil.addLaunchDraftLayout(launchSetId1, layout1);
 
 		classPKs = _layoutLocalService.getClassPKsByLaunchSetId(
 			_group.getGroupId(), launchSetId1);
@@ -596,7 +597,7 @@ public class LayoutLocalServiceTest {
 			_group, RandomTestUtil.randomString(),
 			WorkflowConstants.STATUS_APPROVED);
 
-		_addLaunchDraftLayout(launchSetId1, layout2);
+		LayoutTestUtil.addLaunchDraftLayout(launchSetId1, layout2);
 
 		classPKs = _layoutLocalService.getClassPKsByLaunchSetId(
 			_group.getGroupId(), launchSetId1);
@@ -951,7 +952,7 @@ public class LayoutLocalServiceTest {
 
 		long launchSetId = RandomTestUtil.randomLong();
 
-		_addLaunchDraftLayout(launchSetId, layout);
+		LayoutTestUtil.addLaunchDraftLayout(launchSetId, layout);
 
 		Assert.assertEquals(
 			0,
@@ -1432,26 +1433,6 @@ public class LayoutLocalServiceTest {
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 				_group.getGroupId(), false);
 		}
-	}
-
-	private Layout _addLaunchDraftLayout(long launchSetId, Layout layout)
-		throws Exception {
-
-		Layout launchDraftLayout = _layoutLocalService.addLayout(
-			StringBundler.concat(
-				layout.getExternalReferenceCode(), "-launch-", launchSetId),
-			TestPropsValues.getUserId(), layout.getGroupId(),
-			layout.isPrivateLayout(), layout.getParentLayoutId(),
-			_portal.getClassNameId(Layout.class), layout.getPlid(),
-			layout.getNameMap(), layout.getTitleMap(),
-			layout.getDescriptionMap(), layout.getKeywordsMap(),
-			layout.getRobotsMap(), layout.getType(), layout.getTypeSettings(),
-			true, true, Collections.emptyMap(),
-			layout.getMasterLayoutPageTemplateEntryERC(), _serviceContext);
-
-		launchDraftLayout.setLaunchSetId(launchSetId);
-
-		return _layoutLocalService.updateLayout(launchDraftLayout);
 	}
 
 	private void _assertExternalReferenceCodes(
