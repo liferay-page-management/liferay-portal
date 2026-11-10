@@ -10,7 +10,8 @@ import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.publisher.constants.AssetPublisherPortletKeys;
 import com.liferay.exportimport.changeset.Changeset;
-import com.liferay.exportimport.changeset.portlet.action.ExportImportChangesetMVCActionCommandHelper;
+import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationParameterMapFactoryUtil;
+import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.exportimport.kernel.service.StagingLocalService;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalArticleResource;
@@ -337,32 +338,10 @@ public class JournalArticleLayoutClassedModelUsageUpgradeProcessTest {
 	}
 
 	private void _publishToLive(Layout layout) throws Exception {
-		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-			new MockLiferayPortletActionRequest();
-
-		mockLiferayPortletActionRequest.setAttribute(
-			WebKeys.PORTLET_ID, LayoutAdminPortletKeys.GROUP_PAGES);
-
-		ServiceContext serviceContext =
-			ServiceContextThreadLocal.getServiceContext();
-
-		mockLiferayPortletActionRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, serviceContext.getThemeDisplay());
-
-		mockLiferayPortletActionRequest.setParameter(
-			"groupId", String.valueOf(layout.getGroupId()));
-
-		Changeset.Builder builder = Changeset.create();
-
-		Changeset changeset = builder.addStagedModel(
-			() -> layout
-		).addMultipleStagedModel(
-			Collections::emptyList
-		).build();
-
-		_exportImportChangesetMVCActionCommandHelper.publish(
-			mockLiferayPortletActionRequest,
-			new MockLiferayPortletActionResponse(), changeset);
+		StagingUtil.publishLayouts(
+			_user.getUserId(), layout.getGroupId(), _liveGroup.getGroupId(), false,
+			ExportImportConfigurationParameterMapFactoryUtil.
+				buildFullPublishParameterMap());
 	}
 
 	private void _pushServiceContext(Group group, Layout layout)
@@ -459,9 +438,6 @@ public class JournalArticleLayoutClassedModelUsageUpgradeProcessTest {
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
-	@Inject
-	private ExportImportChangesetMVCActionCommandHelper
-		_exportImportChangesetMVCActionCommandHelper;
 
 	@Inject
 	private GroupLocalService _groupLocalService;
