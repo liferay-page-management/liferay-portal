@@ -6,10 +6,6 @@
 package com.liferay.layout.admin.web.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.depot.constants.DepotConstants;
-import com.liferay.depot.model.DepotEntry;
-import com.liferay.depot.service.DepotEntryGroupRelLocalService;
-import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
@@ -31,7 +27,6 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -82,7 +77,9 @@ public class AddContentLayoutMVCActionCommandTest {
 			_group.getCompanyId(), true, "LPD-57283");
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_addLayoutPageTemplateEntry(_addDesignLibraryGroup(false));
+			_addLayoutPageTemplateEntry(
+				DesignLibraryTestUtil.addDesignLibraryGroup(
+					_group.getGroupId(), false));
 
 		Exception exception = Assert.assertThrows(
 			PortletException.class,
@@ -152,21 +149,6 @@ public class AddContentLayoutMVCActionCommandTest {
 			draftLayout.getMasterLayoutPlid());
 	}
 
-	private Group _addDesignLibraryGroup(boolean connected) throws Exception {
-		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
-			RandomTestUtil.randomLocaleStringMap(),
-			RandomTestUtil.randomLocaleStringMap(),
-			DepotConstants.TYPE_DESIGN_LIBRARY,
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-
-		if (connected) {
-			_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
-				depotEntry.getDepotEntryId(), _group.getGroupId());
-		}
-
-		return depotEntry.getGroup();
-	}
-
 	private LayoutPageTemplateEntry _addLayoutPageTemplateEntry(Group group)
 		throws Exception {
 
@@ -230,12 +212,6 @@ public class AddContentLayoutMVCActionCommandTest {
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
-
-	@Inject
-	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
-
-	@Inject
-	private DepotEntryLocalService _depotEntryLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;
