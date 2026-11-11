@@ -110,13 +110,13 @@ public class GetDropZoneAllowedFragmentEntryKeysMVCResourceCommandTest {
 
 		dropZoneLayoutStructureItem.setAllowNewFragmentEntries(false);
 
-		if (fragmentEntryKeys != null) {
-			dropZoneLayoutStructureItem.setFragmentEntryKeys(fragmentEntryKeys);
-		}
-
 		if (fragmentEntriesJSONArray != null) {
 			dropZoneLayoutStructureItem.setFragmentEntriesJSONArray(
 				fragmentEntriesJSONArray);
+		}
+
+		if (fragmentEntryKeys != null) {
+			dropZoneLayoutStructureItem.setFragmentEntryKeys(fragmentEntryKeys);
 		}
 
 		_layoutPageTemplateStructureLocalService.

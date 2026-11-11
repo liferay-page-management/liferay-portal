@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -44,13 +44,15 @@ public class DropZoneAllowedFragmentEntriesHelperImplTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
-	@AfterClass
-	public static void tearDownClass() {
+	@After
+	public void tearDown() {
 		_scopeUtilMockedStatic.close();
 	}
 
 	@Before
 	public void setUp() throws Exception {
+		_scopeUtilMockedStatic = Mockito.mockStatic(ScopeUtil.class);
+
 		_dropZoneAllowedFragmentEntriesHelperImpl =
 			new DropZoneAllowedFragmentEntriesHelperImpl();
 
@@ -68,8 +70,6 @@ public class DropZoneAllowedFragmentEntriesHelperImplTest {
 		Mockito.reset(
 			_fragmentCollectionContributorRegistry, _fragmentEntryLocalService,
 			_fragmentRendererRegistry);
-
-		_scopeUtilMockedStatic.reset();
 	}
 
 	@Test
@@ -510,9 +510,6 @@ public class DropZoneAllowedFragmentEntriesHelperImplTest {
 
 	private static final long _SCOPE_GROUP_ID = RandomTestUtil.randomLong();
 
-	private static final MockedStatic<ScopeUtil> _scopeUtilMockedStatic =
-		Mockito.mockStatic(ScopeUtil.class);
-
 	private DropZoneAllowedFragmentEntriesHelperImpl
 		_dropZoneAllowedFragmentEntriesHelperImpl;
 	private final FragmentCollectionContributorRegistry
@@ -522,5 +519,6 @@ public class DropZoneAllowedFragmentEntriesHelperImplTest {
 		Mockito.mock(FragmentEntryLocalService.class);
 	private final FragmentRendererRegistry _fragmentRendererRegistry =
 		Mockito.mock(FragmentRendererRegistry.class);
+	private MockedStatic<ScopeUtil> _scopeUtilMockedStatic;
 
 }
