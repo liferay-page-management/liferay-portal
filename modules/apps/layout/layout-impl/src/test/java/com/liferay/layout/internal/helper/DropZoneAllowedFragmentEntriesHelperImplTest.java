@@ -44,11 +44,6 @@ public class DropZoneAllowedFragmentEntriesHelperImplTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
-	@After
-	public void tearDown() {
-		_scopeUtilMockedStatic.close();
-	}
-
 	@Before
 	public void setUp() throws Exception {
 		_scopeUtilMockedStatic = Mockito.mockStatic(ScopeUtil.class);
@@ -70,6 +65,11 @@ public class DropZoneAllowedFragmentEntriesHelperImplTest {
 		Mockito.reset(
 			_fragmentCollectionContributorRegistry, _fragmentEntryLocalService,
 			_fragmentRendererRegistry);
+	}
+
+	@After
+	public void tearDown() {
+		_scopeUtilMockedStatic.close();
 	}
 
 	@Test
