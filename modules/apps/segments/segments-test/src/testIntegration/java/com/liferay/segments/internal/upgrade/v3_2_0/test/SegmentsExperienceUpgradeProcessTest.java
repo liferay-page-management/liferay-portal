@@ -8,6 +8,7 @@ package com.liferay.segments.internal.upgrade.v3_2_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
+import com.liferay.change.tracking.service.CTCollectionService;
 import com.liferay.change.tracking.test.util.BaseCTUpgradeProcessTestCase;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
@@ -196,6 +197,40 @@ public class SegmentsExperienceUpgradeProcessTest
 		runUpgrade();
 
 		_assertSegmentsExperiences(ctCollection);
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
+	public void testUpgradeWithPublishedCTCollectionSegmentsExperiences()
+		throws Exception {
+
+		_deleteSegmentsExperiences();
+
+		CTCollection ctCollection = _addCTCollection();
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_updateFragmentEntryLinks();
+			_updateLayoutPageTemplateStructureRels();
+
+			for (SegmentsExperience segmentsExperience :
+					_segmentsExperienceLocalService.getSegmentsExperiences(
+						_group.getGroupId(), _publishedLayout.getPlid())) {
+
+				updateCTModel(segmentsExperience);
+			}
+		}
+
+		runUpgrade();
+
+		_ctCollectionService.publishCTCollection(
+			TestPropsValues.getUserId(), ctCollection.getCtCollectionId());
+
+		_multiVMPool.clear();
+
+		_assertSegmentsExperiences();
 	}
 
 	@Test
@@ -570,6 +605,9 @@ public class SegmentsExperienceUpgradeProcessTest
 
 	@Inject
 	private CTCollectionLocalService _ctCollectionLocalService;
+
+	@Inject
+	private CTCollectionService _ctCollectionService;
 
 	private Layout _draftLayout;
 
