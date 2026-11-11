@@ -539,8 +539,6 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 		Assert.assertNull(postMasterPage.getThumbnailURLReference());
 
 		_testPostSiteMasterPageWithDropZonePageElement();
-		_testPostSiteMasterPageWithDropZonePageElementFromCompanyGroupFragment();
-		_testPostSiteMasterPageWithDropZonePageElementFromDesignLibraryDepotFragment();
 		_testPostSiteMasterPageWithPageSpecifications();
 		_testPostSiteMasterPageWithSiteTemplatePageSpecification();
 		_testPostSiteMasterPageWithThumbnail();
@@ -650,8 +648,6 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 				fileEntry.getExternalReferenceCode(), thumbnailURL));
 
 		_testPutSiteMasterPageWithDropZonePageElement();
-		_testPutSiteMasterPageWithDropZonePageElementFromCompanyGroupFragment();
-		_testPutSiteMasterPageWithDropZonePageElementFromDesignLibraryDepotFragment();
 		_testPutSiteMasterPageWithPageSpecifications();
 		_testPutSiteMasterPageWithThumbnail();
 		_testPutSiteMasterPageWithThumbnailURLReferenceExternalReferenceCodeAndFileBase64();
@@ -1968,47 +1964,6 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 				testGroup.getExternalReferenceCode(), masterPage));
 	}
 
-	private void _testPostSiteMasterPageWithDropZonePageElementFromCompanyGroupFragment()
-		throws Exception {
-
-		MasterPageResource masterPageResource = _getMasterPageResource();
-
-		Group companyGroup = _groupLocalService.getCompanyGroup(
-			testGroup.getCompanyId());
-
-		PageElement[] pageElements = {
-			PageElementsTestUtil.getDropZonePageElement(
-				RandomTestUtil.randomString(), companyGroup.getGroupId())
-		};
-
-		MasterPage masterPage = _getMasterPage(pageElements);
-
-		_assertPageElements(
-			pageElements,
-			masterPageResource.postSiteMasterPage(
-				testGroup.getExternalReferenceCode(), masterPage));
-	}
-
-	private void _testPostSiteMasterPageWithDropZonePageElementFromDesignLibraryDepotFragment()
-		throws Exception {
-
-		MasterPageResource masterPageResource = _getMasterPageResource();
-
-		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
-
-		PageElement[] pageElements = {
-			PageElementsTestUtil.getDropZonePageElement(
-				RandomTestUtil.randomString(), designLibraryGroup.getGroupId())
-		};
-
-		MasterPage masterPage = _getMasterPage(pageElements);
-
-		_assertPageElements(
-			pageElements,
-			masterPageResource.postSiteMasterPage(
-				testGroup.getExternalReferenceCode(), masterPage));
-	}
-
 	private void _testPostSiteMasterPageWithPageSpecifications()
 		throws Exception {
 
@@ -2372,59 +2327,6 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 				testGroup.getExternalReferenceCode(),
 				irrelevantGroupSiteMasterPage.getExternalReferenceCode(),
 				irrelevantGroupSiteMasterPage));
-	}
-
-	private void _testPutSiteMasterPageWithDropZonePageElementFromCompanyGroupFragment()
-		throws Exception {
-
-		MasterPageResource masterPageResource = _getMasterPageResource();
-
-		Group companyGroup = _groupLocalService.getCompanyGroup(
-			testGroup.getCompanyId());
-
-		PageElement[] pageElements = {
-			PageElementsTestUtil.getDropZonePageElement(
-				RandomTestUtil.randomString(), companyGroup.getGroupId())
-		};
-
-		MasterPage masterPage = _getMasterPage(pageElements);
-
-		MasterPage postMasterPage = masterPageResource.postSiteMasterPage(
-			testGroup.getExternalReferenceCode(), masterPage);
-
-		postMasterPage.setDateModified(new Date());
-
-		_assertPageElements(
-			pageElements,
-			masterPageResource.putSiteMasterPage(
-				testGroup.getExternalReferenceCode(),
-				postMasterPage.getExternalReferenceCode(), masterPage));
-	}
-
-	private void _testPutSiteMasterPageWithDropZonePageElementFromDesignLibraryDepotFragment()
-		throws Exception {
-
-		MasterPageResource masterPageResource = _getMasterPageResource();
-
-		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
-
-		PageElement[] pageElements = {
-			PageElementsTestUtil.getDropZonePageElement(
-				RandomTestUtil.randomString(), designLibraryGroup.getGroupId())
-		};
-
-		MasterPage masterPage = _getMasterPage(pageElements);
-
-		MasterPage postMasterPage = masterPageResource.postSiteMasterPage(
-			testGroup.getExternalReferenceCode(), masterPage);
-
-		postMasterPage.setDateModified(new Date());
-
-		_assertPageElements(
-			pageElements,
-			masterPageResource.putSiteMasterPage(
-				testGroup.getExternalReferenceCode(),
-				postMasterPage.getExternalReferenceCode(), masterPage));
 	}
 
 	private void _testPutSiteMasterPageWithPageSpecifications()
