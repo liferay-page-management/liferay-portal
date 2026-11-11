@@ -9,9 +9,6 @@ import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvide
 import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
 import com.liferay.asset.kernel.model.AssetRenderer;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
-import com.liferay.depot.constants.DepotConstants;
-import com.liferay.depot.model.DepotEntry;
-import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldSet;
 import com.liferay.info.field.InfoFieldSetEntry;
@@ -31,14 +28,11 @@ import com.liferay.layout.page.template.info.item.provider.DisplayPageInfoItemFi
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
 import com.liferay.layout.page.template.util.LayoutPageTemplateEntryUtil;
+import com.liferay.layout.util.GroupUtil;
 import com.liferay.petra.function.UnsafeSupplierValue;
-import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -49,7 +43,6 @@ import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -133,8 +126,7 @@ public class DisplayPageInfoItemFieldSetProviderImpl
 
 		List<LayoutPageTemplateEntry> layoutPageTemplateEntries =
 			_layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
-				_getGroupIds(
-					themeDisplay.getScopeGroup(),
+				GroupUtil.getSiteAndConnectedDesignLibraryGroupIds(
 					themeDisplay.getScopeGroupId()),
 				classNameId,
 				LayoutPageTemplateEntryUtil.getClassTypeKey(
@@ -241,34 +233,6 @@ public class DisplayPageInfoItemFieldSetProviderImpl
 			externalReferenceCode);
 	}
 
-	private long[] _getGroupIds(Group group, long groupId) {
-		long[] groupIds = {groupId};
-
-		if ((group == null) ||
-			!FeatureFlagManagerUtil.isEnabled(
-				group.getCompanyId(), "LPD-57283")) {
-
-			return groupIds;
-		}
-
-		try {
-			return ArrayUtil.append(
-				groupIds,
-				TransformUtil.transformToLongArray(
-					_depotEntryLocalService.getGroupConnectedDepotEntries(
-						groupId, DepotConstants.TYPE_DESIGN_LIBRARY,
-						QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-					DepotEntry::getGroupId));
-		}
-		catch (PortalException portalException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(portalException);
-			}
-
-			return groupIds;
-		}
-	}
-
 	private List<InfoFieldSetEntry> _getInfoFieldSetEntries(
 		String itemClassName, String infoItemFormVariationKey, String namespace,
 		long scopeGroupId) {
@@ -281,8 +245,8 @@ public class DisplayPageInfoItemFieldSetProviderImpl
 
 		List<LayoutPageTemplateEntry> layoutPageTemplateEntries =
 			_layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
-				_getGroupIds(
-					_groupLocalService.fetchGroup(scopeGroupId), scopeGroupId),
+				GroupUtil.getSiteAndConnectedDesignLibraryGroupIds(
+					scopeGroupId),
 				classNameId,
 				LayoutPageTemplateEntryUtil.getClassTypeKey(
 					classNameId, GetterUtil.getLong(infoItemFormVariationKey),
@@ -464,9 +428,6 @@ public class DisplayPageInfoItemFieldSetProviderImpl
 	@Reference
 	private AssetDisplayPageFriendlyURLProvider
 		_assetDisplayPageFriendlyURLProvider;
-
-	@Reference
-	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Reference
 	private GroupLocalService _groupLocalService;

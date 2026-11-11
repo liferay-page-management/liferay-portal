@@ -5,9 +5,6 @@
 
 package com.liferay.layout.internal.importer.structure.util;
 
-import com.liferay.depot.constants.DepotConstants;
-import com.liferay.depot.model.DepotEntry;
-import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.contributor.FragmentCollectionContributor;
 import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
 import com.liferay.fragment.model.FragmentCollection;
@@ -19,17 +16,12 @@ import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.headless.delivery.dto.v1_0.PageElement;
 import com.liferay.layout.internal.importer.LayoutStructureItemImporterContext;
 import com.liferay.layout.internal.importer.exception.DropzoneLayoutStructureItemException;
+import com.liferay.layout.util.GroupUtil;
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
-import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
-import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.service.CompanyLocalService;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
@@ -46,16 +38,12 @@ public class DropZoneLayoutStructureItemImporter
 	implements LayoutStructureItemImporter {
 
 	public DropZoneLayoutStructureItemImporter(
-		CompanyLocalService companyLocalService,
-		DepotEntryLocalService depotEntryLocalService,
 		FragmentCollectionContributorRegistry
 			fragmentCollectionContributorRegistry,
 		FragmentCollectionLocalService fragmentCollectionLocalService,
 		FragmentEntryLocalService fragmentEntryLocalService,
 		FragmentRendererRegistry fragmentRendererRegistry) {
 
-		_companyLocalService = companyLocalService;
-		_depotEntryLocalService = depotEntryLocalService;
 		_fragmentCollectionContributorRegistry =
 			fragmentCollectionContributorRegistry;
 		_fragmentCollectionLocalService = fragmentCollectionLocalService;
@@ -133,8 +121,8 @@ public class DropZoneLayoutStructureItemImporter
 
 		Layout layout = layoutStructureItemImporterContext.getLayout();
 
-		long[] groupIds = _getGroupIds(
-			layout.getCompanyId(), layout.getGroupId());
+		long[] groupIds = GroupUtil.getSiteAndConnectedDesignLibraryGroupIds(
+			layout.getCompanyId(), true, layout.getGroupId());
 
 		for (Map<String, String> allowedFragmentMap : allowedFragments) {
 			fragmentEntryKeys.add(allowedFragmentMap.get(_KEY_KEY));
@@ -222,31 +210,12 @@ public class DropZoneLayoutStructureItemImporter
 		return null;
 	}
 
-	private long[] _getGroupIds(long companyId, long groupId) throws Exception {
-		Company company = _companyLocalService.getCompany(companyId);
-
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-57283")) {
-			return new long[] {groupId, company.getGroupId()};
-		}
-
-		return ArrayUtil.append(
-			new long[] {groupId},
-			TransformUtil.transformToLongArray(
-				_depotEntryLocalService.getGroupConnectedDepotEntries(
-					groupId, DepotConstants.TYPE_DESIGN_LIBRARY,
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-				DepotEntry::getGroupId),
-			new long[] {company.getGroupId()});
-	}
-
 	private static final String _KEY_ALLOWED_FRAGMENTS = "allowedFragments";
 
 	private static final String _KEY_KEY = "key";
 
 	private static final String _KEY_UNALLOWED_FRAGMENTS = "unallowedFragments";
 
-	private final CompanyLocalService _companyLocalService;
-	private final DepotEntryLocalService _depotEntryLocalService;
 	private final FragmentCollectionContributorRegistry
 		_fragmentCollectionContributorRegistry;
 	private final FragmentCollectionLocalService

@@ -360,7 +360,6 @@ public class LayoutsImporterImpl implements LayoutsImporter {
 			new ContainerLayoutStructureItemImporter());
 		_addLayoutStructureItemImporter(
 			new DropZoneLayoutStructureItemImporter(
-				_companyLocalService, _depotEntryLocalService,
 				_fragmentCollectionContributorRegistry,
 				_fragmentCollectionLocalService, _fragmentEntryLocalService,
 				_fragmentRendererRegistry));

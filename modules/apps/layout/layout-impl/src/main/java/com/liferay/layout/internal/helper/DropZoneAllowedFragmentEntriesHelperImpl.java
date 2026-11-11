@@ -5,26 +5,18 @@
 
 package com.liferay.layout.internal.helper;
 
-import com.liferay.depot.constants.DepotConstants;
-import com.liferay.depot.model.DepotEntry;
-import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererRegistry;
 import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.layout.helper.DropZoneAllowedFragmentEntriesHelper;
+import com.liferay.layout.util.GroupUtil;
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
-import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -191,7 +183,8 @@ public class DropZoneAllowedFragmentEntriesHelperImpl
 			}
 		}
 
-		long[] groupIds = _getGroupIds(companyId, scopeGroupId);
+		long[] groupIds = GroupUtil.getSiteAndConnectedDesignLibraryGroupIds(
+			companyId, true, scopeGroupId);
 
 		for (String fragmentEntryKey : fragmentEntryKeys) {
 			if (promotedFragmentEntryKeys.contains(fragmentEntryKey)) {
@@ -267,29 +260,6 @@ public class DropZoneAllowedFragmentEntriesHelperImpl
 		return null;
 	}
 
-	private long[] _getGroupIds(long companyId, long scopeGroupId)
-		throws PortalException {
-
-		Group companyGroup = _groupLocalService.getCompanyGroup(companyId);
-
-		long[] groupIds = {scopeGroupId, companyGroup.getGroupId()};
-
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-57283")) {
-			return groupIds;
-		}
-
-		return ArrayUtil.append(
-			groupIds,
-			TransformUtil.transformToLongArray(
-				_depotEntryLocalService.getGroupConnectedDepotEntries(
-					scopeGroupId, DepotConstants.TYPE_DESIGN_LIBRARY,
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-				DepotEntry::getGroupId));
-	}
-
-	@Reference
-	private DepotEntryLocalService _depotEntryLocalService;
-
 	@Reference
 	private FragmentCollectionContributorRegistry
 		_fragmentCollectionContributorRegistry;
@@ -299,8 +269,5 @@ public class DropZoneAllowedFragmentEntriesHelperImpl
 
 	@Reference
 	private FragmentRendererRegistry _fragmentRendererRegistry;
-
-	@Reference
-	private GroupLocalService _groupLocalService;
 
 }
