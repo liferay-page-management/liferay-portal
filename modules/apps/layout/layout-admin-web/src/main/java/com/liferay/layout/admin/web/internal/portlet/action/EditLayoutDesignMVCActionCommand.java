@@ -16,6 +16,7 @@ import com.liferay.layout.constants.LayoutTypeSettingsConstants;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.LayoutJavaScriptException;
 import com.liferay.portal.kernel.exception.LayoutNameException;
+import com.liferay.portal.kernel.exception.MasterLayoutException;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -28,6 +29,7 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
+import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.servlet.MultiSessionMessages;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -227,6 +229,9 @@ public class EditLayoutDesignMVCActionCommand extends BaseMVCActionCommand {
 			String masterLayoutPageTemplateEntryERC = ParamUtil.getString(
 				uploadPortletRequest, "masterLayoutPageTemplateEntryERC",
 				layout.getMasterLayoutPageTemplateEntryERC());
+			String masterLayoutPageTemplateEntryScopeERC = ParamUtil.getString(
+				uploadPortletRequest, "masterLayoutPageTemplateEntryScopeERC",
+				layout.getMasterLayoutPageTemplateEntryScopeERC());
 
 			ServiceContext serviceContext = ServiceContextFactory.getInstance(
 				Layout.class.getName(), actionRequest);
@@ -252,6 +257,23 @@ public class EditLayoutDesignMVCActionCommand extends BaseMVCActionCommand {
 					Sites.LAYOUT_UPDATEABLE,
 					layoutTypeSettingsUnicodeProperties.get(
 						Sites.LAYOUT_UPDATEABLE));
+			}
+
+			if (!StringUtil.equals(
+					masterLayoutPageTemplateEntryERC,
+					layout.getMasterLayoutPageTemplateEntryERC()) ||
+				!StringUtil.equals(
+					masterLayoutPageTemplateEntryScopeERC,
+					layout.getMasterLayoutPageTemplateEntryScopeERC())) {
+
+				LayoutPermissionUtil.checkLayoutUpdatePermission(
+					themeDisplay.getPermissionChecker(), layout);
+
+				layout =
+					_layoutLocalService.updateMasterLayoutPageTemplateEntry(
+						groupId, layout.isPrivateLayout(), layout.getLayoutId(),
+						masterLayoutPageTemplateEntryERC,
+						masterLayoutPageTemplateEntryScopeERC);
 			}
 
 			layout = _layoutService.updateLayout(
@@ -340,7 +362,9 @@ public class EditLayoutDesignMVCActionCommand extends BaseMVCActionCommand {
 
 			actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
 		}
-		catch (LayoutJavaScriptException | LayoutNameException exception) {
+		catch (LayoutJavaScriptException | LayoutNameException |
+			   MasterLayoutException exception) {
+
 			if (_log.isDebugEnabled()) {
 				_log.debug(exception);
 			}

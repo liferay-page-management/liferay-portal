@@ -57,6 +57,8 @@ LayoutRevision layoutRevision = LayoutStagingUtil.getLayoutRevision(selLayout);
 			<liferay-ui:message arguments="<%= layoutsAdminDisplayContext.getLayoutNameLabel() %>" key="please-add-a-x" />
 		</liferay-ui:error>
 
+		<liferay-ui:error exception="<%= MasterLayoutException.class %>" message="the-selected-master-no-longer-exists" />
+
 		<c:if test="<%= layoutsAdminDisplayContext.isShowPublishedConfigurationMessage() %>">
 			<clay:alert
 				displayType="info"
