@@ -65,6 +65,7 @@ page import="com.liferay.portal.kernel.exception.LayoutJavaScriptException" %><%
 page import="com.liferay.portal.kernel.exception.LayoutNameException" %><%@
 page import="com.liferay.portal.kernel.exception.LayoutSetJavaScriptException" %><%@
 page import="com.liferay.portal.kernel.exception.LayoutTypeException" %><%@
+page import="com.liferay.portal.kernel.exception.MasterLayoutException" %><%@
 page import="com.liferay.portal.kernel.exception.NoSuchGroupException" %><%@
 page import="com.liferay.portal.kernel.exception.NoSuchLayoutException" %><%@
 page import="com.liferay.portal.kernel.exception.NoSuchRoleException" %><%@

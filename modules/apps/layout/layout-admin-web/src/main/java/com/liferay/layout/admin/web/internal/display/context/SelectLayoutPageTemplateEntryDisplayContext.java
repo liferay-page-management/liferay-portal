@@ -12,6 +12,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionLocalServiceUtil;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUtil;
+import com.liferay.layout.page.template.util.LayoutPageTemplateEntryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -273,6 +274,23 @@ public class SelectLayoutPageTemplateEntryDisplayContext {
 				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
 				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null));
+
+		if (scopeGroup.isLayoutPrototype()) {
+			return masterLayoutPageTemplateEntries;
+		}
+
+		for (long designLibraryGroupId :
+				LayoutPageTemplateEntryUtil.
+					fetchMasterLayoutDesignLibraryGroupIds(
+						scopeGroup.getCompanyId(), scopeGroup.getGroupId())) {
+
+			masterLayoutPageTemplateEntries.addAll(
+				LayoutPageTemplateEntryServiceUtil.getLayoutPageTemplateEntries(
+					designLibraryGroupId,
+					LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null));
+		}
 
 		return masterLayoutPageTemplateEntries;
 	}
