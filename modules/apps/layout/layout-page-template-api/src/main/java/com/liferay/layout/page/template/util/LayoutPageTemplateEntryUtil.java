@@ -57,6 +57,15 @@ public class LayoutPageTemplateEntryUtil {
 
 	public static LayoutPageTemplateEntry
 		fetchDefaultMasterLayoutPageTemplateEntry(
+			long companyId, long groupId) {
+
+		return fetchDefaultMasterLayoutPageTemplateEntry(
+			fetchMasterLayoutDesignLibraryGroupIds(companyId, groupId),
+			groupId);
+	}
+
+	public static LayoutPageTemplateEntry
+		fetchDefaultMasterLayoutPageTemplateEntry(
 			long[] designLibraryGroupIds, long groupId) {
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =

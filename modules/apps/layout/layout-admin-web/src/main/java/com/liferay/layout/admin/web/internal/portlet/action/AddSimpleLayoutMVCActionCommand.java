@@ -7,9 +7,10 @@ package com.liferay.layout.admin.web.internal.portlet.action;
 
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.admin.web.internal.handler.LayoutExceptionRequestHandlerUtil;
-import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
+import com.liferay.layout.admin.web.internal.util.MasterLayoutUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
+import com.liferay.layout.page.template.util.LayoutPageTemplateEntryUtil;
 import com.liferay.layout.set.prototype.helper.LayoutSetPrototypeHelper;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Layout;
@@ -32,7 +33,6 @@ import com.liferay.portal.kernel.util.PropertiesParamUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -87,11 +87,9 @@ public class AddSimpleLayoutMVCActionCommand
 
 		if (!Objects.equals(type, LayoutConstants.TYPE_CONTENT)) {
 			masterLayoutPageTemplateEntry =
-				_layoutPageTemplateEntryService.
-					fetchDefaultLayoutPageTemplateEntry(
-						groupId,
-						LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
-						WorkflowConstants.STATUS_APPROVED);
+				LayoutPageTemplateEntryUtil.
+					fetchDefaultMasterLayoutPageTemplateEntry(
+						themeDisplay.getCompanyId(), groupId);
 		}
 		else {
 			long masterLayoutPlid = ParamUtil.getLong(
@@ -113,6 +111,11 @@ public class AddSimpleLayoutMVCActionCommand
 			if (masterLayoutPageTemplateEntry != null) {
 				masterLayoutPageTemplateEntryERC =
 					masterLayoutPageTemplateEntry.getExternalReferenceCode();
+
+				serviceContext.setAttribute(
+					"masterLayoutPageTemplateEntryScopeERC",
+					MasterLayoutUtil.getMasterLayoutPageTemplateEntryScopeERC(
+						groupId, masterLayoutPageTemplateEntry));
 			}
 
 			Layout layout = _layoutService.addLayout(

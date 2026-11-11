@@ -69,6 +69,11 @@ public class MasterLayoutPageTemplateEntryItemSelectorViewDescriptor
 						group.getCompanyId(), group.getGroupId());
 			_groupId = group.getGroupId();
 		}
+
+		_defaultLayoutPageTemplateEntry =
+			LayoutPageTemplateEntryUtil.
+				fetchDefaultMasterLayoutPageTemplateEntry(
+					_designLibraryGroupIds, _groupId);
 	}
 
 	@Override
@@ -145,14 +150,7 @@ public class MasterLayoutPageTemplateEntryItemSelectorViewDescriptor
 		layoutPageTemplateEntry.setName(
 			LanguageUtil.get(_httpServletRequest, "blank"));
 
-		LayoutPageTemplateEntry defaultLayoutPageTemplateEntry =
-			LayoutPageTemplateEntryServiceUtil.
-				fetchDefaultLayoutPageTemplateEntry(
-					_themeDisplay.getScopeGroupId(),
-					LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
-					WorkflowConstants.STATUS_APPROVED);
-
-		if (defaultLayoutPageTemplateEntry == null) {
+		if (_defaultLayoutPageTemplateEntry == null) {
 			layoutPageTemplateEntry.setDefaultTemplate(true);
 		}
 
@@ -196,9 +194,17 @@ public class MasterLayoutPageTemplateEntryItemSelectorViewDescriptor
 			return layoutPageTemplateEntry.isDefaultTemplate();
 		}
 
+		if ((_defaultLayoutPageTemplateEntry != null) &&
+			(_defaultLayoutPageTemplateEntry.getLayoutPageTemplateEntryId() ==
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId())) {
+
+			return true;
+		}
+
 		return false;
 	}
 
+	private final LayoutPageTemplateEntry _defaultLayoutPageTemplateEntry;
 	private final long[] _designLibraryGroupIds;
 	private final long _groupId;
 	private final HttpServletRequest _httpServletRequest;
