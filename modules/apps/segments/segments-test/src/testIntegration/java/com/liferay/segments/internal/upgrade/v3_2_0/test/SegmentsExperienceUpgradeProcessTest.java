@@ -200,41 +200,6 @@ public class SegmentsExperienceUpgradeProcessTest
 	}
 
 	@Test
-	@TestInfo("LPD-113912")
-	public void testUpgradeWithPublishedCTCollectionSegmentsExperiences()
-		throws Exception {
-
-		_deleteSegmentsExperiences();
-
-		CTCollection ctCollection = _addCTCollection();
-
-		try (SafeCloseable safeCloseable =
-				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
-					ctCollection.getCtCollectionId())) {
-
-			_updateFragmentEntryLinks();
-			_updateLayoutPageTemplateStructureRels();
-
-			for (SegmentsExperience segmentsExperience :
-					_segmentsExperienceLocalService.getSegmentsExperiences(
-						_group.getGroupId(), _publishedLayout.getPlid())) {
-
-				updateCTModel(segmentsExperience);
-			}
-		}
-
-		runUpgrade();
-		runUpgrade();
-
-		_ctCollectionService.publishCTCollection(
-			TestPropsValues.getUserId(), ctCollection.getCtCollectionId());
-
-		_multiVMPool.clear();
-
-		_assertSegmentsExperiences();
-	}
-
-	@Test
 	public void testUpgradeWithClassPKColumns() throws Exception {
 		_deleteSegmentsExperiences();
 
@@ -313,6 +278,41 @@ public class SegmentsExperienceUpgradeProcessTest
 				_connection, "LayoutPageTemplateStructure", "classPK",
 				"plid LONG");
 		}
+
+		_assertSegmentsExperiences();
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
+	public void testUpgradeWithPublishedCTCollectionSegmentsExperiences()
+		throws Exception {
+
+		_deleteSegmentsExperiences();
+
+		CTCollection ctCollection = _addCTCollection();
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_updateFragmentEntryLinks();
+			_updateLayoutPageTemplateStructureRels();
+
+			for (SegmentsExperience segmentsExperience :
+					_segmentsExperienceLocalService.getSegmentsExperiences(
+						_group.getGroupId(), _publishedLayout.getPlid())) {
+
+				updateCTModel(segmentsExperience);
+			}
+		}
+
+		runUpgrade();
+		runUpgrade();
+
+		_ctCollectionService.publishCTCollection(
+			TestPropsValues.getUserId(), ctCollection.getCtCollectionId());
+
+		_multiVMPool.clear();
 
 		_assertSegmentsExperiences();
 	}
