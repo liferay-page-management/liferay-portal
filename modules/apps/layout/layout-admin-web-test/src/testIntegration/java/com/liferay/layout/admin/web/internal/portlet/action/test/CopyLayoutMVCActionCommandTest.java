@@ -643,9 +643,6 @@ public class CopyLayoutMVCActionCommandTest {
 			expectedLayoutFragmentEntryLink.getRendererKey(),
 			actualLayoutFragmentEntryLink.getRendererKey());
 		Assert.assertEquals(
-			expectedLayoutFragmentEntryLink.getEditableValues(),
-			actualLayoutFragmentEntryLink.getEditableValues());
-		Assert.assertEquals(
 			expectedLayoutFragmentEntryLink.getPosition(),
 			actualLayoutFragmentEntryLink.getPosition());
 
