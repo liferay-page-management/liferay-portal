@@ -13,8 +13,8 @@ import {sub} from 'frontend-js-web';
 import React, {useState} from 'react';
 
 function updateLookAndFeelVisibility(
-	masterLayoutPageTemplateEntryERC,
-	portletNamespace
+	masterLayoutPageTemplateEntryERC: string,
+	portletNamespace: string
 ) {
 	const customCSS = document.getElementById(`${portletNamespace}customCSS`);
 
@@ -31,9 +31,9 @@ function updateLookAndFeelVisibility(
 		`${portletNamespace}themeContainer`
 	);
 
-	if (themeContainer) {
-		const sheet = themeContainer.closest('.sheet');
+	const sheet = themeContainer?.closest('.sheet');
 
+	if (sheet) {
 		if (!masterLayoutPageTemplateEntryERC) {
 			sheet.classList.remove('hide');
 
@@ -47,6 +47,17 @@ function updateLookAndFeelVisibility(
 	}
 }
 
+interface IProps {
+	changeMasterLayoutURL: string;
+	editMasterLayoutURL: string;
+	isReadOnly: boolean;
+	masterLayoutName: string;
+	masterLayoutPageTemplateEntryERC: string;
+	masterLayoutPageTemplateEntryScopeERC: string;
+	masterLayoutPageTemplateEntryScopeLabel: string;
+	portletNamespace: string;
+}
+
 export default function MasterLayoutConfiguration({
 	changeMasterLayoutURL,
 	editMasterLayoutURL,
@@ -56,7 +67,7 @@ export default function MasterLayoutConfiguration({
 	masterLayoutPageTemplateEntryScopeERC,
 	masterLayoutPageTemplateEntryScopeLabel,
 	portletNamespace,
-}) {
+}: IProps) {
 	const [masterLayout, setMasterLayout] = useState({
 		erc: masterLayoutPageTemplateEntryERC,
 		name: masterLayoutName,
@@ -71,7 +82,7 @@ export default function MasterLayoutConfiguration({
 
 		openSelectionModal({
 			iframeBodyCssClass: '',
-			onSelect(selectedItem) {
+			onSelect(selectedItem: {value: string}) {
 				if (selectedItem) {
 					const itemValue = JSON.parse(selectedItem.value);
 
@@ -136,7 +147,6 @@ export default function MasterLayoutConfiguration({
 						aria-label={Liferay.Language.get('edit-master')}
 						button={{monospaced: true}}
 						className="c-ml-2"
-						disabled={isReadOnly}
 						displayType="secondary"
 						href={editMasterLayoutURL}
 					>
