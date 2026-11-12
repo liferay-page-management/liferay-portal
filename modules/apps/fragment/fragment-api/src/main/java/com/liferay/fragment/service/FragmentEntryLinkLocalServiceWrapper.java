@@ -379,12 +379,38 @@ public class FragmentEntryLinkLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<FragmentEntryLink>
+			getAllFragmentEntryLinksByFragmentEntry(
+				long groupId,
+				com.liferay.fragment.model.FragmentEntry fragmentEntry,
+				int start, int end,
+				com.liferay.portal.kernel.util.OrderByComparator
+					<FragmentEntryLink> orderByComparator)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _fragmentEntryLinkLocalService.
+			getAllFragmentEntryLinksByFragmentEntry(
+				groupId, fragmentEntry, start, end, orderByComparator);
+	}
+
+	@Override
 	public int getAllFragmentEntryLinksCountByFragmentEntry(
 			com.liferay.fragment.model.FragmentEntry fragmentEntry)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _fragmentEntryLinkLocalService.
 			getAllFragmentEntryLinksCountByFragmentEntry(fragmentEntry);
+	}
+
+	@Override
+	public int getAllFragmentEntryLinksCountByFragmentEntry(
+			long groupId,
+			com.liferay.fragment.model.FragmentEntry fragmentEntry)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _fragmentEntryLinkLocalService.
+			getAllFragmentEntryLinksCountByFragmentEntry(
+				groupId, fragmentEntry);
 	}
 
 	@Override
@@ -402,12 +428,38 @@ public class FragmentEntryLinkLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<FragmentEntryLink>
+			getAllLayoutFragmentEntryLinksByFragmentEntry(
+				long groupId,
+				com.liferay.fragment.model.FragmentEntry fragmentEntry,
+				int start, int end,
+				com.liferay.portal.kernel.util.OrderByComparator
+					<FragmentEntryLink> orderByComparator)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _fragmentEntryLinkLocalService.
+			getAllLayoutFragmentEntryLinksByFragmentEntry(
+				groupId, fragmentEntry, start, end, orderByComparator);
+	}
+
+	@Override
 	public int getAllLayoutFragmentEntryLinksCountByFragmentEntry(
 			com.liferay.fragment.model.FragmentEntry fragmentEntry)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _fragmentEntryLinkLocalService.
 			getAllLayoutFragmentEntryLinksCountByFragmentEntry(fragmentEntry);
+	}
+
+	@Override
+	public int getAllLayoutFragmentEntryLinksCountByFragmentEntry(
+			long groupId,
+			com.liferay.fragment.model.FragmentEntry fragmentEntry)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _fragmentEntryLinkLocalService.
+			getAllLayoutFragmentEntryLinksCountByFragmentEntry(
+				groupId, fragmentEntry);
 	}
 
 	@Override
@@ -426,6 +478,22 @@ public class FragmentEntryLinkLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<FragmentEntryLink>
+			getAllLayoutPageTemplateFragmentEntryLinksByFragmentEntry(
+				long groupId,
+				com.liferay.fragment.model.FragmentEntry fragmentEntry,
+				int layoutPageTemplateType, int start, int end,
+				com.liferay.portal.kernel.util.OrderByComparator
+					<FragmentEntryLink> orderByComparator)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _fragmentEntryLinkLocalService.
+			getAllLayoutPageTemplateFragmentEntryLinksByFragmentEntry(
+				groupId, fragmentEntry, layoutPageTemplateType, start, end,
+				orderByComparator);
+	}
+
+	@Override
 	public int getAllLayoutPageTemplateFragmentEntryLinksCountByFragmentEntry(
 			com.liferay.fragment.model.FragmentEntry fragmentEntry,
 			int layoutPageTemplateType)
@@ -434,6 +502,18 @@ public class FragmentEntryLinkLocalServiceWrapper
 		return _fragmentEntryLinkLocalService.
 			getAllLayoutPageTemplateFragmentEntryLinksCountByFragmentEntry(
 				fragmentEntry, layoutPageTemplateType);
+	}
+
+	@Override
+	public int getAllLayoutPageTemplateFragmentEntryLinksCountByFragmentEntry(
+			long groupId,
+			com.liferay.fragment.model.FragmentEntry fragmentEntry,
+			int layoutPageTemplateType)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _fragmentEntryLinkLocalService.
+			getAllLayoutPageTemplateFragmentEntryLinksCountByFragmentEntry(
+				groupId, fragmentEntry, layoutPageTemplateType);
 	}
 
 	/**
@@ -859,4 +939,4 @@ public class FragmentEntryLinkLocalServiceWrapper
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1810675196
+// LIFERAY-SERVICE-BUILDER-HASH:-346907710
