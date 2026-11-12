@@ -734,6 +734,70 @@ test(
 );
 
 test(
+	'Rich text editables on inline elements are not wrapped in a paragraph',
+	{tag: '@LPD-115192'},
+	async ({apiHelpers, page, pageEditorPage, site}) => {
+
+		// Create a page with a Card fragment
+
+		const fragmentId = getRandomString();
+		const fragmentDefinition = getFragmentDefinition({
+			id: fragmentId,
+			key: 'BASIC_COMPONENT-card',
+		});
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([fragmentDefinition]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		// Edit the title, a rich text editable on a span, and the content, a
+		// rich text editable on a div
+
+		for (const editableId of ['02-title', '03-content']) {
+			await pageEditorPage.selectEditable(fragmentId, editableId);
+
+			const editable = pageEditorPage.getEditable({
+				editableId,
+				fragmentId,
+			});
+
+			await editable.click();
+
+			const editor = editable.locator('[contenteditable="true"]');
+
+			await editor.click();
+
+			await page.keyboard.type('Edited');
+			await page.keyboard.press('Escape');
+
+			await expect(editor).not.toBeAttached();
+
+			await pageEditorPage.waitForChangesSaved();
+		}
+
+		// Check that only the content keeps its paragraph after a reload
+
+		await page.reload();
+
+		await expect(
+			pageEditorPage
+				.getEditable({editableId: '02-title', fragmentId})
+				.locator('p')
+		).toHaveCount(0);
+
+		await expect(
+			pageEditorPage
+				.getEditable({editableId: '03-content', fragmentId})
+				.locator('p')
+		).toHaveCount(1);
+	}
+);
+
+test(
 	'Prevent the drag preview from appearing when dragging text inside the editor',
 	{
 		tag: '@LPD-56399',
