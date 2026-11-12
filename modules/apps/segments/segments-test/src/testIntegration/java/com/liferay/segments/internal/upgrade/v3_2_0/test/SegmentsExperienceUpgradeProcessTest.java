@@ -224,6 +224,7 @@ public class SegmentsExperienceUpgradeProcessTest
 		}
 
 		runUpgrade();
+		runUpgrade();
 
 		_ctCollectionService.publishCTCollection(
 			TestPropsValues.getUserId(), ctCollection.getCtCollectionId());
