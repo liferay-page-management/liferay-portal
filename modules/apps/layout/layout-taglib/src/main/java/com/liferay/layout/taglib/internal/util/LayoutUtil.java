@@ -11,12 +11,14 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.launch.LaunchPreviewThreadLocal;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
@@ -28,6 +30,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -89,7 +92,7 @@ public class LayoutUtil {
 			HttpServletRequest httpServletRequest,
 			String itemSelectorReturnType, boolean privateLayout,
 			long parentLayoutId, String[] selectedLayoutUuid, long selPlid,
-			int start, int end)
+			int start, int end, int[] statuses)
 		throws Exception {
 
 		ThemeDisplay themeDisplay =
@@ -101,13 +104,13 @@ public class LayoutUtil {
 		List<Layout> layouts = ListUtil.filter(
 			LayoutServiceUtil.getLayouts(
 				groupId, privateLayout, parentLayoutId),
-			layout -> _isIncluded(layout));
+			layout -> _isIncluded(layout, statuses));
 
 		for (Layout layout : ListUtil.subList(layouts, start, end)) {
 			List<Layout> childLayouts = ListUtil.filter(
 				LayoutServiceUtil.getLayouts(
 					groupId, layout.isPrivateLayout(), layout.getLayoutId()),
-				curLayout -> _isIncluded(curLayout));
+				curLayout -> _isIncluded(curLayout, statuses));
 
 			jsonArray.put(
 				JSONUtil.put(
@@ -197,16 +200,37 @@ public class LayoutUtil {
 		);
 	}
 
-	private static boolean _isIncluded(Layout layout) {
+	private static boolean _isIncluded(Layout layout, int[] statuses) {
 		if (!layout.isTypeContent() && !layout.isTypeEmpty()) {
 			return true;
 		}
 
-		if (layout.fetchDraftLayout() != null) {
-			return layout.isPublished();
+		if (layout.fetchDraftLayout() == null) {
+			if (layout.isApproved() && !layout.isHidden() &&
+				!layout.isSystem()) {
+
+				return true;
+			}
+
+			return false;
 		}
 
-		if (layout.isApproved() && !layout.isHidden() && !layout.isSystem()) {
+		if (layout.isPublished() ||
+			ArrayUtil.contains(statuses, WorkflowConstants.STATUS_DRAFT)) {
+
+			return true;
+		}
+
+		long launchSetId = LaunchPreviewThreadLocal.getLaunchSetId();
+
+		if (launchSetId <= 0) {
+			return false;
+		}
+
+		Layout launchDraftLayout = LayoutLocalServiceUtil.fetchDraftLayout(
+			layout.getPlid(), launchSetId);
+
+		if (launchDraftLayout != null) {
 			return true;
 		}
 

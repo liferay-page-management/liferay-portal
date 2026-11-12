@@ -6,6 +6,7 @@
 package com.liferay.layout.item.selector;
 
 import com.liferay.item.selector.BaseItemSelectorCriterion;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 /**
  * @author Sergio González
@@ -16,6 +17,11 @@ public class LayoutItemSelectorCriterion extends BaseItemSelectorCriterion {
 		_showBreadcrumb = true;
 		_showPrivatePages = true;
 		_showPublicPages = true;
+		_statuses = new int[] {WorkflowConstants.STATUS_APPROVED};
+	}
+
+	public int[] getStatuses() {
+		return _statuses;
 	}
 
 	public boolean isCheckDisplayPage() {
@@ -66,11 +72,16 @@ public class LayoutItemSelectorCriterion extends BaseItemSelectorCriterion {
 		_showPublicPages = showPublicPages;
 	}
 
+	public void setStatuses(int[] statuses) {
+		_statuses = statuses;
+	}
+
 	private boolean _checkDisplayPage;
 	private boolean _enableCurrentPage;
 	private boolean _multiSelection;
 	private boolean _showBreadcrumb;
 	private boolean _showPrivatePages;
 	private boolean _showPublicPages;
+	private int[] _statuses;
 
 }
