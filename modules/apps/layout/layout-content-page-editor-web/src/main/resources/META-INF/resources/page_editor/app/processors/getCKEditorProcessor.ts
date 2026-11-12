@@ -52,6 +52,31 @@ const KEYCODES = {
 	ESCAPE: 27,
 };
 
+const INLINE_TAGS = new Set([
+	'A',
+	'B',
+	'BUTTON',
+	'CITE',
+	'CODE',
+	'EM',
+	'H1',
+	'H2',
+	'H3',
+	'H4',
+	'H5',
+	'H6',
+	'I',
+	'LABEL',
+	'P',
+	'S',
+	'SMALL',
+	'SPAN',
+	'STRONG',
+	'SUB',
+	'SUP',
+	'U',
+]);
+
 export default function getCKEditorProcessor(
 	editorType: EditorType,
 	getEditorWrapper = defaultGetEditorWrapper,
@@ -200,7 +225,10 @@ export default function getCKEditorProcessor(
 							editorName,
 							initialData: editorWrapper.innerHTML,
 							itemSelectorEventName,
-							removeOuterParagraph: editorType === 'text',
+							removeOuterParagraph:
+								editorType === 'text' ||
+								(editorType === 'rich-text' &&
+									INLINE_TAGS.has(element.tagName)),
 						}),
 						onReady: (editor: TEditor) => {
 							if (!editor) {
