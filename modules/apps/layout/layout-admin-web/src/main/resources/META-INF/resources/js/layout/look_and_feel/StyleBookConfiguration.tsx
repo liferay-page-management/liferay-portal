@@ -10,6 +10,7 @@ import ClayLabel from '@clayui/label';
 import {useModal} from '@clayui/modal';
 import {IFrontendDataSetProps} from '@liferay/frontend-data-set-web';
 import {ItemSelectorModal} from '@liferay/frontend-js-item-selector-web';
+import {DesignLibraryNameLabel} from '@liferay/layout-js-components-web';
 import {openSelectionModal} from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
 import React, {useState} from 'react';
@@ -24,24 +25,6 @@ type StyleBook = {
 	name: string;
 	scope: Scope | null;
 };
-
-const DesignLibraryNameLabel = ({value}: {value: string}) => (
-	<ClayLabel
-		aria-label={sub(
-			Liferay.Language.get('style-book-from-x-design-library'),
-			value
-		)}
-		displayType="success"
-		inverse
-		withClose={false}
-	>
-		<ClayLabel.ItemBefore>
-			<ClayIcon symbol="books-brush" />
-		</ClayLabel.ItemBefore>
-
-		<ClayLabel.ItemExpand>{value}</ClayLabel.ItemExpand>
-	</ClayLabel>
-);
 
 const STYLE_BOOK_VIEWS: IFrontendDataSetProps['views'] = [
 	{
@@ -217,6 +200,12 @@ export default function StyleBookConfiguration({
 			{styleBookEntry.scope?.label && (
 				<div className="mt-2">
 					<DesignLibraryNameLabel
+						ariaLabel={sub(
+							Liferay.Language.get(
+								'style-book-from-x-design-library'
+							),
+							styleBookEntry.scope.label
+						)}
 						value={styleBookEntry.scope.label}
 					/>
 				</div>
@@ -236,6 +225,12 @@ export default function StyleBookConfiguration({
 									}) =>
 										value?.label ? (
 											<DesignLibraryNameLabel
+												ariaLabel={sub(
+													Liferay.Language.get(
+														'style-book-from-x-design-library'
+													),
+													value.label
+												)}
 												value={value.label}
 											/>
 										) : null,
