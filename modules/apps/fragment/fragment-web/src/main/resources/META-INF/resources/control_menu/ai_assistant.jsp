@@ -10,13 +10,7 @@
 <%
 FragmentDisplayContext portletFragmentDisplayContext = (FragmentDisplayContext)request.getAttribute(FragmentWebKeys.FRAGMENT_DISPLAY_CONTEXT);
 
-String fragmentSetExternalReferenceCode = null;
-
-if ((portletFragmentDisplayContext != null) && Objects.equals(portletFragmentDisplayContext.getFragmentType(), FragmentTypeConstants.BASIC_FRAGMENT_TYPE)) {
-	FragmentCollection fragmentCollection = portletFragmentDisplayContext.getFragmentCollection();
-
-	fragmentSetExternalReferenceCode = fragmentCollection.getExternalReferenceCode();
-}
+FragmentCollection fragmentCollection = portletFragmentDisplayContext.getFragmentCollection();
 
 Group scopeGroup = themeDisplay.getScopeGroup();
 %>
@@ -30,7 +24,7 @@ Group scopeGroup = themeDisplay.getScopeGroup();
 			).put(
 				"fragmentPortletNamespace", portletDisplay.getNamespace()
 			).put(
-				"fragmentSetExternalReferenceCode", fragmentSetExternalReferenceCode
+				"fragmentSetExternalReferenceCode", fragmentCollection.getExternalReferenceCode()
 			).put(
 				"siteExternalReferenceCode", scopeGroup.getExternalReferenceCode()
 			).build()

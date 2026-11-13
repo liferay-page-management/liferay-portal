@@ -32,7 +32,7 @@ function getFragment(
 type Props = {
 	editFragmentURL: string;
 	fragmentPortletNamespace: string;
-	fragmentSetExternalReferenceCode: string | null;
+	fragmentSetExternalReferenceCode: string;
 	siteExternalReferenceCode: string;
 };
 
