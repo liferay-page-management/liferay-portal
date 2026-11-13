@@ -261,31 +261,33 @@ const FragmentEditor = ({
 										</span>
 									</div>
 
-									{Liferay.FeatureFlags['LPD-94003'] && (
-										<div className="btn-group-item mr-2">
-											<AIAssistantTriggerButton
-												chatbotExternalReferenceCode="L_EDIT_FRAGMENT_CHATBOT"
-												getContext={() => ({
-													fragmentCSS:
-														codeRef.current.css,
-													fragmentConfiguration:
-														codeRef.current
-															.configuration,
-													fragmentHTML:
-														codeRef.current.html,
-													fragmentJS:
-														codeRef.current.js,
-												})}
-												greeting={Liferay.Language.get(
-													'hi-i-can-help-you-edit-this-fragment'
-												)}
-												hideLabel
-												instructionDefinitionScope=""
-												presentation="sidebar"
-												pushContainer="#main-content"
-											/>
-										</div>
-									)}
+									{Liferay.FeatureFlags['LPD-62272'] &&
+										Liferay.FeatureFlags['LPD-94003'] && (
+											<div className="btn-group-item mr-2">
+												<AIAssistantTriggerButton
+													chatbotExternalReferenceCode="L_EDIT_FRAGMENT_CHATBOT"
+													getContext={() => ({
+														fragmentCSS:
+															codeRef.current.css,
+														fragmentConfiguration:
+															codeRef.current
+																.configuration,
+														fragmentHTML:
+															codeRef.current
+																.html,
+														fragmentJS:
+															codeRef.current.js,
+													})}
+													greeting={Liferay.Language.get(
+														'hi-i-can-help-you-edit-this-fragment'
+													)}
+													hideLabel
+													instructionDefinitionScope=""
+													presentation="sidebar"
+													pushContainer="#main-content"
+												/>
+											</div>
+										)}
 
 									<div className="btn-group-item">
 										<button
