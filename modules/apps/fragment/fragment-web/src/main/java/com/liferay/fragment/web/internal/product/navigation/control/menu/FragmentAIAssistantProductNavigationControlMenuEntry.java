@@ -5,7 +5,9 @@
 
 package com.liferay.fragment.web.internal.product.navigation.control.menu;
 
+import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.constants.FragmentPortletKeys;
+import com.liferay.fragment.web.internal.security.permission.resource.FragmentPermission;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
@@ -63,7 +65,11 @@ public class FragmentAIAssistantProductNavigationControlMenuEntry
 
 		if (!Objects.equals(
 				FragmentPortletKeys.FRAGMENT,
-				portletDisplay.getPortletName())) {
+				portletDisplay.getPortletName()) ||
+			!FragmentPermission.contains(
+				themeDisplay.getPermissionChecker(),
+				themeDisplay.getScopeGroupId(),
+				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES)) {
 
 			return false;
 		}
