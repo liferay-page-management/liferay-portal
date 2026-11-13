@@ -5,12 +5,18 @@
 
 package com.liferay.segments.internal.upgrade.v3_2_0;
 
+import com.liferay.change.tracking.constants.CTConstants;
+import com.liferay.change.tracking.model.CTEntry;
+import com.liferay.change.tracking.service.CTEntryLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.segments.model.SegmentsExperience;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,8 +30,10 @@ import java.util.Map;
 public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 
 	public SegmentsExperienceUpgradeProcess(
+		CTEntryLocalService ctEntryLocalService,
 		LayoutLocalService layoutLocalService) {
 
+		_ctEntryLocalService = ctEntryLocalService;
 		_layoutLocalService = layoutLocalService;
 	}
 
@@ -167,7 +175,7 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 					preparedStatement2.addBatch();
 				}
 
-				draftLayoutSegmentsExperienceIds.put(
+				draftLayoutSegmentsExperienceIds.putIfAbsent(
 					segmentsExperienceId, draftLayoutSegmentsExperienceId);
 
 				if (hasFragmentEntryLinkSegmentsExperienceId) {
@@ -228,6 +236,56 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 			preparedStatement5.executeBatch();
 
 			preparedStatement6.executeBatch();
+		}
+
+		_addCTEntries();
+	}
+
+	private void _addCTEntries() throws Exception {
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				StringBundler.concat(
+					"select SegmentsExperience.mvccVersion, ",
+					"SegmentsExperience.ctCollectionId, ",
+					"SegmentsExperience.segmentsExperienceId, ",
+					"SegmentsExperience.companyId, SegmentsExperience.userId ",
+					"from SegmentsExperience inner join CTCollection on ",
+					"CTCollection.ctCollectionId = ",
+					"SegmentsExperience.ctCollectionId inner join Layout on ",
+					"Layout.ctCollectionId = 0 and Layout.plid = ",
+					"SegmentsExperience.plid where CTCollection.status != ? ",
+					"and Layout.classNameId = ? and not exists (select 1 from ",
+					"CTEntry where CTEntry.ctCollectionId = ",
+					"SegmentsExperience.ctCollectionId and ",
+					"CTEntry.modelClassNameId = ? and CTEntry.modelClassPK = ",
+					"SegmentsExperience.segmentsExperienceId)"))) {
+
+			long segmentsExperienceClassNameId = PortalUtil.getClassNameId(
+				SegmentsExperience.class);
+
+			preparedStatement.setInt(1, WorkflowConstants.STATUS_APPROVED);
+			preparedStatement.setLong(
+				2, PortalUtil.getClassNameId(Layout.class));
+			preparedStatement.setLong(3, segmentsExperienceClassNameId);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					CTEntry ctEntry = _ctEntryLocalService.createCTEntry(
+						increment(CTEntry.class.getName()));
+
+					ctEntry.setCompanyId(resultSet.getLong("companyId"));
+					ctEntry.setUserId(resultSet.getLong("userId"));
+					ctEntry.setCtCollectionId(
+						resultSet.getLong("ctCollectionId"));
+					ctEntry.setModelClassNameId(segmentsExperienceClassNameId);
+					ctEntry.setModelClassPK(
+						resultSet.getLong("segmentsExperienceId"));
+					ctEntry.setModelMvccVersion(
+						resultSet.getLong("mvccVersion"));
+					ctEntry.setChangeType(CTConstants.CT_CHANGE_TYPE_ADDITION);
+
+					_ctEntryLocalService.addCTEntry(ctEntry);
+				}
+			}
 		}
 	}
 
@@ -319,6 +377,7 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 		return sb.toString();
 	}
 
+	private final CTEntryLocalService _ctEntryLocalService;
 	private final LayoutLocalService _layoutLocalService;
 
 }
