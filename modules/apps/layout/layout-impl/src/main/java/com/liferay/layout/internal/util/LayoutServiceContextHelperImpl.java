@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.model.LayoutTypePortlet;
 import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -35,6 +36,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.ThemeLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.permission.LayoutPermission;
 import com.liferay.portal.kernel.servlet.DirectRequestDispatcherFactoryUtil;
 import com.liferay.portal.kernel.servlet.DummyHttpServletResponse;
 import com.liferay.portal.kernel.servlet.HttpMethods;
@@ -94,6 +96,15 @@ public class LayoutServiceContextHelperImpl
 	}
 
 	@Override
+	public AutoCloseable getServiceContextAutoCloseable(Group group)
+		throws PortalException {
+
+		return new ServiceContextTemporarySwapper(
+			_companyLocalService.getCompany(group.getCompanyId()), group, null,
+			null);
+	}
+
+	@Override
 	public AutoCloseable getServiceContextAutoCloseable(Layout layout)
 		throws PortalException {
 
@@ -107,8 +118,8 @@ public class LayoutServiceContextHelperImpl
 		throws PortalException {
 
 		return new ServiceContextTemporarySwapper(
-			_companyLocalService.getCompany(layout.getCompanyId()), layout,
-			user);
+			_companyLocalService.getCompany(layout.getCompanyId()), null,
+			layout, user);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
@@ -130,6 +141,9 @@ public class LayoutServiceContextHelperImpl
 	private LayoutLocalService _layoutLocalService;
 
 	@Reference
+	private LayoutPermission _layoutPermission;
+
+	@Reference
 	private Portal _portal;
 
 	@Reference
@@ -146,17 +160,11 @@ public class LayoutServiceContextHelperImpl
 		public ServiceContextTemporarySwapper(Company company)
 			throws PortalException {
 
-			this(company, null, null);
-		}
-
-		public ServiceContextTemporarySwapper(Company company, Layout layout)
-			throws PortalException {
-
-			this(company, layout, null);
+			this(company, null, null, null);
 		}
 
 		public ServiceContextTemporarySwapper(
-				Company company, Layout layout, User user)
+				Company company, Group group, Layout layout, User user)
 			throws PortalException {
 
 			_company = company;
@@ -210,35 +218,6 @@ public class LayoutServiceContextHelperImpl
 				}
 			}
 
-			if (layout == null) {
-				_group = _groupLocalService.getGroup(
-					company.getCompanyId(), GroupConstants.GUEST);
-
-				String friendlyURL =
-					_friendlyURLNormalizer.normalizeWithEncoding(
-						PropsValues.DEFAULT_GUEST_PUBLIC_LAYOUT_FRIENDLY_URL);
-
-				layout = _layoutLocalService.fetchLayoutByFriendlyURL(
-					_group.getGroupId(), false, friendlyURL);
-			}
-			else {
-				_group = _groupLocalService.getGroup(layout.getGroupId());
-			}
-
-			if (layout == null) {
-				layout = _layoutLocalService.fetchFirstLayout(
-					_group.getGroupId(), false,
-					LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, false);
-			}
-
-			if (layout == null) {
-				layout = _layoutLocalService.fetchFirstLayout(
-					_group.getGroupId(), false,
-					LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
-			}
-
-			_layout = layout;
-
 			if (user == null) {
 				_user = _userLocalService.fetchGuestUser(
 					company.getCompanyId());
@@ -249,15 +228,45 @@ public class LayoutServiceContextHelperImpl
 
 			_permissionChecker = PermissionCheckerFactoryUtil.create(_user);
 
+			if (layout != null) {
+				_group = _groupLocalService.getGroup(layout.getGroupId());
+			}
+			else if (group != null) {
+				_group = group;
+
+				layout = _fetchFirstLayout(_group);
+
+				if ((layout == null) ||
+					!_layoutPermission.contains(
+						_permissionChecker, layout, ActionKeys.VIEW)) {
+
+					layout = _fetchGuestGroupLayout(company);
+				}
+			}
+			else {
+				_group = _groupLocalService.getGroup(
+					company.getCompanyId(), GroupConstants.GUEST);
+
+				layout = _fetchGuestGroupLayout(company);
+			}
+
+			_layout = layout;
+
 			_setHttpServletRequestAttributes(_permissionChecker, _user);
 
 			_setCompanyServiceContext();
 		}
 
+		public ServiceContextTemporarySwapper(Company company, Layout layout)
+			throws PortalException {
+
+			this(company, null, layout, null);
+		}
+
 		public ServiceContextTemporarySwapper(Company company, User user)
 			throws PortalException {
 
-			this(company, null, user);
+			this(company, null, null, user);
 		}
 
 		@Override
@@ -362,6 +371,38 @@ public class LayoutServiceContextHelperImpl
 
 				},
 				ProxyFactory.newDummyInstance(HttpServletRequest.class));
+		}
+
+		private Layout _fetchFirstLayout(Group group) {
+			Layout layout = _layoutLocalService.fetchFirstLayout(
+				group.getGroupId(), false,
+				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, false);
+
+			if (layout != null) {
+				return layout;
+			}
+
+			return _layoutLocalService.fetchFirstLayout(
+				group.getGroupId(), false,
+				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
+		}
+
+		private Layout _fetchGuestGroupLayout(Company company)
+			throws PortalException {
+
+			Group group = _groupLocalService.getGroup(
+				company.getCompanyId(), GroupConstants.GUEST);
+
+			Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
+				group.getGroupId(), false,
+				_friendlyURLNormalizer.normalizeWithEncoding(
+					PropsValues.DEFAULT_GUEST_PUBLIC_LAYOUT_FRIENDLY_URL));
+
+			if (layout != null) {
+				return layout;
+			}
+
+			return _fetchFirstLayout(group);
 		}
 
 		private ThemeDisplay _getThemeDisplay(
