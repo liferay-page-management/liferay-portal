@@ -72,6 +72,7 @@ import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -363,6 +364,71 @@ public class DisplayPageTemplateResourceTest
 		throws Exception {
 
 		super.testGetSiteDisplayPageTemplatesPageWithSortString();
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-114990")
+	public void testPatchDesignLibraryDisplayPageTemplate() throws Exception {
+		String designLibraryExternalReferenceCode =
+			_getDesignLibraryExternalReferenceCode();
+
+		DisplayPageTemplate displayPageTemplate =
+			_addDesignLibraryDisplayPageTemplate(
+				designLibraryExternalReferenceCode);
+
+		Map<String, Map<String, String>> actions =
+			displayPageTemplate.getActions();
+
+		Map<String, String> updateAction = actions.get("update");
+
+		String updateHref = updateAction.get("href");
+
+		Assert.assertTrue(
+			updateHref.endsWith(
+				"/display-page-templates/" +
+					displayPageTemplate.getExternalReferenceCode()));
+
+		Assert.assertEquals("PATCH", updateAction.get("method"));
+
+		String newName = RandomTestUtil.randomString();
+
+		DisplayPageTemplate patchDisplayPageTemplate =
+			displayPageTemplateResource.patchDesignLibraryDisplayPageTemplate(
+				designLibraryExternalReferenceCode,
+				displayPageTemplate.getExternalReferenceCode(),
+				new DisplayPageTemplate() {
+					{
+						setName(newName);
+					}
+				});
+
+		Assert.assertEquals(newName, patchDisplayPageTemplate.getName());
+
+		DisplayPageTemplate getDisplayPageTemplate =
+			displayPageTemplateResource.getDesignLibraryDisplayPageTemplate(
+				designLibraryExternalReferenceCode,
+				displayPageTemplate.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			displayPageTemplate.getMarkedAsDefault(),
+			getDisplayPageTemplate.getMarkedAsDefault());
+		Assert.assertEquals(newName, getDisplayPageTemplate.getName());
+
+		_testPatchDesignLibraryDisplayPageTemplateWithDuplicateName(
+			designLibraryExternalReferenceCode, newName);
+		_assertProblemException(
+			"BAD_REQUEST", "Name must not be null",
+			() ->
+				displayPageTemplateResource.
+					patchDesignLibraryDisplayPageTemplate(
+						designLibraryExternalReferenceCode,
+						displayPageTemplate.getExternalReferenceCode(),
+						new DisplayPageTemplate() {
+							{
+								setName("");
+							}
+						}));
 	}
 
 	@Override
@@ -847,6 +913,52 @@ public class DisplayPageTemplateResourceTest
 				"type",
 			LayoutPageTemplateEntryTestUtil.getMasterLayoutPageTemplateEntry(
 				serviceContext, WorkflowConstants.STATUS_DRAFT));
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-114990")
+	public void testPutDesignLibraryDisplayPageTemplate() throws Exception {
+		String designLibraryExternalReferenceCode =
+			_getDesignLibraryExternalReferenceCode();
+
+		DisplayPageTemplate displayPageTemplate =
+			_addDesignLibraryDisplayPageTemplate(
+				designLibraryExternalReferenceCode);
+
+		String newName = RandomTestUtil.randomString();
+
+		DisplayPageTemplate putDisplayPageTemplate =
+			displayPageTemplateResource.putDesignLibraryDisplayPageTemplate(
+				designLibraryExternalReferenceCode,
+				displayPageTemplate.getExternalReferenceCode(),
+				new DisplayPageTemplate() {
+					{
+						setName(newName);
+					}
+				});
+
+		Assert.assertEquals(newName, putDisplayPageTemplate.getName());
+
+		Map<String, Map<String, String>> actions =
+			putDisplayPageTemplate.getActions();
+
+		Assert.assertTrue(actions.containsKey("update"));
+
+		_assertProblemException(
+			"NOT_FOUND", null,
+			() ->
+				displayPageTemplateResource.putDesignLibraryDisplayPageTemplate(
+					designLibraryExternalReferenceCode,
+					RandomTestUtil.randomString(),
+					new DisplayPageTemplate() {
+						{
+							setName(newName);
+						}
+					}));
+
+		_testPutDesignLibraryDisplayPageTemplateWithoutUpdatePermission(
+			designLibraryExternalReferenceCode, displayPageTemplate);
 	}
 
 	@Override
@@ -1934,6 +2046,7 @@ public class DisplayPageTemplateResourceTest
 		Assert.assertTrue(actions.containsKey("delete"));
 		Assert.assertTrue(actions.containsKey("get"));
 		Assert.assertTrue(actions.containsKey("permissions"));
+		Assert.assertTrue(actions.containsKey("update"));
 	}
 
 	private void _testGetDesignLibraryDisplayPageTemplateWithNestedFields()
@@ -2208,6 +2321,31 @@ public class DisplayPageTemplateResourceTest
 					displayPageTemplate.getThumbnailURLReference());
 			}
 		}
+	}
+
+	private void _testPatchDesignLibraryDisplayPageTemplateWithDuplicateName(
+			String designLibraryExternalReferenceCode, String newName)
+		throws Exception {
+
+		DisplayPageTemplate displayPageTemplate =
+			_addDesignLibraryDisplayPageTemplate(
+				designLibraryExternalReferenceCode);
+
+		_assertProblemException(
+			"BAD_REQUEST",
+			StringBundler.concat(
+				"Duplicate layout page template for group ",
+				_designLibraryGroup.getGroupId(), " with name ", newName),
+			() ->
+				displayPageTemplateResource.
+					patchDesignLibraryDisplayPageTemplate(
+						designLibraryExternalReferenceCode,
+						displayPageTemplate.getExternalReferenceCode(),
+						new DisplayPageTemplate() {
+							{
+								setName(newName);
+							}
+						}));
 	}
 
 	private void _testPatchSiteDisplayPageTemplate(
@@ -2908,6 +3046,41 @@ public class DisplayPageTemplateResourceTest
 			"Unable to download file from " + url +
 				" because of unsupported protocol ftp",
 			RandomTestUtil.randomString(), url);
+	}
+
+	private void
+			_testPutDesignLibraryDisplayPageTemplateWithoutUpdatePermission(
+				String designLibraryExternalReferenceCode,
+				DisplayPageTemplate displayPageTemplate)
+		throws Exception {
+
+		DisplayPageTemplateResource
+			userWithoutPermissionsDisplayPageTemplateResource =
+				_getUserWithoutPermissionsDisplayPageTemplateResource();
+
+		DisplayPageTemplate userDisplayPageTemplate =
+			userWithoutPermissionsDisplayPageTemplateResource.
+				getDesignLibraryDisplayPageTemplate(
+					designLibraryExternalReferenceCode,
+					displayPageTemplate.getExternalReferenceCode());
+
+		Map<String, Map<String, String>> actions =
+			userDisplayPageTemplate.getActions();
+
+		Assert.assertFalse(actions.containsKey("update"));
+
+		_assertProblemException(
+			"FORBIDDEN", "Forbidden",
+			() ->
+				userWithoutPermissionsDisplayPageTemplateResource.
+					putDesignLibraryDisplayPageTemplate(
+						designLibraryExternalReferenceCode,
+						displayPageTemplate.getExternalReferenceCode(),
+						new DisplayPageTemplate() {
+							{
+								setName(RandomTestUtil.randomString());
+							}
+						}));
 	}
 
 	private void _testPutSiteDisplayPageTemplate(
