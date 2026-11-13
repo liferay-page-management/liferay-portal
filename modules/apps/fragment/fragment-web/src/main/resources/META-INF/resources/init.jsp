@@ -21,6 +21,7 @@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
 <%@ page import="com.liferay.design.library.util.DesignLibraryUtil" %><%@
 page import="com.liferay.fragment.constants.FragmentActionKeys" %><%@
+page import="com.liferay.fragment.constants.FragmentPortletKeys" %><%@
 page import="com.liferay.fragment.contributor.FragmentCollectionContributor" %><%@
 page import="com.liferay.fragment.exception.DuplicateFragmentCollectionException" %><%@
 page import="com.liferay.fragment.exception.DuplicateFragmentCollectionKeyException" %><%@
@@ -35,6 +36,7 @@ page import="com.liferay.fragment.model.FragmentComposition" %><%@
 page import="com.liferay.fragment.model.FragmentEntry" %><%@
 page import="com.liferay.fragment.renderer.FragmentRendererController" %><%@
 page import="com.liferay.fragment.service.FragmentCollectionLocalServiceUtil" %><%@
+page import="com.liferay.fragment.web.internal.constants.FragmentTypeConstants" %><%@
 page import="com.liferay.fragment.web.internal.constants.FragmentWebKeys" %><%@
 page import="com.liferay.fragment.web.internal.display.context.ConfigurationDisplayContext" %><%@
 page import="com.liferay.fragment.web.internal.display.context.ContributedFragmentManagementToolbarDisplayContext" %><%@
@@ -62,6 +64,9 @@ page import="com.liferay.frontend.taglib.servlet.taglib.util.AnimationType" %><%
 page import="com.liferay.petra.string.StringPool" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.kernel.model.Group" %><%@
+page import="com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory" %><%@
+page import="com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil" %><%@
+page import="com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder" %><%@
 page import="com.liferay.portal.kernel.service.GroupLocalServiceUtil" %><%@
 page import="com.liferay.portal.kernel.servlet.SessionMessages" %><%@
 page import="com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbEntry" %><%@
