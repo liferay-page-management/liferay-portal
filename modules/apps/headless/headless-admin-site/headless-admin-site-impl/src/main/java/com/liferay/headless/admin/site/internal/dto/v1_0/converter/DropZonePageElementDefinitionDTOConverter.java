@@ -7,6 +7,8 @@ package com.liferay.headless.admin.site.internal.dto.v1_0.converter;
 
 import com.liferay.fragment.contributor.util.FragmentCollectionContributorRegistryUtil;
 import com.liferay.fragment.model.FragmentEntry;
+import com.liferay.fragment.renderer.FragmentRenderer;
+import com.liferay.fragment.renderer.util.FragmentRendererRegistryUtil;
 import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.headless.admin.site.dto.v1_0.DefaultFragmentReference;
 import com.liferay.headless.admin.site.dto.v1_0.DropZonePageElementDefinition;
@@ -14,9 +16,12 @@ import com.liferay.headless.admin.site.dto.v1_0.FragmentItemExternalReference;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentReference;
 import com.liferay.headless.admin.site.dto.v1_0.PageElementDefinition;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.ItemScopeUtil;
+import com.liferay.layout.util.GroupUtil;
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.scope.Scope;
@@ -75,58 +80,28 @@ public class DropZonePageElementDefinitionDTOConverter
 	}
 
 	private FragmentReference[] _getFragmentReferences(
-			List<String> fragmentEntryKeys, long scopeGroupId)
-		throws Exception {
-
-		List<FragmentReference> fragmentReferences = new ArrayList<>();
-
-		for (String fragmentEntryKey : fragmentEntryKeys) {
-			FragmentEntry fragmentEntry =
-				FragmentCollectionContributorRegistryUtil.getFragmentEntry(
-					fragmentEntryKey);
-
-			if (fragmentEntry != null) {
-				fragmentReferences.add(
-					_toDefaultFragmentReference(fragmentEntryKey));
-			}
-			else {
-				fragmentEntry = _fragmentEntryLocalService.fetchFragmentEntry(
-					scopeGroupId, fragmentEntryKey);
-
-				if (fragmentEntry != null) {
-					fragmentReferences.add(
-						_toFragmentItemExternalReference(
-							fragmentEntry.getExternalReferenceCode(),
-							ItemScopeUtil.getItemScope(
-								fragmentEntry.getGroupId(), scopeGroupId)));
-				}
-			}
-		}
-
-		return fragmentReferences.toArray(new FragmentReference[0]);
-	}
-
-	private FragmentReference[] _getFragmentReferences(
 			long companyId,
 			DropZoneLayoutStructureItem dropZoneLayoutStructureItem,
 			long scopeGroupId)
 		throws Exception {
 
-		if (dropZoneLayoutStructureItem.getFragmentEntryKeys() != null) {
-			return _getFragmentReferences(
-				dropZoneLayoutStructureItem.getFragmentEntryKeys(),
-				scopeGroupId);
-		}
-		else if (dropZoneLayoutStructureItem.getFragmentEntriesJSONArray() !=
-					null) {
+		JSONArray fragmentEntriesJSONArray =
+			dropZoneLayoutStructureItem.getFragmentEntriesJSONArray();
 
+		if (!JSONUtil.isEmpty(fragmentEntriesJSONArray)) {
 			return _getFragmentReferences(
-				companyId,
-				dropZoneLayoutStructureItem.getFragmentEntriesJSONArray(),
-				scopeGroupId);
+				companyId, fragmentEntriesJSONArray, scopeGroupId);
 		}
 
-		return null;
+		List<String> fragmentEntryKeys =
+			dropZoneLayoutStructureItem.getFragmentEntryKeys();
+
+		if (ListUtil.isEmpty(fragmentEntryKeys)) {
+			return null;
+		}
+
+		return _getFragmentReferences(
+			companyId, fragmentEntryKeys, scopeGroupId);
 	}
 
 	private FragmentReference[] _getFragmentReferences(
@@ -145,11 +120,62 @@ public class DropZonePageElementDefinitionDTOConverter
 							companyId,
 							jsonObject.getString("fragmentEntryScopeERC"),
 							scopeGroupId)));
+
+				continue;
 			}
-			else if (jsonObject.has("fragmentEntryRendererKey")) {
+
+			if (!jsonObject.has("fragmentEntryRendererKey")) {
+				continue;
+			}
+
+			fragmentReferences.add(
+				_toDefaultFragmentReference(
+					jsonObject.getString("fragmentEntryRendererKey")));
+		}
+
+		return fragmentReferences.toArray(new FragmentReference[0]);
+	}
+
+	private FragmentReference[] _getFragmentReferences(
+			long companyId, List<String> fragmentEntryKeys, long scopeGroupId)
+		throws Exception {
+
+		List<FragmentReference> fragmentReferences = new ArrayList<>();
+
+		long[] groupIds = GroupUtil.getSiteAndConnectedDesignLibraryGroupIds(
+			companyId, true, scopeGroupId);
+
+		for (String fragmentEntryKey : fragmentEntryKeys) {
+			FragmentEntry defaultFragmentEntry =
+				FragmentCollectionContributorRegistryUtil.getFragmentEntry(
+					fragmentEntryKey);
+			FragmentRenderer fragmentRenderer =
+				FragmentRendererRegistryUtil.getFragmentRenderer(
+					fragmentEntryKey);
+
+			if ((defaultFragmentEntry != null) || (fragmentRenderer != null)) {
 				fragmentReferences.add(
-					_toDefaultFragmentReference(
-						jsonObject.getString("fragmentEntryRendererKey")));
+					_toDefaultFragmentReference(fragmentEntryKey));
+
+				continue;
+			}
+
+			for (long groupId : groupIds) {
+				FragmentEntry fragmentEntry =
+					_fragmentEntryLocalService.fetchFragmentEntry(
+						groupId, fragmentEntryKey);
+
+				if (fragmentEntry == null) {
+					continue;
+				}
+
+				fragmentReferences.add(
+					_toFragmentItemExternalReference(
+						fragmentEntry.getExternalReferenceCode(),
+						ItemScopeUtil.getItemScope(
+							fragmentEntry.getGroupId(), scopeGroupId)));
+
+				break;
 			}
 		}
 

@@ -6,9 +6,11 @@
 import ClayButton from '@clayui/button';
 import ClayModal from '@clayui/modal';
 import PropTypes from 'prop-types';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 
+import {config} from '../config/index';
 import {useDispatch} from '../contexts/StoreContext';
+import serviceFetch from '../services/serviceFetch';
 import updateItemConfig from '../thunks/updateItemConfig';
 import AllowedFragmentSelectorTree from './AllowedFragmentSelectorTree';
 
@@ -17,8 +19,26 @@ const ManageAllowedFragmentModal = ({item, observer, onClose}) => {
 
 	const [allowNewFragmentEntries, setAllowNewFragmentEntries] =
 		useState(true);
+	const [resolvedDropZoneConfig, setResolvedDropZoneConfig] = useState(null);
 	const [selectedFragments, setSelectedFragments] = useState(new Set([]));
 	const [loading, setLoading] = useState();
+
+	useEffect(() => {
+		serviceFetch(config.getDropZoneAllowedFragmentEntryKeysURL, {
+			body: {
+				itemId: item.itemId,
+			},
+		})
+			.then(({fragmentEntryKeys}) => {
+				setResolvedDropZoneConfig({
+					...item.config,
+					fragmentEntryKeys,
+				});
+			})
+			.catch(() => {
+				setResolvedDropZoneConfig(item.config);
+			});
+	}, [item]);
 
 	const handleSaveClick = () => {
 		setLoading(true);
@@ -65,10 +85,19 @@ const ManageAllowedFragmentModal = ({item, observer, onClose}) => {
 					)}
 				</p>
 
-				<AllowedFragmentSelectorTree
-					dropZoneConfig={item.config}
-					onSelectedFragment={onSelectedFragment}
-				/>
+				{resolvedDropZoneConfig ? (
+					<AllowedFragmentSelectorTree
+						dropZoneConfig={resolvedDropZoneConfig}
+						onSelectedFragment={onSelectedFragment}
+					/>
+				) : (
+					<div className="d-flex justify-content-center p-4">
+						<span
+							aria-hidden="true"
+							className="loading-animation"
+						></span>
+					</div>
+				)}
 			</ClayModal.Body>
 
 			<ClayModal.Footer

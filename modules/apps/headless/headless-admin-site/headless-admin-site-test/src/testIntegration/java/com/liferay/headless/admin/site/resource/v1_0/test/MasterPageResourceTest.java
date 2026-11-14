@@ -6,6 +6,9 @@
 package com.liferay.headless.admin.site.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.exportimport.kernel.service.StagingLocalService;
 import com.liferay.exportimport.kernel.staging.MergeLayoutPrototypesThreadLocal;
 import com.liferay.fragment.model.FragmentEntryLink;
@@ -520,7 +523,7 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-92443", "LPD-107149"})
+	@TestInfo({"LPD-92443", "LPD-107149", "LPP-65865"})
 	public void testPostSiteMasterPage() throws Exception {
 		super.testPostSiteMasterPage();
 
@@ -627,7 +630,7 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-86817", "LPD-92443"})
+	@TestInfo({"LPD-86817", "LPD-92443", "LPP-65865"})
 	public void testPutSiteMasterPage() throws Exception {
 		_testPutSiteMasterPage(randomMasterPage());
 
@@ -776,6 +779,19 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 		return testGetSiteMasterPagesPage_addMasterPage(
 			testGroup.getExternalReferenceCode(), masterPage);
+	}
+
+	private Group _addConnectedDesignLibraryGroup() throws Exception {
+		Group designLibraryGroup = DesignLibraryTestUtil.addDesignLibraryGroup(
+			testGroup.getGroupId());
+
+		DepotEntry depotEntry = _depotEntryLocalService.fetchGroupDepotEntry(
+			designLibraryGroup.getGroupId());
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			depotEntry.getDepotEntryId(), testGroup.getGroupId());
+
+		return designLibraryGroup;
 	}
 
 	private MasterPage _addDesignLibraryMasterPage(
@@ -1931,9 +1947,13 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 		MasterPageResource masterPageResource = _getMasterPageResource();
 
+		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
+
 		PageElement[] pageElements = {
 			PageElementsTestUtil.getDropZonePageElement(
-				RandomTestUtil.randomString(), testGroup.getGroupId())
+				RandomTestUtil.randomString(), testGroup.getGroupId(),
+				designLibraryGroup.getGroupId(), testGroup.getGroupId(),
+				testCompany.getGroupId())
 		};
 
 		MasterPage masterPage = _getMasterPage(pageElements);
@@ -2271,9 +2291,13 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 		MasterPageResource masterPageResource = _getMasterPageResource();
 
+		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
+
 		PageElement[] pageElements = {
 			PageElementsTestUtil.getDropZonePageElement(
-				RandomTestUtil.randomString(), testGroup.getGroupId())
+				RandomTestUtil.randomString(), testGroup.getGroupId(),
+				designLibraryGroup.getGroupId(), testGroup.getGroupId(),
+				testCompany.getGroupId())
 		};
 
 		MasterPage masterPage = _getMasterPage(pageElements);
@@ -2283,11 +2307,26 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 		postMasterPage.setDateModified(new Date());
 
+		MasterPage testGroupSiteMasterPage =
+			masterPageResource.putSiteMasterPage(
+				testGroup.getExternalReferenceCode(),
+				postMasterPage.getExternalReferenceCode(), masterPage);
+
+		_assertPageElements(pageElements, testGroupSiteMasterPage);
+
+		MasterPage irrelevantGroupSiteMasterPage =
+			masterPageResource.putSiteMasterPage(
+				irrelevantGroup.getExternalReferenceCode(),
+				testGroupSiteMasterPage.getExternalReferenceCode(),
+				testGroupSiteMasterPage);
+
+		_assertPageElements(pageElements, irrelevantGroupSiteMasterPage);
 		_assertPageElements(
 			pageElements,
 			masterPageResource.putSiteMasterPage(
 				testGroup.getExternalReferenceCode(),
-				postMasterPage.getExternalReferenceCode(), masterPage));
+				irrelevantGroupSiteMasterPage.getExternalReferenceCode(),
+				irrelevantGroupSiteMasterPage));
 	}
 
 	private void _testPutSiteMasterPageWithPageSpecifications()
@@ -2368,7 +2407,8 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 			PageElement[] pageElements = {
 				PageElementsTestUtil.getDropZonePageElement(
-					RandomTestUtil.randomString(), testGroup.getGroupId()),
+					RandomTestUtil.randomString(), testGroup.getGroupId(),
+					testGroup.getGroupId()),
 				_getContainerPageElement()
 			};
 
@@ -2576,6 +2616,12 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 	private static byte[] _thumbnail2Bytes;
 	private static String _thumbnail2URL;
 	private static ThumbnailHttpServer _thumbnailHttpServer;
+
+	@Inject
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	private Group _designLibraryGroup;
 
