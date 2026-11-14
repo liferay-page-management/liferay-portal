@@ -14,9 +14,11 @@ import com.liferay.blogs.service.BlogsEntryLocalService;
 import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.service.CTCollectionService;
+import com.liferay.configuration.admin.util.ConfigurationFilterStringUtil;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.fragment.cache.FragmentEntryLinkCache;
+import com.liferay.fragment.configuration.FragmentCacheConfiguration;
 import com.liferay.fragment.configuration.FragmentJavaScriptConfiguration;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
@@ -61,6 +63,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
@@ -71,6 +74,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FileUtil;
@@ -94,6 +98,8 @@ import com.liferay.segments.service.SegmentsExperienceLocalService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -102,6 +108,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -109,6 +116,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -140,6 +148,25 @@ public class FragmentEntryFragmentRendererTest {
 		_defaultSegmentsExperienceId =
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				_layout.getPlid());
+
+		_originalFragmentCacheConfigurationProperties =
+			_getFragmentCacheConfigurationProperties();
+
+		_configurationProvider.deleteCompanyConfiguration(
+			FragmentCacheConfiguration.class, TestPropsValues.getCompanyId());
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		_configurationProvider.deleteCompanyConfiguration(
+			FragmentCacheConfiguration.class, TestPropsValues.getCompanyId());
+
+		if (_originalFragmentCacheConfigurationProperties != null) {
+			_configurationProvider.saveCompanyConfiguration(
+				FragmentCacheConfiguration.class,
+				TestPropsValues.getCompanyId(),
+				_originalFragmentCacheConfigurationProperties);
+		}
 	}
 
 	@Test
@@ -531,6 +558,71 @@ public class FragmentEntryFragmentRendererTest {
 	}
 
 	@Test
+	@TestInfo("LPD-114360")
+	public void testRenderWithFragmentCacheHostsAllowed() throws Exception {
+		FragmentCollection fragmentCollection =
+			FragmentTestUtil.addFragmentCollection(_group.getGroupId());
+
+		FragmentEntry fragmentEntry =
+			_fragmentEntryLocalService.addFragmentEntry(
+				null, TestPropsValues.getUserId(), _group.getGroupId(),
+				fragmentCollection.getFragmentCollectionId(), null,
+				RandomTestUtil.randomString(), StringPool.BLANK,
+				"<div>##URL=${configuration.pageLink}##</div>",
+				StringPool.BLANK, true,
+				JSONUtil.put(
+					"fieldSets",
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"fields",
+							JSONUtil.putAll(
+								JSONUtil.put(
+									"name", "pageLink"
+								).put(
+									"type", "url"
+								))))
+				).toString(),
+				null, 0, false, false, FragmentConstants.TYPE_COMPONENT, null,
+				WorkflowConstants.STATUS_APPROVED, _serviceContext);
+
+		FragmentEntryLink fragmentEntryLink =
+			_fragmentEntryLinkLocalService.addFragmentEntryLink(
+				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
+				fragmentEntry.getExternalReferenceCode(),
+				ScopeUtil.getItemScopeExternalReferenceCode(
+					fragmentEntry.getGroupId(), _group.getGroupId()),
+				_defaultSegmentsExperienceId, _layout.getPlid(),
+				fragmentEntry.getCss(), fragmentEntry.getHtml(),
+				fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
+				JSONUtil.put(
+					FragmentEntryProcessorConstants.
+						KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
+					JSONUtil.put(
+						"pageLink",
+						JSONUtil.put(
+							"layout",
+							JSONUtil.put(
+								"groupId", String.valueOf(_layout.getGroupId())
+							).put(
+								"layoutId",
+								String.valueOf(_layout.getLayoutId())
+							).put(
+								"privateLayout", false
+							)
+						).toString())
+				).toString(),
+				StringPool.BLANK, 0, null, fragmentEntry.getType(),
+				_serviceContext);
+
+		_testRenderWithEmptyHostsAllowed(
+			fragmentEntryLink);
+		_testRenderWithHostsAllowed(
+			fragmentEntryLink);
+		_testRenderWithHostsAllowedCaseInsensitive(
+			fragmentEntryLink);
+	}
+
+	@Test
 	@TestInfo("LPD-112147")
 	public void testRenderWithSelectInfoFieldType() throws Exception {
 		FragmentEntry fragmentEntry =
@@ -884,6 +976,45 @@ public class FragmentEntryFragmentRendererTest {
 		Assert.assertTrue(content, content.contains(expected));
 	}
 
+	private Dictionary<String, Object>
+			_getFragmentCacheConfigurationProperties()
+		throws Exception {
+
+		Configuration[] configurations = _configurationAdmin.listConfigurations(
+			ConfigurationFilterStringUtil.getCompanyScopedFilterString(
+				TestPropsValues.getCompanyId(),
+				FragmentCacheConfiguration.class.getName(), null));
+
+		if (ArrayUtil.isEmpty(configurations)) {
+			return null;
+		}
+
+		Dictionary<String, Object> fragmentCacheConfigurationProperties =
+			HashMapDictionaryBuilder.<String, Object>put(
+				"companyId", TestPropsValues.getCompanyId()
+			).build();
+
+		Configuration configuration = configurations[0];
+
+		Dictionary<String, Object> configurationProperties =
+			configuration.getProperties();
+
+		Enumeration<String> enumeration = configurationProperties.keys();
+
+		while (enumeration.hasMoreElements()) {
+			String key = enumeration.nextElement();
+
+			if (key.startsWith("service.")) {
+				continue;
+			}
+
+			fragmentCacheConfigurationProperties.put(
+				key, configurationProperties.get(key));
+		}
+
+		return fragmentCacheConfigurationProperties;
+	}
+
 	private FragmentEntry _getFragmentEntry(boolean cacheable)
 		throws Exception {
 
@@ -909,6 +1040,33 @@ public class FragmentEntryFragmentRendererTest {
 			WebKeys.THEME_DISPLAY, _getThemeDisplay(httpServletRequest));
 
 		return httpServletRequest;
+	}
+
+	private String _getRenderedContent(
+			FragmentEntryLink fragmentEntryLink, String serverName)
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setServerName(serverName);
+
+		_setThemeDisplay(mockHttpServletRequest, serverName);
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setCompanyId(TestPropsValues.getCompanyId());
+		serviceContext.setRequest(mockHttpServletRequest);
+		serviceContext.setScopeGroupId(_group.getGroupId());
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			_renderFragmentEntryLink(fragmentEntryLink, mockHttpServletRequest);
+
+		ServiceContextThreadLocal.popServiceContext();
+
+		return mockHttpServletResponse.getContentAsString();
 	}
 
 	private ThemeDisplay _getThemeDisplay(HttpServletRequest httpServletRequest)
@@ -958,6 +1116,15 @@ public class FragmentEntryFragmentRendererTest {
 			FragmentEntryLink fragmentEntryLink)
 		throws Exception {
 
+		return _renderFragmentEntryLink(
+			fragmentEntryLink, _getHttpServletRequest());
+	}
+
+	private MockHttpServletResponse _renderFragmentEntryLink(
+			FragmentEntryLink fragmentEntryLink,
+			HttpServletRequest httpServletRequest)
+		throws Exception {
+
 		DefaultFragmentRendererContext defaultFragmentRendererContext =
 			new DefaultFragmentRendererContext(fragmentEntryLink);
 
@@ -967,10 +1134,118 @@ public class FragmentEntryFragmentRendererTest {
 			new MockHttpServletResponse();
 
 		_fragmentRenderer.render(
-			defaultFragmentRendererContext, _getHttpServletRequest(),
+			defaultFragmentRendererContext, httpServletRequest,
 			mockHttpServletResponse);
 
 		return mockHttpServletResponse;
+	}
+
+	private void _saveFragmentCacheHostsAllowed(
+			String[] fragmentCacheHostsAllowed)
+		throws Exception {
+
+		_configurationProvider.deleteCompanyConfiguration(
+			FragmentCacheConfiguration.class, TestPropsValues.getCompanyId());
+
+		_configurationProvider.saveCompanyConfiguration(
+			FragmentCacheConfiguration.class, TestPropsValues.getCompanyId(),
+			HashMapDictionaryBuilder.<String, Object>put(
+				"fragmentCacheHostsAllowed", fragmentCacheHostsAllowed
+			).build());
+	}
+
+	private void _setThemeDisplay(
+			HttpServletRequest httpServletRequest, String serverName)
+		throws Exception {
+
+		ThemeDisplay themeDisplay = _getThemeDisplay(httpServletRequest);
+
+		themeDisplay.setLayout(_layout);
+		themeDisplay.setLayoutSet(_layout.getLayoutSet());
+		themeDisplay.setPlid(_layout.getPlid());
+		themeDisplay.setPortalURL("http://" + serverName);
+		themeDisplay.setServerName(serverName);
+		themeDisplay.setSiteGroupId(_group.getGroupId());
+	}
+
+	private void
+			_testRenderWithEmptyHostsAllowed(
+				FragmentEntryLink fragmentEntryLink)
+		throws Exception {
+
+		_saveFragmentCacheHostsAllowed(new String[0]);
+
+		_fragmentEntryLinkCache.removeFragmentEntryLinkCache(fragmentEntryLink);
+
+		String host1 = StringUtil.toLowerCase(RandomTestUtil.randomString());
+
+		String contentHost1 = _getRenderedContent(fragmentEntryLink, host1);
+
+		Assert.assertEquals(
+			contentHost1,
+			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
+				fragmentEntryLink, _locale));
+		Assert.assertTrue(contentHost1.contains("##URL=http://" + host1));
+
+		String host2 = StringUtil.toLowerCase(RandomTestUtil.randomString());
+
+		Assert.assertEquals(
+			contentHost1, _getRenderedContent(fragmentEntryLink, host2));
+	}
+
+	private void _testRenderWithHostsAllowed(
+			FragmentEntryLink fragmentEntryLink)
+		throws Exception {
+
+		String hostAllowed = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
+
+		_saveFragmentCacheHostsAllowed(new String[] {hostAllowed});
+
+		_fragmentEntryLinkCache.removeFragmentEntryLinkCache(fragmentEntryLink);
+
+		String contentHostAllowed = _getRenderedContent(
+			fragmentEntryLink, hostAllowed);
+
+		Assert.assertEquals(
+			contentHostAllowed,
+			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
+				fragmentEntryLink, _locale));
+		Assert.assertTrue(
+			contentHostAllowed.contains("##URL=http://" + hostAllowed));
+
+		String hostDisallowed = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
+
+		String contentHostDisallowed = _getRenderedContent(
+			fragmentEntryLink, hostDisallowed);
+
+		Assert.assertTrue(
+			contentHostDisallowed.contains("##URL=http://" + hostDisallowed));
+
+		Assert.assertEquals(
+			contentHostAllowed,
+			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
+				fragmentEntryLink, _locale));
+	}
+
+	private void
+			_testRenderWithHostsAllowedCaseInsensitive(
+				FragmentEntryLink fragmentEntryLink)
+		throws Exception {
+
+		String host = RandomTestUtil.randomString();
+
+		_saveFragmentCacheHostsAllowed(
+			new String[] {StringUtil.toUpperCase(host)});
+
+		_fragmentEntryLinkCache.removeFragmentEntryLinkCache(fragmentEntryLink);
+
+		Assert.assertEquals(
+			_getRenderedContent(
+				fragmentEntryLink, StringUtil.toLowerCase(host)),
+			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
+				fragmentEntryLink, _locale));
 	}
 
 	private void _testRenderWithNonce(
@@ -1061,6 +1336,8 @@ public class FragmentEntryFragmentRendererTest {
 
 	private Layout _layout;
 	private Locale _locale;
+	private Dictionary<String, Object>
+		_originalFragmentCacheConfigurationProperties;
 
 	@Inject
 	private Portal _portal;
