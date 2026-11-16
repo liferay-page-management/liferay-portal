@@ -5,10 +5,16 @@
 
 package com.liferay.segments.internal.upgrade.v4_2_2;
 
+import com.liferay.change.tracking.constants.CTConstants;
+import com.liferay.change.tracking.model.CTEntry;
+import com.liferay.change.tracking.service.CTEntryLocalService;
+import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRel;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -17,16 +23,25 @@ import com.liferay.segments.model.SegmentsExperience;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
  * @author Georgel Pop
  */
 public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
+
+	public SegmentsExperienceUpgradeProcess(
+		CTEntryLocalService ctEntryLocalService) {
+
+		_ctEntryLocalService = ctEntryLocalService;
+	}
 
 	@Override
 	protected void doUpgrade() throws Exception {
@@ -36,12 +51,19 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 			fragmentEntryLinkColumnName = "classPK";
 		}
 
+		boolean hasFragmentEntryLinkSegmentsExperienceId = hasColumn(
+			"FragmentEntryLink", "segmentsExperienceId");
+
+		_updateCTCollectionSegmentsExperiences(
+			false, fragmentEntryLinkColumnName,
+			hasFragmentEntryLinkSegmentsExperienceId);
+
+		_addSegmentsExperienceModificationCTEntries();
+
 		_updateSegmentsExperiences();
 
 		boolean hasFragmentEntryLinkCTCollectionId = hasColumn(
 			"FragmentEntryLink", "ctCollectionId");
-		boolean hasFragmentEntryLinkSegmentsExperienceId = hasColumn(
-			"FragmentEntryLink", "segmentsExperienceId");
 		boolean hasLayoutPageTemplateStructureRelCTCollectionId = hasColumn(
 			"LayoutPageTemplateStructureRel", "ctCollectionId");
 
@@ -156,8 +178,409 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 		}
 
 		_updateCTCollectionSegmentsExperiences(
-			fragmentEntryLinkColumnName,
+			true, fragmentEntryLinkColumnName,
 			hasFragmentEntryLinkSegmentsExperienceId);
+
+		_addSegmentsExperienceDeletionCTEntries(
+			fragmentEntryLinkColumnName, hasFragmentEntryLinkCTCollectionId,
+			hasFragmentEntryLinkSegmentsExperienceId,
+			hasLayoutPageTemplateStructureRelCTCollectionId);
+	}
+
+	private void _addCTEntry(
+			long companyId, long userId, long ctCollectionId,
+			long modelClassNameId, long modelClassPK, long modelMvccVersion,
+			int changeType)
+		throws Exception {
+
+		_ctEntryLocalService.addCTEntry(
+			_createCTEntry(
+				companyId, userId, ctCollectionId, modelClassNameId,
+				modelClassPK, modelMvccVersion, changeType));
+	}
+
+	private void _addDeletionCTEntries(
+			long companyId, long userId, long ctCollectionId,
+			String modelClassName, String tableName,
+			String primaryKeyColumnName, String sql, long... parameters)
+		throws Exception {
+
+		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
+				sql);
+			PreparedStatement preparedStatement2 =
+				AutoBatchPreparedStatementUtil.autoBatch(
+					connection,
+					StringBundler.concat(
+						"delete from ", tableName,
+						" where ctCollectionId = ? and ", primaryKeyColumnName,
+						" = ?"))) {
+
+			for (int i = 0; i < parameters.length; i++) {
+				preparedStatement1.setLong(i + 1, parameters[i]);
+			}
+
+			List<CTEntry> ctEntries = new ArrayList<>();
+			Set<Long> ctEntryIds = new HashSet<>();
+
+			try (ResultSet resultSet = preparedStatement1.executeQuery()) {
+				long modelClassNameId = PortalUtil.getClassNameId(
+					modelClassName);
+
+				while (resultSet.next()) {
+					long modelClassPK = resultSet.getLong(primaryKeyColumnName);
+
+					CTEntry ctEntry = _ctEntryLocalService.fetchCTEntry(
+						ctCollectionId, modelClassNameId, modelClassPK);
+
+					if (ctEntry != null) {
+						if (ctEntry.getChangeType() ==
+								CTConstants.CT_CHANGE_TYPE_ADDITION) {
+
+							preparedStatement2.setLong(1, ctCollectionId);
+							preparedStatement2.setLong(2, modelClassPK);
+
+							preparedStatement2.addBatch();
+
+							ctEntries.add(ctEntry);
+						}
+						else if (ctEntry.getChangeType() ==
+									CTConstants.CT_CHANGE_TYPE_MODIFICATION) {
+
+							preparedStatement2.setLong(1, ctCollectionId);
+							preparedStatement2.setLong(2, modelClassPK);
+
+							preparedStatement2.addBatch();
+
+							ctEntryIds.add(ctEntry.getCtEntryId());
+						}
+
+						continue;
+					}
+
+					_addCTEntry(
+						companyId, userId, ctCollectionId, modelClassNameId,
+						modelClassPK, resultSet.getLong("mvccVersion"),
+						CTConstants.CT_CHANGE_TYPE_DELETION);
+				}
+			}
+
+			preparedStatement2.executeBatch();
+
+			for (CTEntry ctEntry : ctEntries) {
+				_ctEntryLocalService.deleteCTEntry(ctEntry);
+			}
+
+			for (long ctEntryId : ctEntryIds) {
+				_ctEntryLocalService.updateChangeType(
+					ctEntryId, CTConstants.CT_CHANGE_TYPE_DELETION);
+			}
+		}
+	}
+
+	private void _addSegmentsExperienceDeletionCTEntries(
+			String fragmentEntryLinkColumnName,
+			boolean hasFragmentEntryLinkCTCollectionId,
+			boolean hasFragmentEntryLinkSegmentsExperienceId,
+			boolean hasLayoutPageTemplateStructureRelCTCollectionId)
+		throws Exception {
+
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				StringBundler.concat(
+					"select draftSegmentsExperience.mvccVersion, ",
+					"CTEntry.ctCollectionId, ",
+					"draftSegmentsExperience.segmentsExperienceId, ",
+					"draftSegmentsExperience.groupId, ",
+					"draftSegmentsExperience.companyId, CTEntry.userId, ",
+					"draftSegmentsExperience.plid from CTEntry inner join ",
+					"CTCollection on CTCollection.ctCollectionId = ",
+					"CTEntry.ctCollectionId inner join SegmentsExperience ",
+					"publishedSegmentsExperience on ",
+					"publishedSegmentsExperience.ctCollectionId = 0 and ",
+					"publishedSegmentsExperience.segmentsExperienceId = ",
+					"CTEntry.modelClassPK inner join Layout on ",
+					"Layout.ctCollectionId = 0 and Layout.classNameId = ? and ",
+					"Layout.classPK = publishedSegmentsExperience.plid inner ",
+					"join SegmentsExperience draftSegmentsExperience on ",
+					"draftSegmentsExperience.ctCollectionId = 0 and ",
+					"draftSegmentsExperience.groupId = ",
+					"publishedSegmentsExperience.groupId and ",
+					"draftSegmentsExperience.segmentsExperienceKey = ",
+					"publishedSegmentsExperience.segmentsExperienceKey and ",
+					"draftSegmentsExperience.plid = Layout.plid where ",
+					"CTCollection.status != ? and CTEntry.modelClassNameId = ",
+					"? and CTEntry.changeType = ? and not exists (select 1 ",
+					"from CTEntry draftCTEntry where ",
+					"draftCTEntry.ctCollectionId = CTEntry.ctCollectionId and ",
+					"draftCTEntry.modelClassNameId = ? and ",
+					"draftCTEntry.modelClassPK = ",
+					"draftSegmentsExperience.segmentsExperienceId)"))) {
+
+			long segmentsExperienceClassNameId = PortalUtil.getClassNameId(
+				SegmentsExperience.class);
+
+			preparedStatement.setLong(
+				1, PortalUtil.getClassNameId(Layout.class));
+			preparedStatement.setInt(2, WorkflowConstants.STATUS_APPROVED);
+			preparedStatement.setLong(3, segmentsExperienceClassNameId);
+			preparedStatement.setInt(4, CTConstants.CT_CHANGE_TYPE_DELETION);
+			preparedStatement.setLong(5, segmentsExperienceClassNameId);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					long companyId = resultSet.getLong("companyId");
+					long userId = resultSet.getLong("userId");
+					long ctCollectionId = resultSet.getLong("ctCollectionId");
+					long groupId = resultSet.getLong("groupId");
+					long segmentsExperienceId = resultSet.getLong(
+						"segmentsExperienceId");
+
+					if (hasFragmentEntryLinkCTCollectionId &&
+						hasFragmentEntryLinkSegmentsExperienceId) {
+
+						_addDeletionCTEntries(
+							companyId, userId, ctCollectionId,
+							"com.liferay.fragment.model.FragmentEntryLink",
+							"FragmentEntryLink", "fragmentEntryLinkId",
+							StringBundler.concat(
+								"select mvccVersion, fragmentEntryLinkId from ",
+								"FragmentEntryLink where ctCollectionId in ",
+								"(0, ?) and groupId = ? and ",
+								"segmentsExperienceId = ? and ",
+								fragmentEntryLinkColumnName, " = ?"),
+							ctCollectionId, groupId, segmentsExperienceId,
+							resultSet.getLong("plid"));
+					}
+
+					if (hasLayoutPageTemplateStructureRelCTCollectionId) {
+						_addDeletionCTEntries(
+							companyId, userId, ctCollectionId,
+							LayoutPageTemplateStructureRel.class.getName(),
+							"LayoutPageTemplateStructureRel",
+							"lPageTemplateStructureRelId",
+							StringBundler.concat(
+								"select mvccVersion, ",
+								"lPageTemplateStructureRelId from ",
+								"LayoutPageTemplateStructureRel where ",
+								"ctCollectionId = 0 and groupId = ? and ",
+								"segmentsExperienceId = ?"),
+							groupId, segmentsExperienceId);
+					}
+
+					_addDeletionCTEntries(
+						companyId, userId, ctCollectionId,
+						ResourcePermission.class.getName(),
+						"ResourcePermission", "resourcePermissionId",
+						StringBundler.concat(
+							"select mvccVersion, resourcePermissionId from ",
+							"ResourcePermission where ctCollectionId = 0 and ",
+							"companyId = ? and name = '",
+							SegmentsExperience.class.getName(),
+							"' and scope = ",
+							ResourceConstants.SCOPE_INDIVIDUAL,
+							" and primKeyId = ?"),
+						companyId, segmentsExperienceId);
+
+					_addCTEntry(
+						companyId, userId, ctCollectionId,
+						segmentsExperienceClassNameId, segmentsExperienceId,
+						resultSet.getLong("mvccVersion"),
+						CTConstants.CT_CHANGE_TYPE_DELETION);
+				}
+			}
+		}
+	}
+
+	private void _addSegmentsExperienceModificationCTEntries()
+		throws Exception {
+
+		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
+				StringBundler.concat(
+					"select CTEntry.ctCollectionId, CTEntry.userId, ",
+					"draftSegmentsExperience.mvccVersion, ",
+					"draftSegmentsExperience.uuid_, ",
+					"draftSegmentsExperience.externalReferenceCode, ",
+					"draftSegmentsExperience.segmentsExperienceId, ",
+					"draftSegmentsExperience.groupId, ",
+					"draftSegmentsExperience.companyId, ",
+					"draftSegmentsExperience.userId as ",
+					"segmentsExperienceUserId, ",
+					"draftSegmentsExperience.userName, ",
+					"draftSegmentsExperience.createDate, ",
+					"draftSegmentsExperience.segmentsEntryERC as ",
+					"draftSegmentsEntryERC, ",
+					"draftSegmentsExperience.segmentsEntryScopeERC as ",
+					"draftSegmentsEntryScopeERC, ",
+					"draftSegmentsExperience.segmentsExperienceKey, ",
+					"draftSegmentsExperience.plid, ",
+					"draftSegmentsExperience.name as draftName, ",
+					"draftSegmentsExperience.priority as draftPriority, ",
+					"draftSegmentsExperience.active_ as draftActive, ",
+					"draftSegmentsExperience.typeSettings as ",
+					"draftTypeSettings, ",
+					"draftSegmentsExperience.lastPublishDate, ",
+					"publishedSegmentsExperience.modifiedDate, ",
+					"publishedSegmentsExperience.segmentsEntryERC, ",
+					"publishedSegmentsExperience.segmentsEntryScopeERC, ",
+					"publishedSegmentsExperience.name, ",
+					"publishedSegmentsExperience.priority, ",
+					"publishedSegmentsExperience.active_, ",
+					"publishedSegmentsExperience.typeSettings from CTEntry ",
+					"inner join CTCollection on CTCollection.ctCollectionId = ",
+					"CTEntry.ctCollectionId inner join SegmentsExperience ",
+					"publishedSegmentsExperience on ",
+					"publishedSegmentsExperience.ctCollectionId = ",
+					"CTEntry.ctCollectionId and ",
+					"publishedSegmentsExperience.segmentsExperienceId = ",
+					"CTEntry.modelClassPK inner join Layout on ",
+					"Layout.ctCollectionId = 0 and Layout.classNameId = ? and ",
+					"Layout.classPK = publishedSegmentsExperience.plid inner ",
+					"join SegmentsExperience draftSegmentsExperience on ",
+					"draftSegmentsExperience.ctCollectionId = 0 and ",
+					"draftSegmentsExperience.groupId = ",
+					"publishedSegmentsExperience.groupId and ",
+					"draftSegmentsExperience.segmentsExperienceKey = ",
+					"publishedSegmentsExperience.segmentsExperienceKey and ",
+					"draftSegmentsExperience.plid = Layout.plid where ",
+					"CTCollection.status != ? and CTEntry.modelClassNameId = ",
+					"? and CTEntry.changeType = ? and not exists (select 1 ",
+					"from CTEntry draftCTEntry where ",
+					"draftCTEntry.ctCollectionId = CTEntry.ctCollectionId and ",
+					"draftCTEntry.modelClassNameId = ? and ",
+					"draftCTEntry.modelClassPK = ",
+					"draftSegmentsExperience.segmentsExperienceId) and not ",
+					"exists (select 1 from SegmentsExperience where ",
+					"SegmentsExperience.ctCollectionId = ",
+					"CTEntry.ctCollectionId and ",
+					"SegmentsExperience.segmentsExperienceId = ",
+					"draftSegmentsExperience.segmentsExperienceId)"));
+			PreparedStatement preparedStatement2 =
+				AutoBatchPreparedStatementUtil.autoBatch(
+					connection,
+					StringBundler.concat(
+						"insert into SegmentsExperience (mvccVersion, ",
+						"ctCollectionId, uuid_, externalReferenceCode, ",
+						"segmentsExperienceId, groupId, companyId, userId, ",
+						"userName, createDate, modifiedDate, ",
+						"segmentsEntryERC, segmentsEntryScopeERC, ",
+						"segmentsExperienceKey, plid, name, priority, ",
+						"active_, typeSettings, lastPublishDate) values (?, ",
+						"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ",
+						"?, ?)"))) {
+
+			long segmentsExperienceClassNameId = PortalUtil.getClassNameId(
+				SegmentsExperience.class);
+
+			preparedStatement1.setLong(
+				1, PortalUtil.getClassNameId(Layout.class));
+			preparedStatement1.setInt(2, WorkflowConstants.STATUS_APPROVED);
+			preparedStatement1.setLong(3, segmentsExperienceClassNameId);
+			preparedStatement1.setInt(
+				4, CTConstants.CT_CHANGE_TYPE_MODIFICATION);
+			preparedStatement1.setLong(5, segmentsExperienceClassNameId);
+
+			List<CTEntry> ctEntries = new ArrayList<>();
+
+			try (ResultSet resultSet = preparedStatement1.executeQuery()) {
+				while (resultSet.next()) {
+					boolean active = resultSet.getBoolean("active_");
+					String name = resultSet.getString("name");
+					int priority = resultSet.getInt("priority");
+					String segmentsEntryERC = resultSet.getString(
+						"segmentsEntryERC");
+					String segmentsEntryScopeERC = resultSet.getString(
+						"segmentsEntryScopeERC");
+					String typeSettings = resultSet.getString("typeSettings");
+
+					if (Objects.equals(
+							segmentsEntryERC,
+							resultSet.getString("draftSegmentsEntryERC")) &&
+						Objects.equals(
+							segmentsEntryScopeERC,
+							resultSet.getString(
+								"draftSegmentsEntryScopeERC")) &&
+						Objects.equals(
+							name, resultSet.getString("draftName")) &&
+						(priority == resultSet.getInt("draftPriority")) &&
+						(active == resultSet.getBoolean("draftActive")) &&
+						Objects.equals(
+							typeSettings,
+							resultSet.getString("draftTypeSettings"))) {
+
+						continue;
+					}
+
+					long companyId = resultSet.getLong("companyId");
+					long ctCollectionId = resultSet.getLong("ctCollectionId");
+					long mvccVersion = resultSet.getLong("mvccVersion");
+					long segmentsExperienceId = resultSet.getLong(
+						"segmentsExperienceId");
+
+					preparedStatement2.setLong(1, mvccVersion);
+					preparedStatement2.setLong(2, ctCollectionId);
+					preparedStatement2.setString(
+						3, resultSet.getString("uuid_"));
+					preparedStatement2.setString(
+						4, resultSet.getString("externalReferenceCode"));
+					preparedStatement2.setLong(5, segmentsExperienceId);
+					preparedStatement2.setLong(6, resultSet.getLong("groupId"));
+					preparedStatement2.setLong(7, companyId);
+					preparedStatement2.setLong(
+						8, resultSet.getLong("segmentsExperienceUserId"));
+					preparedStatement2.setString(
+						9, resultSet.getString("userName"));
+					preparedStatement2.setTimestamp(
+						10, resultSet.getTimestamp("createDate"));
+					preparedStatement2.setTimestamp(
+						11, resultSet.getTimestamp("modifiedDate"));
+					preparedStatement2.setString(12, segmentsEntryERC);
+					preparedStatement2.setString(13, segmentsEntryScopeERC);
+					preparedStatement2.setString(
+						14, resultSet.getString("segmentsExperienceKey"));
+					preparedStatement2.setLong(15, resultSet.getLong("plid"));
+					preparedStatement2.setString(16, name);
+					preparedStatement2.setInt(17, priority);
+					preparedStatement2.setBoolean(18, active);
+					preparedStatement2.setString(19, typeSettings);
+					preparedStatement2.setTimestamp(
+						20, resultSet.getTimestamp("lastPublishDate"));
+
+					preparedStatement2.addBatch();
+
+					ctEntries.add(
+						_createCTEntry(
+							companyId, resultSet.getLong("userId"),
+							ctCollectionId, segmentsExperienceClassNameId,
+							segmentsExperienceId, mvccVersion,
+							CTConstants.CT_CHANGE_TYPE_MODIFICATION));
+				}
+			}
+
+			preparedStatement2.executeBatch();
+
+			for (CTEntry ctEntry : ctEntries) {
+				_ctEntryLocalService.addCTEntry(ctEntry);
+			}
+		}
+	}
+
+	private CTEntry _createCTEntry(
+			long companyId, long userId, long ctCollectionId,
+			long modelClassNameId, long modelClassPK, long modelMvccVersion,
+			int changeType)
+		throws Exception {
+
+		CTEntry ctEntry = _ctEntryLocalService.createCTEntry(
+			increment(CTEntry.class.getName()));
+
+		ctEntry.setCompanyId(companyId);
+		ctEntry.setUserId(userId);
+		ctEntry.setCtCollectionId(ctCollectionId);
+		ctEntry.setModelClassNameId(modelClassNameId);
+		ctEntry.setModelClassPK(modelClassPK);
+		ctEntry.setModelMvccVersion(modelMvccVersion);
+		ctEntry.setChangeType(changeType);
+
+		return ctEntry;
 	}
 
 	private Set<Integer> _getPriorities(
@@ -183,9 +606,9 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 		boolean hasFragmentEntryLinkSegmentsExperienceId,
 		String layoutPageTemplateStructureColumnName) {
 
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(48);
 
-		sb.append("select draftSegmentsExperience.ctCollectionId, ");
+		sb.append("select publishedSegmentsExperience.ctCollectionId, ");
 		sb.append("draftSegmentsExperience.segmentsExperienceId as ");
 		sb.append("newSegmentsExperienceId, draftSegmentsExperience.groupId, ");
 		sb.append("draftSegmentsExperience.plid, ");
@@ -195,14 +618,25 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 		sb.append("Layout.ctCollectionId = 0 and Layout.plid = ");
 		sb.append("draftSegmentsExperience.plid inner join ");
 		sb.append("SegmentsExperience publishedSegmentsExperience on ");
-		sb.append("publishedSegmentsExperience.ctCollectionId = ");
-		sb.append("draftSegmentsExperience.ctCollectionId and ");
 		sb.append("publishedSegmentsExperience.groupId = ");
 		sb.append("draftSegmentsExperience.groupId and ");
 		sb.append("publishedSegmentsExperience.segmentsExperienceKey = ");
 		sb.append("draftSegmentsExperience.segmentsExperienceKey and ");
-		sb.append("publishedSegmentsExperience.plid = Layout.classPK where ");
-		sb.append("Layout.classNameId = ? and (");
+		sb.append("publishedSegmentsExperience.plid = Layout.classPK and ");
+		sb.append("(publishedSegmentsExperience.ctCollectionId = ");
+		sb.append("draftSegmentsExperience.ctCollectionId or ");
+		sb.append("(draftSegmentsExperience.ctCollectionId = 0 and not ");
+		sb.append("exists (select 1 from SegmentsExperience ");
+		sb.append("ctCollectionSegmentsExperience where ");
+		sb.append("ctCollectionSegmentsExperience.ctCollectionId = ");
+		sb.append("publishedSegmentsExperience.ctCollectionId and ");
+		sb.append("ctCollectionSegmentsExperience.groupId = ");
+		sb.append("draftSegmentsExperience.groupId and ");
+		sb.append("ctCollectionSegmentsExperience.segmentsExperienceKey = ");
+		sb.append("draftSegmentsExperience.segmentsExperienceKey and ");
+		sb.append("ctCollectionSegmentsExperience.plid = ");
+		sb.append("draftSegmentsExperience.plid))) where Layout.classNameId ");
+		sb.append("= ? and (");
 
 		if (hasFragmentEntryLinkSegmentsExperienceId) {
 			sb.append("exists (select 1 from FragmentEntryLink where ");
@@ -293,21 +727,30 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 	}
 
 	private void _updateCTCollectionSegmentsExperiences(
-			String fragmentEntryLinkColumnName,
+			boolean approved, String fragmentEntryLinkColumnName,
 			boolean hasFragmentEntryLinkSegmentsExperienceId)
 		throws Exception {
 
+		String statusOperator = "!=";
+
+		if (approved) {
+			statusOperator = "=";
+		}
+
 		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
 				StringBundler.concat(
-					"select SegmentsExperience.segmentsExperienceId as ",
+					"select SegmentsExperience.mvccVersion, ",
+					"SegmentsExperience.ctCollectionId, ",
+					"SegmentsExperience.segmentsExperienceId as ",
 					"oldSegmentsExperienceId, SegmentsExperience.groupId, ",
+					"SegmentsExperience.companyId, SegmentsExperience.userId, ",
 					"SegmentsExperience.plid, ",
 					"productionSegmentsExperience.segmentsExperienceId as ",
 					"newSegmentsExperienceId from SegmentsExperience inner ",
 					"join CTCollection on CTCollection.ctCollectionId = ",
 					"SegmentsExperience.ctCollectionId inner join Layout on ",
 					"Layout.ctCollectionId = 0 and Layout.plid = ",
-					"SegmentsExperience.plid inner join SegmentsExperience ",
+					"SegmentsExperience.plid left join SegmentsExperience ",
 					"productionSegmentsExperience on ",
 					"productionSegmentsExperience.ctCollectionId = 0 and ",
 					"productionSegmentsExperience.groupId = ",
@@ -315,9 +758,10 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 					"productionSegmentsExperience.segmentsExperienceKey = ",
 					"SegmentsExperience.segmentsExperienceKey and ",
 					"productionSegmentsExperience.plid = ",
-					"SegmentsExperience.plid where CTCollection.status = ? ",
-					"and Layout.classNameId = ? and not exists (select 1 from ",
-					"CTEntry where CTEntry.ctCollectionId = ",
+					"SegmentsExperience.plid where CTCollection.status ",
+					statusOperator, " ? and Layout.classNameId = ? and not ",
+					"exists (select 1 from CTEntry where ",
+					"CTEntry.ctCollectionId = ",
 					"SegmentsExperience.ctCollectionId and ",
 					"CTEntry.modelClassNameId = ? and CTEntry.modelClassPK = ",
 					"SegmentsExperience.segmentsExperienceId)"));
@@ -333,20 +777,49 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 					connection,
 					"update LayoutPageTemplateStructureRel set " +
 						"segmentsExperienceId = ? where segmentsExperienceId " +
-							"= ?")) {
+							"= ?");
+			PreparedStatement preparedStatement4 =
+				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
+					connection,
+					"delete from SegmentsExperience where ctCollectionId = ? " +
+						"and segmentsExperienceId = ?")) {
+
+			long segmentsExperienceClassNameId = PortalUtil.getClassNameId(
+				SegmentsExperience.class);
 
 			preparedStatement1.setInt(1, WorkflowConstants.STATUS_APPROVED);
 			preparedStatement1.setLong(
 				2, PortalUtil.getClassNameId(Layout.class));
-			preparedStatement1.setLong(
-				3, PortalUtil.getClassNameId(SegmentsExperience.class));
+			preparedStatement1.setLong(3, segmentsExperienceClassNameId);
 
 			try (ResultSet resultSet = preparedStatement1.executeQuery()) {
 				while (resultSet.next()) {
+					long ctCollectionId = resultSet.getLong("ctCollectionId");
 					long oldSegmentsExperienceId = resultSet.getLong(
 						"oldSegmentsExperienceId");
 					long newSegmentsExperienceId = resultSet.getLong(
 						"newSegmentsExperienceId");
+
+					if (newSegmentsExperienceId == 0) {
+						if (!approved) {
+							_addCTEntry(
+								resultSet.getLong("companyId"),
+								resultSet.getLong("userId"), ctCollectionId,
+								segmentsExperienceClassNameId,
+								oldSegmentsExperienceId,
+								resultSet.getLong("mvccVersion"),
+								CTConstants.CT_CHANGE_TYPE_ADDITION);
+						}
+
+						continue;
+					}
+
+					if (!approved) {
+						preparedStatement4.setLong(1, ctCollectionId);
+						preparedStatement4.setLong(2, oldSegmentsExperienceId);
+
+						preparedStatement4.addBatch();
+					}
 
 					if (hasFragmentEntryLinkSegmentsExperienceId) {
 						preparedStatement2.setLong(1, newSegmentsExperienceId);
@@ -369,6 +842,8 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 			preparedStatement2.executeBatch();
 
 			preparedStatement3.executeBatch();
+
+			preparedStatement4.executeBatch();
 		}
 	}
 
@@ -473,5 +948,7 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 			preparedStatement3.executeBatch();
 		}
 	}
+
+	private final CTEntryLocalService _ctEntryLocalService;
 
 }
