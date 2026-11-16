@@ -36,10 +36,15 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.segments.model.SegmentsExperience;
+import com.liferay.segments.service.SegmentsExperienceLocalServiceUtil;
+import com.liferay.segments.util.SegmentsExperienceUtil;
 
 import jakarta.portlet.PortletURL;
 import jakarta.portlet.RenderRequest;
@@ -47,6 +52,7 @@ import jakarta.portlet.RenderResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -177,6 +183,50 @@ public class FragmentEntryLinkDisplayContext {
 			name, StringPool.SPACE, StringPool.OPEN_PARENTHESIS,
 			LanguageUtil.get(themeDisplay.getLocale(), "draft"),
 			StringPool.CLOSE_PARENTHESIS);
+	}
+
+	public String getFragmentEntryLinkPreviewURL(
+		FragmentEntryLink fragmentEntryLink) {
+
+		Layout layout = _fetchLayout(fragmentEntryLink);
+
+		if (layout == null) {
+			return null;
+		}
+
+		ThemeDisplay themeDisplay = _getThemeDisplay();
+
+		if (!_hasPermission(layout, themeDisplay.getPermissionChecker()) ||
+			!_isPreviewable(layout)) {
+
+			return null;
+		}
+
+		try {
+			if (layout.isDraftLayout() &&
+				!LayoutPermissionUtil.containsLayoutPreviewDraftPermission(
+					themeDisplay.getPermissionChecker(), layout.getClassPK())) {
+
+				return null;
+			}
+
+			String layoutFullURL = PortalUtil.getLayoutFullURL(
+				layout, themeDisplay);
+
+			layoutFullURL = HttpComponentsUtil.setParameter(
+				layoutFullURL, "p_l_back_url", themeDisplay.getURLCurrent());
+
+			return HttpComponentsUtil.setParameter(
+				layoutFullURL, "segmentsExperienceId",
+				_getSegmentsExperienceId(fragmentEntryLink));
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+
+			return null;
+		}
 	}
 
 	public String getFragmentEntryLinkTypeLabel(
@@ -635,6 +685,61 @@ public class FragmentEntryLinkDisplayContext {
 		return -1;
 	}
 
+	private long _getSegmentsExperienceId(FragmentEntryLink fragmentEntryLink)
+		throws PortalException {
+
+		List<Long> segmentsExperienceIds = new ArrayList<>();
+
+		for (FragmentEntryLink curFragmentEntryLink :
+				FragmentEntryLinkLocalServiceUtil.getFragmentEntryLinksByPlid(
+					fragmentEntryLink.getGroupId(),
+					fragmentEntryLink.getPlid())) {
+
+			if (curFragmentEntryLink.isDeleted() ||
+				!Objects.equals(
+					curFragmentEntryLink.getFragmentEntryERC(),
+					fragmentEntryLink.getFragmentEntryERC()) ||
+				!Objects.equals(
+					curFragmentEntryLink.getFragmentEntryScopeERC(),
+					fragmentEntryLink.getFragmentEntryScopeERC())) {
+
+				continue;
+			}
+
+			segmentsExperienceIds.add(
+				curFragmentEntryLink.getSegmentsExperienceId());
+		}
+
+		if (segmentsExperienceIds.isEmpty()) {
+			return fragmentEntryLink.getSegmentsExperienceId();
+		}
+
+		long defaultSegmentsExperienceId =
+			SegmentsExperienceLocalServiceUtil.fetchDefaultSegmentsExperienceId(
+				fragmentEntryLink.getPlid());
+
+		if (segmentsExperienceIds.contains(defaultSegmentsExperienceId)) {
+			return defaultSegmentsExperienceId;
+		}
+
+		List<SegmentsExperience> segmentsExperiences =
+			SegmentsExperienceLocalServiceUtil.getSegmentsExperiences(
+				fragmentEntryLink.getGroupId(), fragmentEntryLink.getPlid(),
+				true);
+
+		for (SegmentsExperience segmentsExperience : segmentsExperiences) {
+			if (segmentsExperienceIds.contains(
+					segmentsExperience.getSegmentsExperienceId()) &&
+				SegmentsExperienceUtil.isActive(
+					segmentsExperience, segmentsExperiences)) {
+
+				return segmentsExperience.getSegmentsExperienceId();
+			}
+		}
+
+		return segmentsExperienceIds.get(0);
+	}
+
 	private ThemeDisplay _getThemeDisplay() {
 		if (_themeDisplay != null) {
 			return _themeDisplay;
@@ -666,6 +771,20 @@ public class FragmentEntryLinkDisplayContext {
 
 			return false;
 		}
+	}
+
+	private boolean _isPreviewable(Layout layout) {
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_fetchLayoutPageTemplateEntry(layout);
+
+		if ((layoutPageTemplateEntry == null) ||
+			(layoutPageTemplateEntry.getType() ==
+				LayoutPageTemplateEntryTypeConstants.BASIC)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
