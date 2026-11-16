@@ -1917,6 +1917,16 @@ public class ContentPageEditorDisplayContext {
 		);
 	}
 
+	private List<LayoutPageTemplateEntry> _getMasterLayoutPageTemplateEntries(
+		long groupId) {
+
+		return _layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
+			groupId, LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+			WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS,
+			LayoutPageTemplateEntryNameComparator.getInstance(true));
+	}
+
 	private LayoutStructure _getMasterLayoutStructure() {
 		if (_masterLayoutStructure != null) {
 			return _masterLayoutStructure;
@@ -1956,16 +1966,9 @@ public class ContentPageEditorDisplayContext {
 				"name", language.get(httpServletRequest, "blank")
 			).build());
 
-		List<LayoutPageTemplateEntry> layoutPageTemplateEntries =
-			_layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
-				themeDisplay.getScopeGroupId(),
-				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
-				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS,
-				LayoutPageTemplateEntryNameComparator.getInstance(true));
-
 		for (LayoutPageTemplateEntry layoutPageTemplateEntry :
-				layoutPageTemplateEntries) {
+				_getMasterLayoutPageTemplateEntries(
+					themeDisplay.getScopeGroupId())) {
 
 			masterLayouts.add(
 				HashMapBuilder.<String, Object>put(
@@ -1985,20 +1988,10 @@ public class ContentPageEditorDisplayContext {
 						themeDisplay.getCompanyId(),
 						themeDisplay.getScopeGroupId())) {
 
-			List<LayoutPageTemplateEntry>
-				designLibraryLayoutPageTemplateEntries =
-					_layoutPageTemplateEntryService.
-						getLayoutPageTemplateEntries(
-							designLibraryGroupId,
-							LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
-							WorkflowConstants.STATUS_APPROVED,
-							QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-							LayoutPageTemplateEntryNameComparator.getInstance(
-								true));
 			Group group = GroupLocalServiceUtil.getGroup(designLibraryGroupId);
 
 			for (LayoutPageTemplateEntry layoutPageTemplateEntry :
-					designLibraryLayoutPageTemplateEntries) {
+					_getMasterLayoutPageTemplateEntries(designLibraryGroupId)) {
 
 				masterLayouts.add(
 					HashMapBuilder.<String, Object>put(
