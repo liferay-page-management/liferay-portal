@@ -287,10 +287,7 @@ public class CopyLayoutMVCActionCommandTest {
 		int count = _segmentsExperienceLocalService.getSegmentsExperiencesCount(
 			_layout.getGroupId(), _layout.getPlid());
 
-		_processAction(false, Collections.emptyMap());
-
-		Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
-			_group.getGroupId(), _layout.isPrivateLayout(), "/" + _NAME);
+		Layout layout = _copyLayout(false, Collections.emptyMap());
 
 		Layout draftLayout = layout.fetchDraftLayout();
 
@@ -470,6 +467,15 @@ public class CopyLayoutMVCActionCommandTest {
 		}
 	}
 
+	private Layout _copyLayout(boolean copyPermissions, Map<String, String> map)
+		throws Exception {
+
+		_processAction(copyPermissions, map);
+
+		return _layoutLocalService.fetchLayoutByFriendlyURL(
+			_layout.getGroupId(), _layout.isPrivateLayout(), "/" + _NAME);
+	}
+
 	private FragmentEntry _getFragmentEntry() throws Exception {
 		if (_fragmentEntry != null) {
 			return _fragmentEntry;
@@ -585,10 +591,7 @@ public class CopyLayoutMVCActionCommandTest {
 			boolean copyPermissions, Map<String, String> map)
 		throws Exception {
 
-		_processAction(copyPermissions, map);
-
-		Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
-			_layout.getGroupId(), _layout.isPrivateLayout(), "/" + _NAME);
+		Layout layout = _copyLayout(copyPermissions, map);
 
 		Assert.assertNotNull(layout);
 
@@ -695,10 +698,7 @@ public class CopyLayoutMVCActionCommandTest {
 			masterLayoutPageTemplateEntry.getExternalReferenceCode(),
 			designLibraryGroup.getExternalReferenceCode());
 
-		_processAction(false, Collections.emptyMap());
-
-		Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
-			_layout.getGroupId(), _layout.isPrivateLayout(), "/" + _NAME);
+		Layout layout = _copyLayout(false, Collections.emptyMap());
 
 		_assertMasterLayout(
 			designLibraryGroup, layout, masterLayoutPageTemplateEntry,
@@ -711,10 +711,7 @@ public class CopyLayoutMVCActionCommandTest {
 				fetchDepotEntryGroupRelByDepotEntryIdToGroupId(
 					designLibraryGroup.getClassPK(), _group.getGroupId()));
 
-		_processAction(false, Collections.emptyMap());
-
-		layout = _layoutLocalService.fetchLayoutByFriendlyURL(
-			_layout.getGroupId(), _layout.isPrivateLayout(), "/" + _NAME);
+		layout = _copyLayout(false, Collections.emptyMap());
 
 		_assertMasterLayout(
 			designLibraryGroup, layout, masterLayoutPageTemplateEntry, 0);
@@ -738,10 +735,7 @@ public class CopyLayoutMVCActionCommandTest {
 			_layout.getLayoutId(),
 			masterLayoutPageTemplateEntry.getExternalReferenceCode());
 
-		_processAction(false, Collections.emptyMap());
-
-		Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
-			_layout.getGroupId(), _layout.isPrivateLayout(), "/" + _NAME);
+		Layout layout = _copyLayout(false, Collections.emptyMap());
 
 		Assert.assertEquals(
 			masterLayoutPageTemplateEntry.getPlid(),
