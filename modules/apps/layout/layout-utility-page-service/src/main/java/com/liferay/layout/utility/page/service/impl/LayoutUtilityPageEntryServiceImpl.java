@@ -5,6 +5,8 @@
 
 package com.liferay.layout.utility.page.service.impl;
 
+import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
+import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.utility.page.constants.LayoutUtilityPageActionKeys;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.base.LayoutUtilityPageEntryServiceBaseImpl;
@@ -12,6 +14,9 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.WildcardMode;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Repository;
+import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -47,6 +52,8 @@ public class LayoutUtilityPageEntryServiceImpl
 		GroupPermissionUtil.check(
 			getPermissionChecker(), groupId,
 			LayoutUtilityPageActionKeys.ADD_LAYOUT_UTILITY_PAGE_ENTRY);
+
+		_validatePreviewFileEntryId(groupId, previewFileEntryId);
 
 		return layoutUtilityPageEntryLocalService.addLayoutUtilityPageEntry(
 			externalReferenceCode, getUserId(), groupId, plid,
@@ -276,6 +283,13 @@ public class LayoutUtilityPageEntryServiceImpl
 			getPermissionChecker(), layoutUtilityPageEntryId,
 			ActionKeys.UPDATE);
 
+		LayoutUtilityPageEntry layoutUtilityPageEntry =
+			layoutUtilityPageEntryPersistence.findByPrimaryKey(
+				layoutUtilityPageEntryId);
+
+		_validatePreviewFileEntryId(
+			layoutUtilityPageEntry.getGroupId(), previewFileEntryId);
+
 		return layoutUtilityPageEntryLocalService.updateLayoutUtilityPageEntry(
 			layoutUtilityPageEntryId, previewFileEntryId, serviceContext);
 	}
@@ -294,6 +308,28 @@ public class LayoutUtilityPageEntryServiceImpl
 			layoutUtilityPageEntryId, name, serviceContext);
 	}
 
+	private void _validatePreviewFileEntryId(
+			long groupId, long previewFileEntryId)
+		throws PortalException {
+
+		if (previewFileEntryId <= 0) {
+			return;
+		}
+
+		FileEntry fileEntry = _portletFileRepository.getPortletFileEntry(
+			previewFileEntryId);
+		Repository repository = _portletFileRepository.fetchPortletRepository(
+			groupId, LayoutAdminPortletKeys.GROUP_PAGES);
+
+		if ((repository == null) ||
+			(repository.getRepositoryId() != fileEntry.getRepositoryId())) {
+
+			throw new NoSuchFileEntryException(
+				"No file entry exists with file entry ID " +
+					previewFileEntryId);
+		}
+	}
+
 	@Reference
 	private CustomSQL _customSQL;
 
@@ -302,5 +338,8 @@ public class LayoutUtilityPageEntryServiceImpl
 	)
 	private ModelResourcePermission<LayoutUtilityPageEntry>
 		_layoutUtilityPageEntryModelResourcePermission;
+
+	@Reference
+	private PortletFileRepository _portletFileRepository;
 
 }
