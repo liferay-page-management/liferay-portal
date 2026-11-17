@@ -52,9 +52,11 @@ public class GroupFragmentEntryUsageManagementToolbarDisplayContextTest {
 			RandomTestUtil.randomInt(1, 100)
 		);
 
-		Assert.assertTrue(
-			_getGroupFragmentEntryUsageManagementToolbarDisplayContext().
-				isSelectable());
+		GroupFragmentEntryUsageManagementToolbarDisplayContext
+			managementToolbarDisplayContext =
+				_getGroupFragmentEntryUsageManagementToolbarDisplayContext();
+
+		Assert.assertTrue(managementToolbarDisplayContext.isSelectable());
 	}
 
 	@Test
@@ -66,9 +68,11 @@ public class GroupFragmentEntryUsageManagementToolbarDisplayContextTest {
 			RandomTestUtil.randomInt(1, 100)
 		);
 
-		Assert.assertFalse(
-			_getGroupFragmentEntryUsageManagementToolbarDisplayContext().
-				isSelectable());
+		GroupFragmentEntryUsageManagementToolbarDisplayContext
+			managementToolbarDisplayContext =
+				_getGroupFragmentEntryUsageManagementToolbarDisplayContext();
+
+		Assert.assertFalse(managementToolbarDisplayContext.isSelectable());
 	}
 
 	@Test
@@ -80,9 +84,11 @@ public class GroupFragmentEntryUsageManagementToolbarDisplayContextTest {
 			Mockito.mock(RowChecker.class)
 		);
 
-		Assert.assertFalse(
-			_getGroupFragmentEntryUsageManagementToolbarDisplayContext().
-				isSelectable());
+		GroupFragmentEntryUsageManagementToolbarDisplayContext
+			managementToolbarDisplayContext =
+				_getGroupFragmentEntryUsageManagementToolbarDisplayContext();
+
+		Assert.assertFalse(managementToolbarDisplayContext.isSelectable());
 	}
 
 	private GroupFragmentEntryUsageManagementToolbarDisplayContext

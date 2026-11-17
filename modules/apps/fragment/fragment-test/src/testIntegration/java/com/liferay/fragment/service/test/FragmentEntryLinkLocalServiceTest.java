@@ -1280,7 +1280,6 @@ public class FragmentEntryLinkLocalServiceTest {
 
 		for (FragmentEntryLink fragmentEntryLink : expectedFragmentEntryLinks) {
 			Assert.assertTrue(
-				actualFragmentEntryLinks.toString(),
 				actualFragmentEntryLinks.contains(fragmentEntryLink));
 		}
 	}
