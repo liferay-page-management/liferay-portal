@@ -147,4 +147,4 @@ public interface LayoutUtilityPageEntryService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-132176084
+// LIFERAY-SERVICE-BUILDER-HASH:-147852338
