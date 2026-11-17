@@ -9,25 +9,11 @@
 
 <%
 FragmentDisplayContext portletFragmentDisplayContext = (FragmentDisplayContext)request.getAttribute(FragmentWebKeys.FRAGMENT_DISPLAY_CONTEXT);
-
-FragmentCollection fragmentCollection = portletFragmentDisplayContext.getFragmentCollection();
-
-Group scopeGroup = themeDisplay.getScopeGroup();
 %>
 
 <li class="control-menu-nav-item">
 	<react:component
 		module="{FragmentAIAssistantTriggerButton} from fragment-web"
-		props='<%=
-			HashMapBuilder.<String, Object>put(
-				"editFragmentURL", FragmentPortletUtil.getEditFragmentEntryURL(request)
-			).put(
-				"fragmentPortletNamespace", portletDisplay.getNamespace()
-			).put(
-				"fragmentSetExternalReferenceCode", fragmentCollection.getExternalReferenceCode()
-			).put(
-				"siteExternalReferenceCode", scopeGroup.getExternalReferenceCode()
-			).build()
-		%>'
+		props="<%= portletFragmentDisplayContext.getAIAssistantProps() %>"
 	/>
 </li>
