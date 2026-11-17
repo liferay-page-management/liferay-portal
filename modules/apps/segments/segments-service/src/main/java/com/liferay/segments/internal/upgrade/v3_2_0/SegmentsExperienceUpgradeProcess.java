@@ -11,7 +11,6 @@ import com.liferay.change.tracking.service.CTEntryLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
@@ -30,11 +29,9 @@ import java.util.Map;
 public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 
 	public SegmentsExperienceUpgradeProcess(
-		CTEntryLocalService ctEntryLocalService,
-		LayoutLocalService layoutLocalService) {
+		CTEntryLocalService ctEntryLocalService) {
 
 		_ctEntryLocalService = ctEntryLocalService;
-		_layoutLocalService = layoutLocalService;
 	}
 
 	@Override
@@ -102,20 +99,15 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 			Map<Long, Long> draftLayoutSegmentsExperienceIds = new HashMap<>();
 
 			while (resultSet.next()) {
-				Layout layout = _layoutLocalService.fetchLayout(
-					resultSet.getLong("plid"));
-
-				if (layout == null) {
-					continue;
-				}
-
-				Layout draftLayout = layout.fetchDraftLayout();
-
-				if (draftLayout == null) {
-					continue;
-				}
-
 				long ctCollectionId = resultSet.getLong("ctCollectionId");
+
+				long draftLayoutPlid = _getDraftLayoutPlid(
+					ctCollectionId, resultSet.getLong("plid"));
+
+				if (draftLayoutPlid == 0) {
+					continue;
+				}
+
 				long groupId = resultSet.getLong("groupId");
 				String segmentsExperienceKey = resultSet.getString(
 					"segmentsExperienceKey");
@@ -123,7 +115,7 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 				long draftLayoutSegmentsExperienceId =
 					_getDraftLayoutSegmentsExperienceId(
 						ctCollectionId, groupId, segmentsExperienceKey,
-						draftLayout.getPlid());
+						draftLayoutPlid);
 
 				long segmentsExperienceId = resultSet.getLong(
 					"segmentsExperienceId");
@@ -161,7 +153,7 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 					preparedStatement2.setLong(
 						12, resultSet.getLong("segmentsEntryId"));
 					preparedStatement2.setString(13, segmentsExperienceKey);
-					preparedStatement2.setLong(14, draftLayout.getPlid());
+					preparedStatement2.setLong(14, draftLayoutPlid);
 					preparedStatement2.setString(
 						15, resultSet.getString("name"));
 					preparedStatement2.setLong(
@@ -199,7 +191,7 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 					}
 
 					preparedStatement.setLong(index++, segmentsExperienceId);
-					preparedStatement.setLong(index, draftLayout.getPlid());
+					preparedStatement.setLong(index, draftLayoutPlid);
 
 					preparedStatement.addBatch();
 				}
@@ -223,7 +215,7 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 
 				preparedStatement.setLong(index++, segmentsExperienceId);
 				preparedStatement.setLong(index++, groupId);
-				preparedStatement.setLong(index, draftLayout.getPlid());
+				preparedStatement.setLong(index, draftLayoutPlid);
 
 				preparedStatement.addBatch();
 			}
@@ -251,11 +243,14 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 					"SegmentsExperience.companyId, SegmentsExperience.userId ",
 					"from SegmentsExperience inner join CTCollection on ",
 					"CTCollection.ctCollectionId = ",
-					"SegmentsExperience.ctCollectionId inner join Layout on ",
-					"Layout.ctCollectionId = 0 and Layout.plid = ",
-					"SegmentsExperience.plid where CTCollection.status != ? ",
-					"and Layout.classNameId = ? and not exists (select 1 from ",
-					"CTEntry where CTEntry.ctCollectionId = ",
+					"SegmentsExperience.ctCollectionId where ",
+					"CTCollection.status != ? and exists (select 1 from ",
+					"Layout where (Layout.ctCollectionId = 0 or ",
+					"Layout.ctCollectionId = ",
+					"SegmentsExperience.ctCollectionId) and Layout.plid = ",
+					"SegmentsExperience.plid and Layout.classNameId = ?) and ",
+					"not exists (select 1 from CTEntry where ",
+					"CTEntry.ctCollectionId = ",
 					"SegmentsExperience.ctCollectionId and ",
 					"CTEntry.modelClassNameId = ? and CTEntry.modelClassPK = ",
 					"SegmentsExperience.segmentsExperienceId) and not exists ",
@@ -295,6 +290,30 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 
 					_ctEntryLocalService.addCTEntry(ctEntry);
 				}
+			}
+		}
+	}
+
+	private long _getDraftLayoutPlid(long ctCollectionId, long plid)
+		throws Exception {
+
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				StringBundler.concat(
+					"select plid from Layout where (ctCollectionId = 0 or ",
+					"ctCollectionId = ?) and classNameId = ? and classPK = ",
+					"?"))) {
+
+			preparedStatement.setLong(1, ctCollectionId);
+			preparedStatement.setLong(
+				2, PortalUtil.getClassNameId(Layout.class));
+			preparedStatement.setLong(3, plid);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				if (resultSet.next()) {
+					return resultSet.getLong("plid");
+				}
+
+				return 0;
 			}
 		}
 	}
@@ -388,6 +407,5 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 	}
 
 	private final CTEntryLocalService _ctEntryLocalService;
-	private final LayoutLocalService _layoutLocalService;
 
 }
