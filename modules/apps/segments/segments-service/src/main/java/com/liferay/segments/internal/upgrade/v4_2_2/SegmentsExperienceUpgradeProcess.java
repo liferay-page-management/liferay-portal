@@ -6,15 +6,20 @@
 package com.liferay.segments.internal.upgrade.v4_2_2;
 
 import com.liferay.change.tracking.constants.CTConstants;
+import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.model.CTEntry;
+import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.service.CTEntryLocalService;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRel;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.ResourcePermission;
+import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
@@ -39,9 +44,13 @@ import java.util.Set;
 public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 
 	public SegmentsExperienceUpgradeProcess(
-		CTEntryLocalService ctEntryLocalService) {
+		CTCollectionLocalService ctCollectionLocalService,
+		CTEntryLocalService ctEntryLocalService,
+		ResourceLocalService resourceLocalService) {
 
+		_ctCollectionLocalService = ctCollectionLocalService;
 		_ctEntryLocalService = ctEntryLocalService;
+		_resourceLocalService = resourceLocalService;
 	}
 
 	@Override
@@ -186,6 +195,8 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 		_updateCTCollectionSegmentsExperiences(
 			true, fragmentEntryLinkColumnName,
 			hasFragmentEntryLinkSegmentsExperienceId);
+
+		_addSegmentsExperienceResources();
 
 		_addSegmentsExperienceDeletionCTEntries(
 			fragmentEntryLinkColumnName, hasFragmentEntryLinkCTCollectionId,
@@ -721,6 +732,70 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 		}
 	}
 
+	private void _addSegmentsExperienceResources() throws Exception {
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				StringBundler.concat(
+					"select SegmentsExperience.ctCollectionId, ",
+					"SegmentsExperience.segmentsExperienceId, ",
+					"SegmentsExperience.groupId, ",
+					"SegmentsExperience.companyId, SegmentsExperience.userId ",
+					"from SegmentsExperience left join CTCollection on ",
+					"CTCollection.ctCollectionId = ",
+					"SegmentsExperience.ctCollectionId where ",
+					"(SegmentsExperience.ctCollectionId = 0 or ",
+					"CTCollection.status != ?) and exists (select 1 from ",
+					"Layout where (Layout.ctCollectionId = 0 or ",
+					"Layout.ctCollectionId = ",
+					"SegmentsExperience.ctCollectionId) and Layout.plid = ",
+					"SegmentsExperience.plid and Layout.classNameId = ?) and ",
+					"not exists (select 1 from ResourcePermission where ",
+					"(ResourcePermission.ctCollectionId = 0 or ",
+					"ResourcePermission.ctCollectionId = ",
+					"SegmentsExperience.ctCollectionId) and ",
+					"ResourcePermission.companyId = ",
+					"SegmentsExperience.companyId and ResourcePermission.name ",
+					"= ? and ResourcePermission.scope = ? and ",
+					"ResourcePermission.primKeyId = ",
+					"SegmentsExperience.segmentsExperienceId)"))) {
+
+			preparedStatement.setInt(1, WorkflowConstants.STATUS_APPROVED);
+			preparedStatement.setLong(
+				2, PortalUtil.getClassNameId(Layout.class));
+			preparedStatement.setString(3, SegmentsExperience.class.getName());
+			preparedStatement.setInt(4, ResourceConstants.SCOPE_INDIVIDUAL);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					long ctCollectionId = resultSet.getLong("ctCollectionId");
+
+					if (ctCollectionId != 0) {
+						CTCollection ctCollection =
+							_ctCollectionLocalService.getCTCollection(
+								ctCollectionId);
+
+						if (ctCollection.isReadOnly()) {
+							ctCollectionId = 0;
+						}
+					}
+
+					try (SafeCloseable safeCloseable =
+							CTCollectionThreadLocal.
+								setCTCollectionIdWithSafeCloseable(
+									ctCollectionId)) {
+
+						_resourceLocalService.addResources(
+							resultSet.getLong("companyId"),
+							resultSet.getLong("groupId"),
+							resultSet.getLong("userId"),
+							SegmentsExperience.class.getName(),
+							resultSet.getLong("segmentsExperienceId"), false,
+							true, true);
+					}
+				}
+			}
+		}
+	}
+
 	private CTEntry _createCTEntry(
 			long companyId, long userId, long ctCollectionId,
 			long modelClassNameId, long modelClassPK, long modelMvccVersion,
@@ -1121,6 +1196,8 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 		}
 	}
 
+	private final CTCollectionLocalService _ctCollectionLocalService;
 	private final CTEntryLocalService _ctEntryLocalService;
+	private final ResourceLocalService _resourceLocalService;
 
 }
