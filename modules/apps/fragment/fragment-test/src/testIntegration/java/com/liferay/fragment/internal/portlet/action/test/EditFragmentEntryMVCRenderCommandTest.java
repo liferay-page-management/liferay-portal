@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -97,6 +98,24 @@ public class EditFragmentEntryMVCRenderCommandTest {
 			FragmentEntryTestUtil.addFragmentEntryByStatus(
 				fragmentCollection.getFragmentCollectionId(),
 				WorkflowConstants.STATUS_DRAFT));
+	}
+
+	@Test
+	@TestInfo("LPD-111343")
+	public void testRenderWithNonexistentExternalReferenceCode()
+		throws Exception {
+
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_getMockLiferayPortletRenderRequest();
+
+		mockLiferayPortletRenderRequest.setParameter(
+			"externalReferenceCode", RandomTestUtil.randomString());
+
+		Assert.assertEquals(
+			"/error.jsp",
+			_mvcRenderCommand.render(
+				mockLiferayPortletRenderRequest,
+				new MockLiferayPortletRenderResponse()));
 	}
 
 	private MockLiferayPortletRenderRequest
