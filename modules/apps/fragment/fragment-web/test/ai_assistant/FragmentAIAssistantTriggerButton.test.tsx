@@ -41,7 +41,6 @@ function renderComponent(
 ) {
 	return render(
 		<FragmentAIAssistantTriggerButton
-			editFragmentURL="editFragmentURL"
 			fragmentPortletNamespace="_namespace_"
 			siteExternalReferenceCode="L_GUEST"
 			{...props}

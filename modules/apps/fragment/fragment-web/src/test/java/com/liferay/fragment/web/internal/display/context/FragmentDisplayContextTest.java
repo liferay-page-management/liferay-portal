@@ -11,7 +11,6 @@ import com.liferay.fragment.model.FragmentComposition;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.service.FragmentCollectionLocalServiceUtil;
 import com.liferay.fragment.web.internal.security.permission.resource.FragmentPermission;
-import com.liferay.fragment.web.internal.util.FragmentPortletUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -123,9 +122,7 @@ public class FragmentDisplayContextTest {
 		try (MockedStatic<FragmentCollectionLocalServiceUtil>
 				fragmentCollectionLocalServiceUtilMockedStatic =
 					Mockito.mockStatic(
-						FragmentCollectionLocalServiceUtil.class);
-			MockedStatic<FragmentPortletUtil> fragmentPortletUtilMockedStatic =
-				Mockito.mockStatic(FragmentPortletUtil.class)) {
+						FragmentCollectionLocalServiceUtil.class)) {
 
 			fragmentCollectionLocalServiceUtilMockedStatic.when(
 				() ->
@@ -135,15 +132,6 @@ public class FragmentDisplayContextTest {
 				fragmentCollection
 			);
 
-			String editFragmentURL = RandomTestUtil.randomString();
-
-			fragmentPortletUtilMockedStatic.when(
-				() -> FragmentPortletUtil.getEditFragmentEntryURL(
-					_httpServletRequest)
-			).thenReturn(
-				editFragmentURL
-			);
-
 			FragmentDisplayContext fragmentDisplayContext =
 				new FragmentDisplayContext(
 					_httpServletRequest, _renderRequest, _renderResponse);
@@ -151,8 +139,6 @@ public class FragmentDisplayContextTest {
 			Map<String, Object> aiAssistantProps =
 				fragmentDisplayContext.getAIAssistantProps();
 
-			Assert.assertEquals(
-				editFragmentURL, aiAssistantProps.get("editFragmentURL"));
 			Assert.assertEquals(
 				fragmentPortletNamespace,
 				aiAssistantProps.get("fragmentPortletNamespace"));
@@ -505,9 +491,7 @@ public class FragmentDisplayContextTest {
 		try (MockedStatic<FragmentCollectionLocalServiceUtil>
 				fragmentCollectionLocalServiceUtilMockedStatic =
 					Mockito.mockStatic(
-						FragmentCollectionLocalServiceUtil.class);
-			MockedStatic<FragmentPortletUtil> fragmentPortletUtilMockedStatic =
-				Mockito.mockStatic(FragmentPortletUtil.class)) {
+						FragmentCollectionLocalServiceUtil.class)) {
 
 			fragmentCollectionLocalServiceUtilMockedStatic.when(
 				() ->
