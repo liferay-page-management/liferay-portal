@@ -12,7 +12,7 @@ FragmentDisplayContext portletFragmentDisplayContext = (FragmentDisplayContext)r
 
 String fragmentSetExternalReferenceCode = null;
 
-if ((portletFragmentDisplayContext != null) && Objects.equals(portletFragmentDisplayContext.getFragmentType(), FragmentTypeConstants.BASIC_FRAGMENT_TYPE)) {
+if ((portletFragmentDisplayContext.getFragmentCollection() != null) && Objects.equals(portletFragmentDisplayContext.getFragmentType(), FragmentTypeConstants.BASIC_FRAGMENT_TYPE)) {
 	FragmentCollection fragmentCollection = portletFragmentDisplayContext.getFragmentCollection();
 
 	fragmentSetExternalReferenceCode = fragmentCollection.getExternalReferenceCode();
