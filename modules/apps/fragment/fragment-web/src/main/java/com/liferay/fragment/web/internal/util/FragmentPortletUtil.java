@@ -5,49 +5,17 @@
 
 package com.liferay.fragment.web.internal.util;
 
-import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.util.comparator.FragmentCollectionCreateDateComparator;
 import com.liferay.fragment.util.comparator.FragmentCollectionNameComparator;
 import com.liferay.fragment.util.comparator.FragmentCompositionFragmentEntryModifiedDateComparator;
 import com.liferay.fragment.util.comparator.FragmentCompositionFragmentEntryNameComparator;
-import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
-import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
-import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.kernel.util.WebKeys;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Jürgen Kappler
  */
 public class FragmentPortletUtil {
-
-	public static String getEditFragmentEntryURL(
-		HttpServletRequest httpServletRequest) {
-
-		RequestBackedPortletURLFactory requestBackedPortletURLFactory =
-			RequestBackedPortletURLFactoryUtil.create(httpServletRequest);
-
-		return PortletURLBuilder.create(
-			requestBackedPortletURLFactory.createRenderURL(
-				FragmentPortletKeys.FRAGMENT)
-		).setMVCRenderCommandName(
-			"/fragment/edit_fragment_entry"
-		).setRedirect(
-			() -> {
-				ThemeDisplay themeDisplay =
-					(ThemeDisplay)httpServletRequest.getAttribute(
-						WebKeys.THEME_DISPLAY);
-
-				return themeDisplay.getURLCurrent();
-			}
-		).setParameter(
-			"externalReferenceCode", "EXTERNAL_REFERENCE_CODE"
-		).buildString();
-	}
 
 	public static OrderByComparator<FragmentCollection>
 		getFragmentCollectionOrderByComparator(

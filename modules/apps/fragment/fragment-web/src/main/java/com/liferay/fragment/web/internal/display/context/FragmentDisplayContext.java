@@ -96,9 +96,6 @@ public class FragmentDisplayContext {
 
 	public Map<String, Object> getAIAssistantProps() {
 		return HashMapBuilder.<String, Object>put(
-			"editFragmentURL",
-			FragmentPortletUtil.getEditFragmentEntryURL(_httpServletRequest)
-		).put(
 			"fragmentPortletNamespace", _renderResponse.getNamespace()
 		).put(
 			"fragmentSetExternalReferenceCode",

@@ -30,14 +30,12 @@ function getFragment(
 }
 
 type Props = {
-	editFragmentURL: string;
 	fragmentPortletNamespace: string;
 	fragmentSetExternalReferenceCode?: string;
 	siteExternalReferenceCode: string;
 };
 
 export default function FragmentAIAssistantTriggerButton({
-	editFragmentURL,
 	fragmentPortletNamespace,
 	fragmentSetExternalReferenceCode,
 	siteExternalReferenceCode,
@@ -70,7 +68,6 @@ export default function FragmentAIAssistantTriggerButton({
 		<AIAssistantTriggerButton
 			chatbotExternalReferenceCode={GENERATE_FRAGMENT_CHATBOT_ERC}
 			context={{
-				editFragmentURL,
 				fragmentSetExternalReferenceCode,
 				siteExternalReferenceCode,
 			}}

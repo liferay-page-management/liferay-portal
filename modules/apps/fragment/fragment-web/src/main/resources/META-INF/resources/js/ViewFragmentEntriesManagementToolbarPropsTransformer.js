@@ -193,7 +193,6 @@ export default function propsTransformer({
 				anchorId: GENERATE_FRAGMENT_TRIGGER_ID,
 				chatbotExternalReferenceCode: GENERATE_FRAGMENT_CHATBOT_ERC,
 				context: {
-					editFragmentURL: item.data.editFragmentURL,
 					fragmentSetExternalReferenceCode:
 						item.data.fragmentSetExternalReferenceCode,
 					siteExternalReferenceCode:
