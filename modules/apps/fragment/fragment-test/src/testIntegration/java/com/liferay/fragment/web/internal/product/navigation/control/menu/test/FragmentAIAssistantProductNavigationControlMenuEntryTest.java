@@ -7,9 +7,6 @@ package com.liferay.fragment.web.internal.product.navigation.control.menu.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.fragment.constants.FragmentPortletKeys;
-import com.liferay.fragment.model.FragmentCollection;
-import com.liferay.fragment.test.util.FragmentTestUtil;
-import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
@@ -72,8 +69,6 @@ public class FragmentAIAssistantProductNavigationControlMenuEntryTest {
 	@Test
 	@TestInfo("LPD-111343")
 	public void testIsShow() throws Exception {
-		FragmentTestUtil.addFragmentCollection(_group.getGroupId());
-
 		Assert.assertTrue(
 			_productNavigationControlMenuEntry.isShow(
 				_getMockHttpServletRequest(TestPropsValues.getUser())));
@@ -81,23 +76,7 @@ public class FragmentAIAssistantProductNavigationControlMenuEntryTest {
 
 	@Test
 	@TestInfo("LPD-111343")
-	public void testIsShowWithInheritedFragmentCollection() throws Exception {
-		Company company = _companyLocalService.getCompany(
-			_group.getCompanyId());
-
-		_fragmentCollection = FragmentTestUtil.addFragmentCollection(
-			company.getGroupId());
-
-		Assert.assertFalse(
-			_productNavigationControlMenuEntry.isShow(
-				_getMockHttpServletRequest(TestPropsValues.getUser())));
-	}
-
-	@Test
-	@TestInfo("LPD-111343")
 	public void testIsShowWithoutFragmentDisplayContext() throws Exception {
-		FragmentTestUtil.addFragmentCollection(_group.getGroupId());
-
 		MockHttpServletRequest mockHttpServletRequest =
 			_getMockHttpServletRequest(TestPropsValues.getUser());
 
@@ -110,8 +89,6 @@ public class FragmentAIAssistantProductNavigationControlMenuEntryTest {
 	@Test
 	@TestInfo("LPD-111343")
 	public void testIsShowWithoutPermission() throws Exception {
-		FragmentTestUtil.addFragmentCollection(_group.getGroupId());
-
 		_user = UserTestUtil.addGroupUser(_group, RoleConstants.POWER_USER);
 
 		Assert.assertFalse(
@@ -170,9 +147,6 @@ public class FragmentAIAssistantProductNavigationControlMenuEntryTest {
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
-
-	@DeleteAfterTestRun
-	private FragmentCollection _fragmentCollection;
 
 	@DeleteAfterTestRun
 	private Group _group;

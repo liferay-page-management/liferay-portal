@@ -34,13 +34,17 @@ function getContentChangedPayload(fragmentSetExternalReferenceCode: string) {
 	};
 }
 
-function renderComponent() {
+function renderComponent(
+	props: {fragmentSetExternalReferenceCode?: string} = {
+		fragmentSetExternalReferenceCode: 'fragment-set-1',
+	}
+) {
 	return render(
 		<FragmentAIAssistantTriggerButton
 			editFragmentURL="editFragmentURL"
 			fragmentPortletNamespace="_namespace_"
-			fragmentSetExternalReferenceCode="fragment-set-1"
 			siteExternalReferenceCode="L_GUEST"
+			{...props}
 		/>
 	);
 }
@@ -101,6 +105,16 @@ describe('FragmentAIAssistantTriggerButton', () => {
 		renderComponent();
 
 		fire(CONTENT_CHANGED_EVENT, getContentChangedPayload('fragment-set-1'));
+
+		expect(Liferay.Portlet.refresh).toHaveBeenCalledWith(
+			'#p_p_id_namespace_'
+		);
+	});
+
+	it('refreshes the portlet when there is no current fragment set', () => {
+		renderComponent({});
+
+		fire(CONTENT_CHANGED_EVENT, getContentChangedPayload('fragment-set-2'));
 
 		expect(Liferay.Portlet.refresh).toHaveBeenCalledWith(
 			'#p_p_id_namespace_'
