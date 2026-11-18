@@ -181,26 +181,15 @@ public class SegmentsExperienceUpgradeProcessTest {
 	public void testUpgradeFrom3_1_1WithCTCollectionAddedLayout()
 		throws Exception {
 
-		_db.alterTableAddColumn(
-			_connection, "SegmentsExperience", "segmentsEntryId", "LONG");
+		CTCollection ctCollection = _addCTCollection();
 
-		try {
-			CTCollection ctCollection = _addCTCollection();
+		Layout layout = _addLayoutWithoutDraftSegmentsExperience(ctCollection);
 
-			Layout layout = _addLayoutWithoutDraftSegmentsExperience(
-				ctCollection);
+		_runUpgradeFrom3_1_1();
 
-			_runUpgrade(new Version(3, 2, 0));
-			_runUpgrade();
+		_publishCTCollection(ctCollection);
 
-			_publishCTCollection(ctCollection);
-
-			_assertDraftLayoutSegmentsExperience(layout);
-		}
-		finally {
-			_db.alterTableDropColumn(
-				_connection, "SegmentsExperience", "segmentsEntryId");
-		}
+		_assertDraftLayoutSegmentsExperience(layout);
 	}
 
 	@Test
@@ -208,36 +197,26 @@ public class SegmentsExperienceUpgradeProcessTest {
 	public void testUpgradeFrom3_1_1WithCTCollectionDeletedSegmentsExperience()
 		throws Exception {
 
-		_db.alterTableAddColumn(
-			_connection, "SegmentsExperience", "segmentsEntryId", "LONG");
+		CTCollection ctCollection = _addCTCollection();
 
-		try {
-			CTCollection ctCollection = _addCTCollection();
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
 
-			try (SafeCloseable safeCloseable =
-					CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
-						ctCollection.getCtCollectionId())) {
-
-				_segmentsExperienceLocalService.deleteSegmentsExperience(
-					_publishedSegmentsExperienceId2);
-			}
-
-			_runUpgrade(new Version(3, 2, 0));
-			_runUpgrade();
-
-			_publishCTCollection(ctCollection);
-
-			Assert.assertNull(
-				_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
-					_fragmentEntryLink2.getFragmentEntryLinkId()));
-			Assert.assertNull(
-				_segmentsExperienceLocalService.fetchSegmentsExperience(
-					_draftSegmentsExperienceId2));
+			_segmentsExperienceLocalService.deleteSegmentsExperience(
+				_publishedSegmentsExperienceId2);
 		}
-		finally {
-			_db.alterTableDropColumn(
-				_connection, "SegmentsExperience", "segmentsEntryId");
-		}
+
+		_runUpgradeFrom3_1_1();
+
+		_publishCTCollection(ctCollection);
+
+		Assert.assertNull(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				_fragmentEntryLink2.getFragmentEntryLinkId()));
+		Assert.assertNull(
+			_segmentsExperienceLocalService.fetchSegmentsExperience(
+				_draftSegmentsExperienceId2));
 	}
 
 	@Test
@@ -245,49 +224,34 @@ public class SegmentsExperienceUpgradeProcessTest {
 	public void testUpgradeFrom3_1_1WithCTCollectionDeletedSegmentsExperiencePriorities()
 		throws Exception {
 
-		_db.alterTableAddColumn(
-			_connection, "SegmentsExperience", "segmentsEntryId", "LONG");
+		SegmentsExperience publishedSegmentsExperience =
+			SegmentsTestUtil.addSegmentsExperience(
+				_group.getGroupId(), _layout.getPlid());
 
-		try {
-			SegmentsExperience publishedSegmentsExperience =
-				SegmentsTestUtil.addSegmentsExperience(
-					_group.getGroupId(), _layout.getPlid());
+		CTCollection ctCollection = _addCTCollection();
 
-			CTCollection ctCollection = _addCTCollection();
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
 
-			try (SafeCloseable safeCloseable =
-					CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
-						ctCollection.getCtCollectionId())) {
-
-				_segmentsExperienceLocalService.deleteSegmentsExperience(
-					_publishedSegmentsExperienceId2);
-			}
-
-			_runUpgrade(new Version(3, 2, 0));
-			_runUpgrade();
-
-			_publishCTCollection(ctCollection);
-
-			Layout draftLayout = _layout.fetchDraftLayout();
-
-			SegmentsExperience draftSegmentsExperience =
-				_segmentsExperienceLocalService.fetchSegmentsExperience(
-					_group.getGroupId(),
-					publishedSegmentsExperience.getSegmentsExperienceKey(),
-					draftLayout.getPlid());
-
-			Assert.assertEquals(-1, draftSegmentsExperience.getPriority());
-
-			publishedSegmentsExperience =
-				_segmentsExperienceLocalService.getSegmentsExperience(
-					publishedSegmentsExperience.getSegmentsExperienceId());
-
-			Assert.assertEquals(-1, publishedSegmentsExperience.getPriority());
+			_segmentsExperienceLocalService.deleteSegmentsExperience(
+				_publishedSegmentsExperienceId2);
 		}
-		finally {
-			_db.alterTableDropColumn(
-				_connection, "SegmentsExperience", "segmentsEntryId");
-		}
+
+		_runUpgradeFrom3_1_1();
+
+		_publishCTCollection(ctCollection);
+
+		SegmentsExperience draftSegmentsExperience =
+			_fetchDraftSegmentsExperience(publishedSegmentsExperience);
+
+		Assert.assertEquals(-1, draftSegmentsExperience.getPriority());
+
+		publishedSegmentsExperience =
+			_segmentsExperienceLocalService.getSegmentsExperience(
+				publishedSegmentsExperience.getSegmentsExperienceId());
+
+		Assert.assertEquals(-1, publishedSegmentsExperience.getPriority());
 	}
 
 	@Test
@@ -295,34 +259,24 @@ public class SegmentsExperienceUpgradeProcessTest {
 	public void testUpgradeFrom3_1_1WithCTCollectionModifiedSegmentsExperience()
 		throws Exception {
 
-		_db.alterTableAddColumn(
-			_connection, "SegmentsExperience", "segmentsEntryId", "LONG");
+		CTCollection ctCollection = _addCTCollection();
+		String name = RandomTestUtil.randomString();
 
-		try {
-			CTCollection ctCollection = _addCTCollection();
-			String name = RandomTestUtil.randomString();
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
 
-			try (SafeCloseable safeCloseable =
-					CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
-						ctCollection.getCtCollectionId())) {
+			_updateSegmentsExperienceIds();
 
-				_updateSegmentsExperienceIds();
-
-				_updateSegmentsExperienceName(
-					name, _publishedSegmentsExperienceId2);
-			}
-
-			_runUpgrade(new Version(3, 2, 0));
-			_runUpgrade();
-
-			_publishCTCollection(ctCollection);
-
-			_assertNames(name);
+			_updateSegmentsExperienceName(
+				name, _publishedSegmentsExperienceId2);
 		}
-		finally {
-			_db.alterTableDropColumn(
-				_connection, "SegmentsExperience", "segmentsEntryId");
-		}
+
+		_runUpgradeFrom3_1_1();
+
+		_publishCTCollection(ctCollection);
+
+		_assertNames(name);
 	}
 
 	@Test
@@ -330,44 +284,34 @@ public class SegmentsExperienceUpgradeProcessTest {
 	public void testUpgradeFrom3_1_1WithCTCollectionSegmentsExperiences()
 		throws Exception {
 
-		_db.alterTableAddColumn(
-			_connection, "SegmentsExperience", "segmentsEntryId", "LONG");
+		CTCollection ctCollection = _addCTCollection();
 
-		try {
-			CTCollection ctCollection = _addCTCollection();
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
 
-			try (SafeCloseable safeCloseable =
-					CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
-						ctCollection.getCtCollectionId())) {
+			_updateSegmentsExperienceIds();
 
-				_updateSegmentsExperienceIds();
-
-				_segmentsExperienceLocalService.updateSegmentsExperience(
-					_segmentsExperienceLocalService.getSegmentsExperience(
-						_publishedSegmentsExperienceId2));
-			}
-
-			SegmentsExperience segmentsExperience =
+			_segmentsExperienceLocalService.updateSegmentsExperience(
 				_segmentsExperienceLocalService.getSegmentsExperience(
-					_draftSegmentsExperienceId2);
-
-			_deleteCTEntry(
-				ctCollection,
-				_addSegmentsExperience(
-					ctCollection, segmentsExperience.getPlid(),
-					segmentsExperience));
-
-			_runUpgrade(new Version(3, 2, 0));
-			_runUpgrade();
-
-			_publishCTCollection(ctCollection);
-
-			_assertDraftSegmentsExperienceIds();
+					_publishedSegmentsExperienceId2));
 		}
-		finally {
-			_db.alterTableDropColumn(
-				_connection, "SegmentsExperience", "segmentsEntryId");
-		}
+
+		SegmentsExperience segmentsExperience =
+			_segmentsExperienceLocalService.getSegmentsExperience(
+				_draftSegmentsExperienceId2);
+
+		_deleteCTEntry(
+			ctCollection,
+			_addSegmentsExperience(
+				ctCollection, segmentsExperience.getPlid(),
+				segmentsExperience));
+
+		_runUpgradeFrom3_1_1();
+
+		_publishCTCollection(ctCollection);
+
+		_assertDraftSegmentsExperienceIds();
 	}
 
 	@Test
@@ -1967,6 +1911,20 @@ public class SegmentsExperienceUpgradeProcessTest {
 
 		_entityCache.clearCache();
 		_multiVMPool.clear();
+	}
+
+	private void _runUpgradeFrom3_1_1() throws Exception {
+		_db.alterTableAddColumn(
+			_connection, "SegmentsExperience", "segmentsEntryId", "LONG");
+
+		try {
+			_runUpgrade(new Version(3, 2, 0));
+			_runUpgrade();
+		}
+		finally {
+			_db.alterTableDropColumn(
+				_connection, "SegmentsExperience", "segmentsEntryId");
+		}
 	}
 
 	private void _updateCTCollectionSegmentsExperienceName(
