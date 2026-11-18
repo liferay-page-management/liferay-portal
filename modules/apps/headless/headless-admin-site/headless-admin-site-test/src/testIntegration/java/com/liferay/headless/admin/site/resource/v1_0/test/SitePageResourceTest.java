@@ -2089,6 +2089,24 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		};
 	}
 
+	private SitePageResource _getSitePageResource(Locale locale)
+		throws Exception {
+
+		User user = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+
+		return SitePageResource.builder(
+		).authentication(
+			user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			locale
+		).parameters(
+			"nestedFields", "pageSpecifications"
+		).build();
+	}
+
 	private SitePageResource _getSitePageResource(String nestedFields)
 		throws Exception {
 
@@ -4546,6 +4564,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			_getRandomSitePage(SitePage.Type.EMBEDDED_PAGE));
 		_testPutSiteSitePageWithEmptyLayoutAndLayoutTypeException(
 			_getRandomSitePage(SitePage.Type.LINK_TO_URL_PAGE));
+		_testPutSiteSitePageWithLayoutTypeMessageInEnglish();
 	}
 
 	private void _testPutSiteSitePageWithEmptyLayout(
@@ -4590,12 +4609,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		ProblemExceptionTestUtil.assertProblemException(
 			"CONFLICT",
 			_language.format(
-				LocaleUtil.getDefault(),
-				"an-empty-page-cannot-be-converted-to-x",
-				_language.get(
-					LocaleUtil.getDefault(),
-					"layout.types." +
-						_externalToInternalValuesMap.get(sitePage.getType()))),
+				LocaleUtil.US, "an-empty-page-cannot-be-converted-to-x",
+				sitePage.getType(), false),
 			() -> sitePageResource.putSiteSitePage(
 				testGroup.getExternalReferenceCode(),
 				sitePage.getExternalReferenceCode(), false, sitePage));
@@ -4628,10 +4643,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		ProblemExceptionTestUtil.assertProblemException(
 			"CONFLICT",
 			_language.format(
-				LocaleUtil.getDefault(), "the-first-page-cannot-be-of-type-x",
-				_language.get(
-					LocaleUtil.getDefault(),
-					"layout.types." + LayoutConstants.TYPE_NODE)),
+				LocaleUtil.US, "the-first-page-cannot-be-of-type-x",
+				SitePage.Type.PAGE_SET_PAGE, false),
 			() -> sitePageResource.putSiteSitePage(
 				testGroup.getExternalReferenceCode(),
 				sitePage.getExternalReferenceCode(), layout.isPrivateLayout(),
@@ -4882,6 +4895,29 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			fragmentEntryLinks, infoForm, expectedInfoForm,
 			_layoutLocalService.getLayoutByExternalReferenceCode(
 				layout.getExternalReferenceCode(), testGroup.getGroupId()));
+	}
+
+	private void _testPutSiteSitePageWithLayoutTypeMessageInEnglish()
+		throws Exception {
+
+		SitePage sitePage = _getRandomSitePage(SitePage.Type.EMBEDDED_PAGE);
+
+		SitePageResource sitePageResource = _getSitePageResource(
+			LocaleUtil.SPAIN);
+
+		Layout layout = _createEmptyLayout(sitePage);
+
+		String message = _language.format(
+			LocaleUtil.US, "an-empty-page-cannot-be-converted-to-x",
+			sitePage.getType(), false);
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"CONFLICT", message,
+			() -> sitePageResource.putSiteSitePage(
+				testGroup.getExternalReferenceCode(),
+				sitePage.getExternalReferenceCode(), false, sitePage));
+
+		_layoutLocalService.deleteLayout(layout);
 	}
 
 	private void _testPutSiteSitePageWithMissingTaxonomyCategories()
@@ -6012,12 +6048,6 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			FileUtil.getBytes(getClass(), "dependencies/liferay.jpg"));
 	}
 
-	private static final Map<SitePage.Type, String>
-		_externalToInternalValuesMap = HashMapBuilder.put(
-			SitePage.Type.EMBEDDED_PAGE, LayoutConstants.TYPE_EMBEDDED
-		).put(
-			SitePage.Type.LINK_TO_URL_PAGE, LayoutConstants.TYPE_URL
-		).build();
 	private static final List<SitePage.Type> _types = Arrays.asList(
 		SitePage.Type.CONTENT_PAGE, SitePage.Type.WIDGET_PAGE);
 
