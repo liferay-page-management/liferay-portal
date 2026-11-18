@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -69,6 +71,8 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 			hasFragmentEntryLinkSegmentsExperienceId);
 
 		_updateSegmentsExperiences();
+
+		_updateDraftSegmentsExperiences();
 
 		String layoutPageTemplateStructureColumnName = "plid";
 
@@ -660,20 +664,9 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 						"segmentsEntryScopeERC");
 					String typeSettings = resultSet.getString("typeSettings");
 
-					if (Objects.equals(
-							segmentsEntryERC,
-							resultSet.getString("draftSegmentsEntryERC")) &&
-						Objects.equals(
-							segmentsEntryScopeERC,
-							resultSet.getString(
-								"draftSegmentsEntryScopeERC")) &&
-						Objects.equals(
-							name, resultSet.getString("draftName")) &&
-						(priority == resultSet.getInt("draftPriority")) &&
-						(active == resultSet.getBoolean("draftActive")) &&
-						Objects.equals(
-							typeSettings,
-							resultSet.getString("draftTypeSettings"))) {
+					if (!_isSegmentsExperienceChanged(
+							active, name, priority, resultSet, segmentsEntryERC,
+							segmentsEntryScopeERC, typeSettings)) {
 
 						continue;
 					}
@@ -828,10 +821,17 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 	}
 
 	private Set<Integer> _getPriorities(
-			long groupId, long plid, PreparedStatement preparedStatement)
+			long groupId, long plid, Map<Long, Set<Integer>> plidPriorities,
+			PreparedStatement preparedStatement)
 		throws Exception {
 
-		Set<Integer> priorities = new HashSet<>();
+		Set<Integer> priorities = plidPriorities.get(plid);
+
+		if (priorities != null) {
+			return priorities;
+		}
+
+		priorities = new HashSet<>();
 
 		preparedStatement.setLong(1, groupId);
 		preparedStatement.setLong(2, plid);
@@ -842,7 +842,15 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 			}
 		}
 
+		plidPriorities.put(plid, priorities);
+
 		return priorities;
+	}
+
+	private String _getSelectSegmentsExperiencePrioritySQL() {
+		return "select segmentsExperienceId, priority from " +
+			"SegmentsExperience where ctCollectionId = 0 and groupId = ? and " +
+				"plid = ?";
 	}
 
 	private String _getSelectSegmentsExperienceSQL(
@@ -971,6 +979,30 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 		return sb.toString();
 	}
 
+	private boolean _isSegmentsExperienceChanged(
+			boolean active, String name, int priority, ResultSet resultSet,
+			String segmentsEntryERC, String segmentsEntryScopeERC,
+			String typeSettings)
+		throws Exception {
+
+		if (Objects.equals(
+				segmentsEntryERC,
+				resultSet.getString("draftSegmentsEntryERC")) &&
+			Objects.equals(
+				segmentsEntryScopeERC,
+				resultSet.getString("draftSegmentsEntryScopeERC")) &&
+			Objects.equals(name, resultSet.getString("draftName")) &&
+			(priority == resultSet.getInt("draftPriority")) &&
+			(active == resultSet.getBoolean("draftActive")) &&
+			Objects.equals(
+				typeSettings, resultSet.getString("draftTypeSettings"))) {
+
+			return false;
+		}
+
+		return true;
+	}
+
 	private void _updateCTCollectionSegmentsExperiences(
 			boolean approved, String fragmentEntryLinkColumnName,
 			boolean hasFragmentEntryLinkSegmentsExperienceId)
@@ -1094,6 +1126,233 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 		}
 	}
 
+	private void _updateDraftSegmentsExperiencePriorities(
+			Map<Long, Long> plidGroupIds,
+			Map<Long, Map<Long, Integer>> plidSegmentsExperiencePriorities)
+		throws Exception {
+
+		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
+				_getSelectSegmentsExperiencePrioritySQL());
+			PreparedStatement preparedStatement2 =
+				AutoBatchPreparedStatementUtil.autoBatch(
+					connection,
+					"update SegmentsExperience set priority = ? where " +
+						"ctCollectionId = 0 and segmentsExperienceId = ?")) {
+
+			for (Map.Entry<Long, Map<Long, Integer>> entry :
+					plidSegmentsExperiencePriorities.entrySet()) {
+
+				Map<Long, Integer> draftPriorities = new HashMap<>();
+				int minimumPriority = 0;
+				Set<Integer> priorities = new HashSet<>();
+				Map<Long, Integer> segmentsExperiencePriorities =
+					entry.getValue();
+
+				preparedStatement1.setLong(1, plidGroupIds.get(entry.getKey()));
+				preparedStatement1.setLong(2, entry.getKey());
+
+				try (ResultSet resultSet = preparedStatement1.executeQuery()) {
+					while (resultSet.next()) {
+						int priority = resultSet.getInt("priority");
+						long segmentsExperienceId = resultSet.getLong(
+							"segmentsExperienceId");
+
+						minimumPriority = Math.min(minimumPriority, priority);
+
+						if (segmentsExperiencePriorities.containsKey(
+								segmentsExperienceId)) {
+
+							draftPriorities.put(segmentsExperienceId, priority);
+						}
+						else {
+							priorities.add(priority);
+						}
+					}
+				}
+
+				boolean reverted = true;
+
+				while (reverted) {
+					reverted = false;
+
+					Set<Integer> takenPriorities = new HashSet<>(priorities);
+
+					Iterator<Map.Entry<Long, Integer>> iterator =
+						segmentsExperiencePriorities.entrySet(
+						).iterator();
+
+					while (iterator.hasNext()) {
+						Map.Entry<Long, Integer> segmentsExperiencePriority =
+							iterator.next();
+
+						if (takenPriorities.add(
+								segmentsExperiencePriority.getValue())) {
+
+							continue;
+						}
+
+						priorities.add(
+							draftPriorities.get(
+								segmentsExperiencePriority.getKey()));
+
+						iterator.remove();
+
+						reverted = true;
+					}
+				}
+
+				for (int priority : segmentsExperiencePriorities.values()) {
+					minimumPriority = Math.min(minimumPriority, priority);
+				}
+
+				for (long segmentsExperienceId :
+						segmentsExperiencePriorities.keySet()) {
+
+					preparedStatement2.setInt(1, --minimumPriority);
+					preparedStatement2.setLong(2, segmentsExperienceId);
+
+					preparedStatement2.addBatch();
+				}
+
+				for (Map.Entry<Long, Integer> segmentsExperiencePriority :
+						segmentsExperiencePriorities.entrySet()) {
+
+					preparedStatement2.setInt(
+						1, segmentsExperiencePriority.getValue());
+					preparedStatement2.setLong(
+						2, segmentsExperiencePriority.getKey());
+
+					preparedStatement2.addBatch();
+				}
+			}
+
+			preparedStatement2.executeBatch();
+		}
+	}
+
+	private void _updateDraftSegmentsExperiences() throws Exception {
+		Map<Long, Long> plidGroupIds = new HashMap<>();
+		Map<Long, Map<Long, Integer>> plidSegmentsExperiencePriorities =
+			new HashMap<>();
+
+		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
+				StringBundler.concat(
+					"select SegmentsExperience.groupId, ",
+					"SegmentsExperience.modifiedDate, ",
+					"SegmentsExperience.segmentsEntryERC, ",
+					"SegmentsExperience.segmentsEntryScopeERC, ",
+					"SegmentsExperience.plid, SegmentsExperience.name, ",
+					"SegmentsExperience.priority, SegmentsExperience.active_, ",
+					"SegmentsExperience.typeSettings, ",
+					"draftSegmentsExperience.segmentsExperienceId, ",
+					"draftSegmentsExperience.segmentsEntryERC as ",
+					"draftSegmentsEntryERC, ",
+					"draftSegmentsExperience.segmentsEntryScopeERC as ",
+					"draftSegmentsEntryScopeERC, draftSegmentsExperience.name ",
+					"as draftName, draftSegmentsExperience.priority as ",
+					"draftPriority, draftSegmentsExperience.active_ as ",
+					"draftActive, draftSegmentsExperience.typeSettings as ",
+					"draftTypeSettings from SegmentsExperience inner join ",
+					"CTCollection on CTCollection.ctCollectionId = ",
+					"SegmentsExperience.ctCollectionId inner join Layout on ",
+					"Layout.ctCollectionId = 0 and Layout.plid = ",
+					"SegmentsExperience.plid inner join SegmentsExperience ",
+					"draftSegmentsExperience on ",
+					"draftSegmentsExperience.ctCollectionId = 0 and ",
+					"draftSegmentsExperience.groupId = ",
+					"SegmentsExperience.groupId and ",
+					"draftSegmentsExperience.segmentsExperienceKey = ",
+					"SegmentsExperience.segmentsExperienceKey and ",
+					"draftSegmentsExperience.plid = SegmentsExperience.plid ",
+					"where CTCollection.status = ? and Layout.classNameId = ? ",
+					"and draftSegmentsExperience.modifiedDate <= ",
+					"SegmentsExperience.modifiedDate and not exists (select 1 ",
+					"from CTEntry where CTEntry.ctCollectionId = ",
+					"SegmentsExperience.ctCollectionId and ",
+					"CTEntry.modelClassNameId = ? and CTEntry.modelClassPK = ",
+					"SegmentsExperience.segmentsExperienceId) order by ",
+					"SegmentsExperience.modifiedDate desc"));
+			PreparedStatement preparedStatement2 =
+				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
+					connection,
+					StringBundler.concat(
+						"update SegmentsExperience set modifiedDate = ?, ",
+						"segmentsEntryERC = ?, segmentsEntryScopeERC = ?, ",
+						"name = ?, priority = ?, active_ = ?, typeSettings = ",
+						"? where ctCollectionId = 0 and segmentsExperienceId ",
+						"= ?"))) {
+
+			preparedStatement1.setInt(1, WorkflowConstants.STATUS_APPROVED);
+			preparedStatement1.setLong(
+				2, PortalUtil.getClassNameId(Layout.class));
+			preparedStatement1.setLong(
+				3, PortalUtil.getClassNameId(SegmentsExperience.class));
+
+			try (ResultSet resultSet = preparedStatement1.executeQuery()) {
+				Set<Long> segmentsExperienceIds = new HashSet<>();
+
+				while (resultSet.next()) {
+					long segmentsExperienceId = resultSet.getLong(
+						"segmentsExperienceId");
+
+					if (!segmentsExperienceIds.add(segmentsExperienceId)) {
+						continue;
+					}
+
+					boolean active = resultSet.getBoolean("active_");
+					String name = resultSet.getString("name");
+					int priority = resultSet.getInt("priority");
+					String segmentsEntryERC = resultSet.getString(
+						"segmentsEntryERC");
+					String segmentsEntryScopeERC = resultSet.getString(
+						"segmentsEntryScopeERC");
+					String typeSettings = resultSet.getString("typeSettings");
+
+					if (!_isSegmentsExperienceChanged(
+							active, name, priority, resultSet, segmentsEntryERC,
+							segmentsEntryScopeERC, typeSettings)) {
+
+						continue;
+					}
+
+					int draftPriority = resultSet.getInt("draftPriority");
+
+					if (priority != draftPriority) {
+						long plid = resultSet.getLong("plid");
+
+						plidGroupIds.put(plid, resultSet.getLong("groupId"));
+
+						Map<Long, Integer> segmentsExperiencePriorities =
+							plidSegmentsExperiencePriorities.computeIfAbsent(
+								plid, key -> new LinkedHashMap<>());
+
+						segmentsExperiencePriorities.put(
+							segmentsExperienceId, priority);
+
+						priority = draftPriority;
+					}
+
+					preparedStatement2.setTimestamp(
+						1, resultSet.getTimestamp("modifiedDate"));
+					preparedStatement2.setString(2, segmentsEntryERC);
+					preparedStatement2.setString(3, segmentsEntryScopeERC);
+					preparedStatement2.setString(4, name);
+					preparedStatement2.setInt(5, priority);
+					preparedStatement2.setBoolean(6, active);
+					preparedStatement2.setString(7, typeSettings);
+					preparedStatement2.setLong(8, segmentsExperienceId);
+
+					preparedStatement2.addBatch();
+				}
+			}
+
+			preparedStatement2.executeBatch();
+		}
+
+		_updateDraftSegmentsExperiencePriorities(
+			plidGroupIds, plidSegmentsExperiencePriorities);
+	}
+
 	private void _updateSegmentsExperiences() throws Exception {
 		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
 				StringBundler.concat(
@@ -1130,8 +1389,7 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 					"productionSegmentsExperience.segmentsExperienceKey = ",
 					"SegmentsExperience.segmentsExperienceKey)"));
 			PreparedStatement preparedStatement2 = connection.prepareStatement(
-				"select priority from SegmentsExperience where " +
-					"ctCollectionId = 0 and groupId = ? and plid = ?");
+				_getSelectSegmentsExperiencePrioritySQL());
 			PreparedStatement preparedStatement3 =
 				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
 					connection,
@@ -1162,16 +1420,9 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 						continue;
 					}
 
-					Set<Integer> priorities = plidPriorities.get(plid);
-
-					if (priorities == null) {
-						priorities = _getPriorities(
-							resultSet.getLong("groupId"), plid,
-							preparedStatement2);
-
-						plidPriorities.put(plid, priorities);
-					}
-
+					Set<Integer> priorities = _getPriorities(
+						resultSet.getLong("groupId"), plid, plidPriorities,
+						preparedStatement2);
 					int priority = resultSet.getInt("priority");
 
 					if (priorities.contains(priority)) {
