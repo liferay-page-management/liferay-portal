@@ -6,7 +6,9 @@
 package com.liferay.segments.internal.upgrade.v4_2_2.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.change.tracking.constants.CTConstants;
 import com.liferay.change.tracking.model.CTCollection;
+import com.liferay.change.tracking.model.CTEntry;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.service.CTCollectionService;
 import com.liferay.change.tracking.service.CTEntryLocalService;
@@ -27,9 +29,12 @@ import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
+import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -40,6 +45,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.upgrade.UpgradeException;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -70,6 +76,11 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Georgel Pop
@@ -433,6 +444,79 @@ public class SegmentsExperienceUpgradeProcessTest {
 
 	@Test
 	@TestInfo("LPD-113912")
+	public void testUpgradeWithCTCollectionAddedLayoutAfterFailedInsert()
+		throws Exception {
+
+		CTCollection ctCollection = _addCTCollection();
+
+		SegmentsExperience segmentsExperience = null;
+
+		Layout layout = _addLayoutWithoutDraftSegmentsExperience(ctCollection);
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			segmentsExperience =
+				_segmentsExperienceLocalService.getSegmentsExperience(
+					_segmentsExperienceLocalService.
+						fetchDefaultSegmentsExperienceId(layout.getPlid()));
+
+			segmentsExperience = (SegmentsExperience)segmentsExperience.clone();
+
+			segmentsExperience.setSegmentsExperienceKey(
+				RandomTestUtil.randomString());
+
+			Layout draftLayout = layout.fetchDraftLayout();
+
+			segmentsExperience = _addSegmentsExperience(
+				ctCollection, draftLayout.getPlid(), segmentsExperience);
+		}
+
+		Assert.assertThrows(UpgradeException.class, this::_runUpgrade);
+
+		_assertSegmentsExperienceCTEntries(ctCollection);
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_segmentsExperienceLocalService.deleteSegmentsExperience(
+				segmentsExperience);
+		}
+
+		_runUpgrade();
+
+		_publishCTCollection(ctCollection);
+
+		_assertDraftLayoutSegmentsExperience(layout);
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
+	public void testUpgradeWithCTCollectionAddedLayoutsAfterFailedUpgrade()
+		throws Exception {
+
+		CTCollection ctCollection = _addCTCollection();
+
+		Layout layout1 = _addLayoutWithoutDraftSegmentsExperience(ctCollection);
+		Layout layout2 = _addLayoutWithoutDraftSegmentsExperience(ctCollection);
+
+		_assertUpgradeException(
+			_createCTEntryModelListener(CTConstants.CT_CHANGE_TYPE_ADDITION));
+
+		_assertSegmentsExperienceCTEntries(ctCollection);
+
+		_runUpgrade();
+
+		_publishCTCollection(ctCollection);
+
+		_assertDraftLayoutSegmentsExperience(layout1);
+		_assertDraftLayoutSegmentsExperience(layout2);
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
 	public void testUpgradeWithCTCollectionDeletedSegmentsExperience()
 		throws Exception {
 
@@ -493,6 +577,68 @@ public class SegmentsExperienceUpgradeProcessTest {
 		Assert.assertNull(
 			_segmentsExperienceLocalService.fetchSegmentsExperience(
 				_publishedSegmentsExperienceId2));
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
+	public void testUpgradeWithCTCollectionDeletedSegmentsExperienceAfterFailedUpgrade()
+		throws Exception {
+
+		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+			_layout.fetchDraftLayout(), _draftSegmentsExperienceId2);
+
+		CTCollection ctCollection = _addCTCollection();
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			fragmentEntryLink.setCss(RandomTestUtil.randomString());
+
+			fragmentEntryLink =
+				_fragmentEntryLinkLocalService.updateFragmentEntryLink(
+					fragmentEntryLink);
+
+			_fragmentEntryLink2.setCss(RandomTestUtil.randomString());
+
+			_fragmentEntryLink2 =
+				_fragmentEntryLinkLocalService.updateFragmentEntryLink(
+					_fragmentEntryLink2);
+
+			_segmentsExperienceLocalService.deleteSegmentsExperience(
+				_publishedSegmentsExperienceId2);
+		}
+
+		_assertUpgradeException(
+			new BaseModelListener<CTEntry>() {
+
+				@Override
+				public void onBeforeUpdate(
+						CTEntry originalCTEntry, CTEntry ctEntry)
+					throws ModelListenerException {
+
+					if ((ctEntry.getChangeType() ==
+							CTConstants.CT_CHANGE_TYPE_DELETION) &&
+						(++_count == 2)) {
+
+						throw new ModelListenerException();
+					}
+				}
+
+				private int _count;
+
+			});
+
+		_runUpgrade();
+
+		_publishCTCollection(ctCollection);
+
+		Assert.assertNull(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				_fragmentEntryLink2.getFragmentEntryLinkId()));
+		Assert.assertNull(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				fragmentEntryLink.getFragmentEntryLinkId()));
 	}
 
 	@Test
@@ -606,6 +752,39 @@ public class SegmentsExperienceUpgradeProcessTest {
 		_runUpgrade();
 
 		_assertNames(name1);
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
+	public void testUpgradeWithCTCollectionModifiedSegmentsExperiencesAfterFailedUpgrade()
+		throws Exception {
+
+		_updateSegmentsExperienceIds();
+
+		CTCollection ctCollection = _addCTCollection();
+		String name = RandomTestUtil.randomString();
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_updateSegmentsExperienceName(
+				name, _publishedSegmentsExperienceId1);
+			_updateSegmentsExperienceName(
+				name, _publishedSegmentsExperienceId2);
+		}
+
+		_assertUpgradeException(
+			_createCTEntryModelListener(
+				CTConstants.CT_CHANGE_TYPE_MODIFICATION));
+
+		_assertSegmentsExperienceCTEntries(ctCollection);
+
+		_runUpgrade();
+
+		_publishCTCollection(ctCollection);
+
+		_assertNames(name);
 	}
 
 	@Test
@@ -1611,6 +1790,32 @@ public class SegmentsExperienceUpgradeProcessTest {
 			fragmentEntryLinks.toString(), 1, fragmentEntryLinks.size());
 	}
 
+	private void _assertSegmentsExperienceCTEntries(CTCollection ctCollection)
+		throws Exception {
+
+		try (PreparedStatement preparedStatement = _connection.prepareStatement(
+				StringBundler.concat(
+					"select count(*) as count from CTEntry where ",
+					"ctCollectionId = ? and modelClassNameId = ? and ",
+					"changeType != ? and not exists (select 1 from ",
+					"SegmentsExperience where ",
+					"SegmentsExperience.ctCollectionId = ",
+					"CTEntry.ctCollectionId and ",
+					"SegmentsExperience.segmentsExperienceId = ",
+					"CTEntry.modelClassPK)"))) {
+
+			preparedStatement.setLong(1, ctCollection.getCtCollectionId());
+			preparedStatement.setLong(
+				2, PortalUtil.getClassNameId(SegmentsExperience.class));
+			preparedStatement.setInt(3, CTConstants.CT_CHANGE_TYPE_DELETION);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				Assert.assertTrue(resultSet.next());
+				Assert.assertEquals(0, resultSet.getLong("count"));
+			}
+		}
+	}
+
 	private void _assertSegmentsExperienceId(
 		long expectedSegmentsExperienceId,
 		FragmentEntryLink fragmentEntryLink) {
@@ -1647,6 +1852,47 @@ public class SegmentsExperienceUpgradeProcessTest {
 		Assert.assertEquals(
 			expectedSegmentsExperienceId,
 			layoutPageTemplateStructureRel.getSegmentsExperienceId());
+	}
+
+	private void _assertUpgradeException(ModelListener<CTEntry> modelListener)
+		throws Exception {
+
+		Bundle bundle = FrameworkUtil.getBundle(
+			SegmentsExperienceUpgradeProcessTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		ServiceRegistration<?> serviceRegistration =
+			bundleContext.registerService(
+				ModelListener.class, modelListener, null);
+
+		try {
+			Assert.assertThrows(UpgradeException.class, this::_runUpgrade);
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
+	}
+
+	private ModelListener<CTEntry> _createCTEntryModelListener(int changeType) {
+		return new BaseModelListener<CTEntry>() {
+
+			@Override
+			public void onBeforeCreate(CTEntry ctEntry)
+				throws ModelListenerException {
+
+				if ((ctEntry.getModelClassNameId() == PortalUtil.getClassNameId(
+						SegmentsExperience.class)) &&
+					(ctEntry.getChangeType() == changeType) &&
+					(++_count == 2)) {
+
+					throw new ModelListenerException();
+				}
+			}
+
+			private int _count;
+
+		};
 	}
 
 	private void _deleteCTEntry(
