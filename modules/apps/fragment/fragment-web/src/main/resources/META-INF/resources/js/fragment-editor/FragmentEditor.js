@@ -148,12 +148,14 @@ const FragmentEditor = ({
 		const applyFragmentCodeHandler = Liferay.on(
 			APPLY_FRAGMENT_CODE_EVENT,
 			({configuration, css, html, js}) => {
-				setLoadedCode({
-					configuration: JSON.stringify(configuration, null, '\t'),
-					css,
-					html,
-					js,
-				});
+				setLoadedCode((loadedCode) => ({
+					configuration: configuration
+						? JSON.stringify(configuration, null, '\t')
+						: loadedCode.configuration,
+					css: css ?? loadedCode.css,
+					html: html ?? loadedCode.html,
+					js: js ?? loadedCode.js,
+				}));
 			}
 		);
 
