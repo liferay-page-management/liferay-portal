@@ -21,7 +21,6 @@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
 <%@ page import="com.liferay.design.library.util.DesignLibraryUtil" %><%@
 page import="com.liferay.fragment.constants.FragmentActionKeys" %><%@
-page import="com.liferay.fragment.constants.FragmentPortletKeys" %><%@
 page import="com.liferay.fragment.contributor.FragmentCollectionContributor" %><%@
 page import="com.liferay.fragment.exception.DuplicateFragmentCollectionException" %><%@
 page import="com.liferay.fragment.exception.DuplicateFragmentCollectionKeyException" %><%@
@@ -60,13 +59,11 @@ page import="com.liferay.fragment.web.internal.frontend.taglib.clay.servlet.tagl
 page import="com.liferay.fragment.web.internal.frontend.taglib.clay.servlet.taglib.FragmentEntryVerticalCardFactory" %><%@
 page import="com.liferay.fragment.web.internal.security.permission.resource.FragmentPermission" %><%@
 page import="com.liferay.fragment.web.internal.servlet.taglib.util.FragmentCollectionActionDropdownItemsProvider" %><%@
+page import="com.liferay.fragment.web.internal.util.FragmentPortletUtil" %><%@
 page import="com.liferay.frontend.taglib.servlet.taglib.util.AnimationType" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.kernel.model.Group" %><%@
-page import="com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory" %><%@
-page import="com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil" %><%@
-page import="com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder" %><%@
 page import="com.liferay.portal.kernel.service.GroupLocalServiceUtil" %><%@
 page import="com.liferay.portal.kernel.servlet.SessionMessages" %><%@
 page import="com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbEntry" %><%@

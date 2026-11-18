@@ -14,6 +14,7 @@ import com.liferay.fragment.web.internal.info.field.type.FormButtonInfoFieldType
 import com.liferay.fragment.web.internal.info.field.type.LocalizationSelectInfoFieldType;
 import com.liferay.fragment.web.internal.info.field.type.StepperInfoFieldType;
 import com.liferay.fragment.web.internal.security.permission.resource.FragmentPermission;
+import com.liferay.fragment.web.internal.util.FragmentPortletUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
@@ -258,15 +259,8 @@ public class BasicFragmentManagementToolbarDisplayContext
 				dropdownItem.putData("action", "generateFragmentWithAI");
 				dropdownItem.putData(
 					"editFragmentURL",
-					PortletURLBuilder.createRenderURL(
-						liferayPortletResponse
-					).setMVCRenderCommandName(
-						"/fragment/edit_fragment_entry"
-					).setRedirect(
-						themeDisplay.getURLCurrent()
-					).setParameter(
-						"externalReferenceCode", "EXTERNAL_REFERENCE_CODE"
-					).buildString());
+					FragmentPortletUtil.getEditFragmentEntryURL(
+						httpServletRequest));
 
 				FragmentCollection fragmentCollection =
 					fragmentDisplayContext.getFragmentCollection();
