@@ -18,7 +18,6 @@ if ((portletFragmentDisplayContext != null) && Objects.equals(portletFragmentDis
 	fragmentSetExternalReferenceCode = fragmentCollection.getExternalReferenceCode();
 }
 
-RequestBackedPortletURLFactory requestBackedPortletURLFactory = RequestBackedPortletURLFactoryUtil.create(request);
 Group scopeGroup = themeDisplay.getScopeGroup();
 %>
 
@@ -27,16 +26,7 @@ Group scopeGroup = themeDisplay.getScopeGroup();
 		module="{FragmentAIAssistantTriggerButton} from fragment-web"
 		props='<%=
 			HashMapBuilder.<String, Object>put(
-				"editFragmentURL",
-				PortletURLBuilder.create(
-					requestBackedPortletURLFactory.createRenderURL(FragmentPortletKeys.FRAGMENT)
-				).setMVCRenderCommandName(
-					"/fragment/edit_fragment_entry"
-				).setRedirect(
-					themeDisplay.getURLCurrent()
-				).setParameter(
-					"externalReferenceCode", "EXTERNAL_REFERENCE_CODE"
-				).buildString()
+				"editFragmentURL", FragmentPortletUtil.getEditFragmentEntryURL(request)
 			).put(
 				"fragmentPortletNamespace", portletDisplay.getNamespace()
 			).put(
