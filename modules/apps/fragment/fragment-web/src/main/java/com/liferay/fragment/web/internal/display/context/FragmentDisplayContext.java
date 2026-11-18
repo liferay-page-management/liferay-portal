@@ -105,6 +105,14 @@ public class FragmentDisplayContext {
 			() -> {
 				FragmentCollection fragmentCollection = getFragmentCollection();
 
+				if ((fragmentCollection == null) ||
+					!Objects.equals(
+						getFragmentType(),
+						FragmentTypeConstants.BASIC_FRAGMENT_TYPE)) {
+
+					return null;
+				}
+
 				return fragmentCollection.getExternalReferenceCode();
 			}
 		).put(

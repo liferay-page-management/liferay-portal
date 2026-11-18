@@ -7,14 +7,13 @@ package com.liferay.fragment.web.internal.product.navigation.control.menu;
 
 import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.constants.FragmentPortletKeys;
-import com.liferay.fragment.web.internal.constants.FragmentTypeConstants;
 import com.liferay.fragment.web.internal.constants.FragmentWebKeys;
-import com.liferay.fragment.web.internal.display.context.FragmentDisplayContext;
 import com.liferay.fragment.web.internal.security.permission.resource.FragmentPermission;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.product.navigation.control.menu.BaseJSPProductNavigationControlMenuEntry;
 import com.liferay.product.navigation.control.menu.ProductNavigationControlMenuEntry;
@@ -71,24 +70,15 @@ public class FragmentAIAssistantProductNavigationControlMenuEntry
 			!FragmentPermission.contains(
 				themeDisplay.getPermissionChecker(),
 				themeDisplay.getScopeGroupId(),
-				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES)) {
+				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES) ||
+			Validator.isNull(
+				httpServletRequest.getAttribute(
+					FragmentWebKeys.FRAGMENT_DISPLAY_CONTEXT))) {
 
 			return false;
 		}
 
-		FragmentDisplayContext fragmentDisplayContext =
-			(FragmentDisplayContext)httpServletRequest.getAttribute(
-				FragmentWebKeys.FRAGMENT_DISPLAY_CONTEXT);
-
-		if ((fragmentDisplayContext == null) ||
-			(fragmentDisplayContext.getFragmentCollection() == null)) {
-
-			return false;
-		}
-
-		return Objects.equals(
-			fragmentDisplayContext.getFragmentType(),
-			FragmentTypeConstants.BASIC_FRAGMENT_TYPE);
+		return true;
 	}
 
 	@Override

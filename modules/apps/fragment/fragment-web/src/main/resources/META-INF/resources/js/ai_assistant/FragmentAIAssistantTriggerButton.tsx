@@ -32,7 +32,7 @@ function getFragment(
 type Props = {
 	editFragmentURL: string;
 	fragmentPortletNamespace: string;
-	fragmentSetExternalReferenceCode: string;
+	fragmentSetExternalReferenceCode?: string;
 	siteExternalReferenceCode: string;
 };
 
@@ -51,7 +51,8 @@ export default function FragmentAIAssistantTriggerButton({
 				if (
 					fragment &&
 					fragment.fragmentSetExternalReferenceCode !==
-						fragmentSetExternalReferenceCode
+						fragmentSetExternalReferenceCode &&
+					fragmentSetExternalReferenceCode
 				) {
 					return;
 				}
