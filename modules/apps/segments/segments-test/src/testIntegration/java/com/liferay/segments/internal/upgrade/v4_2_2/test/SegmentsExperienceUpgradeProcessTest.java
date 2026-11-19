@@ -176,6 +176,22 @@ public class SegmentsExperienceUpgradeProcessTest {
 
 	@Test
 	@TestInfo("LPD-113912")
+	public void testUpgradeFrom3_1_1WithCTCollectionAddedLayout()
+		throws Exception {
+
+		CTCollection ctCollection = _addCTCollection();
+
+		Layout layout = _addLayoutWithoutDraftSegmentsExperience(ctCollection);
+
+		_runUpgradeFrom3_1_1();
+
+		_publishCTCollection(ctCollection);
+
+		_assertDraftLayoutSegmentsExperience(layout);
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
 	public void testUpgradeFrom3_1_1WithCTCollectionDeletedSegmentsExperience()
 		throws Exception {
 
@@ -323,6 +339,101 @@ public class SegmentsExperienceUpgradeProcessTest {
 		_assertSegmentsExperienceId(
 			_draftSegmentsExperienceId1, _fragmentEntryLink1,
 			_layoutPageTemplateStructureRel1);
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
+	public void testUpgradeWithCTCollectionAddedLayout() throws Exception {
+		CTCollection ctCollection = _addCTCollection();
+
+		Layout layout = _addLayoutWithoutDraftSegmentsExperience(ctCollection);
+
+		_runUpgrade();
+		_runUpgrade();
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_assertDraftLayoutSegmentsExperience(layout);
+		}
+
+		_publishCTCollection(ctCollection);
+
+		_assertDraftLayoutSegmentsExperience(layout);
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
+	public void testUpgradeWithCTCollectionAddedLayoutAfterFailedInsert()
+		throws Exception {
+
+		CTCollection ctCollection = _addCTCollection();
+
+		SegmentsExperience segmentsExperience = null;
+
+		Layout layout = _addLayoutWithoutDraftSegmentsExperience(ctCollection);
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			segmentsExperience =
+				_segmentsExperienceLocalService.getSegmentsExperience(
+					_segmentsExperienceLocalService.
+						fetchDefaultSegmentsExperienceId(layout.getPlid()));
+
+			segmentsExperience = (SegmentsExperience)segmentsExperience.clone();
+
+			segmentsExperience.setSegmentsExperienceKey(
+				RandomTestUtil.randomString());
+
+			Layout draftLayout = layout.fetchDraftLayout();
+
+			segmentsExperience = _addSegmentsExperience(
+				ctCollection, draftLayout.getPlid(), segmentsExperience);
+		}
+
+		Assert.assertThrows(UpgradeException.class, this::_runUpgrade);
+
+		_assertSegmentsExperienceCTEntries(ctCollection);
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_segmentsExperienceLocalService.deleteSegmentsExperience(
+				segmentsExperience);
+		}
+
+		_runUpgrade();
+
+		_publishCTCollection(ctCollection);
+
+		_assertDraftLayoutSegmentsExperience(layout);
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
+	public void testUpgradeWithCTCollectionAddedLayoutsAfterFailedUpgrade()
+		throws Exception {
+
+		CTCollection ctCollection = _addCTCollection();
+
+		Layout layout1 = _addLayoutWithoutDraftSegmentsExperience(ctCollection);
+		Layout layout2 = _addLayoutWithoutDraftSegmentsExperience(ctCollection);
+
+		_assertUpgradeException(
+			_createCTEntryModelListener(CTConstants.CT_CHANGE_TYPE_ADDITION));
+
+		_assertSegmentsExperienceCTEntries(ctCollection);
+
+		_runUpgrade();
+
+		_publishCTCollection(ctCollection);
+
+		_assertDraftLayoutSegmentsExperience(layout1);
+		_assertDraftLayoutSegmentsExperience(layout2);
 	}
 
 	@Test
@@ -512,6 +623,60 @@ public class SegmentsExperienceUpgradeProcessTest {
 
 	@Test
 	@TestInfo("LPD-113912")
+	public void testUpgradeWithCTCollectionModifiedSegmentsExperienceWithoutDraftSegmentsExperience()
+		throws Exception {
+
+		CTCollection ctCollection1 = _addCTCollection();
+		String name1 = RandomTestUtil.randomString();
+
+		_updateSegmentsExperienceName(
+			ctCollection1, name1, _publishedSegmentsExperienceId2);
+
+		CTCollection ctCollection2 = _addCTCollection();
+		String name2 = RandomTestUtil.randomString();
+
+		_updateSegmentsExperienceName(
+			ctCollection2, name2, _publishedSegmentsExperienceId2);
+
+		_updateSegmentsExperienceIds();
+
+		_resourcePermissionLocalService.deleteResourcePermissions(
+			_group.getCompanyId(), SegmentsExperience.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL, _draftSegmentsExperienceId2);
+
+		_executeUpdate(
+			"delete from SegmentsExperience where segmentsExperienceId = ?",
+			_draftSegmentsExperienceId2);
+
+		_entityCache.clearCache();
+		_multiVMPool.clear();
+
+		_runUpgrade();
+
+		_assertDraftSegmentsExperienceName(ctCollection1, name1);
+		_assertDraftSegmentsExperienceName(ctCollection2, name2);
+
+		_publishCTCollection(ctCollection1);
+
+		SegmentsExperience publishedSegmentsExperience =
+			_segmentsExperienceLocalService.getSegmentsExperience(
+				_publishedSegmentsExperienceId2);
+
+		SegmentsExperience draftSegmentsExperience =
+			_fetchDraftSegmentsExperience(publishedSegmentsExperience);
+
+		_draftSegmentsExperienceId2 =
+			draftSegmentsExperience.getSegmentsExperienceId();
+
+		_assertNames(name1);
+
+		_runUpgrade();
+
+		_assertNames(name1);
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
 	public void testUpgradeWithCTCollectionModifiedSegmentsExperiencesAfterFailedUpgrade()
 		throws Exception {
 
@@ -651,6 +816,29 @@ public class SegmentsExperienceUpgradeProcessTest {
 		_publishCTCollection(ctCollection);
 
 		_assertSegmentsExperience(segmentsExperience);
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
+	public void testUpgradeWithScheduledCTCollectionAddedLayout()
+		throws Exception {
+
+		CTCollection ctCollection = _addCTCollection();
+
+		Layout layout = _addLayoutWithoutDraftSegmentsExperience(ctCollection);
+
+		ctCollection.setStatus(WorkflowConstants.STATUS_SCHEDULED);
+
+		ctCollection = _ctCollectionLocalService.updateCTCollection(
+			ctCollection);
+
+		_runUpgrade();
+		_runUpgrade();
+
+		_ctProcessLocalService.addCTProcess(
+			TestPropsValues.getUserId(), ctCollection.getCtCollectionId());
+
+		_assertDraftLayoutSegmentsExperience(layout);
 	}
 
 	@Test
@@ -852,6 +1040,60 @@ public class SegmentsExperienceUpgradeProcessTest {
 		}
 	}
 
+	private Layout _addLayoutWithoutDraftSegmentsExperience(
+			CTCollection ctCollection)
+		throws Exception {
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+			Layout draftLayout = layout.fetchDraftLayout();
+
+			SegmentsExperience segmentsExperience =
+				_segmentsExperienceLocalService.getSegmentsExperience(
+					_segmentsExperienceLocalService.
+						fetchDefaultSegmentsExperienceId(
+							draftLayout.getPlid()));
+
+			_addFragmentEntryLink(
+				draftLayout, segmentsExperience.getSegmentsExperienceId());
+
+			_deleteCTEntry(ctCollection, segmentsExperience);
+
+			_resourcePermissionLocalService.deleteResourcePermissions(
+				_group.getCompanyId(), SegmentsExperience.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				segmentsExperience.getSegmentsExperienceId());
+
+			long newSegmentsExperienceId =
+				_segmentsExperienceLocalService.
+					fetchDefaultSegmentsExperienceId(layout.getPlid());
+			long oldSegmentsExperienceId =
+				segmentsExperience.getSegmentsExperienceId();
+
+			_executeUpdate(
+				"update FragmentEntryLink set segmentsExperienceId = ? where " +
+					"segmentsExperienceId = ?",
+				newSegmentsExperienceId, oldSegmentsExperienceId);
+			_executeUpdate(
+				"update LayoutPageTemplateStructureRel set " +
+					"segmentsExperienceId = ? where segmentsExperienceId = ?",
+				newSegmentsExperienceId, oldSegmentsExperienceId);
+
+			_executeUpdate(
+				"delete from SegmentsExperience where segmentsExperienceId = ?",
+				oldSegmentsExperienceId);
+
+			_entityCache.clearCache();
+			_multiVMPool.clear();
+
+			return layout;
+		}
+	}
+
 	private SegmentsExperience _addSegmentsExperience(CTCollection ctCollection)
 		throws Exception {
 
@@ -898,6 +1140,29 @@ public class SegmentsExperienceUpgradeProcessTest {
 		}
 	}
 
+	private void _assertDraftLayoutSegmentsExperience(Layout layout) {
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		SegmentsExperience segmentsExperience =
+			_segmentsExperienceLocalService.fetchSegmentsExperience(
+				_segmentsExperienceLocalService.
+					fetchDefaultSegmentsExperienceId(draftLayout.getPlid()));
+
+		_assertSegmentsExperience(segmentsExperience);
+
+		Assert.assertNotNull(
+			_fetchLayoutPageTemplateStructureRel(
+				draftLayout.getPlid(),
+				segmentsExperience.getSegmentsExperienceId()));
+
+		Assert.assertEquals(
+			3,
+			_resourcePermissionLocalService.getResourcePermissionsCount(
+				_group.getCompanyId(), SegmentsExperience.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(segmentsExperience.getSegmentsExperienceId())));
+	}
+
 	private void _assertDraftSegmentsExperienceIds() {
 		_assertSegmentsExperienceId(
 			_draftSegmentsExperienceId1, _fragmentEntryLink1,
@@ -915,6 +1180,27 @@ public class SegmentsExperienceUpgradeProcessTest {
 					ctCollection.getCtCollectionId())) {
 
 			_assertDraftSegmentsExperienceIds();
+		}
+	}
+
+	private void _assertDraftSegmentsExperienceName(
+			CTCollection ctCollection, String name)
+		throws Exception {
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			SegmentsExperience publishedSegmentsExperience =
+				_segmentsExperienceLocalService.getSegmentsExperience(
+					_publishedSegmentsExperienceId2);
+
+			SegmentsExperience draftSegmentsExperience =
+				_fetchDraftSegmentsExperience(publishedSegmentsExperience);
+
+			Assert.assertEquals(
+				name,
+				draftSegmentsExperience.getName(LocaleUtil.getSiteDefault()));
 		}
 	}
 
@@ -1076,6 +1362,20 @@ public class SegmentsExperienceUpgradeProcessTest {
 				segmentsExperience.getSegmentsExperienceId()));
 	}
 
+	private void _executeUpdate(String sql, long... parameters)
+		throws Exception {
+
+		try (PreparedStatement preparedStatement = _connection.prepareStatement(
+				sql)) {
+
+			for (int i = 0; i < parameters.length; i++) {
+				preparedStatement.setLong(i + 1, parameters[i]);
+			}
+
+			preparedStatement.executeUpdate();
+		}
+	}
+
 	private SegmentsExperience _fetchDraftSegmentsExperience(
 		SegmentsExperience publishedSegmentsExperience) {
 
@@ -1197,6 +1497,18 @@ public class SegmentsExperienceUpgradeProcessTest {
 			_layoutPageTemplateStructureRel1, _publishedSegmentsExperienceId1);
 		_layoutPageTemplateStructureRel2 = _updateSegmentsExperienceId(
 			_layoutPageTemplateStructureRel2, _publishedSegmentsExperienceId2);
+	}
+
+	private void _updateSegmentsExperienceName(
+			CTCollection ctCollection, String name, long segmentsExperienceId)
+		throws Exception {
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_updateSegmentsExperienceName(name, segmentsExperienceId);
+		}
 	}
 
 	private void _updateSegmentsExperienceName(
