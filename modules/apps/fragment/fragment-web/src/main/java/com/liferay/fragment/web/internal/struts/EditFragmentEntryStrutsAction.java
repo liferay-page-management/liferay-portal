@@ -5,14 +5,19 @@
 
 package com.liferay.fragment.web.internal.struts;
 
+import com.liferay.fragment.constants.FragmentActionKeys;
+import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.struts.StrutsAction;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletRequest;
 
@@ -44,6 +49,14 @@ public class EditFragmentEntryStrutsAction implements StrutsAction {
 				ParamUtil.getString(
 					httpServletRequest, "siteExternalReferenceCode"),
 				_portal.getCompanyId(httpServletRequest));
+
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
+			_portletResourcePermission.check(
+				themeDisplay.getPermissionChecker(), group.getGroupId(),
+				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 		}
 		catch (PortalException portalException) {
 			_portal.sendError(
@@ -72,5 +85,10 @@ public class EditFragmentEntryStrutsAction implements StrutsAction {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference(
+		target = "(resource.name=" + FragmentConstants.RESOURCE_NAME + ")"
+	)
+	private PortletResourcePermission _portletResourcePermission;
 
 }
