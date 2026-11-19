@@ -145,6 +145,21 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 		}
 	}
 
+	private String _getProductionModeSQL(String tableName) {
+		StringBundler sb = new StringBundler(8);
+
+		sb.append("(ctCollectionId = 0 or not exists (select 1 from ");
+		sb.append("SegmentsExperience where ");
+		sb.append("SegmentsExperience.ctCollectionId = ");
+		sb.append(tableName);
+		sb.append(".ctCollectionId and ");
+		sb.append("SegmentsExperience.segmentsExperienceId = ");
+		sb.append(tableName);
+		sb.append(".segmentsExperienceId)) and ");
+
+		return sb.toString();
+	}
+
 	private String _getSelectSegmentsExperienceSQL(
 		String fragmentEntryLinkColumnName,
 		boolean hasFragmentEntryLinkSegmentsExperienceId,
@@ -200,19 +215,14 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 	private String _getUpdateFragmentEntryLinkSQL(
 		String columnName, boolean hasCTCollectionId, boolean productionMode) {
 
-		StringBundler sb = new StringBundler(11);
+		StringBundler sb = new StringBundler(6);
 
 		sb.append("update FragmentEntryLink set segmentsExperienceId = ? ");
 		sb.append("where groupId = ? and ");
 
 		if (hasCTCollectionId) {
 			if (productionMode) {
-				sb.append("(ctCollectionId = 0 or not exists (select 1 from ");
-				sb.append("SegmentsExperience where ");
-				sb.append("SegmentsExperience.ctCollectionId = ");
-				sb.append("FragmentEntryLink.ctCollectionId and ");
-				sb.append("SegmentsExperience.segmentsExperienceId = ");
-				sb.append("FragmentEntryLink.segmentsExperienceId)) and ");
+				sb.append(_getProductionModeSQL("FragmentEntryLink"));
 			}
 			else {
 				sb.append("ctCollectionId = ? and ");
@@ -229,20 +239,15 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 	private String _getUpdateLayoutPageTemplateStructureRelSQL(
 		String columnName, boolean hasCTCollectionId, boolean productionMode) {
 
-		StringBundler sb = new StringBundler(15);
+		StringBundler sb = new StringBundler(9);
 
 		sb.append("update LayoutPageTemplateStructureRel set ");
 		sb.append("segmentsExperienceId = ? where ");
 
 		if (hasCTCollectionId) {
 			if (productionMode) {
-				sb.append("(ctCollectionId = 0 or not exists (select 1 from ");
-				sb.append("SegmentsExperience where ");
-				sb.append("SegmentsExperience.ctCollectionId = ");
-				sb.append("LayoutPageTemplateStructureRel.ctCollectionId and ");
-				sb.append("SegmentsExperience.segmentsExperienceId = ");
-				sb.append("LayoutPageTemplateStructureRel.");
-				sb.append("segmentsExperienceId)) and ");
+				sb.append(
+					_getProductionModeSQL("LayoutPageTemplateStructureRel"));
 			}
 			else {
 				sb.append("ctCollectionId = ? and ");
