@@ -211,29 +211,41 @@ public class EditLayoutModeProductNavigationControlMenuEntry
 		long segmentsExperienceId = ParamUtil.getLong(
 			httpServletRequest, "segmentsExperienceId", -1);
 
-		if (segmentsExperienceId != -1) {
-			SegmentsExperience publishedSegmentsExperience =
-				_segmentsExperienceLocalService.fetchSegmentsExperience(
-					segmentsExperienceId);
-
-			Layout draftLayout = layout.fetchDraftLayout();
-
-			SegmentsExperience draftSegmentsExperience =
-				_segmentsExperienceLocalService.fetchSegmentsExperience(
-					draftLayout.getGroupId(),
-					publishedSegmentsExperience.getSegmentsExperienceKey(),
-					draftLayout.getPlid());
-
-			if ((draftSegmentsExperience != null) &&
-				(draftLayout.getPlid() == draftSegmentsExperience.getPlid())) {
-
-				return HttpComponentsUtil.setParameter(
-					url, "segmentsExperienceId",
-					draftSegmentsExperience.getSegmentsExperienceId());
-			}
+		if (segmentsExperienceId == -1) {
+			return url;
 		}
 
-		return url;
+		SegmentsExperience segmentsExperience =
+			_segmentsExperienceLocalService.fetchSegmentsExperience(
+				segmentsExperienceId);
+
+		if (segmentsExperience == null) {
+			return url;
+		}
+
+		Layout draftLayout = layout;
+
+		if (!layout.isDraftLayout()) {
+			draftLayout = layout.fetchDraftLayout();
+		}
+
+		if (draftLayout == null) {
+			return url;
+		}
+
+		SegmentsExperience draftSegmentsExperience =
+			_segmentsExperienceLocalService.fetchSegmentsExperience(
+				draftLayout.getGroupId(),
+				segmentsExperience.getSegmentsExperienceKey(),
+				draftLayout.getPlid());
+
+		if (draftSegmentsExperience == null) {
+			return url;
+		}
+
+		return HttpComponentsUtil.setParameter(
+			url, "segmentsExperienceId",
+			draftSegmentsExperience.getSegmentsExperienceId());
 	}
 
 	private String _getRedirect(
