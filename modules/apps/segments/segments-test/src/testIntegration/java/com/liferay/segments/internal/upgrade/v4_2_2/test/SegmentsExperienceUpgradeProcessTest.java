@@ -49,6 +49,7 @@ import com.liferay.portal.kernel.upgrade.UpgradeException;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.kernel.version.Version;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -57,6 +58,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
+import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.segments.test.util.SegmentsTestUtil;
@@ -820,6 +822,450 @@ public class SegmentsExperienceUpgradeProcessTest {
 
 	@Test
 	@TestInfo("LPD-113912")
+	public void testUpgradeWithPublishedCTCollectionBeforeUpgradeAddedLayout()
+		throws Exception {
+
+		CTCollection ctCollection = _addCTCollection();
+
+		Layout layout = _addLayoutWithoutDraftSegmentsExperience(ctCollection);
+
+		_publishCTCollection(ctCollection);
+
+		_runUpgrade();
+		_runUpgrade();
+
+		_assertDraftLayoutSegmentsExperience(layout);
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
+	public void testUpgradeWithPublishedCTCollectionBeforeUpgradeAddedSegmentsExperience()
+		throws Exception {
+
+		CTCollection ctCollection = _addCTCollection();
+
+		SegmentsExperience segmentsExperience = _addSegmentsExperience(
+			ctCollection);
+
+		SegmentsExperience publishedSegmentsExperience = _addSegmentsExperience(
+			ctCollection, _layout.getPlid(), segmentsExperience);
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			for (FragmentEntryLink fragmentEntryLink :
+					_fragmentEntryLinkLocalService.
+						getFragmentEntryLinksBySegmentsExperienceId(
+							_group.getGroupId(),
+							segmentsExperience.getSegmentsExperienceId(),
+							segmentsExperience.getPlid())) {
+
+				_updateSegmentsExperienceId(
+					fragmentEntryLink,
+					publishedSegmentsExperience.getSegmentsExperienceId());
+			}
+		}
+
+		_publishCTCollection(ctCollection);
+
+		_runUpgrade();
+
+		_assertSegmentsExperience(segmentsExperience);
+
+		_runUpgrade();
+
+		_assertSegmentsExperience(segmentsExperience);
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
+	public void testUpgradeWithPublishedCTCollectionBeforeUpgradeAddedSegmentsExperienceWithSamePriority()
+		throws Exception {
+
+		CTCollection ctCollection = _addCTCollection();
+
+		SegmentsExperience segmentsExperience = _addSegmentsExperience(
+			ctCollection);
+
+		_addSegmentsExperience(
+			ctCollection, _layout.getPlid(), segmentsExperience);
+
+		_publishCTCollection(ctCollection);
+
+		Layout draftLayout = _layout.fetchDraftLayout();
+
+		SegmentsExperience draftSegmentsExperience =
+			SegmentsTestUtil.addSegmentsExperience(
+				_group.getGroupId(), draftLayout.getPlid());
+
+		_runUpgrade();
+		_runUpgrade();
+
+		_assertSegmentsExperience(segmentsExperience);
+
+		segmentsExperience =
+			_segmentsExperienceLocalService.getSegmentsExperience(
+				segmentsExperience.getSegmentsExperienceId());
+
+		Assert.assertEquals(-3, segmentsExperience.getPriority());
+
+		draftSegmentsExperience =
+			_segmentsExperienceLocalService.getSegmentsExperience(
+				draftSegmentsExperience.getSegmentsExperienceId());
+
+		Assert.assertEquals(-2, draftSegmentsExperience.getPriority());
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
+	public void testUpgradeWithPublishedCTCollectionBeforeUpgradeAppendedSegmentsExperienceWithSamePriority()
+		throws Exception {
+
+		CTCollection ctCollection = _addCTCollection();
+		Layout draftLayout = _layout.fetchDraftLayout();
+
+		SegmentsExperience segmentsExperience = null;
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			segmentsExperience = _appendSegmentsExperience(
+				draftLayout.getPlid());
+
+			_addFragmentEntryLink(
+				draftLayout, segmentsExperience.getSegmentsExperienceId());
+		}
+
+		_deleteCTEntry(ctCollection, segmentsExperience);
+
+		_addSegmentsExperience(
+			ctCollection, _layout.getPlid(), segmentsExperience);
+
+		_publishCTCollection(ctCollection);
+
+		SegmentsExperience draftSegmentsExperience = _appendSegmentsExperience(
+			draftLayout.getPlid());
+
+		_runUpgrade();
+		_runUpgrade();
+
+		_assertSegmentsExperience(segmentsExperience);
+
+		segmentsExperience =
+			_segmentsExperienceLocalService.getSegmentsExperience(
+				segmentsExperience.getSegmentsExperienceId());
+
+		Assert.assertEquals(2, segmentsExperience.getPriority());
+
+		draftSegmentsExperience =
+			_segmentsExperienceLocalService.getSegmentsExperience(
+				draftSegmentsExperience.getSegmentsExperienceId());
+
+		Assert.assertEquals(1, draftSegmentsExperience.getPriority());
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
+	public void testUpgradeWithPublishedCTCollectionBeforeUpgradeDeletedSegmentsExperience()
+		throws Exception {
+
+		SegmentsExperience draftSegmentsExperience =
+			_segmentsExperienceLocalService.getSegmentsExperience(
+				_draftSegmentsExperienceId2);
+
+		_segmentsExperienceLocalService.deleteSegmentsExperience(
+			draftSegmentsExperience);
+
+		CTCollection ctCollection = _addCTCollection();
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_segmentsExperienceLocalService.deleteSegmentsExperience(
+				_publishedSegmentsExperienceId2);
+		}
+
+		SegmentsExperience segmentsExperience = _addSegmentsExperience(
+			ctCollection, draftSegmentsExperience.getPlid(),
+			draftSegmentsExperience);
+
+		_deleteCTEntry(ctCollection, segmentsExperience);
+
+		_publishCTCollection(ctCollection);
+
+		_runUpgrade();
+		_runUpgrade();
+
+		Assert.assertNull(
+			_segmentsExperienceLocalService.fetchSegmentsExperience(
+				segmentsExperience.getSegmentsExperienceId()));
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
+	public void testUpgradeWithPublishedCTCollectionBeforeUpgradeModifiedSegmentsExperience()
+		throws Exception {
+
+		CTCollection ctCollection = _addCTCollection();
+		String name = RandomTestUtil.randomString();
+
+		_updateSegmentsExperienceName(
+			ctCollection, name, _publishedSegmentsExperienceId2);
+
+		SegmentsExperience draftSegmentsExperience =
+			_segmentsExperienceLocalService.getSegmentsExperience(
+				_draftSegmentsExperienceId2);
+
+		draftSegmentsExperience.setName(name, LocaleUtil.getSiteDefault());
+
+		SegmentsExperience segmentsExperience = _addSegmentsExperience(
+			ctCollection, draftSegmentsExperience.getPlid(),
+			draftSegmentsExperience);
+
+		_deleteCTEntry(ctCollection, segmentsExperience);
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_fragmentEntryLink2 = _updateSegmentsExperienceId(
+				_fragmentEntryLink2,
+				segmentsExperience.getSegmentsExperienceId());
+			_layoutPageTemplateStructureRel2 = _updateSegmentsExperienceId(
+				_layoutPageTemplateStructureRel2,
+				segmentsExperience.getSegmentsExperienceId());
+		}
+
+		_publishCTCollection(ctCollection);
+
+		_assertSegmentsExperienceId(
+			segmentsExperience.getSegmentsExperienceId(), _fragmentEntryLink2,
+			_layoutPageTemplateStructureRel2);
+
+		_runUpgrade();
+		_runUpgrade();
+
+		Assert.assertNull(
+			_segmentsExperienceLocalService.fetchSegmentsExperience(
+				segmentsExperience.getSegmentsExperienceId()));
+
+		_assertSegmentsExperienceId(
+			_draftSegmentsExperienceId2, _fragmentEntryLink2,
+			_layoutPageTemplateStructureRel2);
+		_assertNames(name);
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
+	public void testUpgradeWithPublishedCTCollectionBeforeUpgradeModifiedSegmentsExperiencePriority()
+		throws Exception {
+
+		CTCollection ctCollection = _addCTCollection();
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			SegmentsExperience publishedSegmentsExperience =
+				_segmentsExperienceLocalService.getSegmentsExperience(
+					_publishedSegmentsExperienceId2);
+
+			publishedSegmentsExperience.setPriority(-2);
+
+			_segmentsExperienceLocalService.updateSegmentsExperience(
+				publishedSegmentsExperience);
+		}
+
+		SegmentsExperience draftSegmentsExperience =
+			_segmentsExperienceLocalService.getSegmentsExperience(
+				_draftSegmentsExperienceId2);
+
+		draftSegmentsExperience.setPriority(-2);
+
+		_deleteCTEntry(
+			ctCollection,
+			_addSegmentsExperience(
+				ctCollection, draftSegmentsExperience.getPlid(),
+				draftSegmentsExperience));
+
+		_publishCTCollection(ctCollection);
+
+		_runUpgrade();
+		_runUpgrade();
+
+		draftSegmentsExperience =
+			_segmentsExperienceLocalService.getSegmentsExperience(
+				_draftSegmentsExperienceId2);
+
+		Assert.assertEquals(-2, draftSegmentsExperience.getPriority());
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
+	public void testUpgradeWithPublishedCTCollectionBeforeUpgradeModifiedSegmentsExperienceWithSamePriority()
+		throws Exception {
+
+		CTCollection ctCollection = _addCTCollection();
+		String name = RandomTestUtil.randomString();
+
+		_updateSegmentsExperienceName(
+			ctCollection, name, _publishedSegmentsExperienceId2);
+
+		SegmentsExperience segmentsExperience =
+			_segmentsExperienceLocalService.getSegmentsExperience(
+				_draftSegmentsExperienceId2);
+
+		segmentsExperience.setName(name, LocaleUtil.getSiteDefault());
+		segmentsExperience.setPriority(0);
+
+		_deleteCTEntry(
+			ctCollection,
+			_addSegmentsExperience(
+				ctCollection, segmentsExperience.getPlid(),
+				segmentsExperience));
+
+		_publishCTCollection(ctCollection);
+
+		_runUpgrade();
+		_runUpgrade();
+
+		segmentsExperience =
+			_segmentsExperienceLocalService.getSegmentsExperience(
+				_draftSegmentsExperienceId2);
+
+		Assert.assertEquals(
+			name, segmentsExperience.getName(LocaleUtil.getSiteDefault()));
+		Assert.assertEquals(-1, segmentsExperience.getPriority());
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
+	public void testUpgradeWithPublishedCTCollectionBeforeUpgradeSwappedSegmentsExperiencePriorities()
+		throws Exception {
+
+		CTCollection ctCollection = _addCTCollection();
+
+		SegmentsExperience draftSegmentsExperience1 =
+			_segmentsExperienceLocalService.getSegmentsExperience(
+				_draftSegmentsExperienceId1);
+		SegmentsExperience draftSegmentsExperience2 =
+			_segmentsExperienceLocalService.getSegmentsExperience(
+				_draftSegmentsExperienceId2);
+
+		draftSegmentsExperience1.setPriority(-1);
+		draftSegmentsExperience2.setPriority(0);
+
+		_deleteCTEntry(
+			ctCollection,
+			_addSegmentsExperience(
+				ctCollection, draftSegmentsExperience1.getPlid(),
+				draftSegmentsExperience1));
+		_deleteCTEntry(
+			ctCollection,
+			_addSegmentsExperience(
+				ctCollection, draftSegmentsExperience2.getPlid(),
+				draftSegmentsExperience2));
+
+		_updateSegmentsExperienceName(
+			ctCollection, RandomTestUtil.randomString(),
+			_publishedSegmentsExperienceId1);
+
+		_publishCTCollection(ctCollection);
+
+		_runUpgrade();
+		_runUpgrade();
+
+		draftSegmentsExperience1 =
+			_segmentsExperienceLocalService.getSegmentsExperience(
+				_draftSegmentsExperienceId1);
+
+		Assert.assertEquals(-1, draftSegmentsExperience1.getPriority());
+
+		draftSegmentsExperience2 =
+			_segmentsExperienceLocalService.getSegmentsExperience(
+				_draftSegmentsExperienceId2);
+
+		Assert.assertEquals(0, draftSegmentsExperience2.getPriority());
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
+	public void testUpgradeWithPublishedCTCollectionsBeforeUpgradeModifiedSegmentsExperience()
+		throws Exception {
+
+		SegmentsExperience segmentsExperience =
+			_segmentsExperienceLocalService.getSegmentsExperience(
+				_draftSegmentsExperienceId2);
+
+		CTCollection ctCollection1 = _addCTCollection();
+
+		_updateCTCollectionSegmentsExperiencePriority(
+			ctCollection1, segmentsExperience,
+			segmentsExperience.getPriority() - 1);
+
+		CTCollection ctCollection2 = _addCTCollection();
+
+		_updateCTCollectionSegmentsExperiencePriority(
+			ctCollection2, segmentsExperience,
+			segmentsExperience.getPriority());
+
+		_publishCTCollection(ctCollection1);
+		_publishCTCollection(ctCollection2);
+
+		_segmentsExperienceLocalService.deleteSegmentsExperience(
+			segmentsExperience);
+
+		_runUpgrade();
+		_runUpgrade();
+
+		Assert.assertEquals(
+			2,
+			_segmentsExperienceLocalService.getSegmentsExperiencesCount(
+				_group.getGroupId(), segmentsExperience.getPlid()));
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
+	public void testUpgradeWithPublishedCTCollectionsBeforeUpgradeModifiedSegmentsExperienceName()
+		throws Exception {
+
+		SegmentsExperience segmentsExperience =
+			_segmentsExperienceLocalService.getSegmentsExperience(
+				_draftSegmentsExperienceId2);
+
+		CTCollection ctCollection1 = _addCTCollection();
+
+		_updateCTCollectionSegmentsExperienceName(
+			ctCollection1, segmentsExperience, RandomTestUtil.randomString());
+
+		CTCollection ctCollection2 = _addCTCollection();
+		String name2 = RandomTestUtil.randomString();
+
+		_updateCTCollectionSegmentsExperienceName(
+			ctCollection2, segmentsExperience, name2);
+
+		_publishCTCollection(ctCollection1);
+		_publishCTCollection(ctCollection2);
+
+		_runUpgrade();
+
+		segmentsExperience =
+			_segmentsExperienceLocalService.getSegmentsExperience(
+				_draftSegmentsExperienceId2);
+
+		Assert.assertEquals(
+			name2, segmentsExperience.getName(LocaleUtil.getSiteDefault()));
+
+		_runUpgrade();
+
+		_assertNames(name2);
+	}
+
+	@Test
+	@TestInfo("LPD-113912")
 	public void testUpgradeWithScheduledCTCollectionAddedLayout()
 		throws Exception {
 
@@ -1138,6 +1584,20 @@ public class SegmentsExperienceUpgradeProcessTest {
 			return _segmentsExperienceLocalService.addSegmentsExperience(
 				ctCollectionSegmentsExperience);
 		}
+	}
+
+	private SegmentsExperience _appendSegmentsExperience(long plid)
+		throws Exception {
+
+		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
+			_group.getGroupId());
+
+		return _segmentsExperienceLocalService.appendSegmentsExperience(
+			TestPropsValues.getUserId(), _group.getGroupId(),
+			segmentsEntry.getExternalReferenceCode(), null, plid,
+			RandomTestUtil.randomLocaleStringMap(), true,
+			new UnicodeProperties(true),
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 	}
 
 	private void _assertDraftLayoutSegmentsExperience(Layout layout) {
@@ -1465,6 +1925,58 @@ public class SegmentsExperienceUpgradeProcessTest {
 			_db.alterTableDropColumn(
 				_connection, "SegmentsExperience", "segmentsEntryId");
 		}
+	}
+
+	private void _updateCTCollectionSegmentsExperienceName(
+			CTCollection ctCollection,
+			SegmentsExperience draftSegmentsExperience, String name)
+		throws Exception {
+
+		_updateSegmentsExperienceName(
+			ctCollection, name, _publishedSegmentsExperienceId2);
+
+		SegmentsExperience ctCollectionSegmentsExperience =
+			(SegmentsExperience)draftSegmentsExperience.clone();
+
+		ctCollectionSegmentsExperience.setName(
+			name, LocaleUtil.getSiteDefault());
+
+		_deleteCTEntry(
+			ctCollection,
+			_addSegmentsExperience(
+				ctCollection, draftSegmentsExperience.getPlid(),
+				ctCollectionSegmentsExperience));
+	}
+
+	private void _updateCTCollectionSegmentsExperiencePriority(
+			CTCollection ctCollection,
+			SegmentsExperience draftSegmentsExperience, int priority)
+		throws Exception {
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			SegmentsExperience publishedSegmentsExperience =
+				_segmentsExperienceLocalService.getSegmentsExperience(
+					_publishedSegmentsExperienceId2);
+
+			publishedSegmentsExperience.setPriority(priority);
+
+			_segmentsExperienceLocalService.updateSegmentsExperience(
+				publishedSegmentsExperience);
+		}
+
+		SegmentsExperience ctCollectionSegmentsExperience =
+			(SegmentsExperience)draftSegmentsExperience.clone();
+
+		ctCollectionSegmentsExperience.setPriority(priority);
+
+		_deleteCTEntry(
+			ctCollection,
+			_addSegmentsExperience(
+				ctCollection, draftSegmentsExperience.getPlid(),
+				ctCollectionSegmentsExperience));
 	}
 
 	private FragmentEntryLink _updateSegmentsExperienceId(
