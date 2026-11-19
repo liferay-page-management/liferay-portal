@@ -10,8 +10,8 @@ import {getCheckedCheckboxes} from 'frontend-js-web';
 
 import AddFragmentModal from './AddFragmentModal';
 import {
+	AI_ASSISTANT_TRIGGER_ID,
 	GENERATE_FRAGMENT_CHATBOT_ERC,
-	GENERATE_FRAGMENT_TRIGGER_ID,
 } from './ai_assistant/aiAssistant';
 import openDeleteFragmentModal from './openDeleteFragmentModal';
 
@@ -190,7 +190,7 @@ export default function propsTransformer({
 		}
 		else if (action === 'generateFragmentWithAI') {
 			AIAssistant.open({
-				anchorId: GENERATE_FRAGMENT_TRIGGER_ID,
+				anchorId: AI_ASSISTANT_TRIGGER_ID,
 				chatbotExternalReferenceCode: GENERATE_FRAGMENT_CHATBOT_ERC,
 				context: {
 					fragmentSetExternalReferenceCode:
@@ -202,7 +202,7 @@ export default function propsTransformer({
 				instructionDefinitionScope: '',
 				presentation: 'sidebar',
 				pushContainer: '#main-content',
-				triggerId: GENERATE_FRAGMENT_TRIGGER_ID,
+				triggerId: AI_ASSISTANT_TRIGGER_ID,
 			});
 		}
 	};

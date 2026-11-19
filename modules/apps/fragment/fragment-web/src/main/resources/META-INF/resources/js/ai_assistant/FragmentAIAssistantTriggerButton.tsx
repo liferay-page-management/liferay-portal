@@ -10,8 +10,8 @@ import {
 import React, {useEffect} from 'react';
 
 import {
+	AI_ASSISTANT_TRIGGER_ID,
 	GENERATE_FRAGMENT_CHATBOT_ERC,
-	GENERATE_FRAGMENT_TRIGGER_ID,
 } from './aiAssistant';
 
 function getFragment(
@@ -78,7 +78,7 @@ export default function FragmentAIAssistantTriggerButton({
 			instructionDefinitionScope=""
 			presentation="sidebar"
 			pushContainer="#main-content"
-			triggerId={GENERATE_FRAGMENT_TRIGGER_ID}
+			triggerId={AI_ASSISTANT_TRIGGER_ID}
 		/>
 	);
 }
