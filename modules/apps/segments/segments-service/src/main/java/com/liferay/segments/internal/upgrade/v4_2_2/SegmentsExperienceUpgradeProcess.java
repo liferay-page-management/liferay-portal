@@ -847,6 +847,12 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 		return priorities;
 	}
 
+	private String _getSelectSegmentsExperiencePrioritySQL() {
+		return "select segmentsExperienceId, priority from " +
+			"SegmentsExperience where ctCollectionId = 0 and groupId = ? and " +
+				"plid = ?";
+	}
+
 	private String _getSelectSegmentsExperienceSQL(
 		String fragmentEntryLinkColumnName,
 		boolean hasFragmentEntryLinkSegmentsExperienceId,
@@ -1126,9 +1132,7 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 		throws Exception {
 
 		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
-				"select segmentsExperienceId, priority from " +
-					"SegmentsExperience where ctCollectionId = 0 and groupId " +
-						"= ? and plid = ?");
+				_getSelectSegmentsExperiencePrioritySQL());
 			PreparedStatement preparedStatement2 =
 				AutoBatchPreparedStatementUtil.autoBatch(
 					connection,
@@ -1385,8 +1389,7 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 					"productionSegmentsExperience.segmentsExperienceKey = ",
 					"SegmentsExperience.segmentsExperienceKey)"));
 			PreparedStatement preparedStatement2 = connection.prepareStatement(
-				"select priority from SegmentsExperience where " +
-					"ctCollectionId = 0 and groupId = ? and plid = ?");
+				_getSelectSegmentsExperiencePrioritySQL());
 			PreparedStatement preparedStatement3 =
 				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
 					connection,
