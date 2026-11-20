@@ -485,7 +485,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			"LPD-72013", "LPD-74331", "LPD-75450", "LPD-77124", "LPD-77505",
 			"LPD-77576", "LPD-77852", "LPD-78667", "LPD-79415", "LPD-80061",
 			"LPD-81793", "LPD-83094", "LPD-97454", "LPD-101044", "LPD-101791",
-			"LPD-103694", "LPD-110626", "LPD-113027", "LPD-114784"
+			"LPD-103694", "LPD-110626", "LPD-113027", "LPD-114784", "LPD-116812"
 		}
 	)
 	public void testPutSiteSitePage() throws Exception {
@@ -528,6 +528,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testPutSiteSitePageWithWidgetPageSettings();
 		_testPutSiteSitePageWithWidgetPageSettingsWithWidgetPageTemplate();
 		_testPutSiteSitePageWithWidgetPageTypeWithWidgetPageWidgetInstances();
+		_testPutSiteSitePageWithoutPageSettings();
 
 		Layout layout = _addLayout(
 			LayoutConstants.TYPE_CONTENT, null, serviceContext);
@@ -5863,6 +5864,43 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			putSitePage -> sitePageResource.putSiteSitePage(
 				testGroup.getExternalReferenceCode(),
 				putSitePage.getExternalReferenceCode(), false, putSitePage));
+	}
+
+	private void _testPutSiteSitePageWithoutPageSettings() throws Exception {
+		_testPutSiteSitePageWithoutPageSettings(SitePage.Type.CONTENT_PAGE);
+		_testPutSiteSitePageWithoutPageSettings(SitePage.Type.EMBEDDED_PAGE);
+		_testPutSiteSitePageWithoutPageSettings(
+			SitePage.Type.LINK_TO_PAGE_PAGE);
+		_testPutSiteSitePageWithoutPageSettings(SitePage.Type.LINK_TO_URL_PAGE);
+		_testPutSiteSitePageWithoutPageSettings(SitePage.Type.PAGE_SET_PAGE);
+		_testPutSiteSitePageWithoutPageSettings(SitePage.Type.WIDGET_PAGE);
+	}
+
+	private void _testPutSiteSitePageWithoutPageSettings(SitePage.Type type)
+		throws Exception {
+
+		SitePage sitePage = sitePageResource.postSiteSitePage(
+			testGroup.getExternalReferenceCode(), false,
+			_getRandomSitePage(type));
+
+		sitePage.setPageSettings((PageSettings)null);
+
+		SitePage putSitePage = sitePageResource.putSiteSitePage(
+			testGroup.getExternalReferenceCode(),
+			sitePage.getExternalReferenceCode(), false, sitePage);
+
+		PageSettings pageSettings = putSitePage.getPageSettings();
+
+		SitePageNavigationSettings sitePageNavigationSettings =
+			pageSettings.getNavigationSettings();
+
+		Assert.assertNull(sitePageNavigationSettings.getQueryString());
+		Assert.assertNull(sitePageNavigationSettings.getTarget());
+
+		_assertSitePage(
+			_layoutLocalService.getLayoutByExternalReferenceCode(
+				putSitePage.getExternalReferenceCode(), testGroup.getGroupId()),
+			putSitePage);
 	}
 
 	private void
