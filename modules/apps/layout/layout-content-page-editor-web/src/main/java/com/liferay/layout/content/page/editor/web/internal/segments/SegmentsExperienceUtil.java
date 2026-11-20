@@ -15,6 +15,7 @@ import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.portal.kernel.comment.CommentManager;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -287,13 +288,37 @@ public class SegmentsExperienceUtil {
 	}
 
 	private static String _getNewEditableValues(
-		JSONObject editableValuesJSONObject, String namespace, long plid) {
+		JSONObject editableValuesJSONObject, String namespace,
+		String oldNamespace, long plid) {
 
 		String instanceId = editableValuesJSONObject.getString("instanceId");
 		String portletId = editableValuesJSONObject.getString("portletId");
 
 		if (Validator.isNull(instanceId) || Validator.isNull(portletId)) {
-			return editableValuesJSONObject.toString();
+			JSONObject rewrittenJSONObject = JSONFactoryUtil.createJSONObject();
+
+			for (String key : editableValuesJSONObject.keySet()) {
+				Object value = editableValuesJSONObject.get(key);
+
+				if (!(value instanceof JSONObject nestedJSONObject)) {
+					rewrittenJSONObject.put(key, value);
+
+					continue;
+				}
+
+				JSONObject rewrittenNestedJSONObject =
+					JSONFactoryUtil.createJSONObject();
+
+				for (String nestedKey : nestedJSONObject.keySet()) {
+					rewrittenNestedJSONObject.put(
+						StringUtil.replace(nestedKey, oldNamespace, namespace),
+						nestedJSONObject.get(nestedKey));
+				}
+
+				rewrittenJSONObject.put(key, rewrittenNestedJSONObject);
+			}
+
+			return rewrittenJSONObject.toString();
 		}
 
 		PortletPreferences portletPreferences = _getNewPortletPreferences(
@@ -441,7 +466,8 @@ public class SegmentsExperienceUtil {
 
 			newFragmentEntryLink.setEditableValues(
 				_getNewEditableValues(
-					editableValuesJSONObject, newNamespace, layout.getPlid()));
+					editableValuesJSONObject, newNamespace,
+					fragmentEntryLink.getNamespace(), layout.getPlid()));
 
 			newFragmentEntryLink.setNamespace(newNamespace);
 			newFragmentEntryLink.setLastPropagationDate(new Date());
