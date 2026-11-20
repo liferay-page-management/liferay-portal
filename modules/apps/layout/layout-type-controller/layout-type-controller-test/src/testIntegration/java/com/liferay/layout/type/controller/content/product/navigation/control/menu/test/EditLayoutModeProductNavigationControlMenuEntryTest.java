@@ -11,6 +11,7 @@ import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.layout.service.LayoutClassedModelUsageLocalService;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
@@ -31,6 +32,8 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.log.LogCapture;
@@ -40,6 +43,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.product.navigation.control.menu.ProductNavigationControlMenuEntry;
+import com.liferay.segments.service.SegmentsExperienceLocalService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -70,6 +74,35 @@ public class EditLayoutModeProductNavigationControlMenuEntryTest {
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup(
 			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(), 0);
+	}
+
+	@Test
+	public void testGetURL() throws Exception {
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		MockHttpServletRequest mockHttpServletRequest =
+			(MockHttpServletRequest)_getHttpServletRequest(
+				draftLayout, TestPropsValues.getUser());
+
+		long segmentsExperienceId =
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				draftLayout.getPlid());
+
+		mockHttpServletRequest.setParameter(
+			"segmentsExperienceId", String.valueOf(segmentsExperienceId));
+
+		String url = _productNavigationControlMenuEntry.getURL(
+			mockHttpServletRequest);
+
+		Assert.assertEquals(
+			Constants.EDIT,
+			HttpComponentsUtil.getParameter(url, "p_l_mode", false));
+		Assert.assertEquals(
+			String.valueOf(segmentsExperienceId),
+			HttpComponentsUtil.getParameter(
+				url, "segmentsExperienceId", false));
 	}
 
 	@Test
@@ -140,15 +173,25 @@ public class EditLayoutModeProductNavigationControlMenuEntryTest {
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
-		themeDisplay.setCompany(
-			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
+		Company company = _companyLocalService.getCompany(
+			TestPropsValues.getCompanyId());
+
+		themeDisplay.setCompany(company);
+
+		themeDisplay.setLanguageId(_group.getDefaultLanguageId());
 		themeDisplay.setLayout(layout);
+		themeDisplay.setLayoutSet(layout.getLayoutSet());
 		themeDisplay.setLayoutTypePortlet(
 			(LayoutTypePortlet)layout.getLayoutType());
+		themeDisplay.setLocale(
+			LocaleUtil.fromLanguageId(_group.getDefaultLanguageId()));
 		themeDisplay.setPermissionChecker(
 			PermissionCheckerFactoryUtil.create(user));
 		themeDisplay.setPlid(layout.getPlid());
+		themeDisplay.setPortalURL(company.getPortalURL(_group.getGroupId()));
 		themeDisplay.setScopeGroupId(_group.getGroupId());
+		themeDisplay.setServerPort(_portal.getPortalServerPort(false));
+		themeDisplay.setSiteGroupId(_group.getGroupId());
 		themeDisplay.setUser(user);
 
 		mockHttpServletRequest.setAttribute(
@@ -180,5 +223,8 @@ public class EditLayoutModeProductNavigationControlMenuEntryTest {
 	)
 	private ProductNavigationControlMenuEntry
 		_productNavigationControlMenuEntry;
+
+	@Inject
+	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
 
 }

@@ -221,6 +221,88 @@ public class FragmentEntryLinkDisplayContextTest {
 	}
 
 	@Test
+	@TestInfo("LPD-114647")
+	public void testGetFragmentEntryLinkPreviewURL() throws Exception {
+		FragmentEntry fragmentEntry = _addFragmentEntry();
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		FragmentEntryLink layoutFragmentEntryLink =
+			FragmentTestUtil.addFragmentEntryLink(
+				fragmentEntry, layout.getPlid());
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		FragmentEntryLink draftLayoutFragmentEntryLink =
+			FragmentTestUtil.addFragmentEntryLink(
+				fragmentEntry, draftLayout.getPlid());
+
+		Layout privateLayout = LayoutTestUtil.addTypePortletLayout(
+			_group, true);
+
+		FragmentEntryLink privateLayoutFragmentEntryLink =
+			FragmentTestUtil.addFragmentEntryLink(
+				fragmentEntry, privateLayout.getPlid());
+
+		Object fragmentEntryLinkDisplayContext =
+			_getFragmentEntryLinkDisplayContext(
+				fragmentEntry.getFragmentEntryId(), "all");
+
+		_assertNullPreviewURL(
+			_displayPageTemplateFragmentEntryLink,
+			fragmentEntryLinkDisplayContext);
+		_assertNullPreviewURL(
+			_masterPageFragmentEntryLink, fragmentEntryLinkDisplayContext);
+		_assertPreviewURL(
+			_pageTemplateFragmentEntryLink, fragmentEntryLinkDisplayContext);
+		_assertPreviewURL(
+			draftLayoutFragmentEntryLink, fragmentEntryLinkDisplayContext);
+		_assertPreviewURL(
+			layoutFragmentEntryLink, fragmentEntryLinkDisplayContext);
+		_assertPreviewURL(
+			privateLayoutFragmentEntryLink, fragmentEntryLinkDisplayContext);
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		_user = UserTestUtil.addUser();
+
+		try {
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(_user));
+
+			fragmentEntryLinkDisplayContext =
+				_getFragmentEntryLinkDisplayContext(
+					fragmentEntry.getFragmentEntryId(), "all");
+
+			_assertNullPreviewURL(
+				privateLayoutFragmentEntryLink,
+				fragmentEntryLinkDisplayContext);
+
+			_userLocalService.addGroupUser(
+				_group.getGroupId(), _user.getUserId());
+
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(_user));
+
+			fragmentEntryLinkDisplayContext =
+				_getFragmentEntryLinkDisplayContext(
+					fragmentEntry.getFragmentEntryId(), "all");
+
+			_assertNullPreviewURL(
+				draftLayoutFragmentEntryLink, fragmentEntryLinkDisplayContext);
+			_assertPreviewURL(
+				layoutFragmentEntryLink, fragmentEntryLinkDisplayContext);
+			_assertPreviewURL(
+				privateLayoutFragmentEntryLink,
+				fragmentEntryLinkDisplayContext);
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(permissionChecker);
+		}
+	}
+
+	@Test
 	@TestInfo("LPD-99652")
 	public void testGetFragmentEntryLinkTypeLabel() throws Exception {
 		FragmentEntry fragmentEntry = _addFragmentEntry();
@@ -240,6 +322,18 @@ public class FragmentEntryLinkDisplayContextTest {
 			FragmentTestUtil.addFragmentEntryLink(
 				fragmentEntry, layout.getPlid()),
 			fragmentEntryLinkDisplayContext, layout);
+	}
+
+	@Test
+	@TestInfo("LPD-114647")
+	public void testGetGroupName() throws Exception {
+		Assert.assertEquals(
+			_group.getDescriptiveName(LocaleUtil.getDefault()),
+			ReflectionTestUtil.invoke(
+				_getFragmentEntryLinkDisplayContext(
+					_fragmentEntry.getFragmentEntryId(), _group.getGroupId(),
+					"all"),
+				"getGroupName", new Class<?>[0]));
 	}
 
 	@Test
@@ -277,6 +371,57 @@ public class FragmentEntryLinkDisplayContextTest {
 			"pages", _layoutFragmentEntryLink1, _layoutFragmentEntryLink2);
 	}
 
+	@Test
+	@TestInfo("LPD-114647")
+	public void testGetSearchContainerWithGroupId() throws Exception {
+		long groupId = _layoutFragmentEntryLink1.getGroupId();
+
+		SearchContainer<FragmentEntryLink> searchContainer =
+			_testGetSearchContainer(
+				groupId, "all", _layoutFragmentEntryLink1,
+				_pageTemplateFragmentEntryLink,
+				_displayPageTemplateFragmentEntryLink,
+				_masterPageFragmentEntryLink);
+
+		Assert.assertNull(searchContainer.getRowChecker());
+
+		_testGetSearchContainer(
+			_layoutFragmentEntryLink2.getGroupId(), "all",
+			_layoutFragmentEntryLink2);
+		_testGetSearchContainer(
+			groupId, "display-page-templates",
+			_displayPageTemplateFragmentEntryLink);
+		_testGetSearchContainer(
+			groupId, "master-pages", _masterPageFragmentEntryLink);
+		_testGetSearchContainer(
+			groupId, "page-templates", _pageTemplateFragmentEntryLink);
+		_testGetSearchContainer(groupId, "pages", _layoutFragmentEntryLink1);
+
+		searchContainer = _testGetSearchContainer(
+			0, "all", _layoutFragmentEntryLink1, _layoutFragmentEntryLink2,
+			_pageTemplateFragmentEntryLink,
+			_displayPageTemplateFragmentEntryLink,
+			_masterPageFragmentEntryLink);
+
+		Assert.assertNotNull(searchContainer.getRowChecker());
+	}
+
+	@Test
+	@TestInfo("LPD-114647")
+	public void testIsGroupUsages() throws Exception {
+		Assert.assertFalse(
+			ReflectionTestUtil.invoke(
+				_getFragmentEntryLinkDisplayContext(
+					_fragmentEntry.getFragmentEntryId(), "all"),
+				"isGroupUsages", new Class<?>[0]));
+		Assert.assertTrue(
+			ReflectionTestUtil.invoke(
+				_getFragmentEntryLinkDisplayContext(
+					_fragmentEntry.getFragmentEntryId(), _group.getGroupId(),
+					"all"),
+				"isGroupUsages", new Class<?>[0]));
+	}
+
 	private static FragmentEntryLink _addFragmentEntryLinkToLayout(Group group)
 		throws Exception {
 
@@ -305,6 +450,32 @@ public class FragmentEntryLinkDisplayContextTest {
 
 		return FragmentEntryTestUtil.addFragmentEntry(
 			fragmentCollection.getFragmentCollectionId());
+	}
+
+	private void _assertNullPreviewURL(
+		FragmentEntryLink fragmentEntryLink,
+		Object fragmentEntryLinkDisplayContext) {
+
+		Assert.assertNull(
+			ReflectionTestUtil.invoke(
+				fragmentEntryLinkDisplayContext,
+				"getFragmentEntryLinkPreviewURL",
+				new Class<?>[] {FragmentEntryLink.class}, fragmentEntryLink));
+	}
+
+	private void _assertPreviewURL(
+		FragmentEntryLink fragmentEntryLink,
+		Object fragmentEntryLinkDisplayContext) {
+
+		String previewURL = ReflectionTestUtil.invoke(
+			fragmentEntryLinkDisplayContext, "getFragmentEntryLinkPreviewURL",
+			new Class<?>[] {FragmentEntryLink.class}, fragmentEntryLink);
+
+		Assert.assertFalse(previewURL.contains("p_l_mode"));
+		Assert.assertTrue(
+			previewURL.contains(
+				"segmentsExperienceId=" +
+					fragmentEntryLink.getSegmentsExperienceId()));
 	}
 
 	private void _assertWarnMessages(
@@ -351,7 +522,7 @@ public class FragmentEntryLinkDisplayContextTest {
 	}
 
 	private Object _getFragmentEntryLinkDisplayContext(
-			long fragmentEntryId, String navigation)
+			long fragmentEntryId, long groupId, String navigation)
 		throws Exception {
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
@@ -362,6 +533,7 @@ public class FragmentEntryLinkDisplayContextTest {
 		themeDisplay.setPermissionChecker(
 			PermissionThreadLocal.getPermissionChecker());
 		themeDisplay.setScopeGroupId(_group.getGroupId());
+		themeDisplay.setSiteGroupId(_group.getGroupId());
 		themeDisplay.setUser(TestPropsValues.getUser());
 
 		MockHttpServletRequest mockHttpServletRequest =
@@ -371,6 +543,7 @@ public class FragmentEntryLinkDisplayContextTest {
 			WebKeys.THEME_DISPLAY, themeDisplay);
 		mockHttpServletRequest.setParameter(
 			"fragmentEntryId", String.valueOf(fragmentEntryId));
+		mockHttpServletRequest.setParameter("groupId", String.valueOf(groupId));
 		mockHttpServletRequest.setParameter("navigation", navigation);
 
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
@@ -396,6 +569,14 @@ public class FragmentEntryLinkDisplayContextTest {
 		return constructor.newInstance(
 			mockHttpServletRequest, mockLiferayPortletRenderRequest,
 			new MockLiferayPortletRenderResponse());
+	}
+
+	private Object _getFragmentEntryLinkDisplayContext(
+			long fragmentEntryId, String navigation)
+		throws Exception {
+
+		return _getFragmentEntryLinkDisplayContext(
+			fragmentEntryId, 0, navigation);
 	}
 
 	private int _getUsageCount(String methodName) throws Exception {
@@ -433,14 +614,15 @@ public class FragmentEntryLinkDisplayContextTest {
 			_getExpectedWarnMessages(fragmentEntryLink, layout));
 	}
 
-	private void _testGetSearchContainer(
-			String navigation, FragmentEntryLink... fragmentEntryLinks)
+	private SearchContainer<FragmentEntryLink> _testGetSearchContainer(
+			long groupId, String navigation,
+			FragmentEntryLink... fragmentEntryLinks)
 		throws Exception {
 
 		SearchContainer<FragmentEntryLink> searchContainer =
 			ReflectionTestUtil.invoke(
 				_getFragmentEntryLinkDisplayContext(
-					_fragmentEntry.getFragmentEntryId(), navigation),
+					_fragmentEntry.getFragmentEntryId(), groupId, navigation),
 				"getSearchContainer", new Class<?>[0]);
 
 		List<FragmentEntryLink> results = searchContainer.getResults();
@@ -453,6 +635,15 @@ public class FragmentEntryLinkDisplayContextTest {
 			Assert.assertTrue(
 				results.toString(), results.contains(fragmentEntryLink));
 		}
+
+		return searchContainer;
+	}
+
+	private void _testGetSearchContainer(
+			String navigation, FragmentEntryLink... fragmentEntryLinks)
+		throws Exception {
+
+		_testGetSearchContainer(0, navigation, fragmentEntryLinks);
 	}
 
 	private static final String _CLASS_NAME =
