@@ -889,24 +889,21 @@ public class SitePageResourceImpl
 
 		PageSettings pageSettings = sitePage.getPageSettings();
 
-		if (pageSettings == null) {
-			return null;
-		}
-
 		SitePage.Type type = sitePage.getType();
 
-		if (((type == SitePage.Type.CONTENT_PAGE) &&
-			 !(pageSettings instanceof ContentPageSettings)) ||
-			((type == SitePage.Type.EMBEDDED_PAGE) &&
-			 !(pageSettings instanceof EmbeddedPageSettings)) ||
-			((type == SitePage.Type.LINK_TO_PAGE_PAGE) &&
-			 !(pageSettings instanceof LinkToPagePageSettings)) ||
-			((type == SitePage.Type.LINK_TO_URL_PAGE) &&
-			 !(pageSettings instanceof LinkToURLPageSettings)) ||
-			((type == SitePage.Type.PAGE_SET_PAGE) &&
-			 !(pageSettings instanceof PageSetPageSettings)) ||
-			((type == SitePage.Type.WIDGET_PAGE) &&
-			 !(pageSettings instanceof WidgetPageSettings))) {
+		if ((pageSettings != null) &&
+			(((type == SitePage.Type.CONTENT_PAGE) &&
+			  !(pageSettings instanceof ContentPageSettings)) ||
+			 ((type == SitePage.Type.EMBEDDED_PAGE) &&
+			  !(pageSettings instanceof EmbeddedPageSettings)) ||
+			 ((type == SitePage.Type.LINK_TO_PAGE_PAGE) &&
+			  !(pageSettings instanceof LinkToPagePageSettings)) ||
+			 ((type == SitePage.Type.LINK_TO_URL_PAGE) &&
+			  !(pageSettings instanceof LinkToURLPageSettings)) ||
+			 ((type == SitePage.Type.PAGE_SET_PAGE) &&
+			  !(pageSettings instanceof PageSetPageSettings)) ||
+			 ((type == SitePage.Type.WIDGET_PAGE) &&
+			  !(pageSettings instanceof WidgetPageSettings)))) {
 
 			throw new IllegalArgumentException(
 				"The page type does not match the page settings type");
@@ -916,19 +913,21 @@ public class SitePageResourceImpl
 		String target = StringPool.BLANK;
 		String targetTypeString = StringPool.BLANK;
 
-		SitePageNavigationSettings sitePageNavigationSettings =
-			pageSettings.getNavigationSettings();
+		if (pageSettings != null) {
+			SitePageNavigationSettings sitePageNavigationSettings =
+				pageSettings.getNavigationSettings();
 
-		if (sitePageNavigationSettings != null) {
-			queryString = GetterUtil.getString(
-				sitePageNavigationSettings.getQueryString());
-			target = GetterUtil.getString(
-				sitePageNavigationSettings.getTarget());
+			if (sitePageNavigationSettings != null) {
+				queryString = GetterUtil.getString(
+					sitePageNavigationSettings.getQueryString());
+				target = GetterUtil.getString(
+					sitePageNavigationSettings.getTarget());
 
-			if (sitePageNavigationSettings.getTargetType() ==
-					SitePageNavigationSettings.TargetType.NEW_TAB) {
+				if (sitePageNavigationSettings.getTargetType() ==
+						SitePageNavigationSettings.TargetType.NEW_TAB) {
 
-				targetTypeString = "useNewTab";
+					targetTypeString = "useNewTab";
+				}
 			}
 		}
 
@@ -1000,7 +999,8 @@ public class SitePageResourceImpl
 				defaultAssetPublisherPortletId);
 		}
 
-		if ((sitePage.getType() == SitePage.Type.CONTENT_PAGE) ||
+		if ((pageSettings == null) ||
+			(sitePage.getType() == SitePage.Type.CONTENT_PAGE) ||
 			(sitePage.getType() == SitePage.Type.PAGE_SET_PAGE)) {
 
 			return unicodePropertiesWrapper.build();
