@@ -30,6 +30,8 @@ import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.dao.orm.WildcardMode;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
+import com.liferay.portal.kernel.jsonwebservice.JSONWebServiceMode;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
@@ -69,14 +71,15 @@ import org.osgi.service.component.annotations.Reference;
 public class LayoutPageTemplateEntryServiceImpl
 	extends LayoutPageTemplateEntryServiceBaseImpl {
 
+	@JSONWebService(mode = JSONWebServiceMode.IGNORE)
 	@Override
 	public LayoutPageTemplateEntry addLayoutPageTemplateEntry(
 			String externalReferenceCode, long groupId,
 			long layoutPageTemplateCollectionId,
 			String layoutPageTemplateEntryKey, long classNameId,
 			String classTypeKey, String name, int type, long previewFileEntryId,
-			boolean defaultTemplate, long layoutPrototypeId, long plid,
-			long masterLayoutPlid, int status, ServiceContext serviceContext)
+			boolean defaultTemplate, long plid, long masterLayoutPlid,
+			int status, ServiceContext serviceContext)
 		throws PortalException {
 
 		_portletResourcePermission.check(
@@ -87,7 +90,34 @@ public class LayoutPageTemplateEntryServiceImpl
 			externalReferenceCode, getUserId(), groupId,
 			layoutPageTemplateCollectionId, layoutPageTemplateEntryKey,
 			classNameId, classTypeKey, name, type, previewFileEntryId,
-			defaultTemplate, layoutPrototypeId, plid, masterLayoutPlid, status,
+			defaultTemplate, 0, plid, masterLayoutPlid, status, serviceContext);
+	}
+
+	/**
+	 * Adds a layout page template entry. The <code>layoutPrototypeId</code>
+	 * argument is ignored.
+	 *
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 *             #addLayoutPageTemplateEntry(String, long, long, String, long,
+	 *             String, String, int, long, boolean, long, long, int,
+	 *             ServiceContext)}
+	 */
+	@Deprecated
+	@JSONWebService(mode = JSONWebServiceMode.IGNORE)
+	@Override
+	public LayoutPageTemplateEntry addLayoutPageTemplateEntry(
+			String externalReferenceCode, long groupId,
+			long layoutPageTemplateCollectionId,
+			String layoutPageTemplateEntryKey, long classNameId,
+			String classTypeKey, String name, int type, long previewFileEntryId,
+			boolean defaultTemplate, long layoutPrototypeId, long plid,
+			long masterLayoutPlid, int status, ServiceContext serviceContext)
+		throws PortalException {
+
+		return addLayoutPageTemplateEntry(
+			externalReferenceCode, groupId, layoutPageTemplateCollectionId,
+			layoutPageTemplateEntryKey, classNameId, classTypeKey, name, type,
+			previewFileEntryId, defaultTemplate, plid, masterLayoutPlid, status,
 			serviceContext);
 	}
 
