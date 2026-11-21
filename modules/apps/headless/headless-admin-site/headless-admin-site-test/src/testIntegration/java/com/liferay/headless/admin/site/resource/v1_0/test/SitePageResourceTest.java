@@ -72,7 +72,6 @@ import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPageWidgetInstance;
 import com.liferay.headless.admin.site.client.http.HttpInvoker;
 import com.liferay.headless.admin.site.client.pagination.Page;
 import com.liferay.headless.admin.site.client.pagination.Pagination;
-import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.headless.admin.site.client.resource.v1_0.SitePageResource;
 import com.liferay.headless.admin.site.client.scope.Scope;
 import com.liferay.headless.admin.site.client.serdes.v1_0.FragmentImageValueSerDes;
@@ -83,7 +82,11 @@ import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutUtilityPage
 import com.liferay.headless.admin.site.resource.v1_0.test.util.PageElementsTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.PageExperiencesTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.PageSpecificationsTestUtil;
+import com.liferay.headless.admin.site.resource.v1_0.test.util.ProblemExceptionTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.SettingsTestUtil;
+import com.liferay.headless.batch.engine.client.dto.v1_0.FailedItem;
+import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.type.InfoFieldType;
 import com.liferay.info.form.InfoForm;
@@ -115,7 +118,6 @@ import com.liferay.object.service.ObjectFieldSettingLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.function.UnsafeFunction;
-import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.function.UnsafeTriConsumer;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.CentralizedThreadLocal;
@@ -402,7 +404,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	@FeatureFlag("LPD-38869")
 	@Override
 	@Test
-	@TestInfo({"LPD-83094", "LPD-101791", "LPD-116313"})
+	@TestInfo({"LPD-83094", "LPD-97551", "LPD-101791", "LPD-116313"})
 	public void testPostSiteSitePage() throws Exception {
 		super.testPostSiteSitePage();
 
@@ -430,7 +432,14 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testPostSiteSitePageWithPageElements();
 		_testPostSiteSitePageWithPageSpecifications();
 		_testPostSiteSitePageWithContentPageSpecification();
+		_testPostSiteSitePageWithDuplicateFragmentInstanceUUID();
+		_testPostSiteSitePageWithDuplicateFriendlyURLPath();
+		_testPostSiteSitePageWithDuplicatePageExperienceUUID();
+		_testPostSiteSitePageWithDuplicateUUID();
+		_testPostSiteSitePageWithImportTask();
+		_testPostSiteSitePageWithInvalidFriendlyURLPath();
 		_testPostSiteSitePageWithInvalidSitemapPagePriority();
+		_testPostSiteSitePageWithReservedFriendlyURLPath();
 		_testPostSiteSitePageWithWidgetPageSettings();
 		_testPostSiteSitePageWithWidgetPageSettingsWithWidgetPageTemplate();
 		_testPostSiteSitePageWithWidgetPageTypeIsDeprecated();
@@ -484,8 +493,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		{
 			"LPD-72013", "LPD-74331", "LPD-75450", "LPD-77124", "LPD-77505",
 			"LPD-77576", "LPD-77852", "LPD-78667", "LPD-79415", "LPD-80061",
-			"LPD-81793", "LPD-83094", "LPD-97454", "LPD-101044", "LPD-101791",
-			"LPD-103694", "LPD-110626", "LPD-113027", "LPD-114784"
+			"LPD-81793", "LPD-83094", "LPD-97454", "LPD-97551", "LPD-101044",
+			"LPD-101791", "LPD-103694", "LPD-110626", "LPD-113027", "LPD-114784"
 		}
 	)
 	public void testPutSiteSitePage() throws Exception {
@@ -507,6 +516,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testPutSiteSitePageWithCachedFragmentEntryLink();
 		_testPutSiteSitePageWithContentPageSpecification();
 		_testPutSiteSitePageWithDefaultAssetPublisher();
+		_testPutSiteSitePageWithDuplicatePageExperienceUUID();
+		_testPutSiteSitePageWithDuplicateUUID();
 		_testPutSiteSitePageWithEmptyLayout();
 		_testPutSiteSitePageWithExportedPageSetSitePageAsFirstPage(
 			serviceContext);
@@ -516,7 +527,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testPutSiteSitePageWithFormFragmentPageElements();
 		LazyReferencingTestUtil.executeWithLazyReferencingSafeCloseable(
 			this::_testPutSiteSitePageWithMissingTaxonomyCategories);
-		_assertProblemException(
+		ProblemExceptionTestUtil.assertProblemException(
 			"NOT_FOUND", null,
 			this::_testPutSiteSitePageWithMissingTaxonomyCategories);
 		_testPutSiteSitePageWithPageElements();
@@ -865,8 +876,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		throws Exception {
 
 		for (Layout layout : layouts) {
-			_assertProblemException(
-				expectedTitle,
+			ProblemExceptionTestUtil.assertProblemException(
+				"BAD_REQUEST", expectedTitle,
 				() -> sitePageResource.deleteSiteSitePage(
 					testGroup.getExternalReferenceCode(),
 					layout.getExternalReferenceCode()));
@@ -1229,8 +1240,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			String expectedTitle, SitePage sitePage)
 		throws Exception {
 
-		_assertProblemException(
-			expectedTitle,
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST", expectedTitle,
 			() -> sitePageResource.patchSiteSitePage(
 				testGroup.getExternalReferenceCode(),
 				sitePage.getExternalReferenceCode(), false, sitePage));
@@ -1240,8 +1251,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			String expectedTitle, Layout layout)
 		throws Exception {
 
-		_assertProblemException(
-			expectedTitle,
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST", expectedTitle,
 			() -> sitePageResource.postSiteSitePagePageSpecification(
 				testGroup.getExternalReferenceCode(),
 				layout.getExternalReferenceCode(),
@@ -1265,30 +1276,6 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		}
 	}
 
-	private void _assertProblemException(
-			String expectedStatus, String expectedTitle,
-			UnsafeRunnable<Exception> unsafeRunnable)
-		throws Exception {
-
-		try {
-			unsafeRunnable.run();
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals(expectedStatus, problem.getStatus());
-			Assert.assertEquals(expectedTitle, problem.getTitle());
-		}
-	}
-
-	private void _assertProblemException(
-			String expectedTitle, UnsafeRunnable<Exception> unsafeRunnable)
-		throws Exception {
-
-		_assertProblemException("BAD_REQUEST", expectedTitle, unsafeRunnable);
-	}
-
 	private void _assertPutSiteSitePageProblemException(
 			String expectedTitle, ServiceContext serviceContext,
 			Layout... layouts)
@@ -1307,8 +1294,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			String expectedTitle, SitePage sitePage)
 		throws Exception {
 
-		_assertProblemException(
-			expectedTitle,
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST", expectedTitle,
 			() -> sitePageResource.putSiteSitePage(
 				testGroup.getExternalReferenceCode(),
 				sitePage.getExternalReferenceCode(), false, sitePage));
@@ -1521,6 +1508,57 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			layout.getExternalReferenceCode());
 
 		return _testPutSiteSitePage(sitePage, testGroup, sitePage);
+	}
+
+	private SitePage _getContentSitePageWithPageExperience(
+			String externalReferenceCode, String fragmentInstanceUUID,
+			String pageExperienceUUID)
+		throws Exception {
+
+		SitePage sitePage = _getRandomSitePage(
+			externalReferenceCode, null,
+			ServiceContextTestUtil.getServiceContext(
+				testGroup, TestPropsValues.getUserId()),
+			SitePage.Type.CONTENT_PAGE,
+			StringUtil.toLowerCase(RandomTestUtil.randomString()));
+
+		BasicFragmentInstancePageElementDefinition
+			basicFragmentInstancePageElementDefinition =
+				(BasicFragmentInstancePageElementDefinition)
+					PageElementsTestUtil.getPageElementDefinition(
+						PageElementDefinition.Type.BASIC_FRAGMENT,
+						testGroup.getGroupId());
+
+		FragmentInstance fragmentInstance =
+			basicFragmentInstancePageElementDefinition.getFragmentInstance();
+
+		fragmentInstance.setUuid(fragmentInstanceUUID);
+
+		PageElement pageElement = new PageElement();
+
+		pageElement.setExternalReferenceCode(RandomTestUtil::randomString);
+		pageElement.setPageElementDefinition(
+			basicFragmentInstancePageElementDefinition);
+		pageElement.setPageElements(new PageElement[0]);
+		pageElement.setPosition(0);
+
+		PageExperience pageExperience =
+			PageExperiencesTestUtil.getDefaultPageExperience(
+				RandomTestUtil.randomString(), new PageElement[] {pageElement},
+				externalReferenceCode, pageExperienceUUID);
+
+		ContentPageSpecification contentPageSpecification =
+			PageSpecificationsTestUtil.getContentPageSpecification(
+				externalReferenceCode, null, null,
+				new PageExperience[] {pageExperience}, testGroup.getGroupId(),
+				PageSpecification.Status.APPROVED);
+
+		pageExperience.setPageElements(() -> new PageElement[] {pageElement});
+
+		sitePage.setPageSpecifications(
+			() -> new PageSpecification[] {contentPageSpecification});
+
+		return sitePage;
 	}
 
 	private CustomMetaTag[] _getCustomMetaTags() {
@@ -2110,6 +2148,24 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		};
 	}
 
+	private SitePageResource _getSitePageResource(Locale locale)
+		throws Exception {
+
+		User user = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+
+		return SitePageResource.builder(
+		).authentication(
+			user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			locale
+		).parameters(
+			"nestedFields", "pageSpecifications"
+		).build();
+	}
+
 	private SitePageResource _getSitePageResource(String nestedFields)
 		throws Exception {
 
@@ -2148,6 +2204,19 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		).parameters(
 			"nestedFields", nestedFields
 		).build();
+	}
+
+	private SitePage _getSitePageWithFriendlyURLPath(String friendlyURLPath)
+		throws Exception {
+
+		SitePage sitePage = _getRandomSitePage(SitePage.Type.WIDGET_PAGE);
+
+		sitePage.setFriendlyUrlPath_i18n(
+			() -> HashMapBuilder.put(
+				LocaleUtil.toBCP47LanguageId(LocaleUtil.US), friendlyURLPath
+			).build());
+
+		return sitePage;
 	}
 
 	private SitePage _getSitePageWithPageElements(PageElement[] pageElements)
@@ -2933,7 +3002,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		_assertSitePage(layout, sitePage);
 
-		_testPatchSiteSitePageWithFriendlyUrlPath(layout, sitePage);
+		_testPatchSiteSitePageWithFriendlyURLPath(layout, sitePage);
 
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
@@ -3062,7 +3131,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		SitePageResource sitePageResource = _getSitePageResource(
 			"pageSpecifications");
 
-		_assertProblemException(
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST",
 			"A single content page specification cannot be applied to an " +
 				"existing page",
 			() -> sitePageResource.patchSiteSitePage(
@@ -3070,7 +3140,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				postSitePage.getExternalReferenceCode(), false, sitePage));
 	}
 
-	private void _testPatchSiteSitePageWithFriendlyUrlPath(
+	private void _testPatchSiteSitePageWithFriendlyURLPath(
 			Layout layout, SitePage sitePage)
 		throws Exception {
 
@@ -3590,7 +3660,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				SitePage.Type.CONTENT_PAGE,
 				StringUtil.toLowerCase(RandomTestUtil.randomString())));
 
-		_assertProblemException(
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST",
 			"The private page setting does not match the target page's privacy",
 			() -> sitePageResource.postSiteSitePage(
 				testGroup.getExternalReferenceCode(), !privateLayout,
@@ -3813,6 +3884,171 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			sitePageExternalReferenceCode, status);
 	}
 
+	private void _testPostSiteSitePageWithDuplicateFragmentInstanceUUID()
+		throws Exception {
+
+		String fragmentInstanceUUID = RandomTestUtil.randomString();
+		SitePageResource sitePageResource = _getSitePageResource(
+			"pageSpecifications");
+
+		sitePageResource.postSiteSitePage(
+			testGroup.getExternalReferenceCode(), false,
+			_getContentSitePageWithPageExperience(
+				RandomTestUtil.randomString(), fragmentInstanceUUID,
+				RandomTestUtil.randomString()));
+
+		SitePage sitePage = _getContentSitePageWithPageExperience(
+			RandomTestUtil.randomString(), fragmentInstanceUUID,
+			RandomTestUtil.randomString());
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"CONFLICT",
+			"A fragment instance with UUID \"" + fragmentInstanceUUID +
+				"\" already exists",
+			() -> sitePageResource.postSiteSitePage(
+				testGroup.getExternalReferenceCode(), false, sitePage));
+	}
+
+	private void _testPostSiteSitePageWithDuplicateFriendlyURLPath()
+		throws Exception {
+
+		String friendlyURLPath = _getRandomFriendlyURL();
+
+		sitePageResource.postSiteSitePage(
+			testGroup.getExternalReferenceCode(), false,
+			_getSitePageWithFriendlyURLPath(friendlyURLPath));
+
+		SitePage sitePage = _getSitePageWithFriendlyURLPath(friendlyURLPath);
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"CONFLICT", "The friendly URL is already in use",
+			() -> sitePageResource.postSiteSitePage(
+				testGroup.getExternalReferenceCode(), false, sitePage));
+	}
+
+	private void _testPostSiteSitePageWithDuplicatePageExperienceUUID()
+		throws Exception {
+
+		String pageExperienceUUID = RandomTestUtil.randomString();
+		SitePageResource sitePageResource = _getSitePageResource(
+			"pageSpecifications");
+
+		sitePageResource.postSiteSitePage(
+			testGroup.getExternalReferenceCode(), false,
+			_getContentSitePageWithPageExperience(
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				pageExperienceUUID));
+
+		SitePage sitePage = _getContentSitePageWithPageExperience(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			pageExperienceUUID);
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"CONFLICT",
+			"A page experience with UUID \"" + pageExperienceUUID +
+				"\" already exists",
+			() -> sitePageResource.postSiteSitePage(
+				testGroup.getExternalReferenceCode(), false, sitePage));
+	}
+
+	private void _testPostSiteSitePageWithDuplicateUUID() throws Exception {
+		SitePage postSitePage = sitePageResource.postSiteSitePage(
+			testGroup.getExternalReferenceCode(), false,
+			_getRandomSitePage(SitePage.Type.WIDGET_PAGE));
+
+		SitePage sitePage = _getRandomSitePage(
+			StringUtil.toLowerCase(RandomTestUtil.randomString()), null,
+			ServiceContextTestUtil.getServiceContext(
+				testGroup, TestPropsValues.getUserId()),
+			SitePage.Type.WIDGET_PAGE, postSitePage.getUuid());
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"CONFLICT",
+			"A site page with UUID \"" + postSitePage.getUuid() +
+				"\" already exists",
+			() -> sitePageResource.postSiteSitePage(
+				testGroup.getExternalReferenceCode(), false, sitePage));
+	}
+
+	private void _testPostSiteSitePageWithImportTask() throws Exception {
+		User user = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).parameters(
+			"siteExternalReferenceCode", testGroup.getExternalReferenceCode()
+		).build();
+
+		SitePage sitePage1 = _getRandomSitePage(SitePage.Type.WIDGET_PAGE);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
+				LoggerTestUtil.ERROR)) {
+
+			SitePage sitePage2 = _getSitePageWithFriendlyURLPath(
+				"no-leading-slash");
+
+			ImportTask importTask = importTaskResource.postImportTask(
+				"com.liferay.headless.admin.site.dto.v1_0.SitePage", null, null,
+				null, "INSERT", null, null, "ON_ERROR_CONTINUE", null,
+				JSONUtil.putAll(
+					_jsonFactory.createJSONObject(sitePage1.toString()),
+					_jsonFactory.createJSONObject(sitePage2.toString())));
+
+			waitForFinish("COMPLETED", JSONUtil.put("id", importTask.getId()));
+
+			ImportTask completedImportTask = importTaskResource.getImportTask(
+				importTask.getId());
+
+			FailedItem[] failedItems = completedImportTask.getFailedItems();
+
+			Assert.assertEquals(
+				Arrays.toString(failedItems), 1, failedItems.length);
+
+			FailedItem failedItem = failedItems[0];
+
+			Assert.assertEquals(
+				"The friendly URL must begin with a slash",
+				failedItem.getMessage());
+		}
+
+		Assert.assertNotNull(
+			sitePageResource.getSiteSitePage(
+				testGroup.getExternalReferenceCode(),
+				sitePage1.getExternalReferenceCode()));
+	}
+
+	private void _testPostSiteSitePageWithInvalidFriendlyURLPath()
+		throws Exception {
+
+		_testPostSiteSitePageWithInvalidFriendlyURLPath(
+			"The friendly URL is too short", StringPool.FORWARD_SLASH);
+		_testPostSiteSitePageWithInvalidFriendlyURLPath(
+			"The friendly URL must begin with a slash", "no-leading-slash");
+		_testPostSiteSitePageWithInvalidFriendlyURLPath(
+			"The friendly URL must not contain adjacent slashes",
+			"/adjacent//slashes");
+		_testPostSiteSitePageWithInvalidFriendlyURLPath(
+			"The friendly URL must not end with a slash", "/trailing/");
+	}
+
+	private void _testPostSiteSitePageWithInvalidFriendlyURLPath(
+			String expectedTitle, String friendlyURLPath)
+		throws Exception {
+
+		SitePage sitePage = _getSitePageWithFriendlyURLPath(friendlyURLPath);
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST", expectedTitle,
+			() -> sitePageResource.postSiteSitePage(
+				testGroup.getExternalReferenceCode(), false, sitePage));
+	}
+
 	private void _testPostSiteSitePageWithInvalidSitemapPagePriority()
 		throws Exception {
 
@@ -3827,7 +4063,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		sitemapSettings.setPagePriority(RandomTestUtil.randomDouble() + 1);
 
-		_assertProblemException(
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST",
 			"pageSettings.seoSettings.sitemapSettings.pagePriority must be " +
 				"less than or equal to 1\n",
 			() -> sitePageResource.postSiteSitePage(
@@ -3888,13 +4125,10 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				publishedContentPageSpecification, draftContentPageSpecification
 			});
 
-		_assertProblemException(
-			StringBundler.concat(
-				"Site page external reference code ",
-				sitePage.getExternalReferenceCode(),
-				" does not match published page specification external ",
-				"reference code ",
-				publishedContentPageSpecification.getExternalReferenceCode()),
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST",
+			"The published page specification's external reference code does " +
+				"not match the site page's external reference code",
 			() -> sitePageResource.postSiteSitePage(
 				testGroup.getExternalReferenceCode(), false, sitePage));
 	}
@@ -4068,6 +4302,26 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				draftFragmentEntryLinkExternalReferenceCodes.contains(
 					draftFragmentOrWidgetInstanceExternalReferenceCode));
 		}
+	}
+
+	private void _testPostSiteSitePageWithReservedFriendlyURLPath()
+		throws Exception {
+
+		SitePage sitePage1 = _getSitePageWithFriendlyURLPath(
+			"/reserved/-/keyword");
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"CONFLICT",
+			"The friendly URL conflicts with the reserved keyword \"/-/\"",
+			() -> sitePageResource.postSiteSitePage(
+				testGroup.getExternalReferenceCode(), false, sitePage1));
+
+		SitePage sitePage2 = _getSitePageWithFriendlyURLPath("/12345");
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"CONFLICT", "The friendly URL conflicts with the page ID \"12345\"",
+			() -> sitePageResource.postSiteSitePage(
+				testGroup.getExternalReferenceCode(), false, sitePage2));
 	}
 
 	private void _testPostSiteSitePageWithWidgetPageSettings()
@@ -4462,7 +4716,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		getSitePage.setPageSpecifications(
 			() -> new PageSpecification[] {pageSpecifications[0]});
 
-		_assertProblemException(
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST",
 			"A single content page specification cannot be applied to an " +
 				"existing page",
 			() -> sitePageResource.putSiteSitePage(
@@ -4501,6 +4756,76 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			portletId,
 			layout.getTypeSettingsProperty(
 				LayoutTypePortletConstants.DEFAULT_ASSET_PUBLISHER_PORTLET_ID));
+	}
+
+	private void _testPutSiteSitePageWithDuplicatePageExperienceUUID()
+		throws Exception {
+
+		String pageExperienceUUID = RandomTestUtil.randomString();
+		SitePageResource sitePageResource = _getSitePageResource(
+			"pageSpecifications");
+
+		sitePageResource.postSiteSitePage(
+			testGroup.getExternalReferenceCode(), false,
+			_getContentSitePageWithPageExperience(
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				pageExperienceUUID));
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		sitePageResource.postSiteSitePage(
+			testGroup.getExternalReferenceCode(), false,
+			_getContentSitePageWithPageExperience(
+				externalReferenceCode, RandomTestUtil.randomString(),
+				RandomTestUtil.randomString()));
+
+		SitePage sitePage = sitePageResource.getSiteSitePage(
+			testGroup.getExternalReferenceCode(), externalReferenceCode);
+
+		for (PageSpecification pageSpecification :
+				sitePage.getPageSpecifications()) {
+
+			ContentPageSpecification contentPageSpecification =
+				(ContentPageSpecification)pageSpecification;
+
+			for (PageExperience pageExperience :
+					contentPageSpecification.getPageExperiences()) {
+
+				pageExperience.setUuid(pageExperienceUUID);
+			}
+		}
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"CONFLICT",
+			"A page experience with UUID \"" + pageExperienceUUID +
+				"\" already exists",
+			() -> sitePageResource.putSiteSitePage(
+				testGroup.getExternalReferenceCode(), externalReferenceCode,
+				false, sitePage));
+	}
+
+	private void _testPutSiteSitePageWithDuplicateUUID() throws Exception {
+		SitePage postSitePage = sitePageResource.postSiteSitePage(
+			testGroup.getExternalReferenceCode(), false,
+			_getRandomSitePage(SitePage.Type.WIDGET_PAGE));
+
+		SitePage sitePage = _getRandomSitePage(
+			StringUtil.toLowerCase(RandomTestUtil.randomString()), null,
+			ServiceContextTestUtil.getServiceContext(
+				testGroup, TestPropsValues.getUserId()),
+			SitePage.Type.WIDGET_PAGE, postSitePage.getUuid());
+
+		Layout layout = _createEmptyLayout(sitePage);
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"CONFLICT",
+			"A site page with UUID \"" + postSitePage.getUuid() +
+				"\" already exists",
+			() -> sitePageResource.putSiteSitePage(
+				testGroup.getExternalReferenceCode(),
+				sitePage.getExternalReferenceCode(), false, sitePage));
+
+		_layoutLocalService.deleteLayout(layout);
 	}
 
 	private void _testPutSiteSitePageWithEmptyLayout() throws Exception {
@@ -4563,6 +4888,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			_getRandomSitePage(SitePage.Type.EMBEDDED_PAGE));
 		_testPutSiteSitePageWithEmptyLayoutAndLayoutTypeException(
 			_getRandomSitePage(SitePage.Type.LINK_TO_URL_PAGE));
+		_testPutSiteSitePageWithLayoutTypeMessageInEnglish();
 	}
 
 	private void _testPutSiteSitePageWithEmptyLayout(
@@ -4604,15 +4930,11 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		Layout layout = _createEmptyLayout(sitePage);
 
-		_assertProblemException(
+		ProblemExceptionTestUtil.assertProblemException(
 			"CONFLICT",
 			_language.format(
-				LocaleUtil.getDefault(),
-				"an-empty-page-cannot-be-converted-to-x",
-				_language.get(
-					LocaleUtil.getDefault(),
-					"layout.types." +
-						_externalToInternalValuesMap.get(sitePage.getType()))),
+				LocaleUtil.US, "an-empty-page-cannot-be-converted-to-x",
+				sitePage.getType(), false),
 			() -> sitePageResource.putSiteSitePage(
 				testGroup.getExternalReferenceCode(),
 				sitePage.getExternalReferenceCode(), false, sitePage));
@@ -4642,13 +4964,11 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		pageSettings.setPriority(0);
 
-		_assertProblemException(
+		ProblemExceptionTestUtil.assertProblemException(
 			"CONFLICT",
 			_language.format(
-				LocaleUtil.getDefault(), "the-first-page-cannot-be-of-type-x",
-				_language.get(
-					LocaleUtil.getDefault(),
-					"layout.types." + LayoutConstants.TYPE_NODE)),
+				LocaleUtil.US, "the-first-page-cannot-be-of-type-x",
+				SitePage.Type.PAGE_SET_PAGE, false),
 			() -> sitePageResource.putSiteSitePage(
 				testGroup.getExternalReferenceCode(),
 				sitePage.getExternalReferenceCode(), layout.isPrivateLayout(),
@@ -4789,12 +5109,12 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			testGroup.getExternalReferenceCode(),
 			importedLayout.getExternalReferenceCode(), false, sitePage);
 
-		Map<String, String> friendlyUrlPathI18n =
+		Map<String, String> friendlyURLPathI18n =
 			importedSitePage.getFriendlyUrlPath_i18n();
 
 		Assert.assertEquals(
 			friendlyURL,
-			friendlyUrlPathI18n.get(
+			friendlyURLPathI18n.get(
 				LocaleUtil.toBCP47LanguageId(LocaleUtil.US)));
 
 		layout = _updateFriendlyURL(
@@ -4899,6 +5219,29 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			fragmentEntryLinks, infoForm, expectedInfoForm,
 			_layoutLocalService.getLayoutByExternalReferenceCode(
 				layout.getExternalReferenceCode(), testGroup.getGroupId()));
+	}
+
+	private void _testPutSiteSitePageWithLayoutTypeMessageInEnglish()
+		throws Exception {
+
+		SitePage sitePage = _getRandomSitePage(SitePage.Type.EMBEDDED_PAGE);
+
+		SitePageResource sitePageResource = _getSitePageResource(
+			LocaleUtil.SPAIN);
+
+		Layout layout = _createEmptyLayout(sitePage);
+
+		String message = _language.format(
+			LocaleUtil.US, "an-empty-page-cannot-be-converted-to-x",
+			sitePage.getType(), false);
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"CONFLICT", message,
+			() -> sitePageResource.putSiteSitePage(
+				testGroup.getExternalReferenceCode(),
+				sitePage.getExternalReferenceCode(), false, sitePage));
+
+		_layoutLocalService.deleteLayout(layout);
 	}
 
 	private void _testPutSiteSitePageWithMissingTaxonomyCategories()
@@ -6029,12 +6372,6 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			FileUtil.getBytes(getClass(), "dependencies/liferay.jpg"));
 	}
 
-	private static final Map<SitePage.Type, String>
-		_externalToInternalValuesMap = HashMapBuilder.put(
-			SitePage.Type.EMBEDDED_PAGE, LayoutConstants.TYPE_EMBEDDED
-		).put(
-			SitePage.Type.LINK_TO_URL_PAGE, LayoutConstants.TYPE_URL
-		).build();
 	private static final List<SitePage.Type> _types = Arrays.asList(
 		SitePage.Type.CONTENT_PAGE, SitePage.Type.WIDGET_PAGE);
 
