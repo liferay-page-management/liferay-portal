@@ -1,0 +1,144 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+@import 'atlas-variables';
+
+html:not(#__):not(#___) .cadmin {
+	.launch-draft-selector {
+		display: inline-flex;
+	}
+
+	.launch-draft-selector .launch-draft-selector__trigger.btn {
+		align-items: center;
+		background: $white;
+		border: 1px solid $secondary-l0;
+		border-radius: 8px;
+		color: $secondary;
+		display: inline-flex;
+		font-size: 14px;
+		font-weight: 600;
+		gap: 8px;
+		height: 32px;
+		line-height: 1.5;
+		max-width: 250px;
+		padding: 6px 12px;
+	}
+
+	.launch-draft-selector .launch-draft-selector__trigger.btn:focus {
+		box-shadow: 0 0 0 2px rgba($cyan-d2, 0.25);
+		outline: 0;
+	}
+
+	.launch-draft-selector .launch-draft-selector__trigger.btn:hover {
+		background: $white;
+		border-color: $secondary;
+		color: $secondary;
+	}
+
+	.launch-draft-selector .launch-draft-selector__trigger-icon,
+	.launch-draft-selector .launch-draft-selector__trigger-caret {
+		flex-shrink: 0;
+		height: 16px;
+		width: 16px;
+	}
+
+	.launch-draft-selector .launch-draft-selector__trigger-icon--main {
+		color: $red-d2;
+	}
+
+	.launch-draft-selector .launch-draft-selector__trigger-icon--launch {
+		color: $cyan-d2;
+	}
+
+	.launch-draft-selector .launch-draft-selector__trigger-label {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+}
+
+html:not(#__):not(#___) {
+	.launch-draft-selector__menu.dropdown-menu {
+		background: $white;
+		border-radius: 8px;
+		box-shadow: 0 4px 8px rgba($dark, 0.12);
+		min-width: 241px;
+		padding: 8px 0;
+	}
+
+	.launch-draft-selector__menu.dropdown-menu .dropdown-divider {
+		background-color: $secondary-l3;
+		height: 1px;
+		margin: 0;
+	}
+
+	.launch-draft-selector__menu.dropdown-menu
+		.dropdown-item.launch-draft-selector__item {
+		align-items: center;
+		color: $secondary;
+		display: flex;
+		font-size: 14px;
+		font-weight: 400;
+		gap: 4px;
+		line-height: 1.5;
+		padding: 5px 16px 6px;
+	}
+
+	.launch-draft-selector__menu.dropdown-menu
+		.dropdown-item.launch-draft-selector__item:focus,
+	.launch-draft-selector__menu.dropdown-menu
+		.dropdown-item.launch-draft-selector__item:hover {
+		background-color: rgba($cyan-d2, 0.08);
+		color: $secondary;
+	}
+
+	.launch-draft-selector__menu.dropdown-menu
+		.launch-draft-selector__item-icon {
+		flex-shrink: 0;
+		height: 16px;
+		width: 16px;
+	}
+
+	.launch-draft-selector__menu.dropdown-menu
+		.launch-draft-selector__item-icon--main {
+		color: $red-d2;
+	}
+
+	.launch-draft-selector__menu.dropdown-menu
+		.launch-draft-selector__item-icon--launch {
+		color: $cyan-d2;
+	}
+
+	.launch-draft-selector__menu.dropdown-menu
+		.launch-draft-selector__item-label {
+		flex: 1;
+		overflow-wrap: break-word;
+		white-space: normal;
+	}
+
+	.launch-draft-selector__menu.dropdown-menu
+		.dropdown-item.launch-draft-selector__item--active,
+	.launch-draft-selector__menu.dropdown-menu
+		.dropdown-item.launch-draft-selector__item--active:focus,
+	.launch-draft-selector__menu.dropdown-menu
+		.dropdown-item.launch-draft-selector__item--active:hover {
+		background-color: $primary-l3;
+		color: $dark;
+	}
+
+	.launch-draft-selector__menu.dropdown-menu
+		.dropdown-item.launch-draft-selector__item--disabled {
+		color: $secondary-l1;
+		cursor: not-allowed;
+	}
+
+	.launch-draft-selector__menu.dropdown-menu
+		.dropdown-item.launch-draft-selector__item--disabled:focus,
+	.launch-draft-selector__menu.dropdown-menu
+		.dropdown-item.launch-draft-selector__item--disabled:hover {
+		background-color: transparent;
+		color: $secondary-l1;
+	}
+}
