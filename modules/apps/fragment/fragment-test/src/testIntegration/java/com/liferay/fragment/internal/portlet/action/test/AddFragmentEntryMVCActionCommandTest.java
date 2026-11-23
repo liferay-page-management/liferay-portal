@@ -101,6 +101,7 @@ public class AddFragmentEntryMVCActionCommandTest {
 
 		themeDisplay.setCompany(
 			_companyLocalService.getCompany(_group.getCompanyId()));
+		themeDisplay.setScopeGroupId(_group.getGroupId());
 		themeDisplay.setUser(TestPropsValues.getUser());
 
 		return themeDisplay;
