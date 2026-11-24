@@ -210,6 +210,8 @@ public class LaunchDraftSelectorProductNavigationControlMenuEntry
 			HttpServletRequest httpServletRequest)
 		throws PortalException {
 
+		List<Map<String, Object>> draftLayouts = new ArrayList<>();
+
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
@@ -247,8 +249,6 @@ public class LaunchDraftSelectorProductNavigationControlMenuEntry
 			});
 
 		launchSetDetailsList.sort(LaunchSetDetailsNameComparator.INSTANCE);
-
-		List<Map<String, Object>> draftLayouts = new ArrayList<>();
 
 		draftLayouts.add(
 			_getDraftLayoutMap(

@@ -173,15 +173,15 @@ public class LaunchDraftSelectorProductNavigationControlMenuEntryTest {
 	}
 
 	private ObjectEntry _addLaunchSetObjectEntry(String name) throws Exception {
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.getObjectDefinition(
-				TestPropsValues.getCompanyId(), "LaunchSet");
-
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), TestPropsValues.getUserId());
 
 		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.getObjectDefinition(
+				TestPropsValues.getCompanyId(), "LaunchSet");
 
 		return _objectEntryLocalService.addObjectEntry(
 			0, TestPropsValues.getUserId(),
