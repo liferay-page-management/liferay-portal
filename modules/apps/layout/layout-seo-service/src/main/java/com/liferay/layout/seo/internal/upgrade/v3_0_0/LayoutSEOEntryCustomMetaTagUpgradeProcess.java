@@ -76,6 +76,14 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcess extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
+		_deleteLayoutSEOEntryCustomMetaTags();
+
+		Map<Long, Set<Long>> addedLayoutSEOEntryCustomMetaTagIdsMap =
+			new HashMap<>();
+		Map<Long, Set<Long>> ddmStorageIdsMap = new TreeMap<>();
+		Map<Long, Set<Long>> deletedLayoutSEOEntryCustomMetaTagIdsMap =
+			new HashMap<>();
+
 		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
 				StringBundler.concat(
 					"select ctCollectionId, layoutSEOEntryId, groupId, ",
@@ -92,15 +100,10 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcess extends UpgradeProcess {
 						"property, content) values (?, ?, ?, ?, ?, ?, ?, ?)"));
 			ResultSet resultSet = preparedStatement1.executeQuery()) {
 
-			Map<Long, List<Long>> addedLayoutSEOEntryCustomMetaTagIdsMap =
-				new HashMap<>();
-			Map<Long, Set<Long>> ddmStorageIdsMap = new TreeMap<>();
-			Map<Long, List<Long>> deletedLayoutSEOEntryCustomMetaTagIdsMap =
-				new HashMap<>();
-			Map<Long, List<Long>> productionLayoutSEOEntryCustomMetaTagIdsMap =
-				new HashMap<>();
 			Map<Long, List<Map.Entry<String, String>>>
 				productionCustomMetaTagsMap = new HashMap<>();
+			Map<Long, List<Long>> productionLayoutSEOEntryCustomMetaTagIdsMap =
+				new HashMap<>();
 
 			while (resultSet.next()) {
 				long companyId = resultSet.getLong("companyId");
@@ -130,9 +133,8 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcess extends UpgradeProcess {
 
 					List<Long> layoutSEOEntryCustomMetaTagIds =
 						_addLayoutSEOEntryCustomMetaTags(
-							companyId, ctCollectionId, groupId,
-							layoutSEOEntryId, preparedStatement2,
-							customMetaTags);
+							companyId, ctCollectionId, customMetaTags, groupId,
+							layoutSEOEntryId, preparedStatement2);
 
 					if (ctCollectionId ==
 							CTConstants.CT_COLLECTION_ID_PRODUCTION) {
@@ -152,18 +154,18 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcess extends UpgradeProcess {
 					continue;
 				}
 
-				List<Long> addedLayoutSEOEntryCustomMetaTagIds =
+				Set<Long> addedLayoutSEOEntryCustomMetaTagIds =
 					addedLayoutSEOEntryCustomMetaTagIdsMap.computeIfAbsent(
-						writableCTCollectionId, key -> new ArrayList<>());
+						writableCTCollectionId, key -> new HashSet<>());
 
 				addedLayoutSEOEntryCustomMetaTagIds.addAll(
 					_addLayoutSEOEntryCustomMetaTags(
-						companyId, ctCollectionId, groupId, layoutSEOEntryId,
-						preparedStatement2, customMetaTags));
+						companyId, ctCollectionId, customMetaTags, groupId,
+						layoutSEOEntryId, preparedStatement2));
 
-				List<Long> deletedLayoutSEOEntryCustomMetaTagIds =
+				Set<Long> deletedLayoutSEOEntryCustomMetaTagIds =
 					deletedLayoutSEOEntryCustomMetaTagIdsMap.computeIfAbsent(
-						writableCTCollectionId, key -> new ArrayList<>());
+						writableCTCollectionId, key -> new HashSet<>());
 
 				deletedLayoutSEOEntryCustomMetaTagIds.addAll(
 					productionLayoutSEOEntryCustomMetaTagIdsMap.getOrDefault(
@@ -175,17 +177,16 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcess extends UpgradeProcess {
 				productionLayoutSEOEntryCustomMetaTagIdsMap);
 
 			preparedStatement2.executeBatch();
-
-			_addCTEntries(
-				addedLayoutSEOEntryCustomMetaTagIdsMap,
-				CTConstants.CT_CHANGE_TYPE_ADDITION);
-			_addCTEntries(
-				deletedLayoutSEOEntryCustomMetaTagIdsMap,
-				CTConstants.CT_CHANGE_TYPE_DELETION);
-
-			_deleteDDMStorages(ddmStorageIdsMap);
 		}
 
+		_addCTEntries(
+			CTConstants.CT_CHANGE_TYPE_ADDITION,
+			addedLayoutSEOEntryCustomMetaTagIdsMap);
+		_addCTEntries(
+			CTConstants.CT_CHANGE_TYPE_DELETION,
+			deletedLayoutSEOEntryCustomMetaTagIdsMap);
+
+		_deleteDDMStorages(ddmStorageIdsMap);
 		_deleteDDMStructures();
 	}
 
@@ -202,14 +203,14 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcess extends UpgradeProcess {
 	}
 
 	private void _addCTEntries(
-			Map<Long, List<Long>> layoutSEOEntryCustomMetaTagIdsMap,
-			int changeType)
+			int changeType,
+			Map<Long, Set<Long>> layoutSEOEntryCustomMetaTagIdsMap)
 		throws Exception {
 
 		long classNameId = _classNameLocalService.getClassNameId(
 			LayoutSEOEntryCustomMetaTag.class);
 
-		for (Map.Entry<Long, List<Long>> entry :
+		for (Map.Entry<Long, Set<Long>> entry :
 				layoutSEOEntryCustomMetaTagIdsMap.entrySet()) {
 
 			CTCollection ctCollection =
@@ -231,7 +232,7 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcess extends UpgradeProcess {
 	}
 
 	private void _addDeletionsForDeletedLayoutSEOEntries(
-			Map<Long, List<Long>> deletedLayoutSEOEntryCustomMetaTagIdsMap,
+			Map<Long, Set<Long>> deletedLayoutSEOEntryCustomMetaTagIdsMap,
 			Map<Long, List<Long>> productionLayoutSEOEntryCustomMetaTagIdsMap)
 		throws Exception {
 
@@ -258,10 +259,10 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcess extends UpgradeProcess {
 						continue;
 					}
 
-					List<Long> deletedLayoutSEOEntryCustomMetaTagIds =
+					Set<Long> deletedLayoutSEOEntryCustomMetaTagIds =
 						deletedLayoutSEOEntryCustomMetaTagIdsMap.
 							computeIfAbsent(
-								ctCollectionId, key -> new ArrayList<>());
+								ctCollectionId, key -> new HashSet<>());
 
 					deletedLayoutSEOEntryCustomMetaTagIds.addAll(
 						layoutSEOEntryCustomMetaTagIds);
@@ -271,9 +272,9 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcess extends UpgradeProcess {
 	}
 
 	private List<Long> _addLayoutSEOEntryCustomMetaTags(
-			long companyId, long ctCollectionId, long groupId,
-			long layoutSEOEntryId, PreparedStatement preparedStatement,
-			List<Map.Entry<String, String>> customMetaTags)
+			long companyId, long ctCollectionId,
+			List<Map.Entry<String, String>> customMetaTags, long groupId,
+			long layoutSEOEntryId, PreparedStatement preparedStatement)
 		throws Exception {
 
 		List<Long> layoutSEOEntryCustomMetaTagIds = new ArrayList<>();
@@ -335,6 +336,26 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcess extends UpgradeProcess {
 
 				_ddmStructureLocalService.deleteStructure(ddmStructure);
 			});
+	}
+
+	private void _deleteLayoutSEOEntryCustomMetaTags() throws Exception {
+		String layoutSEOEntryIdsSQL =
+			"select layoutSEOEntryId from LayoutSEOEntry where DDMStorageId " +
+				"> 0";
+
+		runSQL(
+			StringBundler.concat(
+				"delete from CTEntry where modelClassNameId = ",
+				_classNameLocalService.getClassNameId(
+					LayoutSEOEntryCustomMetaTag.class),
+				" and modelClassPK in (select layoutSEOEntryCustomMetaTagId ",
+				"from LayoutSEOEntryCustomMetaTag where layoutSEOEntryId in (",
+				layoutSEOEntryIdsSQL, "))"));
+
+		runSQL(
+			StringBundler.concat(
+				"delete from LayoutSEOEntryCustomMetaTag where ",
+				"layoutSEOEntryId in (", layoutSEOEntryIdsSQL, ")"));
 	}
 
 	private List<Map.Entry<String, String>> _getCustomMetaTags(
