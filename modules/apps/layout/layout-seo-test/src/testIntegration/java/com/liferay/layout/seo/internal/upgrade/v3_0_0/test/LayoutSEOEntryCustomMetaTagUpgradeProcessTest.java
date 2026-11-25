@@ -387,6 +387,31 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcessTest
 	}
 
 	@Test
+	public void testUpgradeWithLayoutSEOEntryCustomMetaTagsFromFailedUpgrade()
+		throws Exception {
+
+		LayoutSEOEntry layoutSEOEntry = _addLayoutSEOEntry();
+
+		_updateDDMStorageId(
+			_ddmStorageId, layoutSEOEntry.getLayoutSEOEntryId());
+
+		_db.runSQL(
+			StringBundler.concat(
+				"insert into LayoutSEOEntryCustomMetaTag (mvccVersion, ",
+				"ctCollectionId, groupId, companyId, ",
+				"layoutSEOEntryCustomMetaTagId, layoutSEOEntryId, property, ",
+				"content) values (0, 0, ", layoutSEOEntry.getGroupId(), ", ",
+				layoutSEOEntry.getCompanyId(), ", ", RandomTestUtil.nextLong(),
+				", ", layoutSEOEntry.getLayoutSEOEntryId(), ", 'property1', '",
+				RandomTestUtil.randomString(), "')"));
+
+		runUpgrade();
+
+		_assertLayoutSEOEntryCustomMetaTags(
+			layoutSEOEntry, "property1", "property2");
+	}
+
+	@Test
 	public void testUpgradeWithLayoutSEOEntryModifiedInPublication()
 		throws Exception {
 
