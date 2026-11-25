@@ -77,9 +77,11 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcess extends UpgradeProcess {
 	@Override
 	protected void doUpgrade() throws Exception {
 		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
-				"select ctCollectionId, layoutSEOEntryId, groupId, " +
-					"companyId, DDMStorageId from LayoutSEOEntry where " +
-						"DDMStorageId > 0 order by ctCollectionId");
+				StringBundler.concat(
+					"select ctCollectionId, layoutSEOEntryId, groupId, ",
+					"companyId, DDMStorageId from LayoutSEOEntry where ",
+					"DDMStorageId > 0 or ctCollectionId > 0 order by ",
+					"ctCollectionId"));
 			PreparedStatement preparedStatement2 =
 				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
 					connection,
@@ -97,48 +99,55 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcess extends UpgradeProcess {
 				new HashMap<>();
 			Map<Long, List<Long>> productionLayoutSEOEntryCustomMetaTagIdsMap =
 				new HashMap<>();
-			Map<Long, List<Map.Entry<String, String>>> productionPropertiesMap =
-				new HashMap<>();
+			Map<Long, List<Map.Entry<String, String>>>
+				productionCustomMetaTagsMap = new HashMap<>();
 
 			while (resultSet.next()) {
+				long companyId = resultSet.getLong("companyId");
 				long ctCollectionId = resultSet.getLong("ctCollectionId");
 				long ddmStorageId = resultSet.getLong("DDMStorageId");
+				long groupId = resultSet.getLong("groupId");
 				long layoutSEOEntryId = resultSet.getLong("layoutSEOEntryId");
 
 				long writableCTCollectionId = _getWritableCTCollectionId(
 					ctCollectionId);
 
-				Set<Long> ddmStorageIds = ddmStorageIdsMap.computeIfAbsent(
-					writableCTCollectionId, key -> new HashSet<>());
+				List<Map.Entry<String, String>> customMetaTags =
+					Collections.emptyList();
 
-				ddmStorageIds.add(ddmStorageId);
+				if (ddmStorageId > 0) {
+					Set<Long> ddmStorageIds = ddmStorageIdsMap.computeIfAbsent(
+						writableCTCollectionId, key -> new HashSet<>());
 
-				List<Map.Entry<String, String>> properties = _getProperties(
-					writableCTCollectionId, ddmStorageId);
+					ddmStorageIds.add(ddmStorageId);
+
+					customMetaTags = _getCustomMetaTags(
+						writableCTCollectionId, ddmStorageId);
+				}
 
 				if (writableCTCollectionId ==
 						CTConstants.CT_COLLECTION_ID_PRODUCTION) {
 
 					List<Long> layoutSEOEntryCustomMetaTagIds =
 						_addLayoutSEOEntryCustomMetaTags(
-							resultSet.getLong("companyId"), ctCollectionId,
-							resultSet.getLong("groupId"), layoutSEOEntryId,
-							preparedStatement2, properties);
+							companyId, ctCollectionId, groupId,
+							layoutSEOEntryId, preparedStatement2,
+							customMetaTags);
 
 					if (ctCollectionId ==
 							CTConstants.CT_COLLECTION_ID_PRODUCTION) {
 
 						productionLayoutSEOEntryCustomMetaTagIdsMap.put(
 							layoutSEOEntryId, layoutSEOEntryCustomMetaTagIds);
-						productionPropertiesMap.put(
-							layoutSEOEntryId, properties);
+						productionCustomMetaTagsMap.put(
+							layoutSEOEntryId, customMetaTags);
 					}
 
 					continue;
 				}
 
-				if (properties.equals(
-						productionPropertiesMap.get(layoutSEOEntryId))) {
+				if (customMetaTags.equals(
+						productionCustomMetaTagsMap.get(layoutSEOEntryId))) {
 
 					continue;
 				}
@@ -149,9 +158,8 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcess extends UpgradeProcess {
 
 				addedLayoutSEOEntryCustomMetaTagIds.addAll(
 					_addLayoutSEOEntryCustomMetaTags(
-						resultSet.getLong("companyId"), ctCollectionId,
-						resultSet.getLong("groupId"), layoutSEOEntryId,
-						preparedStatement2, properties));
+						companyId, ctCollectionId, groupId, layoutSEOEntryId,
+						preparedStatement2, customMetaTags));
 
 				List<Long> deletedLayoutSEOEntryCustomMetaTagIds =
 					deletedLayoutSEOEntryCustomMetaTagIdsMap.computeIfAbsent(
@@ -162,7 +170,7 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcess extends UpgradeProcess {
 						layoutSEOEntryId, Collections.emptyList()));
 			}
 
-			_addDeletedLayoutSEOEntryCustomMetaTagIds(
+			_addDeletionsForDeletedLayoutSEOEntries(
 				deletedLayoutSEOEntryCustomMetaTagIdsMap,
 				productionLayoutSEOEntryCustomMetaTagIdsMap);
 
@@ -175,42 +183,10 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcess extends UpgradeProcess {
 				deletedLayoutSEOEntryCustomMetaTagIdsMap,
 				CTConstants.CT_CHANGE_TYPE_DELETION);
 
-			for (Map.Entry<Long, Set<Long>> entry :
-					ddmStorageIdsMap.entrySet()) {
-
-				try (SafeCloseable safeCloseable =
-						CTCollectionThreadLocal.
-							setCTCollectionIdWithSafeCloseable(
-								entry.getKey())) {
-
-					for (long ddmStorageId : entry.getValue()) {
-						_ddmStorageEngineManager.deleteByClass(ddmStorageId);
-					}
-				}
-			}
+			_deleteDDMStorages(ddmStorageIdsMap);
 		}
 
-		_companyLocalService.forEachCompanyId(
-			companyId -> {
-				Group companyGroup = _groupLocalService.getCompanyGroup(
-					companyId);
-
-				DDMStructure ddmStructure =
-					_ddmStructureLocalService.fetchStructure(
-						companyGroup.getGroupId(),
-						_classNameLocalService.getClassNameId(
-							LayoutSEOEntry.class.getName()),
-						"custom-meta-tags");
-
-				if (ddmStructure == null) {
-					return;
-				}
-
-				_ddmStorageLinkLocalService.deleteStructureStorageLinks(
-					ddmStructure.getStructureId());
-
-				_ddmStructureLocalService.deleteStructure(ddmStructure);
-			});
+		_deleteDDMStructures();
 	}
 
 	@Override
@@ -254,7 +230,7 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcess extends UpgradeProcess {
 		}
 	}
 
-	private void _addDeletedLayoutSEOEntryCustomMetaTagIds(
+	private void _addDeletionsForDeletedLayoutSEOEntries(
 			Map<Long, List<Long>> deletedLayoutSEOEntryCustomMetaTagIdsMap,
 			Map<Long, List<Long>> productionLayoutSEOEntryCustomMetaTagIdsMap)
 		throws Exception {
@@ -297,12 +273,12 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcess extends UpgradeProcess {
 	private List<Long> _addLayoutSEOEntryCustomMetaTags(
 			long companyId, long ctCollectionId, long groupId,
 			long layoutSEOEntryId, PreparedStatement preparedStatement,
-			List<Map.Entry<String, String>> properties)
+			List<Map.Entry<String, String>> customMetaTags)
 		throws Exception {
 
 		List<Long> layoutSEOEntryCustomMetaTagIds = new ArrayList<>();
 
-		for (Map.Entry<String, String> entry : properties) {
+		for (Map.Entry<String, String> entry : customMetaTags) {
 			long layoutSEOEntryCustomMetaTagId = increment();
 
 			preparedStatement.setLong(1, 0);
@@ -322,11 +298,50 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcess extends UpgradeProcess {
 		return layoutSEOEntryCustomMetaTagIds;
 	}
 
-	private List<Map.Entry<String, String>> _getProperties(
+	private void _deleteDDMStorages(Map<Long, Set<Long>> ddmStorageIdsMap)
+		throws Exception {
+
+		for (Map.Entry<Long, Set<Long>> entry : ddmStorageIdsMap.entrySet()) {
+			try (SafeCloseable safeCloseable =
+					CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+						entry.getKey())) {
+
+				for (long ddmStorageId : entry.getValue()) {
+					_ddmStorageEngineManager.deleteByClass(ddmStorageId);
+				}
+			}
+		}
+	}
+
+	private void _deleteDDMStructures() throws Exception {
+		_companyLocalService.forEachCompanyId(
+			companyId -> {
+				Group companyGroup = _groupLocalService.getCompanyGroup(
+					companyId);
+
+				DDMStructure ddmStructure =
+					_ddmStructureLocalService.fetchStructure(
+						companyGroup.getGroupId(),
+						_classNameLocalService.getClassNameId(
+							LayoutSEOEntry.class.getName()),
+						"custom-meta-tags");
+
+				if (ddmStructure == null) {
+					return;
+				}
+
+				_ddmStorageLinkLocalService.deleteStructureStorageLinks(
+					ddmStructure.getStructureId());
+
+				_ddmStructureLocalService.deleteStructure(ddmStructure);
+			});
+	}
+
+	private List<Map.Entry<String, String>> _getCustomMetaTags(
 			long ctCollectionId, long ddmStorageId)
 		throws Exception {
 
-		List<Map.Entry<String, String>> properties = new ArrayList<>();
+		List<Map.Entry<String, String>> customMetaTags = new ArrayList<>();
 
 		DDMFormValues ddmFormValues = null;
 
@@ -366,7 +381,7 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcess extends UpgradeProcess {
 				(locale, value) -> localizedMap.put(
 					LocaleUtil.toLanguageId(locale), value));
 
-			properties.add(
+			customMetaTags.add(
 				new AbstractMap.SimpleImmutableEntry<>(
 					nameValue.getString(nameValue.getDefaultLocale()),
 					LocalizationUtil.getXml(
@@ -375,7 +390,7 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcess extends UpgradeProcess {
 						"Label")));
 		}
 
-		return properties;
+		return customMetaTags;
 	}
 
 	private long _getWritableCTCollectionId(long ctCollectionId) {
