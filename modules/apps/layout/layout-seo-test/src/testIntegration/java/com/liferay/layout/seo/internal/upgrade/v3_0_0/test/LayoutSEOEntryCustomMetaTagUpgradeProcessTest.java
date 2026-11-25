@@ -206,6 +206,50 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcessTest
 	}
 
 	@Test
+	public void testUpgradeWithDDMStorageClearedInPublication()
+		throws Exception {
+
+		LayoutSEOEntry layoutSEOEntry = _addLayoutSEOEntry();
+
+		_updateDDMStorageId(
+			_ddmStorageId, layoutSEOEntry.getLayoutSEOEntryId());
+
+		CTCollection ctCollection = _addCTCollection();
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_updateLayoutSEOEntry(layoutSEOEntry);
+		}
+
+		Assert.assertEquals(
+			1,
+			_getCount(
+				StringBundler.concat(
+					"select count(*) from LayoutSEOEntry where ctCollectionId ",
+					"= ", ctCollection.getCtCollectionId(),
+					" and (DDMStorageId is null or DDMStorageId = 0)")));
+
+		runUpgrade();
+
+		_assertLayoutSEOEntryCustomMetaTags(
+			layoutSEOEntry, "property1", "property2");
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_assertLayoutSEOEntryCustomMetaTags(layoutSEOEntry);
+		}
+
+		_ctCollectionService.publishCTCollection(
+			TestPropsValues.getUserId(), ctCollection.getCtCollectionId());
+
+		_assertLayoutSEOEntryCustomMetaTags(layoutSEOEntry);
+	}
+
+	@Test
 	public void testUpgradeWithDDMStorageInInProgressPublication()
 		throws Exception {
 
