@@ -49,6 +49,7 @@ import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -56,6 +57,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
@@ -309,6 +311,8 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 			"NOT_FOUND", null,
 			() -> masterPageResource.getSiteMasterPage(
 				testGroup.getExternalReferenceCode(), externalReferenceCode));
+
+		_testGetSiteMasterPageStatus();
 
 		_enableLocalStaging();
 
@@ -1119,6 +1123,16 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 			layoutPageTemplateEntry.getPreviewFileEntryId());
 	}
 
+	private void _assertStatus(MasterPage masterPage, MasterPage.Status status)
+		throws Exception {
+
+		MasterPage getMasterPage = masterPageResource.getSiteMasterPage(
+			testGroup.getExternalReferenceCode(),
+			masterPage.getExternalReferenceCode());
+
+		Assert.assertEquals(status, getMasterPage.getStatus());
+	}
+
 	private void _assertThumbnailFileEntryId(
 			Boolean defaultValue, String masterPageExternalReferenceCode,
 			String thumbnailExternalReferenceCode)
@@ -1639,6 +1653,44 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 		assertEquals(masterPage, getMasterPage);
 		assertValid(getMasterPage);
+	}
+
+	private void _testGetSiteMasterPageStatus() throws Exception {
+		MasterPage masterPage = testPostSiteMasterPage_addMasterPage(
+			randomMasterPage());
+
+		_assertStatus(masterPage, MasterPage.Status.DRAFT);
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.
+				getLayoutPageTemplateEntryByExternalReferenceCode(
+					masterPage.getExternalReferenceCode(),
+					testGroup.getGroupId());
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		ReflectionTestUtil.invoke(
+			_mvcActionCommand, "_publishLayoutPageTemplateEntry",
+			new Class<?>[] {Layout.class, Layout.class, long.class},
+			layout.fetchDraftLayout(), layout, TestPropsValues.getUserId());
+
+		_assertStatus(masterPage, MasterPage.Status.APPROVED);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		draftLayout.setStatus(WorkflowConstants.STATUS_DRAFT);
+
+		_layoutLocalService.updateLayout(draftLayout);
+
+		_assertStatus(masterPage, MasterPage.Status.DRAFT);
+
+		ReflectionTestUtil.invoke(
+			_mvcActionCommand, "_publishLayoutPageTemplateEntry",
+			new Class<?>[] {Layout.class, Layout.class, long.class},
+			layout.fetchDraftLayout(), layout, TestPropsValues.getUserId());
+
+		_assertStatus(masterPage, MasterPage.Status.APPROVED);
 	}
 
 	private void _testGetSiteMasterPageWithNestedFields(MasterPage masterPage)
@@ -2967,6 +3019,11 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 	@Inject
 	private LayoutPageTemplateEntryLocalService
 		_layoutPageTemplateEntryLocalService;
+
+	@Inject(
+		filter = "mvc.command.name=/layout_content_page_editor/publish_layout_page_template_entry"
+	)
+	private MVCActionCommand _mvcActionCommand;
 
 	@Inject
 	private PortletFileRepository _portletFileRepository;

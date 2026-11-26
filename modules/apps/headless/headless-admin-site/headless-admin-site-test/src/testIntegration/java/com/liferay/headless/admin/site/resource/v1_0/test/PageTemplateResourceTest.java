@@ -59,6 +59,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -66,6 +67,7 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -207,6 +209,8 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 			"NOT_FOUND", null,
 			() -> pageTemplateResource.getSitePageTemplate(
 				testGroup.getExternalReferenceCode(), externalReferenceCode));
+
+		_testGetSitePageTemplateStatus();
 
 		_enableLocalStaging();
 
@@ -793,6 +797,17 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 			layoutPageTemplateEntry.getPreviewFileEntryId());
 	}
 
+	private void _assertStatus(
+			PageTemplate pageTemplate, PageTemplate.Status status)
+		throws Exception {
+
+		PageTemplate getPageTemplate = pageTemplateResource.getSitePageTemplate(
+			testGroup.getExternalReferenceCode(),
+			pageTemplate.getExternalReferenceCode());
+
+		Assert.assertEquals(status, getPageTemplate.getStatus());
+	}
+
 	private void _assertThumbnailFileEntryId(
 			Boolean defaultValue, String pageTemplateExternalReferenceCode,
 			String thumbnailExternalReferenceCode)
@@ -1326,6 +1341,49 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 
 		assertEquals(pageTemplate, getPageTemplate);
 		assertValid(getPageTemplate);
+	}
+
+	private void _testGetSitePageTemplateStatus() throws Exception {
+		PageTemplate pageTemplate = testPostSitePageTemplate_addPageTemplate(
+			_getContentPageTemplate(testGroup));
+
+		_assertStatus(pageTemplate, PageTemplate.Status.DRAFT);
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.
+				getLayoutPageTemplateEntryByExternalReferenceCode(
+					pageTemplate.getExternalReferenceCode(),
+					testGroup.getGroupId());
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		ReflectionTestUtil.invoke(
+			_mvcActionCommand, "_publishLayoutPageTemplateEntry",
+			new Class<?>[] {Layout.class, Layout.class, long.class},
+			layout.fetchDraftLayout(), layout, TestPropsValues.getUserId());
+
+		_assertStatus(pageTemplate, PageTemplate.Status.APPROVED);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		draftLayout.setStatus(WorkflowConstants.STATUS_DRAFT);
+
+		_layoutLocalService.updateLayout(draftLayout);
+
+		_assertStatus(pageTemplate, PageTemplate.Status.DRAFT);
+
+		ReflectionTestUtil.invoke(
+			_mvcActionCommand, "_publishLayoutPageTemplateEntry",
+			new Class<?>[] {Layout.class, Layout.class, long.class},
+			layout.fetchDraftLayout(), layout, TestPropsValues.getUserId());
+
+		_assertStatus(pageTemplate, PageTemplate.Status.APPROVED);
+
+		_assertStatus(
+			testPostSitePageTemplate_addPageTemplate(
+				_getWidgetPageTemplate(testGroup)),
+			PageTemplate.Status.APPROVED);
 	}
 
 	private void _testGetSitePageTemplateWithNestedFields(
@@ -2614,6 +2672,11 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 
 	@Inject
 	private LayoutPageTemplateEntryService _layoutPageTemplateEntryService;
+
+	@Inject(
+		filter = "mvc.command.name=/layout_content_page_editor/publish_layout_page_template_entry"
+	)
+	private MVCActionCommand _mvcActionCommand;
 
 	@Inject
 	private PortletFileRepository _portletFileRepository;
