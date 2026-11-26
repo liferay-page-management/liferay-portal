@@ -210,6 +210,18 @@ public class UtilityPageSerDes {
 			sb.append("]");
 		}
 
+		if (utilityPage.getStatus() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"status\": ");
+
+			sb.append("\"");
+			sb.append(utilityPage.getStatus());
+			sb.append("\"");
+		}
+
 		if (utilityPage.getThumbnailURLReference() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -372,6 +384,13 @@ public class UtilityPageSerDes {
 				"permissions", String.valueOf(utilityPage.getPermissions()));
 		}
 
+		if (utilityPage.getStatus() == null) {
+			map.put("status", null);
+		}
+		else {
+			map.put("status", String.valueOf(utilityPage.getStatus()));
+		}
+
 		if (utilityPage.getThumbnailURLReference() == null) {
 			map.put("thumbnailURLReference", null);
 		}
@@ -461,6 +480,9 @@ public class UtilityPageSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "permissions")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "status")) {
 				return false;
 			}
 			else if (Objects.equals(
@@ -587,6 +609,13 @@ public class UtilityPageSerDes {
 					utilityPage.setPermissions(permissionsArray);
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "status")) {
+				if (jsonParserFieldValue != null) {
+					utilityPage.setStatus(
+						UtilityPage.Status.create(
+							(String)jsonParserFieldValue));
+				}
+			}
 			else if (Objects.equals(
 						jsonParserFieldName, "thumbnailURLReference")) {
 
@@ -703,4 +732,4 @@ public class UtilityPageSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1654904830
+// LIFERAY-REST-BUILDER-HASH:958890719

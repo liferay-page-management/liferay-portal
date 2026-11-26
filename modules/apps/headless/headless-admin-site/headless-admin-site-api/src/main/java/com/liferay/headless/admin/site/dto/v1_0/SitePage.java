@@ -756,6 +756,64 @@ public class SitePage implements Serializable {
 		_permissionsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The status of the site page. It is Draft when the page was never published or has unpublished changes. Otherwise it is Approved."
+	)
+	@JsonGetter("status")
+	@Valid
+	public Status getStatus() {
+		if (_statusSupplier != null) {
+			status = _statusSupplier.get();
+
+			_statusSupplier = null;
+		}
+
+		return status;
+	}
+
+	@JsonIgnore
+	public String getStatusAsString() {
+		Status status = getStatus();
+
+		if (status == null) {
+			return null;
+		}
+
+		return status.toString();
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+
+		_statusSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setStatus(
+		UnsafeSupplier<Status, Exception> statusUnsafeSupplier) {
+
+		_statusSupplier = () -> {
+			try {
+				return statusUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The status of the site page. It is Draft when the page was never published or has unpublished changes. Otherwise it is Approved."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Status status;
+
+	@JsonIgnore
+	private Supplier<Status> _statusSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The taxonomy categories associated with this page."
 	)
 	@Valid
@@ -1252,6 +1310,20 @@ public class SitePage implements Serializable {
 			sb.append("]");
 		}
 
+		Status status = getStatus();
+
+		if (status != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"status\": ");
+
+			sb.append("\"");
+			sb.append(status);
+			sb.append("\"");
+		}
+
 		TaxonomyCategoryBrief[] taxonomyCategoryBriefs =
 			getTaxonomyCategoryBriefs();
 
@@ -1330,6 +1402,44 @@ public class SitePage implements Serializable {
 		name = "x-class-name"
 	)
 	public String xClassName;
+
+	@GraphQLName("Status")
+	public static enum Status {
+
+		APPROVED("Approved"), DRAFT("Draft");
+
+		@JsonCreator
+		public static Status create(String value) {
+			if ((value == null) || value.equals("")) {
+				return null;
+			}
+
+			for (Status status : values()) {
+				if (Objects.equals(status.getValue(), value)) {
+					return status;
+				}
+			}
+
+			throw new IllegalArgumentException("Invalid enum value: " + value);
+		}
+
+		@JsonValue
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private Status(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
+	}
 
 	@GraphQLName("Type")
 	public static enum Type {
@@ -1519,4 +1629,4 @@ public class SitePage implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1359307641
+// LIFERAY-REST-BUILDER-HASH:562666015

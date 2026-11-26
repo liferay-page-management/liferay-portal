@@ -587,6 +587,20 @@ public class WidgetPageTemplate extends PageTemplate implements Serializable {
 			sb.append("]");
 		}
 
+		Status status = getStatus();
+
+		if (status != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"status\": ");
+
+			sb.append("\"");
+			sb.append(status);
+			sb.append("\"");
+		}
+
 		TaxonomyCategoryBrief[] taxonomyCategoryBriefs =
 			getTaxonomyCategoryBriefs();
 
@@ -775,4 +789,4 @@ public class WidgetPageTemplate extends PageTemplate implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2060339878
+// LIFERAY-REST-BUILDER-HASH:481603513
