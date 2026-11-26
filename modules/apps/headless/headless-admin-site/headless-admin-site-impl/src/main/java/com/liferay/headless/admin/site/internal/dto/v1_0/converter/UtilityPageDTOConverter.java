@@ -10,6 +10,7 @@ import com.liferay.headless.admin.site.dto.v1_0.UtilityPageSEOSettings;
 import com.liferay.headless.admin.site.dto.v1_0.UtilityPageSettings;
 import com.liferay.headless.admin.site.dto.v1_0.util.ThumbnailURLReferenceUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.CreatorUtil;
+import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutUtil;
 import com.liferay.layout.utility.page.converter.LayoutUtilityPageEntryTypeConverter;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.portal.kernel.model.Layout;
@@ -66,6 +67,14 @@ public class UtilityPageDTOConverter
 				setMarkedAsDefault(
 					layoutUtilityPageEntry::isDefaultLayoutUtilityPageEntry);
 				setName(layoutUtilityPageEntry::getName);
+				setStatus(
+					() -> {
+						if (LayoutUtil.isDraft(layout)) {
+							return Status.DRAFT;
+						}
+
+						return Status.APPROVED;
+					});
 				setThumbnailURLReference(
 					() -> NestedFieldsSupplier.supply(
 						"thumbnailURLReference",
