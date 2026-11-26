@@ -1,0 +1,35 @@
+.location-map {
+	min-height: 150px;
+}
+
+.location-map-container {
+	display: flex;
+	flex: 1 1 300px;
+	flex-direction: column;
+	min-height: 150px;
+	min-width: 300px;
+}
+
+.location-map-container .object-field__location-map {
+	flex-grow: 1;
+	height: auto;
+}
+
+.location-map-container .leaflet-marker-icon {
+	cursor: inherit;
+}
+
+.location-map-container--disabled {
+	position: relative;
+}
+
+.location-map-container--disabled:after {
+	background-color: transparent;
+	content: '';
+	height: 100%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 100%;
+	z-index: 1001;
+}

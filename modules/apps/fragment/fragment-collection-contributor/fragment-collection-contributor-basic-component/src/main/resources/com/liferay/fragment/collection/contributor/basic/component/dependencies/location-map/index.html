@@ -1,0 +1,75 @@
+[#assign address = "" /]
+[#assign latitude = "" /]
+[#assign longitude = "" /]
+
+[#if itemObject?? && itemObject.getValues??]
+	[#assign values = itemObject.getValues() /]
+
+	[#list values?keys as key]
+		[#if configuration.fieldName?has_content && key != configuration.fieldName]
+			[#continue]
+		[/#if]
+
+		[#assign value = values[key]! /]
+
+		[#if value?is_string && value?starts_with("{")]
+			[#attempt]
+				[#assign value = value?eval_json /]
+			[#recover]
+				[#continue]
+			[/#attempt]
+		[/#if]
+
+		[#if !value?is_hash]
+			[#continue]
+		[/#if]
+
+		[#if value.coordinates?? && value.coordinates?is_hash]
+			[#assign coordinates = value.coordinates /]
+		[#else]
+			[#assign coordinates = value /]
+		[/#if]
+
+		[#if coordinates.latitude?? && coordinates.longitude??]
+			[#assign
+				address = (value.address)!""
+				latitude = coordinates.latitude?is_number?then(coordinates.latitude?c, coordinates.latitude?string)
+				longitude = coordinates.longitude?is_number?then(coordinates.longitude?c, coordinates.longitude?string)
+			/]
+
+			[#break]
+		[/#if]
+	[/#list]
+[/#if]
+
+[#assign
+	group = themeDisplay.getScopeGroup()
+
+	companyPortletPreferences = prefsPropsUtil.getPreferences(themeDisplay.getCompanyId())
+
+	googleMapsAPIKey = group.getLiveParentTypeSettingsProperty("googleMapsAPIKey")!companyPortletPreferences.getValue("googleMapsAPIKey", "")
+	mapProviderKey = group.getLiveParentTypeSettingsProperty("MAP_PROVIDER_KEY")!companyPortletPreferences.getValue("MAP_PROVIDER_KEY", "OpenStreetMap")
+	title = ""
+/]
+
+[#if itemObject?? && itemObject.getTitleValue??]
+	[#attempt]
+		[#assign title = itemObject.getTitleValue(themeDisplay.getLanguageId())!"" /]
+	[#recover]
+		[#assign title = "" /]
+	[/#attempt]
+[/#if]
+
+<div class="d-flex flex-column location-map" data-lfr-styles>
+	[#if latitude?has_content]
+	<div class="flex-grow-1 location-map-container [#if layoutMode == "edit"]location-map-container--disabled[/#if]" data-address="${htmlUtil.escapeAttribute(address)}" data-google-maps-api-key="${htmlUtil.escapeAttribute(googleMapsAPIKey)}" data-latitude="${htmlUtil.escapeAttribute(latitude)}" data-longitude="${htmlUtil.escapeAttribute(longitude)}" data-map-provider-key="${htmlUtil.escapeAttribute(mapProviderKey)}" data-title="${htmlUtil.escapeAttribute(title)}" id="${fragmentElementId}-location-map"></div>
+
+		[#if address?has_content]
+			<p class="mb-0 mt-2 text-secondary">${htmlUtil.escape(address)}</p>
+		[/#if]
+	[#elseif layoutMode == "edit"]
+		<div class="alert alert-info">
+			${languageUtil.get(locale, "select-entry")}
+		</div>
+	[/#if]
+</div>
