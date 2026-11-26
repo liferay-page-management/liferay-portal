@@ -43,26 +43,29 @@
 [/#if]
 
 [#assign
-	group = themeDisplay.getScopeGroup()
-
-	companyPortletPreferences = prefsPropsUtil.getPreferences(themeDisplay.getCompanyId())
-
-	googleMapsAPIKey = group.getLiveParentTypeSettingsProperty("googleMapsAPIKey")!companyPortletPreferences.getValue("googleMapsAPIKey", "")
-	mapProviderKey = group.getLiveParentTypeSettingsProperty("MAP_PROVIDER_KEY")!companyPortletPreferences.getValue("MAP_PROVIDER_KEY", "OpenStreetMap")
+	groupId = themeDisplay.getScopeGroupId()
 	title = ""
 /]
 
-[#if itemObject?? && itemObject.getTitleValue??]
+[#if itemObject?? && itemObject.getGroupId??]
+	[#if itemObject.getGroupId() > 0]
+		[#assign groupId = itemObject.getGroupId() /]
+	[/#if]
+
 	[#attempt]
 		[#assign title = itemObject.getTitleValue(themeDisplay.getLanguageId())!"" /]
 	[#recover]
-		[#assign title = "" /]
 	[/#attempt]
 [/#if]
 
+[#assign
+	googleMapsAPIKey = locationMapHelper.getGoogleMapsAPIKey(groupId)
+	mapProviderKey = locationMapHelper.getMapProviderKey(groupId)
+/]
+
 <div class="d-flex flex-column location-map" data-lfr-styles>
 	[#if latitude?has_content]
-	<div class="flex-grow-1 location-map-container [#if layoutMode == "edit"]location-map-container--disabled[/#if]" data-address="${htmlUtil.escapeAttribute(address)}" data-google-maps-api-key="${htmlUtil.escapeAttribute(googleMapsAPIKey)}" data-latitude="${htmlUtil.escapeAttribute(latitude)}" data-longitude="${htmlUtil.escapeAttribute(longitude)}" data-map-provider-key="${htmlUtil.escapeAttribute(mapProviderKey)}" data-title="${htmlUtil.escapeAttribute(title)}" id="${fragmentElementId}-location-map"></div>
+		<div class="flex-grow-1 location-map-container [#if layoutMode == "edit"]location-map-container--disabled[/#if]" data-address="${htmlUtil.escapeAttribute(address)}" data-google-maps-api-key="${htmlUtil.escapeAttribute(googleMapsAPIKey)}" data-latitude="${htmlUtil.escapeAttribute(latitude)}" data-longitude="${htmlUtil.escapeAttribute(longitude)}" data-map-provider-key="${htmlUtil.escapeAttribute(mapProviderKey)}" data-title="${htmlUtil.escapeAttribute(title)}" id="${fragmentElementId}-location-map"></div>
 
 		[#if address?has_content]
 			<p class="mb-0 mt-2 text-secondary">${htmlUtil.escape(address)}</p>
