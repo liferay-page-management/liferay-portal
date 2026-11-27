@@ -6,6 +6,9 @@
 package com.liferay.layout.seo.internal.upgrade.v3_0_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.change.tracking.model.CTCollection;
+import com.liferay.change.tracking.service.CTCollectionLocalService;
+import com.liferay.change.tracking.service.CTCollectionService;
 import com.liferay.change.tracking.test.util.BaseCTUpgradeProcessTestCase;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
@@ -22,8 +25,10 @@ import com.liferay.layout.seo.model.LayoutSEOEntry;
 import com.liferay.layout.seo.model.LayoutSEOEntryCustomMetaTag;
 import com.liferay.layout.seo.service.LayoutSEOEntryLocalService;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.cache.MultiVMPool;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
@@ -33,6 +38,7 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.change.tracking.CTModel;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.change.tracking.CTService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -41,6 +47,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.upgrade.UpgradeException;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -53,12 +60,15 @@ import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -130,6 +140,13 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcessTest
 			_createDDMFormValues(_ddmStructure.getDDMForm()), serviceContext);
 	}
 
+	@After
+	public void tearDown() throws Exception {
+		_db.runSQL("update LayoutSEOEntry set DDMStorageId = 0");
+
+		_multiVMPool.clear();
+	}
+
 	@Test
 	public void testUpgrade() throws Exception {
 		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
@@ -186,6 +203,309 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcessTest
 		Assert.assertEquals(
 			"contenido2",
 			secondLayoutSEOEntryCustomMetaTag.getContent(LocaleUtil.SPAIN));
+	}
+
+	@Test
+	public void testUpgradeWithDDMStorageClearedInPublication()
+		throws Exception {
+
+		LayoutSEOEntry layoutSEOEntry = _addLayoutSEOEntry();
+
+		_updateDDMStorageId(
+			_ddmStorageId, layoutSEOEntry.getLayoutSEOEntryId());
+
+		CTCollection ctCollection = _addCTCollection();
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_updateLayoutSEOEntry(layoutSEOEntry);
+		}
+
+		Assert.assertEquals(
+			1,
+			_getCount(
+				StringBundler.concat(
+					"select count(*) from LayoutSEOEntry where ctCollectionId ",
+					"= ", ctCollection.getCtCollectionId(),
+					" and (DDMStorageId is null or DDMStorageId = 0)")));
+
+		runUpgrade();
+
+		_assertLayoutSEOEntryCustomMetaTags(
+			layoutSEOEntry, "property1", "property2");
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_assertLayoutSEOEntryCustomMetaTags(layoutSEOEntry);
+		}
+
+		_ctCollectionService.publishCTCollection(
+			TestPropsValues.getUserId(), ctCollection.getCtCollectionId());
+
+		_assertLayoutSEOEntryCustomMetaTags(layoutSEOEntry);
+	}
+
+	@Test
+	public void testUpgradeWithDDMStorageInInProgressPublication()
+		throws Exception {
+
+		CTCollection ctCollection = _addCTCollection();
+
+		long ddmStorageId = 0;
+		LayoutSEOEntry layoutSEOEntry = null;
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			layoutSEOEntry = _addLayoutSEOEntry();
+
+			ddmStorageId = _ddmStorageEngineManager.create(
+				TestPropsValues.getCompanyId(), _ddmStructure.getStructureId(),
+				_createDDMFormValues(
+					_ddmStructure.getDDMForm(), "property3",
+					RandomTestUtil.randomString()),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), TestPropsValues.getUserId()));
+		}
+
+		_updateDDMStorageId(ddmStorageId, layoutSEOEntry.getLayoutSEOEntryId());
+
+		runUpgrade();
+
+		Assert.assertEquals(
+			0,
+			_getCount(
+				"select count(*) from DDMStorageLink where classPK = " +
+					ddmStorageId));
+
+		_assertLayoutSEOEntryCustomMetaTags(layoutSEOEntry);
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_assertLayoutSEOEntryCustomMetaTags(layoutSEOEntry, "property3");
+		}
+
+		_ctCollectionService.publishCTCollection(
+			TestPropsValues.getUserId(), ctCollection.getCtCollectionId());
+
+		_assertLayoutSEOEntryCustomMetaTags(layoutSEOEntry, "property3");
+	}
+
+	@Test
+	public void testUpgradeWithDDMStorageModifiedInPublication()
+		throws Exception {
+
+		LayoutSEOEntry layoutSEOEntry = _addLayoutSEOEntry();
+
+		CTCollection ctCollection = _addCTCollection();
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_ddmStorageEngineManager.update(
+				_ddmStorageId,
+				_createDDMFormValues(
+					_ddmStructure.getDDMForm(), "property3",
+					RandomTestUtil.randomString()),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), TestPropsValues.getUserId()));
+
+			_updateLayoutSEOEntry(layoutSEOEntry);
+		}
+
+		_updateDDMStorageId(
+			_ddmStorageId, layoutSEOEntry.getLayoutSEOEntryId());
+
+		runUpgrade();
+
+		Assert.assertEquals(
+			0,
+			_getCount(
+				"select count(*) from DDMField where storageId = " +
+					_ddmStorageId));
+
+		_assertLayoutSEOEntryCustomMetaTags(
+			layoutSEOEntry, "property1", "property2");
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_assertLayoutSEOEntryCustomMetaTags(layoutSEOEntry, "property3");
+		}
+
+		_ctCollectionService.publishCTCollection(
+			TestPropsValues.getUserId(), ctCollection.getCtCollectionId());
+
+		_assertLayoutSEOEntryCustomMetaTags(layoutSEOEntry, "property3");
+	}
+
+	@Test
+	public void testUpgradeWithLayoutDeletedInPublication() throws Exception {
+		LayoutSEOEntry layoutSEOEntry = _addLayoutSEOEntry();
+
+		_updateDDMStorageId(
+			_ddmStorageId, layoutSEOEntry.getLayoutSEOEntryId());
+
+		CTCollection ctCollection = _addCTCollection();
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_layoutLocalService.deleteLayout(
+				layoutSEOEntry.getGroupId(), layoutSEOEntry.isPrivateLayout(),
+				layoutSEOEntry.getLayoutId(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), TestPropsValues.getUserId()));
+		}
+
+		runUpgrade();
+
+		_assertLayoutSEOEntryCustomMetaTags(
+			layoutSEOEntry, "property1", "property2");
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_assertLayoutSEOEntryCustomMetaTags(layoutSEOEntry);
+		}
+
+		_ctCollectionService.publishCTCollection(
+			TestPropsValues.getUserId(), ctCollection.getCtCollectionId());
+
+		_assertLayoutSEOEntryCustomMetaTags(layoutSEOEntry);
+	}
+
+	@Test
+	public void testUpgradeWithLayoutSEOEntryCustomMetaTagsFromFailedUpgrade()
+		throws Exception {
+
+		LayoutSEOEntry layoutSEOEntry = _addLayoutSEOEntry();
+
+		_updateDDMStorageId(
+			_ddmStorageId, layoutSEOEntry.getLayoutSEOEntryId());
+
+		_db.runSQL(
+			StringBundler.concat(
+				"insert into LayoutSEOEntryCustomMetaTag (mvccVersion, ",
+				"ctCollectionId, groupId, companyId, ",
+				"layoutSEOEntryCustomMetaTagId, layoutSEOEntryId, property, ",
+				"content) values (0, 0, ", layoutSEOEntry.getGroupId(), ", ",
+				layoutSEOEntry.getCompanyId(), ", ", RandomTestUtil.nextLong(),
+				", ", layoutSEOEntry.getLayoutSEOEntryId(), ", 'property1', '",
+				RandomTestUtil.randomString(), "')"));
+
+		runUpgrade();
+
+		_assertLayoutSEOEntryCustomMetaTags(
+			layoutSEOEntry, "property1", "property2");
+	}
+
+	@Test
+	public void testUpgradeWithLayoutSEOEntryModifiedInPublication()
+		throws Exception {
+
+		LayoutSEOEntry layoutSEOEntry = _addLayoutSEOEntry();
+
+		CTCollection ctCollection = _addCTCollection();
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_updateLayoutSEOEntry(layoutSEOEntry);
+		}
+
+		_updateDDMStorageId(
+			_ddmStorageId, layoutSEOEntry.getLayoutSEOEntryId());
+
+		runUpgrade();
+
+		_assertLayoutSEOEntryCustomMetaTags(
+			layoutSEOEntry, "property1", "property2");
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_assertLayoutSEOEntryCustomMetaTags(
+				layoutSEOEntry, "property1", "property2");
+		}
+
+		_ctCollectionService.publishCTCollection(
+			TestPropsValues.getUserId(), ctCollection.getCtCollectionId());
+
+		_assertLayoutSEOEntryCustomMetaTags(
+			layoutSEOEntry, "property1", "property2");
+	}
+
+	@Test
+	public void testUpgradeWithPublishedPublication() throws Exception {
+		LayoutSEOEntry layoutSEOEntry = _addLayoutSEOEntry();
+
+		CTCollection ctCollection = _addCTCollection();
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_updateLayoutSEOEntry(layoutSEOEntry);
+		}
+
+		_ctCollectionService.publishCTCollection(
+			TestPropsValues.getUserId(), ctCollection.getCtCollectionId());
+
+		_updateDDMStorageId(
+			_ddmStorageId, layoutSEOEntry.getLayoutSEOEntryId());
+
+		Assert.assertEquals(
+			1,
+			_getCount(
+				StringBundler.concat(
+					"select count(*) from LayoutSEOEntry where ctCollectionId ",
+					"= ", ctCollection.getCtCollectionId(),
+					" and DDMStorageId = ", _ddmStorageId)));
+
+		runUpgrade();
+
+		_assertLayoutSEOEntryCustomMetaTags(
+			layoutSEOEntry, "property1", "property2");
+	}
+
+	@Test
+	public void testUpgradeWithUnreadableDDMStorage() throws Exception {
+		LayoutSEOEntry layoutSEOEntry1 = _addLayoutSEOEntry();
+
+		_updateDDMStorageId(
+			_ddmStorageId, layoutSEOEntry1.getLayoutSEOEntryId());
+
+		LayoutSEOEntry layoutSEOEntry2 = _addLayoutSEOEntry();
+
+		_updateDDMStorageId(
+			Long.MAX_VALUE, layoutSEOEntry2.getLayoutSEOEntryId());
+
+		try {
+			runUpgrade();
+
+			Assert.fail();
+		}
+		catch (UpgradeException upgradeException) {
+			Assert.assertEquals(
+				1,
+				_getCount(
+					"select count(*) from DDMStorageLink where classPK = " +
+						_ddmStorageId));
+		}
 	}
 
 	@Override
@@ -264,6 +584,37 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcessTest
 		}
 	}
 
+	private CTCollection _addCTCollection() throws Exception {
+		return _ctCollectionLocalService.addCTCollection(
+			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			0, RandomTestUtil.randomString(), RandomTestUtil.randomString());
+	}
+
+	private LayoutSEOEntry _addLayoutSEOEntry() throws Exception {
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		return _layoutSEOEntryLocalService.updateLayoutSEOEntry(
+			layout.getUserId(), layout.getGroupId(), layout.isPrivateLayout(),
+			layout.getLayoutId(), false, Collections.emptyMap(),
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId()));
+	}
+
+	private void _assertLayoutSEOEntryCustomMetaTags(
+			LayoutSEOEntry layoutSEOEntry, String... properties)
+		throws Exception {
+
+		_multiVMPool.clear();
+
+		Assert.assertEquals(
+			Arrays.asList(properties),
+			ListUtil.toList(
+				_layoutSEOEntryLocalService.getLayoutSEOEntryCustomMetaTags(
+					layoutSEOEntry.getGroupId(),
+					layoutSEOEntry.getLayoutSEOEntryId()),
+				LayoutSEOEntryCustomMetaTag::getProperty));
+	}
+
 	private DDMFormValues _createDDMFormValues(DDMForm ddmForm) {
 		DDMFormValues ddmFormValues = DDMFormValuesTestUtil.createDDMFormValues(
 			ddmForm);
@@ -307,6 +658,44 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcessTest
 		return ddmFormValues;
 	}
 
+	private DDMFormValues _createDDMFormValues(
+		DDMForm ddmForm, String property, String content) {
+
+		DDMFormValues ddmFormValues = DDMFormValuesTestUtil.createDDMFormValues(
+			ddmForm);
+
+		DDMFormFieldValue propertyDDMFormFieldValue =
+			DDMFormValuesTestUtil.createDDMFormFieldValue(
+				"property", new UnlocalizedValue(property));
+
+		Value value = new LocalizedValue(LocaleUtil.getSiteDefault());
+
+		value.addString(LocaleUtil.getSiteDefault(), content);
+
+		propertyDDMFormFieldValue.setNestedDDMFormFields(
+			ListUtil.fromArray(
+				DDMFormValuesTestUtil.createDDMFormFieldValue(
+					"content", value)));
+
+		ddmFormValues.addDDMFormFieldValue(propertyDDMFormFieldValue);
+
+		return ddmFormValues;
+	}
+
+	private int _getCount(String sql) throws Exception {
+		try (Connection connection = DataAccess.getConnection();
+
+			PreparedStatement preparedStatement = connection.prepareStatement(
+				sql);
+
+			ResultSet resultSet = preparedStatement.executeQuery()) {
+
+			resultSet.next();
+
+			return resultSet.getInt(1);
+		}
+	}
+
 	private void _updateDDMStorageId(long ddmStorageId, long layoutSEOEntryId)
 		throws Exception {
 
@@ -318,6 +707,17 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcessTest
 		_multiVMPool.clear();
 	}
 
+	private void _updateLayoutSEOEntry(LayoutSEOEntry layoutSEOEntry)
+		throws Exception {
+
+		_layoutSEOEntryLocalService.updateLayoutSEOEntry(
+			layoutSEOEntry.getUserId(), layoutSEOEntry.getGroupId(),
+			layoutSEOEntry.isPrivateLayout(), layoutSEOEntry.getLayoutId(),
+			true, RandomTestUtil.randomLocaleStringMap(),
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId()));
+	}
+
 	private static final String _CLASS_NAME =
 		"com.liferay.layout.seo.internal.upgrade.v3_0_0." +
 			"LayoutSEOEntryCustomMetaTagUpgradeProcess";
@@ -327,6 +727,12 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcessTest
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
+
+	@Inject
+	private CTCollectionLocalService _ctCollectionLocalService;
+
+	@Inject
+	private CTCollectionService _ctCollectionService;
 
 	@Inject
 	private DDMStorageEngineManager _ddmStorageEngineManager;
@@ -345,6 +751,9 @@ public class LayoutSEOEntryCustomMetaTagUpgradeProcessTest
 
 	@Inject
 	private GroupLocalService _groupLocalService;
+
+	@Inject
+	private LayoutLocalService _layoutLocalService;
 
 	@Inject
 	private LayoutSEOEntryLocalService _layoutSEOEntryLocalService;

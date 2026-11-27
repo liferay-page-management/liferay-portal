@@ -5,6 +5,8 @@
 
 package com.liferay.layout.seo.internal.upgrade.registry;
 
+import com.liferay.change.tracking.service.CTCollectionLocalService;
+import com.liferay.change.tracking.service.CTEntryLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStorageLinkLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.storage.DDMStorageEngineManager;
@@ -58,6 +60,7 @@ public class LayoutSEOServiceUpgradeStepRegistrator
 			"2.3.0", "3.0.0",
 			new LayoutSEOEntryCustomMetaTagUpgradeProcess(
 				_classNameLocalService, _companyLocalService,
+				_ctCollectionLocalService, _ctEntryLocalService,
 				_ddmStorageEngineManager, _ddmStorageLinkLocalService,
 				_ddmStructureLocalService, _groupLocalService));
 
@@ -72,6 +75,12 @@ public class LayoutSEOServiceUpgradeStepRegistrator
 
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
+
+	@Reference
+	private CTCollectionLocalService _ctCollectionLocalService;
+
+	@Reference
+	private CTEntryLocalService _ctEntryLocalService;
 
 	@Reference
 	private DDMStorageEngineManager _ddmStorageEngineManager;
