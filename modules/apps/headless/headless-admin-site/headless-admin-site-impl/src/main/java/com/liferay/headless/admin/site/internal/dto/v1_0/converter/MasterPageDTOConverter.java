@@ -9,6 +9,7 @@ import com.liferay.headless.admin.site.dto.v1_0.MasterPage;
 import com.liferay.headless.admin.site.dto.v1_0.util.ThumbnailURLReferenceUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.AssetUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.CreatorUtil;
+import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.portal.kernel.model.Layout;
@@ -74,6 +75,14 @@ public class MasterPageDTOConverter
 						layoutPageTemplateEntry.getPlid()));
 				setMarkedAsDefault(layoutPageTemplateEntry::isDefaultTemplate);
 				setName(layoutPageTemplateEntry::getName);
+				setStatus(
+					() -> {
+						if (LayoutUtil.isDraft(layout)) {
+							return Status.DRAFT;
+						}
+
+						return Status.APPROVED;
+					});
 				setTaxonomyCategoryBriefs(
 					() -> AssetUtil.getTaxonomyCategoryBriefs(
 						Layout.class.getName(),

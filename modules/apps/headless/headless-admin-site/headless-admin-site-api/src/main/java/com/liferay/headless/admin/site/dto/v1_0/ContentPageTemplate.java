@@ -288,6 +288,20 @@ public class ContentPageTemplate extends PageTemplate implements Serializable {
 			sb.append("]");
 		}
 
+		Status status = getStatus();
+
+		if (status != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"status\": ");
+
+			sb.append("\"");
+			sb.append(status);
+			sb.append("\"");
+		}
+
 		TaxonomyCategoryBrief[] taxonomyCategoryBriefs =
 			getTaxonomyCategoryBriefs();
 
@@ -476,4 +490,4 @@ public class ContentPageTemplate extends PageTemplate implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:693855743
+// LIFERAY-REST-BUILDER-HASH:1422715644

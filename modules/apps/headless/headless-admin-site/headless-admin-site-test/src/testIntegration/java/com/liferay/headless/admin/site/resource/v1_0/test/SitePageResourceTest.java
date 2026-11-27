@@ -341,6 +341,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		_testGetSiteSitePageWithDeletedOpenGraphImage(serviceContext);
 		_testGetSiteSitePageWithWidgetPageTypeWithWidgetPageWidgetInstances();
+
+		_testGetSiteSitePageStatus();
 	}
 
 	@Override
@@ -1382,6 +1384,16 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		else {
 			_assertWidgetSitePage(layout, sitePage);
 		}
+	}
+
+	private void _assertStatus(Layout layout, SitePage.Status status)
+		throws Exception {
+
+		SitePage sitePage = sitePageResource.getSiteSitePage(
+			testGroup.getExternalReferenceCode(),
+			layout.getExternalReferenceCode());
+
+		Assert.assertEquals(status, sitePage.getStatus());
 	}
 
 	private void _assertTaxonomyCategoryBrief(
@@ -2762,6 +2774,42 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			_assertExternalReferenceCodes(
 				Collections.singletonList(viewableLayout), page);
 		}
+	}
+
+	private void _testGetSiteSitePageStatus() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				testGroup.getGroupId(), TestPropsValues.getUserId());
+
+		Layout layout = _addLayout(
+			LayoutConstants.TYPE_CONTENT, null, serviceContext);
+
+		_assertStatus(layout, SitePage.Status.DRAFT);
+
+		ContentLayoutTestUtil.publishLayout(layout.fetchDraftLayout(), layout);
+
+		_assertStatus(layout, SitePage.Status.APPROVED);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		draftLayout.setStatus(WorkflowConstants.STATUS_DRAFT);
+
+		_layoutLocalService.updateLayout(draftLayout);
+
+		_assertStatus(layout, SitePage.Status.DRAFT);
+
+		ContentLayoutTestUtil.publishLayout(layout.fetchDraftLayout(), layout);
+
+		_assertStatus(layout, SitePage.Status.APPROVED);
+
+		_assertStatus(
+			_addLayout(
+				LayoutConstants.TYPE_PORTLET,
+				UnicodePropertiesBuilder.put(
+					LayoutTypePortletConstants.LAYOUT_TEMPLATE_ID, "1_column"
+				).buildString(),
+				serviceContext),
+			SitePage.Status.APPROVED);
 	}
 
 	private void _testGetSiteSitePageWithDeletedOpenGraphImage(

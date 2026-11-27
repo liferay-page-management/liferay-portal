@@ -61,6 +61,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.test.util.IdempotentRetryAssert;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -224,6 +225,8 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 					testGroup.getExternalReferenceCode(),
 					postUtilityPage.getExternalReferenceCode()));
 		}
+
+		_testGetSiteUtilityPageStatus();
 	}
 
 	@Override
@@ -604,6 +607,17 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 				testGroup.getExternalReferenceCode(), utilityPage));
 	}
 
+	private void _assertStatus(
+			UtilityPage.Status status, UtilityPage utilityPage)
+		throws Exception {
+
+		UtilityPage getUtilityPage = utilityPageResource.getSiteUtilityPage(
+			testGroup.getExternalReferenceCode(),
+			utilityPage.getExternalReferenceCode());
+
+		Assert.assertEquals(status, getUtilityPage.getStatus());
+	}
+
 	private void _assertThumbnailFileEntryId(
 			Boolean defaultValue, String thumbnailExternalReferenceCode,
 			String utilityPageExternalReferenceCode)
@@ -814,6 +828,41 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 		utilityPage.setThumbnailURLReference(thumbnailURLReference);
 
 		return utilityPage;
+	}
+
+	private void _testGetSiteUtilityPageStatus() throws Exception {
+		UtilityPage utilityPage = randomUtilityPage();
+
+		utilityPage.setMarkedAsDefault(false);
+
+		utilityPage = testPostSiteUtilityPage_addUtilityPage(utilityPage);
+
+		_assertStatus(UtilityPage.Status.DRAFT, utilityPage);
+
+		LayoutUtilityPageEntry layoutUtilityPageEntry =
+			_layoutUtilityPageEntryLocalService.
+				getLayoutUtilityPageEntryByExternalReferenceCode(
+					utilityPage.getExternalReferenceCode(),
+					testGroup.getGroupId());
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutUtilityPageEntry.getPlid());
+
+		ContentLayoutTestUtil.publishLayout(layout.fetchDraftLayout(), layout);
+
+		_assertStatus(UtilityPage.Status.APPROVED, utilityPage);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		draftLayout.setStatus(WorkflowConstants.STATUS_DRAFT);
+
+		_layoutLocalService.updateLayout(draftLayout);
+
+		_assertStatus(UtilityPage.Status.DRAFT, utilityPage);
+
+		ContentLayoutTestUtil.publishLayout(layout.fetchDraftLayout(), layout);
+
+		_assertStatus(UtilityPage.Status.APPROVED, utilityPage);
 	}
 
 	private void _testGetSiteUtilityPagesPageWithPageSpecificationsAsNestedFields()

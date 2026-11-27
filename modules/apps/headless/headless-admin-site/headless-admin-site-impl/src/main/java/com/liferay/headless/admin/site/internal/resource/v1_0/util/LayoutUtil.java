@@ -409,18 +409,26 @@ public class LayoutUtil {
 		return null;
 	}
 
-	public static boolean isPublished(Layout layout) {
-		if (!layout.isTypeAssetDisplay() && !layout.isTypeContent()) {
+	public static boolean isDraft(Layout layout) {
+		Layout draftLayout = _fetchDraftLayout(layout);
+
+		if (draftLayout == null) {
+			return false;
+		}
+
+		if (!isPublished(draftLayout)) {
 			return true;
 		}
 
-		if (layout.isDraftLayout()) {
-			return GetterUtil.getBoolean(
-				layout.getTypeSettingsProperty(
-					LayoutTypeSettingsConstants.KEY_PUBLISHED));
-		}
+		return draftLayout.isDraft();
+	}
 
-		Layout draftLayout = layout.fetchDraftLayout();
+	public static boolean isPublished(Layout layout) {
+		Layout draftLayout = _fetchDraftLayout(layout);
+
+		if (draftLayout == null) {
+			return true;
+		}
 
 		return GetterUtil.getBoolean(
 			draftLayout.getTypeSettingsProperty(
@@ -722,6 +730,18 @@ public class LayoutUtil {
 				"portletSetupUseCustomTitle",
 				Boolean.toString(generalConfig.getUseCustomTitle()));
 		}
+	}
+
+	private static Layout _fetchDraftLayout(Layout layout) {
+		if (!layout.isTypeAssetDisplay() && !layout.isTypeContent()) {
+			return null;
+		}
+
+		if (layout.isDraftLayout()) {
+			return layout;
+		}
+
+		return layout.fetchDraftLayout();
 	}
 
 	private static byte[] _getIconImageByteArray(Settings settings)

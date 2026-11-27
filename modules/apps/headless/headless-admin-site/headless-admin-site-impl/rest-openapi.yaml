@@ -807,6 +807,15 @@ components:
                     items:
                         type: permission
                     type: array
+                status:
+                    # @review
+                    description:
+                        The status of the display page template. It is Draft when the page was never published or has unpublished changes. Otherwise it is Approved.
+                    enum:
+                        -   Approved
+                        -   Draft
+                    readOnly: true
+                    type: string
                 thumbnailURLReference:
                     $ref: "#/components/schemas/ThumbnailURLReference"
                     # @review
@@ -2421,6 +2430,15 @@ components:
                     items:
                         type: permission
                     type: array
+                status:
+                    # @review
+                    description:
+                        The status of the master page. It is Draft when the page was never published or has unpublished changes. Otherwise it is Approved.
+                    enum:
+                        -   Approved
+                        -   Draft
+                    readOnly: true
+                    type: string
                 taxonomyCategoryBriefs:
                     # @review
                     description:
@@ -3217,6 +3235,15 @@ components:
                     items:
                         type: permission
                     type: array
+                status:
+                    # @review
+                    description:
+                        The status of the page template. It is Draft when the page was never published or has unpublished changes. Otherwise it is Approved.
+                    enum:
+                        -   Approved
+                        -   Draft
+                    readOnly: true
+                    type: string
                 taxonomyCategoryBriefs:
                     # @review
                     description:
@@ -3774,6 +3801,15 @@ components:
                     items:
                         type: permission
                     type: array
+                status:
+                    # @review
+                    description:
+                        The status of the site page. It is Draft when the page was never published or has unpublished changes. Otherwise it is Approved.
+                    enum:
+                        -   Approved
+                        -   Draft
+                    readOnly: true
+                    type: string
                 taxonomyCategoryBriefs:
                     # @review
                     description:
@@ -4411,6 +4447,15 @@ components:
                     items:
                         type: permission
                     type: array
+                status:
+                    # @review
+                    description:
+                        The status of the utility page. It is Draft when the page was never published or has unpublished changes. Otherwise it is Approved.
+                    enum:
+                        -   Approved
+                        -   Draft
+                    readOnly: true
+                    type: string
                 thumbnailURLReference:
                     $ref: "#/components/schemas/ThumbnailURLReference"
                     # @review

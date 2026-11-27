@@ -281,6 +281,18 @@ public class SitePageSerDes {
 			sb.append("]");
 		}
 
+		if (sitePage.getStatus() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"status\": ");
+
+			sb.append("\"");
+			sb.append(sitePage.getStatus());
+			sb.append("\"");
+		}
+
 		if (sitePage.getTaxonomyCategoryBriefs() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -489,6 +501,13 @@ public class SitePageSerDes {
 			map.put("permissions", String.valueOf(sitePage.getPermissions()));
 		}
 
+		if (sitePage.getStatus() == null) {
+			map.put("status", null);
+		}
+		else {
+			map.put("status", String.valueOf(sitePage.getStatus()));
+		}
+
 		if (sitePage.getTaxonomyCategoryBriefs() == null) {
 			map.put("taxonomyCategoryBriefs", null);
 		}
@@ -592,6 +611,9 @@ public class SitePageSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "permissions")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "status")) {
 				return false;
 			}
 			else if (Objects.equals(
@@ -761,6 +783,12 @@ public class SitePageSerDes {
 					sitePage.setPermissions(permissionsArray);
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "status")) {
+				if (jsonParserFieldValue != null) {
+					sitePage.setStatus(
+						SitePage.Status.create((String)jsonParserFieldValue));
+				}
+			}
 			else if (Objects.equals(
 						jsonParserFieldName, "taxonomyCategoryBriefs")) {
 
@@ -888,4 +916,4 @@ public class SitePageSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-613526252
+// LIFERAY-REST-BUILDER-HASH:-690160949

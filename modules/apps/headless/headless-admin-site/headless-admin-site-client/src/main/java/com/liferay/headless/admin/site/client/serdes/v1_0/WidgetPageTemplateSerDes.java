@@ -294,6 +294,18 @@ public class WidgetPageTemplateSerDes {
 			sb.append("]");
 		}
 
+		if (widgetPageTemplate.getStatus() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"status\": ");
+
+			sb.append("\"");
+			sb.append(widgetPageTemplate.getStatus());
+			sb.append("\"");
+		}
+
 		if (widgetPageTemplate.getTaxonomyCategoryBriefs() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -528,6 +540,13 @@ public class WidgetPageTemplateSerDes {
 				String.valueOf(widgetPageTemplate.getPermissions()));
 		}
 
+		if (widgetPageTemplate.getStatus() == null) {
+			map.put("status", null);
+		}
+		else {
+			map.put("status", String.valueOf(widgetPageTemplate.getStatus()));
+		}
+
 		if (widgetPageTemplate.getTaxonomyCategoryBriefs() == null) {
 			map.put("taxonomyCategoryBriefs", null);
 		}
@@ -637,6 +656,9 @@ public class WidgetPageTemplateSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "permissions")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "status")) {
 				return false;
 			}
 			else if (Objects.equals(
@@ -801,6 +823,13 @@ public class WidgetPageTemplateSerDes {
 					widgetPageTemplate.setPermissions(permissionsArray);
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "status")) {
+				if (jsonParserFieldValue != null) {
+					widgetPageTemplate.setStatus(
+						WidgetPageTemplate.Status.create(
+							(String)jsonParserFieldValue));
+				}
+			}
 			else if (Objects.equals(
 						jsonParserFieldName, "taxonomyCategoryBriefs")) {
 
@@ -931,4 +960,4 @@ public class WidgetPageTemplateSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:736484212
+// LIFERAY-REST-BUILDER-HASH:-963221271

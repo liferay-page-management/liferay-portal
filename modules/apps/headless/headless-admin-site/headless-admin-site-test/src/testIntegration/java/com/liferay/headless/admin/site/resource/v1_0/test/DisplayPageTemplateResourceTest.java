@@ -325,6 +325,8 @@ public class DisplayPageTemplateResourceTest
 				testGroup.getExternalReferenceCode(),
 				RandomTestUtil.randomString()));
 
+		_testGetSiteDisplayPageTemplateStatus();
+
 		_enableLocalStaging();
 
 		_testGetSiteDisplayPageTemplate(displayPageTemplate);
@@ -1385,6 +1387,19 @@ public class DisplayPageTemplateResourceTest
 			layoutPageTemplateEntry.getPreviewFileEntryId());
 	}
 
+	private void _assertStatus(
+			DisplayPageTemplate displayPageTemplate,
+			DisplayPageTemplate.Status status)
+		throws Exception {
+
+		DisplayPageTemplate getDisplayPageTemplate =
+			displayPageTemplateResource.getSiteDisplayPageTemplate(
+				testGroup.getExternalReferenceCode(),
+				displayPageTemplate.getExternalReferenceCode());
+
+		Assert.assertEquals(status, getDisplayPageTemplate.getStatus());
+	}
+
 	private void _assertThumbnailFileEntryId(
 			Boolean defaultValue,
 			String displayPageTemplateExternalReferenceCode,
@@ -2152,6 +2167,45 @@ public class DisplayPageTemplateResourceTest
 
 		assertEquals(displayPageTemplate, getDisplayPageTemplate);
 		assertValid(getDisplayPageTemplate);
+	}
+
+	private void _testGetSiteDisplayPageTemplateStatus() throws Exception {
+		DisplayPageTemplate displayPageTemplate =
+			testPostSiteDisplayPageTemplate_addDisplayPageTemplate(
+				randomDisplayPageTemplate());
+
+		_assertStatus(displayPageTemplate, DisplayPageTemplate.Status.DRAFT);
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.
+				getLayoutPageTemplateEntryByExternalReferenceCode(
+					displayPageTemplate.getExternalReferenceCode(),
+					testGroup.getGroupId());
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		ReflectionTestUtil.invoke(
+			_mvcActionCommand, "_publishLayoutPageTemplateEntry",
+			new Class<?>[] {Layout.class, Layout.class, long.class},
+			layout.fetchDraftLayout(), layout, TestPropsValues.getUserId());
+
+		_assertStatus(displayPageTemplate, DisplayPageTemplate.Status.APPROVED);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		draftLayout.setStatus(WorkflowConstants.STATUS_DRAFT);
+
+		_layoutLocalService.updateLayout(draftLayout);
+
+		_assertStatus(displayPageTemplate, DisplayPageTemplate.Status.DRAFT);
+
+		ReflectionTestUtil.invoke(
+			_mvcActionCommand, "_publishLayoutPageTemplateEntry",
+			new Class<?>[] {Layout.class, Layout.class, long.class},
+			layout.fetchDraftLayout(), layout, TestPropsValues.getUserId());
+
+		_assertStatus(displayPageTemplate, DisplayPageTemplate.Status.APPROVED);
 	}
 
 	private void _testGetSiteDisplayPageTemplateWithNestedFields(

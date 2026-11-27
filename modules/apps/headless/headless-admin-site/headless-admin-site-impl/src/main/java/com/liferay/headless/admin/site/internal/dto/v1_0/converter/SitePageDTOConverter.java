@@ -19,6 +19,7 @@ import com.liferay.headless.admin.site.internal.dto.v1_0.util.AssetUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.ItemScopeUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.SitePageTypeUtil;
+import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.NavigationSettingsUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.OpenGraphSettingsUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.SEOSettingsUtil;
@@ -135,6 +136,14 @@ public class SitePageDTOConverter implements DTOConverter<Layout, SitePage> {
 						return parentLayout.getExternalReferenceCode();
 					});
 				setPermissions(() -> _toPermissions(layout));
+				setStatus(
+					() -> {
+						if (LayoutUtil.isDraft(layout)) {
+							return Status.DRAFT;
+						}
+
+						return Status.APPROVED;
+					});
 				setTaxonomyCategoryBriefs(
 					() -> AssetUtil.getTaxonomyCategoryBriefs(
 						Layout.class.getName(), layout.getPlid(),
