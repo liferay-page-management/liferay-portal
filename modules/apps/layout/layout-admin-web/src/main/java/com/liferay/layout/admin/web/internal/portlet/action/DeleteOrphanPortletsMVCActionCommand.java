@@ -9,6 +9,7 @@ import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.service.PortletLocalService;
+import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -53,6 +54,9 @@ public class DeleteOrphanPortletsMVCActionCommand extends BaseMVCActionCommand {
 				(ThemeDisplay)actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
 			long selPlid = ParamUtil.getLong(actionRequest, "selPlid");
+
+			LayoutPermissionUtil.checkLayoutUpdatePermission(
+				themeDisplay.getPermissionChecker(), selPlid);
 
 			_portletLocalService.deletePortlets(
 				themeDisplay.getCompanyId(), portletIds, selPlid);
