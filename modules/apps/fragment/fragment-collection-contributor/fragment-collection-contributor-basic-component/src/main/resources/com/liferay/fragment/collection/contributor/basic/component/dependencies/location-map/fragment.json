@@ -1,0 +1,8 @@
+{
+	"cacheable": false,
+	"fragmentEntryKey": "location-map",
+	"icon": "globe-pin",
+	"name": "location-map",
+	"thumbnail": "location_map.svg",
+	"type": "component"
+}

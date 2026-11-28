@@ -1,0 +1,39 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"label": "entry",
+					"name": "item",
+					"type": "itemSelector"
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "",
+					"label": "field-name",
+					"name": "fieldName",
+					"type": "text"
+				},
+				{
+					"defaultValue": false,
+					"label": "display-popover-on-hover",
+					"name": "displayPopoverOnHover",
+					"type": "checkbox",
+					"typeOptions": {
+						"displayType": "toggle"
+					}
+				},
+				{
+					"defaultValue": false,
+					"label": "keep-popover-open-in-edit-mode",
+					"name": "keepPopoverOpenInEditMode",
+					"type": "checkbox",
+					"typeOptions": {
+						"displayType": "toggle"
+					}
+				}
+			],
+			"label": "location-map-options"
+		}
+	]
+}

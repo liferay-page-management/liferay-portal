@@ -1,0 +1,41 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.fragment.collection.contributor.basic.component.internal.template;
+
+import com.liferay.portal.kernel.template.TemplateContextContributor;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.Map;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
+/**
+ * @author Sandro Chinea
+ */
+@Component(
+	property = {
+		"template.context.keys=locationMapHelper",
+		"type=" + TemplateContextContributor.TYPE_GLOBAL
+	},
+	service = TemplateContextContributor.class
+)
+public class LocationMapTemplateContextContributor
+	implements TemplateContextContributor {
+
+	@Override
+	public void prepare(
+		Map<String, Object> contextObjects,
+		HttpServletRequest httpServletRequest) {
+
+		contextObjects.put("locationMapHelper", _locationMapHelper);
+	}
+
+	@Reference
+	private LocationMapHelper _locationMapHelper;
+
+}
